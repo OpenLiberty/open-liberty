@@ -1,0 +1,70 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/cdi/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0 CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1925 - CWWKS1949
+
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: A(z) {0} modul telep\u00edt\u00e9se a(z) {1} alkalmaz\u00e1sban nem siker\u00fclt, mart t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3. Az oszt\u00e1lyok list\u00e1ja: {2}. Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel alkalmaz\u00e1scsomagol\u00e1si hiba. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulban csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult, mivel t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s l\u00e9tezik. Ez a felt\u00e9tel nem megengedett.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulhoz csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: A LoginToContinueProperties komponens nem l\u00e9tezik. Az \u0171rlap alap\u00fa bejelentkez\u00e9s nem enged\u00e9lyezett. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s LoginToContinue feljegyz\u00e9ssel van ell\u00e1tva.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Az \u0171rlap alap\u00fa bejelentkez\u00e9shez sz\u00fcks\u00e9ges LoginToContinueProperties komponens nem l\u00e9tezik.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s LoginToContinue FormAuthenticationMechanismDefinition vagy CustomFormAuthenticationMechanismDefinition feljegyz\u00e9ssel van ell\u00e1tva.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: A megadott {0} azonos\u00edt\u00f3 oszt\u00e1lyt a CustomFormHttpAuthenticationMechanism oszt\u00e1ly nem t\u00e1mogatja. Haszn\u00e1lja a javax.security.enterprise.credential.UsernamePasswordCredential vagy javax.security.enterprise.credential.BasicAuthenticationCredential tan\u00fas\u00edtv\u00e1nyt a hiteles\u00edt\u00e9shez.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=A megadott azonos\u00edt\u00f3 oszt\u00e1lyt a CustomFormHttpAuthenticationMechanism oszt\u00e1ly nem t\u00e1mogatja. Haszn\u00e1lja a javax.security.enterprise.credential.UsernamePasswordCredential vagy javax.security.enterprise.credential.BasicAuthenticationCredential tan\u00fas\u00edtv\u00e1nyt a hiteles\u00edt\u00e9shez.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e1mogatott azonos\u00edt\u00f3 oszt\u00e1ly ker\u00fcl alkalmaz\u00e1sra az Egy\u00e9ni \u0171rlap hiteles\u00edt\u00e9shez.
+
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Az azonos\u00edt\u00f3n\u00e9v null\u00e9rt\u00e9k\u0171 vagy az azonos\u00edt\u00f3 objektum nem l\u00e9tezik. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CredentialValidationResult \u00e9rv\u00e9nyes azonos\u00edt\u00f3 objektumot tartalmaz.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=Az azonos\u00edt\u00f3 objektum az adott CredentialValidationResult objektumban \u00e9rv\u00e9nytelen. Ez null\u00e9rt\u00e9k\u0171, vagy nem rendelkezik \u00e9rv\u00e9nyes n\u00e9vvel.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Ha az alkalmaz\u00e1s IdentityStore elemet biztos\u00edt, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez \u00e9rv\u00e9nyes azonos\u00edt\u00f3 objektumot ad vissza a CredentialValidationResult elemben.
+
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: A UniqueId null\u00e9rt\u00e9k\u0171. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a CredentialValidationResult \u00e9rv\u00e9nyes UniqueId elemet tartalmaz.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=A UniqueId az adott CredentialValidationResult objektumban null\u00e9rt\u00e9k\u0171.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Ha az alkalmaz\u00e1s IdentityStore elemet biztos\u00edt, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez \u00e9rv\u00e9nyes UniqueId elemet ad vissza a CredentialValidationResult elemben.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Ay IdentityStoreHandler komponens nem tal\u00e1lhat\u00f3. Haszn\u00e1ljon a server.xml \u00e1ltal megadott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1st. Az IdentityStoreHandler komponens akkor j\u00f6n l\u00e9tre, ha legal\u00e1bb egy IdentityStore komponens tal\u00e1lhat\u00f3. Ha az alkalmaz\u00e1s sz\u00e1nd\u00e9kozik IdentityStore elemet haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez megfelel\u0151en van be\u00e1ll\u00edtva. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Ay IdentityStoreHandler komponens nem tal\u00e1lhat\u00f3. Ha az alkalmaz\u00e1s sz\u00e1nd\u00e9kozik IdentityStore elemet haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez megfelel\u0151en van be\u00e1ll\u00edtva. Az IdentityStoreHandler komponens akkor j\u00f6n l\u00e9tre, ha legal\u00e1bb egy IdentityStore komponens tal\u00e1lhat\u00f3.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Ha az alkalmaz\u00e1s sz\u00e1nd\u00e9kozik IdentityStore elemet haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez megfelel\u0151en van be\u00e1ll\u00edtva. 
+
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Az alkalmaz\u00e1s telep\u00edt\u00e9se nem siker\u00fclt, mert a(z) {1}  alkalmaz\u00e1s {0} modulj\u00e1nak web.xml f\u00e1jlj\u00e1ban t\u00f6bb login-config elem tal\u00e1lhat\u00f3. A HttpAuthenticationMechanism komponens enged\u00e9lyez\u00e9s\u00e9hez t\u00e1vol\u00edtsa el a login-config elemet a web.xml f\u00e1jlb\u00f3l.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Az alkalmaz\u00e1s telep\u00edt\u00e9se meghi\u00fasult, mert a login-config elem \u00e9s a HttpAuthenticationMechanism komponens egyar\u00e1nt meg van hat\u00e1rozva. A k\u00e9t hiteles\u00edt\u00e9si mechanizmus k\u00f6z\u00fcl csak az egyik haszn\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=A HttpAuthenticationMechanism komponens enged\u00e9lyez\u00e9s\u00e9hez t\u00e1vol\u00edtsa el a login-config elemet a web.xml f\u00e1jlb\u00f3l.
+
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Az alap hiteles\u00edt\u00e9s tartom\u00e1nyneve nincs be\u00e1ll\u00edtva, ez\u00e9rt a defaultRealm alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fclt alkalmaz\u00e1sra.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Mivel az alap hiteles\u00edt\u00e9s tartom\u00e1nyneve nincs megadva, a tartom\u00e1nyn\u00e9v a defaultRealm alap\u00e9rtelmezett \u00e9rt\u00e9kre lett be\u00e1ll\u00edtva.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=A tartom\u00e1nyn\u00e9v be\u00e1ll\u00edt\u00e1s\u00e1hoz adja azt meg egy BasicAuthenticationMechanismDefinition feljegyz\u00e9sben az alkalmaz\u00e1sban.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: A(z) {1} konfigur\u00e1ci\u00f3s param\u00e9ter {0} \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=A konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1ci\u00f3s param\u00e9ter helyesen van be\u00e1ll\u00edtva.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: A(z) {1} konfigur\u00e1ci\u00f3s param\u00e9ter {0} \u00e9rt\u00e9ke kisebb, mint a minim\u00e1lis {2} \u00e9rt\u00e9k.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=A konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke kisebb, mint a minim\u00e1lis \u00e9rt\u00e9k.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke ne legyen kisebb, mint a minim\u00e1lis \u00e9rt\u00e9k.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: A kivonatolt adatok \u00e9rv\u00e9nytelenek. {0}
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=A kivonatolt \u00e9rt\u00e9k az adatb\u00e1zisban \u00e9rv\u00e9nytelen.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy kivonatolt adatok az adatb\u00e1zisban azzal a kivonatol\u00e1si algoritmussal lettek kivonatolva, amelyet a PasswordHash megval\u00f3s\u00edt\u00e1si oszt\u00e1ly t\u00e1mogat.
+
+#The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
+JAVAEESEC_CDI_INVALID_ITERATION=Az iter\u00e1ci\u00f3k \u00e9rt\u00e9k ({0}) nem sz\u00e1m.
+JAVAEESEC_CDI_INVALID_ALGORITHM=A(z) {0} kivonatol\u00e1si algoritmus nem t\u00e1mogatott.
+JAVAEESEC_CDI_INVALID_ELEMENTS=Az elemek sz\u00e1ma ({0}) nem 4.
+JAVAEESEC_CDI_INVALID_HASH_VALUE=A kivonatol\u00e1si \u00e9rt\u00e9k nem megfelel\u0151en k\u00f3dolt.
+JAVAEESEC_CDI_INVALID_SALT_VALUE=A vari\u00e1ci\u00f3s \u00e9rt\u00e9k nem megfelel\u0151en k\u00f3dolt.

@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: Nelze ur\u010dit typ vlastnosti pro vlo\u017een\u00ed. Typ bodu vlo\u017een\u00ed byl "{0}".
+unable.to.determine.injection.type.CWMCG5001E.explanation=Bod vlo\u017een\u00ed anotovan\u00fd s kvalifik\u00e1torem @ConfigProperty nem\u011bl platn\u00fd typ.
+unable.to.determine.injection.type.CWMCG5001E.useraction=Ujist\u011bte se, \u017ee bod vlo\u017een\u00ed m\u00e1 platn\u00fd typ pro vlastnost, kterou chcete vlo\u017eit.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: N\u00e1zev vlastnosti mus\u00ed b\u00fdt ur\u010den pro vlo\u017een\u00ed konfigura\u010dn\u00ed vlastnosti konstruktoru a metody.
+unable.to.determine.injection.name.CWMCG5002E.explanation=Nen\u00ed mo\u017en\u00e9 odvodit v\u00fdchoz\u00ed n\u00e1zev vlastnosti pro parametry konstruktor\u016f a metody. Spr\u00e1vn\u00fd n\u00e1zev vlastnosti mus\u00ed b\u00fdt p\u0159ed\u00e1n kvalifik\u00e1toru @ConfigProperty. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=Nastavte spr\u00e1vn\u00fd n\u00e1zev vlastnosti pomoc\u00ed kvalifik\u00e1toru @ConfigProperty.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: Z\u00e1vislost {0} InjectionPoint nebyla vy\u0159e\u0161ena. Chyba: {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=Vlo\u017een\u00e1 konfigura\u010dn\u00ed vlastnost nebyla vy\u0159e\u0161ena. Bu\u010f nelze pojmenovanou vlastnost nal\u00e9zt, nebo p\u0159evodn\u00edk pro po\u017eadovan\u00fd typ nebyl vy\u0159e\u0161en. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=Zkontrolujte zpr\u00e1vu serveru a protokoly ffdc a ur\u010dete p\u0159\u00ed\u010dinu. Ujist\u011bte se, \u017ee vlastnost existuje v jednom ze zdroj\u016f konfigurace a \u017ee po\u017eadovan\u00e9 p\u0159evodn\u00edky byly konfigurov\u00e1ny.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: Konfigura\u010dn\u00ed vlastnost "{0}" nebyla nalezena.
+property.not.found.CWMCG5004E.explanation=Pojmenovan\u00e1 vlastnost nebyla v \u017e\u00e1dn\u00e9m z konfigurovan\u00fdch zdroj\u016f nalezena. 
+property.not.found.CWMCG5004E.useraction=Ov\u011b\u0159te existenci vlastnosti v jednom ze zdroje konfigurace.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: Do\u0161lo k chyb\u011b rozhran\u00ed API konfigurace: {0}
+temporary.CWMCG5999E.explanation=Do\u0161lo k chyb\u011b rozhran\u00ed API konfigurace, kter\u00e1 br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMCG5999E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+

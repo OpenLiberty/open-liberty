@@ -1,17 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package bval.v20.cdi.web;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
+import javax.validation.ClockProvider;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.xml.bind.ValidationException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -34,12 +47,12 @@ public class BeanValCDIServlet extends FATServlet {
 
     @Test
     public void testInjectVF() throws Exception {
-        Assert.assertNotNull(injectValFact);
+        assertNotNull(injectValFact);
     }
 
     @Test
     public void testInjectVal() throws Exception {
-        Assert.assertNotNull(injectVal);
+        assertNotNull(injectVal);
     }
 
     @Test
@@ -107,5 +120,15 @@ public class BeanValCDIServlet extends FATServlet {
                 throw new Exception("interceptor validated method parameters and caught constraint violations, but size wasn't 4.");
             }
         }
+    }
+
+    @Test
+    public void testCustomClockProvider() throws Exception {
+        ClockProvider cp = injectValFact.getClockProvider();
+        System.out.println("Got ClockProvider: " + cp);
+        assertEquals(TestClockProvider.class, cp.getClass());
+
+        // Verify that the custom clock provider is CDI-enabled
+        cp.getClock();
     }
 }

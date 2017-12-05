@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2014
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.websphere.ejbcontainer.test.tools;
 
 import javax.security.auth.login.LoginContext;
@@ -22,8 +21,7 @@ import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
  * to use websphere application server classes and methods that are not
  * available for applications to use.
  */
-public abstract class FATSecurityHelper
-{
+public abstract class FATSecurityHelper {
     public static LoginContext login(String user, String pass) throws Exception {
         LoginContext lCtx = new LoginContext(JaasLoginConfigConstants.APPLICATION_WSLOGIN, new WSCallbackHandlerImpl(user, pass));
         lCtx.login();

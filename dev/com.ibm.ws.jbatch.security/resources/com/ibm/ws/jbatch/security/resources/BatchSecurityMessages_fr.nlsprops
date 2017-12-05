@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: La s\u00e9curit\u00e9 Batch est activ\u00e9e.
+BATCH_SECURITY_ENABLED.explanation=Les utilisateurs sont autoris\u00e9s en fonction des r\u00f4les Batch \u00e0 effectuer toutes les op\u00e9rations du composant Batch.
+BATCH_SECURITY_ENABLED.useraction=Aucune action n'est requise.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: La s\u00e9curit\u00e9 Batch est d\u00e9sactiv\u00e9e.
+BATCH_SECURITY_DISABLED.explanation=Les utilisateurs ne disposent pas d'autorisations selon les r\u00f4les Batch.
+BATCH_SECURITY_DISABLED.useraction=Si aucune autorisation bas\u00e9e sur un r\u00f4le Batch n'est requise dans cette configuration serveur, aucune action n'est alors n\u00e9cessaire.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: L''utilisateur {0} n''est pas autoris\u00e9 \u00e0 effectuer des op\u00e9rations Batch associ\u00e9es \u00e0 l''instance de travail {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=L'utilisateur ne dispose pas du r\u00f4le lui permettant d'effectuer l'op\u00e9ration Batch demand\u00e9e sur cette instance de travail.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Si l'utilisateur est autoris\u00e9 \u00e0 effectuer l'op\u00e9ration Batch demand\u00e9e, configurez alors l'autorisation de s\u00e9curit\u00e9 Batch puis ajoutez cet utilisateur aux r\u00f4les Batch requis. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: L''utilisateur {0} n''est pas autoris\u00e9 \u00e0 effectuer des op\u00e9rations Batch.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=L'utilisateur ne dispose pas du r\u00f4le lui permettant d'effectuer des op\u00e9rations Batch.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Si l'utilisateur n'est pas autoris\u00e9 \u00e0 \u00eatre un utilisateur Batch, aucune action n'est alors requise. Si l'utilisateur est autoris\u00e9 \u00e0 effectuer les op\u00e9rations Batch et que la s\u00e9curit\u00e9 Batch est activ\u00e9e, configurez alors l'autorisation de s\u00e9curit\u00e9 Batch et ajoutez cet utilisateur aux r\u00f4les Batch requis.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: L''utilisateur {0} n''est pas autoris\u00e9 \u00e0 d\u00e9marrer les travaux Batch.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=L'utilisateur ne dispose pas d'un r\u00f4le lui permettant de d\u00e9marrer des travaux Batch.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Si l'utilisateur n'est pas autoris\u00e9 \u00e0 d\u00e9marrer des travaux Batch, aucune action n'est alors requise. Si l'utilisateur est autoris\u00e9 \u00e0 effectuer l'op\u00e9ration Batch demand\u00e9e, configurez alors l'autorisation de s\u00e9curit\u00e9 Batch puis ajoutez cet utilisateur aux r\u00f4les Batch requis.

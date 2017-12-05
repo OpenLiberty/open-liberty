@@ -1,0 +1,265 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Sk\u0142adnia nazwy unikalnej {0} jest niepoprawna. Udost\u0119pnij nazw\u0119 unikaln\u0105, u\u017cywaj\u0105c poprawnej sk\u0142adni. Na przyk\u0142ad uid=xyz,dc=firma,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=Sk\u0142adnia okre\u015blonej nazwy unikalnej jest niepoprawna. W\u0142a\u015bciwo\u015b\u0107 uniqueName okre\u015blona we w\u0142a\u015bciwo\u015bci identyfikatora jest niepoprawna. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w bez poprawnej nazwy unikalnej.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=Sprawd\u017a, czy nazwa unikalna jest poprawnie zapisana. Przejrzyj sk\u0142adni\u0119 nazwy unikalnej. Na przyk\u0142ad je\u015bli ma ona format nazwy wyr\u00f3\u017cniaj\u0105cej, sprawd\u017a czy dla znak\u00f3w specjalnych poprawnie u\u017cyto znak\u00f3w zmiany znaczenia.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Definicja typu jednostki {0} jest niepoprawna. Popraw definicj\u0119 jednostki w pliku server.xml.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= Typ jednostki musi mie\u0107 zdefiniowan\u0105 nazw\u0119 typu jednostki oraz co najmniej jedn\u0105 odpowiedni\u0105 w\u0142a\u015bciwo\u015b\u0107 wzgl\u0119dnej nazwy wyr\u00f3\u017cniaj\u0105cej (RDN).
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Zmodyfikuj i popraw definicj\u0119 typu jednostki w pliku server.xml.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Definicja wpisu podstawowego {0} jest niepoprawna.  Popraw definicj\u0119 wpisu podstawowego w pliku server.xml. Przyk\u0142adowa sk\u0142adnia: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= Okre\u015blona definicja wpisu podstawowego jest niepoprawna. Sk\u0142adnia definiowania wpisu podstawowego to <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= Zmodyfikuj i popraw definicj\u0119 wpisu podstawowego w pliku server.xml.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Definicja dziedziny {0} jest niepoprawna. Popraw definicj\u0119 dziedziny w pliku server.xml.
+INVALID_REALM_DEFINITION.explanation= Brakuje znacznika dziedziny albo jest on niepoprawny z powodu braku wymaganego atrybutu.
+INVALID_REALM_DEFINITION.useraction=Zmodyfikuj i popraw definicj\u0119 dziedziny w pliku server.xml.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Definicja uczestnicz\u0105cego wpisu podstawowego {0} jest niepoprawna. Popraw definicj\u0119 uczestnicz\u0105cego wpisu podstawowego w pliku server.xml. Przyk\u0142adowa sk\u0142adnia: <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= Podana definicja uczestnicz\u0105cego wpisu podstawowego jest niepoprawna. Sk\u0142adnia definiowania uczestnicz\u0105cego wpisu podstawowego to <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=Zmodyfikuj i popraw definicj\u0119 uczestnicz\u0105cego wpisu podstawowego w pliku server.xml.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Definicja odwzorowania atrybutu {0} rejestru u\u017cytkownik\u00f3w jest niepoprawna. Popraw odwzorowanie atrybutu rejestru u\u017cytkownik\u00f3w w pliku server.xml.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= Definicja odwzorowania atrybutu rejestru u\u017cytkownik\u00f3w jest zdefiniowana niepoprawnie.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=Zmodyfikuj i popraw definicj\u0119 odwzorowania atrybutu rejestru u\u017cytkownik\u00f3w w pliku server.xml.
+
+INVALID_REALM_NAME=CWIMK0006E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podana nazwa dziedziny {0} jest niepoprawna. Okre\u015bl nazw\u0119 istniej\u0105cej dziedziny.
+INVALID_REALM_NAME.explanation=Podana nazwa dziedziny nie zosta\u0142a zdefiniowana lub jest niepoprawna w pliku server.xml.
+INVALID_REALM_NAME.useraction=Sprawd\u017a, czy nazwa dziedziny istnieje oraz czy jej pisownia jest poprawna w pliku server.xml. Je\u015bli nazwa nie istnieje, nale\u017cy poda\u0107 poprawn\u0105 dziedzin\u0119.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Dla dziedziny {0} nie zdefiniowano poprawnego wpisu podstawowego. Zdefiniuj wpis podstawowy dla dziedziny w pliku server.xml.
+MISSING_BASE_ENTRY_IN_REALM.explanation=Dla dziedziny powinien zosta\u0107 zdefiniowany co najmniej jeden poprawny uczestnicz\u0105cy wpis podstawowy.
+MISSING_BASE_ENTRY_IN_REALM.useraction=Sprawd\u017a, czy dla dziedziny zdefiniowano poprawny uczestnicz\u0105cy wpis podstawowy w pliku server.xml.
+
+MISSING_BASE_ENTRY=CWIMK0008E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Repozytorium {0} musi zawiera\u0107 co najmniej jeden wpis podstawowy. Zdefiniuj wpis podstawowy w pliku server.xml.
+MISSING_BASE_ENTRY.explanation=Po dodaniu repozytorium nale\u017cy doda\u0107 do niego co najmniej jeden wpis podstawowy.
+MISSING_BASE_ENTRY.useraction=Dodaj co najmniej jeden wpis podstawowy do repozytorium w pliku server.xml.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: Us\u0142uga stowarzyszania rejestru u\u017cytkownik\u00f3w jest gotowa.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+FEDERATED_MANAGER_SERVICE_READY.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Us\u0142uga stowarzyszania rejestru u\u017cytkownik\u00f3w jest zatrzymana.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie znaleziono identyfikatora jednostki. Okre\u015bl poprawny identyfikator jako parametr wej\u015bciowy. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Identyfikator jednostki nie zosta\u0142 okre\u015blony. System nie mo\u017ce znale\u017a\u0107 jednostki. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w przed znalezieniem tej jednostki. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Sprawd\u017a, czy jednostka w obiekcie wej\u015bciowym zawiera w\u0142a\u015bciwo\u015b\u0107 identyfikatora.
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Okre\u015blono nazw\u0119 zewn\u0119trzn\u0105 {0}, ale nie okre\u015blono obiektu steruj\u0105cego dla nazwy zewn\u0119trznej. Okre\u015bl obiekt steruj\u0105cy dla danej nazwy zewn\u0119trznej.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=Je\u015bli podczas operacji pobierania ustawiono w\u0142a\u015bciwo\u015b\u0107 externalName, konieczne jest okre\u015blenie w\u0142a\u015bciwo\u015bci ExternalNameControl.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Okre\u015bl w\u0142a\u015bciwo\u015b\u0107 ExternalNameControl albo usu\u0144 w\u0142a\u015bciwo\u015b\u0107 externalName z obiektu wej\u015bciowego.
+
+INVALID_IDENTIFIER=CWIML1010E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Atrybuty uniqueId = {0} i uniqueName = {1} obiektu identyfikatora s\u0105 niepoprawne lub nie s\u0105 zdefiniowane w repozytorium zaplecza.
+INVALID_IDENTIFIER.explanation=Okre\u015blony obiekt identyfikatora jest niepoprawny. W obiekcie identyfikatora konieczne jest okre\u015blenie poprawnego atrybutu uniqueId lub uniqueName. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w bez poprawnego obiektu identyfikatora. Je\u015bli okre\u015blono obiekt identyfikatora, atrybut uniqueId lub uniqueName jest pusty albo ma warto\u015b\u0107 null.
+INVALID_IDENTIFIER.useraction=Upewnij si\u0119, \u017ce jednostka w obiekcie wej\u015bciowym ma identyfikator z poprawnym atrybutem uniqueId lub uniqueName (nie mog\u0105 one oba jednocze\u015bnie by\u0107 puste lub mie\u0107 warto\u015b\u0107 null). 
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Jednostka {0} nie jest w zasi\u0119gu dziedziny {1}. Okre\u015bl jednostk\u0119 w zasi\u0119gu skonfigurowanej dziedziny w pliku server.xml.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=Nie mo\u017cna wykona\u0107 operacji, poniewa\u017c podana jednostka nie znajduje si\u0119 w zasi\u0119gu dziedziny.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Sprawd\u017a, czy nazwa unikalna jednostki zosta\u0142a poprawnie okre\u015blona. Je\u015bli nazwa dziedziny zosta\u0142a okre\u015blona w obiekcie Context obiektu wej\u015bciowego, sprawd\u017a poprawno\u015b\u0107 pisowni tej nazwy.
+
+MISSING_SORT_KEY=CWIML1001E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Brak klucza sortowania w wej\u015bciowym obiekcie steruj\u0105cym sortowaniem. Zdefiniuj klucz sortowania dla okre\u015blonego obiektu steruj\u0105cego sortowaniem.
+MISSING_SORT_KEY.explanation=W operacji wyszukiwania przekazano obiekt SortControl bez klucza sortowania, kt\u00f3ry jest wymagany do przeprowadzenia sortowania.
+MISSING_SORT_KEY.useraction=Ustaw klucz sortowania w obiekcie SortControl i sprawd\u017a, czy w\u0142a\u015bciwo\u015b\u0107 u\u017cyta jako klucz sortowania jest cz\u0119\u015bci\u0105 powrotnej listy w\u0142a\u015bciwo\u015bci.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Brak obiektu steruj\u0105cego wyszukiwaniem w obiekcie wej\u015bciowym operacji wyszukiwania. Zdefiniuj obiekt steruj\u0105cy wyszukiwaniem w obiekcie wej\u015bciowym.
+MISSING_SEARCH_CONTROL.explanation=Obiekt SearchControl musi zosta\u0107 okre\u015blony w obiekcie wej\u015bciowym operacji wyszukiwania.
+MISSING_SEARCH_CONTROL.useraction=Okre\u015bl obiekt SearchControl w obiekcie wej\u015bciowym wyszukiwania.
+
+MISSING_COOKIE=CWIML1002E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. W obiekcie sterowania stronami brakuje informacji cookie s\u0142u\u017c\u0105cej do pobierania kolejnej strony wynik\u00f3w wyszukiwania. Zdefiniuj parametr cookie w obiekcie steruj\u0105cym stronami.
+MISSING_COOKIE.explanation=Rejestr u\u017cytkownik\u00f3w nie mo\u017ce pobra\u0107 nast\u0119pnej strony wynik\u00f3w wyszukiwania. W obiekcie PageControl musi zosta\u0107 okre\u015blony parametr cookie s\u0142u\u017c\u0105cy do pobierania kolejnej strony wynik\u00f3w wyszukiwania.
+MISSING_COOKIE.useraction=Sprawd\u017a, czy w obiekcie PageControl zosta\u0142a okre\u015blona w\u0142a\u015bciwo\u015b\u0107 cookie oraz czy jej warto\u015b\u0107 pocz\u0105tkowa to 0. W\u0142a\u015bciwo\u015b\u0107 cookie w obiekcie PageResponseControl zwraca warto\u015b\u0107 s\u0142u\u017c\u0105c\u0105 do pobierania kolejnej strony wynik\u00f3w wyszukiwania.
+
+INVALID_COOKIE=CWIML1041E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Parametr cookie okre\u015blony w obiekcie steruj\u0105cym stronami jest niepoprawny lub utraci\u0142 wa\u017cno\u015b\u0107.
+INVALID_COOKIE.explanation=Rejestr u\u017cytkownik\u00f3w nie mo\u017ce pobra\u0107 nast\u0119pnej strony wynik\u00f3w wyszukiwania. Parametr cookie s\u0142u\u017c\u0105cy do pobierania kolejnej strony wynik\u00f3w wyszukiwania w obiekcie PageControl jest niepoprawny. 
+INVALID_COOKIE.useraction=Sprawd\u017a, czy w obiekcie PageControl okre\u015blono poprawny parametr cookie. 
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Limit licznika {0} okre\u015blony w obiekcie sterowania wyszukiwaniem jest niepoprawny. Warto\u015b\u0107 musi wynosi\u0107 0 lub by\u0107 liczb\u0105 dodatni\u0105.
+INCORRECT_COUNT_LIMIT.explanation=Limit licznika operacji wyszukiwania nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105. Liczba dodatnia ustawia maksymaln\u0105 liczb\u0119 pozycji zwracanych jako wyniki wyszukiwania. Warto\u015b\u0107 0 wskazuje brak limitu. Ustawienie limitu wyszukiwania na warto\u015b\u0107 0 spowoduje zwr\u00f3cenie wszystkich pozycji.
+INCORRECT_COUNT_LIMIT.useraction=Nie okre\u015blaj liczby ujemnej dla limitu licznika.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Limit wyszukiwania {0} okre\u015blony w obiekcie sterowania wyszukiwaniem jest niepoprawny. Warto\u015b\u0107 musi wynosi\u0107 0 lub by\u0107 liczb\u0105 dodatni\u0105.
+INCORRECT_SEARCH_LIMIT.explanation=Limit wyszukiwania operacji wyszukiwania nie mo\u017ce by\u0107 liczb\u0105 ujemn\u0105.
+INCORRECT_SEARCH_LIMIT.useraction=Nie okre\u015blaj w\u0142a\u015bciwo\u015bci limitu wyszukiwania jako liczby ujemnej. Warto\u015b\u0107 musi wynosi\u0107 0 lub by\u0107 liczb\u0105 dodatni\u0105.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie mo\u017cna okre\u015bli\u0107 parametru countLimit w obiekcie sterowania wyszukiwaniem, je\u015bli w wywo\u0142aniu wyszukiwania okre\u015blono tak\u017ce obiekt steruj\u0105cy stronami. Okre\u015bl limity licznika lub obiekt steruj\u0105cy stronami, lecz nie oba te elementy jednocze\u015bnie.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=Parametr countLimit okre\u015bla oczekiwan\u0105 przez program wywo\u0142uj\u0105cy liczb\u0119 wynik\u00f3w, kt\u00f3re maj\u0105 zosta\u0107 zwr\u00f3cone przez operacj\u0119 wyszukiwania. Nie mo\u017cna go u\u017cywa\u0107 razem z obiektem PageControl.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=Zale\u017cnie od potrzeb program wywo\u0142uj\u0105cy mo\u017ce u\u017cy\u0107 albo parametru countLimit, albo obiektu PageControl, ale nie mo\u017ce u\u017cy\u0107 ich obu jednocze\u015bnie. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Brak w\u0142a\u015bciwo\u015bci wyra\u017cenia w obiekcie sterowania wyszukiwaniem. Zdefiniuj w\u0142a\u015bciwo\u015b\u0107 wyra\u017cenia w obiekcie steruj\u0105cym wyszukiwaniem. 
+MISSING_SEARCH_EXPRESSION.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji wyszukiwania. Konieczne jest okre\u015blenie w\u0142a\u015bciwo\u015bci expression w obiekcie SearchControl.
+MISSING_SEARCH_EXPRESSION.useraction=Podaj \u0142a\u0144cuch wyra\u017cenia wyszukiwania we w\u0142a\u015bciwo\u015bci expression w obiekcie SearchControl.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Wyra\u017cenie wyszukiwania okre\u015blone w obiekcie sterowania wyszukiwaniem zawiera b\u0142\u0105d: {0}. Sprawd\u017a sk\u0142adni\u0119 wyra\u017cenia wyszukiwania w obiekcie steruj\u0105cym wyszukiwaniem.
+SEARCH_EXPRESSION_ERROR.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji. Wyra\u017cenie wyszukiwania okre\u015blone w obiekcie SearchControl jest niezgodne z obs\u0142ugiwan\u0105 sk\u0142adni\u0105 XPath.
+SEARCH_EXPRESSION_ERROR.useraction=Przejrzyj sk\u0142adni\u0119 wyra\u017cenia wyszukiwania i popraw b\u0142\u0119dy.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Sk\u0142adnia wyra\u017cenia wyszukiwania {0} jest niepoprawna. Okre\u015bl poprawn\u0105 sk\u0142adni\u0119 wyra\u017cenia wyszukiwania. 
+INVALID_SEARCH_EXPRESSION.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji wyszukiwania, poniewa\u017c wyra\u017cenie wyszukiwania jest niepoprawne.
+INVALID_SEARCH_EXPRESSION.useraction=Podaj poprawne wyra\u017cenie wyszukiwania.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Liczba wynik\u00f3w wyszukiwania ({0}) przekracza maksymalny limit wyszukiwania ({1}). \u017badne wyniki wyszukiwania nie zostan\u0105 zwr\u00f3cone. Zwi\u0119ksz maksymalny limit wyszukiwania lub zmie\u0144 wyra\u017cenie wyszukiwania, tak aby pobiera\u0142o mniejsz\u0105 liczb\u0119 rekord\u00f3w.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=Liczba rekord\u00f3w zwr\u00f3conych przez wyszukiwanie jest wi\u0119ksza ni\u017c maksymalna liczba rekord\u00f3w okre\u015blona w limicie wyszukiwania.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=Zwi\u0119ksz maksymalny limit wyszukiwania lub u\u017cyj bardziej restrykcyjnego wyra\u017cenia wyszukiwania, aby pobra\u0107 mniejsz\u0105 liczb\u0119 rekord\u00f3w.
+
+INVALID_CHANGETYPE=CWIML4552E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podany element changeType {0} jest niepoprawny dla wyszukiwania zmienionych jednostek. Poprawne typy zmiany to add, modify, delete, rename i * (oznacza wszystkie typy).
+INVALID_CHANGETYPE.explanation=Poprawne typy zmiany przy wyszukiwaniu zmienionych jednostek to add, modify, delete, rename i * (oznacza wszystkie typy zmian).
+INVALID_CHANGETYPE.useraction=Podaj jeden z poprawnych typ\u00f3w zmiany.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Brak wej\u015bciowego obiektu Entity dla operacji {0}. Obiekt danych jednostki musi by\u0107 zdefiniowany dla obiektu, kt\u00f3rego dotyczy operacja.
+MISSING_ENTITY_DATA_OBJECT.explanation=Okre\u015blona operacja wymaga obiektu Entity.
+MISSING_ENTITY_DATA_OBJECT.useraction=Obiekt jednostki, na kt\u00f3rej ma zosta\u0107 przeprowadzona operacja, musi by\u0107 zdefiniowany.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Dzia\u0142anie {0} nie obs\u0142uguje wielu jednostek. Okre\u015bl tylko jedn\u0105 jednostk\u0119 dla tej operacji.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=Operacja nie obs\u0142uguje wielu jednostek. Na przyk\u0142ad operacja aktualizacji mo\u017ce by\u0107 przeprowadzona tylko na jednej jednostce jednocze\u015bnie.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Upewnij si\u0119, \u017ce do operacji na rejestrze u\u017cytkownik\u00f3w przekazano tylko jedn\u0105 jednostk\u0119.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Brak nazwy u\u017cytkownika lub jest ona pusta. 
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=Do logowania z has\u0142em wymagana jest nazwa u\u017cytkownika.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Sprawd\u017a, czy okre\u015blono nazw\u0119 u\u017cytkownika.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Dla nazwy u\u017cytkownika {0} istnieje wi\u0119cej ni\u017c jeden rekord w skonfigurowanych rejestrach u\u017cytkownik\u00f3w. Nazwa u\u017cytkownika musi by\u0107 unikalna we wszystkich rejestrach u\u017cytkownik\u00f3w.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Dla danej nazwy u\u017cytkownika znaleziono wielu u\u017cytkownik\u00f3w. Nie mo\u017cna kontynuowa\u0107 procesu logowania.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Sprawd\u017a, czy okre\u015blono poprawn\u0105 nazw\u0119 u\u017cytkownika. Na przyk\u0142ad okre\u015blenie nazwy u\u017cytkownika jako nazwy unikalnej pozwoli unikn\u0105\u0107 tego wyj\u0105tku.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: Nie mo\u017cna zako\u0144czy\u0107 operacji uwierzytelniania. Uwierzytelnianie przy u\u017cyciu certyfikatu nie jest obs\u0142ugiwane przez repozytorium {0}. Podstawowa przyczyna: {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=Uwierzytelnianie przy u\u017cyciu certyfikatu nie jest obs\u0142ugiwane przez repozytorium.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Upewnij si\u0119, \u017ce uwierzytelnianie przy u\u017cyciu certyfikatu jest obs\u0142ugiwane przez repozytorium.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Odwzorowywanie certyfikatu nie powiod\u0142o si\u0119. Okre\u015bl poprawne odwzorowanie certyfikatu w pliku server.xml lub u\u017cyj poprawnego certyfikatu.
+CERTIFICATE_MAP_FAILED.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d przy odwzorowywaniu podanego certyfikatu do rejestru u\u017cytkownik\u00f3w.
+CERTIFICATE_MAP_FAILED.useraction=Popraw odwzorowanie certyfikatu w pliku server.xml lub zaloguj si\u0119 przy u\u017cyciu poprawnego certyfikatu.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Okre\u015blona nazwa u\u017cytkownika {0} nie zosta\u0142a znaleziona w repozytorium zaplecza.
+PRINCIPAL_NOT_FOUND.explanation=Nazwa u\u017cytkownika nie zosta\u0142a znaleziona w repozytorium. Nie mo\u017cna kontynuowa\u0107 procesu logowania.
+PRINCIPAL_NOT_FOUND.useraction=Sprawd\u017a, czy okre\u015blono poprawn\u0105 nazw\u0119 u\u017cytkownika.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Okre\u015blona podstawa wyszukiwania {0} nie istnieje w bie\u017c\u0105cej skonfigurowanej dziedzinie. Okre\u015bl poprawn\u0105 podstaw\u0119 wyszukiwania i sprawd\u017a, czy wpis podstawowy jest skonfigurowany w bie\u017c\u0105cej dziedzinie.
+NON_EXISTING_SEARCH_BASE.explanation=Okre\u015blona podstawa wyszukiwania nie istnieje w bie\u017c\u0105cej dziedzinie.
+NON_EXISTING_SEARCH_BASE.useraction=Sprawd\u017a okre\u015blon\u0105 podstaw\u0119 wyszukiwania i upewnij si\u0119, \u017ce w bie\u017c\u0105cej dziedzinie skonfigurowano odpowiedni wpis podstawowy.
+
+ENTITY_NOT_FOUND=CWIML4001E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie znaleziono jednostki {0}. Okre\u015bl poprawn\u0105 jednostk\u0119 lub utw\u00f3rz brakuj\u0105c\u0105 jednostk\u0119.
+ENTITY_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonej nazwy jednostki (uniqueName lub uniqueId) w bazowym repozytorium. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w przed znalezieniem tej jednostki.
+ENTITY_NOT_FOUND.useraction=Sprawd\u017a, czy jednostka istnieje w repozytorium bazowym. Je\u015bli jednostka istnieje, upewnij si\u0119, \u017ce zosta\u0142y dla niej ustawione uprawnienia do odczytu i spr\u00f3buj ponownie.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. W elemencie steruj\u0105cym {1} okre\u015blono niepoprawn\u0105 warto\u015b\u0107 dla poziomu w\u0142a\u015bciwo\u015bci {0}. Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci level (poziom) musi by\u0107 r\u00f3wna 0 lub by\u0107 dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105.
+INVALID_LEVEL_IN_CONTROL.explanation=Warto\u015b\u0107 poziomu w\u0142a\u015bciwo\u015bci zosta\u0142a okre\u015blona jako liczba ujemna.
+INVALID_LEVEL_IN_CONTROL.useraction=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci level (poziom) musi by\u0107 r\u00f3wna 0 lub by\u0107 dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105. Zmie\u0144 warto\u015b\u0107 poziomu w\u0142a\u015bciwo\u015bci i spr\u00f3buj ponownie.
+
+NAMING_EXCEPTION=CWIML4520E: Nie mo\u017cna zako\u0144czy\u0107 operacji LDAP. Podczas przetwarzania wyst\u0105pi\u0142 wyj\u0105tek {0} dotycz\u0105cy nazewnictwa LDAP.
+NAMING_EXCEPTION.explanation=Komunikat wskazuje, \u017ce wyst\u0105pi\u0142 og\u00f3lny wyj\u0105tek dotycz\u0105cy nazewnictwa podczas operacji LDAP. Dodatkowe informacje zawiera wyj\u0105tek. 
+NAMING_EXCEPTION.useraction=Sprawd\u017a, czy pokrewne repozytorium (na przyk\u0142ad baza danych lub serwer LDAP) zosta\u0142o uruchomione i ustawione poprawnie.
+
+SYSTEM_EXCEPTION=CWIML1998E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podczas przetwarzania operacji na rejestrze u\u017cytkownik\u00f3w wyst\u0105pi\u0142 nast\u0119puj\u0105cy wyj\u0105tek systemowy: {0} 
+SYSTEM_EXCEPTION.explanation=Program napotka\u0142 wyj\u0105tek systemowy podczas wykonywania operacji na rejestrze u\u017cytkownik\u00f3w. 
+SYSTEM_EXCEPTION.useraction= Sprawd\u017a w dziennikach przyczyn\u0119 tego b\u0142\u0119du i podejmij odpowiednie dzia\u0142ania naprawcze.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Wprowadzona warto\u015b\u0107 w\u0142a\u015bciwo\u015bci {0} jest niepoprawna dla jednostki {1}. Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci musi by\u0107 poprawna i jej typ danych musi by\u0107 poprawny.
+INVALID_PROPERTY_VALUE.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci jest niepoprawna. Na przyk\u0142ad w\u0142a\u015bciwo\u015b\u0107 typu Identyfikator wskazuje niepoprawn\u0105 pozycj\u0119.
+INVALID_PROPERTY_VALUE.useraction=Sprawd\u017a, czy warto\u015b\u0107 w\u0142a\u015bciwo\u015bci jest poprawna i ma poprawny typ danych. Je\u015bli pr\u00f3bujesz pobra\u0107 w\u0142a\u015bciwo\u015b\u0107 typu identyfikatora razem z innymi w\u0142a\u015bciwo\u015bciami, podziel to wywo\u0142anie na dwa wywo\u0142ania. Jedno wywo\u0142anie b\u0119dzie s\u0142u\u017cy\u0142o do pobrania w\u0142a\u015bciwo\u015bci typu identyfikatora, a drugie inn\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+GENERIC=CWIML1999E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podczas przetwarzania wyst\u0105pi\u0142 b\u0142\u0105d \u015brodowiska wykonawczego: {0}
+GENERIC.explanation=Program napotka\u0142 okre\u015blony b\u0142\u0105d podczas wykonywania operacji.
+GENERIC.useraction= Sprawd\u017a w dziennikach przyczyn\u0119 tego b\u0142\u0119du i podejmij odpowiednie dzia\u0142ania naprawcze.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Brak warto\u015bci obowi\u0105zkowej w\u0142a\u015bciwo\u015bci {0}. Podaj warto\u015b\u0107 tej obowi\u0105zkowej w\u0142a\u015bciwo\u015bci.
+MISSING_MANDATORY_PROPERTY.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji z powodu braku warto\u015bci obowi\u0105zkowej w\u0142a\u015bciwo\u015bci. Na przyk\u0142ad nie okre\u015blono w\u0142a\u015bciwo\u015bci RDN (wzgl\u0119dna nazwa wyr\u00f3\u017cniaj\u0105ca) podczas tworzenia jednostki, brakuje w\u0142a\u015bciwo\u015bci propertyName lub entityTypeName w elemencie PropertyDefinitionControl lub ExtensionPropertyDefinitionControl albo brakuje w\u0142a\u015bciwo\u015bci entityName w elemencie entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Podaj warto\u015b\u0107 tej obowi\u0105zkowej w\u0142a\u015bciwo\u015bci.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie mo\u017cna usun\u0105\u0107 u\u017cytkownika o nazwie unikalnej {0}, poniewa\u017c jest on zalogowany. Aby usun\u0105\u0107 tego u\u017cytkownika, zaloguj si\u0119 jako inny u\u017cytkownik.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=U\u017cytkownik pr\u00f3bowa\u0142 usun\u0105\u0107 samego siebie z produktu Virtual Member Manager. To dzia\u0142anie jest niedozwolone.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Aby usun\u0105\u0107 bie\u017c\u0105cego u\u017cytkownika, zaloguj si\u0119 jako inny u\u017cytkownik.
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas pobierania referencji podmiotu. Przejrzyj dzienniki \u015bledzenia, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119 b\u0142\u0119du.
+AUTH_SUBJECT_CRED_FAILURE.explanation=Nie mo\u017cna pobra\u0107 referencji podmiotu z powodu nieznanego b\u0142\u0119du.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Przejrzyj dzienniki \u015bledzenia, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119 b\u0142\u0119du. Problem mo\u017ce dotyczy\u0107 konfiguracji zabezpiecze\u0144 produktu WebSphere.
+
+AUTH_SUBJECT_FAILURE=CWIML2004E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas pobierania podmiotu programu wywo\u0142uj\u0105cego. Przejrzyj dzienniki \u015bledzenia, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119 b\u0142\u0119du.
+AUTH_SUBJECT_FAILURE.explanation=Nie mo\u017cna pobra\u0107 podmiotu programu wywo\u0142uj\u0105cego z powodu nieznanego b\u0142\u0119du.
+AUTH_SUBJECT_FAILURE.useraction=Przejrzyj dzienniki \u015bledzenia, aby okre\u015bli\u0107 podstawow\u0105 przyczyn\u0119 b\u0142\u0119du. Problem mo\u017ce dotyczy\u0107 konfiguracji zabezpiecze\u0144 produktu WebSphere.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: W\u0142a\u015bciwo\u015b\u0107 {0} identyfikatora unikalnego elementu nadrz\u0119dnego jest niepoprawna.
+INVALID_PARENT_UNIQUE_ID.explanation=Podany identyfikator unikalny jednostki nadrz\u0119dnej jest niepoprawny. Podaj poprawny identyfikator unikalny.
+INVALID_PARENT_UNIQUE_ID.useraction=Sprawd\u017a, czy identyfikator unikalny jednostki nadrz\u0119dnej znajduje si\u0119 w repozytorium i czy zosta\u0142 poprawnie okre\u015blony.
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: Nie mo\u017cna okre\u015bli\u0107 domy\u015blnego elementu nadrz\u0119dnego dla {0}. Sprawd\u017a, czy konfiguracja dziedziny {1} jest poprawna.
+DEFAULT_PARENT_NOT_FOUND.explanation=Nie mo\u017cna wykona\u0107 operacji, poniewa\u017c nie mo\u017cna okre\u015bli\u0107 domy\u015blnego elementu nadrz\u0119dnego dla tego typu jednostki.
+DEFAULT_PARENT_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce domy\u015blny element nadrz\u0119dny typu jednostki zosta\u0142 skonfigurowany dla stowarzyszonych repozytori\u00f3w lub dziedziny. Element nadrz\u0119dny mo\u017ce te\u017c zosta\u0107 okre\u015blony jako cz\u0119\u015b\u0107 danych wej\u015bciowych.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Brak konfiguracji repositoriesForGroups dla repozytorium {0}.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=Dla repozytorium nie zdefiniowano konfiguracji grupy wielu repozytori\u00f3w.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Przyczyn\u0119 niepowodzenia mo\u017cna znale\u017a\u0107 w pliku dziennika. Sprawd\u017a konfiguracj\u0119 repozytorium.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Podany typ jednostki {0} nie jest poprawny dla tej operacji.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Za\u017c\u0105dano operacji na jednostce, lecz ta operacja nie obs\u0142uguje podanego typu jednostki.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Upewnij si\u0119, \u017ce jednostka podana w danych wej\u015bciowych nale\u017cy do obs\u0142ugiwanych typ\u00f3w jednostek. Usu\u0144 nieobs\u0142ugiwane typy jednostek z danych wej\u015bciowych.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: W\u0142a\u015bciwo\u015b\u0107 {0} wzgl\u0119dnej nazwy wyr\u00f3\u017cniaj\u0105cej dla typu jednostki {1} (RDN) zosta\u0142a podana w danych wej\u015bciowych. Nie mo\u017cna utworzy\u0107 nazwy unikalnej w repozytorium bazowym, poniewa\u017c informacja RDN podana w danych wej\u015bciowych jest niejednoznaczna.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=Przy tworzeniu jednostki wzgl\u0119dna nazwa wyr\u00f3\u017cniaj\u0105ca (RDN) musi by\u0107 poprawnie sformatowana i nie mo\u017ce zawiera\u0107 niejednoznacznych w\u0142a\u015bciwo\u015bci. Na przyk\u0142ad typ jednostki OrgContainer mo\u017ce reprezentowa\u0107 organizacj\u0119 (u\u017cywaj\u0105c\u0105 w\u0142a\u015bciwo\u015bci RDN O) lub jednostk\u0119 organizacyjn\u0105 (u\u017cywaj\u0105c\u0105 w\u0142a\u015bciwo\u015bci RDN OU) w repozytorium bazowym. Je\u015bli zar\u00f3wno w\u0142a\u015bciwo\u015b\u0107 O, jak i OU zostan\u0105 okre\u015blone we w\u0142a\u015bciwo\u015bci RDN dla wej\u015bciowego obiektu danych nowej jednostki, nie b\u0119dzie mo\u017cna utworzy\u0107 dla niej nazwy unikalnej.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=Okre\u015bl typ jednostki, kt\u00f3ry ma zosta\u0107 utworzony w repozytorium bazowym, i udost\u0119pnij odpowiedni\u0105 w\u0142a\u015bciwo\u015b\u0107 RDN dla tego typu. Aby na przyk\u0142ad utworzy\u0107 organizacj\u0119, podaj tylko warto\u015b\u0107 O.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: Nie mo\u017cna zainicjowa\u0107 skonfigurowanego repozytorium {0} z powodu niepowodzenia bazowego: {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=Nie mo\u017cna zainicjowa\u0107 repozytorium stowarzyszonego z powodu niepowodzenia bazowego.
+REPOSITORY_INITIALIZATION_FAILED.useraction=Przejrzyj komunikat o przyczynie i plik \u015bledzenia, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia. Napraw b\u0142\u0105d i spr\u00f3buj ponownie.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Wyst\u0105pi\u0142 wyj\u0105tek w rejestrze niestandardowym skonfigurowanym dla {0}
+CUSTOM_REGISTRY_EXCEPTION.explanation=Rejestr niestandardowy zg\u0142osi\u0142 wyj\u0105tek. Rejestr niestandardowy jest niedost\u0119pny lub nie mo\u017ce wykona\u0107 operacji.
+CUSTOM_REGISTRY_EXCEPTION.useraction=Przejrzyj komunikat o przyczynie i plik \u015bledzenia, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia. Napraw b\u0142\u0105d i spr\u00f3buj ponownie.
+
+ENTITY_GET_FAILED=CWIML4505E: Rejestr u\u017cytkownik\u00f3w nie m\u00f3g\u0142 uzyska\u0107 jednostki {0} z powodu b\u0142\u0119du bazowego: {1}
+ENTITY_GET_FAILED.explanation=Nie mo\u017cna pobra\u0107 jednostki z powodu przyczyny okre\u015blonej przez repozytorium bazowe.
+ENTITY_GET_FAILED.useraction=Przejrzyj komunikat o przyczynie i plik \u015bledzenia, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia. Napraw b\u0142\u0105d i spr\u00f3buj ponownie.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: Nie mo\u017cna wykona\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. W\u0142a\u015bciwo\u015b\u0107 {0} nie jest zdefiniowana dla jednostki {1}.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=Okre\u015blona w\u0142a\u015bciwo\u015b\u0107 nie jest zdefiniowana dla danego typu jednostki.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=Sprawd\u017a, czy nazwa w\u0142a\u015bciwo\u015bci jest poprawna.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Nie mo\u017cna zako\u0144czy\u0107 operacji dotycz\u0105cej rejestru u\u017cytkownik\u00f3w, poniewa\u017c wyra\u017cenie wyszukiwania {0} jest niepoprawne. Okre\u015bl poprawn\u0105 sk\u0142adni\u0119 wyra\u017cenia wyszukiwania.
+MALFORMED_SEARCH_EXPRESSION.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji wyszukiwania, poniewa\u017c wyra\u017cenie wyszukiwania jest niepoprawne.
+MALFORMED_SEARCH_EXPRESSION.useraction=Podaj poprawne wyra\u017cenie wyszukiwania.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: Nie mo\u017cna zako\u0144czy\u0107 operacji rejestru u\u017cytkownik\u00f3w, poniewa\u017c rejestr u\u017cytkownik\u00f3w napotka\u0142 na b\u0142\u0105d bazowy: {1}
+ENTITY_SEARCH_FAILED.explanation=Nie mo\u017cna przeszuka\u0107 jednostki z powodu przyczyny okre\u015blonej przez rejestr bazowy.
+ENTITY_SEARCH_FAILED.useraction=Przejrzyj komunikat o przyczynie i plik \u015bledzenia, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia. Napraw b\u0142\u0105d i spr\u00f3buj ponownie.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania, poniewa\u017c nie podano has\u0142a lub jest ono puste.
+MISSING_OR_EMPTY_PASSWORD.explanation=Je\u015bli nazwa u\u017cytkownika zosta\u0142a okre\u015blona w procesie logowania, has\u0142o nie mo\u017ce mie\u0107 warto\u015bci NULL ani by\u0107 puste.
+MISSING_OR_EMPTY_PASSWORD.useraction=Podaj has\u0142o.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania, poniewa\u017c nie powiod\u0142o si\u0119 wygenerowanie certyfikatu.
+CERTIFICATE_GENERATE_FAILED.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas generowania certyfikatu na podstawie wej\u015bciowego pliku certyfikatu.
+CERTIFICATE_GENERATE_FAILED.useraction=Zaloguj si\u0119, u\u017cywaj\u0105c poprawnego certyfikatu.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania, poniewa\u017c rejestr u\u017cytkownik\u00f3w nie obs\u0142uguje logowania z u\u017cyciem certyfikatu.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=Uwierzytelnianie przy u\u017cyciu certyfikatu jest niedozwolone przez bazowy rejestr u\u017cytkownik\u00f3w.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Uwierzytelnij si\u0119 przy u\u017cyciu ID u\u017cytkownika i has\u0142a zamiast certyfikatu.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Nie mo\u017cna zako\u0144czy\u0107 operacji dotycz\u0105cej rejestru u\u017cytkownik\u00f3w, poniewa\u017c repozytorium {0} jest dost\u0119pne tylko do odczytu. Nie obs\u0142uguje ono operacji zapisu. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Repozytorium jest dost\u0119pne tylko do odczytu. Nie obs\u0142uguje ono operacji tworzenia, aktualizowania ani usuwania.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Upewnij si\u0119, \u017ce operacja zapisu nie jest wywo\u0142ywana w repozytorium dost\u0119pnym tylko do odczytu.

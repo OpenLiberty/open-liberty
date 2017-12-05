@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: \u010cek\u00e1 se max. 30 sekund na uveden\u00ed serveru do klidov\u00e9ho stavu.
+quiesce.begin.explanation=Server \u010dek\u00e1 maxim\u00e1ln\u011b 30 sekund na uveden\u00ed slu\u017eeb do klidov\u00e9ho stavu, a pak provede vypnut\u00ed.
+quiesce.begin.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+quiesce.end=CWWKE1101I: Uveden\u00ed serveru do klidov\u00e9ho stavu dokon\u010deno.
+quiesce.end.explanation=Operace uveden\u00ed do klidov\u00e9ho stavu byla \u00fasp\u011b\u0161n\u011b dokon\u010dena.
+quiesce.end.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+quiece.warning=CWWKE1102W: Operace uveden\u00ed do klidov\u00e9ho stavu nebyla dokon\u010dena. Nyn\u00ed se zastav\u00ed server.
+quiece.warning.explanation=Proces nemohl uv\u00e9st v\u0161echny slu\u017eby do klidov\u00e9ho stavu b\u011bhem 30 sekund.
+quiece.warning.useraction=Chybov\u00e9 zpr\u00e1vy, kter\u00e9 jsou v\u00fdsledkem nedostupn\u00fdch povinn\u00fdch slu\u017eeb, m\u016f\u017eete bezpe\u010dn\u011b ignorovat.
+
+client.quiesce.begin=CWWKE1103I: \u010cek\u00e1 se max. 30 sekund na uveden\u00ed klienta do klidov\u00e9ho stavu.
+client.quiesce.begin.explanation=Klient \u010dek\u00e1 maxim\u00e1ln\u011b 30 sekund na uveden\u00ed slu\u017eeb do klidov\u00e9ho stavu, a pak provede vypnut\u00ed.
+client.quiesce.begin.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+client.quiesce.end=CWWKE1104I: Uveden\u00ed klienta do klidov\u00e9ho stavu dokon\u010deno.
+client.quiesce.end.explanation=Operace uveden\u00ed do klidov\u00e9ho stavu byla \u00fasp\u011b\u0161n\u011b dokon\u010dena.
+client.quiesce.end.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

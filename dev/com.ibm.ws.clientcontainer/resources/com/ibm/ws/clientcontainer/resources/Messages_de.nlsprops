@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: Die Klasse muss einen Konstruktor ohne Argumente haben.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=Die Klasse muss einen Konstruktor ohne Argumente haben und die Schnittstelle javax.security.auth.callback.CallbackHandler implementieren.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=F\u00fcgen Sie der Callback-Handler-Klasse einen Konstruktor ohne Argumente hinzu.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: F\u00fcr die ausf\u00fchrende Methode "PostConstruct" trat folgende Ausnahme bei der Injektion auf: {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=Eine Ausnahme wird ausgel\u00f6st, wenn der Container die Methode PostConstruct aufruft.
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=Vergewissern Sie sich, dass die Methode PostConstruct im Deploymentdeskriptor ordnungsgem\u00e4\u00df definiert oder in der Klasse ordnungsgem\u00e4\u00df annotiert ist.
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: F\u00fcr die ausf\u00fchrende Methode "PreDestroy" trat folgende Ausnahme bei der Injektion auf: {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=Beim Aufruf der Methode "PreDestroy" durch den Container tritt ein Fehler auf. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=Stellen Sie sicher, dass die Methode "PreDestroy" im Implementierungsdeskriptor ordnungsgem\u00e4\u00df definiert bzw. in der Klasse ordnungsgem\u00e4\u00df mit Annotationen versehen ist.
+
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: In der Klasse {1} sind mehrere PostConstruct- oder PreDestroy-Methoden vorhanden. Die PostConstruct- oder PreDestroy-Methode {0} wird vom Container nicht aufgerufen.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=In der Klasse sind mehr als nur eine PostConstruct-Methode oder PreDestroy-Methode deklariert.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=Es ist keine Aktion erforderlich. Der Container ruft die erste Methode auf, die er findet.

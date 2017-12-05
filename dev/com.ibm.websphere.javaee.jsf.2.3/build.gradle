@@ -9,47 +9,36 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
- // Global vars
- def downloadSrcDir = "${projectDir}/build/source"
- def downloadJavadocDir = "${projectDir}/build/javadoc"
+// Global vars
+File downloadSrcDir = project.file('build/source')
+File downloadJavadocDir = project.file('build/javadoc')
 
- task copySource {
-    doLast {
-        println "downloadSrcDir: downloadSrcDir"
-        configurations {
-            sourceJar
-            javadocJar
-        }
+configurations {
+    sourceJar
+    javadocJar
+}
 
-        dependencies {
-            sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20171016-074050-275:sources'
-            javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.0-beta:javadoc'
+dependencies {
+    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20171016-074050-275:sources'
+    javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.0-beta:javadoc'
+}
 
-        }
+task copySource(type: Copy) {
+    from configurations.sourceJar
+    into downloadSrcDir
+}
 
-        // Copy the dependencies to the com.ibm.websphere.javaee.jsf.2.3/build/source directory
-        copy {
-            // Creating source directory
-            mkdir(downloadSrcDir)
+task copyJavadoc(type: Copy) {
+    from configurations.javadocJar
+    into downloadJavadocDir
+}
 
-            // Adding jar to "source"
-            from configurations.sourceJar
-            into downloadSrcDir
-        }
+assemble {
+    dependsOn copySource
+    dependsOn copyJavadoc
+}
 
-        // Copy the dependencies to the com.ibm.websphere.javaee.jsf.2.3/build/javadoc directory
-        copy {
-            // Creating javadoc directory
-            mkdir(downloadJavadocDir)
-
-            // Adding jar to "javadoc"
-            from configurations.javadocJar
-            into downloadJavadocDir
-        }
-    }
- }
-
- task deleteJars(type:Delete) {
+task deleteJars(type:Delete) {
     doLast {
         println "deleteJars task, deleting " + downloadSrcDir
         file(downloadSrcDir).deleteDir()
@@ -57,12 +46,8 @@
         println "deleteJars task, deleting " + downloadJavadocDir
         file(downloadJavadocDir).deleteDir()
     }
- }
+}
 
- assemble {
-    dependsOn copySource
- }
-
- clean {
+clean {
     dependsOn deleteJars
- }
+}

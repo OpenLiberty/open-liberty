@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.auth.data/resources/com/ibm/ws/security/auth/data/internal/resources/AuthDataMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Data
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1350 - CWWKS1399
+# Do not translate DefaultPrincipalMapping, JAAS, HashMap, and WSMappingCallbackHandler.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER=CWWKS1350E: Programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed k JAAS DefaultPrincipalMapping nelze prov\u00e9st, proto\u017ee byla obslu\u017en\u00e1 rutina WSMappingCallbackHandler vytvo\u0159ena bez objektu HashMap vlastnost\u00ed mapov\u00e1n\u00ed.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.explanation=Obslu\u017en\u00e1 rutina WSMappingCallbackHandler pou\u017eit\u00e1 k proveden\u00ed programov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed k JAAS DefaultPrincipalMapping neobsahovala parametr java.util.Map.
+MISSING_MAP_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.useraction=Ov\u011b\u0159te, zda aplikace prov\u00e1d\u011bj\u00edc\u00ed programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed k JAAS DefaultPrincipalMapping vytv\u00e1\u0159\u00ed obslu\u017enou rutinu WSMappingCallbackHandler s pomoc\u00ed instance java.util.Map.
+
+# Do not translate DefaultPrincipalMapping, JAAS, HashMap, WSMappingCallbackHandler, and com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER=CWWKS1351E: Programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed k JAAS DefaultPrincipalMapping nelze prov\u00e9st, proto\u017ee v objektu HashMap vlastnost\u00ed mapov\u00e1n\u00ed nebyla nalezena polo\u017eka com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.explanation=Parametr java.util.Map obslu\u017en\u00e9 rutiny WSMappingCallbackHandler pou\u017e\u00edvan\u00e9 k programov\u00e9mu p\u0159ihl\u00e1\u0161en\u00ed k JAAS DefaultPrincipalMapping neobsahoval hodnotu polo\u017eky com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.
+MISSING_MAPPING_ALIAS_IN_CALLBACK_WSMAPPINGCALLBAKHANDLER.useraction=Ov\u011b\u0159te, zda aplikace prov\u00e1d\u011bj\u00edc\u00ed programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed k JAAS DefaultPrincipalMapping vytv\u00e1\u0159\u00ed obslu\u017enou rutinu WSMappingCallbackHandler s pomoc\u00ed instance java.util.Map s hodnotou polo\u017eky com.ibm.wsspi.security.auth.callback.Constants.MAPPING_ALIAS.

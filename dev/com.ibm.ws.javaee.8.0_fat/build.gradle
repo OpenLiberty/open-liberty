@@ -8,21 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
-	addRequiredLibraries {
-	  doLast {
-	    def sharedResources = "${buildDir}/autoFVT/publish/shared/resources"
-	    configurations {
-	      derby
-	    }
-	    dependencies {
-	      derby 'org.apache.derby:derby:10.11.1.1'
-	    }
-	    copy {
-	      from configurations.derby
-	      into sharedResources + "/derby"
-	    }
-	  }
-	}
-	
+
+addRequiredLibraries.dependsOn addDerby

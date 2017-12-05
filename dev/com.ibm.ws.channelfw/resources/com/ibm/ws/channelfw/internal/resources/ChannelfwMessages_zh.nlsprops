@@ -1,0 +1,182 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: \u7f3a\u5c11 {0} \u6216\u5176\u4e0d\u662f\u76ee\u5f55\u3002
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: \u65e0\u6cd5\u6253\u5f00\u901a\u9053\u5b9e\u73b0 {0}\uff1a{1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: \u901a\u9053\u5b9e\u73b0 {0} \u6ca1\u6709\u901a\u9053\u63cf\u8ff0\u7b26\u3002
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: \u4ece {0} \u89e3\u6790\u901a\u9053\u63cf\u8ff0\u7b26\u65f6\u751f\u6210\u9519\u8bef\uff1a{1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: \u901a\u9053\u5b9e\u73b0 {0} \u672a\u6307\u5b9a\u5de5\u5382\u8fd0\u884c\u65f6\u7c7b\u3002
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: \u901a\u9053\u5b9e\u73b0 {0} \u672a\u6307\u5b9a\u901a\u9053\u914d\u7f6e\u7c7b\u3002
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: \u901a\u9053\u5b9e\u73b0 {0} \u672a\u6307\u5b9a\u8bbe\u5907\u7aef\u63a5\u53e3\u6216\u5e94\u7528\u7a0b\u5e8f\u7aef\u63a5\u53e3\u3002
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: \u901a\u9053\u5b9e\u73b0 {0} \u6307\u5b9a\u7f3a\u7701\u6743\u91cd {1}\u3002\u8fd9\u4e0d\u662f\u6709\u6548\u7684\u7f3a\u7701\u6743\u91cd\u3002
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: \u94fe {0} \u4e0d\u5305\u542b\u4efb\u4f55\u4f20\u8f93\u901a\u9053\u3002
+chain.channels.empty.explanation=\u94fe\u5fc5\u987b\u5305\u542b\u4f20\u8f93\u901a\u9053\u624d\u80fd\u8d77\u4f5c\u7528\u3002
+chain.channels.empty.useraction=\u8bf7\u5411\u6307\u5b9a\u94fe\u6dfb\u52a0\u4e00\u4e9b\u4f20\u8f93\u901a\u9053\u3002
+
+chain.flow.mismatch=CWWKO0010E: \u94fe {0} \u7684\u4f20\u8f93\u901a\u9053\u5fc5\u987b\u90fd\u5411\u540c\u4e00\u65b9\u5411\u6d41\u52a8\u3002
+chain.flow.mismatch.explanation=\u4f20\u8f93\u901a\u9053\u53ef\u4ee5\u6d41\u5165\u670d\u52a1\u5668\uff08\u5165\u7ad9\u901a\u9053\uff09\u6216\u4ece\u670d\u52a1\u5668\u6d41\u51fa\uff08\u51fa\u7ad9\u901a\u9053\uff09\u3002\u4e00\u4e2a\u94fe\u4e2d\u7684\u6240\u6709\u4f20\u8f93\u901a\u9053\u5fc5\u987b\u5411\u540c\u4e00\u65b9\u5411\u6d41\u52a8\u3002
+chain.flow.mismatch.useraction=\u8bf7\u786e\u4fdd\u8be5\u94fe\u4e2d\u7684\u6240\u6709\u4f20\u8f93\u901a\u9053\u90fd\u5411\u540c\u4e00\u65b9\u5411\u6d41\u52a8\u3002\u8bf7\u52ff\u5728\u540c\u4e00\u4e2a\u94fe\u4e2d\u6df7\u5408\u4f7f\u7528\u5165\u7ad9\u548c\u51fa\u7ad9\u901a\u9053\u3002
+
+chain.inbound.first.mismatch=CWWKO0011E: \u94fe {0} \u4e2d\u7684\u7b2c\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u4e0d\u662f\u8fde\u63a5\u5668\u901a\u9053\u3002
+chain.inbound.first.mismatch.explanation=\u5165\u7ad9\u94fe\u4e2d\u7684\u7b2c\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u5fc5\u987b\u662f\u8fde\u63a5\u5668\u901a\u9053\u3002
+chain.inbound.first.mismatch.useraction=\u8bf7\u786e\u4fdd\u5165\u7ad9\u94fe\u4e2d\u7684\u7b2c\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u662f\u8fde\u63a5\u5668\u901a\u9053\u3002
+
+chain.inbound.last.mismatch=CWWKO0012E: \u94fe {0} \u4e2d\u7684\u6700\u540e\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u4e0d\u662f\u63a5\u53d7\u5668\u901a\u9053\u3002
+chain.inbound.last.mismatch.explanation=\u5165\u7ad9\u94fe\u4e2d\u7684\u6700\u540e\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u5fc5\u987b\u662f\u63a5\u53d7\u5668\u901a\u9053\u3002
+chain.inbound.last.mismatch.useraction=\u8bf7\u786e\u4fdd\u5165\u7ad9\u94fe\u4e2d\u7684\u6700\u540e\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u662f\u63a5\u53d7\u5668\u901a\u9053\u3002
+
+chain.acceptor.determination.failure=CWWKO0013E: \u7cfb\u7edf\u65e0\u6cd5\u786e\u5b9a\u94fe {0} \u7684\u63a5\u53d7\u5668\u6807\u8bc6\u3002
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: \u7cfb\u7edf\u627e\u4e0d\u5230\u4e0e\u901a\u9053\u914d\u7f6e\u7c7b\u578b {0} \u5339\u914d\u7684\u901a\u9053\u63cf\u8ff0\u7b26\u3002
+channel.descriptor.notfound.explanation=\u901a\u9053\u5fc5\u987b\u63d0\u4f9b\u63cf\u8ff0\u7b26\u4ee5\u5c06\u914d\u7f6e\u7c7b\u578b\u6620\u5c04\u5230\u8fd0\u884c\u65f6\u7c7b\u578b\uff1b\u627e\u4e0d\u5230\u5339\u914d\u7684\u63cf\u8ff0\u7b26\u3002
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: \u7cfb\u7edf\u65e0\u6cd5\u83b7\u53d6\u4ee5\u4e0b\u521d\u59cb\u547d\u540d\u4e0a\u4e0b\u6587\uff1a{0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: \u7cfb\u7edf\u65e0\u6cd5\u88c5\u5165\u4ee5\u4e0b\u4f20\u8f93\u901a\u9053\u5de5\u5382\uff1a{0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: \u7cfb\u7edf\u65e0\u6cd5\u88c5\u5165\u4ee5\u4e0b\u4f20\u8f93\u901a\u9053\uff1a{0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: \u7cfb\u7edf\u65e0\u6cd5\u88c5\u5165\u4ee5\u4e0b\u94fe\uff1a{0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: \u4f20\u8f93\u901a\u9053\u670d\u52a1\u5df2\u542f\u52a8\u94fe {0}\u3002
+chain.started.explanation=\u4f20\u8f93\u901a\u9053\u670d\u52a1\u5df2\u542f\u52a8\u6307\u5b9a\u7684\u94fe\u3002
+chain.started.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+chain.stopped=CWWKO0020I: \u4f20\u8f93\u901a\u9053\u670d\u52a1\u5df2\u505c\u6b62\u6807\u6ce8\u4e3a {0} \u7684\u94fe\u3002
+chain.stopped.explanation=\u4f20\u8f93\u901a\u9053\u670d\u52a1\u5df2\u505c\u6b62\u6307\u5b9a\u7684\u94fe\u3002
+chain.stopped.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+chain.disabled=CWWKO0021I: \u5165\u7ad9\u94fe {0} \u5df2\u6807\u8bb0\u4e3a\u7981\u7528\u3002
+chain.disabled.explanation=\u5165\u7ad9\u94fe\u5fc5\u987b\u663e\u5f0f\u6807\u8bb0\u4e3a\u542f\u7528\uff0c\u624d\u80fd\u7b26\u5408\u81ea\u52a8\u542f\u52a8\u7684\u6761\u4ef6\u3002\u7981\u7528\u7684\u94fe\u4ecd\u7136\u53ef\u4ee5\u542f\u52a8\uff0c\u4f46\u5fc5\u987b\u901a\u8fc7\u540d\u79f0\u663e\u5f0f\u542f\u52a8\u3002
+chain.disabled.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+config.load.error=CWWKO0022E: \u7531\u4e8e\u5f02\u5e38 {0}\uff0c\u4f20\u8f93\u901a\u9053\u670d\u52a1\u65e0\u6cd5\u627e\u5230\u914d\u7f6e
+config.load.error.explanation=\u5c1d\u8bd5\u53d1\u73b0\u548c\u88c5\u5165\u914d\u7f6e\u65f6\uff0c\u4f20\u8f93\u901a\u9053\u670d\u52a1\u751f\u6210\u5f02\u5e38\u3002\u5b83\u5c06\u5728\u6ca1\u6709\u914d\u7f6e\u7684\u60c5\u51b5\u4e0b\u542f\u52a8\u3002
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: \u4f20\u8f93\u901a\u9053\u670d\u52a1\u65e0\u6cd5\u627e\u5230\u914d\u7f6e\uff0c\u4f46\u5c06\u5728\u6ca1\u6709\u914d\u7f6e\u7684\u60c5\u51b5\u4e0b\u542f\u52a8\u3002
+boot.no.config.explanation=\u4f20\u8f93\u901a\u9053\u670d\u52a1\u65e0\u6cd5\u627e\u5230\u914d\u7f6e\u3002\u5e94\u5c06\u4f20\u8f93\u901a\u9053\u670d\u52a1\u7684\u7f3a\u7701\u914d\u7f6e\u8be6\u7ec6\u4fe1\u606f\u6dfb\u52a0\u5230 server.xml \u914d\u7f6e\u6587\u4ef6\u3002
+boot.no.config.useraction=\u8bf7\u4f7f\u7528\u7ba1\u7406\u63a7\u5236\u53f0\u6216 wsadmin \u4e3a\u4f20\u8f93\u901a\u9053\u670d\u52a1\u6dfb\u52a0\u7f3a\u7701\u914d\u7f6e\u3002
+
+framework.disabled=CWWKO0024I: \u4f20\u8f93\u901a\u9053\u670d\u52a1\u5df2\u663e\u5f0f\u7981\u7528\u3002
+framework.disabled.explanation=\u4f20\u8f93\u901a\u9053\u670d\u52a1\u5df2\u663e\u5f0f\u914d\u7f6e\u4e3a\u7981\u7528\uff0c\u5e76\u5c06\u4e0d\u4f1a\u542f\u52a8\u3002
+framework.disabled.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+channel.descriptor.factory.config.missing=CWWKO0025E: \u901a\u9053\u5b9e\u73b0 {0} \u672a\u6307\u5b9a\u5de5\u5382\u914d\u7f6e\u7c7b\u3002
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: \u7cfb\u7edf\u627e\u4e0d\u5230\u4e0e\u4f20\u8f93\u901a\u9053\u914d\u7f6e\u7c7b\u578b {0} \u5339\u914d\u7684\u901a\u9053\u5de5\u5382\u63cf\u8ff0\u7b26\u3002
+factory.descriptor.notfound.explanation=\u901a\u9053\u5fc5\u987b\u63d0\u4f9b\u63cf\u8ff0\u7b26\u4ee5\u5c06\u914d\u7f6e\u7c7b\u578b\u6620\u5c04\u5230\u8fd0\u884c\u65f6\u7c7b\u578b\u3002\u627e\u4e0d\u5230\u5339\u914d\u7684\u63cf\u8ff0\u7b26\u3002
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: \u4e00\u4e2a\u6216\u591a\u4e2a\u4f20\u8f93\u901a\u9053\u5b9e\u73b0\u672a\u88c5\u5165\u3002
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: \u94fe {0} \u4e2d\u7684\u6700\u540e\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u4e0d\u662f\u8fde\u63a5\u5668\u901a\u9053\u3002
+chain.outbound.last.mismatch.explanation=\u51fa\u7ad9\u94fe\u4e2d\u7684\u6700\u540e\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u5fc5\u987b\u662f\u8fde\u63a5\u5668\u901a\u9053\u3002
+chain.outbound.last.mismatch.useraction=\u8bf7\u786e\u4fdd\u51fa\u7ad9\u94fe\u4e2d\u7684\u6700\u540e\u4e00\u4e2a\u4f20\u8f93\u901a\u9053\u662f\u8fde\u63a5\u5668\u901a\u9053\u3002
+
+chain.initialization.error=CWWKO0029E: \u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u521d\u59cb\u5316\u94fe {0} \u65f6\u751f\u6210\u5f02\u5e38
+chain.initialization.error.explanation=\u94fe\u6216\u5e95\u5c42\u901a\u9053\u4e2d\u751f\u6210\u5f02\u5e38\u3002
+chain.initialization.error.useraction=\u8bf7\u786e\u4fdd\u94fe\u4e2d\u6240\u4f7f\u7528\u7684\u901a\u9053\u6b63\u786e\u3002
+
+chain.start.error=CWWKO0030E: \u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u542f\u52a8\u94fe {0} \u65f6\u751f\u6210\u5f02\u5e38
+chain.start.error.explanation=\u94fe\u6216\u5e95\u5c42\u901a\u9053\u4e2d\u751f\u6210\u5f02\u5e38\u3002
+chain.start.error.useraction=\u8bf7\u786e\u4fdd\u94fe\u4e2d\u6240\u4f7f\u7528\u7684\u901a\u9053\u6b63\u786e\u3002
+
+chain.stop.error=CWWKO0031E: \u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u505c\u6b62\u94fe {0} \u65f6\u751f\u6210\u5f02\u5e38
+chain.stop.error.explanation=\u94fe\u6216\u5e95\u5c42\u901a\u9053\u4e2d\u751f\u6210\u5f02\u5e38\u3002
+chain.stop.error.useraction=\u8bf7\u786e\u4fdd\u94fe\u4e2d\u6240\u4f7f\u7528\u7684\u901a\u9053\u6b63\u786e\u3002
+
+chain.destroy.error=CWWKO0032E: \u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u9500\u6bc1\u94fe {0} \u65f6\u751f\u6210\u5f02\u5e38
+chain.destroy.error.explanation=\u94fe\u6216\u5e95\u5c42\u901a\u9053\u4e2d\u751f\u6210\u5f02\u5e38\u3002
+chain.destroy.error.useraction=\u8bf7\u786e\u4fdd\u94fe\u4e2d\u6240\u4f7f\u7528\u7684\u901a\u9053\u6b63\u786e\u3002
+
+chain.retrystart.error=CWWKO0033E: \u5728 {1} \u5c1d\u8bd5\u542f\u52a8\u4f20\u8f93\u94fe {0} \u540e\uff0c\u4f20\u8f93\u901a\u9053\u670d\u52a1\u672a\u542f\u52a8\u8be5\u4f20\u8f93\u94fe\u3002
+chain.retrystart.error.explanation=\u914d\u7f6e\u7684\u91cd\u8bd5\u6b21\u6570\u4e0d\u8db3\uff0c\u56e0\u6b64\u8be5\u94fe\u65e0\u6cd5\u542f\u52a8\uff0c\u6216\u8be5\u94fe\u4f7f\u7528\u7684\u7aef\u53e3\u5df2\u5728\u4f7f\u7528\u4e2d\u3002
+chain.retrystart.error.useraction=\u8bf7\u786e\u4fdd\u8be5\u94fe\u4f7f\u7528\u7684\u7aef\u53e3\u672a\u5728\u4f7f\u7528\u4e2d\u3002\u6b63\u786e\u8bbe\u7f6e\u5b9a\u5236\u5c5e\u6027\u4ee5\u91cd\u65b0\u542f\u52a8\u94fe\u3002
+
+chain.retrystart.warning=CWWKO0034W: \u4f20\u8f93\u901a\u9053\u670d\u52a1\u68c0\u6d4b\u5230\u4f20\u8f93\u94fe {0} \u672a\u542f\u52a8\u3002\u8be5\u670d\u52a1\u5c06\u4ee5\u6bcf {1} \u6beb\u79d2\u7684\u9891\u7387\u5c1d\u8bd5\u542f\u52a8\u94fe {0}\uff0c\u6700\u591a\u8fdb\u884c {2} \u6b21\u5c1d\u8bd5\u3002
+chain.retrystart.warning.explanation=\u542f\u52a8\u8be5\u94fe\u7684\u521d\u59cb\u5c1d\u8bd5\u672a\u6210\u529f\u3002\u5c06\u8fdb\u884c\u66f4\u591a\u5c1d\u8bd5\u4ee5\u542f\u52a8\u8be5\u94fe\u3002
+chain.retrystart.warning.useraction=\u8bf7\u89c2\u5bdf\u662f\u5426\u6709\u6307\u793a\u91cd\u8bd5\u7ed3\u679c\u7684\u9519\u8bef\u6216\u5ba1\u8ba1\u6d88\u606f\u3002
+
+framework.property.error=CWWKO0035E: \u4f20\u8f93\u901a\u9053\u670d\u52a1\u53d1\u73b0\u5c5e\u6027 {1} \u7684\u503c\u4e3a {0}\u3002\u8fd9\u4e0d\u662f\u6709\u6548\u7684\u503c\u3002
+framework.property.error.explanation=\u8be5\u5c5e\u6027\u7684\u503c\u8d85\u51fa\u9884\u671f\u8fb9\u754c\u3002
+framework.property.error.useraction=\u8bf7\u8c03\u6574\u914d\u7f6e\u4ee5\u5c06\u8be5\u5c5e\u6027\u8bbe\u7f6e\u4e3a\u6709\u6548\u7684\u503c\u3002
+
+missing.factory=CWWKO0036W: \u94fe\u914d\u7f6e\u5305\u542b\u7f3a\u5c11\u7684\u5de5\u5382\u7c7b\u578b {0}\uff0c\u5e76\u4e14\u65e0\u6cd5\u542f\u52a8\u4e00\u4e2a\u6216\u591a\u4e2a\u94fe\u3002
+missing.factory.explanation=\u8fd0\u884c\u65f6\u73af\u5883\u4e0d\u5305\u542b\u5177\u6709\u5339\u914d\u7c7b\u578b\u7684\u901a\u9053\u5de5\u5382\uff0c\u5e76\u56e0\u6b64\u65e0\u6cd5\u542f\u52a8\u4f7f\u7528\u8be5\u7c7b\u578b\u5de5\u5382\u7684\u94fe\u3002
+missing.factory.useraction=\u8bf7\u68c0\u67e5\u8fd0\u884c\u65f6\u529f\u80fd\u90e8\u4ef6\u96c6\u5217\u8868\u662f\u5426\u7f3a\u5c11\u4e00\u4e2a\u6216\u591a\u4e2a\u5fc5\u9700\u9879\u76ee\u3002
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: \u65e0\u6cd5\u521b\u5efa\u7f3a\u7701 TCP \u901a\u9053\u914d\u7f6e\u3002\u5f02\u5e38\u4e3a {0}\u3002
+DEFAULT_OPTIONS_ERROR_TCP.explanation=\u521b\u5efa TCP \u901a\u9053\u7684\u7f3a\u7701\u914d\u7f6e\u65f6\u9047\u5230\u9519\u8bef\u3002
+DEFAULT_OPTIONS_ERROR_TCP.useraction=\u8bf7\u53c2\u9605\u5f02\u5e38\u4ee5\u83b7\u53d6\u6709\u5173\u521b\u5efa\u5982\u4f55\u5931\u8d25\u7684\u4fe1\u606f\u3002
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: \u65e0\u6cd5\u521b\u5efa\u7f3a\u7701 UDP \u901a\u9053\u914d\u7f6e\u3002\u5f02\u5e38\u4e3a {0}\u3002
+DEFAULT_OPTIONS_ERROR_UDP.explanation=\u521b\u5efa UDP \u901a\u9053\u7684\u7f3a\u7701\u914d\u7f6e\u65f6\u9047\u5230\u9519\u8bef\u3002
+DEFAULT_OPTIONS_ERROR_UDP.useraction=\u8bf7\u53c2\u9605\u5f02\u5e38\u4ee5\u83b7\u53d6\u6709\u5173\u521b\u5efa\u5982\u4f55\u5931\u8d25\u7684\u4fe1\u606f\u3002
+
+channel.shared.warning=CWWKO0039W: \u6b63\u5728\u591a\u4e2a\u533a\u57df\u95f4\u5171\u4eab\u4e0d\u53ef\u5171\u4eab\u901a\u9053 {0}\u3002
+channel.shared.warning.explanation=\u8be5\u901a\u9053\u5df2\u914d\u7f6e\u4e3a\u4e0d\u53ef\u5171\u4eab\u901a\u9053\u3002\u4f46\u662f\uff0c\u8be5\u901a\u9053\u6b63\u5728\u591a\u4e2a\u533a\u57df\u95f4\u5171\u4eab\u3002
+channel.shared.warning.useraction=\u8bf7\u53c2\u9605\u901a\u9053\u7684\u914d\u7f6e\u53ca\u5176\u7528\u6cd5\u3002

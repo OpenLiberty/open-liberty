@@ -1,0 +1,726 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 93022           2013-27-02 kavitha new message added for Invalid XID 
+# 
+# -------------------------------------------------------------------------------------------------
+
+# File com.ibm.ws.sib.example.CWSISMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_SInn0001=CWSIS0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_SInn0001.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_SInn0001.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+# I have allocated ranges of message ids (500 messages each) so we can avoid tripping over each other.
+# If you need a new range - just allocate it (but check no-one has it already).
+#
+#   - Msgs in the range CWSIS0000-CWSIS0499 belong to the interface stuff (eg PTvL)
+#   - Msgs in the range CWSIS0500-CWSIS0999 belong to the core implementation stuff (eg PTvL)
+#   - Msgs in the range CWSIS1000-CWSIS1499 belong to the transaction stuff (eg GB)
+#   - Msgs in the range CWSIS1500-CWSIS1999 belong to the persistence stuff (eg BTD)
+#   - Msgs in the range CWSIS2000-CWSIS2499 belong to the expiry stuff (eg KC)
+#
+#   - CWSIS9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.4,0,03/04/23,08:38:27
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/msgstore/CWSISMessages.nlsprops
+#COMPONENTPREFIX CWSIS
+#COMPONENTNAMEFOR CWSIS MessageStore
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Interface
+# -------------------------------------------------------------------------------------------------
+
+
+# {0} is the text of the exception thrown
+INVALID_ITEM_CONSTRUCTOR_SIMS0001=CWSIS0001E: Un elemento non dispone di un costruttore predefinito (pubblico) accessibile {0}.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.explanation=All'archivio dati \u00e8 stato aggiunto un elemento che non dispone di un costruttore appropriato.
+INVALID_ITEM_CONSTRUCTOR_SIMS0001.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+STARTUP_EXCEPTION_SIMS0002=CWSIS0002E: Il motore di messaggistica ha rilevato un''eccezione durante l''avvio. Eccezione: {0}
+STARTUP_EXCEPTION_SIMS0002.explanation=Se il messaggio non fornisce informazioni sufficienti, consultare i messaggi di errore di accompagnamento.
+STARTUP_EXCEPTION_SIMS0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REFERENCE_CONSISTENCY_SIMS0003=CWSIS0003E: Il riferimento {0} non ha elementi correlati e non pu\u00f2 essere aggiunto a {1}.
+REFERENCE_CONSISTENCY_SIMS0003.explanation=Si \u00e8 tentato di aggiungere un riferimento a un flusso riferimenti, che interrompe i vincoli di coerenza.
+REFERENCE_CONSISTENCY_SIMS0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#STREAM_NOT_STORED_SIMS0004=CWSIS0004E: It is not possible to add {0} to {1} because it is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.explanation=An attempt was made to add an item to a stream that is not in a data store.
+#STREAM_NOT_STORED_SIMS0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_ADD_CONFLICT_SIMS0005=CWSIS0005E: Non \u00e8 possibile aggiungere {0} al secondo flusso {1}.
+STREAM_ADD_CONFLICT_SIMS0005.explanation=Si \u00e8 tentato di aggiungere un elemento in un flusso mentre l'elemento si trovava gi\u00e0 in un altro flusso.
+STREAM_ADD_CONFLICT_SIMS0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_WRONG_STATE_SIMS0006=CWSIS0006E: Non \u00e8 possibile aggiungere al flusso {0} che \u00e8 {1}.
+STREAM_WRONG_STATE_SIMS0006.explanation=Si \u00e8 tentato di aggiungere un elemento in un flusso che non era in uno stato corretto.
+STREAM_WRONG_STATE_SIMS0006.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# MsgStore Implementation
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+STREAM_STORAGE_MISMATCH_SIMS0500=CWSIS0500E: La strategia di storage elemento {0} supera la strategia di storage flusso proprietaria {1}.
+STREAM_STORAGE_MISMATCH_SIMS0500.explanation=Si \u00e8 tentato di aggiungere un elemento in un flusso mentre l'elemento aveva una strategia di storage superiore al flusso.
+STREAM_STORAGE_MISMATCH_SIMS0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+STREAM_NOT_EMPTY_SIMS0501=CWSIS0501E: Non \u00e8 possibile eliminare un flusso che non \u00e8 vuoto.
+STREAM_NOT_EMPTY_SIMS0501.explanation=Si \u00e8 tentato di eliminare un flusso che non era vuoto.
+STREAM_NOT_EMPTY_SIMS0501.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORING_ITEM_SIMS0502=CWSIS0502E: Si \u00e8 verificata un'eccezione durante il ripristino di un elemento.
+RESTORING_ITEM_SIMS0502.explanation=Il tentativo di ripristinare un elemento non \u00e8 riuscito.
+RESTORING_ITEM_SIMS0502.useraction=CMSG0002
+
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503=CWSIS0503E: Configuration information for the data store is not available.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.explanation=The data store did not receive its configuration.
+#MSGSTORE_CONFIGURATION_ERROR_SIMS0503.useraction=CMSG0002
+
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504=CWSIS0504E: Impossibile creare l'oggetto root persistente.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.explanation=L'oggetto root persistente non \u00e8 stato creato.
+ROOT_PERSISTABLE_EXCEPTION_SIMS0504.useraction=CMSG0002
+
+INVALID_MSGSTORE_STATE_SIMS0505=CWSIS0505E: Lo stato dell''archivio messaggi non \u00e8 corretto, {0}.
+INVALID_MSGSTORE_STATE_SIMS0505.explanation=L'archivio dati non \u00e8 nello stato corretto per eseguire l'operazione richiesta.
+INVALID_MSGSTORE_STATE_SIMS0505.useraction=CMSG0002
+
+#INVALID_AUTHENTICATION_DATA_SIMS0506=CWSIS0506E: The authentication data associated with the alias, {0}, is invalid.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.explanation=The authentication data provided cannot be used to access the database containing the data store.
+#INVALID_AUTHENTICATION_DATA_SIMS0506.useraction=Provide an alternate authentication alias and try again.
+
+STREAM_NOT_EMPTY_SIMS0507=CWSIS0507E: Non \u00e8 possibile eliminare un flusso che non \u00e8 vuoto. Elementi nel flusso={0}. Classe flusso ={1}
+STREAM_NOT_EMPTY_SIMS0507.explanation=Si \u00e8 tentato di eliminare un flusso che non era vuoto. \
+Il numero di elementi rimanenti nel flusso ed i relativi tipi vengono forniti nel messaggio per consentire di determinare la causa per cui \u00e8 stata tentata questa operazione.
+STREAM_NOT_EMPTY_SIMS0507.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Transaction messages
+# -------------------------------------------------------------------------------------------------
+
+XA_PROTOCOL_ERROR_SIMS1000=CWSIS1000E: L'azione richiesta non \u00e8 stata completata, perch\u00e9 non \u00e8 conforme al protocollo della transazione XA.
+XA_PROTOCOL_ERROR_SIMS1000.explanation=Si \u00e8 verificato un errore interno. Il protocollo transazione XA non \u00e8 stato seguito correttamente.
+XA_PROTOCOL_ERROR_SIMS1000.useraction=CMSG0002
+
+TRAN_PROTOCOL_ERROR_SIMS1001=CWSIS1001E: L'azione richiesta non \u00e8 stata completata, perch\u00e9 non \u00e8 conforme al protocollo della transazione interna del gestore risorse.
+TRAN_PROTOCOL_ERROR_SIMS1001.explanation=Si \u00e8 verificato un errore interno. Il protocollo transazione del gestore risorse non \u00e8 stato seguito correttamente.
+TRAN_PROTOCOL_ERROR_SIMS1001.useraction=CMSG0002
+
+COMPLETION_EXCEPTION_SIMS1002=CWSIS1002E: \u00c8 stata rilevata un''eccezione non prevista durante il completamento della transazione. Eccezione: {0}
+COMPLETION_EXCEPTION_SIMS1002.explanation=Si \u00e8 verificato un errore interno. La transazione ha avuto esito negativo quando il gestore risorse ha richiesto di completare il lavoro.
+COMPLETION_EXCEPTION_SIMS1002.useraction=CMSG0002
+
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003=CWSIS1003E: La funzione WebSphere non pu\u00f2 essere utilizzata al di fuori di WebSphere.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.explanation=\u00c8 stato eseguito un tentativo di utilizzare una funzione specifica di WebSphere in un ambiente runtime non WebSphere.
+NOT_SUPPORTED_OUTSIDE_WEBSPHERE_SIMS1003.useraction=CMSG0002
+
+CANNOT_COMMIT_COMPLETE_SIMS1004=CWSIS1004E: Impossibile eseguire il commit della transazione. La transazione \u00e8 stata completata o \u00e8 in fase di completamento.
+CANNOT_COMMIT_COMPLETE_SIMS1004.explanation=Si \u00e8 tentato di eseguire il commit di una transazione che \u00e8 stata gi\u00e0 completata o che \u00e8 in corso di completamento.
+CANNOT_COMMIT_COMPLETE_SIMS1004.useraction=CMSG0002
+
+CANNOT_ROLLBACK_COMPLETE_SIMS1005=CWSIS1005E: Impossibile eseguire il rollback della transazione. La transazione \u00e8 stata completata o \u00e8 in fase di completamento.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.explanation=Si \u00e8 tentato di eseguire il rollback di una transazione gi\u00e0 completata o in fase di completamento.
+CANNOT_ROLLBACK_COMPLETE_SIMS1005.useraction=CMSG0002
+
+HEURISTIC_HAZARD_SIMS1006=CWSIS1006E: Non \u00e8 stato possibile determinare il risultato di una transazione utilizzata per modificare il contenuto dell'archivio messaggi. Il motore di messaggistica \u00e8 stato arrestato per evitare la possibile perdita di dati.
+HEURISTIC_HAZARD_SIMS1006.explanation=\u00c8 stato rilevato un rischio euristico. Il motore di messaggistica potrebbe non essere sincronizzato e deve essere riavviato per determinare se la modifica all'archivio messaggi ha avuto esito positivo.
+HEURISTIC_HAZARD_SIMS1006.useraction=CMSG0002
+
+XID_NOT_RECOGNISED_SIMS1007=CWSIS1007E: L''azione {0} non \u00e8 possibile perch\u00e9 il XID fornito non \u00e8 riconosciuto dal motore di messaggistica. XID: {1}
+XID_NOT_RECOGNISED_SIMS1007.explanation=Impossibile completare l'azione richiesta perch\u00e9 il motore di messaggistica non riconosce il valore XID fornito. \
+Ci\u00f2 pu\u00f2 accadere se il motore di messaggistica non ha mai incontrato il XID precedentemente oppure se il XID \u00e8 nello stato errato.
+XID_NOT_RECOGNISED_SIMS1007.useraction=CMSG0002
+
+XID_STILL_ASSOCIATED_SIMS1008=CWSIS1008E: L''azione {0} non \u00e8 possibile perch\u00e9 il XID fornito non \u00e8 ancora stato richiamato per terminare l''associazione tra il motore di messaggistica e il XID. XID: {1}
+XID_STILL_ASSOCIATED_SIMS1008.explanation=Impossibile completare l'azione richiesta perch\u00e9 il motore di messaggistica \u00e8 ancora associato al XID fornito. \
+Annullare l'associazione del XID dal motore di messaggistica richiamando il metodo di terminazione XA prima di provare a completare la transazione.
+XID_STILL_ASSOCIATED_SIMS1008.useraction=CMSG0002
+
+XID_ALREADY_ASSOCIATED_SIMS1009=CWSIS1009E: L''azione {0} non \u00e8 possibile perch\u00e9 il XID fornito \u00e8 gi\u00e0 associato a questo motore di messaggistica. XID: {1}
+XID_ALREADY_ASSOCIATED_SIMS1009.explanation=Impossibile completare l'azione richiesta perch\u00e9 il motore di messaggistica \u00e8 gi\u00e0 associato al XID fornito.
+XID_ALREADY_ASSOCIATED_SIMS1009.useraction=CMSG0002
+
+INVALID_XID_STRING_SIMS1010=CWSIS1010E: Una stringa XID non valida \u00e8 stata trasmessa per l'operazione di commit o di rollback.
+INVALID_XID_STRING_SIMS1010.explanation=Non \u00e8 stato possibile eseguire l'operazione di commit o di rollback utilizzando la stringa XID specificata.
+INVALID_XID_STRING_SIMS1010.useraction= Specificare una stringa XID valida.
+
+UNEXPECTED_EXCEPTION_SIMS1099=CWSIS1099E: Si \u00e8 verificata un''eccezione imprevista. Eccezione: {0}
+UNEXPECTED_EXCEPTION_SIMS1099.explanation=Si \u00e8 verificato un errore interno. Utilizzare le informazioni dell'eccezione per determinare la causa dell'errore.
+UNEXPECTED_EXCEPTION_SIMS1099.useraction=CMSG0002
+
+# ------------------------------------------------- Unrecoverable Messages ------------------------------------------------- #
+
+UNRECOVERABLE_ERROR_SIMS1499=CWSIS1499E: Si \u00e8 verificato un errore non recuperabile ed il motore di messaggistica non pu\u00f2 continuare.
+UNRECOVERABLE_ERROR_SIMS1499.explanation=Si \u00e8 verificato un errore interno.
+UNRECOVERABLE_ERROR_SIMS1499.useraction=CMSG0002
+
+
+
+# -------------------------------------------------------------------------------------------------
+# Persistence
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500=CWSIS1500E: Il dispatcher non pu\u00f2 accettare il lavoro.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.explanation=Il dispatcher non pu\u00f2 accettare pi\u00f9 lavoro a causa di un errore di archivio dati precedente.
+DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1500.useraction=CMSG0002
+
+DATASOURCE_EXCEPTION_SIMS1501=CWSIS1501E: L''origine dati ha generato un''eccezione non prevista: {0}
+DATASOURCE_EXCEPTION_SIMS1501.explanation=L'origine dati configurata per essere utilizzata come archivio dati ha prodotto un'eccezione.
+DATASOURCE_EXCEPTION_SIMS1501.useraction=CMSG0002
+
+INVALID_TUPLE_TYPE_SIMS1502=CWSIS1502E: Il tipo tuple, {0}, non \u00e8 riconosciuto come valido.
+INVALID_TUPLE_TYPE_SIMS1502.explanation=Si \u00e8 verificato un errore interno.
+INVALID_TUPLE_TYPE_SIMS1502.useraction=CMSG0002
+
+#DATABASE_NOT_SUPPORTED_SIMS1503=CWSIS1503E: Database: {0}, version: {1}, platform: {2}, is not supported
+#DATABASE_NOT_SUPPORTED_SIMS1503.explanation=The specified database is not recognized as a supported database.
+#DATABASE_NOT_SUPPORTED_SIMS1503.useraction=Rerun the command and specify a supported database.
+
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504=CWSIS1504E: The messaging engine is stopping due to an exception from the data source.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.explanation=An exception from the data source caused the messaging engine to stop in order to avoid data corruption.
+#SEVERE_PERSISTENCE_EXCEPTION_SIMS1504.useraction=CMSG0002
+
+#KEY_GENERATOR_UPDATE_FAILED_SIMS1505 is no longer used.
+
+#KEY_GENERATOR_MISSING_SIMS1506 is no longer used.
+
+INVALID_PERSISTABLE_OPERATION_SIMS1507=CWSIS1507E: L''elemento {0}, non pu\u00f2 contenere altri elementi, perch\u00e9 \u00e8 di tipo {1}
+INVALID_PERSISTABLE_OPERATION_SIMS1507.explanation=Si \u00e8 verificata un'operazione non corretta nella rappresentazione del messaggio interno.
+INVALID_PERSISTABLE_OPERATION_SIMS1507.useraction=CMSG0002
+
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508=CWSIS1508E: The item table identifier, {0}, is outside of the allowed range.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.explanation=A maximum of 32 item tables can be used, with identifiers in the range 0 - 31.
+#TABLE_NUMBER_OUTSIDE_RANGE_SIMS1508.useraction=CMSG0002
+
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509=CWSIS1509E: An incorrect number of stream tables, {0}, were found.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.explanation=There must be only one stream table.
+#INVALID_NUMBER_OF_STREAM_TABLES_SIMS1509.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510=CWSIS1510E: An incorrect number of permanent tables, {0}, were found.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.explanation=There must be at least one permanent table.
+#INVALID_NUMBER_OF_PERMANENT_TABLES_SIMS1510.useraction=Correct the problem and try again.
+
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511=CWSIS1511E: An incorrect number of temporary tables, {0}, were found.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.explanation=There must be at least one temporary table.
+#INVALID_NUMBER_OF_TEMPORARY_TABLES_SIMS1511.useraction=Correct the problem and try again.
+
+#UNKNOWN_ITEM_TABLE_KEY_SIMS1512 is no longer used.
+
+ROLLBACK_ONLY_EXCEPTION_SIMS1513=CWSIS1513E: Non \u00e8 possibile impostare lo stato solo rollback su una connessione di autocommit
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.explanation=\u00c8 stato effettuato un tentativo di impostare lo stato di una connessione di autocommit su solo rollback.
+ROLLBACK_ONLY_EXCEPTION_SIMS1513.useraction=CMSG0002
+
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514=CWSIS1514E: A data source JNDI name has not been specified.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.explanation=A JNDI name is needed in order to identify the data source to use as a data store.
+#JNDI_NAME_NOT_SPECIFIED_SIMS1514.useraction=Correct the problem and try again.
+
+#DATABASE_NOT_RECOGNIZED_SIMS1515=CWSIS1515E: The database, {0}, is not recognized as a valid database.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.explanation=An internal error has occurred.
+#DATABASE_NOT_RECOGNIZED_SIMS1515.useraction=CMSG0002
+
+#INVALID_TABLE_ENTRY_SIMS1516=CWSIS1516E: Both data columns of table, {0}, were non-null.
+#INVALID_TABLE_ENTRY_SIMS1516.explanation=An internal error has occurred.
+#INVALID_TABLE_ENTRY_SIMS1516.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517=CWSIS1517W: Reliable persistent data could not be written to the data store by messaging engine {0}.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.explanation=An earlier exception prevented the writing of reliable persistent data to the data store for the messaging engine. The data cannot be recovered.
+#RELIABLE_PERSISTENT_DATA_LOST_SIMS1517.useraction=CMSG0002
+
+#MAX_DATA_SIZE_SIMS1518 is no longer used.
+
+# {0} is the messaging engine's name
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519=CWSIS1519E: Messaging engine {0} cannot obtain the lock on its data store, which ensures it has exclusive access to the data.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.explanation=The data store lock is already held, probably by another active or recently failed messaging engine.
+#CANNOT_OBTAIN_DATA_STORE_LOCK_SIMS1519.useraction=CMSG0002
+
+INVALID_TASK_OPERATION_SIMS1520=CWSIS1520E: La transazione non \u00e8 in uno stato legittimato ad eseguire l''operazione. Lo stato \u00e8: {0}
+INVALID_TASK_OPERATION_SIMS1520.explanation=La transazione deve essere in uno stato valido per poter eseguire l'operazione.
+INVALID_TASK_OPERATION_SIMS1520.useraction=CMSG0002
+
+#UNSUPPORTED_TASK_OPERATION_SIMS1521 is no longer used.
+
+#CONNECTION_WAIT_TIMEOUT_SIMS1522=CWSIS1522E: The messaging engine's request for a database connection timed out.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.explanation=The connection pool for the data source used by the messaging engine is too small.
+#CONNECTION_WAIT_TIMEOUT_SIMS1522.useraction=CMSG0002
+
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523=CWSIS1523E: Dynamic allocation of database objects in DB2 for z/OS is not allowed.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.explanation=Database tables required by the data store cannot be created dynamically.
+#DYNAMIC_TABLE_CREATION_EXCEPTION_SIMS1523.useraction=Use the sibDDLGenerator tool to generate the DDL statements for the data store tables.
+
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524=CWSIS1524E: Data source, {0}, not found.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.explanation=The look up of the specified JNDI name has failed to locate the data source.
+#DATASOURCE_NOT_FOUND_EXCEPTION_SIMS1524.useraction=Verify that the JNDI name is valid and try again.
+
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525=CWSIS1525E: Incorrect item table type, {0}.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.explanation=An item table type has not been recognized as valid.
+#INVALID_TABLE_TYPE_EXCEPTION_SIMS1525.useraction=Correct the problem and try again.
+
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526=CWSIS1526E: The item table, {0}, is not able to perform the operation. It is of type, {1}.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.explanation=The item table cannot perform the requested operation because it is not of the correct type.
+#INVALID_TABLE_OPERATION_EXCEPTION_SIMS1526.useraction=CMSG0002
+
+INVALID_PERSISTABLE_STATE_SIMS1527=CWSIS1527E: Un oggetto persistente \u00e8 in uno stato non corretto: conteggio operazioni iniziate: {0}, conteggio operazioni completate: {1}.
+INVALID_PERSISTABLE_STATE_SIMS1527.explanation=L'oggetto persistente \u00e8 in uno stato non corretto perch\u00e9 il conteggio delle operazioni completate \u00e8 maggiore del conteggio delle operazioni iniziate.
+INVALID_PERSISTABLE_STATE_SIMS1527.useraction=CMSG0002
+
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528=CWSIS1528E: New connections cannot be provided because the persistence layer is stopped.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.explanation=The data store persistence layer has been stopped so no more connections will be provided.
+#DATASOURCE_WRAPPER_STATE_EXCEPTION_SIMS1528.useraction=Restart the messaging engine and try again.
+
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529=CWSIS1529E: The column, {0}, was not found in the table, {1}, as expected.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.explanation=The messaging engine expected to find the column in the relevant table.
+#EXPECTED_COLUMN_NOT_FOUND_SIMS1529.useraction=Correct the problem and try again.
+
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530=CWSIS1530E: The data type, {0}, was found instead of the expected type, {1}, for column, {2}, in table, {3}.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.explanation=The messaging engine expects certain data types to be used for the columns in the data store tables.
+#EXPECTED_DATA_TYPE_NOT_FOUND_SIMS1530.useraction=Correct the problem and try again.
+
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531=CWSIS1531E: The maximum data size, {0} bytes, of the data store has been exceeded. The data size was, {1} bytes.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.explanation=The maximum data size that can be stored in the data store tables has been exceeded.
+#MAX_DATA_SIZE_EXCEPTION_SIMS1531.useraction=CMSG0002
+
+#MISSING_TABLE_EXCEPTION_SIMS1532=CWSIS1532E: The table, {0}, is missing.
+#MISSING_TABLE_EXCEPTION_SIMS1532.explanation=The messaging engine was unable to find the table in the DBMS, and the option to have the messaging engine automatically create it was not selected.
+#MISSING_TABLE_EXCEPTION_SIMS1532.useraction=Correct the problem and try again.
+
+#MISSING_SCHEMA_EXCEPTION_SIMS1533=CWSIS1533E: The schema, {0}, does not exist.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.explanation=The messaging engine was unable to locate the schema in the DBMS.
+#MISSING_SCHEMA_EXCEPTION_SIMS1533.useraction=Correct the problem and try again.
+
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534=CWSIS1534E: Il riferimento classe {0} non \u00e8 stato risolto.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.explanation=Il motore di messaggistica non \u00e8 riuscito a trovare un nome classe che corrisponda al riferimento.
+INVALID_CLASSMAP_TABLE_REFERENCE_SIMS1534.useraction=CMSG0002 
+
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535=CWSIS1535E: The messaging engine''s unique id does not match that found in the data store. ME_UUID={0}, ME_UUID(DB)={1}
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.explanation=The unique id of your messaging engine does not match that in the data store.
+#DBLOCK_MEUUID_DOESNT_MATCH_SIMS1535.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                               by a different messaging engine. Either point your messaging engine's data source \ 
+#                                               to a separate set of tables or remove the existing ones.
+
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536=CWSIS1536E: The messaging engine''s version does not match that found in the data store. VERSION={0}, VERSION(DB)={1}
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.explanation=The version of your messaging engine does not match that in the data store.
+#DBLOCK_VERSION_DOESNT_MATCH_SIMS1536.useraction=You are trying to connect to an existing set of database tables that are owned \ 
+#                                                by a different messaging engine. Either point your messaging engine's data source \ 
+#                                                to a separate set of tables or remove the existing ones.
+
+#DBLOCK_ACQUIRED_SIMS1537=CWSIS1537I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has acquired an exclusive lock on the data store.
+#DBLOCK_ACQUIRED_SIMS1537.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1537.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1538=CWSIS1538I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain an exclusive lock on the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1538.useraction=No action is required.
+
+#DDLGENERATOR_USAGE_INFO_SIMS1539=CWSIS1539I: sibDDLGenerator [{0} <DBMS name>] [{1} <DBMS version>] [{2} <DBMS platform>] [{3} <schema>] [{4} <user>] [{5}|{6}] [{7} <database> (z/OS only)][{8} <true|false> (z/OS only)][{9} <tablespace prefix, maximum 5 characters> (z/OS only)][{10} <storage group> [{11} <high-level qualifier>] (z/OS only)] [{12} <buffer pool> (z/OS only)] [{13} <terminator>] [{14}] [{15}] [{16} <statements>] [{17} <statements>] [{18} <number of permanent tables>] [{19} <number of temporary tables>]
+#DDLGENERATOR_USAGE_INFO_SIMS1539.explanation=DDLGenerator usage information.
+#DDLGENERATOR_USAGE_INFO_SIMS1539.useraction=Rerun the command using the correct syntax.
+
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540=CWSIS1540E: An invalid number of tables has been specified, {0}.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.explanation=The specified number of tables must be a positive integer.
+#INVALID_NUMBER_OF_TABLES_SPECIFIED_SIMS1540.useraction=Correct the error and try again.
+
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541=CWSIS1541E: The maximum number of SIBnnn tables that can be used by a messaging engine, {0}, has been exceeded.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.explanation=The total number of stream (there is always one stream table), permanent and temporary tables should not exceed the maximum.
+#MAX_NUMBER_OF_TABLES_EXCEEDED_SIMS1541.useraction=Reduce the number of permanent or temporary tables specified, and restart the server.
+
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542=CWSIS1542E: The configured number of permanent or temporary tables, {1}, is less than the number currently in use, {0}.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.explanation=The number of permanent or temporary tables cannot be decreased.
+#INCOMPATIBLE_NUMBER_OF_TABLES_SIMS1542.useraction=Restore the original values for the number of permanent and temporary tables, and restart the server. 
+
+#DBLOCK_NO_OWNER_SIMS1543=CWSIS1543I: No previous owner was found in the messaging engine's data store.
+#DBLOCK_NO_OWNER_SIMS1543.explanation=The data store has not been used by another messaging engine.
+#DBLOCK_NO_OWNER_SIMS1543.useraction=No action is required.
+
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544=CWSIS1544E: Multiple previous owner id's found in the messaging engine's data store.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.explanation=The data store has identified more than one messagine engine as its owner.
+#DBLOCK_MULTIPLE_OWNERS_SIMS1544.useraction=CMSG0002
+
+#DBLOCK_ONE_OWNER_SIMS1545=CWSIS1545I: A single previous owner was found in the messaging engine''s data store, ME_UUID={0}, INC_UUID={1}
+#DBLOCK_ONE_OWNER_SIMS1545.explanation=The messaging engine identified has previously used the data store.
+#DBLOCK_ONE_OWNER_SIMS1545.useraction=No action is required.
+
+#DBLOCK_NOT_HELD_SIMS1546 is no longer used.
+
+#SCHEMA_NAME_UNDEFINED_SIMS1547=CWSIS1547E: Unable to determine the schema name for the messaging engine.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.explanation=The schema name was not defined explicitly for the data store, and the database user id was not provided.
+#SCHEMA_NAME_UNDEFINED_SIMS1547.useraction=Provide a schema name and try again.
+
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548=CWSIS1548W: Non \u00e8 possibile modificare la dimensione del file di log nel valore contenuto nella configurazione dell'archivio file del motore di messaggistica in questo momento.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.explanation=Il contenuto esistente dell'archivio file impedisce che il valore nella configurazione divenga effettivo.
+FILE_STORE_LOG_SIZE_CHANGE_PREVENTED_SIMS1548.useraction=Non sono richieste azioni. Il motore di messaggistica tenter\u00e0 di applicare di nuovo la modifica alla configurazione al successivo avvio.
+
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549=CWSIS1549W: Non \u00e8 possibile modificare la dimensione del file di archivio nel valore contenuto nella configurazione dell'archivio file del motore di messaggistica in questo momento.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.explanation=Il contenuto esistente dell'archivio file impedisce che il valore nella configurazione divenga effettivo.
+FILE_STORE_STORE_SIZE_CHANGE_PREVENTED_SIMS1549.useraction=Non sono richieste azioni. Il motore di messaggistica tenter\u00e0 di applicare di nuovo la modifica alla configurazione al successivo avvio.
+
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550=CWSIS1550I: La dimensione corrente del file di log \u00e8 {0} byte. La dimensione nelle informazioni di configurazione del file di log \u00e8 {1} byte.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_LOG_SIZE_CONFIGURATION_INFO_SIMS1550.useraction=Non sono richieste azioni.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551=CWSIS1551I: La dimensione minima riservata corrente del file di archivio permanente \u00e8 {0} byte. La dimensione massima corrente \u00e8 {1} byte.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_SIMS1551.useraction=Non sono richieste azioni.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552=CWSIS1552I: La dimensione minima riservata corrente del file di archivio permanente \u00e8 {0} byte. La dimensione massima corrente \u00e8 illimitata.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_PERMANENT_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1552.useraction=Non sono richieste azioni.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553=CWSIS1553I: La dimensione minima riservata nelle informazioni sulla configurazione del file di archivio permanente \u00e8 {0} byte. La dimensione massima \u00e8 {1} byte.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_SIMS1553.useraction=Non sono richieste azioni.
+
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554=CWSIS1554I: La dimensione minima riservata nelle informazioni sulla configurazione del file di archivio permanente \u00e8 {0} byte. La dimensione massima \u00e8 illimitata.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_PERMANENT_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1554.useraction=Non sono richieste azioni.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555=CWSIS1555I: La dimensione minima riservata corrente del file di archivio temporaneo \u00e8 {0} byte. La dimensione massima corrente \u00e8 {1} byte.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_SIMS1555.useraction=Non sono richieste azioni.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556=CWSIS1556I: La dimensione minima riservata corrente del file di archivio temporaneo \u00e8 {0} byte. La dimensione massima corrente \u00e8 illimitata.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_TEMPORARY_STORE_SIZE_CURRENT_INFO_UNLIMITED_SIMS1556.useraction=Non sono richieste azioni.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557=CWSIS1557I: La dimensione minima riservata nelle informazioni sulla configurazione del file di archivio temporaneo \u00e8 {0} byte. La dimensione massima \u00e8 {1} byte.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_SIMS1557.useraction=Non sono richieste azioni.
+
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558=CWSIS1558I: La dimensione minima riservata nelle informazioni sulla configurazione del file di archivio temporaneo \u00e8 {0} byte. La dimensione massima \u00e8 illimitata.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.explanation=Fa parte delle informazioni di configurazione dell'archivio file.
+FILE_STORE_TEMPORARY_STORE_SIZE_CONFIGURATION_INFO_UNLIMITED_SIMS1558.useraction=Non sono richieste azioni.
+
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559=CWSIS1559I: I dati nel file di archivio permanente occupano {0} byte.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.explanation=Si tratta del numero di byte di spazio consumati dal contenuto del file di archivio permanente. Non \u00e8 possibile ridurre la dimensione minima riservata al di sotto di questo valore.
+FILE_STORE_PERMANENT_STORE_USED_CURRENT_INFO_SIMS1559.useraction=Non sono richieste azioni.
+
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560=CWSIS1560I: I dati nel file di archivio temporaneo occupano {0} byte.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.explanation=Si tratta del numero di byte di spazio consumati dal contenuto del file di archivio temporaneo. Non \u00e8 possibile ridurre la dimensione minima riservata al di sotto di questo valore.
+FILE_STORE_TEMPORARY_STORE_USED_CURRENT_INFO_SIMS1560.useraction=Non sono richieste azioni.
+
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561=CWSIS1561E: L''id univoco del motore di messaggistica non corrisponde a quello individuato nell''archivio file. ME_UUID={0}, ME_UUID(FS)={1}
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.explanation=L'ID univoco del motore di messaggistica non corrisponde a quello dell'archivio file.
+FILE_STORE_LOCK_MEUUID_DOESNT_MATCH_SIMS1561.useraction=Si sta tentando una connessione ad un gruppo di file esistente che appartengono ad un altro motore di messaggistica. \
+Puntare l'archivio file del motore di messaggistica su un differente gruppo di file o rimuovere quelli esistenti.
+
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562=CWSIS1562E: La versione del motore di messaggistica non corrisponde a quella trovata nell''archivio file. VERSION={0}, VERSION(FS)={1}
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.explanation=La versione del motore di messaggistica non corrisponde a quella presente nell'archivio file.
+FILE_STORE_LOCK_VERSION_DOESNT_MATCH_SIMS1562.useraction=Si sta tentando una connessione ad un gruppo di file esistente che appartengono ad un altro motore di messaggistica. \
+Puntare l'archivio file del motore di messaggistica su un differente gruppo di file o rimuovere quelli esistenti.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ACQUIRED_SIMS1563=CWSIS1563I: Il motore di messaggistica ME_UUID={0}, INC_UUID={1}, ha acquisito un blocco esclusivo sull''archivio file.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.explanation=Il motore di messaggistica, identificato dagli UUID, ha stabilito una propriet\u00e0 sull'archivio file.
+FILE_STORE_LOCK_ACQUIRED_SIMS1563.useraction=Non sono richieste azioni.
+
+# {0} is the messaging engine's UUID
+# {1} is the messaging engine's IND_UUID
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564=CWSIS1564I: Il motore di messaggistica ME_UUID={0}, INC_UUID={1} sta provando ad acquisire un blocco esclusivo sull''archivio file.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.explanation=Il motore di messaggistica, identificato dagli UUID, sta tentando di stabilire una propriet\u00e0 sull'archivio file.
+FILE_STORE_LOCK_ATTEMPTING_SIMS1564.useraction=Non sono richieste azioni.
+
+FILE_STORE_LOCK_NO_OWNER_SIMS1565=CWSIS1565I: Non \u00e8 stato trovato alcun proprietario precedente nell'archivio file del motore di messaggistica.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.explanation=L'archivio file non \u00e8 stato utilizzato da un altro motore di messaggistica.
+FILE_STORE_LOCK_NO_OWNER_SIMS1565.useraction=Non sono richieste azioni.
+
+# {0} is the UUID of the messaging engine found in the file store
+# {1} is the INC_UUID of the messaging engine found in the file store
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566=CWSIS1566I: \u00c8 stato rilevato un singolo proprietario precedente nell''archivio file del motore di messaggistica, ME_UUID={0}, INC_UUID={1}
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.explanation=Il motore di messaggistica identificato ha precedentemente utilizzato l'archivio file.
+FILE_STORE_LOCK_ONE_OWNER_SIMS1566.useraction=Non sono richieste azioni.
+
+# {0} is the messaging engine's name
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567=CWSIS1567E: Il motore di messaggistica {0} non riesce ad ottenere il blocco sull''archivio file, che assicura l''accesso esclusivo ai dati.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.explanation=Il blocco dell'archivio file \u00e8 gi\u00e0 applicato, probabilmente da un altro motore di messaggistica attivo o da un motore che ha riportato errori recentemente.
+CANNOT_OBTAIN_FILE_STORE_LOCK_SIMS1567.useraction=CMSG0002
+
+# {0} is the messaging engine's name
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568=CWSIS1568I: Messaging engine {0} is using a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.explanation=The message store for the messaging engine is a data store.
+#MESSAGING_ENGINE_PERSISTENCE_DATASTORE_SIMS1568.useraction=No action is required.
+
+# {0} is the messaging engine's name
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569=CWSIS1569I: Il motore di messaggistica {0} sta utilizzando un archivio file.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.explanation=L'archivio messaggi del motore di messaggistica \u00e8 un archivio file.
+MESSAGING_ENGINE_PERSISTENCE_FILESTORE_SIMS1569.useraction=Non sono richieste azioni.
+
+# {0} is the text of the exception thrown
+#DBLOCK_EXCEPTION_SIMS1570=CWSIS1570E: The messaging engine encountered an exception while locking the data store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1570.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1570.useraction=CMSG0002
+
+# {0} is the number of permanent tables in use
+# {1} is the number of temporary tables in use
+#NUMBER_OF_TABLES_IN_USE_SIMS1571=CWSIS1571I: Data store table summary: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.explanation=The data store is using these permanent and temporary tables.
+#NUMBER_OF_TABLES_IN_USE_SIMS1571.useraction=No action is required.
+
+# This message is also issued if the number of tables is changing
+# {0} is the number of permanent tables previously in use
+# {1} is the number of temporary tables previously in use
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572=CWSIS1572I: Data store table summary before configuration change: Permanent {0}, temporary {1}.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.explanation=The data store was using these permanent and temporary tables before the configuration was changed.
+#NUMBER_OF_TABLES_PREVIOUS_SIMS1572.useraction=No action is required.
+
+FILE_STORE_LOG_FULL_SIMS1573E=CWSIS1573E: Il file di log dell'archivio file \u00e8 pieno.
+FILE_STORE_LOG_FULL_SIMS1573E.explanation=L'archivio file non possiede pi\u00f9 spazio nel file di log per memorizzare i messaggi. \
+Questo potrebbe essere causato da una creazione di messaggi inaspettata o da una riduzione della dimensione del file. 
+FILE_STORE_LOG_FULL_SIMS1573E.useraction=Eliminare tutti i messaggi in eccesso o se necessario aumentare la dimensione del file di log.
+
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E=CWSIS1574E: Il file di archivio permanente dell'archivio file \u00e8 pieno.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.explanation=L'archivio file non possiede pi\u00f9 spazio nel file di archivio permanente per memorizzare i messaggi. \
+Questo potrebbe essere causato da una creazione di messaggi inaspettata o da una riduzione della dimensione del file.
+FILE_STORE_PERMANENT_STORE_FULL_SIMS1574E.useraction=Eliminare tutti i messaggi in eccesso o se necessario aumentare la dimensione del file di archivio permanente.
+
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E=CWSIS1575E: Il file di archivio temporaneo dell'archivio file \u00e8 pieno.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.explanation=L'archivio file non possiede pi\u00f9 spazio nel file di archivio temporaneo per memorizzare i messaggi. \
+Questo potrebbe essere causato da una creazione di messaggi inaspettata o da una riduzione della dimensione del file.
+FILE_STORE_TEMPORARY_STORE_FULL_SIMS1575E.useraction=Eliminare tutti i messaggi in eccesso o se necessario aumentare la dimensione del file di archivio temporaneo.
+
+SPILL_DISPATCHER_IS_FULL_SIMS1576E=CWSIS1576E: Il dispatcher spill \u00e8 pieno. 
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.explanation=Il dispatcher spill \u00e8 pieno e non pu\u00f2 accettare nuovi messaggi fino a quando non viene reso disponibile ulteriore spazio. \
+La rimozione di messaggi esistenti aiuter\u00e0 il dispatcher a liberare spazio.
+SPILL_DISPATCHER_IS_FULL_SIMS1576E.useraction=Non viene richiesta alcuna azione per riportare il dispatcher ad uno stato di normalit\u00e0. \
+Tuttavia, questo pu\u00f2 essere un sintomo del fatto che la dimensione del file di archivio temporaneo \u00e8 insufficiente.
+
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577=CWSIS1577E: Il dispatcher persistente non pu\u00f2 accettare il lavoro.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.explanation=Il dispatcher persistente non \u00e8 in grado di accettare ulteriore lavoro a causa di un errore precedente.
+PERSISTENT_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1577.useraction=CMSG0002
+
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578=CWSIS1578E: Il dispatcher spill non \u00e8 in grado di accettare lavoro.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.explanation=Il dispatcher spill non \u00e8 in grado di accettare ulteriore lavoro a causa di un errore precedente.
+SPILL_DISPATCHER_CANNOT_ACCEPT_WORK_SIMS1578.useraction=CMSG0002
+
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579=CWSIS1579E: Il file di log dell'archivio file \u00e8 bloccato da un altro processo.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.explanation=L'archivio file ha provato a bloccare il proprio file di log, ma l'operazione non \u00e8 riuscita perch\u00e9 un altro processo gi\u00e0 blocca il file. \
+Tale processo pu\u00f2 essere un altro motore di messaggistica attivo oppure un altro processo applicativo.
+FILE_STORE_LOG_FILE_IN_USE_SIMS1579.useraction=Verificare che l'archivio file faccia riferimento ad un file di log che deve essere utilizzato solo da tale archivio file. \
+Se un secondo motore di messaggistica utilizza lo stesso file, la causa potrebbe essere una configurazione non corretta oppure un tentativo di failover non corretto. \
+Per consentire l'avvio di questo motore di messaggistica, determinare quale motore di messaggistica sta utilizzando il file di log ed arrestarlo.
+
+# {0} is the path to the log file that was provided from the configuration.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580=CWSIS1580E: Impossibile trovare il file di log dell''archivio file nell''ubicazione fornita: {0}.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.explanation=L'archivio file ha provato ad aprire o creare il proprio file di log, ma non \u00e8 stato in grado di eseguire l'operazione. \
+Una causa comune di questo problema \u00e8 l'assenza di un montaggio del disco oppure l'immissione non corretta del percorso.
+FILE_STORE_CANNOT_FIND_LOG_FILE_SIMS1580.useraction=Controllare il percorso fornito e verificare se fa riferimento ad un disco ed una directory disponibili.
+
+# {0} The log file name
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581=CWSIS1581I: L''archivio file sta tentando di inizializzare il relativo file di log: {0}
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.explanation=L'archivio file \u00e8 in fase di avvio e sta tentando di leggere il contenuto del relativo file di log.
+FILE_STORE_ATTEMPTING_TO_INITIALISE_SIMS1581.useraction=Non sono richieste azioni.
+
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582=CWSIS1582I: Si \u00e8 verificato un problema per l'archivio file durante l'inizializzazione del relativo file di log, ma verr\u00e0 eseguito un nuovo tentativo.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.explanation=L'archivio file non \u00e8 riuscito ad eseguire l'inizializzazione in questo tentativo. \
+Un messaggio precedente viene emesso con i dettagli sulle cause dell'errore. \
+L'archivio file tenter\u00e0 nuovamente l'inizializzazione per valutare se l'errore \u00e8 ripristinabile.
+FILE_STORE_PROBLEM_INITIALISING_LOG_SIMS1582.useraction=Se l'archivio file non riesce ad eseguire l'inizializzazione correttamente dopo vari tentativi, controllare il file di log per i messaggi che descrivono l'errore per verificare se esiste un problema di connettivit\u00e0 o di configurazione.
+
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583=CWSIS1583E: L'archivio file ha superato il limite di tentativi di inizializzazione e ora verr\u00e0 arrestato.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.explanation=L'archivio file del motore di messaggistica ha raggiunto il limite di tempo per tentare nuovamente l'inizializzazione e ora verr\u00e0 arrestato. \
+I messaggi precedenti descrivono la causa dei ripetuti errori relativi all'inizializzazione. \
+Dopo l'arresto il motore di messaggistica sar\u00e0 pronto per il failover se la configurazione del server supporta tale operazione.
+FILE_STORE_INITIALISATION_RETRY_LIMIT_EXCEEDED_SIMS1583.useraction=L'output dei messaggi precedenti \u00e8 di supporto per individuare la causa dell'errore di inizializzazione dell'archivio file.
+
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584=CWSIS1584I: L'archivio file \u00e8 stato inizializzato correttamente.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.explanation=L'archivio file ha aperto e inizializzato correttamente il file di log.
+FILE_STORE_SUCCESSFULLY_INITIALISED_SIMS1584.useraction=Non sono richieste azioni.
+
+# {0} The permanent store file name
+# {1} The temporary store file name
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585=CWSIS1585I: L''archivio file sta tentando di avviare l''archivio permanente ({0}) e quello temporaneo ({1}).
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.explanation=L'archivio file sta tentando di aprire e leggere il contenuto dei file di archivio. \
+I file verranno creati se questa \u00e8 la prima volta che il motore di messaggistica viene avviato.
+FILE_STORE_START_PERMANENT_TEMPORARY_STORES_SIMS1585.useraction=Non sono richieste azioni.
+
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586=CWSIS1586I: L'archivio permanente dell'archivio file \u00e8 stato avviato correttamente.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.explanation=L'archivio file ha aperto e controllato il contenuto del relativo file archivio permanente.
+FILE_STORE_SUCCESSFULLY_STARTED_PERMANENT_STORE_SIMS1586.useraction=Non sono richieste azioni.
+
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587=CWSIS1587I: L'archivio temporaneo dell'archivio file \u00e8 stato avviato correttamente.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.explanation=L'archivio file ha aperto e controllato il contenuto del relativo file archivio temporaneo.
+FILE_STORE_SUCCESSFULLY_STARTED_TEMPORARY_STORE_SIMS1587.useraction=Non sono richieste azioni.
+
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588=CWSIS1588I: L'archivio file \u00e8 stato avviato correttamente.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.explanation=L'archivio file ha aperto correttamente e letto tutti i file relativi e ora \u00e8 pronto per accettare nuovo lavoro.
+FILE_STORE_STARTED_SUCCESSFULLY_SIMS1588.useraction=Non sono richieste azioni.
+
+FILE_STORE_STOP_EXPECTED_SIMS1589=CWSIS1589I: L'archivio file \u00e8 stato arrestato correttamente.
+FILE_STORE_STOP_EXPECTED_SIMS1589.explanation=L'archivio file \u00e8 stato arrestato nel corso dello spegnimento controllato.
+FILE_STORE_STOP_EXPECTED_SIMS1589.useraction=Non sono richieste azioni.
+
+FILE_STORE_STOP_UNEXPECTED_SIMS1590=CWSIS1590E: L'archivio file \u00e8 stato arrestato inaspettatamente.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.explanation=L'archivio file \u00e8 stato arrestato a causa di un errore imprevisto. \u00c8 possibile reperire nei messaggi precedenti del log la descrizione dell'errore.
+FILE_STORE_STOP_UNEXPECTED_SIMS1590.useraction=Ricercare tutti i messaggi nel log per individuare la causa principale dello spegnimento imprevisto.
+
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591=CWSIS1591E: L'archivio file ha rilevato una eccezione imprevista durante l'inizializzazione.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.explanation=\u00c8 stata rilevata una eccezione imprevista durante l'inizializzazione dell'archivio che ha arrestato l'avvio del motore di messaggistica.
+FILE_STORE_UNEXPECTED_INITIALISATION_EXCEPTION_SIMS1591.useraction=CMSG0002
+
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592=CWSIS1592E: L'archivio file ha rilevato una eccezione io imprevista.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.explanation=\u00c8 stata rilevata una eccezione io imprevista durante l'inizializzazione dell'archivio file. \
+Verr\u00e0 effettuato un ulteriore tentativo di inizializzazione.
+FILE_STORE_UNEXPECTED_IO_EXCEPTION_SIMS1592.useraction=Controllare i log del server per vedere se il problema viene risolto quando si tenta una ulteriore inizializzazione dell'archivio file.
+
+# Messages CWSIS1593 & CWSIS1594 introduced to replace message CWSIS1546 which is ambiguous
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_FAILED_SIMS1593=CWSIS1593I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has failed to gain an initial lock on the data store.
+#DBLOCK_FAILED_SIMS1593.explanation=The messaging engine, identified by the UUIDs in the message, has been unable to get an exclusive lock \ 
+#                                   on the database tables that hold its data. This could be due to another instance of the messaging engine \ 
+#                                   running against the same set of tables. It could also be the result of a lock from a previously running \ 
+#                                   instance being held for longer than expected in the database. The messaging engine will retry for a \ 
+#                                   period during startup to see if it is able to acquire the lock.
+#DBLOCK_FAILED_SIMS1593.useraction=If the messaging engine does not succeed in acquiring the lock during the startup retry period then \ 
+#                                  check that no other instance of the messaging engine is running and that there are no outstanding locks \ 
+#                                 on the tables for this messaging engine being held on your database server.
+
+# {0} the messaging engine UUID
+# {1} the incarnation UUID
+#DBLOCK_LOST_SIMS1594=CWSIS1594I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has lost the lock on the data store.
+#DBLOCK_LOST_SIMS1594.explanation=The messaging engine, identified by the UUIDs in the message, has lost an existing lock on the tables that \ 
+#                                 hold its data. This may be due to a connectivity problem between the messaging engine and the database server \ 
+#                                 or that another instance of the messaging engine has started and taken control of the tables.
+#DBLOCK_LOST_SIMS1594.useraction=Check that a network connection between your messaging engine and database server is available and that there is \ 
+#                               only one instance of the messaging engine running.
+
+#INVALID_PARAMETER_COMBINATION_SIMS1595=CWSIS1595E: An invalid combination of parameters has been specified, Database: {0}, version: {1}, platform: {2} . Refer to the documentation for the correct parameters for your database.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.explanation=The combination of parameters used was unrecognized by the sibDDLGenerator.
+#INVALID_PARAMETER_COMBINATION_SIMS1595.useraction=Refer to the documentation for a valid combination of parameters to use for your database. Rerun the command with a valid combination of parameters.
+
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596=CWSIS1596I: The data store exclusive lock cannot be disabled.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.explanation=The data store exclusive lock ensures integrity of the data within the data store and cannot \ 
+#                                                        be disabled for this messaging engine.
+#DATASTORE_LOCK_CANNOT_BE_DISABLED_CWSIS1596.useraction=If you have identified a need to disable the data store exclusive lock contact IBM Support.
+
+#DATASTORE_LOCK_DISABLED_CWSIS1597=CWSIS1597I: The data store exclusive lock has been disabled for {0} milliseconds.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.explanation=A request was made to disable the data store exclusive lock. The lock will remain disabled for the \ 
+#                                              length of time stated in the message at which point it will re-enable automatically.
+#DATASTORE_LOCK_DISABLED_CWSIS1597.useraction=No action is required.
+
+#DATASTORE_LOCK_REENABLED_CWSIS1598=CWSIS1598I: The data store exclusive lock has been automatically re-enabled.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.explanation=The messaging engines data store has re-enabled its exclusive lock after the requested time period.
+#DATASTORE_LOCK_REENABLED_CWSIS1598.useraction=No action is required.
+
+#DBLOCK_ATTEMPTING_SIMS1599=CWSIS1599I: The messaging engine, ME_UUID={0}, INC_UUID={1}, is attempting to obtain ownership on the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.explanation=The messaging engine, identified by the UUIDs in the message, is attempting to establish ownership of the data store.
+#DBLOCK_ATTEMPTING_SIMS1599.useraction=No action is required.
+
+#DBLOCK_EXCEPTION_SIMS1600=CWSIS1600E: Unable to update Messaging Engine status as the messaging engine encountered an exception while acquiring ownership on the message store. Exception: {0}
+#DBLOCK_EXCEPTION_SIMS1600.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+#DBLOCK_EXCEPTION_SIMS1600.useraction=CMSG0002
+
+#DBLOCK_ACQUIRED_SIMS1601=CWSIS1601I: The messaging engine, ME_UUID={0}, INC_UUID={1}, has obtained ownership on the data store.
+#DBLOCK_ACQUIRED_SIMS1601.explanation=The messaging engine, identified by the UUIDs in the message, has established ownership of the data store.
+#DBLOCK_ACQUIRED_SIMS1601.useraction=No action is required.
+
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602=CWSIS1602W: Restrict database locking feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RESTRICT_DB_LOCK_FEATURE_SIMS1602.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603=CWSIS1603W: Keep count of failed deliveries feature is not supported, because the messaging engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.explanation=Messaging Engine is trying to connect to a datastore which is not migrated to a version that supports this feature.
+#INCOMPATIBLE_DATASTORE_FOR_RDC_FEATURE_SIMS1603.useraction=Use sibDBUpdgrade command to migrate the existing tables.
+
+
+# -------------------------------------------------------------------------------------------------
+# Expiry
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_EXPIRABLE_SIMS2000=CWSIS2000E: L''elemento non ha una chiave univoca: {0}
+DUPLICATE_EXPIRABLE_SIMS2000.explanation=\u00c8 stato effettuato un tentativo di aggiungere un oggetto non univoco in un indice di scadenza.
+DUPLICATE_EXPIRABLE_SIMS2000.useraction=CMSG0002
+
+# {0} is the text of the exception thrown
+EXPIRY_DAEMON_TERMINATED_SIMS2001=CWSIS2001E: Il daemon scadenza \u00e8 terminato in modo anomalo a causa di un''eccezione non prevista: {0}
+EXPIRY_DAEMON_TERMINATED_SIMS2001.explanation=Il thread del daemon scadenza \u00e8 stato interrotto e terminato.
+EXPIRY_DAEMON_TERMINATED_SIMS2001.useraction=CMSG0002
+ 
+# {0} is the text of the exception thrown
+CACHE_LOADER_TERMINATED_SIMS2003=CWSIS2003E: Il daemon del programma di caricamento cache \u00e8 terminato in modo anomalo a causa di un''eccezione non prevista: {0}
+CACHE_LOADER_TERMINATED_SIMS2003.explanation=Il thread del daemon del programma di caricamento cache \u00e8 stato interrotto e si \u00e8 chiuso.
+CACHE_LOADER_TERMINATED_SIMS2003.useraction=CMSG0002
+
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004=CWSIS2004E: Il daemon scadenza \u00e8 gi\u00e0 in esecuzione.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.explanation=\u00c8 stato effettuato un tentativo di avvio del thread daemon scadenza ma questo \u00e8 gi\u00e0 in esecuzione.
+EXPIRY_THREAD_ALREADY_RUNNING_SIMS2004.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# DeliveryDelayManager
+# -------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the non-unique key
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010=CWSIS2010E: L''elemento non ha una chiave univoca: {0}
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.explanation=\u00c8 stato effettuato un tentativo di aggiungere un oggetto non univoco in un indice di ritardo consegna.
+DUPLICATE_DELIVERYDELAYABLE_SIMS2010.useraction=Riavviare il motore di messaggistica. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} is the text of the exception thrown
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011=CWSIS2011E: Il daemon di gestore ritardi consegna \u00e8 terminato in modo anomalo a causa di una eccezione imprevista: {0}
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.explanation=Il thread del daemon di gestore ritardi consegna \u00e8 stato interrotto ed \u00e8 stato arrestato.
+DELIVERYDELAYMANAGER_DAEMON_TERMINATED_SIMS2011.useraction=Riavviare il motore di messaggistica. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ 
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012=CWSIS2012E: Il daemon di gestore ritardi di consegna \u00e8 gi\u00e0 in esecuzione.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.explanation=\u00c8 stato effettuato un tentativo di avviare il thread del daemon di gestore ritardi consegna ma \u00e8 gi\u00e0 in esecuzione.
+DELIVERYDELAYMANAGER_THREAD_ALREADY_RUNNING_SIMS2012.useraction=Riavviare il motore di messaggistica. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIMS9999=CWSIS9999E: {0}
+TEMPORARY_SIMS9999.explanation=Se il messaggio non fornisce informazioni sufficienti, consultare i messaggi di errore di accompagnamento.
+TEMPORARY_SIMS9999.useraction=Per ulteriori informazioni, consultare i messaggi di errore di accompagnamento.

@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: bnd meta-annoations
+Bundle-Name: bnd meta-annotations
 Bundle-SymbolicName: com.ibm.ws.bnd.annotations
 Bundle-Description: bnd meta annotations for metatype and ds
 

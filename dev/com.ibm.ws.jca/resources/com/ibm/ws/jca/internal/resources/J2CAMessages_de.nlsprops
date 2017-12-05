@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca/resources/com/ibm/ws/jca/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+J2CA8500.config.prop.error=J2CA8500E: Beim Versuch, die Eigenschaft {0} des Konfigurationselements {1} in de Klasse {2} zu konfigurieren, ist ein Fehler aufgetreten: {3}
+J2CA8500.config.prop.error.explanation=Eine Eigenschaft konnte wegen eines Fehlers nicht auf der angegebenen Ressource konfiguriert werden.
+J2CA8500.config.prop.error.useraction=Korrigieren Sie die Konfiguration der angegebenen Ressource, und wiederholen Sie dann die Operation.
+ 
+J2CA8501.config.prop.unknown=J2CA8501E: Die Eigenschaft {0} des Konfigurationselements {1} kann nicht definiert werden, weil sie nicht in der Klasse {2} gefunden wurde.
+J2CA8501.config.prop.unknown.explanation=Eine Eigenschaft wurde nicht auf der angegebenen Ressource gefunden.
+J2CA8501.config.prop.unknown.useraction=Korrigieren Sie die Konfiguration der Ressource.
+
+# {1} is the unique identifier for a configuration element, such as jmsTopicConnectionFactory[cf1] or jmsQueue[queue1] 
+J2CA8504.incorrect.props.list=J2CA8504E: Das Unterelement {0} ist f\u00fcr das Konfigurationselement {1} nicht korrekt.
+J2CA8504.incorrect.props.list.explanation=Der Typ der Konfigurationseigenschaftenliste f\u00fcr das angegebene Konfigurationselement ist nicht korrekt.
+J2CA8504.incorrect.props.list.useraction=Aktualisieren Sie die Konfiguration so, dass eine Konfigurationseigenschaftenliste verwendet wird, die dem gew\u00fcnschten Ressourcentyp entspricht.
+
+J2CA8505.destination.type.mismatch=J2CA8505E: Die Zieleigenschaft kann nicht in der Aktivierungsspezifikation konfiguriert werden, weil das Ziel {0} keine Instanz der Schnittstelle ist, die als destinationType-Wert angegeben ist: {1}.
+J2CA8505.destination.type.mismatch.explanation=Es wurde ein Zieltyp angegeben, der nicht mit dem Ziel \u00fcbereinstimmt.
+J2CA8505.destination.type.mismatch.useraction=Aktualisieren Sie die Serverkonfiguration oder die Anwendung und geben Sie einen Zieltyp an, der mit dem Ziel konsistent ist.
+
+J2CA8510.create.timed.out=J2CA8510E: Es konnte kein Zeitgeber f\u00fcr den Ressourcenadapter {0} im Zeitlimit von {1} Millisekunden erstellt werden.
+J2CA8510.create.timed.out.explanation=Die Erstellung des Zeitgebers dauert l\u00e4nger als erwartet.
+J2CA8510.create.timed.out.useraction=Pr\u00fcfen Sie, ob die Auslastung des Systems hoch ist, und verringern Sie die Arbeitslast ggf.
+
+J2CA8600.work.start.timeout=J2CA8600E: Die Anforderung {0}, die vom Ressourcenadapter {1} \u00fcbergeben wurde, wurde nicht innerhalb von {2} Millisekunden gestartet.
+J2CA8600.work.start.timeout.explanation=Beim Versuch, die Anforderung zu starten, wurde das zul\u00e4ssige Zeitlimit \u00fcberschritten.
+J2CA8600.work.start.timeout.useraction=Pr\u00fcfen Sie, ob die Auslastung des Systems hoch ist, und verringern Sie die Arbeitslast ggf., oder fragen Sie beim Anbieter des Ressourcenadapters nach, ob das Anforderungszeitlimit f\u00fcr die \u00dcbergabe von Anforderungen an den JCA-Arbeitsmanager erh\u00f6ht werden kann.
+
+# 8622 deleted
+
+J2CA8623.execution.context.conflict=J2CA8623E: Der Ressourcenadapter {0} hat versucht, Anforderungen mit ExecutionContext und WorkContext zu \u00fcbergeben. Die Kombination von ExecutionContext und WorkContext wird nicht unterst\u00fctzt.
+J2CA8623.execution.context.conflict.explanation=Der Ressourcenadapter hat Anforderungen \u00fcbergeben, die WorkContextProvider implementieren und au\u00dferdem einen ExecutionContext angeben. Die kombinierte Verwendung dieser beiden Optionen ist nicht zul\u00e4ssig.
+J2CA8623.execution.context.conflict.useraction=Der Ressourcenadapter muss aktualisiert werden, um die Wahl zwischen WorkContextProvider und ExecutionContext zu treffen.
+
+J2CA8624.work.context.duplicate=J2CA8624E: Der Ressourcenadapter {0} hat versucht, Anforderungen mit mehreren Kopien des WorkContext-Typs {1} zu \u00fcbergeben. Es wird nur ein einziger WorkContext jedes Typs in einer einzigen Anforderungs\u00fcbergabe unterst\u00fctzt.
+J2CA8624.work.context.duplicate.explanation=Der Ressourcenadapter hat Anforderungen mit mehreren WorkContext-Instanzen desselben Typs \u00fcbergeben.
+J2CA8624.work.context.duplicate.useraction=Der Ressourcenadapter muss aktualisiert werden, um doppelte WorkContext-Instanzen aus dem WorkContextProvider zu entfernen.
+
+J2CA8625.work.context.unavailable=J2CA8625E: Der Ressourcenadapter {0} hat versucht, Anforderungen mit dem Arbeitskontexttyp {1} zu \u00fcbergeben, der nicht unterst\u00fctzt wird, oder das Feature ist nicht aktiviert.
+J2CA8625.work.context.unavailable.explanation=Der Typ des Arbeitskontextes wird vom Anwendungsserver nicht unterst\u00fctzt, oder das Feature, das den Arbeitskontexttyp unterst\u00fctzt, ist nicht aktiviert.
+J2CA8625.work.context.unavailable.useraction=Vergewissern Sie sich, dass der Arbeitskontexttyp unterst\u00fctzt wird. Wenn ja, vergewissern Sie sich, dass das Feature, das diesen Typ unterst\u00fctzt, aktiviert ist.
+
+J2CA8687.hint.datatype.invalid=J2CA8687E: Die Hinweiswerte f\u00fcr {0} m\u00fcssen den Typ {1} haben. Der Ressourcenadapter {2} hat den Wert {3} mit dem Typ {4} angegeben.
+J2CA8687.hint.datatype.invalid.explanation=Der vom Ressourcenadapter angegebene Hinweiswert hat den falschen Datentyp.
+J2CA8687.hint.datatype.invalid.useraction=Bitten Sie en Anbieter des Ressourcenadapters, den Datentyp des Hinweises zu korrigieren.
+
+J2CA8688.work.setup.failed=J2CA8688E: Der Arbeitsmanager kann das Arbeitselement nicht ausf\u00fchren. Sehen Sie sich die Ursachenausnahme an: {0}.
+J2CA8688.work.setup.failed.explanation=Beim Vorbereiten der Arbeitselementausf\u00fchrung ist ein Fehler aufgetreten.
+J2CA8688.work.setup.failed.useraction=Suchen Sie in der Ursachenausnahme nach weiteren Informationen.
+
+J2CA8800.multiple.xa.resources=J2CA8800E: Der Ressourcenadapter {0} hat mehrere XA-Ressourcen f\u00fcr die Aktivierungsspezifikation {1} zur\u00fcckgegeben.
+J2CA8800.multiple.xa.resources.explanation=Der Ressourcenadapter darf nur eine einzige XA-Ressource f\u00fcr die angegebene Aktivierungsspezifikation zur\u00fcckgeben.
+J2CA8800.multiple.xa.resources.useraction=Fordern Sie beim Anbieter des Ressourcenadapters eine Korrektur der Implementierung der API getXAResources an, damit diese der JCA-Spezifikation entspricht.
+
+J2CA8801.act.spec.active=J2CA8801I: Der Nachrichtenendpunkt f\u00fcr die Aktivierungsspezifikation {0} und die MDB-Anwendung {1} ist aktiviert.
+J2CA8801.act.spec.active.explanation=Der Nachrichtenendpunkt wurde aktiviert und kann eingehende Nachrichten verarbeiten.
+J2CA8801.act.spec.active.useraction=Es ist keine Aktion erforderlich.
+
+J2CA8802.activation.failed=J2CA8802E: Die Aktivierung des Nachrichtenendpunkts f\u00fcr den Ressourcenadapter {0} ist wegen der folgenden Ausnahme fehlgeschlagen: {1}
+J2CA8802.activation.failed.explanation=Die angegebene Ausnahme wurde w\u00e4hrend der Aktivierung des Nachrichtenendpunkts generiert.
+J2CA8802.activation.failed.useraction=Verwenden Sie die angegebene Ausnahme zur Bestimmung der Fehlerursache.
+
+J2CA8803.deactivation.failed=J2CA8803E: Die Inaktivierung des Nachrichtenendpunkts f\u00fcr den Ressourcenadapter {0} ist aufgrund der folgenden Ausnahme fehlgeschlagen: {1}
+J2CA8803.deactivation.failed.explanation=Die angegebene Ausnahme wurde w\u00e4hrend der Inaktivierung des Nachrichtenendpunkts generiert.
+J2CA8803.deactivation.failed.useraction=Verwenden Sie die angegebene Ausnahme zur Bestimmung der Fehlerursache.
+
+J2CA8804.act.spec.inactive=J2CA8804I: Der Nachrichtenendpunkt f\u00fcr die Aktivierungsspezifikation {0} und die MDB-Anwendung {1} ist inaktiviert.
+J2CA8804.act.spec.inactive.explanation=Der Nachrichtenendpunkt wurde inaktiviert und verarbeitet keine eingehenden Nachrichten mehr.
+J2CA8804.act.spec.inactive.useraction=Es ist keine Aktion erforderlich.
+
+# 8806 deleted
+
+J2CA8807.native.rrs.not.available=J2CA8807E: Der Service, der die RRS-Transaktionsunterst\u00fctzung bereitstellt, ist nicht aktiv. Die Ressourcenregistrierung wurde abgelehnt.
+J2CA8807.native.rrs.not.available.explanation=Der Service, der die RRS-Transaktionsunterst\u00fctzung bereitstellt, ist nicht aktiv. Ressourcenregistrierungsversuche mit dem Transaktionsmanager werden abgelehnt. 
+J2CA8807.native.rrs.not.available.useraction=Vergewissern Sie sich, dass der Angel-Prozess aktiv ist. Stellen Sie sicher, dass die MVS-Benutzer-ID des Liberty-Prozesses die entsprechende SAF-Berechtigung f\u00fcr den Aufruf der Gruppe berechtigter Services hat, die f\u00fcr die RRS-Integration verwendet werden. Vergewissern Sie sich, dass das Feature, das die RRS-Integration unterst\u00fctzt, konfiguriert wurde.
+
+J2CA8809.embedded.lookup.failed=J2CA8809E: Die Ressource {0} aus dem eingebetteten Ressourcenadapter {1} ist nur f\u00fcr die Anwendung {2} verf\u00fcgbar. Es wurde versucht, \u00fcber die Anwendung {3} auf die Ressource zuzugreifen.
+J2CA8809.embedded.lookup.failed.explanation=Ein eingebetteter Ressourcenadapter und alle von diesem Ressourcenadapter definierten Ressourcen k\u00f6nnen nur von der Anwendung aufgerufen werden, in die der Ressourcenadapter eingebettet ist. 
+J2CA8809.embedded.lookup.failed.useraction=Stellen Sie sicher, dass die Anwendung nur Ressourcen sucht, die im Servergeltungsbereich oder in derselben Anwendung definiert sind.
+
+J2CA8810.embedded.activation.failed=J2CA8810E: Der Endpunkt {0} aus dem eingebetteten Ressourcenadapter {1} kann nur \u00fcber die Anwendung {2} aktiviert werden. Es wurde versucht, den Endpunkt \u00fcber die Anwendung {3} zu aktivieren.
+J2CA8810.embedded.activation.failed.explanation=Die Endpunktaktivierung ist fehlgeschlagen, weil der Endpunkt auf eine Aktivierungsspezifikation verweist, die in eine andere Anwendung eingebettet ist.
+J2CA8810.embedded.activation.failed.useraction=Aktualisieren Sie die Serverkonfiguration so, dass der Endpunkt eine Aktivierungsspezifikation verwendet, die zum Servergeltungsbereich geh\u00f6rt bzw. in dieselbe Anwendung eingebettet ist.
+
+J2CA8811.embedded.lookup.failed=J2CA8811E: Die Ressource {0} aus dem eingebetteten Ressourcenadapter {1} ist nur f\u00fcr die Anwendung {2} verf\u00fcgbar.
+J2CA8811.embedded.lookup.failed.explanation=Ein eingebetteter Ressourcenadapter und alle von diesem Ressourcenadapter definierten Ressourcen k\u00f6nnen nur von der Anwendung aufgerufen werden, in die der Ressourcenadapter eingebettet ist.
+J2CA8811.embedded.lookup.failed.useraction=\u00c4ndern Sie Ihre Anwendung bzw. Ihren Service so, dass nur Ressourcen gesucht werden, die im Servergeltungsbereich definiert sind.
+
+J2CA8812.embedded.activation.failed=J2CA8812E: Der Endpunkt {0} aus dem eingebetteten Ressourcenadapter {1} kann nur \u00fcber die Anwendung {2} aktiviert werden.
+J2CA8812.embedded.activation.failed.explanation=Die Endpunktaktivierung ist fehlgeschlagen, weil der Endpunkt auf eine Aktivierungsspezifikation verweist, die in eine andere Anwendung eingebettet ist.
+J2CA8812.embedded.activation.failed.useraction=Aktualisieren Sie die Serverkonfiguration so, dass der Endpunkt eine Aktivierungsspezifikation verwendet, die im Servergeltungsbereich definiert ist.
+
+J2CA8813.required.activation.prop.not.set=J2CA8813E: Die erforderliche Eigenschaft {0} f\u00fcr die Aktivierungsspezifikation {1} des Ressourcenadapters {2} fehlt.
+J2CA8813.required.activation.prop.not.set.explanation=Der Ressourcenadapter kennzeichnet bestimmte Eigenschaften der Aktivierungsspezifikation als erforderlich, und f\u00fcr einige dieser erforderlichen Eigenschaften wurde kein Wert angegeben. Diese Eigenschaften k\u00f6nnen \u00fcber zwei verschiedene Stellen definiert werden: (1) beim Erstellen eines Konfigurationsobjekts f\u00fcr die Aktivierungsspezifikation im installieren Ressourcenadapter und (2) \u00fcber die Anwendung selbst als <activation-config-property>.
+J2CA8813.required.activation.prop.not.set.useraction=Geben Sie den erforderlichen Wert in der Aktivierungsspezifikation in der Serverkonfiguration oder in einem Eintrag activation-config-property in der Anwendung an.
+
+J2CA8814.resource.adapter.install.failed=J2CA8814E: Das Attribut id des Elements resourceAdapter f\u00fcr das Ressourcenadaptermodul {0} enth\u00e4lt nicht unterst\u00fctzte Zeichen.
+J2CA8814.resource.adapter.install.failed.explanation=Das Attribut id des Elements resourceAdapter darf zus\u00e4tzlich zu alphanumerischen Zeichen nur die Zeichen '.', '-' und '_' enthalten. Die in der Konfiguration angegebene bzw. vom Modulnamen abgeleitete ID enth\u00e4lt nicht unterst\u00fctzte Zeichen.
+J2CA8814.resource.adapter.install.failed.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr das Attribut id des Elements resourceAdapter in der Serverkonfiguration an.
+
+J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Es ist nicht zul\u00e4ssig, dass mehrere Ressourcenadapter dieselbe eindeutige ID {0} haben.
+J2CA8815.duplicate.resource.adapter.id.explanation=Es sind mehrere Ressourcenadapter mit derselben eindeutigen ID konfiguriert bzw. mehrere Ressourcenadapter erhalten implizit dieselbe eindeutige ID.
+J2CA8815.duplicate.resource.adapter.id.useraction=Weisen Sie den Ressourcenadaptern eindeutige IDs zu, damit der Konflikt behoben wird.
+
+# Do not translate the term "Bean Validation"
+# Do not translate the term "Validator"
+# ---------------------------------
+# {0} The Validator type and instance hashcode
+# {1} The Validation exception
+# {2} The JavaBean type and instance hashcode
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008=J2CA1008E: Es ist eine Ausnahme eingetreten, als der Validator {0} versucht hat, die RAR-JavaBean-Instanz {2} zu validieren: {1}. Die Bean-Validation-Vorgaben werden erst validiert, wenn die Instanz aktiviert wird.
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.explanation=Diese Ausnahme ist unerwartet und weist auf ein Problem mit der Validator-Implementierung hin. Die Ursache kann m\u00f6glicherweise nicht sofort bestimmt werden. 
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.useraction=\u00dcberpr\u00fcfen Sie die FFDC- und Systemprotokolle. Falls das Symptom auf einen Fehler in einer anderen Validator-Implementierung als der mit WebSphere Application Server bereitgestellten zur\u00fcckzuf\u00fchren, wenden Sie sich an den Bean-Validation-Provider. CMSG0002                                                   
+
+# Do not translate the term "Bean Validation"
+# ---------------------------------
+# {0} A JavaBean type and instance hashcode, in hexadecimal
+# {1} A newline-delimited list of constraints violated by the JavaBean instance
+BEAN_VALIDATION_FAILED_J2CA0238=J2CA0238E: Die Bean-Validierung der JavaBean {0} ist aufgrund einer oder mehrerer ung\u00fcltiger Konfigurationseinstellungen, in der folgenden Liste ung\u00fcltiger Integrit\u00e4tsbedingungen angegeben sind, fehlgeschlagen: {1}
+BEAN_VALIDATION_FAILED_J2CA0238.explanation=Der Wert mindestens einer Konfigurationseigenschaft der JavaBean-Instanz verst\u00f6\u00dft gegen die angegebenen Integrit\u00e4tsbedingungen f\u00fcr die Bean-Validierung.
+BEAN_VALIDATION_FAILED_J2CA0238.useraction=Verwenden Sie die vom Anbieter des Ressourcenadapters bereitgestellte Dokumentation, um die g\u00fcltigen Werte f\u00fcr die einzelnen Konfigurationseigenschaften zu bestimmen, die anhand der ung\u00fcltigen Integrit\u00e4tsbedingungen angegeben wurden, und konfigurieren Sie die Eigenschaften entsprechend.
+
+#--------------------------------------------------------------------------------
+# J2CA0239 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+# J2CA0240 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Resource Adapter Bean Archives werden nicht unterst\u00fctzt.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=Die Datei beans.xml im Verzeichnis META-INF wird ignoriert, da CDI Managed Bean Archive Resource Adapters nicht unterst\u00fctzt werden.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=Entfernen Sie die Datei beans.xml aus dem Verzeichnis META-INF, da CDI Managed Bean Archive Resource Adapters nicht unterst\u00fctzt werden.
+
+
+

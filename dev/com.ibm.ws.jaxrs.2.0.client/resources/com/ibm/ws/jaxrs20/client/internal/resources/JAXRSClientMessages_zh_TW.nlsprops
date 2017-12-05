@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: \u5728 JAX-RS \u7528\u6236\u7aef\u7684 {1} \u5167\u5bb9\u4e2d\uff0c\u60a8\u6307\u5b9a\u7684\u903e\u6642\u503c {0} \u7121\u6548\u3002\u503c\u5df2\u8a2d\u5b9a\u70ba\u9810\u8a2d\u7684 {2}\u3002{3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=\u903e\u6642\u503c\u7684\u985e\u578b\u5fc5\u9808\u662f long \u6216 int\u3002
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=\u8acb\u5c07\u503c\u7684\u985e\u578b\u8a2d\u70ba long \u6216 int\u3002
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: \u5728 JAX-RS \u7528\u6236\u7aef\u7684 {1} \u5167\u5bb9\u4e2d\uff0c\u60a8\u6307\u5b9a\u7684 Proxy \u4f3a\u670d\u5668\u57e0\u503c {0} \u7121\u6548\u3002\u503c\u5df2\u8a2d\u5b9a\u70ba\u9810\u8a2d\u7684 {2}\u3002{3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=Proxy \u4f3a\u670d\u5668\u57e0\u503c\u7684\u985e\u578b\u5fc5\u9808\u662f int\u3002
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=\u8acb\u5c07\u503c\u7684\u985e\u578b\u8a2d\u70ba int\u3002
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: \u5728 JAX-RS \u7528\u6236\u7aef\u7684 {1} \u5167\u5bb9\u4e2d\uff0c\u60a8\u6307\u5b9a\u7684 Proxy \u4f3a\u670d\u5668\u985e\u578b\u503c {0} \u7121\u6548\u3002\u503c\u5df2\u8a2d\u5b9a\u70ba\u9810\u8a2d\u7684 {2}\u3002{3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=Proxy \u4f3a\u670d\u5668\u985e\u578b\u7684\u503c\u5fc5\u9808\u70ba HTTP \u6216 SOCKS\u3002
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=\u8acb\u5c07\u503c\u8a2d\u70ba HTTP \u6216 SOCKS\u3002
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: \u7121\u6cd5\u5efa\u7acb SSL Socket Factory\uff0c\u56e0\u70ba SSL \u53c3\u7167 ID {0} \u4e0d\u5b58\u5728\u65bc server.xml \u6a94\u4e2d\u3002
+error.jaxrs.client.ssl.invalidsslconfig.explanation= \u9700\u8981\u6709\u6548\u7684\u53c3\u7167 ID \u4ee5\u7522\u751f SSL Socket Factory\u3002server.xml \u6a94\u4e2d\u6c92\u6709 ID \u70ba {0} \u7684 SSL \u914d\u7f6e\u3002
+error.jaxrs.client.ssl.invalidsslconfig.useraction= \u8acb\u5728 server.xml \u6a94\u4e2d\u8a2d\u5b9a\u6709\u6548\u7684 SSL \u53c3\u7167 ID\u3002
+
+no_saml_found_in_subject=CWWKW0704W: \u4e3b\u9ad4\u4e2d\u907a\u6f0f\u5fc5\u8981\u7684 SAML \u8a18\u865f\u3002
+no_saml_found_in_subject.explanation=\u5f9e\u4e3b\u984c\u4e2d\u64f7\u53d6 SAML \u8a18\u865f\u6642\u767c\u751f\u932f\u8aa4\uff0c\u6216\u5728\u73fe\u884c\u4e3b\u984c\u4e2d\u627e\u4e0d\u5230 SAML \u5143\u7d20\u3002
+no_saml_found_in_subject.useraction=\u5982\u679c\u60a8\u5efa\u7acb\u57f7\u884c\u8eab\u5206\u4e3b\u984c\uff0c\u8acb\u78ba\u5b9a\u5df2\u5c07 SAML \u8a18\u865f\u65b0\u589e\u81f3\u4e3b\u984c\u4e2d\u3002\u5426\u5247\uff0c\u8acb\u6aa2\u67e5 SAML \u914d\u7f6e\u4e2d\u7684 includeTokenInSubject \u5c6c\u6027\uff0c\u78ba\u5b9a\u60a8\u7684\u4f3a\u670d\u5668\u914d\u7f6e\u652f\u63f4\u65b0\u589e SAML \u8a18\u865f\u81f3\u4e3b\u984c\u4e2d\u3002
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: \u5617\u8a66\u4f7f\u7528 SAML PropagationHelper API \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a[{0}]
+failed_to_extract_saml_token_from_subject.explanation=\u547c\u53eb PropagationHelper API \u5f9e\u4e3b\u9ad4\u64f7\u53d6 SAML \u8a18\u865f\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+failed_to_extract_saml_token_from_subject.useraction=\u8acb\u78ba\u5b9a server.xml \u5df2\u6307\u5b9a samlWeb-2.0 \u7279\u6027\u3002\u4e26\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u8a72\u7570\u5e38\u72c0\u6cc1\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+failed_run_as_subject=CWWKW0706E: \u5617\u8a66\u53d6\u5f97 RunAsSubject \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a[{0}]\u3002
+failed_run_as_subject.explanation=\u53d6\u5f97 RunAsSubject \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+failed_run_as_subject.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u5df2\u914d\u7f6e\uff0c\u4e26\u4e14\u5df2\u9069\u7576\u555f\u52d5\u3002
+
+warn_missing_mpjwt_token=CWWKW0707W: [{1}] \u914d\u7f6e\u4e2d\u7684 [{0}] \u5c6c\u6027\u8a2d\u5b9a\u70ba [{2}]\uff0c\u4f46 MicroProfile JSON Web Token (JWT) \u7121\u6cd5\u4f7f\u7528\u3002\u8981\u6c42\u4e26\u6c92\u6709\u5305\u542b\u4e00\u500b\u5e36\u6709\u8a18\u865f\u7684 Authorization \u6a19\u982d\u3002
+warn_missing_mpjwt_token.explanation=\u57f7\u884c\u6642\u671f\u5728 runAs \u4e3b\u9ad4\u4e2d\u627e\u4e0d\u5230 MicroProfile JWT\u3002\u6b64\u932f\u8aa4\u901a\u5e38\u8868\u793a\u9451\u5225\u6709\u554f\u984c\u3002\u8acb\u78ba\u5b9a\u5728 MicroProfile JWT \u7279\u6027\u9451\u5225\u4f7f\u7528\u8005\u671f\u9593\uff0c\u4e0d\u6703\u9047\u5230\u932f\u8aa4\u3002
+warn_missing_mpjwt_token.useraction=\u8acb\u6aa2\u67e5\u4f7f\u7528\u8005\u52d5\u4f5c\uff0c\u53d6\u5f97\u4f3a\u670d\u5668\u6240\u8a18\u8f09\u7684\u4efb\u4f55\u5148\u524d\u932f\u8aa4\u3002
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: MicroProfile JWT \u50b3\u64ad\u670d\u52d9\u7121\u6cd5\u4f7f\u7528\u3002\u57f7\u884c\u6642\u671f\u7121\u6cd5\u5b58\u53d6\u8a18\u865f\uff0c\u4ee5\u5c07\u5b83\u5305\u542b\u5728 Authorization \u6a19\u982d\u4e2d\u3002
+warn_mpjwt_prop_service_notavail.explanation=MicroProfile JWT \u50b3\u64ad\u670d\u52d9\u9700\u8981 mpJwt-1.0 \u7279\u6027\u3002
+warn_mpjwt_prop_service_notavail.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u6b63\u5728\u57f7\u884c\uff0c\u4e14\u5b83\u5177\u6709\u5fc5\u8981\u7684\u7279\u6027\u3002

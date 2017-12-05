@@ -1,0 +1,662 @@
+###############################################################################
+# Copyright (c) 2010, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config service messages
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/ConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+# Message prefix block: CWWKG0001 - CWWKG1000
+# -------------------------------------------------------------------------------------------------
+
+copyright=\n\
+Licensed Material - Property of IBM\n\
+(C) COPYRIGHT International Business Machines Corp. 2010 - Wszelkie prawa zastrze\u017cone.\n\
+U\u017cytkownik\u00f3w z instytucji rz\u0105dowych USA obowi\u0105zuj\u0105 warunki\n\
+umowy GSA ADP Schedule Contract z IBM Corp.
+
+error.parse.server=CWWKG0001E: Analizator sk\u0142adni konfiguracji \
+wykry\u0142 b\u0142\u0105d podczas analizowania elementu g\u0142\u00f3wnego konfiguracji i przywo\u0142ywanych \
+dokument\u00f3w konfiguracyjnych. B\u0142\u0105d: {0}
+error.parse.server.explanation=Nie mo\u017cna odczyta\u0107 \
+konfiguracji serwera, poniewa\u017c jeden z plik\u00f3w konfiguracyjnych zawiera b\u0142\u0105d.
+error.parse.server.useraction=Usu\u0144 b\u0142\u0105d z pliku \
+konfiguracyjnego i zrestartuj serwer.
+
+error.parse.bundle=CWWKG0002E: Analizator sk\u0142adni konfiguracji \
+wykry\u0142 b\u0142\u0105d podczas przetwarzania pakunku, wersji lub utrwalonej to\u017csamo\u015bci (PID). B\u0142\u0105d: \
+{0}, b\u0142\u0105d: {1}, przyczyna: {2}
+error.parse.bundle.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas \
+analizowania okre\u015blonej konfiguracji.
+error.parse.bundle.useraction=Napraw b\u0142\u0105d konfiguracji i pon\u00f3w dzia\u0142anie.
+
+info.prop.ignored=CWWKG0003I: Operator nie jest \
+okre\u015blony albo podana warto\u015b\u0107 to NULL lub warto\u015b\u0107 pusta. W\u0142a\u015bciwo\u015b\u0107 zosta\u0142a zignorowana. W\u0142a\u015bciwo\u015b\u0107: \
+{0}, plik: {1}
+info.prop.ignored.explanation=Oczekiwana w\u0142a\u015bciwo\u015b\u0107 \
+konfiguracyjna nie istnieje lub nie zosta\u0142a okre\u015blona i z tego powodu zosta\u0142a zignorowana.
+info.prop.ignored.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+info.unsupported.api=CWWKG0004I: Ten interfejs API nie jest obs\u0142ugiwany: {0}
+info.unsupported.api.explanation=Okre\u015blony interfejs API nie jest obs\u0142ugiwany.
+info.unsupported.api.useraction=U\u017cyj obs\u0142ugiwanego interfejsu \
+API.
+
+info.ignore.unresolved.optional.include=CWWKG0005I: Nierozstrzygni\u0119ty \
+opcjonalny zas\u00f3b {0} ({1}) zosta\u0142 zignorowany. Wiersz: {2}, {3}
+info.ignore.unresolved.optional.include.explanation=Nie mo\u017cna \
+znale\u017a\u0107 opcjonalnego pliku konfiguracyjnego i zostanie on zignorowany.
+info.ignore.unresolved.optional.include.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+info.ignore.invalid.optional.include=CWWKG0006I: Niepoprawny kod \
+@include? zasobu ({0}) zosta\u0142 zignorowany.  Wiersz: {1}, {2}
+info.ignore.invalid.optional.include.explanation=Okre\u015blony zas\u00f3b jest niepoprawny i zosta\u0142 zignorowany.
+info.ignore.invalid.optional.include.useraction=Zmodyfikuj \
+zas\u00f3b tak, aby by\u0142 poprawny, je\u015bli nie ma by\u0107 ignorowany.
+
+warn.file.delete.failed=CWWKG0007W: System nie mo\u017ce usun\u0105\u0107 zasobu {0}
+warn.file.delete.failed.explanation=Usuni\u0119cie okre\u015blonego zasobu \
+nie by\u0142o mo\u017cliwe.
+warn.file.delete.failed.useraction=Rozwi\u0105\u017c problemy uniemo\u017cliwiaj\u0105ce \
+usuni\u0119cie zasobu i pon\u00f3w dzia\u0142anie.
+
+warn.file.mkdirs.failed=CWWKG0008W: System nie mo\u017ce utworzy\u0107 \
+katalog\u00f3w {0}.
+warn.file.mkdirs.failed.explanation=Utworzenie okre\u015blonych \
+katalog\u00f3w nie by\u0142o mo\u017cliwe.
+warn.file.mkdirs.failed.useraction=Rozwi\u0105\u017c problemy \
+uniemo\u017cliwiaj\u0105ce utworzenie katalog\u00f3w i pon\u00f3w dzia\u0142anie.
+
+warn.bundle.factory.noinstance=CWWKG0009W: Konfiguracja {0} w \
+pakunku {1} okre\u015bla konfiguracj\u0119 fabryki bez identyfikatora.
+warn.bundle.factory.noinstance.explanation=Okre\u015blona \
+konfiguracja fabryki nie ma identyfikatora.
+warn.bundle.factory.noinstance.useraction=Okre\u015bl identyfikator dla konfiguracji fabryki.
+
+frameworkShutdown=CWWKG0010I: Serwer {0} jest zamykany z powodu poprzedniego b\u0142\u0119du inicjowania.
+frameworkShutdown.explanation=Poprzedni b\u0142\u0105d inicjowania spowodowa\u0142 \
+zamkni\u0119cie serwera.
+frameworkShutdown.useraction=Napraw b\u0142\u0105d inicjowania i zrestartuj serwer.
+
+config.validator.foundConflictSingleton=Znaleziono konflikt ustawie\u0144 dla konfiguracji {0}.
+config.validator.foundConflictInstance=Znaleziono konflikt \
+ustawie\u0144 dla {1} instancji konfiguracji {0}.
+config.validator.attributeConflict=W przypadku w\u0142a\u015bciwo\u015bci {0} wyst\u0119puje konflikt warto\u015bci:
+config.validator.valueConflict=Warto\u015b\u0107 {0} jest ustawiona w elemencie {1}.
+config.validator.valueConflictNull=W elemencie \
+{0} nie jest ustawiona \u017cadna warto\u015b\u0107.
+config.validator.valueConflictSecure=W elemencie \
+{0} jest ustawiona warto\u015b\u0107 bezpieczna.
+config.validator.activeValue=Dla w\u0142a\u015bciwo\u015bci {0} zostanie ustawiona warto\u015b\u0107 {1}.
+config.validator.activeValueNull=W\u0142a\u015bciwo\u015b\u0107 {0} \
+zostanie ustawiona na brak warto\u015bci.
+config.validator.activeValueSecure=W\u0142a\u015bciwo\u015b\u0107 {0} \
+zostanie ustawiona na warto\u015b\u0107 zdefiniowan\u0105 w elemencie {1}.
+
+warn.config.validate.failed=CWWKG0011W: Sprawdzenie poprawno\u015bci konfiguracji nie powiod\u0142o si\u0119. {0}
+warn.config.validate.failed.explanation=Konfiguracja jest \
+niepoprawna z powodu okre\u015blonych problem\u00f3w.
+warn.config.validate.failed.useraction=Popraw konfiguracj\u0119.
+
+warn.config.delete.failed=CWWKG0012W: System nie mo\u017ce \
+usun\u0105\u0107 konfiguracji {0}.
+warn.config.delete.failed.explanation=Konfiguracja nie zosta\u0142a \
+usuni\u0119ta z us\u0142ugi ConfigurationAdmin.
+warn.config.delete.failed.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+warn.config.delete.failed.multiple=CWWKG0013W: System nie usun\u0105\u0142 \
+konfiguracji {0}. Znaleziono wiele zgodnych konfiguracji.
+warn.config.delete.failed.multiple.explanation=Okre\u015blonej \
+konfiguracji nie mo\u017cna bezpiecznie usun\u0105\u0107 z us\u0142ugi ConfigurationAdmin, poniewa\u017c \
+znaleziono wiele zgodnych konfiguracji.
+warn.config.delete.failed.multiple.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+error.syntax.parse.server=CWWKG0014E: Analizator sk\u0142adni \
+konfiguracji wykry\u0142 b\u0142\u0105d sk\u0142adniowy XML podczas analizowania elementu g\u0142\u00f3wnego \
+konfiguracji i przywo\u0142ywanych dokument\u00f3w konfiguracyjnych. B\u0142\u0105d: {0}, plik: \
+{1}, wiersz: {2}, kolumna: {3}
+error.syntax.parse.server.explanation=Nie mo\u017cna odczyta\u0107 \
+konfiguracji serwera, poniewa\u017c jeden z plik\u00f3w konfiguracyjnych zawiera b\u0142\u0105d \
+sk\u0142adniowy XML.
+error.syntax.parse.server.useraction=Usu\u0144 b\u0142\u0105d sk\u0142adniowy XML \
+z dokumentu konfiguracyjnego i zrestartuj serwer.
+
+error.config.update.init=CWWKG0015E: System nie mo\u017ce zaktualizowa\u0107 \
+co najmniej jednej konfiguracji. B\u0142\u0105d: {0}
+error.config.update.init.explanation=Nie mo\u017cna zaktualizowa\u0107 co \
+najmniej jednej konfiguracji w us\u0142udze ConfigurationAdmin.
+error.config.update.init.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+info.config.refresh.start=CWWKG0016I: Rozpoczynanie \
+aktualizacji konfiguracji serwera.
+info.config.refresh.start.explanation=Pliki konfiguracyjne serwera \
+zosta\u0142y zmienione i system pr\u00f3buje zaktualizowa\u0107 konfiguracj\u0119 serwera przy u\u017cyciu \
+nowych informacji.
+info.config.refresh.start.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+info.config.refresh.stop=CWWKG0017I: Konfiguracja serwera zosta\u0142a pomy\u015blnie zaktualizowana w ci\u0105gu {0} sek.
+info.config.refresh.stop.explanation=System wykry\u0142 zmiany w plikach \
+konfiguracyjnych serwera i zaktualizowa\u0142 konfiguracj\u0119 serwera przy u\u017cyciu \
+nowych informacji.
+info.config.refresh.stop.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+info.config.refresh.nochanges=CWWKG0018I: Konfiguracja serwera nie \
+zosta\u0142a zaktualizowana. Nie wykryto zmian funkcjonalnych.
+info.config.refresh.nochanges.explanation=Pliki konfiguracyjne serwera \
+zosta\u0142y zmodyfikowane, lecz nie wykryto zmian funkcjonalnych konfiguracji.
+info.config.refresh.nochanges.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+schemagen.noextensions=CWWKG0019E: Konfiguracja nadrz\u0119dna {0} \
+okre\u015blona w atrybucie {1} nie obs\u0142uguje rozszerze\u0144.
+schemagen.noextensions.explanation=Korzystanie z \
+konfiguracji zagnie\u017cd\u017conych wymaga w\u0142\u0105czenia rozszerze\u0144 metatyp\u00f3w.
+schemagen.noextensions.useraction=Dodaj wpis \
+ibm:supportExtensions="true" do pliku metatype.xml.
+
+schemagen.invalid.parent=CWWKG0020E: Konfiguracja nadrz\u0119dna {0} okre\u015blona w atrybucie {1} nie jest poprawna.
+schemagen.invalid.parent.explanation=Konfiguracja nadrz\u0119dna okre\u015blona w atrybucie ibm:parentPid nie istnieje.
+schemagen.invalid.parent.useraction=Popraw atrybut ibm:parentPid w \
+pliku metatype.xml.
+
+schemagen.duplicate.pid=CWWKG0021E: Ta sama utrwalona to\u017csamo\u015b\u0107 \
+konfiguracji (PID) {0} jest zdefiniowana w wielu plikach \
+metatype.xml.
+schemagen.duplicate.pid.explanation=Konfiguracja atrybut\u00f3w pid i factoryPid musi by\u0107 unikalna.
+schemagen.duplicate.pid.useraction=Zmie\u0144 pliki metatype.xml, aby wszystkie atrybuty pid i factoryPid by\u0142y unikalne.
+
+schemagen.alias.required=CWWKG0022E: Alias konfiguracji \
+jest wymagany dla konfiguracji zagnie\u017cd\u017conej {0}.
+schemagen.alias.required.explanation=Konfiguracja zagnie\u017cd\u017cona nie ma aliasu.
+schemagen.alias.required.useraction=Skonfiguruj atrybut config.alias w pliku metatype.xml.
+
+schemagen.invalid.child=CWWKG0023E: Konfiguracja potomna {0} musi by\u0107 konfiguracj\u0105 fabryki.
+schemagen.invalid.child.explanation=Konfiguracja musi by\u0107 \
+konfiguracj\u0105 fabryki.
+schemagen.invalid.child.useraction=Aby zdefiniowa\u0107 konfiguracj\u0119 fabryki, u\u017cyj atrybutu factoryPid zamiast atrybutu pid.
+
+error.config.update.disk=CWWKG0024E: Konfiguracja serwera {0} \
+nie zosta\u0142a zaktualizowana na dysku. B\u0142\u0105d: {1}
+error.config.update.disk.explanation=Dane \
+konfiguracyjne serwera nie zosta\u0142y pomy\u015blnie zapisane na dysku.
+error.config.update.disk.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+error.config.update.event=CWWKG0025E: Zdarzenia aktualizacji \
+nie zosta\u0142y wyemitowane dla konfiguracji serwera {0}. B\u0142\u0105d: {1}
+error.config.update.event.explanation=Zdarzenia aktualizacji \
+konfiguracji serwera nie zosta\u0142y wyemitowane.
+error.config.update.event.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+error.alias.collision=CWWKG0026E: Co najmniej dwie definicje metatypu wsp\u00f3\u0142u\u017cytkuj\u0105 t\u0119 sam\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 (PID) lub alias. To\u017csamo\u015b\u0107 PID lub alias elementu {0} s\u0105 wsp\u00f3\u0142u\u017cytkowane przez definicje klasy obiektu {1}.
+error.alias.collision.explanation=Wiele definicji metatypu wsp\u00f3\u0142u\u017cytkuje t\u0119 sam\u0105 warto\u015b\u0107 aliasu. To mo\u017ce spowodowa\u0107 nieoczekiwane zachowanie \u015brodowiska wykonawczego.
+error.alias.collision.useraction=Zg\u0142o\u015b problem serwisowi IBM.
+
+info.config.refresh.timeout=CWWKG0027W: Przekroczenie limitu czasu podczas aktualizowania konfiguracji serwera.
+info.config.refresh.timeout.explanation=System przekroczy\u0142 limit czasu oczekiwania na przetworzenie nowej konfiguracji serwera przez komponenty.
+info.config.refresh.timeout.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+audit.include.being.processed=CWWKG0028A: Przetwarzanie obejmowa\u0142o zas\u00f3b konfiguracji: {0}
+audit.include.being.processed.explanation=Tre\u015b\u0107 okre\u015blonego zasobu zostanie do\u0142\u0105czona do konfiguracji serwera.
+audit.include.being.processed.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+schemagen.bad.reference.extension=CWWKG0029E: Atrybut {0} nie ma rozszerzenia ibm:reference lub rozszerzenie to nie okre\u015bla warto\u015bci pid.
+schemagen.bad.reference.extension.explanation=Rozszerzenie ibm:reference jest wymagane w przypadku atrybut\u00f3w zdefiniowanych z typem ibm:type=pid.
+schemagen.bad.reference.extension.useraction=Przeprowad\u017a edycj\u0119 odpowiedniego pliku metatype.xml i dodaj lub popraw rozszerzenie ibm:reference.
+
+schemagen.bad.reference.pid=CWWKG0030E: Odwo\u0142anie pid {0} wymienione w rozszerzeniu ibm:reference nie istnieje.
+schemagen.bad.reference.pid.explanation=Odwo\u0142anie pid okre\u015blone w rozszerzeniu ibm:reference nie istnieje lub jest niepoprawne.
+schemagen.bad.reference.pid.useraction=Przeprowad\u017a edycj\u0119 odpowiedniego pliku metatype.xml i popraw nazw\u0119 pid w rozszerzeniu ibm:reference.
+
+error.unique.value.conflict=CWWKG0031E: Warto\u015b\u0107 {1} okre\u015blona dla atrybutu unikalnego {0} jest ju\u017c u\u017cywana.
+error.unique.value.conflict.explanation=Warto\u015b\u0107 okre\u015blonego atrybutu musi by\u0107 unikalna, ale jest ju\u017c u\u017cywana.
+error.unique.value.conflict.useraction=Zmie\u0144 warto\u015b\u0107 atrybutu w taki spos\u00f3b, aby by\u0142a unikalna.
+
+warn.config.invalid.value=CWWKG0032W: Okre\u015blono nieoczekiwan\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci [{0}], warto\u015b\u0107 = [{1}]. Oczekiwano nast\u0119puj\u0105cych warto\u015bci: {2}.
+warn.config.invalid.value.explanation=Nie mo\u017cna u\u017cywa\u0107 okre\u015blonej warto\u015bci w\u0142a\u015bciwo\u015bci.
+warn.config.invalid.value.useraction=Popraw warto\u015b\u0107 w\u0142a\u015bciwo\u015bci na oczekiwan\u0105.
+
+warning.pid.not.found=CWWKG0033W: Warto\u015b\u0107 [{1}] okre\u015blona dla atrybutu odniesienia [{0}] nie zosta\u0142a znaleziona w konfiguracji.
+warning.pid.not.found.explanation=Okre\u015blona warto\u015b\u0107 musi by\u0107 elementem w konfiguracji.
+warning.pid.not.found.useraction=Zmie\u0144 warto\u015b\u0107 atrybutu w taki spos\u00f3b, aby odnosi\u0142a si\u0119 do poprawnego elementu konfiguracji.
+
+error.targetRequired=CWWKG0034E: Nale\u017cy okre\u015bli\u0107 plik docelowy
+error.targetRequired.explanation=Nale\u017cy okre\u015bli\u0107 plik docelowy w wierszu komend.
+error.targetRequired.useraction=Wydaj ponownie komend\u0119, okre\u015blaj\u0105c plik docelowy. Istnieje \
+mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
+
+error.unknownArgument=CWWKG0035E: Nieznana opcja: {0}
+error.unknownArgument.explanation=Okre\u015blona opcja nie zosta\u0142a rozpoznana.
+error.unknownArgument.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych opcji. Istnieje \
+mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
+
+error.schemaGenException=CWWKG0036E: B\u0142\u0105d podczas generowania schematu: {0}
+error.schemaGenException.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas generowania schematu.
+error.schemaGenException.useraction=Sprawd\u017a wyj\u0105tek.
+
+error.schemaGenInvalidJarLocation=CWWKG0037E: B\u0142\u0119dne po\u0142o\u017cenie pliku JAR.
+error.schemaGenInvalidJarLocation.explanation=Po\u0142o\u017cenie konfiguracyjnego pliku JAR jest niepoprawne.
+error.schemaGenInvalidJarLocation.useraction=Konfiguracyjny plik JAR powinien znajdowa\u0107 si\u0119 w katalogu wlp/lib.
+
+error.ocdExists=CWWKG0038E: Klasa obiektu z {0} zosta\u0142a ju\u017c zarejestrowana.
+error.ocdExists.explanation=Nie mo\u017cna zarejestrowa\u0107 klasy obiektu dwukrotnie.
+error.ocdExists.useraction=Usu\u0144 duplikat klasy obiektu.
+
+error.dsExists=CWWKG0039E: Element wyznaczony z {0} zosta\u0142 ju\u017c zarejestrowany.
+error.dsExists.explanation=Nie mo\u017cna zarejestrowa\u0107 elementu wyznaczonego dwukrotnie.
+error.dsExists.useraction=Usu\u0144 duplikat klasy elementu wyznaczonego.
+
+error.fileNotFound=CWWKG0040E: Nie znaleziono pliku {0}.
+error.fileNotFound.explanation=Nie znaleziono pliku \
+zawieraj\u0105cego list\u0119 identyfikator\u00f3w pid do wykluczenia.
+error.fileNotFound.useraction=Popraw nazw\u0119 pliku i pon\u00f3w komend\u0119.
+
+error.invalidArgument=CWWKG0041E: Niepoprawny argument {0}. Warto\u015b\u0107 \
+musi by\u0107 okre\u015blona.
+error.invalidArgument.explanation=Nie znaleziono warto\u015bci \
+argumentu
+error.invalidArgument.useraction=Pon\u00f3w komend\u0119 z okre\u015blon\u0105 warto\u015bci\u0105.
+
+warn.parse.circular.include=CWWKG0042W: Do\u0142\u0105czone zasoby \
+konfiguracji tworz\u0105 zale\u017cno\u015b\u0107 cykliczn\u0105: {0}.
+warn.parse.circular.include.explanation=Co najmniej \
+jeden element do\u0142\u0105czony konfiguracji tworzy zale\u017cno\u015b\u0107 cykliczn\u0105.
+warn.parse.circular.include.useraction=Usu\u0144 elementy do\u0142\u0105czone, kt\u00f3re powoduj\u0105 zale\u017cno\u015b\u0107 cykliczn\u0105.
+
+info.configValidator.validator=CWWKG0043I: U\u017cywana \
+klasa analizatora poprawno\u015bci konfiguracji: {0}.
+info.configValidator.validator.explanation=Okre\u015blona klasa \
+b\u0119dzie u\u017cywana na potrzeby sprawdzania poprawno\u015bci konfiguracji.
+info.configValidator.validator.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+fatal.configValidator.documentNotValid=CWWKG0044E: Nast\u0105pi\u0142o \
+zamkni\u0119cie serwera, poniewa\u017c dokument konfiguracji nie zawiera poprawnego podpisu: {0}.
+fatal.configValidator.documentNotValid.explanation=Okre\u015blony \
+dokument konfiguracji nie zawiera poprawnego podpisu lub fragment dokumentu \
+zabezpieczony podpisem zosta\u0142 zmodyfikowany. Ten komunikat jest poprzedzony \
+komunikatem o b\u0142\u0119dzie zawieraj\u0105cym wi\u0119cej informacji na temat konkretnego \
+b\u0142\u0119du w dokumencie.
+fatal.configValidator.documentNotValid.useraction=Usu\u0144 b\u0142\u0105d w \
+dokumencie konfiguracji, kt\u00f3ry zidentyfikowano we wcze\u015bniejszym komunikacie o b\u0142\u0119dzie.
+
+error.configValidator.parseFailed=CWWKG0045E: Nie mo\u017cna \
+przeprowadzi\u0107 analizy dokumentu konfiguracji: {0}, {1}.
+error.configValidator.parseFailed.explanation=Zg\u0142oszono wyj\u0105tek \
+podczas pr\u00f3by przeprowadzenia analizy okre\u015blonego dokumentu konfiguracji.
+error.configValidator.parseFailed.useraction=Usu\u0144 b\u0142\u0105d w dokumencie \
+konfiguracji, z powodu kt\u00f3rego zosta\u0142 zg\u0142oszony wyj\u0105tek, a nast\u0119pnie \
+spr\u00f3buj ponownie uruchomi\u0107 serwer.
+
+error.configValidator.unmarshalFailed=CWWKG0046E: Nie mo\u017cna \
+rozdzieli\u0107 podpisu zawartego w dokumencie konfiguracji: {0}, {1}.
+error.configValidator.unmarshalFailed.explanation=Zg\u0142oszono wyj\u0105tek \
+podczas pr\u00f3by rozdzielenia okre\u015blonego dokumentu konfiguracji.
+error.configValidator.unmarshalFailed.useraction=Usu\u0144 b\u0142\u0105d w dokumencie \
+konfiguracji, z powodu kt\u00f3rego zosta\u0142 zg\u0142oszony wyj\u0105tek, a nast\u0119pnie spr\u00f3buj ponownie \
+uruchomi\u0107 serwer.
+
+error.configValidator.error=CWWKG0047E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas \
+pr\u00f3by sprawdzenia dokumentu konfiguracji: {0}, {1}.
+error.configValidator.error.explanation=Zg\u0142oszono wyj\u0105tek \
+podczas pr\u00f3by sprawdzenia, czy okre\u015blony dokument konfiguracji zawiera poprawny podpis.
+error.configValidator.error.useraction=Usu\u0144 b\u0142\u0105d w dokumencie \
+konfiguracji, z powodu kt\u00f3rego zosta\u0142 zg\u0142oszony wyj\u0105tek, a nast\u0119pnie spr\u00f3buj ponownie \
+uruchomi\u0107 serwer.
+
+error.configValidator.signatureMissing=CWWKG0048E: Dokument \
+konfiguracji nie zawiera podpisu: {0}.
+error.configValidator.signatureMissing.explanation=Okre\u015blony \
+dokument konfiguracji nie zawiera podpisu.
+error.configValidator.signatureMissing.useraction=Zast\u0105p okre\u015blony \
+dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a nast\u0119pnie \
+zrestartuj serwer.
+
+error.configValidator.keyInfoMissing=CWWKG0049E: W obr\u0119bie podpisu \
+zawartego w dokumencie konfiguracji nie znaleziono elementu KeyInfo: {0}.
+error.configValidator.keyInfoMissing.explanation=Podpis zawarty w \
+okre\u015blonym dokumencie konfiguracji nie zawiera elementu KeyInfo.
+error.configValidator.keyInfoMissing.useraction=Zast\u0105p okre\u015blony \
+dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a nast\u0119pnie \
+zrestartuj serwer.
+
+error.configValidator.signerNotAuthorized=CWWKG0050E: Dokument \
+konfiguracji zosta\u0142 podpisany przy u\u017cyciu nieautoryzowanej jednostki: {0}.
+error.configValidator.signerNotAuthorized.explanation=Podpis \
+znajduj\u0105cy si\u0119 w okre\u015blonym dokumencie konfiguracji zawiera nieautoryzowany certyfikat.
+error.configValidator.signerNotAuthorized.useraction=Zast\u0105p okre\u015blony \
+dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a nast\u0119pnie \
+zrestartuj serwer.
+
+error.configValidator.x509DataMissing=CWWKG0051E: W obr\u0119bie podpisu \
+zawartego w dokumencie konfiguracji nie znaleziono elementu X509Data: {0}.
+error.configValidator.x509DataMissing.explanation=Podpis zawarty \
+w okre\u015blonym dokumencie konfiguracji nie zawiera elementu X509Data.
+error.configValidator.x509DataMissing.useraction=Zast\u0105p okre\u015blony \
+dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a nast\u0119pnie \
+zrestartuj serwer.
+
+error.configValidator.x509CertificateMissing=CWWKG0052E: W obr\u0119bie \
+podpisu zawartego w dokumencie konfiguracji nie znaleziono elementu X509Certificate: {0}.
+error.configValidator.x509CertificateMissing.explanation=Podpis \
+zawarty w okre\u015blonym dokumencie konfiguracji nie zawiera elementu X509Certificate.
+error.configValidator.x509CertificateMissing.useraction=Zast\u0105p okre\u015blony \
+dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a nast\u0119pnie \
+zrestartuj serwer.
+
+error.configValidator.protectedSectionModified=CWWKG0053E: Zmodyfikowano \
+sekcj\u0119 dokumentu konfiguracji zabezpieczon\u0105 podpisem: {0}.
+error.configValidator.protectedSectionModified.explanation=Zaktualizowano \
+zabezpieczon\u0105 sekcj\u0119 dokumentu konfiguracji.
+error.configValidator.protectedSectionModified.useraction=Usu\u0144 \
+aktualizacj\u0119 wprowadzon\u0105 w zabezpieczonej sekcji dokumentu konfiguracji, a nast\u0119pnie \
+zrestartuj serwer.
+
+error.configValidator.signatureNotValid=CWWKG0054E: Podpis zawarty \
+w dokumencie konfiguracji nie jest poprawny: {0}.
+error.configValidator.signatureNotValid.explanation=Podpis zawarty \
+w okre\u015blonym dokumencie konfiguracji nie jest poprawny.
+error.configValidator.signatureNotValid.useraction=Zast\u0105p okre\u015blony \
+dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a nast\u0119pnie \
+zrestartuj serwer.
+
+info.configValidator.documentValid=CWWKG0055I: Dokument \
+konfiguracji zawiera poprawny podpis: {0}.
+info.configValidator.documentValid.explanation=Okre\u015blony \
+dokument konfiguracji zawiera poprawny podpis.
+info.configValidator.documentValid.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+fatal.configValidator.dropinsEnabled=CWWKG0056E: Nast\u0105pi\u0142o zamkni\u0119cie \
+serwera, poniewa\u017c w\u0142\u0105czone s\u0105 elementy upuszczane.
+fatal.configValidator.dropinsEnabled.explanation=Dokumenty konfiguracji \
+u\u017cywane na potrzeby uruchamiania serwera wbudowanego nie zawieraj\u0105 elementu \
+applicationMonitor lub zawieraj\u0105 element applicationMonitor, w ramach kt\u00f3rego nie \
+wy\u0142\u0105czono element\u00f3w upuszczanych.
+fatal.configValidator.dropinsEnabled.useraction=Okre\u015bl warto\u015b\u0107 \
+dropinsEnabled=false w elemencie applicationMonitor znajduj\u0105cym si\u0119 w jednym z dokument\u00f3w \
+konfiguracji.
+
+warn.configValidator.refreshFailed=CWWKG0057W: Nie za\u0142adowano nowej \
+konfiguracji, poniewa\u017c podpis jest niepoprawny.
+warn.configValidator.refreshFailed.explanation=Nowy dokument \
+konfiguracji nie zawiera poprawnego podpisu, dlatego konfiguracja nie zostanie zmieniona.
+warn.configValidator.refreshFailed.useraction=Zast\u0105p \
+zaktualizowany dokument konfiguracji wersj\u0105 dokumentu zawieraj\u0105c\u0105 poprawny podpis, a \
+nast\u0119pnie spr\u00f3buj ponownie przeprowadzi\u0107 aktualizacj\u0119.
+
+error.missing.required.attribute=CWWKG0058E: Brak \
+wymaganego atrybutu {1} w elemencie {0} o unikalnym identyfikatorze {2}.
+error.missing.required.attribute.explanation=Brakuj\u0105cy atrybut jest wymagany w pliku konfiguracyjnym server.xml lub w jednym z przywo\u0142ywanych przez niego plik\u00f3w konfiguracyjnych.
+error.missing.required.attribute.useraction=Dodaj atrybut do pliku konfiguracyjnego server.xml lub do jednego z przywo\u0142ywanych przez niego plik\u00f3w konfiguracyjnych.
+
+error.missingSuper=CWWKG0059E: Nie mo\u017cna przetworzy\u0107 utrwalonej to\u017csamo\u015bci {0}, poniewa\u017c rozszerza ona niedost\u0119pn\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 {1}.
+error.missingSuper.explanation=Podczas pr\u00f3by skonfigurowania okre\u015blonej utrwalonej to\u017csamo\u015bci wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d, poniewa\u017c to\u017csamo\u015b\u0107 ta rozszerza inn\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107, kt\u00f3ra jest niedost\u0119pna.
+error.missingSuper.useraction=Upewnij si\u0119, \u017ce sk\u0142adnik lub pakunek udost\u0119pniaj\u0105cy brakuj\u0105c\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 jest dost\u0119pny w \u015brodowisku wykonawczym. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+error.final.override=CWWKG0060E: Nie mo\u017cna nadpisa\u0107 lub zmieni\u0107 nazwy atrybutu {0} dla utrwalonej to\u017csamo\u015bci {1}, poniewa\u017c jest on zadeklarowany jako final przez utrwalon\u0105 to\u017csamo\u015b\u0107 {2}.
+error.final.override.explanation=Atrybut jest deklarowany jako final. Wszystkie pr\u00f3by rekonfiguracji zostan\u0105 zignorowane.
+error.final.override.useraction=Nie pr\u00f3buj rekonfigurowa\u0107 atrybutu oznaczonego jako final. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+#TODO could this be renamed error.factoryOnly.extends?
+error.factoryOnly=CWWKG0061E: Utrwalona to\u017csamo\u015b\u0107 {0} nie jest utrwalon\u0105 to\u017csamo\u015bci\u0105 fabryki, wi\u0119c nie mo\u017ce rozszerza\u0107 utrwalonej to\u017csamo\u015bci {1}.
+error.factoryOnly.explanation=Atrybut ibm:extends mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonej to\u017csamo\u015bci fabryki.
+error.factoryOnly.useraction=Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci, tak aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extends z definicji komponentu obiektu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Utrwalona \
+to\u017csamo\u015b\u0107 {0} nie jest utrwalon\u0105 to\u017csamo\u015bci\u0105 fabryki, wi\u0119c nie mo\u017ce mie\u0107 \
+atrybutu ibm:extendsAlias o warto\u015bci {1}. Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci tak, aby by\u0142a u\u017cywana utrwalona \
+to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extendsAlias z utrwalonej to\u017csamo\u015bci.
+error.factoryOnly.extendsAlias.explanation=Atrybut \
+ibm:extendsAlias mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonych to\u017csamo\u015bci \
+fabryki, kt\u00f3re rozszerzaj\u0105 inn\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 fabryki.
+error.factoryOnly.extendsAlias.useraction=Zmie\u0144 konfiguracj\u0119 \
+utrwalonej to\u017csamo\u015bci tak, aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo \
+usu\u0144 atrybut ibm:extendsAlias z utrwalonej to\u017csamo\u015bci.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+error.superFactoryOnly=CWWKG0062E: Utrwalona to\u017csamo\u015b\u0107 {0} nie jest utrwalon\u0105 to\u017csamo\u015bci\u0105 fabryki, wi\u0119c nie mo\u017ce by\u0107 rozszerzana przez utrwalon\u0105 to\u017csamo\u015b\u0107 {1}.
+error.superFactoryOnly.explanation=Atrybut ibm:extends mo\u017cna zastosowa\u0107 tylko w przypadku utrwalonej to\u017csamo\u015bci fabryki.
+error.superFactoryOnly.useraction=Zmie\u0144 konfiguracj\u0119 utrwalonej to\u017csamo\u015bci, tak aby by\u0142a u\u017cywana utrwalona to\u017csamo\u015b\u0107 fabryki, albo usu\u0144 atrybut ibm:extends z definicji komponentu obiektu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Utrwalona \
+to\u017csamo\u015b\u0107 {0} okre\u015bla atrybut ibm:extendsAlias o warto\u015bci {1} i dlatego musi \
+okre\u015bla\u0107 atrybut ibm:extends.
+error.ExtendsAliasMustExtend.explanation=W przypadku \
+podania atrybutu ibm:extendsAlias nale\u017cy poda\u0107 atrybut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Podaj atrybut \
+ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Utrwalona \
+to\u017csamo\u015b\u0107 {0} okre\u015bla atrybut {1} o warto\u015bci {2} i dlatego musi okre\u015bla\u0107 \
+atrybut {3}.
+error.parentpid.and.childalias.explanation=Metatyp \
+wskazuje, \u017ce element zagnie\u017cd\u017cony, kt\u00f3ry jest pierwszym elementem potomnym, \
+zosta\u0142 okre\u015blony cz\u0119\u015bciowo. Elementy zagnie\u017cd\u017cone, kt\u00f3re s\u0105 pierwszymi \
+elementami potomnymi, musz\u0105 okre\u015bla\u0107 zar\u00f3wno atrybut ibm:parentPid, jak i \
+atrybut ibm:childAlias.
+error.parentpid.and.childalias.useraction=Je\u015bli ten metatyp \
+jest przeznaczony dla elementu zagnie\u017cd\u017conego b\u0119d\u0105cego pierwszym elementem \
+potomnym, podaj brakuj\u0105cy atrybut. W przeciwnym razie usu\u0144 podany atrybut. 
+
+#"ibm:rename" is an xml attribute name and should not be translated
+schemagen.rename.attribute.missing=CWWKG0063E: Nie mo\u017cna zmieni\u0107 nazwy definicji atrybutu {1} okre\u015blonej przez atrybut ibm:rename {2} w utrwalonej to\u017csamo\u015bci {0}.
+schemagen.rename.attribute.missing.explanation=Atrybut w rozszerzanym metatypie pr\u00f3buje zmieni\u0107 nazw\u0119 nieistniej\u0105cego atrybutu.
+schemagen.rename.attribute.missing.useraction=Popraw rozszerzenie rename, aby okre\u015bli\u0107 istniej\u0105cy atrybut. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+schemagen.invalid.type.override=CWWKG0064E: Niepoprawne \
+przes\u0142oni\u0119cie typu atrybutu przez atrybut {0} w metatypie {1}. Zamiast niego zostanie u\u017cyty oryginalny typ {2}.
+schemagen.invalid.type.override.explanation=Atrybut pr\u00f3buje przes\u0142oni\u0107 typ rozszerzonego atrybutu, ale typy atrybut\u00f3w nie mog\u0105 by\u0107 zmieniane przez atrybuty rozszerzenia.
+schemagen.invalid.type.override.useraction=Typ atrybutu \
+zostanie automatycznie ustawiony na typ oryginalny. Aby unikn\u0105\u0107 tego b\u0142\u0119du w \
+przysz\u0142o\u015bci, popraw warto\u015b\u0107 typu w atrybucie rozszerzenia zmiany nazwy. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+schemagen.non.factorypid.extension=CWWKG0065E: Utrwalona to\u017csamo\u015b\u0107 {0} nieb\u0119d\u0105ca to\u017csamo\u015bci\u0105 fabryki pr\u00f3buje rozszerzy\u0107 inny metatyp.
+schemagen.non.factorypid.extension.explanation=Utrwalona to\u017csamo\u015b\u0107 nieb\u0119d\u0105ca to\u017csamo\u015bci\u0105 fabryki pr\u00f3buje rozszerzy\u0107 inny metatyp. Tylko utrwalone to\u017csamo\u015bci fabryki mog\u0105 u\u017cywa\u0107 rozszerze\u0144.
+schemagen.non.factorypid.extension.useraction=Zmie\u0144 metatyp \
+na fabryk\u0119 lub usu\u0144 rozszerzenia z definicji metatypu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+schemagen.invalid.extension.pid=CWWKG0066E: Utrwalona to\u017csamo\u015b\u0107 metatypu {0} pr\u00f3buje rozszerzy\u0107 nieistniej\u0105c\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107 {1}.
+schemagen.invalid.extension.pid.explanation=Metatyp pr\u00f3buje rozszerzy\u0107 inny metatyp, kt\u00f3ry nie istnieje.
+schemagen.invalid.extension.pid.useraction=Zmie\u0144 rozszerzenie metatypu, aby okre\u015bli\u0107 istniej\u0105c\u0105 utrwalon\u0105 to\u017csamo\u015b\u0107. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.rename.attribute.missing=CWWKG0067E: Nie mo\u017cna zmieni\u0107 nazwy definicji atrybutu {1} okre\u015blonej przez atrybut ibm:rename {2} w utrwalonej to\u017csamo\u015bci {0}.
+error.rename.attribute.missing.explanation=Atrybut w rozszerzanym metatypie pr\u00f3buje zmieni\u0107 nazw\u0119 nieistniej\u0105cego atrybutu.
+error.rename.attribute.missing.useraction=Popraw nazw\u0119 atrybutu zidentyfikowan\u0105 w rozszerzeniu rename, aby okre\u015bli\u0107 istniej\u0105cy atrybut. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.conflicting.rename.attribute=CWWKG0068E: Nie mo\u017cna zmieni\u0107 nazwy atrybutu {0} na {1} w utrwalonej to\u017csamo\u015bci {2}, poniewa\u017c nazwa tego atrybutu zosta\u0142a ju\u017c zmieniona przez rozszerzony metatyp.
+error.conflicting.rename.attribute.explanation=Bie\u017c\u0105cy metatyp ma atrybut ibm:rename przywo\u0142uj\u0105cy identyfikator definicji atrybutu, kt\u00f3rego nazwa zosta\u0142a ju\u017c zmieniona przez rozszerzony metatyp.
+error.conflicting.rename.attribute.useraction=Zmie\u0144 atrybut ibm:rename, aby okre\u015bli\u0107 poprawny identyfikator definicji atrybutu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj standardowe procedury okre\u015blania problemu produktu WebSphere.
+
+schemagen.unresolved.attrib.desc=CWWKG0069W: Atrybut {0} definicji klasy obiektu {1} w pakunku {2} ma nierozstrzygni\u0119ty opis atrybutu.
+schemagen.unresolved.attrib.desc.explanation=Atrybut w metatypie ma zlokalizowany opis, ale nie mo\u017cna rozstrzygn\u0105\u0107 komunikatu. W wyniku tego atrybut nie zostanie wy\u015bwietlony w komunikacie.
+schemagen.unresolved.attrib.desc.useraction=U\u017cyj niezlokalizowanego opisu metatypu lub upewnij si\u0119, \u017ce plik lokalizacji zawiera zlokalizowany opis.
+
+schemagen.unresolved.attrib.name=CWWKG0070W: Atrybut {0} definicji klasy obiektu {1} w pakunku {2} ma nierozstrzygni\u0119t\u0105 nazw\u0119 atrybutu.
+schemagen.unresolved.attrib.name.explanation=Atrybut w metatypie ma zlokalizowan\u0105 nazw\u0119, ale nie mo\u017cna rozstrzygn\u0105\u0107 komunikatu.
+schemagen.unresolved.attrib.name.useraction=U\u017cyj niezlokalizowanej nazwy metatypu lub upewnij si\u0119, \u017ce plik lokalizacji zawiera zlokalizowan\u0105 nazw\u0119.
+
+schemagen.no.attrib.desc=CWWKG0071W: Atrybut {0} definicji klasy obiektu {1} w pakunku {2} nie ma opisu atrybutu.
+schemagen.no.attrib.desc.explanation=Atrybut w metatypie nie zawiera opisu.
+schemagen.no.attrib.desc.useraction=Podaj opis atrybutu metatypu.
+
+schemagen.no.attrib.name=CWWKG0072W: Atrybut {0} definicji klasy obiektu {1} w pakunku {2} nie ma nazwy atrybutu.
+schemagen.no.attrib.name.explanation=Atrybut w metatypie nie ma nazwy.
+schemagen.no.attrib.name.useraction=Podaj nazw\u0119 atrybutu metatypu.
+
+missing.metatype.file=CWWKG0073W: W pakunku {0} nie mo\u017cna znale\u017a\u0107 plik\u00f3w lokalizacji metatypu.
+missing.metatype.file.explanation=Okre\u015blony plik JAR nie zawiera wymaganych plik\u00f3w lokalizacji metatypu.
+missing.metatype.file.useraction=Skontaktuj si\u0119 z autorem pakunku, aby uzyska\u0107 pakunek z wymaganymi plikami lokalizacji.
+
+error.config.update.exception=CWWKG0074E: Nie mo\u017cna zaktualizowa\u0107 konfiguracji dla {0} z unikalnym identyfikatorem {2}, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek: {1}.
+error.config.update.exception.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by aktualizacji konfiguracji.
+error.config.update.exception.useraction=Sprawd\u017a konfiguracj\u0119 pod k\u0105tem b\u0142\u0119d\u00f3w i spr\u00f3buj przeprowadzi\u0107 aktualizacj\u0119 ponownie.
+
+error.attribute.validation.exception=CWWKG0075E: Warto\u015b\u0107 {2} nie jest poprawn\u0105 warto\u015bci\u0105 atrybutu {1} elementu konfiguracji {0}. Komunikat sprawdzania poprawno\u015bci: {3}.
+error.attribute.validation.exception.explanation=Sprawdzanie poprawno\u015bci atrybutu nie powiod\u0142o si\u0119.
+error.attribute.validation.exception.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby by\u0142a u\u017cywana poprawna warto\u015b\u0107 atrybutu.
+
+warning.old.config.still.in.use=CWWKG0076W: Poprzednia konfiguracja dla elementu {0} o identyfikatorze {1} jest nadal w u\u017cyciu.
+warning.old.config.still.in.use.explanation=Aktualizacja elementu konfiguracji nie powiod\u0142a si\u0119, ale poprzednia warto\u015b\u0107 b\u0119dzie nadal u\u017cywana.
+warning.old.config.still.in.use.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+error.specify.parentpid=CWWKG0077E: Definicja metatypu dla {0} definiuje alias elementu potomnego, ale nie definiuje elementu nadrz\u0119dnego.
+error.specify.parentpid.explanation=To jest b\u0142\u0105d wewn\u0119trzny, w kt\u00f3rym atrybut childAlias jest poprawny tylko wtedy, gdy okre\u015blono r\u00f3wnie\u017c atrybut parentPID.
+error.specify.parentpid.useraction=Zdefiniuj atrybut parentPID w definicji metatypu. Jest to b\u0142\u0105d wewn\u0119trzny. Wykonaj procedury okre\u015blania problemu produktu WebSphere.
+
+error.prod.ext.features.not.found=CWWKG0078E: Rozszerzenie produktu {0} nie zawiera \u017cadnych sk\u0142adnik\u00f3w.
+error.prod.ext.features.not.found.explanation=Nie znaleziono plik\u00f3w manifestu sk\u0142adnika powi\u0105zanych z okre\u015blonym rozszerzeniem produktu.
+error.prod.ext.features.not.found.useraction=Sprawd\u017a, czy katalog, w kt\u00f3rym znajduj\u0105 si\u0119 manifesty sk\u0142adnik\u00f3w, jest poprawny.
+
+error.prod.ext.not.found=CWWKG0079E: Nie mo\u017cna znale\u017a\u0107 rozszerzenia produktu {0} w po\u0142o\u017ceniu {1}.
+error.prod.ext.not.found.explanation=Nie mo\u017cna znale\u017a\u0107 rozszerzenia produktu w wymienionym po\u0142o\u017ceniu.
+error.prod.ext.not.found.useraction=Sprawd\u017a, czy po\u0142o\u017cenie instalacji produktu zosta\u0142o poprawnie zdefiniowane w pliku w\u0142a\u015bciwo\u015bci instalacji produktu.
+
+error.prod.ext.not.defined=CWWKG0080E: Rozszerzenie produktu o nazwie {0} nie istnieje.
+error.prod.ext.not.defined.explanation=Rozszerzenie produktu o podanej nazwie nie istnieje.
+error.prod.ext.not.defined.useraction=Sprawd\u017a, czy podana nazwa rozszerzenia produktu jest poprawna.
+
+error.invalid.boolean.attribute=CWWKG0081E: Warto\u015b\u0107 {0} atrybutu boolowskiego {1} jest niepoprawna. Poprawne s\u0105 warto\u015bci true (prawda) oraz false (fa\u0142sz). U\u017cyta zostanie warto\u015b\u0107 domy\u015blna: {2}.
+error.invalid.boolean.attribute.explanation=Sprawdzanie poprawno\u015bci atrybutu nie powiod\u0142o si\u0119.
+error.invalid.boolean.attribute.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby by\u0142a u\u017cywana poprawna warto\u015b\u0107 atrybutu.
+
+warning.invalid.boolean.attribute=CWWKG0082W: Warto\u015b\u0107 {0} dla atrybutu boolowskiego {1} zostanie zinterpretowana jako false (fa\u0142sz).
+warning.invalid.boolean.attribute.explanation=Sprawdzanie poprawno\u015bci atrybutu nie powiod\u0142o si\u0119.
+warning.invalid.boolean.attribute.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby by\u0142a u\u017cywana poprawna warto\u015b\u0107 atrybutu.
+
+warn.config.invalid.using.default.value=CWWKG0083W: Wyst\u0105pi\u0142o niepowodzenie sprawdzania poprawno\u015bci podczas przetwarzania w\u0142a\u015bciwo\u015bci [{0}] o warto\u015bci [{1}]. Domy\u015blna u\u017cywana warto\u015b\u0107: {2}. 
+warn.config.invalid.using.default.value.explanation=Okre\u015blona warto\u015b\u0107 w\u0142a\u015bciwo\u015bci jest niepoprawna i nie mo\u017cna jej u\u017cy\u0107.  Zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
+warn.config.invalid.using.default.value.useraction=System u\u017cyje warto\u015bci domy\u015blnej lub mo\u017cna poprawi\u0107 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci tak, aby u\u017cywana by\u0142a poprawna warto\u015b\u0107.
+
+warn.cannot.resolve.optional.include=CWWKG0084W: Nie mo\u017cna rozpozna\u0107 do\u0142\u0105czonego opcjonalnego pliku konfiguracyjnego: {0}
+warn.cannot.resolve.optional.include.explanation=Okre\u015blony plik konfiguracyjny jest niepoprawny. Zwykle ten b\u0142\u0105d wskazuje, \u017ce adres URL nie jest poprawnie zbudowany lub zawiera nieznany protok\u00f3\u0142.
+warn.cannot.resolve.optional.include.useraction=Sprawd\u017a adres \
+URL, aby upewni\u0107 si\u0119, \u017ce jest on poprawny i u\u017cywa og\u00f3lnie znanego protoko\u0142u, \
+np. file, http lub https.
+
+warning.unexpected.server.element=CWWKG0085W: Dokument konfiguracji serwera zawiera zagnie\u017cd\u017cony element serwera. Zagnie\u017cd\u017cona konfiguracja zostanie zignorowana.
+warning.unexpected.server.element.explanation=Element serwera jest zagnie\u017cd\u017cony wewn\u0105trz elementu serwera najwy\u017cszego poziomu w dokumencie konfiguracji XML. Tre\u015b\u0107 w zagnie\u017cd\u017conym serwerze zostanie zignorowana. 
+warning.unexpected.server.element.useraction=Zaktualizuj dokument konfiguracji serwera tak, aby usun\u0105\u0107 zagnie\u017cd\u017cony element serwera.
+
+warn.bad.reference.filter=CWWKG0086W: Filtr odwo\u0142a\u0144 {0} \
+nie jest poprawny.
+warn.bad.reference.filter.explanation=Jest to b\u0142\u0105d wewn\u0119trzny. Filtr \
+odwo\u0142a\u0144 podany w definicji atrybutu ma niepoprawn\u0105 sk\u0142adni\u0119. 
+warn.bad.reference.filter.useraction=Autor definicji metatypu \
+powinien poda\u0107 poprawny filtr odwo\u0142a\u0144. Jest to b\u0142\u0105d wewn\u0119trzny.
+
+warning.multiple.matches=CWWKG0087W: Warto\u015b\u0107 [{1}] \
+okre\u015blona dla atrybutu odwo\u0142ania [{0}] nie jest poprawna, poniewa\u017c jest zgodna \
+z wieloma konfiguracjami.
+warning.multiple.matches.explanation=Wiele element\u00f3w w \
+konfiguracji u\u017cywa tego samego atrybutu identyfikatora. Serwer nie mo\u017ce \
+okre\u015bli\u0107, kt\u00f3rego elementu ma dotyczy\u0107 odwo\u0142anie.
+warning.multiple.matches.useraction=Zaktualizuj konfiguracj\u0119 \
+tak, aby ka\u017cdy element u\u017cywa\u0142 innego atrybutu identyfikatora. 
+
+error.breaking.include.conflict=CWWKG0088E: Element \
+konfiguracji {1} jest okre\u015blony w dw\u00f3ch r\u00f3\u017cnych zasobach konfiguracji: {0} i \
+{2}.
+error.breaking.include.conflict.explanation=Do\u0142\u0105czony \
+zas\u00f3b konfiguracji zosta\u0142 skonfigurowany w taki spos\u00f3b, aby konflikty w \
+elementach konfiguracji by\u0142y rozwi\u0105zywane albo przez wy\u0142\u0105czenie serwera, albo \
+przez uniemo\u017cliwienie przeprowadzenia aktualizacji konfiguracji \u015brodowiska \
+wykonawczego.
+error.breaking.include.conflict.useraction=Zaktualizuj \
+do\u0142\u0105czony zas\u00f3b konfiguracji, aby usun\u0105\u0107 element powoduj\u0105cy konflikt, albo \
+zmie\u0144 zachowanie rozwi\u0105zywania konfliktu na scalenie, zast\u0105pienie lub \
+zignorowanie zamiast przerwania.
+ 
+error.include.location.not.specified=CWWKG0089E: W \
+elemencie konfiguracji do\u0142\u0105czenia okre\u015blonym w wierszu {0} zasobu {1} musi by\u0107 \
+okre\u015blony atrybut po\u0142o\u017cenia.
+error.include.location.not.specified.explanation=Element konfiguracji do\u0142\u0105czenia jest okre\u015blony w konfiguracji serwera, ale ten \
+element nie okre\u015bla po\u0142o\u017cenia.
+error.include.location.not.specified.useraction=Dodaj atrybut \
+po\u0142o\u017cenia do elementu konfiguracji.
+ 
+error.cannot.read.location=CWWKG0090E: Zas\u00f3b \
+konfiguracji {0} nie istnieje lub nie mo\u017cna go odczyta\u0107. 
+error.cannot.read.location.explanation=Zas\u00f3b w \
+okre\u015blonym po\u0142o\u017ceniu jest niedost\u0119pny.
+error.cannot.read.location.useraction=Sprawd\u017a, czy atrybut \
+po\u0142o\u017cenia jest poprawnie okre\u015blony i upewnij si\u0119, \u017ce zas\u00f3b jest dost\u0119pny.
+
+error.variable.name.missing=CWWKG0091E: Dla zmiennej w \
+wierszu {0} zasobu {1} musi by\u0107 okre\u015blony atrybut nazwy.
+error.variable.name.missing.explanation=Konfiguracja \
+serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu nazwy.
+error.variable.name.missing.useraction=Dodaj atrybut nazwy do zmiennej.
+
+error.variable.value.missing=CWWKG0092E: Dla zmiennej w \
+wierszu {0} zasobu {1} musi by\u0107 okre\u015blony atrybut warto\u015bci.
+error.variable.value.missing.explanation=Konfiguracja \
+serwera zawiera element konfiguracji zmiennej, kt\u00f3ry nie ma atrybutu warto\u015bci.
+error.variable.value.missing.useraction=Dodaj atrybut warto\u015bci do zmiennej.
+
+audit.dropin.being.processed=CWWKG0093A: Przetwarzanie zasobu element\u00f3w upuszczanych konfiguracji: {0}
+audit.dropin.being.processed.explanation=Tre\u015b\u0107 okre\u015blonego zasobu zostanie do\u0142\u0105czona do konfiguracji serwera.
+audit.dropin.being.processed.useraction=Nie jest wymagana \
+\u017cadna czynno\u015b\u0107.
+
+warning.unrecognized.merge.behavior=CWWKG0094W: Warto\u015b\u0107 {0}, kt\u00f3ra zosta\u0142a okre\u015blona dla zachowania scalania w elemencie konfiguracji do\u0142\u0105czenia, nie jest poprawna. W systemie zostanie u\u017cyta domy\u015blna warto\u015b\u0107 scalania.
+warning.unrecognized.merge.behavior.explanation=W elemencie konfiguracji do\u0142\u0105czenia okre\u015blono niepoprawn\u0105 warto\u015b\u0107.  Poprawne warto\u015bci to: merge, replace i ignore.
+warning.unrecognized.merge.behavior.useraction=Zaktualizuj konfiguracj\u0119 serwera, aby skorygowa\u0107 zachowanie scalania.
+
+error.missing.required.attribute.singleton=CWWKG0095E: Brak wymaganego atrybutu {1} w elemencie {0}.
+error.missing.required.attribute.singleton.explanation=Brakuj\u0105cy atrybut jest wymagany w pliku konfiguracyjnym server.xml lub w jednym z przywo\u0142ywanych przez niego plik\u00f3w konfiguracyjnych.
+error.missing.required.attribute.singleton.useraction=Dodaj atrybut do pliku konfiguracyjnego server.xml lub do jednego z przywo\u0142ywanych przez niego plik\u00f3w konfiguracyjnych.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.extendsAlias.collision=CWWKG0100E: Atrybut ibm:extendsAlias {2} jest duplikowany w pojedynczej hierarchii rozszerze\u0144. Identyfikatory PID to {0} i {1}. Dokonaj takiej zmiany, aby ka\u017cdy atrybut \
+ibm:extendsAlias by\u0142 unikalny w ramach hierarchii rozszerze\u0144.
+error.extendsAlias.collision.explanation=Atrybut \
+ibm:extendsAlias musi by\u0107 unikalny w ramach pojedynczej hierarchii rozszerze\u0144.
+error.extendsAlias.collision.useraction=Dokonaj takiej zmiany, \
+aby ka\u017cdy atrybut ibm:extendsAlias by\u0142 unikalny w ramach hierarchii rozszerze\u0144.
+
+warning.binding.config=CWWKG0101W: Konfiguracja z utrwalon\u0105 to\u017csamo\u015bci\u0105 (PID) {0} jest powi\u0105zana z pakunkiem {1}. Konfiguracja ta nie jest widoczna dla innych pakunk\u00f3w.  
+warning.binding.config.explanation=Konfiguracja jest powi\u0105zywana z pakunkiem wywo\u0142uj\u0105cym przy pierwszym wywo\u0142aniu metody getConfiguration interfejsu ConfigurationAdmin. Gdy konfiguracja zostanie powi\u0105zana, przestaje by\u0107 widoczna dla innych pakunk\u00f3w. 
+warning.binding.config.useraction=Aby upewni\u0107 si\u0119, \u017ce po\u0142o\u017cenie pakunku jest warto\u015bci\u0105 oczekiwan\u0105, nale\u017cy u\u017cy\u0107 metody getConfiguration w interfejsie ConfigurationAdmin, kt\u00f3ra przyjmuje po\u0142o\u017cenie pakunku jako drugi parametr.
+
+
+# Non-TR message
+error.invalidOCDRef=B\u0141\u0104D: to\u017csamo\u015b\u0107 PID metatypu \
+[{0}] okre\u015bla nieistniej\u0105cy identyfikator definicji klasy obiektu [{1}]

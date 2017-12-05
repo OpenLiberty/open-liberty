@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: Niepoprawne mechanizmy warstwy uwierzytelniania podane w zabezpieczeniach {0} klienta. Poprawna warto\u015b\u0107 to GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Podane mechanizmy warstwy uwierzytelniania zabezpiecze\u0144 klienta nie s\u0105 obs\u0142ugiwane.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Upewnij si\u0119, \u017ce okre\u015blono mechanizm warstwy uwierzytelniania zabezpiecze\u0144 klienta GSSUP.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: Mechanizmy warstwy uwierzytelniania podane w zabezpieczeniach klienta maj\u0105 warto\u015b\u0107 NULL.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Podane mechanizmy warstwy uwierzytelniania zabezpiecze\u0144 klienta maj\u0105 warto\u015b\u0107 NULL.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Upewnij si\u0119, \u017ce okre\u015blono mechanizm warstwy uwierzytelniania zabezpiecze\u0144 klienta GSSUP.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W:  Brak nast\u0119puj\u0105cych atrybut\u00f3w w strategii klienta IIOP. Brakuj\u0105ce atrybuty: [{0}]. Upewnij si\u0119, \u017ce atrybuty s\u0105 okre\u015blone w pliku client.xml, chyba \u017ce aplikacja implementuje logowanie programowe.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=Brak atrybutu w okre\u015blonym mechanizmie warstwy uwierzytelniania strategii klienta IIOP.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Upewnij si\u0119, \u017ce wymagane atrybuty zosta\u0142y ustawione lub w celu wprowadzenia warto\u015bci jest u\u017cywana programowa obs\u0142uga logowania.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: Warstwa uwierzytelniania CSIv2 zosta\u0142a wy\u0142\u0105czona, poniewa\u017c warto\u015bci\u0105 elementu establishTrustInClient jest {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Gdy element establishTrustInClient jest ustawiony na warto\u015b\u0107 Never (Nigdy), warstwa uwierzytelniania CSIv2 jest wy\u0142\u0105czona.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Aby w\u0142\u0105czy\u0107 warstw\u0119 uwierzytelniania CSIv2, ustaw warto\u015b\u0107 elementu establishTrustInClient na warto\u015b\u0107 Supported (Obs\u0142ugiwana) lub Required (Wymagana).
+
+

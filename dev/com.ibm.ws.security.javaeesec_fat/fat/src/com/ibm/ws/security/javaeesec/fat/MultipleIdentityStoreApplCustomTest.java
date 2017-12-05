@@ -221,6 +221,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.INVALIDUSER + ":" + LocalLdapServer.PASSWORD, HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS9104A:.*" + LocalLdapServer.INVALIDUSER + ".*" + LocalLdapServer.GRANTEDGROUP);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -242,6 +243,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.setMarkToEndOfLog();
         String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.INVALIDPASSWORD, HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

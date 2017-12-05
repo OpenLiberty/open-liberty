@@ -1,0 +1,618 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.42,0,02/04/15,16:52:49
+#
+#CMVCPATHNAME com.ibm.ws.ssl/resources/com/ibm/ws/ssl/resources/ssl.nlsprops
+#COMPONENTPREFIX CWPKI
+#COMPONENTNAMEFOR CWPKI WebSphere SSL
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+################################################################################
+# Range 100-110 reserved for TrustManager Prompt
+# Range 200-299 reserved for KeySet Messages
+# Range 300-399 reserved for Signer Util Messages
+# Range 400-599 reserved for CA Pure Client Util and Impls
+# Range 600-799 reserved for Command Tasks located in sslCommandTask.nlsprops file
+# Range 800-899 reserved for Liberty specific messages
+################################################################################
+
+# -------------------------------------------------------------------------------------------------
+ssl.init.startinit.CWPKI0001I=CWPKI0001I: Der SSL-Service initialisiert die Konfiguration.
+ssl.init.startinit.CWPKI0001I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.startinit.CWPKI0001I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.init.startcomplete.CWPKI0002I=CWPKI0002I: Die Initialisierung des SSL-Service wurde fehlerfrei abgeschlossen.
+ssl.init.startcomplete.CWPKI0002I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.startcomplete.CWPKI0002I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstart.CWPKI0003I=CWPKI0003I: Der SSL-Service wird gestartet.
+ssl.init.svcstart.CWPKI0003I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.svcstart.CWPKI0003I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstartcomplete.CWPKI0004I=CWPKI0004I: Der SSL-Service wurde ordnungsgem\u00e4\u00df gestartet.
+ssl.init.svcstartcomplete.CWPKI0004I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.svcstartcomplete.CWPKI0004I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.init.startfail.CWPKI0005I=CWPKI0005I: Die Initialisierung des SSL-Service ist fehlgeschlagen.
+ssl.init.startfail.CWPKI0005I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.startfail.CWPKI0005I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.init.mbeanerror.CWPKI0006E=CWPKI0006E: Beim Erstellen oder Registrieren der MBean {0} mBean ist eine Ausnahme eingetreten. Ausnahme: {1}
+ssl.init.mbeanerror.CWPKI0006E.explanation=Beim Erstellen oder Registrieren einer MBean ist eine unerwartete Ausnahme eingetreten.
+ssl.init.mbeanerror.CWPKI0006E.useraction=M\u00f6glicherweise liegt ein Konfigurationsfehler vor. M\u00f6glicherweise enth\u00e4lt die Ausnahme weitere Einzelheiten.
+# -------------------------------------------------------------------------------------------------
+ssl.init.svcstartfail.CWPKI0007I=CWPKI0007I: Der SSL-Service wurde nicht erfolgreich gestartet.
+ssl.init.svcstartfail.CWPKI0007I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.svcstartfail.CWPKI0007I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.init.error.CWPKI0008E=CWPKI0008E: W\u00e4hrend der SSL-Initialisierung ist ein Fehler aufgetreten. Ausnahme: {0}
+ssl.init.error.CWPKI0008E.explanation=Es ist ein unerwarteter Fehler w\u00e4hrend der Initialisierung der Sicherheit aufgetreten.
+ssl.init.error.CWPKI0008E.useraction=Dies ist ein allgemeiner Fehler. \
+Suchen Sie nach vorangegangenen Nachrichten, die sich auf die SSL-Initialisierung oder ein Konfigurationsproblem beziehen.  \
+Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
+# -------------------------------------------------------------------------------------------------
+ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: Das System konnte das Sicherheitsobjekt w\u00e4hrend der Initialisierung nicht erstellen.
+ssl.init.nullsecobject.CWPKI0009E.explanation=Das Sicherheitsobjekt kann nicht \u00fcber das Repository erstellt werden. Dies ist ein interner Fehler. Die Datei security.xml k\u00f6nnte besch\u00e4digt sein oder fehlen.
+ssl.init.nullsecobject.CWPKI0009E.useraction=Wenden Sie sich an den Kundendienst.
+# -------------------------------------------------------------------------------------------------
+ssl.init.nullprocesstype.CWPKI0010E=CWPKI0010E: Das System konnte den Prozesstyp von WebSphere Application Server w\u00e4hrend der Initialisierung nicht abrufen.
+ssl.init.nullprocesstype.CWPKI0010E.explanation=CMSG0001
+ssl.init.nullprocesstype.CWPKI0010E.useraction=CMSG0002                                                                  
+# -------------------------------------------------------------------------------------------------
+ssl.loadresource.error.CWPKI0011E=CWPKI0011E: Die Ressource {0} konnte nicht aus der Zelle geladen werden. Ausnahme: {1}
+ssl.loadresource.error.CWPKI0011E.explanation=Die angegebene Ressource konnte aufgrund einer Ausnahme nicht geladen werden.
+ssl.loadresource.error.CWPKI0011E.useraction=Suchen Sie nach einem Konfigurationsproblem, das sich auf die Ressource bezieht.
+# -------------------------------------------------------------------------------------------------
+ssl.fips.enabled.CWPKI0012I=CWPKI0012I: FIPS ist aktiviert. Der Server wird im FIPS-Modus mit dem Provider IBMJCEFIPS ausgef\u00fchrt.
+ssl.fips.enabled.CWPKI0012I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.fips.enabled.CWPKI0012I.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.checkProviderList.warning.CWPKI0013W=CWPKI0013W: FIPS ist aktiviert, aber der Provider IBMJCEFIPS ist in der Datei java.security nicht aktiviert. Sie m\u00fcssen diese Datei so \u00e4ndern, dass der Provider IBMJCEFIPS in der Providerliste vor dem Provider IBMJCE steht.
+ssl.checkProviderList.warning.CWPKI0013W.explanation=Wenn der Server im FIPS-Modus ausgef\u00fchrt wird muss der Provider IBMJCEFIPS in der Datei java.security aufgelistet sein und vor dem Provider IBMJCE in der Liste stehen.
+ssl.checkProviderList.warning.CWPKI0013W.useraction=Damit f\u00fcr alle WebSphere Application Server-Prozesstypen FIPS-Algorithmen verwendet werden, l\u00f6schen Sie in der Datei java.security das Kommentarzeichen f\u00fcr den Provider IBMJCEFIPS. Dieser Provider muss vor IBMJCE stehen. Nummerieren Sie die Eintr\u00e4ge in der Providerliste in sequenzieller Reihenfolge neu.
+# -------------------------------------------------------------------------------------------------
+ssl.init.ssldm.init.CWPKI0014I=CWPKI0014I: Das FFDC-Diagnosemodul {0} f\u00fcr die SSL-Komponente wurde erfolgreich registriert: {1}
+ssl.init.ssldm.init.CWPKI0014I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.init.ssldm.init.CWPKI0014I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.stop.error.CWPKI0015E=CWPKI0015E: Beim Stoppen der SSL-Komponente ist ein Fehler aufgetreten. Ausnahme: {0}
+ssl.stop.error.CWPKI0015E.explanation=Beim Stoppen der SSL-Komponente ist ein unerwarteter Fehler aufgetreten.
+ssl.stop.error.CWPKI0015E.useraction=Dies ist ein allgemeiner Fehler. \
+Suchen Sie nach vorangegangenen Nachrichten, die sich m\u00f6glicherweise auf diesen Fehler oder ein Konfigurationsproblem beziehen.  \
+Die Einstellung des Debug-Trace auf SSL=all=enabled liefert m\u00f6glicherweise zus\u00e4tzliche Informationen.
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.warning.CWPKI0016W=CWPKI0016W: Das Zertifikat mit dem Alias {0} aus dem Keystore {1} verf\u00e4llt in {2} Tagen.
+ssl.expiration.warning.CWPKI0016W.explanation=Ein Zertifikat im Keystore steht kurz vor dem Verfallsdatum.
+ssl.expiration.warning.CWPKI0016W.useraction=\u00d6ffnen Sie den Keystore und \u00fcberpr\u00fcfen Sie die Verfallsdaten aller Zertifikate im Keystore. Generieren Sie bei Bedarf neue Zertifikate.
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.expired.CWPKI0017E=CWPKI0017E: Das Zertifikat mit dem Alias {1} aus dem Keystore {2} ist verfallen.
+ssl.expiration.expired.CWPKI0017E.explanation=Ein Zertifikat im Keystore ist abgelaufen.
+ssl.expiration.expired.CWPKI0017E.useraction=\u00d6ffnen Sie den Keystore und \u00fcberpr\u00fcfen Sie die Verfallsdaten aller Zertifikate im Keystore. Entfernen Sie alle abgelaufenen Zertifikate. 
+# -------------------------------------------------------------------------------------------------
+ssl.keystore.type.invalid.CWPKI0018W=CWPKI0018W: Der Keystore-Typ {0} ist f\u00fcr den SSL-Konfigurationsalias {1} nicht g\u00fcltig.
+ssl.keystore.type.invalid.CWPKI0018W.explanation=Der konfigurierte Keystore-Typ ist f\u00fcr den angegebenen Alias nicht g\u00fcltig.
+ssl.keystore.type.invalid.CWPKI0018W.useraction=\u00c4ndern Sie den Keystore-Typ in der SSL-Konfiguration.
+# -------------------------------------------------------------------------------------------------
+ssl.client.config.parse.CWPKI0019E=CWPKI0019E: Fehler bei der Syntaxanalyse der SSL-Clientkonfigurationsdatei {0}. Ausnahme: {1}
+ssl.client.config.parse.CWPKI0019E.explanation=Die Syntax der Datei ssl.client.props oder die Position der Datei k\u00f6nnte ung\u00fcltig sein.
+ssl.client.config.parse.CWPKI0019E.useraction=Sehen Sie sich den zur\u00fcckgegebenen Fehler an und \u00fcberpr\u00fcfen Sie Syntax und Position der Datei ssl.client.props.
+# -------------------------------------------------------------------------------------------------
+ssl.load.trustmanager.error.CWPKI0020E=CWPKI0020E: Fehler beim Laden der angepassten Trust-Manager-Klasse {0}. Ausnahme: {1}
+ssl.load.trustmanager.error.CWPKI0020E.explanation=Beim Laden des konfigurierten angepassten Trust-Managers ist ein Klassenladefehler aufgetreten.
+ssl.load.trustmanager.error.CWPKI0020E.useraction=Vergewissern Sie sich, dass die Klasse in der Umgebung vorhanden ist.
+# -------------------------------------------------------------------------------------------------
+ssl.load.keymanager.error.CWPKI0021E=CWPKI0021E: Fehler beim Laden der angepassten Key-Manager-Klasse {0}. Ausnahme: {1}
+ssl.load.keymanager.error.CWPKI0021E.explanation=Beim Laden des konfigurierten angepassten Key-Managers ist ein Klassenladefehler aufgetreten.
+ssl.load.keymanager.error.CWPKI0021E.useraction=Vergewissern Sie sich, dass die Klasse in der Umgebung vorhanden ist.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: FEHLER BEIM SSL-HANDSHAKE: Es wurde ein Unterzeichner mit dem SubjectDN {0} vom Zielhost gesendet. Der Unterzeichner muss dem lokalen Truststore {1} im SSL-Konfigurationsalias {2} hinzugef\u00fcgt werden. Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: {3}
+ssl.client.handshake.error.CWPKI0022E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Es ist m\u00f6glicherweise ein Export/Import des Unterzeichners vom Zielhost in den Client-Truststore erforderlich.
+ssl.client.handshake.error.CWPKI0022E.useraction=Lesen Sie die erweiterte Nachricht des Trust Manager, um festzustellen, welche \u00c4nderungen zwischen SSL-Zielkonfiguration und SSL-Clientkonfiguration vorgenommen werden m\u00fcssen.
+# -------------------------------------------------------------------------------------------------
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Der mit der Eigenschaft "com.ibm.ssl.keyStoreClientAlias" angegebene Zertifikatalias {0} wurde nicht im Keystore {1} gefunden.
+ssl.client.alias.not.found.CWPKI0023E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden. 
+ssl.client.alias.not.found.CWPKI0023E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Alias hinzu oder \u00e4ndern Sie den angegebenen Zertifikatsalias so, dass der einem Alias im Client-Keystore entspricht.
+# -------------------------------------------------------------------------------------------------
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Der mit der Eigenschaft "com.ibm.ssl.keyStoreServerAlias" angegebene Zertifikatalias {0}  wurde nicht im Keystore {1} gefunden.
+ssl.server.alias.not.found.CWPKI0024E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden. 
+ssl.server.alias.not.found.CWPKI0024E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Alias hinzu oder \u00e4ndern Sie den angegebenen Zertifikatsalias so, dass der einem Alias im Server-Keystore entspricht.
+# -------------------------------------------------------------------------------------------------
+ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: Das System konnte die HTTPS-Handlerklasse {0} nicht laden. Erweiterte Fehlernachricht: {1}
+ssl.load.https.stream.handler.CWPKI0025E.explanation=Beim Laden der HTTPS-URLStreamHandler-Klasse ist ein Fehler aufgetreten. 
+ssl.load.https.stream.handler.CWPKI0025E.useraction=\u00dcberpr\u00fcfen Sie die SSL-Konfiguration, um sicherzustellen, dass der Kontextprovider f\u00fcr die Plattform korrekt ist.
+# -------------------------------------------------------------------------------------------------
+ssl.reinitialize.config.error.CWPKI0026E=CWPKI0026E: Fehler beim Reinitialisieren der SSL-Konfiguration nach einer \u00c4nderung der Datei security.xml. Erweiterte Fehlernachricht: {0}
+ssl.reinitialize.config.error.CWPKI0026E.explanation=Es wurde eine \u00c4nderung in der Datei security.xml vorgenommen. Es ist ein Fehler aufgetreten, als das System versucht hat, die ge\u00e4nderte Konfiguration zu lesen.
+ssl.reinitialize.config.error.CWPKI0026E.useraction=Lesen Sie den Text der Ausnahmenachricht und vergewissern Sie sich, dass die SSL-Konfigurationsparameter g\u00fcltig sind. 
+# -------------------------------------------------------------------------------------------------
+ssl.disable.url.hostname.verification.CWPKI0027I=CWPKI0027I: Die Standard\u00fcberpr\u00fcfung des Standardhostnamens f\u00fcr HTTPS-URL-Verbindungen wird inaktiviert.
+ssl.disable.url.hostname.verification.CWPKI0027I.explanation=Bei der \u00dcberpr\u00fcfung des Hostnamens der JSSE-URL wird gepr\u00fcft, ob der allgemeine Name (CN, Common Name) des X509-Zertifikats mit dem Hostnamen, von dem das Zertifikat stammt, \u00fcbereinstimmt. Diese \u00dcberpr\u00fcfung des Hostnamens wird f\u00fcr URL-Verbindungen standardm\u00e4\u00dfig inaktiviert. 
+ssl.disable.url.hostname.verification.CWPKI0027I.useraction=Wenn Sie die Standard\u00fcberpr\u00fcfung f\u00fcr JSSE-URL-Hostnamen aktivieren m\u00f6chten, setzen Sie die Eigenschaft "com.ibm.ssl.performURLHostNameVerification" auf true.
+# -------------------------------------------------------------------------------------------------
+ssl.no.such.algorithm.CWPKI0028E=CWPKI0028E: Das SSL-Handshake-Protokoll {0} ist nicht g\u00fcltig. Dieses Protokoll ist im SSL-Konfigurationsalias {1} angegeben, der aus der SSL-Konfigurationsdatei {2} geladen wurde. Erweiterte Fehlernachricht: {3}
+ssl.no.such.algorithm.CWPKI0028E.explanation=Das angegebene Handshake-Protokoll ist kein g\u00fcltiges Handshake-Protokoll. 
+ssl.no.such.algorithm.CWPKI0028E.useraction=\u00dcberpr\u00fcfen Sie die SSL-Konfiguration, um sicherzustellen, dass das richtige Handshake-Protokoll angegeben ist.
+# -------------------------------------------------------------------------------------------------
+ssl.invalid.context.provider.CWPKI0029E=CWPKI0029E: Der SSL-Kontextprovider {0} ist nicht g\u00fcltig. Der Provider ist im SSL-Konfigurationsalias {1} angegeben, der aus der SSL-Konfigurationsdatei {2} geladen wurde. Erweiterte Fehlernachricht: {3}
+ssl.invalid.context.provider.CWPKI0029E.explanation=Der angegebene SSL-Kontextprovider ist kein g\u00fcltiger Kontextprovider. 
+ssl.invalid.context.provider.CWPKI0029E.useraction=\u00dcberpr\u00fcfen Sie die SSL-Konfiguration, um sicherzustellen, dass der richtige SSL-Kontextprovider angegeben ist.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.exchange.error.CWPKI0030E=CWPKI0030E: Fehler beim Austauschen der Unterzeichner zwischen Zelle und Knoten. Ausnahme: {0}
+ssl.signer.exchange.error.CWPKI0030E.explanation=Die DefaultKeyStores von Zelle und Knoten m\u00fcssen die Unterzeichner mit den DefaultTrustStores austauschen. Dabei ist ein Fehler aufgetreten.
+ssl.signer.exchange.error.CWPKI0030E.useraction=M\u00f6glicherweise ist ein manueller Unterzeichneraustausch erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.client.keystore.create.error.CWPKI0031E=CWPKI0031E: Fehler beim Erstellen eines Client-Keystore bzw. -Truststore w\u00e4hrend der Initialisierung. Ausnahme: {0}
+ssl.client.keystore.create.error.CWPKI0031E.explanation=W\u00e4hrend der Prozessinitialisierung ist beim Erstellen des dateibasierten Keystore bzw. Truststore ein Fehler aufgetreten.
+ssl.client.keystore.create.error.CWPKI0031E.useraction=Stellen Sie sicher, dass die Keystore- oder Truststore-Einstellungen aktuell und g\u00fcltig sind.
+# -------------------------------------------------------------------------------------------------
+ssl.self.signed.create.error.CWPKI0032E=CWPKI0032E: Fehler beim Erstellen eines selbst signierten Zertifikats. Ausnahme: {0}
+ssl.self.signed.create.error.CWPKI0032E.explanation=W\u00e4hrend des Prozessstarts ist beim Erstellen dieses Zertifikats ein Fehler aufgetreten.
+ssl.self.signed.create.error.CWPKI0032E.useraction=Vergewissern Sie sich, dass die Standardeigenschaftswerte f\u00fcr selbst signierte Zertifikate (com.ibm.ssl.defaultCertReq*) g\u00fcltig sind.
+# -------------------------------------------------------------------------------------------------
+ssl.keystore.load.error.CWPKI0033E=CWPKI0033E: Der Keystore in {0} konnte wegen des folgenden Fehlers nicht geladen werden: {1}
+ssl.keystore.load.error.CWPKI0033E.explanation=Beim Erstellen oder \u00d6ffnen des Keystore ist ein Fehler aufgetreten.
+ssl.keystore.load.error.CWPKI0033E.useraction=\u00dcberpr\u00fcfen Sie die Eigenschaften in der Keystore-Konfiguration und stellen Sie sicher, dass der Keystore vorhanden ist.
+# -------------------------------------------------------------------------------------------------
+ssl.schedule.init.error.CWPKI0034E=CWPKI0034E: Der Plan {0} konnte wegen des folgenden Fehlers nicht initialisiert werden: {1}.
+ssl.schedule.init.error.CWPKI0034E.explanation=Beim Initialisieren des Plans ist ein Fehler aufgetreten.
+ssl.schedule.init.error.CWPKI0034E.useraction=Vergewissern Sie sich, dass die Eigenschaften f\u00fcr den Scheduler g\u00fcltig sind. Stellen Sie au\u00dferdem sicher, dass in das Verzeichnis /etc geschrieben werden kann.
+# -------------------------------------------------------------------------------------------------
+ssl.schedule.read.error.CWPKI0035E=CWPKI0035E: Das n\u00e4chste geplante Datum des Plans {0} konnte nicht erreicht werden. Der Alarm wird f\u00fcr das folgende Datum initialisiert: {1}
+ssl.schedule.read.error.CWPKI0035E.explanation=Beim Lesen des Datums aus der Plandatei im Verzeichnis /etc ist ein Fehler aufgetreten.
+ssl.schedule.read.error.CWPKI0035E.useraction=Stellen Sie sicher, dass in das Verzeichnis /etc geschrieben werden kann und dass die Datei nicht ge\u00e4ndert wurde.
+# -------------------------------------------------------------------------------------------------
+ssl.notification.send.error.CWPKI0036E=CWPKI0036E: Fehler beim Senden der E-Mail an {0} \u00fcber den SMTP-Server {1}. Ausnahme: {2}
+ssl.notification.send.error.CWPKI0036E.explanation=Beim Senden einer E-Mail an den angegebenen SMTP-Server ist ein Fehler aufgetreten.
+ssl.notification.send.error.CWPKI0036E.useraction=Vergewissern Sie sich, dass der angegebene SMTP-Server g\u00fcltig ist und dass die Firewallrichtlinie das Senden von E-Mails an SMTP-Ports zul\u00e4sst.
+# -------------------------------------------------------------------------------------------------
+ssl.notification.send.info.CWPKI0037I=CWPKI0037I: Der Verfallsmonitor meldet die folgenden Informationen: {0}
+ssl.notification.send.info.CWPKI0037I.explanation=Diese Information bezieht sich auf den Zertifikatsverfall.
+ssl.notification.send.info.CWPKI0037I.useraction=M\u00f6glicherweise m\u00fcssen Sie Zertifikate verfallen, um die gemeldeten Probleme zu beheben.
+# -------------------------------------------------------------------------------------------------
+ssl.expiration.monitor.start.error.CWPKI0038E=CWPKI0038E: Der Verfallsmonitor wurde nicht gestartet. Fehler: {0}
+ssl.expiration.monitor.start.error.CWPKI0038E.explanation=Beim Starten der Befehls-Task f\u00fcr den Verfallsmonitor ist ein Fehler aufgetreten.
+ssl.expiration.monitor.start.error.CWPKI0038E.useraction=Versuchen Sie, den Verfallsmonitor direkt zu starten, um n\u00e4here Informationen zu dem aufgetretenen Fehler zu erhalten.
+# -------------------------------------------------------------------------------------------------
+ssl.cannot.find.node.from.hostlist.CWPKI0039E=CWPKI0039E: Die Knoten-Connector-Eigenschaften f\u00fcr den Hostnamen {0} wurden nicht in der Hostliste f\u00fcr den Keystore {1} gefunden.
+ssl.cannot.find.node.from.hostlist.CWPKI0039E.explanation=Der Hostname muss in die Hostliste in demselben kanonischen Format eingegeben werden, indem er in der Datei serverindex.xml angegeben ist.
+ssl.cannot.find.node.from.hostlist.CWPKI0039E.useraction=Editieren Sie die Hostliste, um sie in das richtige kanonische Format zu konvertieren.
+# -------------------------------------------------------------------------------------------------
+ssl.handshake.failure.info.CWPKI0040I=CWPKI0040I: Es ist ein Fehler beim SSL-Handshake mit einem sicheren Client aufgetreten. Der SSL-Unterzeichner des Servers muss dem Truststore des Clients hinzugef\u00fcgt werden. Sie k\u00f6nnen das Dienstprogramm retrieveSigners verwenden, um Unterzeichner vom Server herunterzuladen. Hierf\u00fcr sind jedoch Administratorrechte erforderlich. Wenden Sie sich an Ihren Administrator und lassen Sie ihn dieses Dienstprogramm ausf\u00fchren, um die sichere Umgebung einzurichten, bevor Sie den Client ausf\u00fchren. Alternativ kann die Schnittstelle com.ibm.ssl.enableSignerExchangePrompt in der Datei ssl.client.props f\u00fcr DefaultSSLSettings aktiviert werden, damit der Unterzeichner w\u00e4hrend des Verbindungsversuchs akzeptiert wird.
+ssl.handshake.failure.info.CWPKI0040I.explanation=Der SSL-Unterzeichner des Servers muss dem Truststore des Clients hinzugef\u00fcgt werden. Die Unterzeichner k\u00f6nnen automatisch vom Server herunterladen oder w\u00e4hrend des Herstellens der Verbindung manuell angegeben werden.
+ssl.handshake.failure.info.CWPKI0040I.useraction=F\u00fchren Sie das Dienstprogramm retrieveSigners aus oder aktivieren Sie die Eingabeaufforderung zum Austausch der Sicherheitssignatur.
+# -------------------------------------------------------------------------------------------------
+ssl.default.password.in.use.CWPKI0041W=CWPKI0041W: Mindestens ein Keystore verwendet das Standardkennwort.
+ssl.default.password.in.use.CWPKI0041W.explanation=Wenn der Server zum ersten Mal als eigenst\u00e4ndiger Anwendungsserver oder in einer Network Deployment-Konfiguration gestartet wird, erstellt jeder Server einen Keystore und einen Truststore f\u00fcr die SSL-Standardkonfiguration. Wenn der Server diese Dateien erstellt, wird standardm\u00e4\u00dfig WebAS als Kennwort verwendet.
+ssl.default.password.in.use.CWPKI0041W.useraction=Verwenden Sie das Standardkennwort nicht in einer Produktionsumgebung. \u00c4ndern Sie das Standardkennwort f\u00fcr den Keystore und den Truststore, indem Sie die Datei ssl.client.props bearbeiten. Wenn Sie die Kennw\u00f6rter in der Datei ssl.client.props \u00e4ndern, m\u00fcssen Sie die neuen Kennw\u00f6rter mit dem Dienstprogramm PropFilePasswordEncoder erneut verschl\u00fcsseln.
+# -------------------------------------------------------------------------------------------------
+ssl.error.issue.CWPKI0042E=CWPKI0042E: Beim Speichern eines Zertifikats im Keystore f\u00fcr ausgestellte Zertifikate ist eine Ausnahme eingetreten. Ausnahme: {0}
+ssl.error.issue.CWPKI0042E.explanation=Nachdem Sie ein verkettetes oder selbst signiertes Zertifikat erstellt haben, konnte das entsprechende Unterzeichnerzertifikat nicht im Keystore f\u00fcr ausgestellte Zertifikate gespeichert werden.
+ssl.error.issue.CWPKI0042E.useraction=Suchen Sie in den zugeh\u00f6rigen Fehlerinformationen nach der Fehlerursache.
+# -------------------------------------------------------------------------------------------------
+ssl.chained.create.error.CWPKI0043E=CWPKI0043E: Fehler beim Erstellen eines verketteten Zertifikats. Ausnahme: {0}
+ssl.chained.create.error.CWPKI0043E.explanation=Beim Erstellen eines verketteten Zertifikats ist w\u00e4hrend des Prozessstarts ein Fehler aufgetreten.
+ssl.chained.create.error.CWPKI0043E.useraction=Stellen Sie sicher, dass die Standardeigenschaftswerte f\u00fcr das verkettete Zertifikat (com.ibm.ssl.defaultCertReq*) g\u00fcltig sind und ein g\u00fcltiges Zertifikat im Stamm-Keystore vorhanden ist.
+# -------------------------------------------------------------------------------------------------
+ssl.password.custom.encryption.failed.CWPKI0044E=CWPKI0044E: W\u00e4hrend der angepassten Verschl\u00fcsselung wurde eine Ausnahme des Typs PasswordEncryptException generiert. Ausnahme: {1}
+ssl.password.custom.encryption.failed.CWPKI0044E.explanation=Bei der angepassten Verschl\u00fcsselung ist ein Konfigurationsproblem aufgetreten.
+ssl.password.custom.encryption.failed.CWPKI0044E.useraction=Bestimmen und beheben Sie das Problem mit der angepassten Verschl\u00fcsselung anhand der Ausnahme und der Protokolle.
+# -------------------------------------------------------------------------------------------------
+ssl.password.custom.encryption.failed.CWPKI0045E=CWPKI0045E: Es wurde ein Kennwort empfangen, das mit einem angepassten Algorithmus verschl\u00fcsselt wurde, der momentan nicht konfiguriert ist.
+ssl.password.custom.encryption.failed.CWPKI0045E.explanation=Es wurde ein angepasstes verschl\u00fcsseltes Kennwort empfangen, aber der erforderliche angepasste Algorithmus ist nicht konfiguriert.
+ssl.password.custom.encryption.failed.CWPKI0045E.useraction=Konfigurieren Sie den erforderlichen angepassten Algorithmus.
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E=CWPKI0046E: Das System konnte den Initialisierungsstatus der Hardwareverschl\u00fcsselung nicht abrufen: {1}
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E.explanation=Der Initialisierungsstatus des angegebenen Hardwareverschl\u00fcsselungsproviders konnte nicht abgerufen werden. 
+ssl.crypto.hw.init.status.uncertain.CWPKI0046E.useraction=Stellen Sie sicher, dass der Hardwareverschl\u00fcsselungsprovider funktioniert und ordnungsgem\u00e4\u00df konfiguriert ist.
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.provider.unavailable.CWPKI0047E=CWPKI0047E: Das System konnte die Instanz des Hardwareverschl\u00fcsselungsproviders nicht abrufen: {1}
+ssl.crypto.hw.provider.unavailable.CWPKI0047E.explanation=Es konnte keine Instanz des angegebenen Hardwareverschl\u00fcsselungsproviders abgerufen werden.
+ssl.crypto.hw.provider.unavailable.CWPKI0047E.useraction=Stellen Sie sicher, dass der Hardwareverschl\u00fcsselungsprovider funktioniert und ordnungsgem\u00e4\u00df konfiguriert ist.
+# -------------------------------------------------------------------------------------------------
+ssl.crypto.hw.provider.unavailable.CWPKI0048E=CWPKI0048E: Das System konnte die Instanz des Hardwareverschl\u00fcsselungsproviders nicht abrufen: Tokenbibliothek: {1}, Token-Slot: {2}, Ausnahme: {3}  
+ssl.crypto.hw.provider.unavailable.CWPKI0048E.explanation=Aus den angegebenen Gr\u00fcnden konnte keine Instanz des angegebenen Hardwareverschl\u00fcsselungsproviders abgerufen werden.
+ssl.crypto.hw.provider.unavailable.CWPKI0048E.useraction=Stellen Sie sicher, dass der Hardwareverschl\u00fcsselungsprovider funktioniert und ordnungsgem\u00e4\u00df konfiguriert ist.
+# -------------------------------------------------------------------------------------------------
+ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS ist aktiviert, aber die SSL-Konfiguration verwendet keinen FIPS-konformen JSSE-Provider. Deshalb werden die FIPS-konformen Verschl\u00fcsselungsalgorithmen nicht verwendet.
+ssl.config.not.using.fips.CWPKI0049W.explanation=Obwohl UseFIPS aktiviert ist, k\u00f6nnen die FIPS-konformen Verschl\u00fcsselungsalgorithmen nicht verwendet werden, weil die SSL-Konfiguration keinen FIPS-konformen JSSE-Provider verwendet.
+ssl.config.not.using.fips.CWPKI0049W.useraction=Um die Verwendung FIPS-konformer Verschl\u00fcsselungsalgorithmen sicherzustellen, \u00e4ndern Sie die SSL-Konfiguration so, dass ein FIPS-konformer JSSE-Provider verwendet wird.
+# -------------------------------------------------------------------------------------------------
+
+
+################################################################################
+# Range 100-110 reserved for TrustManager Prompt
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.trustmanager.signer.prompt.CWPKI0100I=*** AUFFORDERUNG ZUM AUSTAUSCH DES SSL-UNTERZEICHNERS ***
+ssl.trustmanager.signer.prompt.CWPKI0101I=Der SSL-Unterzeichner vom Zielhost wurde nicht im Truststore {0} gefunden.\n\
+\n\
+Es folgen die Unterzeichnerinformationen (vergewissern Sie sich, dass der Digest-Wert mit dem auf dem Server angezeigten Wert \u00fcbereinstimmt): 
+ssl.trustmanager.signer.prompt.CWPKI0102I=  Registrierter Name des Zertifikatinhabers: 
+ssl.trustmanager.signer.prompt.CWPKI0103I=  Aussteller-DN:     
+ssl.trustmanager.signer.prompt.CWPKI0104I=  Seriennummer: 
+ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1-Digest:  
+ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5-Digest:    
+ssl.trustmanager.signer.prompt.CWPKI0107I=Unterzeichner dem Truststore sofort hinzuf\u00fcgen? (j/n) 
+# Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
+# should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
+# "y" for "yes" in English, "o" for "oui" in French, etc.
+# Also note that these must match the letters in parenthesis in the above prompt message "ssl.trustmanager.signer.prompt.CWPKI0107I".
+ssl.trustmanager.signer.prompt.answer.yes=J
+ssl.trustmanager.signer.prompt.answer.no=N
+ssl.trustmanager.signer.prompt.answer.full.yes=ja
+ssl.trustmanager.signer.prompt.CWPKI0108I=Die Anforderung muss m\u00f6glicherweise wiederholt werden, wenn der Socket beim Warten auf eine unmittelbare Antwort das zul\u00e4ssige Zeitlimit \u00fcberschreitet. Falls die Wiederholung erforderlich ist, wird die Eingabeaufforderung nicht erneut angezeigt, wenn (J) eingegeben wird. Damit wird angezeigt, dass der Unterzeichner dem Truststore bereits hinzugef\u00fcgt wurde.
+ssl.trustmanager.signer.prompt.CWPKI0109I=  Verfallsdatum:      
+
+################################################################################
+# Range 200-299 reserved for KeySet Messages
+################################################################################
+# -------------------------------------------------------------------------------------------------
+crypto.key.generate.configuration.error.CWPKI0200E=CWPKI0200E: Es wurde versucht, Schl\u00fcssel auf der Basis des Schl\u00fcsselsatzes {0} zu generieren, aber dieser Schl\u00fcsselsatz ist nicht f\u00fcr die Generierung von Schl\u00fcsseln generiert. Nachricht: {1}
+crypto.key.generate.configuration.error.CWPKI0200E.explanation=Dieser Fehler kann folgende Gr\u00fcnde haben: F\u00fcr das KeySet ist keine keyGenerationClass definiert, die keyGenerationClass wurde nicht gefunden, dem KeySet ist ein schreibgesch\u00fctzter Keystore zugeordnet, oder der Keystore l\u00e4sst das Schreiben geheimer Schl\u00fcssel nicht zu.
+crypto.key.generate.configuration.error.CWPKI0200E.useraction=\u00c4ndern Sie die Konfiguration so, dass die richtige keyGenerationClass definiert und ein Keystore-Typ konfiguriert ist, der das Schreiben geheimer Schl\u00fcssel zul\u00e4sst.
+# -------------------------------------------------------------------------------------------------
+crypto.key.getkey.error.CWPKI0201E=CWPKI0201E: Fehler beim Abrufen des Schl\u00fcsselalias {0} aus Schl\u00fcsselsatz {1}. Ausnahme: {2}
+crypto.key.getkey.error.CWPKI0201E.explanation=Beim Abrufen der Schl\u00fcssel aus dem Keystore f\u00fcr das angegebenen KeySet ist ein Fehler aufgetreten.
+crypto.key.getkey.error.CWPKI0201E.useraction=\u00dcberpr\u00fcfen Sie die KeySet-Konfiguration.
+# -------------------------------------------------------------------------------------------------
+crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: Fehler beim Instanzieren der Schl\u00fcsselerstellungsklasse {0}, die im Schl\u00fcsselsatz {1} konfiguriert ist. Nachricht: {2}
+crypto.key.generate.class.load.error.CWPKI0202E.explanation=Dieser Fehler kann die folgenden Gr\u00fcnde haben: Die Laufzeitumgebung hat die f\u00fcr das KeySet konfigurierte Schl\u00fcsselerstellungsklasse nicht gefunden, oder die Klasse implementiert weder "com.ibm.websphere.crypto.KeyGenerator" noch "com.ibm.websphere.crypto.KeyPairGenerator".
+crypto.key.generate.class.load.error.CWPKI0202E.useraction=Vergewissern Sie sich, dass die konfigurierte Schl\u00fcsselerstellungsklasse an einer Position definiert ist, die die Laufzeitumgebung des Anwendungsservers finden kann. Suchen Sie im Information Center nach Informationen dazu, wie angepasste Klassen angegeben werden, so dass sie von der Laufzeitumgebung gefunden werden.
+# -------------------------------------------------------------------------------------------------
+crypto.key.import.error.CWPKI0203E=CWPKI0203E: Der Versuch, Schl\u00fcssel in den Schl\u00fcsselsatz {0} zu importieren, ist fehlgeschlagen. Ausnahme: {1}
+crypto.key.import.error.CWPKI0203E.explanation=Die \u00fcbergebenen Schl\u00fcssel haben m\u00f6glicherweise nicht das korrekte Format, oder die Schl\u00fcssel konnten nicht im Keystore gespeichert werden.
+crypto.key.import.error.CWPKI0203E.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme und passen Sie die Konfiguration entsprechend an.
+# -------------------------------------------------------------------------------------------------
+crypto.key.auto.generate.error.CWPKI0204E=CWPKI0204E: Bei einer geplanten Schl\u00fcsselerstellung f\u00fcr die Schl\u00fcsselsatzgruppe {0} ist ein Fehler aufgetreten. Ausnahme: {1}
+crypto.key.auto.generate.error.CWPKI0204E.explanation=Beim Erstellen einer neuen Schl\u00fcsselreferenz f\u00fcr die angegebene KeySetGroup ist ein Fehler aufgetreten. Der Schl\u00fcssel wurde nach der Erstellung der Schl\u00fcsselreferenz in der Konfiguration generiert. Einer dieser Schritte ist fehlgeschlagen.
+crypto.key.auto.generate.error.CWPKI0204E.useraction=Bestimmen Sie die Fehlerursache anhand der Ausnahme und passen Sie die Konfiguration entsprechend an.
+
+################################################################################
+# Range 300-399 reserved for Signer Util Messages
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Verwenden Sie die Optionen -listRemoteKeyStoreNames und -listLocalKeyStoreNames, um eine Liste mit Namen f\u00fcr <Name_des_fernen_Keystore> bzw. <Name_des_lokalen_Keystore> abzurufen.\n\
+\n\
+Syntax: retrieveSigners <Name_des_fernen_Keystore> <Name_des_lokalen_Keystore> [Optionen]\n\
+\        Optionen: [-profileName <Profilname>] [-remoteAlias <Alias_aus_fernem_Keystore>] [-localAlias <Alias_f\u00fcr_Speichern>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <Host>] [-port <Port>] [-conntype <RMI|SOAP>] [-user <Benutzer>] [-password <Kennwort>] [-trace] [-logfile <Dateiname>] [-replacelog] [-quiet] [-help]\n
+ssl.signer.retrieval.usage.CWPKI0300I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.retrieval.usage.CWPKI0300I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: Tracemodus aktiviert.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: Das System kann nicht in die Traceprotokolldatei an der folgenden Position schreiben: {0}
+ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=Beim Schreiben in die angegebene Protokolldatei ist ein Fehler aufgetreten.
+ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=\u00c4ndern Sie den Pfad der Protokolldatei oder stellen Sie sicher, dass die angegebene Datei nicht im Gebrauch ist.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: Der Trace wird an die folgende Position geschrieben: {0}
+ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.remote.truststore.not.found.CWPKI0304E=CWPKI0304E: Der ferne Keystore {0} wurde nicht auf dem Server gefunden.
+ssl.signer.remote.truststore.not.found.CWPKI0304E.explanation=Der ferne Keystore wurde nicht gefunden. 
+ssl.signer.remote.truststore.not.found.CWPKI0304E.useraction=Setzen Sie den Befehl -listRemoteKeyStoreNames ab, um die Liste der Namen abzurufen.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.alias.not.found.CWPKI0305E=CWPKI0305E: Der Alias {0} wurde nicht im Truststore {1} auf dem Server gefunden.
+ssl.signer.alias.not.found.CWPKI0305E.explanation=Der angegebene Alias wurde nicht im Truststore gefunden.
+ssl.signer.alias.not.found.CWPKI0305E.useraction=Setzen Sie den Befehl -listRemoteKeyStoreNames ab, um die Liste der Namen abzurufen.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: Die folgenden fernen Keystores sind auf dem angegebenen Server vorhanden: {0}
+ssl.signer.remote.truststore.list.CWPKI0306I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.remote.truststore.list.CWPKI0306I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Die folgenden lokalen Keystores sind auf dem Client vorhanden: {0}
+ssl.signer.local.truststore.list.CWPKI0307I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.local.truststore.list.CWPKI0307I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Das System f\u00fcgt den Unterzeichneralias {0} dem lokalen Keystore {1} mit dem folgenden SHA-Digest hinzu: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.no.signers.added.CWPKI0309I=CWPKI0309I: Alle Unterzeichner aus dem fernen Keystore sind bereits im lokalen Keystore enthalten.
+ssl.signer.no.signers.added.CWPKI0309I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.signer.no.signers.added.CWPKI0309I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.local.truststore.not.found.CWPKI0310E=CWPKI0310E: Der angegebene Name f\u00fcr den lokalen Keystore, {0}, wurde nicht auf dem Client gefunden.
+ssl.signer.local.truststore.not.found.CWPKI0310E.explanation=Der lokale Keystore wurde nicht gefunden.
+ssl.signer.local.truststore.not.found.CWPKI0310E.useraction=Setzen Sie den Befehl "-listLocalKeyStoreNames" ab, um die Liste der Namen anzuzeigen.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.before.date.invalid.CWPKI0311E=CWPKI0311E: Das Zertifikat mit dem registrierten Namen des Zertifikatinhabers {0} hat das Anfangsdatum {1}, das hinter dem aktuellen Datum (Zeit) liegt. Dies passiert, wenn die Uhr des Clients der Uhr des Servers vorausgeht. Stellen Sie sicher, dass die Uhren von Client und Server synchronisiert sind, und wiederholen Sie anschlie\u00dfend die Anforderung.
+ssl.certificate.before.date.invalid.CWPKI0311E.explanation=Das Anfangsdatum des Zertifikats ist nicht g\u00fcltig.
+ssl.certificate.before.date.invalid.CWPKI0311E.useraction=Stellen Sie sicher, dass die Uhr des Clients mit der Uhr des Servers synchronisiert ist. Andernfalls erstellen Sie ein Zertifikat mit einem korrekten Anfangsdatum.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.end.date.invalid.CWPKI0312E=CWPKI0312E: Das Zertifikat mit dem registrierten Namen des Zertifikatinhabers {0} hat das Enddatum {1}, das nicht mehr g\u00fcltig ist.
+ssl.certificate.end.date.invalid.CWPKI0312E.explanation=Das Zertifikat ist verfallen.
+ssl.certificate.end.date.invalid.CWPKI0312E.useraction=Ersetzen Sie das Zertifikat durch ein g\u00fcltiges Zertifikat.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.invalid.option.CWPKI0313W=CWPKI0313W: Die folgende Option ist nicht g\u00fcltig: {0}
+ssl.signer.invalid.option.CWPKI0313W.explanation=\u00dcberpr\u00fcfen Sie in der Befehlszeile, ob die angegebene Option g\u00fcltig ist.
+ssl.signer.invalid.option.CWPKI0313W.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
+# -------------------------------------------------------------------------------------------------
+ssl.signer.general.error.CWPKI0314E=CWPKI0314E: Der folgende Fehler wurde nach einer Ausnahme zur\u00fcckgegeben: {0}
+ssl.signer.general.error.CWPKI0314E.explanation=\u00dcberpr\u00fcfen Sie in der Befehlszeile, ob die angegebenen Optionen g\u00fcltig sind.
+ssl.signer.general.error.CWPKI0314E.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
+# -------------------------------------------------------------------------------------------------
+ssl.no.properties.error.CWPKI0315E=CWPKI0315E: Die SSL-Konfigurationseigenschaften sind null. M\u00f6glicherweise ist bei der Syntaxanalyse der SSL-Clientkonfiguration ein Fehler aufgetreten.
+ssl.no.properties.error.CWPKI0315E.explanation=Es sind keine SSL-Konfigurationseigenschaften definiert. Die Eigenschaft \'com.ibm.SSL.ConfigURL\' ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df definiert, oder bei der Syntaxanalyse der SSL-Clientkonfiguration ist ein Fehler aufgetreten.
+ssl.no.properties.error.CWPKI0315E.useraction=\u00dcberpr\u00fcfen Sie die Datei ssl.client.props auf Fehler und stellen Sie sicher, dass die Eigenschaft \'com.ibm.SSL.ConfigURL\' gesetzt ist.
+
+################################################################################
+# Range 400-599 reserved for CA Pure Client Util and Impls
+################################################################################
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.usage=CWPKI0400I: 
+ssl.ca.client.usage.explanation=Verwendungsinformationen zu den Parametern f\u00fcr die Ausf\u00fchrung des Script.
+ssl.ca.client.usage.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.tracemodeon=CWPKI0401I: Der Tracemodus ist aktiviert.
+ssl.ca.client.tracemodeon.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.client.tracemodeon.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.logfile.error=CWPKI0402E: Das System kann nicht in die Traceprotokolldatei an der folgenden Position schreiben: {0}
+ssl.ca.client.logfile.error.explanation=Beim Schreiben in die angegebene Protokolldatei ist ein Fehler aufgetreten.
+ssl.ca.client.logfile.error.useraction=\u00c4ndern Sie den Pfad der Protokolldatei oder stellen Sie sicher, dass die angegebene Datei nicht im Gebrauch ist.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.logfile.location=CWPKI0403I: Der Trace wird an der folgenden Position protokolliert: {0}
+ssl.ca.client.logfile.location.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.client.logfile.location.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option=CWPKI0404W: Die folgende Option ist nicht g\u00fcltig: {0}
+ssl.ca.client.invalid.option.explanation=Die angegebene Option ist nicht korrekt.
+ssl.ca.client.invalid.option.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.general.error=CWPKI0405E: Der folgende Fehler wird von einer Ausnahme zur\u00fcckgegeben: {0}
+ssl.ca.client.general.error.explanation=Eine angegebene Option ist nicht korrekt.
+ssl.ca.client.general.error.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.custom.class.not.found=CWPKI0406E: Die Implementierungsklasse des PKI-Clients, {0} , wurde nicht gefunden.
+ssl.ca.client.custom.class.not.found.explanation=Der Versuch, die angepasste PKI-Clientimplementierung zu laden, ist fehlgeschlagen, weil die Klasse vom Klassenlader nicht gefunden wurde.
+ssl.ca.client.custom.class.not.found.useraction=Stellen Sie sicher, dass die angepasste Klasse im Verzeichnis classes Ihrer Installation vorhanden ist.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.custom.class.invalid=CWPKI0407E: Die Implementierungsklasse des PKI-Clients, {0}, ist keine Instanz von "com.ibm.ws.ssl.WSPKIClient".
+ssl.ca.client.custom.class.invalid.explanation=Der Versuch, die angepasste PKI-Clientimplementierung zu laden, ist fehlgeschlagen, weil die Klasse keine Instanz von com.ibm.ws.ssl.WSPKIClient ist.
+ssl.ca.client.custom.class.invalid.useraction=Stellen Sie sicher, dass die angepasste Klasse com.ibm.ws.ssl.WSPKIClient implementiert.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.not.personal.cert=CWPKI0408E: Das Zertifikat {0} ist kein pers\u00f6nliches Zertifikat.
+ssl.ca.client.not.personal.cert.explanation=Das angegebene Zertifikat ist kein pers\u00f6nliches Zertifikat.
+ssl.ca.client.not.personal.cert.useraction=F\u00fchren Sie den Befehl mit einem pers\u00f6nlichen Zertifikatsaliasnamen erneut aus.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.cert.does.not.exist=CWPKI0409E: Der Zertifikatsalias {0} ist nicht im Keystore {1} vorhanden.
+ssl.ca.client.cert.does.not.exist.explanation=Das System konnte das Zertifikat nicht von der Zertifizierungsstelle empfangen, weil die \u00f6ffentlichen Schl\u00fcssel nicht \u00fcbereinstimmen.
+ssl.ca.client.cert.does.not.exist.useraction=F\u00fchren Sie den Befehl erneut aus und verwenden Sie dazu ein Zertifikat, das von einer Zertifizierungsstelle empfangen und \u00fcber eine Zertifikatsanforderung generiert wurde, die vom angegebenen Alias in diesem Keystore stammt.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.keystore.not.found=CWPKI0410E: Der als Alias {0} angegebene lokale Keystore wurde nicht auf dem Client gefunden.
+ssl.ca.client.keystore.not.found.explanation=Der lokale Keystore wurde nicht gefunden.
+ssl.ca.client.keystore.not.found.useraction=Stellen Sie sicher, dass der Keystore auf dem Client vorhanden ist und einen Alias in der Datei "ssl.client.props" hat.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.cert.publickey.not.found=CWPKI0411E: Es wurde kein Zertifikat mit einem \u00f6ffentlichen Schl\u00fcssel, der dem \u00f6ffentlichen Schl\u00fcssel in dem von der Zertifizierungsstelle empfangenen Zertifikat entspricht, im Keystore {0} gefunden.
+ssl.ca.client.cert.publickey.not.found.explanation=Damit Sie ein Zertifikat in einem Keystore empfangen k\u00f6nnen, muss der \u00f6ffentliche Schl\u00fcssel des Zertifikats mit dem \u00f6ffentlichen Schl\u00fcssel eines Zertifikats im Keystore \u00fcbereinstimmen. 
+ssl.ca.client.cert.publickey.not.found.useraction=F\u00fchren Sie den Befehl mit einem Zertifikat, dessen \u00f6ffentlicher Schl\u00fcssel dem \u00f6ffentlichen Schl\u00fcssel eines Zertifikats im Keystore entspricht, erneut aus.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.request.out.of.band=CWPKI0412I: Das von der Zertifizierungsstelle zur\u00fcckgegebene Zertifikat ist null. Die Zertifikatsanforderung wurde nicht sofort verarbeitet und muss extern \u00fcber den Befehl "queryCertificate" abgerufen werden.
+ssl.ca.client.request.out.of.band.explanation=Die Zertifikatsanforderung wurde nicht sofort von der Zertifizierungsstelle verarbeitet und muss extern abgerufen werden.
+ssl.ca.client.request.out.of.band.useraction=F\u00fchren Sie queryCertificate aus, um den Status des Zertifikats zu \u00fcberpr\u00fcfen und es zu empfangen, sobald die Anforderung verarbeitet wurde.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option.type=CWPKI0413E: {0} wurde f\u00fcr {1} angegeben.
+ssl.ca.client.invalid.option.type.explanation=Der angegebene Wert hat nicht den richtigen Typ.
+ssl.ca.client.invalid.option.type.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie den Befehl, nachdem Sie den Typ des Werts korrigiert haben.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.option.value=CWPKI0414E: Die Option {0} muss mit einem Wert angegeben werden.
+ssl.ca.client.invalid.option.value.explanation=Es wurde kein Wert in der Befehlszeile angegeben.
+ssl.ca.client.invalid.option.value.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die Option korrigiert haben.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.init=CWPKI0415E: Der folgende Fehler ist bei der Initialisierung der CA-Implementierung aufgetreten: {0}
+ssl.ca.client.error.init.explanation= Beim Initialisieren der CA-Implementierung (Certificate Authority, Zertifizierungsstelle) ist ein Fehler aufgetreten.
+ssl.ca.client.error.init.useraction= Sehen Sie sich die zugeh\u00f6rige Fehlernachricht an.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.create=CWPKI0416E: Der folgende Fehler ist beim Erstellen eines signierten CA-Zertifikats aufgetreten: {0}
+ssl.ca.client.error.create.explanation= Beim Erstellen eines signierten CA-Zertifikats (Certificate Authority, Zertifizierungsstelle) ist ein Fehler aufgetreten.
+ssl.ca.client.error.create.useraction= Sehen Sie sich die zugeh\u00f6rige Fehlernachricht an.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.revoke=CWPKI0417E: Der folgende Fehler ist beim Widerrufen eines signierten CA-Zertifikats aufgetreten: {0}
+ssl.ca.client.error.revoke.explanation=Beim Widerrufen eines signierten CA-Zertifikats (Certificate Authority, Zertifizierungsstelle) ist ein Fehler aufgetreten.
+ssl.ca.client.error.revoke.useraction=Sehen Sie sich die zugeh\u00f6rige Fehlernachricht an.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.error.query=CWPKI0418E: Der folgende Fehler ist beim Anfragen eines signierten Zertifikats von der CA aufgetreten: {0}
+ssl.ca.client.error.query.explanation=Beim Abfragen eines signierten Zertifikats von der CA (Certificate Authority, Zertifizierungsstelle) ist ein Fehler aufgetreten.
+ssl.ca.client.error.query.useraction=Sehen Sie sich die zugeh\u00f6rige Fehlernachricht an.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.keystore.readonly=CWPKI0419E: Das System konnte das Zertifikat nicht empfangen, weil der angegebene Keystore schreibgesch\u00fctzt ist.
+ssl.ca.client.keystore.readonly.explanation=Das System versucht, ein empfangenes Zertifikat in einen schreibgesch\u00fctzten Keystore zu schreiben.
+ssl.ca.client.keystore.readonly.useraction=Geben Sie einen Keystore an, der beschreibbar ist.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.receive.failed=CWPKI0420E: Die Zertifikatsanforderung wurde von der CA verarbeitet, konnte aber nicht im Keystore gespeichert werden. Das Zertifikat wird widerrufen, und die Anforderung muss wiederholt werden. Sehen Sie sich die vorherigen Fehlernachrichten an, und beheben Sie die Probleme, bevor Sie die Zertifikatsanforderung wiederholen. 
+ssl.ca.client.receive.failed.explanation=Die von der CA, (Certificate Authority, Zertifizierungsstelle) empfangene Zertifikatsanforderung konnte nicht erfolgreich im angegebenen Keystore gespeichert werden. Deshalb wurde das Zertifikat widerrufen, und Sie m\u00fcssen die Anforderung wiederholen, um ein neues Zertifikat anzufordern.
+ssl.ca.client.receive.failed.useraction=Sehen Sie sich die vorherigen Fehlernachrichten an, die sich auf das Speichern des Keystores beziehen, und beheben Sie die Probleme, bevor Sie die Zertifikatsanforderung wiederholen. 
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.created=CWPKI0421I: Es wurde eine PKCS10-Zertifikatsanforderung mit dem Alias {0} erstellt. Die Anforderung wird in der Datei {1} gespeichert.  
+ssl.ca.client.pkcs10.request.created.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.client.pkcs10.request.created.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.sending=CWPKI0422I: Das System generiert eine PKCS10-Zertifikatsanforderung.
+ssl.ca.client.pkcs10.request.sending.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.client.pkcs10.request.sending.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.pkcs10.request.failed=CWPKI0423E: Die PKCS10-Zertifikatsanforderung konnte wegen des folgenden Fehlers nicht erstellt werden: {0}
+ssl.ca.client.pkcs10.request.failed.explanation=Die PKCS10-Zertifikatsanforderung konnte wegen des angegebenen Fehlers nicht erstellt werden.
+ssl.ca.client.pkcs10.request.failed.useraction=Suchen Sie in den Nachrichtenprotokollen nach Einzelheiten.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.alias.exists=CWPKI0424E: Der Zertifikatsalias {0} ist bereits im Keystore {1} vorhanden.
+ssl.ca.client.alias.exists.explanation=Das System konnte die Zertifikatsanforderung nicht erstellen, weil der angegebene Alias bereits im Keystore vorhanden ist.
+ssl.ca.client.alias.exists.useraction=Geben Sie einen anderen Aliasnamen an.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.subjectdn.invalid=CWPKI0425E: Der angegebene subjectDN ist ung\u00fcltig.
+ssl.ca.client.subjectdn.invalid.explanation=Der angegebene registrierte Name des Zertifikatsinhabers (subjectDN) entspricht nicht dem Standard X500Principal.
+ssl.ca.client.subjectdn.invalid.useraction=\u00dcberpr\u00fcfen Sie den registrierten Namen des Zertifikatsinhabers und stellen Sie sicher, dass er das richtige Format hat.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.ignored.arguments=CWPKI0426W: Die folgenden Optionen wurden nicht erkannt und werden ignoriert: {0}
+ssl.ca.client.ignored.arguments.explanation=Mindestens eine der angegebenen Optionen wurde nicht erkannt und wird ignoriert.
+ssl.ca.client.ignored.arguments.useraction=\u00dcberpr\u00fcfen Sie die Befehlssyntax und stellen Sie sicher, dass die angegebenen Argumente korrekt sind.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.client.invalid.custom.attrs=CWPKI0427E: Die angepassten Attribute k\u00f6nnen nicht geparst werden. 
+ssl.ca.client.invalid.custom.attrs.explanation=Die angepassten Attribute wurden nicht ordnungsgem\u00e4\u00df eingegeben.
+ssl.ca.client.invalid.custom.attrs.useraction=Sehen Sie sich die Syntaxhilfe an und wiederholen Sie die Operation, nachdem Sie die angepassten Attribute korrigiert haben.
+
+
+
+
+#  CA CMP Client Impl
+ssl.ca.cmp.impl.invalid.attribute=CWPKI0450E: Das Attribut {0} fehlt oder hat einen ung\u00fcltigen Typ. Der richtige Typ ist {1}.
+ssl.ca.cmp.impl.invalid.attribute.explanation=Das an die Implementierung \u00fcbergebene Attribut ist null oder hat nicht den richtigen Typ.
+ssl.ca.cmp.impl.invalid.attribute.useraction=Stellen Sie sicher, dass das erforderliche Attribut an die Implementierung \u00fcbergeben wird.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.certificate.request=CWPKI0451E: Die Zertifikatsanforderung ist null.
+ssl.ca.cmp.impl.invalid.certificate.request.explanation=Die Bytefeldgruppe der Zertifikatsanforderung ist null.
+ssl.ca.cmp.impl.invalid.certificate.request.useraction=Stellen Sie sicher, dass eine g\u00fcltige Bytefeldgruppe f\u00fcr die Zertifikatsanforderung an die Implementierung \u00fcbergeben wird.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.revocation.reason=CWPKI0452E:  Das Widerrufkennwort f\u00fcr diese Anforderung ist null.
+ssl.ca.cmp.impl.invalid.revocation.reason.explanation=Die Bytefeldgruppe des Widerrufkennworts f\u00fcr diese Anforderung ist null.
+ssl.ca.cmp.impl.invalid.revocation.reason.useraction=Stellen Sie sicher, dass eine g\u00fcltige Bytefeldgruppe des Widerrufkennworts an die Implementierung \u00fcbergeben wird.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.general.error=CWPKI0453E:  Die folgende unerwartete Ausnahme ist eingetreten: {0}
+ssl.ca.cmp.impl.general.error.explanation=CMSG0001
+ssl.ca.cmp.impl.general.error.useraction=CMSG0002                                                                  
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.tempfile.error=CWPKI0454E: Das System konnte die tempor\u00e4re Datei {0} nicht erstellen.
+ssl.ca.cmp.impl.tempfile.error.explanation= Die tempor\u00e4re Datei konnte nicht in das Dateisystem geschrieben werden.
+ssl.ca.cmp.impl.tempfile.error.useraction= Stellen Sie sicher, dass der Pfad der tempor\u00e4ren Datei vorhanden, beschreibbar und gen\u00fcgend verf\u00fcgbaren Speicherplatz hat.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.request.created=CWPKI0455I: Es wird ein signiertes Zertifikat von der CA angefordert.
+ssl.ca.cmp.impl.request.created.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.cmp.impl.request.created.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.create.error=CWPKI0456E: Beim Anfordern des Zertifikats ist eine Ausnahme eingetreten: {0}
+ssl.ca.cmp.impl.create.error.explanation=Beim Anfordern des Zertifikats ist der angegebene Fehler aufgetreten.
+ssl.ca.cmp.impl.create.error.useraction=Suchen Sie in der Protokolldatei nach detaillierten Fehlerinformationen.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.error=CWPKI0457E: Beim Widerrufen des Zertifikats ist eine Ausnahme eingetreten: {0}
+ssl.ca.cmp.impl.revoke.error.explanation=Beim Widerrufen des Zertifikats ist der angegebene Fehler aufgetreten.
+ssl.ca.cmp.impl.revoke.error.useraction=Suchen Sie in der Protokolldatei nach detaillierten Fehlerinformationen.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.query.error=CWPKI0458E: Beim Abfragen des Zertifikats ist eine Ausnahme eingetreten: {0}
+ssl.ca.cmp.impl.query.error.explanation=Beim Abfragen des Zertifikats ist der angegebene Fehler aufgetreten.
+ssl.ca.cmp.impl.query.error.useraction=Suchen Sie in der Protokolldatei nach detaillierten Fehlerinformationen.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.invalid.certificate.chain=CWPKI0459E: Die Zertifikatskette ist null.
+ssl.ca.cmp.impl.invalid.certificate.chain.explanation=Es ist keine g\u00fcltige Zertifizierungskette f\u00fcr die Implementierung verf\u00fcgbar.
+ssl.ca.cmp.impl.invalid.certificate.chain.useraction=Stellen Sie sicher, dass eine g\u00fcltige Zertifizierungskette an die Implementierung \u00fcbergeben wird.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: Ein signiertes CA-Zertifikat wird widerrufen.
+ssl.ca.cmp.impl.revoke.request.created.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.cmp.impl.revoke.request.created.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.action.not.supported=CWPKI0461I: Die Aktion {0} wird von dieser Implementierung nicht unterst\u00fctzt.
+ssl.ca.cmp.impl.action.not.supported.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.cmp.impl.action.not.supported.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.revoke.request.processed=CWPKI0462I: Es wurde keine Zeritifikatswiderrufanforderung f\u00fcr den Zertifikatsalias {0} eingeleitet. Ursache: {1}
+ssl.ca.cmp.impl.revoke.request.processed.explanation=Eine Anforderung zum Widerrufen eines signierten CA-Zertifikats (Certificate Authority, Zertifizierungsstelle) wurde abgesetzt.
+ssl.ca.cmp.impl.revoke.request.processed.useraction=Fragen Sie bei der externen Zertifizierungsstelle nach, ob das Zertifikat erfolgreich widerrufen wurde.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.certificate.received=CWPKI0463I: Das Zertifikat wurde empfangen und im Keystore {0} als Alias {1} gespeichert.
+ssl.ca.cmp.impl.certificate.received.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.ca.cmp.impl.certificate.received.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.ca.cmp.impl.certificate.received.header=*** ZERTIFIKAT ***
+ssl.ca.cmp.impl.certificate.received.subject=Eigner:
+ssl.ca.cmp.impl.certificate.received.issuer=Aussteller:
+ssl.ca.cmp.impl.certificate.received.serial=Seriennummer:
+ssl.ca.cmp.impl.certificate.received.fingerprints=Elektronischer Fingerabdruck des Zertifikats:
+ssl.ca.cmp.impl.certificate.received.shadigest=SHA-1-Digest:
+ssl.ca.cmp.impl.certificate.received.md5digest=MD5-Digest:
+# -------------------------------------------------------------------------------------------------
+
+################################################################################
+# Range 600-799 reserved for Command Tasks located in sslCommandTask.nlsprops file
+################################################################################
+
+################################################################################
+# Range 800-899 reserved for Liberty specific messages
+################################################################################
+security.addprovider.error=CWPKI0800E: Es ist ein interner Fehler aufgetreten. Ausnahme beim Hinzuf\u00fcgen des Providers IBMJCEFIPS. Ausnahme: {0}
+security.addprovider.error.explanation=Beim Hinzuf\u00fcgen des Verschl\u00fcsselungsmoduls IBMJCEFIPS ist ein Fehler aufgetreten. Die Initialisierung des Servers wird fortgesetzt, aber die SSL-Unterst\u00fctzung ist m\u00f6glicherweise nicht verf\u00fcgbar.
+security.addprovider.error.useraction=CMSG0002                                                                  
+#--------------------------------------------------------------------------------------------------
+DEFAULT_OPTIONS_ERROR=CWPKI0801E: Es kann keine SSL-Standardkonfiguration erstellt werden. Ausnahme: {0}
+DEFAULT_OPTIONS_ERROR.explanation=Beim Erstellen der SSL-Standardkonfiguration ist ein Fehler aufgetreten.
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.start=CWPKI0802I: Das SSL-Zertifikat wird erstellt. Dieser Vorgang kann einige Sekunden dauern.
+ssl.create.certificate.start.explanation=Das SSL-Zertifikat ist nicht vorhanden und wird automatisch generiert. Dieser Vorgang kann einige Sekunden dauern. \
+Die Services, die SSL erfordern, werden erst gestartet, wenn das SSL-Zertifikat generiert wurde und die Konfiguration bereit ist.
+ssl.create.certificate.start.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.end=CWPKI0803A: Das SSL-Zertifikat wurde in {0} Sekunden erstellt. SSL-Schl\u00fcsseldatei: {1}
+ssl.create.certificate.end.explanation=Das SSL-Zertifikat wurde in der angegebenen Zeit generiert.
+ssl.create.certificate.end.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.error=CWPKI0804E: Fehler beim Erstellen des SSL-Zertifikats. Die SSL-Schl\u00fcsseldatei {0} kann nicht erstellt werden.
+ssl.create.certificate.error.explanation=Das SSL-Zertifikat konnte an der angegebenen Position nicht erstellt werden.
+ssl.create.certificate.error.useraction=Stellen Sie sicher, dass die Position f\u00fcr den Serverprozess zug\u00e4nglich ist. Alle FFDCs k\u00f6nnen auf einen schwerwiegenden Fehler bei der Generierung oder beim Laden der Schl\u00fcssel hinweisen.
+#--------------------------------------------------------------------------------------------------
+ssl.default.keystore.config.error=CWPKI0805E: Ein f\u00fcr den Standardkeystorespeicher erforderliches Kennwort fehlt.
+ssl.default.keystore.config.error.explanation=Die Keystore-Konfiguration enth\u00e4lt kein Kennwort f\u00fcr den Standardkeystore.
+ssl.default.keystore.config.error.useraction=\u00c4ndern Sie die Standard-Keystore-Konfiguration und geben Sie ein Kennwort an.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.config.error=CWPKI0806E: Die Keystorekonfiguration ist unvollst\u00e4ndig. Position und Typ m\u00fcssen angegeben werden.
+ssl.keystore.config.error.explanation=Die Keystore-Konfiguration enth\u00e4lt nicht alle erforderlichen Informationen.
+ssl.keystore.config.error.useraction=\u00c4ndern Sie das Keystore-Konfigurationsobjekt und geben Sie Position und Typ des Keystores an.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.not.found.warning=CWPKI0807W: Die Keystoreposition {0} wurde f\u00fcr das Element mit dem ID-Attribut {1} nicht gefunden.
+ssl.keystore.not.found.warning.explanation=Die Keystore-Position referenziert eine Position, die nicht vorhanden ist.
+ssl.keystore.not.found.warning.useraction=\u00c4ndern Sie die Keystore-Position und geben Sie eine Datei mit einem g\u00fcltigen Pfad an.
+#--------------------------------------------------------------------------------------------------
+ssl.create.certificate.password.error=CWPKI0808E: Ein Kennwort mit mindestens 6 Zeichen ist erforderlich, um den Standardkeystore zu erstellen. Der Standardkeystore wird nicht erstellt.
+ssl.create.certificate.password.error.explanation=F\u00fcr die Keystore-Konfiguration ist ein Kennwort mit mindestens 6 Zeichen erforderlich, um den Standard-Keystore zu erstellen.
+ssl.create.certificate.password.error.useraction=\u00c4ndern Sie die Standard-Keystore-Konfiguration und geben Sie ein Kennwort mit mindestens 6 Zeichen an.
+#--------------------------------------------------------------------------------------------------
+ssl.config.not.used.CWPKI0809W=CWPKI0809W: Beim Laden des Keystores {0} ist ein Fehler aufgetreten. Wenn eine SSL-Konfiguration den {1}-Keystore referenziert, schl\u00e4gt die Initialisierung der SSL-Konfiguration fehl. 
+ssl.config.not.used.CWPKI0809W.explanation=Die Keystore-Datei ist nicht vorhanden oder der Keystore-Typ oder das Kennwort sind nicht richtig, so dass jede SSL-Konfiguration, die den Keystore referenziert, nicht verwendet werden kann.
+ssl.config.not.used.CWPKI0809W.useraction=Beheben Sie den Keystore-Konfigurationsfehler.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.readonly.CWPKI0810I=CWPKI0810I: Der Keystore {0} ist schreibgesch\u00fctzt und das Zertifikat wird nicht in die Keystore-Datei geschrieben. Die Vertrauensbeziehung wird nur f\u00fcr diese Verbindung akzeptiert. 
+ssl.keystore.readonly.CWPKI0810I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+ssl.keystore.readonly.CWPKI0810I.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.keystore.modified.CWPKI0811I=CWPKI0811I: Die Keystore-Datei {0} wurde ge\u00e4ndert. Die Keystore-Datei wird erneut geladen, damit die aktualisierte Keystore-Datei verwendet werden kann.
+ssl.keystore.modified.CWPKI0811I.explanation=Die angegebene Keystore-Datei wurde ge\u00e4ndert und die Laufzeitumgebung wird mit der aktualisierten Keystore-Datei gestartet. 
+ssl.keystore.modified.CWPKI0811I.useraction=Es ist keine Aktion erforderlich.
+#--------------------------------------------------------------------------------------------------
+ssl.key.error.CWPKI0812E=CWPKI0812E: Fehler beim Abrufen des Schl\u00fcssels [{0}] aus dem Keystore [{1}]. Stellen Sie sicher, dass der Eintrag ein Schl\u00fcssel ist und dass das Schl\u00fcsselkennwort korrekt ist. Zur\u00fcckgegebene Ausnahme: [{2}].
+ssl.key.error.CWPKI0812E.explanation=Beim Wiederherstellen des Schl\u00fcssels aus der Keystore-Datei ist ein Fehler aufgetreten. M\u00f6glicherweise liegt ein Problem mit dem Schl\u00fcssel vor oder das Schl\u00fcsselkennwort ist nicht korrekt.
+ssl.key.error.CWPKI0812E.useraction=\u00dcberpr\u00fcfen Sie den Keystore, um sicherzustellen, dass der Schl\u00fcsseleintrag vorhanden ist und das richtige Kennwort f\u00fcr den Zugriff auf den Schl\u00fcsseleintrag konfiguriert ist.
+#--------------------------------------------------------------------------------------------------
+ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: Fehler beim Initialisieren des Key-Managers f\u00fcr den Keystore {0}]. Das Kennwort f\u00fcr den privaten Schl\u00fcssel ist nicht korrekt oder der Keystore hat mehrere private Schl\u00fcssel mit verschiedenen Kennw\u00f6rtern. Dieser Keystore kann nicht f\u00fcr SSL verwendet werden. Ausnahmenachricht: [{1}].
+ssl.unrecoverablekey.error.CWPKI0813E.explanation=Beim Initialisieren des Key-Managers ist ein Fehler aufgetreten. Es kann kein SSLContext erstellt werden, wenn das Kennwort f\u00fcr den privaten Schl\u00fcssel nicht korrekt ist oder wenn ein Keystore mehrere Schl\u00fcssel mit verschiedenen Kennw\u00f6rtern hat. 
+ssl.unrecoverablekey.error.CWPKI0813E.useraction=Stellen Sie sicher, dass das Kennwort f\u00fcr den privaten Schl\u00fcssel korrekt ist und dass der Keystore nicht mehrere Schl\u00fcssel mit verschiedenen Kennw\u00f6rtern hat, bevor Sie den Keystore f\u00fcr SSL-Verbindungen verwenden.
+#--------------------------------------------------------------------------------------------------
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Fehler bei der Initialisierung des Hardware-Keystores [{0}]. \u00dcberpr\u00fcfen Sie die Hardwarekonfigurationsdatei {1}, um sicherzustellen, dass die Attribute korrekt definiert sind. Die vom Provider zur\u00fcckgegebene Ausnahme ist {2}.
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=Die Hardwarekonfiguration weist einen Fehler auf, der die Verwendung des Keystores verhindert. Wenn es eine SSL-Konfiguration gibt, die diesen Keystore referenziert, kann der Keystore nicht verwendet werden.
+ssl.hwkeystore.load.error.CWPKI0814E.useraction=Stellen Sie sicher, dass die Hardwarekonfigurationsdatei die erforderlichen Attribute (Name und Bibliothek) enth\u00e4lt. Vergewissern Sie sich, dass die anderen Attribute in der Konfigurationsdatei der Hardwareeinheitenspezifikation entsprechen.
+#--------------------------------------------------------------------------------------------------
+ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: In mehreren OutboundConnection-Elementen sind Host [{0}] und Port [{1}] als Filter angegeben. Es wird das im SSL-Element [{2}] verwendete OutboundConnection-Element verwendet.
+ssl.dynamicSelection.conflict.CWPKI0815W.explanation=In der Serverkonfiguration sind OutboundConnection-Elemente definiert, mit miteinander in Konflikt stehen. Zur Bestimmung der Konfiguration f\u00fcr abgehende SSL-Anforderungen verwendet der Server das erste OutboundConnection-Element, das er verarbeitet.
+ssl.dynamicSelection.conflict.CWPKI0815W.useraction=\u00dcberpr\u00fcfen Sie die miteinander in Konflikt stehenden OutboundConnection-Elements in der Serverkonfiguration und entfernen Sie die Elemente, die Sie nicht ben\u00f6tigen.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultOutbound.conflict.CWPKI0816W=CWPKI0816W: Das Element outboundConnection mit einem Stern (*) f\u00fcr den Host und den Port ist auf die SSL-Konfiguration [{0}] gesetzt. Diese Einstellung steht in Konflikt mit der Attributeinstellung outboundSSLRef. Die {1}-SSL-Konfiguration, die \u00fcber das Attribut outboundSSLRef angegeben ist, wird verwendet.
+ssl.defaultOutbound.conflict.CWPKI0816W.explanation=Das Element outboundConnection mit einem Stern (*) f\u00fcr den Host und den Port steht in Konflikt mit dem konfigurierten Attribut outboundSSLRef. Der Server verwendet die \u00fcber das Attribut outboundSSLRef angegebene SSL-Konfiguration.
+ssl.defaultOutbound.conflict.CWPKI0816W.useraction=\u00dcberpr\u00fcfen Sie die in Konflikt stehende Konfiguration und ermitteln Sie, welche Konfiguration als Standard-SSL-Konfiguration verwendet werden soll. Entfernen Sie die Konfiguration, die Sie nicht ben\u00f6tigen.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.expected.CWPKI0817A=CWPKI0817A: Die SSL-Standardkonfiguration erwartet ein Element <keyStore> mit dem ID-Wert {0} und einem Kennwort. Das Element {0} <Schl\u00fcsselspeicher> fehlt oder das Kennwort wurde nicht angegeben. Definieren Sie das fehlende Element <keyStore id="{0}" password="IhrKennwort" /> oder \u00e4ndern Sie die SSL-Standardkonfiguration so, dass ein vorhandener Keystore verwendet wird. Sehen Sie sich das folgende Beispiel an: <ssl id="defaultSSLConfig" keyStoreRef="newKeyStore" />.
+ssl.defaultKeyStore.expected.CWPKI0817A.explanation=Die SSL-Standardkonfiguration erwartet das Standardelement keystore, das nicht vorhanden ist.
+ssl.defaultKeyStore.expected.CWPKI0817A.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration und f\u00fcgen Sie den fehlenden Keystore hinzu oder \u00e4ndern Sie die SSL-Standardkonfiguration so, dass sie einen anderen Schl\u00fcsselspeicher verwendet.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: Die SSL-Standardkonfiguration verweist auf ein Element <keyStore> mit dem ID-Wert {0}, das nicht in der Konfiguration vorhanden ist oder in dessen Definition ein Kennwort fehlt. Definieren Sie einen Keystore mit der ID {0} oder aktualisieren Sie das Element <ssl id="defaultSSLConfig" keyStoreRef="{0}" /> so, dass es auf einen vorhandenen Keystore verweist.
+ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.explanation=Die SSL-Standardkonfiguration erwartet das Element keystore, das aber nicht vorhanden ist.
+ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration und \u00e4ndern Sie die Konfiguration so, dass sie auf einen vorhandenen Keystore verweist, oder definieren Sie den referenzierten Keystore.

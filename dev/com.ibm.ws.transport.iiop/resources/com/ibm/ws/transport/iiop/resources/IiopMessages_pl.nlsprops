@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: Serwer nazw CORBA jest teraz dost\u0119pny w {0}.
+NAME_SERVER_AVAILABLE.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+NAME_SERVER_AVAILABLE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: Serwer nazw CORBA nie jest ju\u017c dost\u0119pny w {0}.
+NAME_SERVER_UNAVAILABLE.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+NAME_SERVER_UNAVAILABLE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: \u017b\u0105danie wys\u0142ane do zabezpieczonego serwera na ho\u015bcie {0} nie powiod\u0142o si\u0119, poniewa\u017c w bie\u017c\u0105cej konfiguracji nie w\u0142\u0105czono zabezpiecze\u0144. Nale\u017cy skonfigurowa\u0107 zabezpieczenia Common Secure Interoperability Version 2 (CSIv2) po stronie klienta (\u017c\u0105dania wychodz\u0105ce), uwzgl\u0119dniaj\u0105c element keyStore i dodaj\u0105c odpowiedni\u0105 wersj\u0119 sk\u0142adnika appSecurity na serwerze lub odpowiedni\u0105 wersj\u0119 sk\u0142adnika appSecurityClient w kontenerze klienta aplikacji.  
+PORT_ZERO.explanation= \u017b\u0105danie wys\u0142ane do serwera na wskazanym ho\u015bcie nie powiod\u0142o si\u0119. Serwer, do kt\u00f3rego wys\u0142ano \u017c\u0105danie, ma w\u0142\u0105czone zabezpieczenia CSIv2, a bie\u017c\u0105ca konfiguracja - nie. Klient \u0142\u0105cz\u0105cy si\u0119 z serwerem tak\u017ce musi by\u0107 skonfigurowany w taki spos\u00f3b, aby obs\u0142ugiwa\u0142 zabezpieczenia CSIv2 i Secure Sockets Layer (SSL).
+PORT_ZERO.useraction= Nale\u017cy skonfigurowa\u0107 zabezpieczenia Common Secure Interoperability Version 2 (CSIv2) po stronie klienta (\u017c\u0105dania wychodz\u0105ce), uwzgl\u0119dniaj\u0105c element keyStore i dodaj\u0105c odpowiedni\u0105 wersj\u0119 sk\u0142adnika appSecurity na serwerze lub odpowiedni\u0105 wersj\u0119 sk\u0142adnika appSecurityClient w kontenerze klienta aplikacji. Sprawd\u017a w dokumentacji bie\u017c\u0105ca wersj\u0119 sk\u0142adnika appSecurity lub appSecurityClient, kt\u00f3ry ma zosta\u0107 dodany do konfiguracji u\u017cytkownika i ka\u017cdej innej wymaganej konfiguracji. 

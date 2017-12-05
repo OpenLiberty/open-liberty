@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: Nie mo\u017cna okre\u015bli\u0107 typu w\u0142a\u015bciwo\u015bci do wstrzykni\u0119cia. U\u017cyty typ punktu wstrzykiwania: {0}.
+unable.to.determine.injection.type.CWMCG5001E.explanation=Punkt wstrzykiwania z adnotacj\u0105 w postaci kwalifikatora @ConfigProperty nie ma poprawnego typu.
+unable.to.determine.injection.type.CWMCG5001E.useraction=Zmie\u0144 typ punktu wstrzykiwania na taki, kt\u00f3ry jest poprawny w przypadku wstrzykiwanej w\u0142a\u015bciwo\u015bci.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: Nale\u017cy poda\u0107 nazw\u0119 w\u0142a\u015bciwo\u015bci na potrzeby wstrzykiwania w\u0142a\u015bciwo\u015bci konfiguracyjnych Constructor i Method.
+unable.to.determine.injection.name.CWMCG5002E.explanation=Nie mo\u017cna pobra\u0107 domy\u015blnej nazwy w\u0142a\u015bciwo\u015bci dla parametr\u00f3w Constructors i Method. Do kwalifikatora @ConfigProperty nale\u017cy przekaza\u0107 poprawn\u0105 w\u0142a\u015bciwo\u015b\u0107. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=Ustaw poprawn\u0105 nazw\u0119 w\u0142a\u015bciwo\u015bci przy u\u017cyciu kwalifikatora @ConfigProperty.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: Nie rozstrzygni\u0119to zale\u017cno\u015bci InjectionPoint {0}. B\u0142\u0105d: {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=Nie rozstrzygni\u0119to wstrzykni\u0119tej w\u0142a\u015bciwo\u015bci konfiguracji. Nie mo\u017cna znale\u017a\u0107 wymienionej w\u0142a\u015bciwo\u015bci albo nie mo\u017cna rozstrzygn\u0105\u0107 konwertera dla wymaganego typu. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=Sprawd\u017a komunikat serwera i dzienniki ffdc, aby okre\u015bli\u0107 przyczyn\u0119 problemu. Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 istnieje w jednym ze \u017ar\u00f3de\u0142 konfiguracji i \u017ce skonfigurowano wymagane konwertery.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: Nie znaleziono w\u0142a\u015bciwo\u015bci konfiguracji {0}.
+property.not.found.CWMCG5004E.explanation=W\u0142a\u015bciwo\u015bci o podanej nazwie nie mo\u017cna by\u0142o znale\u017a\u0107 w \u017cadnym ze skonfigurowanych \u017ar\u00f3de\u0142. 
+property.not.found.CWMCG5004E.useraction=Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 istnieje w jednym ze \u017ar\u00f3de\u0142 konfiguracji.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API Config: {0}.
+temporary.CWMCG5999E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu API Config, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMCG5999E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+

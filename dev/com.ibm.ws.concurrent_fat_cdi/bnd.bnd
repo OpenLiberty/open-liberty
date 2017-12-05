@@ -15,7 +15,7 @@ src: \
 	fat/src,\
 	test-applications/concurrentCDIApp/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

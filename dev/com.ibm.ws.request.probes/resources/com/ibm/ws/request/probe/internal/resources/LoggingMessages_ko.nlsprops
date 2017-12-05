@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.probe/resources/com/ibm/ws/request/probe/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3200 to 3399 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+
+# updated the old TRAS0116E to TRAS3200E
+INSTR_INST_NOT_AVAILABLE_ERROR=TRAS3200E: \ubaa8\ub2c8\ud130\ub9c1 \ubc0f \uc9c4\ub2e8 \uae30\ub2a5\uc774 \uc791\ub3d9\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c Java \uc778\uc2a4\ud2b8\ub8e8\uba3c\ud14c\uc774\uc158 \uc778\uc2a4\ud134\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. -javaagent JVM \uc635\uc158\uc744 \uc0ac\uc6a9\ud558\uc5ec ws-javaagent.jar \ud30c\uc77c\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624
+INSTR_INST_NOT_AVAILABLE_ERROR.explanation=\ubc14\uc774\ud2b8 \ucf54\ub4dc\ub97c \uc0bd\uc785\ud558\uc5ec \ud074\ub798\uc2a4\ub97c \ubcc0\ud658\ud558\ub824\uba74 \uc778\uc2a4\ud2b8\ub8e8\uba3c\ud14c\uc774\uc158 \uc778\uc2a4\ud134\uc2a4\uac00 \ud544\uc694\ud569\ub2c8\ub2e4. Liberty\uc5d0\uc11c\ub294 \ubc14\uc774\ud2b8 \ucf54\ub4dc \uc778\uc81d\uc158\uc744 \uc0ac\uc6a9\ud558\uc5ec \ubaa8\ub2c8\ud130\ub9c1 \ubc0f \uc9c4\ub2e8 \uc815\ubcf4\ub97c \uc0dd\uc131\ud569\ub2c8\ub2e4.
+INSTR_INST_NOT_AVAILABLE_ERROR.useraction=Java \uc778\uc2a4\ud2b8\ub8e8\uba3c\ud14c\uc774\uc158\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 \ucd94\uac00 JVM \uc124\uc815\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. -javaagent JVM \uc635\uc158\uc744 \uc0ac\uc6a9\ud558\uc5ec ws-javaagent.jar \ud30c\uc77c\uc744 \uad6c\uc131\ud558\uc2ed\uc2dc\uc624. ws-javaagent.jar \ud30c\uc77c\uc740 Liberty \ud504\ub85c\ud30c\uc77c \uc124\uce58\uc758 ${wlp.install.dir}/bin/tools \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
+
+REQUEST_PROBE_FORMAT_HEADER_DURATION=\uc9c0\uc18d \uc2dc\uac04
+REQUEST_PROBE_FORMAT_HEADER_OPERATION=\uc870\uc791

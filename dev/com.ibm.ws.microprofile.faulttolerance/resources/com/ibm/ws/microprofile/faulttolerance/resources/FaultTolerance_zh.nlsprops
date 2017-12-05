@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#A timeout occurred. 
+timeout.occurred.CWMFT0000E=CWMFT0000E: \u53d1\u751f\u4e86\u8d85\u65f6\u3002
+timeout.occurred.CWMFT0000E.explanation=\u64cd\u4f5c\u8017\u65f6\u8fc7\u957f\uff0c\u65e0\u6cd5\u5728\u6240\u914d\u7f6e\u8d85\u65f6\u8303\u56f4\u5185\u5b8c\u6210\u3002
+timeout.occurred.CWMFT0000E.useraction=\u589e\u52a0\u8d85\u65f6\u7684\u6700\u957f\u6301\u7eed\u65f6\u95f4\uff0c\u6216\u786e\u4fdd\u8be5\u64cd\u4f5c\u66f4\u5feb\u5b8c\u6210\u3002
+
+#No free capacity was available in the bulkhead for method {0}.
+bulkhead.no.threads.CWMFT0001E=CWMFT0001E: \u65b9\u6cd5 {0} \u7684\u9694\u677f\u4e2d\u6ca1\u6709\u53ef\u7528\u5bb9\u91cf\u3002
+bulkhead.no.threads.CWMFT0001E.explanation=\u5bf9\u8be5\u65b9\u6cd5\u7684\u8c03\u7528\u672a\u6210\u529f\uff0c\u56e0\u4e3a\u8be5\u65b9\u6cd5\u7684\u9694\u677f\u5df2\u6ee1\u3002
+bulkhead.no.threads.CWMFT0001E.useraction=\u8bf7\u589e\u52a0\u9694\u677f\u5bb9\u91cf\u6216\u51cf\u5c11\u6b64\u670d\u52a1\u7684\u5e76\u884c\u5de5\u4f5c\u8d1f\u8f7d\u4ee5\u63d0\u9ad8\u9694\u677f\u7684\u53ef\u7528\u6027\u3002
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMFT4998E=CWMFT4998E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u5f02\u5e38\u4e3a {0}\u3002
+internal.error.CWMFT4998E.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u9047\u5230\u4e86\u5185\u90e8\u9519\u8bef\u3002
+internal.error.CWMFT4998E.useraction=\u6536\u96c6\u4e00\u7ec4\u9488\u5bf9\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u7684\u8ddf\u8e2a\u5e76\u63d0\u4ea4\u65b0\u95ee\u9898\u3002
+
+#Generic error for internal failures. 
+internal.error.CWMFT4999E=CWMFT4999E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002
+internal.error.CWMFT4999E.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u9047\u5230\u4e86\u5185\u90e8\u9519\u8bef\u3002
+internal.error.CWMFT4999E.useraction=\u6536\u96c6\u4e00\u7ec4\u9488\u5bf9\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u7684\u8ddf\u8e2a\u5e76\u63d0\u4ea4\u65b0\u95ee\u9898\u3002
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT9999E=CWMFT9999E: \u53d1\u751f\u4e86\u6545\u969c\u5bb9\u9519 API \u9519\u8bef\uff1a{0}
+temporary.CWMFT9999E.explanation=\u53d1\u751f\u4e86\u6545\u969c\u5bb9\u9519 API \u9519\u8bef\uff0c\u65e0\u6cd5\u6267\u884c\u5e38\u89c4\u64cd\u4f5c\u3002
+temporary.CWMFT9999E.useraction=\u8bf7\u67e5\u770b FFDC \u65e5\u5fd7\u548c\u5f02\u5e38\u6587\u672c\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

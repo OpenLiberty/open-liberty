@@ -13,7 +13,7 @@ compileJava {
     doLast {
         ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace') {
             classpath {
-                fileset(dir: "${rootDir}/cnf/lib", includes: "ras-instrumentation.jar")
+                fileset(dir: cnf.file('lib'), includes: 'ras-instrumentation.jar')
             }
         }
         println 'Running manual instrumentation for webcontainer'

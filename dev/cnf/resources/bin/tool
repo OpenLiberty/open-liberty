@@ -241,14 +241,14 @@ if [ -n "$defaultFileEncoding" ]; then
   fi
 fi
 
+# If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
+if [ -f "${JAVA_HOME}/lib/modules" ]; then
+  JVM_ARGS="--add-modules java.se.ee --add-opens java.base/java.lang=ALL-UNNAMED --add-exports java.base/sun.security.action=ALL-UNNAMED ${JVM_ARGS}"
+fi
+
 # Prevent the Java invocation appearing as an application on a mac
 # Setting on all platforms to avoid cross platform bugs
 JVM_ARGS="-Djava.awt.headless=true ${JVM_ARGS}"
-
-# If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
-if [ -f "${JAVA_HOME}/lib/modules" ]; then 
-  JVM_ARGS="${JVM_ARGS} --add-modules java.se.ee --add-opens java.base/java.lang=ALL-UNNAMED --add-exports java.base/sun.security.action=ALL-UNNAMED"
-fi
 
 # Execute the tool script or JAR.
 if [ -f "${WLP_INSTALL_DIR}"/lib/tools-internal/@TOOL_SCRIPT@ ]; then

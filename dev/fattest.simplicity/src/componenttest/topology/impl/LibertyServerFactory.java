@@ -13,8 +13,6 @@ package componenttest.topology.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,8 +27,10 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.exception.TopologyException;
+import componenttest.topology.utils.PrivHelper;
 
 public class LibertyServerFactory {
     //track the known Liberty servers by test class name, so that suites don't clean up servers from other test classes in the suite
@@ -44,20 +44,11 @@ public class LibertyServerFactory {
         OFF
     }
 
-    private static final boolean DELETE_RUN_FATS =
-                    Boolean.parseBoolean(AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            // Default is false if not set
-                            //nb the default passed in is ${delete.run.fats} but
-                            //parseBoolean does default that to false.
-                            return System.getProperty("delete.run.fats", "false");
-                        }
-                    }));
+    private static final boolean DELETE_RUN_FATS = PrivHelper.getBoolean("delete.run.fats");
 
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
-     * 
+     *
      * @return A stopped Liberty Server instance
      * @throws Exception
      */
@@ -67,7 +58,7 @@ public class LibertyServerFactory {
 
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
-     * 
+     *
      * @param serverName The name of the server
      * @param testClassName The name of the class to associate with the server.
      * @return A stopped Liberty Server instance
@@ -80,7 +71,7 @@ public class LibertyServerFactory {
      * This method will return a newly created LibertyServer instance with the specified server name.
      * Note if the ignoreCache parameter is set to false, then the returned LibertyServer instance may
      * not be newly-created.
-     * 
+     *
      * @return A stopped Liberty Server instance
      * @throws Exception
      */
@@ -125,7 +116,7 @@ public class LibertyServerFactory {
             //Associate the LibertyServer with the calling test name
             if (testClassName == null)
                 testClassName = getCallerClassNameFromStack();
-            Log.info(LibertyServerFactory.class, "getLibertyServer", "testClassName: " + testClassName + ", server: " + serverName);
+            Log.info(LibertyServerFactory.class, "getLibertyServer", "server=" + serverName + "   testClassName=" + testClassName);
 
             //synchronize while we look for an existing server with this name
             //and create one if it doesn't exist yet
@@ -154,22 +145,21 @@ public class LibertyServerFactory {
                         }
                     }
                 } else {
-                    Log.info(LibertyServerFactory.class, "getLibertyServer", "Ignoring cache for request for " + serverName);
+                    Log.finer(LibertyServerFactory.class, "getLibertyServer", "Ignoring cache for request for " + serverName);
                 }
 
                 //if we haven't yet encountered this server, then create the instance and
                 //copy the autoFVT contents to the servers dir and backup if necessary etc
                 if (ls == null) {
                     if (bootstrap == null) {
-                        Log.info(LibertyServerFactory.class, "getLibertyServer", "using default bootstrapping.properties");
+                        Log.finer(LibertyServerFactory.class, "getLibertyServer", "using default bootstrapping.properties");
                         bootstrap = Bootstrap.getInstance();
                     } else {
                         Log.info(LibertyServerFactory.class, "getLibertyServer", "using supplied bootstrapping.properties");
                     }
                     ls = new LibertyServer(serverName, bootstrap, ignoreCache, usePreviouslyConfigured, windowsServiceOption);
 
-                    if (!usePreviouslyConfigured)
-                    {
+                    if (!usePreviouslyConfigured) {
                         if (installServerFromSampleJar) {
                             if (!LibertyFileManager.libertyFileExists(ls.getMachine(), ls.getServerRoot())) {
                                 //Samples don't overwrite, so only bother running it if the server directory isn't already there
@@ -272,7 +262,7 @@ public class LibertyServerFactory {
 
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
-     * 
+     *
      * @return A started Liberty Server instance
      * @throws Exception
      */
@@ -291,13 +281,13 @@ public class LibertyServerFactory {
      * This method will install a sample server and download any external dependencies defined in it. Once the server is installed the server.xml will be exchanged with a default
      * server XML, that includes fatTestPorts.xml and the sample server.xml. The bootstrap.properties will be exchanged with a default properties file that includes the
      * "../testports.properties" file and the sample properties file. The server will then be added to the list of known servers and returned.
-     * 
+     *
      * @param serverName The name of the server to install, must be matched by a local file named serverName.jar in the lib/LibertyFATTestFiles folder (populated from publish/files
      *            in a FAT test project)
      * @param bootstrap The bootstrap to use on the server
      * @param ignoreCache <code>false</code> if we should load a cached server if available
      * @return The server
-     * 
+     *
      */
     public static LibertyServer installSampleServer(String serverName, Bootstrap bootstrap, boolean ignoreCache) {
         return getLibertyServer(serverName, bootstrap, ignoreCache, true, false, null);
@@ -311,12 +301,12 @@ public class LibertyServerFactory {
      * This method should not be ran by the user, it is ran by the JUnit
      * runner at the end of each test to ensure that post test tidying is
      * done.
-     * 
+     *
      * Once a server has under gone the tidy action, it needs to be removed
      * from the list of known servers, or subsequent cleanups will fail.
      * This will happen in the case of FATSuite being the entry point with
      * multiple test classes.
-     * 
+     *
      * @param testClassName, the name of the test class for which servers should be tidied
      * @throws Exception
      */
@@ -352,12 +342,12 @@ public class LibertyServerFactory {
     /**
      * This method should not be ran by the user, it is ran by the JUnit runner at the end of each test
      * to recover the servers.
-     * 
+     *
      * @param testClassName the name of the FAT test class to recover known servers for
      * @throws Exception
      */
     public static void recoverAllServers(String testClassName) throws Exception {
-        Log.info(c, "recoverAllServers", "Now recovering all servers known to test class: " + testClassName);
+        Log.finer(c, "recoverAllServers", "Now recovering all servers known to test class: " + testClassName);
 
         //If backups were required, so is recovery
         if (BACKUP_REQUIRED) {
@@ -405,7 +395,7 @@ public class LibertyServerFactory {
             Log.error(c, "", e);
             return null;
         } finally {
-            Log.info(c, "applicationsToVerify", appCount + " on server " + ls.getServerName());
+            Log.finer(c, "applicationsToVerify", appCount + " on server " + ls.getServerName());
         }
     }
 
@@ -513,17 +503,16 @@ public class LibertyServerFactory {
         RemoteFile usrServersDir = new RemoteFile(m, server.getServerRoot()).getParentFile(); //should be /wlp/usr/servers
 
         if (backup.exists()) {
-            Log.info(c, METHOD, "Backup file already exists... skipping backup");
             return;
         }
-        Log.info(c, METHOD, "Backing up Server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
+        Log.finer(c, METHOD, "Backing up Server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
 
         String workDir = usrServersDir.getAbsolutePath();
         String command = server.getMachineJavaJarCommandPath();
         String[] param = { "cMf", backup.getAbsolutePath(), server.getServerName() };
         ProgramOutput o = m.execute(command, param, workDir);
         if (o.getReturnCode() == 0) {
-            Log.info(c, METHOD, "Successfully backed up server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
+            Log.finer(c, METHOD, "Successfully backed up server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
         } else {
             Log.warning(c, "Backup jar process failed with return code " + o.getReturnCode());
             Log.warning(c, "Backup jar process failed with error " + o.getStderr());
@@ -545,7 +534,7 @@ public class LibertyServerFactory {
             Log.info(c, METHOD, "Backup file doesn't exist... skipping recovery");
             return;
         }
-        Log.info(c, METHOD, "Recovering Server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
+        Log.finer(c, METHOD, "Recovering Server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
 
         RemoteFile serverFolder = new RemoteFile(m, server.getServerRoot());
         if (!!!serverFolder.delete()) {
@@ -576,7 +565,7 @@ public class LibertyServerFactory {
         String[] param = { "xf", backup.getAbsolutePath() };
         ProgramOutput o = m.execute(command, param, workDir);
         if (o.getReturnCode() == 0) {
-            Log.info(c, METHOD, "Successfully recovered server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
+            Log.finer(c, METHOD, "Successfully recovered server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
         } else {
             Log.warning(c, "Recovery unjar process failed with return code " + o.getReturnCode());
             Log.warning(c, "Recovery unjar process failed with error " + o.getStderr());
@@ -647,7 +636,7 @@ public class LibertyServerFactory {
 
     /**
      * Hack to get the calling test class name from the stack.
-     * 
+     *
      * @param methodName the name of the method that is being called
      */
     private static String getCallerClassNameFromStack() {

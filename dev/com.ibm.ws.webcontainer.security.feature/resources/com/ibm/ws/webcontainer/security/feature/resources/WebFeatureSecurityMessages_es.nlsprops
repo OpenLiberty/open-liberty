@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security.feature/resources/com/ibm/ws/webcontainer/security/feature/resources/WebFeatureSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Feature Web Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9200 - CWWKS9249
+
+FEATURE_ROLE_CONFIG_PROCESSED=CWWKS9120I: El ID de correlaci\u00f3n de rol de caracter\u00edstica="{0}" se ha procesado correctamente.
+FEATURE_ROLE_CONFIG_PROCESSED.explanation=La correlaci\u00f3n de roles de autorizaci\u00f3n se ha procesado satisfactoriamente.
+FEATURE_ROLE_CONFIG_PROCESSED.useraction=No se requiere ninguna acci\u00f3n.
+AUTHZ_ROLE_ID_IS_NULL=CWWKS9121E: Falta el atributo id en el elemento <authorization-roles>.
+AUTHZ_ROLE_ID_IS_NULL.explanation=Se requiere el atributo id para procesar el elemento <authorization-roles>.
+AUTHZ_ROLE_ID_IS_NULL.useraction=Defina el valor adecuado para el atributo id del elemento <authorization-roles>.
+
+

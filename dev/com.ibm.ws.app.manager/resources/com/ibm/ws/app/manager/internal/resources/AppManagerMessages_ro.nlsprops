@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: Aplica\u0163ia {0} a pornit \u00een {1} secunde.
+APPLICATION_START_SUCCESSFUL.explanation=Serverul a pornit aplica\u0163ia cu succes.
+APPLICATION_START_SUCCESSFUL.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: A ap\u0103rut o excep\u0163ie la pornirea aplica\u0163iei {0}. Mesajul excep\u0163iei a fost: {1}
+APPLICATION_START_FAILED.explanation=Serverul nu a putut porni aplica\u0163ia.
+APPLICATION_START_FAILED.useraction=Citi\u0163i mesajul excep\u0163iei pentru informa\u0163ii.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: Aplica\u0163ia {0} a fost actualizat\u0103 \u00een {1} secunde.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=Serverul a actualizat aplica\u0163ia cu succes.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: A ap\u0103rut o excep\u0163ie la pornirea aplica\u0163iei {0}. Mesajul excep\u0163iei a fost: {1}
+APPLICATION_UPDATE_FAILED.explanation=Serverul nu a putut actualiza aplica\u0163ia.
+APPLICATION_UPDATE_FAILED.useraction=Citi\u0163i mesajul excep\u0163iei pentru informa\u0163ii suplimentare.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: Serverul nu este configurat s\u0103 manipuleze resursa la loca\u0163ia {0}.
+NO_APPLICATION_HANDLER.explanation=Serverul nu este configurat curent cu toate caracteristicile necesare pentru resursele de acest tip, astfel \u00eenc\u00e2t resursa nu a putut fi pornit\u0103.
+NO_APPLICATION_HANDLER.useraction=Modifica\u0163i configura\u0163ia de server pentru a include toate caracteristicile necesare pentru a suporta acest tip de resurs\u0103.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: Serverul nu a putut crea o loca\u0163ie de desc\u0103rcare la {0} pentru aplica\u0163ia {1}.
+CANNOT_CREATE_DIRECTORY.explanation=C\u00e2nd se \u00eencerca desc\u0103rcarea unei aplica\u0163ii de instalat, serverul nu a putut crea directorul de desc\u0103rcare.
+CANNOT_CREATE_DIRECTORY.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 suficient spa\u0163iu pe disc pentru desc\u0103rcare.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: A ap\u0103rut o excep\u0163ie \u00een timp ce se desc\u0103rca fi\u015fierul de la {0}. Mesajul excep\u0163iei a fost: {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=Serverul nu a putut desc\u0103rca aplica\u0163ia.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=Dac\u0103 a\u0163i inten\u0163ionat ca serverul s\u0103 descarce aplica\u0163ia, verifica\u0163i c\u0103 fi\u015fierul este disponibil pentru desc\u0103rcare.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: A survenit o eroare intern\u0103. Sistemul nu a putut ob\u0163ine serviciul de loca\u0163ie necesar pentru a rezolva loca\u0163iile fi\u015fierelor.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: Aplica\u0163ia {0} s-a oprit cu succes.
+APPLICATION_STOPPED.explanation=Serverul a oprit cu succes aplica\u0163ia.
+APPLICATION_STOPPED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: A ap\u0103rut o excep\u0163ie \u00een timp ce se oprea aplica\u0163ia {0}. Mesajul excep\u0163iei a fost: {1}
+APPLICATION_STOP_FAILED.explanation=Serverul nu a putut opri aplica\u0163ia.
+APPLICATION_STOP_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este \u00eentr-o stare \u00een care poate fi oprit\u0103.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: A avut loc o excep\u0163ie \u00een timpul c\u0103ut\u0103rii fi\u015fierului {0}. Mesajul excep\u0163iei a fost: {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: Aplica\u0163ia {0} nu a fost pornit\u0103.
+APPLICATION_NOT_STARTED.explanation=Aplica\u0163ia nu a putut fi pornit\u0103 din cauza erorilor anterioare. 
+APPLICATION_NOT_STARTED.useraction=Verifica\u0163i configura\u0163ia aplica\u0163iei \u015fi verifica\u0163i istoricele pentru erori din timpul pornirii aplica\u0163iei.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: Nu se pot porni dou\u0103 aplica\u0163ii numite {0}.
+DUPLICATE_APPLICATION_NAME.explanation=Numele aplica\u0163iei trebuie s\u0103 fie unic.  Aceasta poate fi deoarece dou\u0103 aplica\u0163ii au fost configurate s\u0103 aib\u0103 acela\u015fi nume sau o singur\u0103 aplica\u0163ie a fost implementat\u0103 at\u00e2t prin configurare \u00een fi\u015fierul server.xml c\u00e2t \u015fi prin plasarea aplica\u0163iei \u00een directorul dropins.
+DUPLICATE_APPLICATION_NAME.useraction=Dac\u0103 dou\u0103 aplica\u0163ii au acela\u015fi nume, \u00eenl\u0103tura\u0163i sau redenumi\u0163i una din aplica\u0163ii. Dac\u0103 o singur\u0103 aplica\u0163ie a fost implementat\u0103 \u00een dou\u0103 moduri diferite, modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t s\u0103 fie folosit\u0103 o singur\u0103 metod\u0103 de implementare.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: Aplica\u0163ia {0} nu poate fi pornit\u0103 deoarece ea nu poate fi g\u0103sit\u0103 la loca\u0163ia {1}.
+APPLICATION_NOT_FOUND.explanation=C\u00e2nd \u00eencerca\u0163i s\u0103 porni\u0163i aplica\u0163ia, serverul nu a putut g\u0103si aplica\u0163ia la loca\u0163ia specificat\u0103 (sau loca\u0163ii relative dac\u0103 ar fi fost o cale relativ\u0103).
+APPLICATION_NOT_FOUND.useraction=Verifica\u0163i c\u0103 loca\u0163ia definit\u0103 este corect\u0103 pentru aplica\u0163ie.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: O aplica\u0163ie a fost configurat\u0103 cu o loca\u0163ie sau un nume.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=O aplica\u0163ie a fost configurat\u0103 f\u0103r\u0103 specificarea unei loca\u0163ii sau a unui nume.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Actualiza\u0163i configura\u0163ia pentru a o ad\u0103uga la o loca\u0163ie.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: Aplica\u0163ia {0} nu a fost configurat\u0103 cu o loca\u0163ie.
+APPLICATION_NO_LOCATION.explanation=O aplica\u0163ie a fost configurat\u0103 f\u0103r\u0103 specificarea unei loca\u0163ii.
+APPLICATION_NO_LOCATION.useraction=Actualiza\u0163i configura\u0163ia pentru a o ad\u0103uga la o loca\u0163ie.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: Nu a fost posibil s\u0103 fie dedus tipul de aplica\u0163ie pentru aplica\u0163ia {0} de la loca\u0163ia {1}.
+APPLICATION_NO_TYPE.explanation=O aplica\u0163ie a fost configurat\u0103 f\u0103r\u0103 specificarea unui tip. Tipul nu a putut fi determinat de la loca\u0163ie.
+APPLICATION_NO_TYPE.useraction=Actualiza\u0163i configura\u0163ia pentru a ad\u0103uga un tip.
+
+STARTING_APPLICATION=CWWKZ0018I: Pornirea aplica\u0163iei {0}.
+STARTING_APPLICATION.explanation=Aplica\u0163ia este pornit\u0103.
+STARTING_APPLICATION.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+PARTIAL_START=CWWKZ0019I: Aplica\u0163ia {0} a fost pornit\u0103 par\u0163ial \u00een {1} secunde. Serverul va continua s\u0103 porneasc\u0103 aplica\u0163ia \u00een fundal.
+PARTIAL_START.explanation=\u00centreaga aplica\u0163ie nu poate porni. Aceasta se poate \u00eent\u00e2mpla cu un fi\u015fier ear care con\u0163ine dou\u0103 conflicte unde doar un conflict va porni.
+PARTIAL_START.useraction=Rezolva\u0163i problema cu partea aplica\u0163iei care nu poate porni \u015fi reimplementa\u0163i aplica\u0163ia.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplica\u0163ia {0} nu a fost actualizat\u0103.
+APPLICATION_NOT_UPDATED.explanation=Aplica\u0163ia nu a putut fi pornit\u0103 din cauza erorilor anterioare. 
+APPLICATION_NOT_UPDATED.useraction=Verifica\u0163i configura\u0163ia aplica\u0163iei \u015fi verifica\u0163i istoricele pentru erori din timpul pornirii aplica\u0163iei.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: Serverul nu este configurat s\u0103 manipuleze resursa la loca\u0163ia {0}.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=Serverul nu este configurat curent cu toate caracteristicile necesare pentru resursele de acest tip, astfel \u00eenc\u00e2t resursa nu a putut fi pornit\u0103.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=Modifica\u0163i configura\u0163ia de server pentru a include toate caracteristicile necesare pentru a suporta acest tip de resurs\u0103.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: Aplica\u0163ia {0} nu a pornit \u00een {1} secunde.
+APPLICATION_SLOW_STARTUP.explanation=Aplica\u0163ia nu porne\u015fte \u00een timpul a\u015fteptat. Aceasta poate s\u0103 fie din cauza faptului c\u0103 serverul este supra\u00eenc\u0103rcat sau aplica\u0163ia este prea mare. Dac\u0103 aplica\u0163ia porne\u015fte ca parte a pornirii serverului , pornirea serverului se va finaliza f\u0103r\u0103 s\u0103 a\u015ftepte ca aplica\u0163ia s\u0103 porneasc\u0103.
+APPLICATION_SLOW_STARTUP.useraction=Dac\u0103 aplica\u0163ia dureaz\u0103 un timp \u00eendelungat pentru a porni atunci nu este necesar\u0103 nicio ac\u0163iune; altfel verifica\u0163i istoricele serverului pentru a vedea dac\u0103 mesajul indic\u0103 o cauz\u0103.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca oprirea automat\u0103 a aplica\u0163iei {0}.
+MONITOR_APP_STOP_FAIL.explanation=Monitorul aplica\u0163iei nu a putut g\u0103si aplica\u0163ia ce ruleaz\u0103 pe server.
+MONITOR_APP_STOP_FAIL.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: Serviciul de monitorizare a aplica\u0163iilor nu a putut g\u0103si un nume potrivit pentru aplica\u0163ia {0}.
+INVALID_FILE_NAME.explanation=Serviciul de monitorizare a aplica\u0163iilor folose\u015fte numele fi\u015fierului, f\u0103r\u0103 extensie, pentru a genera numele aplica\u0163iei. Serviciul de monitorizare a aplica\u0163iilor nu a putut determina un nume de aplica\u0163ie dup\u0103 ce s-a \u00eenl\u0103turat extensia din numele fi\u015fierului.
+INVALID_FILE_NAME.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier pentru aplica\u0163ie nu \u00eencepe cu un punct (.) \u015fi are un nume \u00eenainte de extensia fi\u015fierului.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: Serviciul de monitorizare a aplica\u0163iilor nu a putut determina tipul aplica\u0163iei {0}.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=Serviciul de monitorizare a aplica\u0163iilor nu a putut determina tipul aplica\u0163iei nici din extensia fi\u015fierului s\u0103u nici din directorul p\u0103rinte.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia fie are o extensie de fi\u015fier care \u00eei identific\u0103 tipul de aplica\u0163ie, fie este sub un director al c\u0103rui nume identific\u0103 tipul aplica\u0163iei.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca pornirea automat\u0103 a aplica\u0163iei {0}.
+MONITOR_APP_START_FAIL.explanation=Monitorul de aplica\u0163ii nu a putut porni aplica\u0163ia.
+MONITOR_APP_START_FAIL.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: C\u00e2nd citi\u0163i lista memorat\u0103 \u00een cache de aplica\u0163ii pornite din monitorul de aplica\u0163ii ({0}), num\u0103rul liniei {1} nu era valid. Linia era: {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Monitorul de aplica\u0163ii nu a putut citi lista tuturor aplica\u0163iilor pornite.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Porni\u0163i serverul cu o pornire la rece.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorizarea {0} pentru aplica\u0163ii. 
+APPLICATION_MONITOR_STARTED.explanation=Serverul monitorizeaz\u0103 un director pentru ca aplica\u0163iile s\u0103 fie implementate.
+APPLICATION_MONITOR_STARTED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: Aplica\u0163ia {0} instalat\u0103 din {1} a fost \u015ftears\u0103 \u00een timp ce era configurat\u0103 \u00eenc\u0103.
+INVALID_DELETE_OF_APPLICATION.explanation=O aplica\u0163ie configurat\u0103 curent \u00een fi\u015fierul server.xml a fost \u015ftears\u0103.
+INVALID_DELETE_OF_APPLICATION.useraction=Dac\u0103 \u015ftergerea a fost inten\u0163ionat\u0103, \u00eenl\u0103tura\u0163i configura\u0163ia aplica\u0163iei din fi\u015fierul server.xml.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: Serverul nu a putut cur\u0103\u0163a directorul monitorizat vechi de la {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=Directorul vechi nu a putut fi \u00eenl\u0103turat chiar dac\u0103 nu mai este \u00een folosin\u0163\u0103.
+MONITOR_DIR_CLEANUP_FAIL.useraction=Dac\u0103 vechiul director nu mai este necesar, \u00eenl\u0103tura\u0163i-l. Dac\u0103 \u00eenc\u0103 este necesar nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: Nu poate monitoriza {0} aplica\u0163ia.
+APPLICATION_MONITORING_FAIL.explanation=O aplica\u0163ie a fost instalat\u0103 dar monitorizarea nu a fost pornit\u0103 pe ea deci dac\u0103 un fi\u015fier este actualizat \u00een aplica\u0163ie modificarea nu va fi detectat\u0103 de server. 
+APPLICATION_MONITORING_FAIL.useraction=C\u00e2nd actualiza\u0163i fi\u015fierele \u00een aceast\u0103 aplica\u0163ie aplica\u0163ia va necsita s\u0103 fie dezinstalat\u0103 \u015fi reinstalat\u0103 \u00een server.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Aplica\u0163ia {0} de la loca\u0163ia {1} este \u00een\u0103untrul directorului monitorizat {2}. Elementul aplica\u0163iei va fi ignorat.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Un element de aplica\u0163i din configura\u0163ia serverului a definit loca\u0163ia aplica\u0163iei \u00een\u0103untrul directorului care este monitorizat pentru aplica\u0163ii. Drept rezultat, elementul aplica\u0163iei va fi ignorat, iar aplica\u0163ia va fi pornit\u0103 folosind con\u0163inutul directorului monitorizat dac\u0103 aplica\u0163ia este prezent\u0103 \u00een directorul monitorizat.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Fie corecta\u0163i elementul aplica\u0163iei, fie modifica\u0163i loca\u0163ia directorului monitorizat.
+
+APPLICATION_UPDATED=CWWKZ0062I: Aplica\u0163ia {0} a fost actualizat\u0103, dar nu a fost repornit\u0103.
+APPLICATION_UPDATED.explanation=A ap\u0103rut o modificare minor\u0103 \u00een aplica\u0163ia specificat\u0103 \u015fi modificarea a fost considerat\u0103 suficient de minor\u0103 astfel \u00eenc\u00e2t nu trebuie repornit\u0103 aplica\u0163ia.
+APPLICATION_UPDATED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.

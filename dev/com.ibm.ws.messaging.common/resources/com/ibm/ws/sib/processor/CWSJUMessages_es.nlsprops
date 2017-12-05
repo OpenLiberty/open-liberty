@@ -1,0 +1,499 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.CWSJUMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJU0001=CWSJU0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSJU9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.22.1.6
+#
+#CMVCPATHNAME SIB/ws/code/sib.processor/src/com/ibm/ws/sib/processor/CWSJUMessages.nlsprops
+#COMPONENTPREFIX CWSJU
+#COMPONENTNAMEFOR CWSJU Message Tracing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0001=CWSJU0001I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al destino {3} mediante la transacci\u00f3n {4}.
+PRODUCER_SEND_CWSJU0001.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_CWSJU0001.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0002=CWSJU0002I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al destino {3}.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0003=CWSJU0003I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha comprometido al destino {3}, destinado al motor de mensajer\u00eda {4}.
+PRODUCER_SEND_COMMIT_CWSJU0003.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_COMMIT_CWSJU0003.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_QUEUE_CWSJU0004=CWSJU0004I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido a la cola {3}.
+PRODUCER_SEND_QUEUE_CWSJU0004.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_QUEUE_CWSJU0004.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The JMS Correlation Id
+# {2} The destination name
+PRODUCER_SEND_TOPICSPACE_CWSJU0005=CWSJU0005I: Un mensaje con ID {0} e ID de correlaci\u00f3n {1} se ha transferido al espacio de temas {2}.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_SERVICE_CWSJU0006=CWSJU0006I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido al servicio {3}.
+PRODUCER_SEND_SERVICE_CWSJU0006.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_SERVICE_CWSJU0006.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_PORT_CWSJU0007=CWSJU0007I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido al puerto {3}.
+PRODUCER_SEND_PORT_CWSJU0007.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_PORT_CWSJU0007.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The destination name
+# {2} The number of matched consumers
+PUBLICATION_COUNT_CWSJU0008=CWSJU0008I: Un mensaje con ID {0} en el destino {1} ha coincidido con {2} consumidores.
+PUBLICATION_COUNT_CWSJU0008.explanation=Este mensaje informativo indica el estado del programa.
+PUBLICATION_COUNT_CWSJU0008.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The transaction id
+MESSAGE_ROLLBACK_CWSJU0010=CWSJU0010I: Un mensaje con ID {0} y un ID de mensaje del sistema {1} se ha retrotra\u00eddo del destino {2} bajo la transacci\u00f3n {3}.
+MESSAGE_ROLLBACK_CWSJU0010.explanation=Este mensaje informativo indica el estado del programa.
+MESSAGE_ROLLBACK_CWSJU0010.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+MESSAGE_EXPIRED_CWSJU0011=CWSJU0011I: Un mensaje con ID {0} y un ID de mensaje del sistema {1} en el destino {2} ha caducado.
+MESSAGE_EXPIRED_CWSJU0011.explanation=Este mensaje informativo indica el estado del programa.
+MESSAGE_EXPIRED_CWSJU0011.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The reason.
+# {5} The explanation for why the message was exception destinationed
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012=CWSJU0012I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha colocado en el destino de excepciones {3} con la raz\u00f3n {4} y la explicaci\u00f3n {5}.
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.explanation=Se ha enviado un mensaje con el ID especificado al destino de excepciones
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.useraction=Examine la raz\u00f3n por la que el mensaje se ha situado en el destino de excepciones y corrija el error.
+
+# Missing 13
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_BUS_CWSJU0014=CWSJU0014I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido al enlace de bus interno {3}.
+PRODUCER_SEND_BUS_CWSJU0014.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_BUS_CWSJU0014.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The link name
+PRODUCER_SEND_LINK_CWSJU0015=CWSJU0015I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido a la corriente de transmisi\u00f3n de enlaces {3}.
+PRODUCER_SEND_LINK_CWSJU0015.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_LINK_CWSJU0015.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The mq link name
+PRODUCER_SEND_MQLINK_CWSJU0016=CWSJU0016I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido a la corriente de transmisi\u00f3n del enlace WebSphere MQ {3}.
+PRODUCER_SEND_MQLINK_CWSJU0016.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_MQLINK_CWSJU0016.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_BUS_CWSJU0017=CWSJU0017I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al enlace de bus interno {3} mediante la transacci\u00f3n {4}.
+PRODUCER_SEND_BUS_CWSJU0017.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_BUS_CWSJU0017.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The link name
+# {4} The transaction id
+PRODUCER_SEND_LINK_CWSJU0018=CWSJU0018I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al enlace {3} mediante la transacci\u00f3n {4}.
+PRODUCER_SEND_LINK_CWSJU0018.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_LINK_CWSJU0018.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_MQLINK_CWSJU0019=CWSJU0019I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al enlace WebSphere MQ {3} mediante la transacci\u00f3n {4}.
+PRODUCER_SEND_MQLINK_CWSJU0019.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_MQLINK_CWSJU0019.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_CWSJU0020=CWSJU0020I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha recibido del motor de mensajer\u00eda con ID {3} con un destino {4}.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.explanation=Este mensaje informativo indica el estado del programa.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0021=CWSJU0021I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transmitido al motor de mensajer\u00eda con ID {3} para el destino {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.explanation=Este mensaje informativo indica el estado del programa.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_CWSJU0022=CWSJU0022I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transmitido al motor de mensajer\u00eda con ID {3} para el destino {4}.
+MESSAGE_FORWARDED_CWSJU0022.explanation=Este mensaje informativo indica el estado del programa.
+MESSAGE_FORWARDED_CWSJU0022.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0023=CWSJU0023I: Un mensaje con ID {0} ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} est\u00e1 transmitiendo al motor de mensajer\u00eda con ID {3}, asociado al enlace de bus interno {4}
+OUTBOUND_MESSAGE_SENT_CWSJU0023.explanation=Este mensaje informativo indica el estado del programa.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0024=CWSJU0024I: Un mensaje con ID {0} ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} est\u00e1 transmitiendo al motor de mensajer\u00eda con ID {3}, asociado al enlace WebSphere MQ {4}
+OUTBOUND_MESSAGE_SENT_CWSJU0024.explanation=Este mensaje informativo indica el estado del programa.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_REQUEST_SENT_CWSJU0030=CWSJU0030I: Se ha enviado una solicitud de un mensaje en destino {0} del ME {1} al ME {2} en nombre de un consumidor que obtiene de un destino con uuid={3}.
+REMOTE_REQUEST_SENT_CWSJU0030.explanation=Este mensaje informativo indica el estado del programa.
+REMOTE_REQUEST_SENT_CWSJU0030.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_MESSAGE_SENT_CWSJU0031=CWSJU0031I: Se ha enviado un mensaje solicitado de un destino {0} del ME {1} al ME {2} en nombre de un consumidor obteniendo de un destino con uuid={3}.
+REMOTE_MESSAGE_SENT_CWSJU0031.explanation=Este mensaje informativo indica el estado del programa.
+REMOTE_MESSAGE_SENT_CWSJU0031.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+# {1} The message
+REMOTE_REQUEST_SATISFIED_CWSJU0032=CWSJU0032I: Un mensaje {1}, se ha asignado a una solicitud remota con ID {0}
+REMOTE_REQUEST_SATISFIED_CWSJU0032.explanation=Este mensaje informativo indica el estado del programa.
+REMOTE_REQUEST_SATISFIED_CWSJU0032.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+REMOTE_REQUEST_EXPIRED_CWSJU0033=CWSJU0033I: Ha caducado una solicitud remota con ID {0}.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.explanation=Este mensaje informativo indica el estado del programa.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message 
+# {1} The request id
+# {2} The destination
+# {3} The source me
+# {4} The target me
+# {5} The gatheirng uuid
+REMOTE_MESSAGE_EXPIRED_CWSJU0034=CWSJU0034I: Un mensaje persistente {0}, que fue solicitado con ID de solicitud {1} del destino {2} en ME {4} por ME {3} para el consumidor {5} ha caducado ahora y estar\u00e1 disponible de nuevo en el ME de origen. 
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.explanation=Este mensaje informativo indica el estado del programa.
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+# {5} The transaction id
+CONSUMER_RECEIVE_CWSJU0040=CWSJU0040I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha entregado a un consumidor {3} del destino {4} mediante la transacci\u00f3n {5}
+CONSUMER_RECEIVE_CWSJU0040.explanation=Este mensaje informativo indica el estado del programa.
+CONSUMER_RECEIVE_CWSJU0040.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041=CWSJU0041I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha entregado a un consumidor {3} del destino {4}.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.explanation=Este mensaje informativo indica el estado del programa.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+# {2} The transaction id
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042=CWSJU0042I: El consumidor {0} no ha recibido ning\u00fan mensaje del destino {1} mediante la transacci\u00f3n {2}
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.explanation=Este mensaje informativo indica el estado del programa.
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043=CWSJU0043I: El consumidor {0} no ha recibido ning\u00fan mensaje del destino {1}.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.explanation=Este mensaje informativo indica el estado del programa.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0051=CWSJU0051I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al punto de mediaci\u00f3n {3} mediante la transacci\u00f3n {4}.
+PRODUCER_SEND_CWSJU0051.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_CWSJU0051.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0052=CWSJU0052I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al punto de mediaci\u00f3n {3}.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0053=CWSJU0053I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha comprometido al punto de mediaci\u00f3n {3} destinado al motor de mensajer\u00eda {4}.
+PRODUCER_SEND_COMMIT_CWSJU0053.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_COMMIT_CWSJU0053.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_CWSJU0054=CWSJU0054I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido al punto de mediaci\u00f3n {3}.
+PRODUCER_SEND_CWSJU0054.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_CWSJU0054.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061=CWSJU0061I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al enlace de bus interno {3}.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062=CWSJU0062I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al enlace {3}.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063=CWSJU0063I: Un productor {0} ha enviado un mensaje con ID {1} e ID de correlaci\u00f3n {2} al enlace de WebSphere MQ {3}.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064=CWSJU0064I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} est\u00e1 comprometido con el destino for\u00e1neo, {3}, destinado al motor de mensajer\u00eda {4}.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065=CWSJU0065I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} est\u00e1 comprometido con el destino for\u00e1neo, {3}, destinado al motor de mensajer\u00eda {4}.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066=CWSJU0066I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha comprometido al enlace WebSphere MQ {3}, destinado al servidor {4}.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101=CWSJU0101I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido a la cola temporal {3}.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102=CWSJU0102I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transferido al espacio de temas temporal {3}.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.explanation=Este mensaje informativo indica el estado del programa.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120=CWSJU0120I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha recibido del motor de mensajer\u00eda con ID {3} con un destino {4}.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.explanation=Este mensaje informativo indica el estado del programa.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121=CWSJU0121I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transmitido al motor de mensajer\u00eda con ID {3} para el destino {4}.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.explanation=Este mensaje informativo indica el estado del programa.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_TEMP_CWSJU0122=CWSJU0122I: Un mensaje con ID {0}, ID de mensaje del sistema {1} e ID de correlaci\u00f3n {2} se ha transmitido al motor de mensajer\u00eda con ID {3} para el destino temporal {4}.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.explanation=Este mensaje informativo indica el estado del programa.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJU9999=CWSJU9999E: {0}
+TEMPORARY_CWSJU9999.explanation=Si el mensaje no proporciona suficiente informaci\u00f3n, consulte los mensajes anteriores para obtener m\u00e1s ayuda.
+TEMPORARY_CWSJU9999.useraction=Consulte los mensajes anteriores para obtener m\u00e1s informaci\u00f3n. 

@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: \u6307\u5b9a\u7684\u53c3\u6578\u4e0d\u662f\u5b57\u4e32\u6216\u5b57\u4e32\u9663\u5217\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidStringArray.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u5b57\u4e32\u6216\u5b57\u4e32\u9663\u5217\u3002
+invalidStringArray.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\uff0c\u4e26\u78ba\u5b9a\u8a72\u503c\u662f\u5b57\u4e32\u6216\u5b57\u4e32\u9663\u5217\u7684\u6709\u6548\u8868\u793a\u6cd5\u3002
+
+invalidStringCollection=CWWKE0102W: \u6307\u5b9a\u7684\u53c3\u6578\u4e0d\u662f\u5b57\u4e32\u6216\u5b57\u4e32\u96c6\u5408\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidStringCollection.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u5b57\u4e32\u6216\u5b57\u4e32\u96c6\u5408\u3002
+invalidStringCollection.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u662f\u6709\u6548\u7684\u5b57\u4e32\u6216\u5b57\u4e32\u96c6\u5408\u8868\u793a\u6cd5\u3002
+
+invalidBoolean=CWWKE0103W: \u6307\u5b9a\u7684\u53c3\u6578\u4e26\u4e0d\u4ee3\u8868\u5e03\u6797\u503c\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidBoolean.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u5e03\u6797\u503c\u3002
+invalidBoolean.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u662f\u6709\u6548\u7684\u5e03\u6797\u503c\u8868\u793a\u6cd5\u3002
+
+invalidLong=CWWKE0104W: \u6307\u5b9a\u7684\u53c3\u6578\u4e26\u4e0d\u4ee3\u8868\u9577\u6574\u6578\u503c\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidLong.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u9577\u6574\u6578\u503c\u3002
+invalidLong.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u662f\u6709\u6548\u7684\u9577\u6574\u6578\u503c\u8868\u793a\u6cd5\u3002
+
+invalidInteger=CWWKE0105W: \u6307\u5b9a\u7684\u53c3\u6578\u4e26\u4e0d\u4ee3\u8868\u6574\u6578\u503c\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidInteger.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u6574\u6578\u503c\u3002
+invalidInteger.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u662f\u6709\u6548\u7684\u6574\u6578\u503c\u8868\u793a\u6cd5\u3002
+
+invalidIntegerArray=CWWKE0106W: \u6307\u5b9a\u7684\u53c3\u6578\u4e26\u4e0d\u4ee3\u8868\u6574\u6578\u9663\u5217\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidIntegerArray.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u6574\u6578\u9663\u5217\u3002
+invalidIntegerArray.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u662f\u6709\u6548\u7684\u6574\u6578\u9663\u5217\u8868\u793a\u6cd5\u3002
+
+invalidDuration=CWWKE0107W: \u6307\u5b9a\u7684\u53c3\u6578\u4e26\u4e0d\u4ee3\u8868\u671f\u9593\u503c\u3002{1}={2}\uff08\u9069\u7528\u65bc {0}\uff09
+invalidDuration.explanation=\u6240\u6307\u5b9a\u914d\u7f6e\u53c3\u6578\u7684\u503c\u4e26\u672a\u6216\u7121\u6cd5\u8f49\u63db\u6210\u671f\u9593\u503c\u3002
+invalidDuration.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684\u503c\u662f\u6709\u6548\u7684\u671f\u9593\u503c\u8868\u793a\u6cd5\u3002
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

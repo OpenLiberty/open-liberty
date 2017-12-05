@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: Aplikace {0} byla spu\u0161t\u011bna za {1} sekund.
+APPLICATION_START_SUCCESSFUL.explanation=Server aplikaci \u00fasp\u011b\u0161n\u011b spustil.
+APPLICATION_START_SUCCESSFUL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: P\u0159i spu\u0161t\u011bn\u00ed aplikace do\u0161lo k v\u00fdjimce {0}. Zpr\u00e1va v\u00fdjimky: {1}
+APPLICATION_START_FAILED.explanation=Server nemohl spustit aplikaci.
+APPLICATION_START_FAILED.useraction=Informace naleznete ve zpr\u00e1v\u011b v\u00fdjimky.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: Aplikace {0} byla aktualizov\u00e1na za {1} sekund.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=Server aplikaci \u00fasp\u011b\u0161n\u011b aktualizoval.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: P\u0159i spu\u0161t\u011bn\u00ed aplikace do\u0161lo k v\u00fdjimce {0}. Zpr\u00e1va v\u00fdjimky: {1}
+APPLICATION_UPDATE_FAILED.explanation=Server nem\u016f\u017ee aktualizovat aplikaci.
+APPLICATION_UPDATE_FAILED.useraction=Dal\u0161\u00ed informace naleznete ve zpr\u00e1v\u011b v\u00fdjimky.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: Server nen\u00ed nakonfigurov\u00e1n tak, aby dok\u00e1zal zpracovat prost\u0159edek v um\u00edst\u011bn\u00ed {0}.
+NO_APPLICATION_HANDLER.explanation=V sou\u010dasn\u00e9 dob\u011b nen\u00ed server nakonfigurov\u00e1n se v\u0161emi funkcemi pot\u0159ebn\u00fdmi pro prost\u0159edky tohoto typu, tak\u017ee tento prost\u0159edek nen\u00ed mo\u017en\u00e9 spustit.
+NO_APPLICATION_HANDLER.useraction=Zm\u011b\u0148te konfiguraci serveru tak, aby obsahovala v\u0161echny funkce, kter\u00e9 jsou nezbytn\u00e9 pro podporu tohoto typu prost\u0159edk\u016f.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: Server nem\u016f\u017ee vytvo\u0159it um\u00edst\u011bn\u00ed pro stahov\u00e1n\u00ed v {0} pro aplikaci {1}.
+CANNOT_CREATE_DIRECTORY.explanation=P\u0159i pokusu o sta\u017een\u00ed aplikace k instalaci nemohl server vytvo\u0159it adres\u00e1\u0159 pro stahov\u00e1n\u00ed.
+CANNOT_CREATE_DIRECTORY.useraction=Ujist\u011bte se, \u017ee je dostatek m\u00edsta na disku ke sta\u017een\u00ed.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: Do\u0161lo k v\u00fdjimce p\u0159i stahov\u00e1n\u00ed souboru z {0}. Zpr\u00e1va v\u00fdjimky: {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=Server nem\u016f\u017ee st\u00e1hnout aplikaci.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=Pokud chcete, aby server st\u00e1hl aplikaci, ujist\u011bte se, \u017ee je soubor dostupn\u00fd ke sta\u017een\u00ed.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: Do\u0161lo k intern\u00ed chyb\u011b. Syst\u00e9m nemohl z\u00edskat slu\u017ebu um\u00edst\u011bn\u00ed, kter\u00e1 je nezbytn\u00e1 k interpretaci um\u00edst\u011bn\u00ed soubor\u016f.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: Aplikace {0} byla \u00fasp\u011b\u0161n\u011b zastavena.
+APPLICATION_STOPPED.explanation=Server aplikaci \u00fasp\u011b\u0161n\u011b zastavil.
+APPLICATION_STOPPED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: P\u0159i zastaven\u00ed aplikace do\u0161lo k v\u00fdjimce {0}. Zpr\u00e1va v\u00fdjimky: {1}
+APPLICATION_STOP_FAILED.explanation=Server nem\u016f\u017ee zastavit aplikaci.
+APPLICATION_STOP_FAILED.useraction=Ujist\u011bte se, \u017ee aplikace je ve stavu, kdy ji lze zastavit.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Do\u0161lo k v\u00fdjimce p\u0159i hled\u00e1n\u00ed souboru {0}. Zpr\u00e1va v\u00fdjimky: {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: Aplikace {0} nebyla spu\u0161t\u011bna.
+APPLICATION_NOT_STARTED.explanation=Aplikaci nebylo mo\u017en\u00e9 spustit z d\u016fvodu p\u0159edchoz\u00edch chyb. 
+APPLICATION_NOT_STARTED.useraction=Zkontrolujte konfiguraci aplikace a zkontrolujte chyby v protokolech p\u0159i spu\u0161t\u011bn\u00ed aplikace.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: Nen\u00ed mo\u017en\u00e9 spustit dv\u011b aplikace s n\u00e1zvem {0}.
+DUPLICATE_APPLICATION_NAME.explanation=Aplikace mus\u00ed b\u00fdt jedine\u010dn\u00e1. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt nakonfigurov\u00e1n\u00ed dvou aplikac\u00ed s pou\u017eit\u00edm stejn\u00e9ho n\u00e1zvu nebo implementace jedn\u00e9 aplikace nakonfigurov\u00e1n\u00edm v souboru server.xml i vlo\u017een\u00edm aplikace do adres\u00e1\u0159e dropins.
+DUPLICATE_APPLICATION_NAME.useraction=Maj\u00ed-li dv\u011b aplikace stejn\u00fd n\u00e1zev, jednu z t\u011bchto aplikac\u00ed odeberte nebo p\u0159ejmenujte. Byla-li jedna aplikace implementov\u00e1na dv\u011bma r\u016fzn\u00fdmi zp\u016fsoby, zm\u011b\u0148te konfiguraci tak, aby byla pou\u017eita pouze jedna metoda implementace.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: Aplikaci {0} nelze spustit, proto\u017ee ji nebylo mo\u017en\u00e9 nal\u00e9zt v um\u00edst\u011bn\u00ed {1}.
+APPLICATION_NOT_FOUND.explanation=P\u0159i pokusu o spu\u0161t\u011bn\u00ed aplikace server nenalezl aplikaci v zadan\u00e9m um\u00edst\u011bn\u00ed (nebo relativn\u00edch um\u00edst\u011bn\u00edch v p\u0159\u00edpad\u011b relativn\u00ed cesty).
+APPLICATION_NOT_FOUND.useraction=Zkontrolujte, zda je definovan\u00e9 um\u00edst\u011bn\u00ed pro aplikaci spr\u00e1vn\u00e9.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: Aplikace byla nakonfigurov\u00e1na bez um\u00edst\u011bn\u00ed nebo n\u00e1zvu.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=Aplikace byla nakonfigurov\u00e1na bez zad\u00e1n\u00ed um\u00edst\u011bn\u00ed nebo n\u00e1zvu.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Chcete-li p\u0159idat um\u00edst\u011bn\u00ed, aktualizujte konfiguraci.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: Aplikace {0} byla nakonfigurov\u00e1na bez um\u00edst\u011bn\u00ed.
+APPLICATION_NO_LOCATION.explanation=Aplikace byla nakonfigurov\u00e1na bez zad\u00e1n\u00ed um\u00edst\u011bn\u00ed.
+APPLICATION_NO_LOCATION.useraction=Chcete-li p\u0159idat um\u00edst\u011bn\u00ed, aktualizujte konfiguraci.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: Z um\u00edst\u011bn\u00ed {1} nebylo mo\u017en\u00e9 odvodit typ aplikace pro aplikaci {0}.
+APPLICATION_NO_TYPE.explanation=Aplikace byla nakonfigurov\u00e1na bez zad\u00e1n\u00ed typu. Typ se nepoda\u0159ilo ur\u010dit z um\u00edst\u011bn\u00ed.
+APPLICATION_NO_TYPE.useraction=Chcete-li p\u0159idat typ, aktualizujte konfiguraci.
+
+STARTING_APPLICATION=CWWKZ0018I: Spou\u0161t\u011bn\u00ed aplikace {0}.
+STARTING_APPLICATION.explanation=Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed aplikace.
+STARTING_APPLICATION.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+PARTIAL_START=CWWKZ0019I: Aplikace {0} byla \u010d\u00e1ste\u010dn\u011b spu\u0161t\u011bna za {1} sekund. Server bude pokra\u010dovat ve spou\u0161t\u011bn\u00ed aplikac\u00ed na pozad\u00ed.
+PARTIAL_START.explanation=Nepoda\u0159ilo se spustit celou aplikaci. K tomu m\u016f\u017ee doj\u00edt v p\u0159\u00edpad\u011b archivu EAR obsahuj\u00edc\u00edho dva archivy WAR, kdy bude spu\u0161t\u011bn pouze jeden archiv WAR.
+PARTIAL_START.useraction=Vy\u0159e\u0161te probl\u00e9m s tou \u010d\u00e1st\u00ed aplikace, kterou se nepoda\u0159ilo spustit, a implementujte aplikaci znovu.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplikace {0} nebyla aktualizov\u00e1na.
+APPLICATION_NOT_UPDATED.explanation=Aplikaci nebylo mo\u017en\u00e9 spustit z d\u016fvodu p\u0159edchoz\u00edch chyb. 
+APPLICATION_NOT_UPDATED.useraction=Zkontrolujte konfiguraci aplikace a zkontrolujte chyby v protokolech p\u0159i spu\u0161t\u011bn\u00ed aplikace.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: Server nen\u00ed nakonfigurov\u00e1n tak, aby dok\u00e1zal zpracovat prost\u0159edek v um\u00edst\u011bn\u00ed {0}.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=V sou\u010dasn\u00e9 dob\u011b nen\u00ed server nakonfigurov\u00e1n se v\u0161emi funkcemi pot\u0159ebn\u00fdmi pro prost\u0159edky tohoto typu, tak\u017ee tento prost\u0159edek nen\u00ed mo\u017en\u00e9 spustit.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=Zm\u011b\u0148te konfiguraci serveru tak, aby obsahovala v\u0161echny funkce, kter\u00e9 jsou nezbytn\u00e9 pro podporu tohoto typu prost\u0159edk\u016f.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: Aplikace {0} nebyla spu\u0161t\u011bna za {1} sekund.
+APPLICATION_SLOW_STARTUP.explanation=Aplikace se nespustila v o\u010dek\u00e1van\u00e9m \u010dase. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt to, \u017ee je server p\u0159et\u00ed\u017een\u00fd, nebo \u017ee je aplikace velk\u00e1. Pokud se aplikace spou\u0161t\u00ed jako sou\u010d\u00e1st spu\u0161t\u011bn\u00ed serveru, spu\u0161t\u011bn\u00ed serveru se dokon\u010d\u00ed bez \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace.
+APPLICATION_SLOW_STARTUP.useraction=Pokud pouze dlouho trv\u00e1 spu\u0161t\u011bn\u00ed aplikace, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce; jinak v protokolech serveru zkontrolujte, zda p\u0159\u00ed\u010dinu nenazna\u010duj\u00ed dal\u0161\u00ed zpr\u00e1vy.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o automatick\u00e9 zastaven\u00ed aplikace {0}.
+MONITOR_APP_STOP_FAIL.explanation=Monitor aplikac\u00ed nem\u016f\u017ee naj\u00edt aplikaci spu\u0161t\u011bnou na serveru.
+MONITOR_APP_STOP_FAIL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: Slu\u017eba monitorov\u00e1n\u00ed aplikace nemohla naj\u00edt vhodn\u00fd n\u00e1zev pro aplikaci {0}.
+INVALID_FILE_NAME.explanation=Slu\u017eba monitorov\u00e1n\u00ed aplikace pou\u017e\u00edv\u00e1 ke generov\u00e1n\u00ed n\u00e1zvu aplikace n\u00e1zev souboru bez p\u0159\u00edpony. Slu\u017eba monitorov\u00e1n\u00ed aplikace nemohla ur\u010dit n\u00e1zev aplikace pot\u00e9, co byla z n\u00e1zvu souboru odebr\u00e1na p\u0159\u00edpona.
+INVALID_FILE_NAME.useraction=Ujist\u011bte se, \u017ee n\u00e1zev souboru pro aplikaci neza\u010d\u00edn\u00e1 te\u010dkou (.) a je u n\u011bj p\u0159ed p\u0159\u00edponou souboru obsa\u017eena p\u0159\u00edpona.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: Slu\u017eba monitorov\u00e1n\u00ed aplikace nemohla ur\u010dit typ aplikace {0}.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=Slu\u017eba monitorov\u00e1n\u00ed aplikace nemohla ur\u010dit typ aplikace z p\u0159\u00edpony souboru nebo z nad\u0159\u00edzen\u00e9ho adres\u00e1\u0159e.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Ujist\u011bte se, \u017ee soubor pro aplikaci m\u00e1 bu\u010f p\u0159\u00edponu souboru, kter\u00fd identifikuje typ aplikace, nebo je pod adres\u00e1\u0159em, jeho\u017e n\u00e1zev identifikuje typ aplikace.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o automatick\u00e9 spu\u0161t\u011bn\u00ed aplikace {0}.
+MONITOR_APP_START_FAIL.explanation=Monitor aplikac\u00ed nem\u016f\u017ee spustit aplikaci.
+MONITOR_APP_START_FAIL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: P\u0159i \u010dten\u00ed seznamu ulo\u017een\u00e9ho v mezipam\u011bti spu\u0161t\u011bn\u00fdch aplikac\u00ed z monitoru aplikac\u00ed ({0}), nebyl \u0159\u00e1dek \u010d\u00edslo {1} platn\u00fd. Jde o \u0159\u00e1dek: {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Monitor aplikac\u00ed nem\u016f\u017ee \u010d\u00edst seznam v\u0161ech spu\u0161t\u011bn\u00fdch aplikac\u00ed.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Spus\u0165te server se studen\u00fdm startem.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorov\u00e1n\u00ed aplikac\u00ed v {0}. 
+APPLICATION_MONITOR_STARTED.explanation=Server v adres\u00e1\u0159i monitoruje aplikace, kter\u00e9 se maj\u00ed implementovat.
+APPLICATION_MONITOR_STARTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: Aplikace {0} nainstalovan\u00e1 z {1} byla odstran\u011bna, kdy\u017e byla je\u0161t\u011b po\u0159\u00e1d konfigurov\u00e1na.
+INVALID_DELETE_OF_APPLICATION.explanation=Aplikace aktu\u00e1ln\u011b nakonfigurovan\u00e1 v souboru server.xml byla odstran\u011bna.
+INVALID_DELETE_OF_APPLICATION.useraction=Pokud byla odstran\u011bna \u00famysln\u011b, odeberte konfiguraci aplikace ze souboru server.xml.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: Server nemohl vy\u010distit p\u016fvodn\u00ed monitorovan\u00fd adres\u00e1\u0159 v um\u00edst\u011bn\u00ed {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=P\u016fvodn\u00ed adres\u00e1\u0159 nebylo mo\u017en\u00e9 odebrat, i kdy\u017e se ji\u017e nepou\u017e\u00edv\u00e1.
+MONITOR_DIR_CLEANUP_FAIL.useraction=Nen\u00ed-li p\u016fvodn\u00ed adres\u00e1\u0159 ji\u017e zapot\u0159eb\u00ed, odeberte jej. Je-li st\u00e1le pot\u0159ebn\u00fd, nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: Nelze monitorovat aplikaci {0}.
+APPLICATION_MONITORING_FAIL.explanation=Byla nainstalov\u00e1na aplikace, ale nebylo na n\u00ed spu\u0161t\u011bno monitorov\u00e1n\u00ed, tak\u017ee pokud dojde k aktualizaci souboru v r\u00e1mci aplikace, server tuto zm\u011bnu nezjist\u00ed. 
+APPLICATION_MONITORING_FAIL.useraction=P\u0159i aktualizaci soubor\u016f v t\u00e9to aplikaci bude t\u0159eba aplikaci odinstalovat a znovu nainstalovat na server.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Aplikace {0} v um\u00edst\u011bn\u00ed {1} je uvnit\u0159 monitorovan\u00e9ho adres\u00e1\u0159e {2}. Prvek aplikace bude ignorov\u00e1n.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Prvek aplikace v konfiguraci serveru definoval, \u017ee um\u00edst\u011bn\u00ed aplikace m\u00e1 b\u00fdt v adres\u00e1\u0159i, kter\u00fd je monitorovan\u00fd pro aplikace. V d\u016fsledku toho bude prvek aplikace ignorov\u00e1n a aplikace bude spu\u0161t\u011bna pomoc\u00ed obsahu monitorovan\u00e9ho adres\u00e1\u0159e, pokud se aplikace v dan\u00e9m monitorovan\u00e9m adres\u00e1\u0159i nach\u00e1z\u00ed.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Bu\u010f opravte prvek aplikace, nebo zm\u011b\u0148te um\u00edst\u011bn\u00ed monitorovan\u00e9ho adres\u00e1\u0159e.
+
+APPLICATION_UPDATED=CWWKZ0062I: Aplikace {0} byla aktualizov\u00e1na, ale nebyla restartov\u00e1na.
+APPLICATION_UPDATED.explanation=V uveden\u00e9 aplikace do\u0161lo k drobn\u00e9 zm\u011bn\u011b, kter\u00e1 je pova\u017eov\u00e1na za natolik malou, \u017ee nen\u00ed nutn\u00e9 aplikaci restartovat.
+APPLICATION_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

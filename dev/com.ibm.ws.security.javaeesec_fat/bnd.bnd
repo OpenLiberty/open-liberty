@@ -20,12 +20,18 @@ src: \
 	test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src,\
 	test-applications/JavaEEsecFormAuth.war/src,\
 	test-applications/JavaEEsecFormAuthRedirect.war/src,\
-	test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src
+	test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src,\
+	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
+	test-applications/dbfat.war/src,\
+	test-applications/dbfatAuthAlias.war/src,\
+	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src,\
+	test-applications/IdentityStores.jar/src,\
+	test-applications/AuthMechs.jar/src
 
 javac.source: 1.8
 javac.target: 1.8
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	org.apache.httpcomponents:httpclient;version=4.1.2,\
@@ -48,6 +54,8 @@ test.project: true
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.security.token,\
 	com.ibm.websphere.org.osgi.service.component,\
-	apache_directory_server;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
 	org.apache.directory.server:apacheds-service;version=latest,\
-	com.ibm.ws.webcontainer.security_test.servlets;version=latest
+	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+	org.apache.derby:derby;version=10.11.1.1,\
+	com.ibm.ws.security.javaeesec.cdi;version=latest

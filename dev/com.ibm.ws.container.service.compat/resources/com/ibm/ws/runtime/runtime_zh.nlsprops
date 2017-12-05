@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: ComponentMetaDataAccessor beginContext \u65b9\u6cd5\u63a5\u6536\u5230\u7a7a ComponentMetaData\u3002
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: \u53d1\u751f\u610f\u5916\u7684\u5f02\u5e38\uff1a\u201c{0}\u201d\u3002\u5df2\u8bbe\u7f6e com.ibm.websphere.threadpool.clearThreadLocal \u5c5e\u6027\uff0c\u6b64\u5c5e\u6027\u5c06\u5e94\u7528\u4e8e {0} \u7ebf\u7a0b\u6c60\u3002\u5efa\u8bae\u4e0d\u8981\u4f7f\u7528\u6b64\u9009\u9879\u3002
+WSVR0623W.explanation=\u6b64\u53d1\u884c\u7248\u4ecd\u4f7f\u7528 com.ibm.websphere.threadpool.clearThreadLocal \u5c5e\u6027\uff0c\u4f46\u4ee5\u540e\u7684\u53d1\u884c\u7248\u5c06\u9664\u53bb\u6b64\u5c5e\u6027\u3002
+WSVR0623W.useraction=\u8bf7\u4ece Java \u865a\u62df\u673a\uff08JVM\uff09\u5c5e\u6027\u4e2d\u9664\u53bb com.ibm.websphere.threadpool.clearThreadLocal \u5c5e\u6027\u3002
+
+# F743-24122
+WSVR0629I=WSVR0629I: \u7ebf\u7a0b\u6c60\u201c{0}\u201d\u7684\u8bf7\u6c42\u7f13\u51b2\u533a\u5df2\u8fbe\u5230\u5176\u5bb9\u91cf\u9650\u5236\u3002
+WSVR0629I.explanation=\u9488\u5bf9\u6307\u5b9a\u7ebf\u7a0b\u6c60\u7684\u6682\u6302\u5de5\u4f5c\u8bf7\u6c42\u961f\u5217\u5df2\u8fbe\u5230\u5176\u9650\u5236\uff0c\u8fd9\u53ef\u80fd\u4f1a\u5bfc\u81f4\u6027\u80fd\u95ee\u9898\u3002
+WSVR0629I.useraction=\u4e0d\u9700\u8981\u7acb\u5373\u6267\u884c\u64cd\u4f5c\uff1b\u7136\u800c\uff0c\u4e3a\u4e86\u9632\u6b62\u672a\u6765\u53d1\u751f\u6b64\u60c5\u51b5\uff0c\u53ef\u80fd\u9700\u8981\u589e\u52a0\u8be5\u7ebf\u7a0b\u6c60\u7684\u8bf7\u6c42\u7f13\u51b2\u533a\u5927\u5c0f\u3002
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: \u53ef\u589e\u957f\u7ebf\u7a0b\u6c60\u201c{0}\u201d\u5df2\u6269\u5c55\u4e3a\u8d85\u51fa\u5176\u6700\u521d\u5b9a\u4e49\u7684\u6700\u5927\u5bb9\u91cf\u3002\u5f53\u524d\u6c60\u5927\u5c0f\u4e3a\u201c{1}\u201d\u3002
+WSVR0630I.explanation=\u6307\u5b9a\u7684\u7ebf\u7a0b\u6c60\u5df2\u8fbe\u5230\u5176\u9884\u5b9a\u4e49\u7684\u6700\u5927\u5927\u5c0f\u5e76\u5c06\u6269\u5c55\u3002
+WSVR0630I.useraction=\u4e0d\u9700\u8981\u7acb\u5373\u6267\u884c\u64cd\u4f5c\uff1b\u4f46\u662f\uff0c\u53ea\u8981\u5de5\u4f5c\u8bf7\u6c42\u8d85\u8fc7\u53ef\u7528\u7ebf\u7a0b\u7684\u6570\u76ee\uff0c\u6c60\u5c31\u4f1a\u7ee7\u7eed\u589e\u957f\u3002

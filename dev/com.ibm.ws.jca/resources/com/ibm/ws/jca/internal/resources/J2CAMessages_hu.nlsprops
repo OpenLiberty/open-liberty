@@ -1,0 +1,160 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca/resources/com/ibm/ws/jca/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+J2CA8500.config.prop.error=J2CA8500E: Hiba t\u00f6rt\u00e9nt a(z) {1} konfigur\u00e1ci\u00f3s elem {0} tulajdons\u00e1g\u00e1nak be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a k\u00f6vetkez\u0151 oszt\u00e1lyon: {2}: {3}.
+J2CA8500.config.prop.error.explanation=Egy tulajdons\u00e1g hiba miatt nem \u00e1ll\u00edthat\u00f3 be a megadott er\u0151forr\u00e1son.
+J2CA8500.config.prop.error.useraction=V\u00e9gezze el a jav\u00edt\u00e1sokat a megadott er\u0151forr\u00e1s konfigur\u00e1ci\u00f3j\u00e1n, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+ 
+J2CA8501.config.prop.unknown=J2CA8501E: A(z) {1} konfigur\u00e1ci\u00f3s elem {0} tulajdons\u00e1ga nem \u00e1lll\u00edthat\u00f3 be, mert az nem tal\u00e1lhat\u00f3 a(z) {2} oszt\u00e1lyon.
+J2CA8501.config.prop.unknown.explanation=Egy tulajdons\u00e1g nem tal\u00e1lhat\u00f3 a megadott er\u0151forr\u00e1son.
+J2CA8501.config.prop.unknown.useraction=V\u00e9gezze el a jav\u00edt\u00e1sokat az er\u0151forr\u00e1s konfigur\u00e1ci\u00f3j\u00e1n.
+
+# {1} is the unique identifier for a configuration element, such as jmsTopicConnectionFactory[cf1] or jmsQueue[queue1] 
+J2CA8504.incorrect.props.list=J2CA8504E: A(z) {0} r\u00e9szelem helytelen a(z) {1} konfigur\u00e1ci\u00f3s elem eset\u00e9n.
+J2CA8504.incorrect.props.list.explanation=A megadott konfigur\u00e1ci\u00f3s elem konfigur\u00e1ci\u00f3s tulajdons\u00e1gok list\u00e1j\u00e1nak t\u00edpusa helytelen.
+J2CA8504.incorrect.props.list.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy olyan konfigur\u00e1ci\u00f3s tulajdons\u00e1g list\u00e1t haszn\u00e1\u00e9jon, ami megfelel a k\u00edv\u00e1nt er\u0151forr\u00e1st\u00edpusnak.
+
+J2CA8505.destination.type.mismatch=J2CA8505E: A c\u00e9l tulajdons\u00e1g nem \u00e1ll\u00edthat\u00f3 be az aktiv\u00e1l\u00e1si specifik\u00e1ci\u00f3ban, mert a(z) {0} c\u00e9l nem a megadott destinationType p\u00e9ld\u00e1nya: {1}.
+J2CA8505.destination.type.mismatch.explanation=A c\u00e9llal nem egyez\u0151 c\u00e9lt\u00edpus volt megadva.
+J2CA8505.destination.type.mismatch.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t vagy az alkalmaz\u00e1st, \u00e9s adjon meg a c\u00e9lnak megfelel\u0151 c\u00e9lt\u00edpust.
+
+J2CA8510.create.timed.out=J2CA8510E: Nem hozhat\u00f3 l\u00e9tre id\u0151m\u00e9r\u0151 a(z) {0} er\u0151forr\u00e1s-illeszt\u0151h\u00f6z {1} ezredm\u00e1sodpercen bel\u00fcl.
+J2CA8510.create.timed.out.explanation=Az id\u0151m\u00e9r\u0151 l\u00e9trehoz\u00e1sa a v\u00e1rtn\u00e1l hosszabb id\u0151t vesz ig\u00e9nybe.
+J2CA8510.create.timed.out.useraction=Ellen\u0151rizze, hogy nem magas-e a terhel\u00e9s a rendszeren, \u00e9s fontolja meg annak cs\u00f6kkent\u00e9s\u00e9t.
+
+J2CA8600.work.start.timeout=J2CA8600E: A(z) {1} er\u0151forr\u00e1s-illeszt\u0151 \u00e1ltal bek\u00fcld\u00f6tt {0} munka nem indult el {2} ezredm\u00e1sodpercen bel\u00fcl.
+J2CA8600.work.start.timeout.explanation=A munka ind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet t\u00fall\u00e9pte az id\u0151korl\u00e1tot.
+J2CA8600.work.start.timeout.useraction=Ellen\u0151rizze, hogy nem magas-e a terhel\u00e9s a rendszeren, \u00e9s fontolja meg annak cs\u00f6kkent\u00e9s\u00e9t, vagy keresse meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3j\u00e1t, hogy fontolja meg a munka id\u0151korl\u00e1tj\u00e1nak n\u00f6vel\u00e9s\u00e9t, amikor a JCA munkakezel\u0151 sz\u00e1m\u00e1ra ker\u00fcl munka elk\u00fcld\u00e9sre.
+
+# 8622 deleted
+
+J2CA8623.execution.context.conflict=J2CA8623E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 egyidej\u0171leg ExecutionContext \u00e9s WorkContext elemmel k\u00eds\u00e9relt meg munnk\u00e1t bek\u00fcldeni. Az ExecutionContext \u00e9s a WorkContext kombin\u00e1ci\u00f3ja nem t\u00e1mogatott.
+J2CA8623.execution.context.conflict.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 a WorkContextProvider elemet megval\u00f3s\u00edt\u00f3 munk\u00e1t k\u00fcld\u00f6tt el, egy\u00fattal megadott egy ExecutionContext elemet is. Egyidej\u0171leg a kett\u0151 \u00e9rv\u00e9nytelen.
+J2CA8623.execution.context.conflict.useraction=Az er\u0151forr\u00e1s-illeszt\u0151 friss\u00edt\u00e9se sz\u00fcks\u00e9ges: v\u00e1lasztani kell a WorkContextProvider \u00e9s ExecutionContext k\u00f6z\u00f6tt.
+
+J2CA8624.work.context.duplicate=J2CA8624E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 t\u00f6bb {1} t\u00edpus\u00fa WorkContext p\u00e9ld\u00e1nnyal pr\u00f3b\u00e1lt meg egy munk\u00e1t bek\u00fcldeni. Egyetlen munkak\u00fcld\u00e9shez t\u00edpusonk\u00e9nt csak egy WorkContext t\u00e1mogatott.
+J2CA8624.work.context.duplicate.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 olyan munk\u00e1t k\u00fcld\u00f6tt el, amely t\u00f6bb megegyez\u0151 t\u00edpus\u00fa WorkContext p\u00e9ld\u00e1nyt tartalmaz.
+J2CA8624.work.context.duplicate.useraction=Az er\u0151forr\u00e1s-illeszt\u0151t friss\u00edteni kell, hogy ne legyen t\u00f6bbsz\u00f6r szerepl\u0151 WorkContext p\u00e9ld\u00e1ny a WorkContextProvider elemben.
+
+J2CA8625.work.context.unavailable=J2CA8625E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 {1} munkak\u00f6rnyezet t\u00edpussal k\u00eds\u00e9relt meg munk\u00e1t elk\u00fcldeni, ami nem t\u00e1mogatott, vagy a szolg\u00e1ltat\u00e1s nem enged\u00e9lyezett.
+J2CA8625.work.context.unavailable.explanation=A munkak\u00f6rnyezetet az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem t\u00e1mogatja, vagy az azt t\u00e1mogat\u00f3 szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve.
+J2CA8625.work.context.unavailable.useraction=Ellen\u0151rizze, hogy a munkak\u00f6rnyezet t\u00edpus t\u00e1mogatott-e. Ha igen, akkor ellen\u0151rizze, hogy az azt t\u00e1mogat\u00f3 szolg\u00e1ltat\u00e1s enged\u00e9lyezett-e.
+
+J2CA8687.hint.datatype.invalid=J2CA8687E: A(z) {0} tipp \u00e9rt\u00e9kei csak {1} t\u00edpus\u00faak lehetnek. A(z) {2} er\u0151forr\u00e1s-illeszt\u0151 {4} t\u00edpus\u00fa {3} \u00e9rt\u00e9ket adott meg.
+J2CA8687.hint.datatype.invalid.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 \u00e1ltal megadott tipp \u00e9rt\u00e9k adatt\u00edpusa helytelen.
+J2CA8687.hint.datatype.invalid.useraction=A tipp adatt\u00edpus\u00e1nak jav\u00edt\u00e1s\u00e1val kapcsolatban keresse meg az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3j\u00e1t.
+
+J2CA8688.work.setup.failed=J2CA8688E: A munkakezel\u0151 nem tudja futtatni a munkaelemet. L\u00e1sd a kiv\u00e9telt: {0}.
+J2CA8688.work.setup.failed.explanation=Hiba t\u00f6rt\u00e9nt a munkaelem futtat\u00e1s\u00e1nak el\u0151k\u00e9sz\u00edt\u00e9sekor.
+J2CA8688.work.setup.failed.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel sz\u00f6veg\u00e9t.
+
+J2CA8800.multiple.xa.resources=J2CA8800E: T\u00f6bb XA er\u0151forr\u00e1st adott vissza a(z) {0} er\u0151forr\u00e1s-illeszt\u0151 a(z) {1} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s eset\u00e9n.
+J2CA8800.multiple.xa.resources.explanation=Az er\u0151forr\u00e1s-illeszt\u0151nek csak egy XA er\u0151forr\u00e1st kell visszaadnia a megadott aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s eset\u00e9n.
+J2CA8800.multiple.xa.resources.useraction=Vegye fel a kapcsolatot az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3j\u00e1val, \u00e9s jav\u00edttassa vel\u00fck a getXAResources API megval\u00f3s\u00edt\u00e1st, hogy az megfeleljen a JCA specifik\u00e1ci\u00f3nak.
+
+J2CA8801.act.spec.active=J2CA8801I: A(z) {0} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s \u00fczenetv\u00e9gpontja \u00e9s a(z) {1} \u00fczenetvez\u00e9relt komponens alkalmaz\u00e1s aktiv\u00e1l\u00e1sra ker\u00fclt.
+J2CA8801.act.spec.active.explanation=Az \u00fczenetv\u00e9gpont aktiv\u00e1l\u00e1sra ker\u00fclt \u00e9s k\u00e9szen \u00e1ll bej\u00f6v\u0151 \u00fczenetek kezel\u00e9s\u00e9re.
+J2CA8801.act.spec.active.useraction=Semmit sem kell tennie.
+
+J2CA8802.activation.failed=J2CA8802E: Az \u00fczenetv\u00e9gpont aktiv\u00e1l\u00e1s meghi\u00fasult a(z) {0} er\u0151forr\u00e1s-illeszt\u0151re a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}.
+J2CA8802.activation.failed.explanation=A megadott kiv\u00e9tel t\u00f6rt\u00e9nt \u00fczenetv\u00e9gpont aktiv\u00e1l\u00e1s sor\u00e1n.
+J2CA8802.activation.failed.useraction=Vizsg\u00e1lja meg a megadott kiv\u00e9telt a hiba ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben.
+
+J2CA8803.deactivation.failed=J2CA8803E: Az \u00fczenetv\u00e9gpont deaktiv\u00e1l\u00e1sa meghi\u00fasult a(z) {0} er\u0151forr\u00e1s-illeszt\u0151re a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}.
+J2CA8803.deactivation.failed.explanation=A megadott kiv\u00e9tel t\u00f6rt\u00e9nt \u00fczenetv\u00e9gpont deaktiv\u00e1l\u00e1s sor\u00e1n.
+J2CA8803.deactivation.failed.useraction=Vizsg\u00e1lja meg a megadott kiv\u00e9telt a hiba ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben.
+
+J2CA8804.act.spec.inactive=J2CA8804I: A(z) {0} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s \u00fczenetv\u00e9gpontja \u00e9s a(z) {1} \u00fczenetvez\u00e9relt komponens alkalmaz\u00e1s deaktiv\u00e1l\u00e1sra ker\u00fclt.
+J2CA8804.act.spec.inactive.explanation=Az \u00fczenetv\u00e9gpont deaktiv\u00e1l\u00e1sra ker\u00fclt \u00e9s m\u00e1r nem \u00e1ll k\u00e9szen bej\u00f6v\u0151 \u00fczenetek kezel\u00e9s\u00e9re.
+J2CA8804.act.spec.inactive.useraction=Semmit sem kell tennie.
+
+# 8806 deleted
+
+J2CA8807.native.rrs.not.available=J2CA8807E: Az RRS tranzakci\u00f3s t\u00e1mogat\u00e1st biztos\u00edt\u00f3 szolg\u00e1ltat\u00e1s nem akt\u00edv. Az er\u0151forr\u00e1s bejegyz\u00e9se visszautas\u00edt\u00e1sra ker\u00fclt.
+J2CA8807.native.rrs.not.available.explanation=Az RRS tranzakci\u00f3s t\u00e1mogat\u00e1st biztos\u00edt\u00f3 szolg\u00e1ltat\u00e1s nem akt\u00edv. A tranzakci\u00f3kezel\u0151t \u00e9rint\u0151 er\u0151forr\u00e1s regisztr\u00e1ci\u00f3s k\u00eds\u00e9rletek visszautas\u00edt\u00e1sra ker\u00fclnek. 
+J2CA8807.native.rrs.not.available.useraction=Ellen\u0151rizze, hogy az angel folyamat akt\u00edv-e. Ellen\u0151rizze, hogy a Liberty folyamat MVS felhaszn\u00e1l\u00f3i  azonos\u00edt\u00f3ja rendelkezik-e a megfelel\u0151 SAF jogosults\u00e1ggal az RRS integr\u00e1ci\u00f3hoz haszn\u00e1lt jogosult szolg\u00e1ltat\u00e1sok megh\u00edv\u00e1s\u00e1hoz. Ellen\u0151rizze, hogy az RRS integr\u00e1ci\u00f3t biztos\u00edt\u00f3 szolg\u00e1ltat\u00e1s be lett-e \u00e1ll\u00edtva.
+
+J2CA8809.embedded.lookup.failed=J2CA8809E: A(z) {0} er\u0151forr\u00e1s a(z) {1} be\u00e1gyazott er\u0151forr\u00e1s-illeszt\u0151ben csak a(z) {2} alkalmaz\u00e1s sz\u00e1m\u00e1ra el\u00e9rhet\u0151. Az er\u0151forr\u00e1st a(z) {3} alkalmaz\u00e1sb\u00f3l pr\u00f3b\u00e1lt\u00e1k meg el\u00e9rni.
+J2CA8809.embedded.lookup.failed.explanation=Be\u00e1gyazott er\u0151forr\u00e1s-illeszt\u0151 \u00e9s az \u00e1ltala meghat\u00e1rozott er\u0151forr\u00e1sok csak abb\u00f3l az alkalmaz\u00e1sb\u00f3l \u00e9rhet\u0151k el, amelybe az er\u0151forr\u00e1s-illeszt\u0151 be van \u00e1gyazva. 
+J2CA8809.embedded.lookup.failed.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s csak olyan er\u0151forr\u00e1sokat keres ki, amelyek a kiszolg\u00e1l\u00f3 hat\u00f3k\u00f6r\u00e9ben vagy ugyanazon alkalmaz\u00e1son bel\u00fcl vannak meghat\u00e1rozva.
+
+J2CA8810.embedded.activation.failed=J2CA8810E: A(z) {0} v\u00e9gpont a(z) {1} be\u00e1gyazott er\u0151forr\u00e1s-illeszt\u0151ben csak a(z) {2} alkalmaz\u00e1sb\u00f3l aktiv\u00e1lhat\u00f3. Az er\u0151forr\u00e1st a(z) {3} alkalmaz\u00e1sb\u00f3l pr\u00f3b\u00e1lt\u00e1k meg aktiv\u00e1lni.
+J2CA8810.embedded.activation.failed.explanation=A v\u00e9gpont aktiv\u00e1l\u00e1sa meghi\u00fasult, mert m\u00e1sik alkalmaz\u00e1sba be\u00e1gyazott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sra mutat.
+J2CA8810.embedded.activation.failed.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sait \u00fagy, hogy a v\u00e9gpont kiszolg\u00e1l\u00f3 hat\u00f3k\u00f6r\u0171 vagy ugyanazon alkalmaz\u00e1sba be\u00e1gyazott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1st haszn\u00e1ljon.
+
+J2CA8811.embedded.lookup.failed=J2CA8811E: A(z) {0} er\u0151forr\u00e1s a(z) {1} be\u00e1gyazott er\u0151forr\u00e1s-illeszt\u0151ben csak a(z) {2} alkalmaz\u00e1s sz\u00e1m\u00e1ra el\u00e9rhet\u0151.
+J2CA8811.embedded.lookup.failed.explanation=Be\u00e1gyazott er\u0151forr\u00e1s-illeszt\u0151 \u00e9s az \u00e1ltala meghat\u00e1rozott er\u0151forr\u00e1sok csak abb\u00f3l az alkalmaz\u00e1sb\u00f3l \u00e9rhet\u0151k el, amelybe az er\u0151forr\u00e1s-illeszt\u0151 be van \u00e1gyazva.
+J2CA8811.embedded.lookup.failed.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st vagy szolg\u00e1ltat\u00e1st \u00fagy, hogy csak a kiszolg\u00e1l\u00f3 hat\u00f3k\u00f6r\u00e9ben meghat\u00e1rozott er\u0151forr\u00e1sokat keressen ki.
+
+J2CA8812.embedded.activation.failed=J2CA8812E: A(z) {0} v\u00e9gpont a(z) {1} be\u00e1gyazott er\u0151forr\u00e1s-illeszt\u0151ben csak a(z) {2} alkalmaz\u00e1sb\u00f3l aktiv\u00e1lhat\u00f3.
+J2CA8812.embedded.activation.failed.explanation=A v\u00e9gpont aktiv\u00e1l\u00e1sa meghi\u00fasult, mert m\u00e1sik alkalmaz\u00e1sba be\u00e1gyazott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sra mutat.
+J2CA8812.embedded.activation.failed.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sait \u00fagy, hogy a v\u00e9gpont a kiszolg\u00e1l\u00f3 hat\u00f3k\u00f6r\u00e9ben meghat\u00e1rozott aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1st haszn\u00e1ljon.
+
+J2CA8813.required.activation.prop.not.set=J2CA8813E: A(z) {2} er\u0151forr\u00e1s-illeszt\u0151 {1} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s\u00e1nak k\u00f6telez\u0151 {0} tulajdons\u00e1ga hi\u00e1nyzik.
+J2CA8813.required.activation.prop.not.set.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 bizonyos aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s tulajdons\u00e1gokat k\u00f6telez\u0151nek jel\u00f6l, de az \u00e9rt\u00e9k nincs megadva. Ezeket a tulajdons\u00e1gokat k\u00e9t k\u00fcl\u00f6nb\u00f6z\u0151 helyr\u0151l lehet be\u00e1ll\u00edtani: (1) aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s konfigur\u00e1ci\u00f3s objektum l\u00e9trehoz\u00e1sakor a telep\u00edtett er\u0151forr\u00e1s-illeszt\u0151 alatt, vagy (2) mag\u00e1b\u00f3l az alkalmaz\u00e1sb\u00f3l <activation-config-property> elemk\u00e9nt.
+J2CA8813.required.activation.prop.not.set.useraction=Adja meg a sz\u00fcks\u00e9ges \u00e9rt\u00e9ket az aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1sban a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00f6tt vagy az alkalmaz\u00e1son bel\u00fcli activation-config-property bejegyz\u00e9sben.
+
+J2CA8814.resource.adapter.install.failed=J2CA8814E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 modul resourceAdapter elem\u00e9nek id attrib\u00fatuma nem t\u00e1mogatott karaktereket tartalmaz.
+J2CA8814.resource.adapter.install.failed.explanation=A resourceAdapter elem id attrib\u00fatum az alfanumerikus ien k\u00edv\u00fcl csak a k\u00f6vetkez\u0151 karaktereket tartalmazhatja: '.', '-' \u00e9s '_'. A konfigur\u00e1ci\u00f3ban megadott vagy moduln\u00e9vb\u0151l sz\u00e1rmaztatotott azonos\u00edt\u00f3 nem t\u00e1mogatott karaktereket tartalmaz.
+J2CA8814.resource.adapter.install.failed.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a resourceAdapter elem id attrib\u00fatum\u00e1hoz a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00f6tt.
+
+J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Ugyanaz az egyedi azonos\u00edt\u00f3 ({0}) nem tartozhat t\u00f6bb er\u0151forr\u00e1s-illeszt\u0151h\u00f6z.
+J2CA8815.duplicate.resource.adapter.id.explanation=T\u00f6bb er\u0151forr\u00e1s-illeszt\u0151 ugyanazzal az egyedi azonos\u00edt\u00f3val (id) van be\u00e1ll\u00edtva vagy \u00e9rtelemszer\u0171en arra v\u00e9gz\u0151dik.
+J2CA8815.duplicate.resource.adapter.id.useraction=Rendeljen hozz\u00e1 egyedi azonos\u00edt\u00f3kat az er\u0151forr\u00e1s-illeszt\u0151kh\u00f6z, hogy ne legyenek \u00fctk\u00f6z\u00e9sek.
+
+# Do not translate the term "Bean Validation"
+# Do not translate the term "Validator"
+# ---------------------------------
+# {0} The Validator type and instance hashcode
+# {1} The Validation exception
+# {2} The JavaBean type and instance hashcode
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008=J2CA1008E: Kiv\u00e9tel k\u00f6vetkezett be, mik\u00f6zben a(z) {0} \u00e9rv\u00e9nyes\u00edt\u0151 megpr\u00f3b\u00e1lta \u00e9rv\u00e9nyes\u00edteni a {2} RAR JavaBean-p\u00e9ld\u00e1nyt: {1}. A komponens\u00e9rv\u00e9nyes\u00edt\u0151 korl\u00e1toz\u00e1sai addig nem lesznek \u00e9rv\u00e9nyes\u00edtve, am\u00edg a p\u00e9ld\u00e1ny m\u0171k\u00f6d\u00e9sbe nem l\u00e9p.
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.explanation=Ez nem v\u00e1rt kiv\u00e9tel, \u00e9s az \u00e9rv\u00e9nyes\u00edt\u0151 megval\u00f3s\u00edt\u00e1si hib\u00e1j\u00e1t jelzi.  El\u0151fordulhat, hogy a hiba ok\u00e1t nem lehet azonnal meghat\u00e1rozni.  
+BEAN_VALIDATION_VALIDATOR_FAILED_J2CA1008.useraction=Ellen\u0151rizze az FFDC \u00e9s a rendszer napl\u00f3it. Ha a t\u00fcnetek az \u00e9rv\u00e9nyes\u00edt\u0151 nem a WebSphere Application Server \u00e1ltali megval\u00f3s\u00edt\u00e1s\u00e1nak hib\u00e1j\u00e1t jelzik, k\u00e9rje a komponens\u00e9rv\u00e9nyes\u00edt\u0151-szolg\u00e1ltat\u00f3 seg\u00edts\u00e9g\u00e9t. CMSG0002
+
+# Do not translate the term "Bean Validation"
+# ---------------------------------
+# {0} A JavaBean type and instance hashcode, in hexadecimal
+# {1} A newline-delimited list of constraints violated by the JavaBean instance
+BEAN_VALIDATION_FAILED_J2CA0238=J2CA0238E: A(z) {0} JavaBean \u00e9rv\u00e9nyes\u00edt\u00e9se sikertelen az al\u00e1bbi megszor\u00edt\u00e1ss\u00e9rt\u00e9si list\u00e1ban jelzett egy vagy t\u00f6bb \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s miatt: {1}
+BEAN_VALIDATION_FAILED_J2CA0238.explanation=A JavaBean p\u00e9ld\u00e1ny egy vagy t\u00f6bb konfigur\u00e1ci\u00f3s tulajdons\u00e1ga s\u00e9rti a megadott Bean Validation megszor\u00edt\u00e1sokat.
+BEAN_VALIDATION_FAILED_J2CA0238.useraction=Olvassa el az er\u0151forr\u00e1s-illeszt\u0151 dokument\u00e1ci\u00f3j\u00e1t a megszor\u00edt\u00e1ss\u00e9rt\u00e9sek \u00e1ltal jelzett konfigur\u00e1ci\u00f3s tulajdons\u00e1ghoz tartoz\u00f3 \u00e9rv\u00e9nyes \u00e9rt\u00e9kek meghat\u00e1roz\u00e1s\u00e1hoz \u00e9s konfigur\u00e1lja mindegyik tulajdons\u00e1got ennek megfelel\u0151en.
+
+#--------------------------------------------------------------------------------
+# J2CA0239 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+# J2CA0240 is unused (it was previously used by beta-only code that was removed).
+
+#--------------------------------------------------------------------------------
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241=J2CA0241W: Az er\u0151forr\u00e1s-illeszt\u0151 komponens arch\u00edvumok nem t\u00e1mogatottak.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.explanation=A META-INF k\u00f6nyvt\u00e1rban l\u00e9v\u0151 beans.xml f\u00e1jl figyelmen k\u00edv\u00fcl marad, mivel a CDI fel\u00fcgyelt bean arch\u00edvum er\u0151forr\u00e1s-illeszt\u0151k nem t\u00e1mogatottak.
+BEAN_ARCHIVE_RESOURCE_ADAPTERS_NOT_SUPPORT_J2CA0241.useraction=T\u00e1vol\u00edtsa el a beans.xml f\u00e1jlt a META-INF k\u00f6nyvt\u00e1rb\u00f3l, mivel a CDI fel\u00fcgyelt bean arch\u00edvum er\u0151forr\u00e1s-illeszt\u0151k nem t\u00e1mogatottak.
+
+
+

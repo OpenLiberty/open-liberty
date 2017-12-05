@@ -713,7 +713,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
         }
     }
 
-    class ProcessServlet30MethodStep implements BaseServletStep {
+    public class ProcessServlet30MethodStep implements BaseServletStep {
 
         Map<String, String> parseQuery(String query, StringBuffer sb) {
             Scanner commands = new Scanner(query).useDelimiter("[,;\\|&]");

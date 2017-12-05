@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: Serviciul {0} OSGi nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Aceast\u0103 eroare intern\u0103 de server este aruncat\u0103 pentru c\u0103 serviciul specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea de cur\u0103\u0163are.
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: A ap\u0103rut urm\u0103toarea eroare de API Health: {0}
+temporary.CWMH9999E.explanation=A ap\u0103rut o eroare de API Health care \u00eempiedic\u0103 func\u0163ionarea normal\u0103.
+temporary.CWMH9999E.useraction=Examina\u0163i istoricele FFDC \u015fi textul excep\u0163iei pentru a identifica problema.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: Metoda HealthCheck {0} din aplica\u0163ia {1} din modulul {2} a aruncat excep\u0163ia {3} cu urm\u0103torul mesaj: {4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=Metoda de apelare specificat\u0103 a produs o excep\u0163ie.
+healthcheck.bean.call.exception.CWMH0050E.useraction=Examina\u0163i-v\u0103 metoda de apelare din bean-ul HealthCheck pentru a identifica excep\u0163ia care a survenit.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: Implementarea HealthCheckResponse {0} \u00een aplica\u0163ia {1} din modulul {2} a raportat o ie\u015fire DOWN {3} cu date {4}.
+healthcheck.application.down.CWMH0051W.explanation=Ie\u015firea DOWN ar putea fi cauza unui serviciu de monitorizare pentru a ac\u0163iona pe acest server.
+healthcheck.application.down.CWMH0051W.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.  Acest avertisment este o \u00eenregistrare ie\u015firii DOWN.

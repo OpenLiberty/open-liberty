@@ -1,0 +1,194 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.common/resources/com/ibm/ws/security/csiv2/internal/resources/CSIv2CommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9500 - CWWKS9599
+
+# Client CSIv2 Configuration related messages CWWKS9500 - CWWKS9509
+# -------------------------------------------------------------------------------------------------
+
+# Server CSIv2 Configuration related messages CWWKS9510 - CWWKS9519
+# -------------------------------------------------------------------------------------------------
+
+
+# Client CSIv2 runtime related messages CWWKS9520 - CWWKS9579
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED=CWWKS9520E: Neexistuje shoda mezi z\u00e1sadami zabezpe\u010den\u00ed CSIv2 klienta a serveru. \n {0}
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.explanation=Neexistuje soulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed CSIv2 klienta a serveru. 
+CSIv2_CLIENT_COMPATIBLE_CHECK_FAILED.useraction=Zajist\u011bte kompatibilitu z\u00e1sad zabezpe\u010den\u00ed CSIv2 klienta a serveru.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED=CWWKS9521E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva, vrstva ov\u011b\u0159ov\u00e1n\u00ed a vrstva atribut\u016f pro <{0}> s <{1}> na hodnotu Supported a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{2}> na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b, vrstv\u011b ov\u011b\u0159ov\u00e1n\u00ed anebo vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Supported a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu, vrstvu ov\u011b\u0159ov\u00e1n\u00ed anebo vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED=CWWKS9522E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva a vrstva atribut\u016f s <{0}> s hodnotou Supported a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{1}> s hodnotou Required. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b anebo vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Supported a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_SUPPORTS_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu anebo vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED=CWWKS9523E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva, vrstva ov\u011b\u0159ov\u00e1n\u00ed a vrstva atribut\u016f pro <{0}> s <{1}> na hodnotu Required a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{2}> na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b, vrstv\u011b ov\u011b\u0159ov\u00e1n\u00ed anebo vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Required a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu, vrstvu ov\u011b\u0159ov\u00e1n\u00ed anebo vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Required a Supported.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED=CWWKS9524E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva a vrstva atribut\u016f s <{0}> na hodnotu Required a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{1}> na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b anebo vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Required a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ALL_LAYERS_REQUIRES_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu anebo vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Required a Supported.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED=CWWKS9525E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva pro {0} s <{1}> na hodnotu Supported a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{2}> na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b anebo vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Supported a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED=CWWKS9526E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva s <{0}> na hodnotu Supported a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{1}> na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Supported a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_SUPPORTS_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed klienta Supported a hodnotu z\u00e1sad zabezpe\u010den\u00ed serveru Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED=CWWKS9527E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva pro {0} s <{1}> na hodnotu Required a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{2}> na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Required a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED=CWWKS9528E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na transportn\u00ed vrstva s <{0}> na hodnotu Required a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{1}> na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.explanation= V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje v transportn\u00ed vrstv\u011b nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Required a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_TRANSPORT_REQUIRES_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+	
+# Do not translate Supported and Required	
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED=CWWKS9529E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva atribut\u016f pro {0} s <{1}> na hodnotu Supported a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{2}> na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje ve vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Supported a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro transportn\u00ed vrstvu kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED=CWWKS9530E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva atribut\u016f s <{0}> na hodnotu Supported a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{1}> na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje ve vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Supported a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Required. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_SUPPORTS_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED=CWWKS9531E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva atribut\u016f pro {0} s <{1}> na hodnotu Required a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{2}> na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje ve vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Required a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+# Do not translate Supported and Required
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED=CWWKS9532E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva atribut\u016f s <{0}> na hodnotu Required a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s <{1}> na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace existuje ve vrstv\u011b atribut\u016f nesoulad mezi zadan\u00fdmi z\u00e1sadami zabezpe\u010den\u00ed klienta CSIv2 nastaven\u00fdmi na hodnotu Required a z\u00e1sadami zabezpe\u010den\u00ed serveru nastaven\u00fdmi na hodnotu Supported. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_REQUIRES_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed hodnoty z\u00e1sad zabezpe\u010den\u00ed serveru Supported a Required.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED=CWWKS9533E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva atribut\u016f pro <{0}> s typem deklarace identity <{1}> a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s typem deklarace identity <{2}>. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace se neshoduje deklarace identity ve vrstv\u011b atribut\u016f v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta s deklarac\u00ed identity v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed serveru. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_FAILED.useraction=Zajist\u011bte, aby m\u011blo zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed typ deklarace identity.
+
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED=CWWKS9534E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva atribut\u016f s typem deklarace identity <{0}> a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s typem deklarace identity <{1}>. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace se neshoduje deklarace identity ve vrstv\u011b atribut\u016f v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta s deklarac\u00ed identity v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed serveru. 
+CSIv2_CLIENT_COMPATIBLE_ATTRIBUTE_IDENTITY_ASSERTION_NO_AUTH_FAILED.useraction=Zajist\u011bte, aby m\u011bly z\u00e1sady zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed typ deklarace identity.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED=CWWKS9535E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva ov\u011b\u0159ov\u00e1n\u00ed s mechanizmem <{0}> a z\u00e1sady zabezpe\u010den\u00ed serveru jsou nakonfigurov\u00e1ny s mechanizmem <{1}>. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace se neshoduje mechanizmus vrstvy ov\u011b\u0159en\u00ed v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta s mechanizmem v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed serveru. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_MECHANISMS_FAILED.useraction=Zajist\u011bte, aby m\u011bly z\u00e1sady zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed mechanizmus.
+
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED=CWWKS9536E: V konfigura\u010dn\u00edm souboru je zak\u00e1z\u00e1na vrstva ov\u011b\u0159ov\u00e1n\u00ed z\u00e1sad zabezpe\u010den\u00ed klienta a vrstva ov\u011b\u0159ov\u00e1n\u00ed z\u00e1sad zabezpe\u010den\u00ed serveru je nakonfigurov\u00e1na s mechanizmem {0}. 
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace se neshoduje mechanizmus vrstvy ov\u011b\u0159en\u00ed v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta s mechanizmem v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed serveru. 
+CSIv2_CLIENT_COMPATIBLE_AUTTH_CLIENT_DISABLED_FAILED.useraction=Zajist\u011bte, aby m\u011bly z\u00e1sady zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed mechanizmus.
+
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED=CWWKS9537E: V konfigura\u010dn\u00edm souboru je v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta nakonfigurov\u00e1na vrstva ov\u011b\u0159ov\u00e1n\u00ed s mechanizmem <{0}> a vrstva ov\u011b\u0159ov\u00e1n\u00ed z\u00e1sad zabezpe\u010den\u00ed serveru je zak\u00e1z\u00e1na. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.explanation=V souboru server.xml v prost\u0159ed\u00ed aplika\u010dn\u00edho serveru nebo v souboru client.xml v prost\u0159ed\u00ed klienta aplikace se neshoduje mechanizmus vrstvy ov\u011b\u0159en\u00ed v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed klienta s mechanizmem v z\u00e1sad\u00e1ch zabezpe\u010den\u00ed serveru. 
+CSIv2_CLIENT_COMPATIBLE_AUTH_SERVER_DISABLED_FAILED.useraction=Zajist\u011bte, aby m\u011bly z\u00e1sady zabezpe\u010den\u00ed klienta CSIv2 pro vrstvu atribut\u016f kompatibiln\u00ed mechanizmus.
+
+CSIv2_CLIENT_POLICY_NULL_ERROR=CWWKS9538E: Z\u00e1sady zabezpe\u010den\u00ed klienta pro ID po\u017eadavku {0} maj\u00ed hodnotu Null.
+CSIv2_CLIENT_POLICY_NULL_ERROR.explanation= V konfigura\u010dn\u00edm souboru nen\u00ed definov\u00e1na z\u00e1sada zabezpe\u010den\u00ed klienta CSIv2.
+CSIv2_CLIENT_POLICY_NULL_ERROR.useraction= U\u017eivatel bude asi muset nadefinovat z\u00e1sady zabezpe\u010den\u00ed klienta v souladu s dan\u00fdm po\u017eadavkem.
+ 
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR=CWWKS9539E: Server p\u0159ijal neo\u010dek\u00e1vanou zpr\u00e1vu CSIv2 {0} od klienta pro ID po\u017eadavku {1}.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.explanation= Klient zaslal zpr\u00e1vu CSIv2, kterou sm\u00ed jako odezvu zas\u00edlat pouze server.
+CSIv2_SERVER_UNEXPECTED_MSG_ERROR.useraction= Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+ 
+CSIv2_SERVER_CONFIG_NULL_ERROR=CWWKS9540E: Nebyla nalezena \u017e\u00e1dn\u00e1 konfigurace klienta v ID po\u017eadavku z\u00e1sad zabezpe\u010den\u00ed klienta: {0}.
+CSIv2_SERVER_CONFIG_NULL_ERROR.explanation= V konfigura\u010dn\u00edm souboru nen\u00ed definov\u00e1na z\u00e1sada zabezpe\u010den\u00ed serveru CSIv2.
+CSIv2_SERVER_CONFIG_NULL_ERROR.useraction= U\u017eivatel bude asi muset nadefinovat konfiguraci zabezpe\u010den\u00ed serveru v souladu s dan\u00fdm po\u017eadavkem.
+
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR=CWWKS9541E: Pro ID po\u017eadavku {0} nebyl nalezen kontext slu\u017eby zabezpe\u010den\u00ed.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.explanation= U\u017eivatel nedefinoval kontext zabezpe\u010den\u00ed na serveru nebo klientu.
+CSIv2_NO_SECURITY_CONTEXT_FOUND_ERROR.useraction= U\u017eivatel bude asi muset nadefinovat kontext zabezpe\u010den\u00ed na serveru i klientu. 
+
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR=CWWKS9542E: P\u0159i pokusu o odesl\u00e1n\u00ed odchoz\u00edho po\u017eadavku CSIv2 pro ID po\u017eadavku {0} do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Zpr\u00e1va v\u00fdjimky: {1}.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.explanation= P\u0159i pokusu o odesl\u00e1n\u00ed odchoz\u00edho po\u017eadavku CSIv2 do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+CSIv2_CLIENT_UNEXPECTED_EXCEPTION_ERROR.useraction= Dal\u0161\u00ed informace o p\u0159\u00ed\u010din\u011b v\u00fdjimky naleznete v protokolech.
+
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR=CWWKS9543E: Klient CSIv2 po\u017eadoval stavovou relaci s ID kontextu {0} pro ID po\u017eadavku {1}, ale server stavov\u00e9 relace nepodporuje.
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.explanation= Server nem\u00e1 p\u0159ij\u00edmat zpr\u00e1vy CompleteEstablishContext. 
+CSIv2_SERVER_DOES_NOT_SUPPORT_STATEFUL_ERROR.useraction= Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR=CWWKS9544E: P\u0159i p\u0159\u00edjmu p\u0159\u00edchoz\u00edho po\u017eadavku CSIv2 pro ID po\u017eadavku {0} do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce. Zpr\u00e1va v\u00fdjimky: {1}
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.explanation= P\u0159i p\u0159\u00edjmu p\u0159\u00edchoz\u00edho po\u017eadavku CSIv2 do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+CSIv2_SERVER_UNEXPECTED_EXCEPTION_ERROR.useraction= Dal\u0161\u00ed informace o p\u0159\u00ed\u010din\u011b v\u00fdjimky naleznete v protokolech.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER=CWWKS9545E: Klient nem\u016f\u017ee vytvo\u0159it token deklarace identity ITTAnonymous, proto\u017ee to nen\u00ed podporov\u00e1no konfigurac\u00ed vzd\u00e1len\u00e9ho serveru.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.explanation=Vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed serveru nepodporuje deklaraci identity s tokenem ITTAnonymous v souboru server.xml.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_SERVER.useraction=Zajist\u011bte, aby vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed vzd\u00e1len\u00e9ho serveru v souboru server.xml podporovala ITTAnonymous.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT=CWWKS9546E: Klient nem\u016f\u017ee vytvo\u0159it token deklarace identity ITTAnonymous, proto\u017ee to nen\u00ed podporov\u00e1no konfigurac\u00ed tohoto klienta.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.explanation=Vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed klienta nepodporuje Deklaraci identity s tokenem ITTAnonymous v souboru server.xml.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_NOT_SUPPORTED_BY_CLIENT.useraction=Zajist\u011bte, aby vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed klienta v souboru server.xml podporovala ITTAnonymous.
+
+# Do not translate ITTAnonymous
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY=CWWKS9547E: Klient nem\u016f\u017ee deklarovat ov\u011b\u0159en\u00fd p\u0159edm\u011bt, proto\u017ee podporuje pouze deklarace identity s tokenem ITTAnonymous.
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.explanation=Vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed klienta podporuje Deklaraci identity s tokenem ITTAnonymous v souboru server.xml a ov\u011b\u0159en\u00e9ho u\u017eivatele nelze deklarovat pomoc\u00ed tohoto typu tokenu. 
+CSIv2_CLIENT_ANONYMOUS_ASSERTION_ONLY.useraction=Zajist\u011bte, aby vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed klienta v souboru server.xml podporovala krom\u011b ITTAnonymous p\u0159i deklarov\u00e1n\u00ed ov\u011b\u0159en\u00e9ho u\u017eivatele i jin\u00fd typ deklarace identity.
+
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED=CWWKS9548E: Klient nem\u016f\u017ee deklarovat ov\u011b\u0159en\u00fd p\u0159edm\u011bt, proto\u017ee konfigurace vzd\u00e1len\u00e9ho serveru nepodporuje deklarace identity typ\u016f <{0}>.
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.explanation=Vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed klienta nepodporuje Deklaraci identity uveden\u00fdch typ\u016f. 
+CSIv2_CLIENT_ASSERTION_TYPE_NOT_SUPPORTED.useraction=Zajist\u011bte, aby vrstva atribut\u016f z\u00e1sad zabezpe\u010den\u00ed serveru v souboru server.xml podporovala alespo\u0148 jeden z uveden\u00fdch typ\u016f deklarace identity.
+
+# Do not translate GSSUP, WSLogin, and JAAS
+CSIv2_SERVER_CANNOT_DECODE_GSSUP=CWWKS9549E: Server nem\u016f\u017ee dek\u00f3dovat token GSSUP odeslan\u00fd klientem a ov\u011b\u0159it token.
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.explanation=Ov\u011b\u0159en\u00ed s tokenem GSSUP nelze prov\u00e9st, proto\u017ee nebyl dek\u00f3dov\u00e1n. 
+CSIv2_SERVER_CANNOT_DECODE_GSSUP.useraction=Ujist\u011bte se, \u017ee aplikace klienta prov\u00e1d\u00ed programov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed s konfigurac\u00ed WSLogin JAAS k vytvo\u0159en\u00ed p\u0159edm\u011btu z\u00e1kladn\u00edho ov\u011b\u0159en\u00ed.
+
+# Server CSIv2 runtime related messages CWWKS9580 - CWWKS9589
+# -------------------------------------------------------------------------------------------------
+
+SOCKET_BIND_ERROR=CWWKS9580E: Nelze otev\u0159\u00edt soket serveru na {0}:{1}. Zpr\u00e1va v\u00fdjimky: {2}.
+SOCKET_BIND_ERROR.explanation= P\u0159i otev\u00edr\u00e1n\u00ed soketu serveru do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+SOCKET_BIND_ERROR.useraction= Dal\u0161\u00ed informace o p\u0159\u00ed\u010din\u011b v\u00fdjimky naleznete v protokolech.
+
+IOR_NO_MATCHING_ADDRESS=CWWKS9581E: Nebyly nalezeny \u017e\u00e1dn\u00e9 odpov\u00eddaj\u00edc\u00ed prvky iiopsOptions nakonfigurovan\u00e9 s sslRef {0}.
+IOR_NO_MATCHING_ADDRESS.explanation= Ka\u017ed\u00fd prvek transportn\u00ed vrstvy nakonfigurovan\u00fd s atributem sslRef mus\u00ed odpov\u00eddat nejm\u00e9n\u011b jednomu prvku iiopsOptions. Prvky iiopsOptions mus\u00ed b\u00fdt nakonfigurov\u00e1ny se stejn\u00fdm atributem sslRef jako prvek transportn\u00ed vrstvy a mus\u00ed b\u00fdt v prvku iiopEndpoint, na kter\u00fd odkazuje tento prvek orb.
+IOR_NO_MATCHING_ADDRESS.useraction= Nakonfigurujte nejm\u00e9n\u011b jeden prvek iiopsOptions se stejnou hodnotou sslRef, jak\u00e1 je pou\u017eita v transportn\u00ed vrstv\u011b.
+
+# Do not translate sslRef, orb, defaultKeyStore, defaultSSLConfig, ssl in "ssl element".
+SSL_SERVICE_NOT_STARTED=CWWKS9582E: Atributy {0} sslRef vy\u017eadovan\u00e9 prvkem orb s ID {1} nebyly interpretov\u00e1ny b\u011bhem {2} sekund. V d\u016fsledku toho nedojde ke spu\u0161t\u011bn\u00ed aplikac\u00ed. Ujist\u011bte se, zda jste zahrnuli prvek keyStore a zda je spr\u00e1vn\u011b nakonfigurov\u00e1no zabezpe\u010den\u00ed SSL (Secure Sockets Layer). Pokud je atribut sslRef defaultSSLConfig, p\u0159idejte prvek keyStore s ID defaultKeyStore a heslem.
+SSL_SERVICE_NOT_STARTED.explanation= Aplikace se nespustily, proto\u017ee b\u011bhem ur\u010dit\u00e9 doby nebyl interpretov\u00e1n minim\u00e1ln\u011b jeden prvek ssl odkazovan\u00fd atributem sslRef dan\u00e9ho prvku orb. Toto selh\u00e1n\u00ed m\u016f\u017ee b\u00fdt zp\u016fsobeno neplatnou konfigurac\u00ed SSL, nap\u0159\u00edklad chyb\u011bj\u00edc\u00edm prvkem keyStore nebo certifik\u00e1tem SSL, kter\u00fd nen\u00ed vytvo\u0159en b\u011bhem vymezen\u00e9ho \u010dasu. Pot\u00e9, co je chyba konfigurace opravena, se aplikace spust\u00ed.
+SSL_SERVICE_NOT_STARTED.useraction= Ujist\u011bte se, zda jste nakonfigurovali prvek keyStore a zda ka\u017ed\u00fd atribut sslRef ukazuje na platn\u00fd prvek ssl, kter\u00fd je spr\u00e1vn\u011b nakonfigurov\u00e1n. Pokud je atribut sslRef defaultSSLConfig, p\u0159idejte prvek keyStore s ID defaultKeyStore a heslem. Nebyl-li certifik\u00e1t SSL vytvo\u0159en, pou\u017eijte \u00falohu createSSLCertificate p\u0159\u00edkazu securityUtility k ru\u010dn\u00edmu vytvo\u0159en\u00ed certifik\u00e1tu SSL.
+
+
+# Common CSIv2  related messages CWWKS9590 - CWWKS9599
+# -------------------------------------------------------------------------------------------------
+
+
+# Do not translate Supported and Required
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH=CWWKS9590W: Zd\u00e1 se, \u017ee po\u017eadovan\u00e1 \u0161ifrovac\u00ed sada {0} m\u00e1 {1} voleb p\u0159idru\u017een\u00ed, kter\u00e9 neodpov\u00eddaj\u00ed uveden\u00fdm podporovan\u00fdm volb\u00e1m {2} a povinn\u00fdm volb\u00e1m {3}.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.explanation=Mo\u017en\u00e1 \u0161ifrovac\u00ed sada neodpov\u00edd\u00e1 volb\u00e1m p\u0159idru\u017een\u00ed, kter\u00e9 jsou zaps\u00e1ny v odkazu IOR (Interoperable Object Reference) nebo pou\u017eity pro shodu s IOR.
+CSIv2_COMMON_CIPHER_SUITE_MISMATCH.useraction=Ov\u011b\u0159te, \u017ee po\u017eadovan\u00e1 \u0161ifrovac\u00ed sada odpov\u00edd\u00e1 uveden\u00fdm volb\u00e1m p\u0159idru\u017een\u00ed, nebo ji odeberte.
+
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS=CWWKS9591W: Konfigurace SSL {0} neexistuje. D\u016fvodem m\u016f\u017ee b\u00fdt chyb\u011bj\u00edc\u00ed prvek SSL nebo neplatn\u00fd odkaz na prvek \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nebo \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti v konfiguraci. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.explanation=V d\u016fsledku chyby v konfiguraci nelze z\u00edskat pot\u0159ebn\u00fd prvek konfigurace SSL. 
+CSIv2_SSLCONFIG_DOES_NOT_EXISTS.useraction=Ov\u011b\u0159te, \u017ee existuje prvek konfigurace SSL s odkazy na platn\u00e9 prvky \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti. 

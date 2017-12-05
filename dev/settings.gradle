@@ -151,6 +151,12 @@ def loadBuildProps() {
   props.setProperty('is.remote.publishing', isRemotePublishing.toString())
   props.setProperty('is.public.publishing', isPublicPublishing.toString())
 
+  gradle.ext.bndWorkspaceConfigure = { workspace ->
+    props.each { prop ->
+      workspace.setProperty(prop.key, prop.value.toString())
+    }
+  }
+
   // Store props to file for bnd to use. Imported by cnf/build.bnd and props files in cnf/resources/bnd
   File propsFile = new File('generated.properties')
   props.store(propsFile.newWriter(), null)
@@ -248,9 +254,11 @@ import java.text.SimpleDateFormat
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
 def workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+gradle.bndWorkspaceConfigure(workspace)
 
 /* Add cnf project to the graph */
 include bnd_cnf
+include 'build.image'
 
 /* Start with the declared build project name */
 def defaultProjectName = bnd_build
@@ -282,7 +290,7 @@ if ((startParameter.currentDir != rootDir) || projectNames.empty) {
 if (projectNames.remove('')) {
   rootDir.eachDir {
     def projectName = it.name
-    if (!projectName.startsWith('.') && file(projectName + "/build.gradle").exists()) {
+    if (!projectName.startsWith('.')) {
       projectNames += projectName
     }
   }
@@ -290,10 +298,12 @@ if (projectNames.remove('')) {
 
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->
-  include projectName
   def project = getBndProject(workspace, projectName)
-  project?.getDependson()*.getName().each {
-    include it
+  if (project) {
+    include projectName
+    project?.getDependson()*.getName().each {
+      include it
+    }
   }
 }
 

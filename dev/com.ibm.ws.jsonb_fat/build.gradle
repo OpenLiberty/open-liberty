@@ -8,28 +8,31 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
+
+configurations {
+  johnzon
+  refImpls
+}
+
+dependencies {
+  johnzon 'org.apache.johnzon:johnzon-core:1.1.0',
+    'org.apache.johnzon:johnzon-jsonb:1.1.0',
+    'org.apache.johnzon:johnzon-mapper:1.1.0'
+  refImpls 'org.eclipse:yasson:1.0',
+    'org.glassfish:javax.json:1.1'
+}
+
+task addJohnzon(type: Copy) {
+  from configurations.johnzon
+  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/"
+}
+
+task addRefImpls(type: Copy) {
+  from configurations.refImpls
+  into "${buildDir}/autoFVT/publish/shared/resources/refImpls/"
+}
+
 addRequiredLibraries {
-	doLast {
-		configurations {
-			johnzon
-			refImpls
-		}
-		dependencies {
-			johnzon 'org.apache.johnzon:johnzon-core:1.1.0',
-			  'org.apache.johnzon:johnzon-jsonb:1.1.0',
-			  'org.apache.johnzon:johnzon-mapper:1.1.0'
-			refImpls 'org.eclipse:yasson:1.0',
-			  'org.glassfish:javax.json:1.1'
-		}
-		copy {
-			from configurations.johnzon
-			into "${buildDir}/autoFVT/publish/shared/resources/johnzon/"
-		}
-		copy {
-			from configurations.refImpls
-			into "${buildDir}/autoFVT/publish/shared/resources/refImpls/"
-		}
-	}
+  dependsOn addJohnzon
+  dependsOn addRefImpls
 }

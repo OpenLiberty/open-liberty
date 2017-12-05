@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: Hodnotu pro metriku m\u011b\u0159\u00edtka {0} nelze vy\u0159e\u0161it.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=Z\u00e1kladn\u00ed metodu pro m\u011b\u0159\u00edtko nelze vy\u0159e\u0161it. Toto je obvykle zp\u016fsobeno p\u0159\u00edstupem k metrice, kde byla aplikace uvoln\u011bna.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. M\u011b\u0159\u00edtko bude automaticky odregistrov\u00e1no.

@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: A(z) {0} \u00fatvonalhoz a hozz\u00e1f\u00e9r\u00e9s megtagadva.
+SERVER_ACCESS_DENIED_ERROR.explanation=Olyan \u00fatvonal el\u00e9r\u00e9s\u00e9re t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely k\u00edv\u00fcl esik a be\u00e1ll\u00edtott olvas\u00e1si/\u00edr\u00e1si ter\u00fcleten.
+SERVER_ACCESS_DENIED_ERROR.useraction=Jav\u00edtsa az \u00fatvonalat olyan \u00fatvonalra, amely a be\u00e1ll\u00edtott olvas\u00e1si/\u00edr\u00e1si ter\u00fcleten bel\u00fcl tal\u00e1lhat\u00f3.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=Ez bels\u0151 kiszolg\u00e1l\u00f3hiba, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra the kiszolg\u00e1l\u00f3t a "clean" param\u00e9terrel.
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: A(z) {0} f\u00e1jl let\u00f6lt\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s sikeresen teljes\u00fclt.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=A megadott f\u00e1jl let\u00f6lt\u00e9si k\u00e9r\u00e9se sikeresen teljes\u00fclt.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: A(z) {0} f\u00e1jl felt\u00f6lt\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s sikeresen teljes\u00fclt.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=A megadott f\u00e1jl felt\u00f6lt\u00e9si k\u00e9r\u00e9se sikeresen teljes\u00fclt.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: A(z) {0} f\u00e1jl t\u00f6rl\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s sikeresen teljes\u00fclt.
+DELETE_REQUEST_COMPLETE_INFO.explanation=A megadott f\u00e1jl t\u00f6rl\u00e9si k\u00e9r\u00e9se sikeresen teljes\u00fclt.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Ez inform\u00e1ci\u00f3s \u00fczenet, semmit sem kell tennie.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: A(z) {0} f\u00e1jl t\u00f6rl\u00e9s\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9s nem teljes\u00fclt.
+DELETE_REQUEST_ERROR.explanation=A megadott f\u00e1jlra vonatkoz\u00f3 t\u00f6rl\u00e9si k\u00e9r\u00e9s sikertelen, lehet, hogy m\u00e1sik folyamat \u00e1ltal haszn\u00e1latban van.
+DELETE_REQUEST_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jlt nem haszn\u00e1lja m\u00e1sik folyamat, \u00e9s hogy a f\u00e1jl t\u00f6rl\u00e9s\u00e9t lehet\u0151v\u00e9 t\u00e9v\u0151 megfelel\u0151 enged\u00e9lyek be vannak \u00e1ll\u00edtva.
+
+PATH_NOT_VALID=CWWKX0127E: A(z) {0} \u00fatvonal \u00e9rv\u00e9nytelen.
+PATH_NOT_VALID.explanation=A megadott \u00fatvonal nem \u00e9rv\u00e9nyes \u00e9s nem tal\u00e1lhat\u00f3.
+PATH_NOT_VALID.useraction=Gondoskodj\u00e9k r\u00f3la, hogy \u00e9rv\u00e9nytelen karaktereket vagy \u00e9rt\u00e9keket nem tartalmaz\u00f3 \u00e9rv\u00e9nyes \u00fatvonal legyen megadva.
+
+NO_WRITE_LOCATION=CWWKX0128E: Az \u00fatv\u00e1laszt\u00e1si kiszolg\u00e1l\u00f3n nincsenek be\u00e1ll\u00edtott \u00edrhat\u00f3 helyek.
+NO_WRITE_LOCATION.explanation=Az \u00fatv\u00e1laszt\u00e1si kiszolg\u00e1l\u00f3n nincsenek be\u00e1ll\u00edtott \u00edrhat\u00f3 helyek.
+NO_WRITE_LOCATION.useraction=Gondoskodj\u00e9k r\u00f3la, hogy legal\u00e1bb 1 \u00edrhat\u00f3 hely be legyen \u00e1ll\u00edtva az \u00fatv\u00e1laszt\u00e1si kiszolg\u00e1l\u00f3n.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: A felt\u00f6lt\u00f6tt {0} arch\u00edvum nem bonthat\u00f3 ki.
+UPLOAD_EXPANSION_ERROR.explanation=A megadott felt\u00f6lt\u00f6tt arch\u00edvum kibont\u00e1sa nem hajthat\u00f3 v\u00e9gre.
+UPLOAD_EXPANSION_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az arch\u00edvum nem s\u00e9r\u00fclt.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: Az arch\u00edvum kibont\u00f3 seg\u00e9dprogram nem tal\u00e1lhat\u00f3.
+ARCHIVE_EXPANDER_ERROR.explanation=A sz\u00fcks\u00e9ges arch\u00edvum kibont\u00f3 seg\u00e9dprogram nem tal\u00e1lhat\u00f3.
+ARCHIVE_EXPANDER_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Liberty telep\u00edt\u00e9si k\u00f6nyvt\u00e1r nem s\u00e9r\u00fclt.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: Egy feladat {0} azonos\u00edt\u00f3val nem tal\u00e1lhat\u00f3.
+UNKNOWN_TASK_ID_ERROR.explanation=A megadott azonos\u00edt\u00f3 nem felel meg a feladat-nyilv\u00e1ntart\u00e1sban pillanatnyilag t\u00e1rolt egyik feladatnak sem.
+UNKNOWN_TASK_ID_ERROR.useraction=Olyan \u00e9rv\u00e9nyes azonos\u00edt\u00f3t k\u00e9rjen le, amely nem \u00fajrahasznos\u00edtott.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: A(z) {0} \u00e1tvitel ut\u00e1ni m\u0171veletek \u00e9rv\u00e9nytelenek.
+INVALID_ACTION_OPTIONS.explanation=Az \u00e1tvitel ut\u00e1ni m\u0171veletek be\u00e1ll\u00edt\u00e1sainak null\u00e9rt\u00e9knek, \u00fcresnek, vagy a m\u0171veletek list\u00e1j\u00e1val megegyez\u0151 hossz\u00fas\u00e1g\u00fa vessz\u0151vel elv\u00e1lasztott list\u00e1nak kell lennie.
+INVALID_ACTION_OPTIONS.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00e1tvitel ut\u00e1ni m\u0171veletek be\u00e1ll\u00edt\u00e1sai tartalmaznak egy \u00e9rv\u00e9nyes \u00e9rt\u00e9ket.

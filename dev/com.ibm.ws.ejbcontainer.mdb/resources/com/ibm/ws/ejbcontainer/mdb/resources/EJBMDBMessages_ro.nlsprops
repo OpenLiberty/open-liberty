@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: Punctul final al mesajului pentru bean-ul controlat de mesaje {0} a fost activat \u015fi este gata s\u0103 accepte mesaje. 
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=Specifica\u0163ia activ\u0103rii pentru bean-ul controlat de mesaje este disponibil\u0103 \u015fi punctul final al mesajului a devenit activ \u015fi este gata s\u0103 accepte mesaje.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: Punctul final al mesajului pentru bean-ul controlat de mesaje {0} a fost dezactivat \u015fi nu este disponibil s\u0103 accepte mesaje.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=Bean-ul controlat de mesaje este \u00eenl\u0103turat sau specifica\u0163ia de activare nu mai este disponibil\u0103. Punctul final al mesaului nu mai este disponibil s\u0103 accepte mesaje.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: Punctul final al mesajului pentru bean-ul controlat de mesaje {0} nu poate fi activat pentru c\u0103 soecifica\u0163ia de activare {1} nu este disponibil\u0103. Punctul final al mesajului nu va primi mesaje p\u00e2n\u0103 c\u00e2nd specifica\u0163ia de activare devine disponibil\u0103.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=Serverul porne\u015fte bean-ul controlat de mesaje, dar nu poate activa punctul final al mesajului pentru c\u0103 specifica\u0163ia de activare nu a putut fi g\u0103sit\u0103. Punctul final al mesajului nu va primi mesaje p\u00e2n\u0103 c\u00e2nd poate fi activat punctul final.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verifica\u0163i c\u0103 s-a configurat o specifica\u0163ie de activare cu numele specificat. Dac\u0103 exist\u0103 configura\u0163ia, a\u015ftepta\u0163i pentru ca specifica\u0163iile de activare s\u0103 devin\u0103 disponibile.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Punctul final al mesajului pentru bean-ul controlat de mesaje {0} nu poate fi activat deoarece destina\u0163ia {1} nu este disponibil\u0103. Acest punct final al mesajului nu va primi mesaje p\u00e2n\u0103 c\u00e2nd destina\u0163ia nu devine disponibil\u0103.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Serverul porne\u015fte bean-ul controlat de mesaje dar nu poate activa punctul final de mesaje deoarece destina\u0163ia nu a fost g\u0103sit\u0103. Punctul final al mesajului nu va primi mesaje p\u00e2n\u0103 c\u00e2nd poate fi activat punctul final.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Verifica\u0163i dac\u0103 o destina\u0163ie a fost configurat\u0103 cu numele specificat. Dac\u0103 configura\u0163ia exist\u0103, a\u015ftepta\u0163i ca destina\u0163ia s\u0103 devin\u0103 disponibil\u0103.

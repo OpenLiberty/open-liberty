@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=Adja meg a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ba foglalni k\u00edv\u00e1nt konfigur\u00e1ci\u00f3s er\u0151forr\u00e1st.
+config.internal.metatype.includeType.label=Tartalmaz\u00e1s
+config.internal.metatype.includeType.attribute.optional.documentation=Annak enged\u00e9lyez\u00e9se, hogy a tartalmazott er\u0151forr\u00e1s kimaradjon, ha nem tal\u00e1lhat\u00f3.
+config.internal.metatype.includeType.attribute.optional.label=Az er\u0151forr\u00e1s elhagyhat\u00f3
+config.internal.metatype.includeType.attribute.location.documentation=Megadja az er\u0151forr\u00e1s hely\u00e9t. Ez lehet egy f\u00e1jl\u00fatvonal, vagy egy t\u00e1voli er\u0151forr\u00e1s URI azonos\u00edt\u00f3ja.
+config.internal.metatype.includeType.attribute.location.label=Hely
+config.internal.metatype.includeType.attribute.onConflict.documentation=Megadja az elemek \u00f6sszef\u00e9s\u00fcl\u00e9s\u00e9hez \u00fctk\u00f6z\u00e9sek eset\u00e9n haszn\u00e1land\u00f3 viselked\u00e9st.
+config.internal.metatype.includeType.attribute.onConflict.label=\u00dctk\u00f6z\u00e9s eset\u00e9n
+
+config.internal.metatype.variableDefinitionType.documentation=\u00daj v\u00e1ltoz\u00f3 deklar\u00e1l\u00e1sa a v\u00e1ltoz\u00f3 nev\u00e9nek \u00e9s \u00e9rt\u00e9k\u00e9nek megad\u00e1s\u00e1val.
+config.internal.metatype.variableDefinitionType.label=V\u00e1ltoz\u00f3 deklar\u00e1l\u00e1sa
+config.internal.metatype.variableDefinitionType.name.documentation=A v\u00e1ltoz\u00f3 neve.
+config.internal.metatype.variableDefinitionType.name.label=N\u00e9v
+config.internal.metatype.variableDefinitionType.value.documentation=A v\u00e1ltoz\u00f3hoz hozz\u00e1rendelt \u00e9rt\u00e9k.
+config.internal.metatype.variableDefinitionType.value.label=\u00c9rt\u00e9k
+
+config.internal.metatype.duration.desc=Adjon meg egy eg\u00e9sz sz\u00e1mot, amelyet egy id\u0151egys\u00e9g k\u00f6vet, amely lehet \u00f3ra (\u00f3), perc (p), m\u00e1sodperc (s), vagy ezredm\u00e1sodperc (ms). Az 500 ezredm\u00e1sodpercet adja meg p\u00e9ld\u00e1ul 500ms form\u00e1ban. Egyetlen bejegyz\u00e9sbe t\u00f6bb \u00e9rt\u00e9ket is belefoglalhat. P\u00e9ld\u00e1ul 1s500ms egyen\u00e9rt\u00e9k\u0171 1,5 m\u00e1sodperccel.
+config.internal.metatype.duration-s.desc=Adjon meg egy eg\u00e9sz sz\u00e1mot, amelyet egy id\u0151egys\u00e9g k\u00f6vet, amely lehet \u00f3ra (\u00f3), perc (p) vagy m\u00e1sodperc (s). A 30 m\u00e1sodpercet p\u00e9ld\u00e1ul 30s form\u00e1ban adhatja meg. Egyetlen bejegyz\u00e9sbe t\u00f6bb \u00e9rt\u00e9ket is belefoglalhat. P\u00e9ld\u00e1ul 1p30s egyen\u00e9rt\u00e9k\u0171 90 m\u00e1sodperccel.
+config.internal.metatype.duration-m.desc=Adjon meg egy eg\u00e9sz sz\u00e1mot, amelyet egy id\u0151egys\u00e9g k\u00f6vet, amely lehet \u00f3ra (\u00f3) vagy perc (p). A 30 percet p\u00e9ld\u00e1ul 30p form\u00e1ban adhatja meg. Egyetlen bejegyz\u00e9sbe t\u00f6bb \u00e9rt\u00e9ket is belefoglalhat. P\u00e9ld\u00e1ul 1\u00f330p egyen\u00e9rt\u00e9k\u0171 90 perccel.
+config.internal.metatype.duration-h.desc=Adjon meg egy eg\u00e9sz sz\u00e1mot, amelyet egy id\u0151egys\u00e9g k\u00f6vet, amely \u00f3ra (\u00f3) lehet. A 12 \u00f3r\u00e1t p\u00e9ld\u00e1ul 12\u00f3 form\u00e1ban adhatja meg.
+
+config.internal.metatype.pid.reference.type=A(z) {0} (karaktersorozat) t\u00edpus azonos\u00edt\u00f3ja.
+config.internal.metatype.pid.reference.list.type=A(z) {0} (vessz\u0151vel elv\u00e1lasztott karaktersorozat) t\u00edpus konfigur\u00e1ci\u00f3s azonos\u00edt\u00f3inak list\u00e1ja.
+config.internal.metatype.pid.reference.nested.type={0} t\u00edpus\u00fa elem.
+
+config.internal.metatype.type.desc=A PID: {0}.
+config.internal.metatype.type.child.desc=A PID {0}, \u00e9s ez a(z) <q>{1}</q> \u00f6sszetett t\u00edpus lesz\u00e1rmazottja.
+
+config.internal.metatype.id.documentation=Egyedi konfigur\u00e1ci\u00f3azonos\u00edt\u00f3.
+config.internal.metatype.id.label=Azonos\u00edt\u00f3
+
+config.internal.metatype.onConflictType.merge.label=\u00dctk\u00f6z\u0151 elemek lesznek \u00f6sszef\u00e9s\u00fclve.
+config.internal.metatype.onConflictType.replace.label=Elemek \u00fctk\u00f6z\u00e9sekor a tartalmazott f\u00e1jlb\u00f3l sz\u00e1rmaz\u00f3 elemek le fogj\u00e1k cser\u00e9lni az \u00fctk\u00f6z\u0151 elemeket.
+config.internal.metatype.onConflictType.ignore.label=A tartalmazott f\u00e1jlban l\u00e9v\u0151 \u00fctk\u00f6z\u0151 elemek figyelmen k\u00edv\u00fcl maradnak.
+config.internal.metatype.onConflictType.break.label=Az \u00fctk\u00f6z\u0151 elemek konfigur\u00e1ci\u00f3s hib\u00e1kat fognak okozni.
+
+OSGI_SERVICE_ERROR=CWWKG1001E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.  Pr\u00f3b\u00e1lja meg a kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s\u00e1t a --clean param\u00e9terrel.
+OSGI_SERVICE_ERROR.explanation=A megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el, ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t eredm\u00e9nyezve.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a --clean param\u00e9terrel.

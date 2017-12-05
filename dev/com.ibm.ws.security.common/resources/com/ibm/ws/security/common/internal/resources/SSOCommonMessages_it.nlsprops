@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/common/internal/resources/SSOCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SSO Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6101 - CWWKS6200
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS6101E: La richiesta di autenticazione non \u00e8 riuscita poich\u00e9 il tipo di dati della richiesta [{0}] nelle informazioni dell''utente autenticato non \u00e8 valido. La richiesta specificata \u00e8 associata all''attributo di configurazione [{1}]. 
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.explanation=Le informazioni dell'utente autenticato hanno un tipo di dati della richiesta non valido e il runtime non pu\u00f2 continuare con il processo di autenticazione.
+SUBJECT_MAPPING_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione del client Login social specifichi il nome richiesta corretto per l'attributo.
+
+SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: La richiesta di autenticazione non \u00e8 riuscita perch\u00e9 le informazioni dell''utente autenticato non contengono la richiesta [{0}] specificata dall''attributo [{1}].
+SUBJECT_MAPPING_MISSING_ATTR.explanation=Le informazioni dell'utente autenticato non contengono la richiesta specificata per identificare l'attributo indicato e il runtime non pu\u00f2 continuare con il processo di autenticazione.
+SUBJECT_MAPPING_MISSING_ATTR.useraction=Effettuare una delle seguenti operazioni. 1)Controllare se la configurazione del client login social pu\u00f2 specificare una richiesta diversa come attributo 2)Verificare che il provider emetta le informazioni dell'utente autenticato con la richiesta specificata.
+
+ERROR_AUTHENTICATE=CWWKS6103E: Impossibile creare un soggetto sicurezza per l''utente {0}.
+ERROR_AUTHENTICATE.explanation=Impossibile autenticare l'utente. 
+ERROR_AUTHENTICATE.useraction=Verificare che l'utente esista nel registro e che la password o altre credenziali siano corrette.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS6104W: L''attributo di configurazione [{0}] richiesto \u00e8 mancante o vuoto e non \u00e8 stato fornito un valore predefinito. Verificare che l''attributo sia configurato, non sia vuoto e non sia costituito da soli spazi.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=L'attributo di configurazione specificato potrebbe mancare dalla configurazione del server. Se \u00e8 specificato un valore, lo spazio all'inizio e alla fine del valore viene rimosso quando il valore viene elaborato, pertanto il valore nella configurazione potrebbe essere vuoto o essere costituito da soli spazi.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Verificare che l'attributo di configurazione specificato sia configurato, non sia vuoto e non sia costituito da soli spazi.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID=CWWKS6105W: L''attributo di configurazione richiesto [{0}] \u00e8 mancante o vuoto nella configurazione [{1}] e un valore predefinito non \u00e8 stato fornito. Verificare che l''attributo sia configurato, non sia vuoto e non sia costituito da soli spazi.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.explanation=L'attributo di configurazione specificato potrebbe mancare dall'elemento della configurazione del server specificato. Se \u00e8 specificato un valore, lo spazio all'inizio e alla fine del valore viene rimosso quando il valore viene elaborato, pertanto il valore nella configurazione potrebbe essere vuoto o essere costituito da soli spazi.
+CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Verificare che l'attributo di configurazione specificato sia configurato, non sia vuoto e non sia costituito da soli spazi.

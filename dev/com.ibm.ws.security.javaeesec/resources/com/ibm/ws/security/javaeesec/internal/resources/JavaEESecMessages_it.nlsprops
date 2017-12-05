@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1900 - CWWKS1924
+# 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
+
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Oggetto IdentityStore non trovato. Assicurarsi che almeno un IdentityStore sia definito dall'annotazione nell'applicazione.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Oggetto IdentityStore non trovato. \u00c8 richiesto per l'autenticazione e l'autorizzazione.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Assicurarsi che l'applicazione sia correttamente annotata in modo da abilitare almeno un IdentityStore.
+
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Nessun oggetto IdentityStore supporta la convalida utente. Assicurarsi che almeno un IdentityStore supporti la convalida utente.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nessun oggetto IdentityStore supporta la convalida utente, quindi il codice di sicurezza non autentica l'utente.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Assicurarsi che almeno un IdentityStore supporti la convalida utente.
+
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: L''oggetto HttpAuthenticationMechanism per il modulo {0} nell''applicazione {1} non \u00e8 stato trovato. Assicurarsi che il modulo contenga un oggetto HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.explanation=L'oggetto HttpAuthenticationMechanism non pu\u00f2 essere identificato per l'autenticazione. Potrebbero non esserci oggetti o esserci pi\u00f9 oggetti che corrispondono alla condizione specificata. Assicurarsi che ci sia un HttpAuthenticationMechanism nell'applicazione.
+JAVAEESEC_ERROR_NO_HAM.useraction=Assicurarsi che ci sia un HttpAuthenticationMechanism nell'applicazione.
+
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: L''oggetto ModuleProperties per l''autenticazione dell''applicazione {0} non pu\u00f2 essere trovato, probabilmente perch\u00e9 l''applicazione non contiene un oggetto HttpAuthenticationMechanism. Verificare che un oggetto HttpAuthenticationMechanism sia definito per ogni modulo.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=L'oggetto ModuleProperties, che \u00e8 necessario per autenticare l'applicazione, non pu\u00f2 essere identificato. Questo errore generalmente \u00e8 il risultato di un oggetto HttpAuthenticationMechanism non definito nell'applicazione.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Assicurarsi che ogni modulo nell'applicazione contenga un oggetto HttpAuthenticationMechanism.
+
+JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Il nome realm per l'autenticazione di base non \u00e8 impostato, viene utilizzato il valore defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Il nome realm per l'autenticazione di base non \u00e8 impostato, viene utilizzato il valore predefinito defaultRealm.
+JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Se il nome realm deve essere impostato, impostarlo utilizzando l'annotazione BasicAuthenticationMechanismDefinition nell'applicazione.
+
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: La distribuzione per il modulo {0} nell''applicazione {1} non \u00e8 riuscita perch\u00e9 sono state trovate pi\u00f9 implementazioni di HttpAuthenticationMechanism. L''elenco delle classi \u00e8 {2}. Molto probabilmente, questo \u00e8 un problema di packaging dell''applicazione. Assicurarsi che ci sia una sola implementazione di HttpAuthenticationMechanism in ogni modulo.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=La distribuzione dell'applicazione non \u00e8 riuscita perch\u00e9 sono state trovate pi\u00f9 implementazioni di HttpAuthenticationMechanism. Questa condizione non \u00e8 consentita.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Assicurarsi che ci sia una sola implementazione di HttpAuthenticationMechanism per ogni modulo nell'applicazione.

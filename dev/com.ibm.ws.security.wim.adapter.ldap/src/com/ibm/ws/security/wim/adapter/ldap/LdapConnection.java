@@ -1661,65 +1661,80 @@ public class LdapConnection {
                 int pageCount = 1;
                 int count = 0;
                 CachedNamingEnumeration allNeu = new CachedNamingEnumeration();
+                int retries = 0; // The number of retries
+                boolean tryAgain; // Whether to retry the search
+
                 do {
+                    tryAgain = false;
+
                     NamingEnumeration<SearchResult> neu = null;
                     try {
                         if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, METHODNAME + " Search page: " + pageCount);
+                            Tr.debug(tc, METHODNAME + " Search page: " + pageCount + ", Retries: " + retries);
                         }
                         if (filterArgs == null) {
                             neu = ctx.search(new LdapName(name), filterExpr, cons);
                         } else {
                             neu = ctx.search(new LdapName(name), filterExpr, filterArgs, cons);
                         }
-                    } catch (NamingException e) {
-                        if ((e instanceof CommunicationException) || (e instanceof ServiceUnavailableException)) {
-                            ctx = reCreateDirContext(ctx, e.toString());
+
+                        /*
+                         * Save the results.
+                         */
+                        if (neu != null) {
+                            pageCount++;
+                            while (neu.hasMoreElements()) {
+                                allNeu.add(neu.nextElement());
+                                count++;
+                            }
 
                             /*
-                             * If the cookie is not null, we are recovering from a failure after receiving
-                             * results, so reuse the cookie to begin where we left off.
+                             * Get the cookie if there are more results to process.
                              */
-                            PagedResultsControl pagedResultsControl = null;
-                            if (cookie != null && cookie.length > 0) {
-                                pagedResultsControl = new PagedResultsControl(iPageSize, cookie, false);
+                            Control[] resCtrls = ctx.getResponseControls();
+                            if (resCtrls != null && resCtrls.length > 0) {
+                                PagedResultsResponseControl resCtrl = (PagedResultsResponseControl) resCtrls[0];
+                                cookie = resCtrl.getCookie();
+                                if (cookie != null && cookie.length > 0) {
+                                    ctx.setRequestControls(new Control[] { new PagedResultsControl(iPageSize, cookie, false) });
+                                }
+                            }
+                        }
+
+                    } catch (NamingException e) {
+
+                        if (isConnectionException(e, METHODNAME) && retries == 0) {
+
+                            /*
+                             * Some LDAP servers do not allow the paged searches to span new connections, so
+                             * we need to start the paged search from the beginning. Clear the cookie and
+                             * the results collected so far and start at page 1. We also need to be aware that
+                             * the new connection could be to another (fail-over) server that has no context
+                             * for the current paged search's cookie.
+                             */
+                            tryAgain = true;
+                            retries++;
+                            pageCount = 1;
+                            cookie = null;
+                            allNeu = new CachedNamingEnumeration();
+                            count = 0;
+
+                            /*
+                             * Recreate the connection.
+                             */
+                            ctx = reCreateDirContext(ctx, e.toString());
+                            if (requestControls != null) {
+                                ctx.setRequestControls(new Control[] { requestControls[0], new PagedResultsControl(iPageSize, false) });
                             } else {
-                                pagedResultsControl = new PagedResultsControl(iPageSize, false);
+                                ctx.setRequestControls(new Control[] { new PagedResultsControl(iPageSize, false) });
                             }
 
-                            if (requestControls != null) {
-                                ctx.setRequestControls(new Control[] { requestControls[0], pagedResultsControl });
-                            } else {
-                                ctx.setRequestControls(new Control[] { pagedResultsControl });
-                            }
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, METHODNAME + " Search page (retry): " + pageCount);
-                            }
-                            if (filterArgs == null) {
-                                neu = ctx.search(new LdapName(name), filterExpr, cons);
-                            } else {
-                                neu = ctx.search(new LdapName(name), filterExpr, filterArgs, cons);
-                            }
                         } else {
                             throw e;
                         }
                     }
-                    if (neu != null) {
-                        pageCount++;
-                        while (neu.hasMoreElements()) {
-                            allNeu.add(neu.nextElement());
-                            count++;
-                        }
-                        Control[] resCtrls = ctx.getResponseControls();
-                        if (resCtrls != null && resCtrls.length > 0) {
-                            PagedResultsResponseControl resCtrl = (PagedResultsResponseControl) resCtrls[0];
-                            cookie = resCtrl.getCookie();
-                            if (cookie != null && cookie.length > 0) {
-                                ctx.setRequestControls(new Control[] { new PagedResultsControl(iPageSize, cookie, false) });
-                            }
-                        }
-                    }
-                } while (cookie != null && cookie.length > 0 && count < cons.getCountLimit());
+
+                } while (tryAgain || (cookie != null && cookie.length > 0 && count < cons.getCountLimit()));
                 return allNeu;
             } catch (NamingException e) {
                 String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
@@ -2106,7 +2121,7 @@ public class LdapConnection {
                     try {
                         results = ctx.getAttributes(new LdapName(dn), rAttrIds);
                     } catch (NamingException e) {
-                        if ((e instanceof CommunicationException) || (e instanceof ServiceUnavailableException)) {
+                        if (isConnectionException(e, METHODNAME)) {
                             ctx = reCreateDirContext(ctx, e.toString());
                             results = ctx.getAttributes(new LdapName(dn), rAttrIds);
                         } else {

@@ -1,0 +1,337 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Instructions to translation will precede the line to which it applies
+#
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Example: MSG_DESCRIPTIVE_NAME_J2CA0001=J2CA0001I: This is a message.
+#
+# The prefix for this component is:
+#     J2CA (J2C Connection Manager)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# :Begin: WebSphere Quality Validation Information :Begin:
+# :End: WebSphere Quality Validation Information :End:
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: A Kapcsolatt\u00e1r-kezel\u0151 a(z) {0} er\u0151forr\u00e1sb\u00f3l nem tud fel\u00fcgyelt kapcsolatot lefoglalni.
+NULL_MANAGED_CONNECTION_J2CA0015.explanation=A t\u00e1rkezel\u0151 nem tud fel\u00fcgyelt kapcsolatot lefoglalni. Ezt a t\u00e1rkezel\u0151h\u00f6z tartoz\u00f3 tulajdons\u00e1gok okozhatj\u00e1k (p\u00e9ld\u00e1ul: a maxim\u00e1lis kapcsolatok sz\u00e1m\u00e1t t\u00fall\u00e9pt\u00e9k). A t\u00e1rkezel\u0151 NULL fel\u00fcgyelt kapcsolatot adott vissza.
+NULL_MANAGED_CONNECTION_J2CA0015.useraction=CMSG0002
+
+# --------------------------------
+XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: A(z) {1} tranzakci\u00f3azonos\u00edt\u00f3ban egy k\u00e9tf\u00e1zis\u00fa XA m\u0171velet - {0} - ker\u00fclt megh\u00edv\u00e1sra. A(z) {2} t\u00e1rb\u00f3l sz\u00e1rmaz\u00f3 er\u0151forr\u00e1s-illeszt\u0151 nem t\u00e1mogatja a k\u00e9tf\u00e1zis\u00fa feldolgoz\u00e1st.
+XA_OP_NOT_SUPPORTED_J2CA0016.explanation=Ez azt jelzi, hogy a kapcsolatot egy XA tranzakci\u00f3 kontextus\u00e1ban pr\u00f3b\u00e1lt\u00e1k haszn\u00e1lni m\u00e1s XA-k\u00e9pes er\u0151forr\u00e1sokkal. Ez az adott er\u0151forr\u00e1s-illeszt\u0151h\u00f6z nem \u00e9rv\u00e9nyes m\u0171velet.
+XA_OP_NOT_SUPPORTED_J2CA0016.useraction=M\u00f3dos\u00edtsa a m\u0171k\u00f6d\u00e9st, hogy az er\u0151forr\u00e1s-haszn\u00e1lat k\u00fcl\u00f6n\u00e1ll\u00f3 tranzakci\u00f3kba legyen sz\u00e9tv\u00e1lasztva.
+
+# --------------------------------                    
+FAILED_MANAGED_CONNECTION_J2CA0020=J2CA0020E: A kapcsolatt\u00e1r-kezel\u0151 nem tudott fel\u00fcgyelt kapcsolatot lefoglalni: {0}.
+FAILED_MANAGED_CONNECTION_J2CA0020.explanation=A t\u00e1rkezel\u0151 kiv\u00e9telt hozott l\u00e9tre fel\u00fcgyelt kapcsolat lefoglal\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel sz\u00f6vege tov\u00e1bbi inform\u00e1ci\u00f3kat ny\u00fajthat a hibafelder\u00edt\u00e9shez.
+FAILED_MANAGED_CONNECTION_J2CA0020.useraction=Ha nincsenek felhaszn\u00e1l\u00f3 \u00e1ltal vez\u00e9relt jelz\u00e9sek, akkor az \u00fczenetet a kapcsolatkezel\u0151 feldolgoz\u00e1s bels\u0151 hib\u00e1ja eredm\u00e9nyezheti. Gy\u0171jts\u00f6n diagnosztikai adatokat, \u00e9s l\u00e1togasson el az IBM t\u00e1mogat\u00e1s webhely\u00e9re tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+
+# --------------------------------
+FAILED_CONNECTION_J2CA0021=J2CA0021E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy kapcsolat {1} fel\u00fcgyelt kapcsolat-er\u0151forr\u00e1st\u00f3l lek\u00e9r\u00e9se sor\u00e1n: {0}.
+FAILED_CONNECTION_J2CA0021.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 kiv\u00e9telt hozott l\u00e9tre a getConnection() met\u00f3dus h\u00edv\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel sz\u00f6vege tov\u00e1bbi inform\u00e1ci\u00f3kat ny\u00fajthat a hibafelder\u00edt\u00e9shez.
+FAILED_CONNECTION_J2CA0021.useraction=Ha nincsenek felhaszn\u00e1l\u00f3 \u00e1ltal vez\u00e9relt jelz\u00e9sek, akkor az \u00fczenetet a kapcsolatkezel\u0151 feldolgoz\u00e1s bels\u0151 hib\u00e1ja okozhatja. Gy\u0171jts\u00f6n diagnosztikai adatokat, \u00e9s l\u00e1togasson el az IBM t\u00e1mogat\u00e1s webhely\u00e9re tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+
+# --------------------------------
+FAILED_CONNECTION_RELEASE_J2CA0022=J2CA0022I: Kiv\u00e9tel t\u00f6rt\u00e9nt a fel\u00fcgyelt kapcsolat takar\u00edt\u00e1s\u00e1ra \u00e9s felszabad\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a(z) {1} er\u0151forr\u00e1sb\u00f3l egy meghi\u00fasult getConnection sz\u00e1m\u00e1ra a(z) {0} fel\u00fcgyelt kapcsolatb\u00f3l. A m\u00e1sodikat a rendszer elnyelte \u00e9s az eredeti hib\u00e1t \u00fajra kiadta.
+FAILED_CONNECTION_RELEASE_J2CA0022.explanation=Probl\u00e9ma mer\u00fclt fel meghi\u00fasult getConnection k\u00eds\u00e9rlet rekordjainak t\u00f6rl\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. Az \u00fczenet inform\u00e1ci\u00f3s \u00fczenet \u00e9s a megfelel\u0151 hibafelder\u00edt\u00e9s \u00e9rdek\u00e9ben m\u00e1s kapcsol\u00f3d\u00f3 \u00fczenetekkel kell kombin\u00e1lni.
+FAILED_CONNECTION_RELEASE_J2CA0022.useraction=Magyar\u00e1zat\u00e9rt \u00e9s felhaszn\u00e1l\u00f3i v\u00e1laszok\u00e9rt vizsg\u00e1ljon meg tov\u00e1bbi kapcsol\u00f3d\u00f3 \u00fczeneteket.
+
+# --------------------------------
+XA_OPERATION_NOT_SUPPORTED_J2CA0023=J2CA0023E: Egy k\u00e9tf\u00e1zis\u00fa {0} XA m\u0171velet ker\u00fclt megh\u00edv\u00e1sra. A(z) {1} adatforr\u00e1s er\u0151forr\u00e1s-illeszt\u0151je nem t\u00e1mogatja a k\u00e9tf\u00e1zis\u00fa feldolgoz\u00e1st.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.explanation=Olyan er\u0151forr\u00e1s-illeszt\u0151n pr\u00f3b\u00e1ltak meg XA m\u0171veletet megh\u00edvni, amely csak a helyi tranzakci\u00f3kat t\u00e1mogatja. Egy helyi tranzakci\u00f3 er\u0151forr\u00e1s illeszt\u0151 megad\u00e1sra ker\u00fclhetett egy XA tranzakci\u00f3 kontextus\u00e1ban m\u00e1s XA-k\u00e9pes er\u0151forr\u00e1sokkal.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.useraction=M\u00f3dos\u00edtsa az \u00fczleti logik\u00e1t, hogy az er\u0151forr\u00e1s-haszn\u00e1latot k\u00fcl\u00f6n\u00e1ll\u00f3 tranzakci\u00f3kba v\u00e1lassza sz\u00e9t.
+
+# --------------------------------
+XA_END_EXCP_J2CA0024=J2CA0024E: A(z) {0} met\u00f3dus a(z) {4} er\u0151forr\u00e1s-t\u00e1rol\u00f3 {1} tranzakci\u00f3\u00e1g-azonos\u00edt\u00f3j\u00e1ban {2} kiv\u00e9telt kapott \u00e9s {3} kiv\u00e9telt dobott.
+XA_END_EXCP_J2CA0024.explanation=Probl\u00e9ma mer\u00fclt fel az adott met\u00f3dus feldolgoz\u00e1sakor. A fel\u00fclet adott kiv\u00e9teleket hat\u00e1roz meg, amelyek l\u00e9trehozhat\u00f3k, \u00edgy az elfogott kiv\u00e9tel lek\u00e9pez\u00e9sre ker\u00fclt a l\u00e9trehozott kiv\u00e9telre. A met\u00f3duson bel\u00fcli feldolgoz\u00e1s nem fejez\u0151d\u00f6tt be sikeresen.
+XA_END_EXCP_J2CA0024.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fczleti logik\u00e1ja megfelel\u0151en elfogja-e a l\u00e9trehozott kiv\u00e9telt, \u00e9s hogy tartalmazza a sz\u00fcks\u00e9ges vissza\u00e1ll\u00edt\u00e1si logik\u00e1t. A napl\u00f3f\u00e1jlban keresse meg a kor\u00e1bbi hib\u00e1kat, amelyek a kiv\u00e9telt okozt\u00e1k.
+
+# --------------------------------
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026=J2CA0026E: A(z) {0} met\u00f3dus {1} kiv\u00e9telt \u00e9szlelt az er\u0151forr\u00e1s-illeszt\u0151 \u00e9s a szinkroniz\u00e1l\u00e1skezel\u0151 aktu\u00e1lis tranzakci\u00f3hoz bejegyz\u00e9se sor\u00e1n \u00e9s {2} kiv\u00e9telt dobott.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.explanation=Probl\u00e9ma mer\u00fclt fel az adott met\u00f3dus feldolgoz\u00e1sakor. A fel\u00fclet adott kiv\u00e9teleket hat\u00e1roz meg, amelyek l\u00e9trehozhat\u00f3k, \u00edgy az elfogott kiv\u00e9tel lek\u00e9pez\u00e9sre ker\u00fclt a l\u00e9trehozott kiv\u00e9telre. A met\u00f3duson bel\u00fcli feldolgoz\u00e1s nem fejez\u0151d\u00f6tt be sikeresen.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fczleti logik\u00e1ja megfelel\u0151en elfogja-e a l\u00e9trehozott kiv\u00e9telt, \u00e9s hogy tartalmazza-e a sz\u00fcks\u00e9ges vissza\u00e1ll\u00edt\u00e1si logik\u00e1t. A napl\u00f3f\u00e1jlban keresse meg a kor\u00e1bbi hib\u00e1kat, amelyek a kiv\u00e9telt okozt\u00e1k.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027=J2CA0027E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} megh\u00edv\u00e1sakor XA er\u0151forr\u00e1s-illeszt\u0151n a(z) {3}  adatforr\u00e1sb\u00f3l, a(z) {1} tranzakci\u00f3 azonos\u00edt\u00f3ban : {2}.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.explanation=Probl\u00e9ma mer\u00fclt fel az adott met\u00f3dus feldolgoz\u00e1sakor. A met\u00f3duson bel\u00fcli feldolgoz\u00e1s nem fejez\u0151d\u00f6tt be sikeresen.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fczleti logik\u00e1ja megfelel\u0151en elfogja-e a l\u00e9trehozott kiv\u00e9telt, \u00e9s hogy tartalmazza a sz\u00fcks\u00e9ges vissza\u00e1ll\u00edt\u00e1si logik\u00e1t. A napl\u00f3f\u00e1jlokban keresse meg a kor\u00e1bbi hib\u00e1kat is, amelyek a kiv\u00e9telt okozt\u00e1k.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028=J2CA0028E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} megh\u00edv\u00e1sakor  XA er\u0151forr\u00e1s-illeszt\u0151n, a(z) {2} adatb\u00e1zisb\u00f3l : {1}.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.explanation=Probl\u00e9ma mer\u00fclt fel az adott met\u00f3dus feldolgoz\u00e1sakor. A met\u00f3duson bel\u00fcli feldolgoz\u00e1s nem fejez\u0151d\u00f6tt be sikeresen.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fczleti logik\u00e1ja megfelel\u0151en elfogja-e a l\u00e9trehozott kiv\u00e9telt, \u00e9s hogy tartalmazza a sz\u00fcks\u00e9ges vissza\u00e1ll\u00edt\u00e1si logik\u00e1t. A napl\u00f3f\u00e1jlban keresse meg a kor\u00e1bbi hib\u00e1kat, amelyek a kiv\u00e9telt okozt\u00e1k.
+
+# --------------------------------
+ENLIST_RESOURCE_EXCP_J2CA0030=J2CA0030E: A(z) {0} met\u00f3dus {1} kiv\u00e9telt \u00e9szlelt, mik\u00f6zben az aktu\u00e1lis tranzakci\u00f3 {3} adatforr\u00e1s\u00e1nak er\u0151forr\u00e1sait megpr\u00f3b\u00e1lt\u00e1k bejegyezni a tranzakci\u00f3-kezel\u0151h\u00f6z, \u00e9s {2} kiv\u00e9telt dobott.
+ENLIST_RESOURCE_EXCP_J2CA0030.explanation=Probl\u00e9ma mer\u00fclt fel az adott met\u00f3dus feldolgoz\u00e1sakor. A fel\u00fclet adott kiv\u00e9teleket hat\u00e1roz meg, amelyek l\u00e9trehozhat\u00f3k, \u00edgy az elfogott kiv\u00e9tel lek\u00e9pez\u00e9sre ker\u00fclt a l\u00e9trehozott kiv\u00e9telre. A met\u00f3duson bel\u00fcli feldolgoz\u00e1s nem fejez\u0151d\u00f6tt be sikeresen.
+ENLIST_RESOURCE_EXCP_J2CA0030.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fczleti logik\u00e1ja megfelel\u0151en elfogja-e a l\u00e9trehozott kiv\u00e9telt, \u00e9s hogy tartalmazza a sz\u00fcks\u00e9ges vissza\u00e1ll\u00edt\u00e1si logik\u00e1t. A napl\u00f3f\u00e1jlban keresse meg a kor\u00e1bbi hib\u00e1kat, amelyek a kiv\u00e9telt okozt\u00e1k.
+
+# --------------------------------
+DELIST_RESOURCE_EXCP_J2CA0031=J2CA0031I: A(z) {0} met\u00f3dus {1} kiv\u00e9telt \u00e9szlelt, mik\u00f6zben az aktu\u00e1lis tranzakci\u00f3 {3} adatforr\u00e1s\u00e1nak er\u0151forr\u00e1sait megpr\u00f3b\u00e1lt\u00e1k bejegyezni a tranzakci\u00f3-kezel\u0151h\u00f6z, \u00e9s {2} kiv\u00e9telt dobott.
+DELIST_RESOURCE_EXCP_J2CA0031.explanation=Probl\u00e9ma mer\u00fclt fel az er\u0151forr\u00e1soknak a tranzakci\u00f3kezel\u0151b\u0151l t\u00f6rt\u00e9n\u0151 elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben. Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+DELIST_RESOURCE_EXCP_J2CA0031.useraction=Ha ez az \u00fczenet rendszeresen megjelenik, akkor gy\u0171jts\u00f6n diagnosztikai adatokat, \u00e9s l\u00e1togasson el az IBM t\u00e1mogat\u00e1s webhely\u00e9re tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.
+
+# --------------------------------
+UNEXPECTED_CONNECTION_EVENT_J2CA0034=J2CA0034E: Az er\u0151forr\u00e1s-illeszt\u0151b\u0151l a(z) {2} er\u0151forr\u00e1sra vonatkoz\u00f3 v\u00e1ratlan esem\u00e9ny \u00e9rkezett. A v\u00e1rt ConnectionEvent t\u00edpus {0}, a kapott pedig {1}.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.explanation=Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel az adott er\u0151forr\u00e1s-illeszt\u0151 hib\u00e1ja.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=L\u00e9pjen kapcsolatba az er\u0151forr\u00e1s-illeszt\u0151 szolg\u00e1ltat\u00f3val.
+
+# --------------------------------
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: A(z) {0} met\u00f3dushoz a sz\u00e1lon nem tal\u00e1lhat\u00f3 a(z) {2} adatforr\u00e1sb\u00f3l sz\u00e1rmaz\u00f3 er\u0151forr\u00e1sokat haszn\u00e1l\u00f3 {1} koordin\u00e1torral rendelkez\u0151 \u00e9rv\u00e9nyes tranzakci\u00f3-kontextus.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a kapcsolatkezel\u0151 feldolgoz\u00e1sban. Az adott m\u0171velethez egy \u00e9rv\u00e9nyes tranzakci\u00f3kontextus sz\u00fcks\u00e9ges, de ilyen nem tal\u00e1lhat\u00f3.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: A kapcsolat a(z) {0} met\u00f3dus {1} er\u0151forr\u00e1shoz megh\u00edv\u00e1sa sor\u00e1n nem \u00e1ll rendelkez\u00e9sre.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Kapcsolat v\u00e1rakoz\u00e1si id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt. ConnectionWaitTimeoutException ker\u00fclt l\u00e9trehoz\u00e1sra.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=\u00c1ll\u00edtsa \u00fajra be a kapcsolatt\u00e1rol\u00f3t. A hiba elker\u00fcl\u00e9se \u00e9rdek\u00e9ben n\u00f6velje a kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t vagy a kapcsolat v\u00e1rakoz\u00e1si idej\u00e9t.
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: A(z) {0} met\u00f3dus a ManagedConnection {3} er\u0151forr\u00e1shoz l\u00e9trehoz\u00e1sa sor\u00e1n kiv\u00e9telt \u00e9szlelt \u00e9s {2} kiv\u00e9telt dobott. Eredeti kiv\u00e9tel: {1}
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=A ManagedConnection l\u00e9trehoz\u00e1sa sor\u00e1n hiba t\u00f6rt\u00e9nt. Ez \u00e1ltal\u00e1ban az er\u0151forr\u00e1s-illeszt\u0151 hiba\u00fczeneteinek megtekint\u00e9s\u00e9vel megoldhat\u00f3.
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=CMSG0002
+
+# --------------------------------
+HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: A kapcsolatazonos\u00edt\u00f3 a munkahat\u00f3k\u00f6r-egys\u00e9g v\u00e9g\u00e9n nem ker\u00fclt lez\u00e1r\u00e1sra. Az azonos\u00edt\u00f3kat a Connection Manager fogja bez\u00e1rni.
+HANDLE_NOT_CLOSED_J2CA0055.explanation=A tev\u00e9kenys\u00e9g-munkamenet, a tranzakci\u00f3 vagy a helyi tranzakci\u00f3 munkahat\u00f3k\u00f6r lez\u00e1rul \u00e9s a kapcsolatkezel\u0151k nem ker\u00fcltek bez\u00e1r\u00e1sra. Az azonos\u00edt\u00f3k aktu\u00e1lis munkahat\u00f3k\u00f6r-egys\u00e9gen k\u00edv\u00fcli ideiglenes t\u00e1rol\u00e1s\u00e1t az adott konfigur\u00e1ci\u00f3 vagy kiad\u00e1s nem t\u00e1mogatja.
+HANDLE_NOT_CLOSED_J2CA0055.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kapcsolatkezel\u0151k bez\u00e1r\u00e1sa megt\u00f6rt\u00e9nt a kapcsol\u00f3d\u00f3 munkaegys\u00e9g le\u00e1ll\u00e1sa el\u0151tt.
+
+# --------------------------------
+RA_CONNECTION_ERROR_J2CA0056=J2CA0056I: A kapcsolatkezel\u0151 v\u00e9gzetes kapcsolati hib\u00e1t kapott az er\u0151forr\u00e1s-illeszt\u0151t\u0151l a(z) {1} er\u0151forr\u00e1sra vonatkoz\u00f3an. A kiv\u00e9tel: {0}
+RA_CONNECTION_ERROR_J2CA0056.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 \u00e9rtes\u00edtette a kapcsolatkezel\u0151t, hogy a kapcsolaton hiba t\u00f6rt\u00e9nt. Ez az inform\u00e1ci\u00f3s \u00fczenet napl\u00f3z\u00e1sra ker\u00fclt, \u00edgy a felhaszn\u00e1l\u00f3 l\u00e1thatja a visszaadott kiv\u00e9telt.
+RA_CONNECTION_ERROR_J2CA0056.useraction=A kapcsolatkezel\u0151 a t\u00e1rol\u00f3b\u00f3l elt\u00e1vol\u00edtja a hib\u00e1s kapcsolatot vagy az \u00f6sszes kapcsolatot - a konfigur\u00e1ci\u00f3t\u00f3l f\u00fcgg\u0151en. Ez a szok\u00e1sos m\u0171k\u00f6d\u00e9s. Ha ez a hiba v\u00e1ratlanul jelenik meg, akkor vizsg\u00e1lja meg a kiv\u00e9telt a probl\u00e9ma lehets\u00e9ges forr\u00e1s\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+# --------------------------------
+NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: Az interactionPending met\u00f3dus nem tal\u00e1lja a tranzakci\u00f3\u00e1talak\u00edt\u00f3-oszt\u00e1lyt.
+NULL_TRAN_WRAPPER_J2CA0057.explanation=Ez egy WebSphere bels\u0151 hiba.
+NULL_TRAN_WRAPPER_J2CA0057.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: A ConnectionManager nem tudott {0} kapcsolatot rendelni a(z) {3} er\u0151forr\u00e1s {1} ManagedConnection elem\u00e9hez. Kapott kiv\u00e9tel: {2}
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=Ez val\u00f3sz\u00edn\u0171leg egy alkalmaz\u00e1s hiba. P\u00e9lda: Egy ideiglenesen t\u00e1rolt kapcsolat bejegyz\u00e9sre ker\u00fclt egy tranzakci\u00f3ban, majd a kapcsolat bez\u00e1r\u00e1sra ker\u00fclt. A tranzakci\u00f3 befejez\u00e9se el\u0151tt m\u00e1sik k\u00e9r\u00e9s ker\u00fcl elk\u00fcld\u00e9sre ugyanahhoz az EJB-hez, amely eredetileg megnyitotta a kapcsolatot. Az ideiglenesen t\u00e1rolt azonos\u00edt\u00f3 tov\u00e1bbra is hozz\u00e1 van rendelve az eredeti tranzakci\u00f3hoz \u00e9s nem t\u00e1rs\u00edthat\u00f3 addig \u00fajra, am\u00edg a tranzakci\u00f3 v\u00e9grehajt\u00e1sra nem ker\u00fcl.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=Ellen\u0151rizze az alkalmaz\u00e1st \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tranzakci\u00f3 a kapcsolatok bez\u00e1r\u00e1sa ut\u00e1n, amint lehet, v\u00e9grehajt\u00e1sra ker\u00fcl.
+
+# --------------------------------
+FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: PrivilegedActionException kiv\u00e9tel a doPrivileged h\u00edv\u00e1sakor: {0}
+FAILED_DOPRIVILEGED_J2CA0060.explanation=Ez a biztons\u00e1g egy fut\u00e1s k\u00f6zbeni hib\u00e1ja.
+FAILED_DOPRIVILEGED_J2CA0060.useraction=CMSG0002
+
+# ---------------------------------
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: A(z) {1} \u00e9rv\u00e9nytelen {0} be\u00e1ll\u00edt\u00e1sa. A rendszer ink\u00e1bb a(z) {2} alap\u00e9rtelmezett \u00e9rt\u00e9ket haszn\u00e1lja.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt. Az alap\u00e9rtelmezett \u00e9rt\u00e9k haszn\u00e1latakor.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=Ez csak egy figyelmeztet\u00e9s. Ha k\u00e9s\u0151bb hiba l\u00e9p fel, akkor ez seg\u00edthet a hiba diagnosztiz\u00e1l\u00e1s\u00e1ban. Ellenkez\u0151 esetben figyelmen k\u00edv\u00fcl hagyhat\u00f3.
+
+# ---------------------------------
+DELIST_FAILED_J2CA0073=J2CA0073E: A(z) {2} er\u0151forr\u00e1s kapcsolat\u00e1nak bejegyz\u00e9se a(z) {0} met\u00f3dusban l\u00e9v\u0151 tranzakci\u00f3b\u00f3l kiv\u00e9tel miatt nem t\u00e1vol\u00edthat\u00f3 el. Kapcsolat megsemmis\u00edt\u00e9s\u00e9nek kezdem\u00e9nyez\u00e9se. Kiv\u00e9tel: {1}
+DELIST_FAILED_J2CA0073.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt, a kapcsolatkezel\u0151 pedig nem volt k\u00e9pes t\u00f6r\u00f6lni egy kapcsolatot a tranzakci\u00f3b\u00f3l, amely mag\u00e1ban foglalta. A kapcsolatkezel\u0151 megk\u00eds\u00e9rli a kapcsolat megsemmis\u00edt\u00e9s\u00e9t.
+DELIST_FAILED_J2CA0073.useraction=CMSG0002
+
+# ---------------------------------
+ENLIST_FAILED_J2CA0074=J2CA0074E: A(z) {2} er\u0151forr\u00e1s kapcsolat\u00e1t a(z) {0} met\u00f3dusban l\u00e9v\u0151 tranzakci\u00f3hoz nem siker\u00fclt bejegyezni. Kapcsolat megsemmis\u00edt\u00e9s\u00e9nek kezdem\u00e9nyez\u00e9se. Kiv\u00e9tel: {1}
+ENLIST_FAILED_J2CA0074.explanation=Egy kapott bels\u0151 hiba miatt a kapcsolatkezel\u0151 nem tudta megsz\u00fcntetni a kapcsolatot az aktu\u00e1lis tranzakci\u00f3val. A kapcsolatkezel\u0151 megk\u00eds\u00e9rli a kapcsolat megsemmis\u00edt\u00e9s\u00e9t.
+ENLIST_FAILED_J2CA0074.useraction=CMSG0002
+
+# ---------------------------------
+MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: A(z) {0} met\u00f3dus feldolgoz\u00e1sa sor\u00e1n egy akt\u00edv tranzakci\u00f3nak jelen kell lennie.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=Az aktu\u00e1lis met\u00f3dus futtat\u00e1s\u00e1hoz a norm\u00e1l kapcsolatkezel\u00e9s feldolgoz\u00e1sa egy tranzakci\u00f3 jelenl\u00e9t\u00e9t ig\u00e9nyli.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.useraction=Ind\u00edtson el minden sz\u00fcks\u00e9ges tranzakci\u00f3t a kapcsolat sikeres haszn\u00e1lat\u00e1hoz.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077=J2CA0077E: Kiv\u00e9tel t\u00f6rt\u00e9nt a javax.resource.cci.LocalTransaction {1} er\u0151forr\u00e1s ManagedConnection elem\u00e9b\u0151l lek\u00e9r\u00e9se sor\u00e1n. A kiv\u00e9tel: {0}
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.explanation=A kapcsolatkezel\u0151 nem tudta lek\u00e9rni a LocalTransaction elemet az er\u0151forr\u00e1s-illeszt\u0151r\u0151l. Ez az er\u0151forr\u00e1s-illeszt\u0151 probl\u00e9m\u00e1j\u00e1t jelzi.
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.useraction=A probl\u00e9ma azonos\u00edt\u00e1s\u00e1hoz keressen er\u0151forr\u00e1s-illeszt\u0151 hiba\u00fczeneteket.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_XAResource_J2CA0078=J2CA0078E: Kiv\u00e9tel t\u00f6rt\u00e9nt a javax.transaction.xa.XAResource lek\u00e9rdez\u00e9se sor\u00e1n a ManagedConnection elemb\u0151l a(z) {1} adatforr\u00e1son. A kiv\u00e9tel: {0}
+FAILED_TO_OBTAIN_XAResource_J2CA0078.explanation=A kapcsolatkezel\u0151 nem tudta lek\u00e9rni a XAResource elemet az er\u0151forr\u00e1s-illeszt\u0151r\u0151l. Ez az er\u0151forr\u00e1s-illeszt\u0151 probl\u00e9m\u00e1j\u00e1t jelzi.
+FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=A probl\u00e9ma azonos\u00edt\u00e1s\u00e1hoz keressen er\u0151forr\u00e1s-illeszt\u0151 hiba\u00fczeneteket.
+
+# ---------------------------------
+ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: A(z) {0} met\u00f3dus egy bels\u0151 illeg\u00e1lis \u00e1llapotot \u00e9szlelt \u00e9s IllegalStateException kiv\u00e9telt dob. A kiv\u00e9tel: {1}
+ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=A kapcsolatkezel\u0151 bels\u0151 hib\u00e1t \u00e9szlelt.
+ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=CMSG0002
+
+# ---------------------------------
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: A(z) {0} met\u00f3dus illeg\u00e1lis bels\u0151 argumentumot \u00e9szlelt \u00e9s IllegalArgumentException kiv\u00e9telt dob. A kiv\u00e9tel: {1}
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=A kapcsolatkezel\u0151 bels\u0151 hib\u00e1t \u00e9szlelt.
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=CMSG0002
+
+# ---------------------------------
+MCERROR_J2CA0081=J2CA0081E: A(z) {0} met\u00f3dus a(z) {1} met\u00f3dus {2} ManagedConnection elemen, a(z) {4} er\u0151forr\u00e1sb\u00f3l v\u00e9grehajt\u00e1sa sor\u00e1n meghi\u00fasult. Elfogott kiv\u00e9tel: {3}
+MCERROR_J2CA0081.explanation=A kapcsolatkezel\u0151 elfogott egy kiv\u00e9telt, mik\u00f6zben egy m\u0171veletet pr\u00f3b\u00e1ltak meg v\u00e9grehajtani a ManagedConnection elemen.
+MCERROR_J2CA0081.useraction=Mivel a ManagedConnection az er\u0151forr\u00e1s-illeszt\u0151 r\u00e9sze, a probl\u00e9ma tov\u00e1bbi elk\u00fcl\u00f6n\u00edt\u00e9se \u00e9rdek\u00e9ben keressen az er\u0151forr\u00e1s-illeszt\u0151r\u0151l sz\u00e1rmaz\u00f3 \u00fczeneteket.
+
+# --------------------------------
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086=J2CA0086I: Nem haszn\u00e1lhatja t\u00f6bb nyitott kapcsolatazonos\u00edt\u00f3 ugyanazt a ({1} fel\u00e9 kialak\u00edtott) fizikai kapcsolatot egy helyi tranzakci\u00f3n bel\u00fcl, ez\u00e9rt mindegyik kapcsolatazonos\u00edt\u00f3hoz m\u00e1sik fizikai kapcsolat ker\u00fcl felhaszn\u00e1l\u00e1sra. Ebben a helyzetben fontos meggy\u0151z\u0151dni r\u00f3la, hogy a kapcsolatazonos\u00edt\u00f3 bez\u00e1r\u00e1sa ut\u00e1n nem marad folyamatban l\u00e9v\u0151 tranzakci\u00f3s tev\u00e9kenys\u00e9g, mert ha k\u00e9s\u0151bb a helyi tranzakci\u00f3n bel\u00fcl tov\u00e1bbi megoszthat\u00f3 kapcsolatazonos\u00edt\u00f3kat k\u00e9rnek, akkor a fizikai kapcsolat, amelyhez ezek tartoznak, kisz\u00e1m\u00edthatatlann\u00e1 v\u00e1lik.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.explanation=T\u00f6bb nyitott kapcsolatazonos\u00edt\u00f3 egyetlen fizikai kapcsolaton csak glob\u00e1lis tranzakci\u00f3 hat\u00f3k\u00f6r\u00e9n bel\u00fcl osztozhat. Ha helyi tranzakci\u00f3 hat\u00f3k\u00f6r\u00e9n bel\u00fcl van megnyitva t\u00f6bb kapcsolatazonos\u00edt\u00f3, akkor mindegyik azonos\u00edt\u00f3 m\u00e1sik fizikai kapcsolatot haszn\u00e1l. Ha t\u00f6bb megoszthat\u00f3 kapcsolatazonos\u00edt\u00f3 van megnyitva egyidej\u0171leg ugyanazon a helyi tranzakci\u00f3n bel\u00fcl, akkor az n\u00f6velheti a kapcsolatk\u00e9szletben sz\u00fcks\u00e9ges kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t \u00e9s jelent\u0151sen bonyol\u00edthatja a kapcsolatazonos\u00edt\u00f3 haszn\u00e1latot az ezen mint\u00e1t k\u00f6vet\u0151 alkalmaz\u00e1sok helyi tranzakci\u00f3i tekintet\u00e9ben.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kapcsolatk\u00e9szlet \u00fagy van m\u00e9retezve, hogy mindegyik sz\u00e1l ig\u00e9nyelhet t\u00f6bb fizikai kapcsolatot, \u00e9s az alkalmaz\u00e1s k\u00f3dj\u00e1t \u00e1tn\u00e9zve ellen\u0151rizze, hogy ez a haszn\u00e1lati minta k\u00edv\u00e1nt-e \u00e9s az elv\u00e1rt megoszt\u00e1si hat\u00f3k\u00f6r van-e megadva.
+
+# --------------------------------
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087=J2CA0087E: A tranzakci\u00f3kezel\u0151 a(z) {0} er\u0151forr\u00e1st nem tudta bejegyezni a(z) {1} adatforr\u00e1sb\u00f3l.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.explanation=Ez az \u00fczenet egy tranzakci\u00f3 bejegyz\u00e9si probl\u00e9m\u00e1t jelez. Lehet, hogy az er\u0151forr\u00e1s m\u00e1r bejegyz\u00e9sre ker\u00fclt egy tranzakci\u00f3ban, vagy a tranzakci\u00f3 nem a helyes \u00e1llapotban volt.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s \u00fczleti logik\u00e1ja megfelel\u0151en elfogja-e a l\u00e9trehozott kiv\u00e9telt, \u00e9s hogy tartalmazza-e a sz\u00fcks\u00e9ges vissza\u00e1ll\u00edt\u00e1si logik\u00e1t. Keressen kor\u00e1bbi hib\u00e1kat a napl\u00f3f\u00e1jlokban (k\u00fcl\u00f6n\u00f6sen tranzakci\u00f3 hib\u00e1kat), amelyek okozhatt\u00e1k a kiv\u00e9telt.
+
+# --------------------------------
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: A ManagedConnection, amely megsemmis\u00edt\u00e9sre ker\u00fcl a(z) {1} er\u0151forr\u00e1sb\u00f3l, \u00e9rv\u00e9nytelen {0} \u00e1llapotban van. A feldolgoz\u00e1s folytat\u00f3dik.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=CMSG0002
+                     
+# ---------------------------------
+INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: InterruptedException kiv\u00e9tel t\u00f6rt\u00e9nt a Szem\u00e9lygy\u0171jt\u0151 sz\u00e1lon.
+INTERUPTED_EXCEPTION_J2CA0091.explanation=InterruptedException kiv\u00e9tel t\u00f6rt\u00e9nt a szem\u00e9tgy\u0171jt\u0151 sz\u00e1lon. A J2C feldolgoz\u00e1s folytat\u00f3dik, de a haszn\u00e1laton k\u00edv\u00fcli \u00e9s elavult kapcsolatokat nem gy\u0171jti \u00f6ssze.
+INTERUPTED_EXCEPTION_J2CA0091.useraction=CMSG0002
+
+# 0096 deleted
+
+# --------------------------------
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: Egy ClassCastException kiv\u00e9tel t\u00f6rt\u00e9nt az event.getSource ManagedConnection t\u00edpus\u00fav\u00e1 alak\u00edt\u00e1sa sor\u00e1n: {0}
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=A figyel\u0151n aktiv\u00e1lt esem\u00e9ny forr\u00e1sa nem ManagedConnection t\u00edpus\u00fa
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=CMSG0002
+
+# --------------------------------
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: T\u00f6bbsz\u00f6r\u00f6s kapcsolattulajdons\u00e1g nem ker\u00fclt hozz\u00e1ad\u00e1sra. {0}
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=Megpr\u00f3b\u00e1ltak hozz\u00e1adni egy t\u00f6bbsz\u00f6r\u00f6s kapcsolattulajdons\u00e1got. A tulajdons\u00e1g nem ker\u00fclt hozz\u00e1ad\u00e1sra.
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=A kapcsolatgy\u00e1r vagy adatforr\u00e1s egy\u00e9ni tulajdons\u00e1ga egy felhaszn\u00e1l\u00f3i nevet vagy jelsz\u00f3t adott meg, mik\u00f6zben egy \u00f6sszetev\u0151 \u00e1ltal kezelt hiteles\u00edt\u00e9si \u00e1ln\u00e9v szint\u00e9n megad\u00e1sra ker\u00fclt. Az \u00e1ln\u00e9v els\u0151bbs\u00e9get \u00e9lvez az egy\u00e9ni tulajdons\u00e1gokkal szemben. Ez a hiba egy k\u00e9zzel m\u00f3dos\u00edtott resources.xml dokumentum be is lehet.
+
+# ---------------------------------
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: 0 \u00e9rt\u00e9k\u0171 ConnectionWaitTimeout ker\u00fclt megad\u00e1sra a(z) {0} elemhez. A k\u00e9r\u00e9s addig v\u00e1r, am\u00edg a kapcsolatot meg nem tudja szerezni.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=A ConnectionWaitTimeout 0 \u00e9rt\u00e9ke v\u00e9gtelen v\u00e1rakoz\u00e1si id\u0151t jelez. Ez a sz\u00e1l egy kapcsolat felszabadul\u00e1s\u00e1ig alv\u00f3 \u00e1llapotban marad.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=Semmit sem kell tennie.
+
+# --------------------------------
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: CONNECTION_CLOSED ConnectionEvent elemben null\u00e9rt\u00e9k\u0171 ConnectionHandle tal\u00e1lhat\u00f3: {0}
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=A Java EE csatol\u00f3architekt\u00fara megk\u00f6veteli, hogy a CONNECTION_CLOSED ConnectionEvent a ManagedConnection p\u00e9ld\u00e1nyhoz \u00e9rv\u00e9nyes kapcsolatazonos\u00edt\u00f3t tartalmazzon.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=Az er\u0151forr\u00e1s-illeszt\u0151nek a ConnectionEvent.setConnectionHandle() met\u00f3dust kell haszn\u00e1lnia a kapcsolatazonos\u00edt\u00f3 biztos\u00edt\u00e1s\u00e1hoz a CONNECTION_CLOSED ConnectionEvent esem\u00e9nyben.
+
+# ---------------------------------
+SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: Bels\u0151 hiba t\u00f6rt\u00e9nt. K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy egyszer be\u00e1ll\u00edthat\u00f3 tulajdons\u00e1g m\u00f3dos\u00edt\u00e1s\u00e1ra, ami m\u00e1r be van \u00e1ll\u00edtva. A tulajdons\u00e1g neve: {0}
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=CMSG0002
+
+# 0165 deleted
+
+# 0166 deleted
+
+# 0167 deleted
+
+# --------------------------------
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169=J2CA0169E: A(z) {0} tulajdons\u00e1g nem m\u00f3dos\u00edthat\u00f3 a(z) {1} adatforr\u00e1son vagy kapcsolatgy\u00e1ron.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.explanation=A kapcsolatkezel\u0151 most nem tudta elv\u00e9gezni a k\u00e9rt m\u00f3dos\u00edt\u00e1st a konfigur\u00e1ci\u00f3s v\u00e1ltoz\u00f3n.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.useraction=Pr\u00f3b\u00e1lja meg \u00fajra m\u00f3dos\u00edtani a konfigur\u00e1ci\u00f3s v\u00e1ltoz\u00f3t.
+
+# 0200 deleted
+
+# ---------------------------------
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207=J2CA0207W: Az er\u0151forr\u00e1s-illeszt\u0151 term\u00e9k {0} tulajdons\u00e1g\u00e1nak {2} \u00e9rt\u00e9ke nem kompatibilis a(z) {1} t\u00edpus\u00e1val.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.explanation=A kapcsolatgy\u00e1r, aktiv\u00e1l\u00e1si specifik\u00e1ci\u00f3 vagy adminisztr\u00e1lt objektum \u00e9rv\u00e9nytelen er\u0151forr\u00e1s tulajdons\u00e1ggal rendelkezik.  Az \u00e9rt\u00e9k be\u00e1ll\u00edtatlan marad.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.useraction=Jav\u00edtsa az er\u0151forr\u00e1s tulajdons\u00e1got, hogy az \u00e9rt\u00e9k megfeleljen az adatt\u00edpusnak.
+
+# ---------------------------------
+NO_RA_EXCEPTION_J2CA0216=J2CA0216I: A kapcsolatkezel\u0151 v\u00e9gzetes kapcsolati hib\u00e1t kapott az er\u0151forr\u00e1s-illeszt\u0151t\u0151l a(z) {0} er\u0151forr\u00e1sra vonatkoz\u00f3an. A kor\u00e1bbi \u00fczenetek \u00e9s kiv\u00e9telek tartalmazhatnak kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat.
+NO_RA_EXCEPTION_J2CA0216.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 \u00e9rtes\u00edtette a kapcsolatkezel\u0151t, hogy a kapcsolaton helyre\u00e1ll\u00edthatatlan hiba t\u00f6rt\u00e9nt. Az er\u0151forr\u00e1s-illeszt\u0151 nem adott kiv\u00e9telt. 
+NO_RA_EXCEPTION_J2CA0216.useraction=A kapcsolatkezel\u0151 a t\u00e1rol\u00f3b\u00f3l elt\u00e1vol\u00edtja a hib\u00e1s kapcsolatot vagy az \u00f6sszes kapcsolatot (a konfigur\u00e1ci\u00f3t\u00f3l f\u00fcgg\u0151en). Ez a szok\u00e1sos m\u0171k\u00f6d\u00e9s. Ha ennek k\u00e1ros hat\u00e1sai vannak, akkor sz\u00fcks\u00e9ges lehet kapcsolatba l\u00e9pni az er\u0151forr\u00e1s-illeszt\u0151 ell\u00e1t\u00f3val.
+
+# 0226 deleted
+
+# ---------------------------------
+# {0} Configured feature that is ignored.
+# {1} Name of the resource on which the feature is configured. 
+IGNORE_FEATURE_J2CA0240=J2CA0240I: Mell\u0151z\u00f6tt, megval\u00f3s\u00edtatlan szolg\u00e1ltat\u00e1s ({0}) az al\u00e1bbi er\u0151forr\u00e1shoz: {1}.
+IGNORE_FEATURE_J2CA0240.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem val\u00f3s\u00edtotta meg a szolg\u00e1ltat\u00e1st.
+IGNORE_FEATURE_J2CA0240.useraction=Semmit sem kell tennie.
+
+# ---------------------------------
+# {0}    The field that is missing during de-serialization
+# {1}    The classname of the object with the missing field
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278=J2CA0278W: A(z) {0} mez\u0151 p\u00e9ld\u00e1nyos\u00edt\u00e1sa nem sz\u00fcntethet\u0151 meg a(z) {1} oszt\u00e1lyban; az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.explanation=Egy objektum p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1nak megsz\u00fcntet\u00e9sekor egy v\u00e1rt mez\u0151t nem siker\u00fclt megtal\u00e1lni. Ez val\u00f3sz\u00edn\u0171leg az\u00e9rt t\u00f6rt\u00e9nt, mert az objektumot az oszt\u00e1ly egy m\u00e1sik v\u00e1ltozata alak\u00edtja vissza, mint amelyik soros\u00edtotta.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.useraction=Ez a figyelmeztet\u00e9s lehets\u00e9ges probl\u00e9m\u00e1t jelez, de semmit nem kell tennie, hacsak tov\u00e1bbi hib\u00e1k nem mer\u00fclnek fel.
+
+# --------------------------------
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285=J2CA0285W: A(z) {0} met\u00f3dus a(z) {3} er\u0151forr\u00e1s kezelt kapcsolatainak ellen\u0151rz\u00e9se sor\u00e1n kiv\u00e9telt \u00e9szlelt, \u00e9s {2} kiv\u00e9telt dobott. Eredeti kiv\u00e9tel: {1}
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.explanation=A getInvalidConnections() met\u00f3dus megh\u00edv\u00e1sa er\u0151forr\u00e1s-kiv\u00e9telt adott vissza.
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=L\u00e1togasson el az er\u0151forr\u00e1s-illeszt\u0151 szolg\u00e1ltat\u00f3j\u00e1nak webhely\u00e9re.
+
+# 0286 deleted
+                                            
+# ---------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: A(z) {0} er\u0151forr\u00e1s ManagedConnection eleme nem jegyezhet\u0151 be az aktu\u00e1lis tranzakci\u00f3hoz.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a lazyEnlist() met\u00f3dus feldolgoz\u00e1sa sor\u00e1n.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: A kapcsolatkezel\u0151 lazyEnlist() met\u00f3dusa a(z) {0} er\u0151forr\u00e1shoz egy nem null ManagedConnection param\u00e9tert ig\u00e9nyel.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel az er\u0151forr\u00e1s-illeszt\u0151 megval\u00f3s\u00edt\u00e1s\u00e1nak hib\u00e1j\u00e1t jelzi. Az er\u0151forr\u00e1s-illeszt\u0151 megh\u00edvta a lazyEnlist() met\u00f3dust, melynek ManagedConnection \u00e9rt\u00e9ke null.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.useraction=L\u00e1togasson el az er\u0151forr\u00e1s-illeszt\u0151 szolg\u00e1ltat\u00f3j\u00e1nak webhely\u00e9re. Az er\u0151forr\u00e1s-illeszt\u0151 k\u00f3d null\u00e9rt\u00e9ket adott \u00e1t a lazyEnlist() met\u00f3dusnak. A Lusta tranzakci\u00f3-optimaliz\u00e1l\u00e1ssal kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a JCA 1.5 specifik\u00e1ci\u00f3 7.14.2 r\u00e9sz\u00e9t.
+
+# --------------------------------
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295=J2CA0295E: A kapcsolatkezel\u0151 glob\u00e1lis (felhaszn\u00e1l\u00f3i) tranzakci\u00f3n bel\u00fcl helyi tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00eds\u00e9rletet \u00e9rz\u00e9kelt. A pontoss\u00e1g kedv\u00e9\u00e9rt ellen\u0151rizze az alkalmaz\u00e1s k\u00f3dj\u00e1t.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.explanation=Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel az alkalmaz\u00e1s hib\u00e1j\u00e1t jelzi. Az alkalmaz\u00e1snak nem szabadna helyi tranzakci\u00f3kat ind\u00edtania, amikor glob\u00e1lis tranzakci\u00f3n bel\u00fcl m\u0171k\u00f6dik.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1s k\u00f3dj\u00e1t annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy hol indul lok\u00e1lis tranzakci\u00f3 egy glob\u00e1lis tranzakci\u00f3n bel\u00fcl. A k\u00e9rd\u00e9ses k\u00f3dsorok sz\u00e1m\u00e1t esetlegesen tartalmaz\u00f3 veremnyomk\u00f6vet\u00e9s meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben keresse az erre utal\u00f3 \u00fczentet az FFDC katal\u00f3gusban - ez seg\u00edthet lesz\u0171k\u00edteni a keres\u00e9st. Ha nem tal\u00e1lhat\u00f3 a sorok sz\u00e1ma, ha a k\u00f3d JIT ford\u00edt\u00e1son esett \u00e1t, vagy m\u00e1s miatt bizonyul zavarosnak, akkor a probl\u00e9m\u00e1s ter\u00fclet meghat\u00e1roz\u00e1s\u00e1hoz \u00e9rdemes lehet a k\u00f3dot System.out.println() utas\u00edt\u00e1sokkal felszerelni. Ha nem tal\u00e1lja a probl\u00e9m\u00e1t, akkor l\u00e1togasson el az IBM t\u00e1mogat\u00e1s webhely\u00e9re.
+                                   
+# ---------------------------------
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308=J2CA0308W: T\u00f6bbsz\u00f6r\u00f6s kapcsolattulajdons\u00e1g nem ker\u00fclt hozz\u00e1ad\u00e1sra. {0}.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.explanation=Megpr\u00f3b\u00e1ltak hozz\u00e1adni egy t\u00f6bbsz\u00f6r\u00f6s kapcsolattulajdons\u00e1got. A tulajdons\u00e1g nem ker\u00fclt hozz\u00e1ad\u00e1sra.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=A kapcsolatgy\u00e1r vagy adatforr\u00e1s egy\u00e9ni tulajdons\u00e1ga megad\u00e1sra ker\u00fclt, de a tulajdons\u00e1g m\u00e1r l\u00e9tezett. Ez egy k\u00e9zzel m\u00f3dos\u00edtott resources.xml dokumentum t\u00fcnete lehet.
+
+# 0680 deleted
+
+# 0681 deleted
+
+# 0682 deleted
+
+# 0683 deleted
+
+# 0687 deleted
+
+# 0689 deleted
+
+# ---------------------------------
+POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: Nem tal\u00e1lhat\u00f3 els\u0151dleges t\u00e1rkezel\u0151 az \u00e1t\u00e1ll\u00e1s feldolgoz\u00e1sa sor\u00e1n a(z) {0} JNDI nev\u0171 er\u0151forr\u00e1shoz.
+POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt az \u00e1t\u00e1ll\u00e1s feldolgoz\u00e1sa sor\u00e1n.
+POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
+
+# ---------------------------------
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: \u00c9rv\u00e9nytelen {0} MCWrapper a(z) {1} er\u0151forr\u00e1s szabad t\u00e1rol\u00f3j\u00e1b\u00f3l.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Az MCWrapper lefoglal\u00e1sa meghi\u00fasult.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
+
+# ---------------------------------
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: A(z) {0} MCWrappert a megosztott t\u00e1rol\u00f3b\u00f3l nem siker\u00fclt elt\u00e1vol\u00edtani.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Az MCWrapper elt\u00e1vol\u00edt\u00e1sa meghi\u00fasult, amely lehets\u00e9ges probl\u00e9m\u00e1t okoz a megosztott t\u00e1rol\u00f3ban.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

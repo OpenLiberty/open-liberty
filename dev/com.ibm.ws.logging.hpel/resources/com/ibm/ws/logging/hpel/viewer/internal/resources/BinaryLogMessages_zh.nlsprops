@@ -1,0 +1,200 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=\u6307\u5b9a\u7684\u64cd\u4f5c {0} \u65e0\u6548\u3002
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=\u65e0\u6cd5\u89e3\u6790 --minDate \u503c\u3002
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=\u65e0\u6cd5\u89e3\u6790 --maxDate \u503c\u3002
+
+BL_INVALID_REPOSITORYDIR=\u5b58\u50a8\u5e93\u8def\u5f84 {0} \u662f\u65e0\u6548\u8def\u5f84\u540d\u3002
+BL_INVALID_TARGETDIR=\u76ee\u6807\u8def\u5f84 {0} \u662f\u65e0\u6548\u8def\u5f84\u540d\u3002
+BL_UNABLE_TO_COPY=\u65e0\u6cd5\u5728\u76ee\u6807\u4f4d\u7f6e\u521b\u5efa\u5b58\u50a8\u5e93\u3002\u8bf7\u786e\u4fdd\u6240\u6307\u5b9a\u76ee\u6807\u76ee\u5f55\u4e3a\u7a7a\u5e76\u4e14\u5177\u6709\u5199\u8bb8\u53ef\u6743\u3002
+BL_NO_FILES_FOUND_MONITOR=\u6307\u5b9a\u7684\u76ee\u5f55\u5f53\u524d\u672a\u5305\u542b\u4efb\u4f55\u65e5\u5fd7\u6216\u8ddf\u8e2a\u6587\u4ef6\u3002\u7ee7\u7eed\u76d1\u89c6\u6b64\u76ee\u5f55\u3002
+BL_NO_FILES_FOUND=\u6307\u5b9a\u7684\u670d\u52a1\u5668\u65e5\u5fd7\u76ee\u5f55\u6216\u5b58\u50a8\u5e93\u76ee\u5f55\u672a\u5305\u542b\u4efb\u4f55\u65e5\u5fd7\u6216\u8ddf\u8e2a\u6587\u4ef6\u3002
+BL_OPTION_REQUIRES_A_VALUE=\u9009\u9879 {0} \u9700\u8981\u503c\u3002
+BL_UNKNOWN_OPTION=\u9009\u9879 {0} \u4e0d\u53ef\u8bc6\u522b\u3002
+BL_BAD_FORMAT=\u683c\u5f0f {0} \u4e0d\u53ef\u8bc6\u522b\u3002
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=--minDate \u6307\u5b9a\u7684\u65e5\u671f\u5728 --maxDate \u6307\u5b9a\u7684\u65e5\u671f\u4e4b\u540e\u3002
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=--minLevel \u6307\u5b9a\u7684\u7ea7\u522b\u9ad8\u4e8e --maxLevel \u6307\u5b9a\u7684\u7ea7\u522b\u3002
+
+# do not translate "binaryLog help"
+BL_USE_HELP=\u6709\u5173\u7528\u6cd5\u4fe1\u606f\uff0c\u8bf7\u4f7f\u7528 binaryLog help\u3002
+
+BL_REPOSITORY_DIRECTORY=\u6b63\u5c06 {0} \u7528\u4f5c\u5b58\u50a8\u5e93\u76ee\u5f55\u3002
+BL_TARGET_DIRECTORY=\u6b63\u5c06 {0} \u7528\u4f5c\u76ee\u6807\u76ee\u5f55\u3002
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=copy \u64cd\u4f5c\u8981\u6c42\u6307\u5b9a {serverName | repositoryPath} \u548c targetPath\u3002
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=\u7528\u6cd5\uff1abinaryLog action {serverName | repositoryPath} [\u9009\u9879]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\ \ \ \ serverName
+BL_MAIN_USAGE_005=\t\u6307\u5b9a Liberty \u670d\u52a1\u5668\u540d\u79f0\u53ca\u8981\u4ece\u4e2d\u8bfb\u53d6\u7684\u5b58\u50a8\u5e93\u3002
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\t\u6307\u5b9a\u8981\u4ece\u4e2d\u8bfb\u53d6\u7684\u5b58\u50a8\u5e93\u7684\u8def\u5f84\u3002\u5b83\u901a\u5e38\u662f\u5305\u542b\u65e5\u5fd7\u6570\u636e\u548c\u8ddf\u8e2a\u6570\u636e\u76ee\u5f55\u7684\u76ee\u5f55\u3002
+
+BL_MAIN_USAGE_008=\u63cf\u8ff0\uff1a
+BL_MAIN_USAGE_009=\t\u67e5\u770b\u6216\u590d\u5236\u9ad8\u6027\u80fd\u53ef\u6269\u5c55\u65e5\u5fd7\u8bb0\u5f55\u5b58\u50a8\u5e93\u7684\u5185\u5bb9\uff0c\u6216\u5217\u793a\u8be5\u5b58\u50a8\u5e93\u4e2d\u7684\u53ef\u7528\u670d\u52a1\u5668\u8fdb\u7a0b\u5b9e\u4f8b\u3002\n\
+\t
+
+BL_MAIN_USAGE_010=\u64cd\u4f5c\uff1a
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\ \ \ \ view
+BL_MAIN_USAGE_012=\t\u8bfb\u53d6\u5b58\u50a8\u5e93\uff0c\uff08\u53ef\u9009\uff09\u5bf9\u5176\u8fdb\u884c\u8fc7\u6ee4\uff0c\u5e76\u521b\u5efa\u4eba\u5de5\u53ef\u8bfb\u7248\u672c\u3002\n\
+\t
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\ \ \ \ copy
+BL_MAIN_USAGE_014=\t\u8bfb\u53d6\u5b58\u50a8\u5e93\uff0c\uff08\u53ef\u9009\uff09\u5bf9\u5176\u8fdb\u884c\u8fc7\u6ee4\uff0c\u5e76\u5c06\u5185\u5bb9\u5199\u81f3\u65b0\u5b58\u50a8\u5e93\u3002
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\t\u5217\u793a\u5b58\u50a8\u5e93\u4e2d\u7684\u670d\u52a1\u5668\u8fdb\u7a0b\u5b9e\u4f8b\u3002
+
+BL_MAIN_USAGE_017=\u9009\u9879\uff1a
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\t\u4f7f\u7528 help [action] \u6765\u83b7\u53d6\u6bcf\u4e2a\u64cd\u4f5c\u7684\u8be6\u7ec6\u9009\u9879\u4fe1\u606f\u3002
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=\u7528\u6cd5\uff1abinaryLog view {serverName | repositoryPath} [\u9009\u9879]
+
+BL_VIEW_USAGE_002=\t\u8bfb\u53d6\u5b58\u50a8\u5e93\uff0c\uff08\u53ef\u9009\uff09\u5bf9\u5176\u8fdb\u884c\u8fc7\u6ee4\uff0c\u5e76\u521b\u5efa\u4eba\u5de5\u53ef\u8bfb\u7248\u672c\u3002\n\
+\t
+
+BL_VIEW_USAGE_003=\u8fc7\u6ee4\u5668\u9009\u9879\uff1a
+BL_VIEW_USAGE_004=\t\u8fc7\u6ee4\u5668\u90fd\u662f\u53ef\u9009\u7684\u3002\u5982\u679c\u4f7f\u7528\u591a\u4e2a\u8fc7\u6ee4\u5668\uff0c\u90a3\u4e48\u5b83\u4eec\u5728\u903b\u8f91\u4e0a\u662f\u4f7f\u7528 AND \u8fd0\u7b97\u7b26\u7ec4\u5408\u5728\u4e00\u8d77\u7684\u3002\n\
+\t
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\ \ \ \ --minDate=value
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\t\u57fa\u4e8e\u6700\u65e9\u8bb0\u5f55\u521b\u5efa\u65e5\u671f\u7684\u8fc7\u6ee4\u5668\u3002\u503c\u5fc5\u987b\u6307\u5b9a\u4e3a\u65e5\u671f\uff08\u4f8b\u5982 --minDate=\"{0}\"\uff09\u6216\u65e5\u671f\u548c\u65f6\u95f4\n\
+\t\uff08\u4f8b\u5982 --minDate=\"{1}\"\uff09\u3002\
+\u60a8\u8fd8\u53ef\u4ee5\u8f93\u5165 ISO-8601 \u683c\u5f0f\u7684\u65e5\u671f\u548c\u65f6\u95f4\uff1b\u4f8b\u5982\uff0c--minDate=\"{2}\" \u6216  \n\
+\t--minDate=\"{3}\"\u3002
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\ \ \ \ --maxDate=value
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\t\u57fa\u4e8e\u6700\u665a\u8bb0\u5f55\u521b\u5efa\u65e5\u671f\u7684\u8fc7\u6ee4\u5668\u3002\u503c\u5fc5\u987b\u6307\u5b9a\u4e3a\u65e5\u671f\uff08\u4f8b\u5982 --maxDate=\"{0}\"\uff09\u6216\u65e5\u671f\u548c\u65f6\u95f4\n\
+\t\uff08\u4f8b\u5982 --maxDate=\"{1}\"\uff09\u3002\
+\u60a8\u8fd8\u53ef\u4ee5\u8f93\u5165 ISO-8601 \u683c\u5f0f\u7684\u65e5\u671f\u548c\u65f6\u95f4\uff1b\u4f8b\u5982\uff0c--maxDate=\"{2}\" \u6216  \n\
+\t--maxDate=\"{3}\"\u3002
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\ \ \ \ --minLevel=value
+BL_VIEW_USAGE_010=\t\u57fa\u4e8e\u6700\u4f4e\u7ea7\u522b\u7684\u8fc7\u6ee4\u5668\u3002\u503c\u5fc5\u987b\u4e3a\u4e0b\u5217\u5176\u4e2d\u4e00\u9879\uff1a\n\
+\t{0}\u3002
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\ \ \ \ --maxLevel=value
+BL_VIEW_USAGE_012=\t\u57fa\u4e8e\u6700\u9ad8\u7ea7\u522b\u7684\u8fc7\u6ee4\u5668\u3002\u503c\u5fc5\u987b\u4e3a\u4e0b\u5217\u5176\u4e2d\u4e00\u9879\uff1a\n\
+\t{0}\u3002
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\ \ \ \ --includeLogger=value[,value]*
+BL_VIEW_USAGE_014=\t\u5305\u62ec\u5e26\u6709\u6307\u5b9a\u8bb0\u5f55\u5668\u540d\u79f0\u7684\u8bb0\u5f55\u3002\u503c\u53ef\u80fd\u5305\u62ec * \u6216 ? \u4f5c\u4e3a\u901a\u914d\u7b26\u3002
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\ \ \ \ --excludeLogger=value[,value]*
+BL_VIEW_USAGE_016=\t\u6392\u9664\u5e26\u6709\u6307\u5b9a\u8bb0\u5f55\u5668\u540d\u79f0\u7684\u8bb0\u5f55\u3002\u503c\u53ef\u80fd\u5305\u62ec * \u6216 ? \u4f5c\u4e3a\u901a\u914d\u7b26\u3002
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\ \ \ \ --includeMessage=value
+BL_VIEW_USAGE_018=\t\u57fa\u4e8e\u6d88\u606f\u540d\u79f0\u7684\u8fc7\u6ee4\u5668\u3002\
+\u503c\u53ef\u80fd\u5305\u62ec * \u6216 ? \u4f5c\u4e3a\u901a\u914d\u7b26\u3002
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\ \ \ \ --includeThread=value
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\t\u5305\u62ec\u5e26\u6709\u6307\u5b9a\u7ebf\u7a0b\u6807\u8bc6\u7684\u8bb0\u5f55\u3002\u503c\u5fc5\u987b\u4e3a         \n\
+\t\u5341\u516d\u8fdb\u5236\uff08\u4f8b\u5982\uff0c--includeThread=2a\uff09\u3002
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\ \ \ \ --includeExtension=name=value[,name=value]*
+BL_VIEW_USAGE_022=\t\u5305\u62ec\u5e26\u6709\u6307\u5b9a\u6269\u5c55\u540d\u548c\u503c\u7684\u8bb0\u5f55\u3002\
+\u503c\u53ef\u80fd\u5305\u62ec * \u6216 ? \u4f5c\u4e3a\u901a\u914d\u7b26\u3002
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\ \ \ \ --includeInstance=value
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\t\u5305\u62ec\u6240\u6307\u5b9a\u670d\u52a1\u5668\u5b9e\u4f8b\u4e2d\u7684\u8bb0\u5f55\u3002\u503c\u5fc5\u987b\u4e3a\u201c\u6700\u65b0\u201d\u6216\u4e3a\u6709\u6548\u5b9e\u4f8b\u6807\u8bc6\u3002\u4f7f\u7528 listInstances \u64cd\u4f5c\n\
+\t\u8fd0\u884c\u6b64\u547d\u4ee4\u4ee5\u67e5\u770b\u6709\u6548\u5b9e\u4f8b\u6807\u8bc6\u5217\u8868\u3002
+
+BL_VIEW_USAGE_025=\u76d1\u89c6\u5668\u9009\u9879\uff1a
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\t\u6301\u7eed\u76d1\u89c6\u5b58\u50a8\u5e93\u5e76\u5728\u4ea7\u751f\u65b0\u5185\u5bb9\u65f6\u7acb\u5373\u8f93\u51fa\u3002
+			
+BL_VIEW_USAGE_028=\u8f93\u51fa\u9009\u9879\uff1a
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\t\u6307\u5b9a\u8981\u4f7f\u7528\u7684\u8f93\u51fa\u683c\u5f0f\u3002\
+\u201cbasic\u201d\u662f\u7f3a\u7701\u683c\u5f0f\u3002
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\ \ \ \ --encoding=value
+BL_VIEW_USAGE_032=\t\u6307\u5b9a\u8981\u7528\u4e8e\u8f93\u51fa\u7684\u5b57\u7b26\u7f16\u7801\u3002
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\t\u6307\u5b9a\u8981\u7528\u4e8e\u8f93\u51fa\u7684 ISO-8601 \u65e5\u671f\u548c\u65f6\u95f4\u683c\u5f0f\u3002
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=\u7528\u6cd5\uff1abinaryLog listInstances {serverName | repositoryPath} [\u9009\u9879]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\t\u5217\u793a\u5b58\u50a8\u5e93\u4e2d\u7684\u670d\u52a1\u5668\u5b9e\u4f8b\u7684\u6807\u8bc6\u3002\u670d\u52a1\u5668\u5b9e\u4f8b\u662f\u4ece\u670d\u52a1\u5668\u542f\u52a8\u5230\u505c\u6b62\u671f\u95f4\u5199\u5165\u7684\u6240\u6709\u65e5\u5fd7/\u8ddf\u8e2a\u8bb0\u5f55\u7684\u96c6\u5408\u3002\n\
+\t\u670d\u52a1\u5668\u5b9e\u4f8b\u6807\u8bc6\u53ef\u4e0e binaryLog view \u64cd\u4f5c\u7684 --includeInstance \u9009\u9879\u914d\u5408\u4f7f\u7528\u3002
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=\u7528\u6cd5\uff1abinaryLog copy {serverName | repositoryPath} targetPath [\u9009\u9879]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\ \ \ \ targetPath
+BL_COPY_USAGE_003=\t\u6307\u5b9a\u7528\u4e8e\u521b\u5efa\u65b0\u5b58\u50a8\u5e93\u7684\u8def\u5f84\u3002
+
+
+BL_COPY_USAGE_004=\t\u8bfb\u53d6\u5b58\u50a8\u5e93\uff0c\uff08\u53ef\u9009\uff09\u5bf9\u5176\u8fdb\u884c\u8fc7\u6ee4\uff0c\u5e76\u5c06\u5185\u5bb9\u5199\u81f3\u65b0\u5b58\u50a8\u5e93\u3002

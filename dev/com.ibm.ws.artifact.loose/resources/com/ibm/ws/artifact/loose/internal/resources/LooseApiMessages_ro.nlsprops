@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: Fi\u015fierul XML din {0} nu a putut fi g\u0103sit.
+XML_NOT_FOUND.explanation=Fi\u015fierul XML specificat nu a putut fi g\u0103sit.
+XML_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul este \u00een loca\u0163ia corect\u0103 \u015fi nu a fost mutat.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: Fi\u015fierul XML din {0} nu a putut fi citit.
+XML_STREAM_ERROR.explanation=Fi\u015fierul XML specificat nu a putut fi citit.
+XML_STREAM_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul este formatat corect ca XML.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: Fi\u015fierul XML declarat \u00eentr-o aplica\u0163ie a spa\u0163iului de lucru face referire la un fi\u015fier {0} \u015fi include un atribut "excludes" care nu este valid. 
+EXCLUDES_ON_FILE.explanation=Elementul fi\u015fierului XML are un atribut "excludes" care nu este valid. Atributul a fost ignorat.
+EXCLUDES_ON_FILE.useraction=\u00cenl\u0103tura\u0163i atributul "excludes" de la element.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: Fi\u015fierul XML declarat \u00eentr-o aplica\u0163ie a spa\u0163iului de lucru face referire la o arhiv\u0103 numit\u0103 {0} \u015fi include un atribut "excludes" care nu este valid. 
+EXCLUDES_ON_ARCHIVE.explanation=Elementul arhivei XML are un atribut "excludes" care nu este valid. Atributul a fost ignorat.
+EXCLUDES_ON_ARCHIVE.useraction=\u00cenl\u0103tura\u0163i atributul "excludes" de la element.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: Fi\u015fierul XML declarat \u00eentr-o aplica\u0163ie a spa\u0163iului de lucru con\u0163ine un atribut "excludes" care nu este valid: {0}
+INVALID_EXCLUDE_PATTERN.explanation=Atributul "excludes" nu este valid \u015fi nu poate fi \u00een\u0163eles.
+INVALID_EXCLUDE_PATTERN.useraction=Modifica\u0163i atributul la sintaxa corect\u0103 sau \u00eenl\u0103tura\u0163i-l dac\u0103 nu este necesar.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: Fi\u015fierul XML declarat \u00eentr-o aplica\u0163ie a spa\u0163iului de lucru face referire la un fi\u015fier {0} care nu a putut fi g\u0103sit.
+DECLARED_FILE_NOT_FOUND.explanation=Fi\u015fierul declarat pentru aplica\u0163ia spa\u0163iului de lucru nu a putut fi g\u0103sit.
+DECLARED_FILE_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul este \u00een loca\u0163ia cu referin\u0163\u0103 sau c\u0103 loca\u0163ia cu referin\u0163\u0103 se potrive\u015fte loca\u0163iei fi\u015fierului.

@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: Nie znaleziono pliku XML w miejscu {0}.
+XML_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonego pliku XML.
+XML_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce plik znajduje si\u0119 w poprawnym miejscu i nie zosta\u0142 przeniesiony.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: Nie mo\u017cna odczyta\u0107 pliku XML w miejscu {0}.
+XML_STREAM_ERROR.explanation=Nie mo\u017cna odczyta\u0107 okre\u015blonego pliku XML.
+XML_STREAM_ERROR.useraction=Sprawd\u017a, czy plik jest poprawnie sformatowany jako XML.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: Plik XML zadeklarowany w aplikacji obszaru roboczego odwo\u0142uje si\u0119 do pliku w po\u0142o\u017ceniu {0} i zawiera atrybut excludes, kt\u00f3ry jest niepoprawny. 
+EXCLUDES_ON_FILE.explanation=Plik XML ma atrybut excludes, kt\u00f3ry jest niepoprawny. Atrybut zosta\u0142 zignorowany.
+EXCLUDES_ON_FILE.useraction=Usu\u0144 atrybut excludes z elementu.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: Plik XML zadeklarowany w aplikacji obszaru roboczego odwo\u0142uje si\u0119 do elementu archive o nazwie {0} i zawiera atrybut excludes, kt\u00f3ry jest niepoprawny. 
+EXCLUDES_ON_ARCHIVE.explanation=Element XML archive ma atrybut excludes, kt\u00f3ry jest niepoprawny. Atrybut zosta\u0142 zignorowany.
+EXCLUDES_ON_ARCHIVE.useraction=Usu\u0144 atrybut excludes z elementu.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: Plik XML zadeklarowany w aplikacji obszaru roboczego zawiera atrybut excludes, kt\u00f3ry jest niepoprawny: {0}
+INVALID_EXCLUDE_PATTERN.explanation=Atrybut excludes jest niepoprawny i nie mo\u017cna go rozpozna\u0107.
+INVALID_EXCLUDE_PATTERN.useraction=Zmie\u0144 sk\u0142adni\u0119 atrybutu na poprawn\u0105 lub usu\u0144 go, je\u015bli jest niepotrzebny.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: Plik XML zadeklarowany w aplikacji obszaru roboczego odwo\u0142uje si\u0119 do pliku {0}, kt\u00f3rego nie mo\u017cna znale\u017a\u0107.
+DECLARED_FILE_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 pliku zadeklarowanego dla aplikacji obszaru roboczego.
+DECLARED_FILE_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce plik znajduje si\u0119 w miejscu wskazanym w odwo\u0142aniu lub \u017ce to miejsce jest zgodne z faktycznym po\u0142o\u017ceniem pliku.

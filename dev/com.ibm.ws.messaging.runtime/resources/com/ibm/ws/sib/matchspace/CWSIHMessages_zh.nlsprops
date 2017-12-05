@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: \u4e3b\u9898 {0} \u7684\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002\u5b57\u7b26 {1} \u4e2d\u627e\u5230\u4e0d\u9700\u8981\u7684\u201c*\u201d\u5b57\u7b26\u3002
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=\u4e3b\u9898\u7684\u683c\u5f0f\u4e0d\u6b63\u786e\u3002\u201c*\u201d\u5355\u4e00\u7ea7\u522b\u901a\u914d\u7b26\u4ec5\u53ef\u4ee5\u4f5c\u4e3a\u5355\u4e00\u5b57\u7b26\u5728\u4e3b\u9898\u7684\u4e00\u4e2a\u7ea7\u522b\u4e2d\u51fa\u73b0\uff0c\u4f8b\u5982\uff1a*/a \u6216 a/*/b \u6216 a/*\u3002
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=\u8bf7\u4fee\u6b63\u4e0d\u6b63\u786e\u7684\u4e3b\u9898\u89c4\u8303\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: \u4e3b\u9898 {0} \u7684\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002\u5b57\u7b26 {1} \u4e2d\u627e\u5230\u4e0d\u9700\u8981\u7684\u201c.\u201d\u5b57\u7b26\u3002
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=\u4e3b\u9898\u7684\u683c\u5f0f\u4e0d\u6b63\u786e\u3002\u201c.\u201d\u5b57\u7b26\u4ec5\u53ef\u4ee5\u4f5c\u4e3a\u5355\u4e00\u5b57\u7b26\u5728\u4e3b\u9898\u7684\u4e00\u4e2a\u7ea7\u522b\u4e2d\u51fa\u73b0\uff0c\u6216\u5728\u4e3b\u9898\u8868\u8fbe\u5f0f\u7684\u7ed3\u5c3e\u90e8\u5206\u51fa\u73b0\uff0c\u4f8b\u5982\uff1a/./a \u6216 a//.\u3002
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=\u8bf7\u4fee\u6b63\u4e0d\u6b63\u786e\u7684\u4e3b\u9898\u89c4\u8303\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: \u4e3b\u9898 {0} \u7684\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002\u5b57\u7b26 {1} \u4e2d\u627e\u5230\u4e0d\u9700\u8981\u7684\u201c/\u201d\u5b57\u7b26\u3002
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=\u4e3b\u9898\u7684\u683c\u5f0f\u4e0d\u6b63\u786e\u3002\u4e0d\u80fd\u6709\u4e09\u4e2a\u76f8\u90bb\u7684\u201c/\u201d\u5b57\u7b26\u3002
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=\u8bf7\u4fee\u6b63\u4e0d\u6b63\u786e\u7684\u4e3b\u9898\u89c4\u8303\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: \u4e3b\u9898 {0} \u7684\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002\u5728\u5b57\u7b26 {1} \u4e2d\uff0c\u7d27\u8ddf\u7740\u201c/\u201d\u5b57\u7b26\u540e\u9762\u627e\u5230\u4e00\u4e2a\u4e0d\u9700\u8981\u7684\u5b57\u7b26\u3002
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=\u4e3b\u9898\u7684\u683c\u5f0f\u4e0d\u6b63\u786e\u3002\u9664\u4e86\u201c/\u201d\u5b57\u7b26\u4e4b\u5916\uff0c\u901a\u914d\u7b26\u540e\u9762\u4e0d\u5141\u8bb8\u8ddf\u5176\u4ed6\u5b57\u7b26\u3002\u4e0d\u6b63\u786e\u4e3b\u9898\u7684\u793a\u4f8b\u4e3a a//.a \u6216 a/*b\u3002
+
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=\u8bf7\u4fee\u6b63\u4e0d\u6b63\u786e\u7684\u4e3b\u9898\u89c4\u8303\u3002
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: \u8be5\u4e3b\u9898\u65e0\u6548\u3002
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=\u56e0\u4e3a\u63d0\u4f9b\u7684\u4e3b\u9898\u4e3a\u7a7a\u800c\u5bfc\u81f4\u5b83\u65e0\u6548\uff0c\u8fd9\u662f\u4e0d\u5141\u8bb8\u7684\u3002
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=\u8bf7\u786e\u4fdd\u4e3b\u9898\u662f\u6709\u6548\u7684 String \u5bf9\u8c61\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: \u5df2\u53d1\u5e03\u6d88\u606f\u7684\u4e3b\u9898\u8bed\u6cd5\u4e0d\u6b63\u786e\uff1a{0}\u3002
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=\u56e0\u4e3a\u63d0\u4f9b\u7684\u4e3b\u9898\u662f\u4e00\u4efd\u51fa\u7248\u7269\uff0c\u56e0\u6b64\u5b83\u4e0d\u80fd\u5305\u542b\u901a\u914d\u7b26\u3002
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=\u8bf7\u4ece\u51fa\u7248\u7269\u6d88\u606f\u4e2d\u9664\u53bb\u901a\u914d\u7b26\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: \u65e0\u6cd5\u521b\u5efa Matching \u5b9e\u4f8b\uff1a\u5f02\u5e38\u4e3a {0}\u3002
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=\u7531\u4e8e sib.matchspaceImpl.jar \u4e22\u5931\u6216\u5df2\u635f\u574f\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u5339\u914d\u7684\u5b9e\u4f8b\u3002
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=\u5982\u679c\u8be5\u6d88\u606f\u672a\u63d0\u4f9b\u8db3\u591f\u4fe1\u606f\uff0c\u90a3\u4e48\u8bf7\u67e5\u770b\u5148\u524d\u7684\u6d88\u606f\u4ee5\u83b7\u53d6\u66f4\u591a\u5e2e\u52a9\u3002
+TEMPORARY_CWSIH9999.useraction=\u8bf7\u53c2\u9605\u5148\u524d\u7684\u6d88\u606f\u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002

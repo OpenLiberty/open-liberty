@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: \uc9c0\uc815\ub41c \uc704\uce58\uc5d0 \ub3c4\ub2ec\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc54c\ub824\uc9c0\uac70\ub098 \uad6c\uc131\ub41c \uacbd\ub85c\uc758 \ud558\uc704\uac00 \uc544\ub2d9\ub2c8\ub2e4. \uacbd\ub85c={0}.
+unreachableLocation.explanation=\ud50c\ub7ab\ud3fc\uc740 \uc704\uce58 \uc11c\ube44\uc2a4\uac00 \uc9c0\uc815\ub41c \uacbd\ub85c\ub97c \ud574\uc11d\ud558\ub294 \ub370 \uc0ac\uc6a9\ub420 \ub54c \uc784\uc758 \uc561\uc138\uc2a4\uc5d0\uc11c \ud30c\uc77c \uc2dc\uc2a4\ud15c\uc73c\ub85c\uc758 \uac00\uc7a5 \uae30\ubcf8\uc801\uc778 \ubcf4\ud638\ub97c \uc81c\uacf5\ud558\uae30 \uc704\ud574 \uae30\ud638 \uacbd\ub85c\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4. \
+README.TXT\uc5d0 \uae30\ud638 \uacbd\ub85c\uac00 \uad6c\uc131\ub41c \ubc29\ubc95\uc5d0 \ub300\ud55c \uc815\ubcf4\uac00 \ub4e4\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+unreachableLocation.useraction=bootstrap.properties\uc5d0\uc11c \uad6c\uc131\ub41c \uacbd\ub85c\ub97c \uac80\uc0ac\ud558\uace0, \uad6c\uc131\ub41c \uacbd\ub85c\uac00 \uae30\uc874 \uae30\ud638\uc758 \ud558\uc704\uc774\uac70\ub098 \uba85\uc2dc\uc801\uc73c\ub85c \uc815\uc758\ub41c \uae30\ud638\uc640 \uc5f0\uad00\ub418\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+invalidResourceType=CWWKE0201E: \uae30\ud638\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc9c0\uc815\ub41c \uc704\uce58\uac00 \uc874\uc7ac\ud558\uace0 \ud544\uc694\ud55c \uc720\ud615\uacfc \ucda9\ub3cc\ud569\ub2c8\ub2e4. {0}={1}.
+invalidResourceType.explanation=\uae30\ud638\uc5d0 \uc9c0\uc815\ub41c \uacbd\ub85c\uac00 \uc874\uc7ac\ud558\uba70, \uacbd\ub85c\uac00 \uc9c0\uc815\ud558\ub294 \uac83\uacfc\ub294 \ub2e4\ub978 \uc720\ud615\uc758 \uc790\uc6d0\uc785\ub2c8\ub2e4(\uc608\ub97c \ub4e4\uc5b4, \uae30\ud638\ub294 \ud30c\uc77c\uc744 \uc11c\uc220\ud558\uc9c0\ub9cc \uc790\uc6d0\uc740 \ub514\ub809\ud1a0\ub9ac\uc784).
+invalidResourceType.useraction=\uacbd\ub85c\uac00 \uc62c\ubc14\ub974\uac8c \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \
+\ub514\ub809\ud1a0\ub9ac \uacbd\ub85c\ub294 /\ub85c \ub05d\ub098\uc57c \ud569\ub2c8\ub2e4. \
+\uacbd\ub85c\uac00 \uc874\uc7ac\ud558\uc9c0 \uc54a\uac70\ub098 \uc874\uc7ac\ud558\ub294 \uc790\uc6d0\uc744 \ucc38\uc870\ud558\uace0 \ud544\uc694\ud55c \uc720\ud615\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+missingTmpDir=CWWKE0202E: \uc9c0\uc815\ub41c \uc784\uc2dc \ub514\ub809\ud1a0\ub9ac \uc704\uce58\uac00 \uc5c6\uc73c\uba70 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}.
+missingTmpDir.explanation=java.io.tmpdir\ub85c(\uc2dc\uc2a4\ud15c \ud2b9\uc131 \ub610\ub294 \ud50c\ub7ab\ud3fc\ubcc4 \ud658\uacbd \ubcc0\uc218\ub97c \ud1b5\ud574) \uc9c0\uc815\ub41c \ub514\ub809\ud1a0\ub9ac\uac00 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc73c\uba70 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+missingTmpDir.useraction=\uc9c0\uc815\ub41c \ub514\ub809\ud1a0\ub9ac\uac00 \uc874\uc7ac\ud558\uace0 \uc77d\uae30/\uc4f0\uae30 \uad8c\ud55c\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+relativeTmpDir=CWWKE0203I: java.io.tempdir\uc774 \uc0c1\ub300 \uacbd\ub85c\ub85c \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud574\uc11d\ub41c \uacbd\ub85c\ub294 {0}\uc785\ub2c8\ub2e4.
+relativeTmpDir.explanation=java.io.tmpdir\ub85c(\uc2dc\uc2a4\ud15c \ud2b9\uc131 \ub610\ub294 \ud50c\ub7ab\ud3fc\ubcc4 \ud658\uacbd \ubcc0\uc218\ub97c \ud1b5\ud574) \uc9c0\uc815\ub41c \ub514\ub809\ud1a0\ub9ac\uac00 \uc0c1\ub300\uc801\uc774\uba70 \uc2e4\ud589 \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc0c1\ub300\uc801\uc73c\ub85c \ud574\uc11d\ub429\ub2c8\ub2e4.
+relativeTmpDir.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+
+locationInitializationError=CWWKE0204E: \ud50c\ub7ab\ud3fc \uc704\uce58 \uc11c\ube44\uc2a4\ub97c \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc74c. \uc774\uc720={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+frameworkShutdown=CWWKE0205W: \uc774\uc804 \ucd08\uae30\ud654 \uc624\ub958 \ub54c\ubb38\uc5d0 \ud504\ub808\uc784\uc6cc\ud06c\uac00 \uc2dc\uc2a4\ud15c \uc885\ub8cc\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+frameworkShutdown.explanation=\ucd08\uae30\ud654 \uc911\uc5d0 \uc774\uc804 \uc624\ub958 \ub54c\ubb38\uc5d0 \ud504\ub808\uc784\uc6cc\ud06c\uac00 \uc2dc\uc2a4\ud15c \uc885\ub8cc\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+frameworkShutdown.useraction=\uc624\ub958\ub97c \ud574\uacb0\ud558\uace0 \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.

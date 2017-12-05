@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Cale invalid\u0103 a clasei manifest {0} g\u0103sit\u0103 \u00een fi\u015fierul jar {1}.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Calea clasei nu este specificat\u0103 corect. Trebuie s\u0103 fie un \u015fir URI relativ ce indic\u0103 spre un fi\u015fier jar sau un folder.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Actualiza\u0163i MANIFEST.MF al fi\u015fierului jar pentru a furniza defini\u0163ia Class-Path corect\u0103.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Calea clasei manifest {0} nu poate fi g\u0103sit\u0103 \u00een fi\u015fierul jar {1} sau p\u0103rintele s\u0103u.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Calea clasei de manifest nu poate fi g\u0103sit\u0103 \u00een fi\u015fierul jar sau \u00een arhiva ce include fi\u015fierul jar.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Ad\u0103uga\u0163i \u0163inta c\u0103ii clasei \u00een arhiv\u0103.
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: Sunt folosite nume duplicate {0} \u00een fi\u015fierele web-fragment.xml ale {1} \u015fi {2} la folosirea comand\u0103rii relative.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Numele unis este necesar pentru elementul din fiecare fi\u015fier web-fragment.xml la folosirea comand\u0103rii sort\u0103rii relative.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Aloca\u0163i nume unci pentru fiecare web-fragment.xml \u00een timp ce folosi\u0163i comandarea de sortare relativ\u0103 sau elementul <absolute-ordering> de sortare absolut\u0103 Configure Use din fi\u015fierul web.xml.
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+annotation.service.not.available.CWWKM0451E.explanation=MSG0001
+annotation.service.not.available.CWWKM0451E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+annotation.service.not.available.CWWKM0452E.explanation=MSG0001
+annotation.service.not.available.CWWKM0452E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+container.is.not.a.module.CWWKM0453E.explanation=MSG0001
+container.is.not.a.module.CWWKM0453E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0454E.explanation=MSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0455E.explanation=MSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=MSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=MSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=MSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+annotation.service.not.available.CWWKM0463E.explanation=MSG0001
+annotation.service.not.available.CWWKM0463E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+container.is.not.a.web.module.CWWKM0464E.explanation=MSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0465E.explanation=MSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2}
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=MSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=MSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=MSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2} {3}
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=MSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2}
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=MSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=MSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=MSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=MSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=MSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+two.fragments.have.the.same.name.CWWKM0479E.explanation=MSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1} {2}
+conflicting.relative.order.metadata.CWWKM0480E.explanation=MSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0}
+loop.found.in.list.CWWKM0481E.explanation=MSG0001
+loop.found.in.list.CWWKM0481E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. V\u0103 rug\u0103m s\u0103 contacta\u0163i suportul WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+ordered.list.already.contains.CWWKM0482E.explanation=MSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

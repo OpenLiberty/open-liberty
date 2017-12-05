@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+################### LIBRARY SERVICE EXPORT MESSAGES 0050-0058 ################### 
+#################################################################################
+
+# {0} - the name of the library
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the implementation class
+bell.service.name=CWWKL0050I: Biblioteca {0} a \u00eenregistrat serviciul care este declarat \u00een fi\u015fierul {1}, folosind clasa de implementare {2}.
+bell.service.name.explanation=Serviciul a fost declarat \u00een directorul META-INF/services \u015fi serviciul a fost \u00eenregistrat la server.  
+bell.service.name.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.no.impl=CWWKL0051W: Sistemul nu poate localiza implementarea {0} a serviciului care este declarat \u00een fi\u015fierul {1} \u015fi \u00eenregistrat din biblioteca {2}.
+bell.no.impl.explanation=Nu a fost g\u0103sit\u0103 implementarea serviciului.
+bell.no.impl.useraction=Asigura\u0163i-v\u0103 c\u0103 numele specificat \u00een declara\u0163ia de serviciu este corect.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - message from the NoClassDefFoundError
+bell.no.inter=CWWKL0052W: Sistemul nu poate construi o instan\u0163\u0103 a clasei de implementare {0} din cauza lipsei unei defini\u0163ii de clas\u0103. Aceast\u0103 clas\u0103 este o implementare a serviciului care este declarat \u00een fi\u015fierul {1} \u015fi \u00eenregistrat din biblioteca {2}. Eroarea este dup\u0103 cum urmeaz\u0103: {3}.
+bell.no.inter.explanation=Nu a fost g\u0103sit\u0103 o clas\u0103 care este necesar\u0103 pentru ini\u0163ializarea serviciului.
+bell.no.inter.useraction=Asigura\u0163i-v\u0103 c\u0103 numele specificat \u00een declara\u0163ia de serviciu este corect. 
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.not.constructible=CWWKL0053W: Sistemul nu poate construi o instan\u0163\u0103 a clasei de implementare {0}. Aceast\u0103 clas\u0103 este o implementare a serviciului care este declarat \u00een fi\u015fierul {1} \u015fi \u00eenregistrat din biblioteca {2}.
+bell.not.constructible.explanation=Sistemul nu poate crea o instan\u0163\u0103 de implementare serviciu deoarece nu exist\u0103 acces la defini\u0163ia de clas\u0103, sau clasa nu are niciun constructor de argumente.
+bell.not.constructible.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 acces la defini\u0163ia de clas\u0103 \u015fi la constructor.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+bell.illegal.access=CWWKL0054W: Sistemul nu poate construi o instan\u0163\u0103 a clasei de implementare {0} din cauza accesului neautorizat. Aceast\u0103 clas\u0103 este o implementare a serviciului care este declarat \u00een fi\u015fierul {1} \u015fi \u00eenregistrat din biblioteca {2}.
+bell.illegal.access.explanation=Sistemul nu poate accesa declara\u0163ia de clas\u0103 sau constructorul.
+bell.illegal.access.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt definite \u015fi accesibile clasa \u015fi constructorul.
+
+# {0} - the name of the library
+bell.no.services.found=CWWKL0055W: Sistemul nu poate g\u0103si niciun serviciu \u00een urm\u0103toarea bibliotec\u0103: {0}.
+bell.no.services.found.explanation=Nu exist\u0103 niciun serviciu declarat \u00een folderul META-INF/services.
+bell.no.services.found.useraction=Asigura\u0163i-v\u0103 c\u0103 BELL (Basic Extensions using Liberty Libraries) este configurat cu biblioteca corect\u0103 care are folderul META-INF/services a\u015fteptat
+
+# {0} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {1} - the name of the library
+# {2} - the exception thrown when trying to read the file
+bell.io.error=CWWKL0056W: A ap\u0103rut o eroare la citirea fi\u015fierului {0} pentru servicii de export din biblioteca {1}. Eroarea este: {2}
+bell.io.error.explanation=Fi\u015fierul cu declara\u0163ia de serviciu nu poate fi citit.
+bell.io.error.useraction=Asigura\u0163i-v\u0103 ca fi\u015fierul se poate citi de c\u0103tre sistem.
+
+# {0} - the name of the implementation class
+# {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
+# {2} - the name of the library
+# {3} - the exception thrown when instantiating the class
+bell.error.ctor=CWWKL0057W: Instan\u0163a {0} nu a fost creat\u0103 cu succes. Aceast\u0103 clas\u0103 este o implementare a serviciului care este declarat \u00een fi\u015fierul {1} \u015fi \u00eenregistrat din biblioteca {2}. A ap\u0103rut urm\u0103toarea eroare: {3}
+bell.error.ctor.explanation=Sistemul a primit o eroare de excep\u0163ie nea\u015fteptat\u0103 la crearea instan\u0163ei. Aceast\u0103 eroare poate ap\u0103rea ca rezultat al unei excep\u0163ii de la constructorul clasei.
+bell.error.ctor.useraction=Dac\u0103 a ap\u0103rut o excep\u0163ie \u00een constructor, examina\u0163i \u015fi verifica\u0163i comportamentul constructorului clasei.
+
+bell.no.services.config=CWWKL0058W: Nu se poate g\u0103si serviciul {0} \u00een folderul META-INF/services din biblioteca {1}.
+bell.no.services.config.explanation=Nu exist\u0103 niciun serviciu declarat care s\u0103 se potriveasc\u0103 \u00een folderul META-INF/services.
+bell.no.services.config.useraction= Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.

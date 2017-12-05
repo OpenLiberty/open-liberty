@@ -29,10 +29,10 @@
     <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/persistdemodb"/>
   </dataSource>
   <library id="FATJDBCLib">
-    <fileset dir="${server.config.dir}/derby" includes="*.jar"/>
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
 
   <variable name="onError" value="FAIL"/>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby*.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 </server>

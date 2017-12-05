@@ -1,0 +1,337 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Instructions to translation will precede the line to which it applies
+#
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Example: MSG_DESCRIPTIVE_NAME_J2CA0001=J2CA0001I: This is a message.
+#
+# The prefix for this component is:
+#     J2CA (J2C Connection Manager)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# :Begin: WebSphere Quality Validation Information :Begin:
+# :End: WebSphere Quality Validation Information :End:
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: Mened\u017cer puli po\u0142\u0105cze\u0144 nie mo\u017ce przydzieli\u0107 zarz\u0105dzanego po\u0142\u0105czenia z zasobu {0}.
+NULL_MANAGED_CONNECTION_J2CA0015.explanation=Mened\u017cer puli nie mo\u017ce przydzieli\u0107 zarz\u0105dzanego po\u0142\u0105czenia. Mo\u017ce to by\u0107 spowodowane w\u0142a\u015bciwo\u015bciami powi\u0105zanymi z mened\u017cerem puli (np. by\u0107 mo\u017ce przekroczono maksymaln\u0105 liczb\u0119 po\u0142\u0105cze\u0144). Mened\u017cer puli zwr\u00f3ci\u0142 zarz\u0105dzane po\u0142\u0105czenie o warto\u015bci NULL.
+NULL_MANAGED_CONNECTION_J2CA0015.useraction=CMSG0002
+
+# --------------------------------
+XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: Dwufazowa operacja XA ({0}) zosta\u0142a wywo\u0142ana z transakcji o identyfikatorze {1}. Dany adapter zasob\u00f3w z puli {2} nie obs\u0142uguje przetwarzania dwufazowego.
+XA_OP_NOT_SUPPORTED_J2CA0016.explanation=Ten komunikat wskazuje, \u017ce podj\u0119to pr\u00f3b\u0119 u\u017cycia po\u0142\u0105czenia w kontek\u015bcie transakcji XA razem z innymi zasobami obs\u0142uguj\u0105cymi XA. Ta operacja nie jest poprawna w przypadku danego adaptera zasob\u00f3w.
+XA_OP_NOT_SUPPORTED_J2CA0016.useraction=Zmodyfikuj logik\u0119 w taki spos\u00f3b, aby u\u017cycie zasob\u00f3w zosta\u0142o rozdzielone na osobne transakcje.
+
+# --------------------------------                    
+FAILED_MANAGED_CONNECTION_J2CA0020=J2CA0020E: Mened\u017cer puli po\u0142\u0105cze\u0144 nie mo\u017ce przydzieli\u0107 zarz\u0105dzanego po\u0142\u0105czenia {0}.
+FAILED_MANAGED_CONNECTION_J2CA0020.explanation=Mened\u017cer puli utworzy\u0142 wyj\u0105tek podczas pr\u00f3by przydzielenia zarz\u0105dzanego po\u0142\u0105czenia. W tek\u015bcie dotycz\u0105cym wyj\u0105tku mog\u0105 znajdowa\u0107 si\u0119 dodatkowe informacje pomocne przy okre\u015blaniu problemu.
+FAILED_MANAGED_CONNECTION_J2CA0020.useraction=Je\u015bli nie podano wskaz\u00f3wek dla u\u017cytkownika, komunikat mo\u017ce by\u0107 spowodowany b\u0142\u0119dem wewn\u0119trznym, kt\u00f3ry wyst\u0105pi\u0142 podczas przetwarzania w mened\u017cerze po\u0142\u0105cze\u0144. Zbierz dane diagnostyczne i odwied\u017a serwis wsparcia IBM, aby uzyska\u0107 wi\u0119cej informacji.
+
+# --------------------------------
+FAILED_CONNECTION_J2CA0021=J2CA0021E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by pobrania po\u0142\u0105czenia z zasobu zarz\u0105dzanego po\u0142\u0105czenia {1} : {0}.
+FAILED_CONNECTION_J2CA0021.explanation=Adapter zasob\u00f3w utworzy\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania metody getConnection(). W tek\u015bcie dotycz\u0105cym wyj\u0105tku mog\u0105 znajdowa\u0107 si\u0119 dodatkowe informacje pomocne przy okre\u015blaniu problemu.
+FAILED_CONNECTION_J2CA0021.useraction=Je\u015bli nie podano wskaz\u00f3wek dla u\u017cytkownika, komunikat mo\u017ce by\u0107 spowodowany b\u0142\u0119dem wewn\u0119trznym, kt\u00f3ry wyst\u0105pi\u0142 podczas przetwarzania w mened\u017cerze po\u0142\u0105cze\u0144. Zbierz dane diagnostyczne i odwied\u017a serwis wsparcia IBM, aby uzyska\u0107 wi\u0119cej informacji.
+
+# --------------------------------
+FAILED_CONNECTION_RELEASE_J2CA0022=J2CA0022I: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wykonania operacji czyszczenia i zwolnienia zarz\u0105dzanego po\u0142\u0105czenia z zasobu {1} po zako\u0144czonej niepowodzeniem pr\u00f3bie wywo\u0142ania metody getConnection z zarz\u0105dzanego po\u0142\u0105czenia {0}. Wychwycono drugi b\u0142\u0105d, a pierwotny b\u0142\u0105d zosta\u0142 ponownie zg\u0142oszony.
+FAILED_CONNECTION_RELEASE_J2CA0022.explanation=Wyst\u0105pi\u0142 problem podczas pr\u00f3by wyczyszczenia rekord\u00f3w po zako\u0144czonej niepowodzeniem pr\u00f3bie wywo\u0142ania metody getConnection. To jest komunikat informacyjny i powinien on wyst\u0119powa\u0107 razem z innymi komunikatami, kt\u00f3re umo\u017cliwi\u0105 poprawne okre\u015blenie problemu.
+FAILED_CONNECTION_RELEASE_J2CA0022.useraction=Wyja\u015bnienia i proponowane odpowiedzi u\u017cytkownika podano w innych pokrewnych komunikatach.
+
+# --------------------------------
+XA_OPERATION_NOT_SUPPORTED_J2CA0023=J2CA0023E: Wywo\u0142ano dwufazow\u0105 operacj\u0119 XA {0}. Dany adapter zasob\u00f3w ze \u017ar\u00f3d\u0142a danych {1} nie obs\u0142uguje przetwarzania dwufazowego.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.explanation=Podj\u0119to pr\u00f3b\u0119 wywo\u0142ania operacji XA dla adaptera zasob\u00f3w, kt\u00f3ry obs\u0142uguje tylko transakcje lokalne. Adapter zasob\u00f3w obs\u0142uguj\u0105cy transakcje lokalne m\u00f3g\u0142 zosta\u0107 w\u0142\u0105czony do kontekstu transakcji XA, razem z innymi zasobami obs\u0142uguj\u0105cymi XA.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.useraction=Zmodyfikuj logik\u0119 biznesow\u0105 w taki spos\u00f3b, aby u\u017cycie zasob\u00f3w zosta\u0142o rozdzielone na osobne transakcje.
+
+# --------------------------------
+XA_END_EXCP_J2CA0024=J2CA0024E: Metoda {0} (w obr\u0119bie ga\u0142\u0119zi transakcji o identyfikatorze {1} w puli zasob\u00f3w {4}) wychwyci\u0142a wyj\u0105tek {2} i zg\u0142osi\u0142a wyj\u0105tek {3}.
+XA_END_EXCP_J2CA0024.explanation=Wyst\u0105pi\u0142 problem podczas przetwarzania danej metody. Interfejs definiuje, jakie konkretne wyj\u0105tki mog\u0105 by\u0107 tworzone, wi\u0119c wychwycony wyj\u0105tek zosta\u0142 odwzorowany na wyj\u0105tek, kt\u00f3ry zosta\u0142 utworzony. Przetwarzanie w ramach tej metody nie zako\u0144czy\u0142o si\u0119 pomy\u015blnie.
+XA_END_EXCP_J2CA0024.useraction=Sprawd\u017a, czy logika biznesowa aplikacji prawid\u0142owo wychwytuje utworzony wyj\u0105tek i zawiera potrzebn\u0105 logik\u0119 odtwarzania. Przejrzyj tak\u017ce pliki dziennika w celu znalezienia informacji o wcze\u015bniejszych b\u0142\u0119dach, kt\u00f3re spowodowa\u0142y utworzenie wyj\u0105tku.
+
+# --------------------------------
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026=J2CA0026E: Metoda {0} wychwyci\u0142a wyj\u0105tek {1} podczas pr\u00f3by zarejestrowania adaptera zasob\u00f3w z mened\u017cerem synchronizacji dla bie\u017c\u0105cej transakcji i zg\u0142osi\u0142a wyj\u0105tek {2}.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.explanation=Wyst\u0105pi\u0142 problem podczas przetwarzania danej metody. Interfejs definiuje, jakie konkretne wyj\u0105tki mog\u0105 by\u0107 tworzone, wi\u0119c wychwycony wyj\u0105tek zosta\u0142 odwzorowany na wyj\u0105tek, kt\u00f3ry zosta\u0142 utworzony. Przetwarzanie w ramach tej metody nie zako\u0144czy\u0142o si\u0119 pomy\u015blnie.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.useraction=Sprawd\u017a, czy logika biznesowa aplikacji prawid\u0142owo wychwytuje utworzony wyj\u0105tek i zawiera potrzebn\u0105 logik\u0119 odtwarzania. Przejrzyj tak\u017ce pliki dziennika w celu znalezienia informacji o wcze\u015bniejszych b\u0142\u0119dach, kt\u00f3re spowodowa\u0142y utworzenie wyj\u0105tku.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027=J2CA0027E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania metody {0} dla adaptera zasob\u00f3w XA ze \u017ar\u00f3d\u0142a danych {3} w ramach transakcji o identyfikatorze {1} : {2}.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.explanation=Wyst\u0105pi\u0142 problem podczas przetwarzania danej metody. Przetwarzanie w ramach tej metody nie zako\u0144czy\u0142o si\u0119 pomy\u015blnie.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.useraction=Sprawd\u017a, czy logika biznesowa aplikacji prawid\u0142owo wychwytuje utworzony wyj\u0105tek i zawiera potrzebn\u0105 logik\u0119 odtwarzania. Przejrzyj tak\u017ce pliki dziennika w celu znalezienia informacji o wcze\u015bniejszych b\u0142\u0119dach, kt\u00f3re spowodowa\u0142y utworzenie wyj\u0105tku.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028=J2CA0028E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania metody {0} dla adaptera zasob\u00f3w XA ze \u017ar\u00f3d\u0142a danych {2} : {1}.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.explanation=Wyst\u0105pi\u0142 problem podczas przetwarzania danej metody. Przetwarzanie w ramach tej metody nie zako\u0144czy\u0142o si\u0119 pomy\u015blnie.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.useraction=Sprawd\u017a, czy logika biznesowa aplikacji prawid\u0142owo wychwytuje utworzony wyj\u0105tek i zawiera potrzebn\u0105 logik\u0119 odtwarzania. Przejrzyj tak\u017ce pliki dziennika w celu znalezienia informacji o wcze\u015bniejszych b\u0142\u0119dach, kt\u00f3re spowodowa\u0142y utworzenie wyj\u0105tku.
+
+# --------------------------------
+ENLIST_RESOURCE_EXCP_J2CA0030=J2CA0030E: Metoda {0} wychwyci\u0142a wyj\u0105tek {1} podczas pr\u00f3by zarejestrowania zasob\u00f3w ze \u017ar\u00f3d\u0142a danych {3} przy u\u017cyciu mened\u017cera transakcji dla bie\u017c\u0105cej transakcji. Metoda zg\u0142osi\u0142a wyj\u0105tek {2}.
+ENLIST_RESOURCE_EXCP_J2CA0030.explanation=Wyst\u0105pi\u0142 problem podczas przetwarzania danej metody. Interfejs definiuje, jakie konkretne wyj\u0105tki mog\u0105 by\u0107 tworzone, wi\u0119c wychwycony wyj\u0105tek zosta\u0142 odwzorowany na wyj\u0105tek, kt\u00f3ry zosta\u0142 utworzony. Przetwarzanie w ramach tej metody nie zako\u0144czy\u0142o si\u0119 pomy\u015blnie.
+ENLIST_RESOURCE_EXCP_J2CA0030.useraction=Sprawd\u017a, czy logika biznesowa aplikacji prawid\u0142owo wychwytuje utworzony wyj\u0105tek i zawiera potrzebn\u0105 logik\u0119 odtwarzania. Przejrzyj tak\u017ce pliki dziennika w celu znalezienia informacji o wcze\u015bniejszych b\u0142\u0119dach, kt\u00f3re spowodowa\u0142y utworzenie wyj\u0105tku.
+
+# --------------------------------
+DELIST_RESOURCE_EXCP_J2CA0031=J2CA0031I: Metoda {0} wychwyci\u0142a wyj\u0105tek {1} podczas pr\u00f3by wyrejestrowania zasob\u00f3w ze \u017ar\u00f3d\u0142a danych {3} z mened\u017cera transakcji dla bie\u017c\u0105cej transakcji. Metoda zg\u0142osi\u0142a wyj\u0105tek {2}.
+DELIST_RESOURCE_EXCP_J2CA0031.explanation=Wyst\u0105pi\u0142 problem podczas pr\u00f3by wyrejestrowania zasob\u00f3w z mened\u017cera transakcji. Ten komunikat ma charakter informacyjny.
+DELIST_RESOURCE_EXCP_J2CA0031.useraction=Je\u015bli ten komunikat jest wy\u015bwietlany regularnie, zbierz informacje diagnostyczne i odwied\u017a serwis wsparcia IBM, aby uzyska\u0107 wi\u0119cej informacji.
+
+# --------------------------------
+UNEXPECTED_CONNECTION_EVENT_J2CA0034=J2CA0034E: Z adaptera zasob\u00f3w odebrano nieoczekiwane zdarzenie dotycz\u0105ce zasobu {2}. Oczekiwano zdarzenia ConnectionEvent typu {0}, a odebrano zdarzenie ConnectionEvent typu {1}.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.explanation=Jest to najprawdopodobniej b\u0142\u0105d dotycz\u0105cy okre\u015blonego adaptera zasob\u00f3w.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=Skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w.
+
+# --------------------------------
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: Nie znaleziono poprawnego kontekstu transakcji w w\u0105tku dla metody {0} z koordynatorem {1} (w przypadku u\u017cywania zasob\u00f3w ze \u017ar\u00f3d\u0142a danych {2}).
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas przetwarzania w mened\u017cerze po\u0142\u0105cze\u0144. W przypadku danej operacji jest wymagany poprawny kontekst transakcji, ale nie zosta\u0142 on znaleziony.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Po\u0142\u0105czenie nie by\u0142o dost\u0119pne podczas wywo\u0142ywania metody {0} dla zasobu {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Przekroczono limit czasu oczekiwania na po\u0142\u0105czenie. Zosta\u0142 utworzony wyj\u0105tek ConnectionWaitTimeoutException.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Skonfiguruj ponownie pul\u0119 po\u0142\u0105cze\u0144. Aby unikn\u0105\u0107 tego b\u0142\u0119du, zwi\u0119ksz maksymaln\u0105 liczb\u0119 po\u0142\u0105cze\u0144 lub wyd\u0142u\u017c czas oczekiwania na po\u0142\u0105czenie.
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: Metoda {0} wychwyci\u0142a wyj\u0105tek podczas tworzenia zarz\u0105dzanego po\u0142\u0105czenia dla zasobu {3}. Metoda zg\u0142osi\u0142a wyj\u0105tek {2}. Pierwotny wyj\u0105tek: {1}
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia zarz\u0105dzanego po\u0142\u0105czenia. Problem ten mo\u017cna zwykle rozwi\u0105za\u0107, przegl\u0105daj\u0105c komunikaty o b\u0142\u0119dach dotycz\u0105ce adaptera zasob\u00f3w.
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=CMSG0002
+
+# --------------------------------
+HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: Zosta\u0142 osi\u0105gni\u0119ty koniec zasi\u0119gu jednostki pracy, ale mimo to uchwyt po\u0142\u0105czenia nie jest zamkni\u0119ty. Uchwyty zostan\u0105 zamkni\u0119te przez mened\u017cera po\u0142\u0105cze\u0144.
+HANDLE_NOT_CLOSED_J2CA0055.explanation=Zosta\u0142 osi\u0105gni\u0119ty koniec zasi\u0119gu jednej z jednostek pracy (sesji aktywno\u015bci, transakcji lub transakcji lokalnej), a uchwyty po\u0142\u0105cze\u0144 nie zosta\u0142y zamkni\u0119te. W przypadku tej konfiguracji lub wersji nie jest obs\u0142ugiwane buforowanie uchwyt\u00f3w poza bie\u017c\u0105cym zasi\u0119giem jednostki pracy.
+HANDLE_NOT_CLOSED_J2CA0055.useraction=Sprawd\u017a aplikacj\u0119 i upewnij si\u0119, \u017ce uchwyty po\u0142\u0105cze\u0144 zosta\u0142y zamkni\u0119te przed zako\u0144czeniem powi\u0105zanej jednostki pracy.
+
+# --------------------------------
+RA_CONNECTION_ERROR_J2CA0056=J2CA0056I: W przypadku zasobu {1} mened\u017cer po\u0142\u0105cze\u0144 wychwyci\u0142 krytyczny b\u0142\u0105d po\u0142\u0105czenia pochodz\u0105cy z adaptera zasob\u00f3w. Wyj\u0105tek: {0}
+RA_CONNECTION_ERROR_J2CA0056.explanation=Mened\u017cer po\u0142\u0105cze\u0144 zosta\u0142 powiadomiony przez adapter zasob\u00f3w o wyst\u0105pieniu b\u0142\u0119du po\u0142\u0105czenia. Ten komunikat informacyjny zostanie zarejestrowany, aby mo\u017cna by\u0142o zobaczy\u0107 zwr\u00f3cony wyj\u0105tek.
+RA_CONNECTION_ERROR_J2CA0056.useraction=Mened\u017cer po\u0142\u0105cze\u0144 usunie z puli po\u0142\u0105czenie, w przypadku kt\u00f3rego wyst\u0105pi\u0142o niepowodzenie, lub usunie wszystkie po\u0142\u0105czenia (w zale\u017cno\u015bci od konfiguracji). Jest to normalne zachowanie. Je\u015bli ten b\u0142\u0105d wyst\u0119puje nieoczekiwanie, dokonaj analizy wyj\u0105tku, aby okre\u015bli\u0107 mo\u017cliwe \u017ar\u00f3d\u0142o problemu.
+
+# --------------------------------
+NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: Metoda interactionPending nie mog\u0142a znale\u017a\u0107 klasy opakowuj\u0105cej transakcji.
+NULL_TRAN_WRAPPER_J2CA0057.explanation=Jest to b\u0142\u0105d wewn\u0119trzny produktu WebSphere.
+NULL_TRAN_WRAPPER_J2CA0057.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: Mened\u017cer po\u0142\u0105cze\u0144 nie mo\u017ce powi\u0105za\u0107 po\u0142\u0105czenia {0} z zarz\u0105dzanym po\u0142\u0105czeniem {1} w przypadku zasobu {3}. Odebrany wyj\u0105tek:{2}
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=Najprawdopodobniej jest to b\u0142\u0105d aplikacji. Przyk\u0142ad: Buforowane po\u0142\u0105czenie jest rejestrowane w transakcji, a nast\u0119pnie jest zamykane. Przed zako\u0144czeniem transakcji inne \u017c\u0105danie jest wysy\u0142ane do tego samego komponentu EJB, kt\u00f3ry pierwotnie otworzy\u0142 dane po\u0142\u0105czenie. Buforowany uchwyt jest nadal powi\u0105zany z pierwotn\u0105 transakcj\u0105 i nie mo\u017ce zosta\u0107 ponownie powi\u0105zany przed zatwierdzeniem tej transakcji.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=Dokonaj analizy aplikacji i upewnij si\u0119, \u017ce po zamkni\u0119ciu po\u0142\u0105cze\u0144 transakcja jest zatwierdzana tak szybko, jak to mo\u017cliwe.
+
+# --------------------------------
+FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: Wyj\u0105tek PrivilegedActionException wywo\u0142uje metod\u0119 doPrivileged: {0}
+FAILED_DOPRIVILEGED_J2CA0060.explanation=Jest to b\u0142\u0105d zabezpiecze\u0144 \u015brodowiska wykonawczego.
+FAILED_DOPRIVILEGED_J2CA0060.useraction=CMSG0002
+
+# ---------------------------------
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: Niepoprawne ustawienie {0}: {1}. Zostanie u\u017cyta nast\u0119puj\u0105ca warto\u015b\u0107 domy\u015blna: {2}.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=To jest tylko ostrze\u017cenie. Je\u015bli ten b\u0142\u0105d wyst\u0105pi jeszcze raz p\u00f3\u017aniej, komunikat ten mo\u017ce by\u0107 przydatny przy rozpoznawaniu problemu. W przeciwnym razie ostrze\u017cenie to mo\u017cna zignorowa\u0107.
+
+# ---------------------------------
+DELIST_FAILED_J2CA0073=J2CA0073E: Nie mo\u017cna wyrejestrowa\u0107 po\u0142\u0105czenia z zasobu {2} z transakcji w metodzie {0} z powodu wyst\u0105pienia wyj\u0105tku. Trwa inicjowanie operacji niszczenia po\u0142\u0105czenia. Wyj\u0105tek: {1}
+DELIST_FAILED_J2CA0073.explanation=Odebrano b\u0142\u0105d wewn\u0119trzny i mened\u017cer po\u0142\u0105cze\u0144 nie m\u00f3g\u0142 wyrejestrowa\u0107 po\u0142\u0105czenia z transakcji, z kt\u00f3r\u0105 by\u0142 zwi\u0105zany. Mened\u017cer po\u0142\u0105cze\u0144 podejmie pr\u00f3b\u0119 zniszczenia po\u0142\u0105czenia.
+DELIST_FAILED_J2CA0073.useraction=CMSG0002
+
+# ---------------------------------
+ENLIST_FAILED_J2CA0074=J2CA0074E: Nie mo\u017cna zarejestrowa\u0107 po\u0142\u0105czenia z zasobu {2} w bie\u017c\u0105cej transakcji w metodzie {0} z powodu wyst\u0105pienia wyj\u0105tku. Trwa inicjowanie operacji niszczenia po\u0142\u0105czenia. Wyj\u0105tek: {1}
+ENLIST_FAILED_J2CA0074.explanation=Odebrano b\u0142\u0105d wewn\u0119trzny i mened\u017cer po\u0142\u0105cze\u0144 nie m\u00f3g\u0142 zarejestrowa\u0107 po\u0142\u0105czenia w bie\u017c\u0105cej transakcji. Mened\u017cer po\u0142\u0105cze\u0144 podejmie pr\u00f3b\u0119 zniszczenia po\u0142\u0105czenia.
+ENLIST_FAILED_J2CA0074.useraction=CMSG0002
+
+# ---------------------------------
+MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: Podczas przetwarzania metody {0} powinna istnie\u0107 aktywna transakcja.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=Aby by\u0142o mo\u017cliwe wykonanie bie\u017c\u0105cej metody, podczas normalnego przetwarzania zwi\u0105zanego z zarz\u0105dzaniem po\u0142\u0105czeniami wymagana jest obecno\u015b\u0107 transakcji.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.useraction=Uruchom wszystkie transakcje wymagane do pomy\u015blnego u\u017cycia po\u0142\u0105czenia.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077=J2CA0077E: Wychwycono wyj\u0105tek podczas pr\u00f3by uzyskania interfejsu javax.resource.cci.LocalTransaction z obiektu ManagedConnection dla zasobu {1}. Wyj\u0105tek: {0}
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.explanation=Mened\u017cer po\u0142\u0105cze\u0144 nie m\u00f3g\u0142 uzyska\u0107 obiektu LocalTransaction z adaptera zasob\u00f3w. Ten komunikat wskazuje na problem zwi\u0105zany z adapterem zasob\u00f3w.
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.useraction=Przejrzyj inne komunikaty o b\u0142\u0119dach zwi\u0105zanych z adapterem zasob\u00f3w w celu zidentyfikowania tego problemu.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_XAResource_J2CA0078=J2CA0078E: Wychwycono wyj\u0105tek podczas pr\u00f3by uzyskania interfejsu javax.transaction.xa.XAResource z obiektu ManagedConnection w \u017ar\u00f3dle danych {1}. Wyj\u0105tek: {0}
+FAILED_TO_OBTAIN_XAResource_J2CA0078.explanation=Mened\u017cer po\u0142\u0105cze\u0144 nie m\u00f3g\u0142 uzyska\u0107 obiektu XAResource z adaptera zasob\u00f3w. Ten komunikat wskazuje na problem zwi\u0105zany z adapterem zasob\u00f3w.
+FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=Przejrzyj inne komunikaty o b\u0142\u0119dach zwi\u0105zanych z adapterem zasob\u00f3w w celu zidentyfikowania tego problemu.
+
+# ---------------------------------
+ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: Metoda {0} wykry\u0142a niedozwolony stan wewn\u0119trzny i zg\u0142osi\u0142a wyj\u0105tek IllegalStateException. Wyj\u0105tek: {1}
+ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=Mened\u017cer po\u0142\u0105cze\u0144 wykry\u0142 b\u0142\u0105d wewn\u0119trzny.
+ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=CMSG0002
+
+# ---------------------------------
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: Metoda {0} wykry\u0142a niedozwolony argument wewn\u0119trzny i zg\u0142osi\u0142a wyj\u0105tek IllegalArgumentException. Wyj\u0105tek: {1}
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=Mened\u017cer po\u0142\u0105cze\u0144 wykry\u0142 b\u0142\u0105d wewn\u0119trzny.
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=CMSG0002
+
+# ---------------------------------
+MCERROR_J2CA0081=J2CA0081E: Nie powiod\u0142a si\u0119 pr\u00f3ba wykonania metody {0} podczas wykonywania metody {1} w obiekcie ManagedConnection {2} z zasobu {4}. Wychwycony wyj\u0105tek: {3}
+MCERROR_J2CA0081.explanation=Mened\u017cer po\u0142\u0105cze\u0144 wychwyci\u0142 wyj\u0105tek podczas pr\u00f3by wykonania operacji wzgl\u0119dem obiektu ManagedConnection.
+MCERROR_J2CA0081.useraction=Poniewa\u017c obiekt ManagedConnection jest cz\u0119\u015bci\u0105 adaptera zasob\u00f3w, wyszukaj komunikaty dotycz\u0105ce adaptera zasob\u00f3w w celu dok\u0142adniejszego zlokalizowania problemu.
+
+# --------------------------------
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086=J2CA0086I: Wiele otwartych uchwyt\u00f3w po\u0142\u0105cze\u0144 nie mo\u017ce wsp\u00f3\u0142u\u017cytkowa\u0107 po\u0142\u0105czenia fizycznego z {1} w ramach ograniczenia zawierania si\u0119 transakcji lokalnych, dlatego dla ka\u017cdego uchwytu po\u0142\u0105czenia b\u0119dzie u\u017cywane inne po\u0142\u0105czenie fizyczne. W takiej sytuacji nale\u017cy si\u0119 upewni\u0107, \u017ce po zamkni\u0119ciu uchwytu po\u0142\u0105czenia \u017cadne dzia\u0142ania transakcyjne nie pozostaj\u0105 uruchomione, poniewa\u017c je\u015bli dodatkowe uchwyty po\u0142\u0105cze\u0144 wsp\u00f3\u0142u\u017cytkowalnych zostan\u0105 p\u00f3\u017aniej za\u017c\u0105dane w ramach ograniczenia zawierania si\u0119 transakcji lokalnych, po\u0142\u0105czenie fizyczne, z kt\u00f3rym zostan\u0105 powi\u0105zane, b\u0119dzie nieprzewidywalne.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.explanation=Wiele otwartych uchwyt\u00f3w po\u0142\u0105cze\u0144 mo\u017ce wsp\u00f3\u0142u\u017cytkowa\u0107 tylko jedno po\u0142\u0105czenie fizyczne w zasi\u0119gu transakcji globalnej. Je\u015bli w ramach ograniczenia zawierania si\u0119 transakcji lokalnych otwartych jest wiele uchwyt\u00f3w po\u0142\u0105cze\u0144, ka\u017cdy uchwyt u\u017cywa innego po\u0142\u0105czenia fizycznego. Wyst\u0119powanie w tym samym czasie wielu otwartych uchwyt\u00f3w po\u0142\u0105cze\u0144 wsp\u00f3\u0142u\u017cytkowalnych w ramach ograniczenia zawierania si\u0119 transakcji lokalnych mo\u017ce zwi\u0119kszy\u0107 wymagania dotycz\u0105ce maksymalnej liczby po\u0142\u0105cze\u0144 w puli po\u0142\u0105cze\u0144 i mo\u017ce znacz\u0105co zwi\u0119kszy\u0107 z\u0142o\u017cono\u015b\u0107 u\u017cycia uchwytu po\u0142\u0105czenia w odniesieniu do transakcji lokalnych dla aplikacji, kt\u00f3re s\u0105 zgodne z tym wzorcem.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.useraction=Upewnij si\u0119, \u017ce wielko\u015b\u0107 puli po\u0142\u0105cze\u0144 jest ustawiana w taki spos\u00f3b, \u017ce ka\u017cdy w\u0105tek mo\u017ce wymaga\u0107 wielu po\u0142\u0105cze\u0144 fizycznych, oraz przejrzyj kod aplikacji, aby sprawdzi\u0107, czy ten wzorzec u\u017cycia jest po\u017c\u0105dany i czy okre\u015blony jest oczekiwany zasi\u0119g wsp\u00f3\u0142u\u017cytkowania.
+
+# --------------------------------
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087=J2CA0087E: Mened\u017cer transakcji nie m\u00f3g\u0142 zarejestrowa\u0107 zasobu {0} ze \u017ar\u00f3d\u0142a danych {1}.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.explanation=Ten komunikat wskazuje na problem podczas rejestrowania w transakcji. By\u0107 mo\u017ce zas\u00f3b zosta\u0142 ju\u017c zarejestrowany w transakcji lub stan transakcji by\u0142 niepoprawny.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=Sprawd\u017a, czy logika biznesowa aplikacji prawid\u0142owo wychwytuje utworzony wyj\u0105tek i zawiera potrzebn\u0105 logik\u0119 odtwarzania. Przejrzyj pliki dziennika w celu znalezienie informacji o poprzednich b\u0142\u0119dach (przede wszystkim o b\u0142\u0119dach transakcji), kt\u00f3re mog\u0142y spowodowa\u0107 wyst\u0105pienie wyj\u0105tku.
+
+# --------------------------------
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: Obiekt ManagedConnection, kt\u00f3ry jest niszczony w przypadku zasobu {1}, znajduje si\u0119 w niepoprawnym stanie {0}. Przetwarzanie b\u0119dzie kontynuowane.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=CMSG0002
+                     
+# ---------------------------------
+INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: W w\u0105tku funkcji czyszczenia pami\u0119ci wyst\u0105pi\u0142 wyj\u0105tek InterruptedException.
+INTERUPTED_EXCEPTION_J2CA0091.explanation=Wyst\u0105pi\u0142 wyj\u0105tek InterruptedException w w\u0105tku czyszczenia pami\u0119ci. Przetwarzanie J2C b\u0119dzie kontynuowane, ale nieu\u017cywane i stare po\u0142\u0105czenia nie zostan\u0105 oczyszczone.
+INTERUPTED_EXCEPTION_J2CA0091.useraction=CMSG0002
+
+# 0096 deleted
+
+# --------------------------------
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: Wyst\u0105pi\u0142 wyj\u0105tek ClassCastException podczas pr\u00f3by rzutowania metody event.getSource na obiekt ManagedConnection: {0}
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=\u0179r\u00f3d\u0142em zdarzenia wyzwolonego w obiekcie nas\u0142uchiwania nie by\u0142 obiekt typu ManagedConnection
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=CMSG0002
+
+# --------------------------------
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: Nie dodano zduplikowanej w\u0142a\u015bciwo\u015bci konektora. {0}
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=Podj\u0119to pr\u00f3b\u0119 dodania zduplikowanej w\u0142a\u015bciwo\u015bci konektora. W\u0142a\u015bciwo\u015b\u0107 nie zosta\u0142a dodana.
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=Za pomoc\u0105 niestandardowej w\u0142a\u015bciwo\u015bci fabryki po\u0142\u0105cze\u0144 lub \u017ar\u00f3d\u0142a danych okre\u015blono nazw\u0119 u\u017cytkownika lub has\u0142o, ale okre\u015blono tak\u017ce alias uwierzytelniania zarz\u0105dzanego przez komponent. Alias ma wy\u017cszy priorytet ni\u017c w\u0142a\u015bciwo\u015b\u0107 niestandardowa. Ten b\u0142\u0105d mo\u017ce te\u017c by\u0107 spowodowany r\u0119czn\u0105 modyfikacj\u0105 dokumentu resources.xml.
+
+# ---------------------------------
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: Limit czasu oczekiwania na po\u0142\u0105czenie o warto\u015bci 0 zosta\u0142 okre\u015blony dla {0}. \u017b\u0105danie b\u0119dzie oczekiwa\u0107 tak d\u0142ugo a\u017c b\u0119dzie mo\u017cliwe uzyskanie po\u0142\u0105czenia.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=Warto\u015b\u0107 0 parametru ConnectionWaitTimeout oznacza nieograniczony czas oczekiwania. W\u0105tek ten b\u0119dzie u\u015bpiony, chyba \u017ce po\u0142\u0105czenie zostanie zwolnione.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# --------------------------------
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: W obiekcie ConnectionEvent CONNECTION_CLOSED {0} znaleziono obiekt ConnectionHandle o warto\u015bci NULL
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=Obiekt ConnectionEvent CONNECTION_CLOSED jest wymagany przez architektur\u0119 konektora Java EE w celu przechowywania poprawnego uchwytu po\u0142\u0105czenia powi\u0105zanego z instancj\u0105 obiektu ManagedConnection.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=Adapter zasob\u00f3w musi u\u017cywa\u0107 metody ConnectionEvent.setConnectionHandle() w celu udost\u0119pniania uchwytu po\u0142\u0105czenia w obiekcie ConnectionEvent CONNECTION_CLOSED.
+
+# ---------------------------------
+SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: B\u0142\u0105d wewn\u0119trzny. Podj\u0119to pr\u00f3b\u0119 ustawienia w\u0142a\u015bciwo\u015bci ustawianej tylko raz, kt\u00f3r\u0105 ju\u017c ustawiono. Nazwa w\u0142a\u015bciwo\u015bci: {0}
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=CMSG0002
+
+# 0165 deleted
+
+# 0166 deleted
+
+# 0167 deleted
+
+# --------------------------------
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169=J2CA0169E: Nie mo\u017cna zmieni\u0107 w\u0142a\u015bciwo\u015bci {0} \u017ar\u00f3d\u0142a danych lub fabryki po\u0142\u0105cze\u0144 {1}.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.explanation=Mened\u017cer po\u0142\u0105cze\u0144 nie mo\u017ce obecnie dokona\u0107 \u017c\u0105danej zmiany w zmiennej konfiguracyjnej.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.useraction=Spr\u00f3buj ponownie zmieni\u0107 zmienn\u0105 konfiguracyjn\u0105.
+
+# 0200 deleted
+
+# ---------------------------------
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207=J2CA0207W: Artefakt adaptera zasob\u00f3w ma w\u0142a\u015bciwo\u015b\u0107 {0}, kt\u00f3rej warto\u015b\u0107 {2} jest niekompatybilna z jej typem {1}.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.explanation=Fabryka po\u0142\u0105cze\u0144, specyfikacja aktywowania lub obiekt administracyjny ma niepoprawn\u0105 w\u0142a\u015bciwo\u015b\u0107 zasobu.  Warto\u015b\u0107 pozostanie nieustawiona.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.useraction=Popraw w\u0142a\u015bciwo\u015b\u0107 zasobu, aby jej warto\u015b\u0107 by\u0142a sp\u00f3jna z jej typem danych.
+
+# ---------------------------------
+NO_RA_EXCEPTION_J2CA0216=J2CA0216I: W przypadku zasobu {0} mened\u017cer po\u0142\u0105cze\u0144 wychwyci\u0142 krytyczny b\u0142\u0105d po\u0142\u0105czenia pochodz\u0105cy z adaptera zasob\u00f3w. Informacje mog\u0105 by\u0107 dost\u0119pne w poprzednich komunikatach lub wyj\u0105tkach.
+NO_RA_EXCEPTION_J2CA0216.explanation=Mened\u017cer po\u0142\u0105cze\u0144 zosta\u0142 powiadomiony przez adapter zasob\u00f3w o wyst\u0105pieniu nienaprawialnego b\u0142\u0119du po\u0142\u0105czenia. Z adaptera zasob\u00f3w nie odebrano \u017cadnego wyj\u0105tku. 
+NO_RA_EXCEPTION_J2CA0216.useraction=Mened\u017cer po\u0142\u0105cze\u0144 usunie z puli po\u0142\u0105czenie, w przypadku kt\u00f3rego wyst\u0105pi\u0142o niepowodzenie, lub usunie wszystkie po\u0142\u0105czenia (w zale\u017cno\u015bci od konfiguracji). Jest to normalne zachowanie. Je\u015bli to dzia\u0142anie spowoduje efekty uboczne, mo\u017ce si\u0119 okaza\u0107 konieczne nawi\u0105zanie kontaktu z dostawc\u0105 adaptera zasob\u00f3w.
+
+# 0226 deleted
+
+# ---------------------------------
+# {0} Configured feature that is ignored.
+# {1} Name of the resource on which the feature is configured. 
+IGNORE_FEATURE_J2CA0240=J2CA0240I: Zignorowano niezaimplementowan\u0105 opcj\u0119 {0} dla zasobu {1}.
+IGNORE_FEATURE_J2CA0240.explanation=Opcja nie jest implementowana przez serwer aplikacji.
+IGNORE_FEATURE_J2CA0240.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+# ---------------------------------
+# {0}    The field that is missing during de-serialization
+# {1}    The classname of the object with the missing field
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278=J2CA0278W: Nie mo\u017cna przekszta\u0142ci\u0107 z postaci szeregowej pola {0} w klasie {1}. Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.explanation=Nie znaleziono oczekiwanego pola podczas przekszta\u0142cania obiektu z postaci szeregowej. Najprawdopodobniej jest to spowodowane tym, \u017ce obiekt jest przekszta\u0142cany z postaci szeregowej przez klas\u0119, kt\u00f3rej wersja jest inna ni\u017c wersja klasy u\u017cyta w celu przekszta\u0142cenia obiektu do postaci szeregowej.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.useraction=Ten komunikat ostrzegawczy wskazuje na potencjalny problem. Jednak nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika, chyba \u017ce wyst\u0105pi\u0105 kolejne b\u0142\u0119dy.
+
+# --------------------------------
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285=J2CA0285W: Metoda {0} wychwyci\u0142a wyj\u0105tek podczas sprawdzania poprawno\u015bci zarz\u0105dzanych po\u0142\u0105cze\u0144 dla zasobu {3}. Zg\u0142oszony wyj\u0105tek: {2}. Pierwotny wyj\u0105tek: {1}
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.explanation=Wywo\u0142anie metody getInvalidConnections() zwr\u00f3ci\u0142o wyj\u0105tek zasobu.
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=Odwied\u017a serwis WWW wsparcia, aby skontaktowa\u0107 si\u0119 z dostawc\u0105 adaptera zasob\u00f3w.
+
+# 0286 deleted
+                                            
+# ---------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: Obiekt ManagedConnection z zasobu {0} nie mo\u017ce zosta\u0107 zarejestrowany w bie\u017c\u0105cej transakcji.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas przetwarzania metody lazyEnlist().
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: Metoda lazyEnlist() mened\u017cera po\u0142\u0105cze\u0144 wymaga parametru ManagedConnection z warto\u015bci\u0105 inn\u0105 ni\u017c NULL w przypadku zasobu {0}.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=Wskazuje to najprawdopodobniej na b\u0142\u0105d implementacji adaptera zasob\u00f3w. Adapter zasob\u00f3w wywo\u0142a\u0142 metod\u0119 lazyEnlist() z warto\u015bci\u0105 NULL parametru ManagedConnection.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.useraction=Odwied\u017a serwis WWW wsparcia, aby skontaktowa\u0107 si\u0119 z dostawc\u0105 adaptera zasob\u00f3w. Kod adaptera zasob\u00f3w przekaza\u0142 warto\u015b\u0107 NULL do metody lazyEnlist(). Wi\u0119cej informacji na temat optymalizacji operacji op\u00f3\u017anionego rejestrowania transakcji mo\u017cna znale\u017a\u0107 w sekcji 7.14.2 specyfikacji JCA 1.5.
+
+# --------------------------------
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295=J2CA0295E: Mened\u017cer po\u0142\u0105cze\u0144 wykry\u0142 pr\u00f3b\u0119 uruchomienia transakcji lokalnej w obr\u0119bie transakcji globalnej u\u017cytkownika. Sprawd\u017a, czy kod aplikacji jest poprawny.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.explanation=Wskazuje to najprawdopodobniej na b\u0142\u0105d aplikacji. Aplikacja nie powinna uruchamia\u0107 transakcji lokalnych, je\u015bli dzia\u0142a w obr\u0119bie transakcji globalnej.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.useraction=Sprawd\u017a kod aplikacji, aby znale\u017a\u0107 miejsce, w kt\u00f3rym jest uruchamiana transakcja lokalna w obr\u0119bie transakcji globalnej. Wyszukaj ten komunikat w katalogu FFDC, aby znale\u017a\u0107 dane \u015bledzenia stosu, kt\u00f3re mog\u0105 zawiera\u0107 numery wierszy rozpatrywanego kodu. Dzi\u0119ki temu b\u0119dzie mo\u017cna zaw\u0119zi\u0107 zakres wyszukiwania. Je\u015bli nie ma tam informacji o numerach wierszy, poniewa\u017c na przyk\u0142ad kod zosta\u0142 skompilowany w trybie JIT lub te informacje nie mog\u0105 by\u0107 okre\u015blone z innych przyczyn, to w celu znalezienia miejsca wyst\u0105pienia problemu mo\u017cna instrumentowa\u0107 kod przy u\u017cyciu instrukcji System.out.println(). Je\u015bli nie mo\u017cna znale\u017a\u0107 problemu, odwied\u017a serwis WWW wsparcia IBM.
+                                   
+# ---------------------------------
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308=J2CA0308W: Nie dodano zduplikowanej w\u0142a\u015bciwo\u015bci konektora. {0}.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.explanation=Podj\u0119to pr\u00f3b\u0119 dodania zduplikowanej w\u0142a\u015bciwo\u015bci konektora. W\u0142a\u015bciwo\u015b\u0107 nie zosta\u0142a dodana.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=Podano niestandardow\u0105 w\u0142a\u015bciwo\u015b\u0107 fabryki po\u0142\u0105cze\u0144 lub \u017ar\u00f3d\u0142a danych, ale taka w\u0142a\u015bciwo\u015b\u0107 ju\u017c istnia\u0142a. Mo\u017ce to by\u0107 spowodowane r\u0119czn\u0105 modyfikacj\u0105 dokumentu resources.xml.
+
+# 0680 deleted
+
+# 0681 deleted
+
+# 0682 deleted
+
+# 0683 deleted
+
+# 0687 deleted
+
+# 0689 deleted
+
+# ---------------------------------
+POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: Nie mo\u017cna znale\u017a\u0107 g\u0142\u00f3wnego mened\u017cera puli podczas prze\u0142\u0105czania awaryjnego dla zasobu o nazwie JNDI {0}.
+POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d podczas prze\u0142\u0105czania awaryjnego.
+POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
+
+# ---------------------------------
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Z wolnej puli pobrano niepoprawny obiekt MCWrapper {0} dla zasobu {1}.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba zarezerwowania obiektu MCWrapper.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
+
+# ---------------------------------
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Nie powiod\u0142a si\u0119 operacja usuni\u0119cia obiektu MCWrapper {0} ze wsp\u00f3\u0142u\u017cytkowanej puli.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Pr\u00f3ba usuni\u0119cia obiektu MCWrapper nie powiod\u0142a si\u0119, co spowodowa\u0142o potencjalny problem we wsp\u00f3\u0142u\u017cytkowanej puli.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

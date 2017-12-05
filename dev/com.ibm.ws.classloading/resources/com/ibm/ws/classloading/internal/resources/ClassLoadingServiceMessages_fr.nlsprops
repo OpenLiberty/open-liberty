@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: Le syst\u00e8me n''a pas trouv\u00e9 la classe [{0}] en tant que ressource [{1}].
+cls.class.file.not.found.explanation=Une tentative de chargement du fichier de classe indiqu\u00e9 comme ressource d'une application a \u00e9chou\u00e9.
+cls.class.file.not.found.useraction=Assurez-vous que cette classe est disponible pour l'application.
+
+cls.class.file.not.readable=CWWKL0002E: Le syst\u00e8me n''a pas pu lire la classe [{0}] en tant que ressource [{1}].
+cls.class.file.not.readable.explanation=Une tentative de lecture du fichier de classe indiqu\u00e9 comme ressource d'une application a \u00e9chou\u00e9.
+cls.class.file.not.readable.useraction=V\u00e9rifiez l'int\u00e9grit\u00e9 du syst\u00e8me de fichiers. Si le probl\u00e8me persiste, reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support/ (en anglais).
+
+cls.gateway.not.resolvable=CWWKL0003E: Le syst\u00e8me n''a pas pu cr\u00e9er de chargeur de classe pour l''application [{0}], version [{1}].
+cls.gateway.not.resolvable.explanation=Le syst\u00e8me a tent\u00e9 de cr\u00e9er un chargeur de classe d'application mais l'application ne fournit pas les packages Java requis. 
+cls.gateway.not.resolvable.useraction=V\u00e9rifiez que le serveur est configur\u00e9 avec toutes les fonctions n\u00e9cessaires au support de cette application.
+
+cls.library.id.missing=CWWKL0004E: Le syst\u00e8me n'a pas pu cr\u00e9er une biblioth\u00e8que partag\u00e9e.
+cls.library.id.missing.explanation=Pour d\u00e9finir une biblioth\u00e8que partag\u00e9e dans la configuration du serveur, vous devez sp\u00e9cifier un attribut ID. 
+cls.library.id.missing.useraction=Editez la configuration du serveur et ajoutez un attribut ID \u00e0 l'\u00e9l\u00e9ment library.
+
+cls.library.missing=CWWKL0005E: Le syst\u00e8me n''a pas trouv\u00e9 de biblioth\u00e8que partag\u00e9e ayant l''ID [{0}].
+cls.library.missing.explanation=Pour faire r\u00e9f\u00e9rence \u00e0 une biblioth\u00e8que partag\u00e9e dans la configuration du serveur, vous devez sp\u00e9cifier son ID. 
+cls.library.missing.useraction=Editez la configuration du serveur et v\u00e9rifiez que l'ID de la biblioth\u00e8que r\u00e9f\u00e9renc\u00e9e est correct et que cette biblioth\u00e8que existe bien.
+
+cls.library.id.invalid=CWWKL0006E: Une biblioth\u00e8que partag\u00e9e a un ID non valide [{0}] en raison de l''erreur [{1}] 
+cls.library.id.invalid.explanation=Pour sp\u00e9cifier l'ID d'une biblioth\u00e8que partag\u00e9e dans la configuration du serveur, vous devez ob\u00e9ir aux conventions de d\u00e9nomination des attributs.
+cls.library.id.invalid.useraction=Editez la configuration du serveur et modifiez l'attribut ID de l'\u00e9l\u00e9ment library.
+
+cls.fileset.missing=CWWKL0007E: La biblioth\u00e8que partag\u00e9e [{0}] r\u00e9f\u00e9rence un ensemble de fichiers [{1}] qui n''existe pas.
+cls.fileset.missing.explanation=Pour faire r\u00e9f\u00e9rence \u00e0 un ensemble de fichiers depuis une biblioth\u00e8que partag\u00e9e dans la configuration du serveur, vous devez sp\u00e9cifier son ID et veillez \u00e0 ce que cet ensemble de fichiers existe bien.
+cls.fileset.missing.useraction=Examinez la configuration du serveur et v\u00e9rifiez que l'ensemble de fichiers r\u00e9f\u00e9renc\u00e9 dans l'\u00e9l\u00e9ment library existe bien.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: L''application [{0}] est incompatible avec le chargeur de classe commun pour la biblioth\u00e8que [{2}] car leurs configurations de visibilit\u00e9 d''API sont h\u00e9t\u00e9rog\u00e8nes. La biblioth\u00e8que [{2}] est configur\u00e9e avec [{3}] et l''application [{0}] est configur\u00e9e avec [{1}].
+cls.class.space.conflict.explanation=Une application r\u00e9f\u00e9rence une biblioth\u00e8que via un chargeur de classe commun et doit donc partager les instances de classe. L'application et la biblioth\u00e8que ont toutefois \u00e9t\u00e9 configur\u00e9es pour voir diff\u00e9rents ensembles d'API. Elles doivent \u00eatre configur\u00e9es pour voir exactement le m\u00eame ensemble d'API afin de garantir un comportement d'application coh\u00e9rent.
+cls.class.space.conflict.useraction=Mettez \u00e0 jour la configuration afin que l'application et la biblioth\u00e8que puissent voir le m\u00eame ensemble d'API ou configurez l'application afin qu'elle utilise la biblioth\u00e8que de mani\u00e8re priv\u00e9e.
+
+cls.api.type.unknown=CWWKL0009W: L''application [{0}] est configur\u00e9e pour utiliser un type d''API inconnu de [{1}], qui sera ignor\u00e9.  Les types valides sont les suivants : [{2}].
+cls.api.type.unknown.explanation=Il est possible de configurer les applications en d\u00e9finissant les types d'API auxquels ils envisagent d'acc\u00e9der.
+cls.api.type.unknown.useraction=V\u00e9rifiez que la configuration r\u00e9pertorie uniquement les types valides.
+
+cls.classloader.missing=CWWKL0010E: Le syst\u00e8me n''a pas trouv\u00e9 le chargeur de classe ayant l''ID [{0}].
+cls.classloader.missing.explanation=Pour faire r\u00e9f\u00e9rence \u00e0 un chargeur de classe dans la configuration du serveur, vous devez sp\u00e9cifier son ID. 
+cls.classloader.missing.useraction=Examinez la configuration du serveur et v\u00e9rifiez que le chargeur de classe a \u00e9t\u00e9 d\u00e9fini et que l'ID est correct.
+
+cls.fileset.not.ready=CWWKL0011W: Le syst\u00e8me n''a pas pu extraire l''ensemble de fichiers [{0}] pour la biblioth\u00e8que partag\u00e9e [{1}].
+cls.fileset.not.ready.explanation=Une biblioth\u00e8que partag\u00e9e est utilis\u00e9e, mais l'un des ensembles de fichiers associ\u00e9s ne peut pas \u00eatre extrait \u00e0 temps.
+cls.fileset.not.ready.useraction=Recherchez et corrigez les erreurs ou avertissements associ\u00e9s \u00e0 l'ensemble de fichiers.
+
+cls.library.file.invalid=CWWKL0012W: La biblioth\u00e8que [{0}] indique un fichier ayant le nom [{1}]. Le fichier n''existe pas ou n''est pas correctement d\u00e9fini.
+cls.library.file.invalid.explanation=Pour ajouter un fichier \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez indiquer le nom complet d'un fichier existant.
+cls.library.file.invalid.useraction=Editez la configuration du serveur et modifiez l'attribut file de l'\u00e9l\u00e9ment library.
+
+cls.library.folder.invalid=CWWKL0013W: La biblioth\u00e8que [{0}] indique un dossier ayant le nom [{1}]. Ce dossier n''existe pas ou n''est pas valide.
+cls.library.folder.invalid.explanation=Pour ajouter un fichier \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez indiquer le chemin complet d'un dossier existant.
+cls.library.folder.invalid.useraction=Editez la configuration du serveur et modifiez l'attribut folder de l'\u00e9l\u00e9ment library.
+
+cls.library.file.forbidden=CWWKL0014I: Le fichier [{0}] ne peut pas \u00eatre ajout\u00e9 \u00e0 un chemin d''acc\u00e8s aux classes.
+cls.library.file.forbidden.explanation=Pour ajouter un fichier \u00e0 un chemin d'acc\u00e8s aux classes, il doit s'agir d'un conteneur de classes et de ressources valides, tel un fichier JAR.
+cls.library.file.forbidden.useraction=Editez la configuration du serveur et v\u00e9rifiez que les attributs file ou fileset r\u00e9f\u00e9rencent des conteneurs de classe et de ressource valides.
+
+cls.library.created=CWWKL0015I: La biblioth\u00e8que [{0}] ne peut pas \u00eatre utilis\u00e9e.
+cls.library.created.explanation=Une biblioth\u00e8que est devenue disponible, par exemple, apr\u00e8s le traitement de la configuration de serveur.
+cls.library.created.useraction=Aucune action de l'utilisateur n'est requise.
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: Impossible de pr\u00e9parer les fichiers JAR \u00e0 la suppression, les applications contenant des fichiers JAR ne peuvent pas \u00eatre supprim\u00e9s.
+WARN_JARS_STILL_CACHED.explanation=Le serveur n'a pas pu emp\u00eacher le verrouillage des fichiers JAR dans les applications install\u00e9es. Les fichiers JAR peuvent rester verrouill\u00e9s jusqu'\u00e0 l'arr\u00eat du serveur.
+WARN_JARS_STILL_CACHED.useraction=Pour pouvoir supprimer les fichiers JAR se trouvant dans une application install\u00e9e, le serveur doit \u00eatre arr\u00eat\u00e9.
+
+cls.library.archive=CWWKL0017W: Le fichier [{0}] ne peut pas \u00eatre ajout\u00e9 au chemin d''acc\u00e8s aux classes en raison de l''erreur [{1}].
+cls.library.archive.explanation=Seuls les fichiers archive, tels que les fichiers jar ou zip, peuvent \u00eatre ajout\u00e9s au chemin d'acc\u00e8s aux classes.
+cls.library.archive.useraction=Editez la configuration du serveur et v\u00e9rifiez que les fichiers r\u00e9f\u00e9renc\u00e9s \u00e0 partir de l'\u00e9l\u00e9ment Chargeur de classe sont des fichiers archive.
+
+cls.library.destroyed=CWWKL0018I: La biblioth\u00e8que [{0}] est indisponible.
+cls.library.destroyed.explanation=Une biblioth\u00e8que est devenue indisponible, par exemple, parce qu'elle a \u00e9t\u00e9 supprim\u00e9e de la configuration de serveur.
+cls.library.destroyed.useraction=Si la biblioth\u00e8que est toujours n\u00e9cessaire, v\u00e9rifiez qu'elle est correctement configur\u00e9e.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: Le chargeur de classe [{0}] n''a pas pu trouver le fournisseur de classe [{1}]. La recherche a \u00e9chou\u00e9 avec un message d''erreur de syntaxe [{2}].
+cls.provider.id.invalid.explanation=Un chargeur de classe a \u00e9t\u00e9 configur\u00e9 pour la d\u00e9l\u00e9gation \u00e0 un fournisseur de classe mais n'a pas pu extraire le fournisseur de classe appropri\u00e9. Le chargeur de classe fonctionnera mais ne pourra pas extraire de classes ou de ressources du fournisseur de classe sp\u00e9cifi\u00e9.
+cls.provider.id.invalid.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: Le chargeur de classe [{0}] n''a pas pu d\u00e9l\u00e9guer au fournisseur de classe [{1}].  Le fournisseur de classe a renvoy\u00e9 une valeur nulle pour le chargeur de classe. Le fournisseur de services du fournisseur de classe est [{2}].
+cls.provider.loader.null.explanation=Un chargeur de classe a \u00e9t\u00e9 configur\u00e9 pour la d\u00e9l\u00e9gation \u00e0 un fournisseur de classe mais ce dernier n'a pas fourni de chargeur de classe compatible et ne peut pas \u00eatre utilis\u00e9. Le chargeur de classe fonctionnera mais ne pourra pas extraire de classes ou de ressources du fournisseur de classe sp\u00e9cifi\u00e9.
+cls.provider.loader.null.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support, ou contactez le fournisseur de services du fournisseur de classe.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: Le chargeur de classe [{0}] n''a pas pu d\u00e9l\u00e9guer au fournisseur de classe [{1}]. Le fournisseur de classe a renvoy\u00e9 un chargeur de classe inattendu de type [{2}]. Le fournisseur de services du fournisseur de classe est [{3}].
+cls.provider.loader.unknown.explanation=Un chargeur de classe a \u00e9t\u00e9 configur\u00e9 pour la d\u00e9l\u00e9gation \u00e0 un fournisseur de classe mais ce dernier n'a pas fourni de chargeur de classe compatible et ne peut pas \u00eatre utilis\u00e9. Le chargeur de classe fonctionnera mais ne pourra pas extraire de classes ou de ressources du fournisseur de classe sp\u00e9cifi\u00e9.
+cls.provider.loader.unknown.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support, ou contactez le fournisseur de services du fournisseur de classe.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: Le chargeur de classe [{0}] est incompatible avec le fournisseur de classe [{2}] car leurs configurations de visibilit\u00e9 d''API sont h\u00e9t\u00e9rog\u00e8nes. Le chargeur de classe est configur\u00e9 avec [{1}] et le fournisseur de classe avec [{3}].
+cls.provider.class.space.conflict.explanation=Un chargeur de classe a \u00e9t\u00e9 configur\u00e9 pour la d\u00e9l\u00e9gation \u00e0 un fournisseur de classe sp\u00e9cifique et partagera les instances de classe. Toutefois ils ont peut-\u00eatre \u00e9t\u00e9 configur\u00e9s pour voir des ensembles d'API diff\u00e9rents. Le chargeur de classe qui d\u00e9l\u00e8gue et le fournisseur de classe doivent \u00eatre configur\u00e9s pour voir le m\u00eame ensemble d'API afin de garantir un comportement d'application coh\u00e9rent.
+cls.provider.class.space.conflict.useraction=Mettez \u00e0 jour la configuration afin qu'ils puissent voir le m\u00eame ensemble d'API.
+
+slf.no.cache=CWWKL0070E: La cr\u00e9ation du r\u00e9pertoire cache n'a pas abouti .
+slf.no.cache.explanation=Le syst\u00e8me n'est pas parvenu \u00e0 cr\u00e9er un dossier sur le disque.
+slf.no.cache.useraction=Assurez-vous que les autorisations d'\u00e9criture correctes ont \u00e9t\u00e9 d\u00e9finies sur l'unit\u00e9 et que l'espace est suffisant sur le disque.
+slf.no.acf=CWWKL0071E: Une valeur NULL a \u00e9t\u00e9 rencontr\u00e9e pour l'objet ArtifactContainerFactory.
+slf.no.acf.explanation=L'objet ArtifactContainerFactory ne doit pas avoir la valeur NULL lorsque le serveur est en ex\u00e9cution.
+slf.no.acf.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support, ou contactez le fournisseur de services du fournisseur de classe.
+slf.failed.delete=CWWKL0072W: Le fichier cache [{0}] ne peut pas \u00eatre supprim\u00e9. Cette situation pourrait entra\u00eener une alt\u00e9ration des archives imbriqu\u00e9es.
+slf.failed.delete.explanation=Le syst\u00e8me n'est pas parvenu \u00e0 supprimer le fichier cache. Comme le fichier existe toujours sur le syst\u00e8me, ceci pourrait entra\u00eener une alt\u00e9ration des archives imbriqu\u00e9es.
+slf.failed.delete.useraction=V\u00e9rifier que le fichier cache n'est pas \u00e0 l'\u00e9tat verrouill\u00e9, ce qui pourrait entra\u00eener l'\u00e9chec de la suppression du fichier.

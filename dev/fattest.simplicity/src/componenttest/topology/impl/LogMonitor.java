@@ -15,12 +15,12 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.NoStringFoundInLogException;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 
@@ -37,7 +37,7 @@ public class LogMonitor {
     protected static final int WAIT_INCREMENT = 300; //milliseconds
 
     /** Default wait period for log search requests **/
-    protected static final long LOG_SEARCH_TIMEOUT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.MINUTES);
+    protected static final long LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     //Used for keeping track of mark positions of log files
     protected final HashMap<String, Long> logMarks = new HashMap<String, Long>();
@@ -61,7 +61,7 @@ public class LogMonitor {
     public void resetLogMarks() {
         client.lmcClearLogOffsets();//logOffsets.clear();
         logMarks.clear();
-        Log.info(c, "resetLogOffsets", "cleared log and mark offsets");
+        Log.finer(c, "resetLogOffsets", "cleared log and mark offsets");
     }
 
     /**
@@ -89,7 +89,7 @@ public class LogMonitor {
             }
 
             Long oldMarkOffset = logMarks.put(path, offset);
-            Log.info(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset);
+            Log.finer(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset);
         }
     }
 
@@ -106,7 +106,7 @@ public class LogMonitor {
             logMarks.put(logFile, 0L);
         }
 
-        Log.info(c, "getMarkOffset", "mark offset=" + logMarks.get(logFile));
+        Log.finer(c, "getMarkOffset", "mark offset=" + logMarks.get(logFile));
         return logMarks.get(logFile);
     }
 
@@ -209,13 +209,13 @@ public class LogMonitor {
         } finally {
             long endTime = System.currentTimeMillis();
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
-            Log.info(c, "waitForStringInLogUsingMark",
-                     "Started waiting for message matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
-                                                       + " and finished at " + formatter.format(new Date(endTime)));
-            Log.info(c, "waitForStringInLogUsingMark", "First line searched: [ " + firstLine + " ]");
-            Log.info(c, "waitForStringInLogUsingMark", "Last line searched:  [ " + lastLine + " ]");
+            Log.finer(c, "waitForStringInLogUsingMark",
+                      "Started waiting for message matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
+                                                        + " and finished at " + formatter.format(new Date(endTime)));
+            Log.finer(c, "waitForStringInLogUsingMark", "First line searched: [ " + firstLine + " ]");
+            Log.finer(c, "waitForStringInLogUsingMark", "Last line searched:  [ " + lastLine + " ]");
             if (hitEof)
-                Log.info(c, "waitForStringInLogUsingMark", "Last line searching reached end of file, preceding last line was the last line of text seen.");
+                Log.finer(c, "waitForStringInLogUsingMark", "Last line searching reached end of file, preceding last line was the last line of text seen.");
         }
         return null;
     }
@@ -310,13 +310,13 @@ public class LogMonitor {
         } finally {
             long endTime = System.currentTimeMillis();
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
-            Log.info(LibertyServer.class, "waitForStringInLogUsingMark",
-                     "Started waiting for message matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
-                                                                         + " and finished at " + formatter.format(new Date(endTime)));
-            Log.info(LibertyServer.class, "waitForStringInLogUsingMark", "First line searched: [ " + firstLine + " ]");
-            Log.info(LibertyServer.class, "waitForStringInLogUsingMark", "Last line searched:  [ " + lastLine + " ]");
+            Log.finer(LibertyServer.class, "waitForStringInLogUsingMark",
+                      "Started waiting for message matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
+                                                                          + " and finished at " + formatter.format(new Date(endTime)));
+            Log.finer(LibertyServer.class, "waitForStringInLogUsingMark", "First line searched: [ " + firstLine + " ]");
+            Log.finer(LibertyServer.class, "waitForStringInLogUsingMark", "Last line searched:  [ " + lastLine + " ]");
             if (hitEof)
-                Log.info(LibertyServer.class, "waitForStringInLogUsingMark", "Last line searching reached end of file, preceding last line was the last line of text seen.");
+                Log.finer(LibertyServer.class, "waitForStringInLogUsingMark", "Last line searching reached end of file, preceding last line was the last line of text seen.");
         }
         return null;
     }
@@ -369,9 +369,9 @@ public class LogMonitor {
         } finally {
             long endTime = System.currentTimeMillis();
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
-            Log.info(LibertyServer.class, "waitForMultipleStringsInLog",
-                     "Started waiting for " + numberOfMatches + " messages matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
-                                                                         + " and finished at " + formatter.format(new Date(endTime)) + " finding " + count + " matches.");
+            Log.finer(LibertyServer.class, "waitForMultipleStringsInLog",
+                      "Started waiting for " + numberOfMatches + " messages matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
+                                                                          + " and finished at " + formatter.format(new Date(endTime)) + " finding " + count + " matches.");
         }
 
         return count;

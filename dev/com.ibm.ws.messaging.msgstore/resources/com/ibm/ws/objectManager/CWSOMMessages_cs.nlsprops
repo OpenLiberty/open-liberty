@@ -1,0 +1,454 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSOMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSOM0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSOM
+#COMPONENTNAMEFOR CWSOM ObjectManager
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} name of the log file.
+ObjectManagerState_ColdStart=CWSOM0001I: Byl proveden studen\u00fd start modulu ObjectManager s pou\u017eit\u00edm parametru logFile {0}.
+ObjectManagerState_ColdStart.explanation=Modulu ObjectManager byl p\u0159ed\u00e1n pr\u00e1zdn\u00fd soubor protokolu. Proto do\u0161lo ke studen\u00e9mu startu.
+ObjectManagerState_ColdStart.useraction= \u017d\u00e1dn\u00e1 akce, pokud jste neo\u010dek\u00e1vali tepl\u00fd start modulu ObjectManager. \
+V takov\u00e9m p\u0159\u00edpad\u011b prozkoumejte, pro\u010d byl soubor protokolu pr\u00e1zdn\u00fd.
+ 
+# {0} name of the log file.
+# {1) The LOG_FILE_TYPE used for the warm start.
+ObjectManagerState_WarmStart=CWSOM0002I: Byl proveden tepl\u00fd start modulu ObjectManager s pou\u017eit\u00edm parametru logFile {0}. Parametr logFileType: {1}.
+ObjectManagerState_WarmStart.explanation=Modulu ObjectManager byl p\u0159ed\u00e1n platn\u00fd soubor protokolu, z n\u011bj\u017e bylo mo\u017en\u00e9 prov\u00e9st restart.
+ObjectManagerState_WarmStart.useraction=\u017d\u00e1dn\u00e1 akce, pokud jste neo\u010dek\u00e1vali studen\u00fd start modulu ObjectManager. \
+V takov\u00e9m p\u0159\u00edpad\u011b prozkoumejte, pro\u010d soubor protokolu nebyl pr\u00e1zdn\u00fd.
+ 
+# {0} name of the log file.
+ObjectManagerState_Shutdown=CWSOM0003I: Modul ObjectManager s pou\u017eit\u00edm parametru logFile {0} byl ukon\u010den.
+ObjectManagerState_Shutdown.explanation=Modul ObjectManager obdr\u017eel po\u017eadavek na ukon\u010den\u00ed.
+ObjectManagerState_Shutdown.useraction=\u017d\u00e1dn\u00e1 akce, pokud jste neo\u010dek\u00e1vali ukon\u010den\u00ed modulu ObjectManager.
+
+# {0} name of the log file.
+ObjectManagerState_ShutdownFast=CWSOM0004I: Modul ObjectManager s pou\u017eit\u00edm parametru logFile {0} byl ukon\u010den bez proveden\u00ed z\u00e1v\u011bre\u010dn\u00e9ho zpracov\u00e1n\u00ed kontroln\u00edho bodu.
+ObjectManagerState_ShutdownFast.explanation=Modul ObjectManager obdr\u017eel po\u017eadavek na ukon\u010den\u00ed bez proveden\u00ed z\u00e1v\u011bre\u010dn\u00e9ho zpracov\u00e1n\u00ed kontroln\u00edho bodu nebo byl ukon\u010den z p\u0159\u00ed\u010diny p\u0159edchoz\u00ed chyby.
+ObjectManagerState_ShutdownFast.useraction=\u017d\u00e1dn\u00e1 akce, pokud jste neo\u010dek\u00e1vali ukon\u010den\u00ed modulu ObjectManager bez proveden\u00ed z\u00e1v\u011bre\u010dn\u00e9ho zpracov\u00e1n\u00ed kontroln\u00edho bodu. \
+P\u0159\u00ed\u010dinu neo\u010dek\u00e1van\u00e9ho ukon\u010den\u00ed m\u016f\u017eete zjistit v diagnostick\u00e9m v\u00fdstupu.
+
+# {0} Descriptive name of the transaction to be backed out.
+ObjectManagerState_LogTooFull=CWSOM0005W: Modul ObjectManager zjistil, \u017ee soubor protokolu je p\u0159\u00edli\u0161 pln\u00fd. Transakce {0} bude vr\u00e1cena zp\u011bt.
+ObjectManagerState_LogTooFull.explanation=Modul ObjectManager zaznamenal po dokon\u010den\u00ed zpracov\u00e1n\u00ed kontroln\u00edho bodu nedostatek m\u00edsta v souboru protokolu. Nejv\u011bt\u0161\u00ed transakce v protokolu byla proto vr\u00e1cena zp\u011bt, aby se m\u00edsto uvolnilo.
+ObjectManagerState_LogTooFull.useraction=Pokou\u0161\u00edte se prov\u00e1d\u011bt p\u0159\u00edli\u0161 mnoho transak\u010dn\u00ed pr\u00e1ce vzhledem ke konfigurovan\u00e9 velikosti souboru protokolu. \
+Zva\u017ete, zda se transakce nepokou\u0161ej\u00ed o proveden\u00ed p\u0159\u00edli\u0161 mnoha aktualizac\u00ed, zda se pokou\u0161\u00edte o aktualizaci p\u0159\u00edli\u0161 mnoha velk\u00fdch objekt\u016f, zda se nepokou\u0161\u00edte o spou\u0161t\u011bn\u00ed p\u0159\u00edli\u0161 mnoha transakc\u00ed sou\u010dasn\u011b nebo zda soubor protokolu nen\u00ed p\u0159\u00edli\u0161 mal\u00fd a nem\u011bl by b\u00fdt zv\u011bt\u0161en. 
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} Descriptive name of the transaction to be backed out.
+InternalTransaction_BackoutOrphan=CWSOM0100W: B\u011bhem operace uvol\u0148ov\u00e1n\u00ed pam\u011bti byla nalezena transakce {0}, kter\u00e1 bude vr\u00e1cena zp\u011bt.
+InternalTransaction_BackoutOrphan.explanation=Aplikace ztratila odkaz na transakci a nem\u016f\u017ee ji dokon\u010dit. \
+Modul ObjectManager proto vr\u00e1t\u00ed transakci zp\u011bt, aby uvolnil p\u0159\u00edslu\u0161n\u00e9 prost\u0159edky.
+InternalTransaction_BackoutOrphan.useraction=Aplikace ztratila odkaz na transakci. \
+Pokud do\u0161lo k nestandardn\u00edmu ukon\u010den\u00ed pr\u00e1ce aplikace, nen\u00ed t\u0159eba prov\u00e1d\u011bt dal\u0161\u00ed akci. \
+Pokud v\u0161ak aplikace ztratila odkaz, ani\u017e by byla jej\u00ed \u010dinnost ukon\u010dena nestandardn\u011b, lze v aplikaci p\u0159edpokl\u00e1dat logickou chybu.
+              
+# ----------------------------------------------------------------------------------------------------
+
+# {0} ObjectStore which could not safely be closed.
+ObjectStore_UnsafeToFlush=CWSOM0200W: Modul ObjectStore {0} se strategi\u00ed ukl\u00e1d\u00e1n\u00ed pouze p\u0159i ukon\u010den\u00ed \u010dinnosti (STRATEGY_SAVE_ONLY_ON_SHUTDOWN) nelze bezpe\u010dn\u011b zav\u0159\u00edt.
+ObjectStore_UnsafeToFlush.explanation=Existuj\u00ed-li p\u0159i ukon\u010den\u00ed \u010dinnosti aktivn\u00ed transakce: \
+Modul ObjectStore pou\u017e\u00edvaj\u00edc\u00ed strategii STRATEGY_SAVE_ONLY_ON_SHUTDOWN nelze bezpe\u010dn\u011b zav\u0159\u00edt, proto\u017ee existuje aktivn\u00ed transakce. \
+Zav\u0159en\u00ed modulu ObjectStore m\u016f\u017ee zp\u016fsobit to, \u017ee ulo\u017e\u00ed nekonzistentn\u00ed data. \
+Modul ObjectStore z\u016fstal beze zm\u011bny.
+ObjectStore_UnsafeToFlush.useraction=Zjist\u011bte, pro\u010d existuj\u00ed aktivn\u00ed transakce. \
+Mo\u017en\u00fdm d\u016fvodem je pou\u017e\u00edv\u00e1n\u00ed extern\u00edho spr\u00e1vce transakc\u00ed. \
+Pokud nelze zabr\u00e1nit existenci aktivn\u00edch transakc\u00ed p\u0159i ukon\u010dov\u00e1n\u00ed \u010dinnosti, pou\u017eijte modul ObjectStore s jinou strategi\u00ed \u00falo\u017ei\u0161t\u011b.
+
+# {0} Bytes required in the file system.
+# {1} Bytes currently used in the file system.
+# {2} Exception caught when trying to reserved the bytes.
+ObjectStore_AllocateFileSpaceFailed=CWSOM0201W: Modul ObjectStore po\u017eadoval {0} bajt\u016f \u00falo\u017en\u00e9ho prostoru, aktu\u00e1ln\u011b m\u00e1 k dispozici {1} bajt\u016f, ale p\u0159ijal v\u00fdjimku {2}.
+ObjectStore_AllocateFileSpaceFailed.explanation=V syst\u00e9mu soubor\u016f nelze p\u0159id\u011blit po\u017eadovan\u00fd prostor. \
+Pokusy o alokaci objekt\u016f v modulu ObjectStore sel\u017eou.
+ObjectStore_AllocateFileSpaceFailed.useraction=Prozkoum\u00e1n\u00edm v\u00fdjimky ur\u010dete, pro\u010d nelze v syst\u00e9mu soubor\u016f p\u0159id\u011blit prostor.
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by ObjectManagerException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The ClassNotFoundException that was caught by the ObjectManager.
+ClassNotFoundException_info=CWSOM1001E: Modul ObjectManager obdr\u017eel v\u00fdjimku ClassNotFoundException={0} (java.lang.ClassNotFoundException) p\u0159i pokusu o deserializaci objektu ManagedObject. 
+ClassNotFoundException_info.explanation=P\u0159i pokusu modulu ObjectManager o deserializaci objektu ManagedObject byla obdr\u017eena v\u00fdjimka java.lang.ClassNotFoundException.
+ClassNotFoundException_info.useraction=V\u00fdjimka obsahuje n\u00e1zev t\u0159\u00eddy, kter\u00e1 nebyla nalezena. \
+Zp\u0159\u00edstupn\u011bte t\u0159\u00eddu zavad\u011b\u010di t\u0159\u00edd modul\u016f ObjectManager, nap\u0159\u00edklad t\u00edm, \u017ee soubor t\u0159\u00eddy zahrnete do cesty ke t\u0159\u00edd\u00e1m.
+
+# {0} The Name of the new and existing ObjectStore.
+# {1} ObjectStore already using the name.
+DuplicateObjectStoreNameException_info=CWSOM1002E: Do\u0161lo k pokusu o sestaven\u00ed modulu ObjectStore pomoc\u00ed n\u00e1zvu storeName={0}(String), kter\u00fd ji\u017e byl pou\u017eit v modulu ObjectStore={1}.
+DuplicateObjectStoreNameException_info.explanation=N\u00e1zvy modul\u016f ObjectStore mus\u00ed b\u00fdt v r\u00e1mci modulu ObjectManager jedine\u010dn\u00e9.
+DuplicateObjectStoreNameException_info.useraction=Zvolte pro modul ObjectStore jin\u00fd n\u00e1zev.
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object was in.
+# {2} The descriptive name of the state.
+StateErrorException_info=CWSOM1003E: Objekt {0} se nyn\u00ed nach\u00e1z\u00ed v chybov\u00e9m stavu. Jeho p\u0159edchoz\u00ed neplatn\u00fd stav: {1} (int) {2} (String). 
+StateErrorException_info.explanation=Byla po\u017eadov\u00e1na operace pro objekt ve stavu, kter\u00fd je pro danou operaci neplatn\u00fd. \
+Operace se nezda\u0159\u00ed a objekt je p\u0159eveden do chybov\u00e9ho stavu.
+StateErrorException_info.useraction=CMSG0002 
+
+# {0} The IOException that was caught by the ObjectManager.
+PermanentIOException_info=CWSOM1004E: Modul ObjectManager zachytil v\u00fdjimku IOException {0} (java.io.IOException). 
+PermanentIOException_info.explanation=Modul ObjectManager zachytil v\u00fdjimku IOException. Operaci vstupu/v\u00fdstupu nebylo mo\u017en\u00e9 bezpe\u010dn\u011b zopakovat a byla zru\u0161ena.
+PermanentIOException_info.useraction=Chyba je pops\u00e1na ve v\u00fdjimce IOException. \
+Prozkoumejte obdr\u017eenou v\u00fdjimku IOException a odstra\u0148te jej\u00ed p\u0159\u00ed\u010dinu.
+
+# {0} The IOException that was caught by the ObjectManager.
+TemporaryIOException_info=CWSOM1005E: Modul ObjectManager zachytil v\u00fdjimku IOException {0} (java.io.IOException). 
+TemporaryIOException_info.explanation=Modul ObjectManager zachytil v\u00fdjimku IOException. Operace vstupu/v\u00fdstupu nebyla provedena, po odstran\u011bn\u00ed p\u0159\u00edslu\u0161n\u00e9 p\u0159\u00ed\u010diny probl\u00e9mu v\u0161ak lze prov\u00e9st bezpe\u010dn\u00fd pokus o jej\u00ed zopakov\u00e1n\u00ed prost\u0159ednictv\u00edm rozhran\u00ed API (Application Programming Interface) modulu ObjectManager.
+TemporaryIOException_info.useraction=Chyba je pops\u00e1na ve v\u00fdjimce IOException. \
+Prozkoumejte obdr\u017eenou v\u00fdjimku IOException a odstra\u0148te jej\u00ed p\u0159\u00ed\u010dinu. Pot\u00e9 operaci zopakujte.
+
+# {0} The ObjectStore being constructed.
+# {1} The name.
+InvalidObjectStoreNameException_info=CWSOM1006E: Modul ObjectStore={0}(ObjectStore) byl zad\u00e1n s neplatn\u00fdm n\u00e1zvem name={1}(String). 
+InvalidObjectStoreNameException_info.explanation=Modul ObjectStore byl vytvo\u0159en s pou\u017eit\u00edm neplatn\u00e9ho n\u00e1zvu. \
+Modul ObjectManager nevytvo\u0159il modul ObjectStore.
+InvalidObjectStoreNameException_info.useraction=Prozkoum\u00e1n\u00edm n\u00e1zvu ur\u010dete, pro\u010d nen\u00ed platn\u00fd.
+
+# {0} The unrecognized statistics set.
+StatisticsNameNotFoundException_info=CWSOM1007E: N\u00e1zev statistiky={0}(String) nen\u00ed rozpozn\u00e1n. 
+StatisticsNameNotFoundException_info.explanation=Aplikace po\u017eaduje sadu statistiky, kter\u00e1 nebyla rozpozn\u00e1na.
+StatisticsNameNotFoundException_info.useraction=Opravte n\u00e1zev po\u017eadovan\u00e9 sady statistiky.
+
+# {0} The ObjectStore detecting the error.
+# {1} The ManagedObject.
+InvalidObjectToStoreException_info=CWSOM1008E: Modul ObjectStore={0}(ObjectStore) byl po\u017eadov\u00e1n k ulo\u017een\u00ed neplatn\u00e9ho objektu ManagedObject={1} (ManagedObject). 
+InvalidObjectToStoreException_info.explanation=Modul ObjectStore byl po\u017e\u00e1d\u00e1n o ulo\u017een\u00ed neplatn\u00e9ho objektu ManagedObject. \
+Modul Objectstore objekt ManagedObject neulo\u017eil.
+InvalidObjectToStoreException_info.useraction=Prozkoum\u00e1n\u00edm ukl\u00e1dan\u00e9ho objektu ManagedObject zjist\u011bte, pro\u010d je neplatn\u00fd. \
+Mo\u017enou p\u0159\u00ed\u010dinou je, \u017ee jde o objekt ManagedObject s hodnotou Null.
+
+# {0} The ObjectStore reporting the sequence error.
+# {1} The non unique sequence number.
+# {2} The ManagedObject already using the sequence number.
+StoreSequenceException_info=CWSOM1009E: Modul ObjectStore={0}(ObjectStore) vygeneroval po\u0159adov\u00e9 \u010d\u00edslo sequenceNumber={1}(Long), kter\u00e9 ji\u017e bylo pou\u017eito v {2}(ManagedObject). 
+StoreSequenceException_info.explanation=V modulu ObjectStore do\u0161lo k intern\u00ed chyb\u011b.
+StoreSequenceException_info.useraction=CMSG0002
+
+# {0} ObjectStore throwing the replacementException.
+# {1} The ManagedObject being replaced.
+# {2} The Token referencing the replacement.
+# {3} The existing Token attempting the replacement.
+ReplacementException_info=CWSOM1010E: Modul ObjectStore {0} byl po\u017e\u00e1d\u00e1n o nahrazen\u00ed objektu ManagedObject {1} odkazovan\u00e9ho tokenem {2}, zat\u00edmco v \u00falo\u017ei\u0161ti ji\u017e existoval jin\u00fd token {3}. 
+ReplacementException_info.explanation=Token je identifikov\u00e1n identifik\u00e1tory objectStoreIdentifier a storedObjectIdentifier. \
+Existovat m\u016f\u017ee pouze jeden token ka\u017ed\u00e9 identity, nov\u00fd a existuj\u00edc\u00ed token v\u0161ak n\u00e1le\u017e\u00ed ke stejn\u00e9 identit\u011b.
+ReplacementException_info.useraction=CMSG0002 
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object is in.
+# {2} The descriptive name of the state.
+InvalidStateException_info=CWSOM1011E: Do\u0161lo k pokusu o proveden\u00ed neplatn\u00e9 operace pro objekt {0}, kter\u00fd byl ve stavu {1} (int) {2} (String). 
+InvalidStateException_info.explanation=Byl proveden pokus o proveden\u00ed operace pro objekt. \
+Operace nen\u00ed pro objekt v jeho aktu\u00e1ln\u00edm stavu platn\u00e1. \
+Do\u0161lo nap\u0159\u00edklad k pokusu o odstran\u011bn\u00ed ji\u017e odstran\u011bn\u00e9ho objektu ManagedObject. \
+Operace je odm\u00edtnuta a objekt z\u016fst\u00e1v\u00e1 nezm\u011bn\u011bn.
+InvalidStateException_info.useraction=Prozkoumejte stav objektu a p\u0159\u00ed\u010dinu pokusu o proveden\u00ed operace.
+
+# {0} ObjecManagerState which has detected the duplicate.
+# {1} The new duplicate InternalTransaction.
+# {2} The old existing InternalTransaction.
+DuplicateTransactionException_info=CWSOM1012E: Modul ObjectManagerState={0}(ObjectManagerState) se pokusil zaregistrovat nebo uvolnit novou transakci transaction={1}(InternalTransaction), kter\u00e1 m\u00e1 stejn\u00fd identifik\u00e1tor LogicalUnitOfWork jako transakce transaction={2} (InternalTransaction).
+DuplicateTransactionException_info.explanation=V modulu ObjectManager byla nalezena nov\u00e1 a existuj\u00edc\u00ed transakce se stejn\u00fdm identifik\u00e1torem transakce. Jde o intern\u00ed chybu, k n\u00ed\u017e by nem\u011blo doch\u00e1zet.
+DuplicateTransactionException_info.useraction=CMSG0002 
+
+# {0} The internal transaction trying to unregister.
+NonExistentTransactionException_info=CWSOM1013E: Prob\u011bhl pokus o zru\u0161en\u00ed registrace transakce, kter\u00e1 nebyla registrov\u00e1na: transaction={0}(InternalTransaction). 
+NonExistentTransactionException_info.explanation=V modulu ObjectManager byla zji\u0161t\u011bna intern\u00ed chyba. S transakc\u00ed nelze prov\u00e1d\u011bt \u017e\u00e1dn\u00e9 dal\u0161\u00ed akce.
+NonExistentTransactionException_info.useraction=CMG0002
+
+# {0} The ObjectStoreIdentifier of the ObjectStore that was not known to the ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info=CWSOM1014E: Do\u0161lo k pokusu o vyhled\u00e1n\u00ed modulu ObjectStore, kter\u00fd nebyl registrov\u00e1n: storeIdentifier={0} (int).
+NonExistentObjectStoreTemporaryIOException_info.explanation=Pomoc\u00ed tokenu byl proveden odkaz na modul ObjectStore, kter\u00fd nen\u00ed v modulu ObjectManager zn\u00e1m.
+NonExistentObjectStoreTemporaryIOException_info.useraction=Pokud byl modul ObjectStore odebr\u00e1n z modulu ObjectManager, bude tato v\u00fdjimka zaznamen\u00e1na v\u017edy p\u0159i odkazu na modul ObjectStore pomoc\u00ed existuj\u00edc\u00edch token\u016f. \
+Implementujte modul ObjectStore znovu nebo p\u0159esta\u0148te pou\u017e\u00edvat tokeny, kter\u00e9 se pokou\u0161\u00ed o p\u0159\u00edstup k dan\u00e9mu modulu.
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSOM1015E: Modul ObjectManager neo\u010dek\u00e1van\u011b obdr\u017eel v\u00fdjimku {0} (Exception). 
+UnexpectedExceptionException_info.explanation=Modul ObjectManager obdr\u017eel v\u00fdjimku, nedok\u00e1zal v\u0161ak jako odpov\u011b\u010f na ni prov\u00e9st \u017e\u00e1dnou smysluplnou akci.
+UnexpectedExceptionException_info.useraction=Zjist\u011bte a odstra\u0148te p\u0159\u00ed\u010dinu p\u0159\u00edslu\u0161n\u00e9 v\u00fdjimky.
+
+# {0} The managedObject being unlocked.
+# {1} Internal transaction trying to release the lock on the ManagedObject.
+# {2} The existing lock on the ManagedObject.
+InvalidTransactionException_info=CWSOM1016E: Do\u0161lo k pokusu o odemknut\u00ed nebo nahrazen\u00ed objektu ManagedObject {0} (ManagedObject) transakc\u00ed InternalTransaction={1} (InternalTransaction), kdy\u017e byl objekt uzamknut z\u00e1mkem transactionLock {2} (TransactionLock). 
+InvalidTransactionException_info.explanation=Byl proveden pokus o odemknut\u00ed nebo nahrazen\u00ed objektu ManagedObject prost\u0159ednictv\u00edm jin\u00e9 transakce ne\u017e t\u00e9, kter\u00e1 jej zamkla. \
+Pokus byl odm\u00edtnut.
+InvalidTransactionException_info.useraction=Prozkoumejte logiku aplikace, kter\u00e1 pou\u017e\u00edv\u00e1 rozhran\u00ed Transaction.unlock(ManagedObject) modulu ObjectManager, a zjist\u011bte, pro\u010d se p\u0159\u00edslu\u0161n\u00e9 dv\u011b transakce li\u0161\u00ed.
+
+# {0} ObjectManagerState which is unable to locate the log file.
+# {1} The exception caught by the ObjectManagerState when trying to locate the log file.
+# {2} The log file name.
+NonExistentLogFileException_info=CWSOM1017E: Modul ObjectManagerState {0} (ObjectManagerState) obdr\u017eel v\u00fdjimku {1} (Exception) p\u0159i pokusu o nalezen\u00ed nebo vytvo\u0159en\u00ed souboru protokolu s n\u00e1zvem {2} (String). 
+NonExistentLogFileException_info.explanation=Byla zachycena v\u00fdjimka p\u0159i pokusu modulu ObjectManager o otev\u0159en\u00ed souboru protokolu s uveden\u00fdm n\u00e1zvem. \
+Modul ObjectManager nebude spu\u0161t\u011bn.
+NonExistentLogFileException_info.useraction=Ov\u011b\u0159te, \u017ee je n\u00e1zev souboru protokolu spr\u00e1vn\u00fd a \u017ee m\u00e1 modul ObjectManager odpov\u00eddaj\u00edc\u00ed opr\u00e1vn\u011bn\u00ed pro z\u00e1pis do n\u011bj.
+
+# {0} The Object raising the exception.
+# {1} The underlying Exception.
+LogFileExhaustedException_info=CWSOM1018E: Objekt {0} (Object) detekoval konec vstupn\u00edho souboru protokolu vzhledem k p\u0159\u00edslu\u0161n\u00e9 v\u00fdjimce {1} (Exception). 
+LogFileExhaustedException_info.explanation=Modul ObjectManager detekoval konec vstupn\u00edho souboru protokolu.
+LogFileExhaustedException_info.useraction=Byla-li v\u00fdjimka vyvol\u00e1na jako d\u016fsledek \u010dten\u00ed protokolu do konce p\u0159i restartov\u00e1n\u00ed modulu ObjectManager, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+# {0} The type of logRecord that was read from the log but not recognized.
+InvalidLogRecordTypeException_info=CWSOM1019E: Z protokolu transakc\u00ed byl p\u0159e\u010dten neplatn\u00fd typ z\u00e1znamu protokolu {0} (int). 
+InvalidLogRecordTypeException_info.explanation=Modul ObjectManager prov\u00e1d\u011bl zotavov\u00e1n\u00ed a nalezl z\u00e1znam protokolu s typem, kter\u00fd nedok\u00e1zal rozpoznat. Nebyla vytvo\u0159ena instance modulu ObjectManager.
+InvalidLogRecordTypeException_info.useraction=CMSG0002 
+
+# {0} The name of the ObjectStore that is not registered with the ObjectManager.
+UnknownObjectStoreException_info=CWSOM1020E: Do\u0161lo k pokusu o vyhled\u00e1n\u00ed modulu ObjectStore, kter\u00fd nebyl registrov\u00e1n: storeName={0} (String).
+UnknownObjectStoreException_info.explanation=Modul ObjectManager byl po\u017e\u00e1d\u00e1n o vyhled\u00e1n\u00ed modulu ObjectStore, kter\u00fd s n\u00edm nebyl zaregistrov\u00e1n.
+UnknownObjectStoreException_info.useraction=Je mo\u017en\u00e9, \u017ee byl modul ObjectStore odebr\u00e1n z modulu ObjectManager. Vytvo\u0159te modul ObjectStore znovu.
+
+# {0} The Object detecting the condition that is not valid.
+# {1} The variable name containing the condition that is not valid.
+# {2} The data assigned to the variable giving the condition that is not valid.
+InvalidConditionException_info=CWSOM1021E: V objektu {0}(Object) byla zji\u0161t\u011bna neplatn\u00e1 podm\u00ednka. Prom\u011bnn\u00e1 variable={1} obsahovala hodnotu value={2}. 
+InvalidConditionException_info.explanation=Do\u0161lo k intern\u00ed chyb\u011b a byla zji\u0161t\u011bna neplatn\u00e1 podm\u00ednka.
+InvalidConditionException_info.useraction=CMSG0002 
+
+# {0} The name of the log file.
+LogFileInUseException_info=CWSOM1022E: N\u00e1zev log_file_name={0}(String) se ji\u017e pou\u017e\u00edv\u00e1.
+LogFileInUseException_info.explanation=Modul ObjectManager se pokusil z\u00edskat v\u00fdhradn\u00ed z\u00e1mek na soubor protokolu, kter\u00fd ji\u017e byl pou\u017e\u00edv\u00e1n.
+LogFileInUseException_info.useraction=Zjist\u011bte, zda se jin\u00fd modul ObjectManager nebo jin\u00fd program nepokou\u0161\u00ed pou\u017e\u00edvat stejn\u00fd soubor protokolu.
+
+LogFileHeaderCorruptException_info=CWSOM1023E: Soubor protokolu neobsahuje platn\u00e9 z\u00e1hlav\u00ed. 
+LogFileHeaderCorruptException_info.explanation=Soubor protokolu transakc\u00ed obsahoval data, kter\u00e1 modul ObjectManager nedok\u00e1\u017ee interpretovat.
+LogFileHeaderCorruptException_info.useraction=Ov\u011b\u0159te, \u017ee jde o spr\u00e1vn\u00fd soubor protokolu.
+
+# {0} The current XID.
+# {1} The rejected XID.
+XIDModificationException_info=CWSOM1024E: Do\u0161lo k pokusu o nastaven\u00ed XID transakce, kter\u00e1 m\u00e1 ji\u017e nastaveno st\u00e1vaj\u00edc\u00ed XID={0}([]byte), rejectedXID={1}([]byte).
+XIDModificationException_info.explanation=Transakce m\u016f\u017ee m\u00edt pouze jeden identifik\u00e1tor transakce XID standardu X/Open. \
+Po nastaven\u00ed tento identifik\u00e1tor nelze upravovat.
+XIDModificationException_info.useraction=Prozkoumejte logiku aplikace a ur\u010dete, pro\u010d se pokou\u0161\u00ed o zm\u011bnu identifik\u00e1toru XID transakce, kter\u00fd ji\u017e nastavila.
+
+# {0} The length of the XID passed to the ObjectManager.
+XIDTooLongException_info=CWSOM1025E: Do\u0161lo k pokusu o nastaven\u00ed XID transakce, kter\u00e9 je p\u0159\u00edli\u0161 dlouh\u00e9: XID.length={0}(int).
+XIDTooLongException_info.explanation=Maxim\u00e1ln\u00ed d\u00e9lka identifik\u00e1toru XID transakce standardu X/Open je ur\u010dena hodnotou java.lang.Short.MAX_VALUE.
+XIDTooLongException_info.useraction=Pou\u017eijte krat\u0161\u00ed d\u00e9lku XID.
+
+# {0} The object containing the disabled interface.
+# {1} The method name of the interface that is disabled.
+InterfaceDisabledExceptionException_info=CWSOM1026E: Do\u0161lo k pokusu o pou\u017eit\u00ed zak\u00e1zan\u00e9ho n\u00e1zvu methodName={1}(String) ve zdroji source={0}(Object).
+InterfaceDisabledExceptionException_info.explanation=Do\u0161lo k pokusu o pou\u017eit\u00ed zak\u00e1zan\u00e9ho rozhran\u00ed.
+InterfaceDisabledExceptionException_info.useraction=P\u0159esta\u0148te dan\u00e9 rozhran\u00ed pou\u017e\u00edvat nebo p\u0159ejd\u011bte na verzi modulu ObjectManager, kter\u00fd je podporuje.
+
+# {0} The number of bytes to be written to the log.
+# {1} The number of reserved bytes included in the request.
+# {2} The number of bytes available in the log file.
+LogFileFullException_info=CWSOM1027E: Soubor protokolu byl p\u0159\u00edli\u0161 pln\u00fd a nebylo mo\u017eno do n\u011bj zapsat celkem {0}(long) bajt\u016f; po\u017eadavek vyhradil dal\u0161\u00edch {1}(long) bajt\u016f, velikost dostupn\u00e9ho prostoru je {2}(long) bajt\u016f.
+LogFileFullException_info.explanation=Byl proveden pokus o zaps\u00e1n\u00ed v\u00edce dat do protokolu, ne\u017e umo\u017e\u0148oval prostor, kter\u00fd byl pro soubor k dispozici. \
+Pokus byl odm\u00edtnut a stav transakce z\u016fstal beze zm\u011bny.
+LogFileFullException_info.useraction=Prove\u010fte n\u011bkterou z n\u00e1sleduj\u00edc\u00edch akc\u00ed: Sni\u017ete po\u010det objekt\u016f aktualizovan\u00fdch v r\u00e1mci transakc\u00ed. \
+Sni\u017ete po\u010det sou\u010dasn\u011b aktivn\u00edch transakc\u00ed. \
+Zmen\u0161ete velikost aktualizovan\u00fdch modul\u016f ManagedObject. \
+Zv\u011bt\u0161ete velikost souboru protokolu.
+
+# {0} The part type found in the log that is not valid.
+InvalidLogRecordPartTypeException_info=CWSOM1028E: Neplatn\u00fd typ \u010d\u00e1sti z\u00e1znamu protokolu {0} (byte). 
+InvalidLogRecordPartTypeException_info.explanation=P\u0159\u00edznak typu pro \u010d\u00e1st z\u00e1znamu protokolu nebyl rozpozn\u00e1n.
+InvalidLogRecordPartTypeException_info.useraction=Zjist\u011bte, jak byl soubor protokolu po\u0161kozen, a obnovte z\u00e1lo\u017en\u00ed soubor protokolu.
+
+# {0} The name of the log file.
+CheckpointEndNotFoundException_info=CWSOM1029E: V souboru log_file={0}(String) nebyl nalezen z\u00e1znam CheckpointEndLogRecord.
+CheckpointEndNotFoundException_info.explanation=Soubor protokolu skon\u010dil d\u0159\u00edve, ne\u017e byl nalezen koncov\u00fd kontroln\u00ed z\u00e1znam. \
+Soubory protokol\u016f mus\u00ed obsahovat alespo\u0148 jeden po\u010d\u00e1te\u010dn\u00ed a jeden koncov\u00fd z\u00e1znam LogRecord kontroln\u00edho bodu.
+CheckpointEndNotFoundException_info.useraction=Zjist\u011bte, jak byl soubor protokolu po\u0161kozen, a obnovte z\u00e1lo\u017en\u00ed soubor protokolu.
+
+# {0} The ObjectStore raising the exception.
+# {1} The Token requesting the ManagedObject.
+InMemoryObjectNotAvailableException_info=CWSOM1030E: Modul ObjectStore {0}  zalo\u017een\u00fd na pam\u011bti byl po\u017e\u00e1d\u00e1n o na\u010dten\u00ed objektu ManagedObject pro token {0}(Token), kter\u00fd se je\u0161t\u011b nenal\u00e9zal v pam\u011bti. 
+InMemoryObjectNotAvailableException_info.explanation=Modul ObjectManager byl po\u017e\u00e1d\u00e1n o na\u010dten\u00ed objektu ManagedObject, kter\u00fd se m\u011bl nach\u00e1zet v pam\u011bti, ale nebyl nalezen.
+InMemoryObjectNotAvailableException_info.useraction=CMSG0002
+
+# {0} The maximum size in bytes the serialized ManagedObject should be.
+# {1} The actual size in bytes of the ManagedObject in bytes.
+SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: Velikost zjednodu\u0161en\u00e9 serializace p\u0159ekro\u010dila maximum maximumSize={0}(long), skute\u010dn\u00e1 velikost je actualSize={1}(long). 
+SimplifiedSerializationSizeExceptionException_info.explanation=Velikost serializovan\u00e9ho objektu ManagedObject p\u0159ekro\u010dila o\u010dek\u00e1vanou maxim\u00e1ln\u00ed velikost.
+SimplifiedSerializationSizeExceptionException_info.useraction=CMSG0002
+
+# {0} The current size of the log.
+# {1} The requested size of the log.
+# {2} The space available in the log.
+# {3} the predicted occupancy of the new log file.
+# {4} The threshold occupancy above which the ObjectManager triggers a checkpoint. 
+LogFileSizeTooSmallException_info=CWSOM1032E: Velikost souboru protokolu je p\u0159\u00edli\u0161 mal\u00e1. St\u00e1vaj\u00edc\u00ed velikost: {0} (long), po\u017eadovan\u00e1 velikost: {1} (long), prostor k dispozici: {2} (long), predikovan\u00e9 obsazen\u00ed: {3} (float), prahov\u00e1 hodnota obsazen\u00ed: {4} (float). 
+LogFileSizeTooSmallException_info.explanation=Modul ObjectManager byl po\u017e\u00e1d\u00e1n o sn\u00ed\u017een\u00ed velikosti protokolu transakc\u00ed. \
+Po\u017eadovan\u00e1 velikost nebyla dostate\u010dn\u00e1 pro obsa\u017een\u00ed st\u00e1vaj\u00edc\u00edch dat protokolu. \
+Nov\u00e1 velikost je men\u0161\u00ed ne\u017e mezn\u00ed hodnota, kter\u00e1 modulu ObjectManager aktu\u00e1ln\u011b umo\u017en\u00ed pracovat bez neust\u00e1l\u00e9ho zpracov\u00e1v\u00e1n\u00ed kontroln\u00edch bod\u016f.
+LogFileSizeTooSmallException_info.useraction=Zadejte rozs\u00e1hlej\u0161\u00ed po\u017eadavek nebo sni\u017ete z\u00e1t\u011b\u017e protokolu prov\u00e1d\u011bn\u00edm z\u00e1pisu men\u0161\u00edho mno\u017estv\u00ed objekt\u016f ManagedObject nebo men\u0161\u00edch objekt\u016f ManagedObject.
+
+# {0} The non empty collection.
+# {1} The number of items, committed and uncommitted, in the collection.
+# {2} The transaction trying to delete the collection.
+CollectionNotEmptyException_info=CWSOM1033E: Kolekce {0} nen\u00ed pr\u00e1zdn\u00e1. Velikost ozna\u010den\u00e9 \u010d\u00e1sti: {1} (long), transakce: {2} (Transaction). 
+CollectionNotEmptyException_info.explanation=Modul ObjectManager byl po\u017e\u00e1d\u00e1n o odstran\u011bn\u00ed kolekce (mapov\u00e1n\u00ed nebo seznamu), kter\u00e1 nebyla pr\u00e1zdn\u00e1. Kolekce obsahovala polo\u017eky, je\u017e nebyly odstran\u011bny nebo byly odstran\u011bny jinou transakc\u00ed ne\u017e tou, kter\u00e1 se pokou\u0161ela o odstran\u011bn\u00ed kolekce.
+CollectionNotEmptyException_info.useraction=Prozkoumejte logiku aplikace a zjist\u011bte, pro\u010d se transakce pokou\u0161\u00ed o odstran\u011bn\u00ed kolekce obsahuj\u00edc\u00ed polo\u017eky.
+
+# {0} The defined maximum number of transactions.
+TooManyTransactionsException_info=CWSOM1034E: Aplikace se pokusila spustit v\u00edce ne\u017e definovan\u00fd maxim\u00e1ln\u00ed po\u010det transakc\u00ed: maximum={0}(long). 
+TooManyTransactionsException_info.explanation=V modulu ObjectManager bylo po\u017eadov\u00e1no spu\u0161t\u011bn\u00ed v\u00edce transakc\u00ed, ne\u017e je ur\u010deno v jeho konfiguraci. Nov\u00e1 transakce nebyla zah\u00e1jena.
+TooManyTransactionsException_info.useraction=Prozkoum\u00e1n\u00edm logiky aplikace zjist\u011bte p\u0159\u00ed\u010dinu spou\u0161t\u011bn\u00ed p\u0159\u00edli\u0161 mnoha transakc\u00ed. \
+Mo\u017enou p\u0159\u00ed\u010dinou je, \u017ee aplikace transakce spou\u0161t\u00ed, av\u0161ak nepotvrzuje je ani neodvol\u00e1v\u00e1.
+
+# {0} The number of active transactions.
+# {1} The number of transactons the ObjectManager can currently run.
+TransactionCapacityExceededException_info=CWSOM1035E: Maxim\u00e1ln\u00ed po\u010det aktivn\u00edch transakc\u00ed byl do\u010dasn\u011b sn\u00ed\u017een: current_active_transactions={0}(long), current_capacity={1}(long).
+TransactionCapacityExceededException_info.explanation=V modulu ObjectManager bylo po\u017eadov\u00e1no spu\u0161t\u011bn\u00ed v\u011bt\u0161\u00edho mno\u017estv\u00ed transakc\u00ed, ne\u017e m\u016f\u017ee s prost\u0159edky, kter\u00e9 jsou mu dostupn\u00e9, podporovat. \
+Modul ObjectManager omezuje po\u010det spou\u0161t\u011bn\u00fdch transakc\u00ed, aby bylo mo\u017en\u00e9 dokon\u010dit kontroln\u00ed body p\u0159ed zapln\u011bn\u00edm souboru protokolu. Nov\u00e1 transakce nebyla zah\u00e1jena.
+TransactionCapacityExceededException_info.useraction=Zv\u011bt\u0161ete velikost souboru protokolu nebo spus\u0165te m\u00e9n\u011b transakc\u00ed.
+
+# {0} The ObjectStore throwing the exception.
+# {1} the name of the ObjectStore.
+StoreFileInUseExceptionException_info=CWSOM1036E: Modul ObjectStore={0}(ObjectStore) name={1}(String) se ji\u017e pou\u017e\u00edv\u00e1. 
+StoreFileInUseExceptionException_info.explanation=Modul ObjectStore p\u0159i pokusu o v\u00fdhradn\u00ed zam\u010den\u00ed sv\u00e9ho souboru zjistil, \u017ee je ji\u017e zam\u010den.
+StoreFileInUseExceptionException_info.useraction=Ur\u010dete, zda je soubor modulu ObjectStore pou\u017e\u00edv\u00e1n jin\u00fdm modulem ObjectManager nebo jin\u00fdm programem.
+
+# {0} The Name of the log file.
+# {1} The expected size of the log file.
+# {2} Byte found not to exist in the physical file.
+PrematureEndOfLogFileException_info=CWSOM1037E: Log_File_name={0}(String), p\u0159i pokusu o p\u0159\u00edstup k bajtu byte={2}(Long) byla zji\u0161t\u011bna fyzick\u00e1 velikost men\u0161\u00ed ne\u017e o\u010dek\u00e1van\u00e1 expected_size={1}(long).
+PrematureEndOfLogFileException_info.explanation=Soubor protokolu nen\u00ed norm\u00e1ln\u011b ukon\u010den; je mo\u017en\u00e9, \u017ee fyzick\u00fd soubor byl o\u0159\u00edznut.
+PrematureEndOfLogFileException_info.useraction=Zjist\u011bte, zda byl soubor protokolu po\u0161kozen, a obnovte p\u016fvodn\u00ed nepo\u0161kozen\u00fd soubor.
+
+# {0} The ObjectManager throwing the exception.
+NoRestartableObjectStoresAvailableException_info=CWSOM1038E: Modul ObjectManager {0} zjistil, \u017ee k dispozici nejsou \u017e\u00e1dn\u00e9 moduly ObjectStore, kter\u00e9 by bylo mo\u017en\u00e9 restartovat. 
+NoRestartableObjectStoresAvailableException_info.explanation=Modul ObjectManager byl po\u017e\u00e1d\u00e1n o ulo\u017een\u00ed odkazu na pojmenovan\u00fd objekt ManagedObject. \
+Neexistuj\u00ed v\u0161ak \u017e\u00e1dn\u00e9 moduly ObjectStore s mo\u017enost\u00ed restartov\u00e1n\u00ed, v nich\u017e by bylo mo\u017en\u00e9 odkaz ulo\u017eit.
+NoRestartableObjectStoresAvailableException_info.useraction=Zjist\u011bte, zda je t\u0159eba pou\u017e\u00edvat pojmenovan\u00fd objekt ManagedObject. \
+Pokud ano, vytvo\u0159te modul ObjectStore s mo\u017enost\u00ed restartov\u00e1n\u00ed.
+
+# {0} The key which already exists in the map.
+# {1} The existing entry in the map.
+# {2} The transaction locking the duplicate entry or null.
+DuplicateKeyExceptionException_info=CWSOM1039E: Duplicate_key={0}(Object) je v konfliktu se st\u00e1vaj\u00edc\u00ed polo\u017ekou entry={1}(Map.Entry) zam\u010den\u00e9 transakc\u00ed transaction={3}(InternalTransaction). 
+DuplicateKeyExceptionException_info.explanation=Do\u0161lo k pokusu o p\u0159id\u00e1n\u00ed jedine\u010dn\u00e9ho kl\u00ed\u010de k mapov\u00e1n\u00ed v situaci, kdy identick\u00fd kl\u00ed\u010d v mapov\u00e1n\u00ed ji\u017e existuje. Existuj\u00edc\u00ed kl\u00ed\u010d je ji\u017e sou\u010d\u00e1st\u00ed jin\u00e9 transakce a nelze jej nahradit nov\u00fdm kl\u00ed\u010dem.
+DuplicateKeyExceptionException_info.useraction=Po\u017eadujte p\u0159id\u00e1n\u00ed duplicitn\u00edho kl\u00ed\u010de metodou putDuplicate nebo zjist\u011bte, pro\u010d se aplikace pokou\u0161\u00ed o nahrazen\u00ed existuj\u00edc\u00edho kl\u00ed\u010de.
+
+# {0} Number of bytes requested in the store file.
+# {1} Existing store file size in bytes.
+# {2} Number of bytes currently used in the store file.
+StoreFileSizeTooSmallException_info=CWSOM1040E: Velikost souboru modulu ObjectStore je p\u0159\u00edli\u0161 mal\u00e1. Po\u017eadovan\u00e1 velikost: {0} (long), st\u00e1vaj\u00edc\u00ed velikost: {1} (long), pou\u017e\u00edvan\u00e1 velikost: {2} (long). 
+StoreFileSizeTooSmallException_info.explanation=Modul ObjectManager byl po\u017e\u00e1d\u00e1n o sn\u00ed\u017een\u00ed velikost souboru \u00falo\u017ei\u0161t\u011b na d\u00e9lku, kter\u00e1 nen\u00ed dostate\u010dn\u00e1 pro obsa\u017een\u00ed st\u00e1vaj\u00edc\u00edch objekt\u016f ManagedObject v souboru.
+StoreFileSizeTooSmallException_info.useraction=Zadejte po\u017eadavek na prostor, kter\u00fd dosta\u010duje k obsa\u017een\u00ed existuj\u00edc\u00edch objekt\u016f ManagedObject. 
+
+# {0} The java.nio.XXXX Exception that was caught by the ObjectManager.
+PermanentNIOException_info=CWSOM1041E: Modul ObjectManager zachytil v\u00fdjimku {0} (java.nio.XXX Exception). 
+PermanentNIOException_info.explanation=Modul ObjectManager zachytil v\u00fdjimku nio. Operaci vstupu/v\u00fdstupu nebylo mo\u017en\u00e9 bezpe\u010dn\u011b zopakovat a byla zru\u0161ena.
+PermanentNIOException_info.useraction=Z\u00e1kladn\u00ed p\u0159\u00ed\u010dina probl\u00e9mu je uvedena ve v\u00fdjimce nio. \
+Prozkoumejte p\u0159\u00edslu\u0161nou v\u00fdjimku nio a odstra\u0148te jej\u00ed p\u0159\u00ed\u010dinu.
+
+# {0} The ObjectStore asked to fulfill the allocation request.
+# {1} The ManagedObject requesting the allocation.
+ObjectStoreFullException_info=CWSOM1042E: Modul ObjectStore {0} (ObjectStore) byl po\u017e\u00e1d\u00e1n o p\u0159id\u011blen\u00ed prostoru pro objekt ManagedObject {1} (ManagedObject), je v\u0161ak pln\u00fd. 
+ObjectStoreFullException_info.explanation=Modul ObjectStore byl ji\u017e pln\u00fd, kdy\u017e byl obdr\u017een nov\u00fd po\u017eadavek na p\u0159id\u011blen\u00ed. \
+\u017d\u00e1dost o p\u0159id\u011blen\u00ed byla odm\u00edtnuta.
+ObjectStoreFullException_info.useraction=Rozhodn\u011bte se, zda m\u00e1 b\u00fdt modul ObjectStore zv\u011bt\u0161en nebo zda maj\u00ed b\u00fdt n\u011bkter\u00e9 existuj\u00edc\u00ed objekty ur\u010deny k odebr\u00e1n\u00ed. \
+P\u0159\u00ed\u010dinou probl\u00e9mu m\u016f\u017ee tak\u00e9 b\u00fdt pokus o ulo\u017een\u00ed v\u011bt\u0161\u00edho mno\u017estv\u00ed objekt\u016f nebo v\u011bt\u0161\u00edch objekt\u016f, ne\u017e bylo pl\u00e1nov\u00e1no.
+
+# {0} The logfiletype that was passed to the ObjectManager constructor.
+InvalidLogFileTypeException_info=CWSOM1043E: Modulu ObjectManager byl p\u0159ed\u00e1n neplatn\u00fd typ souboru protokolu {0} (int). 
+InvalidLogFileTypeException_info.explanation=Konstruktoru modulu ObjectManager byl p\u0159id\u00e1n typ souboru protokolu, kter\u00fd nebyl rozpozn\u00e1n jako jeden z typ\u016f LOG_FILE_TYPE_XXXX. \
+Pro modul ObjectManager nebyly vytvo\u0159eny instance.
+InvalidLogFileTypeException_info.useraction=Zm\u011b\u0148te zp\u016fsob vyvol\u00e1n\u00ed konstruktoru tak, aby byl pou\u017eit rozpozn\u00e1van\u00fd typ souboru protokolu.
+
+# {0} The List from which the sublist is to be created.
+# {1} The entry which is not in the list.
+SubListEntryNotInListException_info=CWSOM1044E: Seznam {0}(List) byl po\u017e\u00e1d\u00e1n o vytvo\u0159en\u00ed d\u00edl\u010d\u00edho seznamu s odd\u011blova\u010dem List.Entry {1}(List.Entry), kter\u00fd v n\u011bm nebyl obsa\u017een. 
+SubListEntryNotInListException_info.explanation=Seznam byl po\u017e\u00e1d\u00e1n o vytvo\u0159en\u00ed d\u00edl\u010d\u00edho seznamu s polo\u017ekami odd\u011blova\u010de, kter\u00e9 neobsahoval. \
+D\u00edl\u010d\u00ed seznam nebyl vytvo\u0159en.
+SubListEntryNotInListException_info.useraction=Zkontrolujte k\u00f3d aplikace a zjist\u011bte, pro\u010d polo\u017eka nebyla v seznamu obsa\u017eena. \
+Mo\u017en\u00fdm d\u016fvodem nap\u0159\u00edklad je, \u017ee ji\u017e byla ze seznamu odebr\u00e1na.
+
+# {0} The List from which the sublist is to be created.
+ObjectSignatureNotFoundException_info=CWSOM1045E: Spr\u00e1vce ObjectManager se pokusil o deserializaci objektu ManagedObject s podpisem {0}(int), kter\u00fd nebyl rozpozn\u00e1n.
+ObjectSignatureNotFoundException_info.explanation=V objektu ManagedObject byl nalezen nerozpoznan\u00fd podpis. Deserializace byla proto zru\u0161ena.
+ObjectSignatureNotFoundException_info.useraction=CMSG0002
+
+# {0} The ObjectStore being constructed.
+# {1} The store strategy value that is not valid.
+InvalidStoreStrategyException_info=CWSOM1046E: Modul ObjectStore {0} byl sestaven s pou\u017eit\u00edm neplatn\u00e9 strategie \u00falo\u017ei\u0161t\u011b {1}(int). 
+InvalidStoreStrategyException_info.explanation=Moduly ObjectStore lze sestavit pouze s pou\u017eit\u00edm platn\u00fdch strategi\u00ed \u00falo\u017ei\u0161t\u011b.
+InvalidStoreStrategyException_info.useraction=Sestavte modul ObjectStore s pou\u017eit\u00edm platn\u00e9 strategie \u00falo\u017ei\u0161t\u011b. \
+P\u0159ehled platn\u00fdch strategi\u00ed naleznete v dokumentaci ObjectManagerJavaDoc.
+
+# {0} The Name of the new ObjectStore.
+# {1} The objectStoreIdentifier of the new and existing store.
+# {2} ObjectStore already using the identifier.
+DuplicateObjectStoreIdentifierException_info=CWSOM1047E: Do\u0161lo k pokusu o sestaven\u00ed modulu ObjectStore pomoc\u00ed storeName={0}(String) a identifik\u00e1toru {1}, kter\u00fd ji\u017e byl pou\u017eit v modulu ObjectStore={2}.
+DuplicateObjectStoreIdentifierException_info.explanation=Identifik\u00e1tory modul\u016f ObjectStore mus\u00ed b\u00fdt v r\u00e1mci modulu ObjectManager jedine\u010dn\u00e9.
+DuplicateObjectStoreIdentifierException_info.useraction=P\u0159ed vytv\u00e1\u0159en\u00edm nov\u00fdch modul\u016f ObjectStore p\u0159idejte st\u00e1vaj\u00edc\u00ed moduly ObjectStore do modulu ObjectManager. \
+T\u00edmto postupem umo\u017en\u00edte modulu ObjectManager vyhnout se op\u011btn\u00e9mu pou\u017eit\u00ed identifik\u00e1tor\u016f.
+
+# {0} The Object discovering data corruption.
+# {1} The corrupted object.
+GuardBytesException_info=CWSOM1048E: Objekt {0} objevil potenci\u00e1ln\u011b po\u0161kozen\u00e1 data v objektu {1} (objekt). 
+GuardBytesException_info.explanation=Modul ObjectManager zjistil neshodu hodnoty ochrann\u00fdch bajt\u016f pro data chr\u00e1n\u011bn\u00e1 ochrann\u00fdmi bajty.
+GuardBytesException_info.useraction=CMSG0002
+
+# {0} The name of the ObjectStore discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidStoreSignatureException_info=CWSOM1049E: \u00dalo\u017ei\u0161t\u011b objekt\u016f s n\u00e1zvem {0} zjistilo po\u0161kozen\u00fd podpis {1}(String) m\u00edsto spr\u00e1vn\u00e9ho podpisu {2}(String). 
+InvalidStoreSignatureException_info.explanation=Z\u00e1hlav\u00ed \u00falo\u017ei\u0161t\u011b objekt\u016f je po\u0161kozeno. \u00dalo\u017ei\u0161t\u011b objekt\u016f nelze zpracovat.
+InvalidStoreSignatureException_info.useraction=Ur\u010dete zp\u016fsob po\u0161kozen\u00ed souboru a obnovte z\u00e1lohu.
+
+# {0} The LogFileHeader discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidLogFileSignatureException_info=CWSOM1050E: V souboru protokolu byl nalezen po\u0161kozen\u00fd podpis {0}(String) m\u00edsto spr\u00e1vn\u00e9ho podpisu {1}(String). 
+InvalidLogFileSignatureException_info.explanation=Z\u00e1hlav\u00ed souboru protokolu je po\u0161kozeno. Soubor protokolu nelze zpracovat.
+InvalidLogFileSignatureException_info.useraction=Ur\u010dete zp\u016fsob po\u0161kozen\u00ed souboru a obnovte z\u00e1lohu.
+
+# {0} The name of the thread which is being asked to perform the request.
+# {1} The name of the request the thread is being asked to perform.
+ThreadNotRunningException_info=CWSOM1051E: Podproces {0} byl po\u017e\u00e1d\u00e1n o proveden\u00ed po\u017eadavku {1} pot\u00e9, co byl jeho b\u011bh ukon\u010den. 
+ThreadNotRunningException_info.explanation=V okam\u017eiku zad\u00e1n\u00ed po\u017eadavku ur\u010den\u00fd podproces selhal nebo vy\u0159izoval po\u017eadavek na sv\u00e9 zastaven\u00ed.
+ThreadNotRunningException_info.useraction=CMSG0002
+
+# {0} ObjectStore which is unable to locate the file.
+# {1} The exception caught by the ObjectStore when trying to locate the file, or null.
+# {2} The file name of the file that cannot be found.
+NonExistentObjectStoreFileException_info=CWSOM1052E: Modul ObjectStore={0}(ObjectStore) zachytil v\u00fdjimku {1}(Exception) p\u0159i pokusu o nalezen\u00ed nebo vytvo\u0159en\u00ed souboru s n\u00e1zvem {2}(String). 
+NonExistentObjectStoreFileException_info.explanation=Byla zachycena v\u00fdjimka p\u0159i pokusu modulu ObjectStore o otev\u0159en\u00ed souboru s uveden\u00fdm n\u00e1zvem. Modul ObjectManager nebude spu\u0161t\u011bn.
+NonExistentObjectStoreFileException_info.useraction=Ov\u011b\u0159te, zda je n\u00e1zev souboru platn\u00fd, zda soubor existuje a zda m\u00e1 modul ObjectManager odpov\u00eddaj\u00edc\u00ed opr\u00e1vn\u011bn\u00ed pro z\u00e1pis do n\u011bj. \
+Je-li to nutn\u00e9, zadejte p\u0159i spu\u0161t\u011bn\u00ed modulu ObjectManager mapov\u00e1n\u00ed n\u00e1zvu logick\u00e9ho \u00falo\u017ei\u0161t\u011b na fyzick\u00e9 um\u00edst\u011bn\u00ed souboru.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIOM9999=CWSOM9999E: {0}
+TEMPORARY_SIOM9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, vyhledejte dal\u0161\u00ed n\u00e1pov\u011bdu v souvisej\u00edc\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_SIOM9999.useraction=Dal\u0161\u00ed informace naleznete v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.

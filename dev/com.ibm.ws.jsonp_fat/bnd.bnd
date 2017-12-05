@@ -21,7 +21,7 @@ src: \
 	test-applications/JSONPWAR.war/src,\
 	test-bundles/custom.jsonp/src
 
-test.project: true
+fat.project: true
 
 -sub: *.bnd
 

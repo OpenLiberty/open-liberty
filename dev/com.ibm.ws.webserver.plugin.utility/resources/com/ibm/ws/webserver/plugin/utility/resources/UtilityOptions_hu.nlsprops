@@ -1,0 +1,133 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+#------------------------------------------------------------------------------
+# Global options used multiple times when help operation is used. 
+#------------------------------------------------------------------------------
+global.description=Le\u00edr\u00e1s:
+global.actions=M\u0171veletek:
+global.options=Param\u00e9terek:
+global.usage=Haszn\u00e1lat:
+global.options.statement=\tAz egyes m\u0171veletek param\u00e9tereinek r\u00e9szletes inform\u00e1ci\u00f3i\u00e9rt haszn\u00e1lja \n\
+\ta help [m\u0171velet] parancsot.
+
+help.desc=\tS\u00fag\u00f3inform\u00e1ci\u00f3kat jelen\u00edt meg a megadott m\u0171veletr\u0151l.
+
+help.usage.options=\t{0} help [m\u0171veletn\u00e9v]
+
+#------------------------------------------------------------------------------
+# generate operation options (generateWebServerPluginTask)
+#------------------------------------------------------------------------------
+generateWebServerPluginTask.required-option-key.serverName=\ \ \ \ <kiszolg\u00e1l\u00f3n\u00e9v>
+generateWebServerPluginTask.required-option-desc.serverName=\tNem k\u00f6telez\u0151. A helyi WebSphere Liberty kiszolg\u00e1l\u00f3 neve,\n\
+\tamelyhez a webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt el\u0151 kell \u00e1ll\u00edtani. Ha a \n\
+\t<kiszolg\u00e1l\u00f3n\u00e9v> nincs megadva, akkor a "defaultServer" ker\u00fcl felhaszn\u00e1l\u00e1sra a\n\
+\t<kiszolg\u00e1l\u00f3n\u00e9v> helyett. Ha a kiszolg\u00e1l\u00f3 nem fut, akkor elindul, majd\n\
+\ta bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl el\u0151\u00e1ll\u00edt\u00e1sa ut\u00e1n le\u00e1ll.
+
+generateWebServerPluginTask.required-option-key.targetPath=\ \ \ \ --targetPath=\u00fatvonal
+generateWebServerPluginTask.required-option-desc.targetPath=\tNem k\u00f6telez\u0151. A k\u00f6nyvt\u00e1r \u00e9rv\u00e9nyes \u00fatvonala, ahol a \n\
+\twebkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt el\u0151 kell \u00e1ll\u00edtani. Ha a \n\
+\t--targetPath \u00e9rt\u00e9ke nincs megadva, akkor az aktu\u00e1lis munkak\u00f6nyvt\u00e1r ker\u00fcl felhaszn\u00e1l\u00e1sra.
+
+generateWebServerPluginTask.usage.options=\t{0} get [param\u00e9terek]
+
+generateWebServerPluginTask.desc=\tEl\u0151\u00e1ll\u00edtja a webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt\n\
+\ta megadott WebSphere Liberty kiszolg\u00e1l\u00f3hoz.
+
+#------------------------------------------------------------------------------
+# merge operation options (MergePluginFilesTask)
+#------------------------------------------------------------------------------
+MergePluginFilesTask.usage.options=\t{0} merge [param\u00e9terek]
+
+MergePluginFilesTask.required-option-key.sourcePath=\ \ \ \ --sourcePath=k\u00f6nyvt\u00e1r|(bedolgoz\u00f3 f\u00e1jlok vessz\u0151vel elv\u00e1lasztott list\u00e1ja)
+MergePluginFilesTask.required-option-desc.sourcePath=\tK\u00f6telez\u0151. Az \u00f6sszes bedolgoz\u00f3f\u00e1jlt tartalmaz\u00f3 forr\u00e1sk\u00f6nyvt\u00e1r helye,\n\
+\tvagy a forr\u00e1s bedolgoz\u00f3f\u00e1jlok neveinek vessz\u0151vel elv\u00e1lasztott list\u00e1ja a \n\
+\tkapcsol\u00f3d\u00f3 teljes f\u00e1jl\u00fatvonallal.
+
+MergePluginFilesTask.required-option-key.targetPath=\ \ \ \ --targetPath=k\u00f6nyvt\u00e1r|(f\u00e1jln\u00e9v a teljes k\u00f6nyvt\u00e1r\u00fatvonallal)
+MergePluginFilesTask.required-option-desc.targetPath=\tNem k\u00f6telez\u0151. Alap\u00e9rtelmez\u00e9s szerint az \u00f6sszef\u00e9s\u00fclt konfigur\u00e1ci\u00f3s f\u00e1jl\n\
+\taz aktu\u00e1lis k\u00f6nyvt\u00e1rban ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra merged-plugin-cfg.xml n\u00e9ven. A felhaszn\u00e1l\u00f3k\n\
+\tmegadhatj\u00e1k a k\u00f6nyvt\u00e1r nev\u00e9t, ahol a merged-plugin-cfg.xml f\u00e1jlt el kell helyezni, \n\
+\tvagy megadhatnak egy teljes k\u00e9pz\u00e9s\u0171 f\u00e1jlnevet. Amennyiben m\u00e1r van ott egy\n\
+\tmerged-plugin-cfg.xml nev\u0171 f\u00e1jl, vagy l\u00e9tezik a megadott nev\u0171 f\u00e1jl, \n\
+\takkor a f\u00e1jl tartalma fel\u00fcl\u00edr\u00e1sra\n\
+\tker\u00fcl.
+
+MergePluginFilesTask.desc=\t\u00d6sszef\u00e9s\u00fcli a webkiszolg\u00e1l\u00f3 bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlokat egyetlen f\u00e1jlba.
+
+#------------------------------------------------------------------------------
+# generate operation options (GeneratePluginTask)
+#------------------------------------------------------------------------------
+GeneratePluginTask.desc=\tEz a parancs bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlt \u00e1ll\u00edt el\u0151 \n\
+\talkalmaz\u00e1skiszolg\u00e1l\u00f3hoz vagy kiszolg\u00e1l\u00f3i f\u00fcrth\u00f6z. 
+
+GeneratePluginTask.usage.options=\t{0} generate [param\u00e9terek]
+
+
+GeneratePluginTask.required-option-key.serverLoginAddress=\ \ \ \ --server=<kiszolg\u00e1l\u00f3azonos\u00edt\u00f3>
+
+GeneratePluginTask.required-option-desc.serverLoginAddress=\tK\u00f6telez\u0151. \
+A kiszolg\u00e1l\u00f3nak futnia kell.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal1=\tHelyi kiszolg\u00e1l\u00f3 eset\u00e9n: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressLocal2=\t\tA kiszolg\u00e1l\u00f3 neve.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote1=\tT\u00e1voli kiszolg\u00e1l\u00f3 eset\u00e9n: 
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2=\t\t<felhaszn\u00e1l\u00f3>:<jelsz\u00f3>@<hoszt>:<port>
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.User=\n\
+\t\t<felhaszn\u00e1l\u00f3>: A c\u00e9lkiszolg\u00e1l\u00f3 egyik adminisztr\u00e1tora. A seg\u00e9dprogram\n\
+\t\tbek\u00e9ri az \u00e9rt\u00e9ket, ha nem adta meg. Ne haszn\u00e1ljon kett\u0151spontot (:) a\n\
+\t\t<felhaszn\u00e1l\u00f3> azonos\u00edt\u00f3j\u00e1ban.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Password=\n\
+\t\t<jelsz\u00f3>: A c\u00e9lkiszolg\u00e1l\u00f3 adminisztr\u00e1tor felhaszn\u00e1l\u00f3j\u00e1nak  \n\
+\t\tjelszava. A seg\u00e9dprogram k\u00e9tszer k\u00e9ri be az \u00e9rt\u00e9ket, ha nem adja meg. \n\
+\t\t A bevitt jelsz\u00f3 \u00e9rt\u00e9keknek egyezni\u00fck kell.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Host=\n\
+\t\t<hoszt>: A c\u00e9lkiszolg\u00e1l\u00f3 hosztja. Ne haszn\u00e1ljon @ szimb\u00f3lumot a \n\
+\t\thoszt \u00e9rt\u00e9k\u00e9ben. Ha hi\u00e1nyzik a hoszt \u00e9rt\u00e9ke, akkor a m\u0171velet sikertelen lesz.
+
+GeneratePluginTask.required-option-desc.serverLoginAddressRemote2.Port=\n\
+\t\t<port>: A c\u00e9lkiszolg\u00e1l\u00f3 portsz\u00e1ma. Ha hi\u00e1nyzik a port \u00e9rt\u00e9ke,\n\
+\t\takkor a m\u0171velet sikertelen lesz.
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress=\ \ \ \ --collective=<felhaszn\u00e1l\u00f3>:<jelsz\u00f3>@<hoszt>:<port>
+
+GeneratePluginTask.required-option-key.collectiveLoginAddress1=\ \ \ \ --collective=<kiszolg\u00e1l\u00f3azonos\u00edt\u00f3>
+
+GeneratePluginTask.required-option-key.cluster=\ \ \ \ --cluster=<f\u00fcrtn\u00e9v>
+GeneratePluginTask.required-option-desc.cluster=\tNem k\u00f6telez\u0151. A kiszolg\u00e1l\u00f3f\u00fcrt neve. Ha f\u00fcrtnevet ad meg,\n\
+\takkor a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sban egy\u00fcttes vez\u00e9rl\u0151t kell megadnia.  
+
+
+GeneratePluginTask.optional-option-key.targetPath=\ \ \ \ --targetPath=k\u00f6nyvt\u00e1r|(f\u00e1jln\u00e9v a teljes k\u00f6nyvt\u00e1r\u00fatvonallal)
+GeneratePluginTask.optional-option-desc.targetPath=\tNem k\u00f6telez\u0151. Alap\u00e9rtelmez\u00e9sben a bedolgoz\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl\n\
+\taz aktu\u00e1lis k\u00f6nyvt\u00e1rban ker\u00fcl el\u0151\u00e1ll\u00edt\u00e1sra <f\u00fcrtn\u00e9v>-plugin-cfg.xml n\u00e9ven, kiszolg\u00e1l\u00f3f\u00fcrt\n\
+\tvagy plugin-cfg.xml eset\u00e9ben. Megadhatja a f\u00e1jl t\u00e1rol\u00e1s\u00e1ra szolg\u00e1l\u00f3 k\u00f6nyvt\u00e1r nev\u00e9t, vagy \n\
+\tmeghat\u00e1rozhat egy teljes k\u00e9pz\u00e9s\u0171 f\u00e1jlnevet.\n\
+\tAz \u00faj f\u00e1jl fel\u00fcl\u00edrja a meg\u00e9l\u0151 f\u00e1jlt.
+
+GeneratePluginTask.optionl-option-key.local=\ \ \ \ --local
+
+GeneratePluginTask.optionl-option-desc.local=\tNem k\u00f6telez\u0151. \
+Azt jelzi, hogy a --server param\u00e9ter helyi kiszolg\u00e1l\u00f3t hat\u00e1roz meg.
+
+#------------------------------------------------------------------------------

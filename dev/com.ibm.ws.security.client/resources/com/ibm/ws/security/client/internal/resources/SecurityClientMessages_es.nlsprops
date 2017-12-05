@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.client/resources/com/ibm/ws/security/client/internal/resources/SecurityClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service for Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1167 - CWWKS1199
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1167E: La entrada jaasLoginContextEntry {0} no tiene m\u00f3dulos de inicio de sesi\u00f3n especificados en loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=La entrada jassLoginContextEntry no tiene m\u00f3dulos de inicio de sesi\u00f3n especificados en loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Aseg\u00farese de que al menos haya un m\u00f3dulo de inicio de sesi\u00f3n especificado en loginModuleRef.  
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1168W: loginModuleRef {0} no tiene definido ning\u00fan m\u00f3dulo de inicio de sesi\u00f3n personalizado JAAS.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=La autenticaci\u00f3n no se ha ejecutado correctamente porque no se ha definido ning\u00fan m\u00f3dulo de inicio de sesi\u00f3n para la referencia de m\u00f3dulo de inicio de sesi\u00f3n.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Compruebe que el elemento loginModuleRef tenga una propiedad loginModule configurada.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1169W: Debido al nombre duplicado, el nombre de jaasLoginContextEntry {0}, definido por el ID {1}, se sobrescribe con el valor del ID {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=Se ha definido el mismo nombre para m\u00e1s de una jassLoginContextEntry. Como resultado, el valor original se sobrescribe con otro valor.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Aseg\u00farese de que cada jaasLoginContextEntry tenga un ID y un nombre exclusivos.
+
+JAAS_LOGIN_NO_CALLBACK_HANDLER=CWWKS1170E: El inicio de sesi\u00f3n en la aplicaci\u00f3n cliente ha fallado porque la implementaci\u00f3n de CallbackHandler es nula. Aseg\u00farese de especificar una implementaci\u00f3n de CallbackHandler v\u00e1lida en el constructor LoginContext o en el descriptor de despliegue de la aplicaci\u00f3n cliente. 
+JAAS_LOGIN_NO_CALLBACK_HANDLER.explanation=El inicio de sesi\u00f3n en la aplicaci\u00f3n cliente ha fallado porque la clase que implementa la interfaz de CallbackHandler es nula. Puesto que no hay ning\u00fan CallbackHandler, no hay ninguna forma de recopilar las credenciales de un usuario que desea iniciar la sesi\u00f3n. Aseg\u00farese de especificar una implementaci\u00f3n de CallbackHandler v\u00e1lida en el constructor LoginContext o en el descriptor de despliegue de la aplicaci\u00f3n cliente.
+JAAS_LOGIN_NO_CALLBACK_HANDLER.useraction=Aseg\u00farese de especificar una implementaci\u00f3n de CallbackHandler v\u00e1lida como un argumento en el constructor LoginContext o en el descriptor de despliegue de la aplicaci\u00f3n cliente.
+
+JAAS_LOGIN_MISSING_CREDENTIALS=CWWKS1171E: El inicio de sesi\u00f3n en la aplicaci\u00f3n cliente ha fallado porque el nombre de usuario o la contrase\u00f1a es nulo/a. Aseg\u00farese de que la implementaci\u00f3n de CallbackHandler est\u00e9 recopilando las credenciales necesarias. 
+JAAS_LOGIN_MISSING_CREDENTIALS.explanation=El inicio de sesi\u00f3n en la aplicaci\u00f3n cliente ha fallado porque el nombre de usuario o la contrase\u00f1a es nulo/a. Aseg\u00farese de que la implementaci\u00f3n de CallbackHandler est\u00e9 recopilando las credenciales necesarias. El CallbackHandler puede especificarse en el constructor LoginContext o en el descriptor de despliegue de la aplicaci\u00f3n cliente.
+JAAS_LOGIN_MISSING_CREDENTIALS.useraction=Aseg\u00farese de que la implementaci\u00f3n de CallbackHandler est\u00e9 recopilando el nombre de usuario y la contrase\u00f1a.
+
+JAAS_LOGIN_UNEXPECTED_EXCEPTION=CWWKS1172E: El inicio de sesi\u00f3n en la aplicaci\u00f3n cliente ha fallado debido a una excepci\u00f3n inesperada. Revise los registros para comprender la causa de la excepci\u00f3n. La excepci\u00f3n es: {0}. 
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.explanation=El inicio de sesi\u00f3n en la aplicaci\u00f3n cliente ha fallado debido a una excepci\u00f3n inesperada. Revise los registros y las entradas FFDC para comprender el problema y corregir la causa de la excepci\u00f3n.
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.useraction=Revise los registros y las entradas FFDC para comprender el problema y corregir la causa de la excepci\u00f3n.

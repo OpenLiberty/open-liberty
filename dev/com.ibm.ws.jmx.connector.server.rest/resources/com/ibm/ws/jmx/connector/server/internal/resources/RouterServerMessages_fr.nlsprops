@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RouterServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX7851 - CWWKX7899
+
+jmx.connector.server.rest.router.ssl.exception=CWWKX7851E: Le contr\u00f4leur de collectivit\u00e9 n''a pas pu cr\u00e9er le contexte SSL lors de la tentative de routage d''une connexion jmx vers {0}.  L''exception est : {1}
+jmx.connector.server.rest.router.ssl.exception.explanation=Impossible de cr\u00e9er un contexte SSL avec le certificat SSL du serveur. 
+jmx.connector.server.rest.router.ssl.exception.useraction=V\u00e9rifiez la configuration SSL du serveur et renouvelez l'enregistrement du serveur aupr\u00e8s du contr\u00f4leur de collectivit\u00e9.
+
+jmx.connector.server.rest.router.jmxauth.node.not.found=CWWKX7852E: Les informations d''authentification JMX ne sont pas disponibles dans le r\u00e9f\u00e9rentiel du contr\u00f4leur de collectivit\u00e9 pour le serveur cible {0} sur l''h\u00f4te {1} \u00e0 l''emplacement {2}. 
+jmx.connector.server.rest.router.jmxauth.node.not.found.explanation=Les informations d'authentification JMX sont n\u00e9cessaires pour \u00e9tablir une connexion JMX au serveur cible sp\u00e9cifi\u00e9.
+jmx.connector.server.rest.router.jmxauth.node.not.found.useraction=Assurez-vous que l'amor\u00e7age du serveur cible a abouti sur le contr\u00f4leur de collectivit\u00e9.
+
+jmx.connector.server.rest.router.jmxauth.hostname.not.found=CWWKX7853E:  La propri\u00e9t\u00e9 de nom d''h\u00f4te des informations d''authentification JMX n''est pas disponible dans le r\u00e9f\u00e9rentiel du contr\u00f4leur de collectivit\u00e9 pour le serveur cible {0} sur l''h\u00f4te {1} dans le r\u00e9pertoire {2}.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.explanation=La propri\u00e9t\u00e9 de nom d'h\u00f4te des informations d'authentification JMX est n\u00e9cessaire pour \u00e9tablir une connexion JMX avec le serveur cible sp\u00e9cifi\u00e9.
+jmx.connector.server.rest.router.jmxauth.hostname.not.found.useraction=Assurez-vous que l'amor\u00e7age du serveur cible a abouti sur le contr\u00f4leur de collectivit\u00e9.
+
+jmx.connector.server.rest.router.jmxauth.port.not.found=CWWKX7854E: La propri\u00e9t\u00e9 de port des informations d''authentification JMX n''est pas disponible dans le r\u00e9f\u00e9rentiel du contr\u00f4leur de collectivit\u00e9 pour le serveur cible {0} sur l''h\u00f4te {1} dans le r\u00e9pertoire {2}.
+jmx.connector.server.rest.router.jmxauth.port.not.found.explanation=Le num\u00e9ro de port des informations d'authentification JMX est requis pour \u00e9tablir une connexion JMX avec le serveur cible indiqu\u00e9
+jmx.connector.server.rest.router.jmxauth.port.not.found.useraction=Assurez-vous que l'amor\u00e7age du serveur cible a abouti sur le contr\u00f4leur de collectivit\u00e9.
+
+jmx.connector.server.rest.router.ssl.keystore.error=CWWKX7855E: Le fichier de cl\u00e9s {0} obligatoire n''est pas configur\u00e9.
+jmx.connector.server.rest.router.ssl.keystore.error.explanation=Le fichier de cl\u00e9s obligatoire pour le routage JMX n'est pas configur\u00e9.
+jmx.connector.server.rest.router.ssl.keystore.error.useraction=Assurez-vous que le fichier de cl\u00e9s est indiqu\u00e9 dans le fichier server.xml.
+
+jmx.connector.server.rest.router.collectivePlugin.not.available=CWWKX7856E: Le programme de lecture de r\u00e9f\u00e9rentiel du contr\u00f4leur de collectivit\u00e9 n'est pas disponible.
+jmx.connector.server.rest.router.collectivePlugin.not.available.explanation=Le programme de lecture de r\u00e9f\u00e9rentiel du contr\u00f4leur de collectivit\u00e9 n'est pas d\u00e9marr\u00e9.
+jmx.connector.server.rest.router.collectivePlugin.not.available.useraction=V\u00e9rifiez la configuration du serveur et assurez-vous que les fonctions obligatoires pour le routage JMX sont pr\u00e9sentes.

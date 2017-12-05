@@ -21,7 +21,7 @@ src: \
 	test-bundles/TestBundleUsingJsonb/src,\
 	test-bundles/TestBundleUsingJsonp/src
 
-test.project: true
+fat.project: true
 
 -sub: *.bnd
 

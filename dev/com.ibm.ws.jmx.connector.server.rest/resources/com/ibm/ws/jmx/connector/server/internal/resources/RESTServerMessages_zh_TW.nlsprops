@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/RESTServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0100 - CWWKX0120
+
+jmx.connector.server.rest.notification.timeout.warning=CWWKX0101W: ID \u70ba {0} \u7684\u901a\u77e5\u7528\u6236\u7aef\u672a\u5728\u5bb9\u8a31\u7684\u6642\u9593\u5167\u63d0\u51fa\u4efb\u4f55\u8981\u6c42\uff0c\u56e0\u6b64\u5df2\u906d\u505c\u7528\u3002
+jmx.connector.server.rest.notification.timeout.warning.explanation= \u901a\u77e5\u7528\u6236\u7aef\u5fc5\u9808\u5728\u5bb9\u8a31\u7684\u6642\u9593\u5167\u63d0\u51fa\u8981\u6c42\u4ee5\u907f\u514d\u903e\u6642\u3002
+jmx.connector.server.rest.notification.timeout.warning.useraction= \u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u4ecd\u7136\u63a5\u53d7 HTTP \u8981\u6c42\u3002
+
+jmx.connector.server.rest.notification.limit.warning=CWWKX0102W: \u4f3a\u670d\u5668\u5df2\u9054\u5230\u5176\u4e26\u884c\u901a\u77e5\u7528\u6236\u7aef\u7684\u9650\u5236\u3002
+jmx.connector.server.rest.notification.limit.warning.explanation= \u53ef\u4ee5\u8a3b\u518a\u901a\u77e5\u7684\u4e26\u884c\u7528\u6236\u7aef\u6578\u76ee\u6709\u9650\u5236\u3002
+jmx.connector.server.rest.notification.limit.warning.useraction= \u8acb\u78ba\u4fdd\u901a\u77e5\u7528\u6236\u7aef\u662f\u78ba\u5be6\u7684\u800c\u4e14\u5fc5\u8981\u3002\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u5c07\u91cd\u8a2d\u6240\u6709\u7684\u901a\u77e5\u7528\u6236\u7aef\u3002
+
+JMX_REST_ADDRESS=CWWKX0103I: JMX REST \u9023\u63a5\u5668\u57f7\u884c\u4e2d\uff0c\u53ef\u5f9e\u4e0b\u5217\u670d\u52d9 URL \u53d6\u5f97\uff1a{0}
+JMX_REST_ADDRESS.explanation=\u73fe\u5728 JMX REST \u9023\u63a5\u5668\u5df2\u5099\u59a5\uff0c\u53ef\u5f9e\u7d66\u5b9a\u7684\u670d\u52d9 URL \u5b58\u53d6\u3002
+JMX_REST_ADDRESS.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR=CWWKX0104W: ID \u70ba {0} \u7684\u901a\u77e5\u7528\u6236\u7aef\u5df2\u9054\u5176\u4e26\u884c MBean \u63a5\u807d\u5668\u767b\u9304\u9650\u5236\u3002
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.explanation= \u901a\u77e5\u7528\u6236\u7aef\u5177\u6709\u7684\u4e26\u884c MBean \u63a5\u807d\u5668\u767b\u9304\u5df2\u9054\u5bb9\u8a31\u7684\u6578\u76ee\u4e0a\u9650\u3002
+JMX_HTTP_MBEAN_LISTENER_LIMIT_ERROR.useraction= \u8acb\u78ba\u5b9a\u73fe\u884c MBean \u63a5\u807d\u5668\u767b\u9304\u662f\u552f\u4e00\u4e14\u5fc5\u8981\u7684\u3002\u8acb\u79fb\u9664\u4e0d\u5fc5\u8981\u7684 MBean \u63a5\u807d\u5668\u767b\u9304\uff0c\u6216\u5efa\u7acb\u65b0\u7684\u901a\u77e5\u7528\u6236\u7aef\u3002

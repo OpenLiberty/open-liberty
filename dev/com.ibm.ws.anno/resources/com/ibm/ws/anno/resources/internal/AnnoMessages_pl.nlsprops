@@ -1,0 +1,411 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.anno/resources/com/ibm/ws/anno/resources/internal/AnnoMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Annotation Scan and Infostore Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# Base Anno scanning layer: 0001 to 0250   com.ibm.ws.anno.resources.internal.AnnoMessages
+# -------------------------------------------------------------------------------------------------
+#
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The class name of the resource
+# # {2} the hashcode id of the resource
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: Zamkni\u0119cie klasy \u017ar\u00f3d\u0142owej [{1}] dla zasobu o identyfikatorze [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=Zamkni\u0119cie zasobu spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the resource
+# # {2} the name of the class associated with the resource
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: Zamkni\u0119cie zasobu [{1}] dla klasy [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=Zamkni\u0119cie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the resource, includes the full path to the class
+# # {2} the name of the class associated with the resource
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: Otwarcie zasobu [{1}] dla klasy [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Otwarcie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} file name
+# # {2} a class name
+# # {3} a file name
+# # {4} the file path name of {1}
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION=CWWKC0004W: Przekszta\u0142cenie pliku [{1}] jako klasy [{2}] w katalogu g\u0142\u00f3wnym pliku [{3}] dla przedrostka [{4}] nie powiod\u0142o si\u0119. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 pliku w obiekt nowego typu.
+ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the item
+# # {3} the name of the container that holds item
+# # {4} the name of the class
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: Otwarcie zasobu [{1}] jako elementu [{2}] w kontenerze g\u0142\u00f3wnym [{3}] dla klasy [{4}] nie powiod\u0142o si\u0119. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=Otwarcie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the container that holds item
+# # {3} the name of the class
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND=CWWKC0006W: Nie znaleziono wpisu [{1}] w kontenerze g\u0142\u00f3wnym [{2}] dla klasy [{3}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.explanation=Zas\u00f3b nie zosta\u0142 znaleziony w kontenerze g\u0142\u00f3wnym.
+ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=Sprawd\u017a, czy \u015bcie\u017cka do zasobu dla klasy istnieje w kontenerze.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} the name of the item
+# # {3} the name of the container that holds item
+# # {4} the name of the class
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: Zamkni\u0119cie zasobu [{1}] jako elementu [{2}] w kontenerze g\u0142\u00f3wnym [{3}] dla klasy [{4}] nie powiod\u0142o si\u0119. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Pr\u00f3ba zamkni\u0119cia strumienia wej\u015bciowego dla klasy spowodowa\u0142a wyj\u0105tek.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a directory name
+# # {2} the path for the directory
+ANNO_CLASSSOURCE_EMPTY_DIR=CWWKC0008W: W katalogu [{1}] w \u015bcie\u017cce [{2}] nie znaleziono \u017cadnych plik\u00f3w. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_EMPTY_DIR.explanation=Dla katalogu docelowego wywo\u0142ano skanowanie adnotacji, ale nie znaleziono w nim \u017cadnych plik\u00f3w klasy.
+ANNO_CLASSSOURCE_EMPTY_DIR.useraction=Sprawd\u017a, czy katalog powinien zawiera\u0107 klasy. Usu\u0144 puste katalogi z aplikacji.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name, class name plus path
+# # {2} a file path
+# # {3} the name of the container for {1}
+# # {4} the name of the class
+ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: Zas\u00f3b [{1}] zosta\u0142 znaleziony jako katalog [{2}] w kontenerze g\u0142\u00f3wnym [{3}] dla klasy [{4}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_NOT_FILE.explanation=Oczekiwano, \u017ce zas\u00f3b b\u0119dzie plikiem, a okaza\u0142o si\u0119, \u017ce jest katalogiem. 
+ANNO_CLASSSOURCE_NOT_FILE.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a file path
+# # {2} the resource name, class name plus path
+# # {3} a directory name
+# # {4} the name of the class
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: Nie powiod\u0142o si\u0119 otwarcie pliku [{1}] dla zasobu [{2}] w katalogu g\u0142\u00f3wnym [{3}] dla klasy [{4}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Pr\u00f3ba otwarcia strumienia wej\u015bciowego dla pliku spowodowa\u0142a wyj\u0105tek.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a directory path
+# # {3} a class name
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: Nie powiod\u0142o si\u0119 zamkni\u0119cie zasobu [{1}] w katalogu g\u0142\u00f3wnym [{2}] dla klasy [{3}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=Zamkni\u0119cie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a jar file path name
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: Otwarcie pliku [{1}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Plik by\u0142 otwierany jako plik JarFile, co spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of the jar file
+# # {2} A number, the value of the 'open counter'
+ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: Stan licznika otwar\u0107 [{2}] pliku JAR [{1}] jest niepoprawny dla zamkni\u0119cia. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Liczba aktywnych u\u017cytkownik\u00f3w pliku JAR nie jest zgodna ze stanem pliku JAR.
+ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
+                        
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the name of a jar file
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: Zamkni\u0119cie pliku [{1}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Pr\u00f3ba zamkni\u0119cia obiektu JarFile spowodowa\u0142a wyst\u0105pienie wyj\u0105tku.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} a jar file path 
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: Otwarcie zasobu [{1}] dla klasy [{2}] w \u015bcie\u017cce [{3}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=Wykryto wpis dla klasy w pliku JAR, ale utworzenie strumienia wej\u015bciowego dla klasy spowodowa\u0142o wyj\u0105tek.  
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} a jar file path 
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: Zamkni\u0119cie zasobu [{1}] dla klasy [{2}] w \u015bcie\u017cce [{3}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Zamkni\u0119cie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a java class name
+# # {2} a method name
+ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: Adnotacja [{0}] klasy adnotacji [{1}] nie zawiera metody [{2}].
+ANNO_ANNOINFO_NO_METHOD.explanation=Nie mo\u017cna znale\u017a\u0107 zgodnej metody dla parametru w kodowanej adnotacji.
+ANNO_ANNOINFO_NO_METHOD.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS1=CWWKC0018W: Obiekt [{1}] jest ju\u017c odr\u0119bn\u0105 klas\u0105 Java [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_EXISTS1.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
+ANNO_CLASSINFO_EXISTS1.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS2=CWWKC0019W: Obiekt [{1}] jest ju\u017c klas\u0105 Java. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_EXISTS2.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
+ANNO_CLASSINFO_EXISTS2.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS3=CWWKC0020W: Obiekt [{1}] jest ju\u017c odr\u0119bn\u0105 klas\u0105 z adnotacjami [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_EXISTS3.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
+ANNO_CLASSINFO_EXISTS3.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+ANNO_CLASSINFO_EXISTS4=CWWKC0021W: Obiekt [{1}] jest ju\u017c klas\u0105 z adnotacjami. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_EXISTS4.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
+ANNO_CLASSINFO_EXISTS4.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the name of a class
+ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: Skanowanie klasy [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat: [{2}]. Przyczyna: [{3}].
+ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=Skanowanie klasy w poszukiwaniu adnotacji spowodowa\u0142o wyj\u0105tek.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: Dodanie obiektu [{1}] nadpisuje istniej\u0105cy obiekt [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_METHODEXISTS.explanation=Obiekt metody dla klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
+ANNO_CLASSINFO_METHODEXISTS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.     
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a hash id used to identify the object
+# # {2} a hash id used to identify the object
+ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: Dodanie obiektu [{1}] nadpisuje istniej\u0105cy obiekt [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_FIELDEXISTS.explanation=Obiekt pola dla klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
+ANNO_CLASSINFO_FIELDEXISTS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.     
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class 
+ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: Nie znaleziono klasy [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Proces skanowania adnotacji nie m\u00f3g\u0142 rozstrzygn\u0105\u0107 klasy. Problem ten mo\u017ce zosta\u0107 rozwi\u0105zany przez p\u00f3\u017aniejsz\u0105 pr\u00f3b\u0119 rozstrzygni\u0119cia klasy.
+ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Sprawd\u017a, czy klasa jest uwzgl\u0119dniona w aplikacji lub w \u015bcie\u017cce klasy aplikacji.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+# # {2} The error message from the exception
+ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: Otwarcie obiektu [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat: {2}
+ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=Otwarcie obiektu \u017ar\u00f3d\u0142owego klasy spowodowa\u0142o wyj\u0105tek.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: Zamkni\u0119cie obiektu [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=Zamkni\u0119cie obiektu \u017ar\u00f3d\u0142owego klasy spowodowa\u0142o wyj\u0105tek.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+       
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the full resource name for the class
+# # {2} The class name
+ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: Otwarcie strumienia wej\u015bciowego zasobu [{1}] dla klasy [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by otwarcia strumienia wej\u015bciowego dla klasy przez proces skanowania adnotacji. 
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+            
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the full resource name for the class
+# # {2} The class name
+ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: Zamkni\u0119cie strumienia wej\u015bciowego zasobu [{1}] dla klasy [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by zamkni\u0119cia strumienia wej\u015bciowego dla klasy przez proces skanowania adnotacji.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} The class name
+# # {1} the full resource name for the class
+ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: Utworzenie programu czytaj\u0105cego klasy dla klasy [{0}] z zasobu [{1}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku.
+ANNO_CREATE_READER_EXCEPTION.explanation=Proces skanowania adnotacji tworzy\u0142 program czytaj\u0105cy klasy, aby przetworzy\u0107 strumie\u0144 wej\u015bciowy dla zasobu, i spowodowa\u0142o to wyj\u0105tek.
+ANNO_CREATE_READER_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a parameter name
+# # {2} a parameter value
+ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Wewn\u0119trzny b\u0142\u0105d stanu: Go\u015b\u0107 [{0}] ustawi\u0142 parametr [{1}] na warto\u015b\u0107 [{2}].
+ANNO_INFOVISIT_INVALID_STATE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania adnotacji. Obiekt go\u015bcia jest niepoprawny.
+ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001
+                    
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET1=CWWKC0032W: Istniej\u0105 pozosta\u0142o\u015bci pakietu [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_RESET1.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
+ANNO_INFOVISITOR_RESET1.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET2=CWWKC0033W: Istniej\u0105 pozosta\u0142o\u015bci klasy [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_RESET2.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
+ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET3=CWWKC0034W: Istniej\u0105 pozosta\u0142o\u015bci metody [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_RESET3.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
+ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
+                
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object that exists
+ANNO_INFOVISITOR_RESET4=CWWKC0035W: Istniej\u0105 pozosta\u0142o\u015bci pola [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_RESET4.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
+ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
+   
+# # {0} A hashcode id used to identify the object emitting the message
+ANNO_INFOVISITOR_RESET5=CWWKC0036W: Istniej\u0105 pozosta\u0142o\u015bci stanu wstrzymania. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_RESET5.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
+ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class
+ANNO_INFOVISITOR_RESET6=CWWKC0037W: Istniej\u0105 pozosta\u0142o\u015bci nazwy klasy zewn\u0119trznej [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_RESET6.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
+ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
+                                       
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class package
+ANNO_INFOVISITOR_VISIT1=CWWKC0038W: Pakiet o nazwie [{1}] ma warto\u015b\u0107 NULL. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_VISIT1.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu podczas przetwarzania skanowania adnotacji.
+ANNO_INFOVISITOR_VISIT1.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class field
+ANNO_INFOVISITOR_VISIT2=CWWKC0039W: Nie znaleziono obiektu pola o nazwie [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_VISIT2.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu podczas przetwarzania skanowania adnotacji.
+ANNO_INFOVISITOR_VISIT2.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The name of a class method
+ANNO_INFOVISITOR_VISIT3=CWWKC0040W: Nie znaleziono obiektu metody o nazwie [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_VISIT3.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu podczas przetwarzania skanowania adnotacji.
+ANNO_INFOVISITOR_VISIT3.useraction=CMSG0002
+
+# # {0} A hashcode id used to identify the object emitting the message
+ANNO_INFOVISITOR_VISIT4=CWWKC0041W: Nie mo\u017cna zidentyfikowa\u0107 obiektu go\u015bcia. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_INFOVISITOR_VISIT4.explanation=CMSG0001
+ANNO_INFOVISITOR_VISIT4.useraction=CMSG0002
+
+
+ANNO_CLASSINFO_INTERFACE_LATE_ADD=CWWKC0042W: B\u0142\u0105d wewn\u0119trzny: Interfejs [{1}] zosta\u0142 dodany do klasy [{0}] po rozstrzygni\u0119ciu interfejs\u00f3w klasy.
+ANNO_CLASSINFO_INTERFACE_LATE_ADD.explanation=CMSG0001
+ANNO_CLASSINFO_INTERFACE_LATE_ADD.useraction=CMSG0002
+
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD=CWWKC0043W: B\u0142\u0105d wewn\u0119trzny nieop\u00f3\u017anionej klasy.  Interfejs [{1}] zosta\u0142 dodany do klasy [{0}] poza zwyk\u0142ymi krokami przetwarzania.
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.explanation=CMSG0001
+ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
+
+ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Wyst\u0105pi\u0142 wyj\u0105tek podczas skanowania danych klasy i adnotacji. Wyj\u0105tek: {0}.
+ANNO_TARGETS_SCAN_EXCEPTION.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas skanowania danych klasy i adnotacji.  Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Wyst\u0105pi\u0142 wyj\u0105tek podczas ko\u0144czenia zapisywania danych klasy i adnotacji.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas ko\u0144czenia zapisywania danych klasy i adnotacji.  Pami\u0119\u0107 podr\u0119czna danych klasy i adnotacji mo\u017ce by\u0107 niekompletna i powinna zosta\u0107 wyczyszczona.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania danych adnotacji.
+ANNO_TARGETS_READ_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas odczytywania danych klasy i adnotacji.  Dalsze przetwarzanie mo\u017ce prowadzi\u0107 do niepoprawnych wynik\u00f3w, poniewa\u017c odczytane zosta\u0142y niekompletne dane.  Pami\u0119\u0107 podr\u0119czna danych klasy i adnotacji powinna zosta\u0107 wyczyszczona.
+ANNO_TARGETS_READ_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Wyst\u0105pi\u0142 wyj\u0105tek podczas zapisywania danych adnotacji.
+ANNO_TARGETS_WRITE_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas zapisywania danych klasy i adnotacji.  Wy\u015bwietlony wiersz nie zosta\u0142 pomy\u015blnie zapisany w danych klasy i adnotacji.  Pami\u0119\u0107 podr\u0119czna danych klasy i adnotacji mo\u017ce by\u0107 niekompletna i powinna zosta\u0107 wyczyszczona.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Wyst\u0105pi\u0142 wyj\u0105tek podczas skanowania klasy [{0}] w poszukiwaniu informacji o klasie i adnotacjach.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas pr\u00f3by skanowania klasy w poszukiwaniu informacji o klasie i adnotacjach.  Przejrzyj wskazan\u0105 klas\u0119, aby sprawdzi\u0107, czy mo\u017ce zosta\u0107 odczytana i czy zawiera poprawne bajty klasy.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Wyst\u0105pi\u0142 wyj\u0105tek podczas tworzenia programu czytaj\u0105cego kod bajtowy klasy [{0}].
+ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Wyst\u0105pi\u0142 problem podczas przygotowywania programu czytaj\u0105cego kod bajtowy klasy.  Warto\u015bci kodu bajtowego dla klasy mog\u0105 by\u0107 niepoprawne lub nie mo\u017cna odczyta\u0107 pliku klasy.  Z tego powodu informacje o klasie i adnotacjach klasy nie b\u0119d\u0105 dost\u0119pne, a modu\u0142, kt\u00f3ry u\u017cywa klasy, mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_TARGETS_FAILED_TO_CREATE_READER.useraction=Przejrzyj tre\u015b\u0107 pliku klasy, kt\u00f3ry spowodowa\u0142 b\u0142\u0105d.  W razie potrzeby zast\u0105p plik klasy plikiem z poprawnym kodem bajtowym.  Wi\u0119cej informacji zawiera tre\u015b\u0107 wyj\u0105tku i powi\u0105zany komunikat FFDC.
+
+ANNO_TARGETS_RESIDUAL_PACKAGE=CWWKC0050W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] wskazuje niewyczyszczon\u0105 nazw\u0119 pakietu [{2}] podczas skanowania klasy [{1}].
+ANNO_TARGETS_RESIDUAL_PACKAGE.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_PACKAGE.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_CLASS=CWWKC0051W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] wskazuje niewyczyszczon\u0105 nazw\u0119 klasy [{2}] podczas skanowania klasy [{1}].
+ANNO_TARGETS_RESIDUAL_CLASS.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_CLASS.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_METHOD=CWWKC0052W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] wskazuje niewyczyszczon\u0105 nazw\u0119 metody [{2}] podczas skanowania klasy [{1}].
+ANNO_TARGETS_RESIDUAL_METHOD.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_METHOD.useraction=CMSG0002
+
+ANNO_TARGETS_RESIDUAL_FIELD=CWWKC0053W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] wskazuje niewyczyszczon\u0105 nazw\u0119 pola [{2}] podczas skanowania klasy [{1}].
+ANNO_TARGETS_RESIDUAL_FIELD.explanation=CMSG0001
+ANNO_TARGETS_RESIDUAL_FIELD.useraction=CMSG0002
+
+ANNO_TARGETS_DUPLICATE_PACKAGE=CWWKC0054W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] podj\u0105\u0142 pr\u00f3b\u0119 drugiego przeskanowania pakietu [{1}].
+ANNO_TARGETS_DUPLICATE_PACKAGE.explanation=CMSG0001
+ANNO_TARGETS_DUPLICATE_PACKAGE.useraction=CMSG0002
+
+ANNO_TARGETS_DUPLICATE_CLASS=CWWKC0055W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] podj\u0105\u0142 pr\u00f3b\u0119 drugiego przeskanowania klasy [{1}].
+ANNO_TARGETS_DUPLICATE_CLASS.explanation=CMSG0001
+ANNO_TARGETS_DUPLICATE_CLASS.useraction=CMSG0002
+
+ANNO_TARGETS_UNEXPECTED_NULL=CWWKC0056W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Go\u015b\u0107 [{0}] ma nieoczekiwan\u0105 warto\u015b\u0107 NULL.
+ANNO_TARGETS_UNEXPECTED_NULL.explanation=CMSG0001
+ANNO_TARGETS_UNEXPECTED_NULL.useraction=CMSG0002
+
+ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Niesp\u00f3jno\u015b\u0107 danych wewn\u0119trznych: Dwukierunkowe odwzorowanie [{0}] niesp\u00f3jnie odwzorowa\u0142o klucz [{1}] na warto\u015b\u0107 [{2}].  Wynikiem dodania klucza jest [{3}], podczas gdy wynikiem dodania warto\u015bci jest [{4}].  Wyniki powinny by\u0107 takie same. 
+ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
+ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
+
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: Tabela \u0142a\u0144cuch\u00f3w [{0}] napotka\u0142a b\u0142\u0105d podczas przetwarzania warto\u015bci [{1}] o typie [{2}].  Warto\u015b\u0107 nie powinna zawiera\u0107 znaku uko\u015bnika odwrotnego (\\).
+ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=Warto\u015b\u0107 jest niepoprawna dla oczekiwanego dla niej u\u017cycia.  Warto\u015b\u0107 nie mo\u017ce zosta\u0107 poprawnie przetworzona.  Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Dane modu\u0142u powinny zosta\u0107 przeanalizowane, aby sprawdzi\u0107 poprawno\u015b\u0107 podanej warto\u015bci.
+
+ANNO_UTIL_UNEXPECTED_CLASS=CWWKC0059W: Tabela \u0142a\u0144cuch\u00f3w [{0}] napotka\u0142a b\u0142\u0105d podczas przetwarzania warto\u015bci [{1}] o typie [{2}].  Warto\u015b\u0107 nie powinna ko\u0144czy\u0107 si\u0119 \u0142a\u0144cuchem .class.
+ANNO_UTIL_UNEXPECTED_CLASS.explanation=Warto\u015b\u0107 jest niepoprawna dla oczekiwanego dla niej u\u017cycia.  Warto\u015b\u0107 nie mo\u017ce zosta\u0107 poprawnie przetworzona.  Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_UTIL_UNEXPECTED_CLASS.useraction=Dane modu\u0142u powinny zosta\u0107 przeanalizowane, aby sprawdzi\u0107 poprawno\u015b\u0107 podanej warto\u015bci.
+
+ANNO_UTIL_EXPECTED_CLASS=CWWKC0060W: Tabela \u0142a\u0144cuch\u00f3w [{0}] napotka\u0142a b\u0142\u0105d podczas przetwarzania warto\u015bci [{1}] o typie [{2}].  Warto\u015b\u0107 powinna ko\u0144czy\u0107 si\u0119 \u0142a\u0144cuchem .class.
+ANNO_UTIL_EXPECTED_CLASS.explanation=Warto\u015b\u0107 jest niepoprawna dla oczekiwanego dla niej u\u017cycia.  Warto\u015b\u0107 nie mo\u017ce zosta\u0107 poprawnie przetworzona.  Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_UTIL_EXPECTED_CLASS.useraction=Dane modu\u0142u powinny zosta\u0107 przeanalizowane, aby sprawdzi\u0107 poprawno\u015b\u0107 podanej warto\u015bci.
+
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH=CWWKC0061W: Tabela \u0142a\u0144cuch\u00f3w [{0}] napotka\u0142a b\u0142\u0105d podczas przetwarzania warto\u015bci [{1}] o typie [{2}].  Warto\u015b\u0107 nie powinna zawiera\u0107 znaku uko\u015bnika (//).
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH.explanation=Warto\u015b\u0107 jest niepoprawna dla oczekiwanego dla niej u\u017cycia.  Warto\u015b\u0107 nie mo\u017ce zosta\u0107 poprawnie przetworzona.  Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_UTIL_UNEXPECTED_FORWARD_SLASH.useraction=Dane modu\u0142u powinny zosta\u0107 przeanalizowane, aby sprawdzi\u0107 poprawno\u015b\u0107 podanej warto\u015bci.
+
+ANNO_UTIL_UNRECOGNIZED_TYPE=CWWKC0062W: Wewn\u0119trzny b\u0142\u0105d przetwarzania: Tabela \u0142a\u0144cuch\u00f3w [{0}] napotka\u0142a b\u0142\u0105d podczas przetwarzania warto\u015bci [{1}] o typie [{2}].  Nie mo\u017cna rozpozna\u0107 typu.
+ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001
+ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
+
+# #{0} A hashcode id used to identify the object emitting the message
+# #{1} The name of the java exception which occurred 
+# #{2} The class name of the resource being closed
+# #{3} The hashcode id of the resource being closed
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: Usuwanie nadmiarowego wyj\u0105tku zamkni\u0119cia {1} z klasy {2} zasobu [{3}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by zamkni\u0119cia zasobu.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+
+# {0} The name of the class
+# {1} The name of the jar the class was in.
+ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: Nie mo\u017cna przetworzy\u0107 klasy {0} w pliku {1} na potrzeby adnotacji, poniewa\u017c plik jest prawdopodobnie uszkodzony.
+ANNO_TARGETS_CORRUPT_CLASS.explanation=Wyst\u0105pi\u0142 problem podczas odczytywania pliku klasy na potrzeby okre\u015blania, czy znajduj\u0105 si\u0119 w nim istotne adnotacje. Klasa jest prawdopodobnie niepoprawnym plikiem klasy. W rezultacie adnotacje z tej klasy nie zostan\u0105 rozpoznane.
+ANNO_TARGETS_CORRUPT_CLASS.useraction=W zale\u017cno\u015bci od istotno\u015bci klasy dla funkcjonowania aplikacji klasa mo\u017ce zosta\u0107 zast\u0105piona lub usuni\u0119ta albo mo\u017cna zignorowa\u0107 ten komunikat.

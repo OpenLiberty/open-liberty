@@ -1,0 +1,140 @@
+###############################################################################
+# Copyright (c) 1997, 2009 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/HpelMessages.nlsprops
+#COMPONENTPREFIX HPEL
+# Long proper prefix CWLHP
+#COMPONENTNAMEFOR HPEL IBM High Performance Extensible Logging
+#NLS_MESSAGEFORMAT_VAR
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+# AbstractBufferedLogFileWriter messages.
+HPEL_WrongBufferSizeValue=HPEL0101W: Dimensiunea de buffer {0} specificat\u0103 \u00een proprietatea sistem {1} nu este un num\u0103r. Se folose\u015fte {2} \u00een loc.
+HPEL_WrongBufferSizeValue.explanation=Dimensiunea de buffer specificat\u0103 nu a fost valid\u0103, se folose\u015fte \u00een schimb o dimensiune implicit\u0103
+HPEL_WrongBufferSizeValue.useraction=Dac\u0103 dimensiunea implicit\u0103 nu este optim\u0103, specifica\u0163i o dimensiune de buffer valid\u0103
+
+HPEL_WrongFlushPeriodValue=HPEL0102W: Perioada de epurare {0} specificat\u0103 \u00een proprietatea sistem {1} nu este un num\u0103r. Se folose\u015fte {2} \u00een loc.
+HPEL_WrongFlushPeriodValue.explanation=Perioada de epurare specificat\u0103 este nevalid\u0103, este utilizat\u0103 \u00een locul ei o perioad\u0103 implicit\u0103
+HPEL_WrongFlushPeriodValue.useraction=Dac\u0103 perioada de epurare implicit\u0103 nu este optim\u0103, specifica\u0163i o perioad\u0103 de epurare valid\u0103
+
+HPEL_ExceptionInPeriodicFlush=HPEL0103W: Excep\u0163ie \u00een timpul epur\u0103rii periodice a fluxului istoric.
+HPEL_ExceptionInPeriodicFlush.explanation=O excep\u0163ie a ap\u0103rut \u00een timp ce se epura fluxul istoric pus \u00een buffer.  Cu mesajul sunt incluse detalii.
+HPEL_ExceptionInPeriodicFlush.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# AbstractHPELRepositoryExporter messages.
+HPEL_HeaderWithoutProcessId=HPEL0104E: Antetul nu con\u0163ine informa\u0163ii de ID proces. Verifica\u0163i c\u0103 proprietatea {0} este setat\u0103 acolo.
+HPEL_HeaderWithoutProcessId.explanation=Lipsesc informa\u0163ii din antet
+HPEL_HeaderWithoutProcessId.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingHeader=HPEL0105E: Excep\u0163ie \u00een timpul conversiei antetului \u00eentr-o matrice de octe\u0163i.
+HPEL_ErrorWhileSerializingHeader.explanation=Antetul istoricului nu a fost valid, codul de procesare nefiind \u00een stare s\u0103-l parseze \u015fi s\u0103-l converteasc\u0103.
+HPEL_ErrorWhileSerializingHeader.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_LogHeaderWasNotSet=HPEL0106E: Eroare invocare: \u00cencercare ilegal\u0103 de a exporta o \u00eenregistrare istoric \u00eenainte de a seta informa\u0163iile pentru proces.
+HPEL_LogHeaderWasNotSet.explanation=A ap\u0103rut o problem\u0103 de ordine proces \u015fi \u00eenregistr\u0103rile sunt scrise \u00eenainte de a fi gata sistemul de \u00eenregistrare \u00een istoric.
+HPEL_LogHeaderWasNotSet.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorWhileSerializingRecord=HPEL0107E: Excep\u0163ie \u00een timpul conversiei \u00eenregistr\u0103rii de istoric \u00eentr-o matrice de octe\u0163i.
+HPEL_ErrorWhileSerializingRecord.explanation=Informa\u0163iile de istoric nu au fost serializate corespunz\u0103tor. Informa\u0163iile excep\u0163iei sunt incluse \u00een eroare.
+HPEL_ErrorWhileSerializingRecord.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRecordBrowser messages.
+HPEL_NoRecordAtLocation=HPEL0108W: Nu s-au g\u0103sit \u00eenregistr\u0103ri la loca\u0163ia specificat\u0103.
+HPEL_NoRecordAtLocation.explanation=Loca\u0163ia specificat\u0103 ca director de istorice nu con\u0163ine niciun fi\u015fier cu \u00eenregistr\u0103ri
+HPEL_NoRecordAtLocation.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryBrowserImpl messages.
+HPEL_NotRepositoryLocation=HPEL0109E: Loca\u0163ia specificat\u0103 nu apar\u0163ine acestei magazii.
+HPEL_NotRepositoryLocation.explanation=Informa\u0163iile de magazie specificate sunt incorecte
+HPEL_NotRepositoryLocation.useraction=Reconsidera\u0163i informa\u0163iile de loca\u0163ie specificate \u015fi modifica\u0163i apelurile
+
+HPEL_NotRepositoryFileNoTimestamp=HPEL0110E: Fi\u015fierul "{0}" folosit \u00een argument nu apar\u0163ine acestei magazii. Nu se poate extrage amprenta de timp.
+HPEL_NotRepositoryFileNoTimestamp.explanation=Fi\u015fierul nu este un fi\u015fier legitim din magazie
+HPEL_NotRepositoryFileNoTimestamp.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_RepositoryFileMissing=HPEL0111W: Fi\u015fierul "{0}" lipse\u015fte din magazie. Cel mai probabil a fost \u00eenl\u0103turat de managerul de p\u0103strare.
+HPEL_RepositoryFileMissing.explanation=Fi\u015fierul a\u015fteptat a fost \u00eenl\u0103turat fie de managerul de loca\u0163ie, fie prin interven\u0163ie manual\u0103
+HPEL_RepositoryFileMissing.useraction=Dac\u0103 sunt dorite informa\u0163iile din fi\u015fier \u015fi fi\u015fierul a fost arhivat, pute\u0163i restaura informa\u0163iile.
+
+HPEL_NotRepositoryFileNoProcessId=HPEL0112E: Fi\u015fierul "{0}" folosit \u00een argument nu apar\u0163ine acestei magazii. Nu se poate extrage ID-ul de proces.
+HPEL_NotRepositoryFileNoProcessId.explanation=Informa\u0163iile de antet din fi\u015fier indic\u0103 faptul c\u0103 fi\u015fierul nu este un fi\u015fier \u00eentr-un format corect \u00een aceast\u0103 magazie.
+HPEL_NotRepositoryFileNoProcessId.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# LogRepositoryWriterImpl messages.
+HPEL_IncorrectSwitchHour=HPEL0113W: Valoarea specificat\u0103 {0} este incorect\u0103 pentru o or\u0103 din zi. Se va folosi \u00een schimb valoarea {1}.
+HPEL_IncorrectSwitchHour.explanation=Ora din zi specificat\u0103 este nevalid\u0103, este folosit\u0103 \u00een locul ei ora implicit\u0103
+HPEL_IncorrectSwitchHour.useraction=Dac\u0103 ora din zi nu este optim\u0103, specifica\u0163i o or\u0103 din zi valid\u0103
+
+# OneLogFileRecordIterator messages.
+HPEL_NoHeaderRecordInFileHead=HPEL0114E: A e\u015fuat citirea \u00eenregistr\u0103rii de antet la \u00eenceputul fi\u015fierului "{0}": {1}
+HPEL_NoHeaderRecordInFileHead.explanation=Fie fi\u015fierul nu are informa\u0163ii de antet valide, fie, c\u00e2nd este activat\u0103 punerea \u00een buffer, magazia creeaz\u0103 un nou fi\u015fier binar care este simultan accesat. 
+HPEL_NoHeaderRecordInFileHead.useraction=Aceasta poate fi o problem\u0103 de timpi. Lua\u0163i \u00een considerare rularea din nou a interog\u0103rii.  Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_NoRecordsInFile=HPEL0115E: Nu s-au g\u0103sit \u00eenregistr\u0103ri \u00een fi\u015fierul "{0}".
+HPEL_NoRecordsInFile.explanation=\u00cen acest moment fi\u015fierul este gol.  Acesta este un indicativ general a unui tip de eroare c\u00e2nd fi\u015fierele sunt create pentru c\u0103 exist\u0103 \u00eenregistr\u0103ri de memorat sau magazia creeaz\u0103 un nou fi\u015fier binar care este simultan accesat. 
+HPEL_NoRecordsInFile.useraction=Aceasta poate fi o problem\u0103 de timpi. Lua\u0163i \u00een considerare rularea din nou a interog\u0103rii.  Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInHeaderRecordSize=HPEL0116W: A e\u015fuat verificarea dimensiunii \u00eenregistr\u0103rii Antet istoric. Copia final\u0103 a unei dimensiuni a antetului \u00eenregistr\u0103rii ({0}) la offset-ul ({1}) estediferit de o copie de pornire ({2}). Aceasta poate indica o problem\u0103 cu fi\u015fierul istoric "{3}".
+HPEL_InconsistencyInHeaderRecordSize.explanation=Informa\u0163iile interne ale fi\u015fierului istoric indic\u0103 apari\u0163ia unei probleme posibile.
+HPEL_InconsistencyInHeaderRecordSize.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_InconsistencyInLogRecordSize=HPEL0117W: Copia de la coad\u0103 cu dimensiunea \u00eenregistr\u0103rii de mesaj ({0}) de la offset-ul ({1}) este diferit\u0103 de cea de la \u00eenceput ({2}). Aceasta poate indica o problem\u0103 cu fi\u015fierul istoric "{3}".
+HPEL_InconsistencyInLogRecordSize.explanation=Informa\u0163iile interne ale fi\u015fierului istoric indic\u0103 apari\u0163ia unei probleme posibile.
+HPEL_InconsistencyInLogRecordSize.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_OffsetBeyondFileSize=HPEL0118E: \u00cencercare incorect\u0103 de a pozi\u0163iona fluxul pentru fi\u015fierul "{0}" la offset-ul {1} care este peste dimensiunea sa: {2}.
+HPEL_OffsetBeyondFileSize.explanation=Cumva un offset dintr-un fi\u015fier este invalid (peste sf\u00e2r\u015fitul fi\u015fierului)
+HPEL_OffsetBeyondFileSize.useraction=Dac\u0103 acesta este un client scris local, revede\u0163i logica calculului pentru offset.  Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSettingFileOffset=HPEL0119E: \u00cencercare incorect\u0103 de a pozi\u0163iona fluxul pentru fi\u015fierul "{0}" la offset-ul {1} unde o \u00eenregistrate de istoric a fost citit\u0103 cu succes anterior: {2}.
+HPEL_ErrorSettingFileOffset.explanation=Aceasta pare o problem\u0103 cu pozi\u0163ionarea \u00een loca\u0163ia corespunz\u0103toare a fi\u015fierului.
+HPEL_ErrorSettingFileOffset.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingFileOffset=HPEL0120E: A e\u015fuat extragerea offset-ului curent din flux pentru fi\u015fierul "{0}": {2}.
+HPEL_ErrorReadingFileOffset.explanation=Aceasta pare o problem\u0103 cu pozi\u0163ionarea \u00een loca\u0163ia corespunz\u0103toare a fi\u015fierului. 
+HPEL_ErrorReadingFileOffset.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorReadingLogRecord=HPEL0121E: A e\u015fuat citirea \u00eenregistr\u0103rii de istoric din fi\u015fierul "{0}": {1}.
+HPEL_ErrorReadingLogRecord.explanation=Nu s-a putut citi o \u00eenregistrare din fi\u015fier
+HPEL_ErrorReadingLogRecord.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+HPEL_ErrorSkippingFailedLogRecord=HPEL0122E: Nu s-a putut s\u0103ri la urm\u0103toarea \u00eenregistrare dup\u0103 o eroare \u00een fi\u015fier "{0}": {1}.
+HPEL_ErrorSkippingFailedLogRecord.explanation=A ap\u0103rut o eroare la \u00eencercarea de repozi\u0163ionare \u00een fi\u015fier
+HPEL_ErrorSkippingFailedLogRecord.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# CompatZipRepositoryExporter and HPELZipRepositoryExporter message.
+HPEL_ErrorClosingZipStream=HPEL0123W: A ap\u0103rut o eroare \u00een timpul \u00eenchiderii unui flux zip.
+HPEL_ErrorClosingZipStream.explanation=A ap\u0103rut o eroare la \u00eenchiderrea unui flux.  Excep\u0163ia va include mai multe informa\u0163ii
+HPEL_ErrorClosingZipStream.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# RepositoryReaderImpl message.
+HPEL_RepositoryPointerNotInRepository=HPEL0124W: Pointer-ul de magazie specificat nu apar\u0163ine niciunei magazii. Cel mai probabil fi\u015fierul c\u0103tre care se indic\u0103 a fost \u015fters deja.
+HPEL_RepositoryPointerNotInRepository.explanation=Pointer-ul de magazie specificat nu apar\u0163ine niciunei magazii. Cel mai probabil fi\u015fierul c\u0103tre care se indic\u0103 a fost \u015fters deja.
+HPEL_RepositoryPointerNotInRepository.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Additional messages from OneLogFileRecordIterator
+HPEL_ErrorReadingLogRecordDoSkip=HPEL0125W: Nu s-a putut g\u0103si o \u00eenregistrare bun\u0103 la offset-ul {0}. Se sar {1} octe\u0163i p\u00e2n\u0103 la urm\u0103toarea \u00eenregistrare din fi\u015fierul {2}.
+HPEL_ErrorReadingLogRecordDoSkip.explanation=Nu s-a putut citi o \u00eenregistrare din fi\u015fier, \u00een timp ce fi\u015fierul poate con\u0163ine alte \u00eenregistr\u0103ri bune.
+HPEL_ErrorReadingLogRecordDoSkip.useraction=Examina\u0163i excep\u0163ia pentru a determina cauza r\u0103d\u0103cin\u0103. Asigura\u0163i-v\u0103 c\u0103 numele de fi\u015fier specificat este un nume de fi\u015fier valid. Asigura\u0163i-v\u0103 c\u0103 runtime-ul Serverului de aplica\u0163ii de\u0163ine permisiunea de a scrie \u00een directorul pentru fi\u015fierul de istoric service. Dac\u0103 aceasta nu rezolv\u0103 problema, verifica\u0163i informa\u0163iile cu privire la determinarea problemelor din cadrul paginii web de Suport server a WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for handling of PCI list
+IllegalArgInConstructingPatternLevel=HPEL0150W: Argumente ilegale \u00een construirea unui element \u00een lista restr\u00e2ns\u0103 {0}
+IllegalArgInConstructingPatternLevel.explanation=O nou\u0103 intrare \u00een lista restr\u00e2ns\u0103 a fost de format gre\u015fit
+IllegalArgInConstructingPatternLevel.useraction=Determina\u0163i dac\u0103 intrarea este din fi\u015fierul propriet\u0103\u0163i, sau cineva utilizeaz\u0103 API pentru a ad\u0103uga intr\u0103ri, apoi corecta\u0163i fi\u015fierul sau apelantul API
+
+InvalidPatternString=HPEL0151I: \u015eirul Model/Nivel {0} nu poate fi parsat corespunz\u0103tor \u00eentr-un model loggerName \u015fi un nivel
+InvalidPatternString.explanation=\u015eirul nu poate fi parsat \u00eentr-un loggerName \u015fi nivelul nu poate fi parsat
+InvalidPatternString.useraction=Determina\u0163i dac\u0103 intrarea este din fi\u015fierul propriet\u0103\u0163i, sau cineva utilizeaz\u0103 API pentru a ad\u0103uga intr\u0103ri, apoi corecta\u0163i fi\u015fierul sau apelantul API
+
+# Messages for file system space alarms
+HPEL_FileSystem_Space_Warning=HPEL0161W: Sistemul de fi\u015fiere la {0} are nevoie de {1} octe\u0163i pentru necesit\u0103\u0163ile de jurnalizare, dar i-au mai r\u0103mas doar {2} octe\u0163i.
+HPEL_FileSystem_Space_Warning.explanation=Configura\u0163iile de jurnalizare (\u00eenregistrare \u00een istoric) \u015fi de urm\u0103rire necesit\u0103 mai mult spa\u0163iu dec\u00e2t con\u0163ine curent acest sistem de fi\u015fiere.
+HPEL_FileSystem_Space_Warning.useraction=Cur\u0103\u0163ai spa\u0163iu \u00een sistemul de fi\u015fiere sau modifica\u0163i configura\u0163iile de jurnalizare \u015fi urm\u0103rire s\u0103 indice spre alt loc sau s\u0103 consume mai pu\u0163in spa\u0163iu.

@@ -346,26 +346,26 @@ public class SelfExtractRun extends SelfExtract {
                     Method m = clazz.getDeclaredMethod("attach", new Class[] { String.class });
                     Object result = m.invoke(null, new String[] { javaAgent.getAbsolutePath() });
                     if (result != null) {
-                        format("UNABLE_TO_ATTACH_AGENT", result);
+                        err("UNABLE_TO_ATTACH_AGENT", result);
                     }
                 } catch (MalformedURLException mue) {
-                    format("UNABLE_TO_ATTACH_AGENT", mue);
+                    err("UNABLE_TO_ATTACH_AGENT", mue);
                 } catch (ClassNotFoundException cnfe) {
-                    format("UNABLE_TO_ATTACH_AGENT", cnfe);
+                    err("UNABLE_TO_ATTACH_AGENT", cnfe);
                 } catch (NoSuchMethodException nsme) {
-                    format("UNABLE_TO_ATTACH_AGENT", nsme);
+                    err("UNABLE_TO_ATTACH_AGENT", nsme);
                 } catch (IllegalAccessException iae) {
-                    format("UNABLE_TO_ATTACH_AGENT", iae);
+                    err("UNABLE_TO_ATTACH_AGENT", iae);
                 } catch (InvocationTargetException ite) {
-                    format("UNABLE_TO_ATTACH_AGENT", ite.getCause());
+                    err("UNABLE_TO_ATTACH_AGENT", ite.getCause());
                 } catch (IOException ioe) {
-                    format("UNABLE_TO_ATTACH_AGENT", ioe);
+                    err("UNABLE_TO_ATTACH_AGENT", ioe);
                 }
             } else {
-                format("UNABLE_TO_FIND_TOOLS_JAR");
+                err("UNABLE_TO_FIND_TOOLS_JAR");
             }
         } else {
-            format("UNABLE_TO_FIND_JAVA_AGENT");
+            err("UNABLE_TO_FIND_JAVA_AGENT");
         }
     }
 
@@ -377,6 +377,7 @@ public class SelfExtractRun extends SelfExtract {
 
         // If WLP_JAR_DEBUG is set then we use 2 JVM's
         boolean result = System.getenv("WLP_JAR_DEBUG") == null;
+        boolean outputMessage=true;
 
         // If we can find any jvm.options files we use 2 JVM's
         if (result) {
@@ -389,6 +390,9 @@ public class SelfExtractRun extends SelfExtract {
             result &= !new File(serverDir, "configDropins/overrides/jvm.options").exists();
             // check ${wlp.install.dir}/etc
             result &= !new File(extractDir, "wlp/etc/jvm.options").exists();
+        } else if (outputMessage) {
+            out("RUN_IN_CHILD_JVM_DEBUG");
+            outputMessage = false;
         }
 
         // If on an IBM Java make sure -XX:+EnableHCR is configured since that is required to attach agent
@@ -401,6 +405,9 @@ public class SelfExtractRun extends SelfExtract {
                 vendor.toLowerCase().contains("ibm")) {
                 result = rt.getInputArguments().contains("-XX:+EnableHCR");
             }
+        } else if (outputMessage) {
+            out("RUN_IN_CHILD_JVM_JVM_OPTIONS");
+            outputMessage = false;
         }
 
         // Only run in 1 JVM if running on a Java SDK
@@ -414,6 +421,13 @@ public class SelfExtractRun extends SelfExtract {
             }
 
             result &= foundToolsJar;
+        } else if (outputMessage) {
+            out("RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE");
+            outputMessage = false;
+        }
+
+        if (!result && outputMessage) {
+            out("RUN_IN_CHILD_JVM_JRE");
         }
 
         return result;

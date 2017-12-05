@@ -1,0 +1,27 @@
+<server description="JavaEESec NoJavaEESec app FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsp-2.3</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+	<basicRegistry id="basic1" realm="NoJavaEESecRealm">
+		<user name="user1" password="s3cur1ty" />
+		<user name="user2" password="s3cur1ty" />
+		<group name="group1">
+			<member name="user1" />
+		</group>
+	</basicRegistry>
+
+ 	<application type="war" id="NoJavaEESec" name="NoJavaEESec" location="NoJavaEESec.war">
+ 		<application-bnd>
+			<security-role name="group1">
+				<group name="group1" />
+			</security-role>	
+		</application-bnd>
+	</application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

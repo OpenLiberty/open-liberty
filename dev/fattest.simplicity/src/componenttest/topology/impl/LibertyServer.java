@@ -32,9 +32,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.charset.Charset;
-import java.security.AccessController;
 import java.security.KeyStore;
-import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,12 +85,14 @@ import com.ibm.ws.fat.util.ACEScanner;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
+import componenttest.topology.utils.PrivHelper;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -105,167 +105,39 @@ public class LibertyServer implements LogMonitorClient {
 
     boolean runAsAWindowService = false;
 
-    protected static final String DEBUGGING_PORT = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("debugging.port");
-        }
-    });
-
+    protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
+    protected static final String DEBUGGING_PORT = PrivHelper.getProperty("debugging.port");
     protected static final boolean DEFAULT_PRE_CLEAN = true;
-
-    protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            // Default is true if not set.
-            return System.getProperty("default.clean.start", "true");
-        }
-    }));
-
+    protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
     protected static final boolean DEFAULT_VALIDATE_APPS = true;
+    protected static final String RELEASE_MICRO_VERSION = PrivHelper.getProperty("micro.version");
+    protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
     public static boolean validateApps = DEFAULT_VALIDATE_APPS;
 
-    protected static final String JAVA_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
-
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
-    protected static final boolean JAVA_VERSION_6 = javaInfo.majorVersion() == 6;
-    protected static final boolean JAVA_VERSION_8 = javaInfo.majorVersion() == 8;
-    protected static final boolean J9_JVM_RUN = javaInfo.vendor() == Vendor.IBM;
-    protected static final boolean HOTSPOT_JVM_RUN = javaInfo.vendor() == Vendor.SUN_ORACLE;
 
-    protected static final String MAC_RUN = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("fat.on.mac");
-        }
-    });
+    protected static final boolean GLOBAL_JAVA2SECURITY = PrivHelper.getBoolean("global.java2.sec");
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = PrivHelper.getBoolean("global.debug.java2.sec");
+    protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
+    protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
 
-    protected static final boolean IBM_JVM = javaInfo.vendor() == Vendor.IBM;
+    protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
+    protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
 
-    protected static final boolean ORACLE_JVM = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String vendor = System.getProperty("java.vendor");
-
-            if (vendor != null) {
-                return vendor.toLowerCase().contains("oracle");
-            }
-            return true;
-        }
-    });
-
-    protected static final boolean SUN_JVM = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String vendor = System.getProperty("java.vendor");
-
-            if (vendor != null) {
-                return vendor.toLowerCase().contains("sun");
-            }
-            return true;
-        }
-    });
-
-    protected static final String GLOBAL_TRACE = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String prop = System.getProperty("global.trace.spec");
-            return prop == null ? "" : prop.trim();
-        }
-    });
-
-    protected static final boolean GLOBAL_JAVA2SECURITY = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String prop = System.getProperty("global.java2.sec");
-            boolean java2security = false;
-            if (prop != null) {
-                Log.info(c, "<clinit>", "global.java2.sec=" + prop);
-                java2security = Boolean.parseBoolean(prop);
-            }
-            Log.info(c, "<clinit>", "GLOBAL_JAVA2SECURITY=" + java2security);
-            return java2security;
-        }
-    });
-
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String prop = System.getProperty("global.debug.java2.sec");
-            boolean java2security = false;
-            if (prop != null) {
-                Log.info(c, "<clinit>", "global.debug.java2.sec=" + prop);
-                java2security = Boolean.parseBoolean(prop);
-            }
-            return java2security;
-        }
-    });
-
-    protected static final String GLOBAL_JVM_ARGS = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String prop = System.getProperty("global.jvm.args");
-            return prop == null ? "" : prop.trim();
-        }
-    });
-    protected static final String TMP_DIR = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.io.tmpdir");
-        }
-    });
-
-    protected static final boolean DO_COVERAGE = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String fatCoverageString = System.getProperty("test.coverage");
-            boolean fatcoverage = false;
-            if (fatCoverageString != null) {
-                Log.info(c, "<clinit>", "test.coverage=" + fatCoverageString);
-                fatcoverage = Boolean.parseBoolean(fatCoverageString);
-            }
-            Log.info(c, "<clinit>", "DO_COVERAGE=" + fatcoverage);
-            return fatcoverage;
-        }
-    });
-
-    protected static final String JAVA_AGENT_FOR_JACOCO = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String agent = System.getProperty("javaagent.for.jacoco");
-            Log.info(c, "<clinit>", "JAVA_AGENT_FOR_JACOCO=" + agent);
-            return agent;
-        }
-    });
-
-    protected static final String RELEASE_MICRO_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String micro = System.getProperty("micro.version");
-            Log.info(c, "<clinit>", "RELEASE_MICRO_VERSION=" + micro);
-            return micro;
-        }
-    });
-
-    protected static final int SERVER_START_TIMEOUT = 30 * 1000;
-    protected static final int SERVER_STOP_TIMEOUT = 30 * 1000;
+    protected static final int SERVER_START_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 15 * 1000 : 30 * 1000;
+    protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
 
     // Increasing this from 50 seconds to 120 seconds to account for poorly performing code;
     // this timeout should only pop in the event of an unexpected failure of apps to start.
-    protected static final int LOG_SEARCH_TIMEOUT = 120 * 1000;
+    protected static final int LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     // Allow configuration updates to wait for messages in the log longer than other log
     // searches. Configuration updates may take some time on slow test systems.
-    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = 180 * 1000;
+    protected static final int LOG_SEARCH_TIMEOUT_CONFIG_UPDATE = FATRunner.FAT_TEST_LOCALRUN ? 18 * 1000 : 180 * 1000;
 
     protected ApplicationManager appmgr;
 
-    protected List<String> installedApplications;
+    protected Set<String> installedApplications;
 
     protected static final String DEFAULT_SERVER = "defaultServer";
 
@@ -483,10 +355,10 @@ public class LibertyServer implements LogMonitorClient {
 
         if (winServiceOption == LibertyServerFactory.WinServiceOption.ON) {
             runAsAWindowService = true;
+            Log.info(c, method, "runAsAWindowService: " + runAsAWindowService);
         } else {
             runAsAWindowService = false;
         }
-        Log.info(c, method, "runAsAWindowService: " + runAsAWindowService);
 
         // This is the only case where we will allow the messages.log name to  be changed
         // by the fat framework -- because we want to look at messasges.log for start/stop/blah
@@ -603,7 +475,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     protected void setup(boolean deleteServerDirIfExist, boolean usePreviouslyConfigured) throws Exception {
-        installedApplications = new ArrayList<String>();
+        installedApplications = new HashSet<String>();
         machine.connect();
         machine.setWorkDir(installRoot);
         if (this.serverToUse == null) {
@@ -638,7 +510,7 @@ public class LibertyServer implements LogMonitorClient {
         // Now it sets all OS specific stuff
         this.machineJava = LibertyServerUtils.makeJavaCompatible(machineJava, machine);
 
-        Log.info(c, "setup", "Successfully obtained machine. Operating System is: " + machineOS.name());
+        Log.info(c, "setup", "Machine operating System is: " + machineOS.name());
         // Continues with setup, we now validate the Java used is a JDK by looking for java and jar files
         String jar = "jar";
         String java = "java";
@@ -655,14 +527,12 @@ public class LibertyServer implements LogMonitorClient {
             machineJarPath = testJar.getAbsolutePath();
             if (!!!testJar.exists()) {
                 throw new TopologyException("cannot find a " + jar + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
-            } else {
-                Log.info(c, "setup", "Jar Home now set to: " + machineJarPath);
             }
         }
         if (!!!testJava.exists())
             throw new TopologyException("cannot find a " + java + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
 
-        Log.info(c, "setup", "machineJava: " + machineJava + " machineJarPath: " + machineJarPath);
+        Log.finer(c, "setup", "machineJava: " + machineJava + " machineJarPath: " + machineJarPath);
 
         massageAutoFVTAbsolutePath();
 
@@ -1001,6 +871,7 @@ public class LibertyServer implements LogMonitorClient {
                                                 String serverCmd, List<String> args,
                                                 boolean validateTimedExit) throws Exception {
         final String method = "startServerAndValidate";
+        Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
         Log.entering(c, method, "clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
@@ -1050,7 +921,7 @@ public class LibertyServer implements LogMonitorClient {
         messageAbsPath = logsRoot + messageFileName;
         consoleAbsPath = logsRoot + consoleFileName;
 
-        Log.info(c, method, "Starting server, messages will go to file " + messageAbsPath);
+        Log.finer(c, method, "Starting server, messages will go to file " + messageAbsPath);
 
         final String[] parameters = parametersList.toArray(new String[] {});
 
@@ -1070,13 +941,6 @@ public class LibertyServer implements LogMonitorClient {
         // from Java 9 onwards, IBM JDKs will also exhibit the same behaviour as it will start to use /dev/random by default.
         // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
         JVM_ARGS += " -Djava.security.egd=file:///dev/urandom";
-
-        // Avoid ClassLoader deadlocks on HotSpot Java 6.
-        if (HOTSPOT_JVM_RUN && JAVA_VERSION_6) {
-            JVM_ARGS += " -XX:+UnlockDiagnosticVMOptions" +
-                        " -XX:+UnsyncloadClass" +
-                        " -Dosgi.classloader.lock=classname";
-        }
 
         JavaInfo info = JavaInfo.forServer(this);
         // Debug for a highly intermittent problem on IBM JVMs.
@@ -1206,7 +1070,7 @@ public class LibertyServer implements LogMonitorClient {
 
         Log.info(c, method, "Using additional env props: " + envVars.toString());
 
-        Log.info(c, method, "Starting Server with command: " + cmd);
+        Log.finer(c, method, "Starting Server with command: " + cmd);
 
         // Create a marker file to indicate that we're trying to start a server
         createServerMarkerFile();
@@ -1319,14 +1183,16 @@ public class LibertyServer implements LogMonitorClient {
                 output = machine.execute(cmd, parameters, envVars);
             }
             int rc = output.getReturnCode();
-            Log.info(c, method, "Response from script is: " + output.getStdout());
-            Log.info(c, method, "Return code from script is: " + rc);
-
-            if (rc != 0 && expectStartFailure) {
-                Log.info(c, method, "EXPECTED: Server didn't start");
-                deleteServerMarkerFile();
-                Log.exiting(c, method);
-                return output;
+            if (rc != 0) {
+                if (expectStartFailure) {
+                    Log.info(c, method, "EXPECTED: Server didn't start");
+                    deleteServerMarkerFile();
+                    Log.exiting(c, method);
+                    return output;
+                } else {
+                    Log.info(c, method, "Response from script is: " + output.getStdout());
+                    Log.info(c, method, "Return code from script is: " + rc);
+                }
             }
         }
 
@@ -1405,54 +1271,12 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     private boolean serverNeedsToRunWithJava2Security() {
-        String method = "serverNeedsToRunWithJava2Security";
-        Log.info(c, method, "Entering serverNeedsToRunWithJava2Security");
-        boolean result = true;
-        String serverName = getServerName();
-
-        try {
-            // Allow servers to opt-out of j2sec by setting
-            // websphere.java.security.exempt=true
-            // in their ${server.config.dir}/bootstrap.properties
-            if ("true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt")))
-                return false;
-
-            if (serversExemptFromJava2SecurityTesting == null) {
-                loadJava2SecurityExemptServers();
-            }
-            Log.info(c, method, "Checking Server Name " + serverName);
-            return !serversExemptFromJava2SecurityTesting.contains(serverName);
-        } catch (Exception e) {
-            Log.info(c, "serverNeedsToRunWithJava2Security", "Error determining Exempt Servers " + e.toString());
-            Log.info(c, method, "Skipping modification of the bootstrap.properties file to enable Java 2 Security on server " + serverName);
-            result = false;
-        }
-        return result;
-    }
-
-    private void loadJava2SecurityExemptServers() throws Exception {
-        String method = "loadJava2SecurityExemptServers";
-        BufferedReader br = null;
-        Log.info(c, method, "loading exempt server list");
-        RemoteFile exempt = new RemoteFile(machine, serverRoot + "/java2SecurityExemptServersList.txt");
-        try {
-            br = new BufferedReader(new InputStreamReader(exempt.openForReading()));
-            String line = br.readLine();
-            serversExemptFromJava2SecurityTesting = new HashSet<String>(1000);
-            while (line != null) {
-                if (line.startsWith("#") == false) {
-                    serversExemptFromJava2SecurityTesting.add(line.trim());
-                }
-                line = br.readLine();
-            }
-        } catch (Exception e) {
-            Log.info(c, method, "Error loading Java 2 Security exempt server list " + e.toString());
-            throw e;
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
+        // Allow servers to opt-out of j2sec by setting
+        // websphere.java.security.exempt=true
+        // in their ${server.config.dir}/bootstrap.properties
+        boolean j2secEnabled = !("true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt")));
+        Log.info(c, "serverNeedsToRunWithJava2Security", "Will server " + getServerName() + " run with Java 2 Security enabled?  " + j2secEnabled);
+        return j2secEnabled;
     }
 
     private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f) throws Exception {
@@ -1486,7 +1310,7 @@ public class LibertyServer implements LogMonitorClient {
 
         String path = pathToAutoFVTOutputFolder + getServerName() + ".mrk";
         LocalFile serverRunningFile = new LocalFile(path);
-        Log.info(c, "createServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
+        Log.finer(c, "createServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
         File createFile = new File(serverRunningFile.getAbsolutePath());
         createFile.createNewFile();
         OutputStream os = serverRunningFile.openForWriting(true);
@@ -1504,7 +1328,7 @@ public class LibertyServer implements LogMonitorClient {
 
         String path = pathToAutoFVTOutputFolder + getServerName() + ".mrk";
         LocalFile serverRunningFile = new LocalFile(path);
-        Log.info(c, "deleteServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
+        Log.finer(c, "deleteServerMarkerFile", "Server marker file: " + serverRunningFile.getAbsolutePath());
         File deleteFile = new File(serverRunningFile.getAbsolutePath());
         if (deleteFile.exists()) {
             deleteFile.delete();
@@ -1512,7 +1336,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void validateAppLoaded(String appName) throws Exception {
-        String exceptionText = validateAppsLoaded(Collections.singletonList(appName), LOG_SEARCH_TIMEOUT, getDefaultLogFile());
+        String exceptionText = validateAppsLoaded(Collections.singleton(appName), LOG_SEARCH_TIMEOUT, getDefaultLogFile());
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
@@ -1532,7 +1356,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected String validateAppsLoaded(List<String> appList, int timeout, RemoteFile outputFile) throws Exception {
+    protected String validateAppsLoaded(Set<String> appList, int timeout, RemoteFile outputFile) throws Exception {
         // At time of writing, timeout argument was being ignored. Preserve that for now...
         timeout = LOG_SEARCH_TIMEOUT;
         return validateAppsLoaded(appList, timeout, 2 * timeout, outputFile);
@@ -1552,7 +1376,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param outputFile file to check
      * @return line that matched the regexp, or null to indicate not found within acceptable (extended) timeout
      */
-    protected String validateAppsLoaded(List<String> appList, int intendedTimeout, int extendedTimeout, RemoteFile outputFile) throws Exception {
+    protected String validateAppsLoaded(Set<String> appList, int intendedTimeout, int extendedTimeout, RemoteFile outputFile) throws Exception {
         final String method = "validateAppsLoaded";
 
         final long startTime = System.currentTimeMillis();
@@ -1572,7 +1396,7 @@ public class LibertyServer implements LogMonitorClient {
             Map<String, List<String>> failedApps = new HashMap<String, List<String>>();
             boolean timedOut = false;
 
-            Log.info(c, method, "Searching for app manager messages in " + outputFile.getAbsolutePath());
+            Log.finer(c, method, "Searching for app manager messages in " + outputFile.getAbsolutePath());
             for (;;) {
                 LogSearchResult allMatches = LibertyFileManager.findStringsInFileCommon(regexpList, Integer.MAX_VALUE, outputFile, offset);
                 if (allMatches != null && !!!allMatches.getMatches().isEmpty()) {
@@ -1634,14 +1458,6 @@ public class LibertyServer implements LogMonitorClient {
             Log.error(c, method, e, "Exception thrown confirming apps are loaded when validating that "
                                     + outputFile.getAbsolutePath() + " contains application install messages.");
             throw e;
-        } finally {
-            long endTime = System.currentTimeMillis();
-            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
-            Log.info(c, method,
-                     "Started searching for app manager messages at " +
-                                formatter.format(new Date(startTime)) +
-                                " and finished at " +
-                                formatter.format(new Date(endTime)));
         }
     }
 
@@ -1903,9 +1719,9 @@ public class LibertyServer implements LogMonitorClient {
 
         for (String line : allMatches.getMatches()) {
             line = line.substring(line.indexOf("CWWKZ"));
-            Log.info(c, method, "line is " + line);
+            Log.finer(c, method, "line is " + line);
             String[] tokens = line.split(":", 2);
-            Log.info(c, method, "tokens are (" + tokens[0] + ") (" + tokens[1] + ")");
+            Log.finer(c, method, "tokens are (" + tokens[0] + ") (" + tokens[1] + ")");
             try {
                 AppManagerMessage matchedMessage = AppManagerMessage.valueOf(tokens[0]);
                 if (matchedMessage != null) {
@@ -1924,9 +1740,9 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "findAppNameInTokens";
 
         for (Map.Entry<String, Pattern> entry : unstartedApps.entrySet()) {
-            Log.info(c, method, "looking for app " + entry.getKey() + " in " + tokens[1]);
+            Log.finer(c, method, "looking for app " + entry.getKey() + " in " + tokens[1]);
             if (entry.getValue().matcher(tokens[1]).matches()) {
-                Log.info(c, method, "matched app " + entry.getKey());
+                Log.finer(c, method, "matched app " + entry.getKey());
                 return entry.getKey();
             }
         }
@@ -2090,12 +1906,6 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public ProgramOutput stopServer(String... expectedFailuresRegExps) throws Exception {
-        final String method = "stopServer1";
-        if (expectedFailuresRegExps != null) {
-            Log.info(c, method, "expectedFailuresRegExps length is " + expectedFailuresRegExps.length);
-        } else {
-            Log.info(c, method, "expectedFailuresRegExps is null.");
-        }
         return this.stopServer(true, expectedFailuresRegExps);
     }
 
@@ -2121,12 +1931,6 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public ProgramOutput stopServer(boolean postStopServerArchive, String... expectedFailuresRegExps) throws Exception {
-        final String method = "stopServer2";
-        if (expectedFailuresRegExps != null) {
-            Log.info(c, method, "expectedFailuresRegExps length is " + expectedFailuresRegExps.length);
-        } else {
-            Log.info(c, method, "expectedFailuresRegExps is null.");
-        }
         return this.stopServer(postStopServerArchive, false, expectedFailuresRegExps);
     }
 
@@ -2149,6 +1953,7 @@ public class LibertyServer implements LogMonitorClient {
         boolean commandPortEnabled = true;
         try {
             final String method = "stopServer";
+            Log.info(c, method, "<<< STOPPING SERVER: " + this.getServerName());
 
             if (!isStarted) {
                 Log.info(c, method, "Server " + serverToUse + " is not running (stop called previously).");
@@ -2156,9 +1961,7 @@ public class LibertyServer implements LogMonitorClient {
                 return output;
             }
 
-            Log.info(c, method, "stoppingServer");
             String cmd = installRoot + "/bin/server";
-
             String[] parameters;
             if (forceStop) {
                 parameters = new String[] { "stop", serverToUse, "--force" };
@@ -2171,7 +1974,7 @@ public class LibertyServer implements LogMonitorClient {
             envVars.setProperty("JAVA_HOME", machineJava);
             if (customUserDir)
                 envVars.setProperty("WLP_USER_DIR", userDir);
-            Log.info(c, method, "Using additional env props: " + envVars.toString());
+            Log.finer(c, method, "Using additional env props: " + envVars.toString());
 
             if (runAsAWindowService == false) {
                 output = machine.execute(cmd, parameters, envVars);
@@ -2194,7 +1997,8 @@ public class LibertyServer implements LogMonitorClient {
 
             String stdout = output.getStdout();
             Log.info(c, method, "Stop Server Response: " + stdout);
-            Log.info(c, method, "Return code from script is: " + output.getReturnCode());
+            if (output.getReturnCode() != 0)
+                Log.info(c, method, "Return code from script is: " + output.getReturnCode());
 
             isStarted = false;
             if (stdout.contains("is not running")) {
@@ -2234,8 +2038,6 @@ public class LibertyServer implements LogMonitorClient {
             this.isTidy = true;
 
             checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
-
-            Log.info(c, method, "serverstopped");
         } finally {
             if (commandPortEnabled) {
                 // If the command port is enabled we should reset the log offsets
@@ -2290,25 +2092,20 @@ public class LibertyServer implements LogMonitorClient {
         // Compile set of regex's using input list and universal ignore list
         List<Pattern> ignorePatterns = new ArrayList<Pattern>();
         if (regIgnore != null && regIgnore.length != 0) {
-            Log.info(c, method, "regIgnore length is " + regIgnore.length);
             for (String ignoreRegEx : regIgnore) {
                 ignorePatterns.add(Pattern.compile(ignoreRegEx));
             }
         }
-        Log.info(c, method, "ignorePatterns is " + ignorePatterns.toString());
         // Add the regexes added via the instance method
         if (ignoredErrors != null) {
-            Log.info(c, method, "ignoreErrors is " + ignoredErrors.toString());
             for (String regex : ignoredErrors) {
                 ignorePatterns.add(Pattern.compile(regex));
             }
             ignoredErrors.clear();
-            Log.info(c, method, "ignoreErrors NOW is " + ignoredErrors.toString());
         }
 
         // Add the global fixed list of regexes entries.
         if (fixedIgnoreErrorsList != null) {
-            Log.info(c, method, "fixedIgnoreErrorsList is " + fixedIgnoreErrorsList.toString());
             for (String regex : fixedIgnoreErrorsList) {
                 ignorePatterns.add(Pattern.compile(regex));
             }
@@ -2320,7 +2117,6 @@ public class LibertyServer implements LogMonitorClient {
             ignorePatterns.add(Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)"));
         }
 
-        Log.info(c, method, "ignorePatterns NOW is " + ignorePatterns.toString());
         // Remove any ignored warnings or patterns
         for (Pattern ignorePattern : ignorePatterns) {
             Iterator<String> iter = errorsInLogs.iterator();
@@ -2328,7 +2124,7 @@ public class LibertyServer implements LogMonitorClient {
                 if (ignorePattern.matcher(iter.next()).find()) {
                     // this is an ignored warning/error, remove it from list
                     iter.remove();
-                    Log.info(c, method, "Error being removed is " + ignorePattern);
+                    Log.finer(c, method, "Error being removed is " + ignorePattern);
                 }
             }
         }
@@ -3787,7 +3583,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected Properties getBootstrapProperties() throws Exception {
+    protected Properties getBootstrapProperties() {
         Properties props = new Properties();
 
         try {
@@ -4460,7 +4256,7 @@ public class LibertyServer implements LogMonitorClient {
             logOffsets.put(logFile, 0L);
         }
 
-        Log.info(LibertyServer.class, "getLogOffset", "log offset=" + logOffsets.get(logFile));
+        Log.finer(LibertyServer.class, "getLogOffset", "log offset=" + logOffsets.get(logFile));
         return logOffsets.get(logFile);
     }
 
@@ -4474,7 +4270,7 @@ public class LibertyServer implements LogMonitorClient {
     @Deprecated
     public void updateLogOffset(String logFile, Long newLogOffset) {
         Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
-        Log.info(LibertyServer.class, "updateLogOffset", "old log offset=" + oldLogOffset + ", new log offset=" + newLogOffset);
+        Log.finer(LibertyServer.class, "updateLogOffset", "old log offset=" + oldLogOffset + ", new log offset=" + newLogOffset);
     }
 
     /**
@@ -4632,11 +4428,11 @@ public class LibertyServer implements LogMonitorClient {
                     } else
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
-                        }
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
                 }
             }
@@ -5162,7 +4958,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    public List<String> listAllInstalledAppsForValidation() {
+    public Set<String> listAllInstalledAppsForValidation() {
         final String method = "listAllInstalledAppsForValidation";
         Log.info(c, method, "Returning list of installed application for validation");
         for (String app : installedApplications) {
@@ -5703,19 +5499,19 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public boolean isJavaVersion6() {
-        return JAVA_VERSION_6;
+        return javaInfo.majorVersion() == 6;
     }
 
     public boolean isJavaVersion8() {
-        return JAVA_VERSION_8;
+        return javaInfo.majorVersion() == 8;
     }
 
     public boolean isIBMJVM() {
-        return IBM_JVM;
+        return javaInfo.vendor() == JavaInfo.Vendor.IBM;
     }
 
     public boolean isOracleJVM() {
-        return ORACLE_JVM;
+        return javaInfo.vendor() == JavaInfo.Vendor.SUN_ORACLE;
     }
 
     public void useSecondaryHTTPPort() {

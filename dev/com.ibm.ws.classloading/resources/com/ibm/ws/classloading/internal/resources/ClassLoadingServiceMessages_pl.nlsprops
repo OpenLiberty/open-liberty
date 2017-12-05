@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: System nie mo\u017ce znale\u017a\u0107 klasy [{0}] jako zasobu [{1}].
+cls.class.file.not.found.explanation=Pr\u00f3ba za\u0142adowania pliku klasy jako zasobu dla aplikacji nie powiod\u0142a si\u0119.
+cls.class.file.not.found.useraction=Sprawd\u017a, czy klasa jest dost\u0119pna dla aplikacji.
+
+cls.class.file.not.readable=CWWKL0002E: System nie mo\u017ce odczyta\u0107 klasy [{0}] jako zasobu [{1}].
+cls.class.file.not.readable.explanation=Pr\u00f3ba odczytania pliku klasy jako zasobu dla aplikacji nie powiod\u0142a si\u0119.
+cls.class.file.not.readable.useraction=Sprawd\u017a integralno\u015b\u0107 systemu plik\u00f3w. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/.
+
+cls.gateway.not.resolvable=CWWKL0003E: System nie mo\u017ce utworzy\u0107 programu \u0142aduj\u0105cego klasy dla aplikacji [{0}] w wersji [{1}].
+cls.gateway.not.resolvable.explanation=System pr\u00f3bowa\u0142 utworzy\u0107 program \u0142aduj\u0105cy klasy aplikacji, ale serwer nie udost\u0119pnia wymaganych pakiet\u00f3w Java. 
+cls.gateway.not.resolvable.useraction=Sprawd\u017a, czy na serwerze skonfigurowano wszystkie opcje potrzebne do obs\u0142ugi tej aplikacji.
+
+cls.library.id.missing=CWWKL0004E: System nie mo\u017ce utworzy\u0107 biblioteki wsp\u00f3\u0142u\u017cytkowanej.
+cls.library.id.missing.explanation=Aby zdefiniowa\u0107 bibliotek\u0119 wsp\u00f3\u0142u\u017cytkowan\u0105 w konfiguracji serwera, konieczne jest okre\u015blenie atrybutu ID. 
+cls.library.id.missing.useraction=Zmodyfikuj konfiguracj\u0119 serwera i dodaj atrybut ID do elementu biblioteki.
+
+cls.library.missing=CWWKL0005E: System nie mo\u017ce znale\u017a\u0107 biblioteki wsp\u00f3\u0142u\u017cytkowanej o identyfikatorze [{0}].
+cls.library.missing.explanation=Aby odwo\u0142a\u0107 si\u0119 do biblioteki w konfiguracji serwera, konieczne jest okre\u015blenie identyfikatora istniej\u0105cej biblioteki. 
+cls.library.missing.useraction=Zmie\u0144 konfiguracj\u0119 serwera i sprawd\u017a, czy zdefiniowano przywo\u0142ywan\u0105 bibliotek\u0119 oraz czy identyfikator jest poprawny.
+
+cls.library.id.invalid=CWWKL0006E: Biblioteka wsp\u00f3\u0142u\u017cytkowana ma niepoprawny identyfikator [{0}] z powodu b\u0142\u0119du [{1}] 
+cls.library.id.invalid.explanation=Aby okre\u015bli\u0107 identyfikator dla biblioteki wsp\u00f3\u0142u\u017cytkowanej w konfiguracji serwera, nale\u017cy przestrzega\u0107 konwencji nazewnictwa atrybut\u00f3w.
+cls.library.id.invalid.useraction=Zmie\u0144 konfiguracj\u0119 serwera i zmodyfikuj atrybut ID elementu biblioteki.
+
+cls.fileset.missing=CWWKL0007E: Biblioteka wsp\u00f3\u0142u\u017cytkowana [{0}] odwo\u0142uje si\u0119 do zestawu plik\u00f3w [{1}], kt\u00f3ry nie istnieje.
+cls.fileset.missing.explanation=Aby odwo\u0142a\u0107 si\u0119 do zestawu plik\u00f3w z biblioteki wsp\u00f3\u0142u\u017cytkowanej w konfiguracji serwera, konieczne jest okre\u015blenie identyfikatora istniej\u0105cego zestawu plik\u00f3w.
+cls.fileset.missing.useraction=Sprawd\u017a element biblioteki w konfiguracji serwera i upewnij si\u0119, \u017ce przywo\u0142ywany zestaw plik\u00f3w istnieje.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: Aplikacja [{0}] nie jest zgodna ze wsp\u00f3lnym programem \u0142aduj\u0105cym klasy dla biblioteki [{2}], poniewa\u017c maj\u0105 one niesp\u00f3jne konfiguracje widoczno\u015bci funkcji API. Biblioteka [{2}] jest skonfigurowana z funkcjami API [{3}], a aplikacja [{0}] - z funkcjami API [{1}].
+cls.class.space.conflict.explanation=Aplikacja odwo\u0142uje si\u0119 do biblioteki za po\u015brednictwem wsp\u00f3lnego programu \u0142aduj\u0105cego klasy i musi wsp\u00f3\u0142u\u017cytkowa\u0107 instancje klas, jednak skonfigurowano je z uwzgl\u0119dnieniem innych zestaw\u00f3w funkcji API. Aplikacja i biblioteka musz\u0105 by\u0107 skonfigurowane z uwzgl\u0119dnieniem dok\u0142adnie tego samego zestawu funkcji API, aby zapewni\u0107 sp\u00f3jne dzia\u0142anie aplikacji.
+cls.class.space.conflict.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby aplikacja i biblioteka uwzgl\u0119dnia\u0142y ten sam zestaw funkcji API, lub skonfiguruj aplikacj\u0119 w taki spos\u00f3b, aby u\u017cywa\u0142a biblioteki prywatnie.
+
+cls.api.type.unknown=CWWKL0009W: Aplikacja [{0}] zosta\u0142a skonfigurowana do u\u017cywania nieznanego typu interfejs\u00f3w API [{1}], kt\u00f3ry zostanie zignorowany.  Poprawne s\u0105 nast\u0119puj\u0105ce typy: [{2}].
+cls.api.type.unknown.explanation=Aplikacje mo\u017cna konfigurowa\u0107, okre\u015blaj\u0105c typy interfejs\u00f3w API, do kt\u00f3rych b\u0119d\u0105 one pr\u00f3bowa\u0107 uzyska\u0107 dost\u0119p.
+cls.api.type.unknown.useraction=Upewnij si\u0119, czy w konfiguracji wymienione s\u0105 tylko poprawne typy.
+
+cls.classloader.missing=CWWKL0010E: System nie mo\u017ce znale\u017a\u0107 programu \u0142aduj\u0105cego klasy o identyfikatorze [{0}].
+cls.classloader.missing.explanation=Aby odwo\u0142a\u0107 si\u0119 do programu \u0142aduj\u0105cego klasy w konfiguracji serwera, konieczne jest okre\u015blenie identyfikatora istniej\u0105cego programu \u0142aduj\u0105cego klasy. 
+cls.classloader.missing.useraction=Sprawd\u017a konfiguracj\u0119 serwera, aby si\u0119 upewni\u0107, \u017ce zdefiniowano program \u0142aduj\u0105cy klasy oraz \u017ce identyfikator jest poprawny.
+
+cls.fileset.not.ready=CWWKL0011W: System nie mo\u017ce pobra\u0107 zestawu plik\u00f3w [{0}] dla biblioteki wsp\u00f3\u0142u\u017cytkowanej [{1}].
+cls.fileset.not.ready.explanation=Biblioteka wsp\u00f3\u0142u\u017cytkowana jest u\u017cywana, ale nie mo\u017cna pobra\u0107 na czas jednego z powi\u0105zanych zestaw\u00f3w plik\u00f3w.
+cls.fileset.not.ready.useraction=Sprawd\u017a, czy wyst\u0119puj\u0105 b\u0142\u0119dy lub ostrze\u017cenia powi\u0105zane z zestawem plik\u00f3w i wyeliminuj je.
+
+cls.library.file.invalid=CWWKL0012W: Biblioteka [{0}] okre\u015bla plik o nazwie [{1}]. Plik ten nie istnieje albo jest niepoprawnie okre\u015blony.
+cls.library.file.invalid.explanation=Aby doda\u0107 plik do biblioteki w konfiguracji serwera, nale\u017cy poda\u0107 pe\u0142n\u0105 nazw\u0119 istniej\u0105cego pliku.
+cls.library.file.invalid.useraction=Zmie\u0144 konfiguracj\u0119 serwera i zmodyfikuj atrybut pliku elementu biblioteki.
+
+cls.library.folder.invalid=CWWKL0013W: Biblioteka [{0}] okre\u015bla folder o nazwie [{1}]. Folder nie istnieje lub nie jest to poprawny folder.
+cls.library.folder.invalid.explanation=Aby doda\u0107 plik do biblioteki w konfiguracji serwera, nale\u017cy poda\u0107 pe\u0142n\u0105 \u015bcie\u017ck\u0119 do istniej\u0105cego folderu.
+cls.library.folder.invalid.useraction=Zmie\u0144 konfiguracj\u0119 serwera i zmodyfikuj atrybut folderu elementu biblioteki.
+
+cls.library.file.forbidden=CWWKL0014I: Plik [{0}] nie mo\u017ce zosta\u0107 dodany do \u015bcie\u017cki klasy.
+cls.library.file.forbidden.explanation=Aby doda\u0107 plik do \u015bcie\u017cki klasy, musi to by\u0107 poprawny kontener klas i zasob\u00f3w, np. plik JAR.
+cls.library.file.forbidden.useraction=Zmie\u0144 konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wszystkie atrybuty pliku lub zestawu plik\u00f3w odwo\u0142uj\u0105 si\u0119 do poprawnych kontener\u00f3w klas i zasob\u00f3w.
+
+cls.library.created=CWWKL0015I: Biblioteka [{0}] jest dost\u0119pna do u\u017cytku.
+cls.library.created.explanation=Biblioteka sta\u0142a si\u0119 dost\u0119pna, na przyk\u0142ad w wyniku przetwarzania konfiguracji serwera.
+cls.library.created.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: Nie mo\u017cna przygotowa\u0107 plik\u00f3w JAR do usuni\u0119cia. Nie mo\u017cna usun\u0105\u0107 aplikacji zawieraj\u0105cych pliki JAR.
+WARN_JARS_STILL_CACHED.explanation=Serwer nie m\u00f3g\u0142 zapobiec zablokowaniu plik\u00f3w JAR w obr\u0119bie zainstalowanych aplikacji. Pliki JAR mog\u0105 pozosta\u0107 zablokowane do czasu zatrzymania serwera.
+WARN_JARS_STILL_CACHED.useraction=Aby usun\u0105\u0107 pliki JAR znajduj\u0105ce si\u0119 w zainstalowanej aplikacji, nale\u017cy wcze\u015bniej zatrzyma\u0107 serwer.
+
+cls.library.archive=CWWKL0017W: Plik [{0}] nie mo\u017ce zosta\u0107 dodany do \u015bcie\u017cki klasy z powodu b\u0142\u0119du [{1}].
+cls.library.archive.explanation=Do \u015bcie\u017cki klasy mo\u017cna dodawa\u0107 tylko pliki archiwum, takie jak pliki JAR lub ZIP.
+cls.library.archive.useraction=Zmodyfikuj konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wszystkie pliki przywo\u0142ywane z elementu programu \u0142aduj\u0105cego klasy s\u0105 plikami archiwum.
+
+cls.library.destroyed=CWWKL0018I: Biblioteka [{0}] jest niedost\u0119pna.
+cls.library.destroyed.explanation=Biblioteka sta\u0142a si\u0119 niedost\u0119pna na przyk\u0142ad dlatego, \u017ce zosta\u0142a usuni\u0119ta z konfiguracji serwera.
+cls.library.destroyed.useraction=Je\u015bli biblioteka jest nadal wymagana, upewnij si\u0119, \u017ce nadal jest ona skonfigurowana poprawnie.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: Program \u0142aduj\u0105cy klasy [{0}] nie mo\u017ce znale\u017a\u0107 dostawcy klas [{1}]. Wyszukiwanie nie powiod\u0142o si\u0119 i wyst\u0105pi\u0142 komunikat o b\u0142\u0119dzie sk\u0142adni [{2}].
+cls.provider.id.invalid.explanation=Program \u0142aduj\u0105cy klasy zosta\u0142 skonfigurowany tak, aby delegowa\u0107 do dostawcy klas, ale nie m\u00f3g\u0142 pobra\u0107 odpowiedniego dostawcy klas. Program \u0142aduj\u0105cy klasy b\u0119dzie dzia\u0142a\u0107, ale nie b\u0119dzie m\u00f3g\u0142 pobiera\u0107 \u017cadnych klas ani zasob\u00f3w z okre\u015blonego dostawcy klas.
+cls.provider.id.invalid.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: Program \u0142aduj\u0105cy klasy [{0}] nie mo\u017ce delegowa\u0107 do dostawcy klas [{1}].  Dostawca klas zwr\u00f3ci\u0142 program \u0142aduj\u0105cy klasy o warto\u015bci NULL. Dostawca us\u0142ug dostawcy klas: [{2}].
+cls.provider.loader.null.explanation=Program \u0142aduj\u0105cy klasy zosta\u0142 skonfigurowany tak, aby delegowa\u0107 do dostawcy klas, ale dostawca klas nie udost\u0119pni\u0142 kompatybilnego programu \u0142aduj\u0105cego klasy i nie mo\u017cna go u\u017cy\u0107. Program \u0142aduj\u0105cy klasy b\u0119dzie dzia\u0142a\u0107, ale nie b\u0119dzie m\u00f3g\u0142 pobiera\u0107 \u017cadnych klas ani zasob\u00f3w z okre\u015blonego dostawcy klas.
+cls.provider.loader.null.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support lub uzyska\u0107 od dostawcy us\u0142ug dostawcy klas.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: Program \u0142aduj\u0105cy klasy [{0}] nie mo\u017ce delegowa\u0107 do dostawcy klas [{1}]. Dostawca klas zwr\u00f3ci\u0142 nieoczekiwany program \u0142aduj\u0105cy klasy typu [{2}]. Dostawca us\u0142ug dostawcy klas: [{3}].
+cls.provider.loader.unknown.explanation=Program \u0142aduj\u0105cy klasy zosta\u0142 skonfigurowany tak, aby delegowa\u0107 do dostawcy klas, ale dostawca klas nie udost\u0119pni\u0142 kompatybilnego programu \u0142aduj\u0105cego klasy i nie mo\u017cna go u\u017cy\u0107. Program \u0142aduj\u0105cy klasy b\u0119dzie dzia\u0142a\u0107, ale nie b\u0119dzie m\u00f3g\u0142 pobiera\u0107 \u017cadnych klas ani zasob\u00f3w z okre\u015blonego dostawcy klas.
+cls.provider.loader.unknown.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support lub uzyska\u0107 od dostawcy us\u0142ug dostawcy klas.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: Program \u0142aduj\u0105cy klasy [{0}] nie jest zgodny z dostawc\u0105 klas [{2}], poniewa\u017c ich konfiguracje widoczno\u015bci funkcji API s\u0105 niesp\u00f3jne. Program \u0142aduj\u0105cy klasy jest skonfigurowany przy u\u017cyciu warto\u015bci [{1}], a dostawca klas jest skonfigurowany przy u\u017cyciu warto\u015bci [{3}].
+cls.provider.class.space.conflict.explanation=Program \u0142aduj\u0105cy klasy zosta\u0142 skonfigurowany tak, aby delegowa\u0107 do okre\u015blonego dostawcy klas i b\u0119dzie wsp\u00f3\u0142u\u017cytkowa\u0142 instancje klas. Programy skonfigurowano jednak z uwzgl\u0119dnieniem innych zestaw\u00f3w funkcji API. Deleguj\u0105cy program \u0142aduj\u0105cy klasy i dostawca klas musz\u0105 by\u0107 skonfigurowane z uwzgl\u0119dnieniem tego samego zestawu funkcji API, aby zapewni\u0107 sp\u00f3jne dzia\u0142anie aplikacji.
+cls.provider.class.space.conflict.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby deleguj\u0105cy program \u0142aduj\u0105cy klasy i dostawca klas uwzgl\u0119dnia\u0142y ten sam zestaw funkcji API.
+
+slf.no.cache=CWWKL0070E: Katalog pami\u0119ci podr\u0119cznej nie zosta\u0142 pomy\u015blnie utworzony.
+slf.no.cache.explanation=System nie m\u00f3g\u0142 utworzy\u0107 folderu na dysku.
+slf.no.cache.useraction=Upewnij si\u0119, \u017ce ustawiono poprawne uprawnienia dost\u0119pu do dysku i \u017ce na dysku jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca.
+slf.no.acf=CWWKL0071E: Znaleziono warto\u015b\u0107 null obiektu ArtifactContainerFactory.
+slf.no.acf.explanation=Obiekt ArtifactContainerFactory nie mo\u017ce mie\u0107 warto\u015bci null podczas dzia\u0142ania serwera.
+slf.no.acf.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support lub uzyska\u0107 od dostawcy us\u0142ug dostawcy klas.
+slf.failed.delete=CWWKL0072W: Nie mo\u017cna usun\u0105\u0107 pliku pami\u0119ci podr\u0119cznej [{0}]. Ten wynik mo\u017ce doprowadzi\u0107 do uszkodzenia zagnie\u017cd\u017conych archiw\u00f3w.
+slf.failed.delete.explanation=System nie usun\u0105\u0142 pliku pami\u0119ci podr\u0119cznej. Poniewa\u017c plik istnieje wci\u0105\u017c w systemie, mo\u017ce to doprowadzi\u0107 do uszkodzenia w zagnie\u017cd\u017conych archiwach.
+slf.failed.delete.useraction=Sprawd\u017a, czy plik pami\u0119ci podr\u0119cznej nie jest zablokowany, co mo\u017ce by\u0107 przyczyn\u0105 niepowodzenia jego usuni\u0119cia.

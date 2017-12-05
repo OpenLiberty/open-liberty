@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0000 - CWWKS0099
+
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE=CWWKS0000E: A avut loc o excep\u0163ie de configurare. Nu este definit niciun atribut {0} pentru un element  <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.explanation=Atributul lips\u0103 este necesar pentru elementul <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.useraction=Specifica\u0163i atributul lips\u0103 pentru elementul <securityConfiguration>.
+
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID=CWWKS0001E: A avut loc o excep\u0163ie de configurare. Un element de configurare de tipul {0} nu define\u015fte un atribut id.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.explanation=Tipul elementului de configurare specificat necesit\u0103 un atribut id pentru a putea fi referen\u0163iat corespunz\u0103tor de alte elemente din configura\u0163ie.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.useraction=Defini\u0163i un atribut id pentru tipul elementului de configurare specificat.
+
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE=CWWKS0002E: A avut loc o excep\u0163ie de configurare. Nici un atribut {0} nu este definit pentru elementul <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.explanation=Atributul lips\u0103 este necesar pentru elementul <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.useraction=Specifica\u0163i atributul lips\u0103 pentru elementul <security>.
+
+SECURITY_SERVICE_ERROR_BAD_DOMAIN=CWWKS0003E: A avut loc o excep\u0163ie de configurare. Configura\u0163ia de securitate specificat\u0103, referen\u0163iat\u0103 de identificatorul {0} pentru atributul {1} din elementul <security>, nu este definit\u0103.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.explanation=Configura\u0163ia de securitate specificat\u0103 nu este definit\u0103. Numele identificatorului poate fi incorect sau referen\u0163iaz\u0103 o configurare de securitate ce nu exist\u0103.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.useraction=Defini\u0163i o configura\u0163ie de securitate valid\u0103 pentru atributul specificat din elementul <security>.
+
+SECURITY_SERVICE_ERROR_BAD_REFERENCE=CWWKS0004E: A avut loc o excep\u0163ie de configurare. Elementul specificat referen\u0163iat de identificatorul {0} pentru  atributul {1} din elementul <securityConfiguration> nu este definit.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.explanation=Identificatorul referin\u0163ei configurate nu este valid. Numele identificatorului poate fi gre\u015fit sau referen\u0163iaz\u0103 o configurare de securitate ce nu exist\u0103.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.useraction=Specifica\u0163i un identificator de configurare de serviciu valid pentru elementul <securityConfiguration>.
+
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE=CWWKS0005E: A avut loc o excep\u0163ie de configurare. Nici un serviciu {0} disponibil.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.explanation=Nu este disponibil niciun serviciu de tipul specificat prin registrul de servicii OSGi.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.useraction=Specifica\u0163i o caracteristic\u0103 de implementare serviciu de tipul specificat.
+
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE=CWWKS0006E: A avut loc o excep\u0163ie de configurare. Exist\u0103 multiple servicii disponibile {0}; sistemul nu  poate determina pe care s\u0103 \u00eel foloseasc\u0103.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.explanation=Multiple servicii de tipul specificat sunt disponibile prin registrul de servicii OSGi \u015fi nu exist\u0103 nicio configura\u0163ie explicit\u0103 care s\u0103 indice ce serviciu s\u0103 fie folosit.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Specifica\u0163i doar o caracteristic\u0103 a implement\u0103rii serviciului de tipul specificat sau defini\u0163i ce serviciu s\u0103 fie folosit \u00een configura\u0163ie.
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved to com.ibm.ws.security.ready.service project
+#
+
+SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: \u00cen timpul ob\u0163inerii principalului apelant, s-a descoperit c\u0103 subiectul de apelant avea mai mult de un principal de tip WSPrincipal. Un singur WSPrincipal poate exista \u00een subiect. Numele WSPrincipals sunt: {}
+SEC_TOO_MANY_PRINCIPALS.explanation=Subiectul apelantului are prea mul\u0163i principali de tipul WSPrincipal. Un singur principal de acest tip este suportat.
+SEC_TOO_MANY_PRINCIPALS.useraction=Examina\u0163i aplica\u0163ia pentru a \u00een\u0163elege de ce subiectul are mai mult de un WSPrincipal.

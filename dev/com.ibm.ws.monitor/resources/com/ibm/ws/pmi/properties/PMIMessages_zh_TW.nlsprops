@@ -1,0 +1,289 @@
+###############################################################################
+# Copyright (c) 2001, 2004 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.11,0,02/04/01,10:58:32
+#
+#
+#CMVCPATHNAME com.ibm.ws.monitor/resources/com/ibm/ws/pmi/properties/PMIMessages.nlsprops
+#COMPONENTPREFIX CWPMI
+#COMPONENTNAMEFOR CWPMI WebSphere Performance Monitoring Instrumentation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+# NLS_ENCODING=UNICODE
+# Warning message when a null path is passed to PMI
+PMI0001W=CWPMI0001W: \u5c07\u7a7a\u503c\u8def\u5f91\u50b3\u905e\u7d66 PMI\uff1a{0}
+PMI0001W.explanation=\u50b3\u7d66\u300c\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI)\u300d\u7684\u8def\u5f91\u70ba\u7a7a\u503c\u6216\u7121\u6548\u3002PMI \u5229\u7528\u8def\u5f91 ID \u4f86\u5b89\u6392\u7528\u4f86\u8ffd\u8e64\u61c9\u7528\u7a0b\u5f0f\u7d71\u8a08\u8cc7\u6599\u7684\u8a08\u6578\u5668\u3002PMI \u958b\u59cb\u65bc\u6839\u8def\u5f91\u53ca\u6240\u6709 WebSphere \u5143\u4ef6\uff0c\u61c9\u7528\u7a0b\u5f0f\u6703\u5c07\u5b83\u5011\u7684\u7d71\u8a08\u8cc7\u6599\u5132\u5b58\u6210\u6839\u8def\u5f91\u4e0b\u7684\u5206\u652f\u3002\u7576\u7a7a\u503c\u8def\u5f91\u50b3\u5165 PMI \u6642\uff0cPMI \u5c07\u7121\u6cd5\u6eff\u8db3\u767c\u51fa\u7684\u8981\u6c42\uff0c\u56e0\u70ba\u5b83\u6703\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u9805\u76ee\u3002
+PMI0001W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find a PMI module the mbean
+PMI0002W=CWPMI0002W: \u627e\u4e0d\u5230 MBean \u7684 PMI \u6a21\u7d44\u540d\u7a31\uff1a{0}
+PMI0002W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7684\u547c\u53eb\u7aef\u6240\u6307\u5b9a\u7684\u53d7\u7ba1\u7406\u7684 Bean (MBean) \u540d\u7a31\u4e0d\u7b26\u5408\u5167\u90e8 PMI \u540d\u7a31\u3002\u5728 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u898f\u683c\u4e2d\uff0cMBean \u662f\u4ee3\u8868\u53ef\u7ba1\u7406\u8cc7\u6e90\u7684 java \u7269\u4ef6\u3002\u60a8\u53ef\u4ee5\u5229\u7528 MBean \u4ecb\u9762\u4f86\u8655\u7406 PMI \u8cc7\u6e90\u3002\u5982\u679c MBean \u6307\u5b9a\u7684\u540d\u7a31\u4e0d\u7b26\u5408\u76ee\u524d\u8f09\u5165\u7684 PMI \u540d\u7a31\uff0c\u5c31\u6703\u7522\u751f\u8b66\u544a\u3002\u9019\u500b\u554f\u984c\u53ef\u80fd\u662f\u56e0\u70ba\u547c\u53eb\u7aef\u61c9\u7528\u7a0b\u5f0f\u7684\u932f\u8aa4\u6240\u9020\u6210\uff0c\u4e5f\u53ef\u80fd\u662f\u547c\u53eb\u7aef\u61c9\u7528\u7a0b\u5f0f\u8a66\u5716\u53c3\u7167\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5c1a\u672a\u8f09\u5165\u7684 PMI \u540d\u7a31\u6240\u81f4\u3002
+PMI0002W.useraction=\u60a8\u662f\u5728\u5229\u7528\u5354\u529b\u5ee0\u5546\u7684\u6548\u80fd\u76e3\u8996\u5de5\u5177\u4f86\u6aa2\u8996 PMI \u7d71\u8a08\u8cc7\u6599\u7684\u60c5\u6cc1\u4e0b\uff0c\u6536\u5230\u9019\u500b\u8a0a\u606f\u3002\u8acb\u78ba\u8a8d\u914d\u7f6e\u5c0d\u5de5\u5177\u800c\u8a00\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when multiple ObjectNames are found but only a single is expected
+PMI0003W=CWPMI0003W: MultipleObjectNamesExistException\uff1aMBean \u7d22\u5f15\u9375\u662f\uff1a{0}
+PMI0003W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7684\u547c\u53eb\u7aef\u6240\u6307\u5b9a\u7684\u53d7\u7ba1\u7406\u7684 Bean (MBean) \u540d\u7a31\u7b26\u5408\u591a\u500b PMI \u540d\u7a31\u3002\u5728 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u898f\u683c\u4e2d\uff0cMBean \u662f\u4ee3\u8868\u53ef\u7ba1\u7406\u8cc7\u6e90\u7684 java \u7269\u4ef6\u3002\u60a8\u53ef\u4ee5\u5229\u7528 MBean \u4ecb\u9762\u4f86\u8655\u7406 PMI \u8cc7\u6e90\u3002\u5982\u679c MBean \u6307\u5b9a\u7684\u540d\u7a31\u7b26\u5408\u591a\u500b PMI \u540d\u7a31\uff0c\u5c31\u6703\u767c\u751f\u9019\u500b\u932f\u8aa4\u3002
+PMI0003W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to create AdminUtilImpl
+PMI0004W=CWPMI0004W: \u5728 PmiJmxMapper \u4e2d\u53d6\u5f97 AdminUtilImpl \u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+PMI0004W.explanation=PmiJmxMapper \u985e\u5225\u7121\u6cd5\u5efa\u7acb\u65b0\u7684 AdminUtil \u985e\u5225\u3002AdminUtil \u4ecb\u9762\u4f7f PMI \u80fd\u5920\u5b58\u53d6 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u9023\u7dda\u6240\u9700\u8981\u7684\u7ba1\u7406\u7269\u4ef6\u3002
+PMI0004W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected null parameter is passed to PMI
+PMI0005W=CWPMI0005W: \u5c07\u7a7a\u503c\u53c3\u6578\u50b3\u905e\u7d66 PMI\uff1a{0}
+PMI0005W.explanation=\u5728\u300c\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI)\u300d\u57f7\u884c\u66f4\u65b0\u6642\uff0c\u5982\u679c PMI \u7528\u6236\u7aef\u50b3\u9001\u7684\u53c3\u6578\u4e4b\u4e00\u70ba\u7a7a\u503c\u6642\uff0c\u4fbf\u6703\u89f8\u767c\u9019\u500b\u4e8b\u4ef6\u3002
+PMI0005W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot a mbean for the given data descriptor
+PMI0006W=CWPMI0006W: \u627e\u4e0d\u5230 PMI \u8cc7\u6599\u63cf\u8ff0\u5b50\u7684 mbean\uff1a{0}
+PMI0006W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u914d\u5c0d PMI \u540d\u7a31\u548c\u76f8\u95dc\u806f\u7684\u53d7\u7ba1\u7406\u7684 Bean (MBean)\u3002\u5728 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u898f\u683c\u4e2d\uff0cMBean \u662f\u4ee3\u8868\u53ef\u7ba1\u7406\u8cc7\u6e90\u7684 java \u7269\u4ef6\u3002\u60a8\u53ef\u4ee5\u5229\u7528 MBean \u4ecb\u9762\u4f86\u8655\u7406 PMI \u8cc7\u6e90\u3002
+PMI0006W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when the module config object is null
+PMI0007W=CWPMI0007W: \u627e\u4e0d\u5230 PMI \u6a21\u7d44\u914d\u7f6e\uff1a{0}
+PMI0007W.explanation=\u9019\u500b\u932f\u8aa4\u4ee3\u8868\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u627e\u4e0d\u5230\u6307\u5b9a\u6a21\u7d44\u914d\u7f6e\u7684\u72c0\u6cc1\u3002\u6a21\u7d44\u662f PMI \u7528\u4f86\u5206\u89e3\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5167\u4e4b\u529f\u80fd\u5143\u4ef6\u7684\u7d44\u7e54\u55ae\u4f4d\u3002
+
+PMI0007W.useraction=\u9019\u662f\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u7121\u6cd5\u7acb\u5373\u77e5\u9053\u539f\u56e0\u3002\u5982\u679c\u554f\u984c\u4ecd\u5728\uff0c\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u4e2d\u5fc3\u9801\u9762\u6240\u63d0\u4f9b\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u7db2\u5740\u70ba\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support/\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an invalid data ID is using in PMI
+PMI0008W=CWPMI0008W: \u7121\u6548\u7684\u8cc7\u6599 ID\uff1a{0}
+PMI0008W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u6a21\u7d44\u7121\u6cd5\u8b58\u5225\u6a21\u7d44\u6240\u8655\u7406\u7684\u8cc7\u6599\u7269\u4ef6\u3002\u6bcf\u500b PMI \u6a21\u7d44\u90fd\u6703\u914d\u7f6e\u4e00\u7d44\u6709\u9650\u7684\u8cc7\u6599\u7269\u4ef6\u3002\u9019\u5247\u8a0a\u606f\u63d0\u4f9b\u7684\u8cc7\u6599\u8eab\u5206\u7121\u6548\u3002
+PMI0008W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong parameter is passed to updateData method
+PMI0009W=CWPMI0009W: \u5c07\u932f\u8aa4\u53c3\u6578\u50b3\u905e\u7d66 PmiAbstarctModule \u4e2d\u7684 updateData \u65b9\u6cd5\uff1a{0}
+PMI0009W.explanation=PmiAbstractModule \u7269\u4ef6\u8a2d\u6210\u5728\u63d0\u4f9b\u7684\u8cc7\u6599\u7269\u4ef6\u4e0a\u57f7\u884c\u672a\u5b9a\u7fa9\u7684\u529f\u80fd\u3002
+PMI0009W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI cannot find the XML file to read
+PMI0010W=CWPMI0010W: \u627e\u4e0d\u5230\u6a94\u6848\uff1a{0}
+PMI0010W.explanation=\u300c\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI)\u300d\u627e\u4e0d\u5230 PMI \u8d77\u59cb\u8a2d\u5b9a\u6642\u7528\u4ee5\u5167\u90e8\u8655\u7406\u7684\u6a94\u6848\u3002\u9019\u500b\u8a0a\u606f\u6307\u51fa\u627e\u4e0d\u5230\u7684\u6a94\u6848\u540d\u7a31\u3002
+PMI0010W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when pmiSpec in WCCM config file is ill-formatted
+PMI0011W=CWPMI0011W: PmiUtil \u4e2d\u7684 pmiSpec \u4e0d\u6b63\u78ba\uff1a{0}
+PMI0011W.explanation=\u300c\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI)\u300d\u6240\u8a2d\u5b9a\u7684\u6548\u80fd\u76e3\u8996\u5c64\u6b21\u503c\u7121\u6548\u3002PMI \u5229\u7528\u6548\u80fd\u76e3\u8996\u5c64\u6b21\u4f86\u5224\u65b7\u73fe\u884c\u76e3\u8996\u96c6\u5305\u542b\u54ea\u4e9b\u6a21\u7d44\u3001\u5b50\u6a21\u7d44\u548c\u7d71\u8a08\u8cc7\u6599\u3002
+PMI0011W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong number of parameters is passed to PmiFactory
+PMI0012W=CWPMI0012W: \u50b3\u905e\u932f\u8aa4\u7684\u53c3\u6578\u6578\u76ee\u7d66 PmiFactory\uff1a{0}
+PMI0012W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u6b63\u5728\u5efa\u7acb\u6a21\u7d44\uff0c\u4f46\u50b3\u7d66 PMI \u7684\u53c3\u6578\u4e0d\u7b26\u5408\u6240\u5efa\u7acb\u4e4b\u6a21\u7d44\u7684\u9700\u6c42\u3002
+PMI0012W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when wrong type of parameters is passed to PmiFactory
+PMI0013W=CWPMI0013W: \u50b3\u905e\u932f\u8aa4\u7684\u53c3\u6578\u985e\u578b\u7d66 PmiFactory\uff1a{0}
+PMI0013W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u6b63\u5728\u5efa\u7acb\u6a21\u7d44\uff0c\u4f46\u50b3\u7d66 PMI \u7684\u5176\u4e2d\u4e00\u500b\u53c3\u6578\u4e0d\u662f\u9810\u671f\u7684\u7269\u4ef6\u985e\u578b\u3002
+
+PMI0013W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when PMI failed to create TransactionModule
+PMI0014W=CWPMI0014W: PmiFactory \u7121\u6cd5\u5efa\u7acb TransactionModule\uff1a{0}
+PMI0014W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u5efa\u7acb\u7ba1\u7406\u4ea4\u6613\u6a21\u7d44\u6548\u80fd\u7d71\u8a08\u8cc7\u6599\u7684\u7269\u4ef6\u3002
+PMI0014W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to connect to AdminClient or AdminService
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0015W=CWPMI0015W: AdminUtilImpl \u9023\u63a5 AdminClient/AdminService \u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+PMI0015W.explanation=AdminUtilImpl \u5728\u9023\u63a5 AdminClient \u6216 AdminService \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+PMI0015W.useraction=\u9019\u662f\u975e\u9810\u671f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u7121\u6cd5\u7acb\u5373\u77e5\u9053\u539f\u56e0\u3002CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to find the ObjectNames
+PMI0016W=CWPMI0016W: AdminUtilImpl \u5c0b\u627e/\u5217\u51fa ObjectNames \u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+PMI0016W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u914d\u5c0d PMI \u540d\u7a31\u548c\u76f8\u5c0d\u61c9\u7684\u53d7\u7ba1\u7406\u7684 Bean (MBean) \u540d\u7a31\u3002\u5728 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u898f\u683c\u4e2d\uff0cMBean \u662f\u4ee3\u8868\u53ef\u7ba1\u7406\u8cc7\u6e90\u7684 java \u7269\u4ef6\u3002MBean \u4ecb\u9762\u8655\u7406 PMI \u8cc7\u6e90\u3002
+PMI0016W.useraction=\u60a8\u662f\u5728\u5229\u7528\u5354\u529b\u5ee0\u5546\u7684\u6548\u80fd\u76e3\u8996\u5de5\u5177\u4f86\u6aa2\u8996 PMI \u7d71\u8a08\u8cc7\u6599\u7684\u60c5\u6cc1\u4e0b\uff0c\u6536\u5230\u9019\u500b\u8a0a\u606f\u3002\u8acb\u78ba\u8a8d\u914d\u7f6e\u5c0d\u5de5\u5177\u800c\u8a00\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when there is an exception to get status from NodeAgent or AppServer
+PMI0017W=CWPMI0017W: AdminUtilImpl \u57f7\u884c getAdminState \u6642\u767c\u751f\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+PMI0017W.explanation=PMI \u7121\u6cd5\u8207\u7ba1\u7406\u7528\u6236\u7aef\u901a\u8a0a\u3002\u7ba1\u7406\u7528\u6236\u7aef\u53ef\u80fd\u5df2\u7121\u6cd5\u518d\u8207\u76ee\u6a19\u7bc0\u9ede\u4ee3\u7406\u7a0b\u5f0f\u6216\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u901a\u8a0a\u3002
+PMI0017W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when no ObjectName is returned from query
+PMI0018W=CWPMI0018W: AdminUtilImpl \u6c92\u6709\u5f9e\u67e5\u8a62\u50b3\u56de\u7684 ObjectName\uff1a{0}
+PMI0018W.explanation= \u7576\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u914d\u5c0d PMI \u540d\u7a31\u548c\u76f8\u5c0d\u61c9\u7684\u53d7\u7ba1\u7406\u7684 Bean (MBean) \u540d\u7a31\u6642\uff0cPMI \u5efa\u7acb\u4e86\u8b66\u544a\u8a0a\u606f\u3002\u5728 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u898f\u683c\u4e2d\uff0cMBean \u662f\u4ee3\u8868\u53ef\u7ba1\u7406\u8cc7\u6e90\u7684 java \u7269\u4ef6\u3002MBean \u4ecb\u9762\u8655\u7406 PMI \u8cc7\u6e90\u3002
+
+PMI0018W.useraction=\u60a8\u662f\u5728\u5229\u7528\u5354\u529b\u5ee0\u5546\u7684\u6548\u80fd\u76e3\u8996\u5de5\u5177\u4f86\u6aa2\u8996 PMI \u7d71\u8a08\u8cc7\u6599\u7684\u60c5\u6cc1\u4e0b\uff0c\u6536\u5230\u9019\u500b\u8a0a\u606f\u3002\u8acb\u78ba\u8a8d\u914d\u7f6e\u5c0d\u5de5\u5177\u800c\u8a00\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when an unexpected runtime config attribute name passed to PMI
+PMI0019W=CWPMI0019W: \u51fa\u73fe\u975e\u9810\u671f\u7684\u57f7\u884c\u6642\u671f\u914d\u7f6e\u5c6c\u6027\u540d\u7a31\uff1a{0}
+PMI0019W.explanation=\u6307\u5b9a\u7d66\u9023\u7dda\u5132\u5b58\u5340\u6a21\u7d44\u7684\u914d\u7f6e\u53c3\u6578\u7121\u6548\u3002\u9019\u500b\u9078\u9805\u7684\u552f\u4e00\u6709\u6548\u53c3\u6578\u662f 'PoolSize'
+PMI0019W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI counter is obviously wrong, e.g., a negative number
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0020W=CWPMI0020W: \u8a08\u6578\u5668\u4e0d\u540c\u6b65\uff1a{0}
+PMI0020W.explanation=\u8a08\u6578\u5668\u4e0d\u540c\u6b65\u3002
+PMI0020W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0021W=CWPMI0021W: \u8cc7\u6599\u985e\u578b\u932f\u8aa4\uff1a{0}
+PMI0021W.explanation=\u9019\u662f\u4e00\u500b\u932f\u8aa4\u8cc7\u6599\u985e\u578b\u3002
+PMI0021W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a wrong data type is used in PMI
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0022W=CWPMI0022W: \u91cd\u8907\u7684\u6a21\u7d44\u540d\u7a31\uff1a{0}
+PMI0022W.explanation=\u9019\u662f\u91cd\u8907\u7684\u6a21\u7d44\u540d\u7a31\u3002
+PMI0022W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0023W=CWPMI0023W: \u7121\u6cd5\u767b\u9304 PMI \u6a21\u7d44\uff0c\u56e0\u70ba\u540d\u7a31\u91cd\u8907\uff1a{0}
+PMI0023W.explanation=\u7531\u65bc\u547d\u540d\u885d\u7a81\uff0c\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u767b\u9304\u6a21\u7d44\u3002PMI \u6703\u5229\u7528\u6307\u5b9a\u8def\u5f91\u5167\u7684\u552f\u4e00\u540d\u7a31\u4f86\u8ffd\u8e64\u6240\u6709\u6a21\u7d44\u548c\u5b50\u6a21\u7d44\u3002\u5982\u679c\u986f\u793a\u9019\u500b\u8a0a\u606f\uff0c\u5c31\u8868\u793a PMI \u56e0\u540c\u540d\u6a21\u7d44\u5df2\u5b58\u5728\uff0c\u800c\u7121\u6cd5\u65b0\u589e\u6a21\u7d44\u3002
+PMI0023W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0024W=CWPMI0024W: \u5df2\u6539\u5beb\u4e0b\u5217\u9805\u76ee\u7684 MBean \u81f3 PMI \u6a21\u7d44\u5c0d\u6620\uff1a{0}
+PMI0024W.explanation=\u7576\u91dd\u5c0d\u5df2\u5728\u5feb\u53d6\u4e2d\u7684\u53c3\u7167\u4f86\u5132\u5b58\u53d7\u7ba1\u7406\u7684 Bean (MBean) \u8def\u5f91\u6642\uff0c\u6703\u986f\u793a\u9019\u500b\u8a0a\u606f\u3002\u5728 Java \u7ba1\u7406\u5ef6\u4f38 (JMX) \u898f\u683c\u4e2d\uff0cMBean \u662f\u4ee3\u8868\u53ef\u7ba1\u7406\u8cc7\u6e90\u7684 java \u7269\u4ef6\u3002MBean \u4ecb\u9762\u8655\u7406 PMI \u8cc7\u6e90\u3002\u5728\u9019\u500b\u5be6\u4f8b\u4e2d\uff0cPMI \u5c07 MBean \u8def\u5f91\u95dc\u806f\u65bc\u73fe\u6709\u7684\u5167\u90e8 PMI \u7269\u4ef6\u3002
+PMI0024W.useraction=\u60a8\u662f\u5728\u5229\u7528\u5354\u529b\u5ee0\u5546\u7684\u6548\u80fd\u76e3\u8996\u5de5\u5177\u4f86\u6aa2\u8996 PMI \u7d71\u8a08\u8cc7\u6599\u7684\u60c5\u6cc1\u4e0b\uff0c\u6536\u5230\u9019\u500b\u8a0a\u606f\u3002\u8acb\u78ba\u8a8d\u914d\u7f6e\u5c0d\u5de5\u5177\u800c\u8a00\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0025W=CWPMI0025W: \u5c07 PMI \u914d\u7f6e\u4fdd\u5b58\u5230 pmi-config.xml \u6642\u767c\u751f\u932f\u8aa4\uff1a{0}
+PMI0025W.explanation=\u7576\u60a8\u5c07\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u914d\u7f6e\u6301\u7e8c\u4fdd\u5b58\u5728 pmi-config.xml \u6a94\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+PMI0025W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0026W=CWPMI0026W: \u8b80\u53d6 pmi-config.xml \u4e2d\u7684 PMI \u914d\u7f6e\u6642\u767c\u751f\u932f\u8aa4\uff1a{0}
+PMI0026W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u5f9e\u9810\u671f\u7684\u4f4d\u7f6e\u8b80\u53d6 pmi-config.xml \u6a94\u3002
+PMI0026W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0027W=CWPMI0027W: \u5c07 PMI \u914d\u7f6e\u4fdd\u5b58\u5230 server.xml \u6642\u767c\u751f\u932f\u8aa4\uff1a{0}
+PMI0027W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u8a66\u5716\u5132\u5b58\u73fe\u884c PMI \u914d\u7f6e\u8cc7\u8a0a\uff0c\u4f46\u5931\u6557\u3002\u9019\u9805\u5931\u6557\u662f PMI \u5617\u8a66\u5be6\u969b\u5132\u5b58\u8cc7\u8a0a\u6642\u6240\u5efa\u7acb\u800c\u88ab\u6355\u6349\u5230\u7684\u4e00\u9805\u7570\u5e38\u72c0\u6cc1\u3002
+PMI0027W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message when a PMI module cannot be created
+PMI0028W=CWPMI0028W: \u53d6\u5f97\u914d\u7f6e\u670d\u52d9\u6642\u767c\u751f\u932f\u8aa4
+PMI0028W.explanation= \u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u627e\u4e0d\u5230\u914d\u7f6e\u670d\u52d9\u3002PMI \u5229\u7528\u914d\u7f6e\u670d\u52d9\u8207\u914d\u7f6e\u8cc7\u8a0a\u4e92\u52d5\u3002
+PMI0028W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0030W=CWPMI0030W: \u8f09\u5165\u81ea\u8a02 PMI \u8cc7\u6e90\u8edf\u9ad4\u7d44\u6642\u767c\u751f\u932f\u8aa4\uff1a{0}
+PMI0030W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u627e\u4e0d\u5230\u5df2\u672c\u5730\u5316\u7684\u8cc7\u6e90\u8edf\u9ad4\u7d44\u3002\u8cc7\u6e90\u8edf\u9ad4\u7d44\u662f\u5c07\u8cc7\u8a0a\u50b3\u7d66\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4f7f\u7528\u8005\u6642\uff0cPMI \u6240\u7528\u7684\u4e00\u7d44\u8a9e\u8a00\u7279\u5b9a\u8cc7\u8a0a\u3002
+PMI0030W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0031W=CWPMI0031W: \u5075\u6e2c\u5230 5.0 \u548c 6.0 PMI \u914d\u7f6e\u3002\u5229\u7528 6.0 \u914d\u7f6e\u555f\u52d5 PMI \u670d\u52d9\u3002\u5f9e 6.0 \u958b\u59cb\uff0cserver.xml \u4e2d\u7684 initialSpecLevel \u5c6c\u6027\u5df2\u68c4\u7528\u3002
+PMI0031W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u662f\u91dd\u5c0d\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668 6.x \u7248\u4f86\u8d77\u59cb\u8a2d\u5b9a\uff0c\u4f46\u5b83\u627e\u5230 5.x \u7248\u914d\u7f6e\u53c3\u6578\u3002\u5728 6.0 \u7248\u4e2d\uff0cserver.xml \u914d\u7f6e\u6a94\u4e2d\u7684 initialSpecLevel \u5c6c\u6027\u5df2\u6dd8\u6c70\u3002
+PMI0031W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message 
+PMI0032W=CWPMI0032W: \u5728\u90e8\u7f72\u7ba1\u7406\u7a0b\u5f0f\u7a0b\u5e8f\u4e2d\uff0c\u7121\u6cd5\u4f7f\u7528 PMI \u670d\u52d9\u3002
+PMI0032W.explanation=\u7121\u6cd5\u5728 Network Deployment \u914d\u7f6e\u7684\u90e8\u7f72\u7ba1\u7406\u7a0b\u5f0f\u7a0b\u5e8f\u5167\uff0c\u8d77\u59cb\u8a2d\u5b9a\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI)\u3002\u5728\u90e8\u7f72\u7ba1\u7406\u7a0b\u5f0f\u5167\uff0cPMI \u7121\u6cd5\u904b\u4f5c\uff0c\u56e0\u6b64\u4efb\u4f55\u5c07\u5b83\u8d77\u59cb\u8a2d\u5b9a\u7684\u5617\u8a66\u90fd\u53ef\u80fd\u5931\u6557\u3002
+PMI0032W.useraction=\u5728\u90e8\u7f72\u7ba1\u7406\u7a0b\u5f0f\u7a0b\u5e8f\u4e2d\uff0c\u7121\u6cd5\u4f7f\u7528 PMI \u670d\u52d9\u3002\u8acb\u6aa2\u95b1\u90e8\u7f72\u7ba1\u7406\u7a0b\u5f0f\u914d\u7f6e\u6a94\uff0c\u4e26\u95dc\u9589 PMI\u3002
+
+# ************* CUSTOM PMI MESSAGES *************
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0101W=CWPMI0101W: \u7121\u6cd5\u5efa\u7acb\u81ea\u8a02 PMI \u6a21\u7d44\u7684\u9810\u8a2d MBean\uff1a{0}
+PMI0101W.explanation=\u7121\u6cd5\u5efa\u7acb\u81ea\u8a02\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u6a21\u7d44\u7684\u9810\u8a2d\u53d7\u7ba1\u7406\u7684 Bean (MBean)\u3002
+PMI0101W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0102W=CWPMI0102W: \u7121\u6cd5\u8b80\u53d6\u81ea\u8a02 PMI \u6a21\u7d44\u914d\u7f6e\uff1a{0}
+PMI0102W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u7121\u6cd5\u8b80\u53d6\u7528\u4f86\u914d\u7f6e\u81ea\u8a02 PMI \u6a21\u7d44\u7684\u4f86\u6e90 XML \u6a94\u3002\u81ea\u8a02 PMI \u662f PMI \u63d0\u4f9b\u8005\u5728 PMI \u4e2d\u7528\u4f86\u767b\u9304\u6a21\u7d44\u7684\u61c9\u7528\u7a0b\u5f0f\u8a2d\u8a08\u4ecb\u9762 (API)\u3002\u7576\u8d77\u59cb\u8a2d\u5b9a\u81ea\u8a02 PMI \u6a21\u7d44\u6642\uff0cPMI \u6703\u8b80\u53d6 XML \u6a94\u4f86\u5224\u65b7\u6a21\u7d44\u7684\u914d\u7f6e\u8cc7\u8a0a\u3002
+PMI0102W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0103W=CWPMI0103W: \u7121\u6cd5\u767b\u9304\u81ea\u8a02 PMI \u6a21\u7d44\uff0c\u56e0\u70ba\u76f8\u540c\u6bcd\u9805\u4e0b\u6709\u91cd\u8907\u540d\u7a31\uff0c\u6216 PMI \u6a39\u72c0\u7d50\u69cb\u8def\u5f91\u7121\u6548\uff1a{0}
+PMI0103W.explanation=\u300c\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI)\u300d\u5c07\u65b0\u6a21\u7d44\u5efa\u7acb\u5728\u7121\u6548\u7684\u6bcd\u8def\u5f91\u4e0b\uff0c\u6216\u5efa\u7acb\u5728\u5167\u542b\u540c\u540d\u6a21\u7d44\u7684\u6bcd\u8def\u5f91\u4e0b\u3002PMI \u6a39\u72c0\u7d50\u69cb\u4e2d\u7684\u6bcf\u500b\u6bcd\u9805\u8def\u5f91\u90fd\u5fc5\u9808\u5177\u6709\u552f\u4e00\u7684 PMI \u6a21\u7d44\u540d\u7a31\u3002
+PMI0103W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0104W=CWPMI0104W: \u627e\u4e0d\u5230\u81ea\u8a02 PMI \u6a21\u7d44\u7684\u6bcd\u9805 MBean\uff1a{0}
+PMI0104W.explanation=\u627e\u4e0d\u5230\u81ea\u8a02\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u6a21\u7d44\u7684\u6bcd\u9805\u53d7\u7ba1\u7406\u7684 Bean (MBean)\u3002
+PMI0104W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0105W=CWPMI0105W: \u627e\u4e0d\u5230 {0} \u7684 PMI \u6a21\u7d44\u9805\u76ee
+PMI0105W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u627e\u4e0d\u5230\u8b66\u544a\u8a0a\u606f\u986f\u793a\u7684\u8def\u5f91\u6240\u8b58\u5225\u7684\u6a21\u7d44\u3002PMI \u6b63\u5728\u5617\u8a66\u5c0b\u627e\u6a21\u7d44\uff0c\u56e0\u6b64\u53ef\u80fd\u5728\u9019\u500b\u6a21\u7d44\u4e0a\u57f7\u884c\u4f5c\u696d\u3002
+PMI0105W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0106W=CWPMI0106W: \u53d6\u6d88\u555f\u52d5\u81ea\u8a02 PMI MBean \u6642\u767c\u751f\u932f\u8aa4\uff1a{0}
+PMI0106W.explanation=\u7576\u53d6\u6d88\u555f\u52d5\u81ea\u8a02\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u53d7\u7ba1\u7406\u7684 Bean (MBean) \u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+PMI0106W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0107W=CWPMI0107W: \u7121\u6cd5\u767b\u9304\u81ea\u8a02 PMI \u6a21\u7d44\uff0c\u56e0\u70ba\u6c92\u6709\u555f\u7528 PMI \u670d\u52d9\uff1a{0}
+PMI0107W.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u5df2\u505c\u7528\uff0c\u4e14\u6709\u5143\u4ef6\u6216\u61c9\u7528\u7a0b\u5f0f\u8a66\u5716\u5efa\u7acb PMI \u7269\u4ef6\u3002\u9019\u500b\u8a0a\u606f\u5c07\u8981\u6c42\u7121\u6cd5\u5b8c\u6210\u7684\u539f\u56e0\u901a\u77e5 PMI \u7528\u6236\u7aef\u64c1\u6709\u8005\u3002
+PMI0107W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Warning message
+PMI0108W=CWPMI0108W: \u7121\u6cd5\u767b\u9304\u81ea\u8a02 PMI \u6a21\u7d44\uff0c\u56e0\u70ba\u6bcd\u9805\u7d71\u8a08\u8cc7\u6599\u7fa4\u7d44/\u5be6\u4f8b\u4e2d\u6709\u91cd\u8907\u7684\u7d71\u8a08\u8cc7\u6599 ID\uff1aID={0}; ParentStats={1}
+PMI0108W.explanation=\u7576\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u8d77\u59cb\u8a2d\u5b9a\u81ea\u8a02 PMI \u6a21\u7d44\u6642\uff0cPMI \u5efa\u7acb\u4e86\u9019\u500b\u8a0a\u606f\u3002PMI \u7121\u6cd5\u5efa\u69cb\u81ea\u8a02 PMI \u6a21\u7d44\u7684\u7d71\u8a08\u8cc7\u6599\u8eab\u5206\uff0c\u56e0\u70ba\u6240\u63d0\u4f9b\u7684\u6a21\u7d44\u7d71\u8a08\u8cc7\u6599\u8eab\u5206\u5df2\u7d93\u5b58\u5728\u3002\u81ea\u8a02 PMI XML \u7bc4\u672c\u4e2d\u7684\u932f\u8aa4\u6709\u53ef\u80fd\u7522\u751f\u9019\u500b\u554f\u984c\u3002
+PMI0108W.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0201I=CWPMI0201I: \u6b63\u5728\u53d6\u6d88\u555f\u52d5 {0} \u7684\u81ea\u8a02 PMI MBean
+PMI0201I.explanation=\u6b63\u5728\u53d6\u6d88\u555f\u52d5\u81ea\u8a02 PMI MBean\u3002
+PMI0201I.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0001I=CWPMI1101I: \u5728\u5feb\u53d6\u8a18\u61b6\u9ad4\u4e2d\u627e\u5230\uff1a{0}
+PMI0001I.explanation=\u5728\u5feb\u53d6\u8a18\u61b6\u9ad4\u4e2d\u627e\u5230\u3002
+PMI0001I.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+# -------------------------------------------------------------------------------------------------
+# This message is DEPRECATED - no longer in use in the product.
+# -------------------------------------------------------------------------------------------------
+PMI0002I=CWPMI1102I: \u5728\u5feb\u53d6\u8a18\u61b6\u9ad4\u4e2d\u627e\u4e0d\u5230\uff1a{0}
+PMI0002I.explanation=\u5728\u5feb\u53d6\u8a18\u61b6\u9ad4\u4e2d\u627e\u4e0d\u5230\u3002
+PMI0002I.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# Information
+PMI0001A=CWPMI1001I: \u5df2\u555f\u7528 PMI
+PMI0001A.explanation=\u9019\u662f\u4e00\u5247\u5be9\u6838\u8a0a\u606f\uff0c\u78ba\u8a8d\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u5df2\u555f\u7528\u4e14\u80fd\u5920\u904b\u4f5c\u3002
+PMI0001A.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# Debug message when the queried object is not found in the cache
+PMI0002A=CWPMI1002I: \u5df2\u505c\u7528 PMI
+PMI0002A.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u5df2\u505c\u7528\u3002
+PMI0002A.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# Indicates and internal error in PMI
+PMI9999E=CWPMI9999E: \u5167\u90e8\u932f\u8aa4\uff1a{0}
+PMI9999E.explanation=\u6548\u80fd\u76e3\u8996\u57fa\u790e\u67b6\u69cb (PMI) \u6307\u51fa\u5404\u7a2e\u554f\u984c\u3002\u8a0a\u606f\u5167\u6587\u6703\u6307\u51fa\u554f\u984c\u7684\u552f\u4e00\u6027\u8cea\u3002
+PMI9999E.useraction=CMSG0002
+
+

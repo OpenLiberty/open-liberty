@@ -19,6 +19,8 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.config
 
 Bundle-Description:MicroProfile Configuration Implementation, version ${bVersion}
 
+testsrc: test/src
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.config.archaius.impl.ArchaiusConfigProviderResolverImpl
 

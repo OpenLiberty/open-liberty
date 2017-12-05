@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: \u914d\u7f6e\u5df2\u5173\u95ed\u3002
+config.closed.CWMCG0001E.explanation=\u4e0d\u80fd\u5bf9\u5df2\u5173\u95ed\u7684\u914d\u7f6e\u5b9e\u4f8b\u6267\u884c\u64cd\u4f5c\u3002
+config.closed.CWMCG0001E.useraction=\u8bf7\u83b7\u53d6\u65b0\u914d\u7f6e\u5b9e\u4f8b\u5e76\u91cd\u8bd5\u8be5\u64cd\u4f5c\u3002
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: ClassLoader \u4e0d\u80fd\u4e3a\u7a7a\u3002
+null.classloader.CWMCG0002E.explanation=ConfigBuilder \u4f7f\u7528\u7684 ClassLoader \u4e0d\u80fd\u4e3a\u7a7a\u3002
+null.classloader.CWMCG0002E.useraction=\u8bf7\u5c06 ClassLoader \u8bbe\u7f6e\u4e3a\u975e\u7a7a\u503c\u3002
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: \u6240\u6307\u5b9a\u7c7b\u88c5\u5165\u5668\u5df2\u5b58\u5728\u914d\u7f6e\u5b9e\u4f8b\u3002
+config.already.exists.CWMCG0003E.explanation=\u5df2\u5bf9\u6240\u6307\u5b9a ClassLoader \u8bbe\u7f6e\u914d\u7f6e\u5b9e\u4f8b\u3002
+config.already.exists.CWMCG0003E.useraction=\u8bf7\u4f7f\u7528\u201creleaseConfig\u201d\u65b9\u6cd5\u79fb\u9664\u5148\u524d\u5b9e\u4f8b\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u65b9\u6cd5\u3002
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: \u65e0\u6cd5\u5173\u95ed\u914d\u7f6e\u5b9e\u4f8b\u3002\u5f02\u5e38\u4e3a {0}\u3002
+could.not.close.CWMCG0004E.explanation=\u5c1d\u8bd5\u5173\u95ed\u914d\u7f6e\u5b9e\u4f8b\u65f6\u53d1\u751f\u4e86\u5f02\u5e38\u3002\u5176\u8d44\u6e90\u53ef\u80fd\u672a\u88ab\u91ca\u653e\u3002
+could.not.close.CWMCG0004E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: \u65e0\u6cd5\u5c06\u5b57\u7b26\u4e32\u201c{0}\u201d\u8f6c\u6362\u4e3a\u7c7b\u578b\u4e3a {1} \u7684\u503c\u3002
+unable.to.convert.CWMCG0006E.explanation=\u627e\u4e0d\u5230\u5bf9\u5e94\u7ed9\u5b9a\u7c7b\u578b\u7684\u9002\u7528 Converter\u3002
+unable.to.convert.CWMCG0006E.useraction=\u8bf7\u6dfb\u52a0\u9002\u7528 Converter\uff0c\u6216\u786e\u4fdd\u8be5\u7c7b\u5177\u6709\u516c\u7528\u5b57\u7b26\u4e32\u6784\u9020\u51fd\u6570\u6216\u9759\u6001 valueOf(String) \u65b9\u6cd5\u3002
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: \u7c7b\u578b\u4e3a {0} \u7684 Converter \u629b\u51fa\u4e86\u5f02\u5e38\u3002\u8f93\u5165\u5b57\u7b26\u4e32\u4e3a\uff1a\u201c{1}\u201d\u3002\u5f02\u5e38\uff1a{2}
+conversion.exception.CWMCG0007E.explanation=Converter \u629b\u51fa\u4e86\u5f02\u5e38\u3002
+conversion.exception.CWMCG0007E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: \u65e0\u6cd5\u5c06\u5b57\u7b26\u4e32\u201c{0}\u201d\u8f6c\u6362\u4e3a\u5e03\u5c14\u7c7b\u578b\u503c\u3002\u5e94\u8be5\u4e3a\u4e0b\u5217\u5176\u4e2d\u4e00\u4e2a\u503c\uff1atrue\u3001yes\u3001on\u3001false\u3001no \u6216 off\u3002
+unable.to.convert.boolean.CWMCG0008E.explanation=\u8f93\u5165\u5b57\u7b26\u4e32\u4e0d\u662f\u6709\u6548\u7684\u5e03\u5c14\u503c\u3002
+unable.to.convert.boolean.CWMCG0008E.useraction=\u66f4\u65b0\u6e90\u8f93\u5165\u5b57\u7b26\u4e32\u5e76\u91cd\u8bd5\u8be5\u64cd\u4f5c\u3002
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: \u65e0\u6cd5\u786e\u5b9a Converter \u7c7b {0} \u7684\u8f6c\u6362\u7c7b\u578b\u3002
+unable.to.determine.conversion.type.CWMCG0009E.explanation=Converter \u5b9e\u73b0\u7c7b\u6ca1\u6709\u9002\u7528\u7684\u901a\u7528\u7c7b\u578b\u3002
+unable.to.determine.conversion.type.CWMCG0009E.useraction=\u8bf7\u786e\u4fdd\u5b9e\u73b0\u7c7b\u5177\u6709\u9002\u7528\u4e8e Converter \u63a5\u53e3\u7684\u901a\u7528\u7c7b\u578b\u53d8\u91cf\u3002
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: \u65e0\u6cd5\u53d1\u73b0 ConfigSources\u3002\u5f02\u5e38\u4e3a {0}\u3002
+unable.to.discover.config.sources.CWMCG0010E.explanation=Java ServiceLoader \u5f62\u6210\u4e86\u5f02\u5e38\u3002\u6700\u53ef\u80fd\u539f\u56e0\u662f\u627e\u4e0d\u5230\u6240\u6307\u5b9a ConfigSource \u7c7b\u3002
+unable.to.discover.config.sources.CWMCG0010E.useraction=\u68c0\u67e5\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u7684 Java \u670d\u52a1\u6587\u4ef6\u4e2d\u6307\u5b9a\u7684\u7c7b\u3002\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u8fdb\u4e00\u6b65\u786e\u5b9a\u95ee\u9898\u3002
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: \u65e0\u6cd5\u53d1\u73b0 ConfigSourceProviders\u3002\u5f02\u5e38\u4e3a {0}\u3002
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=Java ServiceLoader \u5f62\u6210\u4e86\u5f02\u5e38\u3002\u6700\u53ef\u80fd\u539f\u56e0\u662f\u627e\u4e0d\u5230\u6240\u6307\u5b9a ConfigSourceProvider \u7c7b\u3002
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=\u68c0\u67e5\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u7684 Java \u670d\u52a1\u6587\u4ef6\u4e2d\u6307\u5b9a\u7684\u7c7b\u3002\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u8fdb\u4e00\u6b65\u786e\u5b9a\u95ee\u9898\u3002
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: \u65e0\u6cd5\u53d1\u73b0\u8f6c\u6362\u5668\u3002\u5f02\u5e38\u4e3a {0}\u3002
+unable.to.discover.converters.CWMCG0012E.explanation=Java ServiceLoader \u5f62\u6210\u4e86\u5f02\u5e38\u3002\u6700\u53ef\u80fd\u539f\u56e0\u662f\u627e\u4e0d\u5230\u6240\u6307\u5b9a Converter \u7c7b\u3002
+unable.to.discover.converters.CWMCG0012E.useraction=\u68c0\u67e5\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u7684 Java \u670d\u52a1\u6587\u4ef6\u4e2d\u6307\u5b9a\u7684\u7c7b\u3002\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u8fdb\u4e00\u6b65\u786e\u5b9a\u95ee\u9898\u3002
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: \u670d\u52a1\u5668\u65e0\u6cd5\u53d6\u6d88\u5f02\u6b65\u66f4\u65b0\u7ebf\u7a0b\u3002
+future.update.not.cancelled.CWMCG0013E.explanation=\u5c1d\u8bd5\u53d6\u6d88\u672a\u6765\u5f02\u6b65\u66f4\u65b0\u5931\u8d25\u3002\u6b64\u95ee\u9898\u901a\u5e38\u662f\u56e0\u4e3a\u957f\u65f6\u95f4\u8fd0\u884c\u9488\u5bf9 ConfigSource \u5b9e\u4f8b\u7684\u66f4\u65b0\u8c03\u7528\u800c\u5bfc\u81f4\u7684\u3002
+future.update.not.cancelled.CWMCG0013E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: \u627e\u4e0d\u5230\u5bf9\u5e94\u7c7b\u578b {0} \u7684 Converter\u3002
+could.not.find.converter.CWMCG0014E.explanation=\u627e\u4e0d\u5230 Converter\uff0c\u65e0\u6cd5\u5c06\u539f\u59cb\u5c5e\u6027\u5b57\u7b26\u4e32\u8f6c\u6362\u4e3a\u6240\u8bf7\u6c42\u7c7b\u578b\u3002
+could.not.find.converter.CWMCG0014E.useraction=\u786e\u4fdd\u9002\u7528 Converter \u7c7b\u53ef\u7528\uff0c\u5e76\u4e14\u5217\u793a\u5728 Java \u670d\u52a1\u6587\u4ef6\u4e2d\u3002
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: \u5728\u914d\u7f6e\u4e2d\u627e\u4e0d\u5230\u5c5e\u6027 {0}\u3002
+no.such.element.CWMCG0015E.explanation=\u6240\u8bf7\u6c42\u5c5e\u6027\u4e0d\u5728\u4efb\u4f55\u5df2\u914d\u7f6e\u6e90\u4e2d\u3002
+no.such.element.CWMCG0015E.useraction=\u5c06\u8be5\u5c5e\u6027\u6dfb\u52a0\u81f3\u67d0\u4e2a\u73b0\u6709\u6e90\uff0c\u6216\u6dfb\u52a0\u5305\u542b\u8be5\u5c5e\u6027\u7684\u65b0\u6e90\u3002
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: \u53d1\u751f\u4e86\u914d\u7f6e API \u9519\u8bef\uff1a{0}\u3002
+temporary.CWMCG9999E.explanation=\u53d1\u751f\u4e86\u914d\u7f6e API \u9519\u8bef\uff0c\u65e0\u6cd5\u6267\u884c\u6b63\u5e38\u64cd\u4f5c\u3002
+temporary.CWMCG9999E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

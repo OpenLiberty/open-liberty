@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: O valor de tempo limite {0} especificado na propriedade {1} no lado do Cliente do JAX-RS \u00e9 inv\u00e1lido. O valor \u00e9 configurado como o padr\u00e3o {2}. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=O tipo do valor de tempo limite deve ser long ou int.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Configure o tipo do valor como long ou int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: O valor de porta do servidor proxy {0} especificado na propriedade {1} no lado do Cliente do JAX-RS \u00e9 inv\u00e1lido. O valor \u00e9 configurado como o padr\u00e3o {2}. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=O tipo do valor de porta do servidor proxy deve ser int.  
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Configure o tipo do valor como int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: O valor do tipo de servidor proxy {0} especificado na propriedade {1} no lado do Cliente do JAX-RS \u00e9 inv\u00e1lido. O valor \u00e9 configurado como o padr\u00e3o {2}. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=O valor do tipo do servidor proxy deve ser HTTP ou SOCKS.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Configure o valor como HTTP ou SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: O socket factory SSL n\u00e3o pode ser criado porque o ID de refer\u00eancia SSL {0} n\u00e3o existe no arquivo server.xml.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= Um ID de refer\u00eancia v\u00e1lido \u00e9 necess\u00e1rio para gerar um socket factory SSL. N\u00e3o h\u00e1 nenhuma configura\u00e7\u00e3o SSL com ID {0} no arquivo server.xml.  
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Configure um ID de refer\u00eancia SSL v\u00e1lido no arquivo server.xml.
+
+no_saml_found_in_subject=CWWKW0704W: O token SAML requerido est\u00e1 ausente do assunto.
+no_saml_found_in_subject.explanation=Ocorreu um erro ao extrair o token SAML do assunto ou um elemento SAML n\u00e3o foi localizado no assunto atual.
+no_saml_found_in_subject.useraction=Se voc\u00ea criar um assunto executado como, assegure-se de que o token SAML esteja inclu\u00eddo no assunto. Caso contr\u00e1rio, assegure-se de que a sua configura\u00e7\u00e3o do servidor suporte a inclus\u00e3o do token SAML no assunto ao verificar o atributo includeTokenInSubject em sua configura\u00e7\u00e3o SAML.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Ocorreu uma exce\u00e7\u00e3o ao tentar usar a API PropagationHelper de SAML. A exce\u00e7\u00e3o foi: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao chamar a API PropagationHelper para recuperar o token SAML do assunto.
+failed_to_extract_saml_token_from_subject.useraction=Assegure que o server.xml tenha o recurso samlWeb-2.0 especificado. Al\u00e9m disso, verifique os logs do servidor para obter informa\u00e7\u00f5es adicionais referentes \u00e0 exce\u00e7\u00e3o. 
+
+failed_run_as_subject=CWWKW0706E: Ocorreu uma exce\u00e7\u00e3o ao tentar obter o RunAsSubject. A exce\u00e7\u00e3o era: [{0}].
+failed_run_as_subject.explanation=Ocorreu uma exce\u00e7\u00e3o ao obter o RunAsSubject.
+failed_run_as_subject.useraction=Certifique-se de que o servidor tenha sido configurado e iniciado corretamente.
+
+warn_missing_mpjwt_token=CWWKW0707W: O atributo [{0}] na configura\u00e7\u00e3o [{1}] est\u00e1 definido para [{2}], mas o MicroProfile JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel. A solicita\u00e7\u00e3o n\u00e3o cont\u00e9m um cabe\u00e7alho de Autoriza\u00e7\u00e3o com o token.
+warn_missing_mpjwt_token.explanation=O tempo de execu\u00e7\u00e3o falhou ao localizar o MicroProfile JWT no assunto runAs. Esse erro geralmente indica um problema com a autentica\u00e7\u00e3o. Certifique-se de que nenhum erro seja encontrado enquanto o recurso MicroProfile JWT autenticar um usu\u00e1rio.
+warn_missing_mpjwt_token.useraction=Verifique a a\u00e7\u00e3o do usu\u00e1rio para quaisquer erros anteriores que o servidor registrou.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: O servi\u00e7o MicroProfile JWT Propagation n\u00e3o est\u00e1 dispon\u00edvel. O tempo de execu\u00e7\u00e3o n\u00e3o pode acessar o token para inclu\u00ed-lo no cabe\u00e7alho de autoriza\u00e7\u00e3o.
+warn_mpjwt_prop_service_notavail.explanation=O servi\u00e7o MicroProfile JWT Propagation requer o recurso mpJwt-1.0. 
+warn_mpjwt_prop_service_notavail.useraction=Certifique-se de que o servidor esteja executando com o recurso requerido.

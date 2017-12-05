@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry/resources/com/ibm/ws/security/registry/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3000 - CWWKS3099
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID=CWWKS3000E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A userRegistry konfigur\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva refId param\u00e9ter.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.explanation=A userRegistry konfigur\u00e1ci\u00f3s elem adott UserRegistry p\u00e9ld\u00e1nyokra az ID \u00e9rt\u00e9k\u00fck alapj\u00e1n hivatkozik.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_REFID.useraction=Adjon meg egy refId param\u00e9tert a userRegistry elem konfigur\u00e1ci\u00f3j\u00e1ban.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID=CWWKS3001E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A k\u00e9rt UserRegistry p\u00e9ld\u00e1ny (azonos\u00edt\u00f3: {0}) nem tal\u00e1lhat\u00f3.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.explanation=Minden UserRegistry konfigur\u00e1ci\u00f3 megad egy id param\u00e9tert.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_ID.useraction=Adja meg a konfigur\u00e1lt elem id param\u00e9ter\u00e9t, vagy hozza l\u00e9tre a sz\u00fcks\u00e9ges konfigur\u00e1ci\u00f3t.
+
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE=CWWKS3002E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A k\u00e9rt {0} t\u00edpus\u00fa UserRegistry gy\u00e1rt\u00f3 nem tal\u00e1lhat\u00f3.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.explanation=Minden UserRegistry megval\u00f3s\u00edt\u00e1s k\u00f6teg megadja a biztos\u00edtott t\u00edpus\u00e1t.
+USER_REGISTRY_SERVICE_CONFIG_ERROR_NO_SUCH_FACTORY_TYPE.useraction=Adjon meg egy t\u00e1mogatott t\u00edpust, vagy telep\u00edtse a k\u00f6teget, amely a k\u00e9rt t\u00edpus UserRegistry p\u00e9ld\u00e1ny\u00e1t biztos\u00edtja.
+
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID=CWWKS3003E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A(z) {0} nyilv\u00e1ntart\u00e1st\u00edpus konfigur\u00e1ci\u00f3ja nem ad meg azonos\u00edt\u00f3t.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.explanation=A nyilv\u00e1ntart\u00e1st\u00edpus konfigur\u00e1ci\u00f3ja nem ad meg azonos\u00edt\u00f3t.
+USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID.useraction=Adjon meg egy azonos\u00edt\u00f3t a nyilv\u00e1ntart\u00e1st\u00edpus konfigur\u00e1ci\u00f3j\u00e1hoz.
+
+USER_REGISTRY_SERVICE_WITHOUT_TYPE=CWWKS3004E: Bels\u0151 kiv\u00e9tel t\u00f6rt\u00e9nt. A(z) {0} szolg\u00e1ltat\u00e1s nem hat\u00e1rozza meg az \u00e1ltala megval\u00f3s\u00edtott nyilv\u00e1ntart\u00e1st\u00edpust.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.explanation=A szolg\u00e1ltat\u00e1s adja meg a com.ibm.ws.security.registry.type tulajdons\u00e1got.
+USER_REGISTRY_SERVICE_WITHOUT_TYPE.useraction=Adja meg a tulajdons\u00e1g com.ibm.ws.security.registry.type tulajdons\u00e1g\u00e1t.
+
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE=CWWKS3005E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. Nincs el\u00e9rhet\u0151 UserRegistry megval\u00f3s\u00edt\u00e1si szolg\u00e1ltat\u00e1s.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik konfigur\u00e1lt felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1ssal.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.explanation=Nem \u00e9rhet\u0151 el UserRegistry megval\u00f3s\u00edt\u00e1s az OSGi szolg\u00e1ltat\u00e1snyilv\u00e1ntart\u00e1son kereszt\u00fcl.
+USER_REGISTRY_SERVICE_NO_USER_REGISTRY_AVAILABLE.useraction=Adjon meg egy UserRegistry megval\u00f3s\u00edt\u00e1si szolg\u00e1ltat\u00e1st.
+
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE=CWWKS3006E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. T\u00f6bb UserRegistry megval\u00f3s\u00edt\u00e1si szolg\u00e1ltat\u00e1s l\u00e9tezik; a rendszer nem k\u00e9pes eld\u00f6nteni, hogy melyiket haszn\u00e1lja.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.explanation=T\u00f6bb UserRegistry megval\u00f3s\u00edt\u00e1s is el\u00e9rhet\u0151 az OSGi szolg\u00e1ltat\u00e1snyilv\u00e1ntart\u00e1son kereszt\u00fcl.
+USER_REGISTRY_SERVICE_MULTIPLE_USER_REGISTRY_AVAILABLE.useraction=Csak egyetlen UserRegistry megval\u00f3s\u00edt\u00e1si szolg\u00e1ltat\u00e1st adjon meg. Ha t\u00f6bb userRegistry nyilv\u00e1ntart\u00e1st v\u00e1laszt ki, akkor a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sok egyes\u00edt\u00e9s\u00e9hez meg kell adnia az egyes\u00edt\u00e9si szolg\u00e1ltat\u00e1st is.
+
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE=CWWKS3007E: Konfigur\u00e1ci\u00f3s kiv\u00e9tel t\u00f6rt\u00e9nt. A(z) {0} t\u00edpus\u00fa \u00e9s {1} azonos\u00edt\u00f3j\u00fa konfigur\u00e1ci\u00f3 \u00fctk\u00f6zik a(z) {2} t\u00edpus\u00fa, {3} azonos\u00edt\u00f3j\u00fa konfigur\u00e1ci\u00f3val. A(z) {0} t\u00edpus\u00fa, {1} azonos\u00edt\u00f3j\u00fa konfigur\u00e1ci\u00f3t a rendszer figyelmen k\u00edv\u00fcl hagyja.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.explanation=T\u00f6bb nyilv\u00e1ntart\u00e1s-konfigur\u00e1ci\u00f3 adja meg ugyanazt az azonos\u00edt\u00f3t. Ez nem t\u00e1mogatott.
+USER_REGISTRY_SERVICE_ID_WITH_CONFLICTING_TYPE.useraction=M\u00f3dos\u00edtsa az egyik \u00fctk\u00f6z\u0151 nyilv\u00e1ntart\u00e1s-konfigur\u00e1ci\u00f3t, hogy egyedi legyen.
+
+FEDERATING_REGISTRY=CWWKS3008I: A(z) {0} azonos\u00edt\u00f3j\u00fa felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edtett.
+FEDERATING_REGISTRY.explanation=A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edt\u00e9s enged\u00e9lyezve van, \u00e9s a konfigur\u00e1lt felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edtett.
+FEDERATING_REGISTRY.useraction=Ha nem sz\u00fcks\u00e9ges a lerakatok egyes\u00edt\u00e9se, akkor friss\u00edtse a konfigur\u00e1ci\u00f3t a server.xml f\u00e1jlban az egyes\u00edt\u00e9s letilt\u00e1s\u00e1hoz.
+
+REMOVE_FEDERATED_REGISTRY=CWWKS3009I: A(z) {0} azonos\u00edt\u00f3j\u00fa felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt az egyes\u00edt\u00e9sb\u0151l.
+REMOVE_FEDERATED_REGISTRY.explanation=A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edt\u00e9se enged\u00e9lyezve van, \u00e9s a kor\u00e1bban egyes\u00edtett konfigur\u00e1lt felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt az egyes\u00edt\u00e9sb\u0151l.
+REMOVE_FEDERATED_REGISTRY.useraction=Ha nem sz\u00fcks\u00e9ges a lerakatok egyes\u00edt\u00e9se, akkor friss\u00edtse a konfigur\u00e1ci\u00f3t a server.xml f\u00e1jlban az egyes\u00edt\u00e9s letilt\u00e1s\u00e1hoz.
+
+USER_REGISTRY_SERVICE_FEDERATION_FAILED=CWWKS3010E: Nem v\u00e1rt kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sok egyes\u00edt\u00e9sekor: {0}.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sok egyes\u00edt\u00e9sekor, de az meghi\u00fasult.
+USER_REGISTRY_SERVICE_FEDERATION_FAILED.useraction=L\u00e1sd a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support

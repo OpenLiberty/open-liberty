@@ -72,6 +72,10 @@
         	id="ESIInvalidationMonitor" required="false" type="Boolean" default="false" />
         <AD name="%plugin.ESIEnableToPassCookies.name" description="%plugin.ESIEnableToPassCookies.desc" 
         	id="ESIEnableToPassCookies" required="false" type="Boolean" default="false" />
+        <AD name="%plugin.trustedProxyEnable.name" description="%plugin.trustedProxyEnable.desc" 
+        	id="trustedProxyEnable" required="false" type="Boolean" />
+        <AD name="%plugin.trustedProxyGroup.name" description="%plugin.trustedProxyGroup.desc" 
+        	id="trustedProxyGroup" required="false" type="String" />
     </OCD>
 
     <Designate pid="com.ibm.ws.generatePluginConfig">

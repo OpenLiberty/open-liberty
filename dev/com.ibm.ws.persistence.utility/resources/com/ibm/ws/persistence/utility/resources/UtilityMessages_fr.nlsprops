@@ -1,0 +1,114 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.persistence.utility/resources/com/ibm/ws/persistence/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD WebSphere Persistence Service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199: com.ibm.ws.persistence.utility
+# 
+
+#------------------------------------------------------------------------
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# {0} = scriptName, {1}=action.all
+usage=\n\
+Utilisation : {0} '{'{1}'}' nomServeur
+action.all=g\u00e9n\u00e9rer|aide
+
+actions=\n\
+Actions :\n\
+\n
+action-key.generate=\ \ \ \ g\u00e9n\u00e9rer\n
+action-desc.generate=\tG\u00e9n\u00e9rer le DDL pour toutes les fonctions configur\u00e9es qui en ont besoin pour le    \n\
+\tserveur fourni.\n\
+\n
+
+action-key.help=\ \ \ \ aide\n
+action-desc.help=\tImprimer l'aide pour l'action indiqu\u00e9e.\n
+
+generate.help=Syntaxe :\n\
+\tddlGen generate nom_serveur\n\
+\n\
+Description :\n\
+\tG\u00e9n\u00e8re la DDL (langage de d\u00e9finition de donn\u00e9es) pour chaque fonction \n\
+\tconfigur\u00e9e sur le serveur et qui requiert un acc\u00e8s \u00e0 une base de donn\u00e9es.
+
+#------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+argument.required=Argument requis manquant : {0}.
+action.unrecognized=Action inconnue : {0}.
+
+#------------------------------------------------------------------------
+# Task messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+server.not.found=CWWKD0100E: Le serveur nomm\u00e9 {0} est introuvable. Il \u00e9tait suppos\u00e9 se trouver \u00e0 l''emplacement suivant : {1}
+server.not.found.explanation= Impossible de trouver le serveur sp\u00e9cifi\u00e9 dans la commande ddlGen. Vous pouvez trouver l'emplacement attendu pour le r\u00e9pertoire de la configuration de serveur dans le message.
+server.not.found.useraction=V\u00e9rifiez que la configuration de serveur se trouve dans le r\u00e9pertoire fourni par le message.  Si n\u00e9cessaire, modifiez les variables WLP_USER_DIR or WLP_INSTALL_DIR afin que le chemin correct soit utilis\u00e9 pour la recherche des fichiers de la configuration de serveur.
+
+local.connector.not.found=CWWKD0101E: Le serveur nomm\u00e9 {0} n''est pas configur\u00e9 pour accepter des demandes JMX locales.
+local.connector.not.found.explanation=Le serveur sp\u00e9cifi\u00e9 dans la commande ddlGen n'est pas configur\u00e9 pour accepter des demandes JMX locales.
+local.connector.not.found.useraction=Assurez-vous que la configuration de serveur inclut la fonction localConnector et que le serveur est d\u00e9marr\u00e9. L'URL requise pour l'\u00e9tablissement d'une connexion JMX locale \u00e0 ce serveur se trouve dans le fichier WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+local.connector.url.empty=CWWKD0102E: Le serveur nomm\u00e9 {0} indique un probl\u00e8me de configuration de la fonction localConnector.
+local.connector.url.empty.explanation=Le serveur sp\u00e9cifi\u00e9 dans la commande ddlGen n'est pas configur\u00e9 pour accepter des demandes JMX locales. Le fichier contenant l'URL utilis\u00e9e pour cr\u00e9er une connexion JMX au serveur est vide.
+local.connector.url.empty.useraction=Assurez-vous que la configuration de serveur inclut la fonction localConnector et que le serveur est d\u00e9marr\u00e9. L'URL requise pour l'\u00e9tablissement d'une connexion JMX locale \u00e0 ce serveur se trouve dans le fichier WLP_USER_DIR/logs/state/com.ibm.ws.jmx.local.address.
+
+mbean.null.result=CWWKD0103E: L'utilitaire de g\u00e9n\u00e9ration DDL n'a pas retourn\u00e9 de r\u00e9sultat.
+mbean.null.result.explanation=Le MBean de g\u00e9n\u00e9ration de DDL a \u00e9t\u00e9 appel\u00e9, mais aucun r\u00e9sultat n'a \u00e9t\u00e9 retourn\u00e9. Le DDL demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.null.result.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.bad.result=CWWKD0104E: L'utilitaire de g\u00e9n\u00e9ration DDL a indiqu\u00e9 le signalement d'un probl\u00e8me lors de la g\u00e9n\u00e9ration DDL.
+mbean.bad.result.explanation=Le MBean de g\u00e9n\u00e9ration de DDL a \u00e9t\u00e9 appel\u00e9, mais une erreur a \u00e9t\u00e9 signal\u00e9e lors de la g\u00e9n\u00e9ration DDL. Le DDL demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.bad.result.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.result=CWWKD0105E: L'utilitaire de g\u00e9n\u00e9ration DDL n'a pas indiqu\u00e9 si l'op\u00e9ration avait abouti.
+mbean.missing.result.explanation=Le MBean de g\u00e9n\u00e9ration de DDL a \u00e9t\u00e9 appel\u00e9, mais aucun code de r\u00e9ponse n'a \u00e9t\u00e9 retourn\u00e9 dans le r\u00e9sultat. Le DDL demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.missing.result.useraction=V\u00e9rifiez si les journaux serveur et le r\u00e9pertoire FFDC contiennent un message d'erreur ou une exception. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.missing.output.dir=CWWKD0106E: L'utilitaire de g\u00e9n\u00e9ration DDL n'a pas retourn\u00e9 de nom de r\u00e9pertoire de sortie.
+mbean.missing.output.dir.explanation=Le MBean de g\u00e9n\u00e9ration DDL a \u00e9t\u00e9 appel\u00e9 mais le r\u00e9pertoire de sortie utilis\u00e9 pour l'\u00e9criture du DDL n'a pas \u00e9t\u00e9 fourni dans la r\u00e9ponse. Le DDL demand\u00e9 n'a peut-\u00eatre pas \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+mbean.missing.output.dir.useraction=V\u00e9rifiez le DDL g\u00e9n\u00e9r\u00e9 dans le r\u00e9pertoire de sortie du serveur cible. Le r\u00e9pertoire de sortie est sp\u00e9cifi\u00e9 dans le processus serveur par la d\u00e9finition de la variable WLP_OUTPUT_DIR. Le DDL est g\u00e9n\u00e9r\u00e9 dans un r\u00e9pertoire ddl dans le r\u00e9pertoire de sortie. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+mbean.output.dir=CWWKD0107I: Le DDL demand\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans le r\u00e9pertoire suivant : {0}
+mbean.output.dir.explanation=Le DDL demand\u00e9 a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 et se trouve dans le r\u00e9pertoire indiqu\u00e9 dans le message.
+mbean.output.dir.useraction=Aucune \
+action de l'utilisateur n'est requise.
+
+mbean.not.found=CWWKD0108W: Le MBean de g\u00e9n\u00e9ration DDL n''est pas actif sur le serveur {0}.
+mbean.not.found.explanation=Une connexion JMX a \u00e9t\u00e9 \u00e9tablie avec le serveur cible mais le MBean de g\u00e9n\u00e9ration DDL est introuvable. Cette action \u00e9tait pr\u00e9visible si aucune fonction de la configuration de serveur ne requiert un acc\u00e8s \u00e0 une base de donn\u00e9es.
+mbean.not.found.useraction=V\u00e9rifiez qu'une fonction n\u00e9cessitant la g\u00e9n\u00e9ration DDL est configur\u00e9e sur le serveur cible. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+exception.catch=CWWKD0109E: Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e par l''utilitaire de g\u00e9n\u00e9ration DDL : {0}
+exception.catch.explanation=Une exception inattendue a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e par l'utilitaire de g\u00e9n\u00e9ration DDL. La trace de pile d'exceptions figure dans le fichier journal stderr. L'utilitaire va arr\u00eater le traitement.
+exception.catch.useraction=Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.output.generated=CWWKD0110W: L''utilitaire de g\u00e9n\u00e9ration DDL n''a pas produit de sortie pour le serveur {0} car aucune fonction ou ressource n\u00e9cessitant DDL n''est pr\u00e9sente dans la configuration serveur, ou cette derni\u00e8re contenait des erreurs.
+no.output.generated.explanation=L'utilitaire de g\u00e9n\u00e9ration DDL s'est correctement ex\u00e9cut\u00e9, mas aucune fonction n\u00e9cessitant DDL n'est pr\u00e9sente dans la configuration serveur. Il est possible qu'une partie de la configuration serveur soit manquante ou qu'elle comporte une erreur de syntaxe.
+no.output.generated.useraction=V\u00e9rifiez qu'une fonction n\u00e9cessitant la g\u00e9n\u00e9ration DDL est configur\u00e9e sur le serveur cible. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+server.output.logs.dir.not.found=CWWKD0111E: Le r\u00e9pertoire des journaux du serveur nomm\u00e9 {0} est introuvable. Il devait se trouver \u00e0 l''emplacement suivant : {1}. La valeur du r\u00e9pertoire de journaux est calcul\u00e9e \u00e0 partir de la variable WLP_OUTPUT_DIR. 
+server.output.logs.dir.not.found.explanation=Le r\u00e9pertoire des journaux doit \u00eatre disponible pour que la commande puisse localiser les informations de connexion JMX du serveur. Cette erreur peut survenir si la valeur de la variable WLP_OUTPUT_DIR dans l'environnement actuel n'est pas la m\u00eame que celle utilis\u00e9e par le serveur. 
+server.output.logs.dir.not.found.useraction=Veillez \u00e0 ce que la valeur de la variable WLP_OUTPUT_DIR corresponde \u00e0 celle utilis\u00e9e par le serveur et v\u00e9rifiez que le r\u00e9pertoire des journaux existe. 

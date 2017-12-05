@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.sar/resources/com/ibm/ws/app/manager/sar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0552E: A(z) {0} alkalmaz\u00e1s \u00e9rtelmez\u00e9si hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {1} alkalmaz\u00e1sle\u00edr\u00f3 feldolgoz\u00e1sakor: {2}
+error.application.parse.descriptor.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n.  Nem lesznek el\u00e9rhet\u0151k a modulok az alkalmaz\u00e1shoz.
+error.application.parse.descriptor.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.  Tekintse \u00e1t az alkalmaz\u00e1sle\u00edr\u00f3 tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML adatokat tartalmaz.

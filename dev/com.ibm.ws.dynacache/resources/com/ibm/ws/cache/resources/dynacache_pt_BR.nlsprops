@@ -1,0 +1,831 @@
+###############################################################################
+# Copyright (c) 1997, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=1.21.6.11
+#CMVCPATHNAME SERV1/ws/code/dynacache/src/com/ibm/ws/cache/resources/dynacache.nlsprops
+#COMPONENTPREFIX DYNA
+#COMPONENTNAMEFOR DYNA WebSphere Dynacache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# No Comment Provided
+dynacache.priority=DYNA0001E: O valor da prioridade n\u00e3o era um n\u00famero v\u00e1lido para a entrada {0}. Utilize um inteiro ao inv\u00e9s de {1}.
+dynacache.priority.explanation=O usu\u00e1rio digitou um valor decimal ou negativo para a prioridade.
+dynacache.priority.useraction=Altere o valor da prioridade para um valor inteiro positivo.
+
+# No Comment Provided
+dynacache.timeout=DYNA0002E: O valor do tempo limite n\u00e3o era um n\u00famero v\u00e1lido para a entrada {0}. Utilize um inteiro ao inv\u00e9s de {1}.
+dynacache.timeout.explanation=O usu\u00e1rio digitou um valor decimal para o tempo limite.
+dynacache.timeout.useraction=Altere o valor do tempo limite para um valor numeral inteiro.
+
+# No Comment Provided
+dynacache.badconfig=DYNA0003E: {0} n\u00e3o est\u00e1 sendo armazenando em cache devido a configura\u00e7\u00e3o incorreta.
+dynacache.badconfig.explanation=O servlet especificado foi configurado incorretamente.
+dynacache.badconfig.useraction=Verifique se valores legais e n\u00e3o contradit\u00f3rios foram fornecidos e se todos os campos obrigat\u00f3rios est\u00e3o especificados.
+
+# No Comment Provided
+dynacache.questionconfig=DYNA0004E: Um gerador de entrada de cache padr\u00e3o foi criado, mas n\u00e3o recebeu informa\u00e7\u00f5es de configura\u00e7\u00e3o. Ele ir\u00e1 utilizar a URI sem par\u00e2metros para gerar IDs do cache. Estas informa\u00e7\u00f5es devem ser definidas no arquivo servletcache.xml.
+dynacache.questionconfig.explanation=Um servlet foi configurado com informa\u00e7\u00f5es triviais de configura\u00e7\u00e3o. Isso \u00e9 legal, mas n\u00e3o \u00e9 prov\u00e1vel que esteja correto, com exce\u00e7\u00e3o dos casos mais simples.
+dynacache.questionconfig.useraction=Verifique se o servlet a ser armazenado em cache requer somente a URI de chamada para determinar a exclusividade.
+
+# No Comment Provided
+dynacache.externaldup=DYNA0005E: Entrada ExternalCacheGroup duplicada para o endere\u00e7o {0}.
+dynacache.externaldup.explanation=Um ExternalCacheGroup duplicado foi digitado na configura\u00e7\u00e3o.
+dynacache.externaldup.useraction=Remova o grupo duplicado.
+
+# No Comment Provided
+dynacache.externalnotfound=DYNA0006E: O ExternalCacheGroup {0} n\u00e3o foi localizado.
+dynacache.externalnotfound.explanation=O grupo de cache externo ao qual esta sa\u00edda de servlet deveria ser redirecionada n\u00e3o foi registrado na configura\u00e7\u00e3o de cache global.
+dynacache.externalnotfound.useraction=Verifique a ortografia deste grupo de cache externo. Se estiver correto, defina este grupo nas propriedades de cache global.
+
+# No Comment Provided
+dynacache.externaladaptererror=DYNA0007E: Erro ao inicializar o adaptador de cache externo: {0}
+dynacache.externaladaptererror.explanation=O erro especificado foi criado durante a inicializa\u00e7\u00e3o do adaptador de cache externo.
+dynacache.externaladaptererror.useraction=Identifique a causa do erro a partir das informa\u00e7\u00f5es espec\u00edficas do erro fornecidas na mensagem
+
+# No Comment Provided
+dynacache.notexist=DYNA0008E: A CacheUnit n\u00e3o existe mais.
+dynacache.notexist.explanation=Uma mensagem foi enviada ou recebida de uma unidade de cache que n\u00e3o est\u00e1 mais registrada com esta unidade de cache em um grupo de replica\u00e7\u00e3o de cache.
+dynacache.notexist.useraction=Verifique se a unidade de cache especificada deve estar ativa; se sim, reinicie o servidor.
+
+# No Comment Provided
+dynacache.xmlnodoc=DYNA0009E: Nenhum elemento denominado {0} no documento {1}.
+dynacache.xmlnodoc.explanation=Ao analisar o documento especificado, um elemento XML esperado n\u00e3o foi localizado.
+dynacache.xmlnodoc.useraction=Compare o formato do arquivo XML com a documenta\u00e7\u00e3o do produto, procurando por uma configura\u00e7\u00e3o incorreta.
+
+# No Comment Provided
+dynacache.xmlnoelem=DYNA0010E: Nenhum elemento denominado {0} em {1}.
+dynacache.xmlnoelem.explanation=Ao analisar os arquivos XML de configura\u00e7\u00e3o especificados, um elemento XML esperado n\u00e3o foi localizado.
+dynacache.xmlnoelem.useraction=Compare o formato do arquivo XML com a documenta\u00e7\u00e3o do produto, procurando por uma configura\u00e7\u00e3o incorreta.
+
+# No Comment Provided
+dynacache.fileNotFound=DYNA0011E: Arquivo de cache de servlet {0} n\u00e3o localizado, o armazenamento em cache est\u00e1 desativado
+dynacache.fileNotFound.explanation=As propriedades de armazenamento em cache especificadas n\u00e3o foram especificadas para este servidor de aplicativos. O armazenamento em cache est\u00e1 desativado.
+dynacache.fileNotFound.useraction=Construa um arquivo XML de configura\u00e7\u00e3o de cache com o nome especificado. Consulte a documenta\u00e7\u00e3o do produto para obter instru\u00e7\u00f5es sobre como construir um arquivo XML de configura\u00e7\u00e3o de cache.
+
+# No Comment Provided
+dynacache.cachingEnabled=DYNA0012I: O armazenamento em cache do servlet din\u00e2mico est\u00e1 ativado
+dynacache.cachingEnabled.explanation=Armazenamento em cache do servlet din\u00e2mico est\u00e1 ativado.
+dynacache.cachingEnabled.useraction=Nenhum(a).
+
+# No Comment Provided
+dynacache.cachingDisabled=DYNA0013I: O armazenamento em cache do servlet din\u00e2mico est\u00e1 ativado
+dynacache.cachingDisabled.explanation=Armazenamento em cache do servlet din\u00e2mico est\u00e1 ativado.
+dynacache.cachingDisabled.useraction=Nenhum(a).
+
+# No Comment Provided
+dynacache.uriMatched=DYNA0014I: {0} \u00e9 um URI que pode ser armazenado em cache
+dynacache.uriMatched.explanation=Foi inicializado um servlet ou arquivo JSP que tem uma pol\u00edtica de cache v\u00e1lida configurada.
+dynacache.uriMatched.useraction=Nenhum(a).
+
+# No Comment Provided
+dynacache.error=DYNA0015I: O Armazenamento em Cache de Servlet Din\u00e2mico encontrou um erro: {0}
+dynacache.error.explanation=Mensagem de erro geral.
+dynacache.error.useraction=Depurar o erro fornecido.
+
+# No Comment Provided
+dynacache.stats.dump=DYNA0016I: Foi feito dump das estat\u00edsticas de armazenamento em cache de servlet din\u00e2mico para: {0}
+dynacache.stats.dump.explanation=Estat\u00edsticas de cache foram gravadas no arquivo especificado.
+dynacache.stats.dump.useraction=Nenhum(a).
+
+# No Comment Provided
+dynacache.joingroup=DYNA0017I: Associada ao grupo {0}
+dynacache.joingroup.explanation=Esta unidade de cache juntou-se com \u00eaxito a um grupo de caches cooperativos.
+dynacache.joingroup.useraction=Nenhum(a).
+
+# No Comment Provided
+dynacache.idgeneratorerror=DYNA0018E: Erro ao carregar o Gerador de ID {0}
+dynacache.idgeneratorerror.explanation=Erro ao carregar Gerador de ID.
+dynacache.idgeneratorerror.useraction=Depurar o problema utilizando a mensagem de erro fornecida.
+
+# No Comment Provided
+dynacache.metadatageneratorerror=DYNA0019E: Erro ao carregar o Gerador de Metadados {0}
+dynacache.metadatageneratorerror.explanation=Erro ao carregar Gerador de Meta-dados.
+dynacache.metadatageneratorerror.useraction=Depurar o problema utilizando a mensagem de erro fornecida.
+
+# No Comment Provided
+dynacache.notSerializable=DYNA0020E: N\u00e3o foi poss\u00edvel armazenar {0} em cache, atributos de solicita\u00e7\u00e3o n\u00e3o podem ser serializados
+dynacache.notSerializable.explanation=A sa\u00edda do Servlet foi marcada para ser replicada entre os caches, que requer que todos os atributos do pedido sejam seri\u00e1veis.
+dynacache.notSerializable.useraction=Modifique a pol\u00edtica de cache para este servlet para que sua sa\u00edda n\u00e3o seja replicada ou modifique o aplicativo para que todos os atributos do pedido sejam seri\u00e1veis.
+
+# No Comment Provided
+dynacache.cacheInitFailed=DYNA0021E: N\u00e3o foi poss\u00edvel inicializar a unidade de cache {0}: {1}
+dynacache.cacheInitFailed.explanation=Erro n\u00e3o antecipado ao inicializar o cache.
+dynacache.cacheInitFailed.useraction=Depurar o problema utilizando a mensagem de erro fornecida.
+
+# No Comment Provided
+dynacache.configerror=DYNA0022E: Erro ao processar configura\u00e7\u00e3o de cache din\u00e2mico: {0}
+dynacache.configerror.explanation=Erro n\u00e3o antecipado ao processar configura\u00e7\u00e3o de cache.
+dynacache.configerror.useraction=Depurar o problema utilizando a mensagem de erro fornecida.
+
+# No Comment Provided
+dynacache.nullServletMapping=DYNA0023E: Erro ao construir a pol\u00edtica de cache {0}.  N\u00e3o existem mapeamentos de servlets definidos para o servlet {1}
+dynacache.nullServletMapping.explanation=N\u00e3o foi poss\u00edvel localizar um mapeamento de servlet para o servlet ou arquivo JSP de cache.
+dynacache.nullServletMapping.useraction=Corrija o erro de configura\u00e7\u00e3o utilizando a ferramenta de montagem do aplicativo.
+
+# No Comment Provided
+dynacache.excludeerror=DYNA0024E: Erro ao construir a pol\u00edtica de cache {0}.  As vari\u00e1veis de exclus\u00e3o eram duplicadas ou foram definidas incorretamente para a vari\u00e1vel de cache {1}.
+dynacache.excludeerror.explanation=Vari\u00e1veis de exclus\u00e3o duplicadas estavam presentes.
+dynacache.excludeerror.useraction=Remova a vari\u00e1vel duplicada ou as vari\u00e1veis de exclus\u00e3o definidas incorretamente que foram especificadas.
+
+# No Comment Provided
+dynacache.badexternalconfig=DYNA0025E: O armazenamento externo em cache de um servlet usa automaticamente todos os par\u00e2metros de solicita\u00e7\u00e3o, e nada mais, na constru\u00e7\u00e3o dos ids do cache.  Par\u00e2metros necess\u00e1rios podem ser definidos para o cache externo APENAS para utiliza\u00e7\u00e3o com fun\u00e7\u00f5es exclude, invalidate e dataid.
+dynacache.badexternalconfig.explanation=Uma entrada foi marcada como armazen\u00e1vel em cache externamente e cont\u00e9m regras de gera\u00e7\u00e3o de ID adicionais.
+dynacache.badexternalconfig.useraction=Remova as regras adicionais.
+
+# No Comment Provided
+DYNA0026E=DYNA0026E: Erro ao ler o elemento {0}.  Ao processar o valor {1}, foi recebida a exce\u00e7\u00e3o: {2}.
+DYNA0026E.explanation=Ocorreu um erro ao ler o arquivo de configura\u00e7\u00e3o de cache.
+DYNA0026E.useraction=Corrija o erro usando as informa\u00e7\u00f5es fornecidas na mensagem de erro.
+
+# No Comment Provided
+DYNA0027E=DYNA0027E: Pol\u00edtica de replica\u00e7\u00e3o n\u00e3o reconhecida: {0}.
+DYNA0027E.explanation=Uma pol\u00edtica de replica\u00e7\u00e3o n\u00e3o reconhecida foi especificada.
+DYNA0027E.useraction=As pol\u00edticas de replica\u00e7\u00e3o v\u00e1lidas s\u00e3o not-shared, shared-push, shared-pull e shared-push-pull.
+
+# No Comment Provided
+DYNA0028E=DYNA0028E: Uso ilegal do componente {0} quando o idgenerator {1} j\u00e1 est\u00e1 definido.
+DYNA0028E.explanation=Uma pol\u00edtica de cache especificou um componente e um idgenerator para a mesma regra de ID de cache.
+DYNA0028E.useraction=Use tags de componentes ou um idgenerator, mas n\u00e3o ambos simultaneamente.
+
+# No Comment Provided
+DYNA0029E=DYNA0029E: Uso ilegal do idgenerator {0} quando o componente {1} j\u00e1 est\u00e1 definido.
+DYNA0029E.explanation=Uma pol\u00edtica de cache especificou um componente e um idgenerator para a mesma regra de ID de cache.
+DYNA0029E.useraction=Use tags de componentes ou um idgenerator, mas n\u00e3o ambos simultaneamente.
+
+# No Comment Provided
+DYNA0030E=DYNA0030E: No elemento {0} est\u00e1 faltando o atributo obrigat\u00f3rio {1}.
+DYNA0030E.explanation=Um atributo obrigat\u00f3rio estava ausente na configura\u00e7\u00e3o do cache.
+DYNA0030E.useraction=Adicione o atributo requerido em seu arquivo de configura\u00e7\u00e3o de cache.
+
+# No Comment Provided
+DYNA0031E=DYNA0031E: Uso ilegal do elemento {0} com ID {1}.  O elemento do campo ou do m\u00e9todo j\u00e1 est\u00e1 presente.
+DYNA0031E.explanation=O arquivo de configura\u00e7\u00e3o especificou v\u00e1rias tags de m\u00e9todo ou de campo para o mesmo componente.
+DYNA0031E.useraction=Elimine o m\u00e9todo ou campo duplicado ou ambos os elementos do componente no arquivo de configura\u00e7\u00e3o.
+
+# No Comment Provided
+DYNA0032E=DYNA0032E: O elemento ou atributo {0} deve ser configurado como o valor "true" ou "false".  Valor presente: {0}.
+DYNA0032E.explanation=O elemento especificado deve ter um valor verdadeiro ou falso, mas um outro valor foi especificado.
+DYNA0032E.useraction=Corrija o elemento para ter um valor true ou false.
+
+# No Comment Provided
+DYNA0033E=DYNA0033E: N\u00e3o foi poss\u00edvel examinar o m\u00e9todo {0} a partir da classe {1}.  Exce\u00e7\u00e3o: {2}
+DYNA0033E.explanation=Ocorreu um erro ao tentar localizar o m\u00e9todo conforme especificado no arquivo de configura\u00e7\u00e3o de cache.
+DYNA0033E.useraction=Verifique se o m\u00e9todo especificado no arquivo de configura\u00e7\u00e3o de cache existe no objeto que est\u00e1 sendo chamado e se o m\u00e9todo \u00e9 p\u00fablico.
+
+# No Comment Provided
+DYNA0034E=DYNA0034E: Exce\u00e7\u00e3o ao chamar o m\u00e9todo {0} na classe {1}.  Exce\u00e7\u00e3o: {2}
+DYNA0034E.explanation=Ocorreu um erro ao chamar o m\u00e9todo especificado para gerar um ID de cache.
+DYNA0034E.useraction=Depure o problema usando as informa\u00e7\u00f5es fornecidas na mensagem de erro.
+
+# No Comment Provided
+DYNA0035E=DYNA0035E: N\u00e3o foi poss\u00edvel examinar o campo {0} a partir da classe {1}.  Exce\u00e7\u00e3o: {2}
+DYNA0035E.explanation=Ocorreu um erro ao tentar localizar o campo conforme especificado no arquivo de configura\u00e7\u00e3o de cache.
+DYNA0035E.useraction=Verifique se o campo especificado no arquivo de configura\u00e7\u00e3o de cache existe no objeto que est\u00e1 sendo chamado e se o campo \u00e9 p\u00fablico.
+
+# No Comment Provided
+DYNA0036E=DYNA0036E: Exce\u00e7\u00e3o ao recuperar o campo {0} da classe {1}.  Exce\u00e7\u00e3o: {2}
+DYNA0036E.explanation=Ocorreu um erro ao recuperar o campo especificado para gerar um ID de cache.
+DYNA0036E.useraction=Depure o problema usando as informa\u00e7\u00f5es fornecidas na mensagem de erro.
+
+# No Comment Provided
+DYNA0037E=DYNA0037E: Elemento n\u00e3o reconhecido {0} ao processar o elemento {1}.
+DYNA0037E.explanation=Um elemento n\u00e3o reconhecido foi localizado ao analisar o arquivo de configura\u00e7\u00e3o de cache.
+DYNA0037E.useraction=Corrija o documento para corresponder ao arquivo cachespec.dtd.
+
+# No Comment Provided
+DYNA0038E=DYNA0038E: Tipo de componente n\u00e3o reconhecido {0} para o comando {1}.
+DYNA0038E.explanation=O tipo de componente especificado n\u00e3o \u00e9 v\u00e1lido para o armazenamento em cache do comando.
+DYNA0038E.useraction=Os tipos de componentes v\u00e1lidos para os comandos s\u00e3o method e field.
+
+# No Comment Provided
+DYNA0039E=DYNA0039E: Os comandos n\u00e3o suportam classes de gera\u00e7\u00e3o de metadados customizados.  Voc\u00ea deve substituir o m\u00e9todo prepareMetaData().
+DYNA0039E.explanation=O arquivo de configura\u00e7\u00e3o de cache especificou um gerador de metadados personalizado para um comando, mas isso n\u00e3o \u00e9 suportado.
+DYNA0039E.useraction=Consulte a documenta\u00e7\u00e3o do produto para obter informa\u00e7\u00f5es sobre como implementar o m\u00e9todo CacheableCommand.prepareMetaData.
+
+# No Comment Provided
+DYNA0040E=DYNA0040E: Tipo de componente ilegal {0} atendendo {1}.
+DYNA0040E.explanation=Um tipo de componente n\u00e3o suportado foi localizado ao processar o objeto especificado.
+DYNA0040E.useraction=Corrija a pol\u00edtica de configura\u00e7\u00e3o do cache para conter somente tipos de componentes v\u00e1lidos para o objeto especificado.
+
+# No Comment Provided
+DYNA0041E=DYNA0041E: Tipo de componente inv\u00e1lido {0} para fragmento edgeable {1}.
+DYNA0041E.explanation=Um servlet ou JSP foi marcado como Edgeable, mas a pol\u00edtica de cache cont\u00e9m regras de componente que n\u00e3o s\u00e3o v\u00e1lidas em um IBM Edge Server.
+DYNA0041E.useraction=Corrija a pol\u00edtica de cache para eliminar as regras que n\u00e3o s\u00e3o iniciadas no IBM Edge Server ou marque o servlet ou arquivo JSP como n\u00e3o edgeable.
+
+# No Comment Provided
+DYNA0042E=DYNA0042E: Tipo de componente inv\u00e1lido {0} para fragmento de servlet/jsp {1}.
+DYNA0042E.explanation=Um tipo de componente n\u00e3o suportado foi localizado ao processar o servlet ou arquivo JSP especificado.
+DYNA0042E.useraction=Corrija a pol\u00edtica de configura\u00e7\u00e3o do cache para conter somente tipos de componentes v\u00e1lidos para o objeto especificado.
+
+# No Comment Provided
+DYNA0043E=DYNA0043E: O arquivo de configura\u00e7\u00e3o {0} continha erros e n\u00e3o ser\u00e1 usado.
+DYNA0043E.explanation=O arquivo de configura\u00e7\u00e3o especificado continha erros cr\u00edticos e n\u00e3o pode ser utilizado.
+DYNA0043E.useraction=Corrija os erros especificados no arquivo de configura\u00e7\u00e3o.
+
+# No Comment Provided
+DYNA0044E=DYNA0044E: Aviso de an\u00e1lise de XML: {0}, ao analisar o arquivo {1} na linha {2}, coluna {3}.
+DYNA0044E.explanation=Um aviso de an\u00e1lise XML ocorreu ao processar um arquivo de configura\u00e7\u00e3o de cache.
+DYNA0044E.useraction=Corrija o problema especificado na mensagem.
+
+# No Comment Provided
+DYNA0045E=DYNA0045E: Erro de an\u00e1lise de XML: {0}, ao analisar o arquivo {1} na linha {2}, coluna {3}.
+DYNA0045E.explanation=Um aviso de an\u00e1lise XML ocorreu ao processar um arquivo de configura\u00e7\u00e3o de cache.
+DYNA0045E.useraction=Corrija o problema especificado na mensagem.
+
+# No Comment Provided
+DYNA0046E=DYNA0046E: Ocorreu uma exce\u00e7\u00e3o de E/S {0} ao processar o arquivo de configura\u00e7\u00e3o {1}.
+DYNA0046E.explanation=Ocorreu um erro ao ler o arquivo de configura\u00e7\u00e3o de cache.
+DYNA0046E.useraction=Corrija o problema especificado na mensagem.
+
+# No Comment Provided
+DYNA0047I=DYNA0047I: Entradas de cache carregadas com \u00eaxito do arquivo de configura\u00e7\u00e3o de cache {0}.
+DYNA0047I.explanation=Um arquivo de configura\u00e7\u00e3o de cache foi processado com \u00eaxito para entradas de cache do local especificado.
+DYNA0047I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA0048I=DYNA0048I: Cache Din\u00e2mico do WebSphere inicializado com \u00eaxito.
+DYNA0048I.explanation=Os servi\u00e7os de cache din\u00e2mico foram inicializados com \u00eaxito.
+DYNA0048I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA0049E=DYNA0049E: Tipo de componente {0} n\u00e3o reconhecido.
+DYNA0049E.explanation=O tipo de componente especificado estava presente no arquivo de configura\u00e7\u00e3o de cache, mas n\u00e3o \u00e9 reconhecido pelo cache.
+DYNA0049E.useraction=Remova o tipo de componente n\u00e3o reconhecido do arquivo de configura\u00e7\u00e3o de cache.
+
+# No Comment Provided
+DYNA0050E=DYNA0050E: Valor n\u00e3o reconhecido {0} para o elemento {1}.
+DYNA0050E.explanation=O elemento especificado no arquivo de configura\u00e7\u00e3o de cache continha um valor n\u00e3o reconhecido.
+DYNA0050E.useraction=Consulte a documenta\u00e7\u00e3o do produto para obter informa\u00e7\u00f5es sobre valores v\u00e1lidos para o elemento especificado.
+
+# No Comment Provided
+DYNA0051E=DYNA0051E: N\u00e3o foi poss\u00edvel armazenar em cache um CacheableCommand porque o WebSphere Dynamic Caching est\u00e1 desativado.
+DYNA0051E.explanation=Foi feita uma tentativa de usar um CacheableCommand, mas o armazenamento em cache de servlet est\u00e1 desativado nas configura\u00e7\u00f5es do cont\u00eainer de Web.
+DYNA0051E.useraction=Ative o armazenamento em cache de servlet nas configura\u00e7\u00f5es do cont\u00eainer de Web no console administrativo.
+
+# No Comment Provided
+DYNA0052E=DYNA0052E: O objeto armazenado em cache n\u00e3o pode ser replicado ou salvo no disco.  CacheID={0}   ClassName={1}   Tipo={2}    Exce\u00e7\u00e3o={3}
+DYNA0052E.explanation=O objeto foi marcado para replica\u00e7\u00e3o entre caches ou salvo em disco, o que requer que o objeto e todos os objetos referenciados no objeto sejam serializ\u00e1veis.  CacheID \u00e9 o ID da entrada de cache que n\u00e3o pode ser serializada.  ClassName \u00e9 o nome de classe do objeto armazenado em cache que n\u00e3o pode ser serializado.  Tipo \u00e9 o tipo de dados para indicar quais dados est\u00e3o sendo serializados.  Exception \u00e9 a exce\u00e7\u00e3o recebida durante a tentativa de serializa\u00e7\u00e3o.
+DYNA0052E.useraction=Modifique a pol\u00edtica de cache para esse objeto para que n\u00e3o seja replicado ou salvo no disco ou modifique o aplicativo para que o objeto e todos os objetos referenciados sejam serializ\u00e1veis.
+
+# No Comment Provided
+DYNA0053I=DYNA0053I: A transfer\u00eancia para disco est\u00e1 ativada para o cache denominado {0} no diret\u00f3rio {1}.
+DYNA0053I.explanation=O recurso de transfer\u00eancia de disco est\u00e1 ativado para o nome de cache especificado. O cache de disco est\u00e1 armazenado no diret\u00f3rio especificado.
+DYNA0053I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA0054W=DYNA0054W: A transfer\u00eancia para disco est\u00e1 ativada para o nome de cache {0}. A localiza\u00e7\u00e3o {1} n\u00e3o pode ser criada. A localiza\u00e7\u00e3o alternativa padr\u00e3o {2} \u00e9 utilizada em substitui\u00e7\u00e3o.
+DYNA0054W.explanation=O recurso de transfer\u00eancia de disco est\u00e1 ativado para o nome de cache especificado. O cache de disco \u00e9 armazenado no local alternativo porque o diret\u00f3rio especificado n\u00e3o pode ser criado.
+DYNA0054W.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA0055E=DYNA0055E: A transfer\u00eancia para disco est\u00e1 desativada para o nome de cache {0}porque o local {1} ou {2} n\u00e3o pode ser criado. 
+DYNA0055E.explanation=O recurso de transfer\u00eancia de disco est\u00e1 desativado para o nome de cache especificado porque o local de transfer\u00eancia de disco e o local alternativo padr\u00e3o n\u00e3o podem ser criados.
+DYNA0055E.useraction=Certifique-se de que a localiza\u00e7\u00e3o de offload do disco possui privil\u00e9gios de acesso suficientes.
+
+# No Comment Provided
+DYNA0056W=DYNA0056W: Os arquivos de cache de disco foram reinicializados devido a dados corrompidos. 
+DYNA0056W.explanation=Os arquivos de cache de disco foram reinicializados quando o servidor foi reiniciado devido a dados corrompidos. Isso pode ter sido causado por um t\u00e9rmino inesperado da Java Virtual Machine (JVM) ou ocorreu uma exce\u00e7\u00e3o de disco. Todo o conte\u00fado antigo de cache de disco ser\u00e1 perdido.
+DYNA0056W.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA0057I=DYNA0057I: A limpeza do cache de disco foi iniciada para o nome de cache {0}. As estat\u00edsticas s\u00e3o: {1} 
+DYNA0057I.explanation=A limpeza do cache de disco foi iniciada para remover entradas expiradas do cache.
+DYNA0057I.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# No Comment Provided
+DYNA0058I=DYNA0058I: A limpeza do cache de disco foi conclu\u00edda para o nome de cache {0}. As estat\u00edsticas s\u00e3o: {1}
+DYNA0058I.explanation=A limpeza do cache de disco est\u00e1 conclu\u00edda.
+DYNA0058I.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# No Comment Provided
+DYNA0059I=DYNA0059I: A configura\u00e7\u00e3o do cache de disco para o nome de cache {0}. A configura\u00e7\u00e3o \u00e9: {1}
+DYNA0059I.explanation=Isto mostra a configura\u00e7\u00e3o do cache de disco.
+DYNA0059I.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# No Comment Provided
+DYNA0060I=DYNA0060I: A descarga para disco na parada est\u00e1 ativada para o nome de cache {0}.
+DYNA0060I.explanation=O recurso de descarga para disco na parada est\u00e1 ativado para o nome de cache especificado.
+DYNA0060I.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# No Comment Provided
+DYNA0061I=DYNA0061I: A descarga para disco na parada est\u00e1 desativada para o nome de cache {0}.
+DYNA0061I.explanation=O recurso de descarga para disco na parada est\u00e1 desativado para o nome de cache especificado.
+DYNA0061I.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# No Comment Provided
+DYNA0062I=DYNA0062I: Inst\u00e2ncias de cache carregadas com \u00eaxito do arquivo de configura\u00e7\u00e3o {0}.
+DYNA0062I.explanation=Um arquivo de configura\u00e7\u00e3o de cache foi processado com \u00eaxito para inst\u00e2ncias de cache do local especificado.
+DYNA0062I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA0063W=DYNA0063W: O tamanho do cache de disco atingiu o limite de {0} GB para o nome de cache {1}.  {2} entradas de cache foram expulsas da mem\u00f3ria, mas n\u00e3o transferidas para o disco.
+DYNA0063W.explanation=O objeto em cache n\u00e3o ser\u00e1 transferido para o disco, porque ele est\u00e1 acima do tamanho de cache de disco no limite de GB.
+DYNA0063W.useraction=Modifique a propriedade customizada diskCacheSizeInGB para um valor maior de forma que possa armazenar mais caches no disco.
+
+# No Comment Provided
+DYNA0064W=DYNA0064W: O tamanho da entrada do cache est\u00e1 acima do limite de {0} MB para o nome de cache {1}. {2} entradas de cache foram expulsas da mem\u00f3ria, mas n\u00e3o transferidas para o disco.
+DYNA0064W.explanation=O objeto em cache n\u00e3o ser\u00e1 transferido para o disco, porque ele est\u00e1 acima do tamanho de cache de disco no limite de MB.
+DYNA0064W.useraction=Modifique a propriedade customizada diskCacheEntrySizeInMB para um valor maior de forma que possa armazenar mais caches no disco.
+
+# No Comment Provided
+DYNA0065W=DYNA0065W: O tamanho do cache de disco est\u00e1 acima do limite de {0} para o nome de cache {1}.  {2} entradas de cache foram expulsas da mem\u00f3ria, mas n\u00e3o transferidas para o disco.
+DYNA0065W.explanation=O objeto em cache n\u00e3o ser\u00e1 transferido para o disco, porque ele est\u00e1 acima do limite de tamanho de cache de disco
+DYNA0065W.useraction=Modifique a propriedade customizada diskCacheSize para um valor maior de forma que possa armazenar mais caches no disco.
+
+# No Comment Provided
+DYNA0066W=DYNA0066W: O recurso de limitar o tamanho do cache de disco em GB est\u00e1 desativado para o nome de cache {0}. A propriedade customizada diskCacheSizeInGB est\u00e1 configurada para 0. Exclua todos os arquivos de cache de disco sob o diret\u00f3rio {1} antes que esse recurso seja ativado.
+DYNA0066W.explanation=Os arquivos de disco no sistema est\u00e3o no formato antigo e o tamanho de cache de disco limitado em recurso GB utiliza um novo formato de disco. Antes de ativar esse recurso, exclua todos os arquivos de cache de disco no sistema.
+DYNA0066W.useraction=Exclua todos os arquivos de cache de disco e, em seguida, reinicie o servidor.
+
+# No Comment Provided
+DYNA0067W=DYNA0067W: O coletor de lixo de cache de disco est\u00e1 desativado e a Pol\u00edtica de Desocupa\u00e7\u00e3o est\u00e1 configurada para NONE para o nome de cache {0}. Exclua todos os arquivos de cache de disco sob o diret\u00f3rio {1} antes que esse recurso seja ativado.
+DYNA0067W.explanation=Os arquivos de disco no sistema est\u00e3o no formato antigo e recurso de coleta de lixo de cache de disco utiliza um novo formato de disco. Antes de ativar esse recurso, exclua todos os arquivos de cache de disco no sistema.
+DYNA0067W.useraction=Exclua todos os arquivos de cache de disco e, em seguida, reinicie o servidor.
+
+# No Comment Provided
+DYNA0068W=DYNA0068W: Limite de disco inv\u00e1lido configurado para o nome de cache {0}. Usando os valores padr\u00e3o de 80% e 70% para os limites superior e inferior, respectivamente.
+DYNA0068W.explanation=O limite do armazenamento em cache do disco foi configurado para < 0 ou o limite superior \u00e9 menor que o inferior.
+DYNA0068W.useraction=O limite do armazenamento em cache do disco deve ser maior que 0 e o limite superior deve ser maior que o inferior.
+
+# No Comment Provided
+DYNA0069W=DYNA0069W: Um valor inv\u00e1lido  {0} para a propriedade customizada {1}no nome de cache {2}. O intervalo v\u00e1lido baixo: {3} e alto: {4}. Essa propriedade personalizada est\u00e1 definida como {5}.
+DYNA0069W.explanation=O valor para a propriedade customizada n\u00e3o \u00e9 v\u00e1lido. Corrija o valor, utilizando os valores alto e baixo especificados por intervalo na mensagem de aviso.
+DYNA0069W.useraction=Corrija o valor, utilizando os valores alto e baixo especificados por intervalo na mensagem de aviso.
+
+# No Comment Provided
+DYNA0070W=DYNA0070W: O coletor de lixo de cache de disco est\u00e1 desativado e a Pol\u00edtica de Desocupa\u00e7\u00e3o est\u00e1 configurada para NONE para o nome de cache {0}. Isso \u00e9 devido ao tamanho de cache de disco ou cache de disco em limite GB n\u00e3o estarem configurados.
+DYNA0070W.explanation=\u00c9 necess\u00e1rio configurar as propriedades customizadas diskCacheSize ou diskCacheSizeInGB para usar o recurso de coletor de lixo de cache de disco.
+DYNA0070W.useraction=Configure as propriedades customizadas diskCacheSize ou diskCacheSizeInGB e reinicie o servidor.
+
+# No Comment Provided
+DYNA0071W=DYNA0071W: A propriedade customizada diskCacheSizeInGB para o nome de cache {0} est\u00e1 configurada para um valor maior {1}, pois o tamanho total dos arquivos de cache de disco tem um valor maior. Para configurar diskCacheSizeInGB para um valor menor, exclua todos os arquivos de cache de disco sob o diret\u00f3rio {2}.
+DYNA0071W.explanation=Os arquivos de cache de disco n\u00e3o podem reduzir. 
+DYNA0071W.useraction=Para configurar a propriedade customizada diskCacheSizeInGB para um valor menor, exclua todos os arquivos de cache do disco e reinicie o servidor.
+
+# No Comment Provided
+DYNA0072E=DYNA0072E: A transfer\u00eancia para disco est\u00e1 desativada para o nome de cache {0} porque ocorreu uma exce\u00e7\u00e3o de disco. O local de disk offload est\u00e1 em {1}. Exce\u00e7\u00e3o: {2}. 
+DYNA0072E.explanation=O recurso de transfer\u00eancia de disco est\u00e1 desativado para o nome de cache especificado porque ocorreu uma exce\u00e7\u00e3o de disco.
+DYNA0072E.useraction=Os arquivos de cache de disco para essa inst\u00e2ncia de cache ser\u00e3o exclu\u00eddos quando o servidor for reiniciado.
+
+# No Comment Provided
+DYNA0073I=DYNA0073I: A descarga para disco na parada para o nome de cache {0}foi conclu\u00edda. As estat\u00edsticas s\u00e3o: {1}
+DYNA0073I.explanation=A opera\u00e7\u00e3o de descarga para disco na parada foi conclu\u00edda com as estat\u00edsticas. 
+DYNA0073I.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 requerida.
+
+# No Comment Provided
+DYNA1001I=DYNA1001I: A inst\u00e2ncia de Cache Din\u00e2mico do WebSphere denominada {0} foi inicializada com \u00eaxito.
+DYNA1001I.explanation=A inst\u00e2ncia de Cache Din\u00e2mico indicada foi inicializada com \u00eaxito.
+DYNA1001I.useraction=Nenhuma.
+
+# No Comment Provided
+DYNA1002E=DYNA1002E: As inst\u00e2ncias de Cache Din\u00e2mico do WebSphere n\u00e3o podem ser inicializadas devido a um erro {0}.
+DYNA1002E.explanation=As inst\u00e2ncias de cache din\u00e2mico n\u00e3o podem ser inicializadas.  Nenhuma inst\u00e2ncia de caches est\u00e1 dispon\u00edvel.
+DYNA1002E.useraction=Depure o problema usando a mensagem de erro.  Os logs do servidor de aplicativos cont\u00eam informa\u00e7\u00f5es adicionais.
+
+# No Comment Provided
+DYNA1003E=DYNA1003E: A inst\u00e2ncia de Cache Din\u00e2mico do WebSphere denominada {0} n\u00e3o pode ser inicializada devido a um erro {1}.
+DYNA1003E.explanation=A inst\u00e2ncia de cache din\u00e2mico indicada n\u00e3o pode ser inicializada.  A inst\u00e2ncia denominada n\u00e3o est\u00e1 dispon\u00edvel.
+DYNA1003E.useraction=Depure o problema usando a mensagem de erro.  Os logs do servidor de aplicativos cont\u00eam informa\u00e7\u00f5es adicionais.
+
+# No Comment Provided
+DYNA1004E=DYNA1004E: A inst\u00e2ncia de Cache Din\u00e2mico do WebSphere denominada {0} n\u00e3o pode ser inicializada porque ela n\u00e3o est\u00e1 configurada.
+DYNA1004E.explanation=A inst\u00e2ncia de cache din\u00e2mico indicada n\u00e3o pode ser inicializada.  O armazenamento em cache din\u00e2mico est\u00e1 desativado para a inst\u00e2ncia nomeada.
+DYNA1004E.useraction=Use o console administrativo para configurar o recurso da inst\u00e2ncia de cache.
+
+# No Comment Provided
+DYNA1005E=DYNA1005E: A inst\u00e2ncia de Cache Din\u00e2mico do WebSphere denominada {0} n\u00e3o pode ser acessada porque ela \u00e9 do tipo errado.
+DYNA1005E.explanation=A inst\u00e2ncia de cache din\u00e2mico indicada n\u00e3o pode ser usada.  O armazenamento em cache din\u00e2mico est\u00e1 desativado para a inst\u00e2ncia nomeada.
+DYNA1005E.useraction=Use o console administrativo para configurar o recurso da inst\u00e2ncia de cache usando o tipo correto.
+
+# No Comment Provided
+DYNA1006E=DYNA1006E: O m\u00e9todo {0} capturou a exce\u00e7\u00e3o: {1}
+DYNA1006E.explanation=Uma exce\u00e7\u00e3o foi capturada no m\u00e9todo especificado.
+DYNA1006E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1007I=DYNA1007I:  O servi\u00e7o {0} foi inicializado com \u00eaxito. 
+DYNA1007I.explanation=O Servi\u00e7o Controlador do z/OS para o servi\u00e7o de cache din\u00e2mico foi inicializado com \u00eaxito.
+DYNA1007I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1008E=DYNA1008E: M\u00e9todo {0}: o proxy \u00e9 nulo.
+DYNA1008E.explanation=O m\u00e9todo especificado n\u00e3o conseguiu obter um proxy de servant para DRS.
+DYNA1008E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1009E=DYNA1009E: M\u00e9todo {0}: o token \u00e9 nulo.
+DYNA1009E.explanation=O m\u00e9todo especificado transmitiu um token de servant nulo. 
+DYNA1009E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1010E=DYNA1010E: M\u00e9todo {0}: Erro de par\u00e2metro: entryKey \u00e9 nulo.
+DYNA1010E.explanation=O m\u00e9todo especificado transmitiu um par\u00e2metro entryKey nulo. 
+DYNA1010E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1011E=DYNA1011E: M\u00e9todo {0}: tokenBytes \u00e9 nulo: token ={1}   tokenBytes = {2}
+DYNA1011E.explanation=O m\u00e9todo especificado n\u00e3o pode chamar o proxy porque tokenBytes \u00e9 nulo. 
+DYNA1011E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1012E=DYNA1012E: M\u00e9todo {0}: eventBytes \u00e9 nulo: evento = {1}   eventBytes = {2}
+DYNA1012E.explanation=O m\u00e9todo especificado n\u00e3o pode chamar o proxy porque eventBytes \u00e9 nulo.
+DYNA1012E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1013E=DYNA1013E: M\u00e9todo {0}: entryKeyBytes \u00e9 nulo: entryKey = {1}   entryKeyBytes = {2}
+DYNA1013E.explanation=O m\u00e9todo especificado n\u00e3o pode chamar o proxy porque entryKeyBytes \u00e9 nulo.
+DYNA1013E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1014E=DYNA1014E: M\u00e9todo {0}: a entrada deveria estar na tabela push/pull, mas o token de servidor \u00e9 nulo. entryKey = {1}
+DYNA1014E.explanation=O m\u00e9todo especificado n\u00e3o p\u00f4de recuperar a cacheEntry da tabela push/pull porque o token do propriet\u00e1rio do servant \u00e9 nulo.
+DYNA1014E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1015E=DYNA1015E: M\u00e9todo {0}: propKeyBytes \u00e9 nulo: propKey = {1}   propKeyBytes = {2}
+DYNA1015E.explanation=O m\u00e9todo especificado n\u00e3o pode chamar o proxy porque propKeyBytes \u00e9 nulo.
+DYNA1015E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1016E=DYNA1016E: M\u00e9todo {0}: dbmBytes \u00e9 nulo: dbm = {1}  dbmBytes = {2}
+DYNA1016E.explanation=O m\u00e9todo especificado n\u00e3o pode chamar o proxy porque a DRSBootstrapMsg convertida em bytes \u00e9 nula.
+DYNA1016E.useraction=Nenhum(a).
+                                         
+# No Comment Provided
+DYNA1017E=DYNA1017E: M\u00e9todo {0}: Erro de par\u00e2metro: dbm \u00e9 nulo.
+DYNA1017E.explanation=O m\u00e9todo especificado transmitiu um objeto dbm nulo. 
+DYNA1017E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1018E=DYNA1018E: M\u00e9todo {0}: O valor de tmp retornado por proxy.handleBootstrapRequest \u00e9 nulo: tmp = {1}, token = {2}. 
+DYNA1018E.explanation=Para o m\u00e9todo especificado o valor retornado de proxy.handleBootstrapRequest \u00e9 nulo.
+DYNA1018E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1019E=DYNA1019E: M\u00e9todo {0}: Erro de par\u00e2metro: propKey \u00e9 nulo.
+DYNA1019E.explanation=O m\u00e9todo especificado transmitiu um par\u00e2metro propKey nulo. 
+DYNA1019E.useraction=Nenhum(a). 
+
+# No Comment Provided
+DYNA1020E=DYNA1020E: M\u00e9todo {0}: Erro de par\u00e2metro: value \u00e9 nulo.
+DYNA1020E.explanation=O m\u00e9todo especificado recebeu um nulo como o par\u00e2metro value. 
+DYNA1020E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1021E=DYNA1021E: M\u00e9todo {0}: N\u00e3o \u00e9 poss\u00edvel converter o par\u00e2metro value para bytes.
+DYNA1021E.explanation=O m\u00e9todo especificado foi incapaz de converter o par\u00e2metro value em bytes. 
+DYNA1021E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1022E=DYNA1022E: M\u00e9todo {0}: Erro de par\u00e2metro: as informa\u00e7\u00f5es de roteamento de DRSJvmId s\u00e3o nulas.
+DYNA1022E.explanation=O m\u00e9todo especificado recebeu um nulo como o par\u00e2metro de roteamento DRSJvmId. 
+DYNA1022E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1023E=DYNA1023E: M\u00e9todo {0}: Erro de par\u00e2metro: entryKeyList \u00e9 nulo.
+DYNA1023E.explanation=O m\u00e9todo especificado recebeu um nulo como a entryKeyList. 
+DYNA1023E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1024E=DYNA1024E: M\u00e9todo {0}: N\u00e3o \u00e9 poss\u00edvel converter entryKeyList para bytes - entryKeyList = {1}  entryKeyListBytes = {2}
+DYNA1024E.explanation=O m\u00e9todo especificado foi incapaz de converter o par\u00e2metro entryKeyList em uma matriz de bytes.
+DYNA1024E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1025E=DYNA1025E: M\u00e9todo {0}: N\u00e3o \u00e9 poss\u00edvel converter DRSJvmId para bytes - jvmId = {1} jvmIdBytes = {2}
+DYNA1025E.explanation=O m\u00e9todo especificado foi incapaz de converter o par\u00e2metro DRSJvmID em uma matriz de bytes.
+DYNA1025E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1026I=DYNA1026I: A Inst\u00e2ncia de DRS do DynacacheDRSController {0} recebeu o evento REPLICATION_UP.
+DYNA1026I.explanation=A Inst\u00e2ncia de DRS do DynacacheDRSController especificado recebeu o evento REPLICATION_UP.
+DYNA1026I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1027I=DYNA1027I: A Inst\u00e2ncia de DRS do DynacacheDRSController {0} recebeu o evento REPLICATION_DOWN.
+DYNA1027I.explanation=A Inst\u00e2ncia de DRS do DynacacheDRSController especificado recebeu o evento REPLICATION_DOWN.
+DYNA1027I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1028I=DYNA1028I: A Inst\u00e2ncia de DRS do DynacacheDRSController {0} recebeu o evento IS_CONGESTED.
+DYNA1028I.explanation=A Inst\u00e2ncia de DRS do DynacacheDRSController especificado recebeu o evento IS_CONGESTED.
+DYNA1028I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1029I=DYNA1029I: A Inst\u00e2ncia de DRS do DynacacheDRSController {0} recebeu o evento NOT_CONGESTED.
+DYNA1029I.explanation=A Inst\u00e2ncia de DRS do DynacacheDRSController especificado recebeu o evento NOT_CONGESTED.
+DYNA1029I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1030E=DYNA1030E: Valores de intervalo inv\u00e1lidos, os atributos inferior: {0} e superior: {1} devem ser n\u00fameros inteiros
+DYNA1030E.explanation=Um atributo obrigat\u00f3rio estava ausente na configura\u00e7\u00e3o do cache.
+DYNA1030E.useraction=Adicione o atributo requerido em seu arquivo de configura\u00e7\u00e3o de cache.
+
+# No Comment Provided
+DYNA1031E=DYNA1031E: Intervalo inv\u00e1lido, o atributo inferior: {0} \u00e9 maior que o atributo superior: {1}.
+DYNA1031E.explanation=Os valores de atributo inferior e superior especificados para o intervalo n\u00e3o s\u00e3o v\u00e1lidos.
+DYNA1031E.useraction=Corrija os valores de atributos inferior e superior, de forma que o valor inferior seja menor que o valor superior.
+
+# No Comment Provided
+DYNA1032E=DYNA1032E: A propriedade com o nome primary-storage deve ser configurada como o valor memory ou disk.  Valor presente: {0}.
+DYNA1032E.explanation=O elemento especificado deve ter um valor memory ou disk, mas um outro valor foi especificado.
+DYNA1032E.useraction=Corrija o elemento para ter o valor memory ou disk.
+
+
+# No Comment Provided
+DYNA1033W=DYNA1033W: A propriedade customizada disableDependencyId est\u00e1 configurada para {0}, o que n\u00e3o corresponde ao estado atual de arquivos de disco para o nome de cache {1}. A propriedade customizada disableDependencyId est\u00e1 configurada para {2}. 
+DYNA1033W.explanation=A configura\u00e7\u00e3o da propriedade customizada disableDependencyId n\u00e3o corresponde ao estado atual dos arquivos de disco.
+DYNA1033W.useraction=Para configurar a propriedade customizada disableDependencyId para suas configura\u00e7\u00f5es desejadas, exclua todos os arquivos de cache do disco e reinicie o servidor.
+
+# No Comment Provided
+DYNA1034W=DYNA1034W: A propriedade customizada disableTemplatesSupport est\u00e1 configurada para {0}, o que n\u00e3o corresponde ao estado atual de arquivos de disco para o nome de cache {1}. A propriedade customizada disableTemplatesSupport est\u00e1 configurada para {2}. 
+DYNA1034W.explanation=A configura\u00e7\u00e3o da propriedade customizada disableTemplatesSupport n\u00e3o corresponde ao estado atual dos arquivos de disco.
+DYNA1034W.useraction=Para configurar a propriedade customizada disableTemplatesSupport para suas configura\u00e7\u00f5es desejadas, exclua todos os arquivos de cache do disco e reinicie o servidor.
+
+# No Comment Provided
+DYNA1035I=DYNA1035I: Lista de {0} chaves de cache e seus c\u00f3digos hash no cache de mem\u00f3ria para o nome de cache {1}: {2} 
+DYNA1035I.explanation=Exibe cada chave de cache e seu c\u00f3digo hash no cache de mem\u00f3ria.
+DYNA1035I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1036I=DYNA1036I: Lista de {0} chaves de cache e seus c\u00f3digos hash no cache de disco para o nome de cache {1}: {2} 
+DYNA1036I.explanation=Exibe cada chave de cache e seu c\u00f3digo hash no cache de disco.
+DYNA1036I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1037I=DYNA1037I: Lista de {0} chaves de cache e seus c\u00f3digos hash na PushPullTTable para o nome de cache {1}: {2} 
+DYNA1037I.explanation=Exibe cada chave de cache e seu c\u00f3digo hash na PushPullTable.
+DYNA1037I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1038I=DYNA1038I: O n\u00famero total de entradas de cache no cache de mem\u00f3ria \u00e9 {0} para o nome de cache {1}.
+DYNA1038I.explanation=Exibe o n\u00famero total de entradas no cache de mem\u00f3ria.
+DYNA1038I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1039I=DYNA1039I: O n\u00famero total de entradas de cache no cache de disco \u00e9 {0} para o nome de cache {1}.
+DYNA1039I.explanation=Exibe o n\u00famero total de entradas no cache de disco.
+DYNA1039I.useraction=Nenhum(a).
+
+
+# No Comment Provided
+DYNA1040I=DYNA1040I: O n\u00famero total de IDs de cache na PushPullTable \u00e9 {0} para o nome de cache {1}.
+DYNA1040I.explanation=Exibe o n\u00famero total de IDs de cache na PushPullTable.
+DYNA1040I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1041W=DYNA1041W: A compara\u00e7\u00e3o de cache entre server1 {0} e server2 {1} para o nome de cache {2} falhou.
+DYNA1041W.explanation=A falha de compara\u00e7\u00e3o de cache pode ter sido causada por: (1) A transfer\u00eancia para disco est\u00e1 ativada. Quando as inst\u00e2ncias de cache s\u00e3o autoinicializadas uma com a outra na inicializa\u00e7\u00e3o do servidor, as entradas de cache de disco n\u00e3o s\u00e3o replicadas entre si. (2) O congestionamento no DRS pode causar a elimina\u00e7\u00e3o de algumas atualiza\u00e7\u00f5es de cache. (3) Algumas entradas de cache n\u00e3o s\u00e3o compartilh\u00e1veis no dom\u00ednio de replica\u00e7\u00e3o. (4) O comando compareCaches() n\u00e3o funcionar\u00e1 com a pol\u00edtica de compartilhamento Push-Pull. Use o comando compareCacheKeys.
+DYNA1041W.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1042E=DYNA1042E: A inst\u00e2ncia de cache de entrada {0} n\u00e3o \u00e9 v\u00e1lida ou n\u00e3o est\u00e1 configurada.
+DYNA1042E.explanation=A inst\u00e2ncia de cache de entrada n\u00e3o \u00e9 v\u00e1lida. Configure a inst\u00e2ncia de cache usando o console administrativo ou o arquivo cacheinstances.properties. 
+DYNA1042E.useraction=Assegure-se de que uma inst\u00e2ncia de cache esteja configurada corretamente e o nome da inst\u00e2ncia de cache esteja correto.
+
+# No Comment Provided
+DYNA1043E=DYNA1043E: O padr\u00e3o de entrada {0} n\u00e3o \u00e9 uma express\u00e3o regular v\u00e1lida. Exce\u00e7\u00e3o: {1}
+DYNA1043E.explanation=O padr\u00e3o de entrada n\u00e3o \u00e9 uma express\u00e3o comum v\u00e1lida.
+DYNA1043E.useraction=Verifique a classe java.util.regex.Pattern.
+
+# No Comment Provided
+DYNA1044E=DYNA1044E: Erro interno: N\u00e3o foi poss\u00edvel criar o MessageDigest para o algoritmo MD5. Exce\u00e7\u00e3o: {0}
+DYNA1044E.explanation=Erro interno: N\u00e3o foi poss\u00edvel criar o MessageDigest para o algoritmo MD5.
+DYNA1044E.useraction=Entre em contato com o servi\u00e7o IBM para depurar esse problema.
+
+# No Comment Provided
+DYNA1045E=DYNA1045E: O n\u00f3 de entrada {0} n\u00e3o \u00e9 um nome de n\u00f3 v\u00e1lido.
+DYNA1045E.explanation=O nome do n\u00f3 de entrada n\u00e3o \u00e9 v\u00e1lido.
+DYNA1045E.useraction=Assegure-se de que o n\u00f3 exista e o nome esteja correto.
+
+# No Comment Provided
+DYNA1046E=DYNA1046E: O servidor de entrada {0} n\u00e3o \u00e9 um nome de servidor v\u00e1lido.
+DYNA1046E.explanation=O nome do servidor de entrada n\u00e3o \u00e9 v\u00e1lido.
+DYNA1046E.useraction=Assegure-se de que o servidor exista e o nome esteja correto.
+
+# No Comment Provided
+DYNA1047E=DYNA1047E: Erro interno: N\u00e3o foi poss\u00edvel criar o objeto AdminService. Exce\u00e7\u00e3o: {0}
+DYNA1047E.explanation=Erro interno: N\u00e3o foi poss\u00edvel criar o objeto AdminService.
+DYNA1047E.useraction=Entre em contato com o servi\u00e7o IBM para depurar esse problema.
+
+# No Comment Provided
+DYNA1048E=DYNA1048E: O comando de MBean {0} s\u00f3 pode ser executado sob o Deployment Manager.
+DYNA1048E.explanation=O comando MBean CompareCaches pode ser executado somente sob o Deployment Manager.
+DYNA1048E.useraction=Execute o comando CompareCaches a partir do MBean Dynacache do Deployment Manager.
+
+# No Comment Provided
+DYNA1049E=DYNA1049E: O MBean DynaCache n\u00e3o foi localizado no n\u00f3 {0} no qual o servidor {1} reside.
+DYNA1049E.explanation=O MBean DynaCache n\u00e3o foi localizado no n\u00f3 no qual o servidor reside.
+DYNA1049E.useraction=Verifique a express\u00e3o de consulta para o MBean. Assegure-se de que os nomes do n\u00f3 e do servidor fornecidos existam.
+
+# No Comment Provided
+DYNA1050E=DYNA1050E: Ocorreu uma exce\u00e7\u00e3o ao tentar chamar o comando de MBean {0} no servidor {1}. Exce\u00e7\u00e3o: {2}
+DYNA1050E.explanation=Ocorreu uma exce\u00e7\u00e3o ao tentar chamar o comando do MBean.
+DYNA1050E.useraction=Localize a explica\u00e7\u00e3o da exce\u00e7\u00e3o no arquivo SystemOut.log do servidor.
+
+# No Comment Provided
+DYNA1051E=DYNA1051E: O comando de MBean {0} n\u00e3o pode ser executado porque o recurso de transfer\u00eancia de disco n\u00e3o est\u00e1 ativado para a inst\u00e2ncia de cache nomeada {1}. 
+DYNA1051E.explanation=O comando de MBean n\u00e3o pode ser chamado porque o recurso de transfer\u00eancia de disco n\u00e3o est\u00e1 ativado para a inst\u00e2ncia de cache nomeada. 
+DYNA1051E.useraction=Assegure-se de que o recurso de transfer\u00eancia de disco esteja ativado para a inst\u00e2ncia de cache nomeada. Consulte o artigo Configurando a Transfer\u00eancia de Disco de Cache Din\u00e2mico na documenta\u00e7\u00e3o do produto.
+
+# No Comment Provided
+DYNA1052E=DYNA1052E: O nome de entrada {0} n\u00e3o \u00e9 um nome de estat\u00edstica de cache v\u00e1lido.
+DYNA1052E.explanation=O nome de estat\u00edstica de cache de entrada n\u00e3o \u00e9 v\u00e1lido.
+DYNA1052E.useraction=Assegure-se de que o nome de estat\u00edstica de cache seja v\u00e1lido.
+
+# No Comment Provided
+DYNA1053E=DYNA1053E: Ocorreu uma exce\u00e7\u00e3o ao tentar chamar o comando de MBean {0}. Exce\u00e7\u00e3o: {1}
+DYNA1053E.explanation=Ocorreu uma exce\u00e7\u00e3o ao tentar chamar o comando do MBean.
+DYNA1053E.useraction=Consulte a explica\u00e7\u00e3o da exce\u00e7\u00e3o descrita na mensagem de erro.
+
+# No Comment Provided
+DYNA1054I=DYNA1054I: Cache Din\u00e2mico (cache principal) inicializado com \u00eaxito.
+DYNA1054I.explanation=O Cache Din\u00e2mico (cache principal) foi inicializado com \u00eaxito.
+DYNA1054I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1055I=DYNA1055I: Cache Din\u00e2mico (cache de servlet) inicializado com \u00eaxito.
+DYNA1055I.explanation=O Cache Din\u00e2mico (cache de servlet) foi inicializado com \u00eaxito.
+DYNA1055I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1056I=DYNA1056I: Cache Din\u00e2mico (cache de objeto) inicializado com \u00eaxito.
+DYNA1056I.explanation=O Cache Din\u00e2mico (cache de objeto) foi inicializado com \u00eaxito.
+DYNA1056I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1057W=DYNA1057W: A inst\u00e2ncia de cache {0} definida no {1} n\u00e3o foi inclu\u00edda porque j\u00e1 existe um cache com esse nome. 
+DYNA1057W.explanation=A inst\u00e2ncia de cache n\u00e3o foi inclu\u00edda porque j\u00e1 existe um cache com esse nome.
+DYNA1057W.useraction=Assegure-se de que a inst\u00e2ncia de cache n\u00e3o seja definida mais de uma vez nos arquivos de propriedades.
+
+# No Comment Provided
+DYNA1058W=DYNA1058W: A replica\u00e7\u00e3o de cache est\u00e1 desativada para a inst\u00e2ncia de cache {0} porque o servi\u00e7o de Cache Din\u00e2mico est\u00e1 sendo executado em um servidor independente.
+DYNA1058W.explanation=A replica\u00e7\u00e3o de cache est\u00e1 desativada para a inst\u00e2ncia de cache porque o servi\u00e7o de Cache Din\u00e2mico est\u00e1 sendo executado em um servidor independente.
+DYNA1058W.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1059W=DYNA1059W: A inst\u00e2ncia de Cache Din\u00e2mico denominada {0} n\u00e3o pode ser executada porque o servi\u00e7o de cache de Servlet Din\u00e2mico n\u00e3o foi iniciado.
+DYNA1059W.explanation=O servi\u00e7o de cache de Servlet Din\u00e2mico nomeado n\u00e3o foi iniciado. As inst\u00e2ncias de cache de servlet n\u00e3o podem ser usadas.
+DYNA1059W.useraction=Assegure-se de que o armazenamento em cache de servlet Din\u00e2mico esteja ativado no console administrativo.
+
+# No Comment Provided
+DYNA1060W=DYNA1060W: A inst\u00e2ncia de Cache Din\u00e2mico denominada {0} n\u00e3o pode ser executada porque o servi\u00e7o de cache de Objeto Din\u00e2mico n\u00e3o foi iniciado.
+DYNA1060W.explanation=O servi\u00e7o de cache de Objeto Din\u00e2mico nomeado n\u00e3o foi iniciado. As inst\u00e2ncias de cache de objeto n\u00e3o podem ser usadas.
+DYNA1060W.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1061E=DYNA1061E: Nem o cache de servlet nem o armazenamento em cache de objeto est\u00e3o ativados.
+DYNA1061E.explanation=Nem o cache de servlet nem o armazenamento em cache de objeto est\u00e3o ativados.
+DYNA1061E.useraction=Assegure-se de que o armazenamento em cache de servlet Din\u00e2mico esteja ativado no console administrativo.
+
+# No Comment Provided
+DYNA1062E=DYNA1062E: N\u00e3o foi poss\u00edvel inicializar o Cache Din\u00e2mico (cache principal). Exce\u00e7\u00e3o: {0}
+DYNA1062E.explanation=N\u00e3o foi poss\u00edvel inicializar o Cache Din\u00e2mico (cache principal).
+DYNA1062E.useraction=Depure o problema utilizando a mensagem de erro fornecida.
+
+# No Comment Provided
+DYNA1063E=DYNA1063E: A opera\u00e7\u00e3o {0} para o cacheName {1} n\u00e3o pode ser executada porque o provedor de cache {2} n\u00e3o suporta o recurso de alias.
+DYNA1063E.explanation=Esta opera\u00e7\u00e3o espec\u00edfica n\u00e3o pode ser executada porque o provedor de cache n\u00e3o suporta o recurso do alias.
+DYNA1063E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1064E=DYNA1064E: A opera\u00e7\u00e3o {0} para o cacheName {1} n\u00e3o pode ser executada porque o provedor de cache {2} n\u00e3o suporta o recurso de transfer\u00eancia de cache de disco.
+DYNA1064E.explanation=Esta opera\u00e7\u00e3o espec\u00edfica n\u00e3o pode ser executada porque o provedor de cache n\u00e3o suporta o recurso de transfer\u00eancia do cache de disco.
+DYNA1064E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1065E=DYNA1065E: A opera\u00e7\u00e3o {0} para o cacheName {1} n\u00e3o pode ser executada porque o provedor de cache {2} n\u00e3o suporta o recurso de replica\u00e7\u00e3o de DRS.
+DYNA1065E.explanation=Esta opera\u00e7\u00e3o espec\u00edfica n\u00e3o pode ser executada porque o provedor de cache n\u00e3o suporta o recurso de replica\u00e7\u00e3o do DRS (Date Replication Service).
+DYNA1065E.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1066E=DYNA1066E: N\u00e3o \u00e9 poss\u00edvel inicializar o provedor de cache {0}. O cache Din\u00e2mico ser\u00e1 utilizado para criar a inst\u00e2ncia de cache {1} em vez do provedor de cache configurado.
+DYNA1066E.explanation=Ocorreu um erro imprevisto ao inicializar o provedor de cache configurado. O cache Din\u00e2mico ser\u00e1 utilizado como provedor de cache para criar a inst\u00e2ncia de cache, em vez do provedor configurado. 
+DYNA1066E.useraction=Verifique se o provedor de cache \u00e9 fornecido como um pacote configur\u00e1vel em tempo de execu\u00e7\u00e3o do Application Server ou como uma biblioteca no diret\u00f3rio lib do Application Server. 
+
+# No Comment Provided
+DYNA1067E=DYNA1067E: O recurso de tamanho de cache em MB est\u00e1 desativado porque o objeto armazenado em cache n\u00e3o \u00e9 dimension\u00e1vel.  ClassName={0}   Tipo={1}
+DYNA1067E.explanation=O recurso de tamanho de cache em MB est\u00e1 desativado porque o objeto armazenado em cache n\u00e3o est\u00e1 implementado para ser dimension\u00e1vel. 
+DYNA1067E.useraction=Assegure-se de que a classe do objeto armazenado em cache implemente a interface com.ibm.websphere.cache.Sizable.
+
+# No Comment Provided
+DYNA1068E=DYNA1068E: O recurso de tamanho de cache em MB est\u00e1 desativado porque o provedor de cache configurado  {0} n\u00e3o suporta esse recurso para a inst\u00e2ncia de cache {1}.
+DYNA1068E.explanation=O recurso de tamanho de cache em MB est\u00e1 desativado porque o provedor de cache configurado n\u00e3o suporta esse recurso.
+DYNA1068E.useraction=Nenhuma
+
+# No Comment Provided
+DYNA1069I=DYNA1069I: A propriedade customizada lruToDiskTriggerTime ser\u00e1 configurada como {0} para obter um desempenho melhor.
+DYNA1069I.explanation=Como o recurso de tamanho de cache de mem\u00f3ria em MB ou de percentual de acionamento de LRU est\u00e1 ativado, a propriedade customizada lruToDiskTriggerTime ser\u00e1 alterada para obter um desempenho melhor.
+DYNA1069I.useraction=Nenhuma
+
+DYNA1070I=DYNA1070I: A inst\u00e2ncia de cache {0} est\u00e1 cheia e atingiu o tamanho m\u00e1ximo configurado de {1} entradas. Espa\u00e7o no heap da JVM para novas entradas ser\u00e1 conseguido agora desocupando entradas de cache existentes usando o algoritmo LRU. Considere a possibilidade de ativar o recurso de transfer\u00eancia de disco para a inst\u00e2ncia de cache para impedir o descarte de entradas de cache da mem\u00f3ria.
+DYNA1070I.explanation=Como o recurso de transfer\u00eancia de disco est\u00e1 desativado e a inst\u00e2ncia de cache est\u00e1 cheia, o espa\u00e7o de heap da JVM para novas entradas ser\u00e1 disponibilizado desocupando entradas de cache usando o algoritmo LRU.
+DYNA1070I.useraction=Ative o recurso de transfer\u00eancia de disco para a inst\u00e2ncia de cache para impedir o descarte de entradas de cache da mem\u00f3ria.
+
+# No Comment Provided
+DYNA1071I=DYNA1071I: O provedor de cache {0} est\u00e1 sendo usado.
+DYNA1071I.explanation=Isto mostra o nome do provedor de cache que est\u00e1 sendo utilizado.
+DYNA1071I.useraction=Nenhum(a).
+
+# No Comment Provided
+DYNA1072W=DYNA1072W: O ID de cache {0} n\u00e3o ser\u00e1 replicado para outros servidores porque skipMemoryWriteToDisk est\u00e1 configurado para true. A pol\u00edtica de compartilhamento ser\u00e1 configurada para n\u00e3o compartilhada.
+DYNA1072W.explanation=O ID de cache especificado n\u00e3o ser\u00e1 replicado para outros servidores porque skipMemoryWriteToDisk est\u00e1 configurado como true. 
+DYNA1072W.useraction=Nenhum(a).
+
+# RemoteJMSInvalidator external cache group is configured incorrectly
+DYNA1073E=DYNA1073E: O grupo de cache externo RemoteJMSInvalidator n\u00e3o est\u00e1 configurado corretamente. O seguinte endere\u00e7o foi fornecido para o membro do grupo de cache externo: {0}
+DYNA1073E.explanation=Voc\u00ea deve resolver o erro de configura\u00e7\u00e3o para que o grupo de cache externo especificado funcione corretamente.
+DYNA1073E.useraction=Nenhum(a).
+
+# RemoteInvalidator is no longer connected to SIB servers in the remote cell or core group
+DYNA1074W=DYNA1074W: O grupo de cache externo RemoteJMSInvalidator n\u00e3o est\u00e1 mais conectado. O nome JNDI configurado da factory de conex\u00e3o da fila \u00e9 {0} e o nome JNDI do destino indicado \u00e9 {1}.
+DYNA1074W.explanation=Os servidores de barramento de integra\u00e7\u00e3o de servi\u00e7os na factory de conex\u00e3o da fila especificada n\u00e3o est\u00e3o mais dispon\u00edveis.
+DYNA1074W.useraction=Nenhum(a).
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1075I=DYNA1075I: O grupo de cache externo RemoteJMSInvalidator est\u00e1 conectado. O nome JNDI configurado da factory de conex\u00e3o da fila \u00e9 {0} e o nome JNDI do destino indicado \u00e9 {1}.
+DYNA1075I.explanation=O grupo de cache externo agora est\u00e1 conectado aos servidores do barramento de integra\u00e7\u00e3o de servi\u00e7os que s\u00e3o definidos na factory de conex\u00e3o da fila.
+DYNA1075I.useraction=Nenhum(a).
+
+# RemoteInvalidator has successfully connected to the SIB servers in the remote cell or core group
+DYNA1076W=DYNA1076W: O grupo de cache externo RemoteJMSInvalidator n\u00e3o pode se conectar. O nome JNDI configurado da factory de conex\u00e3o da fila \u00e9 {0} e o nome JNDI do destino indicado \u00e9 {1}.
+DYNA1076W.explanation=O grupo de cache externo n\u00e3o consegue se conectar aos servidores do barramento de integra\u00e7\u00e3o de servi\u00e7os que s\u00e3o definidos na factory de conex\u00e3o da fila.
+DYNA1076W.useraction=Pode ser necess\u00e1rio reiniciar os servidores de barramento de integra\u00e7\u00e3o de servi\u00e7os de destino.
+
+# displays defined custom property
+DYNA1077I=DYNA1077I: A propriedade customizada com o nome, {0} e o valor {1} foi detectada.
+DYNA1077I.explanation=O nome e valor de uma propriedade customizada definida.
+DYNA1077I.useraction=Nenhum(a).
+
+# Dynacache openjpa messages
+
+queryCache-instance-created=DYNA1080I: Inst\u00e2ncia de OpenJPA L2 QueryCache Dynacache {0} criada ou recuperada com \u00eaxito para a unidade persistente {1}.
+queryCache-instance-created.explanation=A inst\u00e2ncia de OpenJPA L2 QueryCache Dynacache foi criada com \u00eaxito.
+queryCache-instance-created.useraction=Nenhum(a).
+
+dataCache-instance-created=DYNA1081I: Inst\u00e2ncia de OpenJPA L2 DataCache Dynacache {0} criada ou recuperada com \u00eaxito para a unidade persistente {1}.
+dataCache-instance-created.explanation=A inst\u00e2ncia de OpenJPA L2 DataCache Dynacache foi criada com \u00eaxito.
+dataCache-instance-created.useraction=Nenhum(a).
+
+specify-replication-domain=DYNA1082W: O Dom\u00ednio de Replica\u00e7\u00e3o n\u00e3o foi especificado.
+specify-replication-domain.explanation=For\u00e7ando enableCacheReplication para false.
+specify-replication-domain.useraction=Configure um dom\u00ednio de Replica\u00e7\u00e3o do WebSphere para associar \u00e0 inst\u00e2ncia de cache.
+
+no-cache-name=DYNA1083W: Nenhum cache nomeado est\u00e1 especificado para a inst\u00e2ncia de cache L2 open-jpa. Usando o nome da unidade persistente  {0}  como o nome da inst\u00e2ncia de cache.
+no-cache-name.explanation=Nenhum(a).
+no-cache-name.useraction=Configure um nome para a inst\u00e2ncia de cache L2 open-jpa.
+
+no-cache-size=DYNA1084W: Nenhum tamanho de cache est\u00e1 especificado para a inst\u00e2ncia de cache L2 open-jpa {0}.  Configurando o tamanho do cache na mem\u00f3ria como {1}.
+no-cache-size.explanation=Nenhum(a).
+no-cache-size.useraction=Configure um tamanho para a inst\u00e2ncia de cache L2 open-jpa.
+
+incompatible-configuration=DYNA1085W: A propriedade {0} foi configurada como o valor incompat\u00edvel {1} . For\u00e7ando esse valor para {2}.
+incompatible-configuration.explanation=Nenhum(a).
+incompatible-configuration.useraction=Forne\u00e7a uma configura\u00e7\u00e3o consistente para a inst\u00e2ncia de cache L2 open-jpa.
+incompatible-configuration1=DYNA1086I: Como a propriedade openjpa.DataCacheManager est\u00e1 configurada como dynacache, o Provedor de Cache L2 DinaCache OpenJPA L2 configurar\u00e1 com FORCE a propriedade openjpa.DataCache como dynacache .
+incompatible-configuration1.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+incompatible-configuration1.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+incompatible-configuration2=DYNA1087I: Como a propriedade openjpa.DataCacheManager est\u00e1 configurada como dynacache, o Provedor de Cache L2 DinaCache OpenJPA L2 configurar\u00e1 com FORCE a propriedade openjpa.RemoteCommitProvider como none.
+incompatible-configuration2.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+incompatible-configuration2.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+incompatible-configuration3=DYNA1088I: Como a propriedade openjpa.Datacache est\u00e1 configurada como dynacache, o Provedor de Cache L2 DinaCache OpenJPA L2 configurar\u00e1 com FORCE a propriedade openjpa.RemoteCommitProvider como none.
+incompatible-configuration3.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+incompatible-configuration3.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+incompatible-configuration4=DYNA1089I: Como a propriedade openjpa.Querycache est\u00e1 configurada como dynacache, o Provedor de Cache L2 DinaCache OpenJPA configurar\u00e1 com FORCE a propriedade openjpa.DataCache como dynacache.
+incompatible-configuration4.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+incompatible-configuration4.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+DYNA1090I=DYNA1090I: O Servi\u00e7o de Cache Din\u00e2mico est\u00e1 desativado.
+DYNA1090I.explanation=Os servi\u00e7os de Cache Din\u00e2mico, cache de Objeto e armazenamento em cache de Servlet foram desativados por meio do console administrativo ou de script. 
+DYNA1090I.useraction=Ative o servi\u00e7o de Cache Din\u00e2mico configurando o atributo enable do objeto DynamicCache AdminConfig com escopo definido do servidor ou por meio do painel do console administrativo Servidores de Aplicativos > <server_name> > Servi\u00e7o de Cache Din\u00e2mico
+
+DYNA1091E=DYNA1091E: A configura\u00e7\u00e3o da inst\u00e2ncia de cache {0} n\u00e3o foi reconhecida devido \u00e0 exce\u00e7\u00e3o {0}.
+DYNA1091E.explanation=A configura\u00e7\u00e3o de Cache Din\u00e2mico para a inst\u00e2ncia de cache \u00e9 inv\u00e1lida devido \u00e0 exce\u00e7\u00e3o lan\u00e7ada.
+DYNA1091E.useraction=Corrija e analise a causa da exce\u00e7\u00e3o para que a configura\u00e7\u00e3o do cache possa ser inclu\u00edda com \u00eaxito no tempo de execu\u00e7\u00e3o do Cache Din\u00e2mico.
+                     
+no-jpa-cache-exists-with-this-name=DYNA1092E: N\u00e3o existe um DataCache com o nome {0}.
+no-jpa-cache-exists-with-this-name.explanation=Confirme se o DataCache L2 foi criado com \u00eaxito.
+no-jpa-cache-exists-with-this-name.useraction=Confirme se o Cache de Dados L2 est\u00e1 correto.
+
+no-dynacache-manager-configured=DYNA1093E: DataCache {0} n\u00e3o configurado com o DataCacheManager correto na unidade persistente {1}. 
+no-dynacache-manager-configured.explanation=A propriedade openjpa.DataCacheManager deve ser configurada para dynacache. 
+no-dynacache-manager-configured.useraction=Corrija essa propriedade em persistence.xml.
+
+incorrect-class-name=DYNA1094E: A Classe de Entidade {0} n\u00e3o p\u00f4de ser carregada pelo carregador de classes  {1}. 
+incorrect-class-name.explanation=Confirme se a Classe existe no aplicativo e se est\u00e1 vis\u00edvel para o carregador de classe do servidor de aplicativos.
+incorrect-class-name.useraction=Forne\u00e7a o nome da Classe de Entidade correto e uma biblioteca compartilhada com escopo do servidor configurada que cont\u00e9m as classes associadas a este servidor.
+
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance=DYNA1095E: Persistence-unit: {0} n\u00e3o localizada no aplicativo: {1} m\u00f3dulo: {2} .
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.explanation= N\u00e3o foi poss\u00edvel localizar o xml da unidade de persist\u00eancia no local especificado.
+unable-to-retrieve-OpenJPA-configuration-for-cache-instance.useraction= Confirme se a unidade de persist\u00eancia est\u00e1 realmente colocada no local especificado pelos par\u00e2metros do mbean.
+                   

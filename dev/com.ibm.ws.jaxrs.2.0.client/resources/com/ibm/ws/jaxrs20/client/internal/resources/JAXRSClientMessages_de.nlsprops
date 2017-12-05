@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: Der Zeitlimitwert {0}, den Sie in der Eigenschaft {1} auf JAX-RS-Client-Seite angegeben haben, ist ung\u00fcltig. Die Eigenschaft wird auf den Standardwert {2} gesetzt. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=Die g\u00fcltigen Typen f\u00fcr den Zeitlimitwert sind long und int.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Setzen Sie den Typ des Werts auf long oder int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: Der Portwert f\u00fcr den Proxy-Server, {0}, den Sie in der Eigenschaft {1} auf JAX-RS-Client-Seite angegeben haben, ist ung\u00fcltig. Die Eigenschaft wird auf den Standardwert {2} gesetzt. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=Der g\u00fcltige Typ f\u00fcr den Portwert des Proxy-Servers ist int. 
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Setzen Sie den Typ des Werts auf int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: Der Typwert f\u00fcr den Proxy-Server, {0}, den Sie in der Eigenschaft {1} auf JAX-RS-Client-Seite angegeben haben, ist ung\u00fcltig. Die Eigenschaft wird auf den Standardwert {2} gesetzt. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=Die g\u00fcltigen Werte f\u00fcr den Proxy-Server-Typ sind HTTP und SOCKS.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Setzen Sie den Typ auf HTTP oder SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: Die SSL-Socket-Factory kann nicht erstellt werden, weil die SSL-Referenz-ID {0} in der Datei server.xml nicht vorhanden ist.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= Zum Generieren einer SSL-Socket-Factory ist eine g\u00fcltige Referenz-ID erforderlich. Es ist keine SSL-Konfiguration mit der ID {0} in der Datei server.xml vorhanden. 
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Definieren Sie eine g\u00fcltige SSL-Referenz-ID in der Datei server.xml.
+
+no_saml_found_in_subject=CWWKW0704W: Das erforderliche SAML-Token fehlt im Subjekt.
+no_saml_found_in_subject.explanation=Beim Extrahieren des SAML-Tokens aus dem Subjekt ist ein Fehler aufgetreten oder es wurde kein SAML-Element im aktuellen Subjekt gefunden.
+no_saml_found_in_subject.useraction=Wenn Sie das RunAs-Subjekt erstellen, m\u00fcssen Sie sicherstellen, dass dem Subjekt das SAML-Token hinzugef\u00fcgt wird. Stellen Sie alternativ sicher, dass Ihre Serverkonfiguration das Hinzuf\u00fcgen des SAML-Tokens zum Subjekt unterst\u00fctzt, indem Sie das Attribut includeTokenInSubject in Ihrer SAML-Konfiguration \u00fcberpr\u00fcfen.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: Bei der Verwendung der SAML-API PropagationHelper ist eine Ausnahme eingetreten. Ausnahme: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Beim Aufruf der API PropagationHelper zum Abrufen des SAML-Tokens aus dem Subjekt ist eine Ausnahme eingetreten.
+failed_to_extract_saml_token_from_subject.useraction=Stellen Sie sicher, dass das Feature samlWeb-2.0 in der Datei server.xml angegeben ist. Suchen Sie au\u00dferdem in den Serverprotokollen nach weiteren Informationen zur Ausnahme. 
+
+failed_run_as_subject=CWWKW0706E: Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten. Ausnahme: [{0}]
+failed_run_as_subject.explanation=Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten.
+failed_run_as_subject.useraction=Stellen Sie sicher, dass der Server ordnungsgem\u00e4\u00df konfiguriert und gestartet ist.
+
+warn_missing_mpjwt_token=CWWKW0707W: Das Attribut [{0}] in der Konfiguration [{1}] ist auf [{2}] gesetzt, aber das MicroProfile JSON Web Token (JWT) ist nicht verf\u00fcgbar. Die Anforderung enth\u00e4lt keinen Authorization-Header mit dem Token.
+warn_missing_mpjwt_token.explanation=Die Laufzeitumgebung hat das MicroProfile JWT nicht im RunAs-Subjekt gefunden. Dieser Fehler weist gew\u00f6hnlich auf ein Problem mit der Authentifizierung hin. Stellen Sie sicher, dass keine Fehler auftreten, w\u00e4hrend das Feature MicroProfile JWT einen Benutzer authentifiziert.
+warn_missing_mpjwt_token.useraction=Sehen Sie sich die vorgeschlagenen Benutzeraktionen f\u00fcr alle vorherigen Fehler an, die der Server protokolliert hat.
+
+warn_mpjwt_prop_service_notavail=CWWKW0708W: Der Service f\u00fcr die Weitergabe des MicroProfile JWT ist nicht verf\u00fcgbar. Die Laufzeitumgebung kann nicht auf das Token zugreifen, um es in den Authorization-Header einzuschlie\u00dfen.
+warn_mpjwt_prop_service_notavail.explanation=Der Service f\u00fcr die Weitergabe des MicroProfile JWT setzt das Feature mpJwt-1.0 voraus. 
+warn_mpjwt_prop_service_notavail.useraction=Stellen Sie sicher, dass der Server mit dem erforderlichen Feature ausgef\u00fchrt wird.
