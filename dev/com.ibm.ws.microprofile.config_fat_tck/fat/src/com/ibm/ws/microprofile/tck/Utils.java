@@ -49,7 +49,7 @@ public class Utils {
         jarsFromWlp.add("com.ibm.ws.microprofile.config");
 
         mvnCliRaw = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
-                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost) };
+                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + home.getAbsolutePath() + "/results/tck" };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
 

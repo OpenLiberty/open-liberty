@@ -56,7 +56,7 @@ public class ConfigTckPackageTest {
         if (!Utils.init) {
             Utils.init(server);
         }
-        File mvnOutput = new File(Utils.home, "mvnOut_TCK");
+        File mvnOutput = new File(Utils.home, "results/mvnOutput_TCK");
         int rc = Utils.runCmd(Utils.mvnCliTckRoot, Utils.tckRunnerDir, mvnOutput);
         // mvn returns 0 is all surefire tests and pass 1 on failure
         Assert.assertTrue("TCK has returned non-zero return code of: " + rc +

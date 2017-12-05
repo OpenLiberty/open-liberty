@@ -25,9 +25,11 @@
 
 		<defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
 		<suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+		<targetDirectory>${project.basedir}/target</targetDirectory>
 	</properties>
 
 	<build>
+	<directory>${targetDirectory}</directory>
 		<defaultGoal>clean test</defaultGoal>
 		<plugins>
 			<plugin>
