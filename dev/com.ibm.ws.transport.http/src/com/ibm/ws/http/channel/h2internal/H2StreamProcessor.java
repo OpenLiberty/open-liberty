@@ -111,10 +111,9 @@ public class H2StreamProcessor {
 
     private long closeTime = Constants.INITIAL_CLOSE_TIME;
 
-    // TODO refine buffer handling
-    WsByteBuffer[] streamReadReady = new WsByteBuffer[32]; // hard code the size for now
+    // a list of buffers to be read in by the WebContainer
+    ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
     int streamReadSize = 0;
-    int streamReadBufferIndex = 0;
     long actualReadCount = 0;
 
     public H2StreamProcessor(Integer id, H2HttpInboundLinkWrap link, H2InboundLink m) {
@@ -1431,24 +1430,30 @@ public class H2StreamProcessor {
             Tr.debug(tc, "moveDataIntoReadBufferArray entry: stream " + myID + " buffer: " + newBuf);
         }
 
-        // new data starts at Position and goes to Limit (one before limit)
         // move the data that is to be sent up the channel into the currentReadReady byte array, and update the currentReadSize
-
         if (newBuf != null) {
             int size = newBuf.remaining(); // limit - pos
-            streamReadReady[streamReadBufferIndex] = newBuf;
-            streamReadBufferIndex++;
+            streamReadReady.add(newBuf);
             streamReadSize += size;
         }
     }
 
-    public VirtualConnection read(long numBytes, WsByteBuffer[] req) {
+    /**
+     * Read the HTTP header and data bytes for this stream
+     *
+     * @param numBytes the number of bytes to read
+     * @param requestBuffers an array of buffers to copy the read data into
+     * @return this stream's VirtualConnection or null if too many bytes were requested
+     */
+    @SuppressWarnings("unchecked")
+    public VirtualConnection read(long numBytes, WsByteBuffer[] requestBuffers) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "read entry: stream " + myID + " request: " + req + " num bytes requested: " + numBytes);
+            Tr.debug(tc, "read entry: stream " + myID + " request: " + requestBuffers + " num bytes requested: " + numBytes);
         }
 
-        long streamCount = 0;
-        long requestCount = 0;
+        long streamByteCount = streamReadSize; // number of bytes available on this stream
+        long requestByteCount = bytesRemaining(requestBuffers); // total capacity of the caller byte array
+        int reqArrayIndex = 0; // keep track of where we are in the caller's array
 
         // if at least numBytes are ready to be processed as part of the HTTP Request/Response, then load it up
         if (numBytes > streamReadSize) {
@@ -1458,76 +1463,55 @@ public class H2StreamProcessor {
             return null;
         }
 
-        streamCount = streamReadSize;
-        requestCount = bytesRemaining(req);
-
-        // copy the data from the stream read buffer array, into calling read buffer array.
-        if (streamCount < requestCount) {
-            actualReadCount = streamCount;
+        if (streamByteCount < requestByteCount) {
+            // the byte count requested exceeds the caller array capacity
+            actualReadCount = streamByteCount;
         } else {
-            actualReadCount = requestCount;
+            actualReadCount = requestByteCount;
         }
 
-        // so this is going to be a slow, brute force, one byte copy at a time, needs to be optimized later
-        int streamArrayIndex = 0;
-        int reqArrayIndex = 0;
+        // copy bytes from this stream into the caller arrays
+        for (int bytesRead = 0; bytesRead < actualReadCount; bytesRead++) {
 
-        for (int i = 0; i < actualReadCount; i++) {
-
-            if (!req[reqArrayIndex].hasRemaining()) {
-                // move to the next buffer in the array
+            // find the first buffer from the caller that has remaining capacity
+            while ((requestBuffers[reqArrayIndex].position() == requestBuffers[reqArrayIndex].limit())) {
                 reqArrayIndex++;
-                while (true) {
-                    if (req[reqArrayIndex].hasRemaining()) {
-                        break;
-                    } else {
-                        reqArrayIndex++;
-                    }
-                }
             }
 
-            // if nothing left in this buffer, then move to the next buffer in the array
-            if (!streamReadReady[streamArrayIndex].hasRemaining()) {
-
-                // done with this buffer, so release it
-                streamReadReady[streamArrayIndex].release();
-
-                streamArrayIndex++;
-                while (true) {
-                    if (streamReadReady[streamArrayIndex].hasRemaining()) {
-                        break;
-                    } else {
-                        streamArrayIndex++;
-                    }
-                }
+            // find the next stream buffer that has data
+            while (!streamReadReady.isEmpty() && !streamReadReady.get(0).hasRemaining()) {
+                streamReadReady.get(0).release();
+                streamReadReady.remove(0);
             }
-
-            req[reqArrayIndex].put(streamReadReady[streamArrayIndex].get());
+            requestBuffers[reqArrayIndex].put(streamReadReady.get(0).get());
         }
 
         // put stream array back in shape
-        int streamOldBufferIndex = streamReadBufferIndex;
-        streamReadBufferIndex = 0;
         streamReadSize = 0;
-        if (streamReadReady[streamArrayIndex].hasRemaining()) {
-            moveDataIntoReadBufferArray(streamReadReady[streamArrayIndex].slice());
-        }
-        streamArrayIndex++;
-        while (streamArrayIndex <= streamOldBufferIndex) {
-            moveDataIntoReadBufferArray(streamReadReady[streamArrayIndex]);
-            streamArrayIndex++;
+        for (WsByteBuffer buffer : ((ArrayList<WsByteBuffer>) streamReadReady.clone())) {
+            streamReadReady.clear();
+            if (buffer.hasRemaining()) {
+                moveDataIntoReadBufferArray(buffer.slice());
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "read exit: stream " + myID);
+            Tr.debug(tc, "read exit: " + streamId());
         }
         // return the vc since this was a successful read
         return h2HttpInboundLinkWrap.getVirtualConnection();
     }
 
-    public long readCount(long numBytes, WsByteBuffer[] req) {
+    /**
+     * Read the http header and data bytes for this stream
+     *
+     * @param numBytes the number of bytes requested
+     * @param requestBuffers an array of buffers to copy the read data into
+     * @return the number of bytes that were actually copied into requestBuffers
+     */
+    public long readCount(long numBytes, WsByteBuffer[] requestBuffers) {
 
-        if (read(numBytes, req) != null) {
+        if (read(numBytes, requestBuffers) != null) {
             return actualReadCount;
         }
         return 0;
