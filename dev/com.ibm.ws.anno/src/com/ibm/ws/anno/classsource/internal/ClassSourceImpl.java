@@ -444,12 +444,21 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         int initialClasses = i_seedClassNames.size();
+        System.out.println(
+            "Processing [ " + getCanonicalName() + " ]" +
+            " Initial classes [ " + Integer.valueOf(initialClasses) + " ]");
 
+        String processCase;
         if ( !processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
             processFromScratch(streamer, i_seedClassNames, scanPolicy);
+            processCase = "from scratch";
+        } else {
+            processCase = "from JANDEX";
         }
 
         int finalClasses = i_seedClassNames.size();
+        System.out.println("Processing [ " + getCanonicalName() + " ] " + processCase + ";" +
+                           " Final classes [ " + Integer.valueOf(finalClasses) + " ]");
 
         if ( tc.isDebugEnabled() ) {
             Object[] logParms = new Object[] { getHashText(), null, null };

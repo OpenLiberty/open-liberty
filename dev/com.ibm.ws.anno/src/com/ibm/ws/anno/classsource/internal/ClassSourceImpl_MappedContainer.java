@@ -382,9 +382,36 @@ public class ClassSourceImpl_MappedContainer
 
     //
 
+    /**
+     * <p>Answer the path to JANDEX index files.</p>
+     *
+     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.
+     * This implementation accounts for the possibility that the target container
+     * might be "/WEB-INF/classes", in which case the path is adjusted
+     * to "../../META_INF/jandex.ndx".</p>
+     *
+     * @return The relative path to JANDEX index files.
+     */
+    @Trivial
+    @Override
+    public String getJandexIndexPath() {
+        String jandexIndexPath = super.getJandexIndexPath();
+
+        Container useContainer = getContainer();
+        if ( !useContainer.isRoot() && useContainer.getPath().equals("/WEB-INF/classes") ) {
+            jandexIndexPath = "../../" + jandexIndexPath;
+        }
+
+        return jandexIndexPath;
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     protected Index getJandexIndex() {
         String useJandexIndexPath = getJandexIndexPath();
+
+        System.out.println("Looking for JANDEX [ " + useJandexIndexPath + " ]" +
+                           " in [ " + getContainer().getPhysicalPath() + " ]");
 
         InputStream jandexStream;
 
@@ -397,6 +424,13 @@ public class ClassSourceImpl_MappedContainer
             Tr.error(tc, errorMessage);
             return null;
         }
+
+        if ( jandexStream == null ) {
+            System.out.println("No JANDEX index was found");
+            return null;
+        }
+
+        System.out.println("Located JANDEX index");
 
         long startJandexTime = getTime();
 
