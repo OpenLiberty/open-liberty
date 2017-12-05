@@ -287,6 +287,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         // check to see if new data is an http/2 connection preface
         if (this.myTSC.getSSLContext() != null &&
             !sc.isH2Connection() &&
+            this.myTSC.getSSLContext().getAlpnProtocol() != null &&
             this.myTSC.getSSLContext().getAlpnProtocol().equals("h2") &&
             checkForH2MagicString(sc)) {
             alreadyH2Upgraded = true;
