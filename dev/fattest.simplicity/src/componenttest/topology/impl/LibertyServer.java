@@ -58,9 +58,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -1719,21 +1721,23 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "processAppManagerMessages";
 
         for (String line : allMatches.getMatches()) {
-            String[] tokens = new String[2];
             if (line.startsWith("{")) {
                 // JSON format
-                Pattern pattern = Pattern.compile("\"(CWWKZ\\d{4}[A-Z]): (.*)\"");
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    tokens[0] = matcher.group(1);
-                    tokens[1] = matcher.group(2);
+                JsonReader reader = Json.createReader(new StringReader(line));
+                JsonObject jsonObj = reader.readObject();
+                reader.close();
+                try {
+                    line = jsonObj.getString("message");
+                } catch (NullPointerException npe) {
+                    Log.error(c, method, npe, "JSON does not contain \"message\" key. line=" + line);
+                    continue;
                 }
             } else {
                 // Regular format
                 line = line.substring(line.indexOf("CWWKZ"));
-                Log.finer(c, method, "line is " + line);
-                tokens = line.split(":", 2);
             }
+            Log.finer(c, method, "line is " + line);
+            String[] tokens = line.split(":", 2);
             Log.finer(c, method, "tokens are (" + tokens[0] + ") (" + tokens[1] + ")");
             try {
                 AppManagerMessage matchedMessage = AppManagerMessage.valueOf(tokens[0]);
