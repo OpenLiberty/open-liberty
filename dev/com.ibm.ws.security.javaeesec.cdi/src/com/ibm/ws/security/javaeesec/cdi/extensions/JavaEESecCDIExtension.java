@@ -810,22 +810,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      **/
     private String getModuleFromClass(Class<?> klass, Map<String, ModuleProperties> moduleMap) {
         String file = klass.getProtectionDomain().getCodeSource().getLocation().getFile();
+        String normalizedFile = file.toLowerCase();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "File name  : " + file);
+            Tr.debug(tc, "File name : " + file);
         }
         String moduleName = null;
-        if (file.endsWith(".jar") && file.contains(".war/WEB-INF/lib/")) {
-            // if the class exists in a jar file which is bundled with war file.
-            for (String module : moduleMap.keySet()) {
-                if (file.contains("/" + module + "/")) {
-                    moduleName = module;
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "module name of jar file  : " + moduleName);
-                    }
-                }
-            }
-        }
-        if (moduleName == null) {
+        if (normalizedFile.endsWith(".war")) {
             int index = file.lastIndexOf("/");
             if (index > 0) {
                 moduleName = file.substring(index + 1);
@@ -835,8 +825,25 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "module name : " + moduleName);
             }
+        } else if (normalizedFile.contains(".war/web-inf/")) {
+            // if the class exists in a jar file which is bundled with war file, or the package has been expanded..
+            for (String module : moduleMap.keySet()) {
+                if (file.contains("/" + module + "/")) {
+                    moduleName = module;
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "module name from the list  : " + moduleName);
+                    }
+                }
+            }
+        }
+        if (moduleName == null) {
+            moduleName = file;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "no match. use filename as module name : " + moduleName);
+            }
         }
         return moduleName;
     }
+
 
 }
