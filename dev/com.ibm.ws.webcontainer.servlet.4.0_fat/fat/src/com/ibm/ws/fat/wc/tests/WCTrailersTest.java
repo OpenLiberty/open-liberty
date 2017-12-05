@@ -51,212 +51,204 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 public class WCTrailersTest extends LoggingTest {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(WCTrailersTest.class.getName());
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(WCTrailersTest.class.getName());
 
-	@ClassRule
-	public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
+    @ClassRule
+    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
 
-	@BeforeClass
-	public static void before() throws Exception {
+    @BeforeClass
+    public static void before() throws Exception {
 
-		LOG.info("Setup : add TestServlet40 to the server if not already present.");
+        LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
-		WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
-				"TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
-				"testservlet40.war.listeners", "testservlet40.jar.servlets");
+        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
+                                                  "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
+                                                  "testservlet40.war.listeners", "testservlet40.jar.servlets");
 
-		ArrayList<String> expectedErrors = new ArrayList<String>();
-		expectedErrors.add("CWWWC0401E:.*");
-		SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
+        ArrayList<String> expectedErrors = new ArrayList<String>();
+        expectedErrors.add("CWWWC0401E:.*");
+        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
 
-		SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.startIfNotStarted();
 
-		LOG.info("Setup : wait for message to indicate app has started");
+        LOG.info("Setup : wait for message to indicate app has started");
 
-		SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
 
-		LOG.info("Setup : wait for message to indicate app has started");
+        LOG.info("Setup : wait for message to indicate app has started");
 
-	}
+    }
 
-	@AfterClass
-	public static void testCleanup() throws Exception {
+    @AfterClass
+    public static void testCleanup() throws Exception {
 
-		SHARED_SERVER.getLibertyServer().stopServer(null);
-	}
+        SHARED_SERVER.getLibertyServer().stopServer(null);
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testServletRequestsTrailers() throws Exception {
+    @Test
+    public void testServletRequestsTrailers() throws Exception {
 
-		LOG.info("Starting test testServletRequestsTrailers");
+        LOG.info("Starting test testServletRequestsTrailers");
 
-		sendRequestWithTrailers(null);
+        sendRequestWithTrailers(null);
 
-		LOG.info("Finished test testServletRequestsTrailers");
-	}
+        LOG.info("Finished test testServletRequestsTrailers");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testReadListenerRequestsTrailers() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testReadListenerRequestsTrailers() throws Exception {
 
-		LOG.info("Starting test testReadListenerRequestsTrailers");
+        LOG.info("Starting test testReadListenerRequestsTrailers");
 
-		sendRequestWithTrailers("?Test=RL");
+        sendRequestWithTrailers("?Test=RL");
 
-		LOG.info("Finished test testReadListenerRequestsTrailers");
-	}
+        LOG.info("Finished test testReadListenerRequestsTrailers");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testResponseTrailersSetAfterCommit() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testResponseTrailersSetAfterCommit() throws Exception {
 
-		LOG.info("Starting test testResponseTrailersSetAfterCommit");
+        LOG.info("Starting test testResponseTrailersSetAfterCommit");
 
-		getResponseWithTrailers(null);
+        getResponseWithTrailers(null);
 
-		LOG.info("Finished test testResponseTrailersSetAfterCommit");
-	}
+        LOG.info("Finished test testResponseTrailersSetAfterCommit");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testOneResponseTrailers() throws Exception {
+    @Test
+    public void testOneResponseTrailers() throws Exception {
 
-		LOG.info("Starting test testOneResponseTrailers");
+        LOG.info("Starting test testOneResponseTrailers");
 
-		getResponseWithTrailers("?Test=Add1Trailer");
+        getResponseWithTrailers("?Test=Add1Trailer");
 
-		LOG.info("Finished test testOneResponseTrailers");
-	}
+        LOG.info("Finished test testOneResponseTrailers");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testTwoResponseTrailers() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testTwoResponseTrailers() throws Exception {
 
-		LOG.info("Starting test testTwoResponseTrailers");
+        LOG.info("Starting test testTwoResponseTrailers");
 
-		getResponseWithTrailers("?Test=Add2Trailers");
+        getResponseWithTrailers("?Test=Add2Trailers");
 
-		LOG.info("Finished test testTwoResponseTrailers");
-	}
+        LOG.info("Finished test testTwoResponseTrailers");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testThreeResponseTrailers() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testThreeResponseTrailers() throws Exception {
 
-		LOG.info("Starting test testThreeResponseTrailers");
+        LOG.info("Starting test testThreeResponseTrailers");
 
-		getResponseWithTrailers("?Test=Add3Trailers");
+        getResponseWithTrailers("?Test=Add3Trailers");
 
-		LOG.info("Finished test testThreeResponseTrailers");
-	}
+        LOG.info("Finished test testThreeResponseTrailers");
+    }
 
-	private void sendRequestWithTrailers(String parameters) throws Exception {
+    private void sendRequestWithTrailers(String parameters) throws Exception {
 
-		HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-		HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(),
-				SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
-		BasicHttpContext coreContext = new BasicHttpContext();
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
 
-		LOG.info("Target host : " + target.toURI());
+        LOG.info("Target host : " + target.toURI());
 
-		String requestUri = "/TestServlet40/ServletGetTrailers";
+        String requestUri = "/TestServlet40/ServletGetTrailers";
 
-		if (parameters != null)
-			requestUri += parameters;
+        if (parameters != null)
+            requestUri += parameters;
 
-		ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
-		BasicHeader[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
-				new BasicHeader("t3", "TestTrailer3") };
+        ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
+        BasicHeader[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
+                                   new BasicHeader("t3", "TestTrailer3") };
 
-		HttpEntity requestBody = new HttpEntityWithTrailers(
-				new StringEntity("Chunked message with trailers", ContentType.TEXT_PLAIN), trailers);
-		request.setEntity(requestBody);
+        HttpEntity requestBody = new HttpEntityWithTrailers(new StringEntity("Chunked message with trailers", ContentType.TEXT_PLAIN), trailers);
+        request.setEntity(requestBody);
 
-		LOG.info(">> Request URI: " + request.getUri());
-		URIAuthority auth = new URIAuthority(SHARED_SERVER.getLibertyServer().getHostname(),
-				SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
-		request.setAuthority(auth);
+        LOG.info(">> Request URI: " + request.getUri());
+        URIAuthority auth = new URIAuthority(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        request.setAuthority(auth);
 
-		try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
 
-			String responseText = EntityUtils.toString(response.getEntity());
+            String responseText = EntityUtils.toString(response.getEntity());
 
-			LOG.info("\n" + responseText);
+            LOG.info("\n" + responseText);
 
-			assertFalse("Response contains as failure message", responseText.contains("FAIL"));
-			assertTrue("Response does not contain as pass message", responseText.contains("PASS"));
+            assertFalse("Response contains as failure message", responseText.contains("FAIL"));
+            assertTrue("Response does not contain as pass message", responseText.contains("PASS"));
 
-			for (BasicHeader trailerHeader : trailers) {
-				assertTrue("Response indicates a trailer header was not received:" + trailerHeader.getName(),
-						responseText.contains(trailerHeader.getValue()));
-			}
+            for (BasicHeader trailerHeader : trailers) {
+                assertTrue("Response indicates a trailer header was not received:" + trailerHeader.getName(),
+                           responseText.contains(trailerHeader.getValue()));
+            }
 
-		}
+        }
 
-	}
+    }
 
-	private void getResponseWithTrailers(String parameters) throws Exception {
+    private void getResponseWithTrailers(String parameters) throws Exception {
 
-		HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-		HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(),
-				SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
-		BasicHttpContext coreContext = new BasicHttpContext();
+        HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
+        HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        BasicHttpContext coreContext = new BasicHttpContext();
 
-		LOG.info("Target host : " + target.toURI());
+        LOG.info("Target host : " + target.toURI());
 
-		String requestUri = "/TestServlet40/ServletSetTrailers";
+        String requestUri = "/TestServlet40/ServletSetTrailers";
 
-		if (parameters != null)
-			requestUri += parameters;
+        if (parameters != null)
+            requestUri += parameters;
 
-		ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
+        ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
 
-		HttpEntity requestBody = new StringEntity("Inbound request data, please send trailer back",
-				ContentType.TEXT_PLAIN);
-		request.setEntity(requestBody);
+        HttpEntity requestBody = new StringEntity("Inbound request data, please send trailer back", ContentType.TEXT_PLAIN);
+        request.setEntity(requestBody);
 
-		LOG.info(">> Request URI: " + request.getUri());
-		URIAuthority auth = new URIAuthority(SHARED_SERVER.getLibertyServer().getHostname(),
-				SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
-		request.setAuthority(auth);
+        LOG.info(">> Request URI: " + request.getUri());
+        URIAuthority auth = new URIAuthority(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        request.setAuthority(auth);
 
-		try (ClassicHttpResponse response = httpRequester.execute(target, request, null, Timeout.ofSeconds(5),
-				coreContext)) {
+        try (ClassicHttpResponse response = httpRequester.execute(target, request, null, Timeout.ofSeconds(5),
+                                                                  coreContext)) {
 
-			String responseText = EntityUtils.toString(response.getEntity());
+            String responseText = EntityUtils.toString(response.getEntity());
 
-			LOG.info("\n" + responseText);
+            LOG.info("\n" + responseText);
 
-			assertFalse("Response contains as failure message", responseText.contains("FAIL"));
-			assertTrue("Response does not contain as pass message", responseText.contains("PASS"));
+            assertFalse("Response contains as failure message", responseText.contains("FAIL"));
+            assertTrue("Response does not contain as pass message", responseText.contains("PASS"));
 
-			// Currently the test harness does not include support for receiving
-			// trailers
-			Supplier<List<? extends Header>> responseTrailers = response.getEntity().getTrailers();
-			if (responseTrailers != null) {
-				List<? extends Header> trailerList = responseTrailers.get();
-				for (Header header : trailerList) {
-					LOG.info("Response trailer: " + header.getName() + " = " + header.getValue());
-				}
-			} else {
-				LOG.info("No trailers on response");
-			}
+            // Currently the test harness does not include support for receiving
+            // trailers
+            Supplier<List<? extends Header>> responseTrailers = response.getEntity().getTrailers();
+            if (responseTrailers != null) {
+                List<? extends Header> trailerList = responseTrailers.get();
+                for (Header header : trailerList) {
+                    LOG.info("Response trailer: " + header.getName() + " = " + header.getValue());
+                }
+            } else {
+                LOG.info("No trailers on response");
+            }
 
-		}
+        }
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-	 */
-	@Override
-	protected SharedServer getSharedServer() {
-		// TODO Auto-generated method stub
-		return SHARED_SERVER;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        // TODO Auto-generated method stub
+        return SHARED_SERVER;
+    }
 
 }

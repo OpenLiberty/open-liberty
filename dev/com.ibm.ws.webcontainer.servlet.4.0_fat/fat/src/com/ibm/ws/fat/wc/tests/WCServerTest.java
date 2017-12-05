@@ -25,9 +25,6 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
  */
@@ -99,7 +96,6 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testSimpleServlet() throws Exception {
 
         this.verifyResponse("/TestServlet40/SimpleTestServlet", "Hello World");
@@ -113,7 +109,6 @@ public class WCServerTest extends LoggingTest {
      *             if something goes horribly wrong
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testServletHeader() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet40/MyServlet", "Hello World");
 
@@ -129,7 +124,6 @@ public class WCServerTest extends LoggingTest {
      */
 
     @Test
-    @Mode(TestMode.LITE)
     public void testServletContextMajorMinorVersion() throws Exception {
         this.verifyResponse("/TestServlet40/MyServlet?TestMajorMinorVersion=true", "majorVersion: 4");
 
@@ -143,7 +137,6 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testServletContextSetAndGetSessionTimeout() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
 
