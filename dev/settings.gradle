@@ -296,17 +296,16 @@ if (projectNames.remove('')) {
   }
 }
 
-def projectNameSet = new HashSet()
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->
-  if (projectNameSet.add(projectName)) {
-    def project = getBndProject(workspace, projectName)
+  def project = getBndProject(workspace, projectName)
+  if (project) {
+    include projectName
     project?.getDependson()*.getName().each {
-      projectNameSet.add(it)
+      include it
     }
   }
 }
-projectNameSet.each { include it }
 
 /* Get the bnd project for the specified project name */
 def getBndProject(Workspace workspace, String projectName) {
