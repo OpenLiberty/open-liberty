@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -31,13 +32,21 @@ import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
+/**
+ * <p>Standard aggregate class source implementation.</p>
+ */
 public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassSource_Aggregate {
+    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_Aggregate.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_Aggregate.class);
 
     // Top O' the world
 
-    public ClassSourceImpl_Aggregate(ClassSourceImpl_Factory factory, Util_InternMap internMap, String name) {
+    public ClassSourceImpl_Aggregate(
+        ClassSourceImpl_Factory factory,
+        Util_InternMap internMap,
+        String name) {
+
         super(factory, internMap, name, null);
 
         this.seedClassSources = new HashSet<ClassSource>();
@@ -102,12 +111,14 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     protected List<ClassSource> successfulOpens;
     protected Set<ClassSource> failedOpens;
 
+    @Trivial
     public int getOpenCount() {
         return openCount;
     }
 
+    @Trivial
     public boolean getIsOpen() {
-        return (openCount > 0);
+        return ( openCount > 0 );
     }
 
     protected List<ClassSource> retrieveSuccessfulOpens() {
@@ -116,39 +127,52 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         return oldSuccessfulOpens;
     }
 
+    @Trivial
     protected List<ClassSource> getSuccessfulOpens() {
         return successfulOpens;
     }
 
     protected void addSuccessfulOpen(ClassSource classSource) {
-        this.successfulOpens.add(classSource);
+        successfulOpens.add(classSource);
     }
 
+    @Trivial
     protected Set<ClassSource> getFailedOpens() {
         return failedOpens;
     }
 
     protected void addFailedOpen(ClassSource classSource) {
-        this.failedOpens.add(classSource);
+        failedOpens.add(classSource);
     }
 
     @Override
+    @Trivial
     public void open() throws ClassSource_Exception {
         String methodName = "open";
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, MessageFormat.format("[ {0} ] Open count [ {1} ]",
-                                                          new Object[] { getHashText(), Integer.valueOf(this.openCount) }));
+        if ( tc.isEntryEnabled() ) {
+            String msg = MessageFormat.format(
+                "[ {0} ] Open count [ {1} ]",
+                new Object[] { getHashText(), Integer.valueOf(openCount) });
+            Tr.entry(tc, methodName, msg);
         }
 
-        this.openCount++;
+        openCount++;
 
-        if (this.openCount == 1) { // First one; need to open children.
-            for (ClassSource nextClassSource : retrieveSuccessfulOpens()) {
+        if ( openCount == 1 ) { // First one; need to open children.
+            // 'retrieveSuccessfulOpens' clears the collection of successful opens!
+            //
+            // The class sources must be conveyed to the re-constituted successful opens,
+            // or to the failed opens.
+            //
+            // Once a class source reaches the failed opens collection, it will remain
+            // there forever.
+
+            for ( ClassSource nextClassSource : retrieveSuccessfulOpens() ) {
                 try {
                     nextClassSource.open(); // throws ClassSource_Exception
                     addSuccessfulOpen(nextClassSource);
 
-                } catch (ClassSource_Exception e) {
+                } catch ( ClassSource_Exception e ) {
                     addFailedOpen(nextClassSource);
 
                     // String eMsg = "Class source [ " + getHashText() + " ]" +
@@ -164,52 +188,57 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
             }
         }
 
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Open count [ {1} ]",
-                                                         new Object[] { getHashText(), Integer.valueOf(this.openCount) }));
+        if ( tc.isEntryEnabled() ) {
+            String msg = MessageFormat.format(
+                "[ {0} ] Open count [ {1} ]",
+                new Object[] { getHashText(), Integer.valueOf(openCount) });
+            Tr.exit(tc, methodName, msg);
         }
     }
 
     @Override
+    @Trivial
     public void close() throws ClassSource_Exception {
         String methodName = "close";
-        if (tc.isEntryEnabled()) {
+        if ( tc.isEntryEnabled() ) {
             Tr.entry(tc, methodName, getHashText());
         }
 
-        if (this.openCount == 0) {
-            if (tc.isEntryEnabled()) {
-                Tr.exit(tc, methodName,
-                        MessageFormat.format("[ {0} ] ENTER/RETURN [ {1} ]",
-                                             new Object[] { getHashText(), Integer.valueOf(this.openCount) }));
+        if ( openCount == 0 ) {
+            if ( tc.isEntryEnabled() ) {
+                String msg = MessageFormat.format(
+                    "[ {0} ] ENTER/RETURN [ {1} ]",
+                    new Object[] { getHashText(), Integer.valueOf(openCount) });
+                Tr.exit(tc, methodName, msg);
             }
             return;
         }
 
-        this.openCount--;
+        openCount--;
 
-        if (this.openCount == 0) { // Last one which is active; need to close the children.
-            for (ClassSource nextClassSource : getSuccessfulOpens()) {
+        if ( openCount == 0 ) { // Last one which is active; need to close the children.
+            for ( ClassSource nextClassSource : getSuccessfulOpens() ) {
                 String nextClassSourceName = nextClassSource.getCanonicalName();
 
                 try {
                     nextClassSource.close(); // throws ClassSource_Exception
 
-                } catch (ClassSource_Exception e) {
+                } catch ( ClassSource_Exception e )  {
                     // String eMsg = "Class source [ " + getHashText() + " ]" +
                     //               " failed to close child class source [ " + nextClassSource.getHashText() + " ]";
-
                     Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE1_EXCEPTION",
-                               getHashText(),
-                               nextClassSourceName,
-                               nextClassSource.getHashText());
+                        getHashText(),
+                        nextClassSourceName,
+                        nextClassSource.getHashText());
                 }
             }
         }
 
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, MessageFormat.format("[{0}] Open Count [{1}]",
-                                                         getHashText(), Integer.valueOf(this.openCount)));
+        if ( tc.isEntryEnabled() ) {
+            String msg = MessageFormat.format(
+                "[{0}] Open Count [{1}]",
+                getHashText(), Integer.valueOf(openCount));
+            Tr.exit(tc, methodName, msg);
         }
     }
 
@@ -221,11 +250,13 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     }
 
     @Override
+    @Trivial
     public void addClassSource(ClassSource classSource, ScanPolicy scanPolicy) {
-        if (tc.isDebugEnabled()) {
-            String trMsg = MessageFormat.format("[ {0} ] Adding [ {1} ] [ {2} ]",
-                                                new Object[] { getHashText(), classSource.getHashText(), scanPolicy });
-            Tr.debug(tc, trMsg);
+        if ( tc.isDebugEnabled() ) {
+            String msg = MessageFormat.format(
+                "[ {0} ] Adding [ {1} ] [ {2} ]",
+                new Object[] { getHashText(), classSource.getHashText(), scanPolicy });
+            Tr.debug(tc, msg);
         }
 
         basicAddClassSource(classSource, scanPolicy);
@@ -235,12 +266,13 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     }
 
     @Override
+    @Trivial
     public Set<ClassSource> getClassSources(ScanPolicy scanPolicy) {
-        if (scanPolicy == ScanPolicy.SEED) {
+        if (scanPolicy == ScanPolicy.SEED ) {
             return seedClassSources;
-        } else if (scanPolicy == ScanPolicy.PARTIAL) {
+        } else if ( scanPolicy == ScanPolicy.PARTIAL ) {
             return partialClassSources;
-        } else if (scanPolicy == ScanPolicy.EXCLUDED) {
+        } else if ( scanPolicy == ScanPolicy.EXCLUDED ) {
             return excludedClassSources;
         } else {
             return externalClassSources;
@@ -248,21 +280,25 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     }
 
     @Override
+    @Trivial
     public Set<ClassSource> getSeedClassSources() {
         return seedClassSources;
     }
 
     @Override
+    @Trivial
     public Set<ClassSource> getPartialClassSources() {
         return partialClassSources;
     }
 
     @Override
+    @Trivial
     public Set<ClassSource> getExcludedClassSources() {
         return excludedClassSources;
     }
 
     @Override
+    @Trivial
     public Set<ClassSource> getExternalClassSources() {
         return externalClassSources;
     }
@@ -278,6 +314,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     protected final Set<ClassSource> externalClassSources;
 
     @Override
+    @Trivial
     public List<ClassSource> getClassSources() {
         return classSources;
     }
@@ -286,11 +323,11 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         classSources.add(classSource);
         classSourceNames.put(classSource.getName(), classSource.getCanonicalName());
 
-        if (scanPolicy == ScanPolicy.SEED) {
+        if ( scanPolicy == ScanPolicy.SEED ) {
             seedClassSources.add(classSource);
-        } else if (scanPolicy == ScanPolicy.PARTIAL) {
+        } else if ( scanPolicy == ScanPolicy.PARTIAL ) {
             partialClassSources.add(classSource);
-        } else if (scanPolicy == ScanPolicy.EXCLUDED) {
+        } else if ( scanPolicy == ScanPolicy.EXCLUDED ) {
             excludedClassSources.add(classSource);
         } else {
             externalClassSources.add(classSource);
@@ -299,11 +336,11 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
     @Override
     public ScanPolicy getScanPolicy(ClassSource classSource) {
-        if (seedClassSources.contains(classSource)) {
+        if ( seedClassSources.contains(classSource) ) {
             return ScanPolicy.SEED;
-        } else if (partialClassSources.contains(classSource)) {
+        } else if ( partialClassSources.contains(classSource) ) {
             return ScanPolicy.PARTIAL;
-        } else if (excludedClassSources.contains(classSource)) {
+        } else if ( excludedClassSources.contains(classSource) ) {
             return ScanPolicy.EXCLUDED;
         } else {
             return ScanPolicy.EXTERNAL;
@@ -323,11 +360,13 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     //
 
     @Override
+    @Trivial
     public void scanClasses(ClassSource_Streamer streamer) {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc,
-                     MessageFormat.format("ENTER [ {0} ] [ {1} ]",
-                                          new Object[] { getHashText(), streamer }));
+        if ( tc.isDebugEnabled() ) {
+            String msg = MessageFormat.format(
+                "ENTER [ {0} ] [ {1} ]",
+                new Object[] { getHashText(), streamer });
+            Tr.debug(tc, msg);
         }
 
         Set<String> i_seedClassNames = new HashSet<String>();
@@ -338,12 +377,12 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         // Only scan the children which were successfully opened.
         // Children which could not be opened are removed from view.
 
-        for (ClassSource childSource : getSuccessfulOpens()) {
+        for ( ClassSource childSource : getSuccessfulOpens() ) {
             String childName = childSource.getCanonicalName();
 
             ScanPolicy scanPolicy = getScanPolicy(childSource);
-            if (scanPolicy == ScanPolicy.EXTERNAL) {
-                continue; // completely skip it!
+            if ( scanPolicy == ScanPolicy.EXTERNAL ) {
+                continue; // Skip: External sources are only used to process referenced classes.
             }
 
             // Processing notes:
@@ -374,17 +413,19 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
             int nextSize = i_seedClassNames.size();
 
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] [ {1} ] [ {2} ] Added [ {3} ]",
-                                                  new Object[] { getHashText(), childName,
-                                                                childSource.getHashText(),
-                                                                Integer.valueOf(nextSize - finalSize) }));
+            if ( tc.isDebugEnabled()) {
+                String msg = MessageFormat.format(
+                    "[ {0} ] [ {1} ] [ {2} ] Added [ {3} ]",
+                    new Object[] { getHashText(), childName,
+                                  childSource.getHashText(),
+                                  Integer.valueOf(nextSize - finalSize) });
+                Tr.debug(tc, msg);
             }
 
             finalSize = nextSize;
         }
 
-        if (tc.isDebugEnabled()) {
+        if ( tc.isDebugEnabled() ) {
             Object[] logParms = new Object[] { getHashText(), null, null };
 
             logParms[1] = Integer.valueOf(finalSize - initialSize);
@@ -402,10 +443,26 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         }
     }
 
-    // Currently, aggregate class sources are not allowed to be children.
+    // Leaf class source API.
+    //
+    // Would need to be implemented if aggregate class sources could be put
+    // within aggregate class sources.  That is not currently supported.
 
     @Override
-    public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNamesSet, ScanPolicy scanPolicy) {
+    public void scanClasses(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNamesSet,
+        ScanPolicy scanPolicy) {
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void processFromScratch(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNames,
+        ScanPolicy scanPolicy) {
+
         throw new UnsupportedOperationException();
     }
 
@@ -417,24 +474,27 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     protected Map<String, Integer> i_lookupCounts;
 
     @Override
+    @Trivial
     public long getTotalLookups() {
         return totalLookups;
     }
 
     protected void recordLookup() {
-        this.totalLookups++;
+        totalLookups++;
     }
 
     @Override
+    @Trivial
     public long getRepeatLookups() {
         return repeatLookups;
     }
 
     protected void recordRepeatLookup() {
-        this.repeatLookups++;
+        repeatLookups++;
     }
 
     @Override
+    @Trivial
     public Map<String, Integer> getLookupCounts() {
         return i_lookupCounts;
     }
@@ -442,7 +502,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     protected Integer i_recordLookup(String i_className) {
         Integer lookupCount = i_lookupCounts.get(i_className);
 
-        if (lookupCount == null) {
+        if ( lookupCount == null ) {
             lookupCount = Integer.valueOf(1);
         } else {
             lookupCount = Integer.valueOf(lookupCount.intValue() + 1);
@@ -481,13 +541,15 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
     protected final Map<String, Boolean> i_globalResults;
 
+    @Trivial
     public Map<String, Boolean> getGlobalResults() {
         return i_globalResults;
     }
 
     @Override
+    @Trivial
     public Boolean getGlobalResult(String className) {
-        return i_getGlobalResult(internClassName(className));
+        return i_getGlobalResult( internClassName(className) );
     }
 
     protected Boolean i_getGlobalResult(String i_className) {
@@ -500,19 +562,22 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
     protected final Map<ClassSource, Set<String>> i_failedLookups;
 
+    @Trivial
     public Map<ClassSource, Set<String>> getFailedLookups() {
         return i_failedLookups;
     }
 
     @Override
+    @Trivial
     public Set<String> getFailedLookups(ClassSource classSource) {
         return i_failedLookups.get(classSource);
     }
 
+    @Trivial
     protected Set<String> getFailedLookupsForcing(ClassSource classSource) {
         Set<String> specificFailedLookups = i_failedLookups.get(classSource);
 
-        if (specificFailedLookups == null) {
+        if ( specificFailedLookups == null ) {
             specificFailedLookups = new HashSet<String>();
 
             i_failedLookups.put(classSource, specificFailedLookups);
@@ -524,7 +589,8 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     protected boolean i_alreadyFailed(ClassSource classSource, String i_className) {
         Set<String> specificFailedLookups = getFailedLookups(classSource);
 
-        return ((specificFailedLookups != null) && specificFailedLookups.contains(i_className));
+        return ( (specificFailedLookups != null) &&
+                 specificFailedLookups.contains(i_className) );
     }
 
     protected void i_markFailed(ClassSource classSource, String i_className) {
@@ -534,13 +600,15 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     public Map<String, ClassSource> i_firstSuccesses;
 
     @Override
+    @Trivial
     public Map<String, ClassSource> getFirstSuccesses() {
         return i_firstSuccesses;
     }
 
     @Override
+    @Trivial
     public ClassSource getFirstSuccess(String className) {
-        return i_getFirstSuccess(internClassName(className));
+        return i_getFirstSuccess( internClassName(className) );
     }
 
     protected ClassSource i_getFirstSuccess(String i_className) {
@@ -562,33 +630,38 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
     @Override
     public InputStream openResourceStream(String className, String resourceName) throws ClassSource_Exception {
-
-        Object[] logParams =
-                        (tc.isDebugEnabled() ? new Object[] { getHashText(), className, resourceName, null }
-                                        : null);
+        Object[] logParams = ( (tc.isDebugEnabled()
+            ? new Object[] { getHashText(), className, resourceName, null }
+            : null) );
 
         String i_className = internClassName(className);
 
         i_recordLookup(i_className);
 
         Boolean globalSuccess = i_getGlobalResult(i_className);
-        if (globalSuccess != null) {
-            if (!globalSuccess.booleanValue()) {
-                if (logParams != null) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ]: ENTRY / RETURN [ null ] - prior failure",
-                                                          logParams));
+        if ( globalSuccess != null ) {
+            if ( !globalSuccess.booleanValue() ) {
+                if ( logParams != null ) {
+                    if (tc.isDebugEnabled()) {
+                        String msg = MessageFormat.format(
+                            "[ {0} ] Resource [ {1} ] Class [ {2} ]: ENTRY / RETURN [ null ] - prior failure",
+                            logParams);
+                        Tr.debug(tc, msg);
+                    }
                 }
                 return null;
 
             } else {
                 ClassSource firstSuccess = i_getFirstSuccess(i_className);
 
-                if (logParams != null) {
+                if ( logParams != null ) {
                     logParams[3] = firstSuccess;
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ] Found in [ {3} ]: RETURN [ non-null ] - prior lookup",
-                                                          logParams));
+                    if ( tc.isDebugEnabled() ) {
+                        String msg = MessageFormat.format(
+                            "[ {0} ] Resource [ {1} ] Class [ {2} ] Found in [ {3} ]: RETURN [ non-null ] - prior lookup",
+                            logParams);
+                        Tr.debug(tc, msg);
+                    }
                 }
 
                 // TODO: There is a narrow case of a resource being located in a class
@@ -598,14 +671,18 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
                 //       That can result in a resource open request linking into the
                 //       a child which is not open.
 
-                return firstSuccess.openResourceStream(className, resourceName); // throws ClassSource_Exception
+                return firstSuccess.openResourceStream(className, resourceName);
+                // throws ClassSource_Exception
             }
         }
 
-        if (logParams != null) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ] ENTRY - no prior lookup",
-                                                  logParams));
+        if ( logParams != null ) {
+            if ( tc.isDebugEnabled() ) {
+                String msg = MessageFormat.format(
+                    "[ {0} ] Resource [ {1} ] Class [ {2} ] ENTRY - no prior lookup",
+                    logParams);
+                Tr.debug(tc, msg);
+            }
         }
 
         InputStream inputStream = null;
@@ -613,15 +690,17 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         // Only attempt the open on children which were successfully opened.
         // Children which could not be opened are removed from view.
 
-        for (ClassSource nextClassSource : getSuccessfulOpens()) {
-            if (logParams != null) {
+        for ( ClassSource nextClassSource : getSuccessfulOpens() ) {
+            if ( logParams != null ) {
                 logParams[3] = Integer.valueOf(nextClassSource.hashCode());
             }
 
-            if (i_alreadyFailed(nextClassSource, i_className)) {
-                if (logParams != null) {
-                    Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ] Skipping [ {3} ] - prior failure",
-                                                      logParams));
+            if ( i_alreadyFailed(nextClassSource, i_className) ) {
+                if ( logParams != null ) {
+                    String msg = MessageFormat.format(
+                        "[ {0} ] Resource [ {1} ] Class [ {2} ] Skipping [ {3} ] - prior failure",
+                        logParams);
+                    Tr.debug(tc, msg);
                 }
 
             } else {
@@ -634,13 +713,17 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
                 // even if an error occurred during the open.
 
                 try {
-                    inputStream = nextClassSource.openClassStream(className); // throws ClassSource_Exception
+                    inputStream = nextClassSource.openClassStream(className);
+                    // throws ClassSource_Exception
 
-                    if (inputStream == null) {
-                        if (logParams != null) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ] Not found in [ {3} ]",
-                                                                  logParams));
+                    if ( inputStream == null ) {
+                        if ( logParams != null ) {
+                            if ( tc.isDebugEnabled() ) {
+                                String msg = MessageFormat.format(
+                                    "[ {0} ] Resource [ {1} ] Class [ {2} ] Not found in [ {3} ]",
+                                    logParams);
+                                Tr.debug(tc, msg);
+                            }
                         }
                         i_markFailed(nextClassSource, i_className);
 
@@ -651,7 +734,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
                         break;
                     }
 
-                } catch (ClassSource_Exception e) {
+                } catch ( ClassSource_Exception e ) {
                     i_setGlobalResult(i_className, true);
                     i_setFirstSuccess(i_className, nextClassSource);
 
@@ -660,21 +743,27 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
             }
         }
 
-        if (inputStream == null) {
+        if ( inputStream == null ) {
             i_setGlobalResult(i_className, false);
 
-            if (logParams != null) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ]: ENTRY / RETURN [ null ] - first failure",
-                                                      logParams));
+            if ( logParams != null ) {
+                if ( tc.isDebugEnabled() ) {
+                    String msg = MessageFormat.format(
+                        "[ {0} ] Resource [ {1} ] Class [ {2} ]: ENTRY / RETURN [ null ] - first failure",
+                        logParams);
+                    Tr.debug(tc, msg);
+                }
             }
             return null;
 
         } else {
-            if (logParams != null) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, MessageFormat.format("[ {0} ] Resource [ {1} ] Class [ {2} ] Found in [ {3} ]: RETURN [ non-null ] - first lookup",
-                                                      logParams));
+            if ( logParams != null ) {
+                if ( tc.isDebugEnabled() ) {
+                    String msg = MessageFormat.format(
+                        "[ {0} ] Resource [ {1} ] Class [ {2} ] Found in [ {3} ]: RETURN [ non-null ] - first lookup",
+                        logParams);
+                    Tr.debug(tc, msg);
+                }
             }
             return inputStream;
         }
@@ -685,7 +774,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         try {
             inputStream.close(); // throws IOException
 
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             // String eMsg = "[ " + getHashText() + " ]" +
             //               " Failed to close resource [ " + resourceName + " ]" +
             //               " for class [ " + className + " ]";
@@ -707,7 +796,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
         int exclusionCount = 0;
 
-        for (ClassSource classSource : getClassSources()) {
+        for ( ClassSource classSource : getClassSources() ) {
             exclusionCount += classSource.getResourceExclusionCount();
         }
 
@@ -726,7 +815,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
         int exclusionCount = 0;
 
-        for (ClassSource classSource : getClassSources()) {
+        for ( ClassSource classSource : getClassSources() ) {
             exclusionCount += classSource.getClassExclusionCount();
         }
 
@@ -745,7 +834,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
         int inclusionCount = 0;
 
-        for (ClassSource classSource : getClassSources()) {
+        for ( ClassSource classSource : getClassSources() ) {
             inclusionCount += classSource.getClassInclusionCount();
         }
 
@@ -755,9 +844,11 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     //
 
     @Override
+    @Trivial
     public void log(TraceComponent logger) {
-        if (!logger.isDebugEnabled())
+        if ( !logger.isDebugEnabled() ) {
             return;
+        }
 
         Tr.debug(logger, MessageFormat.format("BEGIN STATE [ {0} ]", getHashText()));
 
@@ -783,9 +874,11 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         Tr.debug(logger, MessageFormat.format("END STATE [ {0} ]", getHashText()));
     }
 
+    @Trivial
     protected void log_lookupCounts(TraceComponent logger) {
-        if (!logger.isDebugEnabled())
+        if ( !logger.isDebugEnabled() ) {
             return;
+        }
 
         Tr.debug(logger, "Lookup Counts: BEGIN");
 
@@ -794,7 +887,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
         Object[] params = new Object[] { null, null };
 
-        for (Map.Entry<String, Integer> nextEntry : getLookupCounts().entrySet()) {
+        for ( Map.Entry<String, Integer> nextEntry : getLookupCounts().entrySet() ) {
             params[0] = nextEntry.getKey();
             params[1] = nextEntry.getValue();
 
@@ -804,9 +897,11 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         Tr.debug(logger, "Lookup Counts: END");
     }
 
+    @Trivial
     protected void log_globalResults(TraceComponent logger) {
-        if (!logger.isDebugEnabled())
+        if ( !logger.isDebugEnabled() ) {
             return;
+        }
 
         Tr.debug(logger, "Global Results: BEGIN");
 
@@ -815,7 +910,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
         Object[] params = new Object[] { null, null };
 
-        for (Map.Entry<String, Boolean> nextEntry : getGlobalResults().entrySet()) {
+        for ( Map.Entry<String, Boolean> nextEntry : getGlobalResults().entrySet() ) {
             params[0] = nextEntry.getKey();
             params[1] = nextEntry.getValue();
 
@@ -825,15 +920,17 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         Tr.debug(logger, "Global Results: END");
     }
 
+    @Trivial
     protected void log_firstSuccesses(TraceComponent logger) {
-        if (!logger.isDebugEnabled())
+        if ( !logger.isDebugEnabled() ) {
             return;
+        }
 
         Tr.debug(logger, "First Successes: BEGIN");
 
         Object[] params = new Object[] { null, null };
 
-        for (Map.Entry<String, ClassSource> nextEntry : getFirstSuccesses().entrySet()) {
+        for ( Map.Entry<String, ClassSource> nextEntry : getFirstSuccesses().entrySet() ) {
             params[0] = nextEntry.getKey();
             params[1] = nextEntry.getValue().getHashText();
 
@@ -843,18 +940,20 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
         Tr.debug(logger, "First Successes: END");
     }
 
+    @Trivial
     protected void log_failedLookups(TraceComponent logger) {
-        if (!logger.isDebugEnabled())
+        if ( !logger.isDebugEnabled() ) {
             return;
+        }
 
         Tr.debug(logger, "Failed Lookups: BEGIN");
 
-        for (Map.Entry<ClassSource, Set<String>> nextFailedLookups : getFailedLookups().entrySet()) {
+        for ( Map.Entry<ClassSource, Set<String>> nextFailedLookups : getFailedLookups().entrySet() ) {
             ClassSource nextClassSource = nextFailedLookups.getKey();
             Set<String> nextFailedClasses = nextFailedLookups.getValue();
 
             Tr.debug(logger, MessageFormat.format("  [ {0} ]", nextClassSource.getHashText()));
-            for (String nextFailedClass : nextFailedClasses) {
+            for ( String nextFailedClass : nextFailedClasses ) {
                 Tr.debug(logger, MessageFormat.format("    [ {0} ]", nextFailedClass));
             }
         }
