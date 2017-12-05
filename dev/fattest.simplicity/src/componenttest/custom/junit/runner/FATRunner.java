@@ -57,25 +57,19 @@ import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.topology.utils.PrivHelper;
 import junit.framework.AssertionFailedError;
 
 public class FATRunner extends BlockJUnit4ClassRunner {
     private static final Class<?> c = FATRunner.class;
 
-    /**
-     * We look for lines like
-     * Exception = com.ibm.ws.security.authentication.AuthenticationException
-     * in the ffdc file.
-     */
+    // Used to reduce timeouts to a sensible level when FATs are running locally
+    public static final boolean FAT_TEST_LOCALRUN = PrivHelper.getBoolean("fat.test.localrun");
 
     private static final int MAX_FFDC_LINES = 1000;
-    private static final boolean DISABLE_FFDC_CHECKING = Boolean.getBoolean("disable.ffdc.checking");
+    private static final boolean DISABLE_FFDC_CHECKING = PrivHelper.getBoolean("disable.ffdc.checking");
 
-    /**
-     * Unlike FFDC checking, the tmp dir checking will default to being off, but can be enabled with the
-     * "enabled.tmpdir.checking" property.
-     */
-    private static final boolean ENABLE_TMP_DIR_CHECKING = Boolean.getBoolean("enable.tmpdir.checking");
+    private static final boolean ENABLE_TMP_DIR_CHECKING = PrivHelper.getBoolean("enable.tmpdir.checking");
     private static final long TMP_DIR_SIZE_THRESHOLD = 20 * 1024; // 20k
 
     //list of filters to apply
@@ -88,6 +82,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     };
 
     static {
+        Log.info(c, "<clinit>", "System property: fat.test.localrun=" + FAT_TEST_LOCALRUN);
         Log.info(c, "<clinit>", "Using filters " + Arrays.toString(testFiltersToApply));
     }
 
@@ -280,28 +275,6 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-//    @Override
-//    protected Statement withBeforeClasses(Statement statement) {
-//        return hasTestsToRun() ? super.withBeforeClasses(statement) : statement;
-//    }
-//
-//    @Override
-//    protected Statement withAfterClasses(Statement statement) {
-//        return hasTestsToRun() ? super.withAfterClasses(statement) : statement;
-//    }
-//
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    protected Statement withBefores(FrameworkMethod method, Object target, Statement statement) {
-//        return hasTestsToRun() ? super.withBefores(method, target, statement) : statement;
-//    }
-//
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    protected Statement withAfters(FrameworkMethod method, Object target, Statement statement) {
-//        return hasTestsToRun() ? super.withAfters(method, target, statement) : statement;
-//    }
-
     /**
      * Run at the end of the whole test. Tidy up and check for any FFDCs which were produced by the cleanup.
      */
@@ -364,10 +337,6 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     /**
      * Creates a new list which includes all the strings in the after list which
      * are not in the before list.
-     *
-     * @param before
-     * @param after
-     * @return
      */
     private List<String> filterOutPreexistingFFDCs(List<String> before, List<String> after) {
         // The after list is modified in this method so create a copy
@@ -596,7 +565,6 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     ffdcList = LibertyServerFactory.retrieveFFDCFile(iterator.next());
                 } catch (TopologyException e) {
                     //ignore the exception as log directory doesn't exist and no FFDC log
-                    Log.info(c, "retrieveFFDCCounts", "Ignoring exception: " + e);
                 } catch (Exception e) {
                     Log.error(c, "retrieveFFDCLogs", e);
                 }

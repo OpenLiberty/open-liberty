@@ -240,44 +240,31 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      */
     @SuppressWarnings("rawtypes")
     private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Class implClass) {
-        Map<String, ModuleProperties> moduleMap = getModuleMap();
-        String moduleName = getModuleFromClass(implClass);
         Properties props = null;
         if (ltc != null) {
             try {
                 props = parseLoginToContinue(ltc);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
                 e.printStackTrace();
             }
         }
-        // if there is a match for the module name, place the class in it, otherwise, place the class
-        // to all of the modules. It is OK to do so since it can be instanciated only in the appropriate module.
-        if (moduleMap.containsKey(moduleName)) {
-            ModuleProperties mp = moduleMap.get(moduleName);
-            mp.putToAuthMechMap(implClass, props);
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "found the module in the map. " + mp);
-        } else {
-            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
-                entry.getValue().putToAuthMechMap(implClass, props);
-            }
-        }
+        addAuthMech(implClass, implClass, props);
     }
 
     private void addAuthMech(Class annotatedClass, Class implClass, Properties props) {
         Map<String, ModuleProperties> moduleMap = getModuleMap();
-        String moduleName = getModuleFromClass(annotatedClass);
+        String moduleName = getModuleFromClass(annotatedClass, moduleMap);
         if (moduleMap.containsKey(moduleName)) {
             moduleMap.get(moduleName).putToAuthMechMap(implClass, props);
         } else {
+            // if there is no match in the module name, it should be a shared jar file.
+            // so place the authmech to the all modules.
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "The module is not found. A new entry is created. Module: " + moduleName);
-            ModuleProperties mp = new ModuleProperties();
-            mp.getAuthMechMap().put(implClass, props);
-            moduleMap.put(moduleName, mp);
+                Tr.debug(tc, "Place the AuthMech to all modules since the module is not found  Module: " + moduleName);
+            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+                entry.getValue().putToAuthMechMap(implClass, props);
+            }
         }
     }
 
@@ -819,17 +806,37 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().getModuleMetaDataList();
     }
 
-    private String getModuleFromClass(Class<?> klass) {
+    /**
+      * Identify the module name from the class. If the class exists in the jar file, return war file name
+      * if it is located under the war file, otherwise returning jar file name.
+     **/
+    private String getModuleFromClass(Class<?> klass, Map<String, ModuleProperties> moduleMap) {
         String file = klass.getProtectionDomain().getCodeSource().getLocation().getFile();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "File name  : " + file);
         }
-        int index = file.lastIndexOf("/");
-        String moduleName;
-        if (index > 0) {
-            moduleName = file.substring(index + 1);
-        } else {
-            moduleName = file;
+        String moduleName = null;
+        if (file.endsWith(".jar") && file.contains(".war/WEB-INF/lib/")) {
+            // if the class exists in a jar file which is bundled with war file.
+            for (String module : moduleMap.keySet()) {
+                if (file.contains("/" + module + "/")) {
+                    moduleName = module;
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "module name of jar file  : " + moduleName);
+                    }
+                }
+            }
+        }
+        if (moduleName == null) {
+            int index = file.lastIndexOf("/");
+            if (index > 0) {
+                moduleName = file.substring(index + 1);
+            } else {
+                moduleName = file;
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "module name : " + moduleName);
+            }
         }
         return moduleName;
     }
