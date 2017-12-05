@@ -30,14 +30,6 @@ JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: The supplied credential class {
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=The supplied credential class for the authentication is not supported by CustomFormHttpAuthenticationMechanism class. Use either javax.security.enterprise.credential.UsernamePasswordCredential or javax.security.enterprise.credential.BasicAuthenticationCredential for authentication.
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Make sure that the supported credential class is used for Custom Form authentication.
 
-JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Principal name is null or Principal object does not exist. Make sure that CredentialValidationResult contains valid Principal object.
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=Principal object in the given CredentialValidationResult object is not valid. Either it is null or it does not have valid name.
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=If the application provides an IdentityStore, make sure that it returns valid Principal object in CredentialValidationResult.
-
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId is null. Make sure that CredentialValidationResult contains valid UniqueId.
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=UniqueId in the given CredentialValidationResult object is null.
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=If the application provides an IdentityStore, make sure that it returns valid UniqueId in CredentialValidationResult.
-
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml. IdentityStoreHandler bean is created when there is at least one IdentityStore bean. If the application intends to use an IdentityStore, make sure that it is configured properly. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=IdentityStoreHandler bean is not found. If the application intends to use an IdentityStore, make sure that it is configured properly. IdentityStoreHandler bean is created when there is at least one IdentityStore bean.
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=If the application intends to use an IdentityStore, make sure that it is configured properly.
