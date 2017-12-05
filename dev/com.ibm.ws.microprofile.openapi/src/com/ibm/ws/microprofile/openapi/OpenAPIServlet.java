@@ -13,26 +13,72 @@ package com.ibm.ws.microprofile.openapi;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import com.ibm.ws.microprofile.openapi.ApplicationProcessor.DocType;
 
 public class OpenAPIServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    private ApplicationProcessor applicationProcessor = null;
+
     /** {@inheritDoc} */
 
+    /** {@inheritDoc} */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String acceptHeader = "";
-        String method = "";
-        acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
-        method = request.getMethod();
-        response.setContentType(Constants.CONTENT_TYPE_JSON);
-        response.setCharacterEncoding("UTF-8");
-        Writer writer = response.getWriter();
-        writer.write("{\"openapi:\" \"3.0.0\"}");
+        if (request.getMethod().equals(Constants.METHOD_GET)) {
+            if (applicationProcessor == null) {
+                findApplicationProcessor(request);
+            }
+            String acceptHeader = "";
+            acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
+            String format = "yaml";
+            if (acceptHeader != null && acceptHeader.equals(Constants.CONTENT_TYPE_JSON)) {
+                format = "json";
+            }
+            String formatParam = request.getParameter("format");
+            if (formatParam != null && formatParam.equals("json")) {
+                format = "json";
+            }
+
+            response.setCharacterEncoding("UTF-8");
+            if (format.equals("json")) {
+                response.setContentType(Constants.CONTENT_TYPE_JSON);
+                Writer writer = response.getWriter();
+                writer.write(applicationProcessor.getOpenAPIDocument(DocType.JSON));
+            } else {
+                Writer writer = response.getWriter();
+                writer.write(applicationProcessor.getOpenAPIDocument(DocType.YAML));
+            }
+        } else {
+            response.setStatus(405);
+        }
+
+    }
+
+    /**
+     * @param request
+     */
+    private void findApplicationProcessor(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        ServletContext sc = session.getServletContext();
+        BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
+
+        ServiceReference<ApplicationProcessor> ref = ctxt.getServiceReference(ApplicationProcessor.class);
+        if (ref == null) {
+
+        } else {
+            applicationProcessor = ctxt.getService(ref);
+        }
     }
 }
