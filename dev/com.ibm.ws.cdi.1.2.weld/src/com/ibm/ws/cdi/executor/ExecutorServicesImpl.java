@@ -11,6 +11,7 @@
 package com.ibm.ws.cdi.executor;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.jboss.weld.executor.AbstractExecutorServices;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -23,7 +24,7 @@ public class ExecutorServicesImpl extends AbstractExecutorServices implements Ex
 
     private final ExecutorService executorService;
 
-    public ExecutorServicesImpl(ExecutorService executorService) {
+    public ExecutorServicesImpl(ExecutorService executorService, ScheduledExecutorService scheduledExecutorService) {
         this.executorService = executorService;
     }
 
