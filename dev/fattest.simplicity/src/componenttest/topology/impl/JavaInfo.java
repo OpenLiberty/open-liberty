@@ -33,7 +33,7 @@ public class JavaInfo {
         JavaInfo info = cache.get(javaHome);
         if (info == null) {
             info = new JavaInfo();
-            cache.put(javaHome, info);
+            cacheJavaInfo(javaHome, info);
         }
         return info;
     }
@@ -47,9 +47,15 @@ public class JavaInfo {
         JavaInfo info = cache.get(jdkPath);
         if (info == null) {
             info = runJavaVersion(jdkPath);
-            cache.put(jdkPath, info);
+            cacheJavaInfo(jdkPath, info);
         }
         return info;
+    }
+
+    private static void cacheJavaInfo(String jdkPath, JavaInfo info) {
+        cache.put(jdkPath, info);
+        if (jdkPath.contains("\\"))
+            cache.put(jdkPath.replace("\\", "/"), info);
     }
 
     /**
