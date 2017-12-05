@@ -346,6 +346,10 @@ public class ClassSourceImpl_MappedJar
             return null;
         }
 
+        if ( jandexStream == null ) {
+            return null;
+        }
+
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
             System.out.println(
