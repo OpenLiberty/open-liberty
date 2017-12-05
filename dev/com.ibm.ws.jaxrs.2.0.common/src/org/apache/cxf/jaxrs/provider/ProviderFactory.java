@@ -981,6 +981,7 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl
         }
         return ep.isReadable(type, genericType, annotations, mediaType);
     }
@@ -1025,6 +1026,7 @@ public abstract class ProviderFactory {
         MessageBodyWriter<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl
         }
         return ep.isWriteable(type, genericType, annotations, mediaType);
     }
