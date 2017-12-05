@@ -13,4 +13,5 @@
   <com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder type="ValidatorFactoryBuilderV20"/>
   <com.ibm.ws.beanvalidation.OSGiBeanValidationImpl />
 
+  <javaPermission id="org.hibernate.validator.HibernateValidatorPermission" className="org.hibernate.validator.HibernateValidatorPermission" name="accessPrivateMembers"/>
 </server>
