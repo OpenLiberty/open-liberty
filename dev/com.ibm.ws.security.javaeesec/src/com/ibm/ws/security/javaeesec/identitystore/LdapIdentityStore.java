@@ -128,9 +128,8 @@ public class LdapIdentityStore implements IdentityStore {
 
         String userDn = validationResult.getCallerDn();
         if (userDn == null || userDn.isEmpty()) {
-            String[] attrIds = { idStoreDefinition.getCallerNameAttribute() };
             String user = validationResult.getCallerPrincipal().getName();
-            String filter = "(&(" + attrIds[0] + "=" + user + ")" + idStoreDefinition.getCallerSearchFilter() + ")";
+            String filter = String.format(idStoreDefinition.getCallerSearchFilter(), user);
             if (isValidDn(user)) {
                 userDn = user;
             } else {
@@ -197,9 +196,7 @@ public class LdapIdentityStore implements IdentityStore {
             String callerName = null;
             String userDn = null;
 
-            filter = "(&(" + attrIds[0] + "=" + user + ")" + filter + ")";
-            Tr.debug(tc, "filter: ", filter);
-            Tr.debug(tc, "attrIds: ", attrIds[0]);
+            filter = String.format(filter, user);
 
             Set<String> groups = new HashSet<String>();
 
@@ -363,7 +360,7 @@ public class LdapIdentityStore implements IdentityStore {
         int scope = getSearchScope(idStoreDefinition.getGroupSearchScope());
 
         SearchControls controls = new SearchControls(scope, limit, timeOut, attrIds, false, false);
-        String filter = "(&" + groupSearchFilter + "(" + idStoreDefinition.getGroupMemberAttribute() + "=" + callerDn + "))";
+        String filter = String.format(groupSearchFilter, callerDn);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JNDI_CALL search entry", new Object[] { groupSearchBase, filter, printControls(controls) });
         }
