@@ -58,6 +58,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.management.remote.JMXConnector;
@@ -1718,9 +1719,21 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "processAppManagerMessages";
 
         for (String line : allMatches.getMatches()) {
-            line = line.substring(line.indexOf("CWWKZ"));
-            Log.finer(c, method, "line is " + line);
-            String[] tokens = line.split(":", 2);
+            String[] tokens = new String[2];
+            if (line.startsWith("{")) {
+                // JSON format
+                Pattern pattern = Pattern.compile("\"(CWWKZ\\d{4}[A-Z]): (.*)\"");
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    tokens[0] = matcher.group(1);
+                    tokens[1] = matcher.group(2);
+                }
+            } else {
+                // Regular format
+                line = line.substring(line.indexOf("CWWKZ"));
+                Log.finer(c, method, "line is " + line);
+                tokens = line.split(":", 2);
+            }
             Log.finer(c, method, "tokens are (" + tokens[0] + ") (" + tokens[1] + ")");
             try {
                 AppManagerMessage matchedMessage = AppManagerMessage.valueOf(tokens[0]);
@@ -1734,6 +1747,7 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
         }
+
     }
 
     protected static String findAppNameInTokens(Map<String, Pattern> unstartedApps, String[] tokens) {
