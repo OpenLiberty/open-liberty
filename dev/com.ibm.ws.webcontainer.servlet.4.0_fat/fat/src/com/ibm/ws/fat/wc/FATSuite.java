@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCDummyTest;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
@@ -25,7 +26,6 @@ import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
-import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 
 /**
  * Servlet 4.0 Tests
@@ -46,14 +46,10 @@ import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
  * build.
  *
  * Alternatively, for a comand line launch, add "-Dfat.test.mode=full".
- *
- * For additional information see:
- *
- * http://was.pok.ibm.com/xwiki/bin/view/Liberty/Test-FAT
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-               WCDummyTest.class,
+                WCDummyTest.class,
                 WCServerTest.class,
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,

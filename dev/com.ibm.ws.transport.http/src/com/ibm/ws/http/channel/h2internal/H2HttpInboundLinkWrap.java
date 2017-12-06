@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
@@ -47,6 +48,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
     private HashMap<String, String> pseudoHeaders = null;
     private ArrayList<H2HeaderField> headers = null;
+    private int headersLength = 0;
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2HttpInboundLinkWrap.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -288,6 +290,14 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         return this.isPushPromise;
     }
 
+    public void setHeadersLength(int len) {
+        this.headersLength = len;
+    }
+
+    public int getHeadersLength() {
+        return this.headersLength;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -329,7 +339,11 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                     Tr.debug(tc, "writeFramesSync processing frame ID: " + currentFrame.getFrameType());
                 }
 
-                streamProcessor.processNextFrame(currentFrame, Direction.WRITING_OUT);
+                if (streamProcessor != null) {
+                    streamProcessor.processNextFrame(currentFrame, Direction.WRITING_OUT);
+                } else {
+                    throw new StreamClosedException("stream " + streamID + " was already closed!");
+                }
 
             } catch (Http2Exception e) {
                 //  send out a connection error.

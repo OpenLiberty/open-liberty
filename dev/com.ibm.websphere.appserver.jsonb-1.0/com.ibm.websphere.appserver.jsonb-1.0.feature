@@ -10,5 +10,6 @@ IBM-API-Package: javax.json.bind; type="spec", \
  javax.json.bind.serializer; type="spec", \
  javax.json.bind.spi; type="spec"
 -features=com.ibm.websphere.appserver.jsonbInternal-1.0
+-bundles=com.ibm.ws.jsonb.service
 kind=beta
 edition=core

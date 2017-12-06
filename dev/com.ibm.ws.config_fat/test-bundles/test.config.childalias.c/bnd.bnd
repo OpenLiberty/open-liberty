@@ -11,8 +11,6 @@
 -include= ~../../../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: Test Config Child Alias C
 Bundle-SymbolicName: test.config.childalias.c
 Bundle-Description: Test bundle C for IBM childAlias extension, version=${bVersion}

@@ -24,7 +24,9 @@ src: \
 	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
 	test-applications/dbfat.war/src,\
 	test-applications/dbfatAuthAlias.war/src,\
-	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src
+	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src,\
+	test-applications/IdentityStores.jar/src,\
+	test-applications/AuthMechs.jar/src
 
 javac.source: 1.8
 javac.target: 1.8
