@@ -150,17 +150,13 @@ public class OperationParser {
                 // default to string
                 schemaObject.setType(SchemaType.STRING);
             }
-//            if (isArray) {
-//                Optional<Schema> arraySchema = AnnotationsUtils.getArraySchema(annotationContent.s());
-//                if (arraySchema.isPresent()) {
-//                    arraySchema.get().setItems(schemaObject);
-//                    return arraySchema;
-//                } else {
-//                    return Optional.empty();
-//                }
-//            } else {
-//                return Optional.of(schemaObject);
-//            }
+            if (isArray) {
+                Schema arraySchema = new SchemaImpl().type(SchemaType.ARRAY);
+                arraySchema.setItems(schemaObject);
+                return Optional.of(arraySchema);
+            } else {
+                return Optional.of(schemaObject);
+            }
 
         } else {
             Optional<Schema> schemaFromAnnotation = AnnotationsUtils.getSchemaFromAnnotation(annotationContent.schema());
