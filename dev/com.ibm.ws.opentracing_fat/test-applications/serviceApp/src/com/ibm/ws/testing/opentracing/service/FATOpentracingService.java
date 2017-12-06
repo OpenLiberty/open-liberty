@@ -38,9 +38,6 @@ import io.opentracing.Tracer;
 @Path("testService") // 'SERVICE_PATH' in the constants
 public class FATOpentracingService extends Application implements FATOpentracingConstants {
     // Trace ...
-
-    @Inject
-    MyBean mybean;
     
     private static final String CLASS_NAME = FATOpentracingService.class.getSimpleName();
 
@@ -211,7 +208,6 @@ public class FATOpentracingService extends Application implements FATOpentracing
     @Produces(MediaType.TEXT_PLAIN)
     public String getImmediate(@QueryParam(RESPONSE_PARAM_NAME) String responseText) {
         String methodName = "getImmediate";
-        mybean.dosomething();
         traceEnterReturn(methodName, "ResponseText", responseText);
         return responseText;
     }
