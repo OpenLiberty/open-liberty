@@ -28,6 +28,8 @@ import com.ibm.ws.microprofile.openapi.impl.jaxrs2.Reader;
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
+import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
+import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.wsspi.adaptable.module.Container;
 
@@ -96,6 +98,10 @@ public class ApplicationProcessor {
             String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
             if (openAPIStaticFile != null) {
                 isOASApp = true;
+                SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
+                if (result.getOpenAPI() != null) {
+                    newDocument = result.getOpenAPI();
+                }
             }
 
             //Parse a document into the model

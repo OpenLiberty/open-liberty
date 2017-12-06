@@ -23,6 +23,8 @@ import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Schema
  *
@@ -347,21 +349,23 @@ public class SchemaImpl implements Schema {
 
     @Override
     public void setRequired(List<String> required) {
-        List<String> list = new ArrayList<>();
-        if (required != null) {
-            for (String req : required) {
-                if (this.properties == null) {
-                    list.add(req);
-                } else if (this.properties.containsKey(req)) {
-                    list.add(req);
-                }
-            }
-        }
-        Collections.sort(list);
-        if (list.size() == 0) {
-            list = null;
-        }
-        this.required = list;
+        /*
+         * List<String> list = new ArrayList<>();
+         * if (required != null) {
+         * for (String req : required) {
+         * if (this.properties == null) {
+         * list.add(req);
+         * } else if (this.properties.containsKey(req)) {
+         * list.add(req);
+         * }
+         * }
+         * }
+         * Collections.sort(list);
+         * if (list.size() == 0) {
+         * list = null;
+         * }
+         */
+        this.required = required;
     }
 
     @Override
@@ -849,6 +853,7 @@ public class SchemaImpl implements Schema {
         return this;
     }
 
+    @JsonIgnore
     public String getName() {
         return this.name;
     }

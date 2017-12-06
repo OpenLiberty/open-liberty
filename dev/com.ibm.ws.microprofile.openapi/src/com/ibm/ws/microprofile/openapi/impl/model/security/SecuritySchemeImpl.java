@@ -14,6 +14,8 @@ package com.ibm.ws.microprofile.openapi.impl.model.security;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * SecurityScheme
  *
@@ -24,6 +26,7 @@ public class SecuritySchemeImpl implements SecurityScheme {
     private SecurityScheme.Type type = null;
     private String description = null;
     private String name = null;
+    private String schemeName = null;
     private String $ref = null;
 
     private SecurityScheme.In in = null;
@@ -286,6 +289,21 @@ public class SecuritySchemeImpl implements SecurityScheme {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
+    }
+
+    /**
+     * @return the schemeName
+     */
+    @JsonIgnore
+    public String getSchemeName() {
+        return schemeName;
+    }
+
+    /**
+     * @param schemeName the schemeName to set
+     */
+    public void setSchemeName(String schemeName) {
+        this.schemeName = schemeName;
     }
 
 }

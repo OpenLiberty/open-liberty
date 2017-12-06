@@ -33,6 +33,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
  * Describes the Components object that holds various reusable objects for different aspects of the OpenAPI Specification (OAS).
+ * 
+ * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject"> OpenAPI Specification Components
+ *      Object</a>
  */
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

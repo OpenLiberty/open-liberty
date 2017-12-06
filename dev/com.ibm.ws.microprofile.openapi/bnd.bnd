@@ -77,4 +77,5 @@ WS-TraceGroup: MPOPENAPI
 	com.fasterxml.jackson.core.jackson-annotations;version=2.9.1,\
 	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
 	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1,\
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	org.yaml.snakeyaml;version=1.18

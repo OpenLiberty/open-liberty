@@ -70,6 +70,7 @@ import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponsesImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.security.SecuritySchemeImpl;
 
 public class Reader {
     //private static final Logger LOGGER = LoggerFactory.getLogger(Reader.class);
@@ -246,8 +247,8 @@ public class Reader {
                 Optional<SecurityScheme> securityScheme = SecurityParser.getSecurityScheme(securitySchemeAnnotation);
                 if (securityScheme.isPresent()) {
                     Map<String, SecurityScheme> securitySchemeMap = new HashMap<>();
-                    if (StringUtils.isNotBlank(securityScheme.get().getName())) {
-                        securitySchemeMap.put(securityScheme.get().getName(), securityScheme.get());
+                    if (StringUtils.isNotBlank(((SecuritySchemeImpl) securityScheme.get()).getSchemeName())) {
+                        securitySchemeMap.put(((SecuritySchemeImpl) securityScheme.get()).getSchemeName(), securityScheme.get());
                         if (components.getSecuritySchemes() != null && components.getSecuritySchemes().size() != 0) {
                             components.getSecuritySchemes().putAll(securitySchemeMap);
                         } else {

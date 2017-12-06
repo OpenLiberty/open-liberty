@@ -71,7 +71,11 @@ public class SecurityParser {
             securitySchemeObject.setDescription(securityScheme.description());
         }
         if (StringUtils.isNotBlank(securityScheme.securitySchemeName())) {
-            securitySchemeObject.setName(securityScheme.securitySchemeName());
+            ((SecuritySchemeImpl) securitySchemeObject).setSchemeName(securityScheme.securitySchemeName());
+        }
+
+        if (StringUtils.isNotBlank(securityScheme.apiKeyName())) {
+            securitySchemeObject.setName(securityScheme.apiKeyName());
         }
         getOAuthFlows(securityScheme.flows()).ifPresent(securitySchemeObject::setFlows);
         return Optional.of(securitySchemeObject);
