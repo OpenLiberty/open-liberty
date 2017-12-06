@@ -142,7 +142,12 @@ public class KernelBootstrap {
 
             // Find the bootstrap resources we need to launch the nested framework.
             // MAY THROW if these resources can not be found or read
-            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(), bootProps.getWorkareaFile(KernelResolver.CACHE_FILE), bootDefaults.getKernelDefinition(bootProps), bootDefaults.getLogProviderDefinition(bootProps), bootDefaults.getOSExtensionDefinition(bootProps), libertyBoot);
+            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(),
+                            bootProps.getWorkareaFile(KernelResolver.CACHE_FILE),
+                            bootDefaults.getKernelDefinition(bootProps),
+                            bootDefaults.getLogProviderDefinition(bootProps),
+                            bootDefaults.getOSExtensionDefinition(bootProps),
+                            libertyBoot);
 
             // ISSUE LAUNCH FEEDBACK TO THE CONSOLE -- we've done the cursory validation at least.
             String logLevel = bootProps.get("com.ibm.ws.logging.console.log.level");

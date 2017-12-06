@@ -21,13 +21,13 @@ import com.ibm.ws.kernel.boot.BootstrapConfig;
  * Wrapper around the Liberty defaults file (in wlp/lib/platform/defaults).
  */
 public class BootstrapDefaults {
-    /** Manifest header for the default kernel version */
+    /** Property key in the defaults file, for the default kernel version */
     static final String MANIFEST_KERNEL = "WebSphere-DefaultKernel";
 
-    /** Manifest header for the default log provider */
+    /** Property key in the defaults file, for the default log provider */
     static final String MANIFEST_LOG_PROVIDER = "WebSphere-DefaultLogProvider";
 
-    /** Manifest header for the default OS Extensions */
+    /** Property key in the defaults file, for the default OS Extensions */
     static final String MANIFEST_OS_EXTENSION = "WebSphere-DefaultExtension-";
 
     /** bootstrap property to override kernel version */
