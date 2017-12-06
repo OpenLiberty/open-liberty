@@ -8,25 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+@TraceOptions(traceGroup = JPAConstants.JPA_TRACE_GROUP, messageBundle = JPAConstants.JPA_RESOURCE_BUNDLE_NAME)
+package com.ibm.ws.jpa.container.beanvalidation;
 
-package com.ibm.ws.jpa.jpa22;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-/**
- * Test cases for functionality introduced with JPA 2.2.
- *
- */
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPACDIIntegrationTest.class,
-                JPA22QueryTest.class,
-                JPA22Injection.class,
-                JPA22TimeAPITest.class,
-                JPA22BeanValidation.class
-})
-public class JPA22FATSuite {
-
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.jpa.management.JPAConstants;

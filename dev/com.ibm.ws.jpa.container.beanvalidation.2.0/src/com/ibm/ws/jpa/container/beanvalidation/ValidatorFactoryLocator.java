@@ -8,25 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.jpa.container.beanvalidation;
 
-package com.ibm.ws.jpa.jpa22;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.validation.ValidatorFactory;
 
 /**
- * Test cases for functionality introduced with JPA 2.2.
- *
+ * The ValidatorFactoryLocator makes use of the BeanValidation service to
+ * obtain a ValidatorFactory instance. <p>
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPACDIIntegrationTest.class,
-                JPA22QueryTest.class,
-                JPA22Injection.class,
-                JPA22TimeAPITest.class,
-                JPA22BeanValidation.class
-})
-public class JPA22FATSuite {
-
+interface ValidatorFactoryLocator
+{
+    /**
+     * Returns the container managed ValidatorFactory that has been configured
+     * for the current Java EE application module. <p>
+     */
+    public ValidatorFactory getValidatorFactory();
 }
