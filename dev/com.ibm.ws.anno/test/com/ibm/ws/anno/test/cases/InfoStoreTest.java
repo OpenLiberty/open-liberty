@@ -641,11 +641,10 @@ public class InfoStoreTest {
         }
 
         @Override
-        public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
+        public void processFromScratch(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER", getHashText()));
             }
-
             // Dummy ClassSource, don't do anything
         }
 
