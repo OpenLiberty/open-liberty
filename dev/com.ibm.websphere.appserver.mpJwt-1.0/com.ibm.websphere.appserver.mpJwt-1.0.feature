@@ -18,4 +18,3 @@ Subsystem-Name: Micro Profile Json Web Token 1.0
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=ga
 edition=core
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
