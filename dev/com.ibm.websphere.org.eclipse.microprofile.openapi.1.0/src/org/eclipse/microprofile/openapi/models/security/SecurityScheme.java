@@ -24,7 +24,7 @@ import org.eclipse.microprofile.openapi.models.Reference;
 /**
  * SecurityScheme
  *
- * @see "https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#securitySchemeObject"
+ * @see "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-scheme-object"
  */
 public interface SecurityScheme extends Constructible, Extensible, Reference<SecurityScheme> {
 

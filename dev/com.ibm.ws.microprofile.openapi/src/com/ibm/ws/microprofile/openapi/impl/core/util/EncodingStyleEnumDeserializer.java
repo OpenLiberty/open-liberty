@@ -12,9 +12,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class EncodingStyleEnumDeserializer extends JsonDeserializer<Encoding.StyleEnum> {
+public class EncodingStyleEnumDeserializer extends JsonDeserializer<Encoding.Style> {
     @Override
-    public Encoding.StyleEnum deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Encoding.Style deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
         if (node != null) {
             String value = node.asText();
@@ -23,12 +23,12 @@ public class EncodingStyleEnumDeserializer extends JsonDeserializer<Encoding.Sty
         return null;
     }
 
-    private Encoding.StyleEnum getStyleEnum(String value) {
+    private Encoding.Style getStyleEnum(String value) {
         return Arrays.stream(
-                             Encoding.StyleEnum.values()).filter(i -> i.toString().equals(value)).findFirst().orElseThrow(() -> new RuntimeException(String.format("Can not deserialize value of type Encoding.StyleEnum from String \"%s\": value not one of declared Enum instance names: %s",
-                                                                                                                                                                   value,
-                                                                                                                                                                   Arrays.stream(Encoding.StyleEnum.values()).map(v -> v.toString()).collect(Collectors.joining(", ",
-                                                                                                                                                                                                                                                                "[",
-                                                                                                                                                                                                                                                                "]")))));
+                             Encoding.Style.values()).filter(i -> i.toString().equals(value)).findFirst().orElseThrow(() -> new RuntimeException(String.format("Can not deserialize value of type Encoding.StyleEnum from String \"%s\": value not one of declared Enum instance names: %s",
+                                                                                                                                                               value,
+                                                                                                                                                               Arrays.stream(Encoding.Style.values()).map(v -> v.toString()).collect(Collectors.joining(", ",
+                                                                                                                                                                                                                                                        "[",
+                                                                                                                                                                                                                                                        "]")))));
     }
 }

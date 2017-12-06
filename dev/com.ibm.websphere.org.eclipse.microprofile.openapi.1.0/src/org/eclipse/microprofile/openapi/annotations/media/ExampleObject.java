@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * This object illustrates an example of a particular content
+ * 
+ * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#exampleObject">OpenAPI Specification Example Object</a>
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
@@ -31,6 +33,10 @@ import java.lang.annotation.Target;
 public @interface ExampleObject {
     /**
      * A unique name to identify this particular example in a map.
+     * <p>
+     * The name is REQUIRED when the example is defined within {@link org.eclipse.microprofile.openapi.annotations.Components}. The 
+     * name will be used as the key to add this example to the 'examples' map for reuse.
+     * </p>
      * 
      * @return the name of this example
      **/
@@ -73,6 +79,10 @@ public @interface ExampleObject {
 
     /**
      * Reference value to an Example object.
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and
+     * all other properties are mutually exclusive. If other properties are defined in addition
+     * to the ref property then the result is undefined.
      *
      * @return reference to an example
      **/

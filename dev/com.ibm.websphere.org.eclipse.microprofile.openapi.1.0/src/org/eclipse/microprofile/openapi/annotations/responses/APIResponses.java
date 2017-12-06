@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * The ApiResponses annotation is a container for @ApiResponse annotations. When used on a method
  * it is treated as if each ApiResponse annotation were applied individually.
  * 
- * @see APIResponse
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#responses-object">Responses Object</a>
  **/
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

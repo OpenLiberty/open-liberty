@@ -31,7 +31,6 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
  * 
  * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#openapi-object">OpenAPI Specification OpenAPI Object</a>
  */
-@SuppressWarnings("rawtypes")
 public interface OpenAPI extends Constructible, Extensible {
 
     /**

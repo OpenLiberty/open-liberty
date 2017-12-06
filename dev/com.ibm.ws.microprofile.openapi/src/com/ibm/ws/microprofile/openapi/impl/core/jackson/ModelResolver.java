@@ -177,11 +177,11 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
             org.eclipse.microprofile.openapi.annotations.media.Schema schemaAnnotation = getSchemaAnnotation(annotations);
             if (schemaAnnotation != null) {
                 String format = schemaAnnotation.format();
-                String type = schemaAnnotation.type();
+                String type = schemaAnnotation.type().toString();
                 // handle strings with format
                 if (!StringUtils.isBlank(schemaAnnotation.format()) &&
                     propType.getRawClass().isAssignableFrom(String.class)) {
-                    type = "string";
+                    type = "strings";
                 }
                 if (StringUtils.isNotBlank(type)) {
                     PrimitiveType primitiveType = PrimitiveType.fromTypeAndFormat(type, format);
@@ -275,10 +275,10 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
         String name = _typeName(type, beanDesc);
 
         if (directSchemaAnnotation != null &&
-            StringUtils.isNotEmpty(directSchemaAnnotation.type()) &&
+            StringUtils.isNotEmpty(directSchemaAnnotation.type().toString()) &&
             !directSchemaAnnotation.type().equals("object")) {
-            if (PrimitiveType.fromName(directSchemaAnnotation.type()) != null) {
-                Schema primitive = PrimitiveType.fromName(directSchemaAnnotation.type()).createProperty();
+            if (PrimitiveType.fromName(directSchemaAnnotation.type().toString()) != null) {
+                Schema primitive = PrimitiveType.fromName(directSchemaAnnotation.type().toString()).createProperty();
                 resolveSchemaMembers(primitive, beanDesc.getClassInfo());
                 XML xml = resolveXml(beanDesc.getClassInfo());
                 if (xml != null) {
@@ -1154,7 +1154,7 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 if (mappings != null && mappings.length > 0) {
                     for (DiscriminatorMapping mapping : mappings) {
                         if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
-                            discriminator.mapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
+                            discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
                         }
                     }
                 }
@@ -1332,8 +1332,8 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
  */
             }
             if (property == null) {
-                if (mp != null && StringUtils.isNotEmpty(mp.type())) {
-                    PrimitiveType primitiveType = PrimitiveType.fromTypeAndFormat(mp.type(), mp.format());
+                if (mp != null && StringUtils.isNotEmpty(mp.type().toString())) {
+                    PrimitiveType primitiveType = PrimitiveType.fromTypeAndFormat(mp.type().toString(), mp.format());
                     if (primitiveType == null) {
                         primitiveType = PrimitiveType.fromType(type);
                     }

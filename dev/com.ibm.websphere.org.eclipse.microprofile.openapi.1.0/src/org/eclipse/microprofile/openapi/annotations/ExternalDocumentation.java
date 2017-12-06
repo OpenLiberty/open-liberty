@@ -33,6 +33,9 @@ import java.lang.annotation.Target;
  * annotation value is added to the OpenAPI document root. If more than one non-empty 
  * annotation is applied to a type in the application or if the externalDocs field of the 
  * OpenAPIDefinition annotation is supplied the results are not defined. 
+ * 
+ * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#externalDocumentationObject">OpenAPI Specification
+ *      External Documentation Object</a>
  **/
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

@@ -14,8 +14,8 @@ public class DeserializationModule extends SimpleModule {
 
         this.addDeserializer(Schema.class, new ModelDeserializer());
         this.addDeserializer(Parameter.class, new ParameterDeserializer());
-        this.addDeserializer(Header.StyleEnum.class, new HeaderStyleEnumDeserializer());
-        this.addDeserializer(Encoding.StyleEnum.class, new EncodingStyleEnumDeserializer());
+        this.addDeserializer(Header.Style.class, new HeaderStyleEnumDeserializer());
+        this.addDeserializer(Encoding.Style.class, new EncodingStyleEnumDeserializer());
 
         this.addDeserializer(SecurityScheme.class, new SecuritySchemeDeserializer());
     }

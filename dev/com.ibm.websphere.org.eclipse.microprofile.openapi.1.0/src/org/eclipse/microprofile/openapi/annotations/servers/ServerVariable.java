@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * An object representing a Server Variable for server URL template substitution.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#server-variable-object">ServerVariable Object</a>
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
@@ -42,7 +44,7 @@ public @interface ServerVariable {
      * 
      * @return array of possible values for this ServerVariable
      **/
-    String[] enumeration() default "";
+    String[] enumeration() default {};
 
     /**
      * The default value of this server variable. This is a REQUIRED property.

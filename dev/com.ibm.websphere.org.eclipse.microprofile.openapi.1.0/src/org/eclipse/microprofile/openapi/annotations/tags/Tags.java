@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * The Tags annotation is a container for @Tag annotations. When used on a method or a type
  * it is treated as if each tag annotation were applied individually.
  * 
- * @see Tag
+ * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject">OpenAPI Specification Tag Object</a>
  *
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })

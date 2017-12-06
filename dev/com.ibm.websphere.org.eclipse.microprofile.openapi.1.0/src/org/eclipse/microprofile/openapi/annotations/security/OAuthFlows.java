@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * Allows configuration of the supported OAuth Flows.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#oauthFlowsObject">OAuthFlows Object</a>
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

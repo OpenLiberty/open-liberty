@@ -17,12 +17,14 @@
 
 package org.eclipse.microprofile.openapi.annotations.enums;
 
-public enum SecuritySchemeIn {
-    DEFAULT(""), HEADER("header"), QUERY("query"), COOKIE("cookie");
+public enum SchemaType {
+    INTEGER("integer"), NUMBER("number"), BOOLEAN("boolean"), 
+    STRING("string"), OBJECT("object"), ARRAY("array"), DEFAULT("");
+
 
     private String value;
 
-    SecuritySchemeIn(String value) {
+    SchemaType(String value) {
         this.value = value;
     }
 

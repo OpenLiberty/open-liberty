@@ -23,7 +23,7 @@ import org.eclipse.microprofile.openapi.models.Extensible;
 /**
  * Configuration of the supported OAuthFlows
  *
- * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#oauthFlowsObject">OAuthFlows Object</a>
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#oauthFlowsObject">OAuthFlows Object</a>
  */
 public interface OAuthFlows extends Constructible, Extensible {
 

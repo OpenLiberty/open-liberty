@@ -68,7 +68,7 @@ public abstract class AnnotationsUtils {
         if (schema == null) {
             return false;
         }
-        if (StringUtils.isBlank(schema.type())
+        if (StringUtils.isBlank(schema.type().toString())
             && StringUtils.isBlank(schema.format())
             && StringUtils.isBlank(schema.title())
             && StringUtils.isBlank(schema.description())
@@ -183,8 +183,7 @@ public abstract class AnnotationsUtils {
             schemaObject.setRef(schema.ref());
         }
         if (schema.type() != null) {
-            //TODO: revisit enum
-            schemaObject.setType(SchemaType.valueOf(schema.type().toUpperCase()));
+            schemaObject.setType(SchemaType.valueOf(schema.type().toString().toUpperCase()));
         }
         if (StringUtils.isNotBlank(schema.defaultValue())) {
             schemaObject.setDefaultValue(schema.defaultValue());
@@ -532,7 +531,7 @@ public abstract class AnnotationsUtils {
             isEmpty = false;
         }
 
-        headerObject.setStyle(Header.StyleEnum.SIMPLE);
+        headerObject.setStyle(Header.Style.SIMPLE);
 
         if (header.schema() != null) {
             if (header.schema().implementation().equals(Void.class)) {
@@ -565,7 +564,7 @@ public abstract class AnnotationsUtils {
                 encodingObject.setContentType(encoding.contentType());
             }
             if (StringUtils.isNotBlank(encoding.style())) {
-                encodingObject.setStyle(Encoding.StyleEnum.valueOf(encoding.style().toUpperCase()));
+                encodingObject.setStyle(Encoding.Style.valueOf(encoding.style().toUpperCase()));
             }
             if (encoding.explode()) {
                 encodingObject.setExplode(encoding.explode());
@@ -587,7 +586,7 @@ public abstract class AnnotationsUtils {
         if (schema == null) {
             return String.class;
         }
-        String schemaType = schema.type();
+        String schemaType = schema.type().toString();
         Class schemaImplementation = schema.implementation();
 
         if (!schemaImplementation.equals(Void.class)) {

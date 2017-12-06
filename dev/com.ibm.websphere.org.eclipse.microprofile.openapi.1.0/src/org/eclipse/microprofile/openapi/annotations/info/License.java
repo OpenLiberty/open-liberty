@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * License information for the exposed API.
+ * 
+ * @see "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.md#licenseObject"
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

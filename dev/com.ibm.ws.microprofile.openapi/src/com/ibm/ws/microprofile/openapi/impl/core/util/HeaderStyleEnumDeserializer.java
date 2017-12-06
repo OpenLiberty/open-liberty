@@ -12,9 +12,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class HeaderStyleEnumDeserializer extends JsonDeserializer<Header.StyleEnum> {
+public class HeaderStyleEnumDeserializer extends JsonDeserializer<Header.Style> {
     @Override
-    public Header.StyleEnum deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Header.Style deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
         if (node != null) {
             String value = node.asText();
@@ -23,12 +23,12 @@ public class HeaderStyleEnumDeserializer extends JsonDeserializer<Header.StyleEn
         return null;
     }
 
-    private Header.StyleEnum getStyleEnum(String value) {
+    private Header.Style getStyleEnum(String value) {
         return Arrays.stream(
-                             Header.StyleEnum.values()).filter(i -> i.toString().equals(value)).findFirst().orElseThrow(() -> new RuntimeException(String.format("Can not deserialize value of type Header.StyleEnum from String \"%s\": value not one of declared Enum instance names: %s",
-                                                                                                                                                                 value,
-                                                                                                                                                                 Arrays.stream(Header.StyleEnum.values()).map(v -> v.toString()).collect(Collectors.joining(", ",
-                                                                                                                                                                                                                                                            "[",
-                                                                                                                                                                                                                                                            "]")))));
+                             Header.Style.values()).filter(i -> i.toString().equals(value)).findFirst().orElseThrow(() -> new RuntimeException(String.format("Can not deserialize value of type Header.StyleEnum from String \"%s\": value not one of declared Enum instance names: %s",
+                                                                                                                                                             value,
+                                                                                                                                                             Arrays.stream(Header.Style.values()).map(v -> v.toString()).collect(Collectors.joining(", ",
+                                                                                                                                                                                                                                                    "[",
+                                                                                                                                                                                                                                                    "]")))));
     }
 }

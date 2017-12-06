@@ -25,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.media.Encoding;
 public class EncodingImpl implements Encoding {
     private String contentType;
     private Map<String, Header> headers;
-    private StyleEnum style;
+    private Style style;
     private Boolean explode;
     private Boolean allowReserved;
     private java.util.Map<String, Object> extensions = null;
@@ -65,18 +65,18 @@ public class EncodingImpl implements Encoding {
     }
 
     @Override
-    public Encoding style(StyleEnum style) {
+    public Encoding style(Style style) {
         this.style = style;
         return this;
     }
 
     @Override
-    public StyleEnum getStyle() {
+    public Style getStyle() {
         return style;
     }
 
     @Override
-    public void setStyle(StyleEnum style) {
+    public void setStyle(Style style) {
         this.style = style;
     }
 

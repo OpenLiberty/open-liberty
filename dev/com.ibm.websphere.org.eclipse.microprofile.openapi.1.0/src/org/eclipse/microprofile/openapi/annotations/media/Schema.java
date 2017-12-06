@@ -24,11 +24,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.eclipse.microprofile.openapi.annotations.ExternalDocumentation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 
 /**
  * The Schema Object allows the definition of input and output data types. 
  * These types can be objects, but also primitives and arrays. 
  * This object is an extended subset of the JSON Schema Specification Wright Draft 00.
+ * 
+ * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#schemaObject">OpenAPI Specification Schema Object</a>
  **/
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -83,6 +86,10 @@ public @interface Schema {
 
     /**
      * The name of the schema or property.
+     * <p>
+     * The name is REQUIRED when the schema is defined within {@link org.eclipse.microprofile.openapi.annotations.Components}. The 
+     * name will be used as the key to add this schema to the 'schemas' map for reuse.
+     * </p>
      * 
      * @return the name of the schema
      **/
@@ -207,8 +214,12 @@ public @interface Schema {
 
     /**
      * Reference value to a Schema definition.
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and
+     * all other properties are mutually exclusive. If other properties are defined in addition
+     * to the ref property then the result is undefined.
      * 
-     * @return a reference to this schema
+     * @return a reference to a schema definition
      **/
     String ref() default "";
 
@@ -276,7 +287,7 @@ public @interface Schema {
      * 
      * @return the type of this schema
      **/
-    String type() default "";
+    SchemaType type() default SchemaType.DEFAULT;;
 
     /**
      * Provides a list of enum values. 
@@ -323,4 +334,38 @@ public @interface Schema {
      * @return whether or not this schema is hidden
      */
     boolean hidden() default false;
+    
+    /**
+     * Only applicable if type=array.  Sets the maximum number of items in an array.
+     * This integer MUST be greater than, or equal to, 0.
+     * <p>
+     * An array instance is valid against "maxItems" if its size is less than, or equal to, the value of this keyword.
+     * </p> 
+     * Ignored if value is Integer.MIN_VALUE.
+     * 
+     * @return the maximum number of items in this array
+     **/
+    int maxItems() default Integer.MIN_VALUE;
+
+    /**
+     * Only applicable if type=array.  Sets the minimum number of items in an array.
+     * This integer MUST be greater than, or equal to, 0. 
+     * <p>
+     * An array instance is valid against "minItems" if its size is greater than, or equal to, the value of this keyword.
+     * </p>
+     * Ignored if value is Integer.MAX_VALUE.
+     * 
+     * @return the minimum number of items in this array
+     **/
+    int minItems() default Integer.MAX_VALUE;
+
+    /**
+     * Only applicable if type=array.  Determines if the items in the array SHOULD be unique.
+     * <p>
+     * If false, the instance validates successfully.
+     * If true, the instance validates successfully if all of its elements are unique.
+     * </p>
+     * @return whether the items in this array are unique
+     **/
+    boolean uniqueItems() default false;
 }

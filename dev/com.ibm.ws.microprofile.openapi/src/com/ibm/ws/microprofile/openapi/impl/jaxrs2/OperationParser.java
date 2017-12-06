@@ -127,11 +127,8 @@ public class OperationParser {
     public static Optional<? extends Schema> getSchema(org.eclipse.microprofile.openapi.annotations.media.Content annotationContent, Components components) {
         Class<?> schemaImplementation = annotationContent.schema().implementation();
         boolean isArray = false;
-        if (schemaImplementation == Void.class) {
-            schemaImplementation = annotationContent.array().schema().implementation();
-            if (schemaImplementation != Void.class) {
-                isArray = true;
-            }
+        if (annotationContent.schema().type() == org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY) {
+            isArray = true;
         }
         Map<String, Schema> schemaMap;
         if (schemaImplementation != Void.class) {
@@ -153,17 +150,17 @@ public class OperationParser {
                 // default to string
                 schemaObject.setType(SchemaType.STRING);
             }
-            if (isArray) {
-                Optional<Schema> arraySchema = AnnotationsUtils.getArraySchema(annotationContent.array());
-                if (arraySchema.isPresent()) {
-                    arraySchema.get().setItems(schemaObject);
-                    return arraySchema;
-                } else {
-                    return Optional.empty();
-                }
-            } else {
-                return Optional.of(schemaObject);
-            }
+//            if (isArray) {
+//                Optional<Schema> arraySchema = AnnotationsUtils.getArraySchema(annotationContent.s());
+//                if (arraySchema.isPresent()) {
+//                    arraySchema.get().setItems(schemaObject);
+//                    return arraySchema;
+//                } else {
+//                    return Optional.empty();
+//                }
+//            } else {
+//                return Optional.of(schemaObject);
+//            }
 
         } else {
             Optional<Schema> schemaFromAnnotation = AnnotationsUtils.getSchemaFromAnnotation(annotationContent.schema());
@@ -173,16 +170,17 @@ public class OperationParser {
                     schemaFromAnnotation.get().setType(SchemaType.STRING);
                 }
                 return Optional.of(schemaFromAnnotation.get());
-            } else {
-                Optional<Schema> arraySchemaFromAnnotation = AnnotationsUtils.getArraySchema(annotationContent.array());
-                if (arraySchemaFromAnnotation.isPresent()) {
-                    if (StringUtils.isBlank(arraySchemaFromAnnotation.get().getItems().getRef()) && arraySchemaFromAnnotation.get().getItems().getType() == null) {
-                        // default to string
-                        arraySchemaFromAnnotation.get().getItems().setType(SchemaType.STRING);
-                    }
-                    return Optional.of(arraySchemaFromAnnotation.get());
-                }
             }
+//                else {
+//                Optional<Schema> arraySchemaFromAnnotation = AnnotationsUtils.getArraySchema(annotationContent.array());
+//                if (arraySchemaFromAnnotation.isPresent()) {
+//                    if (StringUtils.isBlank(arraySchemaFromAnnotation.get().getItems().getRef()) && arraySchemaFromAnnotation.get().getItems().getType() == null) {
+//                        // default to string
+//                        arraySchemaFromAnnotation.get().getItems().setType(SchemaType.STRING);
+//                    }
+//                    return Optional.of(arraySchemaFromAnnotation.get());
+//                }
+//            }
         }
         return Optional.empty();
     }

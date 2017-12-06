@@ -30,6 +30,8 @@ import java.lang.annotation.Target;
  * Defines a security scheme that can be used by the operations. 
  * Supported schemes are HTTP authentication, an API key (either as a header or as a query parameter), 
  * OAuth2's common flows (implicit, password, application and access code) as defined in RFC6749, and OpenID Connect Discovery.
+ * 
+ * @see "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-scheme-object"
  **/
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -37,20 +39,21 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface SecurityScheme {
     /**
-     * The name of this SecurityScheme.
-     * Used as a key in the key-value pair of a SecuritySchemes map 
-     * 
+     * The name of this SecurityScheme. Used as the key to add this security scheme to the 'securitySchemes' map under Components object.
+     * <p>
+     * It is a REQUIRED property unless this is only a reference to a security scheme instance.
+     * </p>
      * @return the name of this SecurityScheme instance
      **/
     String securitySchemeName() default "";
     /**
-     * Type is a REQUIRED property that specifies the type of SecurityScheme instance.
+     * The type of the security scheme. Valid values are defined by SecuritySchemeType enum. Ignored when empty string.
      * <p>
-     * The type of the security scheme. Valid values are defined by SecuritySchemeType enum.
+     * Type is a REQUIRED property unless this is only a reference to a SecuirtyScheme instance.
      * </p>
      * @return the type of this SecuirtyScheme instance
      **/
-    SecuritySchemeType type();
+    SecuritySchemeType type() default SecuritySchemeType.DEFAULT;
 
     /**
      * A short description for security scheme. 
@@ -73,11 +76,11 @@ public @interface SecurityScheme {
      * Applies to and is REQUIRED for SecurityScheme of apiKey type.
      * <p>
      * The location of the API key. 
-     * Valid values are defined by SecuritySchemeIn enum.
+     * Valid values are defined by SecuritySchemeIn enum. Ignored when empty string.
      * </p>
      * @return the location of the API key
      **/
-    SecuritySchemeIn in() default SecuritySchemeIn.QUERY;
+    SecuritySchemeIn in() default SecuritySchemeIn.DEFAULT;
 
     /**
      * Applies to and is REQUIRED for SecurityScheme of http type.
@@ -119,6 +122,10 @@ public @interface SecurityScheme {
 
     /**
      * Reference value to a SecurityScheme object.
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and
+     * all other properties are mutually exclusive. If other properties are defined in addition
+     * to the ref property then the result is undefined.
      *
      * @return reference to a security scheme
      **/

@@ -34,7 +34,7 @@ public class ParameterImpl<T extends Parameter<T>> implements Parameter<T> {
     private Boolean allowEmptyValue = null;
     private String $ref = null;
 
-    private Parameter.StyleEnum style = null;
+    private Parameter.Style style = null;
     private Boolean explode = null;
     private Boolean allowReserved = null;
     private Schema schema = null;
@@ -141,17 +141,17 @@ public class ParameterImpl<T extends Parameter<T>> implements Parameter<T> {
     }
 
     @Override
-    public Parameter.StyleEnum getStyle() {
+    public Parameter.Style getStyle() {
         return style;
     }
 
     @Override
-    public void setStyle(Parameter.StyleEnum style) {
+    public void setStyle(Parameter.Style style) {
         this.style = style;
     }
 
     @Override
-    public T style(Parameter.StyleEnum style) {
+    public T style(Parameter.Style style) {
         this.style = style;
         return (T) this;
     }

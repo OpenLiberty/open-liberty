@@ -111,8 +111,8 @@ public class ApplicationProcessor {
 
             if (isOASApp && currentApp == null) {
                 currentApp = appInfo;
+                this.document = newDocument;
             }
-            this.document = newDocument;
         }
     }
 

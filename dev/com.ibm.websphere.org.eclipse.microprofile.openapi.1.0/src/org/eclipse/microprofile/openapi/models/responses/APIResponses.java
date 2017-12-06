@@ -25,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.Constructible;
  * This interface represents the container for the expected responses of an operation. The container maps a HTTP response code to the expected
  * response.
  *
- * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#responsesObject">Responses Object</a>
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#responses-object">Responses Object</a>
  */
 public interface APIResponses extends Constructible, Map<String, APIResponse> {
 

@@ -101,7 +101,7 @@ public class APIResponseImpl implements APIResponse {
     }
 
     @Override
-    public APIResponse link(String name, Link link) {
+    public APIResponse addLink(String name, Link link) {
         if (this.links == null) {
             this.links = new HashMap<>();
         }
@@ -196,6 +196,13 @@ public class APIResponseImpl implements APIResponse {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public APIResponse links(Map<String, Link> links) {
+        this.links = links;
+        return this;
     }
 
 }

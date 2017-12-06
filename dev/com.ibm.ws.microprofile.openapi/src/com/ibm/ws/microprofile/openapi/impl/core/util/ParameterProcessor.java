@@ -182,7 +182,7 @@ public class ParameterProcessor {
 
     public static void setParameterStyle(Parameter parameter, org.eclipse.microprofile.openapi.annotations.parameters.Parameter p) {
         if (StringUtils.isNotBlank(p.style().toString())) {
-            parameter.setStyle(Parameter.StyleEnum.valueOf(p.style().toString().toUpperCase()));
+            parameter.setStyle(Parameter.Style.valueOf(p.style().toString().toUpperCase()));
         }
     }
 
@@ -210,9 +210,9 @@ public class ParameterProcessor {
                 if (AnnotationsUtils.hasSchemaAnnotation(paramAnnotation.schema())) {
                     paramSchema = paramAnnotation.schema();
                 }
-                if (AnnotationsUtils.hasArrayAnnotation(paramAnnotation.array())) {
-                    paramArraySchema = paramAnnotation.array();
-                }
+//                if (AnnotationsUtils.hasArrayAnnotation(paramAnnotation.array())) {
+//                    paramArraySchema = paramAnnotation.array();
+//                }
             }
         }
         if (rootSchema != null || rootArraySchema != null) {
@@ -246,9 +246,9 @@ public class ParameterProcessor {
         if (AnnotationsUtils.hasSchemaAnnotation(paramAnnotation.schema())) {
             paramSchema = paramAnnotation.schema();
         }
-        if (AnnotationsUtils.hasArrayAnnotation(paramAnnotation.array())) {
-            paramArraySchema = paramAnnotation.array();
-        }
+//        if (AnnotationsUtils.hasArrayAnnotation(paramAnnotation.array())) {
+//            paramArraySchema = paramAnnotation.array();
+//        }
         if (contentSchema != null) {
             return AnnotationsUtils.getSchemaType(contentSchema);
         }

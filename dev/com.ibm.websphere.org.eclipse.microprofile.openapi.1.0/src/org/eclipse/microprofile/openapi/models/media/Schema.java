@@ -147,6 +147,7 @@ public interface Schema extends Extensible, Constructible, Reference<Schema> {
      * Adds an item of the appropriate type to the enumerated list of values allowed.
      *
      * @param enumeration an object to add to the enumerated values
+     * @return current schema instance
      */
     Schema addEnumeration(Object enumeration);
 
@@ -558,26 +559,61 @@ public interface Schema extends Extensible, Constructible, Reference<Schema> {
     Schema addProperty(String key, Schema propertySchema);
 
     /**
-     * Returns the schema which defines new properties added to objects defined by the current schema.
+     * Returns the value of the "additionalProperties" setting, which indicates whether 
+     * properties not otherwise defined are allowed.  This setting MUST either be a {@link Boolean}
+     * or {@link Schema}.
+     * 
+     * <ul>
+     *   <li>If "additionalProperties" is true, then any additional properties are allowed.</li>
+     *
+     *   <li>If "additionalProperties" is false, then only properties covered by the "properties"
+     *   and "patternProperties" are allowed.</li>
+     *
+     *   <li>If "additionalProperties" is a Schema, then additional properties are allowed but
+     *   should conform to the Schema.</li>
+     * </ul>
      *
      * @return this schema's additionalProperties property
-     **/
-    Schema getAdditionalProperties();
+     */
+    Object getAdditionalProperties();
 
     /**
-     * Sets the schema which defines new properties added to objects defined by the current schema.
+     * Sets the schema which defines additional properties not defined by "properties" or "patternProperties".
+     * See the javadoc for {@link Schema#getAdditionalProperties()} for more details on this setting.  Note 
+     * that this version of the setter is mutually exclusive with the Boolean variants.
      *
      * @param additionalProperties a schema which defines additional properties
      */
     void setAdditionalProperties(Schema additionalProperties);
+    
+    /**
+     * Sets the value of "additionalProperties" to either True or False.  See the javadoc for 
+     * {@link Schema#getAdditionalProperties()} for more details on this setting.  Note that
+     * this version of the setter is mutually exclusive with the {@link Schema} variants.
+     *
+     * @param additionalProperties a schema which defines additional properties
+     */
+    void setAdditionalProperties(Boolean additionalProperties);
 
     /**
-     * Sets the schema which defines new properties added to objects defined by the current schema.
+     * Sets the schema which defines additional properties not defined by "properties" or "patternProperties".
+     * See the javadoc for {@link Schema#getAdditionalProperties()} for more details on this setting.  Note 
+     * that this version of the setter is mutually exclusive with the Boolean variants.
      *
      * @param additionalProperties a schema which defines additional properties
      * @return the current Schema instance
      */
     Schema additionalProperties(Schema additionalProperties);
+
+    /**
+     * Sets the value of "additionalProperties" to either True or False.  See the javadoc for 
+     * {@link Schema#getAdditionalProperties()} for more details on this setting.  Note that
+     * this version of the setter is mutually exclusive with the {@link Schema} variants.
+     *
+     * @param additionalProperties a schema which defines additional properties
+     * @return the current Schema instance
+     */
+    Schema additionalProperties(Boolean additionalProperties);
 
     /**
      * Returns a description of the purpose of this schema.

@@ -26,7 +26,7 @@ public class DiscriminatorImpl implements Discriminator {
     }
 
     @Override
-    public Discriminator mapping(String name, String value) {
+    public Discriminator addMapping(String name, String value) {
         if (this.mapping == null) {
             this.mapping = new HashMap<>();
         }

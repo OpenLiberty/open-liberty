@@ -25,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.Extensible;
 /**
  * ServerVariables
  *
- * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#serverVariablesObject">ServerVariables Object</a>
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#server-variable-object">ServerVariable Object</a>
  */
 public interface ServerVariables extends Constructible, Extensible, Map<String, ServerVariable> {
 

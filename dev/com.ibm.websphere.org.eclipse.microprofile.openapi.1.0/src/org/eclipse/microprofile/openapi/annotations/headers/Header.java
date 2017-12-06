@@ -26,17 +26,24 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
  * Describes a single header object
+ * 
+ * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#header-object">OpenAPI Specification Header Object</a>
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Header {
     /**
-     * Required: The name of the header. The name is only used as the key to store this header in a map.
+     * The name of the header. The name is only used as the key to add this header to a map.
+     * <p>
+     * It is a REQUIRED property unless this is only a reference to a header instance.
+     * </p>
+     * When the header is defined within {@link org.eclipse.microprofile.openapi.annotations.Components}, 
+     * the name will be used as the key to add this header to the 'headers' map for reuse.
      * 
      * @return this header's name
      **/
-    String name();
+    String name() default "";
 
     /**
      * Additional description data to provide on the purpose of the header
@@ -76,7 +83,11 @@ public @interface Header {
 
     /**
      * Reference value to a Header object.
-     *
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and
+     * all other properties are mutually exclusive. If other properties are defined in addition
+     * to the ref property then the result is undefined.
+     * 
      * @return reference to a header
      **/
     String ref() default "";

@@ -68,7 +68,7 @@ public class SchemaImpl implements Schema {
     private List<Schema> allOf = null;
     private List<Schema> oneOf = null;
 
-    private Schema additionalProperties;
+    private Object additionalProperties;
     private Schema items = null;
 
     @Override
@@ -438,7 +438,7 @@ public class SchemaImpl implements Schema {
     }
 
     @Override
-    public Schema getAdditionalProperties() {
+    public Object getAdditionalProperties() {
         return additionalProperties;
     }
 
@@ -860,6 +860,20 @@ public class SchemaImpl implements Schema {
 
     public Schema name(String name) {
         this.name = name;
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAdditionalProperties(Boolean additionalProperties) {
+        this.additionalProperties = additionalProperties;
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Schema additionalProperties(Boolean additionalProperties) {
+        this.additionalProperties = additionalProperties;
         return this;
     }
 

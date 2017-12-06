@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * The Servers annotation is a container for @Server annotations. When used on a method or a type
  * it is treated as if each server annotation were applied individually.
  * 
- * @see Server
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#serverObject">Server Object</a>
  *
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })

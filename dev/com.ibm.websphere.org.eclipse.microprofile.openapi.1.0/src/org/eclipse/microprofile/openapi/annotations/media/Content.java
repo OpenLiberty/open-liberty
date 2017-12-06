@@ -24,6 +24,9 @@ import java.lang.annotation.Target;
 
 /**
  * This object provides schema and examples for a particular media type.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#mediaTypeObject">OpenAPI Specification Media Type
+ *      Object</a>
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
@@ -49,13 +52,6 @@ public @interface Content {
      * @return the schema of this media type
      **/
     Schema schema() default @Schema();
-
-    /**
-     * The schema of the array that defines the type used for the content.
-     *
-     * @return the schema of the array
-     */
-    ArraySchema array() default @ArraySchema();
 
     /**
      * An array of encoding corresponding to a map of property name and its encoding information in MediaType model. 

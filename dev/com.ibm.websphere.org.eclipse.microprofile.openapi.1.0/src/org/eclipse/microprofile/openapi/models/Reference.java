@@ -18,7 +18,7 @@
 package org.eclipse.microprofile.openapi.models;
 
 /**
- * Base interface for OpenAPI model objects that can be references to other objects.
+ * Base interface for OpenAPI model objects that can make reference to other objects.
  */
 public interface Reference<T extends Reference<T>> {
 
@@ -31,8 +31,30 @@ public interface Reference<T extends Reference<T>> {
 
     /**
      * Sets this Reference's reference property to the given string.
-     *
-     * @param ref a reference to a T object in the components in this OpenAPI document
+     * <p>
+     * Normally a full reference string is a JSON pointer 
+     * <a href="https://tools.ietf.org/html/rfc6901">RFC6901</a> which indicates an object
+     * definition in the components section of the current OpenAPI document. For example 
+     * the schema of a request body may be #/components/schemas/Payload or the definition 
+     * of a parameter could be #/components/parameters/Routing.HostName.
+     * <p>
+     * If you provide a short name then the name will automatically be expanded to
+     * the appropriate full reference string. A short name is a string which is not a 
+     * JSON pointer in that it does not contain a "/".
+     * <p>
+     * The appropriate full reference is determined by the context. 
+     * For a parameter the short name will be prefixed by 
+     * "#/components/parameters/" to create "#/components/parameters/ShortName". 
+     * <pre><code>parameter.setRef("ShortName"); // #/components/parameters/ShortName</code></pre>
+     * For a response the prefix is "#/components/responses/":
+     * <pre><code>response.setRef("NotFound"); // #/components/responses/NotFound</code></pre>
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and 
+     * all other properties are mutually exclusive. If other properties are defined in addition 
+     * to the reference property then the result is undefined. 
+     * 
+     * @param ref a reference to a T object in the components section of this OpenAPI document
+     * or a JSON pointer to another document. 
      **/
     void setRef(String ref);
 

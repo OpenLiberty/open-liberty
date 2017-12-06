@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 
 /**
  * This object represents an array of Callback URLs that can be invoked.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#callbackObject">OpenAPI Specification Callback Object</a>
  **/
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

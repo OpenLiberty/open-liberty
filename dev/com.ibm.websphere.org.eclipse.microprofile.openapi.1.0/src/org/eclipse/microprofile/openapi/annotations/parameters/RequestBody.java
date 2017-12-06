@@ -27,6 +27,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 
 /**
  * Describes a single request body.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#requestBodyObject">requestBody Object</a>
  **/
 @Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
@@ -43,7 +45,7 @@ public @interface RequestBody {
     String description() default "";
 
     /**
-     * This is a REQUIRED property. The content of the request body.
+     * The content of the request body. It is a REQUIRED property unless this is only a reference to a request body instance.
      * 
      * @return content of this requestBody instance
      **/
@@ -57,7 +59,20 @@ public @interface RequestBody {
     boolean required() default false;
 
     /**
+     * The unique name to identify this request body. Only REQUIRED when the request body is defined
+     * within {@link org.eclipse.microprofile.openapi.annotations.Components}. The name will be 
+     * used as the key to add this request body to the 'requestBodies' map for reuse.
+     * 
+     * @return this request body's name
+     **/
+    String name() default "";
+    
+    /**
      * Reference value to a RequestBody object.
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and
+     * all other properties are mutually exclusive. If other properties are defined in addition
+     * to the ref property then the result is undefined.
      *
      * @return reference to a request body
      **/

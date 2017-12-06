@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies a security requirement for an operation.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-requirement-object">SecuirtyRequirement Object</a>
  **/
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

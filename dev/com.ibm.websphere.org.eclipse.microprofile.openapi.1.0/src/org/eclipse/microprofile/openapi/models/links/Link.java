@@ -149,6 +149,7 @@ public interface Link extends Constructible, Extensible, Reference<Link> {
      * Sets this Link's parameters property to the given map and returns the modified Link instance.
      *
      * @param parameters a map representing parameters to pass to this link's operation as specified with operationId or identified via operationRef
+     * @return current link instance
      */
     Link parameters(Map<String, Object> parameters);
 

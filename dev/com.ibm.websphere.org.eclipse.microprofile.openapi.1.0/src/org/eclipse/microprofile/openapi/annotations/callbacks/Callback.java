@@ -28,6 +28,8 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 
 /**
  * This object represents a callback URL that will be invoked.
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#callbackObject">OpenAPI Specification Callback Object</a>
  **/
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -35,18 +37,25 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 @Inherited
 public @interface Callback {
     /**
-     * The friendly name used to refer to this callback
+     * The friendly name used to refer to this callback. It is a REQUIRED property unless this is only a reference to a callback.
+     * <p>
+     * The name is REQUIRED when the callback is defined within {@link org.eclipse.microprofile.openapi.annotations.Components}. The 
+     * name will be used as the key to add this callback to the 'callbacks' map for reuse.
+     * </p>
      * 
-     * @return the name of the callback
+     * @return the name of this callback
      **/
-    String name();
+    String name() default "";
 
     /**
      * An absolute URL which defines the destination which will be called with the supplied operation definition.
+     * <p>
+     * It is a REQUIRED property unless this is only a reference to a callback instance.
+     * </p>
      * 
      * @return the callback URL
      */
-    String callbackUrlExpression();
+    String callbackUrlExpression() default "";
 
     /**
      * The array of operations that will be called out-of band
@@ -57,8 +66,12 @@ public @interface Callback {
 
     /**
      * Reference value to a Callback object.
-     *
-     * @return reference to a callback
+     * <p>
+     * This property provides a reference to an object defined elsewhere. This property and
+     * all other properties are mutually exclusive. If other properties are defined in addition
+     * to the ref property then the result is undefined.
+     * 
+     * @return reference to a callback object definition
      **/
     String ref() default "";
 }

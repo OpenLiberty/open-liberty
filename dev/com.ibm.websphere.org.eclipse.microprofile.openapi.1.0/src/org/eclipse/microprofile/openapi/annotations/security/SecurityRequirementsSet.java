@@ -31,6 +31,8 @@ import java.lang.annotation.Target;
  *  - api_secret: []
  *    oauth_implicit: []
  * </pre>
+ * 
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-requirement-object">SecurityRequirement Object</a>
  **/
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

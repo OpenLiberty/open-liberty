@@ -25,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.Constructible;
 /**
  * SecurityRequirement
  *
- * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#securityRequirementObject">SecuirtyRequirement Object</a>
+ * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-requirement-object">SecurityRequirement Object</a>
  */
 public interface SecurityRequirement extends Constructible, Map<String, List<String>> {
 

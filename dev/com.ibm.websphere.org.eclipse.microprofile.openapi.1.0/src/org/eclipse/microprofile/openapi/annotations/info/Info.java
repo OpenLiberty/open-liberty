@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation provides metadata about the API, and maps to the Info object in OpenAPI Specification 3.
+ * 
+ * @see "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.md#infoObject"
  **/
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

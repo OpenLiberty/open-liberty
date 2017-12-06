@@ -32,7 +32,7 @@ public class HeaderImpl implements Header {
     private Boolean deprecated = null;
     private Boolean allowEmptyValue = null;
 
-    private StyleEnum style = null;
+    private Style style = null;
     private Boolean explode = null;
     private Schema schema = null;
     private Map<String, Example> examples = null;
@@ -105,17 +105,17 @@ public class HeaderImpl implements Header {
     }
 
     @Override
-    public StyleEnum getStyle() {
+    public Style getStyle() {
         return style;
     }
 
     @Override
-    public void setStyle(StyleEnum style) {
+    public void setStyle(Style style) {
         this.style = style;
     }
 
     @Override
-    public Header style(StyleEnum style) {
+    public Header style(Style style) {
         this.style = style;
         return this;
     }
