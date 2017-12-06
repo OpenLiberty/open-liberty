@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
 import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.flow.util.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
 
 /**
@@ -105,8 +106,7 @@ public class DefaultCDIFacesFlowProvider extends FacesFlowProvider
                 mapKey);
             if (map == null)
             {
-                map = new FlowScopeMap(getBeanManager(), flow.getClientWindowFlowId(
-                    facesContext.getExternalContext().getClientWindow()));
+                map = new FlowScopeMap(getBeanManager(), FlowUtils.getFlowMapKey(facesContext, flow));
                 
                 facesContext.getAttributes().put(mapKey, map);
             }

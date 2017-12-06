@@ -564,7 +564,8 @@ public class NavigationHandlerImpl
                 {
                     if (startFlow)
                     {
-                        if (flowHandler.isActive(facesContext, targetFlow.getDefiningDocumentId(), targetFlow.getId()))
+                        if (flowHandler.isActive(facesContext, targetFlow.getDefiningDocumentId(), targetFlow.getId())
+                                        && targetFlowCallNode == null)
                         {
                             // Add the transition to exit from the flow
                             Flow baseReturnFlow = navigationContext.getCurrentFlow(facesContext);
