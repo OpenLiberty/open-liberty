@@ -124,7 +124,6 @@ public class DefaultWIMRealmTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4537E");
@@ -305,11 +304,9 @@ public class DefaultWIMRealmTest {
             servlet.getUserSecurityName(user);
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         //server.waitForStringInLog("CWIML0515E"); //CWIML0515E The 'uid=testuser' entity is not in the scope of the 'defined' realm.
@@ -426,11 +423,9 @@ public class DefaultWIMRealmTest {
             servlet.getGroupDisplayName(group);
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         //server.waitForStringInLog("CWIML0515E");
@@ -539,11 +534,9 @@ public class DefaultWIMRealmTest {
             servlet.getGroupSecurityName(group);
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         //server.waitForStringInLog("CWIML0515E");
@@ -665,11 +658,9 @@ public class DefaultWIMRealmTest {
             servlet.getUniqueGroupIdsForUser(user);
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         //server.waitForStringInLog("CWIML0515E");

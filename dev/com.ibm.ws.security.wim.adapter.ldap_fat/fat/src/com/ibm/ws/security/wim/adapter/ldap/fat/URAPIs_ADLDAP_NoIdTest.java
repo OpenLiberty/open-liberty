@@ -175,7 +175,6 @@ public class URAPIs_ADLDAP_NoIdTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4537E");
@@ -508,7 +507,6 @@ public class URAPIs_ADLDAP_NoIdTest {
      * servlet.getGroups(group, -1);
      * } catch (RegistryException e) {
      * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-     * // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
      * e.printStackTrace();
      * }
      * server.waitForStringInLog("CWIML1022E"); //CWIML1022E The '-1' count limit specified in the SearchControl data object is invalid.
