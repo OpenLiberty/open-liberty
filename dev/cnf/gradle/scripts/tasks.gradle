@@ -130,7 +130,11 @@ subprojects {
   task apiSpiJavadoc(type: Javadoc) {
     dependsOn jar
     def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
-    enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm') && !new File(buildDir, "javadoc").exists()
+    enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
+
+    onlyIf {
+      !new File(buildDir, "javadoc").exists()
+    }
 
     def sp = files()
     def cp = files()
