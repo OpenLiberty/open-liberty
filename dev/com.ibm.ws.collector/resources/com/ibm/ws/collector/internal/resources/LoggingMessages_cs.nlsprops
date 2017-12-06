@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: Kolektory logstashCollector a bluemixLogCollector mohou pou\u017e\u00edvat zna\u010dky obsahuj\u00edc\u00ed jedno slovo, kter\u00e9 se skl\u00e1d\u00e1 z p\u00edsmen a \u010d\u00edslic. N\u00e1sleduj\u00edc\u00ed zna\u010dky se ignoruj\u00ed: {0}
+TAGS_FILTERING_WARNING.explanation= Ignorovan\u00e9 zna\u010dky obsahuj\u00ed znaky mezery, poml\u010dky nebo zp\u011btn\u00e9ho lom\u00edtka.
+TAGS_FILTERING_WARNING.userAction= Odeberte z t\u011bchto zna\u010dek znaky mezery, poml\u010dky nebo zp\u011btn\u00e9ho lom\u00edtka.
+
+SSLREF_NOTFOUND=TRAS4302E: Atribut sslRef pro logstashCollector nebo bluemixLogCollector nebyl uveden, nebo identifik\u00e1tor sslRef ID nebyl nalezen.
+SSLREF_NOTFOUND.explanation=Pro funkci logstashCollector nebo bluemixLogCollector nebyla nalezena \u017e\u00e1dn\u00e1 konfigurace SSL.
+SSLREF_NOTFOUND.userAction=Vytvo\u0159te konfiguraci SSL a pomoc\u00ed atributu sslRef v prvku logstashCollector nebo bluemixLogCollector zadejte ID.

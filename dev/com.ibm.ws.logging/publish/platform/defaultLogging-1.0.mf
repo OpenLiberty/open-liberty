@@ -5,6 +5,7 @@ Subsystem-Version: 1.0.0
 WebSphere-LogProvider: com.ibm.ws.logging.internal.impl.LogProviderImpl
 Subsystem-Content: com.ibm.ws.logging; version="[1,1.0.100)"; type="boot.jar",
  com.ibm.ws.logging.osgi; version="[1,1.0.100)"; start-phase:=BOOTSTRAP,
+ com.ibm.ws.collector.manager; version="[1,1.0.100)",
  com.ibm.websphere.appserver.spi.logging; version="[1.1,1.1.100)"; location:="dev/spi/ibm/"; type="jar",
  com.ibm.websphere.appserver.spi.logging_1.1-javadoc.zip; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.logging_1.1-javadoc.zip"; type="file"
 Subsystem-Type: osgi.subsystem.feature

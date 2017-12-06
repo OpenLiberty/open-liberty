@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector \u304a\u3088\u3073 bluemixLogCollector \u304c\u4f7f\u7528\u3067\u304d\u308b\u30bf\u30b0\u306b\u542b\u3080\u3053\u3068\u304c\u3067\u304d\u308b\u306e\u306f\u3001\u6587\u5b57\u3068\u6570\u5b57\u304b\u3089\u306a\u308b\u5358\u4e00\u306e\u5358\u8a9e\u3067\u3059\u3002\u6b21\u306e\u30bf\u30b0\u306f\u7121\u8996\u3055\u308c\u307e\u3059: {0}
+TAGS_FILTERING_WARNING.explanation= \u7121\u8996\u3055\u308c\u305f\u30bf\u30b0\u306b\u306f\u3001\u30b9\u30da\u30fc\u30b9\u3001\u30c0\u30c3\u30b7\u30e5\u3001\u307e\u305f\u306f\u5186\u8a18\u53f7\u306e\u6587\u5b57\u304c\u542b\u307e\u308c\u3066\u3044\u307e\u3059\u3002
+TAGS_FILTERING_WARNING.userAction= \u3053\u308c\u3089\u306e\u30bf\u30b0\u304b\u3089\u30b9\u30da\u30fc\u30b9\u3001\u30c0\u30c3\u30b7\u30e5\u3001\u307e\u305f\u306f\u5186\u8a18\u53f7\u306e\u6587\u5b57\u3092\u524a\u9664\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+SSLREF_NOTFOUND=TRAS4302E: logstashCollector \u307e\u305f\u306f bluemixLogCollector \u306e sslRef \u5c5e\u6027\u304c\u6307\u5b9a\u3055\u308c\u3066\u3044\u306a\u3044\u304b\u3001sslRef ID \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002
+SSLREF_NOTFOUND.explanation=logstashCollector \u307e\u305f\u306f bluemixLogCollector \u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306e SSL \u69cb\u6210\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002
+SSLREF_NOTFOUND.userAction=SSL \u69cb\u6210\u3092\u4f5c\u6210\u3057\u3001logstashCollector \u30a8\u30ec\u30e1\u30f3\u30c8\u307e\u305f\u306f bluemixLogCollector \u30a8\u30ec\u30e1\u30f3\u30c8\u3067 sslRef \u5c5e\u6027\u3092\u4f7f\u7528\u3057\u3066 ID \u3092\u6307\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002

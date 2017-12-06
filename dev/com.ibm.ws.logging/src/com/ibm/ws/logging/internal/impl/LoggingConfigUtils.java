@@ -12,6 +12,7 @@ package com.ibm.ws.logging.internal.impl;
 
 import java.io.File;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -28,7 +29,7 @@ public class LoggingConfigUtils {
 
     /**
      * Find, create, and validate the log directory.
-     * 
+     *
      * @param newValue
      *            New parameter value to parse/evaluate
      * @param defaultValue
@@ -67,7 +68,7 @@ public class LoggingConfigUtils {
      * Read boolean value from properties: begin by preserving the old value. If
      * the property is found, and the new value is an boolean, the new value
      * will be returned.
-     * 
+     *
      * @param newValue
      *            New parameter value to parse/evaluate
      * @param defaultValue
@@ -90,7 +91,7 @@ public class LoggingConfigUtils {
      * Read integer value from properties: begin by preserving the old value. If
      * the property is found, and the new value is an integer, the new value
      * will be returned.
-     * 
+     *
      * @param newValue
      *            New parameter value to parse/evaluate
      * @param defaultValue
@@ -154,7 +155,7 @@ public class LoggingConfigUtils {
 
     /**
      * Convert the property value to a TraceFormat type
-     * 
+     *
      * @param s
      *            String value
      * @return TraceFormat, BASIC is the default.
@@ -185,7 +186,7 @@ public class LoggingConfigUtils {
 
     /**
      * Create a delegate instance of the specified (or default) delegate class.
-     * 
+     *
      * @param delegate Specifically configured delegate class
      * @param defaultDelegateClass Default delegate class
      * @return constructed delegate instance
@@ -210,14 +211,14 @@ public class LoggingConfigUtils {
      * If an exception occurs converting the object parameter:
      * FFDC for the exception is suppressed: Callers should handle the thrown
      * IllegalArgumentException as appropriate.
-     * 
+     *
      * @param propertyKey
      *            The name of the configuration property.
      * @param obj
      *            The object retrieved from the configuration property map/dictionary.
      * @param defaultValue
      *            The default value that should be applied if the object is null.
-     * 
+     *
      * @return Collection of strings parsed/retrieved from obj, or default value if obj is null
      * @throws IllegalArgumentException If value is not a String, String collection, or String array, or if an error
      *             occurs while converting/casting the object to the return parameter type.
@@ -245,5 +246,16 @@ public class LoggingConfigUtils {
         }
 
         return defaultValue;
+    }
+
+    public static String getEnvValue(final String envName) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+            @Override
+            public String run() {
+                return System.getenv(envName);
+            }
+
+        });
     }
 }

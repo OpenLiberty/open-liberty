@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector \u015fi bluemixLogCollector pot folosi taguri care con\u0163in un singur cuv\u00e2nt compus din litere \u015fi cifre. Urm\u0103toarele taguri sunt ignorate: {0}
+TAGS_FILTERING_WARNING.explanation= Tag-urile ignorate con\u0163in caracterele spa\u0163iu, liniu\u0163\u0103 sau backslash.
+TAGS_FILTERING_WARNING.userAction= \u00cenl\u0103tura\u0163i caracterele spa\u0163iu, liniu\u0163\u0103 sau backslash din aceste taguri.
+
+SSLREF_NOTFOUND=TRAS4302E: Atributul sslRef al logstashCollector sau bluemixLogCollector nu este specificat sau nu poate fi g\u0103sit ID-ul sslRef.
+SSLREF_NOTFOUND.explanation=Nu este g\u0103sit\u0103 nicio configura\u0163ie SSL pentru caracteristica logstashCollector sau bluemixLogCollector.
+SSLREF_NOTFOUND.userAction=Crea\u0163i o configura\u0163ie SSL \u015fi specifica\u0163i ID-ul folosind atributul sslRef \u00een elementul logstashCollector sau \u00een elementul bluemixLogCollector.

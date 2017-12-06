@@ -44,7 +44,27 @@
             ibm:variable="com.ibm.ws.logging.hideMessage"        
             id="hideMessage" required="false" type="String"/>    
     
-    	<AD name="%trace.format" description="%trace.format.desc" 
+        <AD name="%message.source" description="%message.source.desc" 
+            ibm:variable="com.ibm.ws.logging.message.source"
+            id="messageSource" required="false" type="String" default="message">
+        </AD>
+        
+        <AD name="%message.format" description="%message.format.desc" 
+            ibm:variable="com.ibm.ws.logging.message.format"
+            id="messageFormat" required="false" type="String" default="basic">
+        </AD>
+        
+        <AD name="%config.source" description="%config.source.desc" 
+            ibm:variable="com.ibm.ws.logging.config.source"
+            id="configSource" required="false" type="String" default="message">
+        </AD>
+        
+        <AD name="%config.format" description="%config.format.desc" 
+            ibm:variable="com.ibm.ws.logging.config.format"
+            id="configFormat" required="false" type="String" default="basic">
+        </AD>
+        
+        <AD name="%trace.format" description="%trace.format.desc" 
             ibm:variable="com.ibm.ws.logging.trace.format"
             id="traceFormat" required="false" type="String" default="ENHANCED">
             <Option label="%trace.basic" value="BASIC"/>

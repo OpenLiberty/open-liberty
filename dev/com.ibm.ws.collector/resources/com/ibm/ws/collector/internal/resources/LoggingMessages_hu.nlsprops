@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: A logstashCollector \u00e9s a bluemixLogCollector bet\u0171kb\u0151l \u00e9s sz\u00e1mokb\u00f3l \u00e1ll\u00f3, egyetlen sz\u00f3t tartalmaz\u00f3 c\u00edmk\u00e9ket haszn\u00e1lhat. A k\u00f6vetkez\u0151 c\u00edmk\u00e9k figyelmen k\u00edv\u00fcl maradnak: {0}
+TAGS_FILTERING_WARNING.explanation= A figyelmen k\u00edv\u00fcl hagyott c\u00edmk\u00e9k sz\u00f3k\u00f6zt, k\u00f6t\u0151jelet vagy ford\u00edtott t\u00f6rtvonal karaktereket tartalmaznak.
+TAGS_FILTERING_WARNING.userAction= Ezekb\u0151l a c\u00edmk\u00e9kb\u0151l t\u00e1vol\u00edtsa el a sz\u00f3k\u00f6z, k\u00f6t\u0151jel vagy ford\u00edtott t\u00f6rtvonal karaktereket.
+
+SSLREF_NOTFOUND=TRAS4302E: A logstashCollector vagy a bluemixLogCollector elem sslRef attrib\u00fatuma nincs megadva, vagy az sslRef azonos\u00edt\u00f3 nem tal\u00e1lhat\u00f3.
+SSLREF_NOTFOUND.explanation=Nem tal\u00e1lhat\u00f3 SSL konfigur\u00e1ci\u00f3 a logstashCollector vagy bluemixLogCollector szolg\u00e1ltat\u00e1shoz.
+SSLREF_NOTFOUND.userAction=Hozzon l\u00e9tre egy SSL konfigur\u00e1ci\u00f3t, \u00e9s adja meg az azonos\u00edt\u00f3t az sslRef attrib\u00fatum haszn\u00e1lat\u00e1val a logstashCollector vagy a bluemixLogCollector elemben.
