@@ -2,6 +2,7 @@
 
   <featureManager>
     <feature>servlet-3.1</feature>
+    <feature>mpOpentracing-1.0</feature>
     <feature>usr:opentracingMock-0.30</feature>
     <feature>componenttest-1.0</feature>
   </featureManager>
