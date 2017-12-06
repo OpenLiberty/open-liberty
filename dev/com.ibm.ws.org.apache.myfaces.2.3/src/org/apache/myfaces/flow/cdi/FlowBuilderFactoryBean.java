@@ -67,7 +67,7 @@ public class FlowBuilderFactoryBean
     /**
      * @return the flowDefinitions
      */
-    public List<Flow> getFlowDefinitions()
+    public synchronized List<Flow> getFlowDefinitions()
     {
         if (flowDefinitions == null)
         {
