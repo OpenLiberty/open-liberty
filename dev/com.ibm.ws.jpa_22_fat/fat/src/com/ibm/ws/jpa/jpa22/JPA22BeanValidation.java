@@ -24,19 +24,15 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jpa22injection.web.JPAInjectionTestServlet;
+import jpa22bval.web.JPABeanValTestServlet;
 
-/**
- * Test cases that verify \@PersistenceContext and \@PersistenceUnit are \@Repeatable.
- *
- */
 @RunWith(FATRunner.class)
-public class JPA22Injection extends FATServletClient {
-    public static final String APP_NAME = "jpa22injection";
-    public static final String SERVLET = "TestJPA22Injection";
+public class JPA22BeanValidation extends FATServletClient {
+    public static final String APP_NAME = "bval";
+    public static final String SERVLET = "TestJPA22BeanValidation";
 
-    @Server("JPA22InjectionServer")
-    @TestServlet(servlet = JPAInjectionTestServlet.class, path = APP_NAME + "/" + SERVLET)
+    @Server("JPA22BeanValidationServer")
+    @TestServlet(servlet = JPABeanValTestServlet.class, path = APP_NAME + "/" + SERVLET)
     public static LibertyServer server1;
 
     @BeforeClass
@@ -44,8 +40,8 @@ public class JPA22Injection extends FATServletClient {
         final String resPath = "test-applications/jpa22/" + APP_NAME + "/resources/";
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
-        app.addPackage("jpa22injection.web");
-        app.addPackage("jpa22injection.entity");
+        app.addPackage("jpa22bval.web");
+        app.addPackage("jpa22bval.entity");
         ShrinkHelper.addDirectory(app, resPath);
         ShrinkHelper.exportAppToServer(server1, app);
         server1.addInstalledAppForValidation(APP_NAME);
