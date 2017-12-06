@@ -12,7 +12,7 @@ package com.ibm.wsspi.http.channel;
 
 /**
  * Public constants shared outside of the HTTP channel itself.
- * 
+ *
  * @ibm-private-in-use
  */
 public interface HttpConstants {
@@ -27,5 +27,6 @@ public interface HttpConstants {
     String HTTPReadBufferSize = "zConfiguredHttpReadBufferSize";
     /** Key used on z/OS for an unlimited HTTP body size */
     String HTTPUnlimitedMessageMark = "UNLIMITED_HTTP_MESSAGE_SIZE";
-
+    /** HTTP/2 MAGIC string */
+    String HTTP2PrefaceString = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 }

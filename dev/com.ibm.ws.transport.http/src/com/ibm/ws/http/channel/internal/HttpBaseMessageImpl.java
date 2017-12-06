@@ -2220,6 +2220,8 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     appendHeader(header.getName(), header.getValue());
                 }
             }
+            // set the buffer to the position of the data payload
+            buffer.position(((H2HttpInboundLinkWrap) wrapper).getHeadersLength());
         }
 
         return true;

@@ -237,12 +237,7 @@ public class H2StreamProcessor {
                 //}
 
                 if (frame.getFrameType() == FrameTypes.DATA || frame.getFrameType() == FrameTypes.HEADERS) {
-                    if (state.equals(StreamState.HALF_CLOSED_REMOTE)) {
-                        throw new ProtocolException("Stream half closed remote and received a DATA or HEADERS frame");
-                    } else {
-                        //If we're not half closed remote then we don't need to do anything with the frame received
-                        return;
-                    }
+                    throw new ProtocolException("DATA or HEADERS frame received on a closed stream");
                 } else if (frame.getFrameType() == FrameTypes.RST_STREAM) {
                     return;
                 }
@@ -340,13 +335,10 @@ public class H2StreamProcessor {
                     continue;
                 }
 
-                if (frameType == FrameTypes.RST_STREAM || frameType == FrameTypes.SETTINGS ||
+                if (frameType == FrameTypes.SETTINGS ||
                     frameType == FrameTypes.GOAWAY || frameType == FrameTypes.PING) {
 
                     switch (frameType) {
-                        case RST_STREAM:
-                            processRstFrame();
-                            break;
                         case SETTINGS:
                             processSETTINGSFrame();
                             break;
@@ -370,16 +362,14 @@ public class H2StreamProcessor {
                 try {
                     verifyReadFrameSequence();
                 } catch (Http2Exception e) {
-                    if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
-                        if (e.isConnectionError()) {
-                            addFrame = ADDITIONAL_FRAME.GOAWAY;
-                        } else {
-                            addFrame = ADDITIONAL_FRAME.RESET;
-                        }
-                        addFrameException = e;
+                    if (e.isConnectionError()) {
+                        addFrame = ADDITIONAL_FRAME.GOAWAY;
+                    } else if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
+                        addFrame = ADDITIONAL_FRAME.RESET;
                     } else {
                         addFrame = ADDITIONAL_FRAME.NO;
                     }
+                    addFrameException = e;
                     continue;
                 }
 
@@ -390,6 +380,10 @@ public class H2StreamProcessor {
                 // the priority and window_update frame outside of state specific processing
                 if (frameType == FrameTypes.PRIORITY) {
                     processPriorityFrame();
+                    return;
+                }
+                if (frameType == FrameTypes.RST_STREAM) {
+                    processRstFrame();
                     return;
                 }
 
@@ -1329,6 +1323,7 @@ public class H2StreamProcessor {
             buf.put(this.headerBlock);
             buf.flip();
             moveDataIntoReadBufferArray(buf);
+            this.h2HttpInboundLinkWrap.setHeadersLength(buf.limit());
             headerBlock = null;
 
             //Get ready to decode headers
@@ -1337,7 +1332,9 @@ public class H2StreamProcessor {
             ArrayList<H2HeaderField> headers = new ArrayList<H2HeaderField>();
             H2HeaderField current = null;
             //Decode headers until we reach the end of the buffer
+            int headersLength = buf.position();
             while (buf.hasRemaining()) {
+                headersLength++;
                 current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable()));
                 if (!isFirstLineComplete) {
                     //Is this a Pseudo-Header?
@@ -1372,6 +1369,10 @@ public class H2StreamProcessor {
             this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);
             this.h2HttpInboundLinkWrap.setReadHeaders(headers);
             buf.flip();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "processCompleteHeaders no header block set: stream " + myID);
+            }
         }
     }
 
@@ -1384,6 +1385,7 @@ public class H2StreamProcessor {
             WsByteBufferPoolManager bufManager = HttpDispatcher.getBufferManager();
             WsByteBuffer buf = bufManager.allocate(this.dataPayload.length);
             buf.put(this.dataPayload);
+            buf.flip();
             moveDataIntoReadBufferArray(buf);
         }
     }
