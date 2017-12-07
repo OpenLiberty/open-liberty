@@ -322,7 +322,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
                 fail("Commit should not have succeeded because the test infrastructure is supposed to cause an in-doubt transaction.");
             } catch (HeuristicMixedException x) {
                 // Adjust the XA success limit, so as to allow XA recovery to commit the in-doubt transaction
-                ds3.unwrap(AtomicInteger.class).set(1);
+                ds3.unwrap(AtomicInteger.class).set(1); // TODO this should be removed once the JCA integration layer is updated to set the QMID
                 System.out.println("Caught expected exception: " + x);
             }
         } finally {

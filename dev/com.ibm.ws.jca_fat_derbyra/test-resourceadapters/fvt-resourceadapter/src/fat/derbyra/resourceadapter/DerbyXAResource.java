@@ -28,6 +28,13 @@ import javax.transaction.xa.Xid;
  * limit) but the third will fail, leaving the transaction in an in-doubt state.
  */
 public class DerbyXAResource implements XAResource {
+    static final String XA_RECOVERY_QMID = "This-QMID-Is-Required-For-XA-Recovery";
+
+    /**
+     * Managed connection that created this XAResource.
+     */
+    private final DerbyManagedConnection mc;
+
     /**
      * Number of commits or rollbacks allowed before we simulate errors.
      */
@@ -41,11 +48,13 @@ public class DerbyXAResource implements XAResource {
     /**
      * Construct a wrapper for the specified XA resource.
      *
+     * @param mc Managed connection from which this XA resource is obtained.
      * @param xaRes XA resource to wrap.
      * @param successLimit limit of commits/rollbacks that should succeed for the group of
      *            XA resources before raising errors.
      */
-    DerbyXAResource(XAResource xaRes, AtomicInteger successLimit) {
+    DerbyXAResource(DerbyManagedConnection mc, XAResource xaRes, AtomicInteger successLimit) {
+        this.mc = mc;
         this.xaRes = xaRes;
         this.successLimit = successLimit;
     }
@@ -56,7 +65,7 @@ public class DerbyXAResource implements XAResource {
      */
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
-        if (successLimit == null || successLimit.getAndDecrement() > 0)
+        if (XA_RECOVERY_QMID.equals(mc.mcf.qmid) || successLimit == null || successLimit.getAndDecrement() > 0)
             xaRes.commit(xid, onePhase);
         else {
             XAException x = new XAException("Simulating an error for commit.");
@@ -101,7 +110,7 @@ public class DerbyXAResource implements XAResource {
      */
     @Override
     public void rollback(Xid xid) throws XAException {
-        if (successLimit == null || successLimit.getAndDecrement() > 0)
+        if (XA_RECOVERY_QMID.equals(mc.mcf.qmid) || successLimit == null || successLimit.getAndDecrement() > 0)
             xaRes.rollback(xid);
         else {
             successLimit = null; // TODO remove this when
