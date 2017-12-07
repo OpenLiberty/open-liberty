@@ -24,4 +24,3 @@ Subsystem-Name: Java EE Web Profile 7.0
  com.ibm.websphere.appserver.managedBeans-1.0
 kind=ga
 edition=core
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

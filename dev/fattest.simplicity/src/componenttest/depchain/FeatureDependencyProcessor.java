@@ -58,7 +58,6 @@ public class FeatureDependencyProcessor {
         for (String f : installedFeaturesRaw)
             for (String installedFeature : f.substring(0, f.lastIndexOf(']')).substring(f.lastIndexOf('[') + 1).split(","))
                 installedFeatures.add(installedFeature.trim().toLowerCase());
-        Log.info(c, m, "Installed features are: " + installedFeatures);
 
         // Make sure that any features installed in the server are known to the test dependency graph
         File featureListFile = FeatureList.get(server);
@@ -71,6 +70,8 @@ public class FeatureDependencyProcessor {
                 untestedFeatures.add(installedFeature);
         }
         if (!untestedFeatures.isEmpty()) {
+            Log.info(c, m, "Installed features are: " + installedFeatures);
+            Log.info(c, m, "Computed Tested features are: " + testedFeatures);
             if (hasRetry) {
                 prepForRetry(featureListFile);
                 validateTestedFeatures(server, serverLog);
@@ -122,8 +123,8 @@ public class FeatureDependencyProcessor {
         // In case there were hard-coded features that were not present in the featureList.xml
         testedFeatures.addAll(staticTestedFeatures);
 
-        Log.info(c, m, "Static tested features are:   " + staticTestedFeatures);
-        Log.info(c, m, "Computed Tested features are: " + testedFeatures);
+        if (DEBUG)
+            Log.info(c, m, "Static tested features are:   " + staticTestedFeatures);
         return testedFeatures;
     }
 

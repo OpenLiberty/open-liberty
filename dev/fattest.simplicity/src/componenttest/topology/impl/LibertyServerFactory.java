@@ -116,7 +116,7 @@ public class LibertyServerFactory {
             //Associate the LibertyServer with the calling test name
             if (testClassName == null)
                 testClassName = getCallerClassNameFromStack();
-            Log.info(LibertyServerFactory.class, "getLibertyServer", "testClassName: " + testClassName + ", server: " + serverName);
+            Log.info(LibertyServerFactory.class, "getLibertyServer", "server=" + serverName + "   testClassName=" + testClassName);
 
             //synchronize while we look for an existing server with this name
             //and create one if it doesn't exist yet
@@ -145,14 +145,14 @@ public class LibertyServerFactory {
                         }
                     }
                 } else {
-                    Log.info(LibertyServerFactory.class, "getLibertyServer", "Ignoring cache for request for " + serverName);
+                    Log.finer(LibertyServerFactory.class, "getLibertyServer", "Ignoring cache for request for " + serverName);
                 }
 
                 //if we haven't yet encountered this server, then create the instance and
                 //copy the autoFVT contents to the servers dir and backup if necessary etc
                 if (ls == null) {
                     if (bootstrap == null) {
-                        Log.info(LibertyServerFactory.class, "getLibertyServer", "using default bootstrapping.properties");
+                        Log.finer(LibertyServerFactory.class, "getLibertyServer", "using default bootstrapping.properties");
                         bootstrap = Bootstrap.getInstance();
                     } else {
                         Log.info(LibertyServerFactory.class, "getLibertyServer", "using supplied bootstrapping.properties");
@@ -347,7 +347,7 @@ public class LibertyServerFactory {
      * @throws Exception
      */
     public static void recoverAllServers(String testClassName) throws Exception {
-        Log.info(c, "recoverAllServers", "Now recovering all servers known to test class: " + testClassName);
+        Log.finer(c, "recoverAllServers", "Now recovering all servers known to test class: " + testClassName);
 
         //If backups were required, so is recovery
         if (BACKUP_REQUIRED) {
@@ -395,7 +395,7 @@ public class LibertyServerFactory {
             Log.error(c, "", e);
             return null;
         } finally {
-            Log.info(c, "applicationsToVerify", appCount + " on server " + ls.getServerName());
+            Log.finer(c, "applicationsToVerify", appCount + " on server " + ls.getServerName());
         }
     }
 
@@ -503,17 +503,16 @@ public class LibertyServerFactory {
         RemoteFile usrServersDir = new RemoteFile(m, server.getServerRoot()).getParentFile(); //should be /wlp/usr/servers
 
         if (backup.exists()) {
-            Log.info(c, METHOD, "Backup file already exists... skipping backup");
             return;
         }
-        Log.info(c, METHOD, "Backing up Server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
+        Log.finer(c, METHOD, "Backing up Server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
 
         String workDir = usrServersDir.getAbsolutePath();
         String command = server.getMachineJavaJarCommandPath();
         String[] param = { "cMf", backup.getAbsolutePath(), server.getServerName() };
         ProgramOutput o = m.execute(command, param, workDir);
         if (o.getReturnCode() == 0) {
-            Log.info(c, METHOD, "Successfully backed up server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
+            Log.finer(c, METHOD, "Successfully backed up server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
         } else {
             Log.warning(c, "Backup jar process failed with return code " + o.getReturnCode());
             Log.warning(c, "Backup jar process failed with error " + o.getStderr());
@@ -535,7 +534,7 @@ public class LibertyServerFactory {
             Log.info(c, METHOD, "Backup file doesn't exist... skipping recovery");
             return;
         }
-        Log.info(c, METHOD, "Recovering Server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
+        Log.finer(c, METHOD, "Recovering Server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
 
         RemoteFile serverFolder = new RemoteFile(m, server.getServerRoot());
         if (!!!serverFolder.delete()) {
@@ -566,7 +565,7 @@ public class LibertyServerFactory {
         String[] param = { "xf", backup.getAbsolutePath() };
         ProgramOutput o = m.execute(command, param, workDir);
         if (o.getReturnCode() == 0) {
-            Log.info(c, METHOD, "Successfully recovered server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
+            Log.finer(c, METHOD, "Successfully recovered server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
         } else {
             Log.warning(c, "Recovery unjar process failed with return code " + o.getReturnCode());
             Log.warning(c, "Recovery unjar process failed with error " + o.getStderr());

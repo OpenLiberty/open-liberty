@@ -201,7 +201,9 @@ info.frameworkRestart=CWWKE0041I: Mezipam\u011b\u0165 platformy je nesynchronizo
 info.frameworkRestart.explanation=R\u00e1mec byl restartov\u00e1n, proto\u017ee mezipam\u011b\u0165 platformy nebyla synchronizovan\u00e1.
 info.frameworkRestart.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: Neb\u011b\u017e\u00ed spr\u00e1vn\u00e1 verze prost\u0159ed\u00ed Java. B\u011bhov\u00e9 prost\u0159ed\u00ed vy\u017eaduje prost\u0159ed\u00ed Java 7 nebo vy\u0161\u0161\u00ed.
+error.badVersion.explanation=Bu\u010f b\u011b\u017e\u00ed nepodporovan\u00e1 verze prost\u0159ed\u00ed Java, nebo byla syst\u00e9mov\u00e1 prom\u011bnn\u00e1 JAVA_HOME nastavena na star\u0161\u00ed verzi prost\u0159ed\u00ed Java.
+error.badVersion.useraction= Prove\u010fte upgrade verze Java na verzi Java 7, nebo upravte syst\u00e9movou prom\u011bnnou JAVA_HOME tak, aby ukazovala na prost\u0159ed\u00ed Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: Um\u00edst\u011bn\u00ed pro spu\u0161t\u011bn\u00ed nen\u00ed lok\u00e1ln\u00ed soubor. ({0})
 error.unsupportedLaunch.explanation=B\u011bhov\u00e9 prost\u0159ed\u00ed mus\u00ed b\u00fdt spu\u0161t\u011bno z lok\u00e1ln\u00edho souboru, nap\u0159\u00edklad ze souboru JAR.

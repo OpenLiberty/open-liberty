@@ -29,13 +29,15 @@ import componenttest.topology.impl.LibertyServer;
 public class WCApplicationHelper {
 
     private static final Logger LOG = Logger.getLogger(WCApplicationHelper.class.getName());
-
+    private static final String DIR_APPS = "apps";
+    private static final String DIR_DROPINS = "dropins";
+    private static final String DIR_PUBLISH = "publish/servers/";
     /*
      * Helper method to create a war and add it to the dropins directory
      */
     public static void addWarToServerDropins(LibertyServer server, String warName, boolean addWarResources,
                                              String... packageNames) throws Exception {
-        addEarToServer(server, "dropins", null, false, warName, addWarResources, null, false, packageNames);
+        addEarToServer(server, DIR_DROPINS, null, false, warName, addWarResources, null, false, packageNames);
     }
 
     /*
@@ -43,7 +45,7 @@ public class WCApplicationHelper {
      */
     public static void addWarToServerApps(LibertyServer server, String warName, boolean addWarResources, String jarName, boolean addJarResources,
                                           String... packageNames) throws Exception {
-        addEarToServer(server, "apps", null, false, warName, addWarResources, jarName, addJarResources, packageNames);
+        addEarToServer(server, DIR_APPS, null, false, warName, addWarResources, jarName, addJarResources, packageNames);
     }
 
     /*
@@ -51,7 +53,7 @@ public class WCApplicationHelper {
      */
     public static void addEarToServerDropins(LibertyServer server, String earName, boolean addEarResources,
                                              String warName, boolean addWarResources, String jarName, boolean addJarResources, String... packageNames) throws Exception {
-        addEarToServer(server, "dropins", earName, addEarResources, warName, addWarResources, jarName, addJarResources,
+        addEarToServer(server, DIR_DROPINS, earName, addEarResources, warName, addWarResources, jarName, addJarResources,
                        packageNames);
     }
 
@@ -60,13 +62,107 @@ public class WCApplicationHelper {
      */
     public static void addEarToServerApps(LibertyServer server, String earName, boolean addEarResources, String warName,
                                           boolean addWarResources, String jarName, boolean addJarResources, String... packageNames) throws Exception {
-        addEarToServer(server, "apps", earName, addEarResources, warName, addWarResources, jarName, addJarResources,
+        addEarToServer(server, DIR_APPS, earName, addEarResources, warName, addWarResources, jarName, addJarResources,
                        packageNames);
+    }
+
+
+    /*
+     * Helper method to create a war and placed it to the specified directory which is relative from /publish/servers/ directory.
+     */
+    public static void createWar(LibertyServer server, String dir, String warName, boolean addWarResources, String jarName, boolean addJarResources,
+                                          String... packageNames) throws Exception {
+        addEarToServer(server, dir , null, false, warName, addWarResources, jarName, addJarResources, packageNames);
+    }
+
+    /*
+     * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
+     * this method supports adding jar file.
+     */
+    public static void createJar(LibertyServer server, String dir, String jarName, boolean addJarResources, String... packageNames) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        JavaArchive jar = null;
+        if (jarName != null) {
+            LOG.info("createJar : create jar " + jarName + ", jar includes resources : " + addJarResources);
+            jar = ShrinkWrap.create(JavaArchive.class, jarName);
+            if (packageNames != null) {
+                for (String packageName : packageNames) {
+                    if (packageName.contains(".jar.")) {
+                        jar.addPackage(packageName);
+                    }
+                }
+            }
+            if (addJarResources)
+                ShrinkHelper.addDirectory(jar, "test-applications/" + jarName + "/resources");
+        }
+        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir);
+    }
+
+    /*
+     * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
+     */
+    public static void packageWarsToEar(LibertyServer server, String dir, String earName, boolean addEarResources, String... warFiles) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
+        if (addEarResources) {
+            ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+        }
+        for (String warFile : warFiles) {
+            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir +  warFile));
+            ear.addAsModule(war);
+        }
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+    }
+
+
+    public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        LOG.info("createEar: dir : " + dir + ", earName : " + earName + ", includes resources : " + addEarResources);
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
+        if (addEarResources) {
+            ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+        }
+        return ear;
+    }
+
+    public static void exportEar(LibertyServer server, String dir, EnterpriseArchive ear) throws Exception {
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+    }
+
+    /*
+     */
+    public static EnterpriseArchive packageWars(LibertyServer server, String dir, EnterpriseArchive ear, String... warFiles) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        for (String warFile : warFiles) {
+            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir +  warFile));
+            ear.addAsModule(war);
+        }
+        return ear;
+    }
+
+    /*
+     */
+    public static EnterpriseArchive packageJars(LibertyServer server, String dir, EnterpriseArchive ear, String... jarFiles) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        for (String jarFile : jarFiles) {
+            JavaArchive jar = ShrinkWrap.createFromZipFile(JavaArchive.class, new File(baseDir +  jarFile));
+            ear.addAsLibrary(jar);
+        }
+        return ear;
+    }
+
+
+    /*
+     * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
+     */
+    public static void addEarToServerApps(LibertyServer server, String dir, String earName) throws Exception {
+        server.copyFileToLibertyServerRoot(DIR_PUBLISH + server.getServerName() + "/" + dir, DIR_APPS, earName);
     }
 
     /*
      * Method to create jars, wars and ears for testing. Resources are created
      * as needed and added to dropins or apps directories as specified.
+     * if dir is other than dropins or apps, do not deploy the app.
      */
     private static void addEarToServer(LibertyServer server, String dir, String earName, boolean addEarResources,
                                        String warName, boolean addWarResources, String jarName, boolean addJarResources, String... packageNames) throws Exception {
@@ -117,16 +213,28 @@ public class WCApplicationHelper {
         if (addWarResources)
             ShrinkHelper.addDirectory(war, "test-applications/" + warName + "/resources");
 
+        boolean deploy = false;
+        if (dir.equals(DIR_APPS) || dir.equals( DIR_DROPINS)) {
+            deploy = true;
+        }
+
         if (earName != null) {
             LOG.info("addEarToServer : crteate ear " + earName + ", ear include application/.xml : " + addEarResources);
             EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
             ear.addAsModule(war);
             if (addEarResources)
-                ear.addAsManifestResource(
-                                          new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
-            ShrinkHelper.exportToServer(server, dir, ear);
+                ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+            if (deploy) {
+                ShrinkHelper.exportToServer(server, dir, ear);
+            } else {
+                ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+            }
         } else {
-            ShrinkHelper.exportToServer(server, dir, war);
+            if (deploy) {
+                ShrinkHelper.exportToServer(server, dir, war);
+            } else {
+                ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir);
+            }
         }
 
     }

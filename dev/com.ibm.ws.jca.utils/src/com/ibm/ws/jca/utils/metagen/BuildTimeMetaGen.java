@@ -16,8 +16,6 @@ import java.util.Map;
 /**
  * Calls to this class should only be used by the Ant target generateMetatype
  * for generating metatype at build time.
- * 
- * @see <a href="http://was.pok.ibm.com/xwiki/bin/view/LibertyCookbook/Metatype-Generator">Metatype Generator Documentation</a>
  */
 public class BuildTimeMetaGen {
     public static void main(String[] args) throws Exception {

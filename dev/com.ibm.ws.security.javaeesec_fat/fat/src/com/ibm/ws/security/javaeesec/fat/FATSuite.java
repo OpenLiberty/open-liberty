@@ -38,7 +38,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 LoginToContinueELTest.class,
                 HttpAuthenticationMechanismDBTest.class,
                 HttpAuthenticationMechanismDBAuthAliasTest.class,
-                ProgrammaticTest.class
+                ProgrammaticTest.class,
+                MultipleModuleTest.class
 })
 
 /**

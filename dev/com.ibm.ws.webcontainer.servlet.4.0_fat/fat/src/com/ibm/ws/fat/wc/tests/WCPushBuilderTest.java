@@ -21,9 +21,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-
 /**
  * Note this is a basic test to ensure newPushBuilder() returns null for non H2 requests.
  * A comprehensive test of the pushbuilder api is included in the Servlet 4.0 unit tests.
@@ -62,7 +59,6 @@ public class WCPushBuilderTest extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testPushBuilderAPI() throws Exception {
 
         String[] expectedMessages = { "PASS" };

@@ -106,6 +106,9 @@ public class RepeatTests extends ExternalResource {
         @Override
         public void evaluate() throws Throwable {
             final String m = "evaluate";
+            Log.info(c, m, "All tests will run " + actions.size() + " times:");
+            for (int i = 0; i < actions.size(); i++)
+                Log.info(c, m, "  [" + i + "] " + actions.get(i));
             for (RepeatTestAction action : actions) {
                 if (action.isEnabled()) {
                     Log.info(c, m, "===================================");

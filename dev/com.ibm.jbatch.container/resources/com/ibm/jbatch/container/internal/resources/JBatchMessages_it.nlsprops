@@ -295,3 +295,17 @@ info.batch.events.publish.topic.useraction=La root del topic JMS batch pu\u00f2 
 cdi.ambiguous.artifact.names=CWWKY0041W: Il contenitore batch \u00e8 in esecuzione con una funzione CDI attiva, ma il motore CDI non \u00e8 stato in grado di caricare la risorsa batch come un bean gestito da CDI ed eseguire altre injection CDI. Questo problema pu\u00f2 verificarsi a causa di una annotazione di definizione del bean mancante, ad esempio @Dependent, una modalit\u00e0 di rilevamento bean involontaria o un valore 'ref' ambiguo.
 cdi.ambiguous.artifact.names.explanation=Quando il runtime batch carica le risorse utilizzando il motore CDI, le propriet\u00e0\u00a0batch (@BatchProperty) e i contesti batch (JobContext e StepContext) sono inseriti e vengono rese disponibili le capacit\u00e0 complete di CDI. Tali capacit\u00e0 includono l'injection di altri MBean in base ai qualificatori e alle altre funzioni di programmazione del modello diprogrammazione CDI. Quando il runtime batch carica le risorse senza utilizzare il motore CDI, inserisce solo le propriet\u00e0 e i contesti batch. Poich\u00e9 non c'\u00e8 un bean gestito da CDI in questo percorso, nessuna altra injection o funzione del modello di programmazione CDI \u00e8 disponibile senza tale risorsa batch. Questo messaggio indica che sebbene il server sia configurato in modo che la funzione CDI sia attiva, la risorsa batch non pu\u00f2 essere caricata come bean gestito da CDI perch\u00e9 il valore dell'attributo 'ref' corrispondente a questo riferimento risorsa nell'XML non punta a un singolo, inequivocabile bean gestito da CDI.
 cdi.ambiguous.artifact.names.useraction=Aggiungere l'annotazione @Dependent o un'altra annotazione di definizione bean adatta alla risorsa batch. In alternativa, \u00e8 possibile impostare la modalit\u00e0 di rilevamento bean su 'all' nel file beans.xml, sebbene questa soluzione pu\u00f2 rallenatre l'applicazione. Se tutte le risorse ambigue non sono necessarie, \u00e8 anche possibile rimuovere gli attributi 'ref' ambigui dall'applicazione in modo che rimanga un solo riferimento non ambiguo.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  Il JSL risolto per questo {0} \u00e8 \n\
+\ {1}.
+display.resolved.jsl.explanation=Il JSL utilizzato per il lavoro, il flusso o la partizione viene visualizzato una volta risolti i parametri e le propriet\u00e0.  Il JSL del lavoro non le propriet\u00e0 del piano di partizione.  Ricercare questo messaggio nei log delle singole partizioni per la risoluzione della propriet\u00e0 del piano di partizione.
+display.resolved.jsl.useraction=Verificare che il JSL e la risoluzione del parametro siano quelli previsti.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  Il JSL non risolto per questo lavoro \u00e8 \n\
+\ {0}.
+display.unresolved.jsl.explanation=Il JSL utilizzato per il lavoro viene visualizzato prima che i parametri e le propriet\u00e0 siano risolti.
+display.unresolved.jsl.useraction=Accertarsi che il nome del file per il JSL sia corretto e verificare che l'origine del JSL contenga il JSL corretto.
+

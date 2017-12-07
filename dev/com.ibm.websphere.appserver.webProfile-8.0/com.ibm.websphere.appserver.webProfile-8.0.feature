@@ -26,4 +26,3 @@ Subsystem-Name: Java EE Web Profile 8.0
   com.ibm.websphere.appserver.websocket-1.1
 kind=beta
 edition=core
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"

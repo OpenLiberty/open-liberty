@@ -21,16 +21,16 @@ src: \
 	test-applications/jpa22/cdi/src,\
 	test-applications/jpa22/jpa22injection/src,\
 	test-applications/jpa22/jpa22query/src,\
-	test-applications/jpa22/jpa22timeapi
+	test-applications/jpa22/jpa22timeapi/src
 
-test.project: true
+fat.project: true
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
 runtime.minimum.java.level: 1.8
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
-#      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\

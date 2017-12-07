@@ -13,6 +13,7 @@ package com.ibm.ws.appclient.boot;
 import java.util.ResourceBundle;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
+import com.ibm.ws.kernel.boot.HelpActions;
 import com.ibm.ws.kernel.boot.LaunchArguments;
 import com.ibm.ws.kernel.boot.Launcher;
 import com.ibm.ws.kernel.boot.ReturnCode;
@@ -85,9 +86,8 @@ public class ClientLauncher extends Launcher {
     }
 
     @Override
-    protected ResourceBundle getOptionsResourceBundle() {
-        /** Since this launches the framework, we have to do translation ourselves.. */
-        return ResourceBundle.getBundle("com.ibm.ws.appclient.boot.resources.ClientLauncherOptions");
+    public HelpActions getHelpActions() {
+        return new ClientHelpActions();            
     }
 
     @Override

@@ -131,7 +131,6 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testContextRootServerXmlPrecedence() throws Exception {
         this.verifyResponse("/ServerContextRoot/", "Simple HTML page - TestContextRootServerXmlPrecedence");
     }
@@ -144,7 +143,6 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testContextRootEARAppPrecedence() throws Exception {
         this.verifyResponse("/ApplicationContextRoot/", "Simple HTML page - TestContextRootEARAppPrecedence");
     }
@@ -157,7 +155,6 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testContextRootWebExtPrecedence() throws Exception {
         this.verifyResponse("/WebExtContextRoot/", "Simple HTML page - TestContextRootWebExtPrecedence");
     }
@@ -170,7 +167,6 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testContextRootAppNamePrecedence() throws Exception {
         this.verifyResponse("/AppNameContextRoot/", "Simple HTML page - TestContextRootAppNamePrecedence");
     }
@@ -182,7 +178,6 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testDefaultContextPathElementPrecedence() throws Exception {
         this.verifyResponse("/WebDefaultContextPath/", "Simple HTML page - TestDefaultContextPathPrecedence");
     }
@@ -195,7 +190,6 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testContextRootDirOrFileNamePrecedence() throws Exception {
         this.verifyResponse("/TestContextRootDirOrFileNamePrecedence/",
                             "Simple HTML page - TestContextRootDirOrFileNamePrecedence");
@@ -209,7 +203,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     public void testDefaultContextPathWithoutStartSlashInvalidCase() throws Exception {
         SHARED_SERVER.getLibertyServer().findStringsInLogs(
                                                            "CWWKZ0002E:.*TestDefaultContextPathWithoutStartSlashInvalidCase.*CWWKC2257E:.*default-context-path");
@@ -223,7 +217,7 @@ public class WCContextRootPrecedence extends LoggingTest {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     public void testDefaultContextPathWithEndSlashInvalidCase() throws Exception {
         SHARED_SERVER.getLibertyServer().findStringsInLogs(
                                                            "CWWKZ0002E:.*TestDefaultContextPathWithEndSlashInvalidCase.*CWWKC2257E:.*default-context-path");

@@ -18,9 +18,9 @@
 	<application type="war" id="DatabaseAuthAliasBasicAuthServlet" name="DatabaseAuthAliasBasicAuthServlet" location="DatabaseAuthAliasBasicAuthServlet.war">
  		<application-bnd>
 			<security-role name="javaeesec_basic">
-				<user name="blue1" access-id="user:JavaEESec Basic Realm/blue1" />
+				<user name="blue1" access-id="user:jdbc/derby1fat/blue1" />
 				<group name="group1" />
-				<group name="group3" access-id="group:JavaEESec Basic Realm/group3" />
+				<group name="group3" access-id="group:jdbc/derby1fat/group3" />
 			</security-role>	
 			<security-role name="javaeesec_form">
 				<user name="jaspiuser3" />

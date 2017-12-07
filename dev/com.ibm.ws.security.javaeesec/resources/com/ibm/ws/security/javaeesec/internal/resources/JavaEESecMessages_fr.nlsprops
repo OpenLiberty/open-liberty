@@ -39,3 +39,6 @@ JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Le nom de domaine pour l'authentific
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Le nom de domaine pour l'authentification de base n'a pas \u00e9t\u00e9 d\u00e9fini, la valeur par d\u00e9faut defaultRealm sera utilis\u00e9e.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si le nom de domaine doit \u00eatre d\u00e9finie, sp\u00e9cifiez-le \u00e0 l'aide de l'annotation BasicAuthenticationMechanismDefinition dans l'application.
 
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Le d\u00e9ploiement du module {0} dans l''application {1} a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9 trouv\u00e9es. Liste des classes : {2}. Il s''agit probablement d''un probl\u00e8me de packaging de l''application. V\u00e9rifiez qu''une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente dans chaque module.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9 d\u00e9tect\u00e9es. Cette condition n'est pas autoris\u00e9e.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=V\u00e9rifiez qu'une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente pour chaque module dans l'application.

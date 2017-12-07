@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
+import org.apache.myfaces.flow.util.FlowUtils;
 import org.apache.myfaces.spi.FacesFlowProvider;
 
 /**
@@ -62,8 +63,7 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
     @Override
     public void doBeforeExitFlow(FacesContext facesContext, Flow flow)
     {
-        String flowMapKey = flow.getClientWindowFlowId(
-            facesContext.getExternalContext().getClientWindow());
+        String flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
         String fullToken = FLOW_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + flowMapKey;
 
         String mapKey = CURRENT_FLOW_SCOPE_MAP+SEPARATOR_CHAR+
@@ -102,12 +102,11 @@ public class DefaultFacesFlowProvider extends FacesFlowProvider
             map = (Map<Object, Object>) facesContext.getAttributes().get(mapKey);
             if (map == null)
             {
-                String flowMapKey = flow.getClientWindowFlowId(
-                    facesContext.getExternalContext().getClientWindow());
+                String flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
                 
-                map = new FlowScopeMap(this, flowMapKey);
                 //String fullToken = FLOW_SESSION_MAP_SUBKEY_PREFIX + SEPARATOR_CHAR + flowMapKey;
                 //map = createOrRestoreMap(facesContext, fullToken);
+                map = new FlowScopeMap(this, flowMapKey);
                 
                 facesContext.getAttributes().put(mapKey, map);
             }

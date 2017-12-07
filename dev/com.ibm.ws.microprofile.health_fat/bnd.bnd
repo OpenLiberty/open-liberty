@@ -25,7 +25,7 @@ src: \
 javac.source: 1.8
 javac.target: 1.8
 	
-test.project: true
+fat.project: true
 
 -buildpath: \
 	org.apache.commons:commons-compress;version=1.10, \

@@ -126,7 +126,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         }
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
-        Log.info(c, m, "Got files: " + serverConfigs.toString());
+        Log.info(c, m, "Replacing features in files: " + serverConfigs.toString());
 
         // change all the server.xml files
         assertTrue("There were no servers (*.xml) in " + serverFolder.getAbsolutePath() + " and in " + filesFolder.getAbsolutePath()

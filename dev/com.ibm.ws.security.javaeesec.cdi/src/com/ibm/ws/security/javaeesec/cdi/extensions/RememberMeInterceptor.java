@@ -56,13 +56,12 @@ public class RememberMeInterceptor {
 
     private AuthenticationStatus interceptValidateRequest(InvocationContext ic) throws Exception {
         AuthenticationStatus status = AuthenticationStatus.SUCCESS;
-        RememberMe rememberMe = getRememberMe(ic);
         HttpMessageContext httpMessageContext = getHttpMessageContext(ic);
         HttpServletRequest request = httpMessageContext.getRequest();
-        String rememberMeCookieValue = getRememberMeCookieValue(request, rememberMe.cookieName());
+        RememberMeWrapper rememberMeWrapper = new RememberMeWrapper(ic);
+        String rememberMeCookieValue = getRememberMeCookieValue(request, rememberMeWrapper.getCookieName());
         CredentialValidationResult result = CredentialValidationResult.INVALID_RESULT;
         RememberMeIdentityStore rememberMeIdentityStore = getRememberMeIdentityStore();
-        ELProcessor elProcessor = getELProcessorIfNeeded(ic, rememberMe);
 
         if (rememberMeCookieValue != null) {
             RememberMeCredential credential = new RememberMeCredential(rememberMeCookieValue);
@@ -71,7 +70,7 @@ public class RememberMeInterceptor {
             if (CredentialValidationResult.Status.VALID.equals(result.getStatus())) {
                 httpMessageContext.notifyContainerAboutLogin(result.getCallerPrincipal(), result.getCallerGroups());
             } else {
-                removeCookie(request, httpMessageContext.getResponse(), rememberMe, elProcessor);
+                removeCookie(request, httpMessageContext.getResponse(), rememberMeWrapper);
             }
         }
 
@@ -79,11 +78,11 @@ public class RememberMeInterceptor {
             status = (AuthenticationStatus) ic.proceed();
 
             if (AuthenticationStatus.SUCCESS.equals(status)) {
-                if (isRememberMe(rememberMe, elProcessor)) {
-                    if ((isSecure(rememberMe, elProcessor) && !request.isSecure()) == false) {
+                if (rememberMeWrapper.isRememberMe()) {
+                    if ((rememberMeWrapper.isSecure() && !request.isSecure()) == false) {
                         rememberMeCookieValue = rememberMeIdentityStore.generateLoginToken((CallerPrincipal) httpMessageContext.getCallerPrincipal(),
                                                                                            httpMessageContext.getGroups());
-                        setRememberMeCookieInResponse(rememberMeCookieValue, httpMessageContext.getResponse(), rememberMe, elProcessor);
+                        setRememberMeCookieInResponse(rememberMeCookieValue, httpMessageContext.getResponse(), rememberMeWrapper);
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "The remember me cookie will not be sent back because it must be sent using a secure protocol.");
@@ -95,23 +94,19 @@ public class RememberMeInterceptor {
         return status;
     }
 
-    private RememberMe getRememberMe(InvocationContext ic) {
-        return ic.getTarget().getClass().getAnnotation(RememberMe.class);
-    }
-
     private HttpMessageContext getHttpMessageContext(InvocationContext ic) {
         Object[] params = ic.getParameters();
         return (HttpMessageContext) params[2];
     }
 
     private Void interceptCleanSubject(InvocationContext ic) {
-        RememberMe rememberMe = getRememberMe(ic);
         HttpMessageContext httpMessageContext = getHttpMessageContext(ic);
         HttpServletRequest request = httpMessageContext.getRequest();
-        String rememberMeCookie = getRememberMeCookieValue(request, rememberMe.cookieName());
+        RememberMeWrapper rememberMeWrapper = new RememberMeWrapper(ic);
+        String rememberMeCookie = getRememberMeCookieValue(request, rememberMeWrapper.getCookieName());
 
         if (rememberMeCookie != null) {
-            removeCookie(request, httpMessageContext.getResponse(), rememberMe, getELProcessorIfNeeded(ic, rememberMe));
+            removeCookie(request, httpMessageContext.getResponse(), rememberMeWrapper);
             getRememberMeIdentityStore().removeLoginToken(rememberMeCookie);
         }
         return null;
@@ -132,101 +127,137 @@ public class RememberMeInterceptor {
         return (RememberMeIdentityStore) CDIHelper.getBeanFromCurrentModule(RememberMeIdentityStore.class);
     }
 
-    private void removeCookie(HttpServletRequest request, HttpServletResponse response, RememberMe rememberMe, ELProcessor elProcessor) {
-        String cookieName = rememberMe.cookieName();
+    private void removeCookie(HttpServletRequest request, HttpServletResponse response, RememberMeWrapper rememberMeWrapper) {
+        String cookieName = rememberMeWrapper.getCookieName();
         if (!response.isCommitted() && response instanceof IExtendedResponse) {
             ((IExtendedResponse) response).removeCookie(cookieName);
         }
 
-        Cookie rememberMeInvalidationCookie = createCookie(rememberMe, elProcessor, "", 0);
+        Cookie rememberMeInvalidationCookie = createCookie(rememberMeWrapper, "", 0);
         response.addCookie(rememberMeInvalidationCookie);
     }
 
-    private boolean isRememberMe(RememberMe rememberMe, ELProcessor elProcessor) {
-        String isRememberMeExpression = rememberMe.isRememberMeExpression();
-
-        if (isRememberMeExpression.isEmpty()) {
-            return rememberMe.isRememberMe();
-        } else {
-            return processExpression(elProcessor, isRememberMeExpression);
-        }
-    }
-
-    private void setRememberMeCookieInResponse(@Sensitive String rememberMeCookieValue, HttpServletResponse response, RememberMe rememberMe, ELProcessor elProcessor) {
-        Cookie rememberMeCookie = createCookie(rememberMe, elProcessor, rememberMeCookieValue, getCookieMaxAgeInSeconds(rememberMe, elProcessor));
+    private void setRememberMeCookieInResponse(@Sensitive String rememberMeCookieValue, HttpServletResponse response, RememberMeWrapper rememberMeWrapper) {
+        Cookie rememberMeCookie = createCookie(rememberMeWrapper, rememberMeCookieValue, rememberMeWrapper.getCookieMaxAgeInSeconds());
         response.addCookie(rememberMeCookie);
     }
 
-    private int getCookieMaxAgeInSeconds(RememberMe rememberMe, ELProcessor elProcessor) {
-        String cookieMaxAgeSecondsExpression = rememberMe.cookieMaxAgeSecondsExpression();
-
-        if (cookieMaxAgeSecondsExpression.isEmpty()) {
-            return rememberMe.cookieMaxAgeSeconds();
-        } else {
-            return processExpression(elProcessor, cookieMaxAgeSecondsExpression);
-        }
-    }
-
-    private Cookie createCookie(RememberMe rememberMe, ELProcessor elProcessor, @Sensitive String value, int maxAge) {
-        Cookie cookie = new Cookie(rememberMe.cookieName(), value);
+    private Cookie createCookie(RememberMeWrapper rememberMeWrapper, @Sensitive String value, int maxAge) {
+        Cookie cookie = new Cookie(rememberMeWrapper.getCookieName(), value);
         cookie.setMaxAge(maxAge);
         cookie.setPath("/");
-        cookie.setSecure(isSecure(rememberMe, elProcessor));
-        cookie.setHttpOnly(isHttpOnly(rememberMe, elProcessor));
+        cookie.setSecure(rememberMeWrapper.isSecure());
+        cookie.setHttpOnly(rememberMeWrapper.isHttpOnly());
         return cookie;
-    }
-
-    private boolean isSecure(RememberMe rememberMe, ELProcessor elProcessor) {
-        String cookieSecureOnlyExpression = rememberMe.cookieSecureOnlyExpression();
-
-        if (cookieSecureOnlyExpression.isEmpty()) {
-            return rememberMe.cookieSecureOnly();
-        } else {
-            return processExpression(elProcessor, cookieSecureOnlyExpression);
-        }
-    }
-
-    private boolean isHttpOnly(RememberMe rememberMe, ELProcessor elProcessor) {
-        String cookieHttpOnlyExpression = rememberMe.cookieHttpOnlyExpression();
-
-        if (cookieHttpOnlyExpression.isEmpty()) {
-            return rememberMe.cookieHttpOnly();
-        } else {
-            return processExpression(elProcessor, cookieHttpOnlyExpression);
-        }
-    }
-
-    private ELProcessor getELProcessorIfNeeded(InvocationContext ic, RememberMe rememberMe) {
-        ELProcessor elProcessor = null;
-        if (isAnyELExpressionSet(rememberMe)) {
-            elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
-            elProcessor.defineBean("httpMessageContext", getHttpMessageContext(ic));
-            elProcessor.defineBean("self", ic.getTarget());
-        }
-        return elProcessor;
-    }
-
-    private boolean isAnyELExpressionSet(RememberMe rememberMe) {
-        return !(rememberMe.isRememberMeExpression().isEmpty() &&
-                 rememberMe.cookieSecureOnlyExpression().isEmpty() &&
-                 rememberMe.cookieMaxAgeSecondsExpression().isEmpty() &&
-                 rememberMe.cookieHttpOnlyExpression().isEmpty());
     }
 
     protected ELProcessor getELProcessorWithAppModuleBeanManagerELResolver() {
         return CDIHelper.getELProcessor();
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T processExpression(ELProcessor elProcessor, String expression) {
-        return (T) elProcessor.eval(removeBrackets(expression));
-    }
+    private class RememberMeWrapper {
 
-    private String removeBrackets(String expression) {
-        if ((expression.startsWith("${") || expression.startsWith("#{")) && expression.endsWith("}")) {
-            expression = expression.substring(2, expression.length() - 1);
+        private final RememberMe rememberMe;
+        private final ELProcessor elProcessor;
+
+        // Save only these two attributes since they are the only ones that are read repeatedly.
+        private String cookieName = null;
+        private Boolean isSecure = null;
+
+        public RememberMeWrapper(InvocationContext ic) {
+            rememberMe = getRememberMe(ic);
+            elProcessor = getELProcessorIfNeeded(ic, rememberMe);
         }
-        return expression;
+
+        private RememberMe getRememberMe(InvocationContext ic) {
+            return ic.getTarget().getClass().getAnnotation(RememberMe.class);
+        }
+
+        private ELProcessor getELProcessorIfNeeded(InvocationContext ic, RememberMe rememberMe) {
+            ELProcessor elProcessor = null;
+            if (isAnyELExpressionSet(rememberMe)) {
+                elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
+                elProcessor.defineBean("httpMessageContext", getHttpMessageContext(ic));
+                elProcessor.defineBean("self", ic.getTarget());
+            }
+            return elProcessor;
+        }
+
+        private boolean isAnyELExpressionSet(RememberMe rememberMe) {
+            return rememberMe.isRememberMeExpression().isEmpty() == false ||
+                   rememberMe.cookieSecureOnlyExpression().isEmpty() == false ||
+                   rememberMe.cookieMaxAgeSecondsExpression().isEmpty() == false ||
+                   rememberMe.cookieHttpOnlyExpression().isEmpty() == false ||
+                   rememberMe.cookieName().startsWith("${") ||
+                   rememberMe.cookieName().startsWith("#{");
+        }
+
+        public int getCookieMaxAgeInSeconds() {
+            String cookieMaxAgeSecondsExpression = rememberMe.cookieMaxAgeSecondsExpression();
+
+            if (cookieMaxAgeSecondsExpression.isEmpty()) {
+                return rememberMe.cookieMaxAgeSeconds();
+            } else {
+                return processExpression(elProcessor, cookieMaxAgeSecondsExpression);
+            }
+        }
+
+        public String getCookieName() {
+            if (cookieName == null) {
+                cookieName = rememberMe.cookieName();
+
+                if (cookieName.startsWith("${") || cookieName.startsWith("#{")) {
+                    cookieName = processExpression(elProcessor, cookieName);
+                }
+            }
+            return cookieName;
+        }
+
+        public boolean isHttpOnly() {
+            String cookieHttpOnlyExpression = rememberMe.cookieHttpOnlyExpression();
+
+            if (cookieHttpOnlyExpression.isEmpty()) {
+                return rememberMe.cookieHttpOnly();
+            } else {
+                return processExpression(elProcessor, cookieHttpOnlyExpression);
+            }
+        }
+
+        public boolean isSecure() {
+            if (isSecure == null) {
+                String cookieSecureOnlyExpression = rememberMe.cookieSecureOnlyExpression();
+
+                if (cookieSecureOnlyExpression.isEmpty()) {
+                    isSecure = rememberMe.cookieSecureOnly();
+                } else {
+                    isSecure = processExpression(elProcessor, cookieSecureOnlyExpression);
+                }
+            }
+            return isSecure;
+        }
+
+        public boolean isRememberMe() {
+            String isRememberMeExpression = rememberMe.isRememberMeExpression();
+
+            if (isRememberMeExpression.isEmpty()) {
+                return rememberMe.isRememberMe();
+            } else {
+                return processExpression(elProcessor, isRememberMeExpression);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T> T processExpression(ELProcessor elProcessor, String expression) {
+            return (T) elProcessor.eval(removeBrackets(expression));
+        }
+
+        private String removeBrackets(String expression) {
+            if ((expression.startsWith("${") || expression.startsWith("#{")) && expression.endsWith("}")) {
+                expression = expression.substring(2, expression.length() - 1);
+            }
+            return expression;
+        }
+
     }
 
 }

@@ -269,7 +269,15 @@ zrestartowana, \
 poniewa\u017c pami\u0119\u0107 podr\u0119czna platformy nie by\u0142a zsynchronizowana.
 info.frameworkRestart.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: Nie jest uruchomiona poprawna \
+wersja \u015brodowiska Java. \u015arodowisko wykonawcze wymaga \u015brodowiska Java 7 lub \
+nowszego.
+error.badVersion.explanation=Uruchomiona jest nieobs\u0142ugiwana \
+wersja \u015brodowiska Java lub zmienna systemowa JAVA_HOME jest ustawiona tak, \u017ce \
+wskazuje starsz\u0105 wersj\u0119 \u015brodowiska Java.
+error.badVersion.useraction= Zaktualizuj \u015brodowisko Java do \
+wersji 7 lub dopasuj zmienn\u0105 systemow\u0105 JAVA_HOME tak, aby wskazywa\u0142a \u015brodowisko \
+Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: Po\u0142o\u017cenie uruchamiania nie \
 jest plikiem lokalnym. ({0})
@@ -896,16 +904,13 @@ warning.variable.invalid=CWWKE0941W: Deklaracja zmiennej {0} okre\u015blona w pl
 warning.variable.invalid.explanation=W nazwach zmiennych okre\u015blonych w pliku server.env dozwolone s\u0105 tylko znaki alfanumeryczne.
 warning.variable.invalid.useraction=Zmodyfikuj nazw\u0119 zmiennej, u\u017cywaj\u0105c tylko znak\u00f3w alfanumerycznych, albo przenie\u015b definicj\u0119 zmiennej do pliku bootstrap.properties.
 
-error.zosProcStart.procedure.invalid=CWWKE0942E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}. Nazwa procedury jest niepoprawna. \
-Upewnij si\u0119, \u017ce nazwa procedury ma maksymalnie 8 znak\u00f3w i nie zawiera przecinka.
+error.zosProcStart.procedure.invalid=CWWKE0942E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}. Nazwa procedury jest niepoprawna. Upewnij si\u0119, \u017ce nazwa procedury ma maksymalnie 8 znak\u00f3w i nie zawiera przecinka.
 error.zosProcStart.procedure.invalid.explanation=Nazwa procedury \
 STC podana we w\u0142a\u015bciwo\u015bci WLP_ZOS_PROCEDURE w pliku server.env jest niepoprawna. Nazwa procedury \
 mo\u017ce zawiera\u0107 maksymalnie 8 znak\u00f3w i nie mo\u017ce zawiera\u0107 przecinka.
 error.zosProcStart.procedure.invalid.useraction=Sprawd\u017a, czy nazwa procedury nie jest d\u0142u\u017csza ni\u017c 8 znak\u00f3w i czy nie zawiera przecinka.
 
-error.zosProcStart.jobname.invalid=CWWKE0943E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}.  \
-Nazwa zadania {1} jest niepoprawna. \
-Upewnij si\u0119, \u017ce nazwa zadania ma maksymalnie 8 znak\u00f3w i nie zawiera przecinka.
+error.zosProcStart.jobname.invalid=CWWKE0943E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}. Nazwa zadania {1} jest niepoprawna. Upewnij si\u0119, \u017ce nazwa zadania ma maksymalnie 8 znak\u00f3w i nie zawiera przecinka.
 error.zosProcStart.jobname.invalid.explanation=Nazwa zadania STC podana \
 we w\u0142a\u015bciwo\u015bci WLP_ZOS_JOBNAME w pliku server.env jest niepoprawna. Nazwa zadania mo\u017ce zawiera\u0107 \
 maksymalnie 8 znak\u00f3w i nie mo\u017ce zawiera\u0107 przecinka.

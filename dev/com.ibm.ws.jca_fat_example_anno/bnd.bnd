@@ -16,7 +16,7 @@ src: \
 	test-applications/ExampleApp/src,\
 	test-resourceadapter/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
