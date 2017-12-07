@@ -8,14 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.opentracing.cdi;
+package org.eclipse.microprofile.opentracing;
 
-import javax.enterprise.inject.spi.Extension;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import javax.interceptor.InterceptorBinding;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {}
+@Inherited
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ METHOD, TYPE })
+public @interface Traced {
+
+}

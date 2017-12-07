@@ -1,0 +1,21 @@
+=========================================================================
+==  NOTICE file corresponding to section 4(d) of the Apache License,   ==
+==  Version 2.0, in this case for Microprofile Config                  ==
+=========================================================================
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+Portions of this software were originally based on the following:
+* Apache DeltaSpike Config
+  https://deltaspike.apache.org
+  under Apache License, v2.0
+
+SPDXVersion: SPDX-2.1
+PackageName: Eclipse Microprofile
+PackageHomePage: http://www.eclipse.org/microprofile
+PackageLicenseDeclared: Apache-2.0
+
+PackageCopyrightText: <text>
+Steve Fontes steve.m.fontes@gmail.com
+</text>
