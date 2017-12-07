@@ -57,11 +57,9 @@ public class ProbeExtensionArchive extends AbstractCDIArchive implements Extensi
 
     /**
      * {@inheritDoc}
-     *
-     * @throws CDIException
      */
     @Override
-    public ClassLoader getClassLoader() throws CDIException {
+    public ClassLoader getClassLoader() {
         ClassLoader classLoader = this.probeClass.getClassLoader();
         if (classLoader == null) {
             classLoader = application.getClassLoader();

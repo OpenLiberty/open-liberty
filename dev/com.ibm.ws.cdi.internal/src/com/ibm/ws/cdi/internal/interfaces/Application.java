@@ -39,9 +39,8 @@ public interface Application {
      * Get the Application ClassLoader
      *
      * @return the Application ClassLoader
-     * @throws CDIException
      */
-    ClassLoader getClassLoader() throws CDIException;
+    ClassLoader getClassLoader();
 
     /**
      * Get the type of the application (currently either EAR or WAR)
