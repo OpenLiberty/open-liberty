@@ -20,7 +20,6 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
@@ -38,8 +37,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class BasicAuthenticationMechanismTest extends BasicAuthenticationMechanismSingleISTest {
-
-    private static EmbeddedApacheDS ldapServer = null;
 
     @Rule
     public TestName name = new TestName();
