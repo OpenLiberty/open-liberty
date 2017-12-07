@@ -30,6 +30,11 @@
       <connectionManager maxPoolSize="1"/>
       <properties.DerbyRA userName="DS1USER" password="{xor}GwxuDwgb" xaSuccessLimit="0"/>
     </connectionFactory>
+    
+    <connectionFactory jndiName="eis/ds4">
+      <connectionManager enableSharingForDirectLookups="false"/>
+      <properties.DerbyRA user="DS1USER" password="{xor}GwxuDwgb"/>
+    </connectionFactory>
 
     <adminObject jndiName="eis/bootstrapContext">
       <properties.DerbyRA.BootstrapContext/>

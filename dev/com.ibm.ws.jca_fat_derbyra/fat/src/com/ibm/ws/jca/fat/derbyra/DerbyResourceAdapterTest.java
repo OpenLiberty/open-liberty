@@ -162,4 +162,9 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     public void testConnPoolStatsExceptionInDestroy() throws Exception {
         runTest(DerbyRAServlet);
     }
+
+    @Test
+    public void testErrorInFreeConn() throws Exception {
+        runTest(DerbyRAServlet);
+    }
 }

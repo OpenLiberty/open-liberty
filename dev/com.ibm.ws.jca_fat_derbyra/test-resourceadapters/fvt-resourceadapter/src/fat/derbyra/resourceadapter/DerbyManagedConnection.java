@@ -185,7 +185,7 @@ public class DerbyManagedConnection implements LocalTransaction, ManagedConnecti
         return xares;
     }
 
-    void notify(int eventType, DerbyConnection conHandle, Exception failure) {
+    public void notify(int eventType, DerbyConnection conHandle, Exception failure) {
         ConnectionEvent event = new ConnectionEvent(this, eventType, failure);
         event.setConnectionHandle(conHandle);
         for (ConnectionEventListener listener : listeners)

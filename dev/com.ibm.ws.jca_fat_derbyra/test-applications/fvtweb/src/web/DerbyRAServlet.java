@@ -11,8 +11,11 @@
 package web;
 
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Iterator;
@@ -429,6 +432,38 @@ public class DerbyRAServlet extends FATServlet {
             if (conn != null)
                 conn.close();
         }
+    }
+
+    public void testErrorInFreeConn() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("eis/ds3");
+        Object managedConn = null;
+        Connection con = null;
+        Class<?> derbyConnClass = null;
+        try {
+            con = ds.getConnection();
+            derbyConnClass = con.getClass();
+            Field f = derbyConnClass.getDeclaredField("mc");
+            managedConn = f.get(con);
+            Statement stmt = con.createStatement();
+            stmt.close();
+        } finally {
+            con.close();
+        }
+
+        SQLException sqe = new SQLException("APP_SPECIFIED_CONN_ERROR");
+
+        Class<?> c = managedConn.getClass();
+        Method m = c.getMethod("notify", int.class, derbyConnClass, Exception.class);
+        m.invoke(managedConn, 5, con, sqe); //5 indicates connection error
+
+        String contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds3").getObjectName(), "showPoolContents", null, null);
+        int begin = contents.indexOf("size=");
+        int end = contents.indexOf(System.lineSeparator(), begin);
+        int poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
+
+        //After the error, there should be 0 connections in the pool.
+        if (poolSizeAfterError != 0)
+            throw new Exception("Unexpected number of connections found.  Expected 0 but found " + poolSizeAfterError);
     }
 
     private int getMonitorData(ObjectName name, String attribute) throws Exception {
