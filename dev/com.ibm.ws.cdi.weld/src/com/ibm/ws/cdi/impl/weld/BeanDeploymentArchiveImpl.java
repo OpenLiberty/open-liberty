@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -83,8 +82,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Set<String> allClassNames = new HashSet<String>();
 
     //sorted maps
-    private final Map<String, Class<?>> allClasses = new TreeMap<String, Class<?>>();
-    private final Map<String, Class<?>> beanClasses = new TreeMap<String, Class<?>>();
+    private final Set<String> allClasses = new HashSet<String>();
+    private final Set<String> beanClasses = new HashSet<String>();
+    private final ClassLoader classloader;
 
     private final Set<Class<?>> ejbClasses = new HashSet<Class<?>>();
     private final Set<Class<?>> managedBeanClasses = new HashSet<Class<?>>();
@@ -150,6 +150,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         this.id = archiveID;
         this.eeModuleDescptorId = eeModuleDescptorId == null ? archiveID : eeModuleDescptorId;
         this.archive = archive;
+        this.classloader = archive.getClassLoader();
         this.cdiDeployment = cdiDeployment;
         this.extensionCanSeeApplicationBDAs = extensionCanSeeApplicationBDAs;
 
@@ -297,8 +298,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             ClassLoader classLoader = archive.getClassLoader();
 
             //first load all the classes in the BDA, including any configured additional classes
-            this.allClasses.putAll(CDIUtils.loadClasses(classLoader, this.allClassNames));
-            this.allClasses.putAll(CDIUtils.loadClasses(classLoader, this.additionalClasses));
+
+            /*
+             * this.allClasses.putAll(CDIUtils.loadClasses(classLoader, this.allClassNames));
+             * this.allClasses.putAll(CDIUtils.loadClasses(classLoader, this.additionalClasses));
+             */
 
             //scan the children
             for (WebSphereBeanDeploymentArchive child : accessibleBDAs) {
@@ -312,11 +316,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
             //and pull out the corresponding classes
             for (String className : rawBeanclassNames) {
-                Class<?> clazz = this.allClasses.get(className);
-                if (clazz != null) {
-                    if (clazz.getClassLoader() == classLoader || !isAccessibleBean(clazz)) {
-                        this.beanClasses.put(className, clazz);
-                    }
+
+                if (this.allClasses.contains(className)) {
+                    this.beanClasses.add(className);
                 }
             }
 
@@ -334,7 +336,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         }
     }
 
-    private boolean isAccessibleBean(Class<?> beanClass) {
+    private boolean isAccessibleBean(String beanClass) {
         boolean accessibleBean = false;
         for (WebSphereBeanDeploymentArchive child : accessibleBDAs) {
             if (child.containsBeanClass(beanClass)) {
@@ -374,7 +376,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private void initializeInjectionClasses() throws CDIException {
         Set<Class<?>> classes = new HashSet<Class<?>>();
 
-        classes.addAll(this.beanClasses.values());
+        //load the class now
+        classes.addAll(CDIUtils.loadClasses(this.archive.getClassLoader(), this.beanClasses).values());
 
         if (archive.getType() == ArchiveType.CLIENT_MODULE) {
             Map<String, Class<?>> clientClasses = getClientContainerManagedClasses();
@@ -398,11 +401,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         //it will soon include WebSockets as well
 
         List<String> jeeComponentClassNames = archive.getInjectionClassList();
-        for (Map.Entry<String, Class<?>> entry : this.allClasses.entrySet()) {
+        for (String className : this.allClasses) {
 
-            String className = entry.getKey();
-            Class<?> clazz = entry.getValue();
-
+            Class<?> clazz = CDIUtils.loadClass(classloader, className);
             if (jeeComponentClassNames.contains(className)) {
                 classes.add(clazz);
             }
@@ -461,11 +462,14 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     for (ManagedBeanDescriptor<?> managedBeanDescriptor : managedBeanDescriptors) {
                         boolean added = false;
                         for (WebSphereBeanDeploymentArchive child : getWebSphereBeanDeploymentArchives()) {
-                            if ((child.getAllClazzes().containsKey(managedBeanDescriptor.getBeanClass().getName()))
-                                && (child.getAllClazzes().containsValue(managedBeanDescriptor.getBeanClass()))) {
-                                child.addManagedBeanDescriptor(managedBeanDescriptor);
-                                added = true;
-                                break;
+                            if (child.getAllClazzes().contains(managedBeanDescriptor.getBeanClass().getName())) {
+                                Class<?> clazz = CDIUtils.loadClass(classloader, managedBeanDescriptor.getBeanClass().getName());
+                                if (clazz == managedBeanDescriptor.getBeanClass()) {
+
+                                    child.addManagedBeanDescriptor(managedBeanDescriptor);
+                                    added = true;
+                                    break;
+                                }
                             }
                         }
                         if (!added) {
@@ -476,11 +480,13 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     for (EjbDescriptor<?> ejbDescriptor : ejbDescriptors) {
                         boolean added = false;
                         for (WebSphereBeanDeploymentArchive child : getWebSphereBeanDeploymentArchives()) {
-                            if ((child.getAllClazzes().containsKey(ejbDescriptor.getBeanClass().getName()))
-                                && (child.getAllClazzes().containsValue(ejbDescriptor.getBeanClass()))) {
-                                child.addEjbDescriptor(ejbDescriptor);
-                                added = true;
-                                break;
+                            if (child.getAllClazzes().contains(ejbDescriptor.getBeanClass().getName())) {
+                                Class<?> clazz = CDIUtils.loadClass(classloader, ejbDescriptor.getBeanClass().getName());
+                                if (clazz == ejbDescriptor.getBeanClass()) {
+                                    child.addEjbDescriptor(ejbDescriptor);
+                                    added = true;
+                                    break;
+                                }
                             }
                         }
                         if (!added) {
@@ -590,26 +596,21 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Trivial
     // This is marked trivial because it's called when iterating over all BDAs to look
     // for a single class which causes lots of noise in the trace without adding any value
-    public Map<String, Class<?>> getAllClazzes() {
+    public Set<String> getAllClazzes() {
         return allClasses;
     }
 
     @Override
     public Collection<String> getBeanClasses() {
-        return beanClasses.keySet();
+        return beanClasses;
     }
 
     @Override
-    public boolean containsBeanClass(Class<?> clazz) {
+    public boolean containsBeanClass(String clazz) {
         //check to see whether it contains this class
         boolean containsBeanClass = false;
 
-        Class<?> beanClass = beanClasses.get(clazz.getName());
-        if (beanClass != null && clazz.equals(beanClass)) {
-            containsBeanClass = true;
-        }
-
-        return containsBeanClass;
+        return beanClasses.contains(clazz);
     }
 
     /*
@@ -800,7 +801,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
             this.ejbDescriptors.add(ejbDescriptor);
             Class<?> beanClass = ejbDescriptor.getBeanClass();
-            this.beanClasses.put(beanClass.getName(), beanClass);
+            this.beanClasses.add(beanClass.getName());
             this.ejbClasses.add(beanClass);
             Set<EjbDescriptor<?>> ejbDescriptors = ejbDescriptorMap.get(beanClass);
             if (ejbDescriptors == null) {
@@ -826,9 +827,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     /** {@inheritDoc} */
     @Override
-    public void addToBeanClazzes(Class<?> clazz) {
-        this.beanClasses.put(clazz.getName(), clazz);
-        this.allClasses.put(clazz.getName(), clazz);
+    public void addToBeanClazzes(String className) {
+        this.beanClasses.add(className);
+        this.allClasses.add(className);
     }
 
     @Override
@@ -838,11 +839,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         //jeeComponentClasses is per module but we have multiple bdas per module
         //so if the class is not directly in this bda, check the descendant bdas
         for (Class<?> clazz : jeeComponentClasses) {
-            if (allClasses.containsKey(clazz.getName())) {
+            if (allClasses.contains(clazz.getName())) {
                 createInjectionTargetsForJEEComponentClass(clazz);
             } else {
                 for (WebSphereBeanDeploymentArchive child : getDescendantBdas()) {
-                    if (child.getAllClazzes().containsKey(clazz.getName())) {
+                    if (child.getAllClazzes().contains(clazz.getName())) {
                         child.createInjectionTargetsForJEEComponentClass(clazz);
                         break;
                     }
