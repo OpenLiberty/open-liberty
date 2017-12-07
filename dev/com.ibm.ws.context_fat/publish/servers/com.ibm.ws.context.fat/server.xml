@@ -13,5 +13,7 @@
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission className="java.lang.RuntimePermission" name="createSecurityManager"/>
     <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+    <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="register,get"/>
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 </server>
