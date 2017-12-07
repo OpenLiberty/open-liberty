@@ -112,7 +112,7 @@ public class ApplicationImpl implements Application {
         return getApplicationClassesContainerInfo() != null;
     }
 
-    private ClassLoader getApplicationClassLoader() throws CDIException {
+    private ClassLoader getApplicationClassLoader() {
         ClassLoader classLoader;
         if (this.type == ApplicationType.EAR) {
             classLoader = this.earApplicationInfo.getApplicationClassLoader();
@@ -208,7 +208,7 @@ public class ApplicationImpl implements Application {
 
     /** {@inheritDoc} */
     @Override
-    public ClassLoader getClassLoader() throws CDIException {
+    public ClassLoader getClassLoader() {
         return getApplicationClassLoader();
     }
 
