@@ -20,11 +20,10 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
-import com.ibm.ws.security.javaeesec.fat_singleIS.HttpAuthenticationMechanismSingleISTest;
+import com.ibm.ws.security.javaeesec.fat_singleIS.BasicAuthenticationMechanismSingleISTest;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,9 +36,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class HttpAuthenticationMechanismTest extends HttpAuthenticationMechanismSingleISTest {
-
-    private static EmbeddedApacheDS ldapServer = null;
+public class BasicAuthenticationMechanismTest extends BasicAuthenticationMechanismSingleISTest {
 
     @Rule
     public TestName name = new TestName();
