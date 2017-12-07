@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_WAR;
 import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container_EJB;
 import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container_WAR;
@@ -40,12 +41,14 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
 
     //
 
+    @Trivial
     public ClassSourceImpl_Factory(UtilImpl_Factory utilFactory) {
         super();
 
@@ -55,7 +58,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
         this.utilFactory = utilFactory;
 
-        if (tc.isDebugEnabled()) {
+        if ( tc.isDebugEnabled() ) {
             Tr.debug(methodName, tc, MessageFormat.format("[ {0} ] Created",
                                                           this.hashText));
             Tr.debug(methodName, tc, MessageFormat.format("[ {0} ] Util Factory [ {1} ]",
@@ -68,6 +71,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     protected final UtilImpl_Factory utilFactory;
 
     @Override
+    @Trivial
     public UtilImpl_Factory getUtilFactory() {
         return utilFactory;
     }
@@ -75,13 +79,14 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     @Override
+    @Trivial
     public ClassSource_Exception newClassSourceException(String message) {
         ClassSource_Exception exception = new ClassSource_Exception(message);
-
         return exception;
     }
 
     @Override
+    @Trivial
     public ClassSource_Exception wrapIntoClassSourceException(String callingClassName,
                                                               String callingMethodName,
                                                               String message, Throwable th) {
@@ -104,6 +109,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     @Override
+    @Trivial
     public String getCanonicalName(String classSourceName) {
         return classSourceName.replace('\\', '/');
     }

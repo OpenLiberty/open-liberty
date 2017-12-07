@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,9 @@ package com.ibm.ws.anno.classsource.internal;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Set;
+
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.Index;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -30,6 +33,11 @@ public abstract class ClassSourceImpl implements ClassSource {
     private static final TraceComponent tc = Tr.register(ClassSourceImpl.class);
     public static final String CLASS_NAME = ClassSourceImpl.class.getName();
 
+    @Trivial
+    protected static long getTime() {
+        return System.currentTimeMillis();
+    }
+
     //
 
     protected final String hashText;
@@ -41,12 +49,14 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     @Override
+    @Trivial
     public String toString() {
         return hashText;
     }
 
     //
 
+    @Trivial
     protected ClassSourceImpl(ClassSourceImpl_Factory factory,
                               Util_InternMap internMap,
                               String name,
@@ -73,10 +83,11 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         this.scanCounts = new ClassSourceImpl_ScanCounts();
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] InternMap [ {1} ]",
-                                              this.hashText, internMap.getHashText()));
-
+        if ( tc.isDebugEnabled() ) {
+            String msg = MessageFormat.format(
+                "[ {0} ] InternMap [ {1} ]",
+                this.hashText, internMap.getHashText());
+            Tr.debug(tc, msg);
         }
     }
 
@@ -129,11 +140,13 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     @Override
+    @Trivial
     public String inconvertResourceName(String externalResourceName) {
         return externalResourceName;
     }
 
     @Override
+    @Trivial
     public String outconvertResourceName(String resourceName) {
         return resourceName;
     }
@@ -148,6 +161,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         return internMap;
     }
 
+    @Trivial
     protected String internClassName(String className) {
         return getInternMap().intern(className);
     }
@@ -175,6 +189,7 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     @Override
+    @Trivial
     public String getClassNameFromResourceName(String resourceName) {
         int endingOffset = resourceName.length() - ClassSource.CLASS_EXTENSION.length();
         String className = resourceName.substring(0, endingOffset);
@@ -184,14 +199,17 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     @Override
+    @Trivial
     public String getResourceNameFromClassName(String className) {
-        return className.replace(ClassSource.CLASS_SEPARATOR_CHAR, RESOURCE_SEPARATOR_CHAR) +
-               ClassSource.CLASS_EXTENSION;
+        return
+            className.replace(ClassSource.CLASS_SEPARATOR_CHAR, RESOURCE_SEPARATOR_CHAR) +
+            ClassSource.CLASS_EXTENSION;
     }
 
     @Override
+    @Trivial
     public String resourceAppend(String head, String tail) {
-        if (head.isEmpty()) {
+        if ( head.isEmpty() ) {
             return tail;
         } else {
             return (head + ClassSource.RESOURCE_SEPARATOR_CHAR + tail);
@@ -212,8 +230,8 @@ public abstract class ClassSourceImpl implements ClassSource {
         scanCounts.increment(resultField);
     }
 
-    protected void addResults(ClassSource_ScanCounts seepCounts) {
-        scanCounts.addResults(seepCounts);
+    protected void addResults(ClassSource_ScanCounts partialScanCounts) {
+        scanCounts.addResults(partialScanCounts);
     }
 
     @Trivial
@@ -221,11 +239,6 @@ public abstract class ClassSourceImpl implements ClassSource {
     public int getResult(ClassSource_ScanCounts.ResultField resultField) {
         return scanCounts.getResult(resultField);
     }
-
-    //
-
-    @Override
-    public abstract void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNamesSet, ScanPolicy scanPolicy);
 
     //
 
@@ -266,20 +279,21 @@ public abstract class ClassSourceImpl implements ClassSource {
      * 
      * @throws ClassSource_Exception Thrown in case of a processing failure.
      */
+    @Trivial
     protected boolean scanClass(ClassSource_Streamer streamer, String className, ScanPolicy scanPolicy)
-                    throws ClassSource_Exception {
+        throws ClassSource_Exception {
 
         String methodName = "scanClass";
         Object[] logParms;
-        if (tc.isEntryEnabled()) {
+        if ( tc.isEntryEnabled() ) {
             logParms = new Object[] { getHashText(), className };
             Tr.entry(tc, methodName, MessageFormat.format("[ {0} ] Name [ {1} ]", logParms));
         } else {
             logParms = null;
         }
 
-        if (!streamer.doProcess(className, scanPolicy)) {
-            if (logParms != null) {
+        if ( !streamer.doProcess(className, scanPolicy) ) {
+            if ( logParms != null ) {
                 Tr.exit(tc, methodName,
                         MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: Filtered by streamer", logParms));
             }
@@ -289,20 +303,20 @@ public abstract class ClassSourceImpl implements ClassSource {
         String resourceName = getResourceNameFromClassName(className);
 
         InputStream inputStream = openResourceStream(className, resourceName); // throws ClassSource_Exception
-        if (inputStream == null) {
-            if (logParms != null) {
+        if ( inputStream == null ) {
+            if ( logParms != null ) {
                 Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: No resource is available", logParms));
             }
             return false;
         }
 
         try {
-            streamer.process(this.getCanonicalName(), className, inputStream, scanPolicy);
+            streamer.process( getCanonicalName(), className, inputStream, scanPolicy );
         } finally {
             closeResourceStream(className, resourceName, inputStream);
         }
 
-        if (logParms != null) {
+        if ( logParms != null ) {
             Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Return [ {1} ] [ true ]", logParms));
         }
         return true;
@@ -315,7 +329,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         String methodName = "i_maybeAdd";
 
         boolean didAdd;
-        if (didAdd = !i_seedClassNamesSet.contains(i_resourceName)) {
+        if ( didAdd = !i_seedClassNamesSet.contains(i_resourceName) ) {
             i_seedClassNamesSet.add(i_resourceName);
         }
 
@@ -324,9 +338,11 @@ public abstract class ClassSourceImpl implements ClassSource {
         // seed class names can be large, and displaying it to trace
         // rather bloats the trace.
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName,
-                     MessageFormat.format("[ {0} ] Resource [ {1} ]: [ {2} ]", getHashText(), i_resourceName, Boolean.valueOf(didAdd)));
+        if ( tc.isDebugEnabled() ) {
+            String msg = MessageFormat.format(
+                "[ {0} ] Resource [ {1} ]: [ {2} ]",
+                getHashText(), i_resourceName, Boolean.valueOf(didAdd));
+            Tr.debug(tc, methodName, msg);
         }
 
         return didAdd;
@@ -336,23 +352,23 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     // Mostly common, but overloaded by mapped jars.
     @Override
+    @Trivial
     public InputStream openClassStream(String className) throws ClassSource_Exception {
         String resourceName = getResourceNameFromClassName(className);
-
         return openResourceStream(className, resourceName); // throws ClassSource_Exception
     }
 
     // Mostly common, but overloaded by mapped jars.
     @Override
+    @Trivial
     public void closeClassStream(String className, InputStream inputStream) {
         String resourceName = getResourceNameFromClassName(className);
-
         closeResourceStream(className, resourceName, inputStream);
     }
 
     @Override
     public abstract InputStream openResourceStream(String className, String resourceName)
-                    throws ClassSource_Exception;
+        throws ClassSource_Exception;
 
     @Override
     public abstract void closeResourceStream(String className, String resourceName, InputStream inputStream);
@@ -417,5 +433,173 @@ public abstract class ClassSourceImpl implements ClassSource {
             Tr.debug(logger, MessageFormat.format("  Excluded classes: [ {0} ]",
                                                   Integer.valueOf(getClassExclusionCount())));
         }
+    }
+
+    //
+
+    @Override
+    public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER", getHashText()));
+        }
+
+        int initialClasses = i_seedClassNames.size();
+        System.out.println(
+            "Processing [ " + getCanonicalName() + " ]" +
+            " Initial classes [ " + Integer.valueOf(initialClasses) + " ]");
+
+        String processCase;
+        if ( !processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
+            processFromScratch(streamer, i_seedClassNames, scanPolicy);
+            processCase = "from scratch";
+        } else {
+            processCase = "from JANDEX";
+        }
+
+        int finalClasses = i_seedClassNames.size();
+        System.out.println("Processing [ " + getCanonicalName() + " ] " + processCase + ";" +
+                           " Final classes [ " + Integer.valueOf(finalClasses) + " ]");
+
+        if ( tc.isDebugEnabled() ) {
+            Object[] logParms = new Object[] { getHashText(), null, null };
+
+            logParms[1] = Integer.valueOf(finalClasses - initialClasses);
+            Tr.debug(tc, MessageFormat.format("[ {0} ] RETURN [ {1} ] Added classes", logParms));
+
+            for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
+                int nextResult = getResult(resultField);
+                String nextResultTag = resultField.getTag();
+
+                logParms[1] = Integer.valueOf(nextResult);
+                logParms[2] = nextResultTag;
+
+                Tr.debug(tc, MessageFormat.format("[ {0} ]  [ {1} ] {2}", logParms));
+            }
+        }
+    }
+
+    /**
+     * <p>Main scan implementation step: Process the classes of this class source.  No cache
+     * data is available.</p>
+     * 
+     * @param streamer The streamer used to process the classes.
+     * @param i_seedClassNames The seed class names.  Updated with new seed class names from the scan.
+     * @param scanPolicy The policy to apply to the scan data.
+     */
+    protected abstract void processFromScratch(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNames,
+        ScanPolicy scanPolicy);
+
+    //
+
+    /**
+     * <p>Answer the path to JANDEX index files.</p>
+     *
+     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.</p>
+     *
+     * @return The relative path to JANDEX index files.
+     */
+    @Trivial
+    public String getJandexIndexPath() {
+        return "META-INF/jandex.ndx";
+    }
+
+    /**
+     * <p>Answer the JANDEX index for this class source.  Answer null if none
+     * is available.</p>
+     * 
+     * @return The JANDEX index for this class source.  This default implementation
+     *     always answers null.
+     */
+    protected Index getJandexIndex() {
+        return null;
+    }
+
+    /**
+     * <p>Attempt to process this class source using cache data.</p>
+     * 
+     * @param streamer The streamer used to process the class source.
+     * @param i_seedClassNames The class names of the class source.
+     * @param scanPolicy The policy of this class source.
+     * 
+     * @return True or false telling if the class was successfully
+     *     processed using cache data.
+     */
+    protected boolean processFromCache(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNames,
+        ScanPolicy scanPolicy) {
+
+        if ( streamer == null ) {
+            return false;
+        }
+
+        Index jandexIndex = getJandexIndex();
+        if ( jandexIndex == null ) {
+            return false;
+        }
+
+        String useClassSourceName = getCanonicalName();
+
+        for ( org.jboss.jandex.ClassInfo nextJandexClassInfo : jandexIndex.getKnownClasses() ) {
+            DotName nextClassDotName = nextJandexClassInfo.name();
+            String nextClassName = nextClassDotName.toString();
+
+            markResult(ClassSource_ScanCounts.ResultField.ENTRY);
+            markResult(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
+            markResult(ClassSource_ScanCounts.ResultField.CLASS);
+
+            // Processing notes:
+            //
+            // Make sure to record the class before attempting processing.
+            //
+            // Only one version of the class is to be processed, even if processing
+            // fails on that one version.
+            //
+            // That is, if two child class sources have versions of a class, and
+            // the version from the first class source is non-valid, the version
+            // of the class in the second class source is still masked by the
+            // version in the first class source.
+
+            String i_nextClassName = internClassName(nextClassName);
+            boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
+
+            if ( !didAdd ) {
+                incrementClassExclusionCount();
+                markResult(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
+
+            } else {
+                incrementClassInclusionCount();
+
+                boolean didProcess;
+
+                if ( !streamer.doProcess(i_nextClassName, scanPolicy) ) {
+                    didProcess = false;
+
+                } else {
+                    try {
+                        didProcess = streamer.process(useClassSourceName, nextJandexClassInfo, scanPolicy);
+                    } catch ( ClassSource_Exception e ) {
+                        didProcess = false;
+                        // TODO: NEW_MESSAGE: Need a new message here.
+                        // String eMsg = "[ " + getHashText() + " ]" +
+                        //               " Failed to process entry [ " + nextEntryName + " ]" +
+                        //               " under root [ " + getJarPath() + " ]" +
+                        //               " for class [ " + nextClassName + " ]";
+                        // CWWKC0044W: An exception occurred while scanning class and annotation data.
+                        Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                    }
+                }
+
+                if ( didProcess ) {
+                    markResult(ClassSource_ScanCounts.ResultField.PROCESSED_CLASS);
+                } else {
+                    markResult(ClassSource_ScanCounts.ResultField.UNPROCESSED_CLASS);
+                }
+            }
+        }
+
+        return true;
     }
 }

@@ -43,6 +43,8 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
         this.scanner = scanner;
         this.targets = scanner.getAnnotationTargets();
 
+        this.jandexConverter = new AnnotationTargetsImpl_JandexConverter(this.targets);
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, MessageFormat.format(" [ {0} ]", this.hashText));
             Tr.debug(tc, MessageFormat.format("  Scanner [ {0} ]", this.scanner.getHashText()));
@@ -75,6 +77,14 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
 
     //
 
+    protected final AnnotationTargetsImpl_JandexConverter jandexConverter;
+
+    protected AnnotationTargetsImpl_JandexConverter getJandexConverter() {
+        return jandexConverter;
+    }
+
+    //
+
     @Override
     public boolean doProcess(String className, ScanPolicy scanPolicy) {
         return true;
@@ -86,5 +96,45 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
     @Override
     public boolean process(String classSourceName, String className, InputStream inputStream, ScanPolicy scanPolicy) {
         return getTargets().scanClass(classSourceName, className, inputStream, scanPolicy);
+    }
+
+    //
+
+    /**
+     * <p>Tell if this streamer supports the processing of JANDEX class information.</p>
+     *
+     * <p>This implementation answers true.</p>
+     *
+     * @return True or false telling if this streamer supports the processing of JANDEX
+     *     class information.
+     */
+    @Override
+    public boolean supportsJandex() {
+        return true;
+    }
+
+    /**
+     * <p>Process the data for the specified class.</p>
+     *
+     * @param classSourceName The name of the class source which contains the class.
+     * @param jandexClassInfo JANDEX class information for the class.
+     * @param scanPolicy The policy active on the class.
+     * 
+     * @return True if the class was processed. Otherwise, false.
+     * 
+     * @throws ClassSource_Exception Thrown if an error occurred while
+     *             testing the specified class.
+     */
+    @Override
+    public boolean process(
+        String classSourceName,
+        org.jboss.jandex.ClassInfo jandexClassInfo,
+        ScanPolicy scanPolicy) throws ClassSource_Exception {
+
+        String i_classSourceName = getTargets().internClassSourceName(classSourceName);
+
+        getJandexConverter().convertClassInfo(i_classSourceName, jandexClassInfo, scanPolicy);
+
+        return true;
     }
 }
