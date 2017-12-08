@@ -12,15 +12,13 @@ package com.ibm.ws.microprofile.openapi;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -32,29 +30,21 @@ public class StaticFileProcessor {
 
     private static final TraceComponent tc = Tr.register(StaticFileProcessor.class);
 
-    private static final String META_INF_OPENAPI = "META-INF/openapi";
-
-    public static boolean isYamlJsonFile(String filename) {
-        if (filename.endsWith(".yaml") || filename.endsWith(".yml")) {
-            return true;
-        }
-        if (filename.endsWith(".json")) {
-            return true;
-        }
-        return false;
-    }
-
     @FFDCIgnore(IOException.class)
     public static String getOpenAPIFile(Container container) {
         String result = null;
-        Set<Entry> folderEntries = getOpenAPIFolderEntries(container);
-        if (folderEntries == null) {
+        Entry openAPIFileEntry = container.getEntry("META-INF/openapi.yaml");
+        if (openAPIFileEntry == null) {
+            openAPIFileEntry = container.getEntry("META-INF/openapi.yml");
+        }
+        if (openAPIFileEntry == null) {
+            openAPIFileEntry = container.getEntry("META-INF/openapi.json");
+        }
+
+        if (openAPIFileEntry == null) {
             return null;
         }
-        Entry openAPIFileEntry = getOpenAPIFolderEntries(container).stream().filter(entry -> isYamlJsonFile(entry.getName())).findFirst().orElse(null);
-        if (openAPIFileEntry == null) {
-            return result;
-        }
+
         InputStream is = entryToInputStream(openAPIFileEntry);
         if (is == null) {
             return result;
@@ -63,41 +53,21 @@ public class StaticFileProcessor {
         try {
             result = IOUtils.toString(is, "UTF-8");
         } catch (IOException e) {
-            Tr.event(tc, "Unable to read openapi file into a string");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+
+                Tr.event(tc, "Unable to read openapi file into a string");
+            }
         } finally {
             try {
                 is.close();
             } catch (IOException e) {
-                Tr.event(tc, "Failed to close openapi file InputSteam");
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to close openapi file InputSteam");
+                }
             }
         }
 
         return result;
-    }
-
-    @FFDCIgnore(UnableToAdaptException.class)
-    public static Set<Entry> getOpenAPIFolderEntries(Container container) {
-        Set<Entry> result = null;
-        if (container == null) {
-            return result;
-        }
-        Entry openAPIFolderEntry = container.getEntry(META_INF_OPENAPI);
-        if (openAPIFolderEntry == null) {
-            return result;
-        }
-        Container openAPIFolderContainer = null;
-        try {
-            openAPIFolderContainer = openAPIFolderEntry.adapt(Container.class);
-        } catch (UnableToAdaptException e) {
-            Tr.event(tc, "Unable to adapt openapi folder into a container");
-        }
-        if (openAPIFolderContainer == null)
-            return result;
-        result = new HashSet<>();
-        for (Entry entry : openAPIFolderContainer) {
-            result.add(entry);
-        }
-        return Collections.unmodifiableSet(result);
     }
 
     public static InputStream entryToInputStream(Entry entry) {
@@ -107,7 +77,9 @@ public class StaticFileProcessor {
             InputStream is = entry.adapt(InputStream.class);
             return is;
         } catch (UnableToAdaptException e) {
-            Tr.event(tc, "Unable to adapt {0} to InputStream", entry.getName());
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Unable to adapt {0} to InputStream", entry.getName());
+            }
         }
         return null;
     }

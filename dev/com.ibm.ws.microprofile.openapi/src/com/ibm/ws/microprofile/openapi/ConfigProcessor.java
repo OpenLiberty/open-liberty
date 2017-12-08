@@ -17,6 +17,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 public class ConfigProcessor {
 
@@ -50,7 +51,9 @@ public class ConfigProcessor {
             openAPIFilterClassName = config.getOptionalValue(MP_OPENAPI_FILTER, String.class).orElse(null);
 
         } catch (IllegalArgumentException e) {
-
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to read config: " + e.getMessage());
+            }
         }
     }
 
@@ -64,6 +67,8 @@ public class ConfigProcessor {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
         builder.append(MP_OPENAPI_MODEL_READER + "=" + modelReaderClassName + "\n");
+        builder.append(MP_OPENAPI_FILTER + "=" + openAPIFilterClassName + "\n");
+        builder.append(MP_OPENAPI_SCAN_DISABLE + "=" + scanDisabled + "\n");
         builder.append("}\n");
         return builder.toString();
     }

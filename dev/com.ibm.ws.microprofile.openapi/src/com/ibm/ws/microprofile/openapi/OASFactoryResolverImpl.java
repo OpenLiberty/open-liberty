@@ -123,7 +123,6 @@ public class OASFactoryResolverImpl extends OASFactoryResolver {
 
     public void activate(ComponentContext cc) {
         OASFactoryResolver.setInstance(this);
-        System.out.println("OpenAPI Factory resolver started at: " + System.currentTimeMillis());
     }
 
     @SuppressWarnings("unchecked")

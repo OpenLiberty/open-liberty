@@ -28,6 +28,18 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
 
+    public static boolean isDebugEnabled(TraceComponent tc) {
+        return TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+    }
+
+    public static boolean isEventEnabled(TraceComponent tc) {
+        return TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled();
+    }
+
+    public static boolean isDumpEnabled(TraceComponent tc) {
+        return TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
+    }
+
     @FFDCIgnore(UnableToAdaptException.class)
     public static WebModuleInfo getWebModuleInfo(Container container) {
         WebModuleInfo moduleInfo = null;
@@ -35,7 +47,9 @@ public class OpenAPIUtils {
         try {
             overlayCache = container.adapt(NonPersistentCache.class);
         } catch (UnableToAdaptException e) {
-            //TODO: add tracing
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to get web module info: " + e.getMessage());
+            }
             return null;
         }
         if (overlayCache != null) {
@@ -50,7 +64,9 @@ public class OpenAPIUtils {
             AnnotationScanner scanner = new AnnotationScanner(classloader, cotainer);
             return scanner;
         } catch (UnableToAdaptException e) {
-            //TODO: add tracing
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to create annotation scanner: " + e.getMessage());
+            }
             return null;
         }
     }
@@ -59,7 +75,6 @@ public class OpenAPIUtils {
     @FFDCIgnore({ ClassNotFoundException.class, InstantiationException.class, IllegalAccessException.class })
     public static OASModelReader getOASModelReader(ClassLoader appClassloader, String OASModelReaderClassName) {
         if (appClassloader == null || OASModelReaderClassName == null || OASModelReaderClassName.isEmpty()) {
-            //TODO: add tracing
             return null;
         }
         try {
@@ -71,11 +86,13 @@ public class OpenAPIUtils {
                 return modelReader;
             }
         } catch (ClassNotFoundException e) {
-            //TODO: add tracing
+            Tr.event(tc, "Failed to find class for model: " + OASModelReaderClassName);
         } catch (InstantiationException e) {
-            //TODO: add tracing
+            Tr.event(tc, "Failed to instantiate class for model: " + OASModelReaderClassName);
         } catch (IllegalAccessException e) {
-            //TODO: add tracing
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to access class for model: " + OASModelReaderClassName);
+            }
         }
         return null;
     }
@@ -84,7 +101,6 @@ public class OpenAPIUtils {
     @FFDCIgnore({ ClassNotFoundException.class, InstantiationException.class, IllegalAccessException.class })
     public static OASFilter getOASFilter(ClassLoader appClassloader, String OASFilterClassName) {
         if (appClassloader == null || OASFilterClassName == null || OASFilterClassName.isEmpty()) {
-            //TODO: add tracing
             return null;
         }
         try {
@@ -96,11 +112,17 @@ public class OpenAPIUtils {
                 return oasFilter;
             }
         } catch (ClassNotFoundException e) {
-            //TODO: add tracing
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to find class for filter: " + OASFilterClassName);
+            }
         } catch (InstantiationException e) {
-            //TODO: add tracing
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to instantiate class for filter: " + OASFilterClassName);
+            }
         } catch (IllegalAccessException e) {
-            //TODO: add tracing
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to access class for filter: " + OASFilterClassName);
+            }
         }
         return null;
     }

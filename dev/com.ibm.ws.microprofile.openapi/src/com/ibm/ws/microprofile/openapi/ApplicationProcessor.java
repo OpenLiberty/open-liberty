@@ -25,6 +25,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -47,6 +49,8 @@ import com.ibm.wsspi.http.VirtualHost;
  */
 @Component(service = { ApplicationProcessor.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
 public class ApplicationProcessor {
+
+    private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);
 
     enum DocType {
         JSON,
@@ -101,7 +105,9 @@ public class ApplicationProcessor {
                         newDocument = model;
                     }
                 } catch (Throwable e) {
-                    //TODO: add tracing
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Failed to construct model from the application: " + e.getMessage());
+                    }
                 }
             }
 
@@ -127,14 +133,22 @@ public class ApplicationProcessor {
 
             if (oasFilter != null) {
                 OpenAPIModelWalker walker = new OpenAPIModelWalker(newDocument);
-                walker.accept(new OpenAPIFilter(oasFilter));
+                try {
+                    walker.accept(new OpenAPIFilter(oasFilter));
+                } catch (Throwable e) {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
+                    }
+                }
             }
 
             if (isOASApp && currentApp == null) {
                 this.currentApp = appInfo;
                 this.serverInfo.setApplicationPath(contextRoot);
-                System.out.println(this);
-                System.out.println("Generated new document");
+
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Received new document");
+                }
                 this.document = newDocument;
             }
         }
@@ -147,7 +161,6 @@ public class ApplicationProcessor {
                 currentApp = null;
                 this.serverInfo.setApplicationPath(null);
                 this.document = createBaseOpenAPIDocument();
-                System.out.println("Reset document to base one");
             }
         }
     }
@@ -164,7 +177,9 @@ public class ApplicationProcessor {
                     oasResult = Json.mapper().writeValueAsString(this.document);
                 }
             } catch (JsonProcessingException e) {
-
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Failed to serialize OpenAPI docuemnt: " + e.getMessage());
+                }
             }
         }
         return oasResult;
@@ -191,13 +206,13 @@ public class ApplicationProcessor {
         Object value = props.get("httpsAlias");
         if (value == null) {
             String[] aliases = (String[]) props.get("aliases");
-            //if (OpenAPIUtils.isDebugEnabled.test(tc)) {
-            //    Tr.debug(this, tc, "httpsAlias is null. aliases : " + String.join(", ", aliases));
-            //}
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.debug(this, tc, "httpsAlias is null. aliases : " + String.join(", ", aliases));
+            }
             value = Arrays.stream(aliases).filter(a -> !a.endsWith(":-1")).findFirst().orElse(null);
-            //if (OpenAPIUtils.isDebugEnabled.test(tc)) {
-            //    Tr.debug(this, tc, "Found non-secure alias: " + value);
-            //}
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.debug(this, tc, "Found non-secure alias: " + value);
+            }
         }
 
         String alias = String.valueOf(value);
@@ -209,12 +224,11 @@ public class ApplicationProcessor {
             serverInfo.setHttpPort(port);
             serverInfo.setHttpsPort(securePort);
             serverInfo.setHost(host);
-            System.out.println("new port:" + port);
         }
 
-        //if (OpenAPIUtils.isEventEnabled.test(tc)) {
-        //     Tr.event(this, tc, "Received new alias: " + alias);
-        //}
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(this, tc, "Received new alias: " + alias);
+        }
     }
 
 }
