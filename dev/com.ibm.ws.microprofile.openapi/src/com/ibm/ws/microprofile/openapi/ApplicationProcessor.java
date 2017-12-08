@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.osgi.service.component.ComponentContext;
@@ -35,6 +36,7 @@ import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -119,6 +121,13 @@ public class ApplicationProcessor {
                 isOASApp = true;
                 Set<Class<?>> classes = scanner.getAnnotatedClasses();
                 newDocument = new Reader(newDocument).read(classes);
+            }
+
+            OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
+
+            if (oasFilter != null) {
+                OpenAPIModelWalker walker = new OpenAPIModelWalker(newDocument);
+                walker.accept(new OpenAPIFilter(oasFilter));
             }
 
             if (isOASApp && currentApp == null) {

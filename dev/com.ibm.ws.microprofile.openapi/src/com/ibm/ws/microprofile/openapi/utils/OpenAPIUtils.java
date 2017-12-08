@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.utils;
 
+import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 
 import com.ibm.websphere.ras.Tr;
@@ -68,6 +69,31 @@ public class OpenAPIUtils {
                 modelReaderClass = (Class<OASModelReader>) clazz;
                 OASModelReader modelReader = modelReaderClass.newInstance();
                 return modelReader;
+            }
+        } catch (ClassNotFoundException e) {
+            //TODO: add tracing
+        } catch (InstantiationException e) {
+            //TODO: add tracing
+        } catch (IllegalAccessException e) {
+            //TODO: add tracing
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    @FFDCIgnore({ ClassNotFoundException.class, InstantiationException.class, IllegalAccessException.class })
+    public static OASFilter getOASFilter(ClassLoader appClassloader, String OASFilterClassName) {
+        if (appClassloader == null || OASFilterClassName == null || OASFilterClassName.isEmpty()) {
+            //TODO: add tracing
+            return null;
+        }
+        try {
+            Class<?> clazz = appClassloader.loadClass(OASFilterClassName);
+            Class<OASFilter> oasFilterClass = null;
+            if (OASFilter.class.isAssignableFrom(clazz)) {
+                oasFilterClass = (Class<OASFilter>) clazz;
+                OASFilter oasFilter = oasFilterClass.newInstance();
+                return oasFilter;
             }
         } catch (ClassNotFoundException e) {
             //TODO: add tracing
