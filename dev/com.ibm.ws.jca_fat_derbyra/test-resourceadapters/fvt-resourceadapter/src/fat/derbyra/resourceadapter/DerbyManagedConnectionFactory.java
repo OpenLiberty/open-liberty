@@ -34,6 +34,7 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
     transient String password; // confidential config-property
     transient String userName; // config-property
     private transient boolean exceptionOnDestroy; // config-property
+    transient String qmid; // config-property
     private transient int xaSuccessLimit; // config-property
     transient AtomicInteger xaSuccessLimitCountDown;
 
@@ -70,6 +71,10 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     String getPassword() {
         return password;
+    }
+
+    public String getQmid() {
+        return qmid == null ? DerbyXAResource.XA_RECOVERY_QMID : qmid;
     }
 
     /** {@inheritDoc} */
@@ -138,6 +143,10 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setQmid(String qmid) {
+        this.qmid = qmid;
     }
 
     /** {@inheritDoc} */
