@@ -13,6 +13,7 @@ package fat.derbyra.resourceadapter;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
@@ -30,9 +31,11 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     transient DerbyResourceAdapter adapter;
     private transient boolean dissociatable;
-    private transient String password; // confidential config-property
-    private transient String userName; // config-property
+    transient String password; // confidential config-property
+    transient String userName; // config-property
     private transient boolean exceptionOnDestroy; // config-property
+    private transient int xaSuccessLimit; // config-property
+    transient AtomicInteger xaSuccessLimitCountDown;
 
     /** {@inheritDoc} */
     @Override
@@ -85,6 +88,10 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     String getUserName() {
         return userName;
+    }
+
+    public int getXaSuccessLimit() {
+        return xaSuccessLimit;
     }
 
     public boolean isDissociatable() {
@@ -141,5 +148,10 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setXaSuccessLimit(int xaSuccessLimit) {
+        this.xaSuccessLimit = xaSuccessLimit;
+        xaSuccessLimitCountDown = xaSuccessLimit >= 0 ? new AtomicInteger(xaSuccessLimit) : null;
     }
 }

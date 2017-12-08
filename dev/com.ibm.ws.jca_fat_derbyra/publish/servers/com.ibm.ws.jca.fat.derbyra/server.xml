@@ -19,12 +19,17 @@
       <connectionManager maxPoolSize="2" connectionTimeout="0"/>
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.DerbyRA/>
-    </connectionFactory>    
+    </connectionFactory>
     
     <connectionFactory jndiName="eis/ds2">
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.DerbyRA exceptionOnDestroy="true"/>
-    </connectionFactory>   
+    </connectionFactory>
+
+    <connectionFactory jndiName="eis/ds3">
+      <connectionManager maxPoolSize="1"/>
+      <properties.DerbyRA userName="DS1USER" password="{xor}GwxuDwgb" xaSuccessLimit="0"/>
+    </connectionFactory>
 
     <adminObject jndiName="eis/bootstrapContext">
       <properties.DerbyRA.BootstrapContext/>
@@ -38,6 +43,9 @@
     <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
 
     <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
+
+    <transaction heuristicRetryInterval="2s"/>
+
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/connectors/DerbyRA.rar" className="java.security.AllPermission"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
