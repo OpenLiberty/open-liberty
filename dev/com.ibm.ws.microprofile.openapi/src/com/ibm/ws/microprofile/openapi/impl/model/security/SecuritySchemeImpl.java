@@ -189,15 +189,15 @@ public class SecuritySchemeImpl implements SecurityScheme {
 
     @Override
     public void setRef(String ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/securitySchemes/" + $ref;
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/securitySchemes/" + ref;
         }
         this.$ref = ref;
     }
 
     @Override
     public SecurityScheme ref(String ref) {
-        this.$ref = ref;
+        this.setRef(ref);
         return this;
     }
 

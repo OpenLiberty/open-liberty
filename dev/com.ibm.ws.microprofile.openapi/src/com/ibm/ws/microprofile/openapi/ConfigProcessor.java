@@ -34,6 +34,10 @@ public class ConfigProcessor {
 
     private String modelReaderClassName = null;
     private String openAPIFilterClassName = null;
+    /**
+     * @return the openAPIFilterClassName
+     */
+
     private boolean scanDisabled = false;
     private final Set<String> classesToScan = null;
     private final Set<String> packagesToScan = null;
@@ -62,5 +66,16 @@ public class ConfigProcessor {
         builder.append(MP_OPENAPI_MODEL_READER + "=" + modelReaderClassName + "\n");
         builder.append("}\n");
         return builder.toString();
+    }
+
+    /**
+     * @return the scanDisabled
+     */
+    public boolean isScanDisabled() {
+        return scanDisabled;
+    }
+
+    public String getOpenAPIFilterClassName() {
+        return openAPIFilterClassName;
     }
 }

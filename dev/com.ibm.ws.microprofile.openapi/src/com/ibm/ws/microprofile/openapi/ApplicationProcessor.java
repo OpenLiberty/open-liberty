@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.openapi.OASModelReader;
@@ -17,6 +19,9 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -31,7 +36,9 @@ import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.http.VirtualHost;
 
 /**
  *
@@ -46,6 +53,7 @@ public class ApplicationProcessor {
 
     private OpenAPI document = null;
     private ApplicationInfo currentApp = null;
+    private final ServerInfo serverInfo = new ServerInfo();
 
     public void activate(ComponentContext cc) {
         this.document = createBaseOpenAPIDocument();
@@ -72,6 +80,7 @@ public class ApplicationProcessor {
                 return;
             }
             ClassLoader appClassloader = moduleInfo.getClassLoader();
+            String contextRoot = moduleInfo.getContextRoot();
 
             boolean isOASApp = false;
 
@@ -104,19 +113,19 @@ public class ApplicationProcessor {
                 }
             }
 
-            //Parse a document into the model
-            //TODO: Parse a document into the model
-
             //Scan for annotated classes
             AnnotationScanner scanner = OpenAPIUtils.creatAnnotationScanner(appClassloader, appContainer);
-            if (scanner.anyAnnotatedClasses()) {
+            if (!configProcessor.isScanDisabled() && scanner.anyAnnotatedClasses()) {
                 isOASApp = true;
                 Set<Class<?>> classes = scanner.getAnnotatedClasses();
                 newDocument = new Reader(newDocument).read(classes);
             }
 
             if (isOASApp && currentApp == null) {
-                currentApp = appInfo;
+                this.currentApp = appInfo;
+                this.serverInfo.setApplicationPath(contextRoot);
+                System.out.println(this);
+                System.out.println("Generated new document");
                 this.document = newDocument;
             }
         }
@@ -127,7 +136,9 @@ public class ApplicationProcessor {
         synchronized (this.document) {
             if (currentApp != null && currentApp.getName().equals(appInfo.getName())) {
                 currentApp = null;
+                this.serverInfo.setApplicationPath(null);
                 this.document = createBaseOpenAPIDocument();
+                System.out.println("Reset document to base one");
             }
         }
     }
@@ -136,6 +147,7 @@ public class ApplicationProcessor {
     public String getOpenAPIDocument(DocType docType) {
         String oasResult = null;
         synchronized (this.document) {
+            serverInfo.updateOpenAPIWithServers(this.document);
             try {
                 if (DocType.YAML == docType) {
                     oasResult = Yaml.mapper().writeValueAsString(this.document);
@@ -154,6 +166,46 @@ public class ApplicationProcessor {
         openAPI.info(new InfoImpl().title("Liberty APIs").version("1.0"));
         openAPI.paths(new PathsImpl());
         return openAPI;
+    }
+
+    @Reference(service = VirtualHost.class, target = "(&(enabled=true)(id=default_host)(|(aliases=*)(httpsAlias=*)))", policy = ReferencePolicy.STATIC, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setVirtualHost(VirtualHost vhost, Map<String, Object> props) {
+        updateOpenAPIServer(vhost, props);
+    }
+
+    protected void updatedVirtualHost(VirtualHost vhost, Map<String, Object> props) {
+        updateOpenAPIServer(vhost, props);
+    }
+
+    private void updateOpenAPIServer(VirtualHost vhost, Map<String, Object> props) {
+
+        Object value = props.get("httpsAlias");
+        if (value == null) {
+            String[] aliases = (String[]) props.get("aliases");
+            //if (OpenAPIUtils.isDebugEnabled.test(tc)) {
+            //    Tr.debug(this, tc, "httpsAlias is null. aliases : " + String.join(", ", aliases));
+            //}
+            value = Arrays.stream(aliases).filter(a -> !a.endsWith(":-1")).findFirst().orElse(null);
+            //if (OpenAPIUtils.isDebugEnabled.test(tc)) {
+            //    Tr.debug(this, tc, "Found non-secure alias: " + value);
+            //}
+        }
+
+        String alias = String.valueOf(value);
+
+        synchronized (this.serverInfo) {
+            String host = vhost.getHostName(alias);
+            int port = vhost.getHttpPort(alias);
+            int securePort = vhost.getSecureHttpPort(alias);
+            serverInfo.setHttpPort(port);
+            serverInfo.setHttpsPort(securePort);
+            serverInfo.setHost(host);
+            System.out.println("new port:" + port);
+        }
+
+        //if (OpenAPIUtils.isEventEnabled.test(tc)) {
+        //     Tr.event(this, tc, "Received new alias: " + alias);
+        //}
     }
 
 }

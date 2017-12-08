@@ -99,8 +99,8 @@ public class RequestBodyImpl implements RequestBody {
 
     @Override
     public void setRef(String ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/requestBodies/" + $ref;
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/requestBodies/" + ref;
         }
         this.$ref = ref;
     }

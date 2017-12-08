@@ -212,6 +212,9 @@ public class Reader {
                                                                                                                                                 org.eclipse.microprofile.openapi.annotations.security.SecurityScheme.class);
         List<org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement> apiSecurityRequirements = ReflectionUtils.getRepeatableAnnotations(cls,
                                                                                                                                                            org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement.class);
+        List<org.eclipse.microprofile.openapi.annotations.servers.Server> apiServers = ReflectionUtils.getRepeatableAnnotations(cls,
+                                                                                                                                org.eclipse.microprofile.openapi.annotations.servers.Server.class);
+
         ExternalDocumentation apiExternalDocs = ReflectionUtils.getAnnotation(cls, ExternalDocumentation.class);
         org.eclipse.microprofile.openapi.annotations.tags.Tag[] apiTags = ReflectionUtils.getRepeatableAnnotationsArray(cls,
                                                                                                                         org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
@@ -266,6 +269,15 @@ public class Reader {
                                                                                                             apiSecurityRequirements.toArray(new org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement[apiSecurityRequirements.size()]));
             if (requirementsObject.isPresent()) {
                 classSecurityRequirements = requirementsObject.get();
+            }
+        }
+
+        List<org.eclipse.microprofile.openapi.models.servers.Server> classServers = new ArrayList<>();
+        if (apiServers != null) {
+            Optional<List<org.eclipse.microprofile.openapi.models.servers.Server>> serversObject = AnnotationsUtils.getServers(
+                                                                                                                               apiServers.toArray(new org.eclipse.microprofile.openapi.annotations.servers.Server[apiServers.size()]));
+            if (serversObject.isPresent()) {
+                classServers = serversObject.get();
             }
         }
 
@@ -328,7 +340,7 @@ public class Reader {
                                                   classConsumes,
                                                   classSecurityRequirements,
                                                   classExternalDocumentation,
-                                                  classTags);
+                                                  classTags, classServers);
                 if (operation != null) {
                     PathItem pathItemObject;
                     if (openAPI.getPaths() != null && openAPI.getPaths().get(operationPath) != null) {
@@ -537,7 +549,7 @@ public class Reader {
                            null,
                            new ArrayList<>(),
                            Optional.empty(),
-                           new HashSet<>());
+                           new HashSet<>(), null);
     }
 
     public Operation parseMethod(
@@ -549,7 +561,7 @@ public class Reader {
                                  Consumes classConsumes,
                                  List<SecurityRequirement> classSecurityRequirements,
                                  Optional<org.eclipse.microprofile.openapi.models.ExternalDocumentation> classExternalDocs,
-                                 Set<String> classTags) {
+                                 Set<String> classTags, List<org.eclipse.microprofile.openapi.models.servers.Server> classServers) {
         JavaType classType = TypeFactory.defaultInstance().constructType(method.getDeclaringClass());
         return parseMethod(
                            classType.getClass(),
@@ -561,7 +573,7 @@ public class Reader {
                            classConsumes,
                            classSecurityRequirements,
                            classExternalDocs,
-                           classTags);
+                           classTags, classServers);
     }
 
     private Operation parseMethod(
@@ -574,7 +586,7 @@ public class Reader {
                                   Consumes classConsumes,
                                   List<SecurityRequirement> classSecurityRequirements,
                                   Optional<org.eclipse.microprofile.openapi.models.ExternalDocumentation> classExternalDocs,
-                                  Set<String> classTags) {
+                                  Set<String> classTags, List<org.eclipse.microprofile.openapi.models.servers.Server> classServers) {
         Operation operation = new OperationImpl();
 
         org.eclipse.microprofile.openapi.annotations.Operation apiOperation = ReflectionUtils.getAnnotation(method, org.eclipse.microprofile.openapi.annotations.Operation.class);
@@ -617,8 +629,10 @@ public class Reader {
         }
 
         // servers
-        if (apiServers != null) {
+        if (apiServers != null && apiServers.size() > 0) {
             AnnotationsUtils.getServers(apiServers.toArray(new Server[apiServers.size()])).ifPresent(servers -> servers.forEach(operation::addServer));
+        } else if (classServers != null && classServers.size() > 0) {
+            operation.setServers(classServers);
         }
 
         // external docs

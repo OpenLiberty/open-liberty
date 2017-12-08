@@ -95,16 +95,16 @@ public class ExampleImpl implements Example {
     }
 
     @Override
-    public void setRef(String $ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/examples/" + $ref;
+    public void setRef(String ref) {
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/examples/" + ref;
         }
-        this.$ref = $ref;
+        this.$ref = ref;
     }
 
     @Override
     public Example ref(String $ref) {
-        this.$ref = $ref;
+        setRef($ref);
         return this;
     }
 

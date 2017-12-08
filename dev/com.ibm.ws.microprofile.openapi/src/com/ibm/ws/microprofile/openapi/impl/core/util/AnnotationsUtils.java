@@ -334,7 +334,9 @@ public abstract class AnnotationsUtils {
             // TODO extensions
             serverVariablesObject.addServerVariable(serverVariable.name(), serverVariableObject);
         }
-        serverObject.setVariables(serverVariablesObject);
+        if (serverVariablesObject.size() > 0) {
+            serverObject.setVariables(serverVariablesObject);
+        }
 
         return Optional.of(serverObject);
     }

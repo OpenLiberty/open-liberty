@@ -268,8 +268,8 @@ public class ParameterImpl<T extends Parameter<T>> implements Parameter<T> {
 
     @Override
     public void setRef(String ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/parameters/" + $ref;
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/parameters/" + ref;
         }
         this.$ref = ref;
     }

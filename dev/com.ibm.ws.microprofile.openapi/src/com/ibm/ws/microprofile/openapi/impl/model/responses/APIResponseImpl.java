@@ -115,11 +115,11 @@ public class APIResponseImpl implements APIResponse {
     }
 
     @Override
-    public void setRef(String $ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/responses/" + $ref;
+    public void setRef(String ref) {
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/responses/" + ref;
         }
-        this.$ref = $ref;
+        this.$ref = ref;
     }
 
     @Override

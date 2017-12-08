@@ -103,13 +103,16 @@ public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Cal
     /** {@inheritDoc} */
     @Override
     public void setRef(String ref) {
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/callbacks/" + ref;
+        }
         this.$ref = ref;
     }
 
     /** {@inheritDoc} */
     @Override
     public Callback ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 

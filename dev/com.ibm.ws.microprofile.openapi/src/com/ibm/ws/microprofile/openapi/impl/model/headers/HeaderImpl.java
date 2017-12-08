@@ -261,16 +261,16 @@ public class HeaderImpl implements Header {
     }
 
     @Override
-    public void setRef(String $ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/headers/" + $ref;
+    public void setRef(String ref) {
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/headers/" + ref;
         }
-        this.$ref = $ref;
+        this.$ref = ref;
     }
 
     @Override
-    public Header ref(String $ref) {
-        this.$ref = $ref;
+    public Header ref(String ref) {
+        setRef(ref);
         return this;
     }
 
