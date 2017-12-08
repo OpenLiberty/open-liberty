@@ -314,6 +314,9 @@ public abstract class ProviderFactory {
         }
 
         ObjectMapper mapperObject = new ObjectMapper();
+
+        mapperObject.disableDefaultTyping();
+
         AnnotationIntrospector annotationIntrospectorPairObject = new AnnotationIntrospector.Pair(new JaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
 
         SerializationConfig serializationConfig = mapperObject.getSerializationConfig();
