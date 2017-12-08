@@ -9,22 +9,20 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package jpa10callback.entity.entitydeclared.mappedsuperclass.ano;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
-import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+@Entity
+@DiscriminatorValue("MSCProtected")
+public class CallbackProtectedMSCEntity extends CallbackProtectedMSC {
+    public CallbackProtectedMSCEntity() {
+        super();
+    }
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPABootstrapTest.class,
-                JPA10FATSuite.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
-})
-public class FATSuite {
-
+    @Override
+    public String toString() {
+        return "CallbackProtectedMSCEntity [id=" + getId() + ", name=" + getName() + "]";
+    }
 }
