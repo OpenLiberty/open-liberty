@@ -92,7 +92,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             addValueExtractorBeans(config, appClassLoader);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Current bean managed is null, skipping creating CDI enhanced objects.");
+                Tr.debug(tc, "Current module is not CDI enabled, skipping creating CDI enhanced objects.");
         }
         return config.buildValidatorFactory();
     }

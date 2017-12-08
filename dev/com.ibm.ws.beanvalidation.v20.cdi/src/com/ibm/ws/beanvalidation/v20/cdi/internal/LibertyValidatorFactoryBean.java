@@ -20,21 +20,23 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.cdi.HibernateValidator;
 import org.hibernate.validator.cdi.internal.ValidationProviderHelper;
-import org.hibernate.validator.cdi.internal.ValidatorBean;
+import org.hibernate.validator.cdi.internal.ValidatorFactoryBean;
+
+import com.ibm.ws.beanvalidation.accessor.BeanValidationAccessor;
 
 /**
- * This class is used to extend the Hibernate ValidatorBean for the sole purpose
- * of overriding the create method. Instead of passing in the Validator object
- * when the bean is initialized, we delay the creation of the Validator until
+ * This class is used to extend the Hibernate ValidatorFactoryBean for the sole purpose
+ * of overriding the create method. Instead of passing in the ValidatorFactory object
+ * when the bean is initialized, we delay the creation of the ValidatorFactory until
  * create is called. The delay is needed since the server thread doesn't have its
- * metadata and context initialized to a point where creating the Validator will succeed.
+ * metadata and context initialized to a point where creating the ValidatorFactory will succeed.
  *
  */
-public class LibertyValidatorBean extends ValidatorBean {
+public class LibertyValidatorFactoryBean extends ValidatorFactoryBean {
 
     protected final String id = getClass().getName();
 
@@ -42,25 +44,24 @@ public class LibertyValidatorBean extends ValidatorBean {
                                                                                     new AnnotationLiteral<HibernateValidator>() {},
                                                                                     new AnnotationLiteral<Any>() {}));
 
-    public LibertyValidatorBean() {
-        super(null, null, ValidationProviderHelper.forHibernateValidator());
+    public LibertyValidatorFactoryBean() {
+        super(null, ValidationProviderHelper.forHibernateValidator());
     }
 
     @Override
-    public Validator create(CreationalContext<Validator> context) {
-        Validator validator = LibertyHibernateValidatorExtension.getDefaultValidator();
-        return validator;
+    public ValidatorFactory create(CreationalContext<ValidatorFactory> context) {
+        return BeanValidationAccessor.getValidatorFactory();
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return Validator.class;
+        return ValidatorFactory.class;
     }
 
     @Override
     public Set<Type> getTypes() {
         Set<Type> types = new HashSet<Type>();
-        for (Class<?> c = Validator.class; c != null; c = c.getSuperclass())
+        for (Class<?> c = ValidatorFactory.class; c != null; c = c.getSuperclass())
             types.add(c);
         return types;
     }
@@ -71,12 +72,13 @@ public class LibertyValidatorBean extends ValidatorBean {
     }
 
     /*
-     * Override this method so that a LibertyValidatorBean is stored in the WELD
-     * Bean Store keyed on its classname. This allows an injected Validator Bean to
+     * Override this method so that a LibertyValidatorFactoryBean is stored in the WELD
+     * Bean Store keyed on its classname. This allows an injected ValidatorFactory Bean to
      * be retrieved in both local and server failover scenarios
      */
     @Override
     public String getId() {
         return id;
     }
+
 }
