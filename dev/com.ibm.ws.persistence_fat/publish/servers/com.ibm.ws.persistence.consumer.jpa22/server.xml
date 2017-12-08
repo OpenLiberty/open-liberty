@@ -19,6 +19,8 @@
         </library>
     </jdbcDriver>
 
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
     <dataSource id="consumerJtaDs" jndiName="consumerJtaDs" jdbcDriverRef="derby">
         <properties databaseName="memory:consumer" createDatabase="create" />
     </dataSource>
