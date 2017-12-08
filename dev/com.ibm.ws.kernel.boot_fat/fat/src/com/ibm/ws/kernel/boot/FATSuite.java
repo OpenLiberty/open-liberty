@@ -23,13 +23,14 @@ import com.ibm.ws.kernel.boot.internal.commands.LogLevelPropertyTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageCommandTest;
 import com.ibm.ws.kernel.provisioning.KernelChangeTest;
 import com.ibm.ws.kernel.provisioning.ProvisioningTest;
+import com.ibm.ws.kernel.service.ServerEndpointControlMBeanTest;
 import com.ibm.wsspi.kernel.embeddable.EmbeddedServerAddProductExtensionMultipleTest;
 import com.ibm.wsspi.kernel.embeddable.EmbeddedServerAddProductExtensionTest;
 import com.ibm.wsspi.kernel.embeddable.EmbeddedServerMergeProductExtensionTest;
 import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
 
 /**
- * Collection of a few fast example tests
+ * Collection of tests exercising server function
  */
 @RunWith(Suite.class)
 /*
@@ -55,6 +56,7 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 ServerClasspathTest.class,
                 ServerStartJVMOptionsTest.class,
                 PauseResumeCommandTest.class,
-                EmbeddedServerMergeProductExtensionTest.class
+                EmbeddedServerMergeProductExtensionTest.class,
+                ServerEndpointControlMBeanTest.class
 })
 public class FATSuite {}
