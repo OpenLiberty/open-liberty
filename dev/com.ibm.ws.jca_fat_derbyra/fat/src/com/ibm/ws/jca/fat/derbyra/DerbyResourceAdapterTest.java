@@ -72,7 +72,9 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("SRVE9967W", // The manifest class path derbyLocale_cs.jar can not be found in jar file wsjar:file:/C:/Users/IBM_ADMIN/Documents/workspace/build.image/wlp/usr/servers/com.ibm.ws.jca.fat.derbyra/connectors/DerbyRA.rar!/derby.jar or its parent.
                           // This may just be because we don't care about including manifest files in our test buckets, if that's the case, we can ignore this.
-                          "J2CA0081E"); //Expected due to simulated exception in testConnPoolStatsExceptionDestroy
+                          "J2CA0027E: .*eis/ds3", // Intentionally caused failure on XA.commit in order to cause in-doubt transaction
+                          "J2CA0081E", //Expected due to simulated exception in testConnPoolStatsExceptionDestroy
+                          "WTRN0048W: .*XAER_RMFAIL"); // Intentionally caused failure on XA.commit in order to cause in-doubt transaction
     }
 
     private void runTest(String servlet) throws Exception {
@@ -141,6 +143,12 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
     @Test
     public void testTransactionSynchronizationRegistry() throws Exception {
+        runTest(DerbyRAAnnoServlet);
+    }
+
+    @ExpectedFFDC("javax.transaction.xa.XAException") // intentionally caused failure to make the transaction in-doubt
+    @Test
+    public void testXARecovery() throws Exception {
         runTest(DerbyRAAnnoServlet);
     }
 

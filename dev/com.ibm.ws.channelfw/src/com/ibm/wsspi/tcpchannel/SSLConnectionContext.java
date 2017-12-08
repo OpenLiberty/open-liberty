@@ -16,64 +16,64 @@ import javax.net.ssl.SSLSession;
 /**
  * This interface describes the SSL context for a connection.
  * It is made available via the TCPConnectionContext interface.
- * 
+ *
  * @ibm-spi
- * 
+ *
  */
 public interface SSLConnectionContext {
 
     /**
      * get the list of enabled cipher suites
-     * 
+     *
      * @return String[]
      */
     String[] getEnabledCipherSuites();
 
     /**
      * get a list of the enabled protocols.
-     * 
+     *
      * @return String[]
      */
     String[] getEnabledProtocols();
 
     /**
      * set the list of enabled protocols
-     * 
+     *
      * @param args
      */
     void setEnabledProtocols(String args[]);
 
     /**
      * This returns true if new sessions may be established on this connection.
-     * 
+     *
      * @return boolean
      */
     boolean getEnableSessionCreation();
 
     /**
      * configured to require client authentication
-     * 
+     *
      * @return boolean
      */
     boolean getNeedClientAuth();
 
     /**
      * get the SSLSession that is associated with this session.
-     * 
+     *
      * @return javax.net.ssl.SSLSession
      */
     SSLSession getSession();
 
     /**
      * returns true if the socket requires client mode in its first handshake.
-     * 
+     *
      * @return boolean
      */
     boolean getUseClientMode();
 
     /**
      * whether the socket would like the client to authenticate
-     * 
+     *
      * @return boolean
      */
     boolean getWantClientAuth();
@@ -81,7 +81,7 @@ public interface SSLConnectionContext {
     /**
      * set the suites available for this socket. Throws an exception if the socket
      * is already established.
-     * 
+     *
      * @param suites
      * @throws SSLException
      */
@@ -90,7 +90,7 @@ public interface SSLConnectionContext {
     /**
      * sets whether new sessions may be created by this socket. Throws an
      * exception if the socket is already established.
-     * 
+     *
      * @param flag
      * @throws SSLException
      */
@@ -99,7 +99,7 @@ public interface SSLConnectionContext {
     /**
      * sets the requirement for client authentication. Throws an exception if the
      * socket is already established.
-     * 
+     *
      * @param flag
      * @throws SSLException
      */
@@ -108,7 +108,7 @@ public interface SSLConnectionContext {
     /**
      * set the preference to have client authentication. Throws an exception if
      * the socket is already established.
-     * 
+     *
      * @param flag
      * @throws SSLException
      */
@@ -120,7 +120,7 @@ public interface SSLConnectionContext {
      * Once handshaking has begun, the mode can not be reset for the
      * life of this connection. Servers normally authenticate themselves,
      * and clients are not required to do so.
-     * 
+     *
      * @param flag
      * @throws SSLException
      */
@@ -132,5 +132,19 @@ public interface SSLConnectionContext {
      * new SSL handshake with the other end of the connection.
      */
     void renegotiate();
+
+    /**
+     * the name of the ALPN protocol selected for this connection
+     * 
+     * @return String
+     */
+    String getAlpnProtocol();
+
+    /**
+     * Set the ALPN protocol chosen for this connection
+     * 
+     * @param protocol
+     */
+    void setAlpnProtocol(String protocol);
 
 }

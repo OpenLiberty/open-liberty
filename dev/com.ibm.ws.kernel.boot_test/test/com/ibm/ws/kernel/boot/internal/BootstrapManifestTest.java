@@ -72,43 +72,6 @@ public class BootstrapManifestTest {
         setBootstrapJar(0); // use a real built jar
         BootstrapManifest m = new BootstrapManifest();
         assertNotNull("Bundle version should be set for the kernel.boot jar/bundle", m.getBundleVersion());
-        assertEquals("Kernel definition should be set to the name of the default", "kernelCore-1.0", m.getKernelDefinition(config));
-        assertEquals("Log provider definition should be set to the name of the default", "defaultLogging-1.0", m.getLogProviderDefinition(config));
-    }
-
-    @Test
-    public void testMissingKernelDefinition() throws Exception {
-        BootstrapConfig config = new BootstrapConfig();
-
-        setBootstrapJar(1); // use a jar with a missing kernel definition
-        BootstrapManifest m = new BootstrapManifest();
-        assertNull("No value should have been found for kernel version", m.getKernelDefinition(config)); // this will throw
-        assertNull("No value should have been found for log provider", m.getLogProviderDefinition(config));
-    }
-
-    @Test
-    public void testMissingAttributesWithProperties() throws Exception {
-        SharedBootstrapConfig config = SharedBootstrapConfig.createSharedConfig(outputMgr);
-
-        setBootstrapJar(1); // use a jar with a missing kernel definition and log provider
-
-        String kernelDef = "kernel_1.x";
-        String operatingSystemExtensionsDef = "extension_1.x";
-        String logProviderDef = "logging_1.x";
-
-        Map<String, String> initProps = new HashMap<String, String>();
-        initProps.put(BootstrapManifest.BOOTPROP_KERNEL, kernelDef);
-        initProps.put(BootstrapManifest.BOOTPROP_OS_EXTENSIONS, operatingSystemExtensionsDef);
-        initProps.put(BootstrapManifest.BOOTPROP_LOG_PROVIDER, logProviderDef);
-        config.setInitProps(initProps);
-
-        BootstrapManifest m = new BootstrapManifest();
-        assertEquals("Property was set: Kernel definition should equal provided property value",
-                     kernelDef, m.getKernelDefinition(config));
-        assertEquals("Property was set: OS extensions definition should equal provided property value",
-                     operatingSystemExtensionsDef, m.getOSExtensionDefinition(config));
-        assertEquals("Property was set: Log provider definition should equal provided property value",
-                     logProviderDef, m.getLogProviderDefinition(config));
     }
 
     @Test(expected = com.ibm.ws.kernel.boot.LaunchException.class)
@@ -205,39 +168,6 @@ public class BootstrapManifestTest {
         m.prepSystemPackages(config);
         assertNull(initProps.get(BootstrapConstants.INITPROP_OSGI_EXTRA_PACKAGE));
         assertNull(initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES));
-    }
-
-    @Test
-    public void testGetNormalizedOperatingSystemName() throws Exception {
-        Map<String, String> names = new HashMap<String, String>();
-        names.put("AIX", "aix");
-        names.put("Digital Unix", "digitalunix");
-        names.put("FreeBSD", "freebsd");
-        names.put("HP UX", "hpux");
-        names.put("Irix", "irix");
-        names.put("Linux", "linux");
-        names.put("Mac OS", "macos");
-        names.put("Mac OS X", "macosx");
-        names.put("MPE/iX", "mpeix");
-        names.put("Netware 4.11", "netware411");
-        names.put("OS/2", "os2");
-        names.put("OS/390", "os390");
-        names.put("Solaris", "solaris");
-        names.put("Windows 2000", "windows2000");
-        names.put("Windows 7", "windows7");
-        names.put("Windows 8", "windows8");
-        names.put("Windows 95", "windows95");
-        names.put("Windows 98", "windows98");
-        names.put("Windows NT", "windowsnt");
-        names.put("Windows NT (unknown)", "windowsntunknown");
-        names.put("Windows Server 2012", "windowsserver2012");
-        names.put("Windows Vista", "windowsvista");
-        names.put("Windows XP", "windowsxp");
-        names.put("z/OS", "zos");
-
-        for (String osName : names.keySet()) {
-            assertEquals(names.get(osName), BootstrapManifest.getNormalizedOperatingSystemName(osName));
-        }
     }
 
     protected static void setBootstrapJar(int jarTestCase) throws Exception {

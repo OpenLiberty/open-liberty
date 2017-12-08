@@ -60,6 +60,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -1718,7 +1721,21 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "processAppManagerMessages";
 
         for (String line : allMatches.getMatches()) {
-            line = line.substring(line.indexOf("CWWKZ"));
+            if (line.startsWith("{")) {
+                // JSON format
+                JsonReader reader = Json.createReader(new StringReader(line));
+                JsonObject jsonObj = reader.readObject();
+                reader.close();
+                try {
+                    line = jsonObj.getString("message");
+                } catch (NullPointerException npe) {
+                    Log.error(c, method, npe, "JSON does not contain \"message\" key. line=" + line);
+                    continue;
+                }
+            } else {
+                // Regular format
+                line = line.substring(line.indexOf("CWWKZ"));
+            }
             Log.finer(c, method, "line is " + line);
             String[] tokens = line.split(":", 2);
             Log.finer(c, method, "tokens are (" + tokens[0] + ") (" + tokens[1] + ")");
@@ -1734,6 +1751,7 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
         }
+
     }
 
     protected static String findAppNameInTokens(Map<String, Pattern> unstartedApps, String[] tokens) {

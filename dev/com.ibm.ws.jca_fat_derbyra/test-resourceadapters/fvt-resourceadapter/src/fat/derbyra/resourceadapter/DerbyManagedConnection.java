@@ -39,7 +39,7 @@ public class DerbyManagedConnection implements LocalTransaction, ManagedConnecti
     final DerbyManagedConnectionFactory mcf;
     final Subject subject;
     final XAConnection xacon;
-    final XAResource xares;
+    private final XAResource xares;
     final boolean exceptionOnDestry;
 
     DerbyManagedConnection(final DerbyManagedConnectionFactory mcf, DerbyConnectionRequestInfo cri, Subject subj) throws ResourceException {
@@ -66,8 +66,12 @@ public class DerbyManagedConnection implements LocalTransaction, ManagedConnecti
             });
 
         try {
-            this.xacon = userPwd == null ? mcf.adapter.xaDataSource.getXAConnection() : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
-            this.xares = xacon.getXAResource();
+            this.xacon = userPwd == null //
+                            ? (mcf.userName == null //
+                                            ? mcf.adapter.xaDataSource.getXAConnection() //
+                                            : mcf.adapter.xaDataSource.getXAConnection(mcf.userName, mcf.password)) //
+                            : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
+            this.xares = new DerbyXAResource(this, xacon.getXAResource(), mcf.xaSuccessLimitCountDown);
             this.con = xacon.getConnection();
         } catch (SQLException x) {
             throw new ResourceAllocationException(x);

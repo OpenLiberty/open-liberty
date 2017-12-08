@@ -21,7 +21,7 @@ public class StreamClosedException extends Http2Exception {
 
     int errorCode = Constants.STREAM_CLOSED;
     String errorString = "STREAM_CLOSED";
-    boolean connectionError = false;
+    boolean connectionError = true;
 
     public StreamClosedException(String s) {
         super(s);

@@ -52,12 +52,10 @@ public class AroundConstructEjbTest extends AroundConstructTestBase {
         } catch (MalformedURLException e1) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e1.printStackTrace();
         } catch (WebBrowserException e1) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e1.printStackTrace();
         }
         try {
@@ -65,7 +63,6 @@ public class AroundConstructEjbTest extends AroundConstructTestBase {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
 

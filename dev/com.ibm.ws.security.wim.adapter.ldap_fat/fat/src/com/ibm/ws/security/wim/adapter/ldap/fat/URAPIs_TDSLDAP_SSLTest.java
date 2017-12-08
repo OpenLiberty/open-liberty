@@ -217,7 +217,6 @@ public class URAPIs_TDSLDAP_SSLTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4537E");
@@ -342,7 +341,6 @@ public class URAPIs_TDSLDAP_SSLTest {
      * servlet.getUsers(user, -1);
      * } catch (RegistryException e) {
      * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-     * // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
      * e.printStackTrace();
      * }
      * server.waitForStringInLog("CWIML1022E"); //CWIML1022E The '-1' count limit specified in the SearchControl data object is invalid.
@@ -593,7 +591,6 @@ public class URAPIs_TDSLDAP_SSLTest {
      * servlet.getGroups(group, -1);
      * } catch (RegistryException e) {
      * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-     * // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
      * e.printStackTrace();
      * }
      * server.waitForStringInLog("CWIML1022E"); //CWIML1022E The '-1' count limit specified in the SearchControl data object is invalid.

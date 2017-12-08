@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryChangeListener;
 import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -87,7 +88,7 @@ interface UserRegistryRefConfig {
  * UserRegistry objects.
  */
 @Component(immediate = true,
-           //order means config.displayId comes from factory config
+//order means config.displayId comes from factory config
            configurationPid = { "com.ibm.ws.security.registry.internal.UserRegistryRefConfig", "com.ibm.ws.security.registry" },
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            property = "service.vendor=IBM")
@@ -98,14 +99,14 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
     final ConcurrentServiceReferenceMap<String, UserRegistry> userRegistries = new ConcurrentServiceReferenceMap<String, UserRegistry>(KEY_USER_REGISTRY);
     private final ConcurrentServiceReferenceSet<UserRegistryChangeListener> listeners = new ConcurrentServiceReferenceSet<UserRegistryChangeListener>(KEY_LISTENER);
-
-    private volatile FederationRegistry federationRegistry;
+    private final AtomicServiceReference<FederationRegistry> federationRegistryServiceRef = new AtomicServiceReference<FederationRegistry>(KEY_FEDERATION_REGISTRY);
 
     // Keep track of the actual user registry to use
     private final AtomicReference<UserRegistry> userRegistry = new AtomicReference<UserRegistry>();
     private final Object userRegistrySync = new Object() {};
     private final List<String> registryTypes = new ArrayList<String>();
 
+    static final String KEY_FEDERATION_REGISTRY = "FederationRegistry";
     static final String KEY_USER_REGISTRY = "UserRegistry";
     static final String KEY_LISTENER = "UserRegistryChangeListener";
     static final String KEY_CONFIG_ID = "config.id";
@@ -139,22 +140,24 @@ public class UserRegistryServiceImpl implements UserRegistryService {
      * Since id values are NOT guaranteed to be unique across types,
      * it is possible to have a config like this:
      * <p>
-     * 
-     * <pre> {@code
+     *
+     * <pre>
+     *  {@code
      * <basicRegistry id="basic1" realm="SampleRealm">
      * <user name="admin" password="adminpwd" />
      * </basicRegistry>
-     * 
+     *
      * <ldapRegistry id="basic1" /> <-- DUPLICATE ID
-     * <ldapRegistry id="ldap1" /> * } </pre>
-     * 
+     * <ldapRegistry id="ldap1" /> * }
+     * </pre>
+     *
      * <p>
      * In this case, there are two basic1 IDs. If this situatoin occurs,
      * the first instance of the ID is used, and all subsequent instances
      * are ignored. The decision of which one to ignore was arbitrary and
      * due to the nature of Declarative Services, non-deterministic as the
      * order of which the services get set is not guaranteed.
-     * 
+     *
      * @param ref Reference to a registered UserRegistryConfiguration
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, target = "(!(objectClass=com.ibm.ws.security.registry.FederationRegistry))")
@@ -224,7 +227,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
      * a reference of the wrong type, so this method does not need special
      * logic to protect against the case where multiple configurations define
      * the same ID but are of different types.
-     * 
+     *
      * @param ref Reference to an unregistered UserRegistryConfiguration
      */
     protected Map<String, Object> unsetUserRegistry(ServiceReference<UserRegistry> ref) {
@@ -249,16 +252,14 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         }
     }
 
-    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected Map<String, Object> setFederationRegistry(FederationRegistry federationRegistry) {
-        this.federationRegistry = federationRegistry;
+    @Reference(name = KEY_FEDERATION_REGISTRY, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    protected Map<String, Object> setFederationRegistry(ServiceReference<FederationRegistry> federationRegistryRef) {
+        federationRegistryServiceRef.setReference(federationRegistryRef);
         return refreshUserRegistryCache();
     }
 
-    protected Map<String, Object> unsetFederationRegistry(FederationRegistry federationRegistry) {
-        if (this.federationRegistry == federationRegistry) {
-            this.federationRegistry = null;
-        }
+    protected Map<String, Object> unsetFederationRegistry(ServiceReference<FederationRegistry> federationRegistryRef) {
+        federationRegistryServiceRef.unsetReference(federationRegistryRef);
 
         /*
          * Don't refresh the user registry cache if we are shutting down.
@@ -294,6 +295,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         userRegistries.activate(cc);
         listeners.activate(cc);
+        federationRegistryServiceRef.activate(cc);
         return getServiceProperties();
     }
 
@@ -314,6 +316,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         realm = null;
         userRegistries.deactivate(cc);
         listeners.deactivate(cc);
+        federationRegistryServiceRef.deactivate(cc);
         return getServiceProperties();
     }
 
@@ -329,7 +332,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
     /**
      * Determine if configuration data is defined in the server.xml
-     * 
+     *
      * @return true if the config.source is non-null
      */
     private boolean isConfigured() {
@@ -343,7 +346,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
      * then they will be delegated to via the UserRegistryProxy. Otherwise,
      * the single, requested UserRegistryFactory is found and its associated
      * UserRegistry instance is returned.
-     * 
+     *
      * @return UserRegistry instance. {@code null} is not returned.
      * @throws RegistryException if there is a problem obtaining the UserRegistry instance.
      */
@@ -381,7 +384,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
      * logic to try and return the single UserRegistry. If there is no
      * service, or multiple services, that is considered an error case which
      * "auto-detect" can not resolve.
-     * 
+     *
      * @return
      * @throws RegistryException
      */
@@ -428,17 +431,16 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     /**
      * @return
      * @throws RegistryException
-     * 
+     *
      */
-    //TODO lazy??
     private UserRegistry getFederationRegistry(boolean exceptionOnError) throws RegistryException {
-        return federationRegistry;
+        return federationRegistryServiceRef.getService();
     }
 
     /**
      * When a configuration element is defined, use it to resolve the effective
      * UserRegistry configuration.
-     * 
+     *
      * @return
      * @throws RegistryException
      */

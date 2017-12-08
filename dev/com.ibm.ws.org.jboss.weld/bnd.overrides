@@ -28,7 +28,7 @@ Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";\
  "[1.1,2)",javax.inject,javax.management,javax.naming,javax.naming.spi\
  ,javax.xml.parsers,org.jboss.classfilewriter;version="[1.1,2)",org.jb\
  oss.classfilewriter.code;version="[1.1,2)",org.jboss.classfilewriter.\
- util;version="[1.1,2)",org.jboss.logging;version="[3.2,4)",org.jboss.\
+ util;version="[1.1,2)",org.jboss.\
  weld.bootstrap.api;version="[2.4,3)",org.jboss.weld.bootstrap.api.hel\
  pers;version="[2.4,3)",org.jboss.weld.bootstrap.spi;version="[2.4,3)"\
  ,org.jboss.weld.bootstrap.spi.helpers;version="[2.4,3)",org.jboss.wel\
@@ -47,7 +47,8 @@ Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";\
  .helpers;version="[2.4,3)",org.jboss.weld.servlet.spi;version="[2.4,3\
  )",org.jboss.weld.servlet.spi.helpers;version="[2.4,3)",org.jboss.wel\
  d.transaction.spi;version="[2.4,3)",org.xml.sax,org.xml.sax.helpers,o\
- rg.jboss.logging.annotations;resolution:=optional
+ rg.jboss.logging.annotations;resolution:=optional,org.jboss.logging;v\
+ ersion="[3.2,4)";packageType=was_internal
 
 Service-Component: \
   com.ibm.ws.weld.deserializationClassProvider;\

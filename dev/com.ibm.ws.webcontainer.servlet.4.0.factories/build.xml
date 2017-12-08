@@ -6,7 +6,4 @@
 
     <import file="../ant_build/public_imports/standard_imports.xml"/>
 
-    <!-- skip findbugs until it works with Java 8 -->
-    <property name="skip.findbugs" value="true"/>
-
 </project>

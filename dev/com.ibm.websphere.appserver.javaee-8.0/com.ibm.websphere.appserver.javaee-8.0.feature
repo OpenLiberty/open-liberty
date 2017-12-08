@@ -27,4 +27,3 @@ Subsystem-Name: Java EE Full Platform 8.0
   com.ibm.websphere.appserver.webProfile-8.0
 kind=beta
 edition=base
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"

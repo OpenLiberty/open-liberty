@@ -35,6 +35,8 @@ public class SSLConnectionContextImpl implements SSLConnectionContext {
     private SSLConnectionLink sslConnLink = null;
     /** Whether this connection is inbound or outbound. */
     private boolean isOutbound = false;
+    /** The ALPN protocol selected for this connection */
+    private String alpnProtocol = null;
 
     /**
      * Constructor.
@@ -171,6 +173,20 @@ public class SSLConnectionContextImpl implements SSLConnectionContext {
                 Tr.debug(tc, "Error while attempting handshake renegotiation; " + se);
             }
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.ibm.wsspi.tcpchannel.SSLConnectionContext#getAlpnProtocol()
+     */
+    public String getAlpnProtocol() {
+        return alpnProtocol;
+    }
+    
+    /* (non-Javadoc)
+     * @see com.ibm.wsspi.tcpchannel.SSLConnectionContext#getAlpnProtocol()
+     */
+    public void setAlpnProtocol(String protocol) {
+        this.alpnProtocol = protocol;
     }
 
 }

@@ -102,8 +102,6 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 /**
  * Generates metatype for a resource adapter based on ra.xml files.
- *
- * @see <a href="http://was.pok.ibm.com/xwiki/bin/view/LibertyCookbook/Metatype-Generator">Metatype Documentation</a>
  */
 public class MetatypeGenerator {
     private static final TraceComponent tc = Tr.register(MetatypeGenerator.class);
@@ -1136,10 +1134,10 @@ public class MetatypeGenerator {
                 if ("PASSWORD".equals(name) || "USER".equals(name) || "USERNAME".equals(name))
                     // special case for connection factories - override the description for user/userName/password to discourage usage
                     if (cType == ConstructType.ConnectionFactory)
-                    ad_configProperty.setRecommendAuthAliasUsage(true);
+                        ad_configProperty.setRecommendAuthAliasUsage(true);
                     // special case for activation spec - omit user/userName/password from the metatype
                     else
-                    return null;
+                        return null;
             }
 
             ad_configProperty.setMax(configProperty.getMax());

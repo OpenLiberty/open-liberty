@@ -2060,7 +2060,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 //Call into the LinkWrap to process the header buffer
                 //That will pass back a WsByteBuffer with the new data in it
                 //We will then continue on from there
-
+                if (msg.isBodyExpected()) {
+                    complete = false;
+                }
                 ArrayList<Frame> headerFrames = link.prepareHeaders(WsByteBufferUtils.asByteArray(headerBuffers), complete);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2080,7 +2082,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 //                    } catch (InterruptedException e) {
 //                        // TODO Auto-generated catch block
 //                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-//                        // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
 //                        e.printStackTrace();
 //                    }
 
