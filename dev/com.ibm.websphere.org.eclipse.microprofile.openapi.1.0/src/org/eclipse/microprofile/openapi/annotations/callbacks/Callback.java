@@ -24,8 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.eclipse.microprofile.openapi.annotations.Operation;
-
 /**
  * This object represents a callback URL that will be invoked.
  * 
@@ -62,7 +60,7 @@ public @interface Callback {
      * 
      * @return the callback operations
      **/
-    Operation[] operation() default {};
+    CallbackOperation[] operations() default {};
 
     /**
      * Reference value to a Callback object.

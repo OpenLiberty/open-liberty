@@ -66,8 +66,7 @@ public class ParameterProcessor {
                     parameter.setName(p.name());
                 }
                 if (StringUtils.isNotBlank(p.in().toString())) {
-                    //TODO: handle parameter IN
-                    //parameter.setIn(Parameter.In.valueOf(p.in().toString()));
+                    ((ParameterImpl) parameter).setIn(Parameter.In.valueOf(p.in().toString().toUpperCase()));
                 }
                 if (StringUtils.isNotBlank(p.example())) {
                     try {

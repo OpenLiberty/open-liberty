@@ -26,7 +26,10 @@ import java.lang.annotation.Target;
 /**
  * The Tags annotation is a container for @Tag annotations. When used on a method or a type
  * it is treated as if each tag annotation were applied individually.
- * 
+ * <p>
+ * <b>Note:</b> If both {@link org.eclipse.microprofile.openapi.annotations.tags.Tag Tag} and 
+ * {@link org.eclipse.microprofile.openapi.annotations.tags.Tags Tags} annotations are specified on the same method/class,
+ * then both tag definitions should be applied to method/class.
  * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#tagObject">OpenAPI Specification Tag Object</a>
  *
  */

@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 @Component(service = { ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ApplicationListener implements ApplicationStateListener {
@@ -36,7 +37,9 @@ public class ApplicationListener implements ApplicationStateListener {
             try {
                 appProcessor.processApplication(appInfo);
             } catch (Throwable e) {
-
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to process application: " + e.getMessage());
+                }
             }
         }
     }
@@ -52,7 +55,9 @@ public class ApplicationListener implements ApplicationStateListener {
             try {
                 appProcessor.removeApplication(appInfo);
             } catch (Throwable e) {
-
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to remove application: " + e.getMessage());
+                }
             }
         }
     }

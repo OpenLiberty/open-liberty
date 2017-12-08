@@ -36,6 +36,11 @@ import java.lang.annotation.Target;
  * defined. The server is also added to the servers defined in the root level of the 
  * OpenAPI document. 
  * <p>
+ * This annotation is {@link java.lang.annotation.Repeatable Repeatable}.
+ * <p>
+ * <b>Note:</b> If both {@link org.eclipse.microprofile.openapi.annotations.servers.Server Server} and 
+ * {@link org.eclipse.microprofile.openapi.annotations.servers.Servers Servers} annotation are specified on the same type,
+ * the server definitions will be combined.
  * @see <a href=
  * "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#server-object">
  *      OpenAPI Specification Server Object</a>

@@ -30,7 +30,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
  * 
  * @see <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc2/versions/3.0.md#requestBodyObject">requestBody Object</a>
  **/
-@Target({ ElementType.PARAMETER })
+@Target({ ElementType.PARAMETER, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface RequestBody {
@@ -59,9 +59,10 @@ public @interface RequestBody {
     boolean required() default false;
 
     /**
-     * The unique name to identify this request body. Only REQUIRED when the request body is defined
-     * within {@link org.eclipse.microprofile.openapi.annotations.Components}. The name will be 
-     * used as the key to add this request body to the 'requestBodies' map for reuse.
+     * The unique name to identify this request body. Unless this annotation is used on the actual request body parameter,
+     * it is required to match the name of that parameter so the appropriate association can be made.  When the request body
+     * is defined within {@link org.eclipse.microprofile.openapi.annotations.Components}. The name will be used as the key to 
+     * add this request body to the 'requestBodies' map for reuse.
      * 
      * @return this request body's name
      **/
