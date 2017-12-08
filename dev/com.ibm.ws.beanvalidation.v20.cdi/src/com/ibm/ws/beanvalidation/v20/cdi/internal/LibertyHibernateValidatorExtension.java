@@ -103,15 +103,14 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     }
 
     private ValidationExtension extDelegate;
-    private String isClassloaderHintSet = "";
+    private String currentClassloaderHint = "";
 
-    private ValidationExtension delegate(String classloaderHint) {
-        if (extDelegate == null || (classloaderHint != null && !classloaderHint.equals(isClassloaderHintSet))) {
+    private ValidationExtension delegate(String newClassloaderHint) {
+        if (newClassloaderHint != null && !newClassloaderHint.equals(currentClassloaderHint)) {
 
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
             try {
-                //tcclClassLoader = configureBvalClassloader(this.getClass().getClassLoader());
                 ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
                     @Override
@@ -121,7 +120,7 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
 
                 });
 
-                ClassLoader bvalClassLoader = AccessController.doPrivileged(new CreateValidation20ClassLoaderAction(tccl, classloaderHint));
+                ClassLoader bvalClassLoader = AccessController.doPrivileged(new CreateValidation20ClassLoaderAction(tccl, newClassloaderHint));
                 ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
                 // set the thread context class loader to be used, must be reset in finally block
@@ -131,7 +130,7 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                     Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + bvalClassLoader);
                 }
                 extDelegate = new ValidationExtension();
-                isClassloaderHintSet = classloaderHint;
+                currentClassloaderHint = newClassloaderHint;
             } finally {
                 if (setClassLoader != null) {
                     setClassLoader.execute(oldClassLoader);
@@ -139,10 +138,9 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
-//                if (setClassLoader != null && setClassLoader.wasChanged) {
-//                    releaseLoader(bvalClassLoader);
-//                }
             }
+        } else if (extDelegate == null) {
+            extDelegate = new ValidationExtension();
         }
         return extDelegate;
     }

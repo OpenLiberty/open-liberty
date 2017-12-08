@@ -33,7 +33,8 @@ Import-Package: \
   *
 
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF
+  OSGI-INF=resources/OSGI-INF,\
+  META-INF=resources/META-INF
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 

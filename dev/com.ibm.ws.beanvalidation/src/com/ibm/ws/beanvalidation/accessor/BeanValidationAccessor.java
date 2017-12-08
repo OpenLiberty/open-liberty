@@ -31,8 +31,8 @@ public class BeanValidationAccessor {
     private static final TraceComponent tc = Tr.register(BeanValidationAccessor.class);
 
     public static ValidatorFactory getValidatorFactory() {
-        BundleContext bctx = AccessController.doPrivileged(new GetBundleContextAction(FrameworkUtil.getBundle(BeanValidationAccessor.class)));
-        BeanValidation bv = AccessController.doPrivileged(new GetServiceAction(bctx, BeanValidation.class));
+        Bundle bundle = FrameworkUtil.getBundle(BeanValidationAccessor.class);
+        BeanValidation bv = AccessController.doPrivileged(new GetServiceAction(bundle));
 
         if (bv != null) {
             ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -50,36 +50,19 @@ public class BeanValidationAccessor {
     }
 
     /**
-     * Privileged action for getting a bundle context.
+     * Privileged action for getting a service.
      */
-    private static class GetBundleContextAction implements PrivilegedAction<BundleContext> {
+    private static class GetServiceAction implements PrivilegedAction<BeanValidation> {
         private final Bundle bundle;
 
-        private GetBundleContextAction(Bundle bundle) {
+        private GetServiceAction(Bundle bundle) {
             this.bundle = bundle;
         }
 
         @Override
-        public BundleContext run() {
-            return bundle.getBundleContext();
-        }
-    }
-
-    /**
-     * Privileged action for getting a service.
-     */
-    private static class GetServiceAction implements PrivilegedAction<BeanValidation> {
-        private final BundleContext bCtx;
-        private final Class<BeanValidation> clazz;
-
-        private GetServiceAction(BundleContext bCtx, Class<BeanValidation> clazz) {
-            this.bCtx = bCtx;
-            this.clazz = clazz;
-        }
-
-        @Override
         public BeanValidation run() {
-            ServiceReference<BeanValidation> svcRef = bCtx.getServiceReference(clazz);
+            BundleContext bCtx = bundle.getBundleContext();
+            ServiceReference<BeanValidation> svcRef = bCtx.getServiceReference(BeanValidation.class);
             return svcRef == null ? null : bCtx.getService(svcRef);
         }
     }
