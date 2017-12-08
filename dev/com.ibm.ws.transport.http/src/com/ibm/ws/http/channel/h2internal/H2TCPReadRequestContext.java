@@ -12,6 +12,7 @@ package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -90,6 +91,7 @@ public class H2TCPReadRequestContext implements TCPReadRequestContext {
         }
         while (true) {
             try {
+                // this is on the async read path; not currently used
                 Thread.sleep(250);
                 vc = p.read(numBytes, this.getBuffers());
                 if (vc != null) {
@@ -102,24 +104,22 @@ public class H2TCPReadRequestContext implements TCPReadRequestContext {
         }
     }
 
+    /**
+     * Get bytes from the stream processor associated with this read context
+     */
     @Override
     public long read(long numBytes, int timeout) throws IOException {
 
         long readCount = 0;
         H2StreamProcessor p = muxLink.getStreamProcessor(streamID);
 
-        while (true) {
-            try {
-                readCount = p.readCount(numBytes, this.getBuffers());
-                if ((readCount != 0) || (numBytes == 0)) {
-                    return readCount;
-                }
-
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-
-            }
+        try {
+            p.getReadLatch().await(timeout, TimeUnit.MILLISECONDS);
+            readCount = p.readCount(numBytes, this.getBuffers());
+        } catch (InterruptedException e) {
+            throw new IOException("read was stopped by an InterruptedException: " + e);
         }
+        return readCount;
     }
 
     @Override
