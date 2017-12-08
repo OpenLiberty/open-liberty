@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.internal.impl;
+package com.ibm.ws.logging.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +18,12 @@ import java.io.PrintStream;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+import com.ibm.ws.logging.internal.impl.BaseTraceService;
+import com.ibm.ws.logging.internal.impl.CountingOutputStream;
+import com.ibm.ws.logging.internal.impl.FileLogHeader;
+import com.ibm.ws.logging.internal.impl.FileLogSet;
+import com.ibm.ws.logging.internal.impl.LoggingConstants;
+import com.ibm.ws.logging.internal.impl.LoggingFileUtils;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 
