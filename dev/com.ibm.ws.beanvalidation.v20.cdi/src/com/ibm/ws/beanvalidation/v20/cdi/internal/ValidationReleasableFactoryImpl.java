@@ -11,6 +11,7 @@
 package com.ibm.ws.beanvalidation.v20.cdi.internal;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,6 @@ import com.ibm.ws.beanvalidation.service.ValidationReleasable;
 import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
@@ -274,7 +274,13 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         List<ValueExtractor> valueExtractors;
 
         if (System.getSecurityManager() != null) {
-            valueExtractors = AccessController.doPrivileged(GetInstancesFromServiceLoader.action(PrivHelper.getContextClassLoader(), ValueExtractor.class));
+            ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
+            valueExtractors = AccessController.doPrivileged(GetInstancesFromServiceLoader.action(tccl, ValueExtractor.class));
         } else {
             valueExtractors = GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(), ValueExtractor.class).run();
         }
