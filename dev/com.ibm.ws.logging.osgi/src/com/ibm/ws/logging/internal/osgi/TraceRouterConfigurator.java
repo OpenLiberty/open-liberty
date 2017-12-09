@@ -19,7 +19,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.logging.WsTraceHandler;
-import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
+//import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 
 /**
  * This class scans the existing services and registers itself as a ServiceListener,
@@ -93,11 +93,11 @@ public class TraceRouterConfigurator {
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
     	//If it is a jsonTrService, then we don't want early trace messages, and the opposite is true if it is not a jsonTrService
-    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
-            getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);   		
-    	} else {
+    	//if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
+        //    getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);   		
+    	//} else {
     		 getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);  
-    	}
+    	//}
     }
 
     /**
