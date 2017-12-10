@@ -25,9 +25,9 @@
 -plugin.2.Release: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = Release; \
-        local = ${build}/local; \
         releaseUrl="${fileuri;${build}/${maven.release.name}}"; \
-        snapshotUrl="${fileuri;${build}/${maven.release.name}}"
+        snapshotUrl="${fileuri;${build}/${maven.release.name}}"; \
+        local = ${build}/local
 
 fetch.oss.repository: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
@@ -63,7 +63,7 @@ push.ibm.repository: \
 #-snapshot: ${if;${is.release};;SNAPSHOT}
 
 # Don't upload sources or javadoc unless bundle overrides
--maven-release: ${if;${is.remote.publishing};remote;local}, sources;path=NONE, javadoc;path=NONE
+-maven-release: remote, sources;path=NONE, javadoc;path=NONE
 
 bin: ${if;${driver;gradle};build/classes/java/main;bin}
 testbin: ${if;${driver;gradle};build/classes/java/test;bin_test}
