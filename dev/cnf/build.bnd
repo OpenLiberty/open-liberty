@@ -17,6 +17,8 @@
 # Logging for repository connection when debugging
 #-connection-log: ${.}/connection-log.txt
 
+maven.release.name: release
+
 -plugin.1.Local: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = Local; \
@@ -42,13 +44,9 @@ fetch.oss.ibm.repository: \
         releaseUrl = http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/; \
         index = ${build}/oss_ibm.maven
 
-fetch.ibm.java.repository: \
-    aQute.bnd.repository.maven.provider.MavenBndRepository; \
-        name = DummyRepo
+fetch.ibm.java.repository:
 
-push.ibm.repository: \
-    aQute.bnd.repository.maven.provider.MavenBndRepository; \
-        name = RemotePublish
+push.ibm.repository:
 
 -plugin.3.RemotePublic: ${fetch.oss.repository}
 
@@ -63,7 +61,7 @@ push.ibm.repository: \
 #-snapshot: ${if;${is.release};;SNAPSHOT}
 
 # Don't upload sources or javadoc unless bundle overrides
--maven-release: remote, sources;path=NONE, javadoc;path=NONE
+-maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
 
 bin: ${if;${driver;gradle};build/classes/java/main;bin}
 testbin: ${if;${driver;gradle};build/classes/java/test;bin_test}
@@ -79,6 +77,8 @@ javac.encoding: UTF-8
 -sources: false
 
 -pedantic: true
+-fixupmessages.javac17: "The .JRE container is set to JavaSE-1.8 but bnd is compiling against 1.7";is:=ignore
+-fixupmessages.nosrc: "bnd's src folder 'src' is not in the Eclipse build path";is:=ignore
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
 
 -releaserepo: ${if;${is.remote.publishing};RemotePublish;Release}
