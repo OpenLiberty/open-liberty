@@ -33,7 +33,8 @@
     
     <connectionFactory jndiName="eis/ds4">
       <connectionManager enableSharingForDirectLookups="false"/>
-      <properties.DerbyRA user="DS1USER" password="{xor}GwxuDwgb"/>
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <properties.DerbyRA/>
     </connectionFactory>
 
     <adminObject jndiName="eis/bootstrapContext">

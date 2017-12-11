@@ -435,7 +435,7 @@ public class DerbyRAServlet extends FATServlet {
     }
 
     public void testErrorInFreeConn() throws Exception {
-        DataSource ds = (DataSource) new InitialContext().lookup("eis/ds3");
+        DataSource ds = (DataSource) new InitialContext().lookup("eis/ds4");
         Object managedConn = null;
         Connection con = null;
         Class<?> derbyConnClass = null;
@@ -456,7 +456,7 @@ public class DerbyRAServlet extends FATServlet {
         Method m = c.getMethod("notify", int.class, derbyConnClass, Exception.class);
         m.invoke(managedConn, 5, con, sqe); //5 indicates connection error
 
-        String contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds3").getObjectName(), "showPoolContents", null, null);
+        String contents = (String) mbeanServer.invoke(getMBeanObjectInstance("eis/ds4").getObjectName(), "showPoolContents", null, null);
         int begin = contents.indexOf("size=");
         int end = contents.indexOf(System.lineSeparator(), begin);
         int poolSizeAfterError = Integer.parseInt(contents.substring(begin + 5, end).trim());
