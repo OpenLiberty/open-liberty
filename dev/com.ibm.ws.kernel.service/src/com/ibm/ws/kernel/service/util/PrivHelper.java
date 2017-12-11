@@ -28,9 +28,13 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+/**
+ * @deprecated All liberty bundles may not run with the same permissions in the future.
+ *             Dependencies on this class should therefore be removed.
+ */
 @Trivial
-public class PrivHelper
-{
+@Deprecated
+public class PrivHelper {
     private PrivHelper() {}
 
     public static String getProperty(final String prop) {

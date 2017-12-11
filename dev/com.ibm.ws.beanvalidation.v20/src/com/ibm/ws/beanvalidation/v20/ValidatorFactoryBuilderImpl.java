@@ -34,7 +34,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -88,7 +87,9 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
-        vf.close();
+        if (vf != null) {
+            vf.close();
+        }
     }
 
     @Override
@@ -147,13 +148,18 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
         }
     };
 
-    public void releaseLoader(ClassLoader tccl) {
+    private void releaseLoader(ClassLoader tccl) {
         AccessController.doPrivileged(new DestroyThreadContextClassLoaderAction(tccl));
     }
 
-    public ClassLoader configureBvalClassloader(ClassLoader cl) {
+    private ClassLoader configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
-            cl = PrivHelper.getContextClassLoader();
+            cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
         }
         if (cl != null) {
             ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
