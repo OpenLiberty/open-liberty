@@ -10,7 +10,6 @@
  *******************************************************************************/
 package fat.derbyra.resourceadapter;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.resource.ResourceException;
@@ -25,13 +24,8 @@ import javax.resource.spi.endpoint.MessageEndpointFactory;
  */
 public class DerbyActivationSpec implements ActivationSpec {
     private ResourceAdapter adapter;
-    DerbyMap<?, ?> destination;
     String keyPrefix;
     final ConcurrentLinkedQueue<MessageEndpointFactory> messageEndpointFactories = new ConcurrentLinkedQueue<MessageEndpointFactory>();
-
-    public Map<?, ?> getDestination() {
-        return destination;
-    }
 
     public String getKeyPrefix() {
         return keyPrefix;
@@ -40,10 +34,6 @@ public class DerbyActivationSpec implements ActivationSpec {
     @Override
     public ResourceAdapter getResourceAdapter() {
         return adapter;
-    }
-
-    public void setDestination(Map<?, ?> destination) {
-        this.destination = (DerbyMap<?, ?>) destination;
     }
 
     public void setKeyPrefix(String keyPrefix) {
@@ -57,8 +47,6 @@ public class DerbyActivationSpec implements ActivationSpec {
 
     @Override
     public void validate() throws InvalidPropertyException {
-        System.out.println("Validating ActivationSpec with keyPrefix " + keyPrefix + " for destination " + destination + " and resource adapter " + adapter);
-        if (destination == null)
-            throw new InvalidPropertyException("Destination: " + destination);
+        System.out.println("Validated ActivationSpec with keyPrefix " + keyPrefix + " and resource adapter " + adapter);
     }
 }

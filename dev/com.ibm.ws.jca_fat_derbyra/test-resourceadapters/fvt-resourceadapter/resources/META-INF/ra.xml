@@ -76,10 +76,6 @@
           <activationspec>
             <activationspec-class>fat.derbyra.resourceadapter.DerbyActivationSpec</activationspec-class>
             <config-property>
-              <description>Destination</description>
-              <config-property-name>destination</config-property-name>
-            </config-property>
-            <config-property>
               <description>Key prefix for which to send a message when its value is replaced in any DerbyMap admin object that is associated with the resource adapter.</description>
               <config-property-name>keyPrefix</config-property-name>
               <config-property-type>java.lang.String</config-property-type>

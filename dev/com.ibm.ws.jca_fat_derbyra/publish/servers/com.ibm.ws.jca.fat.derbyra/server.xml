@@ -33,14 +33,14 @@
     </connectionFactory>
 
     <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">
-      <properties.DerbyRA destinationRef="map1" keyPrefix="mdbtest"/>
+      <properties.DerbyRA keyPrefix="mdbtest"/>
     </activationSpec>
 
     <adminObject jndiName="eis/bootstrapContext">
       <properties.DerbyRA.BootstrapContext/>
     </adminObject>
 
-    <adminObject id="map1" jndiName="eis/map1">
+    <adminObject jndiName="eis/map1">
       <properties.DerbyRA.Map tableName="MAP1"/>
     </adminObject>
 
