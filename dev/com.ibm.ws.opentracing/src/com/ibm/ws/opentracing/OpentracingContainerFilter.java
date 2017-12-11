@@ -11,8 +11,8 @@
 package com.ibm.ws.opentracing;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URI;
-import java.text.Format;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +35,7 @@ import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.TextMap;
+import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 
 /**
