@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>build.example_fat</name>
+	<name>com.ibm.ws.microprofile.config_fat_tck</name>
 	<comment></comment>
 	<projects>
 	</projects>
