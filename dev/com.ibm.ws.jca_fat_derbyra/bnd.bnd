@@ -28,6 +28,7 @@ fat.project: true
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

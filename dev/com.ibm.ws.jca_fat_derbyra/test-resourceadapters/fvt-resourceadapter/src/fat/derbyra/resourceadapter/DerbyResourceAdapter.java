@@ -14,11 +14,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.enterprise.concurrent.ContextService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
@@ -37,6 +37,7 @@ import javax.transaction.xa.XAResource;
  * Fake resource adapter for the FAT bucket.
  */
 public class DerbyResourceAdapter implements ResourceAdapter {
+    final ConcurrentLinkedQueue<DerbyActivationSpec> activationSpecs = new ConcurrentLinkedQueue<DerbyActivationSpec>();
     private boolean appServerSupportsHintsContext, appServerSupportsSecurityContext, appServerSupportsTransactionContext;
     BootstrapContext bootstrapContext;
     Connection connection;
@@ -49,12 +50,16 @@ public class DerbyResourceAdapter implements ResourceAdapter {
 
     @Override
     public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) throws ResourceException {
-        throw new NotSupportedException();
+        DerbyActivationSpec as = ((DerbyActivationSpec) activationSpec);
+        as.messageEndpointFactories.add(endpointFactory);
+        activationSpecs.add(as);
     }
 
     @Override
     public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) {
-        throw new UnsupportedOperationException();
+        DerbyActivationSpec as = ((DerbyActivationSpec) activationSpec);
+        activationSpecs.remove(as);
+        as.messageEndpointFactories.remove(endpointFactory);
     }
 
     BootstrapContext getBootstrapContext() {

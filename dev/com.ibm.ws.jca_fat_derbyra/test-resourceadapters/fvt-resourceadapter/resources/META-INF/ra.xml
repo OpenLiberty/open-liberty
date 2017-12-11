@@ -69,6 +69,21 @@
       </connection-definition>
       <reauthentication-support>false</reauthentication-support> 
     </outbound-resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener>
+          <messagelistener-type>javax.resource.cci.MessageListener</messagelistener-type>
+          <activationspec>
+            <activationspec-class>fat.derbyra.resourceadapter.DerbyActivationSpec</activationspec-class>
+            <config-property>
+              <description>Key prefix for which to send a message when its value is replaced in any DerbyMap admin object that is associated with the resource adapter.</description>
+              <config-property-name>keyPrefix</config-property-name>
+              <config-property-type>java.lang.String</config-property-type>
+            </config-property>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
     <adminobject>
       <adminobject-interface>java.util.Map</adminobject-interface>
       <adminobject-class>fat.derbyra.resourceadapter.DerbyMap</adminobject-class>
