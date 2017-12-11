@@ -50,7 +50,7 @@ public class LoggingFileUtils {
     /**
      * Safely retrieve a list of files from the given directory:
      * filter the files using the specified regular expression
-     * 
+     *
      * @param dirName Directory to list
      * @param p Regex pattern that should be used to filter listed files
      * @return String array containing files matching the pattern, or null
@@ -75,7 +75,7 @@ public class LoggingFileUtils {
     /**
      * This method will create the directory if it does not exist,
      * ensuring the specified location is writable.
-     * 
+     *
      * @param The new directory location
      * @return A valid/accessible/created directory or null
      */
@@ -113,11 +113,11 @@ public class LoggingFileUtils {
     /**
      * This method will create a new file with the specified name and extension in the specified directory. If a unique file is required then it will add a timestamp to the file
      * and if necessary a unqiue identifier to the file name.
-     * 
+     *
      * @return The file or <code>null</code> if an error occurs
      * @see #getUniqueFile(File, String, String)
      */
-    static File createNewFile(final FileLogSet fileLogSet) {
+    public static File createNewFile(final FileLogSet fileLogSet) {
         final File directory = fileLogSet.getDirectory();
         final String fileName = fileLogSet.getFileName();
         final String fileExtension = fileLogSet.getFileExtension();
@@ -145,7 +145,7 @@ public class LoggingFileUtils {
      * Compiles a pattern that can be used to match rolled over log file names.
      * The first capturing group is the date/time string, and the second
      * capturing group is the ID.
-     * 
+     *
      * @param baseName the log file basename (e.g., "messages")
      * @param extension the log file extension (e.g., ".log")
      * @param idOptional true if the rollover ID is optional
@@ -171,7 +171,7 @@ public class LoggingFileUtils {
 
     /**
      * Safely delete the specified file.
-     * 
+     *
      * @param dirName Directory containing the file
      * @param name Target file name
      */
@@ -208,7 +208,7 @@ public class LoggingFileUtils {
     /**
      * Try to close the closable (output or input stream) passed as a parameter:
      * handles null, and exceptions on close operation itself.
-     * 
+     *
      * @param c
      */
     public static boolean tryToClose(Closeable c) {

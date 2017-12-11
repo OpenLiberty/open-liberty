@@ -44,7 +44,8 @@ Export-Package: \
     com.ibm.ws.http.channel.h2internal.frames, \
     com.ibm.ws.http.channel.h2internal.exceptions, \
     com.ibm.ws.http.channel.h2internal.hpack, \
-    com.ibm.ws.http.channel.h2internal.huffman
+    com.ibm.ws.http.channel.h2internal.huffman, \
+    com.ibm.ws.http.logging.data
 
 Private-Package: \
   com.ibm.ws.http.*, \
@@ -72,7 +73,7 @@ Service-Component: \
         provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
         modified:='modified';\
         immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0"
+        properties:="service.vendor=IBM,service.ranking:Integer=0", \
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF, \
@@ -92,13 +93,14 @@ instrument.classesExcludes: \
     **/com/ibm/wsspi/http/HttpInputStream.class
 
 -buildpath: \
+	com.ibm.ws.logging,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.event,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.kernel.boot.core,\
+    com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.timer;version=latest,\
