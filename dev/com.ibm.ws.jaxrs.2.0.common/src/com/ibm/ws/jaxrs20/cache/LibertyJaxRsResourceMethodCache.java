@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.cxf.jaxrs.model.OperationResourceInfo;
+import org.apache.cxf.jaxrs.model.OperationResourceInfoStack;
 
 /**
  *
@@ -27,11 +28,13 @@ public class LibertyJaxRsResourceMethodCache {
         OperationResourceInfo ori;
         MultivaluedMap<String, String> values;
         String responseMediaType;
+        OperationResourceInfoStack oriStack;
 
-        public ResourceMethodCache(OperationResourceInfo ori, MultivaluedMap<String, String> values, String responseMediaType) {
+        public ResourceMethodCache(OperationResourceInfo ori, MultivaluedMap<String, String> values, String responseMediaType, OperationResourceInfoStack oriStack) {
             this.ori = ori;
             this.values = values;
             this.responseMediaType = responseMediaType;
+            this.oriStack = oriStack;
         }
 
         public OperationResourceInfo getOperationResourceInfo() {
@@ -44,6 +47,10 @@ public class LibertyJaxRsResourceMethodCache {
 
         public String getMediaType() {
             return this.responseMediaType;
+        }
+
+        public OperationResourceInfoStack getOperationResourceInfoStack() {
+            return this.oriStack;
         }
     }
 
@@ -64,13 +71,13 @@ public class LibertyJaxRsResourceMethodCache {
         return ref.get();
     }
 
-    public void put(String uriString, OperationResourceInfo ori, MultivaluedMap<String, String> values, String mt) {
+    public void put(String uriString, OperationResourceInfo ori, MultivaluedMap<String, String> values, String mt, OperationResourceInfoStack oriStack) {
 
-        if (uriString == null || "".equals(uriString) || ori == null || values == null) {
+        if (uriString == null || "".equals(uriString) || ori == null || values == null || oriStack == null) {
             return;
         }
         synchronized (cache) {
-            cache.put(uriString, new SoftReference<ResourceMethodCache>(new ResourceMethodCache(ori, values, mt)));
+            cache.put(uriString, new SoftReference<ResourceMethodCache>(new ResourceMethodCache(ori, values, mt, oriStack)));
         }
     }
 
