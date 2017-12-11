@@ -5,6 +5,7 @@
       <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
       <feature>localConnector-1.0</feature>
+      <feature>mdb-3.2</feature>
       <feature>servlet-3.1</feature>
       <feature>monitor-1.0</feature>
     </featureManager>
@@ -31,11 +32,15 @@
       <properties.DerbyRA userName="DS1USER" password="{xor}GwxuDwgb" xaSuccessLimit="0"/>
     </connectionFactory>
 
+    <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">
+      <properties.DerbyRA destinationRef="map1" keyPrefix="mdbtest"/>
+    </activationSpec>
+
     <adminObject jndiName="eis/bootstrapContext">
       <properties.DerbyRA.BootstrapContext/>
     </adminObject>
 
-    <adminObject jndiName="eis/map1">
+    <adminObject id="map1" jndiName="eis/map1">
       <properties.DerbyRA.Map tableName="MAP1"/>
     </adminObject>
 

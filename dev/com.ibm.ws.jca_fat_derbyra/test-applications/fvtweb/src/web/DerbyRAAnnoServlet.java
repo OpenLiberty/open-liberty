@@ -11,12 +11,14 @@
 package web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +36,7 @@ import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.XATerminator;
 import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.WorkManager;
+import javax.servlet.ServletException;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 import javax.transaction.HeuristicMixedException;
@@ -71,9 +74,62 @@ public class DerbyRAAnnoServlet extends FATServlet {
     DataSource loginModuleCF;
 
     /**
-     * Maximum number of milliseconds a test should wait for something to happen
+     * Maximum number of nanoseconds a test should wait for something to happen
      */
-    private static final long TIMEOUT = 5000;
+    private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(20);
+
+    /**
+     * One-time initialization for servlet
+     */
+    @Override
+    public void init() throws ServletException {
+        try {
+            Connection con = ds1.getConnection();
+            try {
+                // create table to be used by Message Driven Bean
+                Statement stmt = con.createStatement();
+                try {
+                    stmt.executeUpdate("create table TestActivationSpecTBL (id varchar(50) not null primary key, oldValue varchar(50))");
+                } finally {
+                    stmt.close();
+                }
+            } finally {
+                con.close();
+            }
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Verify that a message driven bean is invoked.
+     */
+    public void testActivationSpec() throws Throwable {
+        try {
+            assertNull(map1.put("mdbtestActvSpec", "value1"));
+            assertEquals("value1", map1.put("mdbtestActvSpec", "value2"));
+
+            // Database entry inserted by message driven bean should show up in a reasonable amount of time
+            String oldValueFromDB = null;
+            Connection con = ds1.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement("select oldValue from TestActivationSpecTBL where id=?");
+                pstmt.setString(1, "mdbtestActvSpec");
+                for (long start = System.nanoTime(); oldValueFromDB == null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200)) {
+                    ResultSet result = pstmt.executeQuery();
+                    if (result.next())
+                        oldValueFromDB = result.getString(1);
+                    result.close();
+                }
+                pstmt.close();
+            } finally {
+                con.close();
+            }
+            assertEquals("value1", oldValueFromDB);
+        } finally {
+            map1.clear();
+        }
+    }
 
     public void testCustomLoginModuleCF() throws Exception {
         Connection con = loginModuleCF.getConnection();
@@ -153,7 +209,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
             RecursiveTimerTask task = new RecursiveTimerTask(new AtomicInteger(4), new AtomicLong(), resultQueue, timer, tran);
             timer.scheduleAtFixedRate(task, 0, 1);
 
-            Object result = resultQueue.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+            Object result = resultQueue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             if (result instanceof Throwable)
                 throw new Exception("Timer task failed. See cause.", (Throwable) result);
             if (!Long.valueOf(10).equals(result))
@@ -387,7 +443,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
                         // Make another update in the main transaction
                         stmt.executeUpdate("insert into TestXATerminatorTBL values (3, 'C')");
                     } finally {
-                        listener.latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+                        listener.latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                         xaTerminator.commit(xid, true);
                     }
                     if (listener.failure != null)
@@ -432,7 +488,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
                         // Make another update in the main transaction
                         stmt.executeUpdate("insert into TestXATerminatorTBL values (6, 'F')");
                     } finally {
-                        listener.latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+                        listener.latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                         int vote = xaTerminator.prepare(xid);
                         if (vote == XAResource.XA_OK)
                             xaTerminator.rollback(xid);
