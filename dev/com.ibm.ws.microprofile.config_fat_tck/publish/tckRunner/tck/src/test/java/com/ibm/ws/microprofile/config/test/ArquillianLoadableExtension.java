@@ -4,8 +4,8 @@ import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArch
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * We can register a class that can amend the vanilla wars that the TCK
- * tests create. 
+ * We register an extension class with Arquillian that amends the vanilla tck's wars
+ * to add any libraries that are not in the default Liberty environment
  */
 public class ArquillianLoadableExtension implements LoadableExtension {
 	@Override

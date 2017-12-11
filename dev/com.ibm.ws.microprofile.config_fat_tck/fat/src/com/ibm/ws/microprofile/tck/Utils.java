@@ -18,7 +18,9 @@ import com.ibm.websphere.simplicity.PortType;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * A set of mostly static utility fuctions.
+ * A set of mostly static utility functions.
+ * This exists partly as there is more than one test class
+ * in development that share these functions.
  */
 public class Utils {
 
@@ -29,13 +31,12 @@ public class Utils {
     public static String[] mvnCliRaw;
     public static String[] mvnCliRoot;
     public static String[] mvnCliTckRoot;
-    public static String[] mvnCliMethodRoot;
-    public static String[] mvnCliClassRoot;
-    public static String[] mvnCliPackageRoot;
     static List<String> jarsFromWlp = new ArrayList<String>(3);
 
     /**
      * Initialise shared values for a particular server.
+     * This enables us to set up things like the Liberty install
+     * directory and jar locations once.
      *
      * @param server
      * @throws Exception
@@ -43,6 +44,7 @@ public class Utils {
     public static void init(LibertyServer server) throws Exception {
         wlp = server.getInstallRoot();
         home = new File(System.getProperty("user.dir"));
+        tckRunnerDir = new File("publish/tckRunner");
 
         jarsFromWlp.add("com.ibm.websphere.org.eclipse.microprofile.config");
         jarsFromWlp.add("com.ibm.ws.microprofile.config.cdi");
@@ -53,11 +55,11 @@ public class Utils {
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
 
+        // The cmd below is a base for running the TCK as a whole for this project.
+        // It is possible to use other Testng control xml files (and even generate them
+        // based on examining the TCK jar) in which case the value for suiteXmlFile would
+        // be different.
         mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
-        mvnCliMethodRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=method.xml" });
-        mvnCliClassRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=class.xml" });
-        mvnCliPackageRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=package.xml" });
-        tckRunnerDir = new File("publish/tckRunner");
 
         init = true;
     }
@@ -85,7 +87,9 @@ public class Utils {
     }
 
     /**
-     * Smashes two String arrays into a returned third.
+     * Smashes two String arrays into a returned third. Useful for appending to the CLI
+     * used for ProcessBuilder. This is not a very efficient way to do this but it is
+     * easy to read/write and it is not a performance sensitive use case.
      *
      * @param a
      * @param b
@@ -98,12 +102,12 @@ public class Utils {
     }
 
     /**
-     * Run a command using a ProcessBuilder
+     * Run a command using a ProcessBuilder.
      *
      * @param cmd
-     * @param workingDirectory TODO
-     * @param outputFile TODO
-     * @return
+     * @param workingDirectory
+     * @param outputFile
+     * @return The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
     public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
@@ -134,7 +138,10 @@ public class Utils {
     }
 
     /**
-     * Return a full path for a jar file name substr
+     * Return a full path for a jar file name substr.
+     * This function enables the Liberty build version which is often included
+     * in jar names to increment and the FAT bucket to find the jar under the
+     * new version.
      *
      * @param jarName
      * @param server
@@ -147,23 +154,17 @@ public class Utils {
     }
 
     /**
-     * This is more easily unit testable than resolveJarPath
+     * This is more easily unit testable and reusable version of guts of resolveJarPath
      *
      * @param jarName
      * @param wlpPathName
-     * @return
+     * @return the path to the jar
      */
     public static String genericResolveJarPath(String jarName, String wlpPathName) {
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
         String spi = dev + "spi/";
-        String apiSpec = api + "spec/";
         String apiStable = api + "stable/";
-        String apiThirdParty = api + "third-party/";
-        String apiIbm = api + "ibm/";
-        String spiSpec = spi + "spec/";
-        String spiThirdParty = spi + "third-party/";
-        String spiIbm = spi + "ibm/";
         String lib = wlpPathName + "/lib/";
 
         ArrayList<String> places = new ArrayList<String>();
@@ -185,9 +186,9 @@ public class Utils {
     }
 
     /**
-     * Looks for a path in a directory
+     * Looks for a path in a directory from a sub set of the filename
      *
-     * TODO support regexes?
+     * TODO support regexes in the future?
      *
      * @param jarNameFragment
      * @param dir
@@ -199,10 +200,10 @@ public class Utils {
         String[] files = dirFileObj.list();
         log("looking for jar " + jarNameFragment + " in dir " + dir);
 
-// Looking for (for example):
-//              <systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
-//              <systemPath>${lib}com.ibm.ws.microprofile.config_${liberty.version}.jar</systemPath>
-//              <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
+        // Looking for (for example):
+        //              <systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
+        //              <systemPath>${lib}com.ibm.ws.microprofile.config_${liberty.version}.jar</systemPath>
+        //              <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
 
         for (int i = 0; i < files.length; i++) {
             log(files[i]);
@@ -226,6 +227,8 @@ public class Utils {
     }
 
     /**
+     * A simple log abstraction to enable easy grepping of the logs.
+     * 
      * @param string
      */
     public static void log(String string) {
