@@ -20,13 +20,15 @@ import java.util.Map.Entry;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
-//import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
@@ -111,7 +113,7 @@ public class CollectorManagerImpl implements CollectorManager {
              *
              * Alas, continue 'as normal' afterwards.
              */
-            //processInitializedConduits(source);
+            processInitializedConduits(source);
 
             //Passes BufferManager onto SourceManager which will then associate a Handler to it.
             srcMgr.setBufferManager(bufferManagerMap.get(sourceId));
@@ -140,55 +142,55 @@ public class CollectorManagerImpl implements CollectorManager {
      * Process Conduits created by Trace and Message due to the CollectorManagerPipelineConfigurator
      * and CollectorManagerPipelineUtils.
      */
-//    private void processInitializedConduits(Source source) {
-//        String sourceId = CollectorManagerUtils.getSourceId(source);
-//        String sourceName = source.getSourceName();
-//        /*
-//         * Check that the current source initialized is Log/Message and Trace.
-//         * These are the unique special sources along with their respective Conduits/BufferManagers
-//         * that were started before OSGI and thusly were not configured via 'the osgi' way that CollectorManager
-//         * had in place before the JSON Logging work.
-//         */
-//        if (sourceName.equals(CollectorConstants.MESSAGES_SOURCE) || sourceName.equals(CollectorConstants.TRACE_SOURCE)) {
-//            //Make sure we have a bundleContext, we need this to play with osgi (i.e. register/listen to services)
-//            if (bundleContext == null) {
-//                retrieveBundleContext();
-//            }
-//            /*
-//             * We should really check if the source and conduit/bufferManager is already set into the
-//             * SourceManager and BufferManager maps. If so, no need to continue the rest of this method.
-//             */
-//            if (sourceMgrs.containsKey(sourceId) && bufferManagerMap.containsKey(sourceId)) {
-//                return;
-//            }
-//
-//            ServiceReference<BufferManager>[] servRefs;
-//            try {
-//                servRefs = (ServiceReference<BufferManager>[]) bundleContext.getServiceReferences(BufferManager.class.getName(), null);
-//                if (servRefs != null) {
-//                    for (ServiceReference<BufferManager> servRef : servRefs) {
-//                        /*
-//                         * Ensure that the Conduit/BufferManager retrieved is the right one for the source
-//                         * by checking that the 'source' that the conduit/bufferManager was assinged to
-//                         * was for the Source that we are registering.
-//                         */
-//                        if (sourceName.equals(servRef.getProperty("source"))) {
-//                            /*
-//                             * Retrieve the actual Conduit/BufferManager fro mthe service Reference
-//                             * and put it into the bufferManagerMap.
-//                             */
-//                            Object object = bundleContext.getService(servRef);
-//                            BufferManager conduit = (BufferManager) object;
-//                            bufferManagerMap.put(sourceId, conduit);
-//                        }
-//                    }
-//                }
-//
-//            } catch (InvalidSyntaxException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    private void processInitializedConduits(Source source) {
+        String sourceId = CollectorManagerUtils.getSourceId(source);
+        String sourceName = source.getSourceName();
+        /*
+         * Check that the current source initialized is Log/Message and Trace.
+         * These are the unique special sources along with their respective Conduits/BufferManagers
+         * that were started before OSGI and thusly were not configured via 'the osgi' way that CollectorManager
+         * had in place before the JSON Logging work.
+         */
+        if (sourceName.equals(CollectorConstants.MESSAGES_SOURCE) || sourceName.equals(CollectorConstants.TRACE_SOURCE)) {
+            //Make sure we have a bundleContext, we need this to play with osgi (i.e. register/listen to services)
+            if (bundleContext == null) {
+                retrieveBundleContext();
+            }
+            /*
+             * We should really check if the source and conduit/bufferManager is already set into the
+             * SourceManager and BufferManager maps. If so, no need to continue the rest of this method.
+             */
+            if (sourceMgrs.containsKey(sourceId) && bufferManagerMap.containsKey(sourceId)) {
+                return;
+            }
+
+            ServiceReference<BufferManager>[] servRefs;
+            try {
+                servRefs = (ServiceReference<BufferManager>[]) bundleContext.getServiceReferences(BufferManager.class.getName(), null);
+                if (servRefs != null) {
+                    for (ServiceReference<BufferManager> servRef : servRefs) {
+                        /*
+                         * Ensure that the Conduit/BufferManager retrieved is the right one for the source
+                         * by checking that the 'source' that the conduit/bufferManager was assinged to
+                         * was for the Source that we are registering.
+                         */
+                        if (sourceName.equals(servRef.getProperty("source"))) {
+                            /*
+                             * Retrieve the actual Conduit/BufferManager fro mthe service Reference
+                             * and put it into the bufferManagerMap.
+                             */
+                            Object object = bundleContext.getService(servRef);
+                            BufferManager conduit = (BufferManager) object;
+                            bufferManagerMap.put(sourceId, conduit);
+                        }
+                    }
+                }
+
+            } catch (InvalidSyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /*
      * OSGi runtime calls this method to notify the collector manager when an existing source provider

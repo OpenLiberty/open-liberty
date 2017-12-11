@@ -11,11 +11,11 @@
 package com.ibm.ws.logging.utils;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.internal.impl.ConsoleLogHandler;
 import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
-import com.ibm.ws.logging.temp.collector.CollectorConstants;
 import com.ibm.wsspi.collector.manager.Handler;
 
 public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBootstrap {

@@ -24,9 +24,9 @@ import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
+import com.ibm.ws.logging.collector.DateFormatHelper;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
-import com.ibm.ws.logging.temp.collector.DateFormatHelper;
 
 /**
  *

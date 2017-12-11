@@ -12,9 +12,9 @@ package com.ibm.ws.logging.internal.impl;
 
 import java.util.List;
 
+import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
-import com.ibm.ws.logging.temp.collector.CollectorConstants;
-import com.ibm.ws.logging.temp.collector.Formatter;
 import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 
 /**
