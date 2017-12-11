@@ -31,7 +31,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
-import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 /**
  * ZIP file container factory.

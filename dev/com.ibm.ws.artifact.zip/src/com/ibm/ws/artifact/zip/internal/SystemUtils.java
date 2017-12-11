@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.kernel.service.utils;
+package com.ibm.ws.artifact.zip.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

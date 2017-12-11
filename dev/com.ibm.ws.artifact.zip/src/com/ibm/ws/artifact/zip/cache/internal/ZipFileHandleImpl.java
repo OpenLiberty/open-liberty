@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
-import com.ibm.wsspi.kernel.service.utils.FileUtils;
+import com.ibm.ws.artifact.zip.internal.FileUtils;
 
 /**
  * A handle to a zip file.

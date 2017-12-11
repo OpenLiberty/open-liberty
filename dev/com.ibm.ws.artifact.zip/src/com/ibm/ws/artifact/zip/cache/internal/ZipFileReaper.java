@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
-import com.ibm.wsspi.kernel.service.utils.SystemUtils;
+import com.ibm.ws.artifact.zip.internal.SystemUtils;
 
 /**
  * Reaper facility for managing ZipFiles.

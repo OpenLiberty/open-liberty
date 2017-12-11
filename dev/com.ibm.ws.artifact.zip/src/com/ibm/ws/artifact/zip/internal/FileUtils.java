@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +9,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.kernel.service.utils;
+package com.ibm.ws.artifact.zip.internal;
 
 import java.io.Closeable;
 import java.io.File;
@@ -220,6 +221,28 @@ public class FileUtils {
                 }
 
             });
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+    }
+
+    /**
+     * Execute the {@link File#setLastModified()} from within a {@link PrivilegedAction}.
+     *
+     * @param target The file to get the last modified for
+     * @param lastModified The last modified time to set.
+     *
+     * @return True or false telling if the last modified time was set.
+     */
+    public static boolean fileSetLastModified(final File target, final long lastModified) {
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            return AccessController.doPrivileged( new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.valueOf( target.setLastModified(lastModified) );
+                }
+            } ).booleanValue();
         } finally {
             ThreadIdentityManager.reset(token);
         }
