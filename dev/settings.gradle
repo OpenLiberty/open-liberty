@@ -44,10 +44,7 @@ def loadBuildProps() {
   }
 
   if (usrHomeProps.exists()) {
-    usrHomeProps.withInputStream { props.load(it) }    
-    props.each {      
-      props.setProperty(it.key, it.value)      
-    }
+    usrHomeProps.withInputStream { props.load(it) }
   }
 
   // Retain properties from prior builds; used in automated build publishing
