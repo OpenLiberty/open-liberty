@@ -17,6 +17,12 @@ import javax.interceptor.InvocationContext;
 
 import org.eclipse.microprofile.opentracing.Traced;
 
+import com.ibm.ws.opentracing.OpentracingTracerManager;
+
+import io.opentracing.Span;
+import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
+
 @Traced
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE) //run this interceptor after platform interceptors but before application interceptors
@@ -24,10 +30,19 @@ public class TracedInterceptor {
 
     @AroundInvoke
     public Object executeFT(InvocationContext context) throws Throwable {
-        System.out.println("BB- Around Invoke Execution before method run");
-        Object result = context.proceed();
-        System.out.println("BB - Around Invoke Execution after method run");
+        String methodName = "BB -" + context.getMethod().getName();
+        Tracer tracer = OpentracingTracerManager.getTracer();
+        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(methodName);
 
+        spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
+        spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), methodName);
+
+        Span span = spanBuilder.startManual();
+        tracer.makeActive(span);
+
+        Object result = context.proceed();
+
+        span.finish();
         return result;
     }
 

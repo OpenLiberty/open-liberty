@@ -12,6 +12,7 @@ package com.ibm.ws.opentracing;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.Format;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.ibm.websphere.ras.Tr;
@@ -31,7 +34,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 
@@ -46,6 +48,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     public static final String SERVER_SPAN_PROP_ID = OpentracingContainerFilter.class.getName() + ".Span";
 
     public static final String SERVER_SPAN_SKIPPED_ID = OpentracingContainerFilter.class.getName() + ".Skipped";
+
+    @Context
+    private ResourceInfo resourceInfo;
 
     /** {@inheritDoc} */
     @Override
@@ -81,6 +86,18 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
         boolean process = true;
 
+        Annotation[] annotations = resourceInfo.getResourceMethod().getAnnotations();
+        for (Annotation anno : annotations) {
+            String processing = anno.toString();
+            if (processing.contains("Traced(value=")) {
+                if (processing.contains("value=true")) {
+                    System.out.println("BB - Annotated method Traced found and passed to interceptor - incoming");
+                    return;
+                }
+            }
+
+        }
+
         if (process) {
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(incomingURL);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
@@ -115,6 +132,18 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     public void filter(ContainerRequestContext incomingRequestContext,
                        ContainerResponseContext outgoingResponseContext) throws IOException {
         String methodName = "filter(outgoing)";
+
+        Annotation[] annotations = resourceInfo.getResourceMethod().getAnnotations();
+        for (Annotation anno : annotations) {
+            String processing = anno.toString();
+            if (processing.contains("Traced(value=")) {
+                if (processing.contains("value=true")) {
+                    System.out.println("BB - Annotated method Traced found and passed to interceptor - incoming");
+                    return;
+                }
+            }
+
+        }
 
         if ((Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

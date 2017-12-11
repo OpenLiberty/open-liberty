@@ -19,11 +19,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.interceptor.InterceptorBinding;
+import javax.enterprise.util.Nonbinding;
 
 @Inherited
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ METHOD, TYPE })
 public @interface Traced {
-
+    @Nonbinding
+    boolean value() default true;
+    @Nonbinding
+    String operationName() default "";	
 }
