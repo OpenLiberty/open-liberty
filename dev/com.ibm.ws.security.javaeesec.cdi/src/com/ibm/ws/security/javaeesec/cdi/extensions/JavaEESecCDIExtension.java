@@ -14,6 +14,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -193,12 +194,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * @param annotationType
      */
     private <T> void createModulePropertiesProviderBeanForFormToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType,
-                                                                    Class annotatedClass) {
+                                                                    Class<?> annotatedClass) {
         try {
             Method loginToContinueMethod = annotationType.getMethod("loginToContinue");
             Annotation ltcAnnotation = (Annotation) loginToContinueMethod.invoke(annotation);
             Properties props = parseLoginToContinue(ltcAnnotation);
-            Class implClass;
+            Class<?> implClass;
             if (FormAuthenticationMechanismDefinition.class.equals(annotationType)) {
                 implClass = FormAuthenticationMechanism.class;
             } else {
@@ -251,7 +252,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         addAuthMech(implClass, implClass, props);
     }
 
-    private void addAuthMech(Class annotatedClass, Class implClass, Properties props) {
+    private void addAuthMech(Class<?> annotatedClass, Class<?> implClass, Properties props) {
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
         if (moduleMap.containsKey(moduleName)) {
@@ -267,8 +268,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    private Map<Class, Properties> getAuthMechs(String moduleName) {
-        Map<Class, Properties> authMechs = null;
+    private Map<Class<?>, Properties> getAuthMechs(String moduleName) {
+        Map<Class<?>, Properties> authMechs = null;
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         if (moduleMap.containsKey(moduleName)) {
             authMechs = moduleMap.get(moduleName).getAuthMechMap();
@@ -697,12 +698,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     protected void initModuleMap() {
-        if (moduleMap.isEmpty()) {
-            List<String> wml = getWebModuleList();
-            if (wml != null) {
-                for (String name : wml) {
-                    moduleMap.put(name, new ModuleProperties());
+        Map<String, URL> wml = getWebModuleMap();
+        if (wml != null) {
+            for (Map.Entry<String, URL> entry : wml.entrySet()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "moduleName : " + entry.getKey() + ", location : " + entry.getValue());
                 }
+                moduleMap.put(entry.getKey(), new ModuleProperties(entry.getValue()));
             }
         }
     }
@@ -723,34 +725,36 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return result;
     }
 
-    private List<String> getWebModuleList() {
-        List<ModuleMetaData> mmds = getModuleMetaDataList();
-        List<String> list = null;
+    private Map<String, URL> getWebModuleMap() {
+        Map<URL, ModuleMetaData> mmds = getModuleMetaDataMap();
+        Map<String, URL> map = null;
         if (mmds != null) {
-            list = new ArrayList<String>();
-            for (ModuleMetaData mmd : mmds) {
+            map = new HashMap<String, URL>();
+            for (Map.Entry<URL, ModuleMetaData> entry : mmds.entrySet()) {
+                ModuleMetaData mmd = entry.getValue();
                 if (mmd instanceof WebModuleMetaData) {
                     String j2eeModuleName = mmd.getJ2EEName().getModule();
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "j2ee module name  : " + j2eeModuleName);
                     }
-                    list.add(j2eeModuleName);
+                    map.put(j2eeModuleName, entry.getKey());
                 }
             }
         }
-        return list;
+        return map;
     }
 
     /**
      * make sure that there is one HAM for each modules, and if there is a HAM in a module, make sure there is no login configuration in web.xml.
      **/
     private void verifyConfiguration() throws DeploymentException {
-        List<ModuleMetaData> mmds = getModuleMetaDataList();
+        Map<URL, ModuleMetaData> mmds = getModuleMetaDataMap();
         if (mmds != null) {
-            for (ModuleMetaData mmd : mmds) {
+            for (Map.Entry<URL, ModuleMetaData> entry : mmds.entrySet()) {
+                ModuleMetaData mmd = entry.getValue();
                 if (mmd instanceof WebModuleMetaData) {
                     String j2eeModuleName = mmd.getJ2EEName().getModule();
-                    Map<Class, Properties> authMechs = getAuthMechs(j2eeModuleName);
+                    Map<Class<?>, Properties> authMechs = getAuthMechs(j2eeModuleName);
                     if (authMechs != null && !authMechs.isEmpty()) {
                         // make sure that only one HAM.
                         if (authMechs.size() != 1) {
@@ -777,10 +781,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    private String getAuthMechNames(Map<Class, Properties> authMechs) {
+    private String getAuthMechNames(Map<Class<?>, Properties> authMechs) {
         StringBuffer result = new StringBuffer();
         boolean first = true;
-        for (Class authMech : authMechs.keySet()) {
+        for (Class<?> authMech : authMechs.keySet()) {
             if (first) {
                 first = false;
             } else {
@@ -793,47 +797,35 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     private String getApplicationName() {
         String result = null;
-        List<ModuleMetaData> mmds = getModuleMetaDataList();
+        Map<URL, ModuleMetaData> mmds = getModuleMetaDataMap();
         if (mmds != null && !mmds.isEmpty()) {
             result = mmds.get(0).getJ2EEName().getApplication();
         }
         return result;
     }
 
-    protected List<ModuleMetaData> getModuleMetaDataList() {
-        return ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().getModuleMetaDataList();
+    protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+        return ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().getModuleMetaDataMap();
     }
 
     /**
-      * Identify the module name from the class. If the class exists in the jar file, return war file name
-      * if it is located under the war file, otherwise returning jar file name.
+     * Identify the module name from the class. If the class exists in the jar file, return war file name
+     * if it is located under the war file, otherwise returning jar file name.
      **/
     private String getModuleFromClass(Class<?> klass, Map<String, ModuleProperties> moduleMap) {
         String file = klass.getProtectionDomain().getCodeSource().getLocation().getFile();
-        String normalizedFile = file.toLowerCase();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "File name : " + file);
         }
         String moduleName = null;
-        if (normalizedFile.endsWith(".war")) {
-            int index = file.lastIndexOf("/");
-            if (index > 0) {
-                moduleName = file.substring(index + 1);
-            } else {
-                moduleName = file;
-            }
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "module name : " + moduleName);
-            }
-        } else if (normalizedFile.contains(".war/web-inf/")) {
-            // if the class exists in a jar file which is bundled with war file, or the package has been expanded..
-            for (String module : moduleMap.keySet()) {
-                if (file.contains("/" + module + "/")) {
-                    moduleName = module;
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "module name from the list  : " + moduleName);
-                    }
+        for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+            URL location = entry.getValue().getLocation();
+            if (location.getProtocol().equals("file") && file.startsWith(location.getFile())) {
+                moduleName = entry.getKey();
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "module name from the list  : " + moduleName);
                 }
+                break;
             }
         }
         if (moduleName == null) {
@@ -844,6 +836,5 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
         return moduleName;
     }
-
 
 }
