@@ -15,11 +15,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
 import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPABootstrapTest.class,
+                JPA10FATSuite.class,
                 JPA22FATSuite.class,
                 JPAAppClientTest.class
 })

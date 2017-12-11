@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: Security MicroProfile JWT Propagation
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.propagation
 Bundle-Description: Security MicroProfile JWT Propagation service, version=${bVersion}

@@ -51,6 +51,17 @@
      	  <config-property-type>java.lang.Boolean</config-property-type>
      	  <config-property-value>false</config-property-value> 
     	</config-property>
+        <config-property>
+    	  <description>This property added to test WMQ XA recovery path. Value should not be configured because it will be supplied by the application server.</description>
+     	  <config-property-name>qmid</config-property-name> 
+     	  <config-property-type>java.lang.String</config-property-type> 
+    	</config-property>
+        <config-property>
+    	  <description>Enforce a success limit on XA resource commits and rollbacks (-1 means no limit)</description>
+     	  <config-property-name>xaSuccessLimit</config-property-name> 
+     	  <config-property-type>java.lang.Integer</config-property-type>
+     	  <config-property-value>-1</config-property-value>  
+    	</config-property>
         <connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface> 
         <connectionfactory-impl-class>fat.derbyra.resourceadapter.DerbyConnectionFactory</connectionfactory-impl-class> 
         <connection-interface>java.sql.Connection</connection-interface> 

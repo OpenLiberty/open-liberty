@@ -11,8 +11,11 @@
 package web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
@@ -26,12 +29,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.XATerminator;
 import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.WorkManager;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
+import javax.transaction.HeuristicMixedException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -271,6 +276,82 @@ public class DerbyRAAnnoServlet extends FATServlet {
 
         if (list.size() != 2)
             throw new Exception("Missing beforeCompletion, afterCompletion, or both from: " + list);
+    }
+
+    /**
+     * Intentionally cause an in-doubt transaction and verify that the transaction manager successfully recovers it
+     * by committing the updates to the database.
+     */
+    public void testXARecovery() throws Exception {
+        Connection con = ds1.getConnection();
+        try {
+            // create table
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("create table TestXARecoveryTBL (id int not null primary key, value varchar(30))");
+            stmt.close();
+        } finally {
+            con.close();
+        }
+
+        DataSource ds3 = InitialContext.doLookup("eis/ds3");
+
+        boolean commitAttempted = false;
+        tran.begin();
+        try {
+            Connection con1 = ds1.getConnection();
+            try {
+                Statement s1 = con1.createStatement();
+                s1.executeUpdate("insert into TestXARecoveryTBL values (1, 'VALUE FROM DS1')");
+                s1.close();
+            } finally {
+                con1.close();
+            }
+
+            Connection con2 = ds3.getConnection();
+            try {
+                Statement s2 = con2.createStatement();
+                s2.executeUpdate("insert into TestXARecoveryTBL values (2, 'VALUE FROM DS3')");
+                s2.close();
+            } finally {
+                con2.close();
+            }
+
+            try {
+                commitAttempted = true;
+                tran.commit();
+                fail("Commit should not have succeeded because the test infrastructure is supposed to cause an in-doubt transaction.");
+            } catch (HeuristicMixedException x) {
+                // Adjust the XA success limit, so as to allow XA recovery to commit the in-doubt transaction
+                ds3.unwrap(AtomicInteger.class).set(1); // TODO this should be removed once the JCA integration layer is updated to set the QMID
+                System.out.println("Caught expected exception: " + x);
+            }
+        } finally {
+            if (!commitAttempted)
+                tran.rollback();
+        }
+
+        System.out.println("--- attempting to access data (only possible after recovery) ---");
+
+        con = ds1.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("select value from TestXARecoveryTBL where id=?");
+
+            ps.setInt(1, 2);
+            ResultSet result = ps.executeQuery();
+            assertTrue(result.next());
+            assertEquals("VALUE FROM DS3", result.getString(1));
+            result.close();
+
+            ps.setInt(1, 1);
+            result = ps.executeQuery();
+            assertTrue(result.next());
+            assertEquals("VALUE FROM DS1", result.getString(1));
+            result.close();
+
+            ps.close();
+        } finally {
+            con.close();
+        }
     }
 
     /**

@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: JNDI services for URL contexts
 Bundle-SymbolicName: com.ibm.ws.jndi.url.contexts
 Bundle-Description: This bundle provides the ObjectFactory and associated support for the java:comp namespace; version=${bVersion}

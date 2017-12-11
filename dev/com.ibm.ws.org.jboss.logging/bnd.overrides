@@ -6,7 +6,7 @@ Bundle-SymbolicName: com.ibm.ws.org.jboss.logging.3.3.0
 
 Bundle-Description: jboss-logging-3.3.0.Final, version 3.3.0.Final
 
-Export-Package: org.jboss.logging;version="3.3.0.Final"
+Export-Package: org.jboss.logging;version="3.3.0.Final";packageType=was_internal
 Import-Package: \
   org.apache.log4j;resolution:=optional, \
   org.apache.logging.log4j;version="[2.0,3)";resolution:=optional, \

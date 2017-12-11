@@ -42,7 +42,6 @@ import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 /**
- * http://was.pok.ibm.com/xwiki/bin/view/Liberty/JMX_HTTP
  * <p>
  * The valid definitions are:
  * <p> {@code <quickStartSecurity userName="user" userPassword="password" /> <!-- This is where we create the

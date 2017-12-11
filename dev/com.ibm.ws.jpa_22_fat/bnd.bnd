@@ -18,6 +18,8 @@ src: \
 	fat/src,\
 	test-applications/appclient/src,\
 	test-applications/jpabootstrap/src,\
+	test-applications/jpa10/callback/src,\
+	test-applications/jpa22/bval/src,\
 	test-applications/jpa22/cdi/src,\
 	test-applications/jpa22/jpa22injection/src,\
 	test-applications/jpa22/jpa22query/src,\
@@ -36,4 +38,5 @@ runtime.minimum.java.level: 1.8
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1

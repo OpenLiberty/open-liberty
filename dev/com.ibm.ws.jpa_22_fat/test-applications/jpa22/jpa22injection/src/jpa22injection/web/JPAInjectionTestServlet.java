@@ -1,11 +1,14 @@
 package jpa22injection.web;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.UserTransaction;
 
@@ -133,5 +136,37 @@ public class JPAInjectionTestServlet extends FATServlet {
 
         em1.close();
         em2.close();
+    }
+
+    /**
+     * JPA 2.2 Providers are also responsible for handling a host of JPA annotations that have been marked as @Repetable.
+     * This test case verifies @NamedQuery is properly repeatable
+     */
+    @Test
+    public void testPersistenceProviderNamedQueryRepeatableAnnotation() throws Exception {
+        EntityManager em1 = (EntityManager) InitialContext.doLookup("java:comp/env/em1");
+        Assert.assertNotNull(em1);
+
+        tx.begin();
+        em1.joinTransaction();
+        InjectEntityA entA1 = new InjectEntityA();
+        entA1.setStrData("NamedQuery1");
+        em1.persist(entA1);
+        tx.commit();
+
+        Query q = em1.createNamedQuery("findAllEntityA");
+        Assert.assertNotNull(q);
+        List resultList = q.getResultList();
+        Assert.assertNotNull(resultList);
+        Assert.assertTrue(resultList.size() >= 1);
+
+        Query q2 = em1.createNamedQuery("findEntityAById");
+        Assert.assertNotNull(q2);
+        q2.setParameter("id", entA1.getId());
+        Object result = q2.getSingleResult();
+        Assert.assertNotNull(result);
+
+        InjectEntityA qEnt = (InjectEntityA) result;
+        Assert.assertEquals(entA1.getId(), qEnt.getId());
     }
 }

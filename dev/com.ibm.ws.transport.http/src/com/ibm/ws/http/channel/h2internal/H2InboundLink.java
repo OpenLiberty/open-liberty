@@ -229,6 +229,45 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
+    /**
+     * Handle a connection initiated via ALPN "h2"
+     *
+     * @param link the initial inbound link
+     * @return true if the upgrade was sucessful
+     */
+    public boolean handleHTTP2AlpnConnect(HttpInboundLink link) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "handleHTTP2AlpnConnect entry");
+        }
+
+        initialHttpInboundLink = link;
+        Integer streamID = new Integer(0);
+
+        H2VirtualConnectionImpl h2VC = new H2VirtualConnectionImpl(initialVC);
+
+        // remove the HttpDispatcherLink from the map, so a new one will be created and used by this new H2 stream
+        h2VC.getStateMap().remove(HttpDispatcherLink.LINK_ID);
+        H2HttpInboundLinkWrap wrap = new H2HttpInboundLinkWrap(httpInboundChannel, h2VC, streamID, this);
+
+        // create the initial stream processor, add it to the link stream table, and add it to the write queue
+        H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
+        streamTable.put(streamID, streamProcessor);
+        writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "handleHTTP2AlpnConnect, exit");
+        }
+        return true;
+    }
+
+    /**
+     * Handle an h2c upgrade request
+     *
+     * @param headers a map of the headers for this request
+     * @param link the initial inbound link
+     * @return true if the http2 upgrade was successful
+     */
     public boolean handleHTTP2UpgradeRequest(Map<String, String> headers, HttpInboundLink link) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

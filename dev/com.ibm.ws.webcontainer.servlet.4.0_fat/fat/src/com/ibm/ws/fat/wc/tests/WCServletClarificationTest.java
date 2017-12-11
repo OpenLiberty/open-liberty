@@ -32,114 +32,110 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * getInitParameter return NPE if name is null Clarification 3. setAttribute,
  * setInitParameter return NPE if name is null
  */
+@Mode(TestMode.FULL)
 public class WCServletClarificationTest extends LoggingTest {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(WCServletClarificationTest.class.getName());
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(WCServletClarificationTest.class.getName());
 
-	@ClassRule
-	public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
+    @ClassRule
+    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-	 */
-	@Override
-	protected SharedServer getSharedServer() {
-		// TODO Auto-generated method stub
-		return SHARED_SERVER;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        // TODO Auto-generated method stub
+        return SHARED_SERVER;
+    }
 
-	@Before
-	public void before() {
-		ArrayList<String> expectedErrors = new ArrayList<String>();
-		expectedErrors.add("CWWWC0400E:.*");
-		SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
+    @Before
+    public void before() {
+        ArrayList<String> expectedErrors = new ArrayList<String>();
+        expectedErrors.add("CWWWC0400E:.*");
+        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
 
-	}
+    }
 
-	@BeforeClass
-	public static void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
 
-		LOG.info("Setup : add TestSertvlet40 app to server if not already present");
+        LOG.info("Setup : add TestSertvlet40 app to server if not already present");
 
-		WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
-				"TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
-				"testservlet40.war.listeners", "testservlet40.jar.servlets");
+        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
+                                                  "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
+                                                  "testservlet40.war.listeners", "testservlet40.jar.servlets");
 
-		SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.startIfNotStarted();
 
-		LOG.info("Setup : wait for message to indicate app has started");
+        LOG.info("Setup : wait for message to indicate app has started");
 
-		SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
 
-		LOG.info("Setup : complete, ready for Tests");
+        LOG.info("Setup : complete, ready for Tests");
 
-	}
+    }
 
-	@AfterClass
-	public static void testCleanup() throws Exception {
+    @AfterClass
+    public static void testCleanup() throws Exception {
 
-		SHARED_SERVER.getLibertyServer().stopServer(null);
-	}
+        SHARED_SERVER.getLibertyServer().stopServer(null);
+    }
 
-	protected String parseResponse(WebResponse wr, String beginText, String endText) {
-		String s;
-		String body = wr.getResponseBody();
-		int beginTextIndex = body.indexOf(beginText);
-		if (beginTextIndex < 0)
-			return "begin text, " + beginText + ", not found";
-		int endTextIndex = body.indexOf(endText, beginTextIndex);
-		if (endTextIndex < 0)
-			return "end text, " + endText + ", not found";
-		s = body.substring(beginTextIndex + beginText.length(), endTextIndex);
-		return s;
-	}
+    protected String parseResponse(WebResponse wr, String beginText, String endText) {
+        String s;
+        String body = wr.getResponseBody();
+        int beginTextIndex = body.indexOf(beginText);
+        if (beginTextIndex < 0)
+            return "begin text, " + beginText + ", not found";
+        int endTextIndex = body.indexOf(endText, beginTextIndex);
+        if (endTextIndex < 0)
+            return "end text, " + endText + ", not found";
+        s = body.substring(beginTextIndex + beginText.length(), endTextIndex);
+        return s;
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void test_GetAttribute_Null_Name() throws Exception {
-		this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=getAttribute",
-				"Caught expected NPE, PASS");
-	}
+    @Test
+    public void test_GetAttribute_Null_Name() throws Exception {
+        this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=getAttribute",
+                            "Caught expected NPE, PASS");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void test_GetInitParameter_Null_Name() throws Exception {
-		this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=getInitParameter",
-				"Caught expected NPE, PASS");
-	}
+    @Test
+    public void test_GetInitParameter_Null_Name() throws Exception {
+        this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=getInitParameter",
+                            "Caught expected NPE, PASS");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void test_SetAttribute_Null_Name() throws Exception {
-		this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=setAttribute",
-				"Caught expected NPE, PASS");
-	}
+    @Test
+    public void test_SetAttribute_Null_Name() throws Exception {
+        this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=setAttribute",
+                            "Caught expected NPE, PASS");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void test_SetInitParameter_Null_Name() throws Exception {
-		this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=setInitParameter",
-				"Caught expected NPE, PASS");
-	}
+    @Test
+    public void test_SetInitParameter_Null_Name() throws Exception {
+        this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=setInitParameter",
+                            "Caught expected NPE, PASS");
+    }
 
-	/*
-	 * test valid set and get attribute name
-	 */
-	@Test
-	@Mode(TestMode.LITE)
-	public void test_SetGetValidAttribute_Name() throws Exception {
-		this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=setGetValidAttribute",
-				"setAttribute and getAttribute, PASS");
-	}
-	/*
-	 * @Test
-	 *
-	 * @Mode(TestMode.LITE) public void test_Valid_Name() throws Exception {
-	 * this.verifyResponse(
-	 * "/TestServlet40/ServletClarification?TestValidName=dummyValue", new
-	 * String[] { "TestValidName" }, new String[] { "FAILED" }); }
-	 */
+    /*
+     * test valid set and get attribute name
+     */
+    @Test
+    public void test_SetGetValidAttribute_Name() throws Exception {
+        this.verifyResponse("/TestServlet40/ServletClarification?TestNullName=setGetValidAttribute",
+                            "setAttribute and getAttribute, PASS");
+    }
+    /*
+     * @Test
+     *
+     * public void test_Valid_Name() throws Exception {
+     * this.verifyResponse(
+     * "/TestServlet40/ServletClarification?TestValidName=dummyValue", new
+     * String[] { "TestValidName" }, new String[] { "FAILED" }); }
+     */
 }

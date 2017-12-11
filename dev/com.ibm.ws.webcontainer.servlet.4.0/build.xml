@@ -5,9 +5,6 @@
     <property name="javac.boot.classpath" value="1.8" />
 
     <import file="../ant_build/public_imports/standard_imports.xml"/>
-	
-    <!-- skip findbugs until it works with Java 8 -->
-    <property name="skip.findbugs" value="true"/>
 
     <!-- exclude modified WAS classes from instrumentation -->
     <!-- also exclude classes that may trace buffers and-or other sensitive user information -->

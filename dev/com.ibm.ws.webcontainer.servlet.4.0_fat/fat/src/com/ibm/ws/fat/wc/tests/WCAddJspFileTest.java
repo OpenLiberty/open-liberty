@@ -35,112 +35,107 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 public class WCAddJspFileTest extends LoggingTest {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(WCAddJspFileTest.class.getName());
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(WCAddJspFileTest.class.getName());
 
-	protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
+    protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
-	@ClassRule
-	public static SharedServer SHARED_SERVER = new SharedServer("servlet40_addJspFileServer");
+    @ClassRule
+    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_addJspFileServer");
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-	 */
-	@Override
-	protected SharedServer getSharedServer() {
-		// TODO Auto-generated method stub
-		return SHARED_SERVER;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+    @Override
+    protected SharedServer getSharedServer() {
+        // TODO Auto-generated method stub
+        return SHARED_SERVER;
+    }
 
-	@BeforeClass
-	public static void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
 
-		LOG.info("Setup : add TestAddJspFile to the server if not already present.");
+        LOG.info("Setup : add TestAddJspFile to the server if not already present.");
 
-		WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestAddJspFile.ear", false,
-				"TestAddJspFile.war", true, null, false, "testaddjspfile.war.listeners");
+        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestAddJspFile.ear", false,
+                                                  "TestAddJspFile.war", true, null, false, "testaddjspfile.war.listeners");
 
-		SHARED_SERVER.startIfNotStarted();
+        SHARED_SERVER.startIfNotStarted();
 
-		LOG.info("Setup : wait for message to indicate app has started");
+        LOG.info("Setup : wait for message to indicate app has started");
 
-		SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestAddJspFile", 10000);
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestAddJspFile", 10000);
 
-		LOG.info("Setup : wait for message to indicate app has started");
-	}
+        LOG.info("Setup : wait for message to indicate app has started");
+    }
 
-	@AfterClass
-	public static void testCleanup() throws Exception {
-		SHARED_SERVER.getLibertyServer().stopServer(null);
-	}
+    @AfterClass
+    public static void testCleanup() throws Exception {
+        SHARED_SERVER.getLibertyServer().stopServer(null);
+    }
 
-	/**
-	 * Request a simple servlet.
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	@Mode(TestMode.LITE)
-	public void testJSPOne() throws Exception {
+    /**
+     * Request a simple servlet.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testJSPOne() throws Exception {
 
-		this.verifyResponse("/TestAddJspFile/jsp1", "Welcome to jsp one.jsp");
-	}
+        this.verifyResponse("/TestAddJspFile/jsp1", "Welcome to jsp one.jsp");
+    }
 
-	@Test
-	@Mode(TestMode.FULL)
-	public void testJSPOneDirect() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testJSPOneDirect() throws Exception {
 
-		this.verifyResponse("/TestAddJspFile/addJsp/one.jsp", "Welcome to jsp one.jsp");
-	}
+        this.verifyResponse("/TestAddJspFile/addJsp/one.jsp", "Welcome to jsp one.jsp");
+    }
 
-	@Test
-	@Mode(TestMode.FULL)
-	public void testJSPTwo() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testJSPTwo() throws Exception {
 
-		this.verifyResponse("/TestAddJspFile/jsp2", "Welcome to jsp two.jsp");
-	}
+        this.verifyResponse("/TestAddJspFile/jsp2", "Welcome to jsp two.jsp");
+    }
 
-	@Test
-	@Mode(TestMode.FULL)
-	public void testJSPDefinedInWebXml() throws Exception {
+    @Test
+    @Mode(TestMode.FULL)
+    public void testJSPDefinedInWebXml() throws Exception {
 
-		this.verifyResponse("/TestAddJspFile/webxmljsp", "Welcome to jsp webxml.jsp");
-	}
+        this.verifyResponse("/TestAddJspFile/webxmljsp", "Welcome to jsp webxml.jsp");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testJSPPartiallyDefinedInWebXml() throws Exception {
+    @Test
+    public void testJSPPartiallyDefinedInWebXml() throws Exception {
 
-		this.verifyResponse("/TestAddJspFile/webxmlpartialone", "Welcome to jsp webxmlpartialone.jsp");
-	}
+        this.verifyResponse("/TestAddJspFile/webxmlpartialone", "Welcome to jsp webxmlpartialone.jsp");
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testJSPMultipleMappingPartiallyDefinedInWebXml() throws Exception {
+    @Test
+    public void testJSPMultipleMappingPartiallyDefinedInWebXml() throws Exception {
 
-		this.verifyResponse("/TestAddJspFile/webxmlpartialtwo", "Welcome to jsp webxmlpartialtwo.jsp");
-		this.verifyResponse("/TestAddJspFile/webxmlpartialthree", "Welcome to jsp webxmlpartialtwo.jsp");
-		this.verifyResponse("/TestAddJspFile/webxmlpartialfour", "Welcome to jsp webxmlpartialtwo.jsp");
+        this.verifyResponse("/TestAddJspFile/webxmlpartialtwo", "Welcome to jsp webxmlpartialtwo.jsp");
+        this.verifyResponse("/TestAddJspFile/webxmlpartialthree", "Welcome to jsp webxmlpartialtwo.jsp");
+        this.verifyResponse("/TestAddJspFile/webxmlpartialfour", "Welcome to jsp webxmlpartialtwo.jsp");
 
-	}
+    }
 
-	@Test
-	@Mode(TestMode.LITE)
-	public void testForCorrectExceptions() throws Exception {
+    @Test
+    public void testForCorrectExceptions() throws Exception {
 
-		// Messages will come out during server start so should be there when
-		// this test runs
-		List<String> messages = SHARED_SERVER.getLibertyServer()
-				.findStringsInLogs("TEST.*: AddJspContextListener registration of a jsp with servletname");
-		boolean failFound = false;
-		for (String message : messages) {
-			LOG.info("Test message found in logs : " + message);
-			failFound = failFound || message.contains("FAILED");
-		}
-		assertFalse("Test Failed : Failure message found in log", failFound);
-		assertTrue("Test Failed : Expected 2 messages but got : " + messages.size(), messages.size() == 2);
-	}
+        // Messages will come out during server start so should be there when
+        // this test runs
+        List<String> messages = SHARED_SERVER.getLibertyServer().findStringsInLogs("TEST.*: AddJspContextListener registration of a jsp with servletname");
+        boolean failFound = false;
+        for (String message : messages) {
+            LOG.info("Test message found in logs : " + message);
+            failFound = failFound || message.contains("FAILED");
+        }
+        assertFalse("Test Failed : Failure message found in log", failFound);
+        assertTrue("Test Failed : Expected 2 messages but got : " + messages.size(), messages.size() == 2);
+    }
 
 }

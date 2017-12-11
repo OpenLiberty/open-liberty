@@ -11,8 +11,6 @@
 -include= ~../../../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: Test bundle providing a quiesce listener 
 Bundle-SymbolicName: test.server.quiesce
 Bundle-Description: Test bundle providing a server quiesce listener; version=${bVersion}

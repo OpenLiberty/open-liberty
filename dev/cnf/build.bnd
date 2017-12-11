@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include ${workspace}/gradle.properties
+-include: ${workspace}/gradle.properties, ${workspace}/generated.properties
 
 # Maven repository credentials
 -connection-settings: ${if;${artifactory.download.token};server;-dummy};id=https://${artifactory.download.server};username=${artifactory.download.user};password=${artifactory.download.token}, \

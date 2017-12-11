@@ -176,7 +176,6 @@ public class FacesConfigurator
     private final Class<?>[] NO_PARAMETER_TYPES = new Class[]{};
     private final Object[] NO_PARAMETERS = new Object[]{};
 
-    //private static final Log log = LogFactory.getLog(FacesConfigurator.class);
     private static final Logger log = Logger.getLogger(FacesConfigurator.class.getName());
 
     private static final String DEFAULT_RENDER_KIT_CLASS = HtmlRenderKitImpl.class.getName();

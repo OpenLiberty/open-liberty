@@ -27,5 +27,3 @@ Subsystem-Name: Java EE Full Platform 7.0
  com.ibm.websphere.appserver.appClientSupport-1.0
 kind=ga
 edition=base
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
-

@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 JPACDIIntegrationTest.class,
                 JPA22QueryTest.class,
                 JPA22Injection.class,
-                JPA22TimeAPITest.class
+                JPA22TimeAPITest.class,
+                JPA22BeanValidation.class
 })
 public class JPA22FATSuite {
 

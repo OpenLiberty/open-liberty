@@ -155,7 +155,7 @@ public class HttpUtils {
         int timeout = DEFAULT_TIMEOUT;
         URL url = createURL(server, path);
         HttpURLConnection con = getHttpConnection(url, timeout, HTTPRequestMethod.GET);
-        Log.info(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
+        Log.finer(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
         con.connect();
         return con;
     }
@@ -242,8 +242,8 @@ public class HttpUtils {
     public static HttpURLConnection getHttpConnection(URL url, int expectedResponseCode, int[] allowedUnexpectedResponseCodes, int connectionTimeout,
                                                       HTTPRequestMethod requestMethod, Map<String, String> headers,
                                                       InputStream streamToWrite) throws IOException, ProtocolException {
-        Log.info(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response of " + expectedResponseCode + " in " + connectionTimeout
-                                                       + " seconds.");
+        Log.finer(HttpUtils.class, "getHttpConnection",
+                  "Connecting to " + url.toExternalForm() + " expecting http response of " + expectedResponseCode + " in " + connectionTimeout + " seconds.");
 
         long startTime = System.currentTimeMillis();
         int timeout = connectionTimeout * 1000; // this is bad practice because it could overflow but the connection timeout on a urlconnection has to fit in an int.
@@ -259,10 +259,8 @@ public class HttpUtils {
                     if ((allowedUnexpectedResponseCodes != null
                          && !contains(allowedUnexpectedResponseCodes, con.getResponseCode()))
                         || !streamToWriteReset) {
-                        String msg = "Expected response " + expectedResponseCode +
-                                     ", received " + con.getResponseCode() +
-                                     " (" + con.getResponseMessage() +
-                                     ") while connecting to " + url;
+                        String msg = "Expected response " + expectedResponseCode + ", received " + con.getResponseCode() +
+                                     " (" + con.getResponseMessage() + ") while connecting to " + url;
                         if (!streamToWriteReset)
                             msg += ". Unable to reset streamToWrite";
 
@@ -283,11 +281,8 @@ public class HttpUtils {
 
                     // fail when time's up
                     if (timeout <= (System.currentTimeMillis() - startTime)) {
-                        String msg = "Expected response " + expectedResponseCode +
-                                     " within " + connectionTimeout +
-                                     " seconds, last received " + con.getResponseCode() +
-                                     " (" + con.getResponseMessage() +
-                                     ") while connecting to " + url;
+                        String msg = "Expected response " + expectedResponseCode + " within " + connectionTimeout +
+                                     " seconds, last received " + con.getResponseCode() + " (" + con.getResponseMessage() + ") while connecting to " + url;
                         AssertionError e = new AssertionError(msg);
                         Log.error(HttpUtils.class, "getHttpConnection", e, msg);
                         throw e;
@@ -336,10 +331,11 @@ public class HttpUtils {
                 con.connect();
                 count++;
             } while (con.getResponseCode() != expectedResponseCode);
-            Log.info(HttpUtils.class, "getHttpConnection", "RC=" + con.getResponseCode() + ", Connection established");
+            Log.finer(HttpUtils.class, "getHttpConnection", "RC=" + con.getResponseCode() + ", Connection established");
             return con;
         } finally {
-            Log.info(HttpUtils.class, "getHttpConnection", "Returning after " + count + " attempts to establish a connection.");
+            if (count > 1)
+                Log.info(HttpUtils.class, "getHttpConnection", "Returning after " + count + " attempts to establish a connection.");
         }
     }
 

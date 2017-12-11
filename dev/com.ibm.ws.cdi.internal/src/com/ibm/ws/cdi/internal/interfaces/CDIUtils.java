@@ -173,7 +173,7 @@ public class CDIUtils {
     }
 
     @FFDCIgnore({ Throwable.class })
-    private static Class<?> loadClass(final ClassLoader classLoader, final String className) {
+    public static Class<?> loadClass(final ClassLoader classLoader, final String className) {
 
         Class<?> clazz = null;
         try {
