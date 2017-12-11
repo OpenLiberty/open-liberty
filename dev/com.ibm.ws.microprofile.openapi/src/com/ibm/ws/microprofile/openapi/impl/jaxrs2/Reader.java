@@ -373,7 +373,7 @@ public class Reader {
                                                    classConsumes,
                                                    operationParameters,
                                                    paramAnnotations[i],
-                                                   type);
+                                                   type, method.getAnnotation(org.eclipse.microprofile.openapi.annotations.parameters.RequestBody.class));
                             }
                         }
                     } else {
@@ -392,7 +392,7 @@ public class Reader {
                                                    classConsumes,
                                                    operationParameters,
                                                    paramAnnotations[i],
-                                                   type);
+                                                   type, method.getAnnotation(org.eclipse.microprofile.openapi.annotations.parameters.RequestBody.class));
                             }
                         }
                     }
@@ -462,9 +462,16 @@ public class Reader {
     protected void processRequestBody(Parameter requestBodyParameter, Operation operation,
                                       Consumes methodConsumes, Consumes classConsumes,
                                       List<Parameter> operationParameters,
-                                      Annotation[] paramAnnotations, Type type) {
+                                      Annotation[] paramAnnotations, Type type, org.eclipse.microprofile.openapi.annotations.parameters.RequestBody methododRequestBody) {
         if (operation.getRequestBody() == null) {
             org.eclipse.microprofile.openapi.annotations.parameters.RequestBody requestBodyAnnotation = getRequestBody(Arrays.asList(paramAnnotations));
+
+            if (requestBodyAnnotation == null) {
+                if (methododRequestBody != null) {
+                    requestBodyAnnotation = methododRequestBody;
+                }
+            }
+
             if (requestBodyAnnotation != null) {
                 Optional<RequestBody> optionalRequestBody = OperationParser.getRequestBody(requestBodyAnnotation, classConsumes, methodConsumes, components);
                 if (optionalRequestBody.isPresent()) {
@@ -750,7 +757,7 @@ public class Reader {
         }
         Callback callbackObject = new CallbackImpl();
         PathItem pathItemObject = new PathItemImpl();
-        for (org.eclipse.microprofile.openapi.annotations.Operation callbackOperation : apiCallback.operation()) {
+        for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
             Operation callbackNewOperation = new OperationImpl();
             setOperationObjectFromApiOperationAnnotation(
                                                          callbackNewOperation,
@@ -819,34 +826,20 @@ public class Reader {
         if (apiOperation.deprecated()) {
             operation.setDeprecated(apiOperation.deprecated());
         }
+    }
 
-        ReaderUtils.getStringListFromStringArray(apiOperation.tags()).ifPresent(tags -> {
-            tags.stream().filter(t -> operation.getTags() == null || (operation.getTags() != null && !operation.getTags().contains(t))).forEach(operation::addTag);
-        });
-
-        if (operation.getExternalDocs() == null) { // if not set in root annotation
-            AnnotationsUtils.getExternalDocumentation(apiOperation.externalDocs()).ifPresent(operation::setExternalDocs);
+    private void setOperationObjectFromApiOperationAnnotation(
+                                                              Operation operation,
+                                                              org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOp,
+                                                              Produces methodProduces,
+                                                              Produces classProduces,
+                                                              Consumes methodConsumes,
+                                                              Consumes classConsumes) {
+        if (StringUtils.isNotBlank(callbackOp.summary())) {
+            operation.setSummary(callbackOp.summary());
         }
-
-        OperationParser.getApiResponses(apiOperation.responses(), classProduces, methodProduces, components).ifPresent(responses -> {
-            if (operation.getResponses() == null) {
-                operation.setResponses(responses);
-            } else {
-                responses.forEach(operation.getResponses()::addApiResponse);
-            }
-        });
-        AnnotationsUtils.getServers(apiOperation.servers()).ifPresent(servers -> servers.forEach(operation::addServer));
-
-        getParametersListFromAnnotation(
-                                        apiOperation.parameters(),
-                                        classConsumes,
-                                        methodConsumes,
-                                        operation).ifPresent(p -> p.forEach(operation::addParameter));
-
-        // security
-        Optional<List<SecurityRequirement>> requirementsObject = SecurityParser.getSecurityRequirements(apiOperation.security());
-        if (requirementsObject.isPresent()) {
-            requirementsObject.get().stream().filter(r -> operation.getSecurity() == null || !operation.getSecurity().contains(r)).forEach(operation::addSecurityRequirement);
+        if (StringUtils.isNotBlank(callbackOp.description())) {
+            operation.setDescription(callbackOp.description());
         }
     }
 
