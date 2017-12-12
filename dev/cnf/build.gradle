@@ -197,6 +197,7 @@ task createGaESAList {
 task createGeneratedReplacementProjects {
     doLast {
         File templateDir = new File(projectDir, 'gradle/projects.for.ivy.ant')
+        def excludeList = []
         rootProject.fileTree(dir: '.', include: '*').visit { element ->
             if (element.isDirectory()) {
                 String relativePath = "$element.relativePath"
@@ -204,10 +205,10 @@ task createGeneratedReplacementProjects {
                 if (bndProject == null) {
                     return
                 }
-                if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', 'false'))
+                if (!generateReplacement && 'true'.equals(bndProject.get('test.project', 'false'))) {
                     return
                 }
-
                 List bsns = bndProject.getBsns()
                 int bsnCount = bndProject.isNoBundles() ? 0 : bndProject.getBsns().size()
                 if (bsnCount > 0) {
@@ -216,6 +217,7 @@ task createGeneratedReplacementProjects {
                     //println "projectName=" + relativePath + ", artifact=" + artifact
                     File targetDir = new File(buildDir, 'replacements/' + relativePath)
                     targetDir.mkdirs()
+                    excludeList.add('dev/' + relativePath + '/')
                     copy {
                         from templateDir
                         into targetDir
@@ -254,6 +256,11 @@ $classpathEntries</classpath>
                 }
             }
         }
+        File excludeFile = new File(project.buildDir, 'excludeList.txt')
+        excludeFile.createNewFile()
+        String text = ""
+        excludeList.sort().each { text += it + '\n' }
+        excludeFile.text = text
     }
 }
 
@@ -327,7 +334,9 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGaESAList
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', {from new File(project.buildDir, 'dependencies.gradle'), new File(project.buildDir, 'gaFeatures.txt')}
+    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
+                                    new File(project.buildDir, 'gaFeatures.txt'),
+                                    new File(project.buildDir, 'excludeList.txt') }
     from new File(project.buildDir, 'replacements')
 }
 
