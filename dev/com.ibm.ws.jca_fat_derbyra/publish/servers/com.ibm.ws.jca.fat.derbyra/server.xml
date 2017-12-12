@@ -31,6 +31,12 @@
       <connectionManager maxPoolSize="1"/>
       <properties.DerbyRA userName="DS1USER" password="{xor}GwxuDwgb" xaSuccessLimit="0"/>
     </connectionFactory>
+    
+    <connectionFactory jndiName="eis/ds4">
+      <connectionManager enableSharingForDirectLookups="false"/>
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <properties.DerbyRA/>
+    </connectionFactory>
 
     <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">
       <properties.DerbyRA keyPrefix="mdbtest"/>
