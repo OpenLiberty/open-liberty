@@ -358,7 +358,7 @@ public class ServerEndpointControlMBeanTest {
     }
 
     /**
-     * Tests that the expected exception is thrown if the MBean pause method is issued with invalid target list when no pauseable components exist
+     * Tests that the expected exception is thrown if the MBean pause method is issued with empty target list
      *
      * @throws Exception
      */
