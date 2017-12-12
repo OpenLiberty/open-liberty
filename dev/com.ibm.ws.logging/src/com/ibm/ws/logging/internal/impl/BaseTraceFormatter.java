@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
+import com.ibm.ws.logging.temp.collector.DateFormatHelper;
 
 /**
  *
@@ -391,7 +392,7 @@ public class BaseTraceFormatter extends Formatter {
         String sym = getMarker(logRecord);
         String name = nonNullString(logRecord.getLoggerName(), logRecord.getSourceClassName());
 
-        sb.append('[').append(DataFormatHelper.formatTime(logRecord.getMillis(), useIsoDateFormat)).append("] ");
+        sb.append('[').append(DateFormatHelper.formatTime(logRecord.getMillis(), useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');
         formatFixedString(sb, name, enhancedNameLength);
         sb.append(sym); // sym has built-in padding
@@ -432,7 +433,7 @@ public class BaseTraceFormatter extends Formatter {
         StringBuilder sb = new StringBuilder(256);
 
         // Common header
-        sb.append('[').append(DataFormatHelper.formatTime(logRecord.getMillis(), useIsoDateFormat)).append("] ");
+        sb.append('[').append(DateFormatHelper.formatTime(logRecord.getMillis(), useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId());
 
         switch (traceFormat) {

@@ -18,6 +18,7 @@ Bundle-SymbolicName: com.ibm.ws.logging; singleton:=true
 Private-Package: \
  !com.ibm.ws.logging.internal.osgi.*,\
  com.ibm.ws.logging.*,\
+ com.ibm.ws.collector.manager.internal.*,\
  com.ibm.wsspi.logprovider.*
 
 # For each exported package, create (in that package) a package-info.java
@@ -25,18 +26,22 @@ Private-Package: \
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
- com.ibm.ejs.ras;provide:=true, \
- com.ibm.websphere.logging;provide:=true, \
- com.ibm.websphere.logging.hpel;provide:=true, \
- com.ibm.websphere.ras;provide:=true, \
- com.ibm.websphere.ras.annotation;provide:=true, \
- com.ibm.ws.ffdc;provide:=true, \
- com.ibm.ws.ffdc.annotation;provide:=true, \
- com.ibm.ws.staticvalue;provide:=true, \
- com.ibm.ws.logging;provide:=true, \
- com.ibm.ws.ras.instrument.annotation, \
- com.ibm.ws.logging.internal, \
- com.ibm.wsspi.logging;provide:=true
+	com.ibm.ejs.ras;provide:=true,\
+	com.ibm.websphere.logging;provide:=true,\
+	com.ibm.websphere.logging.hpel;provide:=true,\
+	com.ibm.websphere.ras;provide:=true,\
+	com.ibm.websphere.ras.annotation;provide:=true,\
+	com.ibm.ws.ffdc;provide:=true,\
+	com.ibm.ws.ffdc.annotation;provide:=true,\
+	com.ibm.ws.staticvalue;provide:=true,\
+	com.ibm.ws.logging;provide:=true,\
+	com.ibm.ws.ras.instrument.annotation,\
+	com.ibm.ws.logging.internal,\
+	com.ibm.ws.logging.synch,\
+	com.ibm.ws.logging.utils,\
+	com.ibm.ws.http.logging.data,\
+	com.ibm.ws.logging.temp.collector,\
+	com.ibm.wsspi.logging;provide:=true
 
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -34,10 +35,9 @@ public class ModulePropertiesTest {
     /**
      *
      */
-    @SuppressWarnings("rawtypes")
     @Test
     public void testGetAuthMechMapNotEmpty() {
-        Map<Class, Properties> amm = new HashMap<Class, Properties>();
+        Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
         Properties prop1 = new Properties();
         Properties prop2 = new Properties();
         amm.put(TestClass1.class, prop1);
@@ -50,10 +50,9 @@ public class ModulePropertiesTest {
     /**
      *
      */
-    @SuppressWarnings("rawtypes")
     @Test
     public void testGetFromAuthMechMapNotEmpty() {
-        Map<Class, Properties> amm = new HashMap<Class, Properties>();
+        Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
         Properties prop1 = new Properties();
         Properties prop2 = new Properties();
         amm.put(TestClass1.class, prop1);
@@ -70,12 +69,31 @@ public class ModulePropertiesTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void testPutToAuthMechMapNotEmpty() {
-        Map<Class, Properties> amm = new HashMap<Class, Properties>();
+        Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
         Properties prop1 = new Properties();
         ModuleProperties mp = new ModuleProperties(amm);
         assertNull("null should be returned.", mp.getFromAuthMechMap(TestClass1.class));
         mp.putToAuthMechMap(TestClass1.class, prop1);
         assertEquals("Properties should be returned.", prop1, mp.getFromAuthMechMap(TestClass1.class));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetLocationNull() {
+        ModuleProperties mp = new ModuleProperties();
+        assertNull("location should be null.", mp.getLocation());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetLocationValue() throws Exception {
+        URL value = new URL("file:/test");
+        ModuleProperties mp = new ModuleProperties(value);
+        assertEquals("location should be null.", value, mp.getLocation());
     }
 
     class TestClass1 {}

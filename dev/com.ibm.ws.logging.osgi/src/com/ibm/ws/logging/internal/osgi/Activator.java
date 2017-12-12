@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -26,6 +27,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceComponentChangeListener;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
 
@@ -40,6 +42,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
     private ServiceTracker<EventAdmin, EventAdmin> eventAdminTracker;
     private MessageRouterConfigurator msgRouter;
     private TraceRouterConfigurator traceRouter;
+    private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
 
     private LoggingConfigurationService logCfgService;
 
@@ -112,7 +115,8 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         // 3. track LogHandler services and inject them into the MessageRouter
         msgRouter = new MessageRouterConfigurator(context);
         traceRouter = new TraceRouterConfigurator(context);
-
+        
+        //collectorMgrPipeConfigurator = new CollectorManagerPipelineConfigurator(context);
     }
 
     /**

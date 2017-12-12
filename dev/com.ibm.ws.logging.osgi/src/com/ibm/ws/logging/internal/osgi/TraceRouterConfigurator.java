@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.logging.WsTraceHandler;
+//import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 
 /**
  * This class scans the existing services and registers itself as a ServiceListener,
@@ -91,7 +92,12 @@ public class TraceRouterConfigurator {
      * This method is called from the ServiceListener.
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
-        getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
+    	//If it is a jsonTrService, then we don't want early trace messages, and the opposite is true if it is not a jsonTrService
+    	//if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
+        //    getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);   		
+    	//} else {
+    		 getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);  
+    	//}
     }
 
     /**

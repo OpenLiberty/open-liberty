@@ -1,0 +1,24 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector.manager/resources/com/ibm/ws/collector/manager/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# New messages starting December 1, 2016 should use message block TRAS4001 - TRAS4100.
+
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING=TRAS0120W: Spr\u00e1vce kolektor\u016f detekoval, \u017ee obslu\u017en\u00e1 rutina {0} ztratila {1} ud\u00e1lost\u00ed ze zdroje {2} od spu\u0161t\u011bn\u00ed obslu\u017en\u00e9 rutiny.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.explanation=Obslu\u017en\u00e1 rutina ztr\u00e1c\u00ed ud\u00e1losti, kdy\u017e je nen\u00ed schopna p\u0159ij\u00edmat tak rychle, jak jsou produkov\u00e1ny zdrojem. Spr\u00e1vce kolektor\u016f m\u00e1 dostate\u010dn\u011b velk\u00e9 intern\u00ed vyrovn\u00e1vac\u00ed pam\u011bti, aby se vyrovnal s pomal\u00fdm zpracov\u00e1v\u00e1n\u00edm ud\u00e1lost\u00ed obslu\u017enou rutinou. Nicm\u00e9n\u011b zdroj produkuj\u00edc\u00ed zna\u010dn\u00e9 mno\u017estv\u00ed ud\u00e1lost\u00ed kon\u010d\u00ed p\u0159epln\u011bn\u00edm t\u011bchto vyrovn\u00e1vac\u00edch pam\u011bt\u00ed, co\u017e znamen\u00e1, \u017ee se ud\u00e1losti mohou ztratit d\u0159\u00edve, ne\u017e je obslu\u017en\u00e1 rutina stihne zpracovat.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+HANDLER_LOST_EVENTS_WARNING=TRAS0121W: Spr\u00e1vce kolektor\u016f detekoval, \u017ee obslu\u017en\u00e1 rutina {0} ztratila {1} ud\u00e1lost\u00ed ze zdroje {2} za posledn\u00edch {3} min, celkem od doby spu\u0161t\u011bn\u00ed obslu\u017en\u00e9 rutiny ztratila ze zdroje {4} ud\u00e1lost\u00ed.
+HANDLER_LOST_EVENTS_WARNING.explanation= Obslu\u017en\u00e1 rutina ztr\u00e1c\u00ed ud\u00e1losti, kdy\u017e je nen\u00ed schopna p\u0159ij\u00edmat tak rychle, jak jsou produkov\u00e1ny zdrojem. Spr\u00e1vce kolektor\u016f m\u00e1 dostate\u010dn\u011b velk\u00e9 intern\u00ed vyrovn\u00e1vac\u00ed pam\u011bti, aby se vyrovnal s pomal\u00fdm zpracov\u00e1v\u00e1n\u00edm ud\u00e1lost\u00ed obslu\u017enou rutinou. Nicm\u00e9n\u011b zdroj produkuj\u00edc\u00ed zna\u010dn\u00e9 mno\u017estv\u00ed ud\u00e1lost\u00ed kon\u010d\u00ed p\u0159epln\u011bn\u00edm t\u011bchto vyrovn\u00e1vac\u00edch pam\u011bt\u00ed, co\u017e znamen\u00e1, \u017ee se ud\u00e1losti mohou ztratit d\u0159\u00edve, ne\u017e je obslu\u017en\u00e1 rutina stihne zpracovat. 
+HANDLER_LOST_EVENTS_WARNING.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.

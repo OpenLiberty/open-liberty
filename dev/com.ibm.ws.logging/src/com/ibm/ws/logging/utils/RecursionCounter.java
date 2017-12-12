@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.internal.osgi;
+package com.ibm.ws.logging.utils;
 
 /**
  * A generic recursion detection facility.

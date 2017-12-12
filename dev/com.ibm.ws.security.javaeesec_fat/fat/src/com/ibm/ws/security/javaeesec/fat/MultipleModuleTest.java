@@ -70,6 +70,8 @@ public class MultipleModuleTest extends JavaEESecTestBase {
     protected static String WAR2CUSTOM_NAME = MODULE2CUSTOM_NAME + ".war";
     protected static String XML_NAME = "multipleModule.xml";
     protected static String XML2_NAME = "multipleModule2.xml";
+    protected static String XMLEX_NAME = "multipleModuleExpand.xml";
+    protected static String XML2EX_NAME = "multipleModule2Expand.xml";
     protected static String APP_NAME = "multipleModule";
     protected static String APP2_NAME = "multipleModule2";
     protected static String EAR_NAME = APP_NAME + ".ear";
@@ -95,6 +97,22 @@ public class MultipleModuleTest extends JavaEESecTestBase {
     protected static String REALM1_PASSWORD = "s3cur1ty";
     protected static String REALM2_USER = "realm2user";
     protected static String REALM2_PASSWORD = "s3cur1ty";
+    protected static String COMMON_USER1 = "commonuser1";
+    protected static String COMMON_USER2 = "commonuser2";
+    protected static String IS1_REALM_NAME = "127.0.0.1:10389";
+    protected static String IS2_REALM_NAME = "localhost:10389";
+    protected static String REALM1_REALM_NAME = "Realm1";
+    protected static String REALM2_REALM_NAME = "Realm2";
+    protected static String COMMON_REALM_NAME = "CommonIdentityStore";
+
+    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:10389/";
+    protected static String IS2_GROUP_REALM_NAME = "group:localhost:10389/";
+
+    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup";
+    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup";
+    protected static String REALM1_GROUPS = "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2";
+    protected static String REALM2_GROUPS = "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup";
+    protected static String COMMONUSER_GROUPS = "group:CommonIdentityStore/grantedgroup2, group:CommonIdentityStore/commonGroup2, group:CommonIdentityStore/commonGroup1, group:CommonIdentityStore/grantedgroup";
 
     protected DefaultHttpClient httpclient;
 
@@ -122,7 +140,6 @@ public class MultipleModuleTest extends JavaEESecTestBase {
             ldapServer.stop();
         }
         myServer.setServerConfigurationFile("server.xml");
-
     }
 
     @Before
@@ -183,47 +200,30 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
-
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on the other module.
 
         response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
 
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // Execute Form login and get redirect location for custom identity store in this module.
-
         response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM1_USER, REALM1_PASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + REALM1_USER, Constants.getRemoteUserFound + REALM1_USER);
-        verifyRealm(response, "Realm1");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2");
+        verifyResponse(response, REALM1_USER, REALM1_REALM_NAME, IS1_GROUP_REALM_NAME, REALM1_GROUPS);
 
         httpclient.getConnectionManager().shutdown();
         setupConnection();
@@ -231,9 +231,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // Execute Form login and get redirect location for custom identity store in the different module.
         // this should fail.
         response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM2_USER, REALM2_PASSWORD, true);
-
         // Redirect to the given page, ensure that this is an error page since there is no user exist in the identitystores.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE1_TITLE_ERROR_PAGE);
 
@@ -247,10 +245,8 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
@@ -260,10 +256,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
@@ -272,10 +265,120 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM2_USER, REALM2_PASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + REALM2_USER, Constants.getRemoteUserFound + REALM2_USER);
-        verifyRealm(response, "Realm2");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup");
+        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, IS1_GROUP_REALM_NAME, REALM2_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in the different module.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM1_USER, REALM1_PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE2_TITLE_CUSTOMERROR_PAGE);
+
+
+        myServer.removeInstalledAppForValidation(APP_NAME);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
+     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * <LI> autoExpand is set as true.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
+     *      the one which are bundled with each module is only visible within the module.
+     * </OL>
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testMultipleModuleWarsExpand() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, form login, redirect, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly","web.war.identitystores.custom.realm1");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly","web.war.identitystores.custom.realm2");
+
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
+
+        startServer(XMLEX_NAME, APP_NAME);
+
+        // ------------- accessing module1 ---------------
+        // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for LdapIdentityStoreDefinision on the other module.
+
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in this module.
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM1_USER, REALM1_PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, REALM1_USER, REALM1_REALM_NAME, IS1_GROUP_REALM_NAME, REALM1_GROUPS);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in the different module.
+        // this should fail.
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM2_USER, REALM2_PASSWORD, true);
+        // Redirect to the given page, ensure that this is an error page since there is no user exist in the identitystores.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE1_TITLE_ERROR_PAGE);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Execute Form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location with a user which exists in ldapidentitystore definision in another module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in this module.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM2_USER, REALM2_PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, IS1_GROUP_REALM_NAME, REALM2_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
@@ -303,7 +406,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      *      the one which are bundled with each module is only visible within the module.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsWithModuleJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -322,57 +425,37 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
-
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on the other module.
 
         response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
-
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // Execute Form login and get redirect location for custom identity store in this module.
 
         response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM1_USER, REALM1_PASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + REALM1_USER, Constants.getRemoteUserFound + REALM1_USER);
-        verifyRealm(response, "Realm1");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2");
-
+        verifyResponse(response, REALM1_USER, REALM1_REALM_NAME, IS1_GROUP_REALM_NAME, REALM1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // Execute Form login and get redirect location for custom identity store in the different module.
         // this should fail.
         response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM2_USER, REALM2_PASSWORD, true);
-
         // Redirect to the given page, ensure that this is an error page since there is no user exist in the identitystores.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE1_TITLE_ERROR_PAGE);
 
@@ -386,10 +469,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
@@ -399,10 +479,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
@@ -411,10 +488,117 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM2_USER, REALM2_PASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + REALM2_USER, Constants.getRemoteUserFound + REALM2_USER);
-        verifyRealm(response, "Realm2");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup");
+        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, IS1_GROUP_REALM_NAME, REALM2_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in the different module.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM1_USER, REALM1_PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE2_TITLE_CUSTOMERROR_PAGE);
+
+        myServer.removeInstalledAppForValidation(APP_NAME);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
+     *      which is packaged in a jar file.
+     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * <LI> autoExpand is set as true.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
+     *      the one which are bundled with each module is only visible within the module.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMultipleModuleWarsWithModuleJarExpand() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, form login, redirect, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly","web.jar.realm1");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly","web.jar.realm2");
+
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
+
+        startServer(XMLEX_NAME, APP_NAME);
+
+        // ------------- accessing module1 ---------------
+        // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for LdapIdentityStoreDefinision on the other module.
+
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in this module.
+
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM1_USER, REALM1_PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, REALM1_USER, REALM1_REALM_NAME, IS1_GROUP_REALM_NAME, REALM1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in the different module.
+        // this should fail.
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM2_USER, REALM2_PASSWORD, true);
+        // Redirect to the given page, ensure that this is an error page since there is no user exist in the identitystores.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE1_TITLE_ERROR_PAGE);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Execute Form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location with a user which exists in ldapidentitystore definision in another module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in this module.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM2_USER, REALM2_PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, IS1_GROUP_REALM_NAME, REALM2_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
@@ -462,33 +646,77 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // ------------- accessing module1 ---------------
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, "commonuser1", LocalLdapServer.PASSWORD, true);
-
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, COMMON_USER1, LocalLdapServer.PASSWORD, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + "commonuser1", Constants.getRemoteUserFound + "commonuser1");
-        verifyRealm(response, "CommonIdentityStore");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:CommonIdentityStore/grantedgroup2, group:CommonIdentityStore/commonGroup2, group:CommonIdentityStore/commonGroup1, group:CommonIdentityStore/grantedgroup");
-
+        verifyResponse(response, COMMON_USER1, COMMON_REALM_NAME, IS2_GROUP_REALM_NAME, COMMONUSER_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // ------------- accessing module2 ---------------
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
-
         // Execute Form login and get redirect location.
-        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, "commonuser2", LocalLdapServer.PASSWORD, getViewState(response));
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, COMMON_USER2, LocalLdapServer.PASSWORD, getViewState(response));
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + "commonuser2", Constants.getRemoteUserFound + "commonuser2");
-        verifyRealm(response, "CommonIdentityStore");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:CommonIdentityStore/grantedgroup2, group:CommonIdentityStore/commonGroup2, group:CommonIdentityStore/commonGroup1, group:CommonIdentityStore/grantedgroup");
+        verifyResponse(response, COMMON_USER2, COMMON_REALM_NAME, IS1_GROUP_REALM_NAME, COMMONUSER_GROUPS);
+        myServer.removeInstalledAppForValidation(APP_NAME);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files and common jar file. Each war files contains one LdapIdentityStoreDefinision,
+     *      and one FormHttpAuthenticationMechanismDefinision which points to different form. There is an identitystore in the jar
+     *      file which is placed as a library of the ear.
+     * <LI> autoExpand is set as true
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> users in the common ear identitystore is visible from both war file
+     * </OL>
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testMultipleModuleWithCommonJarExpand() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, form login, redirect, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createJar(myServer, TEMP_DIR, IS_JAR_NAME, true, "web.jar.base", "web.jar.common.identitystores");
+
+        EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR_NAME, true);
+        WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2CUSTOM_NAME);
+        WCApplicationHelper.packageJars(myServer, TEMP_DIR, ear, IS_JAR_NAME);
+        WCApplicationHelper.exportEar(myServer, TEMP_DIR, ear);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
+
+        startServer(XMLEX_NAME, APP_NAME);
+
+        // ------------- accessing module1 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        // Execute Form login and get redirect location.
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, COMMON_USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, COMMON_USER1, COMMON_REALM_NAME, IS2_GROUP_REALM_NAME, COMMONUSER_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        // Execute Form login and get redirect location.
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, COMMON_USER2, LocalLdapServer.PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, COMMON_USER2, COMMON_REALM_NAME, IS1_GROUP_REALM_NAME, COMMONUSER_GROUPS);
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -504,7 +732,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * <LI> 
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWithModuleHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -524,33 +752,74 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // ------------- accessing module1 ---------------
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + COMMON_APP1_SERVLET, false, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         // Execute Form login and get redirect location.
         String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
-
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         setupConnection();
 
         // ------------- accessing module2 ---------------
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         response = getFormLoginPage(httpclient, urlBase + COMMON_APP2_SERVLET, false, urlBase + MODULE2_LOGIN, MODULE2_TITLE_LOGIN_PAGE);
-
         // Execute Form login and get redirect location.
         location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+        myServer.removeInstalledAppForValidation(APP2_NAME);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains only one FormHttpAuthenticationMechanismDefinition in a jar file which is stored as a library
+     *      in a war file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
+     * <LI> autoExpand is set as true.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> 
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMultipleModuleWithModuleHAMJarExpand() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+
+        EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
+        WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2_NAME);
+        WCApplicationHelper.exportEar(myServer, TEMP_DIR, ear);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR2_NAME);
+
+        startServer(XML2EX_NAME, APP2_NAME);
+
+        // ------------- accessing module1 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + COMMON_APP1_SERVLET, false, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        // Execute Form login and get redirect location.
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + COMMON_APP2_SERVLET, false, urlBase + MODULE2_LOGIN, MODULE2_TITLE_LOGIN_PAGE);
+        // Execute Form login and get redirect location.
+        location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
         myServer.removeInstalledAppForValidation(APP2_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -588,16 +857,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // ------------- accessing module1 ---------------
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + COMMON_APP1_SERVLET, false, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-
         // Execute Form login and get redirect location.
         String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
-
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP1_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
 
         httpclient.getConnectionManager().shutdown();
         setupConnection();
@@ -605,16 +869,66 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // ------------- accessing module2 ---------------
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         response = getFormLoginPage(httpclient, urlBase + COMMON_APP2_SERVLET, false, urlBase + MODULE2_LOGIN, MODULE2_TITLE_LOGIN_PAGE);
-
         // Execute Form login and get redirect location.
         location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP2_SERVLET);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+        myServer.removeInstalledAppForValidation(APP2_NAME);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains only one FormHttpAuthenticationMechanismDefinition in a jar file which is stored as a library
+     *      in an ear file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
+     ( <LI> autoExpand is set as true.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> 
+     * </OL>
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testMultipleModuleWithCommonHAMJarExpand() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createJar(myServer, TEMP_DIR, HAM_JAR_NAME, true, "web.jar.base", "web.jar.mechanisms.form.get.forward");
+
+        EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
+        WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2_NAME);
+        WCApplicationHelper.packageJars(myServer, TEMP_DIR, ear, HAM_JAR_NAME);
+        WCApplicationHelper.exportEar(myServer, TEMP_DIR, ear);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR2_NAME);
+
+        startServer(XML2EX_NAME, APP2_NAME);
+
+        // ------------- accessing module1 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + COMMON_APP1_SERVLET, false, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        // Execute Form login and get redirect location.
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + COMMON_APP2_SERVLET, false, urlBase + MODULE2_LOGIN, MODULE2_TITLE_LOGIN_PAGE);
+        // Execute Form login and get redirect location.
+        location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + COMMON_APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
         myServer.removeInstalledAppForValidation(APP2_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -628,6 +942,15 @@ public class MultipleModuleTest extends JavaEESecTestBase {
             viewState = m.group(1);
         }
         return viewState;
+    }
+
+    protected void verifyResponse(String response, String user, String realm, String invalidRealm, String groups) {
+        verifyUserResponse(response, Constants.getUserPrincipalFound + user, Constants.getRemoteUserFound + user);
+        verifyRealm(response, realm);
+        if (invalidRealm != null) {
+            verifyNotInGroups(response, invalidRealm);  // make sure that there is no realm name from the second IdentityStore.
+        }
+        verifyGroups(response, groups);
     }
 
 }

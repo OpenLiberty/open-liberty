@@ -15,6 +15,7 @@ import java.util.logging.LogRecord;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.WsTraceRouter;
+import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.MessageRouter;
 
 /**
@@ -190,4 +191,5 @@ public interface TrService {
      * @param logRecord
      */
     void publishLogRecord(LogRecord logRecord);
+    
 }
