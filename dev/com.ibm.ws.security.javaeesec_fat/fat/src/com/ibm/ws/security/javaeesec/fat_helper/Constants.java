@@ -116,6 +116,8 @@ public class Constants {
     public final static String jaspi_notInRegistryInFormRoleUser = "jaspiuser102";
     public final static String jaspi_notInRegistryInFormRolePwd = "jaspiuser102Pwd";
 
+    // unauthenticated user
+    public final static String unauthenticated_user = "UNAUTHENTICATED";
     // Jaspi roles
     public final static String BasicRole = "javaeesec_basic";
     public final static String FormRole = "javaeesec_form";
@@ -144,6 +146,9 @@ public class Constants {
     public final static String isManadatoryTrue = "isManadatory=true";
     public final static String requestIsWrapped = "The httpServletRequest has been wrapped by httpServletRequestWrapper.";
     public final static String responseIsWrapped = "The httpServletRestponse has been wrapped by httpServletResponseWrapper.";
+    public final static String secContextGetPrincipal = "securityContext.getCallerPrincipal():";
+    public final static String secContextGetPrincipalName = "securityContext.getCallerPrincipal().getName():";
+    public final static String secContextIsCallerInRole = "securityContext.isCallerInRole";
 
     public final static String messageLayerRuntime = "null";
     public final static String messageLayerDefault = "HttpServlet";
@@ -172,5 +177,4 @@ public class Constants {
     public final static String DB_GROUP2 = "group2";
     public final static String DB_GROUP3 = "group3";
     public final static String DB_USER_NOPWD = "userNoPwd";
-
 }
