@@ -98,7 +98,6 @@ public class ApplicationProcessor {
             OASModelReader modelReader = OpenAPIUtils.getOASModelReader(appClassloader, configProcessor.getModelReaderClassName());
             if (modelReader != null) {
                 try {
-                    new OASFactoryResolverImpl();
                     OpenAPI model = modelReader.buildModel();
                     if (model != null) {
                         isOASApp = true;

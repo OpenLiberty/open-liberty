@@ -44,6 +44,7 @@ import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.impl.model.ExternalDocumentationImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.examples.ExampleImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.headers.HeaderImpl;
@@ -115,6 +116,7 @@ public abstract class AnnotationsUtils {
         return true;
     }
 
+    @FFDCIgnore(IOException.class)
     public static Optional<Example> getExample(ExampleObject example) {
         if (example == null) {
             return Optional.empty();
@@ -263,7 +265,7 @@ public abstract class AnnotationsUtils {
         }
         Set<Tag> tagsList = new LinkedHashSet<>();
         for (org.eclipse.microprofile.openapi.annotations.tags.Tag tag : tags) {
-            if (StringUtils.isBlank(tag.name())) {
+            if (StringUtils.isBlank(tag.name()) && StringUtils.isBlank(tag.ref())) {
                 continue;
             }
             if (skipOnlyName &&
@@ -276,7 +278,11 @@ public abstract class AnnotationsUtils {
             if (StringUtils.isNotBlank(tag.description())) {
                 tagObject.setDescription(tag.description());
             }
-            tagObject.setName(tag.name());
+            if (StringUtils.isNotBlank(tag.ref())) {
+                tagObject.setName(tag.ref());
+            } else {
+                tagObject.setName(tag.name());
+            }
             getExternalDocumentation(tag.externalDocs()).ifPresent(tagObject::setExternalDocs);
             tagsList.add(tagObject);
         }
