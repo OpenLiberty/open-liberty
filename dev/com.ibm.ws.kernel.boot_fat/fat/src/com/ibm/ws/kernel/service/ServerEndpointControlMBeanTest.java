@@ -358,7 +358,7 @@ public class ServerEndpointControlMBeanTest {
     }
 
     /**
-     * Tests that the expected exception is thrown if the MBean pause method is issued with empty target list
+     * Tests that the expected exception is thrown if the MBean resume method is issued with empty target list
      *
      * @throws Exception
      */
