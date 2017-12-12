@@ -11,6 +11,11 @@
 package fat.derbyra.resourceadapter;
 
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.resource.ResourceException;
 import javax.resource.cci.MappedRecord;
@@ -19,6 +24,7 @@ import javax.resource.cci.Record;
 import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.Work;
+import javax.sql.XAConnection;
 
 /**
  * Notifies message driven beans that a value in a DerbyMap was replaced.
@@ -51,22 +57,55 @@ public class DerbyMessageWork implements Work {
                 record.put("newValue", value);
                 record.put("previousValue", previous);
 
-                MessageEndpoint endpoint = mef.createEndpoint(null);
+                // Fail xa commit/rollback only for tests that specify a key of mdbtestRecovery
+                AtomicInteger successLimit = "mdbtestRecovery".equals(key) ? new AtomicInteger(0) : null;
+                DerbyResourceAdapter ra = (DerbyResourceAdapter) activationSpec.getResourceAdapter();
+                XAConnection xaCon = ra.xaDataSource.getXAConnection(); // XA connection is implicitly closed by DerbyXAResource upon successful commit/rollback
+                DerbyXAResource xaRes = new DerbyXAResource(xaCon.getXAResource(), successLimit, activationSpec, xaCon);
+
+                MessageEndpoint endpoint = mef.createEndpoint(xaRes);
                 MessageListener listener = (MessageListener) endpoint;
                 Method onMessage = MessageListener.class.getMethod("onMessage", Record.class);
                 endpoint.beforeDelivery(onMessage);
                 record = (MappedRecord) listener.onMessage(record);
-                endpoint.afterDelivery();
-                endpoint.release();
 
                 System.out.println("Response from MDB has record name " + record.getRecordName() +
                                    " and description: " + record.getRecordShortDescription() +
                                    ". Content is " + record);
+
+                // Write the response to the database under the same transaction
+                Connection con = xaCon.getConnection();
+                try {
+                    PreparedStatement ps = con.prepareStatement("insert into TestActivationSpecRecoveryTBL values (?,?)");
+                    try {
+                        ps.setString(1, key.toString());
+                        ps.setString(2, record.getRecordShortDescription());
+                        ps.executeUpdate();
+                        System.out.println("inserted " + record.getRecordShortDescription());
+                    } catch (SQLIntegrityConstraintViolationException x) {
+                        ps.close();
+                        ps = con.prepareStatement("update TestActivationSpecRecoveryTBL set description=? where id=?");
+                        ps.setString(1, record.getRecordShortDescription());
+                        ps.setString(2, key.toString());
+                        ps.executeUpdate();
+                        System.out.println("updated " + record.getRecordShortDescription());
+                    }
+                    ps.close();
+                } finally {
+                    con.close();
+                }
+
+                endpoint.afterDelivery();
+                endpoint.release();
             } catch (ResourceException x) {
                 x.printStackTrace();
+                throw new RuntimeException(x);
             } catch (NoSuchMethodException x) {
                 x.printStackTrace();
-            } finally {
+                throw new RuntimeException(x);
+            } catch (SQLException x) {
+                x.printStackTrace();
+                throw new RuntimeException(x);
             }
     }
 }

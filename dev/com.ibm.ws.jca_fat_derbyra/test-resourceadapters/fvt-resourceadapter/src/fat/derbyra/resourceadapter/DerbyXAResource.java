@@ -10,8 +10,10 @@
  *******************************************************************************/
 package fat.derbyra.resourceadapter;
 
+import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
@@ -31,14 +33,20 @@ public class DerbyXAResource implements XAResource {
     static final String XA_RECOVERY_QMID = "This-QMID-Is-Required-For-XA-Recovery";
 
     /**
-     * Managed connection that created this XAResource.
+     * Activation spec to associate with this XA resource in the event of an in-doubt transaction.
      */
-    private final DerbyManagedConnection mc;
+    private final DerbyActivationSpec activationSpec;
 
     /**
      * Number of commits or rollbacks allowed before we simulate errors.
      */
-    private AtomicInteger successLimit;
+    AtomicInteger successLimit;
+
+    /**
+     * XA connection to close upon successful commit or rollback.
+     * This works reasonably well as a short cut for test code, but wouldn't want this approach in actual production code.
+     */
+    private XAConnection xaCon;
 
     /**
      * The real XAResource.
@@ -48,15 +56,31 @@ public class DerbyXAResource implements XAResource {
     /**
      * Construct a wrapper for the specified XA resource.
      *
-     * @param mc Managed connection from which this XA resource is obtained.
      * @param xaRes XA resource to wrap.
      * @param successLimit limit of commits/rollbacks that should succeed for the group of
      *            XA resources before raising errors.
      */
-    DerbyXAResource(DerbyManagedConnection mc, XAResource xaRes, AtomicInteger successLimit) {
-        this.mc = mc;
+    DerbyXAResource(XAResource xaRes, AtomicInteger successLimit) {
         this.xaRes = xaRes;
         this.successLimit = successLimit;
+        this.activationSpec = null;
+        this.xaCon = null;
+    }
+
+    /**
+     * Construct a wrapper for the specified XA resource.
+     *
+     * @param xaRes XA resource to wrap.
+     * @param successLimit limit of commits/rollbacks that should succeed for the group of
+     *            XA resources before raising errors.
+     * @param activationSpec activation spec to associate with this XA resource in the event of an in-doubt transaction.
+     * @param xaCon XA connection to close upon successful commit or rollback.
+     */
+    DerbyXAResource(XAResource xaRes, AtomicInteger successLimit, DerbyActivationSpec activationSpec, XAConnection xaCon) {
+        this.xaRes = xaRes;
+        this.successLimit = successLimit;
+        this.activationSpec = activationSpec;
+        this.xaCon = xaCon;
     }
 
     /**
@@ -65,17 +89,29 @@ public class DerbyXAResource implements XAResource {
      */
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
-        if (XA_RECOVERY_QMID.equals(mc.mcf.qmid) || successLimit == null || successLimit.getAndDecrement() > 0)
+        if (successLimit == null || successLimit.getAndDecrement() > 0) {
+            System.out.println(this + ".commit");
             xaRes.commit(xid, onePhase);
-        else {
+            if (xaCon != null) // XA connection kept open for recovery in the case of activation spec
+                try {
+                    xaCon.close();
+                    xaCon = null;
+                } catch (SQLException x) {
+                    throw (XAException) new XAException().initCause(x);
+                }
+        } else {
+            System.out.println(this + ".commit - intentional failure");
             XAException x = new XAException("Simulating an error for commit.");
             x.errorCode = XAException.XAER_RMFAIL;
+            if (activationSpec != null)
+                activationSpec.addRecoverableResource(this);
             throw x;
         }
     }
 
     @Override
     public void end(Xid xid, int flags) throws XAException {
+        System.out.println(this + ".end " + xid);
         xaRes.end(xid, flags);
     }
 
@@ -96,6 +132,7 @@ public class DerbyXAResource implements XAResource {
 
     @Override
     public int prepare(Xid xid) throws XAException {
+        System.out.println(this + ".prepare");
         return xaRes.prepare(xid);
     }
 
@@ -110,12 +147,22 @@ public class DerbyXAResource implements XAResource {
      */
     @Override
     public void rollback(Xid xid) throws XAException {
-        if (XA_RECOVERY_QMID.equals(mc.mcf.qmid) || successLimit == null || successLimit.getAndDecrement() > 0)
+        if (successLimit == null || successLimit.getAndDecrement() > 0) {
+            System.out.println(this + ".rollback");
             xaRes.rollback(xid);
-        else {
-            successLimit = null; // TODO remove this when
+            if (xaCon != null) // XA connection kept open for recovery in the case of activation spec
+                try {
+                    xaCon.close();
+                    xaCon = null;
+                } catch (SQLException x) {
+                    throw (XAException) new XAException().initCause(x);
+                }
+        } else {
+            System.out.println(this + ".rollback - intentional failure");
             XAException x = new XAException("Simulating an error for rollback.");
             x.errorCode = XAException.XAER_RMFAIL;
+            if (activationSpec != null)
+                activationSpec.addRecoverableResource(this);
             throw x;
         }
     }
@@ -127,6 +174,7 @@ public class DerbyXAResource implements XAResource {
 
     @Override
     public void start(Xid xid, int flags) throws XAException {
+        System.out.println(this + ".start");
         xaRes.start(xid, flags);
     }
 }

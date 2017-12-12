@@ -87,6 +87,15 @@ public class DerbyResourceAdapterTest extends FATServletClient {
         runTest(DerbyRAAnnoServlet);
     }
 
+    @ExpectedFFDC({ "javax.ejb.EJBException",
+                    "javax.transaction.HeuristicMixedException",
+                    "javax.transaction.xa.XAException",
+                    "com.ibm.websphere.csi.CSITransactionRolledbackException" })
+    @Test
+    public void testActivationSpecXARecovery() throws Exception {
+        runTest(DerbyRAAnnoServlet);
+    }
+
     @Test
     public void testAdminObjectDirectLookup() throws Exception {
         runTest(DerbyRAServlet);
