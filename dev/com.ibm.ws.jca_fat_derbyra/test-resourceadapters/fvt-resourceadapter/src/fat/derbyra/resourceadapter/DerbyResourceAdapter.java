@@ -13,7 +13,6 @@ package fat.derbyra.resourceadapter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
@@ -105,12 +104,17 @@ public class DerbyResourceAdapter implements ResourceAdapter {
 
         ArrayList<XAResource> list = new ArrayList<XAResource>();
         for (ActivationSpec as : activationSpecs) {
-            ConcurrentLinkedQueue<DerbyXAResource> resources = recoverableXAResources.get(((DerbyActivationSpec) as).keyPrefix);
-            if (resources != null)
-                for (DerbyXAResource xaRes; (xaRes = resources.poll()) != null;) {
-                    xaRes.successLimit.set(1); // TODO only if activation spec has the proper qmid attribute
-                    list.add(xaRes);
-                }
+            DerbyActivationSpec das = (DerbyActivationSpec) as;
+
+            // Enforce that qmid must be set by application server in order for XA resource to be recovered:
+            if (DerbyXAResource.XA_RECOVERY_QMID.equals(das.qmid)) {
+                ConcurrentLinkedQueue<DerbyXAResource> resources = recoverableXAResources.get(das.keyPrefix);
+                if (resources != null)
+                    for (DerbyXAResource xaRes; (xaRes = resources.poll()) != null;) {
+                        xaRes.successLimit.set(1);
+                        list.add(xaRes);
+                    }
+            }
         }
 
         System.out.println("getXAResources returning " + list);
@@ -148,10 +152,6 @@ public class DerbyResourceAdapter implements ResourceAdapter {
 
             xaConnection = xaDataSource.getXAConnection();
             connection = xaConnection.getConnection();
-
-            Statement statement = connection.createStatement();
-            statement.execute("create table TestActivationSpecRecoveryTBL (id varchar(50) not null primary key, description varchar(150))");
-            statement.close();
 
             ContextService contextSvc = (ContextService) new InitialContext().lookup("java:comp/DefaultContextService");
             lookup_ds1ref = contextSvc.createContextualProxy(new Callable<DataSource>() {

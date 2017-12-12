@@ -80,6 +80,11 @@
               <config-property-name>keyPrefix</config-property-name>
               <config-property-type>java.lang.String</config-property-type>
             </config-property>
+            <config-property>
+    	      <description>This property added to test WMQ XA recovery path. Value should not be configured because it will be supplied by the application server.</description>
+     	      <config-property-name>qmid</config-property-name> 
+     	      <config-property-type>java.lang.String</config-property-type> 
+    	    </config-property>
           </activationspec>
         </messagelistener>
       </messageadapter>

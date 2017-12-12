@@ -33,7 +33,9 @@
     </connectionFactory>
 
     <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">
-      <properties.DerbyRA keyPrefix="mdbtest"/>
+      <recoveryAuthData userName="ActvSpecUser" password="ActvSpecPwd"/> <!-- convenient place to test recoveryAuthData for activation specs -->
+      <!-- TODO remove configuration of qmid once application server starts setting the value on XA recovery path -->
+      <properties.DerbyRA keyPrefix="mdbtest" qmid="This-QMID-Is-Required-For-XA-Recovery"/>
     </activationSpec>
 
     <adminObject jndiName="eis/bootstrapContext">
