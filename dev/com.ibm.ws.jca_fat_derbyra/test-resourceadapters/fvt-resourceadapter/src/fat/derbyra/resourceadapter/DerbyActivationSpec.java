@@ -23,9 +23,20 @@ import javax.resource.spi.endpoint.MessageEndpointFactory;
  * for a key that matches the specified key prefix, notifies a message driven bean.
  */
 public class DerbyActivationSpec implements ActivationSpec {
-    private ResourceAdapter adapter;
+    private DerbyResourceAdapter adapter;
     String keyPrefix;
     final ConcurrentLinkedQueue<MessageEndpointFactory> messageEndpointFactories = new ConcurrentLinkedQueue<MessageEndpointFactory>();
+
+    /**
+     * Track an XA resource for recovery
+     *
+     * @param xaRes XA resource instance in need of recovery
+     */
+    void addRecoverableResource(DerbyXAResource xaRes) {
+        ConcurrentLinkedQueue<DerbyXAResource> newList = new ConcurrentLinkedQueue<DerbyXAResource>();
+        ConcurrentLinkedQueue<DerbyXAResource> oldList = adapter.recoverableXAResources.putIfAbsent(keyPrefix, newList);
+        (oldList == null ? newList : oldList).add(xaRes);
+    }
 
     public String getKeyPrefix() {
         return keyPrefix;
@@ -42,11 +53,11 @@ public class DerbyActivationSpec implements ActivationSpec {
 
     @Override
     public void setResourceAdapter(ResourceAdapter adapter) throws ResourceException {
-        this.adapter = adapter;
+        this.adapter = (DerbyResourceAdapter) adapter;
     }
 
     @Override
     public void validate() throws InvalidPropertyException {
-        System.out.println("Validated ActivationSpec with keyPrefix " + keyPrefix + " and resource adapter " + adapter);
+        System.out.println("Validated " + this + " with keyPrefix " + keyPrefix + " and resource adapter " + adapter);
     }
 }

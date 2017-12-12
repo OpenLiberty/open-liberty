@@ -13,7 +13,11 @@ package fat.derbyra.resourceadapter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.enterprise.concurrent.ContextService;
@@ -45,6 +49,7 @@ public class DerbyResourceAdapter implements ResourceAdapter {
     private String databaseName; // demonstrates a defaulted String config-property
     private int loginTimeout; // demonstrates an ibm:type="duration(s)" config-property
     Callable<DataSource> lookup_ds1ref;
+    final ConcurrentHashMap<String, ConcurrentLinkedQueue<DerbyXAResource>> recoverableXAResources = new ConcurrentHashMap<String, ConcurrentLinkedQueue<DerbyXAResource>>();
     private XAConnection xaConnection;
     XADataSource xaDataSource;
 
@@ -93,7 +98,24 @@ public class DerbyResourceAdapter implements ResourceAdapter {
     /** {@inheritDoc} */
     @Override
     public XAResource[] getXAResources(ActivationSpec[] activationSpecs) throws ResourceException {
-        return null;
+        if (activationSpecs == null)
+            return null;
+
+        System.out.println("getXAResources for " + Arrays.asList(activationSpecs));
+
+        ArrayList<XAResource> list = new ArrayList<XAResource>();
+        for (ActivationSpec as : activationSpecs) {
+            ConcurrentLinkedQueue<DerbyXAResource> resources = recoverableXAResources.get(((DerbyActivationSpec) as).keyPrefix);
+            if (resources != null)
+                for (DerbyXAResource xaRes; (xaRes = resources.poll()) != null;) {
+                    xaRes.successLimit.set(1); // TODO only if activation spec has the proper qmid attribute
+                    list.add(xaRes);
+                }
+        }
+
+        System.out.println("getXAResources returning " + list);
+
+        return list.toArray(new XAResource[list.size()]);
     }
 
     public void setCreateDatabase(boolean createDatabase) {
@@ -126,6 +148,10 @@ public class DerbyResourceAdapter implements ResourceAdapter {
 
             xaConnection = xaDataSource.getXAConnection();
             connection = xaConnection.getConnection();
+
+            Statement statement = connection.createStatement();
+            statement.execute("create table TestActivationSpecRecoveryTBL (id varchar(50) not null primary key, description varchar(150))");
+            statement.close();
 
             ContextService contextSvc = (ContextService) new InitialContext().lookup("java:comp/DefaultContextService");
             lookup_ds1ref = contextSvc.createContextualProxy(new Callable<DataSource>() {

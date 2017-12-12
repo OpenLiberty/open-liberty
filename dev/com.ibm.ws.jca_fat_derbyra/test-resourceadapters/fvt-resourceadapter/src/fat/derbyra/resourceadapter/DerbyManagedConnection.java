@@ -31,7 +31,6 @@ import javax.sql.XAConnection;
 import javax.transaction.xa.XAResource;
 
 public class DerbyManagedConnection implements LocalTransaction, ManagedConnection {
-
     Connection con;
     final DerbyConnectionRequestInfo cri;
     final ConcurrentLinkedQueue<DerbyConnection> handles = new ConcurrentLinkedQueue<DerbyConnection>();
@@ -71,7 +70,7 @@ public class DerbyManagedConnection implements LocalTransaction, ManagedConnecti
                                             ? mcf.adapter.xaDataSource.getXAConnection() //
                                             : mcf.adapter.xaDataSource.getXAConnection(mcf.userName, mcf.password)) //
                             : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
-            this.xares = new DerbyXAResource(this, xacon.getXAResource(), mcf.xaSuccessLimitCountDown);
+            this.xares = new DerbyXAResource(xacon.getXAResource(), DerbyXAResource.XA_RECOVERY_QMID.equals(mcf.qmid) ? null : mcf.xaSuccessLimitCountDown);
             this.con = xacon.getConnection();
         } catch (SQLException x) {
             throw new ResourceAllocationException(x);

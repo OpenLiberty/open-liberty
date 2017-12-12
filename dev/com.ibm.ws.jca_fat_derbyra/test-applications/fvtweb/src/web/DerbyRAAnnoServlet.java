@@ -131,6 +131,37 @@ public class DerbyRAAnnoServlet extends FATServlet {
         }
     }
 
+    /**
+     * Verify XA recovery for activation specs
+     */
+    public void testActivationSpecXARecovery() throws Throwable {
+        try {
+            assertNull(map1.put("mdbtestRecovery", "valueA"));
+            assertEquals("valueA", map1.put("mdbtestRecovery", "valueB"));
+
+            // Database entry inserted by message driven bean should show up in a reasonable amount of time
+            String oldValueFromDB = null;
+            DataSource ds = InitialContext.doLookup("java:global/env/eis/ds1ref");
+            Connection con = ds.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement("select description from TestActivationSpecRecoveryTBL where id=?");
+                pstmt.setString(1, "mdbtestRecovery");
+                for (long start = System.nanoTime(); oldValueFromDB == null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200)) {
+                    ResultSet result = pstmt.executeQuery();
+                    if (result.next())
+                        oldValueFromDB = result.getString(1);
+                    result.close();
+                }
+                pstmt.close();
+            } finally {
+                con.close();
+            }
+            assertEquals("mdbtestRecovery: valueA --> valueB", oldValueFromDB);
+        } finally {
+            map1.clear();
+        }
+    }
+
     public void testCustomLoginModuleCF() throws Exception {
         Connection con = loginModuleCF.getConnection();
         try {
