@@ -19,6 +19,7 @@ package org.eclipse.microprofile.openapi.models.parameters;
 
 import java.util.Map;
 
+import org.eclipse.microprofile.openapi.models.Constructible;
 import org.eclipse.microprofile.openapi.models.Extensible;
 import org.eclipse.microprofile.openapi.models.Reference;
 import org.eclipse.microprofile.openapi.models.examples.Example;
@@ -30,7 +31,8 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
  * <p>
  * Describes a single operation parameter.
  * <p>
- * A unique parameter is defined by a combination of a name and location. There are four possible parameter locations specified by the in field:
+ * A unique parameter is defined by a combination of a name and location. There are four possible parameter locations
+ * specified by the <code>in</code> field:
  * <ul>
  * <li>path - Used together with Path Templating, where the parameter value is actually part of the operation's URL. This does not include the host or
  * base path of the API. For example, in /items/{itemId}, the path parameter is itemId.</li>
@@ -48,7 +50,7 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
  * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#parameterObject">OpenAPI Specification Parameter
  *      Object</a>
  */
-public interface Parameter<T extends Parameter<T>> extends Extensible, Reference<T> {
+public interface Parameter extends Constructible, Extensible, Reference<Parameter> {
 
     /**
      * The values allowed for the style field.
@@ -68,6 +70,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
             return String.valueOf(value);
         }
     }
+    
     /**
      * The values allowed for the in field.
      */
@@ -85,7 +88,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
             return String.valueOf(value);
         }
     }
-
+    
     /**
      * Returns the name property from a Parameter instance.
      *
@@ -106,7 +109,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param name the name of the parameter
      * @return the current Parameter instance
      */
-    T name(String name);
+    Parameter name(String name);
 
     /**
      * Returns the in property from a Parameter instance.
@@ -114,6 +117,21 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @return the location of the parameter
      **/
     In getIn();
+    
+    /**
+     * Sets the in property of a Parameter instance to the given value.
+     *
+     * @param in the value of the in property
+     */
+    void setIn(In in);
+    
+    /**
+     * Sets the in property of a Parameter instance to the given value.
+     *
+     * @param in the value of the in property
+     * @return the current Parameter instance
+     */
+    Parameter in(In in);
 
     /**
      * Returns the description property from a Parameter instance.
@@ -135,7 +153,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param description a brief description of the parameter
      * @return the current Parameter instance
      */
-    T description(String description);
+    Parameter description(String description);
 
     /**
      * Returns the required property from a Parameter instance.
@@ -157,7 +175,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param required indicates whether this parameter is mandatory
      * @return the current Parameter instance
      */
-    T required(Boolean required);
+    Parameter required(Boolean required);
 
     /**
      * Returns the deprecated property from a Parameter instance.
@@ -179,7 +197,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param deprecated specifies that a parameter is deprecated
      * @return the current Parameter instance
      */
-    T deprecated(Boolean deprecated);
+    Parameter deprecated(Boolean deprecated);
 
     /**
      * Returns the allowEmptyValue property from a Parameter instance.
@@ -201,7 +219,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param allowEmptyValue specify the ability to pass empty-valued parameters
      * @return the current Parameter instance
      */
-    T allowEmptyValue(Boolean allowEmptyValue);
+    Parameter allowEmptyValue(Boolean allowEmptyValue);
 
     /**
      * Returns the style property from a Parameter instance.
@@ -223,7 +241,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param style describes how the parameter value will be serialized
      * @return the current Parameter instance
      */
-    T style(Parameter.Style style);
+    Parameter style(Parameter.Style style);
 
     /**
      * Returns the explode property from a Parameter instance.
@@ -245,7 +263,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param explode whether parameter values of type "array" or "object" generate separate parameters for each value
      * @return the current Parameter instance
      */
-    T explode(Boolean explode);
+    Parameter explode(Boolean explode);
 
     /**
      * Returns the allowReserved property from a Parameter instance.
@@ -267,7 +285,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param allowReserved specifies whether the parameter value should allow reserved characters
      * @return the current Parameter instance
      */
-    T allowReserved(Boolean allowReserved);
+    Parameter allowReserved(Boolean allowReserved);
 
     /**
      * Returns the schema property from a Parameter instance.
@@ -289,7 +307,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param schema schema defining the type used for the parameter
      * @return the current Parameter instance
      */
-    T schema(Schema schema);
+    Parameter schema(Schema schema);
 
     /**
      * Returns the examples property from a Parameter instance.
@@ -313,7 +331,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param examples examples of the media type
      * @return the current Parameter instance
      */
-    T examples(Map<String, Example> examples);
+    Parameter examples(Map<String, Example> examples);
 
     /**
      * Adds an example of the media type using the specified key. The example should contain a value in the correct format as specified in the
@@ -323,7 +341,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param example example of the media type
      * @return the current Parameter instance
      */
-    T addExample(String key, Example example);
+    Parameter addExample(String key, Example example);
 
     /**
      * Returns the example property from a Parameter instance.
@@ -347,7 +365,7 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param example example of the media type
      * @return the current Parameter instance
      */
-    T example(Object example);
+    Parameter example(Object example);
 
     /**
      * Returns the content property from a Parameter instance.
@@ -369,6 +387,6 @@ public interface Parameter<T extends Parameter<T>> extends Extensible, Reference
      * @param content a map containing the media representations for the parameter
      * @return the current Parameter instance
      */
-    T content(Content content);
+    Parameter content(Content content);
 
 }

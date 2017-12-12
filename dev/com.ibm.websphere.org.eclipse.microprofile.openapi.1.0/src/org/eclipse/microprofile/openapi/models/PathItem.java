@@ -34,7 +34,6 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
  * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#pathItemObject"> OpenAPI Specification Path Item
  *      Object</a>
  */
-@SuppressWarnings("rawtypes")
 public interface PathItem extends Constructible, Extensible, Reference<PathItem> {
 
     /**

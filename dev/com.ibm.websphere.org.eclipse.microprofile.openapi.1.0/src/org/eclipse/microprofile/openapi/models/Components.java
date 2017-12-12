@@ -49,7 +49,6 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
  * @see <a href= "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#componentsObject"> OpenAPI Specification Components
  *      Object</a>
  */
-@SuppressWarnings("rawtypes")
 public interface Components extends Constructible, Extensible {
 
     /**
