@@ -1,0 +1,85 @@
+/*
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2015
+ *
+ * The source code for this program is not published or otherwise divested 
+ * of its trade secrets, irrespective of what has been deposited with the 
+ * U.S. Copyright Office.
+ */
+package com.ibm.ws.clientcontainer.fat;
+
+import org.junit.Test;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import java.io.File;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import componenttest.topology.impl.LibertyClientFactory;
+
+public class BvalAppClientTest_11 extends AbstractAppClientTest {
+    
+	@Test
+	public void testApacheBvalConfig_11_AppClient() throws Exception {
+		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.ApacheBvalConfig_11";
+		client = LibertyClientFactory.getLibertyClient(testClientName);
+		
+        ShrinkHelper.exportToClient(client, "apps", FATSuite.apacheBvalConfigApp);
+        
+		client.startClient();
+		assertClientStartMessages(testClientName);
+		assertClientAppMessage("ApacheBvalConfig Application Client Completed.");
+	}
+	
+	@Test
+	public void testBeanvalidation_11_AppClient() throws Exception {
+		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.beanvalidation_11";
+		client = LibertyClientFactory.getLibertyClient(testClientName);
+		
+		
+        ShrinkHelper.exportToClient(client, "apps", FATSuite.beanValidationApp);
+        
+		client.startClient();
+		assertClientStartMessages(testClientName);
+		assertClientAppMessage("Beanvalidation Application Client Completed.");
+	}
+	
+	@Test
+	public void testBeanValidationCDI_11_AppClient() throws Exception {
+		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.BeanValidationCDI_11";
+		client = LibertyClientFactory.getLibertyClient(testClientName);
+		
+		
+        ShrinkHelper.exportToClient(client, "apps", FATSuite.beanValidationCDIApp);
+        
+		client.startClient();
+		assertClientStartMessages(testClientName);
+		assertClientAppMessage("BeanValidationCDI Application Client Completed.");
+	}
+	
+	@Test
+	public void testDefaultbeanvalidation_11_AppClient() throws Exception {
+		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.defaultbeanvalidation_11";
+		client = LibertyClientFactory.getLibertyClient(testClientName);
+		
+		
+        ShrinkHelper.exportToClient(client, "apps", FATSuite.defaultBeanValidationApp);
+        
+		client.startClient();
+		assertClientStartMessages(testClientName);
+		assertClientAppMessage("Defaultbeanvalidation Application Client Completed.");
+	}
+	
+	@Test
+	public void testDefaultBeanValidationCDI_11_AppClient() throws Exception {
+		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.DefaultBeanValidationCDI_11";
+		client = LibertyClientFactory.getLibertyClient(testClientName);
+		
+		
+        ShrinkHelper.exportToClient(client, "apps", FATSuite.defaultBeanValidationCDIApp);
+        
+		client.startClient();
+		assertClientStartMessages(testClientName);
+		assertClientAppMessage("DefaultBeanValidationCDI Application Client Completed.");
+	}
+}

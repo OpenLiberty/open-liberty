@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/ApacheBvalConfig.jar/src"/>
+	<classpathentry kind="src" path="test-applications/beanvalidation.jar/src"/>
+	<classpathentry kind="src" path="test-applications/BeanValidationCDI.jar/src"/>
+	<classpathentry kind="src" path="test-applications/defaultbeanvalidation.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DefaultBeanValidationCDI.jar/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.validation.1.1"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.cdi.1.2"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
