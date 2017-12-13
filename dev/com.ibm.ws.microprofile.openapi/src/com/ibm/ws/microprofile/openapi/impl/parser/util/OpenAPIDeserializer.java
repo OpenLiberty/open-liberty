@@ -45,6 +45,7 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.eclipse.microprofile.openapi.models.media.XML;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
@@ -83,11 +84,7 @@ import com.ibm.ws.microprofile.openapi.impl.model.media.EncodingImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.XMLImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.CookieParameterImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.HeaderParameterImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.ParameterImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.PathParameterImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.QueryParameterImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponsesImpl;
@@ -1272,7 +1269,7 @@ public class OpenAPIDeserializer {
             if (ref.getNodeType().equals(JsonNodeType.STRING)) {
                 parameter = new ParameterImpl();
                 parameter.setRef(ref.asText());
-                return ((ParameterImpl) parameter.ref(ref.asText()));
+                return (parameter.ref(ref.asText()));
             } else {
                 result.invalidType(location, "$ref", "string", obj);
                 return null;
@@ -1295,13 +1292,13 @@ public class OpenAPIDeserializer {
         }
 
         if (QUERY_PARAMETER.equals(value)) {
-            parameter = new QueryParameterImpl();
+            parameter = new ParameterImpl().in(In.QUERY);
         } else if (HEADER_PARAMETER.equals(value)) {
-            parameter = new HeaderParameterImpl();
+            parameter = new ParameterImpl().in(In.HEADER);
         } else if (PATH_PARAMETER.equals(value)) {
-            parameter = new PathParameterImpl();
+            parameter = new ParameterImpl().in(In.PATH);
         } else if (COOKIE_PARAMETER.equals(value)) {
-            parameter = new CookieParameterImpl();
+            parameter = new ParameterImpl().in(In.COOKIE);
         }
 
         if (parameter == null) {

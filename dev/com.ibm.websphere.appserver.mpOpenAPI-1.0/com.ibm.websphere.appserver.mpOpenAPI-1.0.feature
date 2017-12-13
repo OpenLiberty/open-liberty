@@ -27,8 +27,9 @@ IBM-API-Package: org.eclipse.microprofile.openapi.annotations;  type="stable",\
 	org.eclipse.microprofile.openapi.models.responses; type="stable",\
 	org.eclipse.microprofile.openapi.models.security; type="stable",\
 	org.eclipse.microprofile.openapi.models.servers; type="stable",\
-	org.eclipse.microprofile.openapi.models.tags; type="stable",\
-	org.eclipse.microprofile.openapi.spi; type="stable"
+	org.eclipse.microprofile.openapi.models.tags; type="stable"
+
+IBM-SPI-Package: org.eclipse.microprofile.openapi.spi; type="stable"
 		
 IBM-ShortName: mpOpenAPI-1.0
 Subsystem-Name: MicroProfile OpenAPI 1.0
@@ -36,8 +37,9 @@ Subsystem-Name: MicroProfile OpenAPI 1.0
  com.ibm.websphere.appserver.javax.annotation-1.2, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
  com.ibm.websphere.appserver.mpConfig-1.1,\
- com.ibm.wsspi.appserver.webBundle-1.0
+ com.ibm.wsspi.appserver.webBundle-1.0,\
+ com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.openapi
-kind=noship
+kind=beta
 edition=core

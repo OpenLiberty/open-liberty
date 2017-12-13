@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 
 import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,11 +38,7 @@ import com.ibm.ws.microprofile.openapi.impl.core.util.ParameterProcessor;
 import com.ibm.ws.microprofile.openapi.impl.jaxrs2.ext.AbstractOpenAPIExtension;
 import com.ibm.ws.microprofile.openapi.impl.jaxrs2.ext.OpenAPIExtension;
 import com.ibm.ws.microprofile.openapi.impl.jaxrs2.ext.OpenAPIExtensions;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.CookieParameterImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.HeaderParameterImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.ParameterImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.PathParameterImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.parameters.QueryParameterImpl;
 
 public class DefaultParameterExtension extends AbstractOpenAPIExtension {
     private static String QUERY_PARAM = "query";
@@ -71,24 +68,28 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
         for (Annotation annotation : annotations) {
             if (annotation instanceof QueryParam) {
                 QueryParam param = (QueryParam) annotation;
-                Parameter qp = new QueryParameterImpl();
+                Parameter qp = new ParameterImpl();
+                qp.setIn(In.QUERY);
                 qp.setName(param.value());
                 parameter = qp;
             } else if (annotation instanceof PathParam) {
                 PathParam param = (PathParam) annotation;
-                Parameter pp = new PathParameterImpl();
+                Parameter pp = new ParameterImpl();
+                pp.setIn(In.PATH);
                 pp.setName(param.value());
                 parameter = pp;
             } else if (annotation instanceof HeaderParam) {
                 HeaderParam param = (HeaderParam) annotation;
-                Parameter pp = new HeaderParameterImpl();
-                pp.setName(param.value());
-                parameter = pp;
+                Parameter hp = new ParameterImpl();
+                hp.setIn(In.HEADER);
+                hp.setName(param.value());
+                parameter = hp;
             } else if (annotation instanceof CookieParam) {
                 CookieParam param = (CookieParam) annotation;
-                Parameter pp = new CookieParameterImpl();
-                pp.setName(param.value());
-                parameter = pp;
+                Parameter cp = new ParameterImpl();
+                cp.setIn(In.COOKIE);
+                cp.setName(param.value());
+                parameter = cp;
             } else if (annotation instanceof org.eclipse.microprofile.openapi.annotations.parameters.Parameter) {
                 if (((org.eclipse.microprofile.openapi.annotations.parameters.Parameter) annotation).hidden()) {
                     extractParametersResult.parameters = parameters;

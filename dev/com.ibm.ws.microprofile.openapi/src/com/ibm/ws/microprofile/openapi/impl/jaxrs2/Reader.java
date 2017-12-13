@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
@@ -638,12 +639,13 @@ public class Reader {
         }
 
         // security
-        classSecurityRequirements.forEach(operation::addSecurityRequirement);
-        if (apiSecurity != null) {
+        if (apiSecurity != null && apiSecurity.size() > 0) {
             Optional<List<SecurityRequirement>> requirementsObject = SecurityParser.getSecurityRequirements(apiSecurity.toArray(new org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement[apiSecurity.size()]));
             if (requirementsObject.isPresent()) {
                 requirementsObject.get().stream().filter(r -> operation.getSecurity() == null || !operation.getSecurity().contains(r)).forEach(operation::addSecurityRequirement);
             }
+        } else {
+            classSecurityRequirements.forEach(operation::addSecurityRequirement);
         }
 
         // servers
@@ -657,10 +659,23 @@ public class Reader {
         AnnotationsUtils.getExternalDocumentation(apiExternalDocumentation).ifPresent(operation::setExternalDocs);
 
         // method tags
-        if (apiTags != null) {
-            apiTags.stream().filter(t -> operation.getTags() == null
-                                         || (operation.getTags() != null && !operation.getTags().contains(t.name()))).map(t -> t.name()).forEach(operation::addTag);
+        if (apiTags != null && apiTags.size() > 0) {
+
+            Predicate<org.eclipse.microprofile.openapi.annotations.tags.Tag> tagPredicate = (t) -> operation.getTags() == null
+                                                                                                   || (operation.getTags() != null && (!operation.getTags().contains(t.name())
+                                                                                                                                       || !operation.getTags().contains(t.ref())));
+            apiTags.stream().filter(tagPredicate).filter(t -> StringUtils.isNotBlank(t.name()) || StringUtils.isNotBlank(t.ref())).map(t -> {
+                if (StringUtils.isNotBlank(t.ref())) {
+                    return t.ref();
+                } else {
+                    return t.name();
+                }
+            }).forEach(operation::addTag);
             AnnotationsUtils.getTags(apiTags.toArray(new org.eclipse.microprofile.openapi.annotations.tags.Tag[apiTags.size()]), true).ifPresent(tags -> openApiTags.addAll(tags));
+        }
+        // class tags after tags defined as field of @Operation
+        else if (classTags != null) {
+            classTags.stream().filter(t -> operation.getTags() == null || (operation.getTags() != null && !operation.getTags().contains(t))).forEach(operation::addTag);
         }
 
         // parameters
@@ -698,11 +713,6 @@ public class Reader {
 
         if (apiOperation != null) {
             setOperationObjectFromApiOperationAnnotation(operation, apiOperation, methodProduces, classProduces, methodConsumes, classConsumes);
-        }
-
-        // class tags after tags defined as field of @Operation
-        if (classTags != null) {
-            classTags.stream().filter(t -> operation.getTags() == null || (operation.getTags() != null && !operation.getTags().contains(t))).forEach(operation::addTag);
         }
 
         // external docs of class if not defined in annotation of method or as field of Operation annotation

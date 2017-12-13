@@ -40,7 +40,6 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
  * The value is the fully qualified name of the filter implementation, which needs to be visible to the application's classloader.
  *
  */
-@SuppressWarnings("rawtypes")
 public interface OASFilter {    
 
     /** 

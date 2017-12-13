@@ -13,11 +13,7 @@ package com.ibm.ws.microprofile.openapi.impl.core.util;
 
 import java.io.IOException;
 
-import org.eclipse.microprofile.openapi.models.parameters.CookieParameter;
-import org.eclipse.microprofile.openapi.models.parameters.HeaderParameter;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
-import org.eclipse.microprofile.openapi.models.parameters.PathParameter;
-import org.eclipse.microprofile.openapi.models.parameters.QueryParameter;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,19 +36,8 @@ public class ParameterDeserializer extends JsonDeserializer<Parameter> {
         if (sub != null) {
             result = new ParameterImpl().ref(sub.asText());
         } else if (inNode != null) {
-            String in = inNode.asText();
-
             ObjectReader reader = null;
-
-            if ("query".equals(in)) {
-                reader = Json.mapper().readerFor(QueryParameter.class);
-            } else if ("header".equals(in)) {
-                reader = Json.mapper().readerFor(HeaderParameter.class);
-            } else if ("path".equals(in)) {
-                reader = Json.mapper().readerFor(PathParameter.class);
-            } else if ("cookie".equals(in)) {
-                reader = Json.mapper().readerFor(CookieParameter.class);
-            }
+            reader = Json.mapper().readerFor(Parameter.class);
             if (reader != null) {
                 result = reader.with(DeserializationFeature.READ_ENUMS_USING_TO_STRING).readValue(node);
             }
