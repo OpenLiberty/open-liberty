@@ -132,4 +132,14 @@ public class WeldCDIUtils {
         }
         return classNames;
     }
+
+    /**
+     * Find out whether the beans.xml contains the element trim
+     * 
+     * @param beansXml
+     * @return true if element trim is present. Otherwise, return false.
+     */
+    public static boolean isTrimmed(BeansXml beansXml) {
+        return beansXml.isTrimmed();
+    }
 }
