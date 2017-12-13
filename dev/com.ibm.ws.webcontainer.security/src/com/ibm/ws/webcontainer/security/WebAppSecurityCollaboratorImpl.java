@@ -983,10 +983,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             result = false;
         }
         authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
-        if (!resp.isCommitted()) {
+        if (!resp.isCommitted() && webReply != null) {
             webReply.writeResponse(resp);
         }
-        Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
+
+        int statusCode = webReply != null ? Integer.valueOf(webReply.getStatusCode()) : resp.getStatus();
+        Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
         return result;
     }
 
