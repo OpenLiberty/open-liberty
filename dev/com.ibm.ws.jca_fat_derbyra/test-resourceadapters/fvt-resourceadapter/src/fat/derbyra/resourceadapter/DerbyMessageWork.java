@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.resource.ResourceException;
@@ -32,12 +33,22 @@ import javax.sql.XAConnection;
 public class DerbyMessageWork implements Work {
     private final DerbyActivationSpec activationSpec;
     private final Object key, value, previous;
+    private static boolean tableCreated = false;
 
     DerbyMessageWork(DerbyActivationSpec activationSpec, Object key, Object value, Object previous) {
         this.activationSpec = activationSpec;
         this.key = key;
         this.value = value;
         this.previous = previous;
+    }
+
+    private static synchronized void initTable(Connection con) throws SQLException {
+        if (!tableCreated) {
+            Statement stmt = con.createStatement();
+            stmt.execute("create table TestActivationSpecRecoveryTBL (id varchar(50) not null primary key, description varchar(150))");
+            stmt.close();
+            tableCreated = true;
+        }
     }
 
     @Override
@@ -60,8 +71,11 @@ public class DerbyMessageWork implements Work {
                 // Fail xa commit/rollback only for tests that specify a key of mdbtestRecovery
                 AtomicInteger successLimit = "mdbtestRecovery".equals(key) ? new AtomicInteger(0) : null;
                 DerbyResourceAdapter ra = (DerbyResourceAdapter) activationSpec.getResourceAdapter();
-                XAConnection xaCon = ra.xaDataSource.getXAConnection(); // XA connection is implicitly closed by DerbyXAResource upon successful commit/rollback
+                XAConnection xaCon = ra.xaDataSource.getXAConnection("ActvSpecUser", "ActvSpecPwd"); // XA connection is implicitly closed by DerbyXAResource upon successful commit/rollback
                 DerbyXAResource xaRes = new DerbyXAResource(xaCon.getXAResource(), successLimit, activationSpec, xaCon);
+
+                Connection con = xaCon.getConnection();
+                initTable(con);
 
                 MessageEndpoint endpoint = mef.createEndpoint(xaRes);
                 MessageListener listener = (MessageListener) endpoint;
@@ -74,7 +88,6 @@ public class DerbyMessageWork implements Work {
                                    ". Content is " + record);
 
                 // Write the response to the database under the same transaction
-                Connection con = xaCon.getConnection();
                 try {
                     PreparedStatement ps = con.prepareStatement("insert into TestActivationSpecRecoveryTBL values (?,?)");
                     try {

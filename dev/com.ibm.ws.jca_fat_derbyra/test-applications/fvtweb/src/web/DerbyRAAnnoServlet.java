@@ -141,8 +141,8 @@ public class DerbyRAAnnoServlet extends FATServlet {
 
             // Database entry inserted by message driven bean should show up in a reasonable amount of time
             String oldValueFromDB = null;
-            DataSource ds = InitialContext.doLookup("java:global/env/eis/ds1ref");
-            Connection con = ds.getConnection();
+            DataSource ds = InitialContext.doLookup("eis/ds1");
+            Connection con = ds.getConnection("ActvSpecUser", "ActvSpecPwd");
             try {
                 PreparedStatement pstmt = con.prepareStatement("select description from TestActivationSpecRecoveryTBL where id=?");
                 pstmt.setString(1, "mdbtestRecovery");

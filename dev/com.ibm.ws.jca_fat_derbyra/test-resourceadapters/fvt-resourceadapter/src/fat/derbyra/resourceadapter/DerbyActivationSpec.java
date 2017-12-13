@@ -24,8 +24,9 @@ import javax.resource.spi.endpoint.MessageEndpointFactory;
  */
 public class DerbyActivationSpec implements ActivationSpec {
     private DerbyResourceAdapter adapter;
-    String keyPrefix;
+    String keyPrefix; // config-property
     final ConcurrentLinkedQueue<MessageEndpointFactory> messageEndpointFactories = new ConcurrentLinkedQueue<MessageEndpointFactory>();
+    String qmid; // config-property
 
     /**
      * Track an XA resource for recovery
@@ -42,6 +43,10 @@ public class DerbyActivationSpec implements ActivationSpec {
         return keyPrefix;
     }
 
+    public String getQmid() {
+        return qmid == null ? DerbyXAResource.XA_RECOVERY_QMID : qmid;
+    }
+
     @Override
     public ResourceAdapter getResourceAdapter() {
         return adapter;
@@ -49,6 +54,10 @@ public class DerbyActivationSpec implements ActivationSpec {
 
     public void setKeyPrefix(String keyPrefix) {
         this.keyPrefix = keyPrefix;
+    }
+
+    public void setQmid(String qmid) {
+        this.qmid = qmid;
     }
 
     @Override
