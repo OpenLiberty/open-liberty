@@ -169,6 +169,9 @@ public class FrameData extends Frame {
         if (this.paddingLength > this.payloadLength) {
             throw new ProtocolException("DATA padding length must be less than the length of the payload");
         }
+        if (this.paddingLength < 0) {
+            throw new ProtocolException("DATA padding length is invalid");
+        }
     }
 
     @Override
