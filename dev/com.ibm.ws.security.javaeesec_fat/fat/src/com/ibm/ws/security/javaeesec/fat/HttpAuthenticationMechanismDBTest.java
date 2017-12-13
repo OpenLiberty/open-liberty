@@ -1,6 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.security.javaeesec.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,17 +40,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2017
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
 /**
  * Test Description:
  */
@@ -76,8 +79,7 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
+        myServer.stopServer("CWWKS1922W", "CWWKS1923W", "CWWKS1924W");
     }
 
     @Before
@@ -155,6 +157,29 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
     /**
      * Verify the following:
      * <OL>
+     * <LI> That null password will fail nicely.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 403
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testJaspiAnnotatedDBBasicNullUserPwd() throws Exception {
+        executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
+                                        null,
+                                        HttpServletResponse.SC_FORBIDDEN);
+
+        String msg = NullPointerException.class.getName();
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Found '" + msg + "' in trace: " + errorResults, errorResults.isEmpty());
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
      * <LI> Attempt to access a protected servlet configured for basic authentication with JASPI activated.
      * <LI> Login with an invalid userId and password and verify that
      * <LI> JASPI authentication fails.
@@ -215,6 +240,11 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER_DUPE,
                                         Constants.DB_USER1_PWD,
                                         HttpServletResponse.SC_FORBIDDEN);
+
+        String msg = "CWWKS1924W";
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -237,6 +267,11 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER_NOPWD,
                                         Constants.DB_USER1_PWD,
                                         HttpServletResponse.SC_FORBIDDEN);
+
+        String msg = "CWWKS1923W";
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
