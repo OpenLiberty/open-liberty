@@ -39,7 +39,20 @@ task copyMavenLibs(type: Copy) {
     into cnf.file('mavenlibs')
 }
 
+task cleanRepos(type: Delete) {
+    delete fileTree('release')
+    delete 'release.mvn'
+    delete fileTree('local')
+    delete 'local.mvn'
+    delete fileTree('mavenlibs')
+}
+
+clean{
+    dependsOn cleanRepos
+}
+
 task initialize {
+    dependsOn cleanRepos
     dependsOn copyMavenLibs
     doLast {
         println "Gradle Initialized"
@@ -322,7 +335,6 @@ task zipIvyBootstrap(type: Zip) {
     dependsOn createIvyXml
     dependsOn createGeneratedReplacementProjects
     dependsOn createGaESAList
-    dependsOn createIndex
     baseName 'ivy-bootstrap'
     into 'prereq.published', {from new File(project.buildDir, 'ivy.xml'), new File(project.buildDir, 'ivy-latest.xml')}
     from new File(project.buildDir, 'replacements')
@@ -332,7 +344,6 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGradleBootstrap
     dependsOn createGeneratedReplacementProjects
     dependsOn createGaESAList
-    dependsOn createIndex
     baseName 'gradle-bootstrap'
     into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
                                     new File(project.buildDir, 'gaFeatures.txt'),
