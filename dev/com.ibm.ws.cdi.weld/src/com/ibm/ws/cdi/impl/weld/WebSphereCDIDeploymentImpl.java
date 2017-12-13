@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
@@ -101,7 +102,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
         ExecutorService executorService = cdiRuntime.getExecutorService();
         if (executorService != null) {
-            ExecutorServices executorServices = new ExecutorServicesImpl(executorService);
+            ExecutorServices executorServices = new ExecutorServicesImpl(executorService, cdiRuntime.getScheduledExecutorService());
             serviceRegistry.add(ExecutorServices.class, executorServices);
         }
 
