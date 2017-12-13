@@ -11,6 +11,7 @@
 package web.war.identitystores.ldap.ldap2;
 
 import java.util.logging.Logger;
+
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 @LdapIdentityStoreDefinition(
@@ -18,7 +19,7 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
                              callerBaseDn = "",
                              callerSearchBase = "ou=anotherusers,o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             callerSearchFilter = "(objectclass=person)",
+                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
                              callerNameAttribute = "uid",
                              groupNameAttribute = "cn",
                              groupSearchBase = "ou=anothergroups,o=ibm,c=us",
@@ -27,10 +28,10 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
                              groupMemberAttribute = "member",
                              bindDn = "uid=admin,ou=anotherusers,o=ibm,c=us",
                              bindDnPassword = "an0thers3cur1ty",
-                             priority = 150
-                             )
+                             priority = 150)
 public class LdapLocalHostAnnotate150 {
     private static Logger log = Logger.getLogger(LdapLocalHostAnnotate150.class.getName());
+
     public LdapLocalHostAnnotate150() {
         log.info("<ctor>");
     }

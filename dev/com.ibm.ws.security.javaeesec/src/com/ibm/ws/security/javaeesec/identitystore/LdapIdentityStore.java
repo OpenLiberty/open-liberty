@@ -39,7 +39,6 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -128,9 +127,8 @@ public class LdapIdentityStore implements IdentityStore {
 
         String userDn = validationResult.getCallerDn();
         if (userDn == null || userDn.isEmpty()) {
-            String[] attrIds = { idStoreDefinition.getCallerNameAttribute() };
             String user = validationResult.getCallerPrincipal().getName();
-            String filter = "(&(" + attrIds[0] + "=" + user + ")" + idStoreDefinition.getCallerSearchFilter() + ")";
+            String filter = String.format(idStoreDefinition.getCallerSearchFilter(), user);
             if (isValidDn(user)) {
                 userDn = user;
             } else {
@@ -150,7 +148,6 @@ public class LdapIdentityStore implements IdentityStore {
      *
      * @return The {@link SearchControls} object to use when search LDAP for the user.
      */
-    @Trivial
     private SearchControls getCallerSearchControls() {
         String[] attrIds = { idStoreDefinition.getCallerNameAttribute() };
         long limit = Long.valueOf(idStoreDefinition.getMaxResults());
@@ -165,7 +162,6 @@ public class LdapIdentityStore implements IdentityStore {
      * @param scope The {@link LdapIdentityStore} to convert to the JNDI equivalent.
      * @return The JNDI {@link SearchControls} search scope.
      */
-    @Trivial
     private int getSearchScope(LdapSearchScope scope) {
         if (scope == LdapSearchScope.ONE_LEVEL) {
             return SearchControls.ONELEVEL_SCOPE;
@@ -193,13 +189,11 @@ public class LdapIdentityStore implements IdentityStore {
         if (credential.isValid()) {
             String user = cred.getCaller();
             String filter = idStoreDefinition.getCallerSearchFilter();
-            String[] attrIds = { idStoreDefinition.getCallerNameAttribute() };
+            String callerNameAttribute = idStoreDefinition.getCallerNameAttribute();
             String callerName = null;
             String userDn = null;
 
-            filter = "(&(" + attrIds[0] + "=" + user + ")" + filter + ")";
-            Tr.debug(tc, "filter: ", filter);
-            Tr.debug(tc, "attrIds: ", attrIds[0]);
+            filter = String.format(filter, user);
 
             Set<String> groups = new HashSet<String>();
 
@@ -207,7 +201,6 @@ public class LdapIdentityStore implements IdentityStore {
                 userDn = user;
             } else {
                 userDn = getUserDn(user, filter, getCallerSearchControls());
-                callerName = user;
             }
             if (userDn == null) {
                 return CredentialValidationResult.INVALID_RESULT;
@@ -227,16 +220,16 @@ public class LdapIdentityStore implements IdentityStore {
                 return CredentialValidationResult.INVALID_RESULT;
             }
 
-            String url = idStoreDefinition.getUrl();
-            url = url.replaceFirst("(?i)ldaps?:\\/\\/", "");
-            if (url.endsWith("/")) {
-                url = url.substring(0, url.length() - 1);
-            }
-
-            if (callerName == null) {
+            if (callerNameAttribute.equalsIgnoreCase("dn")) {
+                callerName = userDn;
+            } else {
                 try {
-                    Attributes attrs = context.getAttributes(userDn, attrIds);
-                    Attribute attribute = attrs.get(attrIds[0]);
+                    Attributes attrs = context.getAttributes(userDn, new String[] { callerNameAttribute });
+                    Attribute attribute = attrs.get(callerNameAttribute);
+                    if (attribute == null) {
+                        Tr.error(tc, "User, " + userDn + ", does not have attribute: " + callerNameAttribute);
+                        return CredentialValidationResult.INVALID_RESULT;
+                    }
                     NamingEnumeration<?> ne = attribute.getAll();
                     while (ne.hasMoreElements()) {
                         callerName = (String) ne.nextElement();
@@ -260,9 +253,16 @@ public class LdapIdentityStore implements IdentityStore {
                         groups = getGroupsByMember(context, userDn, groupSearchBase, groupSearchFilter);
                     }
                 } catch (NamingException e) {
-                    Tr.debug(tc, "exception: " + e);
+                    Tr.error(tc, "A NamingException occurred." + e);
                 }
             }
+
+            String url = idStoreDefinition.getUrl();
+            url = url.replaceFirst("(?i)ldaps?:\\/\\/", "");
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length() - 1);
+            }
+
             return new CredentialValidationResult(url, callerName, userDn, userDn, groups);
         }
 
@@ -289,6 +289,10 @@ public class LdapIdentityStore implements IdentityStore {
             userDn = idStoreDefinition.getCallerNameAttribute() + "=" + callerName + "," + idStoreDefinition.getCallerBaseDn();
         } else {
             try {
+                if (filter.isEmpty()) {
+                    Tr.error(tc, "An empty callerSearchFilter was provided. Please specify a valid callerSearchFilter in @LdapIdentityStoreDefinition");
+                    return null;
+                }
                 DirContext ctx = bind();
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "JNDI_CALL search", new Object[] { searchBase, filter, printControls(controls) });
@@ -296,17 +300,16 @@ public class LdapIdentityStore implements IdentityStore {
                 NamingEnumeration<SearchResult> ne = ctx.search(new LdapName(searchBase), filter, controls);
                 if (ne.hasMoreElements()) {
                     userDn = ne.nextElement().getNameInNamespace();
-                    Tr.debug(tc, "userDN: ", userDn);
                     if (ne.hasMoreElements()) {
-                        Tr.debug(tc, "multiple principals found");
+                        Tr.error(tc, "Multiple principals were found using search base: " + searchBase + " and filter: " + filter);
                         return null;
                     }
                 } else {
-                    Tr.debug(tc, "no principal found");
+                    Tr.error(tc, "No principal was found using search base: " + searchBase + " and filter: " + filter);
                     return null;
                 }
             } catch (NamingException ne) {
-                Tr.debug(tc, "exception: ", ne);
+                Tr.error(tc, "A NamingException occurred", ne);
             }
         }
         return userDn;
@@ -318,7 +321,6 @@ public class LdapIdentityStore implements IdentityStore {
      * @param controls The controls to get the string for.
      * @return The string representation for the SearchControls object.
      */
-    @Trivial
     private String printControls(SearchControls controls) {
         StringBuffer result = new StringBuffer();
         result.append("[searchScope: ").append(controls.getSearchScope());
@@ -365,12 +367,15 @@ public class LdapIdentityStore implements IdentityStore {
         SearchControls controls = new SearchControls(scope, limit, timeOut, attrIds, false, false);
         String filter = "(&" + groupSearchFilter + "(" + idStoreDefinition.getGroupMemberAttribute() + "=" + callerDn + "))";
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "JNDI_CALL search entry", new Object[] { groupSearchBase, filter, printControls(controls) });
+            Tr.debug(tc, "JNDI_CALL search", new Object[] { groupSearchBase, filter, printControls(controls) });
         }
         NamingEnumeration<SearchResult> ne = context.search(new LdapName(groupSearchBase), filter, controls);
         Set<String> groups = new HashSet<String>();
         while (ne.hasMoreElements()) {
             groups.add(ne.nextElement().getNameInNamespace());
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "getGroupsByMember", groups);
         }
         return groups;
     }
@@ -386,8 +391,9 @@ public class LdapIdentityStore implements IdentityStore {
      */
     private Set<String> getGroupsByMembership(DirContext context, String callerDn) throws NamingException {
         String memberOfAttribute = idStoreDefinition.getGroupMemberOfAttribute();
+        String groupNameAttribute = idStoreDefinition.getGroupNameAttribute();
         Attributes attrs;
-        Set<String> groups = new HashSet<String>();
+        Set<String> groupDns = new HashSet<String>();
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JNDI_CALL getAttributes", new Object[] { callerDn, memberOfAttribute });
@@ -398,14 +404,43 @@ public class LdapIdentityStore implements IdentityStore {
         if (groupSet != null) {
             NamingEnumeration<?> ne = groupSet.getAll();
             while (ne.hasMoreElements()) {
-                groups.add((String) ne.nextElement());
+                groupDns.add((String) ne.nextElement());
             }
         }
 
-        return groups;
+        if (groupNameAttribute.equalsIgnoreCase("dn")) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "getGroupsByMembership", groupDns);
+            }
+            return groupDns;
+        }
+
+        Set<String> groupNames = new HashSet<String>();
+        for (String groupDn : groupDns) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "JNDI_CALL getAttributes", new Object[] { groupDn, groupNameAttribute });
+            }
+            Attributes groupNameAttrs = context.getAttributes(groupDn, new String[] { groupNameAttribute });
+            Attribute groupNameAttr = groupNameAttrs.get(groupNameAttribute);
+            if (groupNameAttr == null) {
+                Tr.warning(tc, "Group, " + groupDn + ", does not have attribute: " + groupNameAttribute);
+                continue;
+            }
+            NamingEnumeration<?> ne = groupNameAttr.getAll();
+            String groupNameAttributeValue = null;
+            while (ne.hasMoreElements()) {
+                groupNameAttributeValue = (String) ne.nextElement();
+            }
+
+            groupNames.add(groupNameAttributeValue);
+
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "getGroupsByMembership", groupNames);
+        }
+        return groupNames;
     }
 
-    @Trivial
     @FFDCIgnore(InvalidNameException.class)
     private boolean isValidDn(String user) {
         try {

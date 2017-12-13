@@ -754,11 +754,11 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         props.put("callerBaseDn", "");
         props.put("callerNameAttribute", "uid");
         props.put("callerSearchBase", LDAP_ROOT_PARTITION);
-        props.put("callerSearchFilter", "(objectclass=person)");
+        props.put("callerSearchFilter", "(&(objectclass=person)(uid=%s))");
         props.put("callerSearchScope", "SUBTREE");
         props.put("groupMemberAttribute", "member");
         props.put("groupMemberOfAttribute", "");
-        props.put("groupNameAttribute", "cn");
+        props.put("groupNameAttribute", "dn");
         props.put("groupSearchBase", LDAP_ROOT_PARTITION);
         props.put("groupSearchFilter", "(objectclass=groupofnames)");
         props.put("groupSearchScope", "SUBTREE");
