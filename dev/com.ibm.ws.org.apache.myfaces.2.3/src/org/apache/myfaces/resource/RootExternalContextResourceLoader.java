@@ -21,7 +21,6 @@ package org.apache.myfaces.resource;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import javax.faces.application.ResourceHandler;
@@ -66,12 +65,7 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     protected Set<String> getResourcePaths(String path)
     {
         String correctedPath = path.startsWith("/") ? path : '/' + path;
-        
-        if (correctedPath.startsWith(contractsDirectory) || correctedPath.startsWith(resourcesDirectory))
-        {
-            // Resources under this directory should be accesed by other ContractResourceLoader
-            return Collections.emptySet();
-        }
+
         return FacesContext.getCurrentInstance().getExternalContext().getResourcePaths(correctedPath);
     }
 
@@ -93,16 +87,10 @@ public class RootExternalContextResourceLoader extends ResourceLoader
         try
         {
             String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
-            if (correctedResourceId.startsWith(contractsDirectory) || 
-                correctedResourceId.startsWith(resourcesDirectory))
-            {
-                return null;
-            }
-            else
-            {
-                return FacesContext.getCurrentInstance().getExternalContext().getResource(
-                    correctedResourceId);
-            }
+
+            return FacesContext.getCurrentInstance().getExternalContext().getResource(
+                correctedResourceId);
+
         }
         catch (MalformedURLException e)
         {
@@ -127,10 +115,7 @@ public class RootExternalContextResourceLoader extends ResourceLoader
     {
         String resourceId = resourceMeta.getResourceIdentifier();
         String correctedResourceId = resourceId.startsWith("/") ? resourceId : "/"+resourceId;
-        if (correctedResourceId.startsWith(contractsDirectory) ||  correctedResourceId.startsWith(resourcesDirectory))
-        {
-            return null;
-        }
+
         return FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream(correctedResourceId);
     }
 
