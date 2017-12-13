@@ -45,7 +45,6 @@ import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -264,16 +263,15 @@ public class ServerEndpointControlMBeanTest {
     }
 
     /**
-     * Tests that the expected warning log is emitted if the MBean pause method is issued with no targets when no pauseable components exist
+     * Tests that the expected exception is emitted if the MBean pause all method is issued when no pauseable components exist
      *
      * @throws Exception
      */
-    @AllowedFFDC(PAUSEABLE_EXCEPTION_CLASS)
+    @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
     @Test
     public void testPauseAllNoPauseableComponents() throws Exception {
         final String METHOD_NAME = "testPauseAllNoPauseableComponents";
         Log.entering(c, METHOD_NAME);
-        boolean noException = true;
         restoreSavedConfig = true;
 
         // remove the servlet feature so that all endpoints are deactivated including the default instance of httpEndpoint
@@ -283,17 +281,11 @@ public class ServerEndpointControlMBeanTest {
         try {
             server.setMarkToEndOfLog();
             mbean.pause();
+            fail("Failed to get expected exception from attempting to pause all endpoints with no pauseable components");
         } catch (MBeanException e) {
-            // based on the design of the PauseableComponent service, you may get an exception if no endpoint has ever been registered
-            // and pause or resume all is called on it or simply an info message that the operation completed if an endpoint has ever been registered
-            // but may be deactivated
-            noException = false;
+            // expected
         }
-        // if we got an exception or the completion log message was found, test passed
-        final String res = server.waitForStringInLog("CWWKE0938I");
-        if (noException && ("".equals(res) || res == null)) {
-            fail("Failed to get either an exception or completion log message from attempting to pause an endpoint with no pauseable components");
-        }
+        assertNotNull("Didn't find CWWKE0933W in logs as expected.", server.waitForStringInLog("CWWKE0933W"));
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -322,17 +314,16 @@ public class ServerEndpointControlMBeanTest {
     }
 
     /**
-     * Tests that the expected exception is thrown if the MBean resume method is issued when no pauseable components exist
+     * Tests that the expected exception is thrown if the MBean resume all method is issued when no pauseable components exist
      *
      * @throws Exception
      */
 
-    @AllowedFFDC(PAUSEABLE_EXCEPTION_CLASS)
+    @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
     @Test
     public void testResumeAllNoPauseableComponents() throws Exception {
         final String METHOD_NAME = "testResumeAllNoPauseableComponents";
         Log.entering(c, METHOD_NAME);
-        boolean noException = true;
         restoreSavedConfig = true;
 
         // remove the servlet feature so that all endpoints are deactivated including the default instance of httpEndpoint
@@ -342,18 +333,11 @@ public class ServerEndpointControlMBeanTest {
         try {
             server.setMarkToEndOfLog();
             mbean.resume();
+            fail("Failed to get expected exception from attempting to resume all endpoints with no pauseable components");
         } catch (MBeanException e) {
-            // based on the design of the PauseableComponent service, you may get an exception if no endpoint has ever been registered
-            // and pause or resume all is called on it or simply an info message that the operation completed if an endpoint has ever been registered
-            // but may be deactivated
-            Log.info(c, METHOD_NAME, "Caught expected exception: " + e.getCause());
-            noException = false;
+            // expected
         }
-        // if we got an exception or the completion log message was found, test passed
-        final String res = server.waitForStringInLog("CWWKE0939I");
-        if (noException && ("".equals(res) || res == null)) {
-            fail("Failed to get either an exception or completion log message from attempting to resume an endpoint with no pauseable components");
-        }
+        assertNotNull("Didn't find CWWKE0934W in logs as expected.", server.waitForStringInLog("CWWKE0934W"));
         Log.exiting(c, METHOD_NAME);
     }
 
