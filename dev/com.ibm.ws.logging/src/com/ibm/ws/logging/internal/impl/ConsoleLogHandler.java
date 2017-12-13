@@ -15,12 +15,12 @@ import java.util.List;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
-import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 /**
  *
  */
-public class ConsoleLogHandler extends JsonLogHandler implements SyncrhonousHandler, Formatter {
+public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
     private SystemLogHolder sysLogHolder;

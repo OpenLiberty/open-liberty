@@ -28,12 +28,12 @@ import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
-import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 /**
  * An abstract class that defines the common functionality of a json handler services
  */
-public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
+public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
     private static final TraceComponent tc = Tr.register(JsonLogHandler.class);
 

@@ -15,12 +15,12 @@ import java.util.List;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
-import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 /**
  *
  */
-public class MessageLogHandler extends JsonLogHandler implements SyncrhonousHandler, Formatter {
+public class MessageLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     private TraceWriter traceWriter;
     /*

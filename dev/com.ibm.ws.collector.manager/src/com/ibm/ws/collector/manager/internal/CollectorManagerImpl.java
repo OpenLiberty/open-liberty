@@ -33,7 +33,7 @@ import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.Source;
-import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class CollectorManagerImpl implements CollectorManager {
 
@@ -366,8 +366,8 @@ public class CollectorManagerImpl implements CollectorManager {
 
         BufferManagerImpl bufferMgr = new BufferManagerImpl(10000, sourceId);
 
-        if (handler instanceof SyncrhonousHandler) {
-            bufferMgr.addSyncHandler((SyncrhonousHandler) handler);
+        if (handler instanceof SynchronousHandler) {
+            bufferMgr.addSyncHandler((SynchronousHandler) handler);
         }
 
         //Add BufferManager into a Map. This will be retrieved later to be passed onto a SourceManager so that it can associate a Handler to it.
