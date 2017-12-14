@@ -45,7 +45,10 @@ Export-Package: \
 	com.ibm.websphere.jaxrs.providers.json4j;version=1.1.0,\
 	com.ibm.websphere.jaxrs20.multipart;version=1.1.0,\
 	com.ibm.ws.jaxrs20.clientconfig,\
-	org.apache.cxf.feature
+	org.apache.cxf.feature,\
+	org.apache.cxf.jaxrs;version=3.1.11,\
+	org.apache.cxf.jaxrs.client;version=3.1.11,\
+	org.apache.cxf.jaxrs.client.spec;version=3.1.11
 
 Import-Package: \
  !com.wordnik.swagger.jaxrs.config, \
