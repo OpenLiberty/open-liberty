@@ -13,7 +13,7 @@ bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
 # and uses the RTC buildLabel for the qualifier. The "generated.build.id" file
 # (included above) will predefine the Build-Identifier header.
 Build-Identifier: SNAPSHOT-${now}
-Bundle-Version: ${bFullVersion}.${version.qualifier}${if;${is.release};;-SNAPSHOT}
+Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
 
 -donotcopy      = (CVS|.svn|.+.bak|nlsbuild|~.+|.+~|.jazzignore)
 -removeheaders  = Include-Resource, Ignore-Package, TODAY, DSTAMP, TSTAMP, Bnd-LastModified
@@ -24,7 +24,7 @@ Bundle-Version: ${bFullVersion}.${version.qualifier}${if;${is.release};;-SNAPSHO
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
 
 #tell bnd to use our Externals plugin
--plugin: com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor, com.ibm.ws.build.bnd.plugins.BundleManifestValidator
+-plugin: ${if;${driver;gradle};com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor, com.ibm.ws.build.bnd.plugins.BundleManifestValidator;}
 
 #require explicitly specifying all ds and metatype annotated classes.
 -dsannotations:
