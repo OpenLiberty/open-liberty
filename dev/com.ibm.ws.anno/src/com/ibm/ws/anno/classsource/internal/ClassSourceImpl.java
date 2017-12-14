@@ -502,7 +502,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      */
     @Trivial
     public String getJandexIndexPath() {
-        return "META-INF/jandex.ndx";
+        return "META-INF/jandex.idx";
     }
 
     /**
