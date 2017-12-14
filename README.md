@@ -24,7 +24,9 @@ You can download released versions and nightly build artifacts from: https://www
     git clone https://github.com/OpenLiberty/sample-mpconf.git
     cd sample-mpconf
     mvn clean package -P start
-    
+
+Open browser to http://localhost:8080/ and explore the demo application. Afterwards run `mvn liberty:stop-server` to stop the server.
+
 ### Open Liberty Guides
 Visit the [OpenLiberty website](https://openliberty.io/guides/) for a number of step by step guides.
 
