@@ -496,13 +496,13 @@ public abstract class ClassSourceImpl implements ClassSource {
     /**
      * <p>Answer the path to JANDEX index files.</p>
      *
-     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.</p>
+     * <p>The default implementation answers <code>"META-INF/jandex.idx"</code>.</p>
      *
      * @return The relative path to JANDEX index files.
      */
     @Trivial
     public String getJandexIndexPath() {
-        return "META-INF/jandex.ndx";
+        return "META-INF/jandex.idx";
     }
 
     /**
