@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -51,46 +52,46 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 
 /**
  * Represents an independent HTTP/2 stream
+ * This class is intentionally not thread safe, it is designed with the idea that per stream only one frame will be processed at one time
  */
 public class H2StreamProcessor {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2StreamProcessor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    // This class is intentionally not thread safe, it is designed with the idea that per stream only one frame will be processed at one time.
-    StreamState state = StreamState.IDLE;
+    // connection objects we're interested in
+    private H2HttpInboundLinkWrap h2HttpInboundLinkWrap = null;
+    private H2InboundLink muxLink = null;
 
-    Frame currentFrame;
+    // bytes buffered by this stream
+    private ArrayList<byte[]> headerBlock;
+    private ArrayList<byte[]> dataPayload;
 
-    FrameTypes frameType;
+    // general stream settings
+    private int myID = -1;
+    private int weight = 0;
+    private boolean exclusive = false;
+    private int streamDependency = 0;
+    private FrameTypes frameType;
 
-    // stream data
-    ArrayList<byte[]> headerBlock;
-    ArrayList<byte[]> dataPayload;
+    // keep track of the stream state
+    private StreamState state = StreamState.IDLE;
+    private Frame currentFrame;
+    private boolean endStream = false;
+    private long closeTime = Constants.INITIAL_CLOSE_TIME;
 
-    // stream settings
-    int weight = 0;
-    boolean exclusive = false;
-    int streamDependency = 0;
-
-    long readReceivedCount = 0;
-    long readRequestSize = 0;
-
-    // if false, this stream's buffers do not contain a complete set of headers
+    // keep track of the state of this stream's headers
     private boolean headersCompleted = false;
     private boolean continuationExpected = false;
+    private boolean trailerExpected = false;
+    private List<String> trailerHeaderNames;
 
-    public boolean endStream = false;
-
-    int myID = -1;
-    private boolean highestStreamIdChecked = false;
-
-    H2HttpInboundLinkWrap h2HttpInboundLinkWrap = null;
-    H2InboundLink muxLink = null;
+    // the anticipated content length, as passed in from a content-length header
+    private int expectedContentLength = -1;
 
     // objects to track http2 connection initialization
-    boolean connection_preface_settings_ack_rcvd = false;
-    boolean connection_preface_settings_rcvd = false;
+    private boolean connection_preface_settings_ack_rcvd = false;
+    private boolean connection_preface_settings_rcvd = false;
 
     public static enum PROCESS_TYPE {
         DEFAULT, PAYLOAD_FIRST
@@ -109,21 +110,34 @@ public class H2StreamProcessor {
 
     // flag used to signal that we don't want to queue any data frames, as the flow control window has not been exceeded
     private boolean waitingForWindowUpdate = false;
-    // keep track of any DATA frames that cannot be sent until the client updates the window
+    // keep trac1k of any DATA frames that cannot be sent until the client updates the window
     Queue<FrameData> dataWaitingForWindowUpdate;
 
-    private long closeTime = Constants.INITIAL_CLOSE_TIME;
-
     // a list of buffers to be read in by the WebContainer
-    ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
-    int streamReadSize = 0;
-    long actualReadCount = 0;
+    private final ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
+    private int streamReadSize = 0;
+    private long actualReadCount = 0;
     private CountDownLatch readLatch = new CountDownLatch(1);
 
+    /**
+     * Constructor
+     *
+     * @param ID
+     * @param H2HttpInboundLinkWrap
+     * @param H2InboundLink
+     */
     public H2StreamProcessor(Integer id, H2HttpInboundLinkWrap link, H2InboundLink m) {
         this(id, link, m, StreamState.IDLE);
     }
 
+    /**
+     * Create a stream processor initialized to a given http2 stream state
+     *
+     * @param ID
+     * @param H2HttpInboundLinkWrap
+     * @param H2InboundLink
+     * @param StreamState
+     */
     public H2StreamProcessor(Integer id, H2HttpInboundLinkWrap link, H2InboundLink m, StreamState state) {
         myID = id.intValue();
         h2HttpInboundLinkWrap = link;
@@ -512,14 +526,6 @@ public class H2StreamProcessor {
             Tr.debug(tc, "readWriteTransitionState: entry: frame type: " + currentFrame.getFrameType() + " state: " + state);
         }
 
-        // Validate and update the current stream ID
-        if (!highestStreamIdChecked &&
-            currentFrame.getFrameType() == FrameTypes.HEADERS ||
-            currentFrame.getFrameType() == FrameTypes.PUSH_PROMISE) {
-            muxLink.updateHighestStreamId(myID);
-            highestStreamIdChecked = true;
-        }
-
         if (currentFrame.getFrameType() == FrameTypes.GOAWAY
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             writeFrameSync();
@@ -855,12 +861,16 @@ public class H2StreamProcessor {
      * @param direction
      * @throws CompressionException
      * @throws FlowControlException
+     * @throws ProtocolException
      */
-    private void processIdle(Constants.Direction direction) throws CompressionException, FlowControlException {
+    private void processIdle(Constants.Direction direction) throws CompressionException, FlowControlException, ProtocolException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processIdle entry: stream " + myID);
         }
-
+        if (currentFrame.getFrameType() == FrameTypes.HEADERS ||
+            currentFrame.getFrameType() == FrameTypes.PUSH_PROMISE) {
+            muxLink.updateHighestStreamId(myID);
+        }
         // Can only receive HEADERS or PRIORITY frame in Idle state
         if (direction == Constants.Direction.READ_IN) {
             if (frameType == FrameTypes.HEADERS) {
@@ -869,8 +879,8 @@ public class H2StreamProcessor {
                 getHeadersFromFrame();
 
                 if (currentFrame.flagEndHeadersSet()) {
-                    setHeadersComplete();
                     processCompleteHeaders();
+                    setHeadersComplete();
                     setReadyForRead();
                 } else {
                     setContinuationFrameExpected(true);
@@ -907,11 +917,16 @@ public class H2StreamProcessor {
                     processCompleteData();
                     setReadyForRead();
                 }
-            } else if (frameType == FrameTypes.CONTINUATION) {
+            } else if (frameType == FrameTypes.CONTINUATION ||
+                       (frameType == FrameTypes.HEADERS)) {
                 getHeadersFromFrame();
                 if (currentFrame.flagEndHeadersSet()) {
-                    setHeadersComplete();
                     processCompleteHeaders();
+                    setHeadersComplete();
+                    setReadyForRead();
+                    if (currentFrame.flagEndStreamSet()) {
+                        setReadyForRead();
+                    }
                 } else {
                     setContinuationFrameExpected(true);
                 }
@@ -1005,10 +1020,8 @@ public class H2StreamProcessor {
         } else if (frameType == FrameTypes.CONTINUATION) {
             getHeadersFromFrame();
             if (currentFrame.flagEndHeadersSet()) {
-                // no more headers are expected
-                setHeadersComplete();
                 processCompleteHeaders();
-                // the stream has been signaled to close: we don't need to worry about DATA frames following
+                setHeadersComplete();
                 setReadyForRead();
             }
         }
@@ -1124,11 +1137,11 @@ public class H2StreamProcessor {
                 // (non-spec) HEADERS frame is only read by the server side if the connection was in idle state,
                 // meaning the client/remote side is starting a new stream and sending a request on it
                 if (state != StreamState.IDLE) {
-                    throw new ProtocolException("HEADERS Frame Received in the wrong state of: " + state);
-                } else if (state == StreamState.HALF_CLOSED_REMOTE) {
-                    throw new StreamClosedException("HEADERS Frame Received in the wrong state of: " + state);
+                    if (state == StreamState.OPEN && trailerExpected) {
+                        break;
+                    } else
+                        throw new ProtocolException("HEADERS Frame Received in the wrong state of: " + state);
                 }
-
                 break;
 
             case PRIORITY:
@@ -1257,11 +1270,13 @@ public class H2StreamProcessor {
      * Call when all header block fragments for a header block have been received
      */
     private void setHeadersComplete() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "completed headers have been received stream " + myID);
+        if (!trailerExpected) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "completed headers have been received stream " + myID);
+            }
+            headersCompleted = true;
+            setContinuationFrameExpected(false);
         }
-        headersCompleted = true;
-        setContinuationFrameExpected(false);
     }
 
     public boolean isContinuationFrameExpected() {
@@ -1305,8 +1320,6 @@ public class H2StreamProcessor {
         }
     }
 
-    int expectedContentLength = -1;
-
     /**
      * Puts stream's header block into the read buffer that will be passed to the webcontainer
      *
@@ -1339,6 +1352,9 @@ public class H2StreamProcessor {
             //Decode headers until we reach the end of the buffer
             boolean isFirstHeaderBlock;
             boolean isFirstHeader = true;
+
+            boolean processTrailerHeaders = trailerExpected;
+
             while (buf.hasRemaining()) {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
                 current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock, this.muxLink.getConnectionSettings()));
@@ -1381,11 +1397,36 @@ public class H2StreamProcessor {
                     }
                     headers.add(current);
                 }
+                if ("TE".equalsIgnoreCase(current.getName()) && "trailers".equalsIgnoreCase(current.getValue())) {
+                    System.out.println("wtl: TE set");
+                    this.trailerExpected = true;
+                    headersCompleted = false;
+                }
+                if ("trailer".equalsIgnoreCase(current.getName())) {
+                    System.out.println("wtl: trailer set");
+                    this.trailerExpected = true;
+                    headersCompleted = false;
+                    String[] trailerHeaders = current.getValue().split(",");
+                    trailerHeaderNames = java.util.Arrays.asList(trailerHeaders);
+                }
+                if (processTrailerHeaders) {
+                    //validate trailer headers
+                }
             }
-            //Add all decoded pseudo-headers / headers to the H2 inbound link wrap
-            this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);
-            this.h2HttpInboundLinkWrap.setReadHeaders(headers);
-            buf.flip();
+            if (!processTrailerHeaders) {
+                //Add all decoded pseudo-headers / headers to the H2 inbound link wrap
+                this.h2HttpInboundLinkWrap.setReadHeaders(headers);
+                this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);
+            } else {
+                trailerExpected = false;
+                // add the trailer headers to the existing list of
+                ArrayList<H2HeaderField> readHeaders = h2HttpInboundLinkWrap.getReadHeaders();
+                for (H2HeaderField header : headers) {
+                    if (trailerHeaderNames.contains(header.getName())) {
+                        readHeaders.add(header);
+                    }
+                }
+            }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "processCompleteHeaders no header block set: stream " + myID);
@@ -1431,7 +1472,6 @@ public class H2StreamProcessor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setReadyForRead entry: stream id:" + myID);
         }
-
         if (headersCompleted) {
             ExecutorService executorService = CHFWBundle.getExecutorService();
             Http2Ready readyThread = new Http2Ready(h2HttpInboundLinkWrap);
@@ -1738,5 +1778,13 @@ public class H2StreamProcessor {
             }
         }
         return count;
+    }
+
+    public int getId() {
+        return myID;
+    }
+
+    public H2HttpInboundLinkWrap getWrappedInboundLink() {
+        return h2HttpInboundLinkWrap;
     }
 }

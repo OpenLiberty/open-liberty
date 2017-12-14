@@ -663,10 +663,10 @@ public class H2InboundLink extends HttpInboundLink {
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "destroying " + stream + ", " + stream.myID);
+                Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
-            if (stream.myID != 0) {
-                stream.h2HttpInboundLinkWrap.destroy(e);
+            if (stream.getId() != 0) {
+                stream.getWrappedInboundLink().destroy(e);
             }
         }
 
@@ -858,14 +858,14 @@ public class H2InboundLink extends HttpInboundLink {
                     stream = streamTable.get(i);
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "close(vc,e): looking at stream: " + stream.myID);
+                        Tr.debug(tc, "close(vc,e): looking at stream: " + stream.getId());
                     }
 
-                    if (stream.myID != 0 && !stream.isHalfClosed() && !stream.isStreamClosed() && highestLocalStreamId > -1) {
+                    if (stream.getId() != 0 && !stream.isHalfClosed() && !stream.isStreamClosed() && highestLocalStreamId > -1) {
                         continue;
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "close(vc,e): stream not ready to close: " + stream.myID + " :close: H2InboundLink hc: " + this.hashCode());
+                            Tr.debug(tc, "close(vc,e): stream not ready to close: " + stream.getId() + " :close: H2InboundLink hc: " + this.hashCode());
                         }
                         return;
                     }
@@ -983,11 +983,11 @@ public class H2InboundLink extends HttpInboundLink {
 
         streamProcessor.setCloseTime(System.nanoTime());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "triggerStreamClose : move stream into close table.  stream-id: " + streamProcessor.myID);
+            Tr.debug(tc, "triggerStreamClose : move stream into close table.  stream-id: " + streamProcessor.getId());
         }
 
-        closeTable.put(streamProcessor.myID, streamProcessor);
-        streamTable.remove(streamProcessor.myID);
+        closeTable.put(streamProcessor.getId(), streamProcessor);
+        streamTable.remove(streamProcessor.getId());
     }
 
     /**

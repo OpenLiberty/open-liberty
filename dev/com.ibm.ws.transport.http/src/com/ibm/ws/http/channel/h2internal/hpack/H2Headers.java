@@ -433,23 +433,6 @@ public class H2Headers {
 
     }
 
-    private static boolean checkIsValidPseudoHeader(H2HeaderField pseudoHeader) throws CompressionException {
-        //If the H2HeaderField being evaluated has an empty value, it is not a valid
-        //pseudo-header.
-        if (!pseudoHeader.getValue().isEmpty()) {
-            //Evaluate if input is a valid request pseudo-header by comparing to the
-            //four request pseudo-header hashes.
-            int hash = pseudoHeader.getNameHash();
-            boolean valid = (hash == HpackConstants.AUTHORITY_HASH || hash == HpackConstants.METHOD_HASH ||
-                             hash == HpackConstants.PATH_HASH || hash == HpackConstants.SCHEME_HASH);
-            if (!valid) {
-                throw new CompressionException("Invalid pseudo-header for decompression context: " + pseudoHeader.toString());
-            }
-            return valid;
-        }
-        throw new CompressionException("Invalid pseudo-header for decompression context: " + pseudoHeader.toString());
-    }
-
     /**
      * Validate a H2HeaderField object
      *
@@ -457,13 +440,21 @@ public class H2Headers {
      * @throws CompressionException if the H2HeaderField is not valid
      */
     private static void checkIsValidH2Header(H2HeaderField header) throws CompressionException {
-        if (header.getName().startsWith(":")) {
-            checkIsValidPseudoHeader(header);
-        }
-        if ("Connection".equalsIgnoreCase(header.getName())) {
-            throw new CompressionException("Invalid Connection header received: " + header.toString());
-        } else if ("TE".equalsIgnoreCase(header.getName()) && !"trailers".equalsIgnoreCase(header.getValue())) {
-            throw new CompressionException("Invalid header: TE header must have value \"trailers\": " + header.toString());
+        if (!header.getName().startsWith(":")) {
+            String headerName = header.getName();
+            String headerValue = header.getValue();
+
+            for (String name : HpackConstants.connectionSpecificHeaderList) {
+                if (name.equalsIgnoreCase(headerName)) {
+                    throw new CompressionException("Invalid Connection header received: " + header.toString());
+                }
+            }
+            if ("Connection".equalsIgnoreCase(headerName) && !"TE".equalsIgnoreCase(headerValue)) {
+                throw new CompressionException("Invalid Connection header received: " + header.toString());
+            }
+            if ("TE".equalsIgnoreCase(headerName) && !"trailers".equalsIgnoreCase(headerValue)) {
+                throw new CompressionException("Invalid header: TE header must have value \"trailers\": " + header.toString());
+            }
         }
     }
 
