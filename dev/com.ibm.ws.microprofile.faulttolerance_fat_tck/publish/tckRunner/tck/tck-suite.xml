@@ -7,12 +7,12 @@
         the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-faulttolerance-TCK" verbose="2" configfailurepolicy="continue" >
+<suite name="microprofile-config-TCK" verbose="2" configfailurepolicy="continue" >
 
-	<test name="microprofile-faulttolerance 1.0 TCK">
-		<packages>
-			<package name="org.eclipse.microprofile.fault.tolerance.tck.*"></package>
-			<package name="org.eclipse.microprofile.*"></package>
-		</packages>
-	</test>
+    <test name="microprofile-config 1.0 TCK">
+        <packages>
+                 <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
+        </package>
+        </packages>
+    </test>
 </suite>
