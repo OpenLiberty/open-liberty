@@ -224,7 +224,7 @@ public class Utils {
 				r = r.replaceAll("\\_","");
 				log("r testing " + r);
 				if (r.equals( jarNameFragment.replaceAll("\\.","") )) {
-					log(jarNameFragment + " JAR found in dir " +  dir + result);
+					log(jarNameFragment + " jar found in dir " +  dir + result);
 					return result;
 				}else {
 					log("match failed");
@@ -241,7 +241,7 @@ public class Utils {
 	 * @param string
 	 */
 	public static void log(String string) {
-		System.out.println("GDH:" + string);
+		System.out.println("TCK: " + string);
 	}
 
 }
