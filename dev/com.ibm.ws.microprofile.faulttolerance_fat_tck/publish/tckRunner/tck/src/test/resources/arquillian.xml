@@ -17,9 +17,9 @@
        <container qualifier="websphere" default="true">
                <configuration>
                        <!-- Each variable used is set in surefire config in running pom.xml -->
-                       <property name="wlpHome">${wlpHome}</property> 
-                       <property name="serverName">${serverName}</property>
-                       <property name="httpPort">${httpPort}</property>
+                       <property name="wlpHome">${wlp}</property> 
+                       <property name="serverName">${tck_server}</property>
+                       <property name="httpPort">${tck_port}</property>
                        <property name="allowConnectingToRunningServer">true</property>
                </configuration>
        </container>
