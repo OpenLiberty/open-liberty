@@ -384,8 +384,8 @@ subprojects {
           }
           contentvalidator(constraint: "disallowed", pattern: "\\{\\d+\\}", loglevel: "warning", message: "variables are disallowed in explanations or useractions") {
               keyfilter {
-                  exclude(name: "*.explanation")
-                  exclude(name: "*.useraction")
+                  include(name: "*.explanation")
+                  include(name: "*.useraction")
               }
           }
           contentvalidator(constraint: "disallowed", pattern: "\\b((WAS)|(TAM)|(WIM)|(WPS)|(eWAS)|(LUW)|(ND)|(MQSeries))\\b", loglevel: "warning", message: "product acronyms are disallowed")
