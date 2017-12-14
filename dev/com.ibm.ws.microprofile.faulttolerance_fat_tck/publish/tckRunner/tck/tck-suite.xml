@@ -7,7 +7,7 @@
         the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-config-TCK" verbose="2" configfailurepolicy="continue" >
+<suite name="microprofile-fault-tolerance-TCK" verbose="2" configfailurepolicy="continue" >
 
     <test name="microprofile-config 1.0 TCK">
         <packages>
