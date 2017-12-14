@@ -13,9 +13,5 @@
 instrument.disabled: true
 
 -buildpath: \
-  com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-  com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-  com.ibm.websphere.javaee.validation.2.0;version=latest,\
   org.hibernate.validator:hibernate-validator;version=6.0.4.Final,\
-  org.hibernate.validator:hibernate-validator-cdi;version=6.0.4.Final,\
-  com.ibm.ws.beanvalidation;version=latest
+  org.hibernate.validator:hibernate-validator-cdi;version=6.0.4.Final

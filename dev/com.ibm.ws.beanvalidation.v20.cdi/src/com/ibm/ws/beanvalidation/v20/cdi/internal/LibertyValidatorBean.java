@@ -26,8 +26,6 @@ import org.hibernate.validator.cdi.HibernateValidator;
 import org.hibernate.validator.cdi.internal.ValidationProviderHelper;
 import org.hibernate.validator.cdi.internal.ValidatorBean;
 
-import com.ibm.ws.beanvalidation.accessor.BeanValidationAccessor;
-
 /**
  * This class is used to extend the Hibernate ValidatorBean for the sole purpose
  * of overriding the create method. Instead of passing in the Validator object
@@ -50,8 +48,7 @@ public class LibertyValidatorBean extends ValidatorBean {
 
     @Override
     public Validator create(CreationalContext<Validator> context) {
-        Validator validator = BeanValidationAccessor.getValidatorFactory().getValidator();
-        return validator;
+        return new LibertyValidatorProxy();
     }
 
     @Override

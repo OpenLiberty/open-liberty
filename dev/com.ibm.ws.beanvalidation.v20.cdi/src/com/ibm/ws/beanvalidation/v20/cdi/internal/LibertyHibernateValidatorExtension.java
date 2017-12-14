@@ -84,21 +84,17 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     }
 
     private ValidatorFactoryBean vfBean;
-    private ValidatorFactoryBean hibernateValidatorFactoryBean;
     private ValidatorBean vBean;
-    private ValidatorBean hibernateValidatorBean;
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscoveryEvent, BeanManager beanManager) {
         if (vfBean == null) {
-            vfBean = hibernateValidatorFactoryBean = new LibertyValidatorFactoryBean();
+            vfBean = new LibertyValidatorFactoryBean();
             afterBeanDiscoveryEvent.addBean(vfBean);
-            afterBeanDiscoveryEvent.addBean(hibernateValidatorFactoryBean);
         }
 
         if (vBean == null) {
-            vBean = hibernateValidatorBean = new LibertyValidatorBean();
+            vBean = new LibertyValidatorBean();
             afterBeanDiscoveryEvent.addBean(vBean);
-            afterBeanDiscoveryEvent.addBean(hibernateValidatorBean);
         }
     }
 
@@ -111,16 +107,15 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
             try {
-                ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                ClassLoader bvalClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
                     @Override
                     public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
+                        return new CreateValidation20ClassLoaderAction(Thread.currentThread().getContextClassLoader(), newClassloaderHint).run();
                     }
 
                 });
 
-                ClassLoader bvalClassLoader = AccessController.doPrivileged(new CreateValidation20ClassLoaderAction(tccl, newClassloaderHint));
                 ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
                 // set the thread context class loader to be used, must be reset in finally block
