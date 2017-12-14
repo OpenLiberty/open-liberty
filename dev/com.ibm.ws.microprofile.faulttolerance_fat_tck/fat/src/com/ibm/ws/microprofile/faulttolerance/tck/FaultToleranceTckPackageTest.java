@@ -32,7 +32,7 @@ public class FaultToleranceTckPackageTest {
     public static void setUp() throws Exception {
         server.startServer();
     }
-
+    
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");

@@ -12,6 +12,7 @@
 	<test name="microprofile-faulttolerance 1.0 TCK">
 		<packages>
 			<package name="org.eclipse.microprofile.fault.tolerance.tck.*"></package>
+			<package name="org.eclipse.microprofile.*"></package>
 		</packages>
 	</test>
 </suite>
