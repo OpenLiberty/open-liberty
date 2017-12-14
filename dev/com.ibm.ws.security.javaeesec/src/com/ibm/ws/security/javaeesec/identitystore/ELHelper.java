@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.el.ELException;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
@@ -88,9 +89,9 @@ class ELHelper {
      *            contained in either the expression or the result.
      * @return True if the expression is an immediate EL expression.
      */
-	@Trivial
+    @Trivial
     static boolean isImmediateExpression(String expression, boolean mask) {
-        final String methodName = "removeBrackets";
+        final String methodName = "isImmediateExpression";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, methodName, new Object[] { (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, mask });
         }
@@ -133,7 +134,9 @@ class ELHelper {
              * Evaluate the EL expression to get the value.
              */
             Object obj = evaluateElExpression(expression);
-            if (obj instanceof Number) {
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + expression + "' for '" + name + "'evaluated to null.");
+            } else if (obj instanceof Number) {
                 result = ((Number) obj).intValue();
                 immediate = isImmediateExpression(expression);
             } else {
@@ -219,26 +222,28 @@ class ELHelper {
      */
     @FFDCIgnore(ELException.class)
     @Trivial
-    static String processString(String name, String value, boolean immediateOnly, boolean mask) {
+    static String processString(String name, String expression, boolean immediateOnly, boolean mask) {
 
         final String methodName = "processString";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, new Object[] { name, (value == null) ? null : mask ? OBFUSCATED_STRING : value, immediateOnly, mask });
+            Tr.entry(tc, methodName, new Object[] { name, (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, immediateOnly, mask });
         }
 
         String result;
         boolean immediate = false;
 
         try {
-            Object obj = evaluateElExpression(value, mask);
-            if (obj instanceof String) {
+            Object obj = evaluateElExpression(expression, mask);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "'evaluated to null.");
+            } else if (obj instanceof String) {
                 result = (String) obj;
-                immediate = isImmediateExpression(value, mask);
+                immediate = isImmediateExpression(expression, mask);
             } else {
                 throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String value.");
             }
         } catch (ELException e) {
-            result = value;
+            result = expression;
             immediate = true;
         }
 
@@ -251,8 +256,106 @@ class ELHelper {
     }
 
     /**
+     * This method will process a configuration value for an String[] setting in
+     * {@link LdapIdentityStoreDefinition} or {@link DatabaseIdentityStoreDefinition}.
+     * It will first check to see if there is an EL expression. It there is, it will return
+     * the evaluated expression; otherwise, it will return the non-EL value.
+     *
+     * @param name The name of the property. Used for error messages.
+     * @param expression The EL expression returned from from the identity store definition.
+     * @param immediateOnly Return null if the value is a deferred EL expression.
+     * @param mask Set whether to mask the expression and result. Useful for when passwords might be
+     *            contained in either the expression or the result.
+     * @return Either the evaluated EL expression or the non-EL value.
+     */
+    @FFDCIgnore(ELException.class)
+    @Trivial
+    static String[] processStringArray(String name, String expression, boolean immediateOnly, boolean mask) {
+
+        final String methodName = "processStringArray";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, new Object[] { name, (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, immediateOnly, mask });
+        }
+
+        String[] result;
+        boolean immediate = false;
+
+        try {
+            Object obj = evaluateElExpression(expression, mask);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "'evaluated to null.");
+            } else if (obj instanceof String[]) {
+                result = (String[]) obj;
+                immediate = isImmediateExpression(expression, mask);
+            } else {
+                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String value.");
+            }
+        } catch (ELException e) {
+            throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String[] value.");
+        }
+
+        String[] finalResult = (immediateOnly && !immediate) ? null : result;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, (finalResult == null) ? null : mask ? OBFUSCATED_STRING : finalResult);
+        }
+
+        return finalResult;
+    }
+
+    /**
+     * This method will process a configuration value for an String[] setting in
+     * {@link LdapIdentityStoreDefinition} or {@link DatabaseIdentityStoreDefinition}.
+     * It will first check to see if there is an EL expression. It there is, it will return
+     * the evaluated expression; otherwise, it will return the non-EL value.
+     *
+     * @param name The name of the property. Used for error messages.
+     * @param expression The EL expression returned from from the identity store definition.
+     * @param immediateOnly Return null if the value is a deferred EL expression.
+     * @param mask Set whether to mask the expression and result. Useful for when passwords might be
+     *            contained in either the expression or the result.
+     * @return Either the evaluated EL expression or the non-EL value.
+     */
+    @FFDCIgnore(ELException.class)
+    @Trivial
+    static Stream<String> processStringStream(String name, String expression, boolean immediateOnly, boolean mask) {
+
+        final String methodName = "processStringStream";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, new Object[] { name, (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, immediateOnly, mask });
+        }
+
+        Stream<String> result;
+        boolean immediate = false;
+
+        try {
+            Object obj = evaluateElExpression(expression, mask);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "'evaluated to null.");
+            } else if (obj instanceof Stream) {
+                result = (Stream<String>) obj;
+                immediate = isImmediateExpression(expression, mask);
+            } else {
+                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a Stream<String> value.");
+            }
+        } catch (ELException e) {
+            throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a Stream<String> value.");
+        }
+
+        Stream<String> finalResult = (immediateOnly && !immediate) ? null : result;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, (finalResult == null) ? null : mask ? OBFUSCATED_STRING : finalResult);
+        }
+
+        return finalResult;
+    }
+
+    /**
      * Validate and return the {@link ValidationType}s for the {@link IdentityStore} from either
      * the EL expression or the direct useFor setting.
+     *
+     * @param useForExpression The EL expression returned from from the identity store definition.
+     * @param useFor The non-EL value.
+     * @param immediateOnly Return null if the value is a deferred EL expression.
      *
      * @return The validated useFor types.
      */

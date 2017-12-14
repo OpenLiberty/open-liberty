@@ -19,8 +19,11 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -28,7 +31,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.security.javaeesec.fat_helper.FATHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.identitystore.LdapIdentityStore;
@@ -104,7 +107,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
 
-        myServer.stopServer();
+        myServer.stopServer("CWWKS1916W");
 
         if (ldapServer != null) {
             try {
@@ -218,30 +221,39 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         return name.getMethodName();
     }
 
+    /**
+     * Verify that the user responses are as expected.
+     *
+     * @param code1 Expected response code for ldapuser1.
+     * @param code2 Expected response code for ldapuser2.
+     * @param code3 Expected response code for ldapuser3.
+     * @param code4 Expected response code for ldapuser4.
+     * @throws Exception If there was an error processing the request.
+     */
     private void verifyAuthorization(int code1, int code2, int code3, int code4) throws Exception {
 
-        /* LDAP_USER1 */
+        /* ldapuser1 */
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER1_UID, LDAP_USER1_PASSWORD, code1);
         if (code1 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + LDAP_USER1_UID, getRemoteUserFound + LDAP_USER1_UID);
         }
 //        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER1_PASSWORD); TODO Uncomment when ApacheDS logs are clean
 
-        /* LDAP_USER2 */
+        /* ldapuser2 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER2_UID, LDAP_USER2_PASSWORD, code2);
         if (code2 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + LDAP_USER2_UID, getRemoteUserFound + LDAP_USER2_UID);
         }
 //        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER2_PASSWORD); TODO Uncomment when ApacheDS logs are clean
 
-        /* LDAP_USER3 */
+        /* ldapuser3 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER3_UID, LDAP_USER3_PASSWORD, code3);
         if (code3 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + LDAP_USER3_UID, getRemoteUserFound + LDAP_USER3_UID);
         }
 //        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER3_PASSWORD); TODO Uncomment when ApacheDS logs are clean
 
-        /* LDAP_USER4 */
+        /* ldapuser4 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER4_UID, LDAP_USER4_PASSWORD, code4);
         if (code4 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + LDAP_USER4_UID, getRemoteUserFound + LDAP_USER4_UID);
@@ -287,7 +299,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      */
     @Test
     @ExpectedFFDC("javax.naming.AuthenticationException")
-    public void bindDN() throws Exception {
+    public void bindDn() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
@@ -295,6 +307,35 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a an bindDn EL expression that resolves to null is handled.
+     * The bindDn will be defaulted to an empty string resulting in an anonymous bind.
+     *
+     * <ul>
+     * <li>ldapuser1 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * <li>ldapuser2 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * <li>ldapuser3 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * <li>ldapuser4 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC("javax.naming.NoPermissionException")
+    public void bindDn_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("bindDn", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDn' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -321,6 +362,35 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a an bindDnPassword EL expression that resolves to null is handled.
+     * The bindDnPassword will be defaulted to an empty string resulting in an anonymous bind.
+     *
+     * <ul>
+     * <li>ldapuser1 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * <li>ldapuser2 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * <li>ldapuser3 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * <li>ldapuser4 - unauthorized (anonymous bind, so no access to search for user)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    public void bindDnPassword_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("bindDnPassword", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(myServer);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDnPassword' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -353,6 +423,36 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
+     * This test will verify that a an callerBaseDn EL expression that resolves to null is handled.
+     * The callerBaseDn will be defaulted to an empty string resulting in an InvalidNameException on search.
+     *
+     * <ul>
+     * <li>ldapuser1 - unauthorized (null callerBaseDn generates non-existent caller DN)</li>
+     * <li>ldapuser2 - unauthorized (null callerBaseDn generates non-existent caller DN)</li>
+     * <li>ldapuser3 - unauthorized (null callerBaseDn generates non-existent caller DN)</li>
+     * <li>ldapuser4 - unauthorized (null callerBaseDn generates non-existent caller DN)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC("javax.naming.InvalidNameException")
+    public void callerBaseDn_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("callerBaseDn", "NULL");
+        overrides.put("callerSearchBase", ""); // Needs to be empty to use callerBaseDn
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerBaseDn' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
      * This test will verify that we can change the callerNameAttribute setting via a deferred EL expression.
      *
      * <ul>
@@ -373,6 +473,34 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a an callerNameAttribute EL expression that resolves to null is handled.
+     * The callerNameAttribute will be defaulted to 'uid'.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized</li>
+     * <li>ldapuser2 - authorized</li>
+     * <li>ldapuser3 - authorized</li>
+     * <li>ldapuser4 - authorized</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void callerNameAttribute_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("callerNameAttribute", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerNameAttribute' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -404,6 +532,35 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
+     * This test will verify that a an callerSearchBase EL expression that resolves to null is handled.
+     * The callerSearchBase will be defaulted to an empty string resulting in InvalidNameException on search.
+     *
+     * <ul>
+     * <li>ldapuser1 - unauthorized (cannot find user with invalid search base)</li>
+     * <li>ldapuser2 - unauthorized (cannot find user with invalid search base)</li>
+     * <li>ldapuser3 - unauthorized (cannot find user with invalid search base)</li>
+     * <li>ldapuser4 - unauthorized (cannot find user with invalid search base)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC("javax.naming.InvalidNameException")
+    public void callerSearchBase_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("callerSearchBase", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchBase' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
      * This test will verify that we can change the callerSearchFilter setting via a deferred EL expression.
      *
      * <ul>
@@ -420,10 +577,38 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("callerSearchFilter", "(objectclass=nosuchclass)");
+        overrides.put("callerSearchFilter", "(&(uid=%s)(objectclass=nosuchclass))");
         updateLdapSettingsBean(overrides);
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a an callerSearchFilter EL expression that resolves to null is handled.
+     * The callerSearchFilter will be defaulted to an empty string which will not match any users.
+     *
+     * <ul>
+     * <li>ldapuser1 - unauthorized</li>
+     * <li>ldapuser2 - unauthorized</li>
+     * <li>ldapuser3 - unauthorized</li>
+     * <li>ldapuser4 - unauthorized</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void callerSearchFilter_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("callerSearchFilter", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchFilter' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -454,6 +639,34 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
+     * This test will verify that a an callerSearchScope EL expression that resolves to null is handled.
+     * The callerSearchScope will be defaulted to SUBTREE.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - unauthorized (user is out of search scope, cannot authenticate)</li>
+     * <li>ldapuser4 - unauthorized (user is out of search scope, cannot authenticate)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void callerSearchScope_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("callerSearchScope", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchScope/callerSearchScopeExpression' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
      * This test will verify that we can change the groupMemberAttribute setting via a deferred EL expression.
      *
      * <ul>
@@ -479,6 +692,34 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
+     * This test will verify that a an groupMemberAttribute EL expression that resolves to null is handled.
+     * The groupMemberAttribute will be defaulted to 'member'.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void groupMemberAttribute_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("groupMemberAttribute", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupMemberAttribute' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
      * This test will verify that we can change the groupMemberOfAttribute setting via a deferred EL expression.
      *
      * <ul>
@@ -491,7 +732,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    public void groupMemberOfAttribute1() throws Exception {
+    public void groupMemberOfAttribute_1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
@@ -518,7 +759,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    public void groupMemberOfAttribute2() throws Exception {
+    public void groupMemberOfAttribute_2() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
@@ -528,6 +769,36 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a an groupMemberOfAttribute EL expression that resolves to null is handled.
+     * The groupMemberOfAttribute will be defaulted to 'memberOf'.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void groupMemberOfAttribute_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("groupMemberOfAttribute", "NULL");
+        overrides.put("groupSearchBase", ""); // Either groupSearchBase or groupSearchFilter needs to be empty to get into memberOf checks
+        overrides.put("groupSearchFilter", ""); // Either groupSearchBase or groupSearchFilter needs to be empty to get into memberOf checks
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupMemberOfAttribute' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -545,7 +816,6 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @Ignore("Enable this test when the groupNameAttribute is used in the LdapIdentityStore")
     public void groupNameAttribute() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -553,10 +823,35 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("groupNameAttribute", "badgroupnameattribute");
         updateLdapSettingsBean(overrides);
 
-        /*
-         * TODO We don't use groupNameAttribute for anything...
-         */
-        verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_FORBIDDEN, SC_OK);
+        verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a groupNameAttribute EL expression that resolves to null is handled.
+     * The groupNameAttribute will be defaulted to 'cn'.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - unauthorized (group membership not captured due to bad groupNameAttribute)</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - unauthorized (group membership not captured due to bad groupNameAttribute)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void groupNameAttribute_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("groupNameAttribute", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupNameAttribute' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -588,6 +883,34 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
+     * This test will verify that a groupSearchBase EL expression that resolves to null is handled.
+     * The groupSearchBase will be defaulted to an empty string.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - unauthorized (group membership not captured due to bad groupSearchBase)</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - unauthorized (group membership not captured due to bad groupSearchBase)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void groupSearchBase_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("groupSearchBase", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchBase' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
      * This test will verify that we can change the groupSearchFilter setting via a deferred EL expression.
      *
      * <ul>
@@ -608,6 +931,34 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a groupSearchFilter EL expression that resolves to null is handled.
+     * The groupSearchFilter will be defaulted to an empty string.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - unauthorized (group membership not captured due to bad groupSearchFilter)</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - unauthorized (group membership not captured due to bad groupSearchFilter)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void groupSearchFilter_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("groupSearchFilter", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchFilter' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -638,6 +989,96 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
+     * This test will verify that a groupSearchScope EL expression that resolves to null is handled.
+     * The groupSearchScope will be defaulted to SUBTREE.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void groupSearchScope_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("groupSearchScope", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'groupSearchScope/groupSearchScopeExpression' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that we can change the priority setting via a deferred EL expression.
+     *
+     * <ul>
+     * <li>DB_USER1 - authorized</li>
+     * <li>DB_USER2 - authorized</li>
+     * <li>DB_USER3 - unauthorized (not authorized by user or group)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void priority() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("priority", "100");
+        updateLdapSettingsBean(overrides);
+
+        /*
+         * TODO We reload the applications since Java 8 doesn't work with injected entry/exit trace yet.
+         * When it does, we can remove this.
+         */
+        FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));;
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInTrace("IdentityStore from module BeanManager.*priority : 100");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a priority EL expression that resolves to null is handled.
+     * The priority will be defaulted to 80.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void priority_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("priority", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        /*
+         * TODO We reload the applications since Java 8 doesn't work with injected entry/exit trace yet.
+         * When it does, we can remove this.
+         */
+        FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));;
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'priority/priorityExpression' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
      * This test will verify that we can change the readTimeout setting via a deferred EL expression.
      *
      * <ul>
@@ -657,7 +1098,37 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("readTimeout", "100");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK); // TODO Maybe need to check logs for timeout value?
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInTrace("searchScope: 2, timeLimit: 100");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a readTimeout EL expression that resolves to null is handled.
+     * The readTimeout will be defaulted to 0.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void readTimeout_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("readTimeout", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'readTimeout/readTimeoutExpression' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -689,19 +1160,48 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
-     * This test will verify that we can change the url setting via a deferred EL expression.
+     * This test will verify that a url EL expression that resolves to null is handled.
+     * The url will be defaulted to an empty string resulting in failure to connect.
      *
      * <ul>
-     * <li>ldapuser1 - authorized</li>
-     * <li>ldapuser2 - unauthorized (identity store does't support PROVIDE_GROUPS)</li>
-     * <li>ldapuser3 - authorized</li>
-     * <li>ldapuser4 - unauthorized (identity store does't support PROVIDE_GROUPS)</li>
+     * <li>ldapuser1 - unauthorized (cannot connect to LDAP server to authenticate)</li>
+     * <li>ldapuser2 - unauthorized (cannot connect to LDAP server to authenticate)</li>
+     * <li>ldapuser3 - unauthorized (cannot connect to LDAP server to authenticate)</li>
+     * <li>ldapuser4 - unauthorized (cannot connect to LDAP server to authenticate)</li>
      * </ul>
      *
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    public void useFor1() throws Exception {
+    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    public void url_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("url", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'url' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that we can change the useFor setting via a deferred EL expression.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized</li>
+     * <li>ldapuser2 - unauthorized (identity store doesn't support PROVIDE_GROUPS)</li>
+     * <li>ldapuser3 - authorized</li>
+     * <li>ldapuser4 - unauthorized (identity store doesn't support PROVIDE_GROUPS)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void useFor_1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
@@ -714,27 +1214,56 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     }
 
     /**
-     * This test will verify that we can change the url setting via a deferred EL expression.
+     * This test will verify that we can change the useFor setting via a deferred EL expression.
      *
      * <ul>
-     * <li>ldapuser1 - unauthorized (identity store does't support VALIDATE)</li>
-     * <li>ldapuser2 - unauthorized (identity store does't support PROVIDE_GROUPS)</li>
-     * <li>ldapuser3 - unauthorized (identity store does't support VALIDATE)</li>
-     * <li>ldapuser4 - unauthorized (identity store does't support PROVIDE_GROUPS)</li>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
      * </ul>
      *
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
-    public void useFor2() throws Exception {
+    public void useFor_2() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
         overrides.put("useFor", "");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a useFor EL expression that resolves to null is handled.
+     * The useFor will be defaulted to both VALIDATE and PROVIDE_GROUPS.
+     *
+     * <ul>
+     * <li>ldapuser1 - authorized via user</li>
+     * <li>ldapuser2 - authorized via group</li>
+     * <li>ldapuser3 - authorized via user</li>
+     * <li>ldapuser4 - authorized via group</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    public void useFor_NULL() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put("useFor", "NULL");
+        updateLdapSettingsBean(overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -758,10 +1287,11 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         props.put("callerSearchScope", "SUBTREE");
         props.put("groupMemberAttribute", "member");
         props.put("groupMemberOfAttribute", "");
-        props.put("groupNameAttribute", "dn");
+        props.put("groupNameAttribute", "cn");
         props.put("groupSearchBase", LDAP_ROOT_PARTITION);
         props.put("groupSearchFilter", "(objectclass=groupofnames)");
         props.put("groupSearchScope", "SUBTREE");
+        props.put("priority", "0");
         props.put("readTimeout", "0");
         props.put("url", "ldap://localhost:10389");
         props.put("useFor", "VALIDATE PROVIDE_GROUPS");

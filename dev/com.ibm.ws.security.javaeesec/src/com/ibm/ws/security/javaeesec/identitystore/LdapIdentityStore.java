@@ -82,6 +82,10 @@ public class LdapIdentityStore implements IdentityStore {
     private DirContext bind(String bindDn, ProtectedString bindPw) throws NamingException {
         Hashtable<Object, Object> env = new Hashtable<Object, Object>();
         String url = this.idStoreDefinition.getUrl();
+        if (url == null || url.isEmpty()) {
+            throw new IllegalArgumentException("An empty LDAP URL is invalid.");
+        }
+
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, url);
 
@@ -94,7 +98,7 @@ public class LdapIdentityStore implements IdentityStore {
         /*
          * Add credentials.
          */
-        if (bindDn != null && !bindDn.isEmpty()) {
+        if (bindDn != null && !bindDn.isEmpty() && bindPw != null) {
 
             /*
              * Support encoded passwords.
@@ -359,25 +363,44 @@ public class LdapIdentityStore implements IdentityStore {
      */
     private Set<String> getGroupsByMember(DirContext context, String callerDn, String groupSearchBase, String groupSearchFilter) throws NamingException {
 
-        String[] attrIds = { idStoreDefinition.getGroupNameAttribute() };
+        String groupNameAttribute = idStoreDefinition.getGroupNameAttribute();
+
+        String[] attrIds = { groupNameAttribute };
         long limit = Long.valueOf(idStoreDefinition.getMaxResults());
         int timeOut = idStoreDefinition.getReadTimeout();
         int scope = getSearchScope(idStoreDefinition.getGroupSearchScope());
 
         SearchControls controls = new SearchControls(scope, limit, timeOut, attrIds, false, false);
         String filter = "(&" + groupSearchFilter + "(" + idStoreDefinition.getGroupMemberAttribute() + "=" + callerDn + "))";
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JNDI_CALL search", new Object[] { groupSearchBase, filter, printControls(controls) });
         }
         NamingEnumeration<SearchResult> ne = context.search(new LdapName(groupSearchBase), filter, controls);
-        Set<String> groups = new HashSet<String>();
+
+        Set<String> groupNames = new HashSet<String>();
         while (ne.hasMoreElements()) {
-            groups.add(ne.nextElement().getNameInNamespace());
+            SearchResult sr = ne.nextElement();
+            String groupDn = sr.getNameInNamespace();
+            if (groupNameAttribute.equalsIgnoreCase("dn")) {
+                groupNames.add(groupDn);
+            } else {
+                Attribute groupNameAttr = sr.getAttributes().get(groupNameAttribute);
+                if (groupNameAttr == null) {
+                    Tr.warning(tc, "Group, " + groupDn + ", does not have attribute: " + groupNameAttribute);
+                    continue;
+                }
+                NamingEnumeration<?> ne2 = groupNameAttr.getAll();
+                if (ne2.hasMoreElements()) {
+                    groupNames.add((String) ne2.nextElement());
+                }
+            }
         }
+
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "getGroupsByMember", groups);
+            Tr.debug(tc, "getGroupsByMember", groupNames);
         }
-        return groups;
+        return groupNames;
     }
 
     /**
@@ -427,13 +450,9 @@ public class LdapIdentityStore implements IdentityStore {
                 continue;
             }
             NamingEnumeration<?> ne = groupNameAttr.getAll();
-            String groupNameAttributeValue = null;
-            while (ne.hasMoreElements()) {
-                groupNameAttributeValue = (String) ne.nextElement();
+            if (ne.hasMoreElements()) {
+                groupNames.add((String) ne.nextElement());
             }
-
-            groupNames.add(groupNameAttributeValue);
-
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "getGroupsByMembership", groupNames);
