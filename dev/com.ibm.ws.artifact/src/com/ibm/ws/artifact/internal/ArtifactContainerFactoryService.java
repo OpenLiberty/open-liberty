@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -38,10 +39,10 @@ import com.ibm.wsspi.artifact.factory.contributor.ArtifactContainerFactoryContri
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSetMap;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
-@Component(xmlns="http://felix.apache.org/xmlns/scr/v1.2.0-felix",
-immediate = true, 
-configurationPolicy = ConfigurationPolicy.IGNORE, 
-property = { "service.vendor=IBM" })
+@Component(immediate = true,
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           property = { "service.vendor=IBM" })
+@DSExt.ConfigurableServiceProperties
 public class ArtifactContainerFactoryService implements ArtifactContainerFactory {
 
     /**  */

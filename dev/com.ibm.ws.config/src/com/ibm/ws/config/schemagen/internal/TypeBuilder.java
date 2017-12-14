@@ -175,7 +175,10 @@ class TypeBuilder {
         buildTypes(metatype, metatype.getFactoryPids(), true);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Currently processing metatype from bundle " + metatype.getBundle().getSymbolicName() + "_" + metatype.getBundle().getVersion());
+            Bundle mb = metatype.getBundle();
+            if (mb != null) {
+                Tr.debug(tc, "Currently processing metatype from bundle " + mb.getSymbolicName() + "_" + mb.getVersion());
+            }
             Tr.debug(tc, "Pids processed: " + Arrays.toString(metatype.getPids()));
             Tr.debug(tc, "Factory Pids processed: " + Arrays.toString(metatype.getFactoryPids()));
         }
