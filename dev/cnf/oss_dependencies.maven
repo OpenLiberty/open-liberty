@@ -164,8 +164,8 @@ org.eclipse.jetty:jetty-websocket:8.2.0.v20160908
 org.eclipse.jetty.websocket:websocket-api:9.4.7.RC0
 org.eclipse.jetty.websocket:websocket-client:9.4.7.RC0
 org.eclipse.jetty.websocket:websocket-common:9.4.7.RC0
-org.eclipse.microprofile.config:microprofile-config-api:1.0
 org.eclipse.microprofile.config:microprofile-config-api:1.1
+org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0
 org.glassfish:javax.json:1.0.4
 org.glassfish:javax.json:1.1.2
