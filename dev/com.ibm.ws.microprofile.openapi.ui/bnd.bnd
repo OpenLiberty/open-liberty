@@ -1,0 +1,14 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: OpenAPI UI
+Bundle-SymbolicName: com.ibm.ws.microprofile.openapi.ui
+Bundle-Description: OpenAPI User Interface, version ${bVersion}
+
+Web-ContextPath: /api/explorer
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+Include-Resource: \
+  WEB-INF=resources/WEB-INF, \
+  resources/WEB-CONTENT
