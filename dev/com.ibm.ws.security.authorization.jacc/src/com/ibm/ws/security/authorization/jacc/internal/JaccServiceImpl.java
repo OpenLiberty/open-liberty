@@ -13,6 +13,7 @@ package com.ibm.ws.security.authorization.jacc.internal;
 import java.security.AccessController;
 import java.security.Policy;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import javax.security.auth.Subject;
 import javax.security.jacc.EJBMethodPermission;
 import javax.security.jacc.EJBRoleRefPermission;
 import javax.security.jacc.PolicyConfigurationFactory;
+import javax.security.jacc.PolicyContext;
 import javax.security.jacc.WebResourcePermission;
 import javax.security.jacc.WebRoleRefPermission;
 import javax.security.jacc.WebUserDataPermission;
@@ -527,4 +529,20 @@ public class JaccServiceImpl implements JaccService {
         }
     }
 
+    @Override
+    public void resetPolicyContextHandlerInfo() {
+        try {
+            AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() {
+                    // resetting the handler info as per spec..
+                    PolicyContext.setHandlerData(null);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception when resetting setHandlerData. Ignoring.. " + e.getException());
+        }
+    }
 }
