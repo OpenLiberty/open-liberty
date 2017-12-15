@@ -22,6 +22,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.ibm.websphere.ras.Tr;
@@ -46,6 +48,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     public static final String SERVER_SPAN_PROP_ID = OpentracingContainerFilter.class.getName() + ".Span";
 
     public static final String SERVER_SPAN_SKIPPED_ID = OpentracingContainerFilter.class.getName() + ".Skipped";
+
+    @Context
+    private ResourceInfo resourceInfo;
 
     /** {@inheritDoc} */
     @Override
@@ -82,7 +87,14 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         boolean process = true;
 
         if (process) {
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(incomingURL);
+            // "The default operation name of the new Span for the incoming request is
+            // <HTTP method>:<package name>.<class name>.<method name>"
+            // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#server-span-name
+            String operationName = incomingRequestContext.getMethod() + ":"
+                                   + resourceInfo.getResourceClass().getName() + "."
+                                   + resourceInfo.getResourceMethod().getName();
+            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
+
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
             spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), incomingRequestContext.getMethod());
