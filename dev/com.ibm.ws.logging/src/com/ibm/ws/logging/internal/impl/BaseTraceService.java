@@ -522,24 +522,28 @@ public class BaseTraceService implements TrService {
          * The second time the counter increments is the second pass-through due
          * to trace emitted. We do not want any more pass-throughs.
          */
-        if (!(counter.incrementCount() > 2)) {
-            if (logRecord != null) {
-                Level level = logRecord.getLevel();
-                int levelValue = level.intValue();
-                if (levelValue < Level.INFO.intValue()) {
-                    String levelName = level.getName();
-                    if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
-                        WsTraceRouter internalTrRouter = internalTraceRouter.get();
-                        if (internalTrRouter != null) {
-                            retMe &= internalTrRouter.route(routedTrace);
-                        } else {
-                            earlierTraces.add(routedTrace);
+        try {
+            if (!(counter.incrementCount() > 2)) {
+                if (logRecord != null) {
+                    Level level = logRecord.getLevel();
+                    int levelValue = level.intValue();
+                    if (levelValue < Level.INFO.intValue()) {
+                        String levelName = level.getName();
+                        if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                            WsTraceRouter internalTrRouter = internalTraceRouter.get();
+                            if (internalTrRouter != null) {
+                                retMe &= internalTrRouter.route(routedTrace);
+                            } else {
+                                earlierTraces.add(routedTrace);
+                            }
                         }
                     }
                 }
             }
+        } finally {
+            counter.decrementCount();
         }
-        counter.decrementCount();
+
         return retMe;
     }
 

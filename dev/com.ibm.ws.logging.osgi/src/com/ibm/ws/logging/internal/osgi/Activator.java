@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponentChangeListener;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
+import com.ibm.wsspi.collector.manager.Source;
 
 /**
  * Activator for the RAS/FFDC bundle.
@@ -116,7 +117,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         msgRouter = new MessageRouterConfigurator(context);
         traceRouter = new TraceRouterConfigurator(context);
         
-        //collectorMgrPipeConfigurator = new CollectorManagerPipelineConfigurator(context);
+        collectorMgrPipeConfigurator = new CollectorManagerPipelineConfigurator(context);
     }
 
     /**

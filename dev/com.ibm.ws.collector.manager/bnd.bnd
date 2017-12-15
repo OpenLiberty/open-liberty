@@ -13,10 +13,7 @@ Export-Package: \
 	com.ibm.wsspi.collector.manager,\
 	com.ibm.ws.health.center.data,\
 	com.ibm.ws.logging.ffdc.source,\
-	com.ibm.ws.logging.source,\
-	com.ibm.ws.collector.manager.buffer,\
-	com.ibm.ws.http.logging.source, \
-    com.ibm.ws.logging.collector
+	com.ibm.ws.http.logging.source
 
 Import-Package: com.ibm.ejs.ras, \
                 com.ibm.websphere.ras, \
@@ -28,17 +25,16 @@ Import-Package: com.ibm.ejs.ras, \
                 org.osgi.framework, \
                 javax.management, \
                 com.ibm.ws.logging, \
+                com.ibm.ws.logging.source, \
                 com.ibm.ws.http.logging.data, \
+                com.ibm.ws.health.center.data, \
                 com.ibm.ws.logging.internal, \
+                com.ibm.wsspi.collector.manager, \
+                com.ibm.ws.collector.manager.buffer, \
                 com.ibm.websphere.logging, \
                 com.ibm.tools.attach, \
                 org.osgi.service.cm, \
-                com.ibm.wsspi.logging, \
-                com.ibm.wsspi.http.logging, \
-                com.ibm.wsspi.http.channel, \
-                com.ibm.wsspi.genericbnf, \
-                com.ibm.ws.logging.utils, \
-                com.ibm.ws.logging.synch
+                com.ibm.wsspi.logging
 
 Service-Component:\
     com.ibm.ws.collector.manager; \
@@ -56,21 +52,6 @@ Service-Component:\
         implementation:=com.ibm.ws.logging.ffdc.source.FFDCSource;\
         provide:=com.ibm.wsspi.collector.manager.Source; \
         bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.ffdc.source.ffdcsource)'; \
-        properties:="service.vendor=IBM", \
-	 com.ibm.ws.logging.source.message;\
-        implementation:=com.ibm.ws.logging.source.LogSource;\
-        provide:='com.ibm.wsspi.collector.manager.Source,com.ibm.ws.logging.WsLogHandler'; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.source.message)'; \
-        properties:='service.vendor=IBM,id=ANALYTICSLOGSOURCE', \
-     com.ibm.ws.logging.source.trace;\
-        implementation:=com.ibm.ws.logging.source.TraceSource;\
-        provide:='com.ibm.wsspi.collector.manager.Source,com.ibm.ws.logging.WsTraceHandler'; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.source.trace)'; \
-        properties:='service.vendor=IBM,id=ANALYTICSTRACESOURCE', \
-    com.ibm.ws.http.logging.source.accesslog;\
-        implementation:=com.ibm.ws.http.logging.source.AccessLogSource;\
-        provide:=com.ibm.wsspi.collector.manager.Source; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.http.logging.source.accesslog)'; \
         properties:="service.vendor=IBM"
 
 	

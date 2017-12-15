@@ -21,13 +21,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Handler;
-import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class BufferManagerImpl extends BufferManager {
 
 	private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
 
-	private Set<SyncrhonousHandler> synchronizedHandlerSet = new HashSet<SyncrhonousHandler>();
+	private Set<SynchronousHandler> synchronizedHandlerSet = new HashSet<SynchronousHandler>();
 
 	private final String sourceId;
 	/* Map to keep track of the next event for a handler */
@@ -45,7 +45,7 @@ public class BufferManagerImpl extends BufferManager {
 		 * Check if we have any synchronized handlers, and write directly to them
 		 */
 		if (!synchronizedHandlerSet.isEmpty()) {
-			for (SyncrhonousHandler synchronizedHandler : synchronizedHandlerSet) {
+			for (SynchronousHandler synchronizedHandler : synchronizedHandlerSet) {
 				synchronizedHandler.synchronousWrite(event);
 			}
 		}
@@ -106,11 +106,11 @@ public class BufferManagerImpl extends BufferManager {
 		handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
 	}
 
-	public void addSyncHandler(SyncrhonousHandler syncHandler) {
+	public void addSyncHandler(SynchronousHandler syncHandler) {
 		synchronizedHandlerSet.add(syncHandler);
 	}
 	
-	public void removeSyncHandler(SyncrhonousHandler syncHandler) {
+	public void removeSyncHandler(SynchronousHandler syncHandler) {
 		synchronizedHandlerSet.remove(syncHandler);
 	}
 
