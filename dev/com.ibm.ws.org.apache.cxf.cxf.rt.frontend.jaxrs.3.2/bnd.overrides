@@ -1,0 +1,51 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2
+
+Bundle-Activator: com.ibm.ws.jaxrs21.rt.frontend.jaxrs.NoOpActivator
+
+-dsannotations: com.ibm.ws.jaxrs21.component.*
+
+Import-Package: \
+  !org.apache.aries.*,\
+  !org.springframework.*,\
+  !org.osgi.service.blueprint.*,\
+  !org.apache.cxf.configuration.blueprint,\
+  !org.apache.cxf.configuration.spring,\
+  javax.tools;resolution:=optional,\
+  javax.validation;resolution:=optional,\
+  com.ibm.json.java,\
+  *
+
+exportVer=3.2.1
+
+Export-Package: com.ibm.ws.jaxrs20.cache,\
+  org.apache.cxf.jaxrs;version=${exportVer},\
+  org.apache.cxf.jaxrs.ext;version=${exportVer},\
+  org.apache.cxf.jaxrs.ext.multipart;version=${exportVer},\
+  org.apache.cxf.jaxrs.ext.xml;version=${exportVer},\
+  org.apache.cxf.jaxrs.impl;version=${exportVer},\
+  org.apache.cxf.jaxrs.impl.tl;version=${exportVer},\
+  org.apache.cxf.jaxrs.interceptor;version=${exportVer},\
+  org.apache.cxf.jaxrs.lifecycle;version=${exportVer},\
+  org.apache.cxf.jaxrs.model;version=${exportVer},\
+  org.apache.cxf.jaxrs.model.doc;version=${exportVer},\
+  org.apache.cxf.jaxrs.provider;version=${exportVer},\
+  org.apache.cxf.jaxrs.utils;version=${exportVer},\
+  org.apache.cxf.jaxrs.utils.schemas;version=${exportVer},\
+  com.ibm.websphere.jaxrs20.multipart;version=1.1.0,\
+  com.ibm.ws.jaxrs20,\
+  com.ibm.ws.jaxrs20.api;provide=true,\
+  com.ibm.ws.jaxrs20.bus,\
+  com.ibm.ws.jaxrs20.endpoint,\
+  com.ibm.ws.jaxrs20.injection,\
+  com.ibm.ws.jaxrs20.injection.metadata,\
+  com.ibm.ws.jaxrs20.metadata,\
+  com.ibm.ws.jaxrs20.metadata.builder,\
+  com.ibm.ws.jaxrs20.providers.multipart,\
+  com.ibm.ws.jaxrs20.support,\
+  com.ibm.ws.jaxrs20.utils,\
+  com.ibm.ws.jaxrs21.component,\
+  com.ibm.ws.jaxrs21.threading
+  

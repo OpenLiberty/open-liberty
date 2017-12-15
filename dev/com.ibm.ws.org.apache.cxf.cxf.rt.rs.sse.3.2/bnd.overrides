@@ -1,0 +1,17 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2
+
+exportVer=3.2.1
+
+Import-Package: \
+  !org.atmosphere.*,\
+  !org.apache.cxf.cdi.extension,\
+  *
+
+Export-Package: \
+  org.apache.cxf.transport.sse;version=${exportVer},\
+  org.apache.cxf.jaxrs.sse;version=${exportVer},\
+  org.apache.cxf.jaxrs.sse.cdi;version=${exportVer},\
+  org.apache.cxf.jaxrs.sse.client;version=${exportVer};thread-context=true

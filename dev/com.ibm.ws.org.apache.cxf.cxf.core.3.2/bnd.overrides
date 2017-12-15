@@ -1,0 +1,169 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.core.3.2
+
+Bundle-Activator: com.ibm.ws.jaxrs21.cxf.core.NoOpActivator
+
+exportVer=3.2.1
+
+#Export-Package: org.apache.cxf,\
+#  org.apache.cxf.attachment,\
+#  org.apache.cxf.common.classloader,
+#  org.apache.cxf.common.i18n
+
+Export-Package: \
+  com.ibm.ws.jaxrs21.cxf.core,\
+  org.apache.cxf;version=${exportVer},\
+  org.apache.cxf.annotations;version=${exportVer},\
+  org.apache.cxf.attachment;version=${exportVer},\
+  org.apache.cxf.binding;version=${exportVer},\
+  org.apache.cxf.bus;version=${exportVer},\
+  org.apache.cxf.bus.blueprint;version=${exportVer},\
+  org.apache.cxf.bus.extension;version=${exportVer},\
+  org.apache.cxf.bus.managers;version=${exportVer},\
+  org.apache.cxf.bus.osgi;version=${exportVer},\
+  org.apache.cxf.bus.resource;version=${exportVer},\
+  org.apache.cxf.bus.spring;version=${exportVer},\
+  org.apache.cxf.buslifecycle;version=${exportVer},\
+  org.apache.cxf.catalog;version=${exportVer},\
+  org.apache.cxf.common;version=${exportVer},\
+  org.apache.cxf.common.annotation;version=${exportVer},\
+  org.apache.cxf.common.classloader;version=${exportVer},\
+  org.apache.cxf.common.i18n;version=${exportVer},\
+  org.apache.cxf.common.injection;version=${exportVer},\
+  org.apache.cxf.common.jaxb;version=${exportVer},\
+  org.apache.cxf.common.logging;version=${exportVer},\
+  org.apache.cxf.common.security;version=${exportVer},\
+  org.apache.cxf.common.util;version=${exportVer},\
+  org.apache.cxf.common.xmlschema;version=${exportVer},\
+  org.apache.cxf.configuration;version=${exportVer},\
+  org.apache.cxf.configuration.blueprint;version=${exportVer},\
+  org.apache.cxf.configuration.jsse;version=${exportVer},\
+  org.apache.cxf.configuration.security;version=${exportVer},\
+  org.apache.cxf.configuration.spring;version=${exportVer},\
+  org.apache.cxf.continuations;version=${exportVer},\
+  org.apache.cxf.databinding;version=${exportVer},\
+  org.apache.cxf.databinding.source;version=${exportVer},\
+  org.apache.cxf.databinding.source.mime;version=${exportVer},\
+  org.apache.cxf.databinding.stax;version=${exportVer},\
+  org.apache.cxf.endpoint;version=${exportVer},\
+  org.apache.cxf.extension;version=${exportVer},\
+  org.apache.cxf.feature;version=${exportVer},\
+  org.apache.cxf.feature.transform;version=${exportVer},\
+  org.apache.cxf.feature.validation;version=${exportVer},\
+  org.apache.cxf.headers;version=${exportVer},\
+  org.apache.cxf.helpers;version=${exportVer},\
+  org.apache.cxf.interceptor;version=${exportVer},\
+  org.apache.cxf.interceptor.security;version=${exportVer},\
+  org.apache.cxf.interceptor.security.callback;version=${exportVer},\
+  org.apache.cxf.interceptor.transform;version=${exportVer},\
+  org.apache.cxf.io;version=${exportVer},\
+  org.apache.cxf.logging;version=${exportVer},\
+  org.apache.cxf.management;version=${exportVer},\
+  org.apache.cxf.management.annotation;version=${exportVer},\
+  org.apache.cxf.message;version=${exportVer},\
+  org.apache.cxf.phase;version=${exportVer},\
+  org.apache.cxf.policy;version=${exportVer},\
+  org.apache.cxf.resource;version=${exportVer},\
+  org.apache.cxf.security;version=${exportVer},\
+  org.apache.cxf.security.claims.authorization;version=${exportVer},\
+  org.apache.cxf.security.transport;version=${exportVer},\
+  org.apache.cxf.service;version=${exportVer},\
+  org.apache.cxf.service.factory;version=${exportVer},\
+  org.apache.cxf.service.invoker;version=${exportVer},\
+  org.apache.cxf.service.invoker.spring;version=${exportVer},\
+  org.apache.cxf.service.model;version=${exportVer},\
+  org.apache.cxf.staxutils;version=${exportVer},\
+  org.apache.cxf.staxutils.transform;version=${exportVer},\
+  org.apache.cxf.staxutils.validation;version=${exportVer},\
+  org.apache.cxf.transport;version=${exportVer},\
+  org.apache.cxf.transport.common.gzip;version=${exportVer},\
+  org.apache.cxf.validation;version=${exportVer},\
+  org.apache.cxf.version;version=${exportVer},\
+  org.apache.cxf.workqueue;version=${exportVer},\
+  org.apache.cxf.ws.addressing;version=${exportVer},\
+  org.apache.cxf.ws.addressing.v200403;version=${exportVer},\
+  org.apache.cxf.ws.addressing.v200408;version=${exportVer},\
+  org.apache.cxf.ws.addressing.wsdl;version=${exportVer},\
+  org.apache.cxf.wsdl.http;version=${exportVer}
+
+Import-Package: \
+  !com.ctc.wstx.*,\
+  !org.codehaus.stax2.*,\
+  !com.sun.msv.*,\
+  !com.sun.xml.bind.marshaller,\
+  !com.sun.xml.fastinfoset.stax.*,\
+  !org.apache.log4j.*,\
+  !net.sf.cglib.proxy.*,\
+  !org.springframework.*,\
+  !javax.validation.*, \
+  !org.apache.aries.*,\
+  !org.osgi.service.blueprint.*,\
+  *
+  
+# !com.wordnik.swagger.jaxrs.config, \
+# !com.wordnik.swagger.jaxrs.listing, \
+# com.ibm.websphere.jaxrs20.multipart, \
+# !sun.reflect.generics.reflectiveObjects, \
+# !javax.cache.*, \
+# javax.ws.rs.*, \
+# junit.framework.*;resolution:=optional, \
+# org.apache.xml.resolver.*;resolution:=optional, \
+# !org.junit.*;resolution:=optional, \
+# !org.apache.velocity.*, \
+# org.objectweb.asm.*;resolution:=optional, \
+# org.slf4j.*;resolution:=optional;version="[1.5,2)", \
+# org.osgi.framework.*, \
+# org.apache.neethi;resolution:=optional, \
+# org.apache.commons.logging.*;resolution:=optional, \
+# javax.activation, \
+# javax.mail;version="[0.0,2)", \
+# javax.annotation;version="[1.2,2)", \
+# javax.xml.stream.*, \
+# !com.sun.xml.fastinfoset.stax.*, \
+# !javax.xml.ws, \
+# javax.xml.namespace;resolution:=optional, \
+# javax.servlet.*;resolution:=optional;version="[0.0,4)", \
+# javax.xml.ws.*;version="[2.2,3)", \
+# javax.servlet.*;resolution:=optional;version="[0.0,4)", \
+# com.ibm.wsspi.classloading, \
+# com.ibm.websphere.ras, \
+# com.ibm.websphere.ras.annotation, \
+# com.ibm.ws.ffdc, \
+# com.ibm.ws.webcontainer.extension, \
+# com.ibm.ws.webcontainer.osgi, \
+# com.ibm.websphere.security, \
+# 
+#
+# 
+# 
+# !org.codehaus.stax2.*, \
+# 
+# !org.apache.xerces.dom, \
+# !org.apache.xerces.*, \
+# !com.ibm.wsdl.util.xml, \
+# 
+# 
+# !org.apache.xerces.dom, \
+# !com.sun.tools.xjc.reader.internalizer, \
+# !org.osgi.service.blueprint.*, \
+# !org.apache.xerces.dom, \
+# !org.apache.xerces.*, \
+# !org.apache.cxf.ws.policy.*, \
+# !javax.wsdl.*, \
+# !org.apache.cxf.wsdl.*, \
+# !org.joda.time.*, \
+# !javax.xml.bind.*, \
+# com.ibm.json.xml, \
+# com.ibm.json.java, \
+# !org.osgi.service.http.*, \
+# org.qi4j.*;resolution:=optional, \
+# javax.enterprise.context.*;resolution:=optional, \
+# javax.enterprise.event.*;resolution:=optional, \
+# javax.enterprise.inject.*;resolution:=optional, \
+# javax.enterprise.util.*;resolution:=optional, \
+# javax.inject.*;resolution:=optional, \
+# !org.atmosphere.*, \
+# !org.apache.cxf.cdi.*, \
+# *
