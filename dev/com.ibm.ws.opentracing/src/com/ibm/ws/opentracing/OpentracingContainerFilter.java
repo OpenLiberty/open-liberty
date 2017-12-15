@@ -11,6 +11,7 @@
 package com.ibm.ws.opentracing;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -36,8 +37,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
+import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 
 /**
@@ -91,6 +92,18 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
         boolean process = true;
 
+        Annotation[] annotations = resourceInfo.getResourceMethod().getAnnotations();
+        for (Annotation anno : annotations) {
+            String processing = anno.toString();
+            if (processing.contains("Traced(value=")) {
+                if (processing.contains("value=true")) {
+                    System.out.println("BB - Annotated method Traced found and passed to interceptor - incoming");
+                    return;
+                }
+            }
+
+        }
+
         if (process) {
             // "The default operation name of the new Span for the incoming request is
             // <HTTP method>:<package name>.<class name>.<method name>"
@@ -132,6 +145,18 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     public void filter(ContainerRequestContext incomingRequestContext,
                        ContainerResponseContext outgoingResponseContext) throws IOException {
         String methodName = "filter(outgoing)";
+
+        Annotation[] annotations = resourceInfo.getResourceMethod().getAnnotations();
+        for (Annotation anno : annotations) {
+            String processing = anno.toString();
+            if (processing.contains("Traced(value=")) {
+                if (processing.contains("value=true")) {
+                    System.out.println("BB - Annotated method Traced found and passed to interceptor - incoming");
+                    return;
+                }
+            }
+
+        }
 
         if ((Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
