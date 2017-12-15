@@ -19,7 +19,7 @@ public interface JaccService {
 
     /**
      * Propagates web constraints information to JACC.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param webAppConfig WebAppConfig object. In this interface, it is intentionally declare as Object to avoid adding any dependency to webcontainer project.
@@ -30,7 +30,7 @@ public interface JaccService {
 
     /**
      * Validates whether SSL is required for web inbound transport.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param uriName Uri
@@ -46,7 +46,7 @@ public interface JaccService {
 
     /**
      * Validates whether the http request is excluded.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param uriName Uri
@@ -62,7 +62,7 @@ public interface JaccService {
 
     /**
      * Validates whether given Subject is granted to access the specified resource.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param uriName Uri
@@ -80,7 +80,7 @@ public interface JaccService {
 
     /**
      * Validates whether given Subject is granted to access the specified resource.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param uriName Uri
@@ -98,7 +98,7 @@ public interface JaccService {
 
     /**
      * Propagates EJB role mapping information to JACC.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param beanName Bean name
@@ -113,7 +113,7 @@ public interface JaccService {
 
     /**
      * Validates whether given Subject is granted to access the specified resource.
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param beanName Bean name
@@ -138,7 +138,7 @@ public interface JaccService {
 
     /**
      * Validates whether given Subject is a member of the specified role
-     * 
+     *
      * @param applicationName Application name
      * @param moduleName Module name
      * @param beanName Bean name
@@ -160,11 +160,16 @@ public interface JaccService {
                                    Object bean,
                                    Subject subject);
 
-
     /**
      * Returns whether RequestMethodArguments are required for authorization decision for EJB.
-     * 
+     *
      * @return true if RequestMethodArguments are required. false otherwise.
      */
+
     public boolean areRequestMethodArgumentsRequired();
+
+    /**
+     * Reset the policyContext Handler as per JACC specification
+     */
+    public void resetPolicyContextHandlerInfo();
 }

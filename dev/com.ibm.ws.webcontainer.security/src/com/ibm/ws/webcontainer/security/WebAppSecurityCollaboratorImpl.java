@@ -451,6 +451,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     @Override
     public void postInvoke(Object secObject) throws ServletException {
+
+        if (jaccServiceRef.getService() != null) {
+            jaccServiceRef.getService().resetPolicyContextHandlerInfo();
+        }
+
         if (secObject != null) {
             WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
             if (webSecurityContext.getJaspiAuthContext() != null &&
