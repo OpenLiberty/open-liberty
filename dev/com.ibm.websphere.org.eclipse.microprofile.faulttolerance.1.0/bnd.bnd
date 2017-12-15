@@ -6,9 +6,9 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#     IBM Corporation - initial API and implementation
+# IBM Corporation - initial API and implementation
 #*******************************************************************************
--include ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
 javac.source: 1.8
@@ -24,7 +24,10 @@ Export-Package: \
   org.eclipse.microprofile.faulttolerance;version=1.0, \
   org.eclipse.microprofile.faulttolerance.exceptions;version=1.0
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api;1.0.0}
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: FAULTTOLERANCE
 
@@ -36,3 +39,4 @@ WS-TraceGroup: FAULTTOLERANCE
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/stable
+
