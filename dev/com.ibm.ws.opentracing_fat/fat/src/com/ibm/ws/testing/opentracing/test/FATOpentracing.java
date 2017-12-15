@@ -607,7 +607,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** The completed span event must be be for a get tracer state request. ***
 
-        assertEq("Operation", requestUrl, completedSpan.getOperation());
+        assertEq("Operation", "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState", completedSpan.getOperation());
 
         // *** The completed span must have valid state and finish times. ***
 
