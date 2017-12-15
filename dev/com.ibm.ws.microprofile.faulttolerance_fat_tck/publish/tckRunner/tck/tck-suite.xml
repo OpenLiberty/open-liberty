@@ -5,14 +5,11 @@
         under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
         OR CONDITIONS OF ANY KIND, either express or implied. See the License for
         the specific language governing permissions and limitations under the License. -->
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-
-<suite name="microprofile-fault-tolerance-TCK" verbose="2" configfailurepolicy="continue" >
-
-    <test name="microprofile-config 1.0 TCK">
-        <packages>
-                 <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
-        </package>
-        </packages>
-    </test>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="microprofile-fault-tolerance-TCK" verbose="2" configfailurepolicy="continue">
+	<test name="microprofile-config 1.0 TCK">
+		<packages>
+			<package name="org.eclipse.microprofile.fault.tolerance.tck.*"></package>
+		</packages>
+	</test>
 </suite>

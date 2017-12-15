@@ -9,16 +9,14 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
    <featureManager>
-        <feature>osgiconsole-1.0</feature>
+        <feature>mpFaultTolerance-1.0</feature>
         <feature>cdi-1.2</feature>
         <feature>servlet-3.1</feature>
         <feature>componentTest-1.0</feature>
         <feature>mpConfig-1.1</feature>
-        <feature>mpFaultTolerance-1.0</feature>
+        <feature>componentTest-1.0</feature>
         <feature>localConnector-1.0</feature>
    </featureManager>
     <include location="../fatTestPorts.xml"/>
-
 </server>

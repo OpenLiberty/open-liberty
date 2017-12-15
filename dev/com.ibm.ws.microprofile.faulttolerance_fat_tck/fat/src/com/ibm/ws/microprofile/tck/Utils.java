@@ -4,6 +4,14 @@
 package com.ibm.ws.microprofile.tck;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,7 +22,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import com.ibm.websphere.simplicity.PortType;
-
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -220,18 +227,18 @@ public class Utils {
 				// We match on dots and letters only
 				String r = result.replaceAll(".jar", "");
 				r = r.replaceAll("[0-9]", "");
-				r = r.replaceAll("\\.","");
-				r = r.replaceAll("\\_","");
+				r = r.replaceAll("\\.", "");
+				r = r.replaceAll("\\_", "");
 				log("r testing " + r);
-				if (r.equals( jarNameFragment.replaceAll("\\.","") )) {
-					log(jarNameFragment + " jar found in dir " +  dir + result);
+				if (r.equals(jarNameFragment.replaceAll("\\.", ""))) {
+					log(jarNameFragment + " jar found in dir " + dir + result);
 					return result;
-				}else {
+				} else {
 					log("match failed");
 				}
 			}
 		}
-		log("JAR returning NOT FOUND" + jarNameFragment );
+		log("JAR returning NOT FOUND" + jarNameFragment);
 		return null;
 	}
 
@@ -242,6 +249,36 @@ public class Utils {
 	 */
 	public static void log(String string) {
 		System.out.println("TCK: " + string);
+	}
+
+	public static class CopyFileVisitor extends SimpleFileVisitor<Path> {
+		private Path src, tgt;
+
+		public CopyFileVisitor(Path src, Path tgt) {
+			this.src = src;
+			this.tgt = tgt;
+		}
+
+		public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+			Path dest = tgt.resolve(src.relativize(path));
+			try {
+				Files.copy(path, dest, StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			return FileVisitResult.CONTINUE;
+		}
+
+		public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes fileAttributes) {
+			Path dest = tgt.resolve(src.relativize(path));
+			try {
+				Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+			return FileVisitResult.CONTINUE;
+		}
+
 	}
 
 }
