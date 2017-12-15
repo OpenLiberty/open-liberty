@@ -16,13 +16,12 @@
 	<name>MicroProfile Fault Tolerance TCK Runner TCK Module</name>
 
 	<properties>
-		<!--  the below is used in arquillian.xml -->
-		<wlp>${wlp}</wlp>
-		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
+		<!--  the below is used in arquillian.xml -->
+		<wlp>${wlp}</wlp>
 		<defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
 		<suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
 		<targetDirectory>${project.basedir}/target</targetDirectory>

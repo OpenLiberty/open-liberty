@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.microprofile.tck;
 
 import java.io.File;
@@ -25,8 +32,7 @@ import com.ibm.websphere.simplicity.PortType;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * A set of mostly static utility functions. This exists partly as there is more
- * than one test class in development that share these functions.
+ * A set of mostly static utility functions.
  */
 public class Utils {
 
@@ -51,6 +57,14 @@ public class Utils {
 		home = new File(System.getProperty("user.dir"));
 		tckRunnerDir = new File("publish/tckRunner");
 
+		mvnCliRaw = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
+				"-Dtck_port=" + server.getPort(PortType.WC_defaulthost),
+				"-DtargetDirectory=" + home.getAbsolutePath() + "/results/tck" };
+
+		// These are jars that we try to resolve independent of Liberty version numbers. 
+		// On finding a match path, we export it as an ENV variable which is then
+		// included as the <systemPath> element for the mvn coordinates of the dependency
+		// in tck/pom.xml
 		jarsFromWlp.add("com.ibm.websphere.org.eclipse.microprofile.faulttolerance");
 		jarsFromWlp.add("com.ibm.ws.microprofile.faulttolerance");
 		jarsFromWlp.add("com.ibm.ws.microprofile.faulttolerance.cdi");
@@ -58,19 +72,12 @@ public class Utils {
 		jarsFromWlp.add("com.ibm.ws.microprofile.config");
 		jarsFromWlp.add("com.ibm.ws.microprofile.config.cdi");
 
-		mvnCliRaw = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
-				"-Dtck_port=" + server.getPort(PortType.WC_defaulthost),
-				"-DtargetDirectory=" + home.getAbsolutePath() + "/results/tck" };
-
 		mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
 
 		// The cmd below is a base for running the TCK as a whole for this project.
-		// It is possible to use other Testng control xml files (and even generate them
-		// based on examining the TCK jar) in which case the value for suiteXmlFile
-		// would
-		// be different.
+		// It is possible to use other Testng control xml files that do useful inclusions
+		// and exclusions and there are some examples (see *.xml) in the tck directory
 		mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
-
 		init = true;
 	}
 
@@ -81,7 +88,7 @@ public class Utils {
 	 *
 	 * @param server
 	 * @param nonVersionedJars
-	 * @return an array of string that can be added to a ProcessRunner command
+	 * @return an array of String that can be added to a ProcessRunner command
 	 */
 	private static String[] getJarCliEnvVars(LibertyServer server, List<String> nonVersionedJars) {
 
@@ -100,7 +107,7 @@ public class Utils {
 	/**
 	 * Smashes two String arrays into a returned third. Useful for appending to the
 	 * CLI used for ProcessBuilder. This is not a very efficient way to do this but
-	 * it is easy to read/write and it is not a performance sensitive use case.
+	 * it is easy to read/write and it is not a performance sensitive area.
 	 *
 	 * @param a
 	 * @param b
@@ -152,7 +159,7 @@ public class Utils {
 
 	/**
 	 * Return a full path for a jar file name substr. This function enables the
-	 * Liberty build version which is often included in jar names to increment and
+	 * Liberty build version (which is often included in jar names) to increment and
 	 * the FAT bucket to find the jar under the new version.
 	 *
 	 * @param jarName
@@ -166,7 +173,7 @@ public class Utils {
 	}
 
 	/**
-	 * This is more easily unit testable and reusable version of guts of
+	 * This is more easily unit testable and reusable version of the internals of
 	 * resolveJarPath
 	 *
 	 * @param jarName
@@ -201,8 +208,6 @@ public class Utils {
 	/**
 	 * Looks for a path in a directory from a sub set of the filename
 	 *
-	 * TODO support regexes in the future?
-	 *
 	 * @param jarNameFragment
 	 * @param dir
 	 * @return
@@ -220,11 +225,10 @@ public class Utils {
 		// ./com.ibm.ws.microprofile.faulttolerance_1.0.18.jar
 		// ./com.ibm.ws.microprofile.faulttolerance.spi_1.0.18.jar
 		for (int i = 0; i < files.length; i++) {
-			log(files[i]);
 			if (files[i].contains(jarNameFragment)) {
 				result = files[i];
 				log("dir " + dir + " contains " + jarNameFragment + " as " + result);
-				// We match on dots and letters only
+				// Do we have a match ignoring version numbers
 				String r = result.replaceAll(".jar", "");
 				r = r.replaceAll("[0-9]", "");
 				r = r.replaceAll("\\.", "");
@@ -234,16 +238,16 @@ public class Utils {
 					log(jarNameFragment + " jar found in dir " + dir + result);
 					return result;
 				} else {
-					log("match failed");
+					log("close match failed for " + jarNameFragment + " in " + dir + result);
 				}
 			}
 		}
-		log("JAR returning NOT FOUND" + jarNameFragment);
+		log("returning NOT FOUND for " + jarNameFragment);
 		return null;
 	}
 
 	/**
-	 * A simple log abstraction to enable easy grepping of the logs.
+	 * A simple log abstraction to enable easy grepping of messages
 	 * 
 	 * @param string
 	 */
@@ -251,6 +255,11 @@ public class Utils {
 		System.out.println("TCK: " + string);
 	}
 
+	/**
+	 * A fairly standard fileTreeWalker Visitor that copies files to a new directory.
+	 * Used for copying testng results to the simplicity junit directory
+	 *
+	 */
 	public static class CopyFileVisitor extends SimpleFileVisitor<Path> {
 		private Path src, tgt;
 
@@ -259,6 +268,9 @@ public class Utils {
 			this.tgt = tgt;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.nio.file.SimpleFileVisitor#visitFile(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
+		 */
 		public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
 			Path dest = tgt.resolve(src.relativize(path));
 			try {
@@ -269,6 +281,9 @@ public class Utils {
 			return FileVisitResult.CONTINUE;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.nio.file.SimpleFileVisitor#preVisitDirectory(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
+		 */
 		public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes fileAttributes) {
 			Path dest = tgt.resolve(src.relativize(path));
 			try {
