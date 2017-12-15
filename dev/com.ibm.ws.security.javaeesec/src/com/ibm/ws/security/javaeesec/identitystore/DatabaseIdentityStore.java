@@ -53,7 +53,6 @@ public class DatabaseIdentityStore implements IdentityStore {
     /** The definitions for this IdentityStore. */
     private final DatabaseIdentityStoreDefinitionWrapper idStoreDefinition;
 
-    /** The password hash to use for password comparisons. */
     private final PasswordHash passwordHash;
 
     /**
@@ -64,19 +63,12 @@ public class DatabaseIdentityStore implements IdentityStore {
     public DatabaseIdentityStore(DatabaseIdentityStoreDefinition idStoreDefinition) {
         this.idStoreDefinition = new DatabaseIdentityStoreDefinitionWrapper(idStoreDefinition);
 
-        /*
-         * Get the password hashing implementation.
-         */
         Instance<? extends PasswordHash> p2phi = CDI.current().select(this.idStoreDefinition.getHashAlgorithm());
         if (p2phi != null) {
             passwordHash = p2phi.get();
         } else {
             throw new IllegalArgumentException("Cannot load the password HashAlgorithm, the CDI bean was not found for: " + this.idStoreDefinition.getHashAlgorithm());
         }
-
-        /*
-         * Initialize the password hashing implementation with the hash algorithm parameters.
-         */
         List<String> params = this.idStoreDefinition.getHashAlgorithmParameters();
         if (params != null && !params.isEmpty()) {
             if (tc.isEventEnabled()) {
@@ -86,7 +78,7 @@ public class DatabaseIdentityStore implements IdentityStore {
             for (String param : params) {
                 String[] split = param.split("=");
                 if (split.length != 2) {
-                    throw new IllegalArgumentException("Hash algorithm parameter is in the incorrect format. Expected: name=value,  received: " + param);
+                    throw new IllegalArgumentException("Hash algorithm parameter is in the incorrect format. Expected: name=value,  recevied: " + param);
                 }
                 prepped.put(split[0], split[1]);
             }
@@ -191,22 +183,14 @@ public class DatabaseIdentityStore implements IdentityStore {
 
             Connection conn = getConnection(caller);
             try {
-                String callerQuery = idStoreDefinition.getCallerQuery();
-                if (callerQuery == null || callerQuery.isEmpty()) {
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The 'callerQuery' configuration can not be null or empty.");
-                    }
-                    return CredentialValidationResult.INVALID_RESULT;
-                }
-
-                prep = conn.prepareStatement(callerQuery);
+                prep = conn.prepareStatement(idStoreDefinition.getCallerQuery());
                 prep.setString(1, caller);
 
                 ResultSet result = runQuery(prep, caller);
 
                 if (!result.next()) { // advance to first result
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "No users returned for caller: " + caller + ", using query: " + callerQuery);
+                        Tr.event(tc, "No users returned for caller: " + caller + ", using query: " + idStoreDefinition.getCallerQuery());
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
@@ -265,12 +249,7 @@ public class DatabaseIdentityStore implements IdentityStore {
 
     private Connection getConnection(String caller) throws NamingException, SQLException {
         // datasource could be an expression, look it up fresh everytime.
-        String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
-        if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
-            throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be empty or null.");
-        }
-
-        DataSource dataSource = (DataSource) new InitialContext().lookup(dataSourceLookup);
+        DataSource dataSource = (DataSource) new InitialContext().lookup(idStoreDefinition.getDataSourceLookup());
 
         return dataSource.getConnection();
     }

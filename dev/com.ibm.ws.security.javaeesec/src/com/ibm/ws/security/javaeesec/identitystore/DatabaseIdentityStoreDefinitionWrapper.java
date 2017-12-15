@@ -11,21 +11,13 @@
 package com.ibm.ws.security.javaeesec.identitystore;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.PasswordHash;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * A wrapper class that offers convenience methods for retrieving configuration
@@ -37,8 +29,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * return the literal value instead.
  */
 public class DatabaseIdentityStoreDefinitionWrapper {
-
-    private static final TraceComponent tc = Tr.register(DatabaseIdentityStoreDefinitionWrapper.class);
 
     /** The query to use to lookup users/callers. Will be null when set by a deferred EL expression. */
     private final String callerQuery;
@@ -103,16 +93,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The callerQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerQuery(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerQuery", "" });
-            }
-            return ""; /* Default value from the spec. */
-        }
+        return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
     }
 
     /**
@@ -124,16 +106,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The dataSourceLookup or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateDataSourceLookup(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("dataSourceLookup", idStoreDefinition.dataSourceLookup(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "dataSourceLookup", "java:comp/DefaultDataSource" });
-            }
-            return "java:comp/DefaultDataSource"; /* Default value from the spec. */
-        }
+        return ELHelper.processString("dataSourceLookup", idStoreDefinition.dataSourceLookup(), immediateOnly);
     }
 
     /**
@@ -145,16 +119,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The groupsQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupsQuery(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupsQuery", "" });
-            }
-            return ""; /* Default value from the spec. */
-        }
+        return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
     }
 
     /**
@@ -171,78 +137,14 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      *
      * @return The hashAlgorithmParameters.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private List<String> evaluateHashAlgorithmParameters() {
         List<String> parameters = new ArrayList<String>();
 
-        String[] rawArray = idStoreDefinition.hashAlgorithmParameters();
-        if (rawArray == null || rawArray.length == 0) {
-            return parameters;
-        }
-
-        /*
-         * The EL expressions is used for a full array element. It must evaluate to either a
-         * single string, a string array or string Stream.
-         */
-        if (rawArray.length == 1) {
-            /*
-             * Process as String.
-             */
-            try {
-                String value = ELHelper.processString("hashAlgorithmParameters[0]", rawArray[0], false);
-                if (value != null && !value.isEmpty()) {
-                    parameters.add(value);
-                }
-                return parameters;
-            } catch (IllegalArgumentException e) {
-                // Ignore.
-            }
-
-            /*
-             * Process as String[].
-             */
-            try {
-                String[] array = ELHelper.processStringArray("hashAlgorithmParameters[0]", rawArray[0], false, false);
-                if (array != null && array.length == 0) {
-                    for (String value : array) {
-                        if (value != null && !value.isEmpty()) {
-                            parameters.add(value);
-                        }
-                    }
-                }
-                return parameters;
-            } catch (IllegalArgumentException e) {
-                // Ignore.
-            }
-
-            /*
-             * Process as Stream<String>.
-             */
-            try {
-                Stream<String> stream = ELHelper.processStringStream("hashAlgorithmParameters[0]", rawArray[0], false, false);
-                Iterator<String> iterator = stream.iterator();
-                while (iterator.hasNext()) {
-                    String value = iterator.next();
-                    if (value != null && !value.isEmpty()) {
-                        parameters.add(value);
-                    }
-                }
-                return parameters;
-            } catch (IllegalArgumentException e) {
-                // Ignore.
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "hashAlgorithmParameters[0]", Collections.emptyList() });
-            }
-        } else {
-            if (rawArray != null && rawArray.length > 0) {
-                for (int idx = 0; idx < rawArray.length; idx++) {
-                    String value = ELHelper.processString("hashAlgorithmParameters[" + idx + "]", rawArray[idx], false);
-                    if (value != null && !value.isEmpty()) {
-                        parameters.add(value);
-                    }
-                }
+        String[] config = idStoreDefinition.hashAlgorithmParameters();
+        if (config != null && config.length > 0) {
+            for (int idx = 0; idx < config.length; idx++) {
+                String value = config[idx];
+                parameters.add(ELHelper.processString("hashAlgorithmParameters[" + idx + "]", value, false));
             }
         }
 
@@ -258,16 +160,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The priority or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluatePriority(boolean immediateOnly) {
-        try {
-            return ELHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", 70 });
-            }
-            return 70; /* Default value from the spec. */
-        }
+        return ELHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
     }
 
     /**
@@ -279,20 +173,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The useFor or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
-        try {
-            return ELHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            Set<ValidationType> values = new HashSet<ValidationType>();
-            values.add(ValidationType.PROVIDE_GROUPS); /* Default value from the spec. */
-            values.add(ValidationType.VALIDATE); /* Default value from the spec. */
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "useFor/useForExpression", values });
-            }
-            return values;
-        }
+        return ELHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
     }
 
     /**
