@@ -17,6 +17,8 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,7 +34,7 @@ import com.ibm.wsspi.security.wim.model.PersonAccount;
 @Trivial
 public class WIMTraceHelper {
 
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");//$NON-NLS-1$
+    private static final String LINE_SEPARATOR;
 
     /**
      * The string used for display password in the trace. For security reasons, password can not be printed out in the trace or message.
@@ -43,6 +45,15 @@ public class WIMTraceHelper {
 
     //Properties
     static HashSet systemProps = new HashSet();
+
+    static {
+        LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("line.separator");//$NON-NLS-1$
+            }
+        });
+    }
 
     /**
      * Method takes the JavaBean object and returns InputStream for tracing purpose
