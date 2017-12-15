@@ -59,6 +59,7 @@ import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * OSGi specific implementation of the BeanValidation container integration
@@ -523,7 +524,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
      * configuration updates.
      */
     private void cleanBvalCache() {
-        if (isBeanValidationVersion11()) {
+        if (isBeanValidationVersion11() && !FrameworkState.isStopping()) {
             ClassLoader classLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;

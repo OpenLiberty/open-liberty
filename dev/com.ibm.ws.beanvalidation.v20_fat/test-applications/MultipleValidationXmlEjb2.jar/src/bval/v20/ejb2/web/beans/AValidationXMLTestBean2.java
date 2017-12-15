@@ -50,7 +50,14 @@ public class AValidationXMLTestBean2 {
     boolean setToFail = false;
 
     @Inject
+    ValidatorFactory injectedValidatorFactory;
+
+    @Inject
+    Validator injectedValidator;
+
+    @Resource
     ValidatorFactory validatorFactory;
+
     @Resource
     Validator validator;
 
@@ -89,7 +96,7 @@ public class AValidationXMLTestBean2 {
 
     /**
      * Convert the constraint violations for use within WAS diagnostic logs.
-     * 
+     *
      * @return a String representation of the constraint violations formatted one per line and uniformly indented.
      */
     public String formatConstraintViolations(Set<ConstraintViolation<AValidationXMLTestBean2>> cvSet) {
@@ -105,11 +112,11 @@ public class AValidationXMLTestBean2 {
     }
 
     public void checkCustomMessageInterpolator() {
-        String message = validatorFactory.getMessageInterpolator().interpolate("test", null);
+        String message = injectedValidatorFactory.getMessageInterpolator().interpolate("test", null);
         assertEquals("test### interpolator2 added message ###", message);
     }
 
-    public boolean checkAtInjectValidatorFactory() {
+    public boolean checkAtResourceValidatorFactory() {
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<AValidationXMLTestBean2>> cvSet = validator.validate(this);
         if (cvSet != null && !cvSet.isEmpty()) {
@@ -132,7 +139,31 @@ public class AValidationXMLTestBean2 {
 
         return true;
     }
-    
+
+    public boolean checkAtInjectValidatorFactory() {
+        Validator validator = injectedValidatorFactory.getValidator();
+        Set<ConstraintViolation<AValidationXMLTestBean2>> cvSet = validator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
     public boolean checkAtResourceValidator() {
         Set<ConstraintViolation<AValidationXMLTestBean2>> cvSet = validator.validate(this);
         if (cvSet != null && !cvSet.isEmpty()) {
@@ -144,6 +175,29 @@ public class AValidationXMLTestBean2 {
         setValidationToFail();
         try {
             cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
+    public boolean checkAtInjectValidator() {
+        Set<ConstraintViolation<AValidationXMLTestBean2>> cvSet = injectedValidator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = injectedValidator.validate(this);
             if (cvSet != null && cvSet.size() != 2) {
                 svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
                                                      "when there should have been 2: " + formatConstraintViolations(cvSet));

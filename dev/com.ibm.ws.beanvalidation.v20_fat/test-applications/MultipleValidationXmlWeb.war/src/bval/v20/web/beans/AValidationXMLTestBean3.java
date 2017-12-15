@@ -17,7 +17,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.validation.ConstraintViolation;
@@ -49,6 +51,18 @@ public class AValidationXMLTestBean3 {
     @Pattern(regexp = "[a-z][a-z]*")
     String pattern = "mypattern";
     boolean setToFail = false;
+
+    @Resource
+    Validator validator;
+
+    @Resource
+    ValidatorFactory validatorFactory;
+
+    @Inject
+    ValidatorFactory injectedValidatorFactory;
+
+    @Inject
+    Validator injectedValidator;
 
     private void setValidationToFail() {
         svLogger.entering(CLASS_NAME, "setValidationToFail", this);
@@ -85,7 +99,7 @@ public class AValidationXMLTestBean3 {
 
     /**
      * Convert the constraint violations for use within WAS diagnostic logs.
-     * 
+     *
      * @return a String representation of the constraint violations formatted one per line and uniformly indented.
      */
     public String formatConstraintViolations(Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet) {
@@ -101,13 +115,13 @@ public class AValidationXMLTestBean3 {
     }
 
     public void checkCustomMessageInterpolator() throws NamingException {
-    	ValidatorFactory validatorFactory = (ValidatorFactory) new InitialContext().lookup("java:comp/ValidatorFactory");
+        ValidatorFactory validatorFactory = (ValidatorFactory) new InitialContext().lookup("java:comp/ValidatorFactory");
         String message = validatorFactory.getMessageInterpolator().interpolate("test", null);
         assertEquals("test### interpolator3 added message ###", message);
     }
 
     public boolean checkLookupValidatorFactory() throws NamingException {
-    	ValidatorFactory validatorFactory = (ValidatorFactory) new InitialContext().lookup("java:comp/ValidatorFactory");
+        ValidatorFactory validatorFactory = (ValidatorFactory) new InitialContext().lookup("java:comp/ValidatorFactory");
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet = validator.validate(this);
         if (cvSet != null && !cvSet.isEmpty()) {
@@ -130,9 +144,9 @@ public class AValidationXMLTestBean3 {
 
         return true;
     }
-    
-    public boolean checkLookupValidator() throws NamingException {
-    	Validator validator = (Validator) new InitialContext().lookup("java:comp/Validator");
+
+    public boolean checkAtResourceValidatorFactory() throws NamingException {
+        Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet = validator.validate(this);
         if (cvSet != null && !cvSet.isEmpty()) {
             svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
@@ -154,4 +168,99 @@ public class AValidationXMLTestBean3 {
 
         return true;
     }
+
+    public boolean checkAtInjectValidatorFactory() throws NamingException {
+        Validator validator = injectedValidatorFactory.getValidator();
+        Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet = validator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
+    public boolean checkLookupValidator() throws NamingException {
+        Validator validator = (Validator) new InitialContext().lookup("java:comp/Validator");
+        Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet = validator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
+    public boolean checkAtResourceValidator() throws NamingException {
+        Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet = validator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
+    public boolean checkAtInjectValidator() throws NamingException {
+        Set<ConstraintViolation<AValidationXMLTestBean3>> cvSet = injectedValidator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = injectedValidator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
 }

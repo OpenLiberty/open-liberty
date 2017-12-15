@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.beanvalidation.v20;
+package com.ibm.ws.beanvalidation.service;
 
 import java.io.IOException;
 import java.io.InputStream;

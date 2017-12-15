@@ -62,14 +62,38 @@ public class BeanValidationTestServlet extends FATServlet {
 
     /**
      * Test that @Inject for a ValidatorFactory works for
+     * the module containing AValidationXMLTestBean1.
+     */
+    @Test
+    public void testAtInjectValidatorFactoryFromJar1() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean1 testBean1 = (AValidationXMLTestBean1) ctx.lookup("java:app/MultipleValidationXmlEjb1/AValidationXMLTestBean1");
+        assertTrue("should have been able to use a ValidatorFactory defined via @Inject in the EJB",
+                   testBean1.checkAtInjectValidatorFactory());
+    }
+
+    /**
+     * Test that @Inject for a ValidatorFactory works for
      * the module containing AValidationXMLTestBean2.
      */
-    // @Test TODO re-enable this test
+    @Test
     public void testAtInjectValidatorFactoryFromJar2() throws Exception {
         InitialContext ctx = new InitialContext();
         AValidationXMLTestBean2 testBean2 = (AValidationXMLTestBean2) ctx.lookup("java:app/MultipleValidationXmlEjb2/AValidationXMLTestBean2");
         assertTrue("should have been able to use a ValidatorFactory defined via @Inject in the EJB",
                    testBean2.checkAtInjectValidatorFactory());
+    }
+
+    /**
+     * Test that @Inject for a ValidatorFactory works for
+     * the module containing AValidationXMLTestBean3.
+     */
+    @Test
+    public void testAtInjectValidatorFactoryFromWar() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean3 testBean3 = (AValidationXMLTestBean3) ctx.lookup("java:app/MultipleValidationXmlWeb/AValidationXMLTestBean3");
+        assertTrue("should have been able to use a ValidatorFactory defined via @Inject in the EJB",
+                   testBean3.checkAtInjectValidatorFactory());
     }
 
     /**
@@ -82,6 +106,30 @@ public class BeanValidationTestServlet extends FATServlet {
         AValidationXMLTestBean1 testBean1 = (AValidationXMLTestBean1) ctx.lookup("java:app/MultipleValidationXmlEjb1/AValidationXMLTestBean1");
         assertTrue("should have been able to use a ValidatorFactory defined via @Resource in the EJB",
                    testBean1.checkAtResourceValidatorFactory());
+    }
+
+    /**
+     * Test that @Resource for a ValidatorFactory works for
+     * the module containing AValidationXMLTestBean2.
+     */
+    @Test
+    public void testAtResourceValidatorFactoryFromJar2() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean2 testBean2 = (AValidationXMLTestBean2) ctx.lookup("java:app/MultipleValidationXmlEjb2/AValidationXMLTestBean2");
+        assertTrue("should have been able to use a ValidatorFactory defined via @Resource in the EJB",
+                   testBean2.checkAtResourceValidatorFactory());
+    }
+
+    /**
+     * Test that @Resource for a ValidatorFactory works for
+     * the module containing AValidationXMLTestBean3.
+     */
+    @Test
+    public void testAtResourceValidatorFactoryFromWar() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean3 testBean3 = (AValidationXMLTestBean3) ctx.lookup("java:app/MultipleValidationXmlWeb/AValidationXMLTestBean3");
+        assertTrue("should have been able to use a ValidatorFactory defined via @Resource in the EJB",
+                   testBean3.checkAtResourceValidatorFactory());
     }
 
     /**
@@ -109,15 +157,63 @@ public class BeanValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Test that @Inject for a Validator works for
+     * the module containing AValidationXMLTestBean2.
+     */
+    @Test
+    public void testAtInjectValidatorFromJar2() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean2 testBean2 = (AValidationXMLTestBean2) ctx.lookup("java:app/MultipleValidationXmlEjb2/AValidationXMLTestBean2");
+        assertTrue("should have been able to use a Validator defined via @Inject in the EJB",
+                   testBean2.checkAtInjectValidator());
+    }
+
+    /**
+     * Test that @Inject for a Validator works for
+     * the module containing AValidationXMLTestBean3.
+     */
+    @Test
+    public void testAtInjectValidatorFromWar() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean3 testBean3 = (AValidationXMLTestBean3) ctx.lookup("java:app/MultipleValidationXmlWeb/AValidationXMLTestBean3");
+        assertTrue("should have been able to use a Validator defined via @Inject in the EJB",
+                   testBean3.checkAtInjectValidator());
+    }
+
+    /**
+     * Test that @Resource for a Validator works for
+     * the module containing AValidationXMLTestBean1.
+     */
+    @Test
+    public void testAtResourceValidatorFromJar1() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean1 testBean1 = (AValidationXMLTestBean1) ctx.lookup("java:app/MultipleValidationXmlEjb1/AValidationXMLTestBean1");
+        assertTrue("should have been able to use a Validator defined via @Resource in the EJB",
+                   testBean1.checkAtResourceValidator());
+    }
+
+    /**
      * Test that @Resource for a Validator works for
      * the module containing AValidationXMLTestBean2.
      */
-    //@Test TODO re-enable this test
+    @Test
     public void testAtResourceValidatorFromJar2() throws Exception {
         InitialContext ctx = new InitialContext();
         AValidationXMLTestBean2 testBean2 = (AValidationXMLTestBean2) ctx.lookup("java:app/MultipleValidationXmlEjb2/AValidationXMLTestBean2");
         assertTrue("should have been able to use a Validator defined via @Resource in the EJB",
                    testBean2.checkAtResourceValidator());
+    }
+
+    /**
+     * Test that @Resource for a Validator works for
+     * the module containing AValidationXMLTestBean3.
+     */
+    @Test
+    public void testAtResourceValidatorFromWar() throws Exception {
+        InitialContext ctx = new InitialContext();
+        AValidationXMLTestBean3 testBean3 = (AValidationXMLTestBean3) ctx.lookup("java:app/MultipleValidationXmlWeb/AValidationXMLTestBean3");
+        assertTrue("should have been able to use a Validator defined via @Resource in the EJB",
+                   testBean3.checkAtResourceValidator());
     }
 
     /**

@@ -48,7 +48,7 @@ public class LibertyValidatorFactoryBean extends ValidatorFactoryBean {
 
     @Override
     public ValidatorFactory create(CreationalContext<ValidatorFactory> context) {
-        return LibertyHibernateValidatorExtension.getDefaultValidatorFactory();
+        return new LibertyValidatorFactoryProxy();
     }
 
     @Override
