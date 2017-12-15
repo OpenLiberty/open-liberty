@@ -38,14 +38,9 @@ public class AnnotatedTypeWrapper<T> extends AnnotatedWrapper implements Annotat
 
         for (AnnotatedMethod<? super T> method : this.wrapped.getMethods()) {
             if (interceptedMethods.contains(method)) {
-                AnnotatedType<?> declaringType = method.getDeclaringType();
-                if (declaringType.equals(wrapped)) {
-                    AnnotatedMethodWrapper<T> methodWrapper = new AnnotatedMethodWrapper<T>(this, (AnnotatedMethod<T>) method);
-                    this.methods.add(methodWrapper);
-                    this.wrappedMethods.put(method, methodWrapper);
-                } else {
-                    throw new RuntimeException(Tr.formatMessage(tc, "internal.error.CWMFT4999E"));
-                }
+                AnnotatedMethodWrapper<T> methodWrapper = new AnnotatedMethodWrapper<T>(this, (AnnotatedMethod<T>) method);
+                this.methods.add(methodWrapper);
+                this.wrappedMethods.put(method, methodWrapper);
             } else {
                 this.methods.add(method);
             }
