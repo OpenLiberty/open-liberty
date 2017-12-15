@@ -178,6 +178,10 @@ public class DerbyManagedConnection implements LocalTransaction, ManagedConnecti
         return null;
     }
 
+    public String getQmid() {
+        return DerbyXAResource.XA_RECOVERY_QMID;
+    }
+
     /** {@inheritDoc} */
     @Override
     public XAResource getXAResource() throws ResourceException {

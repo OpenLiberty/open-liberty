@@ -73,10 +73,6 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
         return password;
     }
 
-    public String getQmid() {
-        return qmid == null ? DerbyXAResource.XA_RECOVERY_QMID : qmid;
-    }
-
     /** {@inheritDoc} */
     @Override
     public ResourceAdapter getResourceAdapter() {
