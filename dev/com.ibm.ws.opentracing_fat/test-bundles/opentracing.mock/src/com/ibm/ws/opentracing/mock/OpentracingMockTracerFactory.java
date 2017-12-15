@@ -20,6 +20,11 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.ws.opentracing.tracer.OpentracingTracerFactory;
 
+import io.opentracing.Tracer;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.mock.MockTracer.Propagator;
+import io.opentracing.util.ThreadLocalActiveSpanSource;
+
 /**
  * <p>Mock tracer factory.  Provides an implementation of
  * {@link OpentracingTracerFactory} which creates mock tracer
@@ -50,6 +55,8 @@ public class OpentracingMockTracerFactory implements OpentracingTracerFactory {
     protected void modified(ComponentContext ctx, Map<String, Object> config) {
         System.out.println("OpentracingMockTracerFactory.modified");
     }
+    
+    private static final boolean USE_MOCK_TRACER = Boolean.getBoolean("USE_MOCK_TRACER");
 
     /**
      * <p>Factory API: Create and return a new tracer.  As this is the
@@ -60,8 +67,12 @@ public class OpentracingMockTracerFactory implements OpentracingTracerFactory {
      * @return A new mock tracer.
      */
     @Override
-    public OpentracingMockTracer newInstance(String serviceName) {
+    public Tracer newInstance(String serviceName) {
         System.out.println("OpentracingMockTracerFactory.newInstance");
-        return new OpentracingMockTracer();
+        if (USE_MOCK_TRACER) {
+            return new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
+        } else {
+            return new OpentracingMockTracer();
+        }
     }
 }
