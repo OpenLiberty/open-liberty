@@ -286,7 +286,13 @@ public class FATOpentracing implements FATOpentracingConstants {
                 continue;
             }
 
-            String operation = completedSpan.getOperation();
+            String operation = completedSpan.getTag("http.url");
+            
+            // If operation is null, it's a manual span
+            
+            if (operation == null) {
+                operation = completedSpan.getOperation();
+            }
 
             boolean foundAll = true;
             for ( String text : selectText ) {
