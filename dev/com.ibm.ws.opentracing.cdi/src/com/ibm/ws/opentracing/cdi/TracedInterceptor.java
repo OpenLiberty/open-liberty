@@ -17,28 +17,47 @@ import javax.interceptor.InvocationContext;
 
 import org.eclipse.microprofile.opentracing.Traced;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.opentracing.OpentracingTracerManager;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
 
 @Traced
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE) //run this interceptor after platform interceptors but before application interceptors
 public class TracedInterceptor {
 
+    private static final TraceComponent tc = Tr.register(TracedInterceptor.class);
+
     @AroundInvoke
     public Object executeFT(InvocationContext context) throws Throwable {
-        String methodName = "BB -" + context.getMethod().getName();
+        String methodName = "executeFT";
+
+        // If the annotated method is not a JAX-RS endpoint, the default
+        // operation name of the new Span for the method is:
+        // <package name>.<class name>.<method name>"
+        // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#321-the-traced-annotation
+
+        String operationName = context.getClass().getName() + "." + context.getMethod().getName();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName + " operationName", operationName);
+        }
+
         Tracer tracer = OpentracingTracerManager.getTracer();
-        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(methodName);
 
-        spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
-        spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), methodName);
-
+        ActiveSpan activeSpan = tracer.activeSpan();
+        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
+        if (activeSpan != null) {
+            spanBuilder.asChildOf(activeSpan.context());
+        }
         Span span = spanBuilder.startManual();
-        tracer.makeActive(span);
+        if (activeSpan == null) {
+            tracer.makeActive(span);
+        }
 
         Object result = context.proceed();
 
