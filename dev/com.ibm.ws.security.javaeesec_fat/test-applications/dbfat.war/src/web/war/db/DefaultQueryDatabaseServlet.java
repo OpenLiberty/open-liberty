@@ -27,7 +27,6 @@ public class DefaultQueryDatabaseServlet extends FATDatabaseServlet {
     private final String callerTable = "callers";
     private final String groupTable = "caller_groups";
 
-    @SuppressWarnings("restriction")
     @Override
     public void init() throws ServletException {
         System.out.println("Creating database for DatabaseIdentityStore");
@@ -86,7 +85,7 @@ public class DefaultQueryDatabaseServlet extends FATDatabaseServlet {
 
         } catch (Exception e) {
             System.out.println("Failed to create database for DatabaseIdentityStore: " + e.getMessage());
-            e.printStackTrace();
+            throw new ServletException("Failed to create database for DatabaseIdentityStore: " + e.getMessage(), e);
         }
         System.out.println("Created database for DatabaseIdentityStore");
     }

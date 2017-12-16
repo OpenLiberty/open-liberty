@@ -30,116 +30,202 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapS
 @Named
 @ApplicationScoped
 public class LdapSettingsBean {
+    private static final String CLASS_NAME = LdapSettingsBean.class.getName();
 
     private Properties props;
 
     public LdapSettingsBean() {}
 
     public String getBindDn() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("bindDn");
+        refreshConfiguration();
+
+        String prop = getProperty("bindDn");
+        System.out.println(CLASS_NAME + ".getBindDn() returns: " + prop);
+        return prop;
     }
 
     public String getBindDnPassword() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("bindDnPassword");
+        refreshConfiguration();
+
+        String prop = getProperty("bindDnPassword");
+        System.out.println(CLASS_NAME + ".getBindDnPassword() returns: " + prop);
+        return prop;
     }
 
     public String getCallerBaseDn() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("callerBaseDn");
+        refreshConfiguration();
+
+        String prop = getProperty("callerBaseDn");
+        System.out.println(CLASS_NAME + ".getCallerBaseDn() returns: " + prop);
+        return prop;
     }
 
     public String getCallerNameAttribute() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("callerNameAttribute");
+        refreshConfiguration();
+
+        String prop = getProperty("callerNameAttribute");
+        System.out.println(CLASS_NAME + ".getCallerNameAttribute() returns: " + prop);
+        return prop;
     }
 
     public String getCallerSearchBase() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("callerSearchBase");
+        refreshConfiguration();
+
+        String prop = getProperty("callerSearchBase");
+        System.out.println(CLASS_NAME + ".getCallerSearchBase() returns: " + prop);
+        return prop;
     }
 
     public String getCallerSearchFilter() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("callerSearchFilter");
+        refreshConfiguration();
+
+        String prop = getProperty("callerSearchFilter");
+        System.out.println(CLASS_NAME + ".getCallerSearchFilter() returns: " + prop);
+        return prop;
     }
 
     public LdapSearchScope getCallerSearchScope() throws IOException {
-        refereshConfiguration();
+        refreshConfiguration();
 
-        String prop = props.getProperty("callerSearchScope");
-        if ("SUBTREE".equalsIgnoreCase(prop)) {
-            return LdapSearchScope.SUBTREE;
-        } else {
-            return LdapSearchScope.ONE_LEVEL;
+        String prop = getProperty("callerSearchScope");
+        LdapSearchScope result = null;
+        if (prop != null) {
+            if ("SUBTREE".equalsIgnoreCase(prop)) {
+                result = LdapSearchScope.SUBTREE;
+            } else {
+                result = LdapSearchScope.ONE_LEVEL;
+            }
         }
+
+        System.out.println(CLASS_NAME + ".getCallerSearchScope() returns: " + result);
+        return result;
     }
 
     public String getGroupMemberAttribute() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("groupMemberAttribute");
+        refreshConfiguration();
+
+        String prop = getProperty("groupMemberAttribute");
+        System.out.println(CLASS_NAME + ".getGroupMemberAttribute() returns: " + prop);
+        return prop;
     }
 
     public String getGroupMemberOfAttribute() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("groupMemberOfAttribute");
+        refreshConfiguration();
+
+        String prop = getProperty("groupMemberOfAttribute");
+        System.out.println(CLASS_NAME + ".getGroupMemberOfAttribute() returns: " + prop);
+        return prop;
     }
 
     public String getGroupNameAttribute() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("groupNameAttribute");
+        refreshConfiguration();
+
+        String prop = getProperty("groupNameAttribute");
+        System.out.println(CLASS_NAME + ".getGroupNameAttribute() returns: " + prop);
+        return prop;
     }
 
     public String getGroupSearchBase() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("groupSearchBase");
+        refreshConfiguration();
+
+        String prop = getProperty("groupSearchBase");
+        System.out.println(CLASS_NAME + ".getGroupSearchBase() returns: " + prop);
+        return prop;
     }
 
     public String getGroupSearchFilter() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("groupSearchFilter");
+        refreshConfiguration();
+
+        String prop = getProperty("groupSearchFilter");
+        System.out.println(CLASS_NAME + ".getGroupSearchFilter() returns: " + prop);
+        return prop;
     }
 
     public LdapSearchScope getGroupSearchScope() throws IOException {
-        refereshConfiguration();
+        refreshConfiguration();
 
-        String prop = props.getProperty("groupSearchScope");
-        if ("SUBTREE".equalsIgnoreCase(prop)) {
-            return LdapSearchScope.SUBTREE;
-        } else {
-            return LdapSearchScope.ONE_LEVEL;
+        String prop = getProperty("groupSearchScope");
+        LdapSearchScope result = null;
+        if (prop != null) {
+            if ("SUBTREE".equalsIgnoreCase(prop)) {
+                result = LdapSearchScope.SUBTREE;
+            } else {
+                result = LdapSearchScope.ONE_LEVEL;
+            }
         }
+
+        System.out.println(CLASS_NAME + ".getGroupSearchScope() returns: " + result);
+        return result;
+    }
+
+    public Integer getPriority() throws IOException {
+        refreshConfiguration();
+
+        String prop = getProperty("priority");
+        Integer result = null;
+        if (prop != null) {
+            result = Integer.valueOf(prop);
+        }
+
+        System.out.println(CLASS_NAME + ".getPriority() returns: " + result);
+        return result;
     }
 
     public Integer getReadTimeout() throws IOException {
-        refereshConfiguration();
-        return Integer.valueOf(props.getProperty("readTimeout"));
+        refreshConfiguration();
+
+        String prop = getProperty("readTimeout");
+        Integer result = null;
+        if (prop != null) {
+            result = Integer.valueOf(prop);
+        }
+
+        System.out.println(CLASS_NAME + ".getReadTimeout() returns: " + result);
+        return result;
     }
 
     public String getUrl() throws IOException {
-        refereshConfiguration();
-        return props.getProperty("url");
+        refreshConfiguration();
+
+        String prop = getProperty("url");
+        System.out.println(CLASS_NAME + ".getUrl() returns: " + prop);
+        return prop;
     }
 
     public Set<ValidationType> getUseFor() throws IOException {
-        refereshConfiguration();
+        refreshConfiguration();
 
-        Set<ValidationType> results = new HashSet<ValidationType>();
+        String prop = getProperty("useFor");
+        Set<ValidationType> results = null;
+        if (prop != null) {
+            results = new HashSet<ValidationType>();
 
-        String prop = props.getProperty("useFor");
-        if (prop.contains("VALIDATE")) {
-            results.add(ValidationType.VALIDATE);
+            if (prop.contains("VALIDATE")) {
+                results.add(ValidationType.VALIDATE);
+            }
+            if (prop.contains("PROVIDE_GROUPS")) {
+                results.add(ValidationType.PROVIDE_GROUPS);
+            }
         }
-        if (prop.contains("PROVIDE_GROUPS")) {
-            results.add(ValidationType.PROVIDE_GROUPS);
-        }
 
+        System.out.println(CLASS_NAME + ".getUseFor() returns: " + results);
         return results;
     }
 
-    private void refereshConfiguration() throws IOException {
+    private void refreshConfiguration() throws IOException {
         props = new Properties();
         props.load(new FileReader("LdapSettingsBean.props"));
+    }
+
+    /**
+     * Common logic for returning a property. If the property's value is a string "null",
+     * return null. This will allow testing null handling from beans.
+     *
+     * @param prop
+     * @return
+     */
+    private String getProperty(String prop) {
+        String value = props.getProperty(prop);
+        return "null".equalsIgnoreCase(value) ? null : value;
     }
 }

@@ -475,7 +475,7 @@ public class JavaEESecTestBase {
     }
 
     public void mustContain(String response, String target) {
-        assertTrue("Expected result " + target + " not found in response", response.contains(target));
+        assertTrue("Expected result " + target + " not found in response: " + response, response.contains(target));
     }
 
     private void mustNotContain(String response, String target) {

@@ -10,16 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
-import org.apache.http.impl.client.DefaultHttpClient;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,26 +27,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
-
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.annotation.AllowedFFDC;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
 @MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
@@ -108,8 +102,8 @@ public class MultipleModuleTest extends JavaEESecTestBase {
     protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:10389/";
     protected static String IS2_GROUP_REALM_NAME = "group:localhost:10389/";
 
-    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup";
-    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup";
+    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1";
+    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup";
     protected static String REALM1_GROUPS = "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2";
     protected static String REALM2_GROUPS = "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup";
     protected static String COMMONUSER_GROUPS = "group:CommonIdentityStore/grantedgroup2, group:CommonIdentityStore/commonGroup2, group:CommonIdentityStore/commonGroup1, group:CommonIdentityStore/grantedgroup";
@@ -152,7 +146,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
     }
 
     @After
-    public void cleanupConnection() throws Exception{
+    public void cleanupConnection() throws Exception {
         httpclient.getConnectionManager().shutdown();
         myServer.stopServer();
     }
@@ -173,12 +167,12 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
-     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
      * </OL>
      * <P> Expected Results:
      * <OL>
      * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
-     *      the one which are bundled with each module is only visible within the module.
+     * the one which are bundled with each module is only visible within the module.
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -187,9 +181,12 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, form login, redirect, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly","web.war.identitystores.custom.realm1");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly","web.war.identitystores.custom.realm2");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                      "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
+                                      "web.war.identitystores.custom.realm2");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
@@ -275,23 +272,21 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE2_TITLE_CUSTOMERROR_PAGE);
 
-
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-
 
     /**
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
-     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
      * <LI> autoExpand is set as true.
      * </OL>
      * <P> Expected Results:
      * <OL>
      * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
-     *      the one which are bundled with each module is only visible within the module.
+     * the one which are bundled with each module is only visible within the module.
      * </OL>
      */
     @Mode(TestMode.FULL)
@@ -300,9 +295,12 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, form login, redirect, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly","web.war.identitystores.custom.realm1");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly","web.war.identitystores.custom.realm2");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                      "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
+                                      "web.war.identitystores.custom.realm2");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
@@ -388,7 +386,6 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, MODULE2_TITLE_CUSTOMERROR_PAGE);
 
-
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -397,13 +394,13 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
-     *      which is packaged in a jar file.
-     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * which is packaged in a jar file.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
      * </OL>
      * <P> Expected Results:
      * <OL>
      * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
-     *      the one which are bundled with each module is only visible within the module.
+     * the one which are bundled with each module is only visible within the module.
      * </OL>
      */
     @Mode(TestMode.FULL)
@@ -412,9 +409,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, form login, redirect, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly","web.jar.realm1");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.jar.realm1");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly","web.jar.realm2");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                      "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.jar.realm2");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
@@ -506,14 +505,14 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
-     *      which is packaged in a jar file.
-     *      and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * which is packaged in a jar file.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
      * <LI> autoExpand is set as true.
      * </OL>
      * <P> Expected Results:
      * <OL>
      * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
-     *      the one which are bundled with each module is only visible within the module.
+     * the one which are bundled with each module is only visible within the module.
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -522,9 +521,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, form login, redirect, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly","web.jar.realm1");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.jar.realm1");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly","web.jar.realm2");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                      "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.jar.realm2");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
@@ -616,8 +617,8 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains two war files and common jar file. Each war files contains one LdapIdentityStoreDefinision,
-     *      and one FormHttpAuthenticationMechanismDefinision which points to different form. There is an identitystore in the jar
-     *      file which is placed as a library of the ear.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form. There is an identitystore in the jar
+     * file which is placed as a library of the ear.
      * </OL>
      * <P> Expected Results:
      * <OL>
@@ -630,9 +631,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, form login, redirect, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1",
+                                      "web.war.identitystores.custom.grouponly");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward",
+                                      "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         WCApplicationHelper.createJar(myServer, TEMP_DIR, IS_JAR_NAME, true, "web.jar.base", "web.jar.common.identitystores");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR_NAME, true);
@@ -670,8 +673,8 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains two war files and common jar file. Each war files contains one LdapIdentityStoreDefinision,
-     *      and one FormHttpAuthenticationMechanismDefinision which points to different form. There is an identitystore in the jar
-     *      file which is placed as a library of the ear.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form. There is an identitystore in the jar
+     * file which is placed as a library of the ear.
      * <LI> autoExpand is set as true
      * </OL>
      * <P> Expected Results:
@@ -685,9 +688,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, form login, redirect, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1",
+                                      "web.war.identitystores.custom.grouponly");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, null, false, "web.war.servlets.customform", "web.war.servlets.customform.get.forward",
+                                      "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         WCApplicationHelper.createJar(myServer, TEMP_DIR, IS_JAR_NAME, true, "web.jar.base", "web.jar.common.identitystores");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR_NAME, true);
@@ -725,11 +730,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains only one FormHttpAuthenticationMechanismDefinition in a jar file which is stored as a library
-     *      in a war file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
+     * in a war file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> 
+     * <LI>
      * </OL>
      */
     @Mode(TestMode.FULL)
@@ -738,9 +743,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
+                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2",
+                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
         WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2_NAME);
@@ -776,12 +783,12 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains only one FormHttpAuthenticationMechanismDefinition in a jar file which is stored as a library
-     *      in a war file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
+     * in a war file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
      * <LI> autoExpand is set as true.
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> 
+     * <LI>
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -790,9 +797,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
+                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2",
+                                      "web.war.identitystores.custom.grouponly", "web.jar.mechanisms.form.get.forward");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
         WCApplicationHelper.packageWars(myServer, TEMP_DIR, ear, WAR1_NAME, WAR2_NAME);
@@ -828,11 +837,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains only one FormHttpAuthenticationMechanismDefinition in a jar file which is stored as a library
-     *      in an ear file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
+     * in an ear file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> 
+     * <LI>
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -841,9 +850,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
+                                      "web.war.identitystores.custom.grouponly");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2",
+                                      "web.war.identitystores.custom.grouponly");
         WCApplicationHelper.createJar(myServer, TEMP_DIR, HAM_JAR_NAME, true, "web.jar.base", "web.jar.mechanisms.form.get.forward");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
@@ -882,12 +893,12 @@ public class MultipleModuleTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> An ear file which contains only one FormHttpAuthenticationMechanismDefinition in a jar file which is stored as a library
-     *      in an ear file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
-     ( <LI> autoExpand is set as true.
+     * in an ear file. There are two modules in the package of which has one LdapIdentityStoreDefinision and one custom identitystore.
+     * ( <LI> autoExpand is set as true.
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> 
+     * <LI>
      * </OL>
      */
     @Mode(TestMode.FULL)
@@ -896,9 +907,11 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // create module1, ldap1. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
+                                      "web.war.identitystores.custom.grouponly");
         // create module2, custom form login, forward, ldap2. grouponly.
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2","web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap2",
+                                      "web.war.identitystores.custom.grouponly");
         WCApplicationHelper.createJar(myServer, TEMP_DIR, HAM_JAR_NAME, true, "web.jar.base", "web.jar.mechanisms.form.get.forward");
 
         EnterpriseArchive ear = WCApplicationHelper.createEar(myServer, TEMP_DIR, EAR2_NAME, true);
@@ -933,7 +946,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-/* ------------------------ support methods ----------------------*/
+/* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
         Pattern p = Pattern.compile("[\\s\\S]*value=\"(.+)\".*autocomplete[\\s\\S]*");
         Matcher m = p.matcher(form);
@@ -948,7 +961,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
         verifyUserResponse(response, Constants.getUserPrincipalFound + user, Constants.getRemoteUserFound + user);
         verifyRealm(response, realm);
         if (invalidRealm != null) {
-            verifyNotInGroups(response, invalidRealm);  // make sure that there is no realm name from the second IdentityStore.
+            verifyNotInGroups(response, invalidRealm); // make sure that there is no realm name from the second IdentityStore.
         }
         verifyGroups(response, groups);
     }
