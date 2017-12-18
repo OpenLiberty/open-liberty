@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package bval.v20;
+package bval.v20.multixml;
 
 import java.util.Locale;
 

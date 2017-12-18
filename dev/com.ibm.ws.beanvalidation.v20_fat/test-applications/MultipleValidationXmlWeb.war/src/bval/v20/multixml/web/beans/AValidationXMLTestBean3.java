@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package bval.v20.web.beans;
+package bval.v20.multixml.web.beans;
 
 import static org.junit.Assert.assertEquals;
 

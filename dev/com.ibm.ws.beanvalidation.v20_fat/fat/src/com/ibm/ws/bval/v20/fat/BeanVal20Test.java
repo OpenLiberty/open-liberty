@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import bval.v20.cdi.web.BeanValCDIServlet;
+import bval.v20.multixml.web.BeanValidationTestServlet;
 import bval.v20.web.BeanVal20TestServlet;
-import bval.v20.web.BeanValidationTestServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -52,7 +52,7 @@ public class BeanVal20Test extends FATServletClient {
 
         JavaArchive multiValXmlEjb2 = ShrinkHelper.buildJavaArchive("MultipleValidationXmlEjb2.jar", "bval.v20.ejb2.*");
 
-        WebArchive multiValXmlWar = ShrinkHelper.buildDefaultApp("MultipleValidationXmlWeb.war", "bval.v20.*");
+        WebArchive multiValXmlWar = ShrinkHelper.buildDefaultApp("MultipleValidationXmlWeb.war", "bval.v20.multixml.*");
 
         EnterpriseArchive multiValXmlEar = ShrinkWrap.create(EnterpriseArchive.class, "MultipleValidationXmlEjb.ear");
         multiValXmlEar.addAsModule(multiValXmlEjb1);
@@ -68,6 +68,7 @@ public class BeanVal20Test extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        // Stop the server but ignore any ConstraintViolationExceptions thrown by validation tests
+        server.stopServer("ConstraintViolationException");
     }
 }

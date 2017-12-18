@@ -9,23 +9,36 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package bval.v20.web;
+package bval.v20.multixml.web;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
+
+import javax.ejb.EJBException;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.junit.Test;
 
 import bval.v20.ejb1.web.beans.AValidationXMLTestBean1;
 import bval.v20.ejb2.web.beans.AValidationXMLTestBean2;
-import bval.v20.web.beans.AValidationXMLTestBean3;
+import bval.v20.multixml.web.beans.AValidationXMLTestBean3;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/BeanValidationTestServlet")
 public class BeanValidationTestServlet extends FATServlet {
+
+    @Inject
+    AValidationXMLTestBean1 bean1;
+
+    @Inject
+    AValidationXMLTestBean2 bean2;
 
     /**
      * Test to check if the ValidatorFactory is configured with the provided custom
@@ -226,5 +239,69 @@ public class BeanValidationTestServlet extends FATServlet {
         AValidationXMLTestBean3 testBean3 = (AValidationXMLTestBean3) ctx.lookup("java:app/MultipleValidationXmlWeb/AValidationXMLTestBean3");
         assertTrue("should have been able to use a Validator looked up via JNDI in the EJB",
                    testBean3.checkLookupValidator());
+    }
+
+    /**
+     * Test method parameter constraints for AValidationXMLTestBean1
+     */
+    @Test
+    @ExpectedFFDC("javax.validation.ConstraintViolationException")
+    public void testMethodParmConstraintsFromJar1() throws Exception {
+        if (bean1 == null) {
+            throw new Exception("CDI didn't inject the bean AValidationXMLTestBean1 into this servlet");
+        }
+
+        // Call method with non-null string of length 5. This should pass validation.
+        bean1.testMethodParmConstraintEJB1("12345");
+
+        try {
+            // Call method with null. This should throw an exception.
+            bean1.testMethodParmConstraintEJB1(null);
+            throw new Exception("interceptor didn't validate method call properly");
+        } catch (EJBException e) {
+            // Expected ConstraintViolationException will be wrapped in an EJBException
+            Exception causedBy = e.getCausedByException();
+            if (!(causedBy instanceof ConstraintViolationException)) {
+                throw e;
+            }
+            Set<ConstraintViolation<?>> cvs = ((ConstraintViolationException) causedBy).getConstraintViolations();
+            if (cvs.size() != 1) {
+                throw new Exception("interceptor validated method parametersand caught " +
+                                    "constraints, but size wasn't 1: " + cvs);
+            }
+
+        }
+    }
+
+    /**
+     * Test method parameter constraints for AValidationXMLTestBean2
+     */
+    @Test
+    @ExpectedFFDC("javax.validation.ConstraintViolationException")
+    public void testMethodParmConstraintsFromJar2() throws Exception {
+        if (bean2 == null) {
+            throw new Exception("CDI didn't inject the bean AValidationXMLTestBean2 into this servlet");
+        }
+
+        // Call method with non-null string of length 3. This should pass validation.
+        bean2.testMethodParmConstraintEJB2("123");
+
+        try {
+            // Call method with null. This should throw an exception.
+            bean2.testMethodParmConstraintEJB2(null);
+            throw new Exception("interceptor didn't validate method call properly");
+        } catch (EJBException e) {
+            // Expected ConstraintViolationException will be wrapped in an EJBException
+            Exception causedBy = e.getCausedByException();
+            if (!(causedBy instanceof ConstraintViolationException)) {
+                throw e;
+            }
+            Set<ConstraintViolation<?>> cvs = ((ConstraintViolationException) causedBy).getConstraintViolations();
+            if (cvs.size() != 1) {
+                throw new Exception("interceptor validated method parametersand caught " +
+                                    "constraints, but size wasn't 1: " + cvs);
+            }
+
+        }
     }
 }
