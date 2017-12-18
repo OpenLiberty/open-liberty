@@ -8,14 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.opentracing.cdi;
-
-import javax.enterprise.inject.spi.Extension;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {}
+/**
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+package com.ibm.ws.opentracing.tracer;
