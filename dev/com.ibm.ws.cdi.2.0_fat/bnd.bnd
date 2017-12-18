@@ -18,7 +18,8 @@ src: \
 	test-applications/builtinAnnoLiteralsApp/src,\
 	test-applications/cdiContainerConfigApp/src,\
 	test-applications/configuratorApp/src,\
-	test-applications/interceptionFactoryApp/src
+	test-applications/interceptionFactoryApp/src,\
+	test-applications/trimTestApp/src
 
 fat.project: true
 

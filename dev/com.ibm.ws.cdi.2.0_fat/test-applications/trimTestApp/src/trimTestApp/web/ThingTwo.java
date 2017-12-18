@@ -8,22 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package trimTestApp.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                BuiltinAnnoLiteralsTest.class,
-                CDIContainerConfigTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
-                TrimTest.class
-})
-public class FATSuite {
-
-}
+public class ThingTwo implements Thing {}
