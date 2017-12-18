@@ -37,8 +37,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.TextMap;
 import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 
 /**
@@ -98,7 +98,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             if (processing.contains("Traced(value=")) {
                 if (processing.contains("value=true")) {
                     System.out.println("BB - Annotated method Traced found and passed to interceptor - incoming");
-                    return;
+                    //return;
                 }
             }
 
@@ -152,7 +152,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             if (processing.contains("Traced(value=")) {
                 if (processing.contains("value=true")) {
                     System.out.println("BB - Annotated method Traced found and passed to interceptor - incoming");
-                    return;
+                    //return;
                 }
             }
 
