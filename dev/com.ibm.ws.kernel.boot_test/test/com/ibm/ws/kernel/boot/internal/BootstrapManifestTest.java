@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -122,6 +123,8 @@ public class BootstrapManifestTest {
         SharedBootstrapConfig config = SharedBootstrapConfig.createSharedConfig(outputMgr);
         config.setInitProps(initProps);
 
+        // Load system-packages_*.propeties from /test data/lib/simple_5.0.jar
+        // NOTE: this jar is checked in pre-built and needs to be manually updated when new JDK versions added
         setBootstrapJar(5); // use a jar with fake system packages that have version numbers
         BootstrapManifest m = new BootstrapManifest();
         m.prepSystemPackages(config);
@@ -132,6 +135,9 @@ public class BootstrapManifestTest {
         int index = javaVersion.indexOf('_');
         index = (index == -1) ? javaVersion.indexOf('-') : index;
         javaVersion = (index == -1) ? javaVersion : javaVersion.substring(0, index);
+
+        Assume.assumeTrue(!javaVersion.startsWith("9"));
+
         //validate the system packages obtained match the running java.version file name
         assertTrue("The system packages being used do not match the running java.version: "
                    + javaVersion
@@ -145,8 +151,6 @@ public class BootstrapManifestTest {
             versionsToCheck = "1.7.0,1.6.0";
         } else if (javaVersion.equals("1.8.0")) {
             versionsToCheck = "1.8.0,1.7.0,1.6.0";
-        } else if (javaVersion.equals("9")) {
-            versionsToCheck = "9,1.8.0,1.7.0,1.6.0";
         } else {
             fail("The running java version: " + javaVersion + " is newer than we have properties files for, system-packages udpates are required");
         }
