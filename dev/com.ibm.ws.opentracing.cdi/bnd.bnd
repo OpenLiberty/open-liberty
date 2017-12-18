@@ -41,4 +41,6 @@ Include-Resource: \
 	com.ibm.ws.opentracing;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.ws.jaxrs.2.0.common;version=latest
