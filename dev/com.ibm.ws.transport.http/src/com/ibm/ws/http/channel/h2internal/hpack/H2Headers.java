@@ -41,7 +41,7 @@ public class H2Headers {
      */
     public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table) {
         try {
-            return decodeHeader(buffer, table, true, null);
+            return decodeHeader(buffer, table, true, false, null);
         } catch (CompressionException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "decodeHeader error caught: " + e.toString());
@@ -60,7 +60,8 @@ public class H2Headers {
      * @return H2HeaderField
      * @throws CompressionException if invalid header names or values are found
      */
-    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, boolean isFirstHeader, H2ConnectionSettings settings) throws CompressionException {
+    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, boolean isFirstHeader,
+                                             boolean isTrailerBlock, H2ConnectionSettings settings) throws CompressionException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "decodeHeader");
@@ -116,7 +117,7 @@ public class H2Headers {
             if (header == null) {
                 throw new CompressionException("Received an invalid header index");
             }
-            checkIsValidH2Header(header);
+            checkIsValidH2Header(header, isTrailerBlock);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Found header: [" + header.getName() + ", " + header.getValue() + "]");
@@ -197,7 +198,7 @@ public class H2Headers {
 
         }
 
-        checkIsValidH2Header(header);
+        checkIsValidH2Header(header, isTrailerBlock);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Decoded the header: [" + header.getName() + ", " + header.getValue() + "]");
@@ -439,7 +440,7 @@ public class H2Headers {
      * @param H2HeaderField
      * @throws CompressionException if the H2HeaderField is not valid
      */
-    private static void checkIsValidH2Header(H2HeaderField header) throws CompressionException {
+    private static void checkIsValidH2Header(H2HeaderField header, boolean isTrailerField) throws CompressionException {
         if (!header.getName().startsWith(":")) {
             String headerName = header.getName();
             String headerValue = header.getValue();
@@ -455,6 +456,28 @@ public class H2Headers {
             if ("TE".equalsIgnoreCase(headerName) && !"trailers".equalsIgnoreCase(headerValue)) {
                 throw new CompressionException("Invalid header: TE header must have value \"trailers\": " + header.toString());
             }
+        } else {
+            if (isTrailerField) {
+                throw new CompressionException("Psuedo-headers are not allowed in trailers: " + header.toString());
+            }
+        }
+        if (isTrailerField) {
+            checkIsValidTrailerHeader(header);
+        }
+    }
+
+    /**
+     * Validate headers in a header block fragment. From the HTTP/1.1 spec, trailer block headers MUST NOT
+     * contain the following fields: Transfer-Encoding, Content-Length, or Trailer
+     *
+     * @param H2HeaderField
+     * @throws CompressionException if the header field was Transfer-Encoding, Content-Length, or Trailer
+     */
+    private static void checkIsValidTrailerHeader(H2HeaderField header) throws CompressionException {
+        String name = header.getName();
+        if ("Content-Length".equalsIgnoreCase(name) || "Transfer-Encoding".equalsIgnoreCase(name) ||
+            "Trailer".equalsIgnoreCase(name)) {
+            throw new CompressionException("Invalid trailer header received: " + header.toString());
         }
     }
 

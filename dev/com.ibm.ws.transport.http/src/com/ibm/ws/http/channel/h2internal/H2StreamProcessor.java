@@ -1135,12 +1135,10 @@ public class H2StreamProcessor {
 
             case HEADERS:
                 // (non-spec) HEADERS frame is only read by the server side if the connection was in idle state,
-                // meaning the client/remote side is starting a new stream and sending a request on it
-                if (state != StreamState.IDLE) {
-                    if (state == StreamState.OPEN && trailerExpected) {
-                        break;
-                    } else
-                        throw new ProtocolException("HEADERS Frame Received in the wrong state of: " + state);
+                // meaning the client/remote side is starting a new stream and sending a request on it, or if the
+                // stream was in open state, meaning that trailer headers were sent
+                if (state != StreamState.IDLE && state != StreamState.OPEN) {
+                    throw new ProtocolException("HEADERS Frame Received in the wrong state of: " + state);
                 }
                 break;
 
@@ -1349,15 +1347,15 @@ public class H2StreamProcessor {
             HashMap<String, String> pseudoHeaders = new HashMap<String, String>();
             ArrayList<H2HeaderField> headers = new ArrayList<H2HeaderField>();
             H2HeaderField current = null;
-            //Decode headers until we reach the end of the buffer
             boolean isFirstHeaderBlock;
             boolean isFirstHeader = true;
-
             boolean processTrailerHeaders = trailerExpected;
 
+            //Decode headers until we reach the end of the buffer
             while (buf.hasRemaining()) {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
-                current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock, this.muxLink.getConnectionSettings()));
+                current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
+                                                  processTrailerHeaders, this.muxLink.getConnectionSettings()));
                 if (current == null) {
                     // processed a dynamic table size update; go to the next header
                     continue;
@@ -1397,29 +1395,25 @@ public class H2StreamProcessor {
                     }
                     headers.add(current);
                 }
-                if ("TE".equalsIgnoreCase(current.getName()) && "trailers".equalsIgnoreCase(current.getValue())) {
-                    System.out.println("wtl: TE set");
-                    this.trailerExpected = true;
-                    headersCompleted = false;
-                }
-                if ("trailer".equalsIgnoreCase(current.getName())) {
-                    System.out.println("wtl: trailer set");
+                // check to see if the header name is "trailers"; if so, parse the value for later use
+                if ("trailer".equalsIgnoreCase(current.getName()) && trailerHeaderNames == null) {
                     this.trailerExpected = true;
                     headersCompleted = false;
                     String[] trailerHeaders = current.getValue().split(",");
+                    for (String header : trailerHeaders) {
+                        header.trim();
+                    }
                     trailerHeaderNames = java.util.Arrays.asList(trailerHeaders);
                 }
-                if (processTrailerHeaders) {
-                    //validate trailer headers
-                }
             }
-            if (!processTrailerHeaders) {
+            // only set headers on the link once
+            if (!processTrailerHeaders && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
                 //Add all decoded pseudo-headers / headers to the H2 inbound link wrap
                 this.h2HttpInboundLinkWrap.setReadHeaders(headers);
                 this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);
-            } else {
+                // add any trailer headers to the link header list
+            } else if (processTrailerHeaders) {
                 trailerExpected = false;
-                // add the trailer headers to the existing list of
                 ArrayList<H2HeaderField> readHeaders = h2HttpInboundLinkWrap.getReadHeaders();
                 for (H2HeaderField header : headers) {
                     if (trailerHeaderNames.contains(header.getName())) {
