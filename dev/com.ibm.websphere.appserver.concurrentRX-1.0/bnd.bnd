@@ -15,8 +15,6 @@
 javac.source: 1.8
 javac.target: 1.8
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 -dependson: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
