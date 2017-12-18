@@ -20,7 +20,7 @@ subprojects {
   rootProject.file('generated.properties').withInputStream { props.load(it) }
 
   /* Project artifacts are versioned by bnd Bundle-Version attribute, with the qualifier being current Git branch. */
-  def projectVersion = (isRelease ? bnd.buildID : "1.0.${qualifier}")
+  def projectVersion = (isRelease ? bnd.buildID : "1.0.${qualifier}-SNAPSHOT")
   if (releaseVersionOverride != null) {
     projectVersion = releaseVersionOverride
   }

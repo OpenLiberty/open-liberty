@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include: ${workspace}/gradle.properties
+-include: ${workspace}/gradle.properties, ${workspace}/generated.properties
 
 # Maven repository credentials
 -connection-settings: ${if;${artifactory.download.token};server;-dummy};id=https://${artifactory.download.server};username=${artifactory.download.user};password=${artifactory.download.token}, \
@@ -17,51 +17,32 @@
 # Logging for repository connection when debugging
 #-connection-log: ${.}/connection-log.txt
 
-maven.release.name: release
-
 -plugin.1.Local: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = Local; \
+        noupdateOnRelease = true; \
         local = ${build}/local
 
 -plugin.2.Release: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = Release; \
-        releaseUrl="${fileuri;${build}/${maven.release.name}}"; \
-        snapshotUrl="${fileuri;${build}/${maven.release.name}}"; \
-        local = ${build}/local
+        noupdateOnRelease = true; \
+        local = ${build}/${maven.release.name}
 
-fetch.oss.repository: \
-    aQute.bnd.repository.maven.provider.MavenBndRepository; \
-        name = RemotePublic; \
-        releaseUrl = https://repo.maven.apache.org/maven2/; \
-        index = ${build}/oss_dependencies.maven
+-plugin.3.RemotePublic = ${fetch.oss.repository}
 
-fetch.oss.ibm.repository: \
-    aQute.bnd.repository.maven.provider.MavenBndRepository; \
-        name = RemoteIBM; \
-        local = ~/.ibmdhe/repository; \
-        releaseUrl = http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/; \
-        index = ${build}/oss_ibm.maven
+-plugin.4.RemoteIBM = ${fetch.oss.ibm.repository}
 
-fetch.ibm.java.repository:
+-plugin.5.RemoteIBMJava = ${fetch.ibm.java.repository}
 
-push.ibm.repository:
-
--plugin.3.RemotePublic: ${fetch.oss.repository}
-
--plugin.4.RemoteIBM: ${fetch.oss.ibm.repository}
-
--plugin.5.RemoteIBMJava: ${fetch.ibm.java.repository}
-
--plugin.6.RemotePublish: ${push.ibm.repository}
+-plugin.6.RemotePublish = ${push.ibm.repository}
 
 # TODO: Disabled while testing whether this works correctly.
 # Remove -SNAPSHOT for releases
 #-snapshot: ${if;${is.release};;SNAPSHOT}
 
 # Don't upload sources or javadoc unless bundle overrides
--maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
+-maven-release: ${if;${is.remote.publishing};remote;local}, sources;path=NONE, javadoc;path=NONE
 
 bin: ${if;${driver;gradle};build/classes/java/main;bin}
 testbin: ${if;${driver;gradle};build/classes/java/test;bin_test}
@@ -77,8 +58,6 @@ javac.encoding: UTF-8
 -sources: false
 
 -pedantic: true
--fixupmessages.javac17: "The .JRE container is set to JavaSE-1.8 but bnd is compiling against 1.7";is:=ignore
--fixupmessages.nosrc: "bnd's src folder 'src' is not in the Eclipse build path";is:=ignore
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
 
 -releaserepo: ${if;${is.remote.publishing};RemotePublish;Release}
@@ -86,7 +65,7 @@ javac.encoding: UTF-8
 -buildrepo: Local
 -groupid: ${if;${test.project};test;dev}
 -pom: 
-#-dsannotations-options: version;minimum=1.2
+-dsannotations-options: version;minimum=1.2
 
 buildEngineName: defaultEngine
 
@@ -106,7 +85,9 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 mockito: org.mockito.mockito-core;version="[1.9,2)",\
   org.objenesis;version="[2.1,3)"
 
--pluginpath: ${if;${driver;gradle};${workspace}/cnf/lib/wlp-bndPlugins.jar,${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar;}
+-pluginpath: \
+    ${workspace}/cnf/lib/wlp-bndPlugins.jar,\
+    ${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class
@@ -140,8 +121,9 @@ javac.bootclasspath.java8:
 
 # catch-all if something goes wrong. This should be updated in
 # settings.gradle
-defaultjdklib.bootclasspath:
-
+defaultjdklib.bootclasspath: \
+    ${java.home}/jre/lib/rt.jar;version=file;boot=true
+	
 internaljavac.bootclasspath.1.4: \
     com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.6.0;boot=true
 

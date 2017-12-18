@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -51,7 +50,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 /* disable-formatter */
-@Component(service = FileMonitor.class,
+@Component(xmlns = "http://felix.apache.org/xmlns/scr/v1.2.0-felix",
+           service = FileMonitor.class,
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            configurationPid = "com.ibm.ws.kernel.metatype.helper.fileset",
@@ -59,7 +59,6 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
                        "service.vendor=IBM",
                        "monitor.filter=files",
                        "monitor.recurse:Boolean=false" })
-@DSExt.ConfigurableServiceProperties
 public class FilesetImpl implements Fileset, FileMonitor {
     private static final TraceComponent tc = Tr.register(FilesetImpl.class);
     private static final boolean DEFAULT_CASE_SENSITIVITY = true; // default to true

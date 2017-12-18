@@ -40,7 +40,6 @@ instrument.classesIncludes: com/ibm/ws/ejbcontainer/osgi/**/*.class
   com.ibm.websphere.ejbcontainer.test.osgi.pmi.internal.TestEJBPMICollaboratorFactory
   
 test.project: true
-#generate.replacement: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
