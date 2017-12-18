@@ -67,7 +67,7 @@ public class ServiceComponentDeclaration {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version='1.0' encoding='utf-8' standalone='no'?>\n");
-        sb.append("<component xmlns='http://www.osgi.org/xmlns/scr/v1.3.0' configuration-policy='ignore' name='").append(name).append("'>\n");
+        sb.append("<component xmlns='http://felix.apache.org/xmlns/scr/v1.1.0-felix' configuration-policy='ignore' name='").append(name).append("'>\n");
         sb.append("  <implementation class='").append(implementationClass).append("' />\n");
         sb.append("  <service>\n");
         for (String iface : providedInterfaces)

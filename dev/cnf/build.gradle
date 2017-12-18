@@ -39,20 +39,7 @@ task copyMavenLibs(type: Copy) {
     into cnf.file('mavenlibs')
 }
 
-task cleanRepos(type: Delete) {
-    delete fileTree('release')
-    delete 'release.mvn'
-    delete fileTree('local')
-    delete 'local.mvn'
-    delete fileTree('mavenlibs')
-}
-
-clean{
-    dependsOn cleanRepos
-}
-
 task initialize {
-    dependsOn cleanRepos
     dependsOn copyMavenLibs
     doLast {
         println "Gradle Initialized"
@@ -210,7 +197,6 @@ task createGaESAList {
 task createGeneratedReplacementProjects {
     doLast {
         File templateDir = new File(projectDir, 'gradle/projects.for.ivy.ant')
-        def excludeList = []
         rootProject.fileTree(dir: '.', include: '*').visit { element ->
             if (element.isDirectory()) {
                 String relativePath = "$element.relativePath"
@@ -218,10 +204,10 @@ task createGeneratedReplacementProjects {
                 if (bndProject == null) {
                     return
                 }
-                boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', 'false'))
-                if (!generateReplacement && 'true'.equals(bndProject.get('test.project', 'false'))) {
+                if ('true'.equals(bndProject.get('test.project', 'false'))) {
                     return
                 }
+
                 List bsns = bndProject.getBsns()
                 int bsnCount = bndProject.isNoBundles() ? 0 : bndProject.getBsns().size()
                 if (bsnCount > 0) {
@@ -230,7 +216,6 @@ task createGeneratedReplacementProjects {
                     //println "projectName=" + relativePath + ", artifact=" + artifact
                     File targetDir = new File(buildDir, 'replacements/' + relativePath)
                     targetDir.mkdirs()
-                    excludeList.add('dev/' + relativePath + '/')
                     copy {
                         from templateDir
                         into targetDir
@@ -269,11 +254,6 @@ $classpathEntries</classpath>
                 }
             }
         }
-        File excludeFile = new File(project.buildDir, 'excludeList.txt')
-        excludeFile.createNewFile()
-        String text = ""
-        excludeList.sort().each { text += it + '\n' }
-        excludeFile.text = text
     }
 }
 
@@ -335,6 +315,7 @@ task zipIvyBootstrap(type: Zip) {
     dependsOn createIvyXml
     dependsOn createGeneratedReplacementProjects
     dependsOn createGaESAList
+    dependsOn createIndex
     baseName 'ivy-bootstrap'
     into 'prereq.published', {from new File(project.buildDir, 'ivy.xml'), new File(project.buildDir, 'ivy-latest.xml')}
     from new File(project.buildDir, 'replacements')
@@ -344,10 +325,9 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGradleBootstrap
     dependsOn createGeneratedReplacementProjects
     dependsOn createGaESAList
+    dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
-                                    new File(project.buildDir, 'gaFeatures.txt'),
-                                    new File(project.buildDir, 'excludeList.txt') }
+    into 'prereq.published', {from new File(project.buildDir, 'dependencies.gradle'), new File(project.buildDir, 'gaFeatures.txt')}
     from new File(project.buildDir, 'replacements')
 }
 

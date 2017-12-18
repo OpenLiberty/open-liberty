@@ -74,7 +74,7 @@
     
     <target name="statusChecksGHE">
        <sequential>
-           <startActivity label="Create status checks for Open Liberty EBC builds linked to pull requests and commits"/>
+           <startActivity label="Create status checks for Open Libety EBC builds linked to pull requests and commits"/>
            <createStatusChecksForOpenLibertyBuilds 
                repositoryAddress="${repositoryAddress}"
                userId="${userId}"

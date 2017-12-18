@@ -55,7 +55,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.ssl.default",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM")
+           property = "service.vendor=IBM",
+           xmlns = "http://felix.apache.org/xmlns/scr/v1.2.0-felix")
 public class SSLComponent extends GenericSSLConfigService implements SSLSupportOptional {
 
     /** Value for the SSLSupport property that indicates an active instance */
