@@ -41,7 +41,7 @@ public class TracedInterceptor {
         // <package name>.<class name>.<method name>"
         // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#321-the-traced-annotation
 
-        String operationName = context.getClass().getName() + "." + context.getMethod().getName();
+        String operationName = context.getMethod().getDeclaringClass().getName() + "." + context.getMethod().getName();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " operationName", operationName);
