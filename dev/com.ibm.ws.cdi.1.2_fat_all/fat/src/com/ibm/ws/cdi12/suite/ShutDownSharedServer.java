@@ -29,6 +29,17 @@ public class ShutDownSharedServer extends SharedServer {
     }
 
     @Override
+    protected void before() {
+        try {
+            getLibertyServer().refreshServerXMLFromPublish();
+            super.before();
+        } catch (Exception e) {
+            throw new RuntimeException(e); //TODO something better here.
+        }
+    }
+
+
+    @Override
     protected void after() {
         if (shutdownAfterTest && getLibertyServer().isStarted()) {
             try {
