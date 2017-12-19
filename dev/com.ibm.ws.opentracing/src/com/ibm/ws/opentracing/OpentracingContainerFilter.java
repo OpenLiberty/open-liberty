@@ -91,7 +91,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         boolean process = true;
 
         String operationName = OpentracingService.getOperationName(resourceInfo.getResourceMethod());
-        if (operationName != null && OpentracingService.OPERATION_NAME_UNTRACED.equals(operationName)) {
+
+        // Check if this JAXRS method has @Traced(false)
+        if (OpentracingService.OPERATION_NAME_UNTRACED.equals(operationName)) {
             process = false;
         }
 
