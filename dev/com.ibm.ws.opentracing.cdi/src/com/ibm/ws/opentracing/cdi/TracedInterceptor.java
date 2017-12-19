@@ -111,6 +111,9 @@ public class TracedInterceptor {
             } catch (Exception e) {
                 OpentracingService.addSpanErrorInfo(span, e);
                 throw e;
+            } catch (Error e) {
+                OpentracingService.addSpanErrorInfo(span, e);
+                throw e;
             } finally {
                 span.finish();
             }
