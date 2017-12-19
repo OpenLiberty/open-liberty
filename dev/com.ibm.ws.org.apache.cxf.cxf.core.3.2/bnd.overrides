@@ -5,6 +5,8 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.core.3.2
 
 Bundle-Activator: com.ibm.ws.jaxrs21.cxf.core.NoOpActivator
 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 exportVer=3.2.1
 
 #Export-Package: org.apache.cxf,\
