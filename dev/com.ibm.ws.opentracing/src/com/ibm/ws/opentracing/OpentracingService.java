@@ -48,6 +48,16 @@ public class OpentracingService {
     private static final TraceComponent tc = Tr.register(OpentracingService.class);
 
     /**
+     * Represents a method that is Traced with value = true and the default operation name.
+     */
+    public static final String OPERATION_NAME_TRACED = OpentracingService.class.getName() + ".TRACED";
+
+    /**
+     * Represents a method that is Traced with value = false (i.e. untraced).
+     */
+    public static final String OPERATION_NAME_UNTRACED = OpentracingService.class.getName() + ".UNTRACED";
+
+    /**
      * List of all active span filters.
      */
     private static volatile SpanFilter[] allFilters = new SpanFilter[0];
@@ -161,16 +171,6 @@ public class OpentracingService {
 
         return result;
     }
-
-    /**
-     * Represented a method that is Traced with value = true and the default operation name.
-     */
-    public static final String OPERATION_NAME_TRACED = OpentracingService.class.getName() + ".TRACED";
-
-    /**
-     * Represented a method that is Traced with value = false (i.e. untraced).
-     */
-    public static final String OPERATION_NAME_UNTRACED = OpentracingService.class.getName() + ".UNTRACED";
 
     /**
      * If {@code method} has the {@code Traced} annotation with {@code value}
