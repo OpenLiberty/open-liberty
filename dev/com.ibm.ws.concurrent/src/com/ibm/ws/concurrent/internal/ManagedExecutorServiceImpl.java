@@ -48,6 +48,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
+import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -61,10 +62,11 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
+           service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class },
            reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
-public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent {
+public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
@@ -271,10 +273,20 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     @Override
+    public WSContextService getContextService() {
+        return AccessController.doPrivileged(contextSvcAccessor);
+    }
+
+    @Override
     public Set<String> getDependentApplications() {
         Set<String> members = new HashSet<String>(applications);
         applications.removeAll(members);
         return members;
+    }
+
+    @Override
+    public PolicyExecutor getNormalPolicyExecutor() {
+        return policyExecutor;
     }
 
     /** {@inheritDoc} */

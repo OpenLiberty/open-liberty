@@ -127,20 +127,18 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertNotSame(currentThreadName, threadName);
         assertTrue(threadName, !threadName.startsWith("Default Executor-thread-"));
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        // TODO enable once we implement context capture from thread that creates the stage
-        //if (lookupResult instanceof Throwable)
-        //    throw new Exception((Throwable) lookupResult);
-        //assertEquals(defaultManagedExecutor, lookupResult);
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenRunAsync (second occurrence) on default execution facility
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
         assertNotSame(currentThreadName, threadName);
         assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        // TODO enable once we implement context capture from thread that creates the stage
-        //if (lookupResult instanceof Throwable)
-        //    throw new Exception((Throwable) lookupResult);
-        //assertEquals(defaultManagedExecutor, lookupResult);
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
 
         // thenRunAsync requested from unmanaged thread
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
