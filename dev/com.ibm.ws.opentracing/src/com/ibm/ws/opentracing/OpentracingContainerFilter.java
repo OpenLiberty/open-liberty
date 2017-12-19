@@ -91,7 +91,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         boolean process = true;
 
         String operationName = OpentracingService.getOperationName(resourceInfo.getResourceMethod());
-        if (OpentracingService.OPERATION_NAME_UNTRACED.equals(operationName)) {
+        if (operationName != null && OpentracingService.OPERATION_NAME_UNTRACED.equals(operationName)) {
             process = false;
         }
 
