@@ -132,4 +132,15 @@ public class WeldCDIUtils {
         }
         return classNames;
     }
+
+    /**
+     * In CDI 1.2, there is no trim element support. So just return false
+     * 
+     * @param beansXml the beans.xml
+     * @return false as there is no support for trim mode in cdi 1.2
+     */
+    public static boolean isTrimmed(BeansXml beansXml) {
+        return false;
+    }
+
 }

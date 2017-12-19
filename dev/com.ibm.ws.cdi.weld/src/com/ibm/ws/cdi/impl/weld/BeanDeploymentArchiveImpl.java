@@ -356,7 +356,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         Set<String> classNames = new HashSet<String>();
 
         BeanDiscoveryMode mode = getBeanDiscoveryMode();
-        if (mode == BeanDiscoveryMode.ANNOTATED) {
+        if ((mode == BeanDiscoveryMode.ANNOTATED) || ((mode == BeanDiscoveryMode.ALL) && WeldCDIUtils.isTrimmed(this.beansXml))) {
             //first find the bean defining annotations in this archive, any accessible archives and any default bean defining annotations
             Set<String> beanDefiningAnnotations = scanForBeanDefiningAnnotations(true);
             //then find the classes in this archive that are annotated with those annotations
@@ -1016,4 +1016,23 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     public String getEEModuleDescriptorId() {
         return eeModuleDescptorId;
     }
+
+    /**
+     * This method is used by Weld 3 for performance optimisation
+     * 
+     * @return all bean classes
+     */
+    public Collection<Class<?>> getLoadedBeanClasses() {
+        return this.beanClasses.values();
+    }
+
+    /**
+     * This method is used by Weld 3 for performance optimisation
+     * 
+     * @return all classes in the archive
+     */
+    public Collection<String> getKnownClasses() {
+        return getAllClazzes();
+    }
+
 }
