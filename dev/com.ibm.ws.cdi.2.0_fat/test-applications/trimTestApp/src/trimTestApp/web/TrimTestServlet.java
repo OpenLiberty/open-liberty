@@ -10,7 +10,6 @@
  *******************************************************************************/
 package trimTestApp.web;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -34,11 +33,19 @@ public class TrimTestServlet extends FATServlet {
     BeanManager beanManager;
 
     @Test
-    public void testTrim() throws Exception {
+    public void testBeans() {
         Set<Bean<?>> beans = beanManager.getBeans(Thing.class);
         assertTrue("Wrong number of beans found: " + beans.size(), beans.size() == 1);
         for (Bean<?> bean : beans) {
-            assertFalse("Did not expect to find " + ThingTwo.class.getName(), bean.getBeanClass().getName().equals(ThingTwo.class.getName()));
+            assertTrue("Did not expect to find " + bean.getBeanClass().getName(), bean.getBeanClass().getName().equals(ThingOne.class.getName()));
         }
+    }
+
+    @Test
+    public void testPATObservers() {
+        assertTrue("ProcessAnnotatedType<ThingOne> not observed", PATObserver.observed.contains(ThingOne.class.getName()));
+        assertTrue("ProcessAnnotatedType<ThingTwo> not observed", PATObserver.observed.contains(ThingTwo.class.getName()));
+        assertTrue("ProcessAnnotatedType<Thing> not observed", PATObserver.observed.contains(Thing.class.getName()));
+        assertTrue("Unexpected observer count: " + PATObserver.observed.size(), 3 == PATObserver.observed.size());
     }
 }

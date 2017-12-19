@@ -47,10 +47,12 @@ public class TrimTest extends FATServletClient {
 
         WebArchive app1 = ShrinkWrap.create(WebArchive.class,
                                             APP_NAME + ".war").addPackages(true,
-                                                                           APP_NAME + ".web").addAsWebInfResource(new File("test-applications/"
-                                                                                                                           + APP_NAME
-                                                                                                                           + "/resources/META-INF/beans.xml"),
-                                                                                                                  "beans.xml") // NEEDS TO GO IN WEB-INF in a war
+                                                                           APP_NAME + ".web").addAsManifestResource(new File("test-applications/" + APP_NAME
+                                                                                                                             + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+                                                                                                                    "services/javax.enterprise.inject.spi.Extension").addAsWebInfResource(new File("test-applications/"
+                                                                                                                                                                                                   + APP_NAME
+                                                                                                                                                                                                   + "/resources/META-INF/beans.xml"),
+                                                                                                                                                                                          "beans.xml") // NEEDS TO GO IN WEB-INF in a war
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
         // Write the WebArchive to 'publish/servers/cdi20BasicServer/dropins/trimTestApp.war' and print the contents
         ShrinkHelper.exportDropinAppToServer(server1, app1);
