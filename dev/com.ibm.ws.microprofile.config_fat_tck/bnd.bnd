@@ -30,5 +30,3 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	org.apache.derby:derbynet;version=10.11.1.1

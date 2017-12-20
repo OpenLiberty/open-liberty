@@ -1,167 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Licensed under the Apache License, Version 2.0 (the "License"); you 
-	may not use this file except in compliance with the License. You may obtain 
-	a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
-	required by applicable law or agreed to in writing, software distributed 
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-	the specific language governing permissions and limitations under the License. -->
+    may not use this file except in compliance with the License. You may obtain 
+    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+    required by applicable law or agreed to in writing, software distributed 
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+    the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.ibm.ws.microprofile.config</groupId>
-	<artifactId>tck.runner.tck</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<name>MicroProfile Config TCK Runner TCK Module</name>
+    <groupId>com.ibm.ws.microprofile.config</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>MicroProfile Config TCK Runner TCK Module</name>
 
-	<properties>
-		<!--  the below is used in arquillian.xml -->
-		<wlp>${wlp}</wlp>
-		
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+    <properties>
+        <!-- the below is used in arquillian.xml -->
+        <wlp>${wlp}</wlp>
 
-		<defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
-		<suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
-		<targetDirectory>${project.basedir}/target</targetDirectory>
-	</properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
-	<build>
-	<directory>${targetDirectory}</directory>
-		<defaultGoal>clean test</defaultGoal>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>build-classpath</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>build-classpath</goal>
-						</goals>
-						<configuration>
-							<!-- configure the plugin here -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.17</version>
-				<configuration>
-<!--  					<properties>
-						<property>
-							<name>className</name>
-							<value>${className}</value>
-						</property>
-						<property>
-							<name>methodName</name>
-							<value>${methodName}</value>
-						</property>
-						<property>
-							<name>packageName</name>
-							<value>${packageName}</value>
-						</property>
-					</properties>
-	-->
-					<systemPropertyVariables>
-				<!--		<packageName>${packageName</packageName> -->
-				<!--		<className>${className}</className> -->
-				<!--		<methodName>${methodName}</methodName> -->
-				        <wlp>${wlp}</wlp>
-						<tck_server>${tck_server}</tck_server>
-						<tck_port>${tck_port}</tck_port>
-					</systemPropertyVariables>
-					<suiteXmlFiles>
-						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-					</suiteXmlFiles>
-					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-file</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.wagon</groupId>
-			<artifactId>wagon-http</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-aether-provider</artifactId>
-			<version>3.3.9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sonatype.aether</groupId>
-			<artifactId>aether-connector-wagon</artifactId>
-			<version>1.13.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.microprofile.config</groupId>
-			<artifactId>microprofile-config-api</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.microprofile.config</groupId>
-			<artifactId>microprofile-config-tck</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.9.9</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.arquillian.testng</groupId>
-			<artifactId>arquillian-testng-container</artifactId>
-			<version>1.1.14.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-wlp-managed-8.5</artifactId>
-			<version>1.0.0.Final-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.microprofile.apis</groupId>
-			<artifactId>microprofile-config_1.1_api</artifactId>
-			<version>1.1-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${com.ibm.websphere.org.eclipse.microprofile.config}</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.wlp.lib</groupId>
-			<artifactId>wlp.mpConfig</artifactId>
-			<version>1.1</version>
-			<scope>system</scope>
-			<systemPath>${com.ibm.ws.microprofile.config}</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.ibm.wlp.lib</groupId>
-			<artifactId>wlp.mpConfig.cdi</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${com.ibm.ws.microprofile.config.cdi}	</systemPath>
-		</dependency>
-	</dependencies>
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+    </properties>
+
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <!-- <properties> <property> <name>className</name> <value>${className}</value> 
+                        </property> <property> <name>methodName</name> <value>${methodName}</value> 
+                        </property> <property> <name>packageName</name> <value>${packageName}</value> 
+                        </property> </properties> -->
+                    <systemPropertyVariables>
+                        <!-- <packageName>${packageName</packageName> -->
+                        <!-- <className>${className}</className> -->
+                        <!-- <methodName>${methodName}</methodName> -->
+                        <wlp>${wlp}</wlp>
+                        <tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-file</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+            <version>3.3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-wagon</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-tck</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>1.1.14.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-wlp-managed-8.5</artifactId>
+            <version>1.0.0.Final-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.apis</groupId>
+            <artifactId>microprofile-config_1.1_api</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.wlp.lib</groupId>
+            <artifactId>wlp.mpConfig</artifactId>
+            <version>1.1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.microprofile.config}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.wlp.lib</groupId>
+            <artifactId>wlp.mpConfig.cdi</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.microprofile.config.cdi}    </systemPath>
+        </dependency>
+    </dependencies>
 </project>
