@@ -5,6 +5,8 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2
 
 Bundle-Activator: com.ibm.ws.jaxrs21.rt.frontend.jaxrs.NoOpActivator
 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 -dsannotations: com.ibm.ws.jaxrs21.component.*
 
 Import-Package: \

@@ -22,7 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 CDIContainerConfigTest.class,
                 ConfiguratorTest.class,
                 InterceptionFactoryTest.class,
-                TrimTest.class
+                TrimTest.class,
+                SecureAsyncEventsTest.class,
 })
 public class FATSuite {
 

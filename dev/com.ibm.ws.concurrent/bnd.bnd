@@ -18,12 +18,16 @@ Bundle-Description: Application server-managed concurrency utilities; version=${
 WS-TraceGroup: concurrent
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Export-Package:\
+  com.ibm.ws.concurrent
     
 Private-Package:\
-     com.ibm.ws.concurrent.*
+  com.ibm.ws.concurrent.internal.*,\
+  com.ibm.ws.concurrent.resources.*
 
 Include-Resource:\
-    OSGI-INF=resources/OSGI-INF
+  OSGI-INF=resources/OSGI-INF
 
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
