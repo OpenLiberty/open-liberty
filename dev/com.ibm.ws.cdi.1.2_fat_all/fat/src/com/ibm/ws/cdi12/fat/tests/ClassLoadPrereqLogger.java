@@ -34,7 +34,7 @@ public class ClassLoadPrereqLogger extends LoggingTest {
 
     @Test
     @Mode(TestMode.FULL)
-    public void testAfterTypeDecoratorAddition() throws Exception {
+    public void testClassLoadPrereqLogger() throws Exception {
         verifyResponse("/TestClassLoadPrereqLogger/testservlet", "Test passed");
     }
 

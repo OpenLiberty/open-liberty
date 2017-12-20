@@ -11,6 +11,7 @@
 package web.war.identitystores.ldap.ldap1;
 
 import java.util.logging.Logger;
+
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 @LdapIdentityStoreDefinition(
@@ -18,7 +19,7 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
                              callerBaseDn = "",
                              callerSearchBase = "ou=users,o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             callerSearchFilter = "(objectclass=person)",
+                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
                              callerNameAttribute = "uid",
                              groupNameAttribute = "cn",
                              groupSearchBase = "ou=groups,o=ibm,c=us",
@@ -27,10 +28,10 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
                              groupMemberAttribute = "member",
                              bindDn = "uid=admin,ou=users,o=ibm,c=us",
                              bindDnPassword = "s3cur1ty",
-                             priority = 100
-                             )
+                             priority = 100)
 public class LdapIpAddressAnnotate100 {
     private static Logger log = Logger.getLogger(LdapIpAddressAnnotate100.class.getName());
+
     public LdapIpAddressAnnotate100() {
         log.info("<ctor>");
     }

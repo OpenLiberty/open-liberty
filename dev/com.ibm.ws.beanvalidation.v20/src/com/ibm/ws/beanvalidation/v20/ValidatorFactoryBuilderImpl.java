@@ -32,6 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
 import com.ibm.ws.util.ThreadContextAccessor;
@@ -118,8 +119,10 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
             }
             Configuration<?> config = Validation.byDefaultProvider().configure();
 
-            HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
-            hvConfig.externalClassLoader(bvalClassLoader);
+            if (config instanceof HibernateValidatorConfiguration) {
+                HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
+                hvConfig.externalClassLoader(bvalClassLoader);
+            }
 
             if (validationReleasableFactorySR.getReference() != null) {
                 ValidationReleasableFactory releasableFactory = validationReleasableFactorySR.getServiceWithException();

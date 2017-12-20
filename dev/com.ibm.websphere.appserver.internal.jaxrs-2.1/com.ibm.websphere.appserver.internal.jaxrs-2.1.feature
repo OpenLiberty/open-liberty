@@ -19,6 +19,14 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.ws.org.apache.neethi.3.0.2, \
  com.ibm.ws.jaxrs.2.1.common, \
  com.ibm.ws.jaxrs.2.x.config, \
+ com.ibm.ws.org.apache.cxf.cxf.core.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
  com.ibm.websphere.javaee.jaxrs.2.1; location:="dev/api/spec/,lib/", \
  com.ibm.ws.jaxrs.2.0.tools, \

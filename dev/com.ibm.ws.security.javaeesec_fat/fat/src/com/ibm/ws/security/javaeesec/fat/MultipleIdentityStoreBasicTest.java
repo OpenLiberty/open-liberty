@@ -12,8 +12,6 @@ package com.ibm.ws.security.javaeesec.fat;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,24 +20,21 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
+import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-
-import com.ibm.ws.security.javaeesec.fat_helper.Constants;
-import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
-import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
-import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 @MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
@@ -72,7 +67,8 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.basic","web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.basic", "web.war.identitystores.ldap.ldap1",
+                                               "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -130,8 +126,8 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
+        verifyNotInGroups(response, "group:localhost:10389/"); // make sure that there is no realm name from the second IdentityStore.
+        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -158,8 +154,8 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
         verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyNotInGroups(response, "group:127.0.0.1:10389/"); // make sure that there is no realm name from the second IdentityStore.
+        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -178,7 +174,7 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.FULL)
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISBasicAuthWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -187,8 +183,8 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
+        verifyNotInGroups(response, "group:127.0.0.1:10389/"); // make sure that there is no realm name from the second IdentityStore.
+        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -206,8 +202,8 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISBasicAuthNoCred_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = executeGetRequestNoAuthCreds(httpclient, urlBase + queryString, 
-                                                          HttpServletResponse.SC_UNAUTHORIZED);
+        String response = executeGetRequestNoAuthCreds(httpclient, urlBase + queryString,
+                                                       HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -246,7 +242,7 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISBasicAuthWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

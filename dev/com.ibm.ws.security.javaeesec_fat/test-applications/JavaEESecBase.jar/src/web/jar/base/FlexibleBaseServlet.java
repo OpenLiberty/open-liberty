@@ -29,12 +29,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import javax.inject.Inject;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
@@ -42,9 +40,8 @@ import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
+import javax.security.enterprise.SecurityContext;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
-import javax.security.enterprise.credential.UsernamePasswordCredential;
-import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.ServletException;
@@ -61,15 +58,13 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
-import javax.security.enterprise.SecurityContext;
-
 /**
  * Base servlet which the JASPI test servlets extend.
  */
 public abstract class FlexibleBaseServlet extends HttpServlet {
     @Inject
     private SecurityContext securityContext;
-    
+
     private static final long serialVersionUID = 1L;
     private String servletName;
     public List<BaseServletStep> mySteps = new ArrayList<BaseServletStep>();
@@ -80,6 +75,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
     public FlexibleBaseServlet(String servletName) {
         this.servletName = servletName;
     }
+
     public FlexibleBaseServlet(String servletName, String moduleName) {
         this.servletName = servletName;
         this.moduleName = moduleName;
@@ -147,8 +143,8 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
      * @throws IOException
      */
     public void performTask(String type,
-                               HttpServletRequest req,
-                               HttpServletResponse resp, StringBuffer sb) throws Exception {
+                            HttpServletRequest req,
+                            HttpServletResponse resp, StringBuffer sb) throws Exception {
         performCustomTasks(type, req, resp, sb);
     }
 
@@ -311,6 +307,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
         }
 
     }
+
     public class WriteSecurityContextStep implements BaseServletStep {
 
         @Override
@@ -320,18 +317,41 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
                                      + securityContext.isCallerInRole("javaeesec_basic"));
             writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_form): " + securityContext.isCallerInRole("javaeesec_form"));
             String role = p.getRequest().getParameter("role");
-            if (role == null) {
-                writeLine(p.getBuffer(), "You can customize the isUserInRole call with the follow paramter: ?role=name");
+            if (role != null) {
+                writeLine(p.getBuffer(), "securityContext.isCallerInRole(" + role + "): " + securityContext.isCallerInRole(role));
             }
-            writeLine(p.getBuffer(), "securityContext.isCallerInRole(" + role + "): " + securityContext.isCallerInRole(role));
-            
-            //writeLine(p.getBuffer(), "getRemoteUser: " + p.getRequest().getRemoteUser());
+
+            // look for principals by type if type passed in
+            String type = p.getRequest().getParameter("type");
+            if (type != null) {
+                if (type.equals("Principal")) {
+                    Set<Principal> principals = securityContext.getPrincipalsByType(Principal.class);
+                    writeLine(p.getBuffer(), "securityContext.GetPrincipalsByType number of principals: " + principals.size());
+                }
+            }
+
+            // check to see if user has access to a resource
+            String resource = p.getRequest().getParameter("resource");
+            String methods = p.getRequest().getParameter("methods");
+            if (resource != null && methods != null) {
+                String[] servletMethods = methods.split(",");
+                if (servletMethods.length == 1) {
+                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "): "
+                                             + securityContext.hasAccessToWebResource(resource, servletMethods[0]));
+                }
+                if (servletMethods.length == 2) {
+                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "," + servletMethods[1] + "): "
+                                             + securityContext.hasAccessToWebResource(resource, servletMethods[0], servletMethods[1]));
+                }
+            }
+
             writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): " + securityContext.getCallerPrincipal());
 
             if (securityContext.getCallerPrincipal() != null) {
-                writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): "
+                writeLine(p.getBuffer(), "securityContext.getCallerPrincipal().getName(): "
                                          + securityContext.getCallerPrincipal().getName());
             }
+
         }
 
     }
@@ -488,7 +508,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
     }
 
     public abstract class ProcessStep implements BaseServletStep {
-        public  HttpURLConnection prepareConnection(BaseServletParms p, String rawUrl) throws MalformedURLException, IOException, ProtocolException {
+        public HttpURLConnection prepareConnection(BaseServletParms p, String rawUrl) throws MalformedURLException, IOException, ProtocolException {
             URL url = new URL(rawUrl);
             writeLine(p.getBuffer(), "HttpURLConnection URL is set to: " + url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -513,7 +533,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
         }
 
         public void processResponse(BaseServletParms p,
-                                       HttpURLConnection connection) throws IOException, UnsupportedEncodingException {
+                                    HttpURLConnection connection) throws IOException, UnsupportedEncodingException {
             InputStream responseStream = null;
             int statusCode = connection.getResponseCode();
             writeLine(p.getBuffer(), "HttpURLConnection status code from connect: " + statusCode);

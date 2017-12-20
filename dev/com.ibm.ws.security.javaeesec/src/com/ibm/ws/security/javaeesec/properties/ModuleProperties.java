@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.properties;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -18,24 +19,41 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 public class ModuleProperties {
-    private Map<Class, Properties> authMechMap;
+    private Map<Class<?>, Properties> authMechMap;
+    private URL location;
 
-    public ModuleProperties(Map<Class, Properties> authMechMap) {
+    public ModuleProperties(URL location, Map<Class<?>, Properties> authMechMap) {
         this.authMechMap = authMechMap;
+        this.location = location;
+    }
+
+    public ModuleProperties(Map<Class<?>, Properties> authMechMap) {
+        this.authMechMap = authMechMap;
+        this.location = null;
+    }
+
+    public ModuleProperties(URL location) {
+        authMechMap = new HashMap<Class<?>, Properties>();
+        this.location = location;
     }
 
     public ModuleProperties() {
-        authMechMap = new HashMap<Class, Properties>();
+        authMechMap = new HashMap<Class<?>, Properties>();
+        location = null;
     }
 
-    public Map<Class, Properties> getAuthMechMap() {
+    public Map<Class<?>, Properties> getAuthMechMap() {
         return authMechMap;
     }
-    public Properties getFromAuthMechMap(Class className) {
+    public Properties getFromAuthMechMap(Class<?> className) {
         return authMechMap.get(className);
     }
 
-    public Properties putToAuthMechMap(Class className, Properties props) {
+    public URL getLocation() {
+        return location;
+    }
+
+    public Properties putToAuthMechMap(Class<?> className, Properties props) {
         return authMechMap.put(className, props);
     }
 }

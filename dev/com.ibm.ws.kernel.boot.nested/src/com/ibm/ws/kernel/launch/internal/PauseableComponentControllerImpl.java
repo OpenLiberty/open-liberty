@@ -69,7 +69,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Set<String> failed = new HashSet<String>();
 
-        if (tracker.getTrackingCount() == 0) {
+        if (tracker.getTracked().isEmpty()) {
             Tr.warning(tc, "warning.server.pause.no.targets");
             throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.pause.no.targets"));
         }
@@ -206,7 +206,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Set<String> failed = new HashSet<String>();
 
-        if (tracker.getTrackingCount() == 0) {
+        if (tracker.getTracked().isEmpty()) {
             Tr.warning(tc, "warning.server.resume.no.targets");
             throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.resume.no.targets"));
         }

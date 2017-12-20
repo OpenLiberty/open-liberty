@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -29,6 +30,11 @@ public class EJB32Test extends LoggingTest {
     @Test
     public void testRemoteEJBsWorkWithCDI() throws Exception {
         verifyResponse("/ejbMisc/AServlet", "observed=true");
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        SHARED_SERVER.getLibertyServer().removeDropinsApplications("ejbMisc.war");
     }
 
     @Override

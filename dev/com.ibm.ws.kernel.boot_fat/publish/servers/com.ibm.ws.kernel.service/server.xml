@@ -9,11 +9,12 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
-	<include location="../fatTestPorts.xml"/>
+<!-- Note fatTestPort is not included because we control creation of all ports in fats  -->
+	<include location="../fatTestCommon.xml"/>
 	
     <featureManager>
         <feature>localConnector-1.0</feature>
         <feature>endpointControl-1.0</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
 </server>

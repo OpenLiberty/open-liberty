@@ -96,7 +96,7 @@ public class ModulePropertiesProviderImplTest {
         final String MODULENAME = "ModuleName";
         withModuleName(MODULENAME);
         mm.clear();
-        Map<Class, Properties> amm = new HashMap<Class, Properties>();
+        Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
         Properties prop1 = new Properties();
         Properties prop2 = new Properties();
         amm.put(TestClass1.class, prop1);
@@ -132,7 +132,7 @@ public class ModulePropertiesProviderImplTest {
         final String MODULENAME = "ModuleName";
         withModuleName(MODULENAME).withModuleName(MODULENAME);
         mm.clear();
-        Map<Class, Properties> amm = new HashMap<Class, Properties>();
+        Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
         Properties prop1 = new Properties();
         Properties prop2 = new Properties();
         amm.put(TestClass1.class, prop1);

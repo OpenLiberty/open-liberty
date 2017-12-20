@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,8 +90,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * is sufficient. At the time of this writing (2012/04/25) this map is
      * only modified during application deployment and undeployment.
      */
-    private final ConcurrentMap<String, AuthzInfo> resourceToAuthzInfoMap =
-                    new ConcurrentHashMap<String, AuthzInfo>(16, 0.7f, 1);
+    private final ConcurrentMap<String, AuthzInfo> resourceToAuthzInfoMap = new ConcurrentHashMap<String, AuthzInfo>(16, 0.7f, 1);
 
     private static final class AuthzInfo {
         final Collection<SecurityRole> securityRoles;
@@ -139,7 +138,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
 
     /**
      * Register the webcontainer's default delegation provider.
-     * 
+     *
      * @param cc
      */
     private void registerDefaultDelegationProvider(ComponentContext cc) {
@@ -180,7 +179,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * If a table already exists for the application name, issue an error. Two
      * applications with the same name is an error, and we should not be going
      * through appDeployed without having gone through appUndeployed.
-     * 
+     *
      * @param appName
      * @param securityRoles
      * @return {@code true} if the (new) table was created, {@code false} if there was an existing table.
@@ -229,7 +228,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
 
     /**
      * Remove the tables for the given appName.
-     * 
+     *
      * @param appName
      */
     private void removeTable(String appName) {
@@ -242,7 +241,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * If the special subject was not found, an empty list is added to
      * the subject-to-roles map. Otherwise, the list contains the set of
      * roles mapped to the special subject.
-     * 
+     *
      * @param appName the name of the application, this is the key used when
      *            updating the subject-to-role map
      * @param specialSubjectToRolesMap the subject-to-role mapping,
@@ -306,7 +305,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     /**
      * Get the access id for a user or group in the bindings config by looking up
      * the user registry.
-     * 
+     *
      * @param subject the Subject object in the bindings config, can be User or Group
      * @return the access id of the Subject specified in the bindings config,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -354,7 +353,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * successfully computed, the map will be updated with the accessID.
      * If the accessID can not be computed due to the user not being found,
      * INVALID_ACCESS_ID will be stored.
-     * 
+     *
      * @param maps
      * @param user
      * @param userNameFromRole
@@ -377,7 +376,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * successfully computed, the map will be updated with the accessID.
      * If the accessID can not be computed due to the user not being found,
      * INVALID_ACCESS_ID will be stored.
-     * 
+     *
      * @param maps
      * @param group
      * @param groupNameFromRole
@@ -401,7 +400,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * update the accessId-to-roles mapping with the result. If the accessId was
      * not found, an empty list is added to the accessId-to-role map. Otherwise,
      * the list contains the set of roles mapped to the accessId.
-     * 
+     *
      * @param accessid the access id of the entity
      * @param appName the name of the application, this is the key used when updating the
      *            accessId-to-roles map
@@ -425,12 +424,16 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
                     User user = users.next();
                     String userNameFromRole = user.getName();
                     String accessIdFromRole = user.getAccessId();
-                    if (accessIdFromRole == null || accessIdFromRole.isEmpty() || !accessIdFromRole.startsWith(AccessIdUtil.TYPE_USER)) {
+                    if (accessIdFromRole == null || accessIdFromRole.isEmpty()) {
                         accessIdFromRole = maps.userToAccessIdMap.get(userNameFromRole);
                         if (accessIdFromRole == null) {
                             accessIdFromRole = updateMissingUserAccessId(maps, user, userNameFromRole);
                         }
+                    } else if (!accessIdFromRole.startsWith(AccessIdUtil.TYPE_USER)) {
+                        accessIdFromRole = getCompleteAccessId(accessId, accessIdFromRole, AccessIdUtil.TYPE_USER);
+                        maps.userToAccessIdMap.put(userNameFromRole, accessIdFromRole);
                     }
+
                     if (isMatch(accessId, accessIdFromRole)) {
                         rolesForSubject.add(roleName);
                     }
@@ -441,12 +444,16 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
                     Group group = groups.next();
                     String groupNameFromRole = group.getName();
                     String accessIdFromRole = group.getAccessId();
-                    if (accessIdFromRole == null || accessIdFromRole.isEmpty() || !accessIdFromRole.startsWith(AccessIdUtil.TYPE_GROUP)) {
+                    if (accessIdFromRole == null || accessIdFromRole.isEmpty()) {
                         accessIdFromRole = maps.groupToAccessIdMap.get(groupNameFromRole);
                         if (accessIdFromRole == null) {
                             accessIdFromRole = updateMissingGroupAccessId(maps, group, groupNameFromRole);
                         }
+                    } else if (!accessIdFromRole.startsWith(AccessIdUtil.TYPE_GROUP)) {
+                        accessIdFromRole = getCompleteAccessId(accessId, accessIdFromRole, AccessIdUtil.TYPE_GROUP);
+                        maps.groupToAccessIdMap.put(groupNameFromRole, accessIdFromRole);
                     }
+
                     if (isMatch(accessId, accessIdFromRole)) {
                         rolesForSubject.add(roleName);
                     }
@@ -466,6 +473,16 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
         }
 
         return maps.accessIdToRolesMap;
+    }
+
+    private String getCompleteAccessId(String accessIdFromSubject, String accessIdFromRole, String type) {
+        String tempAccessId = type + AccessIdUtil.TYPE_SEPARATOR + accessIdFromRole;
+        if (AccessIdUtil.isAccessId(tempAccessId)) {
+            return tempAccessId;
+        } else {
+            String realm = AccessIdUtil.getRealm(accessIdFromSubject);
+            return AccessIdUtil.createAccessId(type, realm, accessIdFromRole);
+        }
     }
 
     /** {@inheritDoc} */

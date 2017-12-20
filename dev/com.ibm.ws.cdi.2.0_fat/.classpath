@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-        <classpathentry kind="src" path="test-applications/asyncEventsApp/src"/>
+	<classpathentry kind="src" path="test-applications/asyncEventsApp/src"/>
 	<classpathentry kind="src" path="test-applications/beanManagerLookupApp/src"/>
 	<classpathentry kind="src" path="test-applications/builtinAnnoLiteralsApp/src"/>
 	<classpathentry kind="src" path="test-applications/cdiContainerConfigApp/src"/>
 	<classpathentry kind="src" path="test-applications/configuratorApp/src"/>
 	<classpathentry kind="src" path="test-applications/interceptionFactoryApp/src"/>
+	<classpathentry kind="src" path="test-applications/secureAsyncEventsApp/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="/com.ibm.websphere.security"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.concurrent.1.0/generated/com.ibm.websphere.javaee.concurrent.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

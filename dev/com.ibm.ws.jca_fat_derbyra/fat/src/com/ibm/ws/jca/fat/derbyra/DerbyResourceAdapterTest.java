@@ -48,6 +48,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, WAR_NAME + ".war");
         war.addPackage("web");
+        war.addPackage("web.mdb");
         war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml"));
         war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/web.xml"));
 
@@ -79,6 +80,20 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
     private void runTest(String servlet) throws Exception {
         FATServletClient.runTest(server, servlet, testName.getMethodName());
+    }
+
+    @Test
+    public void testActivationSpec() throws Exception {
+        runTest(DerbyRAAnnoServlet);
+    }
+
+    @ExpectedFFDC({ "javax.ejb.EJBException",
+                    "javax.transaction.HeuristicMixedException",
+                    "javax.transaction.xa.XAException",
+                    "com.ibm.websphere.csi.CSITransactionRolledbackException" })
+    @Test
+    public void testActivationSpecXARecovery() throws Exception {
+        runTest(DerbyRAAnnoServlet);
     }
 
     @Test
@@ -160,6 +175,11 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     @ExpectedFFDC({ "javax.resource.ResourceException" }) //simulated exception in destroy
     @Test
     public void testConnPoolStatsExceptionInDestroy() throws Exception {
+        runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testErrorInFreeConn() throws Exception {
         runTest(DerbyRAServlet);
     }
 }

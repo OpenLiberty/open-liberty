@@ -42,3 +42,7 @@ JAVAEESEC_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, pl
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: The deployment for the {0} module in the {1} application failed because multiple HttpAuthenticationMechanism implementation are found. The list of classes is {2}. Most likely, this is an application packaging issue. Make sure that there is only one HttpAuthenticationMechanism implementation in each module.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=The application deployment failed because more than one HttpAuthenticationMechanism implementation are found. This condition is not allowed.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation for each module in the application.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: An error occurs when the program resolves the ''{0}'' configuration for the identity store. Ensure that the EL expression and the result are valid and ensure any referenced beans that are used in the expression are resolvable. The value defaults to ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The identity store configuration cannot be resolved to a valid value.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. If you use EL expressions, ensure that they are valid and that any referenced beans that are used in the expression are resolvable.

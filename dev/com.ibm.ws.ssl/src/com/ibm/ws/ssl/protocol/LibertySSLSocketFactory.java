@@ -10,24 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.ssl.protocol;
 
-
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.SocketFactory;
-import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
+import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.config.SSLConfigManager;
 
@@ -40,7 +41,6 @@ import com.ibm.ws.ssl.config.SSLConfigManager;
  * </p>
  *
  **/
-
 public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
     private static final TraceComponent tc = Tr.register(LibertySSLSocketFactory.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
     protected java.util.Properties props;
@@ -67,7 +67,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             if (props == null) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Getting default SSL properties from WebSphere configuration.");
-                props = JSSEHelper.getInstance().getProperties(null, connectionInfo, null);
+                props = getProperties(null, connectionInfo, null);
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Getting javax.net.ssl.* SSL System properties.");
@@ -75,7 +75,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             }
 
             if (props != null)
-                default_factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, props);
+                default_factory = getSSLSocketFactory(connectionInfo, props);
             else
                 default_factory = (SSLSocketFactory) javax.net.ssl.SSLSocketFactory.getDefault();
 
@@ -97,17 +97,17 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
      * </p>
      *
      * @param String alias
-     * @throws SSLException
+     * @throws javax.net.ssl.SSLException
      ***/
-    public LibertySSLSocketFactory(String alias) throws SSLException {
+    public LibertySSLSocketFactory(String alias) throws javax.net.ssl.SSLException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LibertySSLSocketFactory", new Object[] { alias });
         try {
             default_constructor = false;
             java.util.Map<String, Object> connectionInfo = new HashMap<String, Object>();
             connectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_OUTBOUND);
-            props = JSSEHelper.getInstance().getProperties(alias, connectionInfo, null);
-            default_factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, props);
+            props = getProperties(alias, connectionInfo, null);
+            default_factory = getSSLSocketFactory(connectionInfo, props);
         } catch (Exception e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "LibertySSLSocketFactory exception getting SSL factory from alias.", new Object[] { e });
@@ -125,9 +125,9 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
      * </p>
      *
      * @param java.util.Properties sslprops
-     * @throws SSLException
+     * @throws javax.net.ssl.SSLException
      ***/
-    public LibertySSLSocketFactory(java.util.Properties sslprops) throws SSLException {
+    public LibertySSLSocketFactory(java.util.Properties sslprops) throws javax.net.ssl.SSLException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LibertySSLSocketFactory", new Object[] { sslprops });
 
@@ -136,7 +136,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             props = sslprops;
             java.util.Map<String, Object> connectionInfo = new HashMap<String, Object>();
             connectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_OUTBOUND);
-            default_factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, props);
+            default_factory = getSSLSocketFactory(connectionInfo, props);
         } catch (Exception e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "LibertySSLSocketFactory exception getting SSL properties from properties.", new Object[] { e });
@@ -173,8 +173,8 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
         try {
             default_constructor = false;
 
-            props = JSSEHelper.getInstance().getProperties(alias, connectionInfo, null);
-            default_factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, props);
+            props = getProperties(alias, connectionInfo, null);
+            default_factory = getSSLSocketFactory(connectionInfo, props);
         } catch (Exception e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "LibertySSLSocketFactory exception getting SSL properties from selections.", new Object[] { e });
@@ -269,7 +269,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
         java.util.Properties sslProps = props;
         if (default_constructor) {
             try {
-                java.util.Properties sslPropsOnThread = JSSEHelper.getInstance().getSSLPropertiesOnThread();
+                java.util.Properties sslPropsOnThread = getSSLPropertiesOnThread();
                 java.util.Map<String, Object> currentConnectionInfo = JSSEHelper.getInstance().getOutboundConnectionInfo();
                 if ((sslPropsOnThread != null) || (currentConnectionInfo != null)) {
                     if (tc.isDebugEnabled())
@@ -278,10 +278,10 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
                         currentConnectionInfo = new HashMap<String, Object>();
                         currentConnectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_OUTBOUND);
                     }
-                    sslProps = JSSEHelper.getInstance().getProperties(null, currentConnectionInfo, null);
+                    sslProps = getProperties(null, currentConnectionInfo, null);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Getting SSLSocketFactory");
-                    currentFactory = JSSEHelper.getInstance().getSSLSocketFactory(currentConnectionInfo, sslProps);
+                    currentFactory = getSSLSocketFactory(currentConnectionInfo, sslProps);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Got SSLSocketFactory", new Object[] { currentFactory });
                 } else {
@@ -352,11 +352,11 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, Integer.toString(port));
 
             if (default_constructor) {
-                sslprops = JSSEHelper.getInstance().getProperties(null, connectionInfo, null);
+                sslprops = getProperties(null, connectionInfo, null);
             }
 
             if (sslprops != null)
-                factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, sslprops);
+                factory = getSSLSocketFactory(connectionInfo, sslprops);
         } catch (Exception e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception getting SSLSocketFactory.", new Object[] { e });
@@ -427,11 +427,11 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, Integer.toString(port));
 
             if (default_constructor) {
-                sslprops = JSSEHelper.getInstance().getProperties(null, connectionInfo, null);
+                sslprops = getProperties(null, connectionInfo, null);
             }
 
             if (sslprops != null)
-                factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, sslprops);
+                factory = getSSLSocketFactory(connectionInfo, sslprops);
 
         } catch (Exception e) {
             if (tc.isDebugEnabled())
@@ -512,11 +512,11 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, Integer.toString(port));
 
             if (default_constructor) {
-                sslprops = JSSEHelper.getInstance().getProperties(null, connectionInfo, null);
+                sslprops = getProperties(null, connectionInfo, null);
             }
 
             if (sslprops != null)
-                factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, sslprops);
+                factory = getSSLSocketFactory(connectionInfo, sslprops);
 
         } catch (Exception e) {
             if (tc.isDebugEnabled())
@@ -568,11 +568,11 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, Integer.toString(port));
 
             if (default_constructor) {
-                sslprops = JSSEHelper.getInstance().getProperties(null, connectionInfo, null);
+                sslprops = getProperties(null, connectionInfo, null);
             }
 
             if (sslprops != null)
-                factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, sslprops);
+                factory = getSSLSocketFactory(connectionInfo, sslprops);
 
         } catch (Exception e) {
             if (tc.isDebugEnabled())
@@ -625,11 +625,11 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, Integer.toString(port));
 
             if (default_constructor) {
-                sslprops = JSSEHelper.getInstance().getProperties(null, connectionInfo, null);
+                sslprops = getProperties(null, connectionInfo, null);
             }
 
             if (sslprops != null)
-                factory = JSSEHelper.getInstance().getSSLSocketFactory(connectionInfo, sslprops);
+                factory = getSSLSocketFactory(connectionInfo, sslprops);
 
         } catch (Exception e) {
             if (tc.isDebugEnabled())
@@ -665,6 +665,84 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "one of parameters is null, throwing NullPointerException.");
             throw new java.lang.NullPointerException();
+        }
+    }
+
+    /**
+     * Convenience method to call {@link JSSEHelper#getSSLPropertiesOnThread()} with elevated privileges.
+     *
+     * @return The SSL properties that are set on the thread.
+     * @see JSSEHelper#getSSLPropertiesOnThread()
+     */
+    private static java.util.Properties getSSLPropertiesOnThread() {
+        return AccessController.doPrivileged(new PrivilegedAction<java.util.Properties>() {
+            @Override
+            public java.util.Properties run() {
+                return JSSEHelper.getInstance().getSSLPropertiesOnThread();
+            }
+        });
+    }
+
+    /**
+     * Convenience method to call {@link JSSEHelper#getProperties(String, Map, SSLConfigChangeListener))} with elevated privileges.
+     *
+     * @param sslAliasName The alias name of the SSL configuration.
+     * @param currentConnectionInfo Remote connection information.
+     * @param listener Listener for SSL configuration updates.
+     * @return The properties.
+     * @throws com.ibm.websphere.ssl.SSLException
+     * @see JSSEHelper#getProperties(String, Map, SSLConfigChangeListener)
+     */
+    private static java.util.Properties getProperties(final String sslAliasName, final Map<String, Object> currentConnectionInfo,
+                                                      final SSLConfigChangeListener listener) throws com.ibm.websphere.ssl.SSLException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<java.util.Properties>() {
+                @Override
+                public java.util.Properties run() throws Exception {
+                    return JSSEHelper.getInstance().getProperties(sslAliasName, currentConnectionInfo, listener);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            /*
+             * Can only be SSLException or RuntimeException.
+             */
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            } else {
+                throw (com.ibm.websphere.ssl.SSLException) cause;
+            }
+        }
+    }
+
+    /**
+     * Convenience method to call {@link JSSEHelper#getSSLSocketFactory(Map, java.util.Properties)} with elevated privileges.
+     *
+     * @param currentConnectionInfo Remote connection information.
+     * @param sslProps Properties used to configure the SSL socket factory.
+     * @return The {@link SSLSocketFactory}.
+     * @throws com.ibm.websphere.ssl.SSLException
+     * @see JSSEHelper#getSSLSocketFactory(Map, java.util.Properties)
+     */
+    private static SSLSocketFactory getSSLSocketFactory(final Map<String, Object> currentConnectionInfo,
+                                                        final java.util.Properties sslProps) throws com.ibm.websphere.ssl.SSLException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<SSLSocketFactory>() {
+                @Override
+                public SSLSocketFactory run() throws Exception {
+                    return JSSEHelper.getInstance().getSSLSocketFactory(currentConnectionInfo, sslProps);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            /*
+             * Can only be SSLException or RuntimeException.
+             */
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            } else {
+                throw (com.ibm.websphere.ssl.SSLException) cause;
+            }
         }
     }
 }

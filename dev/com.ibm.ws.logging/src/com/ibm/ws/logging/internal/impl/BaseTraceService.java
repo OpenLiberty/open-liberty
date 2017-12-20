@@ -34,6 +34,8 @@ import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
+import com.ibm.ws.logging.utils.FileLogHolder;
+import com.ibm.ws.logging.utils.RecursionCounter;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -108,6 +110,8 @@ public class BaseTraceService implements TrService {
     public static final Logger NULL_LOGGER = null;
     public static final String NULL_FORMATTED_MSG = null;
 
+    protected static RecursionCounter counter = new RecursionCounter();
+
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
      */
@@ -165,8 +169,8 @@ public class BaseTraceService implements TrService {
     private volatile Collection<String> hideMessageids;
 
     /** Early msgs issued before MessageRouter is started. */
-    private final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
-    private final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
+    protected final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
+    protected final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -205,7 +209,6 @@ public class BaseTraceService implements TrService {
         update(config);
 
         registerLoggerHandlerSingleton();
-
         // Capture System.out/.err after registerLoggerHandler has initialized
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
@@ -268,7 +271,6 @@ public class BaseTraceService implements TrService {
         if (hideMessageids.size() > 0) {
             Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
         }
-
     }
 
     /**
@@ -437,6 +439,7 @@ public class BaseTraceService implements TrService {
         // Tee to messages.log (always)
         String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
         messagesLog.writeRecord(message);
+
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
 
         if (detailLog == systemOut) {
@@ -512,21 +515,35 @@ public class BaseTraceService implements TrService {
 
         boolean retMe = true;
         LogRecord logRecord = routedTrace.getLogRecord();
-        if (logRecord != null) {
-            Level level = logRecord.getLevel();
-            int levelValue = level.intValue();
-            if (levelValue < Level.INFO.intValue()) {
-                String levelName = level.getName();
-                if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
-                    WsTraceRouter internalTrRouter = internalTraceRouter.get();
-                    if (internalTrRouter != null) {
-                        retMe &= internalTrRouter.route(routedTrace);
-                    } else {
-                        earlierTraces.add(routedTrace);
+
+        /*
+         * Avoid any feedback traces that are emitted after this point.
+         * The first time the counter increments is the first pass-through.
+         * The second time the counter increments is the second pass-through due
+         * to trace emitted. We do not want any more pass-throughs.
+         */
+        try {
+            if (!(counter.incrementCount() > 2)) {
+                if (logRecord != null) {
+                    Level level = logRecord.getLevel();
+                    int levelValue = level.intValue();
+                    if (levelValue < Level.INFO.intValue()) {
+                        String levelName = level.getName();
+                        if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                            WsTraceRouter internalTrRouter = internalTraceRouter.get();
+                            if (internalTrRouter != null) {
+                                retMe &= internalTrRouter.route(routedTrace);
+                            } else {
+                                earlierTraces.add(routedTrace);
+                            }
+                        }
                     }
                 }
             }
+        } finally {
+            counter.decrementCount();
         }
+
         return retMe;
     }
 
@@ -567,7 +584,7 @@ public class BaseTraceService implements TrService {
                 return;
             }
 
-            // messages.log
+            // messages.log  //send directly.
             messagesLog.writeRecord(messageLogFormat);
 
             // console.log
@@ -660,7 +677,6 @@ public class BaseTraceService implements TrService {
      * Inject the internal WsMessageRouter.
      */
     protected void setWsMessageRouter(WsMessageRouter msgRouter) {
-
         internalMessageRouter.set(msgRouter);
 
         // Pass the earlierMessages queue to the router.
@@ -738,6 +754,7 @@ public class BaseTraceService implements TrService {
                 ((FileLogHolder) traceLog).releaseFile();
             }
         }
+
     }
 
     private FileLogHeader newFileLogHeader(boolean trace) {
@@ -938,4 +955,5 @@ public class BaseTraceService implements TrService {
         }
         return txt;
     }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.wsspi.logging.LogHandler;
 
 /**
@@ -178,7 +179,15 @@ public class MessageRouterConfigurator implements BundleListener {
      * This method is called from the ServiceListener.
      */
     protected void setWsLogHandler(ServiceReference<WsLogHandler> ref) {
-        getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
+    	
+    	//If it is a jsonTrService, then we don't want early messages, and the opposite is true if it is not a jsonTrService
+    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
+    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
+    	}
+    	else {
+    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);   		
+    	}
+
     }
 
     /**

@@ -13,6 +13,7 @@ package com.ibm.ws.logging.internal.impl;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
@@ -95,11 +96,29 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** The current/active trace specification */
     protected volatile String traceSpec = "*=info";
 
+    /** List of sources to route to messages.log */
+    protected volatile Collection<String> messageSource = Arrays.asList(LoggingConstants.DEFAULT_MESSAGE_SOURCE);
+
+    /** Format to use for messages.log */
+    protected volatile String messageFormat = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
+
+    /** List of sources to route to console.log / console */
+    protected volatile Collection<String> consoleSource = Arrays.asList(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
+
+    /** Format to use for console.log / console */
+    protected volatile String consoleFormat = LoggingConstants.DEFAULT_CONSOLE_FORMAT;
+
     /** The header written at the beginning of all log files. */
     private final String logHeader;
 
     /** True if java.lang.instrument is available for trace. */
     private final boolean javaLangInstrument;
+
+    /** The server name. */
+    private final String serverName;
+
+    /** The wlp user dir name. */
+    private final String wlpUsrDir;
 
     /**
      * Initial configuration of BaseTraceService from TrServiceConfig.
@@ -116,6 +135,22 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         ffdcSummaryPolicy = LoggingConfigUtils.getFFDCSummaryPolicy(config.get(LoggingConstants.PROP_FFDC_SUMMARY_POLICY),
                                                                     FFDCSummaryPolicy.DEFAULT);
+
+        // Check ENV to see if the sources and formats are set
+        messageSource = LoggingConfigUtils.parseStringCollection("messageSource",
+                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_SOURCE),
+                                                                 messageSource);
+
+        messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
+                                                          messageFormat);
+
+        consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
+                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
+                                                                 consoleSource);
+
+        consoleFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_FORMAT),
+                                                          consoleFormat);
+
         doCommonInit(config, true);
 
         // If the trace file name is 'java.util.logging', then Logger won't write output via Tr,
@@ -141,6 +176,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         javaLangInstrument = Boolean.parseBoolean(config.get("java.lang.instrument"));
 
+        serverName = config.get("wlp.server.name");
+
+        wlpUsrDir = config.get("wlp.user.dir");
     }
 
     /**
@@ -176,8 +214,12 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFileName = InitConfgAttribute.MSG_FILE_NAME.getStringValue(c, messageFileName, isInit);
         logDirectory = InitConfgAttribute.LOG_LOCATION.getLogDirectory(c, logDirectory, isInit);
 
-        hideMessageIds = InitConfgAttribute.HIDE_MESSAGES.getStringCollectionValue(c, hideMessageIds, isInit);
+        hideMessageIds = InitConfgAttribute.HIDE_MESSAGES.getStringCollectionValue("hideMessage", c, hideMessageIds, isInit);
 
+        messageSource = InitConfgAttribute.MESSAGE_SOURCE.getStringCollectionValue("messageSource", c, messageSource, isInit);
+        messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValue(c, messageFormat, isInit);
+        consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValue("consoleSource", c, consoleSource, isInit);
+        consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValue(c, consoleFormat, isInit);
     }
 
     /**
@@ -305,6 +347,30 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return ffdcSummaryPolicy;
     }
 
+    public String getServerName() {
+        return serverName;
+    }
+
+    public String getWlpUsrDir() {
+        return wlpUsrDir;
+    }
+
+    public Collection<String> getMessageSource() {
+        return messageSource;
+    }
+
+    public String getMessageFormat() {
+        return messageFormat;
+    }
+
+    public Collection<String> getConsoleSource() {
+        return consoleSource;
+    }
+
+    public String getConsoleFormat() {
+        return consoleFormat;
+    }
+
     /**
      * @return true if we should use the logger -> tr handler
      */
@@ -341,7 +407,12 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         TRACE_SPEC("traceSpecification", "com.ibm.ws.logging.trace.specification"),
         TRACE_FORMAT("traceFormat", "com.ibm.ws.logging.trace.format"),
         ISO_DATE_FORMAT("isoDateFormat", "com.ibm.ws.logging.isoDateFormat"),
-        HIDE_MESSAGES("hideMessage", "com.ibm.ws.logging.hideMessage");
+        HIDE_MESSAGES("hideMessage", "com.ibm.ws.logging.hideMessage"),
+
+        MESSAGE_SOURCE("messageSource", "com.ibm.ws.logging.message.source"),
+        MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
+        CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
+        CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format");
 
         final String configKey;
         final String propertyKey;
@@ -392,10 +463,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
             return newValue;
         }
 
-        Collection<String> getStringCollectionValue(Map<String, Object> config, Collection<String> defaultValue, boolean isInit) {
+        Collection<String> getStringCollectionValue(String key, Map<String, Object> config, Collection<String> defaultValue, boolean isInit) {
             Object value = config.get(isInit ? propertyKey : configKey);
-            Collection<String> hideMessageIds = LoggingConfigUtils.parseStringCollection("hideMessage", value, defaultValue);
-            return hideMessageIds;
+            Collection<String> collection = LoggingConfigUtils.parseStringCollection(key, value, defaultValue);
+            return collection;
         }
 
     }
