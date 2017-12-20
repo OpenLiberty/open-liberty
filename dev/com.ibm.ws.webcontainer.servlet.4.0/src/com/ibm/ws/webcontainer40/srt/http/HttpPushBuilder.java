@@ -333,6 +333,9 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
 
     // Reset the "state" of this PushBuilder before next push
     private void reset() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "reset()", "Clearing the path and removing conditional headers");
+        }
 
         //clear the path
         _path = null;
