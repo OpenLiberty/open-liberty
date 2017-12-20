@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs20.client.security;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.interceptor.Fault;
@@ -61,21 +62,13 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             sslRef = (String) sslRefObj;
         }
 
-        Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
         //Allow a null sslRef to be used,  Liberty will resolve it to the default // getSSLSocketFactory will return null if either the ssl feature is not enabled
         // or if it is enabled but there is no SSL configuration defined.  A null here
         // means to use the JDK's SSL implementation.
         if (isSecured && JaxRsAppSecurity.getSSLSocketFactory(sslRef, null) != null) {
-
-            boolean disableCNCheck = false;
-            if (disableCNCheckObj instanceof Boolean) {
-                disableCNCheck = ((Boolean) disableCNCheckObj).booleanValue();
-            } else if (disableCNCheckObj instanceof String) {
-                disableCNCheck = Boolean.parseBoolean((String) disableCNCheckObj);
-            }
-
+            Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
             Conduit cd = message.getExchange().getConduit(message);
-            configClientSSL(cd, sslRef, disableCNCheck);
+            configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj));
         }
     }
 
