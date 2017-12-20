@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import bval.v20.cdi.web.BeanValCDIServlet;
+import bval.v20.hibernateconfig.web.BeanValidationServlet;
 import bval.v20.multixml.web.BeanValidationTestServlet;
 import bval.v20.valueextractor.web.ValueExtractorServlet;
 import bval.v20.web.BeanVal20TestServlet;
@@ -38,13 +39,15 @@ public class BeanVal20Test extends FATServletClient {
     public static final String CDI_APP = "bvalCDIApp";
     public static final String MULTI_VAL_APP = "MultipleValidationXmlWeb";
     public static final String VAL_EXT_APP = "bvalValueExtractorApp";
-
+    public static final String HIBERNATE_DEFAULT_APP = "HibernateConfig";
+	
     @Server("beanval.v20_fat")
     @TestServlets({
                     @TestServlet(servlet = BeanVal20TestServlet.class, contextRoot = REG_APP),
                     @TestServlet(servlet = BeanValCDIServlet.class, contextRoot = CDI_APP),
                     @TestServlet(servlet = BeanValidationTestServlet.class, contextRoot = MULTI_VAL_APP),
-                    @TestServlet(servlet = ValueExtractorServlet.class, contextRoot = VAL_EXT_APP)
+                    @TestServlet(servlet = ValueExtractorServlet.class, contextRoot = VAL_EXT_APP),
+					@TestServlet(servlet = BeanValidationServlet.class, contextRoot = HIBERNATE_DEFAULT_APP)
     })
     public static LibertyServer server;
 
@@ -66,6 +69,7 @@ public class BeanVal20Test extends FATServletClient {
         ShrinkHelper.defaultDropinApp(server, REG_APP, "bval.v20.web");
         ShrinkHelper.defaultDropinApp(server, CDI_APP, "bval.v20.cdi.web");
         ShrinkHelper.defaultDropinApp(server, VAL_EXT_APP, "bval.v20.valueextractor.web");
+		ShrinkHelper.defaultDropinApp(server, HIBERNATE_DEFAULT_APP, "bval.v20.hibernateconfig.web");
         ShrinkHelper.exportToServer(server, "dropins", multiValXmlEar);
         server.startServer();
     }
