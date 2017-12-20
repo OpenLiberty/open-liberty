@@ -21,7 +21,7 @@ javac.source: 1.7
 javac.target: 1.7
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService,\
+-dsannotations: \
   com.ibm.ws.cdi.liberty.CDIRuntimeImpl,\
   com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService,\
   com.ibm.ws.cdi.impl.inject.InjectProcessorProvider

@@ -21,7 +21,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 BuiltinAnnoLiteralsTest.class,
                 CDIContainerConfigTest.class,
                 ConfiguratorTest.class,
-                InterceptionFactoryTest.class
+                InterceptionFactoryTest.class,
+                SecureAsyncEventsTest.class,
 })
 public class FATSuite {
 
