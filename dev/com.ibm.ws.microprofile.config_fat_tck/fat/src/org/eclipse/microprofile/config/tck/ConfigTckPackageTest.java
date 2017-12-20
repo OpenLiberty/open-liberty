@@ -4,6 +4,7 @@
 package org.eclipse.microprofile.config.tck;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -52,7 +53,13 @@ public class ConfigTckPackageTest {
         // Everything under autoFVT/results is collected from the child build machine
         File mvnOutput = new File(Utils.home, "results/mvnOutput_TCK");
         int rc = Utils.runCmd(Utils.mvnCliTckRoot, Utils.tckRunnerDir, mvnOutput);
-        // mvn returns 0 is all surefire tests and pass 1 on failure
+        File src = new File(Utils.home, "results/tck/surefire-reports/junitreports");
+        File tgt = new File(Utils.home, "results/junit");
+        Files.walkFileTree(src.toPath(), new Utils.CopyFileVisitor(src.toPath(), tgt.toPath()));
+
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+
         Assert.assertTrue("com.ibm.ws.microprofile.config_fat_tck:org.eclipse.microprofile.config.tck.ConfigTckPackageTest:testTck:TCK has returned non-zero return code of: " + rc
                           +
                           " This indicates test failure, see: ...autoFVT/results/mvn* " +

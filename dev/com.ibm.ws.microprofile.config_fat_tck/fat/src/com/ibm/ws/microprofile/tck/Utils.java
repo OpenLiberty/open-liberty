@@ -4,6 +4,13 @@
 package com.ibm.ws.microprofile.tck;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -188,8 +195,6 @@ public class Utils {
     /**
      * Looks for a path in a directory from a sub set of the filename
      *
-     * TODO support regexes in the future?
-     *
      * @param jarNameFragment
      * @param dir
      * @return
@@ -206,33 +211,81 @@ public class Utils {
         //              <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
 
         for (int i = 0; i < files.length; i++) {
-            log(files[i]);
             if (files[i].contains(jarNameFragment)) {
                 result = files[i];
                 log("dir " + dir + " contains " + jarNameFragment + " as " + result);
-                // We do not want to allow any prefixes or postfixes that contain letters.
-                String r = result.replaceAll(".jar", "").replaceAll("[^a-zA-Z]", "");
-                log("r " + r);
-                if (r.length() == 0) {
-                    // No extra letters in a prefix/postfix.
-                    log("JAR found in dir " + jarNameFragment + " " + dir + " as " + result);
+                // Do we have a match ignoring version numbers
+                String r = result.replaceAll(".jar", "");
+                r = r.replaceAll("[0-9]", "");
+                r = r.replaceAll("\\.", "");
+                r = r.replaceAll("\\_", "");
+                log("r testing " + r);
+                if (r.equals(jarNameFragment.replaceAll("\\.", ""))) {
+                    log(jarNameFragment + " jar found in dir " + dir + result);
                     return result;
+                } else {
+                    log("close match failed for " + jarNameFragment + " in " + dir + result);
                 }
-            } else {
-                log("JAR no jar in dir " + jarNameFragment + " " + dir);
             }
         }
-        log("JAR returning" + jarNameFragment + " " + dir);
-        return result;
+        log("returning NOT FOUND for " + jarNameFragment);
+        return null;
     }
 
     /**
      * A simple log abstraction to enable easy grepping of the logs.
-     * 
+     *
      * @param string
      */
     public static void log(String string) {
-        System.out.println("GDH:" + string);
+        System.out.println("TCK:" + string);
+    }
+
+    /**
+     * A fairly standard fileTreeWalker Visitor that copies files to a new directory.
+     * Used for copying testng results to the simplicity junit directory
+     *
+     */
+    public static class CopyFileVisitor extends SimpleFileVisitor<Path> {
+        private Path src, tgt;
+
+        public CopyFileVisitor(Path src, Path tgt) {
+            this.src = src;
+            this.tgt = tgt;
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.nio.file.SimpleFileVisitor#visitFile(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
+         */
+        @Override
+        public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+            Path dest = tgt.resolve(src.relativize(path));
+            try {
+                Files.copy(path, dest, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+            return FileVisitResult.CONTINUE;
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.nio.file.SimpleFileVisitor#preVisitDirectory(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
+         */
+        @Override
+        public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes fileAttributes) {
+            Path dest = tgt.resolve(src.relativize(path));
+            try {
+                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+            return FileVisitResult.CONTINUE;
+        }
+
     }
 
 }
