@@ -90,24 +90,52 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
         boolean process = true;
 
-        String operationName = OpentracingService.getOperationName(resourceInfo.getResourceMethod());
+        String methodOperationName = OpentracingService.getMethodOperationName(resourceInfo.getResourceMethod());
+        String classOperationName = OpentracingService.getClassOperationName(resourceInfo.getResourceMethod());
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName + " operation namnes", classOperationName, methodOperationName);
+        }
 
         // Check if this JAXRS method has @Traced(false)
-        if (OpentracingService.OPERATION_NAME_UNTRACED.equals(operationName)) {
+        if (OpentracingService.isNotTraced(classOperationName, methodOperationName)) {
             process = false;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + " skipping not traced method");
+            }
         }
 
         if (process) {
             // If there's no Traced annotation (operationName is null) or there is a Traced annotation
             // with value=true but a default operationName, then set it to the default based on the URI.
-            if (operationName == null || OpentracingService.OPERATION_NAME_TRACED.equals(operationName)) {
+
+            String operationName;
+
+            if (OpentracingService.hasExplicitOperationName(methodOperationName)) {
+                operationName = methodOperationName;
+
+                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
+                    operationName = classOperationName + "/" + operationName;
+                }
+            } else {
                 // "The default operation name of the new Span for the incoming request is
-                // <HTTP method>:<package name>.<class name>.<method name>"
+                // <HTTP method>:<package name>.<class name>.<method name> [...]
+                // If operationName is specified on a class, then the operation name of each
+                // traced method in that class is prefixed with the class operationName
+                // followed by a forward slash (/). If the class encloses a JAX-RS endpoint,
+                // the prefix is added after <HTTP method>: and before <package name>."
                 // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#server-span-name
 
-                operationName = incomingRequestContext.getMethod() + ":"
-                                + resourceInfo.getResourceClass().getName() + "."
-                                + resourceInfo.getResourceMethod().getName();
+                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
+                    operationName = incomingRequestContext.getMethod() + ":" + classOperationName + "/"
+                                    + resourceInfo.getResourceClass().getName() + "."
+                                    + resourceInfo.getResourceMethod().getName();
+                } else {
+                    operationName = incomingRequestContext.getMethod() + ":"
+                                    + resourceInfo.getResourceClass().getName() + "."
+                                    + resourceInfo.getResourceMethod().getName();
+                }
             }
 
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);

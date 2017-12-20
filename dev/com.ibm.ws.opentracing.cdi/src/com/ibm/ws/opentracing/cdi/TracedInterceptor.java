@@ -57,15 +57,16 @@ public class TracedInterceptor {
     public Object executeFT(InvocationContext context) throws Exception {
         String methodName = "executeFT";
 
-        String operationName = OpentracingService.getOperationName(context.getMethod());
+        String classOperationName = OpentracingService.getClassOperationName(context.getMethod());
+        String methodOperationName = OpentracingService.getMethodOperationName(context.getMethod());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " inferred operation name", operationName);
+            Tr.debug(tc, methodName + " operation names", classOperationName, methodOperationName);
         }
 
         boolean process = true;
 
-        if (OpentracingService.OPERATION_NAME_UNTRACED.equals(operationName)) {
+        if (!OpentracingService.isTraced(classOperationName, methodOperationName)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " skipping untraced method");
             }
@@ -75,18 +76,34 @@ public class TracedInterceptor {
         if (process && isHandledByFilter(context.getMethod())) {
             // This is already processed as part of the OpentracingContainerFilter
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " skipping JAXRS method", operationName);
+                Tr.debug(tc, methodName + " skipping JAXRS method");
             }
             process = false;
         }
 
         if (process) {
-            if (OpentracingService.OPERATION_NAME_TRACED.equals(operationName)) {
+
+            String operationName;
+
+            if (OpentracingService.hasExplicitOperationName(methodOperationName)) {
+                operationName = methodOperationName;
+
+                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
+                    operationName = classOperationName + "/" + operationName;
+                }
+            } else {
                 // If the annotated method is not a JAX-RS endpoint, the default
                 // operation name of the new Span for the method is:
                 // <package name>.<class name>.<method name>"
                 // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#321-the-traced-annotation
                 operationName = context.getMethod().getDeclaringClass().getName() + "." + context.getMethod().getName();
+
+                // "If operationName is specified on a class, then the operation
+                // name of each traced method in that class is prefixed with the
+                // class operationName followed by a forward slash (/)."
+                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
+                    operationName = classOperationName + "/" + operationName;
+                }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, methodName + " setting default operationName", operationName);

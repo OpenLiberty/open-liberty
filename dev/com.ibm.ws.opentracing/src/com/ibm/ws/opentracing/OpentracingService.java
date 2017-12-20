@@ -173,26 +173,90 @@ public class OpentracingService {
     }
 
     /**
-     * If {@code method} has the {@code Traced} annotation with {@code value}
-     * set to {@code true}, then return the {@code operationName} set on the
-     * annotation, or if it's the default, return {@code OPERATION_NAME_TRACED}.
-     * If {@code value} is set to {@code false}, return {@code OPERATION_NAME_UNTRACED}.
-     * If {@code method} doesn't have the annotation, perform the same logic
-     * for its declaring class.
+     * If the declaring class of {@code method} doesn't have the {@code Traced}
+     * annotation, then return {@code null}.
+     * Otherwise: If the {@code Traced} value is {@code false}, then return
+     * {@code OPERATION_NAME_UNTRACED}. If it's true and {@code operationName}
+     * is specified, then return {@code operationName}; otherwise, return
+     * {@code OPERATION_NAME_TRACED}.
      *
-     * @param method The method and its declaring class to check.
-     * @return See above.
+     * @param method The method to check.
+     * @return Operation name or constant.
      */
-    public static String getOperationName(Method method) {
-        // If the method has a Traced annotation, then that always takes precedence
-        // over a class annotation
-        String operationName = getOperationName(method.getAnnotation(Traced.class));
-        if (operationName == null) {
+    public static String getClassOperationName(Method method) {
+        return getOperationName(method.getDeclaringClass().getAnnotation(Traced.class));
+    }
 
-            // If there is no method annotation, then we check for a class annotation
-            operationName = getOperationName(method.getDeclaringClass().getAnnotation(Traced.class));
-        }
-        return operationName;
+    /**
+     * If the {@code method} doesn't have the {@code Traced}
+     * annotation, then return {@code null}.
+     * Otherwise: If the {@code Traced} value is {@code false}, then return
+     * {@code OPERATION_NAME_UNTRACED}. If it's true and {@code operationName}
+     * is specified, then return {@code operationName}; otherwise, return
+     * {@code OPERATION_NAME_TRACED}.
+     *
+     * @param method The method to check.
+     * @return Operation name or constant.
+     */
+    public static String getMethodOperationName(Method method) {
+        return getOperationName(method.getAnnotation(Traced.class));
+    }
+
+    /**
+     * Return true if {@code operationName} is not null (i.e. it represents
+     * something that has the {@code Traced} annotation) and if the
+     * {@code Traced} annotation was not explicitly set to {@code false}.
+     *
+     * @param operationName The operation name to check
+     * @return See above
+     */
+    private static boolean isTraced(String operationName) {
+        return operationName != null && !OPERATION_NAME_UNTRACED.equals(operationName);
+    }
+
+    /**
+     * Return true if {@code methodOperationName} is not null (i.e. it represents
+     * something that has the {@code Traced} annotation) and if the
+     * {@code Traced} annotation was not explicitly set to {@code false}, or return
+     * true if {@code classOperationName} is not null (i.e. it represents
+     * something that has the {@code Traced} annotation) and the
+     * {@code Traced} annotation was not explicitly set to {@code false},
+     * and the {@code methodOperationName} is not explicitly set to {@code false}.
+     *
+     * @param classOperationName The class operation name
+     * @param methodOperationName The method operation name
+     * @return See above
+     */
+    public static boolean isTraced(String classOperationName, String methodOperationName) {
+        return isTraced(methodOperationName) || (isTraced(classOperationName) && !OPERATION_NAME_UNTRACED.equals(methodOperationName));
+    }
+
+    /**
+     * Return true if {@code methodOperationName} is not null (i.e. it represents
+     * something that has the {@code Traced} annotation) and if the
+     * {@code Traced} annotation was explicitly set to {@code false}, or return
+     * true if {@code classOperationName} is not null (i.e. it represents
+     * something that has the {@code Traced} annotation) and the
+     * {@code Traced} annotation was explicitly set to {@code false},
+     * and the {@code methodOperationName} is not explicitly set to {@code true}.
+     *
+     * @param classOperationName The class operation name
+     * @param methodOperationName The method operation name
+     * @return See above
+     */
+    public static boolean isNotTraced(String classOperationName, String methodOperationName) {
+        return OPERATION_NAME_UNTRACED.equals(methodOperationName) || (OPERATION_NAME_UNTRACED.equals(classOperationName) && !isTraced(methodOperationName));
+    }
+
+    /**
+     * Return true if {@code operationName} is not {@code null} and not
+     * {@code OPERATION_NAME_UNTRACED} and not {@code OPERATION_NAME_UNTRACED}.
+     *
+     * @param operationName The operation name to check.
+     * @return See above
+     */
+    public static boolean hasExplicitOperationName(String operationName) {
+        return operationName != null && !OPERATION_NAME_TRACED.equals(operationName) && !OPERATION_NAME_UNTRACED.equals(operationName);
     }
 
     /**
