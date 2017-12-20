@@ -13,10 +13,12 @@ package com.ibm.ws.collector.manager.internal;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -205,8 +207,13 @@ public class CollectorManagerImpl implements CollectorManager {
                 Tr.event(tc, "Removing source from the list", source.getClass());
             }
             srcMgr = sourceMgrs.get(sourceId);
-            //Change all subscriptions to pending subscriptions
-            for (String handlerId : srcMgr.getSubscriptions()) {
+            /*
+             * Change all subscriptions to pending subscriptions
+             * Need to make a copy to avoid a ConcurrentModification Exception when unsubscribe is called
+             * and subsequent call to SrcMgr to remove the handler from the subscriptions list.
+             */
+            Set<String> srcMgrSubscriptions = new HashSet<String>(srcMgr.getSubscriptions());
+            for (String handlerId : srcMgrSubscriptions) {
                 List<String> sourceIds = new ArrayList<String>();
                 sourceIds.add(sourceId);
                 try {
