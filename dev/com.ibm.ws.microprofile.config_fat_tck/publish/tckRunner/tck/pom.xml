@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Licensed under the Apache License, Version 2.0 (the "License"); you 
-    may not use this file except in compliance with the License. You may obtain 
-    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
-    required by applicable law or agreed to in writing, software distributed 
-    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-    the specific language governing permissions and limitations under the License. -->
+<!-- 
+    Copyright (c) 2017 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-v10.html 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -16,6 +18,9 @@
     <name>MicroProfile Config TCK Runner TCK Module</name>
 
     <properties>
+        <microprofile.config.version>1.1</microprofile.config.version>
+        <arquillian-core-version>1.1.13.Final</arquillian-core-version> <!--  There is no 1.1.14.Final at time of writing in Central -->
+        
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
 
@@ -63,14 +68,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
-                    <!-- <properties> <property> <name>className</name> <value>${className}</value> 
-                        </property> <property> <name>methodName</name> <value>${methodName}</value> 
-                        </property> <property> <name>packageName</name> <value>${packageName}</value> 
-                        </property> </properties> -->
                     <systemPropertyVariables>
-                        <!-- <packageName>${packageName</packageName> -->
-                        <!-- <className>${className}</className> -->
-                        <!-- <methodName>${methodName}</methodName> -->
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
@@ -107,12 +105,12 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>1.1</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>1.1</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -123,7 +121,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>1.1.14.Final</version>
+            <version>${arquillian-core-version}</version>
         </dependency>
         <dependency>
             <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
@@ -133,7 +131,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.apis</groupId>
-            <artifactId>microprofile-config_1.1_api</artifactId>
+            <artifactId>microprofile-config_${microprofile.config.version}_api</artifactId>
             <version>1.1-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config}</systemPath>
@@ -141,16 +139,16 @@
         <dependency>
             <groupId>com.ibm.wlp.lib</groupId>
             <artifactId>wlp.mpConfig</artifactId>
-            <version>1.1</version>
+            <version>1.1</version> <!--  this could be independent of config API version -->
             <scope>system</scope>
             <systemPath>${com.ibm.ws.microprofile.config}</systemPath>
         </dependency>
         <dependency>
             <groupId>com.ibm.wlp.lib</groupId>
             <artifactId>wlp.mpConfig.cdi</artifactId>
-            <version>1.0</version>
+            <version>1.0</version> <!--  this is independent of config API version -->
             <scope>system</scope>
-            <systemPath>${com.ibm.ws.microprofile.config.cdi}    </systemPath>
+            <systemPath>${com.ibm.ws.microprofile.config.cdi}</systemPath>
         </dependency>
     </dependencies>
 </project>

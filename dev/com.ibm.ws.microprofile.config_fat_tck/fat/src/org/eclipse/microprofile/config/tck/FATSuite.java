@@ -19,6 +19,4 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConfigTckPackageTest.class
 })
 
-public class FATSuite {
-
-}
+public class FATSuite {}
