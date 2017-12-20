@@ -3,9 +3,5 @@
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="src" path="/com.ibm.ws.cdi.internal"/>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.core/generated/com.ibm.websphere.org.osgi.core.jar"/>
-	<classpathentry kind="src" path="/com.ibm.websphere.security"/>
-	<classpathentry kind="src" path="/com.ibm.ws.context"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
