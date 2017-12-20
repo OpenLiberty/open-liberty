@@ -79,6 +79,15 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     private ManagedCompletableFuture(CompletableFuture<T> completableFuture, WSManagedExecutorService managedExecutor) {
         super();
+
+        // For the sake of operations that rely upon CompletableFuture internals, update the state of the super class upon completion:
+        completableFuture.whenComplete((result, failure) -> {
+            if (failure == null)
+                super.complete(result);
+            else
+                super.completeExceptionally(failure);
+        });
+
         this.completableFuture = completableFuture;
         this.defaultExecutor = managedExecutor;
     }
@@ -233,7 +242,9 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public int getNumberOfDependents() {
-        return completableFuture.getNumberOfDependents();
+        // Subtract out the extra dependent stage that we use internally to be notified of completion.
+        int count = completableFuture.getNumberOfDependents();
+        return count > 1 ? count - 1 : 0;
     }
 
     /**
