@@ -12,12 +12,15 @@ package com.ibm.ws.webcontainer40.srt.http;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -298,6 +301,84 @@ public class HttpPushBuilderTest {
             assertTrue(hC.getComment().equals("Test Cookie"));
             assertTrue(hC.getMaxAge() == 10);
         }
+
+    }
+    
+    @Test
+    public void testAPI_conditionalHeadersAfterPush() throws Exception {
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+
+        //Headers which should be removed
+        headers.put("If-Match", "match");
+        headers.put("If-Modified-Since", "Tue, 07 Feb 2017 13050:00 GMT");
+        headers.put("If-None-Match", "noneMatch");
+        headers.put("If-Range", "range");
+        headers.put("If-Unmodified-Since", "Tue, 07 Feb 2017 13050:00 GMT");
+        
+        StringTokenizer imE = new StringTokenizer(headers.get("If-Match"), "&");
+        StringTokenizer imsE = new StringTokenizer(headers.get("If-Modified-Since"), "&");
+        StringTokenizer inmE = new StringTokenizer(headers.get("If-None-Match"), "&");
+        StringTokenizer irE = new StringTokenizer(headers.get("If-Range"), "&");
+        StringTokenizer iusE = new StringTokenizer(headers.get("If-Unmodified-Since"), "&");
+
+
+        context.checking(new Expectations() {
+            {
+                oneOf(srtReq).getHeaders("If-Match");
+                will(returnValue(imE));
+                
+                oneOf(srtReq).getHeaders("If-Modified-Since");
+                will(returnValue(imsE));
+                
+                oneOf(srtReq).getHeaders("If-None-Match");
+                will(returnValue(inmE));
+                
+                oneOf(srtReq).getHeaders("If-Range");
+                will(returnValue(irE));
+                
+                oneOf(srtReq).getHeaders("If-Unmodified-Since");
+                will(returnValue(iusE));
+            }
+        });
+
+        Enumeration headerList = Collections.enumeration(headers.keySet());
+
+        HttpPushBuilder pb = new HttpPushBuilder(srtReq, null, headerList, null);
+
+        context.checking(new Expectations() {
+            {
+                oneOf(srtReq).getRequestURI();
+                will(returnValue("/UnitTest/TestAPI_path"));
+
+                oneOf(srtReq).getIRequest();
+                will(returnValue(IReq40));
+
+                oneOf(IReq40).getHttpRequest();
+                will(returnValue(hReq));
+
+                allowing(hReq).pushNewRequest(pb);
+                
+                ignoring(srtReq).getQueryString();
+            }
+        });
+        
+        //Add the conditional headers to the PB
+        for(Map.Entry<String, String> header : headers.entrySet()) {
+            pb.addHeader(header.getKey(), header.getValue());
+        }
+
+        //Push, then check that the conditional headers were removed
+        try {
+            pb.path("/testPath");
+            pb.push();
+        }
+        catch (Exception e) {
+            fail("Exception thrown during push: " + e.getMessage());
+        }
+        
+        for(Map.Entry<String, String> header : headers.entrySet())
+            assertNull("Found unexpected " + header.getKey() + " header after push with value: " + pb.getHeader(header.getKey()), pb.getHeader(header.getKey()));
 
     }
 
