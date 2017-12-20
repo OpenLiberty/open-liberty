@@ -29,6 +29,7 @@ javac.target: 1.8
   com.ibm.ws.classloading,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.injection.core,\
+  com.ibm.ws.javaee.dd.common;version=latest,\
   com.ibm.ws.kernel.service,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
