@@ -87,22 +87,18 @@ public class TracedInterceptor {
 
             if (OpentracingService.hasExplicitOperationName(methodOperationName)) {
                 operationName = methodOperationName;
-
-                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
-                    operationName = classOperationName + "/" + operationName;
-                }
             } else {
                 // If the annotated method is not a JAX-RS endpoint, the default
                 // operation name of the new Span for the method is:
-                // <package name>.<class name>.<method name>"
+                // <package name>.<class name>.<method name> [...]
+                // If operationName is specified on a class, that operationName will be used
+                // for all methods of the class unless a method explicitly overrides it with
+                // its own operationName."
                 // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#321-the-traced-annotation
-                operationName = context.getMethod().getDeclaringClass().getName() + "." + context.getMethod().getName();
-
-                // "If operationName is specified on a class, then the operation
-                // name of each traced method in that class is prefixed with the
-                // class operationName followed by a forward slash (/)."
                 if (OpentracingService.hasExplicitOperationName(classOperationName)) {
-                    operationName = classOperationName + "/" + operationName;
+                    operationName = classOperationName;
+                } else {
+                    operationName = context.getMethod().getDeclaringClass().getName() + "." + context.getMethod().getName();
                 }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

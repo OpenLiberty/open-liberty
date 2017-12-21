@@ -114,23 +114,16 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
             if (OpentracingService.hasExplicitOperationName(methodOperationName)) {
                 operationName = methodOperationName;
-
-                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
-                    operationName = classOperationName + "/" + operationName;
-                }
             } else {
                 // "The default operation name of the new Span for the incoming request is
                 // <HTTP method>:<package name>.<class name>.<method name> [...]
-                // If operationName is specified on a class, then the operation name of each
-                // traced method in that class is prefixed with the class operationName
-                // followed by a forward slash (/). If the class encloses a JAX-RS endpoint,
-                // the prefix is added after <HTTP method>: and before <package name>."
+                // If operationName is specified on a class, that operationName will be used
+                // for all methods of the class unless a method explicitly overrides it with
+                // its own operationName."
                 // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#server-span-name
 
                 if (OpentracingService.hasExplicitOperationName(classOperationName)) {
-                    operationName = incomingRequestContext.getMethod() + ":" + classOperationName + "/"
-                                    + resourceInfo.getResourceClass().getName() + "."
-                                    + resourceInfo.getResourceMethod().getName();
+                    operationName = classOperationName;
                 } else {
                     operationName = incomingRequestContext.getMethod() + ":"
                                     + resourceInfo.getResourceClass().getName() + "."
