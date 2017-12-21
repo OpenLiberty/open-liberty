@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="WebApp_ID">
+  <display-name>LogstashApp</display-name>
+  <description>Logstash servlet</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>Logstash Servlet</servlet-name>
+    <display-name>Logstash Servlet</display-name>
+    <servlet-class>com.ibm.logs.LogstashServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet id="AccessServlet">
+    <servlet-name>AccessServlet</servlet-name>
+    <display-name>AccessServlet</display-name>
+    <servlet-class>com.ibm.logs.AccessServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet id="TraceServlet">
+    <servlet-name>TraceServlet</servlet-name>
+    <display-name>TraceServlet</display-name>
+    <servlet-class>com.ibm.logs.TraceServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>Logstash Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="AccessServlet">
+    <servlet-name>AccessServlet</servlet-name>
+    <url-pattern>/AccessURL</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet-mapping id="TraceServlet">
+    <servlet-name>TraceServlet</servlet-name>
+    <url-pattern>/TraceURL</url-pattern>
+  </servlet-mapping>
+
+</web-app>
