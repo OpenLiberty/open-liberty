@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.websphere.concurrent.rx;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -28,6 +31,13 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -63,12 +73,38 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * @param <T>
  */
 public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
+    private static final TraceComponent tc = Tr.register(ManagedCompletableFuture.class);
+
     /**
      * Execution property that indicates a task should run with any previous transaction suspended.
      */
     private static Map<String, String> XPROPS_SUSPEND_TRAN = Collections.singletonMap(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
 
+    /**
+     * Privileged action that obtains the default instance of ManagedExecutorService from the service registry.
+     * This is the same as looking up java:comp/DefaultManagedExecutorService, except doesn't require the jndi-1.0 feature.
+     */
+    private static PrivilegedAction<ManagedExecutorService> getDefaultManagedExecutorAction = () -> {
+        BundleContext bc = FrameworkUtil.getBundle(ManagedCompletableFuture.class).getBundleContext();
+        Collection<ServiceReference<ManagedExecutorService>> refs;
+        try {
+            refs = bc.getServiceReferences(ManagedExecutorService.class, "(id=DefaultManagedExecutorService)");
+        } catch (InvalidSyntaxException x) {
+            throw new RuntimeException(x); // should never happen
+        }
+        if (refs.isEmpty())
+            throw new IllegalStateException("DefaultManagedExecutorService");
+        return bc.getService(refs.iterator().next());
+    };
+
+    /**
+     * The real completable future to which meaningful operations are delegated.
+     */
     private final CompletableFuture<T> completableFuture;
+
+    /**
+     * The default asynchronous execution facility for this completable future.
+     */
     private final WSManagedExecutorService defaultExecutor;
 
     /**
@@ -82,6 +118,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
         // For the sake of operations that rely upon CompletableFuture internals, update the state of the super class upon completion:
         completableFuture.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
             if (failure == null)
                 super.complete(result);
             else
@@ -94,6 +132,37 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
     // static method equivalents for CompletableFuture
 
+    /**
+     * Replaces CompletableFuture.completedFuture(value) with an implementation that switches the
+     * default asynchronous execution facility to be the default managed executor.
+     *
+     * @param value result of the completed future
+     * @return completed completable future where the default managed executor is the default asynchronous execution facility.
+     */
+    public static <U> ManagedCompletableFuture<U> completedFuture(U value) {
+        return new ManagedCompletableFuture<U>( //
+                        CompletableFuture.completedFuture(value), //
+                        (WSManagedExecutorService) AccessController.doPrivileged(getDefaultManagedExecutorAction));
+    }
+
+    /**
+     * Replaces CompletableFuture.runAsync(action) with an implementation that switches the
+     * default asynchronous execution facility to be the default managed executor.
+     *
+     * @param action the action to run asynchronously.
+     * @return completable future where the default managed executor is the default asynchronous execution facility.
+     */
+    public static ManagedCompletableFuture<Void> runAsync(Runnable action) {
+        return runAsync(action, AccessController.doPrivileged(getDefaultManagedExecutorAction));
+    }
+
+    /**
+     * Replaces CompletableFuture.runAsync(action, executor) with an implementation that switches the
+     * default asynchronous execution facility to be the specified managed executor.
+     *
+     * @param action the action to run asynchronously.
+     * @return completable future where the specified managed executor is the default asynchronous execution facility.
+     */
     public static ManagedCompletableFuture<Void> runAsync(Runnable action, Executor executor) {
         // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
         if (action instanceof ManagedTask)
@@ -111,6 +180,24 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         return new ManagedCompletableFuture<Void>(completableFuture, managedExecutor);
     }
 
+    /**
+     * Replaces CompletableFuture.supplyAsync(supplier) with an implementation that switches the
+     * default asynchronous execution facility to be the default managed executor.
+     *
+     * @param action the supplier to invoke asynchronously.
+     * @return completable future where the default managed executor is the default asynchronous execution facility.
+     */
+    public static <U> ManagedCompletableFuture<U> supplyAsync(Supplier<U> action) {
+        return supplyAsync(action, AccessController.doPrivileged(getDefaultManagedExecutorAction));
+    }
+
+    /**
+     * Replaces CompletableFuture.supplyAsync(supplier, executor) with an implementation that switches the
+     * default asynchronous execution facility to be the specified managed executor.
+     *
+     * @param action the supplier to invoke asynchronously.
+     * @return completable future where the specified managed executor is the default asynchronous execution facility.
+     */
     public static <U> ManagedCompletableFuture<U> supplyAsync(Supplier<U> action, Executor executor) {
         // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
         if (action instanceof ManagedTask)
@@ -403,7 +490,21 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<Void> runAfterEither(CompletionStage<?> other, Runnable action) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<?>) other).completableFuture;
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
+
+        CompletableFuture<Void> dependentStage = completableFuture.runAfterEither(other, action);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
     }
 
     /**
@@ -411,7 +512,22 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<Void> runAfterEitherAsync(CompletionStage<?> other, Runnable action) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<?>) other).completableFuture;
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
+
+        CompletableFuture<Void> dependentStage = completableFuture.runAfterEitherAsync(other, action, policyExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
     }
 
     /**
@@ -419,7 +535,28 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<Void> runAfterEitherAsync(CompletionStage<?> other, Runnable action, Executor executor) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<?>) other).completableFuture;
+
+        CompletableFuture<Void> dependentStage;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
+
+            dependentStage = completableFuture.runAfterEitherAsync(other, action, policyExecutor);
+        } else {
+            dependentStage = completableFuture.runAfterEitherAsync(other, action, executor);
+        }
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
     }
 
     /**
