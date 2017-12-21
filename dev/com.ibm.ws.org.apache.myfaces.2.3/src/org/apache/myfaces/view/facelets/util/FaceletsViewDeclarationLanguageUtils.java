@@ -111,7 +111,7 @@ public class FaceletsViewDeclarationLanguageUtils
      */
     public static void markRenderedResources(FacesContext facesContext, UIViewRoot view)
     {
-        if (facesContext.getPartialViewContext().isAjaxRequest())
+        if (view != null && facesContext.getPartialViewContext().isAjaxRequest())
         {
             markRenderedResources(facesContext, view, view.getComponentResources(facesContext, "head"));
             markRenderedResources(facesContext, view, view.getComponentResources(facesContext, "body"));
