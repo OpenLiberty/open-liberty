@@ -616,29 +616,65 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletionStage#thenApply(java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenApply(Function<? super T, ? extends U> fn) {
-        // TODO contextualize fn and other steps
-        return new ManagedCompletableFuture<U>(completableFuture.thenApply(fn), defaultExecutor);
+    @SuppressWarnings("unchecked")
+    public <R> ManagedCompletableFuture<R> thenApply(Function<? super T, ? extends R> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = contextSvc.createContextualProxy(contextDescriptor, action, Function.class);
+
+        CompletableFuture<R> dependentStage = completableFuture.thenApply(action);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenApplyAsync(java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenApplyAsync(Function<? super T, ? extends U> fn) {
-        // TODO contextualize fn and other steps
-        Executor policyExecutor = (Executor) defaultExecutor; // TODO get policy executor from default executor
-        return new ManagedCompletableFuture<U>(completableFuture.thenApplyAsync(fn, policyExecutor), defaultExecutor);
+    @SuppressWarnings("unchecked")
+    public <R> ManagedCompletableFuture<R> thenApplyAsync(Function<? super T, ? extends R> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = contextSvc.createContextualProxy(contextDescriptor, action, Function.class);
+
+        CompletableFuture<R> dependentStage = completableFuture.thenApplyAsync(action, policyExecutor);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenApplyAsync(java.util.function.Function, java.util.concurrent.Executor)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenApplyAsync(Function<? super T, ? extends U> fn, Executor executor) {
-        // TODO contextualize fn and other steps
-        Executor policyExecutor = executor; // TODO get policy executor from the supplied executor, if a managed executor
-        return new ManagedCompletableFuture<U>(completableFuture.thenApplyAsync(fn, policyExecutor), defaultExecutor);
+    @SuppressWarnings("unchecked")
+    public <R> ManagedCompletableFuture<R> thenApplyAsync(Function<? super T, ? extends R> action, Executor executor) {
+        CompletableFuture<R> dependentStage;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = contextSvc.createContextualProxy(contextDescriptor, action, Function.class);
+
+            dependentStage = completableFuture.thenApplyAsync(action, policyExecutor);
+        } else {
+            dependentStage = completableFuture.thenApplyAsync(action, executor);
+        }
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
     }
 
     /**
@@ -793,23 +829,50 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         return new ManagedCompletableFuture<T>(completableFuture.whenCompleteAsync(action, policyExecutor), defaultExecutor);
     }
 
-    // TODO move to general context service in com.ibm.ws.context project once Java 8 can be used there
+    // TODO move the following classes to the general context service in com.ibm.ws.context project once Java 8 can be used there
+
     /**
-     * Proxy for Supplier that applies thread context before running and removes it afterward
+     * Proxy for Function that applies thread context before running and removes it afterward
      *
-     * @param <U>
+     * @param <T> type of the function's parameter
+     * @param <R> type of the function's result
      */
-    private static class ContextualSupplier<U> implements Supplier<U> {
-        private final Supplier<U> action;
+    private static class ContextualFunction<T, R> implements Function<T, R> {
+        private final Function<T, R> action;
         private final ThreadContextDescriptor threadContextDescriptor;
 
-        private ContextualSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<U> action) {
+        private ContextualFunction(ThreadContextDescriptor threadContextDescriptor, Function<T, R> action) {
             this.action = action;
             this.threadContextDescriptor = threadContextDescriptor;
         }
 
         @Override
-        public U get() {
+        public R apply(T t) {
+            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
+            try {
+                return action.apply(t);
+            } finally {
+                threadContextDescriptor.taskStopping(contextApplied);
+            }
+        }
+    }
+
+    /**
+     * Proxy for Supplier that applies thread context before running and removes it afterward
+     *
+     * @param <T> type of the result that is supplied by the supplier
+     */
+    private static class ContextualSupplier<T> implements Supplier<T> {
+        private final Supplier<T> action;
+        private final ThreadContextDescriptor threadContextDescriptor;
+
+        private ContextualSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action) {
+            this.action = action;
+            this.threadContextDescriptor = threadContextDescriptor;
+        }
+
+        @Override
+        public T get() {
             ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
             try {
                 return action.get();
