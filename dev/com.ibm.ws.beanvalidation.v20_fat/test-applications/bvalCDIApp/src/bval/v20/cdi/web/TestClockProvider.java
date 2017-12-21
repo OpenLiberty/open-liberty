@@ -24,8 +24,8 @@ public class TestClockProvider implements ClockProvider {
 
     @Override
     public Clock getClock() {
-        // Verify that a CDI bean can be injected into a custom ClockProvder to
-        // confirm that a custom clock provider is registered as a CDI managed object
+        // Verify that a CDI bean can be injected into a custom ClockProvider to
+        // confirm that the custom clock provider was registered as a CDI managed object.
         System.out.println("Verifying that " + getClass() + " can have a CDI bean injected into it: " + bean);
         Assert.assertNotNull(bean);
         return Clock.systemUTC();

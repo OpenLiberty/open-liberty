@@ -14,10 +14,7 @@ IBM-API-Package: javax.validation; type="spec", \
   javax.validation.metadata; type="spec", \
   javax.validation.spi; type="spec",\
   javax.validation.valueextraction; type="spec",\
-  com.ibm.ws.beanvalidation.accessor; type="internal",\
-  org.hibernate.validator; type="internal",\
-  com.ibm.ws.beanvalidation.v20.cdi.internal; type="internal",\
-  org.hibernate.validator.internal.engine; type="internal"
+  com.ibm.ws.beanvalidation.accessor; type="internal"
 -features=\
   com.ibm.websphere.appserver.javax.cdi-2.0, \
   com.ibm.websphere.appserver.beanValidationCore-1.0, \

@@ -12,6 +12,7 @@ package com.ibm.ws.beanvalidation.v20.cdi.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -28,8 +29,13 @@ import javax.validation.executable.ValidateOnExecution;
 import org.hibernate.validator.cdi.ValidationExtension;
 import org.hibernate.validator.cdi.internal.ValidatorBean;
 import org.hibernate.validator.cdi.internal.ValidatorFactoryBean;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
@@ -37,6 +43,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
@@ -58,33 +65,13 @@ import com.ibm.ws.util.ThreadContextAccessor;
 public class LibertyHibernateValidatorExtension implements Extension, WebSphereCDIExtension {
     private static final TraceComponent tc = Tr.register(LibertyHibernateValidatorExtension.class);
 
-    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
-        @Override
-        public ThreadContextAccessor run() {
-            return ThreadContextAccessor.getThreadContextAccessor();
-        }
-    };
-
-    /**
-     * Privileged action for creating a Validation20ClassLoader.
-     */
-    private class CreateValidation20ClassLoaderAction implements PrivilegedAction<Validation20ClassLoader> {
-        private final ClassLoader parentCL;
-        private final String moduleHint;
-
-        private CreateValidation20ClassLoaderAction(ClassLoader parentCL, String moduleHint) {
-            this.parentCL = parentCL;
-            this.moduleHint = moduleHint;
-        }
-
-        @Override
-        public Validation20ClassLoader run() {
-            return new Validation20ClassLoader(parentCL, moduleHint);
-        }
-    }
+    @Reference
+    protected ClassLoadingService classLoadingService;
 
     private ValidatorFactoryBean vfBean;
     private ValidatorBean vBean;
+    private ValidationExtension extDelegate;
+    private String currentClassloaderHint = "";
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscoveryEvent, BeanManager beanManager) {
         if (vfBean == null) {
@@ -98,31 +85,29 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
         }
     }
 
-    private ValidationExtension extDelegate;
-    private String currentClassloaderHint = "";
-
     private ValidationExtension delegate(String newClassloaderHint) {
-        if (newClassloaderHint != null && !newClassloaderHint.equals(currentClassloaderHint)) {
+        if (extDelegate == null || newClassloaderHint != null && !newClassloaderHint.equals(currentClassloaderHint)) {
 
+            ClassLoader tcclClassLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
             try {
-                ClassLoader bvalClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                final ClassLoader tcclClassLoaderTmp = tcclClassLoader = configureBvalClassloader(null);
 
-                    @Override
-                    public ClassLoader run() {
-                        return new CreateValidation20ClassLoaderAction(Thread.currentThread().getContextClassLoader(), newClassloaderHint).run();
-                    }
+                ClassLoader bvalClassLoader;
+                if (newClassloaderHint != null) {
+                    bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(tcclClassLoaderTmp, newClassloaderHint));
+                } else {
+                    bvalClassLoader = tcclClassLoaderTmp;
+                }
 
-                });
-
-                ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
+                ThreadContextAccessor tca = AccessController.doPrivileged((PrivilegedAction<ThreadContextAccessor>) () -> ThreadContextAccessor.getThreadContextAccessor());
 
                 // set the thread context class loader to be used, must be reset in finally block
                 setClassLoader = new SetContextClassLoaderPrivileged(tca);
                 oldClassLoader = setClassLoader.execute(bvalClassLoader);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + bvalClassLoader);
+                    Tr.debug(tc, "Called setClassLoader with oldClassLoader of " + oldClassLoader + " and newClassLoader of " + bvalClassLoader);
                 }
                 extDelegate = new ValidationExtension();
                 currentClassloaderHint = newClassloaderHint;
@@ -133,9 +118,10 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
+                if (setClassLoader != null && setClassLoader.wasChanged) {
+                    releaseLoader(tcclClassLoader);
+                }
             }
-        } else if (extDelegate == null) {
-            extDelegate = new ValidationExtension();
         }
         return extDelegate;
     }
@@ -159,8 +145,10 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
         delegate(moduleName).processAnnotatedType(processAnnotatedTypeEvent);
     }
 
-    private String getModuleName(Class<?> javaClass) {
-        String moduleName = javaClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+    private String getModuleName(final Class<?> javaClass) {
+        ProtectionDomain protectionDomain = AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) () -> javaClass.getProtectionDomain());
+
+        String moduleName = protectionDomain.getCodeSource().getLocation().getPath();
 
         //Handle war module
         if (moduleName.endsWith("/WEB-INF/classes/")) {
@@ -172,5 +160,43 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
             moduleName = moduleName.substring(index);
         }
         return moduleName;
+    }
+
+    private ClassLoadingService getClassLoadingService() {
+        Bundle bundle = FrameworkUtil.getBundle(ClassLoadingService.class);
+        ClassLoadingService classLoadingService = AccessController.doPrivileged((PrivilegedAction<ClassLoadingService>) () -> {
+            BundleContext bCtx = bundle.getBundleContext();
+            ServiceReference<ClassLoadingService> svcRef = bCtx.getServiceReference(ClassLoadingService.class);
+            return svcRef == null ? null : bCtx.getService(svcRef);
+        });
+        if (classLoadingService == null) {
+            throw new IllegalStateException("Failed to get the ClassLoadingService.");
+        }
+        return classLoadingService;
+    }
+
+    private void releaseLoader(ClassLoader tccl) {
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            getClassLoadingService().destroyThreadContextClassLoader(tccl);
+            return null;
+        });
+    }
+
+    private ClassLoader configureBvalClassloader(ClassLoader cl) {
+        if (cl == null) {
+            cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+        }
+        if (cl != null) {
+            if (getClassLoadingService().isThreadContextClassLoader(cl)) {
+                return cl;
+            } else if (getClassLoadingService().isAppClassLoader(cl)) {
+                return createTCCL(cl);
+            }
+        }
+        return createTCCL(LibertyHibernateValidatorExtension.class.getClassLoader());
+    }
+
+    private ClassLoader createTCCL(ClassLoader parentCL) {
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> getClassLoadingService().createThreadContextClassLoader(parentCL));
     }
 }
