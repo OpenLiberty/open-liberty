@@ -17,6 +17,7 @@ public class JavaInfo {
 
     public static enum Vendor {
         IBM,
+        OPENJ9,
         ORACLE,
         UNKNOWN
     }
@@ -44,6 +45,8 @@ public class JavaInfo {
         String vendor = PrivHelper.getProperty("java.vendor").toLowerCase();
         if (vendor.contains("ibm"))
             VENDOR = Vendor.IBM;
+        else if (vendor.contains("openj9"))
+            VENDOR = Vendor.OPENJ9;
         else if (vendor.contains("oracle"))
             VENDOR = Vendor.ORACLE;
         else
