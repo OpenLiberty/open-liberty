@@ -41,8 +41,7 @@ public class TrimTestServlet extends FATServlet {
         }
     }
 
-//  Pending issue https://github.com/OpenLiberty/open-liberty/issues/1372
-//  @Test
+    @Test
     public void testPATObservers() {
         assertTrue("ProcessAnnotatedType<ThingOne> not observed", PATObserver.observed.contains(ThingOne.class.getName()));
         assertTrue("ProcessAnnotatedType<ThingTwo> not observed", PATObserver.observed.contains(ThingTwo.class.getName()));
