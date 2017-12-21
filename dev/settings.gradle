@@ -238,10 +238,14 @@ buildscript {
     }
   }
 
-  /* Pass bnd gradle plugin classpath to rootProject once created */
+  /* Add bnd gradle plugin to buildscript classpath of rootProject */
   def bndPlugin = files(configurations.classpath.files)
-  gradle.rootProject { rootProject ->
-    rootProject.ext.bndPlugin = bndPlugin
+  gradle.projectsLoaded { gradle ->
+    gradle.rootProject.buildscript {
+      dependencies {
+        classpath bndPlugin
+      }
+    }
   }
 }
 
@@ -253,7 +257,7 @@ import java.text.SimpleDateFormat
 
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
-def workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
 gradle.bndWorkspaceConfigure(workspace)
 
 /* Add cnf project to the graph */
@@ -298,7 +302,7 @@ if (projectNames.remove('')) {
 
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->
-  def project = getBndProject(workspace, projectName)
+  def project = workspace.getProject(projectName)
   if (project) {
     include projectName
     project?.getDependson()*.getName().each {
@@ -307,34 +311,7 @@ projectNames.each { projectName ->
   }
 }
 
-/* Get the bnd project for the specified project name */
-def getBndProject(Workspace workspace, String projectName) {
-  def project = workspace.getProject(projectName)
-  if (project == null) {
-    return null
-  }
-  project.prepare()
-  if (project.isValid()) {
-    return project
-  }
-
-  project.getInfo(workspace, "${rootDir} :")
-  def errorCount = 0
-  project.getWarnings().each {
-    println "Warning: ${it}"
-  }
-  project.getErrors().each {
-    println "Error  : ${it}"
-    errorCount++
-  }
-  if (!project.isOk()) {
-    def str = 'even though no errors were reported'
-    if (errorCount == 1) {
-      str = 'one error was reported'
-    } else if (errorCount > 1) {
-      str = "${errorCount} errors were reported"
-    }
-    throw new GradleException("Project ${rootDir}/${projectName} is invalid, ${str}")
-  }
-  throw new GradleException("Project ${rootDir}/${projectName} is not a valid bnd project")
+/* Pass workspace to root project */
+gradle.projectsLoaded { gradle ->
+  gradle.rootProject.ext.bndWorkspace = workspace
 }

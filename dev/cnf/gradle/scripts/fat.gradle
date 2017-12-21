@@ -25,17 +25,13 @@ publishing {
   }
 }
 
-task cleanFat() {
-  doLast {
-    delete autoFvtDir
-  }
+task cleanFat(type: Delete) {
+  delete autoFvtDir
 }
 
-task cleanBeforeRun() {
-  doLast {
-    delete new File(autoFvtDir, 'output')
-    delete new File(autoFvtDir, 'results')
-  }
+task cleanBeforeRun(type: Delete) {
+  delete new File(autoFvtDir, 'output')
+  delete new File(autoFvtDir, 'results')
 }
 
 configurations {
@@ -48,14 +44,12 @@ dependencies {
 }
 
 task addRequiredLibraries(type: Copy) {
-  shouldRunAfter cleanFat
   shouldRunAfter jar
   from configurations.requiredLibs
   into new File(autoFvtDir, 'lib')
 }
 
 task addDerby(type: Copy) {
-  shouldRunAfter cleanFat
   shouldRunAfter jar
   from configurations.derby
   into new File(autoFvtDir, 'publish/shared/resources/derby')
@@ -321,12 +315,7 @@ if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
 	}
 }
 
-compileJava {
-  dependsOn cleanFat
-}
-
 assemble {
-  dependsOn zipProjectFVT
   // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
   if(!buildFatEnabled) {
     enabled = false;
@@ -343,7 +332,9 @@ build {
 }
 
 buildfat {
+  dependsOn cleanFat
   dependsOn build
+  dependsOn zipProjectFVT
 }
 
 task buildandrun {
