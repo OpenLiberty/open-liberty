@@ -19,6 +19,7 @@ src: \
 	test-applications/cdiContainerConfigApp/src,\
 	test-applications/configuratorApp/src,\
 	test-applications/interceptionFactoryApp/src,\
+	test-applications/trimTestApp/src,\
 	test-applications/secureAsyncEventsApp/src
 
 fat.project: true
