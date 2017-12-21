@@ -19,17 +19,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.microprofile.tck.Utils;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.MvnUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
  */
+@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class ConfigTckPackageTest {
 
@@ -53,16 +53,16 @@ public class ConfigTckPackageTest {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void testTck() throws Exception {
-        if (!Utils.init) {
-            Utils.init(server);
+    public void testConfigTck() throws Exception {
+        if (!MvnUtils.init) {
+            MvnUtils.init(server);
         }
         // Everything under autoFVT/results is collected from the child build machine
-        File mvnOutput = new File(Utils.home, "results/mvnOutput_TCK");
-        int rc = Utils.runCmd(Utils.mvnCliTckRoot, Utils.tckRunnerDir, mvnOutput);
-        File src = new File(Utils.home, "results/tck/surefire-reports/junitreports");
-        File tgt = new File(Utils.home, "results/junit");
-        Files.walkFileTree(src.toPath(), new Utils.CopyFileVisitor(src.toPath(), tgt.toPath()));
+        File mvnOutput = new File(MvnUtils.home, "results/mvnOutput_TCK");
+        int rc = MvnUtils.runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
+        File src = new File(MvnUtils.home, "results/tck/surefire-reports/junitreports");
+        File tgt = new File(MvnUtils.home, "results/junit");
+        Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
 
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
