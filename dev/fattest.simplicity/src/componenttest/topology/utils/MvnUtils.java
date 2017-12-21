@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.tck;
+package componenttest.topology.utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import com.ibm.websphere.simplicity.PortType;
 
@@ -36,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
  * This exists partly as there is more than one test class
  * in development that share these functions.
  */
-public class Utils {
+public class MvnUtils {
 
     public static File home;
     public static String wlp;
@@ -110,9 +109,18 @@ public class Utils {
      * @return cat a b
      */
     public static String[] concatStringArray(String[] a, String[] b) {
-        Stream<String> streamA = Arrays.stream(a);
-        Stream<String> streamB = Arrays.stream(b);
-        return Stream.concat(streamA, streamB).toArray(String[]::new);
+        if (a == null && b != null) {
+            return Arrays.copyOf(b, b.length);
+        } else if (a != null && b == null) {
+            return Arrays.copyOf(a, a.length);
+        } else if (a == null && b == null) {
+            return new String[] {};
+        } else {
+            String[] result = new String[a.length + b.length];
+            System.arraycopy(a, 0, result, 0, a.length);
+            System.arraycopy(b, 0, result, a.length, b.length);
+            return result;
+        }
     }
 
     /**
@@ -177,7 +185,6 @@ public class Utils {
     public static String genericResolveJarPath(String jarName, String wlpPathName) {
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
-        String spi = dev + "spi/";
         String apiStable = api + "stable/";
         String lib = wlpPathName + "/lib/";
 
@@ -254,7 +261,7 @@ public class Utils {
      *
      */
     public static class CopyFileVisitor extends SimpleFileVisitor<Path> {
-        private Path src, tgt;
+        private final Path src, tgt;
 
         public CopyFileVisitor(Path src, Path tgt) {
             this.src = src;
