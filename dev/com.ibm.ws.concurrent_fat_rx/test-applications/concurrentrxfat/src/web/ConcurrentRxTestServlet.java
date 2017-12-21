@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -62,6 +63,166 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) {
         testThreads = Executors.newFixedThreadPool(20);
+    }
+
+    /**
+     * Verify that CompletableFuture.allOf properly identifies exceptional completion of a managed completable future.
+     */
+    @Test
+    public void testAllOf_ExceptionalResult() throws Exception {
+        // Managed completable future with non-null result:
+        CompletableFuture<Object> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testAllOf_ExceptionalResult");
+            System.out.println("< supply ArrayIndexOutOfBoundsException (intentional failure)");
+            throw new ArrayIndexOutOfBoundsException("Intentionally caused failure in order to test exceptional completion");
+        }, defaultManagedExecutor);
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+
+        CompletableFuture<Void> cf2 = CompletableFuture.allOf(cf1);
+        try {
+            Object result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should have raised ExecutionException. Instead: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof ArrayIndexOutOfBoundsException))
+                throw new Exception("Unexpected cause of ExecutionException. See exception chain.", x);
+        }
+        assertTrue(cf2.isDone());
+        assertTrue(cf2.isCompletedExceptionally());
+        assertTrue(cf1.isDone());
+        assertTrue(cf1.isCompletedExceptionally());
+    }
+
+    /**
+     * Verify that CompletableFuture.allOf properly identifies completion of a managed completable future with a non-null result.
+     */
+    @Test
+    public void testAllOf_NonNullResult() throws Exception {
+        // Managed completable future with non-null result:
+        CompletableFuture<ManagedExecutorService> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testAllOf_NonNullResult");
+            try {
+                ManagedExecutorService result = InitialContext.doLookup("java:comp/env/executorRef");
+                System.out.println("< supply " + result);
+                return result;
+            } catch (NamingException x) {
+                System.out.println("< supply raised exception");
+                x.printStackTrace(System.out);
+                throw new RuntimeException(x);
+            }
+        }, defaultManagedExecutor);
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+
+        CompletableFuture<Void> cf2 = CompletableFuture.allOf(cf1);
+        assertNull(cf2.join());
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertEquals(defaultManagedExecutor, cf1.get());
+    }
+
+    /**
+     * Verify that CompletableFuture.allOf properly identifies completion of a managed completable future with a null result.
+     */
+    @Test
+    public void testAllOf_NullResult() throws Exception {
+        // Managed completable future with non-null result:
+        CompletableFuture<Object> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testAllOf_NullResult");
+            System.out.println("< supply: null");
+            return null;
+        }, defaultManagedExecutor);
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+
+        CompletableFuture<Void> cf2 = CompletableFuture.allOf(cf1);
+        assertNull(cf2.join());
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertNull(cf1.get());
+    }
+
+    /**
+     * Verify that CompletableFuture.anyOf properly identifies exceptional completion of a managed completable future.
+     */
+    @Test
+    public void testAnyOf_ExceptionalResult() throws Exception {
+        // Managed completable future with non-null result:
+        CompletableFuture<Object> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testAnyOf_ExceptionalResult");
+            System.out.println("< supply ArrayIndexOutOfBoundsException (intentional failure)");
+            throw new ArrayIndexOutOfBoundsException("Intentionally caused failure in order to test exceptional completion");
+        }, defaultManagedExecutor);
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+
+        CompletableFuture<Object> cf2 = CompletableFuture.anyOf(cf1);
+        try {
+            Object result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should have raised ExecutionException. Instead: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof ArrayIndexOutOfBoundsException))
+                throw new Exception("Unexpected cause of ExecutionException. See exception chain.", x);
+        }
+        assertTrue(cf2.isDone());
+        assertTrue(cf2.isCompletedExceptionally());
+        assertTrue(cf1.isDone());
+        assertTrue(cf1.isCompletedExceptionally());
+    }
+
+    /**
+     * Verify that CompletableFuture.anyOf properly identifies completion of a managed completable future with a non-null result.
+     */
+    @Test
+    public void testAnyOf_NonNullResult() throws Exception {
+        // Managed completable future with non-null result:
+        CompletableFuture<ManagedExecutorService> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testAnyOf_NonNullResult");
+            try {
+                ManagedExecutorService result = InitialContext.doLookup("java:comp/env/executorRef");
+                System.out.println("< supply " + result);
+                return result;
+            } catch (NamingException x) {
+                System.out.println("< supply raised exception");
+                x.printStackTrace(System.out);
+                throw new RuntimeException(x);
+            }
+        }, defaultManagedExecutor);
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+
+        CompletableFuture<Object> cf2 = CompletableFuture.anyOf(cf1);
+        assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+    }
+
+    /**
+     * Verify that CompletableFuture.anyOf properly identifies completion of a managed completable future with a null result.
+     */
+    @Test
+    public void testAnyOf_NullResult() throws Exception {
+        // Managed completable future with non-null result:
+        CompletableFuture<Object> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testAnyOf_NullResult");
+            System.out.println("< supply: null");
+            return null;
+        }, defaultManagedExecutor);
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+
+        CompletableFuture<Object> cf2 = CompletableFuture.anyOf(cf1);
+        assertNull(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
     }
 
     /**
@@ -248,7 +409,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      * Supply unmanaged CompletableFuture.runAfterBoth with a ManagedCompletableFuture and see if it can notice
      * when the ManagedCompletableFuture completes.
      */
-    //@Test // TODO enable if we can make ManagedCompletableFuture internals reflect its underlying CompletableFuture
+    @Test
     public void testUnmanagedRunAfterBoth() throws Exception {
         AtomicInteger count = new AtomicInteger();
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
