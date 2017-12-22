@@ -32,6 +32,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Resource;
@@ -581,6 +582,94 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify thenApply and both forms of thenApplyAsync.
+     */
+    @Test
+    public void testThenApply() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        final Function<Integer, Integer> increment = (count) -> {
+            System.out.println("> increment #" + (++count) + " from testThenApply");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< increment");
+            return count;
+        };
+
+        final CompletableFuture<Integer> cf = ManagedCompletableFuture
+                        .supplyAsync(() -> 0, defaultManagedExecutor)
+                        .thenApplyAsync(increment)
+                        .thenApplyAsync(increment, testThreads)
+                        .thenApply(increment)
+                        .thenApplyAsync(increment);
+
+        // Submit from thread that lacks context
+        CompletableFuture.runAsync(() -> cf.thenApplyAsync(increment));
+
+        String threadName;
+        Object lookupResult;
+
+        assertTrue(cf.toString(), cf instanceof ManagedCompletableFuture);
+
+        // thenApplyAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenApplyAsync on unmanaged executor
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        // thenApply on unmanaged thread (context should be applied from stage creation time)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenApplyAsync (second occurrence) on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenApplyAsync requested from unmanaged thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        // result after 4 increments (the 5th increment is on a subsequent stage, and so would not be reflected in cf's result)
+        assertEquals(Integer.valueOf(4), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
      * Verify thenRun and both forms of thenRunAsync.
      */
     @Test
@@ -619,8 +708,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // static runAsync that creates ManagedCompletableFuture
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName);
-        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
@@ -628,7 +717,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // thenRunAsync on default execution facility
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
@@ -636,7 +726,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // thenRunAsync on unmanaged executor
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (lookupResult instanceof NamingException)
             ; // pass
@@ -647,7 +737,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // thenRun on unmanaged thread (context should be applied from stage creation time)
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
@@ -655,7 +745,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // thenRunAsync (second occurrence) on default execution facility
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (lookupResult instanceof Throwable)
             throw new Exception((Throwable) lookupResult);
@@ -663,7 +754,8 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // thenRunAsync requested from unmanaged thread
         assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName);
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
         assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (lookupResult instanceof NamingException)
             ; // pass
