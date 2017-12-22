@@ -26,8 +26,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
 /**
- * This is a test class that runs a whole Maven TCK as one test FAT test.
- * There is a detailed output on specific
+ * This is a test class that runs a whole Maven TCK as one test FAT test. There
+ * is a detailed output on specific
  */
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
@@ -37,9 +37,8 @@ public class ConfigTckPackageTest {
     public static LibertyServer server;
 
     // These are the jar names subsets that are devoid of specific version numbers
-    String[] jarsUsed = { "com.ibm.websphere.org.eclipse.microprofile.config",
-                          "com.ibm.ws.microprofile.config",
-                          "com.ibm.ws.microprofile.config.cdi" };
+    String[] jarsUsed = { "com.ibm.websphere.org.eclipse.microprofile.config", "com.ibm.ws.microprofile.config",
+            "com.ibm.ws.microprofile.config.cdi" };
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -62,15 +61,24 @@ public class ConfigTckPackageTest {
         int rc = MvnUtils.runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
         File src = new File(MvnUtils.home, "results/tck/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.home, "results/junit");
-        Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
 
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        try {
+            Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
+        } catch (java.nio.file.NoSuchFileException nsfe) {
+            Assert.assertNull(
+                    "The TCK tests' results directory does not exist which suggests the TCK tests did not run - check build logs."
+                            + src.getAbsolutePath(), nsfe);
+        }
+        
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is
+        // enough to mark the build as having failed
         // the TCK regression
 
-        Assert.assertTrue("com.ibm.ws.microprofile.config_fat_tck:org.eclipse.microprofile.config.tck.ConfigTckPackageTest:testTck:TCK has returned non-zero return code of: " + rc
-                          +
-                          " This indicates test failure, see: ...autoFVT/results/mvn* " +
-                          "and ...autoFVT/results/tck/surefire-reports/index.html", rc == 0);
+        Assert.assertTrue(
+                "com.ibm.ws.microprofile.config_fat_tck:org.eclipse.microprofile.config.tck.ConfigTckPackageTest:testTck:TCK has returned non-zero return code of: "
+                        + rc + " This indicates test failure, see: ...autoFVT/results/mvn* "
+                        + "and ...autoFVT/results/tck/surefire-reports/index.html",
+                rc == 0);
     }
 
 }
