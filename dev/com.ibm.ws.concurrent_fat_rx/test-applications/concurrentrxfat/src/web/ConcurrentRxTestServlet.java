@@ -32,6 +32,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -579,6 +580,89 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertTrue(cf1.isDone());
         assertFalse(cf1.isCompletedExceptionally());
         assertEquals(Boolean.TRUE, results.poll());
+    }
+
+    /**
+     * Verify thenAccept and both forms of thenAcceptAsync by checking that the parameter is correctly supplied,
+     * that thread context is captured from the code that adds the dependent stage, not the thread that runs the action for the prior stage,
+     * and that async operations run on threads from the Liberty global thread pool.
+     */
+    @Test
+    public void testThenAccept() throws Exception {
+        AtomicInteger count = new AtomicInteger();
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        final Consumer<String> consumer = (prevThreadName) -> {
+            System.out.println("> accept #" + count.incrementAndGet() + " from testThenAccept");
+            results.add(prevThreadName);
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< accept");
+        };
+
+        CompletableFuture<Void> cf = ManagedCompletableFuture
+                        .supplyAsync(() -> Thread.currentThread().getName())
+                        .thenAcceptAsync(consumer, noContextExecutor)
+                        .thenApplyAsync(unused -> Thread.currentThread().getName(), testThreads)
+                        .thenAccept(consumer)
+                        .thenApply(unused -> Thread.currentThread().getName())
+                        .thenAcceptAsync(consumer);
+
+        String threadName;
+        Object lookupResult;
+
+        assertTrue(cf.toString(), cf instanceof ManagedCompletableFuture);
+
+        // static supplyAsync that creates ManagedCompletableFuture (value stored by dependent stage)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+
+        // thenAcceptAsync on noContextExecutor
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        // thenApplyAsync on unmanaged executor (value stored by dependent stage)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+
+        // thenAccept on unmanaged thread or servlet thread
+        String previousThreadName = threadName;
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, previousThreadName.equals(threadName) || currentThreadName.equals(threadName)); // must run on the thread that ran the previous action or the servlet thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenApply on unmanaged thread or servlet thread
+        previousThreadName = threadName;
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, previousThreadName.equals(threadName) || currentThreadName.equals(threadName)); // must run on the thread that ran the previous action or the servlet thread
+
+        // thenAcceptAsync on default asynchronous execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        assertNull(cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
