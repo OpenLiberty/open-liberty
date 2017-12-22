@@ -62,8 +62,14 @@ public class ConfigTckPackageTest {
         int rc = MvnUtils.runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
         File src = new File(MvnUtils.home, "results/tck/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.home, "results/junit");
-        Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
-
+        try {
+            Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
+        } catch (java.nio.file.NoSuchFileException nsfe) {
+            Assert.assertNull(
+                    "The TCK tests' results directory does not exist which suggests the TCK tests did not run - check build logs."
+                            + src.getAbsolutePath(), nsfe);
+        }
+        
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
 
