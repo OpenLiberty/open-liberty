@@ -851,8 +851,18 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<T> whenComplete(BiConsumer<? super T, ? super Throwable> action) {
-        // TODO contextualize action and other steps
-        return new ManagedCompletableFuture<T>(completableFuture.whenComplete(action), defaultExecutor);
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiConsumer<>(contextDescriptor, action);
+
+        CompletableFuture<T> dependentStage = completableFuture.whenComplete(action);
+        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
     }
 
     /**
@@ -860,9 +870,19 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action) {
-        // TODO contextualize action and other steps
-        Executor policyExecutor = (Executor) defaultExecutor; // TODO get policy executor from default executor
-        return new ManagedCompletableFuture<T>(completableFuture.whenCompleteAsync(action, policyExecutor), defaultExecutor);
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiConsumer<>(contextDescriptor, action);
+
+        CompletableFuture<T> dependentStage = completableFuture.whenCompleteAsync(action, policyExecutor);
+        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
     }
 
     /**
@@ -870,12 +890,54 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor) {
-        // TODO contextualize action and other steps
-        Executor policyExecutor = executor; // TODO get policy executor from the supplied executor, if a managed executor
-        return new ManagedCompletableFuture<T>(completableFuture.whenCompleteAsync(action, policyExecutor), defaultExecutor);
+        CompletableFuture<T> dependentStage;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualBiConsumer<>(contextDescriptor, action);
+
+            dependentStage = completableFuture.whenCompleteAsync(action, policyExecutor);
+        } else {
+            dependentStage = completableFuture.whenCompleteAsync(action, executor);
+        }
+        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
     }
 
     // TODO move the following classes to the general context service in com.ibm.ws.context project once Java 8 can be used there
+
+    /**
+     * Proxy for BiConsumer that applies thread context before running and removes it afterward
+     *
+     * @param <T> type of the function's parameter
+     * @param <R> type of the function's result
+     */
+    private static class ContextualBiConsumer<T, U> implements BiConsumer<T, U> {
+        private final BiConsumer<T, U> action;
+        private final ThreadContextDescriptor threadContextDescriptor;
+
+        private ContextualBiConsumer(ThreadContextDescriptor threadContextDescriptor, BiConsumer<T, U> action) {
+            this.action = action;
+            this.threadContextDescriptor = threadContextDescriptor;
+        }
+
+        @Override
+        public void accept(T t, U u) {
+            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
+            try {
+                action.accept(t, u);
+            } finally {
+                threadContextDescriptor.taskStopping(contextApplied);
+            }
+        }
+    }
 
     /**
      * Proxy for Consumer that applies thread context before running and removes it afterward
