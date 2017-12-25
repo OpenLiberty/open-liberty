@@ -51,25 +51,6 @@ public class Utils {
         return self;
     }
 
-    protected boolean validateResult(CredentialValidationResult result) throws AuthenticationException {
-        Principal principal = result.getCallerPrincipal();
-        String username = null;
-        if (principal != null) {
-            username = principal.getName();
-        }
-        if (username == null) {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_USERNAME_NULL");
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_USERNAME_NULL");
-            throw new AuthenticationException(msg);
-        }
-        if (result.getCallerUniqueId() == null) {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL");
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL");
-            throw new AuthenticationException(msg);
-        }
-        return true;
-    }
-
     protected AuthenticationStatus validateUserAndPassword(CDI cdi, String realmName, Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
                                                          HttpMessageContext httpMessageContext) throws AuthenticationException {
         return validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
