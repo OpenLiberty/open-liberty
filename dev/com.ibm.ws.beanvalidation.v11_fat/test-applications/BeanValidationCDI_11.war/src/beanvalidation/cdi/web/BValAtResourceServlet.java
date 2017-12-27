@@ -10,6 +10,8 @@
  *******************************************************************************/
 package beanvalidation.cdi.web;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
 import javax.validation.ValidatorFactory;
@@ -41,4 +43,20 @@ public class BValAtResourceServlet extends FATServlet {
 
     }
 
+    /**
+     * Test that a ValidatorFactory obtained with @Resource has the custom message
+     * interpolator set and that the custom message interpolator was NOT able to inject
+     * another bean in this application due to the CDI feature being disabled.
+     */
+    public void testDynamicStopOfCDI() throws Exception {
+        try {
+            resourceValidatorFactory.getMessageInterpolator().interpolate(null, null);
+            throw new Exception("custom interpolator should have thrown an IllegalStateException since CDI is disabled.");
+        } catch (IllegalStateException ex) {
+            assertEquals("IllegalStateException message should be, \"bean is null, CDI must not have injected it\"",
+                         "bean is null, CDI must not have injected it",
+                         ex.getMessage());
+            System.out.println("testDynamicStopOfCDI() threw expected IllegalStateException.");
+        }
+    }
 }
