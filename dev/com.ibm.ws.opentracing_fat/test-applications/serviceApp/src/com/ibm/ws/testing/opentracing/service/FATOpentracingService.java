@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.service;
 
+import org.eclipse.microprofile.opentracing.Traced;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -37,7 +38,7 @@ import io.opentracing.Tracer;
 @Path("testService") // 'SERVICE_PATH' in the constants
 public class FATOpentracingService extends Application implements FATOpentracingConstants {
     // Trace ...
-
+    
     private static final String CLASS_NAME = FATOpentracingService.class.getSimpleName();
 
     @SuppressWarnings("unused")
@@ -201,6 +202,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
      *
      * @return The response text as plain text.
      */
+    @Traced
     @GET
     @Path(GET_IMMEDIATE_PATH)
     @Produces(MediaType.TEXT_PLAIN)

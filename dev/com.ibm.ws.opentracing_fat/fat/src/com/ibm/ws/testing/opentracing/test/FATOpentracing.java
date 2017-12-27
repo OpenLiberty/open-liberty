@@ -286,7 +286,13 @@ public class FATOpentracing implements FATOpentracingConstants {
                 continue;
             }
 
-            String operation = completedSpan.getOperation();
+            String operation = completedSpan.getTag("http.url");
+            
+            // If operation is null, it's a manual span
+            
+            if (operation == null) {
+                operation = completedSpan.getOperation();
+            }
 
             boolean foundAll = true;
             for ( String text : selectText ) {
@@ -607,7 +613,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** The completed span event must be be for a get tracer state request. ***
 
-        assertEq("Operation", requestUrl, completedSpan.getOperation());
+        assertEq("Operation", "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState", completedSpan.getOperation());
 
         // *** The completed span must have valid state and finish times. ***
 
