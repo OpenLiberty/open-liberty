@@ -296,8 +296,19 @@ public class CollectorManagerImpl implements CollectorManager {
                         Tr.debug(tc, "Subscribing to source " + sourceId, handlerId);
                     }
                     srcMgr.addSubscriber(handler);
-                    //Inform the handler that this source/buffer is now available.
-                    handler.setBufferManager(sourceId, srcMgr.getBufferManager());
+                    /*
+                     * Inform the handler that this source/buffer/conduit is now available:
+                     * Synchronous Handler - Add handler as synchronous handler to the Buffer/Conduit's sync handler set
+                     * Asynchronous Handler - Set the buffer/conduit into the handler for async consumption
+                     *
+                     */
+                    if (handler instanceof SynchronousHandler) {
+                        ((BufferManagerImpl) srcMgr.getBufferManager()).addSyncHandler((SynchronousHandler) handler);
+                    } else {
+                        handler.setBufferManager(sourceId, srcMgr.getBufferManager());
+                    }
+
+                    //Add as subscribed source to the handler's Handler Manager
                     hdlrMgr.addSubscribedSource(srcMgr.getSource());
 
                 } else {
@@ -330,8 +341,17 @@ public class CollectorManagerImpl implements CollectorManager {
                 //Check if the source is available
                 if (sourceMgrs.containsKey(sourceId) && sourceMgrs.get(sourceId).getSource() != null) {
                     SourceManager srcMgr = sourceMgrs.get(sourceId);
-                    //Inform the handler that this source/buffer will no longer be available.
-                    handler.unsetBufferManager(sourceId, srcMgr.getBufferManager());
+                    /*
+                     * Inform the handler that this source/buffer will no longer be available:
+                     * Synchronous Handler: Remove the synchronous handler from the Buffer/Conduit's sync handler set
+                     * Asynchronous Handler: Remove buffer/conduit from the asynchronous handler
+                     */
+                    if (handler instanceof SynchronousHandler) {
+                        ((BufferManagerImpl) srcMgr.getBufferManager()).removeSyncHandler((SynchronousHandler) handler);
+                    } else {
+                        handler.unsetBufferManager(sourceId, srcMgr.getBufferManager());
+                    }
+
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unsubscribing from source " + sourceId, handlerId);
                     }
@@ -339,7 +359,10 @@ public class CollectorManagerImpl implements CollectorManager {
                     HandlerManager hdlrMgr = handlerMgrs.get(handlerId);
                     hdlrMgr.removeSubscribedSource(srcMgr.getSource());
 
-                    //We need to unregister the service. This will deactivate the Source.
+                    /*
+                     * We need to unregister the service if the handler unsubscribing is the last handler.
+                     * This will deactivate the Source.
+                     */
                     if (srcMgr.removeSubscriber(handler)) {
                         ServiceRegistration<?> entry = activeBuffMgrServices.get(sourceId);
                         if (entry != null) {

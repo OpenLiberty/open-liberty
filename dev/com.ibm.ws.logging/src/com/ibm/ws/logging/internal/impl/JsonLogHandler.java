@@ -150,12 +150,12 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
     @Override
     public void setBufferManager(String sourceId, BufferManager bufferMgr) {
-        //Not needed in a Syncrhonized Handler
+        //Not needed in a Synchronized Handler
     }
 
     @Override
     public void unsetBufferManager(String sourceId, BufferManager bufferMgr) {
-        //Not needed in a Syncrhonized Handler
+        //Not needed in a Synchronized Handler
     }
 
     @Override
