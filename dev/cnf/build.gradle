@@ -39,12 +39,23 @@ task copyMavenLibs(type: Copy) {
     into cnf.file('mavenlibs')
 }
 
+void deleteRecursive(File file) {
+    if (file.isDirectory()) {
+        for (File entry : file.listFiles()) {
+            deleteRecursive(entry);
+        }
+    }
+    file.delete();
+}
+
 task cleanRepos(type: Delete) {
-    delete fileTree('release')
-    delete 'release.mvn'
-    delete fileTree('local')
-    delete 'local.mvn'
-    delete fileTree('mavenlibs')
+    doLast {
+        deleteRecursive(file('release'))
+        delete 'release.mvn'
+        deleteRecursive(file('local'))
+        delete 'local.mvn'
+        delete fileTree('mavenlibs')
+    }
 }
 
 clean{
@@ -259,32 +270,46 @@ task ('createIndex') {
         /* indexer */
         def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
 
-        def bundlesToIndex = bundles*.absolutePath.sort()
+        def tmpreleaserepo = cnf.file('tmpreleaserepo')
+        deleteRecursive(tmpreleaserepo)
 
-        println 'Generating index of release repo'
+        try {
+            copy {
+                from releaserepo
+                into tmpreleaserepo
+                include '**/*.jar'
+                exclude '**/*-latest.jar'
+                exclude '**/*-sources.jar'
+                exclude '**/*-javadoc.jar'
+            }
 
-        /* index uncompressed. */
-        javaexec {
-            main = '-jar' // first arg must be the jar
-            args repoindexJar
-            args '--pretty'
-            args '-r', index_uncompressed
-            args '-d', releaserepo
-            args '-n', 'bnd'
-            args bundlesToIndex
-        }.assertNormalExitValue()
-        logger.info 'Generated index {}.', index_uncompressed
+            println 'Generating index of release repo'
 
-        /* index compressed. */
-        javaexec {
-            main = '-jar' // first arg must be the jar
-            args repoindexJar
-            args '-r', index_compressed
-            args '-d', releaserepo
-            args '-n', 'bnd'
-            args bundlesToIndex
-        }.assertNormalExitValue()
-        logger.info 'Generated index {}.', index_compressed
+            /* index uncompressed. */
+            javaexec {
+                main = '-jar' // first arg must be the jar
+                args repoindexJar
+                args '--pretty'
+                args '-r', index_uncompressed
+                args '-d', tmpreleaserepo
+                args '-n', 'bnd'
+                args tmpreleaserepo
+            }.assertNormalExitValue()
+            logger.info 'Generated index {}.', index_uncompressed
+
+            /* index compressed. */
+            javaexec {
+                main = '-jar' // first arg must be the jar
+                args repoindexJar
+                args '-r', index_compressed
+                args '-d', tmpreleaserepo
+                args '-n', 'bnd'
+                args tmpreleaserepo
+            }.assertNormalExitValue()
+            logger.info 'Generated index {}.', index_compressed
+        } finally {
+            deleteRecursive(tmpreleaserepo)
+        }
     }
 }
 
