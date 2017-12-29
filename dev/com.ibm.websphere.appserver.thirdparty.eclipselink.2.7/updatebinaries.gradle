@@ -12,14 +12,14 @@
 // 1. Navigate into this project in Git Bash.
 // 2. Invoke the following command to update the oss_ibm.maven with the new version for the EclipseLink binaries:
 //        .././gradlew -b updatebinaries.gradle replacemavendependencies -Pnewversion={NewEclipseLinkBinariesVersion}
-//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1.WAS-8e605f1
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1-8e605f1
 // 3. Invoke the following command to ensure no new messages were introduced in the new EclipseLink binaries:
 //        .././gradlew -b updatebinaries.gradle comparenlsprops -Pnewversion={NewEclipseLinkBinariesVersion}
-//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1.WAS-8e605f1
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1-8e605f1
 // 4. Invoke the following command which will generate the ossc.xml files in this project's generated directory. NOTE: you will have to manually update the ossc.xml file where it resides. The command is meant to help with generating checksums.
 //        .././gradlew -b updatebinaries.gradle generateosscxml -Pnewversion={NewEclipseLinkBinariesVersion} -Pbaseversion={NewEclipseLinkBinariesBaseVersion}
-//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1.WAS-8e605f1
-//        Example of {NewEclipseLinkBinariesBaseVersion} -> 2.7.1_WAS
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1-8e605f1
+//        Example of {NewEclipseLinkBinariesBaseVersion} -> 2.7.1
 // 5. Invoke the releaseNeeded command to make sure everything worked properly:
 //        .././gradlew releaseNeeded
 
