@@ -8,17 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.extended;
+package jaxrs21.fat.cdi;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.HashSet;
+import java.util.Set;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                PatchTest.class,
-                ProviderPriorityTest.class,
-                ClassSubResTest.class,
-                CDITest.class
-})
-public class FATSuite {}
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@ApplicationPath("/rest")
+public class CDIApplication extends Application {
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(CDIResource.class);
+        classes.add(CDIObject.class);
+        classes.add(MyCar.class);
+        classes.add(MyCDIProvider.class);
+        return classes;
+    }
+}

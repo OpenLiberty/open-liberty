@@ -8,17 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.extended;
+package jaxrs21.fat.cdi;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+public class MyCar {
+    private String car;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                PatchTest.class,
-                ProviderPriorityTest.class,
-                ClassSubResTest.class,
-                CDITest.class
-})
-public class FATSuite {}
+    public MyCar() {
+        car = "Pinto";
+    }
+
+    public MyCar(String model) {
+        car = model;
+    }
+
+    public String getModel() {
+        return car;
+    }
+
+    public void setModel(String model) {
+        car = model;
+    }
+}
