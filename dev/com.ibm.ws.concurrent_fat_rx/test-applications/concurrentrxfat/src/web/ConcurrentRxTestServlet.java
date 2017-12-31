@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -831,6 +832,128 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // result after 4 increments (the 5th increment is on a subsequent stage, and so would not be reflected in cf's result)
         assertEquals(Integer.valueOf(4), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Verify thenCompose and both forms of thenComposeAsync.
+     */
+    @Test
+    public void testThenCompose() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        Function<Integer, CompletionStage<Long>> incrementIntToLong = (count) -> {
+            System.out.println("> incrementIntToLong #" + (++count) + " from testThenCompose");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< incrementIntToLong");
+            return CompletableFuture.completedFuture(count.longValue());
+        };
+
+        Function<Long, CompletionStage<Integer>> incrementLongToInt = (count) -> {
+            System.out.println("> incrementLongToInt #" + (++count) + " from testThenCompose");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< incrementLongToInt");
+            return CompletableFuture.completedFuture(count.intValue());
+        };
+
+        final CompletableFuture<Integer> cf = ManagedCompletableFuture
+                        .supplyAsync(() -> 0, defaultManagedExecutor)
+                        .thenComposeAsync(incrementIntToLong)
+                        .thenComposeAsync(incrementLongToInt, testThreads)
+                        .thenCompose(incrementIntToLong)
+                        .thenComposeAsync(incrementLongToInt);
+
+        // Submit from thread that lacks context
+        CompletableFuture.runAsync(() -> cf.thenApplyAsync(incrementIntToLong));
+
+        String threadName;
+        Object lookupResult;
+
+        assertTrue(cf.toString(), cf instanceof ManagedCompletableFuture);
+
+        // thenComposeAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenComposeAsync on unmanaged executor
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        // thenCompose on unmanaged thread (context should be applied from stage creation time)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenComposeAsync (second occurrence) on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenComposeAsync requested from unmanaged thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        // result after 4 increments (the 5th increment is on a subsequent stage, and so would not be reflected in cf's result)
+        assertEquals(Integer.valueOf(4), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Verify that the function argument to thenCompose can return a result that is a ManagedCompletableFuture.
+     */
+    @Test
+    public void testThenComposeManagedCompletableFuture() throws Exception {
+        ManagedCompletableFuture<String> cf = ManagedCompletableFuture
+                        .supplyAsync(() -> 100)
+                        .thenCompose(t -> {
+                            return ManagedCompletableFuture.supplyAsync(() -> {
+                                try {
+                                    return t + "," + InitialContext.doLookup("java:comp/env/executorRef");
+                                } catch (NamingException x) {
+                                    throw new CompletionException(x);
+                                }
+                            });
+                        });
+        String result;
+        assertNotNull(result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(result, result.startsWith("100,"));
+        assertTrue(result, result.indexOf("ManagedExecutorService") > 0);
     }
 
     /**

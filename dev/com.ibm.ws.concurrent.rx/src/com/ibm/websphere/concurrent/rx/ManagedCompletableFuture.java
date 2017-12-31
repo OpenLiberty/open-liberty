@@ -751,24 +751,65 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletionStage#thenCompose(java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenCompose(Function<? super T, ? extends CompletionStage<U>> fn) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> thenCompose(Function<? super T, ? extends CompletionStage<U>> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualFunction<>(contextDescriptor, action);
+
+        CompletableFuture<U> dependentStage = completableFuture.thenCompose(action);
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenComposeAsync(java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> fn) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualFunction<>(contextDescriptor, action);
+
+        CompletableFuture<U> dependentStage = completableFuture.thenComposeAsync(action, policyExecutor);
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenComposeAsync(java.util.function.Function, java.util.concurrent.Executor)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> fn, Executor executor) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> action, Executor executor) {
+        CompletableFuture<U> dependentStage;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualFunction<>(contextDescriptor, action);
+
+            dependentStage = completableFuture.thenComposeAsync(action, policyExecutor);
+        } else {
+            dependentStage = completableFuture.thenComposeAsync(action, executor);
+        }
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor);
     }
 
     /**
