@@ -26,6 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
 import com.ibm.websphere.simplicity.PortType;
 
 import componenttest.topology.impl.LibertyServer;
@@ -40,6 +50,7 @@ public class MvnUtils {
     public static File home;
     public static String wlp;
     public static File tckRunnerDir;
+    public static File pomXml;
     public static boolean init;
     public static String[] mvnCliRaw;
     public static String[] mvnCliRoot;
@@ -51,20 +62,31 @@ public class MvnUtils {
      * This enables us to set up things like the Liberty install
      * directory and jar locations once.
      *
-     * @param server
+     * @param server Simplicity LibertyServer
      * @throws Exception
      */
     public static void init(LibertyServer server) throws Exception {
+        String pomRelativePath = "tck/pom.xml";
+        init(server, pomRelativePath);
+    }
+
+    /**
+     * Initialise shared values for a particular server.
+     * This enables us to set up things like the Liberty install
+     * directory and jar locations once.
+     *
+     * @param server Simplicity LibertyServer
+     * @param pomRelativePath relative to "publish/tckRunner" path to pom - usually "tck/pom.xml"
+     * @throws Exception
+     */
+    public static void init(LibertyServer server, String pomRelativePath) throws Exception {
         wlp = server.getInstallRoot();
         home = new File(System.getProperty("user.dir"));
         tckRunnerDir = new File("publish/tckRunner");
 
-        jarsFromWlp.add("com.ibm.websphere.org.eclipse.microprofile.config");
-        jarsFromWlp.add("com.ibm.ws.microprofile.config.cdi");
-        jarsFromWlp.add("com.ibm.ws.microprofile.config");
-        jarsFromWlp.add("com.ibm.websphere.org.eclipse.microprofile.faulttolerance");
-        jarsFromWlp.add("com.ibm.ws.microprofile.faulttolerance.cdi");
-        jarsFromWlp.add("com.ibm.ws.microprofile.faulttolerance");
+        pomXml = new File(tckRunnerDir, pomRelativePath);
+
+        populateJarsFromWlp(pomXml);
 
         mvnCliRaw = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + home.getAbsolutePath() + "/results/tck" };
@@ -78,6 +100,39 @@ public class MvnUtils {
         mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
 
         init = true;
+    }
+
+    /**
+     * This method will add in all the ${variables} used in <systemPath> elements in the pom.xml passed in to those
+     * that are searched for in the Liberty jar directories as held in jarsFromWlp
+     *
+     * @param pomXml the pom.xml file to search for <systemPath>${jar.name}</systemPath>
+     * @throws Exception
+     */
+    private static void populateJarsFromWlp(File pomXml) throws Exception {
+
+        try {
+            DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+            DocumentBuilder bldr = fac.newDocumentBuilder();
+            Document doc = bldr.parse(pomXml.getAbsolutePath());
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xp = xpf.newXPath();
+            // We are looking for <systemPath>${jar.name}</systemPath>
+            XPathExpression expr = xp.compile("//systemPath");
+
+            NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+            for (int i = 0; i < nl.getLength(); i++) {
+                // turn "<systemPath>${jar.name}</systemPath>" into "jar.name"
+                String jarKey = nl.item(i).getTextContent().replaceAll("\\$\\{", "").replaceAll("\\}", "".replaceAll("\\s+", ""));
+                jarsFromWlp.add(jarKey);
+                log(jarKey);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log(e.toString());
+            throw e;
+        }
+
     }
 
     /**
