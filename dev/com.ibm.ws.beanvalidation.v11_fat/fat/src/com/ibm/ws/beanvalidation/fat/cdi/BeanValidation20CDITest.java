@@ -91,14 +91,14 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
             config.getFeatureManager().getFeatures().remove("cdi-2.0");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BeanValidationCDI_11"), true, "CWWKZ000[13]I.*BeanValidationCDI_11");
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BeanValidationCDI_11"), true, "CWWKZ000[13]I.* BeanValidationCDI_11");
             run("BeanValidationCDI_11", "BValAtResourceServlet", "testDynamicStopOfCDI");
 
             //Run again with CDI enabled.
             config.getFeatureManager().getFeatures().add("cdi-2.0");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BeanValidationCDI_11"), true, "CWWKZ000[13]I.*BeanValidationCDI_11");
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BeanValidationCDI_11"), true, "CWWKZ000[13]I.* BeanValidationCDI_11");
             run("BeanValidationCDI_11", "BValAtResourceServlet", "testCDIInjectionInInterpolatorAtResource");
         } finally {
             //Make sure all test applications are up and running after toggling the CDI feature.
