@@ -38,6 +38,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -116,18 +117,18 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     private ManagedCompletableFuture(CompletableFuture<T> completableFuture, WSManagedExecutorService managedExecutor) {
         super();
 
+        this.completableFuture = completableFuture;
+        this.defaultExecutor = managedExecutor;
+
         // For the sake of operations that rely upon CompletableFuture internals, update the state of the super class upon completion:
         completableFuture.whenComplete((result, failure) -> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "whenComplete", result, failure);
+                Tr.debug(ManagedCompletableFuture.this, tc, "whenComplete", result, failure);
             if (failure == null)
                 super.complete(result);
             else
                 super.completeExceptionally(failure);
         });
-
-        this.completableFuture = completableFuture;
-        this.defaultExecutor = managedExecutor;
     }
 
     // static method equivalents for CompletableFuture
@@ -371,6 +372,12 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         // TODO contextualize fn and other steps
         Executor policyExecutor = executor; // TODO get policy executor from the supplied executor, if a managed executor
         return new ManagedCompletableFuture<U>(completableFuture.handleAsync(fn, policyExecutor), defaultExecutor);
+    }
+
+    @Override
+    @Trivial
+    public int hashCode() {
+        return completableFuture.hashCode();
     }
 
     /**
@@ -885,7 +892,30 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         return this;
     }
 
-    // TODO override toString to include proper status (and maybe correlate to the underlying CompletableFuture)
+    /*
+     * @see java.util.concurrent.CompletableFuture#toString()
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder s = new StringBuilder(75).append("ManagedCompletableFuture@").append(Integer.toHexString(System.identityHashCode(this))) //
+                        .append('[').append(Integer.toHexString(completableFuture.hashCode()));
+        if (completableFuture.isDone())
+            if (completableFuture.isCompletedExceptionally())
+                s.append(" Completed exceptionally]");
+            else
+                s.append(" Completed normally]");
+        else {
+            s.append(" Not completed");
+            // Subtract out the extra dependent stage that we use internally to be notified of completion.
+            int d = completableFuture.getNumberOfDependents();
+            if (d > 1)
+                s.append(", ").append(d - 1).append(" dependents]");
+            else
+                s.append(']');
+        }
+        return s.toString();
+    }
 
     /**
      * @see java.util.concurrent.CompletionStage#whenComplete(java.util.function.BiConsumer)
