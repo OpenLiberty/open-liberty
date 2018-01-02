@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.cdi;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
 import componenttest.annotation.MinimumJavaLevel;
@@ -68,5 +72,40 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
     @Override
     public LibertyServer getServer() {
         return server;
+    }
+
+    /**
+     * Test that a servlet can use @Resource to inject a ValidatorFactory that
+     * configures a custom MessageInterpolator. This custom component uses @Inject
+     * to implement the interface.
+     */
+    @Test
+    public void testDynamicStartStopOfCDI() throws Exception {
+        ServerConfiguration config = getServer().getServerConfiguration();
+
+        //Run with CDI enabled.
+        run("BeanValidationCDI_11", "BValAtResourceServlet", "testCDIInjectionInInterpolatorAtResource");
+
+        try {
+            //Run with CDI disabled.
+            config.getFeatureManager().getFeatures().remove("cdi-2.0");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BeanValidationCDI_11"), true, "CWWKZ000[13]I.* BeanValidationCDI_11");
+            run("BeanValidationCDI_11", "BValAtResourceServlet", "testDynamicStopOfCDI");
+
+            //Run again with CDI enabled.
+            config.getFeatureManager().getFeatures().add("cdi-2.0");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BeanValidationCDI_11"), true, "CWWKZ000[13]I.* BeanValidationCDI_11");
+            run("BeanValidationCDI_11", "BValAtResourceServlet", "testCDIInjectionInInterpolatorAtResource");
+        } finally {
+            //Make sure all test applications are up and running after toggling the CDI feature.
+            config.getFeatureManager().getFeatures().add("cdi-2.0");
+            server.updateServerConfiguration(config);
+            server.stopServer();
+            server.startServer();
+        }
     }
 }
