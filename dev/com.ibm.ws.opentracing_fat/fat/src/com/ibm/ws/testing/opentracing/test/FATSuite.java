@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     TestSpanUtils.class,
-    FATOpentracing.class
+    FATOpentracing.class,
+    FATOpentracingHelloWorld.class
 })
 public class FATSuite implements FATOpentracingConstants {
     // Logging ...
