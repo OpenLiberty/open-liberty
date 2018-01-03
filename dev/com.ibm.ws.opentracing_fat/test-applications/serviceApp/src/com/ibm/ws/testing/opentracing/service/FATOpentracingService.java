@@ -462,6 +462,13 @@ public class FATOpentracingService extends Application implements FATOpentracing
         return finalResponse;
     }
 
+    /**
+     * Simple endpoint that takes a {@code responseText} query parameter and
+     * returns its value as a plain/text response. This can be useful to vary
+     * different requests and test different exclude/include filters.
+     * @param responseText The text to return.
+     * @return {@code responseText}
+     */
     @GET
     @Path(GET_EXCLUDE_TEST_PATH)
     @Produces(MediaType.TEXT_PLAIN)
