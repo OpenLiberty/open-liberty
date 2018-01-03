@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -720,6 +721,127 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(3, count.get()); // two additional executions of the lookup function
+    }
+
+    /**
+     * Verify the handle method and both forms of handleAsync.
+     */
+    @Test
+    public void testHandle() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+        AtomicInteger failureCount = new AtomicInteger();
+
+        BiFunction<Integer, Throwable, Integer> increment = (count, failure) -> {
+            if (failure != null)
+                count = failureCount.incrementAndGet() * 1000;
+            System.out.println("> increment #" + (++count) + " from testHandle");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+                System.out.println("< increment");
+                return count;
+            } catch (NamingException x) {
+                results.add(x);
+                System.out.println("< increment: " + x);
+                throw new CompletionException(x);
+            }
+        };
+
+        CompletableFuture<Integer> cf1 = ManagedCompletableFuture
+                        .supplyAsync(() -> 0, defaultManagedExecutor)
+                        .handleAsync(increment);
+
+        CompletableFuture<Integer> cf2 = cf1.handleAsync(increment, testThreads);
+
+        CompletableFuture<Integer> cf3 = cf2.handle(increment);
+
+        CompletableFuture<Integer> cf4 = cf3.handleAsync(increment);
+
+        LinkedBlockingQueue<CompletableFuture<Integer>> cf5q = new LinkedBlockingQueue<CompletableFuture<Integer>>();
+
+        // Submit from thread that lacks context
+        CompletableFuture.runAsync(() -> {
+            cf5q.add(cf4.handleAsync(increment));
+        });
+
+        String threadName;
+        Object lookupResult;
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+        assertTrue(cf2.toString(), cf2 instanceof ManagedCompletableFuture);
+        assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+        assertTrue(cf4.toString(), cf4 instanceof ManagedCompletableFuture);
+
+        // handleAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(1), cf1.get());
+
+        // handleAsync on unmanaged executor
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+        try {
+            Integer result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Action should fail, not return " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NamingException))
+                throw x;
+        }
+
+        // handle on unmanaged thread (context should be applied from stage creation time)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(1001), cf3.get());
+
+        // handleAsync (second occurrence) on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(1002), cf4.get());
+
+        // handleAsync requested from unmanaged thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        CompletableFuture<Integer> cf5 = cf5q.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        try {
+            Integer result = cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Action should fail, not return " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NamingException))
+                throw x;
+        }
+
+        assertEquals(Integer.valueOf(2001), cf5.handle(increment).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
