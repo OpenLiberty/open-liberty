@@ -663,13 +663,13 @@ error.zosProcStart.jobname.invalid=CWWKE0943E: The z/OS STC procedure {0} failed
 error.zosProcStart.jobname.invalid.explanation=The STC job name specified by the WLP_ZOS_JOBNAME property in the server.env file is not valid. The job name must be no longer than 8 characters and must not contain a comma.
 error.zosProcStart.jobname.invalid.useraction=Verify that the job name is no longer than eight characters and that it does not contain a comma.
 
-error.server.pause.command.port.disabled=CWWKE0944E: A pause request was received for server {0}, but the server command port is disabled. The request cannot be processed. 
-error.server.pause.command.port.disabled.explanation=The server command port is required for communication with a running server.  The command port is disabled for this server, therefore the pause request could not be processed.  Note that the command port is disabled by default when a server is started as a started task on z/OS.
-error.server.pause.command.port.disabled.useraction=If the server is running as a started task on z/OS, this dump can be requested from the operator console.  See the information center for details.
+error.server.pause.command.port.disabled=CWWKE0944E: A pause request was received for server {0}, but the server command port is disabled. The request cannot be processed. Enable the command port, and try again.
+error.server.pause.command.port.disabled.explanation=The server command port is required for communication with a running server. The command port is disabled for this server, therefore the pause request could not be processed. Note that the command port is disabled by default when a server is started as a started task on z/OS.
+error.server.pause.command.port.disabled.useraction=Enable the command port for this server. If the server is running as a started task on z/OS, this pause can alternatively be requested from the operator console.
 
-error.server.resume.command.port.disabled=CWWKE0945E: A resume request was received for server {0}, but the server command port is disabled. The request cannot be processed. 
-error.server.resume.command.port.disabled.explanation=The server command port is required for communication with a running server.  The command port is disabled for this server, therefore the resume request could not be processed.  Note that the command port is disabled by default when a server is started as a started task on z/OS.
-error.server.resume.command.port.disabled.useraction=If the server is running as a started task on z/OS, this dump can be requested from the operator console.  See the information center for details.
+error.server.resume.command.port.disabled=CWWKE0945E: A resume request was received for server {0}, but the server command port is disabled. The request cannot be processed. Enable the command port, and try again.
+error.server.resume.command.port.disabled.explanation=The server command port is required for communication with a running server. The command port is disabled for this server, therefore the resume request could not be processed. Note that the command port is disabled by default when a server is started as a started task on z/OS.
+error.server.resume.command.port.disabled.useraction=Enable the command port for this server. If the server is running as a started task on z/OS, this resume can alternatively be requested from the operator console.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
