@@ -1,0 +1,81 @@
+<server>
+    <featureManager>
+      <feature>jca-1.7</feature>
+      <feature>jndi-1.0</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <resourceAdapter location="${server.config.dir}/connectors/ErrorPathRA.rar"/>
+
+    <activationSpec id="ActivationSpecMissingProp1">
+      <properties.ErrorPathRA requiredProp2="TWO"/>
+    </activationSpec>
+
+    <adminObject jndiName="eis/InvalidDate">
+      <properties.ErrorPathRA.Date year="114" month="14" date="1"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-byte-over-max">
+      <properties.ErrorPathRA.SortedMap byteProp1="126"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-byte-under-min">
+      <properties.ErrorPathRA.SortedMap byteProp1="0"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-char-over-max">
+      <properties.ErrorPathRA.SortedMap charProp1="{"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-char-under-min">
+      <properties.ErrorPathRA.SortedMap charProp1="@"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-double-over-max">
+      <properties.ErrorPathRA.SortedMap doubleProp1="100.1"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-double-under-min">
+      <properties.ErrorPathRA.SortedMap doubleProp1="9.9"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-float-over-max">
+      <properties.ErrorPathRA.SortedMap floatProp1="1.01e-5"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-float-under-min">
+      <properties.ErrorPathRA.SortedMap floatProp1="9.0e-8"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-int-over-max">
+      <properties.ErrorPathRA.SortedMap intProp1="0"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-int-under-min">
+      <properties.ErrorPathRA.SortedMap intProp1="-2147433333"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-long-under-min">
+      <properties.ErrorPathRA.SortedMap longProp1="-1"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-short-over-max">
+      <properties.ErrorPathRA.SortedMap shortProp1="9223372036854775807"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-short-under-min">
+      <properties.ErrorPathRA.SortedMap shortProp1="-999999999"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-string-over-max">
+      <properties.ErrorPathRA.SortedMap stringProp1="aaabbbccc"/>
+    </adminObject>
+
+    <adminObject jndiName="eis/sortedmap-string-under-min">
+      <properties.ErrorPathRA.SortedMap stringProp1="ABCDE"/>
+    </adminObject>
+
+</server>
