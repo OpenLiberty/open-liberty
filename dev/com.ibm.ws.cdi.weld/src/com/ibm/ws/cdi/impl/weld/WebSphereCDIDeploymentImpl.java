@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
@@ -101,7 +102,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
         ExecutorService executorService = cdiRuntime.getExecutorService();
         if (executorService != null) {
-            ExecutorServices executorServices = new ExecutorServicesImpl(executorService);
+            ExecutorServices executorServices = new ExecutorServicesImpl(executorService, cdiRuntime.getScheduledExecutorService());
             serviceRegistry.add(ExecutorServices.class, executorServices);
         }
 
@@ -534,10 +535,23 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
         if (wbda == null) {
             for (WebSphereBeanDeploymentArchive bda : orderedBDAs) {
-                if ((bda.getAllClazzes().containsKey(clazz.getName())) && (bda.getAllClazzes().containsValue(clazz))) {
-                    wbda = bda;
-                    classBDAMap.put(clazz, bda);
-                    break;
+                if (bda.getAllClazzes().contains(clazz.getName())) {
+
+                    Class<?> bdaClazz = null;
+                    try {
+                        bdaClazz = CDIUtils.loadClass(bda.getClassLoader(), clazz.getName());
+                    } catch (CDIException e) {
+                        // TODO Auto-generated catch block
+                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                        // https://websphere.pok.ibm.com/~liberty/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
+                        e.printStackTrace();
+                    }
+                    if (bdaClazz == clazz) {
+
+                        wbda = bda;
+                        classBDAMap.put(clazz, bda);
+                        break;
+                    }
                 }
             }
         }

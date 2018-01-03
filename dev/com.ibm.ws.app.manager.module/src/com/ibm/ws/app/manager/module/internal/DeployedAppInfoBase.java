@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.osgi.framework.BundleContext;
@@ -360,11 +362,12 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             return false;
         }
 
-        List<ModuleMetaData> mmds = new ArrayList<ModuleMetaData>();
+        Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
         for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
             try {
                 ModuleMetaData mmd = modInfo.createModuleMetaData(appInfo, this, this);
-                mmds.add(mmd);
+                URL location = modInfo.getContainer().getURLs().iterator().next();
+                mmds.put(location, mmd);
             } catch (Throwable ex) {
                 uninstallApp();
                 futureMonitor.setResult(result, ex);

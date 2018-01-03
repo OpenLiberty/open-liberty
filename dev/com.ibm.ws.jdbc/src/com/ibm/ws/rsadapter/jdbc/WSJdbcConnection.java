@@ -353,6 +353,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
         if (!managedConn.isTransactional()) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(this, tc, "beginTransactionIfNecessary", "no-op enlistment is disabled");
+              managedConn.enforceAutoCommit(autoCommit);  // PI90945
             return;
         }
         switch (managedConn.getTransactionState()) {

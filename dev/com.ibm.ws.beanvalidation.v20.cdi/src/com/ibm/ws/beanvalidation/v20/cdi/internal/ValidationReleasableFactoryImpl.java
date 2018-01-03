@@ -10,10 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.v20.cdi.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.validation.BootstrapConfiguration;
 import javax.validation.ClockProvider;
 import javax.validation.Configuration;
@@ -22,8 +27,11 @@ import javax.validation.MessageInterpolator;
 import javax.validation.ParameterNameProvider;
 import javax.validation.TraversableResolver;
 import javax.validation.ValidatorFactory;
+import javax.validation.valueextraction.ValueExtractor;
 
 import org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;
+import org.hibernate.validator.internal.engine.valueextraction.ValueExtractorDescriptor;
+import org.hibernate.validator.internal.util.privilegedactions.GetInstancesFromServiceLoader;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -39,13 +47,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.ValidationReleasable;
 import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.container.service.metadata.ComponentMetaDataListener;
-import com.ibm.ws.container.service.metadata.MetaDataEvent;
+import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectService;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -56,7 +62,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Component(configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
            property = { "type=CDIValidationReleasableFactory" })
-public class ValidationReleasableFactoryImpl implements ValidationReleasableFactory, ComponentMetaDataListener {
+public class ValidationReleasableFactoryImpl implements ValidationReleasableFactory {
 
     private static final TraceComponent tc = Tr.register(ValidationReleasableFactoryImpl.class);
     private static final String REFERENCE_CDI_SERVICE = "cdiService";
@@ -64,7 +70,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     private final AtomicServiceReference<CDIService> cdiService = new AtomicServiceReference<CDIService>(REFERENCE_CDI_SERVICE);
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>(REFERENCE_MANAGED_OBJECT_SERVICE);
-    private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<ComponentMetaData, BeanManager>();
 
     @Override
     public <T> ManagedObject<T> createValidationReleasable(Class<T> clazz) {
@@ -78,28 +83,23 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     @Override
     public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader) {
-        if (getCurrentBeanManager() != null) {
+        if (isCurrentModuleCDIEnabled()) {
             createManagedConstraintValidatorFactory(config, appClassLoader);
             createManagedMessageInterpolator(config, appClassLoader);
             createManagedTraversableResolver(config, appClassLoader);
             createManagedParameterNameProvider(config, appClassLoader);
             createManagedClockProvider(config, appClassLoader);
-            //this.addValueExtractorBeans(config);
+            addValueExtractorBeans(config, appClassLoader);
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "managedObjectService is null, skipping creating CDI enhanced objects.");
+                Tr.debug(tc, "Current module is not CDI enabled, skipping creating CDI enhanced objects.");
         }
         return config.buildValidatorFactory();
     }
 
-    private BeanManager getCurrentBeanManager() {
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        BeanManager beanMgr = beanManagers.get(cmd);
-        if (beanMgr == null) {
-            beanMgr = cdiService.getServiceWithException().getCurrentBeanManager();
-            beanManagers.put(cmd, beanMgr);
-        }
-        return beanMgr;
+    private boolean isCurrentModuleCDIEnabled() {
+        CDIRuntime cdiRuntime = (CDIRuntime) cdiService.getServiceWithException();
+        return cdiRuntime.isCurrentModuleCDIEnabled();
     }
 
     @Activate
@@ -133,29 +133,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     protected void unsetManagedObjectService(ServiceReference<ManagedObjectService> ref) {
         managedObjectServiceRef.unsetReference(ref);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataCreated(com.ibm.ws.container.service.metadata.MetaDataEvent)
-     */
-    @Override
-    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
-        // no-op
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataDestroyed(com.ibm.ws.container.service.metadata.MetaDataEvent)
-     */
-    @Override
-    public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
-        BeanManager beanManager = beanManagers.remove(event.getMetaData());
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Removed bean manager from cache: ", beanManager);
     }
 
     private void createManagedMessageInterpolator(Configuration<?> config, ClassLoader appClassLoader) {
@@ -245,8 +222,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (constraintValidatorFactoryClassName == null) {
             // use default
-//            ManagedObject<?> mangedObject = createManagedObject(new ReleasableConstraintValidatorFactory(this));
-//            cvf = (ConstraintValidatorFactory) mangedObject.getObject();
             cvf = createManagedObject(InjectingConstraintValidatorFactory.class);
         } else {
             @SuppressWarnings("unchecked")
@@ -263,34 +238,46 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         }
     }
 
-//    private Set<ValueExtractorDescriptor> createValidationXmlValueExtractors(Configuration<?> config, ClassLoader appClassLoader) {
-//        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
-//        Set<String> valueExtractorFqcns = bootstrapConfiguration.getValueExtractorClassNames();
-//
-//        @SuppressWarnings("unchecked")
-//        Set<ValueExtractorDescriptor> valueExtractorDescriptors = valueExtractorFqcns.stream()
-//        .map( fqcn -> createInstance( (Class<? extends ValueExtractor<?>>) run( LoadClass.action( fqcn, null ) ) ) )
-//        .map( ve -> new ValueExtractorDescriptor( ve ) )
-//        .collect( Collectors.toSet() );
-//
-//        return valueExtractorDescriptors;
-//    }
-//
-//    @SuppressWarnings("rawtypes")
-//    private Set<ValueExtractorDescriptor> createServiceLoaderValueExtractors() {
-//        Set<ValueExtractorDescriptor> valueExtractorDescriptors = new HashSet<>();
-//
-//        List<ValueExtractor> valueExtractors = run( GetInstancesFromServiceLoader.action(
-//                                                                                         run( GetClassLoader.fromContext() ),
-//                                                                                         ValueExtractor.class
-//                        ) );
-//
-//        for ( ValueExtractor<?> valueExtractor : valueExtractors ) {
-//            valueExtractorDescriptors.add( new ValueExtractorDescriptor( injectInstance( valueExtractor ) ) );
-//        }
-//
-//        return valueExtractorDescriptors;
-//    }
+    private void addValueExtractorBeans(Configuration<?> config, ClassLoader appClassLoader) {
+        Map<ValueExtractorDescriptor.Key, ValueExtractorDescriptor> valueExtractorDescriptors = createValidationXmlValueExtractors(config,
+                                                                                                                                   appClassLoader).stream().collect(Collectors.toMap(ValueExtractorDescriptor::getKey,
+                                                                                                                                                                                     Function.identity()));
+
+        for (ValueExtractorDescriptor serviceLoaderValueExtractorDescriptor : createServiceLoaderValueExtractors()) {
+            valueExtractorDescriptors.putIfAbsent(serviceLoaderValueExtractorDescriptor.getKey(), serviceLoaderValueExtractorDescriptor);
+        }
+
+        for (ValueExtractorDescriptor valueExtractorDescriptor : valueExtractorDescriptors.values()) {
+            config.addValueExtractor(valueExtractorDescriptor.getValueExtractor());
+        }
+    }
+
+    private Set<ValueExtractorDescriptor> createValidationXmlValueExtractors(Configuration<?> config, ClassLoader appClassLoader) {
+        BootstrapConfiguration bootstrapConfiguration = config.getBootstrapConfiguration();
+        Set<String> valueExtractorClassNames = bootstrapConfiguration.getValueExtractorClassNames();
+
+        @SuppressWarnings("unchecked")
+        Set<ValueExtractorDescriptor> valueExtractorDescriptors = valueExtractorClassNames.stream() //
+                        .map(fqcn -> createManagedObject((Class<? extends ValueExtractor<?>>) loadClass(fqcn, appClassLoader))) //
+                        .map(valueExtractor -> new ValueExtractorDescriptor(valueExtractor)) //
+                        .collect(Collectors.toSet());
+
+        return valueExtractorDescriptors;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private Set<ValueExtractorDescriptor> createServiceLoaderValueExtractors() {
+        Set<ValueExtractorDescriptor> valueExtractorDescriptors = new HashSet<>();
+
+        List<ValueExtractor> valueExtractors;
+
+        valueExtractors = AccessController.doPrivileged((PrivilegedAction<List<ValueExtractor>>) () -> GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(),
+                                                                                                                                            ValueExtractor.class).run());
+        for (ValueExtractor<?> valueExtractor : valueExtractors) {
+            valueExtractorDescriptors.add(new ValueExtractorDescriptor(createManagedObject((Class<? extends ValueExtractor<?>>) valueExtractor.getClass())));
+        }
+        return valueExtractorDescriptors;
+    }
 
     private <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(Class<T> clazz) {
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
@@ -308,20 +295,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             // ffdc
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Failed to create a ManagedObjectFactory for " + clazz.getName(), e);
-            return null;
-        }
-    }
-
-    //TODO: delete once we are certain we won't need to use our ReleasableConstraintValidatorFactory.
-    private <T> ManagedObject<?> createManagedObject(Object instance) {
-        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
-        ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
-        try {
-            return managedObjectService.createManagedObject(mmd, instance);
-        } catch (ManagedObjectException e) {
-            // ffdc
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Failed to create a ManagedObject for an instance of " + instance.getClass().getName(), e);
             return null;
         }
     }

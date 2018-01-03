@@ -171,7 +171,7 @@ public class JavaEESecTestBase {
     }
 
     protected String accessWithCustomHeader(DefaultHttpClient httpClient, String url, String name, String value, int expectedStatusCode) {
-        Log.info(logClass, getCurrentTestName(), "accessWithCustomHeader: url=" + url + ", name=" + name + ", value=" + value + 
+        Log.info(logClass, getCurrentTestName(), "accessWithCustomHeader: url=" + url + ", name=" + name + ", value=" + value +
                                                  ", expectedStatusCode=" + expectedStatusCode);
         try {
             HttpGet getMethod = new HttpGet(url);
@@ -278,15 +278,15 @@ public class JavaEESecTestBase {
                            content.contains(formTitle));
                 Log.info(logClass, methodName, "Found expected Form login page title: " + formTitle);
             }
-            
+
         } catch (IOException e) {
             fail("Caught unexpected exception: " + e);
         }
         return content;
-    }  
+    }
 
     /**
-     * Send HttpClient post request with specified parameters to the given URL, ensure that the user is redirected or forwarded 
+     * Send HttpClient post request with specified parameters to the given URL, ensure that the user is redirected or forwarded
      * to the form login page
      * Note that in order to use this method properly, HttlClient needs to be set ClientPNames.HANDLE_REDIRECTS=Boolean.FALSE.
      * This propety let httpclient disable following the redirect automatically.
@@ -335,12 +335,12 @@ public class JavaEESecTestBase {
                            content.contains(formTitle));
                 Log.info(logClass, methodName, "Found expected Form login page title: " + formTitle);
             }
-            
+
         } catch (IOException e) {
             fail("Caught unexpected exception: " + e);
         }
         return content;
-    }  
+    }
 
     /**
      * Post HttpClient request to execute a form login on the given page, using the given username and password
@@ -414,7 +414,6 @@ public class JavaEESecTestBase {
         }
         postMethod.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
-
         HttpResponse response = httpclient.execute(postMethod);
         Log.info(logClass, methodName, "postMethod.getStatusCode():  " + response.getStatusLine().getStatusCode());
         String content = EntityUtils.toString(response.getEntity());
@@ -430,7 +429,6 @@ public class JavaEESecTestBase {
         Log.info(logClass, methodName, "Redirect location:  " + location);
         return location;
     }
-
 
     /**
      *
@@ -477,7 +475,7 @@ public class JavaEESecTestBase {
     }
 
     public void mustContain(String response, String target) {
-        assertTrue("Expected result " + target + " not found in response", response.contains(target));
+        assertTrue("Expected result " + target + " not found in response: " + response, response.contains(target));
     }
 
     private void mustNotContain(String response, String target) {
@@ -541,10 +539,11 @@ public class JavaEESecTestBase {
     }
 
     protected void verifyPostResponse(String response, String user, String firstName, String lastName, String eMailAddr, String phoneNumber) {
-        Log.info(logClass, "verifyPostResponse", "Verify response shows: user : " + user + ", firstName : " + firstName + ", lastName : "  + lastName + ", eMailAddr : " + eMailAddr + ", phoneNum : " + phoneNumber);
+        Log.info(logClass, "verifyPostResponse", "Verify response shows: user : " + user + ", firstName : " + firstName + ", lastName : " + lastName + ", eMailAddr : " + eMailAddr
+                                                 + ", phoneNum : " + phoneNumber);
         mustContain(response, "RemoteUser : " + user);
         mustContain(response, "firstName : " + firstName);
-        mustContain(response, "lastName : "  + lastName);
+        mustContain(response, "lastName : " + lastName);
         mustContain(response, "eMailAddr : " + eMailAddr);
         mustContain(response, "phoneNum : " + phoneNumber);
     }
@@ -638,9 +637,9 @@ public class JavaEESecTestBase {
         response.contains("Unable to create a provider, class name: " + providerClass);
 
     }
- 
+
     /**
-      * verify the group names. Note that this is a simple string comparison.
+     * verify the group names. Note that this is a simple string comparison.
      **/
     public void verifyGroups(String response, String groups) {
         Log.info(logClass, "verifyGroups", "Verify group contains: " + groups);
@@ -648,19 +647,30 @@ public class JavaEESecTestBase {
     }
 
     /**
-      * verify the group names. Note that this is a simple string comparison.
+     * verify the group names. Note that this is a simple string comparison.
      **/
     public void verifyNotInGroups(String response, String group) {
         Log.info(logClass, "verifyGroups", "Verify group does not contain: " + group);
-        mustNotMatch(response, "(?s)\\A.*?\\bCallerSubject:.*?groupIds=\\[.*" + group +".*\\].*\\z");
+        mustNotMatch(response, "(?s)\\A.*?\\bCallerSubject:.*?groupIds=\\[.*" + group + ".*\\].*\\z");
     }
 
     /**
-      * verify the realm name. Note that this is a simple string comparison.
+     * verify the realm name. Note that this is a simple string comparison.
      **/
     public void verifyRealm(String response, String realm) {
         Log.info(logClass, "verifyRealm", "Verify realm is : " + realm);
         mustContain(response, "realmName=" + realm + ",");
+    }
+
+    public void verifySecurityContextResponse(String response, String getUserPrincipal, String getUserPrincipalName) {
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + getUserPrincipal + ", " + getUserPrincipalName);
+        mustContain(response, getUserPrincipal);
+        mustContain(response, getUserPrincipalName);
+    }
+
+    public void verifySecurityContextResponse(String response, String isCallerInRoleString) {
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + isCallerInRoleString);
+        mustContain(response, isCallerInRoleString);
     }
 
 }

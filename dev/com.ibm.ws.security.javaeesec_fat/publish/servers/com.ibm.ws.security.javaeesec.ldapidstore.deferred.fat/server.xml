@@ -14,8 +14,8 @@
 			<security-role name="javaeesec_basic">
 				<user name="ldapuser1" access-id="user:localhost:10389/uid=ldapuser1,o=ibm,c=us" />
 				<user name="ldapuser3" access-id="user:localhost:10389/uid=ldapuser3,ou=subtree,o=ibm,c=us" />
-				<group name="ldapgroup1" access-id="group:localhost:10389/cn=ldapgroup1,o=ibm,c=us" />
-				<group name="ldapgroup2" access-id="group:localhost:10389/cn=ldapgroup2,ou=subtree,o=ibm,c=us" />
+				<group name="ldapgroup1" access-id="group:localhost:10389/ldapgroup1" />
+				<group name="ldapgroup2" access-id="group:localhost:10389/ldapgroup2" />
 			</security-role>
 			<security-role name="AllAuthenticated">
 				<special-subject type="ALL_AUTHENTICATED_USERS" />

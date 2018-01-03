@@ -40,7 +40,7 @@ public class DerbyConnection implements Connection {
     ConnectionManager cm;
     DerbyConnectionRequestInfo cri;
     boolean isClosed;
-    DerbyManagedConnection mc;
+    public DerbyManagedConnection mc;
     DerbyManagedConnectionFactory mcf;
 
     DerbyConnection(DerbyManagedConnection mc) {
@@ -387,6 +387,6 @@ public class DerbyConnection implements Connection {
 
     @Override
     public String toString() {
-        return super.toString() + "[Subject=" + mc.subject + "]";
+        return mc == null ? super.toString() : super.toString() + "[Subject=" + mc.subject + "]";
     }
 }

@@ -10,10 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.accessor;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.validation.ValidatorFactory;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -26,8 +31,8 @@ public class BeanValidationAccessor {
     private static final TraceComponent tc = Tr.register(BeanValidationAccessor.class);
 
     public static ValidatorFactory getValidatorFactory() {
-        BundleContext bctx = FrameworkUtil.getBundle(BeanValidationAccessor.class).getBundleContext();
-        BeanValidation bv = bctx.getService(bctx.getServiceReference(BeanValidation.class));
+        Bundle bundle = FrameworkUtil.getBundle(BeanValidationAccessor.class);
+        BeanValidation bv = AccessController.doPrivileged(new GetServiceAction(bundle));
 
         if (bv != null) {
             ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -44,4 +49,21 @@ public class BeanValidationAccessor {
         return null;
     }
 
+    /**
+     * Privileged action for getting a service.
+     */
+    private static class GetServiceAction implements PrivilegedAction<BeanValidation> {
+        private final Bundle bundle;
+
+        private GetServiceAction(Bundle bundle) {
+            this.bundle = bundle;
+        }
+
+        @Override
+        public BeanValidation run() {
+            BundleContext bCtx = bundle.getBundleContext();
+            ServiceReference<BeanValidation> svcRef = bCtx.getServiceReference(BeanValidation.class);
+            return svcRef == null ? null : bCtx.getService(svcRef);
+        }
+    }
 }

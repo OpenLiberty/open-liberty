@@ -675,7 +675,7 @@ public class WSJdbcStatement extends WSJdbcObject implements Statement, WSJdbcOb
         return stmtImpl;
     }
 
-
+    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
     /**
      * @see com.ibm.ws.jdbc.timedoperations.WSJdbcObjectHelper#getUniqueIdentifier()
      * 
@@ -685,7 +685,8 @@ public class WSJdbcStatement extends WSJdbcObject implements Statement, WSJdbcOb
         DSConfig config = dsConfig.get();
         return config.jndiName == null ? config.id : config.jndiName;
     }    
-    
+
+    //TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
     public String getSql(){
         return null; //dummy method, not used 
         

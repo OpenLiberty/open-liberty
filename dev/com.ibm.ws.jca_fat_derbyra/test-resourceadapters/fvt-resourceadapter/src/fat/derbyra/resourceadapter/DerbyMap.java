@@ -27,6 +27,7 @@ import java.util.TreeSet;
 import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterAssociation;
+import javax.resource.spi.work.WorkException;
 import javax.sql.DataSource;
 
 /**
@@ -206,8 +207,17 @@ public class DerbyMap<K, V> implements Map<K, V>, ResourceAdapterAssociation, Se
                         @SuppressWarnings("unchecked")
                         V previous = (V) result.getObject(1);
                         int updateCount = stmt.executeUpdate("update " + tableName + " set value='" + value + "' where id='" + key + "' and value='" + previous + "'");
-                        if (updateCount == 1)
+                        if (updateCount == 1) {
+                            // Replacing a value can be a trigger for sending a message
+                            for (DerbyActivationSpec as : adapter.activationSpecs)
+                                if (key instanceof String && ((String) key).startsWith(as.keyPrefix))
+                                    try {
+                                        adapter.bootstrapContext.getWorkManager().scheduleWork(new DerbyMessageWork(as, key, value, previous));
+                                    } catch (WorkException x) {
+                                        x.printStackTrace();
+                                    }
                             return previous;
+                        }
                     } else
                         try {
                             int updateCount = stmt.executeUpdate("insert into " + tableName + " values ('" + key + "', '" + value + "')");

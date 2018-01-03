@@ -44,6 +44,11 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     private String _pathQueryString = null;
 
     private static final String HDR_REFERER = HttpHeaderKeys.HDR_REFERER.getName();
+    private static final String HDR_IF_MATCH = HttpHeaderKeys.HDR_IF_MATCH.getName();
+    private static final String HDR_IF_MODIFIED_SINCE = HttpHeaderKeys.HDR_IF_MODIFIED_SINCE.getName();
+    private static final String HDR_IF_NONE_MATCH = HttpHeaderKeys.HDR_IF_NONE_MATCH.getName();
+    private static final String HDR_IF_RANGE = HttpHeaderKeys.HDR_IF_RANGE.getName();
+    private static final String HDR_IF_UNMODIFIED_SINCE = HttpHeaderKeys.HDR_IF_UNMODIFIED_SINCE.getName();
 
     private final SRTServletRequest40 _inboundRequest;
 
@@ -231,18 +236,12 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
                 Tr.debug(tc, "push()", "exception from push request : " + e);
             }
 
-            _path = null;
-            _pathURI = null;
-            _queryString = null;
-            _pathQueryString = null;
+            reset();
 
             throw new IllegalStateException(e);
         }
 
-        _path = null;
-        _pathURI = null;
-        _queryString = null;
-        _pathQueryString = null;
+        reset();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "push()");
@@ -330,6 +329,26 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     @Override
     public Set<HttpCookie> getCookies() {
         return _cookies;
+    }
+
+    // Reset the "state" of this PushBuilder before next push
+    private void reset() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "reset()", "Clearing the path and removing conditional headers");
+        }
+
+        //clear the path
+        _path = null;
+        _pathURI = null;
+        _queryString = null;
+        _pathQueryString = null;
+
+        //remove conditional headers
+        removeHeader(HDR_IF_MATCH);
+        removeHeader(HDR_IF_MODIFIED_SINCE);
+        removeHeader(HDR_IF_NONE_MATCH);
+        removeHeader(HDR_IF_RANGE);
+        removeHeader(HDR_IF_UNMODIFIED_SINCE);
     }
 
 }

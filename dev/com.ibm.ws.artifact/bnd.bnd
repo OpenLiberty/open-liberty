@@ -35,4 +35,5 @@ Private-Package: com.ibm.ws.artifact.internal
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

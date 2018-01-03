@@ -20,7 +20,7 @@ subprojects {
   rootProject.file('generated.properties').withInputStream { props.load(it) }
 
   /* Project artifacts are versioned by bnd Bundle-Version attribute, with the qualifier being current Git branch. */
-  def projectVersion = (isRelease ? bnd.buildID : "1.0.${qualifier}-SNAPSHOT")
+  def projectVersion = (isRelease ? bnd.buildID : "1.0.${qualifier}")
   if (releaseVersionOverride != null) {
     projectVersion = releaseVersionOverride
   }
@@ -384,8 +384,8 @@ subprojects {
           }
           contentvalidator(constraint: "disallowed", pattern: "\\{\\d+\\}", loglevel: "warning", message: "variables are disallowed in explanations or useractions") {
               keyfilter {
-                  exclude(name: "*.explanation")
-                  exclude(name: "*.useraction")
+                  include(name: "*.explanation")
+                  include(name: "*.useraction")
               }
           }
           contentvalidator(constraint: "disallowed", pattern: "\\b((WAS)|(TAM)|(WIM)|(WPS)|(eWAS)|(LUW)|(ND)|(MQSeries))\\b", loglevel: "warning", message: "product acronyms are disallowed")

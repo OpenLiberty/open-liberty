@@ -69,7 +69,10 @@ test.project: true
 	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	com.ibm.ws.componenttest:fat.util;version=1.0.0,\
 	com.ibm.ws.timedexit.internal;version=latest,\
+	com.sun.xml.bind:jaxb-core;version=2.2.10,\
+	com.sun.xml.bind:jaxb-impl;version=2.2.10,\
 	httpunit:httpunit;version=1.5.4,\
+	javax.activation:activation;version=1.1,\
     net.sf.jtidy:jtidy;version=9.3.8,\
     org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
     org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\

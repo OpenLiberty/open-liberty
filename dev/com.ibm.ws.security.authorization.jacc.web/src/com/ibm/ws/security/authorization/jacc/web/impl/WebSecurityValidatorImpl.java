@@ -41,8 +41,7 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
 
     /** {@inheritDoc} */
     @Override
-    public boolean checkDataConstraints(String contextId, Object httpServletRequest, WebUserDataPermission webUDPermission)
-    {
+    public boolean checkDataConstraints(String contextId, Object httpServletRequest, WebUserDataPermission webUDPermission) {
         HttpServletRequest req = null;
         if (httpServletRequest != null) {
             try {
@@ -79,8 +78,6 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
         } catch (PrivilegedActionException e) {
             Tr.error(tc, "JACC_WEB_IMPLIES_FAILURE", new Object[] { contextId, e.getException() });
             result = Boolean.FALSE;
-        } finally {
-            resetHandlerInfo();
         }
 
         return result.booleanValue();
@@ -108,8 +105,6 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
             result = checkResourceConstraints(cid, r, p, s, ho);
         } catch (PrivilegedActionException e) {
             Tr.error(tc, "JACC_WEB_IMPLIES_FAILURE", new Object[] { contextId, e.getException() });
-        } finally {
-            resetHandlerInfo();
         }
         return result;
     }
@@ -121,54 +116,36 @@ public class WebSecurityValidatorImpl implements WebSecurityValidator {
                                              final HashMap<String, Object> handlerObjects) throws PrivilegedActionException {
         Boolean result = Boolean.FALSE;
         result = AccessController.doPrivileged(
-                        new PrivilegedExceptionAction<Boolean>() {
-                            @Override
-                            public Boolean run() throws javax.security.jacc.PolicyContextException {
-                                PolicyContext.setContextID(contextId);
+                                               new PrivilegedExceptionAction<Boolean>() {
+                                                   @Override
+                                                   public Boolean run() throws javax.security.jacc.PolicyContextException {
+                                                       PolicyContext.setContextID(contextId);
 
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Registering JACC context handlers");
-                                for (String key : jaccHandlerKeyArray) {
-                                    PolicyContext.registerHandler(key, pch, true);
-                                }
-                                handlerObjects.put(jaccHandlerKeyArray[0], subject);
-                                handlerObjects.put(jaccHandlerKeyArray[1], req);
+                                                       if (tc.isDebugEnabled())
+                                                           Tr.debug(tc, "Registering JACC context handlers");
+                                                       for (String key : jaccHandlerKeyArray) {
+                                                           PolicyContext.registerHandler(key, pch, true);
+                                                       }
+                                                       handlerObjects.put(jaccHandlerKeyArray[0], subject);
+                                                       handlerObjects.put(jaccHandlerKeyArray[1], req);
 
-                                ProtectionDomain pd = null;
+                                                       ProtectionDomain pd = null;
 
-                                if (subject != null && subject.getPrincipals().size() > 0) {
-                                    Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);
-                                    pd = new ProtectionDomain(nullCs, null, null, principalArray);
-                                } else {
-                                    pd = nullPd;
-                                }
+                                                       if (subject != null && subject.getPrincipals().size() > 0) {
+                                                           Principal[] principalArray = subject.getPrincipals().toArray(new Principal[subject.getPrincipals().size()]);
+                                                           pd = new ProtectionDomain(nullCs, null, null, principalArray);
+                                                       } else {
+                                                           pd = nullPd;
+                                                       }
 
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Setting JACC handler data");
-                                PolicyContext.setHandlerData(handlerObjects);
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Calling JACC implies. PD : " + pd);
-                                return Policy.getPolicy().implies(pd, permission);
-                            }
-                        });
+                                                       if (tc.isDebugEnabled())
+                                                           Tr.debug(tc, "Setting JACC handler data");
+                                                       PolicyContext.setHandlerData(handlerObjects);
+                                                       if (tc.isDebugEnabled())
+                                                           Tr.debug(tc, "Calling JACC implies. PD : " + pd);
+                                                       return Policy.getPolicy().implies(pd, permission);
+                                                   }
+                                               });
         return result.booleanValue();
     }
-
-    private void resetHandlerInfo() {
-        try {
-            AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
-            {
-                @Override
-                public Object run() {
-                    // resetting the handler info as per spec..
-                    PolicyContext.setHandlerData(null);
-                    return null;
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception when resetting setHandler data. Ignoring.. " + e.getException());
-        }
-    }
-
 }

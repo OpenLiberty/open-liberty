@@ -51,9 +51,8 @@ public interface CDIArchive {
      * Note that this may be unique to the archive or it may be shared with others.
      *
      * @return the ClassLoader
-     * @throws CDIException
      */
-    ClassLoader getClassLoader() throws CDIException;
+    ClassLoader getClassLoader();
 
     /**
      * Get the names of all of the classes contained in this archive

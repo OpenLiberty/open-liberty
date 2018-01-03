@@ -16,7 +16,10 @@ src: \
 	test-applications/checkJvmAppClasspath/src,\
 	test-applications/shutdownfat/src
 
+
 fat.project: true
+test.classpath.wlp.include: api/spec/*.jar,api/ibm/*.jar
+
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -32,6 +35,7 @@ fat.project: true
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.thirdparty.equinox;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.service.location;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\

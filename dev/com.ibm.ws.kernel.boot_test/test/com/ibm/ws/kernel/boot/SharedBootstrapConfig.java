@@ -65,6 +65,10 @@ public class SharedBootstrapConfig extends BootstrapConfig {
         this.initProps = initProps;
     }
 
+    public void setInstallRoot(File installRoot) {
+        this.installRoot = installRoot;
+    }
+
     public void cleanServerDir() {
         FileUtils.recursiveClean(getConfigFile(null));
     }

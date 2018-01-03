@@ -51,6 +51,17 @@
      	  <config-property-type>java.lang.Boolean</config-property-type>
      	  <config-property-value>false</config-property-value> 
     	</config-property>
+        <config-property>
+    	  <description>This property added to test WMQ XA recovery path. Value should not be configured because it will be supplied by the application server.</description>
+     	  <config-property-name>qmid</config-property-name> 
+     	  <config-property-type>java.lang.String</config-property-type> 
+    	</config-property>
+        <config-property>
+    	  <description>Enforce a success limit on XA resource commits and rollbacks (-1 means no limit)</description>
+     	  <config-property-name>xaSuccessLimit</config-property-name> 
+     	  <config-property-type>java.lang.Integer</config-property-type>
+     	  <config-property-value>-1</config-property-value>  
+    	</config-property>
         <connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface> 
         <connectionfactory-impl-class>fat.derbyra.resourceadapter.DerbyConnectionFactory</connectionfactory-impl-class> 
         <connection-interface>java.sql.Connection</connection-interface> 
@@ -58,6 +69,26 @@
       </connection-definition>
       <reauthentication-support>false</reauthentication-support> 
     </outbound-resourceadapter>
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener>
+          <messagelistener-type>javax.resource.cci.MessageListener</messagelistener-type>
+          <activationspec>
+            <activationspec-class>fat.derbyra.resourceadapter.DerbyActivationSpec</activationspec-class>
+            <config-property>
+              <description>Key prefix for which to send a message when its value is replaced in any DerbyMap admin object that is associated with the resource adapter.</description>
+              <config-property-name>keyPrefix</config-property-name>
+              <config-property-type>java.lang.String</config-property-type>
+            </config-property>
+            <config-property>
+    	      <description>This property added to test WMQ XA recovery path. Value should not be configured because it will be supplied by the application server.</description>
+     	      <config-property-name>qmid</config-property-name> 
+     	      <config-property-type>java.lang.String</config-property-type> 
+    	    </config-property>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
     <adminobject>
       <adminobject-interface>java.util.Map</adminobject-interface>
       <adminobject-class>fat.derbyra.resourceadapter.DerbyMap</adminobject-class>

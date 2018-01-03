@@ -29,166 +29,52 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
-import com.ibm.ws.kernel.service.util.PrivHelper;
-import com.ibm.ws.util.ThreadContextAccessor;
-import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true)
 public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
-    private static final TraceComponent tc = Tr.register(ValidatorFactoryBuilderImpl.class);
 
-    private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
     private static final String REFERENCE_VALIDATION_RELEASABLE_FACTORY = "ValidationReleasableFactory";
-
-    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
     private final AtomicServiceReference<ValidationReleasableFactory> validationReleasableFactorySR = new AtomicServiceReference<ValidationReleasableFactory>(REFERENCE_VALIDATION_RELEASABLE_FACTORY);
-
-    /**
-     * Privileged action for creating a thread context class loader.
-     */
-    private class CreateThreadContextClassLoaderAction implements PrivilegedAction<ClassLoader> {
-        private final ClassLoader parentCL;
-
-        private CreateThreadContextClassLoaderAction(ClassLoader parentCL) {
-            this.parentCL = parentCL;
-        }
-
-        @Override
-        public ClassLoader run() {
-            return classLoadingServiceSR.getServiceWithException().createThreadContextClassLoader(parentCL);
-        }
-    }
-
-    /**
-     * Privileged action for destroying a thread context class loader.
-     */
-    private class DestroyThreadContextClassLoaderAction implements PrivilegedAction<Void> {
-        private final ClassLoader tccl;
-
-        private DestroyThreadContextClassLoaderAction(ClassLoader tccl) {
-            this.tccl = tccl;
-        }
-
-        @Override
-        public Void run() {
-            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
-            return null;
-        }
-    }
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
-        vf.close();
+        if (vf != null) {
+            vf.close();
+        }
     }
 
     @Override
     public ValidatorFactory buildValidatorFactory(final ClassLoader appClassLoader, final String containerPath) {
-        ClassLoader tcclClassLoader = null;
-        SetContextClassLoaderPrivileged setClassLoader = null;
-        ClassLoader oldClassLoader = null;
-        try {
-            tcclClassLoader = configureBvalClassloader(this.getClass().getClassLoader());
 
-            // consider refactoring to combine multiple privileged actions into one
-            ClassLoader bvalClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                @Override
-                public ClassLoader run() {
-                    return new Validation20ClassLoader(appClassLoader, containerPath);
-                }
-            });
+        ClassLoader bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(appClassLoader, containerPath));
 
-            ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
+        Configuration<?> config = Validation.byDefaultProvider().configure();
 
-            // set the thread context class loader to be used, must be reset in finally block
-            setClassLoader = new SetContextClassLoaderPrivileged(tca);
-            oldClassLoader = setClassLoader.execute(tcclClassLoader);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + tcclClassLoader);
-            }
-            Configuration<?> config = Validation.byDefaultProvider().configure();
-
+        if (config instanceof HibernateValidatorConfiguration) {
             HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
             hvConfig.externalClassLoader(bvalClassLoader);
-
-            if (validationReleasableFactorySR.getReference() != null) {
-                ValidationReleasableFactory releasableFactory = validationReleasableFactorySR.getServiceWithException();
-                return releasableFactory.injectValidatorFactoryResources(config, appClassLoader);
-            } else {
-                return config.buildValidatorFactory();
-            }
-        } finally {
-            if (setClassLoader != null) {
-                setClassLoader.execute(oldClassLoader);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
-                }
-            }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                releaseLoader(tcclClassLoader);
-            }
         }
 
-    }
-
-    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
-        @Override
-        public ThreadContextAccessor run() {
-            return ThreadContextAccessor.getThreadContextAccessor();
+        if (validationReleasableFactorySR.getReference() != null) {
+            ValidationReleasableFactory releasableFactory = validationReleasableFactorySR.getServiceWithException();
+            return releasableFactory.injectValidatorFactoryResources(config, appClassLoader);
+        } else {
+            return config.buildValidatorFactory();
         }
-    };
-
-    public void releaseLoader(ClassLoader tccl) {
-        AccessController.doPrivileged(new DestroyThreadContextClassLoaderAction(tccl));
-    }
-
-    public ClassLoader configureBvalClassloader(ClassLoader cl) {
-        if (cl == null) {
-            cl = PrivHelper.getContextClassLoader();
-        }
-        if (cl != null) {
-            ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
-            if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
-            } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
-            }
-        }
-        return createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader());
-    }
-
-    private ClassLoader createTCCL(ClassLoader parentCL) {
-        return AccessController.doPrivileged(new CreateThreadContextClassLoaderAction(parentCL));
-    }
-
-    @Reference(name = REFERENCE_CLASSLOADING_SERVICE,
-               service = ClassLoadingService.class)
-    protected void setClassLoadingService(ServiceReference<ClassLoadingService> ref) {
-        classLoadingServiceSR.setReference(ref);
-    }
-
-    protected void unsetClassLoadingService(ServiceReference<ClassLoadingService> ref) {
-        classLoadingServiceSR.unsetReference(ref);
     }
 
     @Activate
     protected void activate(ComponentContext cc) {
-        classLoadingServiceSR.activate(cc);
         validationReleasableFactorySR.activate(cc);
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        classLoadingServiceSR.deactivate(cc);
         validationReleasableFactorySR.deactivate(cc);
     }
 

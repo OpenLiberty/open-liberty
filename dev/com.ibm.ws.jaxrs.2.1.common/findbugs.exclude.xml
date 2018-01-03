@@ -359,7 +359,7 @@
       <Bug pattern="WMI_WRONG_MAP_ITERATOR,TR_INCORRECTLY_GUARDED,TR_MISSING_GUARD" />
       <Or>
       <Class name="com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl" />
-      <Class name="com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigHolder" /> 
+      <Class name="com.ibm.ws.jaxrs21.clientconfig.JAXRSClientConfigHolder" /> 
       </Or>
    </Match>
    

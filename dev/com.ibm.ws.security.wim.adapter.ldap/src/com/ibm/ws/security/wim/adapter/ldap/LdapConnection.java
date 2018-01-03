@@ -92,6 +92,7 @@ import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.wim.AccessControllerHelper;
 import com.ibm.ws.security.wim.FactoryManager;
 import com.ibm.ws.security.wim.env.ICacheUtil;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
@@ -2410,9 +2411,8 @@ public class LdapConnection {
             }
 
             // New:: Set the classloader so that a class in the package can be loaded by JNDI
-            Thread thread = Thread.currentThread();
-            ClassLoader origCL = thread.getContextClassLoader();
-            thread.setContextClassLoader(getClass().getClassLoader());
+            ClassLoader origCL = AccessControllerHelper.getContextClassLoader();
+            AccessControllerHelper.setContextClassLoader(getClass());
             try {
                 TimedDirContext ctx = null;
                 try {
@@ -2422,7 +2422,7 @@ public class LdapConnection {
                         throw e;
                     } else {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Encountered an exception while creating a context : " + e.getMessage());
+                            Tr.debug(tc, "Encountered an exception while creating a context: " + e.getMessage());
                     }
 
                     // Get the Next URL
@@ -2445,7 +2445,7 @@ public class LdapConnection {
                 }
                 return ctx;
             } finally {
-                thread.setContextClassLoader(origCL);
+                AccessControllerHelper.setContextClassLoader(origCL);
             }
         } finally {
             FactoryManager.getSSLUtil().setSSLPropertiesOnThread(currentSSLProps);
@@ -2471,9 +2471,11 @@ public class LdapConnection {
      * @throws NamingException
      */
     public TimedDirContext createDirContext(Hashtable<?, ?> env, long createTimestamp) throws NamingException {
+
+        /*
+         * Check if the credential is a protected string. It will be unprotected if this is an anonymous bind
+         */
         Object o = env.get(Context.SECURITY_CREDENTIALS);
-        // Check if the credential is a protected string. It will be unprotected if this is an
-        // anonymous bind
         if (o instanceof ProtectedString) {
             // Reset the bindPassword to simple string.
             ProtectedString sps = (ProtectedString) env.get(Context.SECURITY_CREDENTIALS);
@@ -2492,10 +2494,11 @@ public class LdapConnection {
                 }
             }
 
-            // New:: Set the classloader so that a class in the package can be loaded by JNDI
-            Thread thread = Thread.currentThread();
-            ClassLoader origCL = thread.getContextClassLoader();
-            thread.setContextClassLoader(getClass().getClassLoader());
+            /*
+             * Set the classloader so that a class in the package can be loaded by JNDI
+             */
+            ClassLoader origCL = AccessControllerHelper.getContextClassLoader();
+            AccessControllerHelper.setContextClassLoader(getClass());
             try {
                 TimedDirContext ctx = new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
                 String newURL = getProviderURL(ctx);
@@ -2507,7 +2510,7 @@ public class LdapConnection {
 
                 return ctx;
             } finally {
-                thread.setContextClassLoader(origCL);
+                AccessControllerHelper.setContextClassLoader(origCL);
             }
         } finally {
             FactoryManager.getSSLUtil().setSSLPropertiesOnThread(currentSSLProps);

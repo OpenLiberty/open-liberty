@@ -28,7 +28,6 @@ public class AfterTypeDiscoveryTest extends LoggingTest {
     /** {@inheritDoc} */
     @Override
     protected ShutDownSharedServer getSharedServer() {
-        // TODO Auto-generated method stub
         return SHARED_SERVER;
     }
 

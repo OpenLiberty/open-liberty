@@ -11,9 +11,14 @@
 package web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,12 +31,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.XATerminator;
 import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.WorkManager;
+import javax.servlet.ServletException;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
+import javax.transaction.HeuristicMixedException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -66,9 +74,93 @@ public class DerbyRAAnnoServlet extends FATServlet {
     DataSource loginModuleCF;
 
     /**
-     * Maximum number of milliseconds a test should wait for something to happen
+     * Maximum number of nanoseconds a test should wait for something to happen
      */
-    private static final long TIMEOUT = 5000;
+    private static final long TIMEOUT_NS = TimeUnit.SECONDS.toNanos(20);
+
+    /**
+     * One-time initialization for servlet
+     */
+    @Override
+    public void init() throws ServletException {
+        try {
+            Connection con = ds1.getConnection();
+            try {
+                // create table to be used by Message Driven Bean
+                Statement stmt = con.createStatement();
+                try {
+                    stmt.executeUpdate("create table TestActivationSpecTBL (id varchar(50) not null primary key, oldValue varchar(50))");
+                } finally {
+                    stmt.close();
+                }
+            } finally {
+                con.close();
+            }
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Verify that a message driven bean is invoked.
+     */
+    public void testActivationSpec() throws Throwable {
+        try {
+            assertNull(map1.put("mdbtestActvSpec", "value1"));
+            assertEquals("value1", map1.put("mdbtestActvSpec", "value2"));
+
+            // Database entry inserted by message driven bean should show up in a reasonable amount of time
+            String oldValueFromDB = null;
+            Connection con = ds1.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement("select oldValue from TestActivationSpecTBL where id=?");
+                pstmt.setString(1, "mdbtestActvSpec");
+                for (long start = System.nanoTime(); oldValueFromDB == null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200)) {
+                    ResultSet result = pstmt.executeQuery();
+                    if (result.next())
+                        oldValueFromDB = result.getString(1);
+                    result.close();
+                }
+                pstmt.close();
+            } finally {
+                con.close();
+            }
+            assertEquals("value1", oldValueFromDB);
+        } finally {
+            map1.clear();
+        }
+    }
+
+    /**
+     * Verify XA recovery for activation specs
+     */
+    public void testActivationSpecXARecovery() throws Throwable {
+        try {
+            assertNull(map1.put("mdbtestRecovery", "valueA"));
+            assertEquals("valueA", map1.put("mdbtestRecovery", "valueB"));
+
+            // Database entry inserted by message driven bean should show up in a reasonable amount of time
+            String oldValueFromDB = null;
+            DataSource ds = InitialContext.doLookup("eis/ds1");
+            Connection con = ds.getConnection("ActvSpecUser", "ActvSpecPwd");
+            try {
+                PreparedStatement pstmt = con.prepareStatement("select description from TestActivationSpecRecoveryTBL where id=?");
+                pstmt.setString(1, "mdbtestRecovery");
+                for (long start = System.nanoTime(); oldValueFromDB == null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200)) {
+                    ResultSet result = pstmt.executeQuery();
+                    if (result.next())
+                        oldValueFromDB = result.getString(1);
+                    result.close();
+                }
+                pstmt.close();
+            } finally {
+                con.close();
+            }
+            assertEquals("mdbtestRecovery: valueA --> valueB", oldValueFromDB);
+        } finally {
+            map1.clear();
+        }
+    }
 
     public void testCustomLoginModuleCF() throws Exception {
         Connection con = loginModuleCF.getConnection();
@@ -148,7 +240,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
             RecursiveTimerTask task = new RecursiveTimerTask(new AtomicInteger(4), new AtomicLong(), resultQueue, timer, tran);
             timer.scheduleAtFixedRate(task, 0, 1);
 
-            Object result = resultQueue.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+            Object result = resultQueue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             if (result instanceof Throwable)
                 throw new Exception("Timer task failed. See cause.", (Throwable) result);
             if (!Long.valueOf(10).equals(result))
@@ -274,6 +366,82 @@ public class DerbyRAAnnoServlet extends FATServlet {
     }
 
     /**
+     * Intentionally cause an in-doubt transaction and verify that the transaction manager successfully recovers it
+     * by committing the updates to the database.
+     */
+    public void testXARecovery() throws Exception {
+        Connection con = ds1.getConnection();
+        try {
+            // create table
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("create table TestXARecoveryTBL (id int not null primary key, value varchar(30))");
+            stmt.close();
+        } finally {
+            con.close();
+        }
+
+        DataSource ds3 = InitialContext.doLookup("eis/ds3");
+
+        boolean commitAttempted = false;
+        tran.begin();
+        try {
+            Connection con1 = ds1.getConnection();
+            try {
+                Statement s1 = con1.createStatement();
+                s1.executeUpdate("insert into TestXARecoveryTBL values (1, 'VALUE FROM DS1')");
+                s1.close();
+            } finally {
+                con1.close();
+            }
+
+            Connection con2 = ds3.getConnection();
+            try {
+                Statement s2 = con2.createStatement();
+                s2.executeUpdate("insert into TestXARecoveryTBL values (2, 'VALUE FROM DS3')");
+                s2.close();
+            } finally {
+                con2.close();
+            }
+
+            try {
+                commitAttempted = true;
+                tran.commit();
+                fail("Commit should not have succeeded because the test infrastructure is supposed to cause an in-doubt transaction.");
+            } catch (HeuristicMixedException x) {
+                // Adjust the XA success limit, so as to allow XA recovery to commit the in-doubt transaction
+                ds3.unwrap(AtomicInteger.class).set(1); // TODO this should be removed once the JCA integration layer is updated to set the QMID
+                System.out.println("Caught expected exception: " + x);
+            }
+        } finally {
+            if (!commitAttempted)
+                tran.rollback();
+        }
+
+        System.out.println("--- attempting to access data (only possible after recovery) ---");
+
+        con = ds1.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement("select value from TestXARecoveryTBL where id=?");
+
+            ps.setInt(1, 2);
+            ResultSet result = ps.executeQuery();
+            assertTrue(result.next());
+            assertEquals("VALUE FROM DS3", result.getString(1));
+            result.close();
+
+            ps.setInt(1, 1);
+            result = ps.executeQuery();
+            assertTrue(result.next());
+            assertEquals("VALUE FROM DS1", result.getString(1));
+            result.close();
+
+            ps.close();
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
      * Use XATerminator to commit or roll back a transaction.
      */
     public void testXATerminator() throws Exception {
@@ -306,7 +474,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
                         // Make another update in the main transaction
                         stmt.executeUpdate("insert into TestXATerminatorTBL values (3, 'C')");
                     } finally {
-                        listener.latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+                        listener.latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                         xaTerminator.commit(xid, true);
                     }
                     if (listener.failure != null)
@@ -351,7 +519,7 @@ public class DerbyRAAnnoServlet extends FATServlet {
                         // Make another update in the main transaction
                         stmt.executeUpdate("insert into TestXATerminatorTBL values (6, 'F')");
                     } finally {
-                        listener.latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+                        listener.latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                         int vote = xaTerminator.prepare(xid);
                         if (vote == XAResource.XA_OK)
                             xaTerminator.rollback(xid);

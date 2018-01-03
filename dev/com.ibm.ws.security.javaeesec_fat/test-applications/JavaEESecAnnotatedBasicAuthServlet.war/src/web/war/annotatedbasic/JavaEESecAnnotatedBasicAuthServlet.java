@@ -1,8 +1,9 @@
 package web.war.annotatedbasic;
 
-import web.jar.base.FlexibleBaseServlet;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
+
+import web.jar.base.FlexibleBaseServlet;
 
 @BasicAuthenticationMechanismDefinition(realmName = "JavaEESec Basic Realm")
 @LdapIdentityStoreDefinition(
@@ -10,7 +11,7 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
                              callerBaseDn = "",
                              callerSearchBase = "o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             callerSearchFilter = "(objectclass=person)",
+                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
                              callerNameAttribute = "uid",
                              groupNameAttribute = "cn",
                              groupSearchBase = "o=ibm,c=us",

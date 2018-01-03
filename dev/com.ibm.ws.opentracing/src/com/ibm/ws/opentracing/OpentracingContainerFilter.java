@@ -116,7 +116,8 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
                        ContainerResponseContext outgoingResponseContext) throws IOException {
         String methodName = "filter(outgoing)";
 
-        if ((Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID)) {
+        Boolean skipped = (Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID);
+        if (skipped != null && skipped) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " skipped");
             }
@@ -153,8 +154,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             incomingRequestContext.removeProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
         }
     }
-
-    //
 
     private static class MultivaluedMapToTextMap implements TextMap {
         private final MultivaluedMap<String, String> mvMap;

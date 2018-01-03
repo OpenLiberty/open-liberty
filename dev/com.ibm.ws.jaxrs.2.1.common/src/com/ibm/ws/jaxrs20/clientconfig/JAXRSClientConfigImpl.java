@@ -23,6 +23,8 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientConfigHolder;
+import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientConstants;
 
 @Component(immediate = true,
            service = { JAXRSClientConfig.class },

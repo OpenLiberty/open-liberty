@@ -204,9 +204,8 @@ public abstract class AbstractResourceInfo {
                 }
             }
             return (ThreadLocalProxy<?>) proxy;
-        } else {
-            return InjectionUtils.createThreadLocalProxy(f.getType());
         }
+        return InjectionUtils.createThreadLocalProxy(f.getType());
     }
 
     @FFDCIgnore(Throwable.class)

@@ -13,12 +13,15 @@ package fat.derbyra.resourceadapter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.enterprise.concurrent.ContextService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.resource.NotSupportedException;
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.BootstrapContext;
@@ -37,6 +40,7 @@ import javax.transaction.xa.XAResource;
  * Fake resource adapter for the FAT bucket.
  */
 public class DerbyResourceAdapter implements ResourceAdapter {
+    final ConcurrentLinkedQueue<DerbyActivationSpec> activationSpecs = new ConcurrentLinkedQueue<DerbyActivationSpec>();
     private boolean appServerSupportsHintsContext, appServerSupportsSecurityContext, appServerSupportsTransactionContext;
     BootstrapContext bootstrapContext;
     Connection connection;
@@ -44,17 +48,22 @@ public class DerbyResourceAdapter implements ResourceAdapter {
     private String databaseName; // demonstrates a defaulted String config-property
     private int loginTimeout; // demonstrates an ibm:type="duration(s)" config-property
     Callable<DataSource> lookup_ds1ref;
+    final ConcurrentHashMap<String, ConcurrentLinkedQueue<DerbyXAResource>> recoverableXAResources = new ConcurrentHashMap<String, ConcurrentLinkedQueue<DerbyXAResource>>();
     private XAConnection xaConnection;
     XADataSource xaDataSource;
 
     @Override
     public void endpointActivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) throws ResourceException {
-        throw new NotSupportedException();
+        DerbyActivationSpec as = ((DerbyActivationSpec) activationSpec);
+        as.messageEndpointFactories.add(endpointFactory);
+        activationSpecs.add(as);
     }
 
     @Override
     public void endpointDeactivation(MessageEndpointFactory endpointFactory, ActivationSpec activationSpec) {
-        throw new UnsupportedOperationException();
+        DerbyActivationSpec as = ((DerbyActivationSpec) activationSpec);
+        activationSpecs.remove(as);
+        as.messageEndpointFactories.remove(endpointFactory);
     }
 
     BootstrapContext getBootstrapContext() {
@@ -88,7 +97,29 @@ public class DerbyResourceAdapter implements ResourceAdapter {
     /** {@inheritDoc} */
     @Override
     public XAResource[] getXAResources(ActivationSpec[] activationSpecs) throws ResourceException {
-        return null;
+        if (activationSpecs == null)
+            return null;
+
+        System.out.println("getXAResources for " + Arrays.asList(activationSpecs));
+
+        ArrayList<XAResource> list = new ArrayList<XAResource>();
+        for (ActivationSpec as : activationSpecs) {
+            DerbyActivationSpec das = (DerbyActivationSpec) as;
+
+            // Enforce that qmid must be set by application server in order for XA resource to be recovered:
+            if (DerbyXAResource.XA_RECOVERY_QMID.equals(das.qmid)) {
+                ConcurrentLinkedQueue<DerbyXAResource> resources = recoverableXAResources.get(das.keyPrefix);
+                if (resources != null)
+                    for (DerbyXAResource xaRes; (xaRes = resources.poll()) != null;) {
+                        xaRes.successLimit.set(1);
+                        list.add(xaRes);
+                    }
+            }
+        }
+
+        System.out.println("getXAResources returning " + list);
+
+        return list.toArray(new XAResource[list.size()]);
     }
 
     public void setCreateDatabase(boolean createDatabase) {
