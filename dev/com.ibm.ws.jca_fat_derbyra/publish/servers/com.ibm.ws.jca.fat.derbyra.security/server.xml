@@ -40,9 +40,20 @@
     <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
 
     <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
+    
+    <!-- 
+    NOTE: for this bucket to run cleanly with j2sec enabled with IBM JDK, the following permission must 
+    be manually granted in the java.policy file at $JAVA_HOME/jre/lib/security/java.policy: 
+    permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
+    -->
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/connectors/DerbyRA.rar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/loginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntryName"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 </server>
