@@ -27,7 +27,8 @@ tested.features: \
   includeClientFeature-1.0, pfeatureA-1.0, pfeatureB-1.0, pfeatureC-1.0, pfeatureD-1.0, pfeatureE-1.0,\
   pfeatureF-1.0, pfeatureG-1.0, pfeatureH-1.0, pfeatureI-1.0, pfeatureJ-1.0, pfeatureL-1.0, pfeatureM-1.0,\
   pfeatureN-1.0, ufeatureA-1.0, ufeatureB-1.0, ufeatureC-1.0, ufeatureD-1.0, ufeatureE-1.0, ufeatureF-1.0,\
-  ufeatureG-1.0, ufeatureH-1.0, ufeatureI-1.0, ufeatureJ-1.0, ufeatureL-1.0, ufeatureM-1.0, ufeatureN-1.0
+  ufeatureG-1.0, ufeatureH-1.0, ufeatureI-1.0, ufeatureJ-1.0, ufeatureL-1.0, ufeatureM-1.0, ufeatureN-1.0, \
+  productauto:pfeaturef-1.0, productauto:pfeaturee-1.0, productauto:pfeatureg-1.0
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

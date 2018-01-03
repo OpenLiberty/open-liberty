@@ -12,6 +12,7 @@
 		<feature>localConnector-1.0</feature>
 	</featureManager>
 
+	<cdi enableImplicitBeanArchives="false"/>
 	<cdi12 enableImplicitBeanArchives="false"/>
     
 </server>

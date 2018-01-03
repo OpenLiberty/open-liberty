@@ -22,11 +22,13 @@ maven.release.name: release
 -plugin.1.Local: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = Local; \
+        noupdateOnRelease = true; \
         local = ${build}/local
 
 -plugin.2.Release: \
     aQute.bnd.repository.maven.provider.MavenBndRepository; \
         name = Release; \
+        noupdateOnRelease = true; \
         releaseUrl="${fileuri;${build}/${maven.release.name}}"; \
         snapshotUrl="${fileuri;${build}/${maven.release.name}}"; \
         local = ${build}/local

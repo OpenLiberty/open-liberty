@@ -17,7 +17,7 @@ src: \
 
 fat.project: true
 
-runtime.minimum.java.level: 1.8
+fat.minimum.java.level: 1.8
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

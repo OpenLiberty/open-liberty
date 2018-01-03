@@ -156,7 +156,7 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 
     /**
      * Configure common endpoint properties
-     * 
+     *
      * @param endpointInfo
      */
     protected void configureEndpointInfoProperties(EndpointInfo libertyEndpointInfo, org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo) {
@@ -188,14 +188,23 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
     protected void updateDestination(HttpServletRequest request) {
 
         String ad = destination.getEndpointInfo().getAddress();
+        String base = getBaseURL(request);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "EndpointInfo address = " + ad);
+            Tr.debug(tc, "Base URL = " + base);
+        }
+
         if (ad != null && ad.startsWith(HTTP_PREFIX)) {
-            return;
+            // It is possible that the destination address may have changed from http to https or localhost to some other host.
+            // So we will check if the cached destination address starts with the base for this request.
+            if (ad.startsWith(base)) {
+                return;
+            }
         }
 
         synchronized (destination) {
-            ad = destination.getEndpointInfo().getAddress();
-            if (ad == null
-                && destination.getAddress() != null
+            ad = null;
+            if (destination.getAddress() != null
                 && destination.getAddress().getAddress() != null) {
                 ad = destination.getAddress().getAddress().getValue();
                 if (ad == null) {
@@ -204,7 +213,6 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
             }
 
             if (ad != null && !ad.startsWith(HTTP_PREFIX)) {
-                String base = getBaseURL(request);
                 String combined = "";
                 if (!base.endsWith("/") && !ad.startsWith("/")) {
                     combined = base + "/" + ad;
@@ -228,7 +236,7 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 
     /**
      * Calculate the base URL based on the HttpServletRequest instance
-     * 
+     *
      * @param request
      * @return
      */
@@ -243,7 +251,7 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
         if (!"/".equals(pathInfo) || reqPrefix.endsWith("/")) {
             StringBuilder sb = new StringBuilder();
             // request.getScheme(), request.getLocalName() and request.getLocalPort()
-            // should be marginally cheaper - provided request.getLocalName() does 
+            // should be marginally cheaper - provided request.getLocalName() does
             // return the actual name used in request URI as opposed to localhost
             // consistently across the Servlet stacks
 

@@ -11,29 +11,14 @@
 /*
  * Master Gradle build script
  *
- * Depends on bndPlugin property set by settings.gradle.
- * and bnd_* values from gradle.properties.
+ * Depends on bnd_* values from gradle.properties.
  */
 
-import aQute.bnd.build.Workspace
-import aQute.bnd.osgi.Constants
-
-/* Add bnd gradle plugin as a script dependency */
-buildscript {
-  dependencies {
-    classpath bndPlugin
-  }
-}
-
-/* Initialize the bnd workspace */
-Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
-Workspace.addGestalt(Constants.GESTALT_BATCH, null)
+/* Initialize rootProject properties */
 ext {
-  bndWorkspace = new Workspace(rootDir, bnd_cnf).setOffline(gradle.startParameter.offline)
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
 }
-gradle.bndWorkspaceConfigure(bndWorkspace)
 
 /* Configure the subprojects */
 subprojects {

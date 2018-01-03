@@ -1016,4 +1016,23 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     public String getEEModuleDescriptorId() {
         return eeModuleDescptorId;
     }
+
+    /**
+     * This method is used by Weld 3 for performance optimisation
+     *
+     * @return all bean classes
+     */
+    public Collection<Class<?>> getLoadedBeanClasses() {
+        return this.beanClasses.values();
+    }
+
+    /**
+     * This method is used by Weld 3 for performance optimisation
+     *
+     * @return all classes in the archive
+     */
+    public Collection<String> getKnownClasses() {
+        return getAllClazzes();
+    }
+
 }

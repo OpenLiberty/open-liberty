@@ -222,8 +222,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (constraintValidatorFactoryClassName == null) {
             // use default
-//            ManagedObject<?> mangedObject = createManagedObject(new ReleasableConstraintValidatorFactory(this));
-//            cvf = (ConstraintValidatorFactory) mangedObject.getObject();
             cvf = createManagedObject(InjectingConstraintValidatorFactory.class);
         } else {
             @SuppressWarnings("unchecked")
@@ -267,27 +265,17 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         return valueExtractorDescriptors;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Set<ValueExtractorDescriptor> createServiceLoaderValueExtractors() {
         Set<ValueExtractorDescriptor> valueExtractorDescriptors = new HashSet<>();
 
         List<ValueExtractor> valueExtractors;
 
-        if (System.getSecurityManager() != null) {
-            valueExtractors = AccessController.doPrivileged(new PrivilegedAction<List<ValueExtractor>>() {
-                @Override
-                public List<ValueExtractor> run() {
-                    return GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(), ValueExtractor.class).run();
-                }
-            });
-        } else {
-            valueExtractors = GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(), ValueExtractor.class).run();
-        }
-
+        valueExtractors = AccessController.doPrivileged((PrivilegedAction<List<ValueExtractor>>) () -> GetInstancesFromServiceLoader.action(Thread.currentThread().getContextClassLoader(),
+                                                                                                                                            ValueExtractor.class).run());
         for (ValueExtractor<?> valueExtractor : valueExtractors) {
-            valueExtractorDescriptors.add(new ValueExtractorDescriptor(createManagedObject(valueExtractor)));
+            valueExtractorDescriptors.add(new ValueExtractorDescriptor(createManagedObject((Class<? extends ValueExtractor<?>>) valueExtractor.getClass())));
         }
-
         return valueExtractorDescriptors;
     }
 
@@ -309,21 +297,6 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
                 Tr.debug(tc, "Failed to create a ManagedObjectFactory for " + clazz.getName(), e);
             return null;
         }
-    }
-
-    private <T> T createManagedObject(T instance) {
-        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
-        ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
-        ManagedObject<T> mo;
-        try {
-            mo = managedObjectService.createManagedObject(mmd, instance);
-        } catch (ManagedObjectException e) {
-            // ffdc
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Failed to create a ManagedObject for an instance of " + instance.getClass().getName(), e);
-            return null;
-        }
-        return mo.getObject();
     }
 
     private <T> T createManagedObject(Class<T> clazz) {

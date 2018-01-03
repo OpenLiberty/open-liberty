@@ -124,10 +124,13 @@ public class WCApplicationHelper {
             if (addEarResources)
                 ear.addAsManifestResource(
                                           new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
-            File wasPolicy = new File("test-applications/" + earName + "/resources/META-INF/was.policy");
-            if (wasPolicy.exists()) {
-                ear.addAsManifestResource(wasPolicy);
+
+            //Liberty does not use was.policy but permissions.xml
+            File permissionsXML = new File("test-applications/" + earName + "/resources/META-INF/permissions.xml");
+            if (permissionsXML.exists()) {
+                ear.addAsManifestResource(permissionsXML);
             }
+
             ShrinkHelper.exportToServer(server, dir, ear);
         } else {
             ShrinkHelper.exportToServer(server, dir, war);

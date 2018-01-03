@@ -704,6 +704,10 @@ public class SAFConfigHelper {
      *
      */
     public static void addMap(String user, String userIdFilter, String filterLabel, String registry, Cleanup c, boolean ignoreCleanupError) throws Exception {
+        // Attempt to remove the mapping first
+        new CleanupMap(user, filterLabel, true).call();
+
+        // Now add the mapping
         String safClass = "IDIDMAP";
         runTsoCmd("RACMAP MAP ID(" + user + ") USERDIDFILTER(NAME('" + userIdFilter + "')) WITHLABEL('" + filterLabel + "') REGISTRY(NAME('" + registry + "'))");
         c.addCleanup(new CleanupMap(user, filterLabel, ignoreCleanupError));

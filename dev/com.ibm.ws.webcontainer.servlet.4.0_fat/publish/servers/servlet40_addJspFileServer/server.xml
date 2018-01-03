@@ -15,5 +15,7 @@
     maxFiles="10"
     traceFormat="BASIC"/>
     
-
+  <!--Java2 security-->
+  <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+  
 </server>

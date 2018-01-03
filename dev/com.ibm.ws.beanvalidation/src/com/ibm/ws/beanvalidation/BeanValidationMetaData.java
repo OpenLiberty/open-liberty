@@ -19,7 +19,7 @@ public class BeanValidationMetaData {
 
     private String moduleUri;
     private ClassLoader moduleClassLoader;
-    private ValidatorFactory vf;
+    volatile private ValidatorFactory vf;
 
     /**
      * @param classLoader

@@ -98,12 +98,12 @@
         <property file="${basedir}/fat.bnd.properties" />
 		<script language="javascript"> <![CDATA[
 			var testBucketClassForLowJava = "componenttest.custom.junit.runner.AlwaysPassesTest";
-			var minTestJava = project.getProperty("runtime.minimum.java.level");
+			var minTestJava = project.getProperty("fat.minimum.java.level");
 			var javaVersion = project.getProperty("java.specification.version");
 			if(minTestJava != null && javaVersion < minTestJava)
 			  project.setProperty("test.bucket.class", testBucketClassForLowJava);
         ]]></script>
-        <echo message="runtime.minimum.java.level=${runtime.minimum.java.level}"/>
+        <echo message="fat.minimum.java.level=${fat.minimum.java.level}"/>
         <echo message="java.specification.version=${java.specification.version}"/>
         <echo message="FAT entry point will be: ${test.bucket.class}"/>
 	</target>
@@ -128,6 +128,12 @@
 		<condition property="is.windows.platform" else="false">
 			<os family="windows" />
 		</condition>
+		
+		<!-- boolean for Java9+ -->
+	    <script language="javascript">
+			var curJava = project.getProperty("java.specification.version");
+			project.setProperty("is.java9", (curJava > 8));
+	    </script>
 
 		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
 		<replaceLdapPorts />
@@ -283,14 +289,14 @@
 		<property name="enable.server.log.validation" value="false" />
 		
 		<!-- Java 9 args to launch JUnit with -->
-		<!-- To fully override java9.args specify 'java9.args' -->
-		<!-- To add additonal args, specify 'java9.args.append' -->
-		<property name="java9.args.append" value=""/>
-		<property name="java9.args" value="--add-modules java.activation,java.xml.bind,java.xml.ws,java.xml.ws.annotation ${java9.args.append}"/>
+		<property name="java9.args" value=""/>
 		<condition property="conditional.java9.args" value="${java9.args}" else="">
 			<istrue value="${is.java9}"/>
 		</condition>
-		<echo message="Launching FAT with java 9 args: ${conditional.java9.args}"/>
+		<iff>
+		  <istrue value="${is.java9}"/>
+		  <then> <echo message="Launching FAT with java 9 args: ${conditional.java9.args}"/> </then>
+		</iff>
 
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
