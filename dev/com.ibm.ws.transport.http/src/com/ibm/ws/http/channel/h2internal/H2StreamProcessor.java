@@ -110,7 +110,7 @@ public class H2StreamProcessor {
 
     // flag used to signal that we don't want to queue any data frames, as the flow control window has not been exceeded
     private boolean waitingForWindowUpdate = false;
-    // keep trac1k of any DATA frames that cannot be sent until the client updates the window
+    // keep track of any DATA frames that cannot be sent until the client updates the window
     Queue<FrameData> dataWaitingForWindowUpdate;
 
     // a list of buffers to be read in by the WebContainer
@@ -1671,7 +1671,6 @@ public class H2StreamProcessor {
                 }
                 // release buffer used to synchronously write the frame
                 writeFrame.release();
-            } finally {
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

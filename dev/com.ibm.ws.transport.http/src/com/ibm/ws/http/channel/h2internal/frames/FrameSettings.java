@@ -45,6 +45,11 @@ public class FrameSettings extends Frame {
     private int maxHeaderListSize = -1;
     private int initialWindowSize = -1;
 
+    // frame size setting constants
+    private final int MAX_INITIAL_WINDOW_SIZE = 2147483647;
+    private final int INITIAL_MAX_FRAME_SIZE = 16384;
+    private final int MAX_FRAME_SIZE = 16777215;
+
     // Payload IDs
     private final int HEADER_TABLE_SIZE_ID = 0x01;
     private final int ENABLE_PUSH_ID = 0x02;
@@ -197,10 +202,6 @@ public class FrameSettings extends Frame {
 
         return frame;
     }
-
-    int MAX_INITIAL_WINDOW_SIZE = 2147483647;
-    int INITIAL_MAX_FRAME_SIZE = 16384;
-    int MAX_FRAME_SIZE = 16777215;
 
     @Override
     public void validate(H2ConnectionSettings settings) throws Http2Exception {
