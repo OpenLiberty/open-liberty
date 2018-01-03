@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.rsadapter.AdapterUtil;
+import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 
 /**
@@ -23,6 +24,32 @@ import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 public class WSJdbcUtil
 {
     private static final TraceComponent tc = Tr.register(WSJdbcUtil.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
+
+    /**
+     * Utility method to obtain the unique identifier of the data source associated with a JDBC wrapper.
+     * 
+     * @param jdbcWrapper proxy for a JDBC resource.
+     * @return JNDI name of the data source if it has one, otherwise the config.displayId of the data source.
+     */
+    public static String getDataSourceIdentifier(WSJdbcWrapper jdbcWrapper) {
+        DSConfig config = jdbcWrapper.dsConfig.get();
+        return config.jndiName == null ? config.id : config.jndiName;
+    }
+
+    /**
+     * Utility method to obtain the SQL command associated with a JDBC resource.
+     * 
+     * @param jdbcWrapper proxy for a JDBC resource.
+     * @return SQL command associated with the JDBC resource. Null if not a PreparedStatement, CallableStatement, or ResultSet.
+     */
+    public static String getSql(Object jdbcWrapper) {
+        if (jdbcWrapper instanceof WSJdbcPreparedStatement) // also includes WSJdbcCallableStatement
+            return ((WSJdbcPreparedStatement) jdbcWrapper).sql;
+        else if (jdbcWrapper instanceof WSJdbcResultSet)
+            return ((WSJdbcResultSet) jdbcWrapper).sql;
+        else
+            return null;
+    }
 
     /**
      * Performs special handling for stale statements, such as clearing the statement cache
