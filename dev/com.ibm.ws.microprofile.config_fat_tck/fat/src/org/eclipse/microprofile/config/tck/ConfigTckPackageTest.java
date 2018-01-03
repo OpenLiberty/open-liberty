@@ -36,11 +36,6 @@ public class ConfigTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
-    // These are the jar names subsets that are devoid of specific version numbers
-    String[] jarsUsed = { "com.ibm.websphere.org.eclipse.microprofile.config",
-                          "com.ibm.ws.microprofile.config",
-                          "com.ibm.ws.microprofile.config.cdi" };
-
     @BeforeClass
     public static void setUp() throws Exception {
         server.startServer();
