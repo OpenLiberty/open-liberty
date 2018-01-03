@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jca.internal;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -47,14 +50,11 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
     static final String RA_MODULE_CONSTANT = "ResourceAdapterModule";
 
     /**
-     * Id for WebSphere JMS resource adapter
+     * Reserved Ids for WebSphere JMS and MQ resource adapter
      */
     private static final String WASJMS = "wasJms";
-
-    /**
-     * Id for WebSphere MQ resource adapter
-     */
     private static final String WMQJMS = "wmqJms";
+    private static final Set<String> reservedIds = new HashSet<String>(Arrays.asList(WASJMS, WMQJMS));
 
     private final ApplicationMetaData applicationMetaData;
     private Boolean autoStart = null;
@@ -105,8 +105,9 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
         if (!id.matches("[0-9a-zA-Z.\\-_]*"))
             throw new UnableToAdaptException(Utils.getMessage("J2CA8814.resource.adapter.install.failed", id));
         // verify that id isn't one of the reserved ids for wmq or was jms adapter
-        if (WMQJMS.equals(id) || WASJMS.equals(id))
-            throw new UnableToAdaptException(Utils.getMessage("J2CA8816.reserved.resource.adapter.id", moduleName, WMQJMS, WASJMS));
+        if (reservedIds.contains(id))
+            throw new UnableToAdaptException(Utils.getMessage("J2CA8816.reserved.resource.adapter.id", moduleName, reservedIds));
+        System.out.println("hello");
 
         processConfigElementCustomizations();
         metagenConfig.put(MetaGenConstants.KEY_ADAPTER_NAME, id);
