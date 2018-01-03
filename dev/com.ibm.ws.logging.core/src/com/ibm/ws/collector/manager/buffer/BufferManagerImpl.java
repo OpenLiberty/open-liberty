@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
@@ -26,7 +26,7 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class BufferManagerImpl extends BufferManager {
 
 	private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
-
+	private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
 	private Set<SynchronousHandler> synchronizedHandlerSet = new HashSet<SynchronousHandler>();
 
 	private final String sourceId;
@@ -40,24 +40,34 @@ public class BufferManagerImpl extends BufferManager {
 
 	@Override
 	public void add(Object event) {
-		
-		/*
-		 * Check if we have any synchronized handlers, and write directly to them
-		 */
-		if (!synchronizedHandlerSet.isEmpty()) {
-			for (SynchronousHandler synchronizedHandler : synchronizedHandlerSet) {
-				synchronizedHandler.synchronousWrite(event);
-			}
-		}
 		if (event == null)
 			throw new NullPointerException();
-		
+
+		/*
+		 * Check if we have any synchronized handlers, and write directly to
+		 * them
+		 */
+		if (!synchronizedHandlerSet.isEmpty()) {
+			/*
+			 * There can be many Reader locks, but only one writer lock. This
+			 * ReaderWriter lock is needed to avoid CMException when the add()
+			 * method is forwarding log events to synchronized handlers and an
+			 * addSyncHandler or removeSyncHandler is called
+			 */
+			RERWLOCK.readLock().lock();
+			try {
+				for (SynchronousHandler synchronizedHandler : synchronizedHandlerSet) {
+					synchronizedHandler.synchronousWrite(event);
+				}
+			} finally {
+				RERWLOCK.readLock().unlock();
+			}
+		}
+
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Adding event to buffer " + event);
 		}
 		ringBuffer.add(event);
-
-
 	}
 
 	@Override
@@ -107,11 +117,31 @@ public class BufferManagerImpl extends BufferManager {
 	}
 
 	public void addSyncHandler(SynchronousHandler syncHandler) {
-		synchronizedHandlerSet.add(syncHandler);
+        /* There can be many Reader locks, but only one writer lock.
+        *  This ReaderWriter lock is needed to avoid CMException when the add() method is forwarding log events
+        *  to synchronized handlers and an addSyncHandler or removeSyncHandler is called
+        */
+		RERWLOCK.writeLock().lock();
+		try{
+			synchronizedHandlerSet.add(syncHandler);
+		} finally {
+        RERWLOCK.writeLock().unlock();
+    	}
 	}
 	
 	public void removeSyncHandler(SynchronousHandler syncHandler) {
-		synchronizedHandlerSet.remove(syncHandler);
+        /*
+		 * There can be many Reader locks, but only one writer lock. This
+		 * ReaderWriter lock is needed to avoid CMException when the add()
+		 * method is forwarding log events to synchronized handlers and an
+		 * addSyncHandler or removeSyncHandler is called
+		 */
+		RERWLOCK.writeLock().lock();
+		try {
+			synchronizedHandlerSet.remove(syncHandler);
+		} finally {
+			RERWLOCK.writeLock().unlock();
+		}
 	}
 
 	public void removeHandler(String handlerId) {
