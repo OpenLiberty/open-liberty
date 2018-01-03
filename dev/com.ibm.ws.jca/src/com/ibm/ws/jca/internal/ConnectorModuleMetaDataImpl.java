@@ -46,6 +46,16 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
 
     static final String RA_MODULE_CONSTANT = "ResourceAdapterModule";
 
+    /**
+     * Id for WebSphere JMS resource adapter
+     */
+    private static final String WASJMS = "wasJms";
+
+    /**
+     * Id for WebSphere MQ resource adapter
+     */
+    private static final String WMQJMS = "wmqJms";
+
     private final ApplicationMetaData applicationMetaData;
     private Boolean autoStart = null;
     final Dictionary<String, Object> embeddedRAConfig;
@@ -71,6 +81,7 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
         applicationMetaData = appInfo.getMetaData();
         config = appInfo.getConfigHelper();
         moduleName = cmInfo.getName(); // get the unique module name. This is handled by app manager
+
         embeddedRAConfig = isEmbedded ? getConfigForEmbeddedResourceAdapter() : null;
         String id = (String) get("id");
         if (id != null && id.startsWith("default-")) // ignore generated id
@@ -90,8 +101,13 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
             // Standalone RA same as app, so use a constant for module
             ivJ2EEName = j2eeNameFactory.create(applicationMetaData.getJ2EEName().getApplication(), RA_MODULE_CONSTANT, null);
         }
+        // id consists only of supported characters?
         if (!id.matches("[0-9a-zA-Z.\\-_]*"))
             throw new UnableToAdaptException(Utils.getMessage("J2CA8814.resource.adapter.install.failed", id));
+        // verify that id isn't one of the reserved ids for wmq or was jms adapter
+        if (WMQJMS.equals(id) || WASJMS.equals(id))
+            throw new UnableToAdaptException(Utils.getMessage("J2CA8816.reserved.resource.adapter.id", moduleName, WMQJMS, WASJMS));
+
         processConfigElementCustomizations();
         metagenConfig.put(MetaGenConstants.KEY_ADAPTER_NAME, id);
         metagenConfig.put(MetaGenConstants.KEY_GENERATION_MODE, MetaGenConstants.VALUE_GENERATION_MODE_RAR);
