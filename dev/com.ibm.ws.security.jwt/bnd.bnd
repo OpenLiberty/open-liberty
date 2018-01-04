@@ -32,6 +32,9 @@ Export-Package: \
         com.ibm.ws.security.jwt.builder.utils
 
 Import-Package: \
+    javax.security.auth, \
+    com.ibm.websphere.security.auth, \
+    com.ibm.websphere.security.cred, \
     com.ibm.websphere.ras, \
     com.ibm.websphere.ras.annotation, \
     com.ibm.ejs.ras, \
