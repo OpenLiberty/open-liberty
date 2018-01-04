@@ -68,6 +68,7 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
     @Override
     public boolean handles(String viewId)
     {
+        /*
         for (String suffix : _suffixes)
         {
             if (viewId != null && viewId.endsWith (suffix)) 
@@ -75,8 +76,9 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
                 return true;
             }
         }
+        */
         
-        return false;
+        return true;
     }
     
     static LinkedList<String> loadSuffixes (ExternalContext context) 
