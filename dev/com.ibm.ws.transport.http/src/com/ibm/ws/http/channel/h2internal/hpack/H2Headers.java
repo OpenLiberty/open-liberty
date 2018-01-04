@@ -38,16 +38,10 @@ public class H2Headers {
      * @param WsByteBuffer
      * @param H2HeaderTable
      * @return H2HeaderField
+     * @throws CompressionException
      */
-    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table) {
-        try {
-            return decodeHeader(buffer, table, true, false, null);
-        } catch (CompressionException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "decodeHeader error caught: " + e.toString());
-            }
-            return null;
-        }
+    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table) throws CompressionException {
+        return decodeHeader(buffer, table, true, false, null);
     }
 
     /**
