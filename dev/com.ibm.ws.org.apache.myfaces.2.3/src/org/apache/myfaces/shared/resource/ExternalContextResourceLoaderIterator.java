@@ -55,13 +55,13 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
         {
             for (String p : paths)
             {
-                if (p.startsWith("/WEB-INF"))
+                if (p.startsWith("/WEB-INF") && isTopLevelViewsOnly(options))
                 {
                     // skip
                 }
-                else if (p.startsWith("/META-INF"))
+                else if (p.startsWith("/META-INF") && isTopLevelViewsOnly(options))
                 {
-                    // skip
+                    // skip 
                 }
                 else
                 {
@@ -69,6 +69,21 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
                 }
             }
         }
+    }
+
+    private boolean isTopLevelViewsOnly(ResourceVisitOption... options) 
+    {
+        boolean isTopLevelViewsOnly = false;
+        
+        for (ResourceVisitOption option : options) 
+        {
+            if(option == ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY) 
+            {
+                isTopLevelViewsOnly = true;
+            }
+        }
+        
+        return isTopLevelViewsOnly;
     }
 
     @Override

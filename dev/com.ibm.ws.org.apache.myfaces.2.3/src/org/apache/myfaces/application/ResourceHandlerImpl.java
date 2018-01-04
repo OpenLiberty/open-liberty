@@ -69,9 +69,9 @@ import org.apache.myfaces.util.SkipMatchIterator;
 /**
  * DOCUMENT ME!
  *
- * @author Simon Lessard (latest modification by $Author: tandraschko $)
+ * @author Simon Lessard (latest modification by $Author$)
  * 
- * @version $Revision: 1813155 $ $Date: 2017-10-24 09:20:13 +0000 (Tue, 24 Oct 2017) $
+ * @version $Revision$ $Date$
  */
 public class ResourceHandlerImpl extends ResourceHandler
 {
@@ -1777,19 +1777,11 @@ public class ResourceHandlerImpl extends ResourceHandler
                 }
             }
         }
-        Iterator it = null;
-        if (topLevelViewOnly)
-        {
-            it = new FilterTopLevelViewResourceIterator(new ViewResourceIterator(facesContext, 
+
+        Iterator it = new FilterInvalidSuffixViewResourceIterator(new ViewResourceIterator(facesContext, 
                     getResourceHandlerSupport(), localePrefix, contracts,
                     contractPreferred, path, maxDepth, options), facesContext, _viewSuffixes);
-        }
-        else
-        {
-            it = new ViewResourceIterator(facesContext, getResourceHandlerSupport(), localePrefix, contracts,
-                contractPreferred, path, maxDepth, options);
-        }
-        
+ 
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it,Spliterator.DISTINCT), false);
     }
     
@@ -1836,12 +1828,15 @@ public class ResourceHandlerImpl extends ResourceHandler
         return result;
     }    
     
-    private static class FilterTopLevelViewResourceIterator extends SkipMatchIterator<String>
+    /*
+     * Filter out views without a valid suffix.
+     */
+    private static class FilterInvalidSuffixViewResourceIterator extends SkipMatchIterator<String>
     {
         private FacesContext facesContext;
         private Set<String> validSuffixes;
 
-        public FilterTopLevelViewResourceIterator(Iterator<String> delegate, FacesContext facesContext,
+        public FilterInvalidSuffixViewResourceIterator(Iterator<String> delegate, FacesContext facesContext,
                 Set<String> validSuffixes)
         {
             super(delegate);
