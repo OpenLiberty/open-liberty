@@ -133,4 +133,5 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest
+    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.slf4j.api.1.7.7;version=latest
