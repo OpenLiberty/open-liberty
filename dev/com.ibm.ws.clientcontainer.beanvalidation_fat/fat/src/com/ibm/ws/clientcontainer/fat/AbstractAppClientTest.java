@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,20 +14,14 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyClient;
 
 public abstract class AbstractAppClientTest {
 	protected static LibertyClient client;
 	
-    @ClassRule
-    public static TestRule java7Rule = new OnlyRunInJava7Rule();
-
 	@Rule
 	public TestName name = new TestName();
 	
