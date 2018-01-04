@@ -449,29 +449,65 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletionStage#handle(java.util.function.BiFunction)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> handle(BiFunction<? super T, Throwable, ? extends U> fn) {
-        // TODO contextualize fn and other steps
-        return new ManagedCompletableFuture<U>(completableFuture.handle(fn), defaultExecutor);
+    public <R> ManagedCompletableFuture<R> handle(BiFunction<? super T, Throwable, ? extends R> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiFunction<>(contextDescriptor, action);
+
+        CompletableFuture<R> dependentStage = completableFuture.handle(action);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#handleAsync(java.util.function.BiFunction)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn) {
-        // TODO contextualize fn and other steps
-        Executor policyExecutor = (Executor) defaultExecutor; // TODO get policy executor from default executor
-        return new ManagedCompletableFuture<U>(completableFuture.handleAsync(fn, policyExecutor), defaultExecutor);
+    public <R> ManagedCompletableFuture<R> handleAsync(BiFunction<? super T, Throwable, ? extends R> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+        WSContextService contextSvc = defaultExecutor.getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiFunction<>(contextDescriptor, action);
+
+        CompletableFuture<R> dependentStage = completableFuture.handleAsync(action, policyExecutor);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#handleAsync(java.util.function.BiFunction, java.util.concurrent.Executor)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn, Executor executor) {
-        // TODO contextualize fn and other steps
-        Executor policyExecutor = executor; // TODO get policy executor from the supplied executor, if a managed executor
-        return new ManagedCompletableFuture<U>(completableFuture.handleAsync(fn, policyExecutor), defaultExecutor);
+    public <R> ManagedCompletableFuture<R> handleAsync(BiFunction<? super T, Throwable, ? extends R> action, Executor executor) {
+        CompletableFuture<R> dependentStage;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualBiFunction<>(contextDescriptor, action);
+
+            dependentStage = completableFuture.handleAsync(action, policyExecutor);
+        } else {
+            dependentStage = completableFuture.handleAsync(action, executor);
+        }
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
     }
 
     /**
@@ -1123,6 +1159,33 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
             try {
                 action.accept(t);
+            } finally {
+                threadContextDescriptor.taskStopping(contextApplied);
+            }
+        }
+    }
+
+    /**
+     * Proxy for BiFunction that applies thread context before running and removes it afterward
+     *
+     * @param <T> type of the function's first parameter
+     * @param <U> type of the function's second parameter
+     * @param <R> type of the function's result
+     */
+    private static class ContextualBiFunction<T, U, R> implements BiFunction<T, U, R> {
+        private final BiFunction<T, U, R> action;
+        private final ThreadContextDescriptor threadContextDescriptor;
+
+        private ContextualBiFunction(ThreadContextDescriptor threadContextDescriptor, BiFunction<T, U, R> action) {
+            this.action = action;
+            this.threadContextDescriptor = threadContextDescriptor;
+        }
+
+        @Override
+        public R apply(T t, U u) {
+            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
+            try {
+                return action.apply(t, u);
             } finally {
                 threadContextDescriptor.taskStopping(contextApplied);
             }
