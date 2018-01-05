@@ -40,7 +40,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl,\
+  com.ibm.ws.beanvalidation.v20.cdi.internal.BvalManagedObjectBuilderImpl,\
   com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyHibernateValidatorExtension
 
 -buildpath: \
@@ -49,6 +49,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
     com.ibm.websphere.appserver.spi.logging;version=latest,\
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.beanvalidation;version=latest,\
+    com.ibm.ws.beanvalidation.core;version=latest,\
     com.ibm.ws.managedobject;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
@@ -60,4 +61,5 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
     com.ibm.ws.org.hibernate.validator.6.0.4.Final;version=latest, \
     com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest, \
     com.ibm.ws.cdi.internal;version=latest, \
+    com.ibm.ws.logging.core,\
     com.ibm.ws.kernel.service;version=latest

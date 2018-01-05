@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
-import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -38,8 +38,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
            immediate = true)
 public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
-    private static final String REFERENCE_VALIDATION_RELEASABLE_FACTORY = "ValidationReleasableFactory";
-    private final AtomicServiceReference<ValidationReleasableFactory> validationReleasableFactorySR = new AtomicServiceReference<ValidationReleasableFactory>(REFERENCE_VALIDATION_RELEASABLE_FACTORY);
+    private static final String REFERENCE_BVAL_MANAGED_OBJECT_BUILDER = "BvalManagedObjectBuilder";
+    private final AtomicServiceReference<BvalManagedObjectBuilder> bvalManagedObjectBuilderSR = new AtomicServiceReference<BvalManagedObjectBuilder>(REFERENCE_BVAL_MANAGED_OBJECT_BUILDER);
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
@@ -60,9 +60,9 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
             hvConfig.externalClassLoader(bvalClassLoader);
         }
 
-        if (validationReleasableFactorySR.getReference() != null) {
-            ValidationReleasableFactory releasableFactory = validationReleasableFactorySR.getServiceWithException();
-            return releasableFactory.injectValidatorFactoryResources(config, appClassLoader);
+        if (bvalManagedObjectBuilderSR.getReference() != null) {
+            BvalManagedObjectBuilder bvalManagedObjectBuilder = bvalManagedObjectBuilderSR.getServiceWithException();
+            return bvalManagedObjectBuilder.injectValidatorFactoryResources(config, appClassLoader);
         } else {
             return config.buildValidatorFactory();
         }
@@ -70,24 +70,24 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Activate
     protected void activate(ComponentContext cc) {
-        validationReleasableFactorySR.activate(cc);
+        bvalManagedObjectBuilderSR.activate(cc);
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        validationReleasableFactorySR.deactivate(cc);
+        bvalManagedObjectBuilderSR.deactivate(cc);
     }
 
-    @Reference(name = REFERENCE_VALIDATION_RELEASABLE_FACTORY,
-               service = ValidationReleasableFactory.class,
+    @Reference(name = REFERENCE_BVAL_MANAGED_OBJECT_BUILDER,
+               service = BvalManagedObjectBuilder.class,
                cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.STATIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected void setValidationReleasableFactory(ServiceReference<ValidationReleasableFactory> factoryRef) {
-        validationReleasableFactorySR.setReference(factoryRef);
+    protected void setBvalManagedObjectBuilder(ServiceReference<BvalManagedObjectBuilder> builderRef) {
+        bvalManagedObjectBuilderSR.setReference(builderRef);
     }
 
-    protected void unsetValidationReleasableFactory(ServiceReference<ValidationReleasableFactory> factoryRef) {
-        validationReleasableFactorySR.unsetReference(factoryRef);
+    protected void unsetBvalManagedObjectBuilder(ServiceReference<BvalManagedObjectBuilder> builderRef) {
+        bvalManagedObjectBuilderSR.unsetReference(builderRef);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
-import javax.validation.ValidatorFactory;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -145,39 +143,16 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         managedObjectServiceRef.unsetReference(ref);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataCreated(com.ibm.ws.container.service.metadata.MetaDataEvent)
-     */
     @Override
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
         // no-op
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.container.service.metadata.ComponentMetaDataListener#componentMetaDataDestroyed(com.ibm.ws.container.service.metadata.MetaDataEvent)
-     */
     @Override
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
         BeanManager beanManager = beanManagers.remove(event.getMetaData());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Removed bean manager from cache: ", beanManager);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.beanvalidation.service.ValidationReleasableFactory#injectValidatorFactoryResources(javax.validation.Configuration, java.lang.ClassLoader)
-     */
-    //TODO: Look at refactoring this method into a new service used by bval 2.0 only.
-    @Override
-    public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "injectValidatorFactoryResources called for bval 1.1. Returning null. ");
-        return null;
     }
 }
