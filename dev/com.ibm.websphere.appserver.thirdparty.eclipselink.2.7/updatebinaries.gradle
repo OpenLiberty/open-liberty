@@ -12,7 +12,7 @@
 // 1. Navigate into this project in Git Bash.
 // 2. Invoke the clean command:
 //        .././gradlew clean
-// 3. Invoke the following command to update the oss_dependencies.maven with the new version for the EclipseLink binaries:
+// 3. Invoke the following command to update the oss_ibm.maven with the new version for the EclipseLink binaries:
 //        .././gradlew -b updatebinaries.gradle updateMavenFile -Pnewversion={NewEclipseLinkBinariesVersion} -Pnewhash={NewEclipseLinkBinariesHash}
 //        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1
 //        Example of {NewEclipseLinkBinariesHash} -> 8e605f1
@@ -25,26 +25,26 @@
 apply from: '../cnf/gradle/scripts/repos.gradle'
 apply plugin: 'java'
 
-// Replaces the EclipseLink binaries coordinates in oss_dependencies.maven with the new coordinates passed in
+// Replaces the EclipseLink binaries coordinates in oss_ibm.maven with the new coordinates passed in
 task updateMavenFile { 
   doLast {
     ant.replaceregexp(match:'org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.antlr:2\\.7.*$', replace: "org.eclipse.persistence:org.eclipse.persistence.antlr:${newversion}-${newhash}", flags:'g', byline:true) { 
-      fileset(dir: "${rootDir}/../cnf", includes: 'oss_dependencies.maven')
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
     }
     ant.replaceregexp(match:'org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.asm:2\\.7.*$', replace: "org.eclipse.persistence:org.eclipse.persistence.asm:${newversion}-${newhash}", flags:'g', byline:true) { 
-      fileset(dir: "${rootDir}/../cnf", includes: 'oss_dependencies.maven')
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
     }
     ant.replaceregexp(match:'org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.core:2\\.7.*$', replace: "org.eclipse.persistence:org.eclipse.persistence.core:${newversion}-${newhash}", flags:'g', byline:true) { 
-      fileset(dir: "${rootDir}/../cnf", includes: 'oss_dependencies.maven')
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
     }
     ant.replaceregexp(match:'org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.jpa\\.jpql:2\\.7.*$', replace: "org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:${newversion}-${newhash}", flags:'g', byline:true) { 
-      fileset(dir: "${rootDir}/../cnf", includes: 'oss_dependencies.maven')
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
     }
     ant.replaceregexp(match:'org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.jpa\\.modelgen\\.processor:2\\.7.*$', replace: "org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:${newversion}-${newhash}", flags:'g', byline:true) { 
-      fileset(dir: "${rootDir}/../cnf", includes: 'oss_dependencies.maven')
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
     }
     ant.replaceregexp(match:'org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.jpa:2\\.7.*$', replace: "org.eclipse.persistence:org.eclipse.persistence.jpa:${newversion}-${newhash}", flags:'g', byline:true) { 
-      fileset(dir: "${rootDir}/../cnf", includes: 'oss_dependencies.maven')
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
     }
   }
 }
