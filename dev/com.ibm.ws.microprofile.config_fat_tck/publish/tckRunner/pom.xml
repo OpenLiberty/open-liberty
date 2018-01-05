@@ -19,7 +19,7 @@
     <name>MicroProfile Config TCK Runner</name>
 
     <properties>
-        <arquillian-core-version>1.1.13.7</arquillian-core-version>
+        <arquillian.version>1.1.13.Final</arquillian.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -38,14 +38,15 @@
                 <version>1.2</version>
             </dependency>
             <dependency>
-                <groupId>org.arquillian.universe</groupId>
-                <artifactId>arquillian-core</artifactId>
-                <version>${arquillian-core-version}</version>
-                <scope>import</scope>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
                 <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <build>
         <pluginManagement>
             <plugins>
