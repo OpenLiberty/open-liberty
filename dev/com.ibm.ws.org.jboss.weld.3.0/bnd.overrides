@@ -70,7 +70,8 @@ Service-Component: \
         |org.jboss.weld.module.ejb\
         |org.jboss.weld.proxy\
         |org.jboss.weld.serialization\
-        |org.jboss.weld.util.bean"
+        |org.jboss.weld.util.bean\
+        |org.jboss.weld.util.collections"
 
 Include-Resource: \
   @${repo;org.jboss.weld:weld-osgi-bundle;[3.0.2.Final,4)}!/!META-INF/maven/*
