@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.utils;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  *
@@ -18,6 +22,12 @@ import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 public class CustomizerUtils {
 
     public static String createCustomizerKey(JaxRsFactoryBeanCustomizer customizer) {
-        return Integer.toString(customizer.hashCode());// + ":" + Thread.currentThread().getId();
+        J2EEName j2eeName = null;
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd != null) {
+            ModuleMetaData mmd = cmd.getModuleMetaData();
+            j2eeName = mmd.getJ2EEName();
+        }
+        return Integer.toString(customizer.hashCode()) + j2eeName;// + ":" + Thread.currentThread().getId();
     }
 }
