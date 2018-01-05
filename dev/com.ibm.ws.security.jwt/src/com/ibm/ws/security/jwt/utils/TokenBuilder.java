@@ -47,6 +47,9 @@ public class TokenBuilder {
 		try {
 			JwtBuilder builder = JwtBuilder.create(config.getId());
 
+			// all the "normal" stuff like issuer, aud, etc. is handled
+			// by the builder, we only need to add the mp-jwt things
+			// that the builder is not already aware of.
 			String user = getUserName();
 			builder.subject(user);
 			builder.claim(USER_CLAIM, user);
@@ -55,8 +58,6 @@ public class TokenBuilder {
 			if (isValidList(groups)) {
 				builder.claim(GROUP_CLAIM, groups);
 			}
-			// all the "normal" stuff like issuer, aud, etc. is handled
-			// by the builder, we don't have to specify anything here.
 
 			return builder.buildJwt().compact();
 
@@ -64,11 +65,6 @@ public class TokenBuilder {
 			// ffdc
 			return null;
 		}
-	}
-
-	@Trivial
-	private boolean isValidString(String in) {
-		return (in != null && in.length() > 0);
 	}
 
 	@Trivial

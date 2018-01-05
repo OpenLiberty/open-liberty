@@ -185,8 +185,8 @@ public class JwtEndpointServices {
 		}
 		try {
 			PrintWriter pw = response.getWriter();
-			response.setHeader(WebConstants.HTTP_HEADER_CONTENT_TYPE, WebConstants.HTTP_CONTENT_TYPE_TEXT_PLAIN);
-			pw.write(tokenString);
+			response.setHeader(WebConstants.HTTP_HEADER_CONTENT_TYPE, WebConstants.HTTP_CONTENT_TYPE_JSON);
+			pw.write("{\"token\": \"" + tokenString + "\"}");
 			pw.flush();
 			pw.close();
 		} catch (IOException e) {

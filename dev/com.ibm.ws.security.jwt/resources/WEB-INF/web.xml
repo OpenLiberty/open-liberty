@@ -51,7 +51,7 @@
     <security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Token Endpoint</web-resource-name>
-			<url-pattern>/ibm/api/*</url-pattern>
+			<url-pattern>/ibm/api/token/*</url-pattern>
 			<http-method>GET</http-method>
 			<http-method>POST</http-method>
 		</web-resource-collection>
