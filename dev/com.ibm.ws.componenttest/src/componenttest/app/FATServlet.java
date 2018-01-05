@@ -44,7 +44,7 @@ import org.junit.Assert;
  */
 @SuppressWarnings("serial")
 public abstract class FATServlet extends HttpServlet {
-    public static final String SUCCESS = "SUCCESS";
+    public static final String SUCCESS = "[TEST-SERVLET-SUCCESS]";
     public static final String TEST_METHOD = "testMethod";
 
     @Override

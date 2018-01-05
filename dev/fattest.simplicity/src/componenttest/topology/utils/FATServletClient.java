@@ -28,13 +28,14 @@ import com.ibm.websphere.simplicity.config.dsprops.testrules.DataSourcePropertie
 import com.ibm.websphere.simplicity.config.dsprops.testrules.DataSourcePropertiesSkipRule;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.app.FATServlet;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Utilities for running tests using {@link FATServlet}-style output.
  */
 public class FATServletClient {
-    public static final String SUCCESS = "SUCCESS";
+    public static final String SUCCESS = "[TEST-SERVLET-SUCCESS]";
     public static final String TEST_METHOD = "testMethod";
 
     @Rule
