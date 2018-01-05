@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package mdb.interceptors;
+package com.ibm.websphere.ejbcontainer.test.mdb.interceptors;
 
 import static javax.annotation.Resource.AuthenticationType.APPLICATION;
 
