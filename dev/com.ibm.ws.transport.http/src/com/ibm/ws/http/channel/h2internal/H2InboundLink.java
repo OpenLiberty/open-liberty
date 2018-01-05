@@ -34,6 +34,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -124,6 +125,9 @@ public class H2InboundLink extends HttpInboundLink {
 
     private boolean continuationFrameExpected = false;
 
+    private final Object oneTimeEntrySync = new Object() {};
+    private boolean oneTimeEntry = false;
+
     public boolean isContinuationExpected() {
         return continuationFrameExpected;
     }
@@ -163,6 +167,7 @@ public class H2InboundLink extends HttpInboundLink {
 
         hcDebug = this.hashCode();
 
+        initialVC.getStateMap().put(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE, "true");
     }
 
     public synchronized long getInitialWindowSize() {
@@ -709,6 +714,17 @@ public class H2InboundLink extends HttpInboundLink {
     public void closeConnectionLink(Exception exceptionForCloseFromHere) {
         boolean closeFromHere = false;
 
+        // can only enter this routine once per lifecycle of this object
+        synchronized (oneTimeEntrySync) {
+            if (oneTimeEntry) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: re-entered so exiting :close: H2InboundLink hc: " + this.hashCode());
+                }
+                return;
+            }
+            oneTimeEntry = true;
+        }
+
         synchronized (linkStatusSync) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -718,6 +734,26 @@ public class H2InboundLink extends HttpInboundLink {
             if (linkStatus == LINK_STATUS.CLOSING) {
                 return;
             }
+        }
+
+        // Outside of holding the linkStatusSync, try to cleanly close the connection at the dispatcher link, in
+        // case there is processing currently in flight.
+        HttpDispatcherLink hdLink = (HttpDispatcherLink) initialVC.getStateMap().get(HttpDispatcherLink.LINK_ID);
+        if (hdLink != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpDispatcherLink found: " + hdLink);
+            }
+            try {
+                hdLink.close(initialVC, null);
+            } catch (Exception consume) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: consuming exception: " + consume);
+                }
+            }
+        }
+
+        // see if we still need to close from here
+        synchronized (linkStatusSync) {
 
             if (closeFuture == null) {
                 closeFromHere = true;
@@ -737,7 +773,7 @@ public class H2InboundLink extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "closeConnectionLink: close the device link now. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: " + this.hashCode());
                 }
-                // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code.
+                // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
                 linkStatus = LINK_STATUS.CLOSING;
                 if ((exceptionForCloseFromHere != null) && (connTimeout != null)) {
                     exceptionForCloseFromHere = connTimeout.e;
@@ -748,7 +784,7 @@ public class H2InboundLink extends HttpInboundLink {
                     Tr.debug(tc, "closeConnectionLink: another thread will close" + " :close: H2InboundLink hc: " + this.hashCode());
                 }
             }
-        } // end sync, close the deviceLink outside the link
+        } // end sync, close the deviceLink outside the sync lock
 
         if (closeFromHere) {
             ConnectionLink deviceLink = initialHttpInboundLink.getDeviceLink();
@@ -843,9 +879,8 @@ public class H2InboundLink extends HttpInboundLink {
                 return;
             }
 
-            // if there was an close with exception on the inbound link, then close down immediately
-            // else close down cleanly
             if (e == null) {
+                // Attempt to close down cleanly if all streams are closed.
 
                 //Determine if all streams are in half closed or closed state
                 //If not, do nothing and return
@@ -872,7 +907,6 @@ public class H2InboundLink extends HttpInboundLink {
                 }
             }
 
-            // Either close immediately due to exception passed in, or
             // All streams are either closed or in half closed, and a GOAWAY frame needs to be sent
             // Wait the timeout time and then send the GOAWAY frame with the last good stream
 
@@ -885,7 +919,7 @@ public class H2InboundLink extends HttpInboundLink {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close : scheduler : " + scheduler + " config : " + config);
             }
-            connTimeout = new H2ConnectionTimeout(initialVC, e);
+            connTimeout = new H2ConnectionTimeout(e);
 
             if (e == null) {
                 // close cleanly if no other traffic has been received for this H2 connection within the timeout
@@ -902,11 +936,9 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     private class H2ConnectionTimeout implements Runnable {
-        private final VirtualConnection vc;
         private final Exception e;
 
-        public H2ConnectionTimeout(VirtualConnection inVC, Exception inE) {
-            vc = inVC;
+        public H2ConnectionTimeout(Exception inE) {
             e = inE;
         }
 
@@ -939,35 +971,13 @@ public class H2InboundLink extends HttpInboundLink {
 
                 streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
 
-            } catch (Exception e) {
+            } catch (Exception x) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2ConnectionTimeout-run: exeception received while sending GOAWAY: " + " :close: H2InboundLink hc: " + hcDebug + " " + e);
+                    Tr.debug(tc, "H2ConnectionTimeout-run: exeception received while sending GOAWAY: " + " :close: H2InboundLink hc: " + hcDebug + " " + x);
                 }
             } finally {
 
-                boolean closeFromHere = false;
-
-                synchronized (linkStatusSync) {
-                    if (linkStatus != LINK_STATUS.CLOSING) {
-                        linkStatus = LINK_STATUS.CLOSING;
-                        closeFromHere = true;
-                    }
-                }
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2ConnectionTimeout-run: closefromeHere: " + closeFromHere + " :close: H2InboundLink hc: " + hcDebug);
-                }
-
-                if (closeFromHere) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "H2ConnectionTimeout-run: set :linkStatus: to CLOSING and close the device link" + " :close: H2InboundLink hc: " + hcDebug);
-                    }
-
-                    ConnectionLink deviceLink = initialHttpInboundLink.getDeviceLink();
-                    if (deviceLink != null) {
-                        initialHttpInboundLink.getDeviceLink().close(vc, e);
-                    }
-                }
+                closeConnectionLink(e);
             }
         }
     }
