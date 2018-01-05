@@ -170,19 +170,6 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public H2StreamProcessor createNewInboundLink(Integer streamID) {
-        if ((streamID & 1) == 0) { // even number, server-initialized stream
-            if (streamID > highestLocalStreamId) {
-                highestLocalStreamId = streamID;
-            }
-        } else { // client-initialized stream
-            if (streamID > highestClientStreamId) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "highestClientStreamId set to stream-id: " + streamID);
-                }
-                highestClientStreamId = streamID;
-            }
-        }
-
         H2VirtualConnectionImpl h2VC = new H2VirtualConnectionImpl(initialVC);
         // remove the HttpDispatcherLink from the map, so a new one will be created and used by this new H2 stream
         h2VC.getStateMap().remove(HttpDispatcherLink.LINK_ID);
@@ -335,6 +322,38 @@ public class H2InboundLink extends HttpInboundLink {
             Tr.debug(tc, "handleHTTP2UpgradeRequest, exit");
         }
         return true;
+    }
+
+    /**
+     * Keep track of the highest-valued local and remote stream IDs for this connection
+     *
+     * @param proposedHighestStreamId
+     * @throws ProtocolException if the proposed stream ID is lower than a previous streams'
+     */
+    protected void updateHighestStreamId(int proposedHighestStreamId) throws ProtocolException {
+        if ((proposedHighestStreamId & 1) == 0) { // even number, server-initialized stream
+            if (proposedHighestStreamId > highestLocalStreamId) {
+                highestLocalStreamId = proposedHighestStreamId;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "highestLocalStreamId set to stream-id: " + proposedHighestStreamId);
+                }
+            } else if (proposedHighestStreamId < highestLocalStreamId) {
+                throw new ProtocolException("received a new stream with a lower ID than previous; "
+                                            + "current stream-id: " + proposedHighestStreamId + " highest stream-id: "
+                                            + highestLocalStreamId);
+            }
+        } else {
+            if (proposedHighestStreamId > highestClientStreamId) {
+                highestClientStreamId = proposedHighestStreamId;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "highestClientStreamId set to stream-id: " + proposedHighestStreamId);
+                }
+            } else if (proposedHighestStreamId < highestClientStreamId) {
+                throw new ProtocolException("received a new stream with a lower ID than previous; "
+                                            + "current stream-id: " + proposedHighestStreamId + " highest stream-id: "
+                                            + highestClientStreamId);
+            }
+        }
     }
 
     public void startAsyncRead(boolean newFrame) {
@@ -644,10 +663,10 @@ public class H2InboundLink extends HttpInboundLink {
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "destroying " + stream + ", " + stream.myID);
+                Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
-            if (stream.myID != 0) {
-                stream.h2HttpInboundLinkWrap.destroy(e);
+            if (stream.getId() != 0) {
+                stream.getWrappedInboundLink().destroy(e);
             }
         }
 
@@ -839,14 +858,14 @@ public class H2InboundLink extends HttpInboundLink {
                     stream = streamTable.get(i);
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "close(vc,e): looking at stream: " + stream.myID);
+                        Tr.debug(tc, "close(vc,e): looking at stream: " + stream.getId());
                     }
 
-                    if (stream.myID != 0 && !stream.isHalfClosed() && !stream.isStreamClosed() && highestLocalStreamId > -1) {
+                    if (stream.getId() != 0 && !stream.isHalfClosed() && !stream.isStreamClosed() && highestLocalStreamId > -1) {
                         continue;
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "close(vc,e): stream not ready to close: " + stream.myID + " :close: H2InboundLink hc: " + this.hashCode());
+                            Tr.debug(tc, "close(vc,e): stream not ready to close: " + stream.getId() + " :close: H2InboundLink hc: " + this.hashCode());
                         }
                         return;
                     }
@@ -964,13 +983,20 @@ public class H2InboundLink extends HttpInboundLink {
 
         streamProcessor.setCloseTime(System.nanoTime());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "triggerStreamClose : move stream into close table.  stream-id: " + streamProcessor.myID);
+            Tr.debug(tc, "triggerStreamClose : move stream into close table.  stream-id: " + streamProcessor.getId());
         }
 
-        closeTable.put(streamProcessor.myID, streamProcessor);
-        streamTable.remove(streamProcessor.myID);
+        closeTable.put(streamProcessor.getId(), streamProcessor);
+        streamTable.remove(streamProcessor.getId());
     }
 
+    /**
+     * Get the stream processor for a given stream ID, if it exists
+     *
+     * @param streamID of the desired stream
+     * @return a stream object if it's in the open or close table, or null if the
+     *         ID is new or has already been removed from the close table
+     */
     public H2StreamProcessor getStream(int streamID) {
         H2StreamProcessor streamProcessor = null;
 

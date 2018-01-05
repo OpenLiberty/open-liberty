@@ -24,6 +24,7 @@ public class utils {
     static final byte FRAME_TYPE_GOAWAY = 0x07;
     static final byte FRAME_TYPE_WINDOW_UPDATE = 0x08;
     static final byte FRAME_TYPE_CONTINUATION = 0x09;
+    static final byte FRAME_TYPE_UNKNOWN = 0xf;
 
     static final int ZERO_STREAM_ID = 0; // makes reading the code easier to understand
 
