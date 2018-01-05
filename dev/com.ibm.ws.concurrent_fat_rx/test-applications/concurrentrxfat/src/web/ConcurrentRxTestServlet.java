@@ -846,6 +846,18 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Proxying an implementation class rather than an interface is a bit dangerous because when new methods are added to
+     * the class, our proxy implementation won't be aware that it needs to be updated accordingly. This test exists to detect
+     * any methods that are added so that we have the opportunity to properly implement.
+     */
+    @Test
+    public void testNoNewMethods() throws Exception {
+        assertEquals("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture",
+                     104, // WARNING: do not update this value unless you have properly implemented the new methods on ManagedCompletableFuture!
+                     CompletableFuture.class.getMethods().length);
+    }
+
+    /**
      * From threads lacking application context, create 2 managed completable futures.
      * From the application thread, invoke runAfterBoth for these completable futures.
      * Verify that the runnable action runs on the same thread as at least one of the others (or on the servlet thread in case the stage completes quickly).
@@ -1787,6 +1799,47 @@ public class ConcurrentRxTestServlet extends FATServlet {
             throw new Exception((Throwable) lookupResult);
         else
             fail("Unexpected result of lookup: " + lookupResult);
+    }
+
+    /**
+     * Validate that toString of a ManagedCompletableFuture includes information about the state of the completable future,
+     * as well as indicating which PolicyExecutor Future it runs on and under which concurrency policy.
+     */
+    @Test
+    public void testToString() throws Exception {
+        CountDownLatch runningLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> cf = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testToString");
+            runningLatch.countDown();
+            try {
+                boolean result = continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                System.out.println("< supply " + result);
+                return result;
+            } catch (InterruptedException x) {
+                System.out.println("< supply " + x);
+                throw new CompletionException(x);
+            }
+        }, noContextExecutor);
+
+        assertTrue(runningLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        String s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Not completed"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        assertTrue(s, s.contains("RUNNING on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+
+        continueLatch.countDown();
+
+        assertTrue(cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Completed normally"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        assertTrue(s, s.contains("SUCCESSFUL on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
     }
 
     /**

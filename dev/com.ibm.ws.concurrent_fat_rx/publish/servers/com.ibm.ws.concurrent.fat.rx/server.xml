@@ -22,7 +22,7 @@
     
     <application location="concurrentrxfat.war" />
 
-    <managedScheduledExecutorService jndiName="concurrent/noContextExecutor">
+    <managedScheduledExecutorService id="noContextExecutor" jndiName="concurrent/noContextExecutor">
         <concurrencyPolicy max="2" maxQueueSize="2" runIfQueueFull="false"/>
         <contextService/>
     </managedScheduledExecutorService>
