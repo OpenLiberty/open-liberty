@@ -930,6 +930,10 @@ public class FATSuite {
                         .addClass("com.ibm.ws.cdi12.test.priority.WarDecorator")
                         .addClass("com.ibm.ws.cdi12.test.priority.GlobalPriorityTestServlet")
                         .add(new FileAsset(new File("test-applications/globalPriorityWebApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        WebArchive userSAXParserFactoryWebApp = ShrinkWrap.create(WebArchive.class, "userSAXParserFactory.war")
+                        .addPackage("my.parsers")
+                        .add(new FileAsset(new File("test-applications/userSAXParserFactory.war/resources/META-INF/services/javax.xml.parsers.SAXParserFactory")), "/META-INF/services/javax.xml.parsers.SAXParserFactory")
+                        .add(new FileAsset(new File("test-applications/userSAXParserFactory.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
 
         ResourceAdapterArchive jarInRar173 = ShrinkWrap.create(ResourceAdapterArchive.class,"jarInRar.rar")
@@ -1155,6 +1159,7 @@ public class FATSuite {
         
         exportAppToServer("cdi12SharedLibraryServer", sharedLibrary33, "/InjectionSharedLibrary");
         exportAppToServer("cdi12JSFWithSharedLibServer", sharedLibrary33, "/InjectionSharedLibrary");
+        exportAppToServer("cdi12UserSAXParserFactory", userSAXParserFactoryWebApp);
         
         exportAppToClient("cdiClientSecurity", appClientSecurity122, "/apps");
         exportAppToClient("cdiClient", HelloAppClient72, "/apps");
