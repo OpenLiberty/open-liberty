@@ -22,9 +22,9 @@
 # NLS_MESSAGEFORMAT_ALL
 #
 #   Strings in this file which contain replacement variables are processed by the MessageFormat
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
-#   (single quote must be coded as one single quote ').
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
 begin_profile_of=Begin profile of
@@ -37,7 +37,7 @@ connected=connected
 
 connector=connector
 
-context=Context:
+context=Context:    
 
 database_name=database name
 
@@ -71,7 +71,7 @@ mulitple_files=mulitple files
 
 multiple_readers=multiple readers
 
-name=Name:
+name=Name: 
 
 nest_level=(nest level = {0})
 
@@ -99,7 +99,7 @@ profiling_time=profiling time
 
 reader=reader
 
-schema=Schema:
+schema=Schema: 
 
 sdo_classgenerator_usage_help_1of8={0} Usage: org.eclipse.persistence.sdo.helper.{0} [-options]
 
@@ -165,9 +165,9 @@ staticweave_commandline_help_message_8of19=    -persistencexml
 
 staticweave_commandline_help_message_9of19=           Identify the location of the persistence.xml relative to the root of the persistence unit if it is somewhere other that META-INF/persistence.xml
 
-staticweave_processor_dir_not_created=Cannot create directory '{0}'.
+staticweave_processor_dir_not_created=The {0} directory cannot be created.
 
-staticweave_processor_file_not_created=Cannot create file '{0}'.
+staticweave_processor_file_not_created=The {0} file cannot be created.
 
 staticweave_processor_unknown_outcome=Weaving classes stored in a directory and outputting to a JAR often leads to unexpected results.
 
