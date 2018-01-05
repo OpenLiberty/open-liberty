@@ -4,9 +4,9 @@
     projectURL="https://www.eclipse.org/eclipselink/"
     version="@VERSION@" revision="@REVISION@"
     license-type="EPLv1"
-    contact="sutter@us.ibm.com"
+    contact="jgrassel@us.ibm.com"
     encryption="no">
-    <download location="ftp://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/com/ibm/ws/org/eclipse/persistence/">
+    <download location="ftp://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/org/eclipse/persistence/">
         <file basename="@ANTLR_JAR@" checksum="@ANTLR_CHECKSUM@"/>
         <file basename="@ASM_JAR@" checksum="@ASM_CHECKSUM@"/>
         <file basename="@CORE_JAR@" checksum="@CORE_CHECKSUM@"/>
