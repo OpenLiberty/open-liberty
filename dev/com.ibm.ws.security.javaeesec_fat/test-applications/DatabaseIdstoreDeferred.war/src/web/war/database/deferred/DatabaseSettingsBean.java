@@ -24,6 +24,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+
 /**
  * This bean will read DB identity store configuration settings from a well-known file
  * allowing tests to update the DB identity store dynamically by simply updating the
@@ -41,21 +43,21 @@ public class DatabaseSettingsBean {
 
     public String getCallerQuery() throws IOException {
         refreshConfiguration();
-        String prop = getProperty("callerQuery");
+        String prop = getProperty(JavaEESecConstants.CALLER_QUERY);
         System.out.println(CLASS_NAME + ".getCallerQuery() returns: " + prop);
         return prop;
     }
 
     public String getDataSourceLookup() throws IOException {
         refreshConfiguration();
-        String prop = getProperty("dataSourceLookup");
+        String prop = getProperty(JavaEESecConstants.DS_LOOKUP);
         System.out.println(CLASS_NAME + ".getDataSourceLookup() returns: " + prop);
         return prop;
     }
 
     public String getGroupsQuery() throws IOException {
         refreshConfiguration();
-        String prop = getProperty("groupsQuery");
+        String prop = getProperty(JavaEESecConstants.GROUPS_QUERY);
         System.out.println(CLASS_NAME + ".getGroupsQuery() returns: " + prop);
         return prop;
     }
@@ -63,7 +65,7 @@ public class DatabaseSettingsBean {
     public Object getHashAlgorithmParameters() throws IOException {
         refreshConfiguration();
 
-        String prop = getProperty("hashAlgorithmParameters");
+        String prop = getProperty(JavaEESecConstants.PWD_HASH_PARAMETERS);
         Object result = null;
         if (prop != null) {
 
@@ -81,7 +83,7 @@ public class DatabaseSettingsBean {
     public Integer getPriority() throws IOException {
         refreshConfiguration();
 
-        String prop = getProperty("priority");
+        String prop = getProperty(JavaEESecConstants.PRIORITY);
         Integer result = null;
         if (prop != null) {
             result = Integer.valueOf(prop);
@@ -96,7 +98,7 @@ public class DatabaseSettingsBean {
 
         Set<ValidationType> results = null;
 
-        String prop = getProperty("useFor");
+        String prop = getProperty(JavaEESecConstants.USE_FOR);
         if (prop != null) {
             results = new HashSet<ValidationType>();
 
@@ -128,13 +130,13 @@ public class DatabaseSettingsBean {
     public static void updateDatabaseSettingsBean(String directory, Map<String, String> overrides) throws IOException {
 
         Properties props = new Properties();
-        props.put("callerQuery", "select password from callers where name = ?");
-        props.put("dataSourceLookup", "java:comp/DefaultDataSource");
-        props.put("groupsQuery", "select group_name from caller_groups where caller_name = ?");
-        props.put("hashAlgorithm", ""); // TODO
-        props.put("hashAlgorithmParameters", "");
-        props.put("priority", "0");
-        props.put("useFor", "VALIDATE PROVIDE_GROUPS");
+        props.put(JavaEESecConstants.CALLER_QUERY, "select password from callers where name = ?");
+        props.put(JavaEESecConstants.DS_LOOKUP, "java:comp/DefaultDataSource");
+        props.put(JavaEESecConstants.GROUPS_QUERY, "select group_name from caller_groups where caller_name = ?");
+        props.put(JavaEESecConstants.PWD_HASH_ALGORITHM, ""); // TODO
+        props.put(JavaEESecConstants.PWD_HASH_PARAMETERS, "");
+        props.put(JavaEESecConstants.PRIORITY, "0");
+        props.put(JavaEESecConstants.USE_FOR, "VALIDATE PROVIDE_GROUPS");
 
         props.putAll(overrides);
 

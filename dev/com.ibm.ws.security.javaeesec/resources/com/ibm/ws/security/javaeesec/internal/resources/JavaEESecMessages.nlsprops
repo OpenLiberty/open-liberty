@@ -46,3 +46,37 @@ JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only o
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: An error occurs when the program resolves the ''{0}'' configuration for the identity store. Ensure that the EL expression and the result are valid and ensure any referenced beans that are used in the expression are resolvable. The value defaults to ''{1}''.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The identity store configuration cannot be resolved to a valid value.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. If you use EL expressions, ensure that they are valid and that any referenced beans that are used in the expression are resolvable.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm parameter provided for the hashAlgorithm, {0}, is in the incorrect format. The parameter received is {1}. The required format is name=value.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=A hashAlgorithm parameter list is in the incorrect format and cannot be parsed.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Correct the hashAlgorithmParameters element on the DatabaseIdentityStore annotation.
+
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: The ''{1}'' query to get the {0} caller failed on the DatabaseIdentityStore with an error: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=The search for the provided caller failed with an error.
+JAVAEESEC_WARNING_GEN_DB.useraction=Review the provided error.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: The ''{1}'' query to get the groups for the {0} caller failed on the DatabaseIdentityStore. The partial list of groups is {2}. The error is {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=The search for groups for the caller failed with an error.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Review the provided error. A partial list of groups is returned.
+
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: The credential provided to the IdentityStore is not a UsernamePasswordCredential and cannot be validated.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=The credential provided to the IdentityStore is not a UsernamePasswordCredential and cannot be validated.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=Review the type of credential passed into the IdentityStore.
+
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: A null password was provided to the DatabaseIdentityStore and cannot be validated.
+JAVAEESEC_WARNING_NULL_PWD.explanation=The UsernamePasswordCredential contained a null password.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Supply a valid password.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: The hash algorithm bean was not found for class {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=The hash algorithm listed in the hashAlgorithm element on the DatabaseIdentityStore annotation was not found.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Add the custom hash algorithm as a bean that is available to the application.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: The ''{1}'' query did not return a password for the {0} caller on the DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=The query did not return a password for the provided caller query.
+JAVAEESEC_WARNING_NO_PWD.useraction=If a password was expected, review the caller query and database contents.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: The ''{1}'' query returned multiple results for the {0} caller on the DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Multiple results were returned for the requested caller. The caller query should only return a single result.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Review the caller query and database contents. Change the caller query to return one result.
+
+>>>>>>> Add messages for IdentityStore
