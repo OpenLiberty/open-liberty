@@ -43,6 +43,7 @@ Export-Package: \
 	componenttest.exception;version=1.0.16,\
 	componenttest.logging.ffdc;version=1.0.16,\
 	componenttest.rules;version=1.0.16,\
+	componenttest.rules.repeater;version=1.0.16,\
 	componenttest.topology.database;version=1.0.16,\
 	componenttest.topology.impl;version=1.0.16,\
 	componenttest.topology.ldap;version=1.0.16,\

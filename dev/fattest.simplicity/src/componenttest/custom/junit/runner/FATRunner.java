@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,10 +24,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.ClassRule;
 import org.junit.internal.AssumptionViolatedException;
@@ -81,9 +83,18 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                                                       new JavaLevelFilter()
     };
 
+    private static final Set<String> classesUsingFATRunner = new HashSet<String>();
+
     static {
         Log.info(c, "<clinit>", "System property: fat.test.localrun=" + FAT_TEST_LOCALRUN);
         Log.info(c, "<clinit>", "Using filters " + Arrays.toString(testFiltersToApply));
+    }
+
+    public static void requireFATRunner(String className) {
+        if (!classesUsingFATRunner.contains(className))
+            throw new IllegalStateException("The class " + className + " is attempting to use functionality " +
+                                            "that requires @RunWith(FATRunner.class) to be specified at the " +
+                                            "class level.");
     }
 
     private boolean hasTests = true;
@@ -112,6 +123,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
     public FATRunner(Class<?> tc) throws Exception {
         super(tc);
+        classesUsingFATRunner.add(tc.getName());
         try {
             //filter any tests, using our list of filters
             filter(new CompoundFilter(testFiltersToApply));
@@ -161,6 +173,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         Statement statement = new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                if (!RepeatTestFilter.shouldRun(method)) {
+                    return;
+                }
                 Map<String, Long> tmpDirFilesBeforeTest = createDirectorySnapshot("/tmp");
                 try {
                     Log.info(c, "evaluate", "entering " + getTestClass().getName() + "." + method.getName());
@@ -285,6 +300,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         Statement statement = new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                if (!RepeatTestFilter.shouldRun(getTestClass().getJavaClass())) {
+                    return;
+                }
                 try {
                     superStatement.evaluate();
                 } finally {

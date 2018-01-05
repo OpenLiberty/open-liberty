@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.rules;
+package componenttest.rules.repeater;
 
 public interface RepeatTestAction {
 
@@ -22,5 +22,10 @@ public interface RepeatTestAction {
      * Invoked by the FAT framework to perform setup steps before repeating the tests.
      */
     public void setup() throws Exception;
+
+    /**
+     * Used to identify the RepeatTestAction and used in conjunction with @SkipForRepat
+     */
+    public String getID();
 
 }

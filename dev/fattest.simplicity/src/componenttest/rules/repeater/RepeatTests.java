@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.rules;
+package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,8 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.RepeatTestFilter;
 
 /**
  * Used as a JUnit <code>@ClassRule</code> to repeat all tests with the specified actions.
@@ -50,20 +52,7 @@ public class RepeatTests extends ExternalResource {
         return new RepeatTests().andWith(action);
     }
 
-    private static final RepeatTestAction NO_MODIFICATION_ACTION = new RepeatTestAction() {
-        @Override
-        public void setup() {}
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return "No modifications";
-        }
-    };
+    private static final RepeatTestAction NO_MODIFICATION_ACTION = new EmptyAction();
 
     private final List<RepeatTestAction> actions = new ArrayList<>();
 
@@ -110,6 +99,7 @@ public class RepeatTests extends ExternalResource {
             for (int i = 0; i < actions.size(); i++)
                 Log.info(c, m, "  [" + i + "] " + actions.get(i));
             for (RepeatTestAction action : actions) {
+                RepeatTestFilter.CURRENT_REPEAT_ACTION = action.getID();
                 if (action.isEnabled()) {
                     Log.info(c, m, "===================================");
                     Log.info(c, m, "");
