@@ -120,6 +120,7 @@ src: \
 	test-applications/TestValidatorInJar.war/src,\
 	test-applications/TestVetoedAlternative.jar/src,\
 	test-applications/TestVetoedAlternative.war/src,\
+	test-applications/userSAXParserFactory.war/src,\
 	test-applications/utilLib.jar/src,\
 	test-applications/vetoedEJBStartup.war/src,\
 	test-applications/visTestAppClient.jar/src,\
@@ -158,13 +159,16 @@ javac.target: 1.7
 fat.project: true
 
 tested.features:\
-	cdi-2.0,\
-        servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3
+    cdi-2.0,\
+    servlet-4.0,\
+    jdbc-4.2,\
+    jpa-2.2,\
+    beanValidation-2.0,\
+    jaxrs-2.1,\
+    jsf-2.3,\
+    jsonb-1.0,\
+    appsecurity-3.0,\
+    webprofile-8.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\

@@ -10,36 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
-import java.nio.file.Files; 
-import java.nio.file.StandardCopyOption; 
-import java.nio.file.attribute.FileAttribute; 
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import componenttest.rules.FeatureReplacementAction;
-import componenttest.rules.RepeatTests;
-
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import com.ibm.ws.cdi12.fat.tests.AfterTypeDiscoveryTest;
 import com.ibm.ws.cdi12.fat.tests.AlterableContextTest;
@@ -61,6 +35,7 @@ import com.ibm.ws.cdi12.fat.tests.ClassExclusionTest;
 import com.ibm.ws.cdi12.fat.tests.ClassLoadPrereqLogger;
 import com.ibm.ws.cdi12.fat.tests.ClassMaskingTest;
 import com.ibm.ws.cdi12.fat.tests.ConversationFilterTest;
+import com.ibm.ws.cdi12.fat.tests.CustomerProvidedXMLParserFactoryTest;
 import com.ibm.ws.cdi12.fat.tests.DecoratorOnBuiltInBeansTest;
 import com.ibm.ws.cdi12.fat.tests.DeltaSpikeSchedulerTest;
 import com.ibm.ws.cdi12.fat.tests.DisablingBeansXmlValidationTest;
@@ -104,7 +79,9 @@ import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveTest;
 import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchivesDisabledTest;
 import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarLibJarsTest;
 import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarTest;
-import com.ibm.ws.fat.util.FatLogHandler;
+
+import componenttest.rules.FeatureReplacementAction;
+import componenttest.rules.RepeatTests;
 
 /**
  * Tests that run on CDI 1.2 and again on CDI 2.0
@@ -131,6 +108,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 ClassLoadPrereqLogger.class,
                 ClassMaskingTest.class,
                 ConversationFilterTest.class,
+                CustomerProvidedXMLParserFactoryTest.class,
                 DecoratorOnBuiltInBeansTest.class,
                 DeltaSpikeSchedulerTest.class,
                 DisablingBeansXmlValidationTest.class,
@@ -175,12 +153,11 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 VisTest.class,
                 WarLibsAccessWarBeansTest.class,
                 WebBeansBeansXmlInWeldTest.class,
-                WithAnnotationsTest.class                
+                WithAnnotationsTest.class
 })
 public class CDI1220Suite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES);
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES);
 
 }
