@@ -1839,7 +1839,9 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertTrue(s, s.contains("ManagedCompletableFuture@"));
         assertTrue(s, s.contains("Completed normally"));
         assertTrue(s, s.contains("PolicyTaskFuture@"));
-        assertTrue(s, s.contains("SUCCESSFUL on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+        // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
+        assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
+        assertTrue(s, s.contains("on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
     }
 
     /**
