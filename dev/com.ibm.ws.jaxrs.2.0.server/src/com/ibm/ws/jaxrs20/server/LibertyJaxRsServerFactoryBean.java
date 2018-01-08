@@ -69,7 +69,6 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
     private final static TraceComponent tc = Tr.register(LibertyJaxRsServerFactoryBean.class);
 
     private final List<JaxRsFactoryBeanCustomizer> beanCustomizers = new LinkedList<JaxRsFactoryBeanCustomizer>();
-//    private final Map<String, Object> beanCustomizerContexts = new HashMap<String, Object>();
     private Map<String, Object> beanCustomizerContexts;
     private final EndpointInfo endpointInfo;
     private final JaxRsModuleMetaData moduleMetadata;
@@ -295,7 +294,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
             Object oldCustomizerContext = beanCustomizerContexts.get(key);
             BeanCustomizerContext context = new BeanCustomizerContext(endpointInfo, moduleMetadata, cxfPRHolder);
 
-            if (key != null && (oldCustomizerContext instanceof HashMap)) {
+            if (key != null && (oldCustomizerContext instanceof Map)) {
                 context.setContextObject(oldCustomizerContext);
             }
             customizer.onPrepareProviderResource(context);

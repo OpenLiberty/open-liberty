@@ -28,6 +28,6 @@ public class CustomizerUtils {
             ModuleMetaData mmd = cmd.getModuleMetaData();
             j2eeName = mmd.getJ2EEName();
         }
-        return Integer.toString(customizer.hashCode()) + j2eeName;// + ":" + Thread.currentThread().getId();
+        return Integer.toString(customizer.hashCode()) + j2eeName;
     }
 }
