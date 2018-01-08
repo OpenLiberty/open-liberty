@@ -137,6 +137,12 @@
 			<scope>system</scope>
 			<systemPath>${com.ibm.ws.microprofile.config.cdi}</systemPath>
 		</dependency>
+                <dependency>
+                    <groupId>javax.enterprise</groupId>
+                    <artifactId>cdi-api</artifactId>
+                    <version>1.2</version>
+                    <scope>provided</scope>
+                </dependency>
 		<!-- 
 		./lib/com.ibm.ws.microprofile.faulttolerance.cdi_1.0.18.jar
 		./lib/com.ibm.ws.microprofile.faulttolerance_1.0.18.jar
