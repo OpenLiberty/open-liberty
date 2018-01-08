@@ -522,11 +522,7 @@ public class H2InboundLink extends HttpInboundLink {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "processRead: an error occurred processing a frame: " + e.getErrorString());
             }
-            try {
-                getStreamProcessor(0).sendGOAWAYFrame(e);
-            } catch (ProtocolException x) {
-                // nothing to do here, since we can't even send the GOAWAY frame.
-            }
+            close(vc, e);
 
         } finally {
 
