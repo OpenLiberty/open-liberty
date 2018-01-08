@@ -20,6 +20,7 @@ package org.apache.myfaces.view.jsp;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,6 +67,7 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
                                                          "head", "body", "button", "link"};
 
     private final ViewDeclarationLanguageStrategy _strategy;
+    private LinkedList<String> _suffixes;
     
     /**
      * 
@@ -80,9 +82,11 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
         _strategy = new JspViewDeclarationLanguageStrategy();
     }
 
-    public JspViewDeclarationLanguage(FacesContext facesContext, ViewDeclarationLanguageStrategy strategy)
+    public JspViewDeclarationLanguage(FacesContext facesContext, ViewDeclarationLanguageStrategy strategy, 
+                                      LinkedList<String> suffixes)
     {
         this._strategy = strategy;
+        this._suffixes = suffixes;
     }
 
     /**
@@ -259,13 +263,36 @@ public class JspViewDeclarationLanguage extends JspViewDeclarationLanguageBase
     public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
     {
         Stream<String> stream = super.getViews(facesContext, path, maxDepth, options);
-        stream = stream.filter(f -> _strategy.handles(f));
+        stream = stream.filter(f -> (_strategy.handles(f) && isValidJSPView(facesContext,f)));
         if (options != null &&
             Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
         {
             stream = stream.map(f -> _strategy.getMinimalImplicitOutcome(f));
         }
         return stream;
+    }
+
+    private boolean isValidJSPView(FacesContext facesContext, String path)
+    {
+        boolean isValid = false;
+
+        // _suffixes should only be null if this JSPViewDeclarationLanguage was created
+        // via the default constructor.
+        if (_suffixes == null)
+        {
+            _suffixes = JspViewDeclarationLanguageStrategy.loadSuffixes(facesContext.getExternalContext());
+        }
+
+        for (String suffix : _suffixes)
+        {
+            if (path != null && path.endsWith (suffix)) 
+            {
+                isValid = true;
+                break;
+            }
+        }
+
+        return isValid;
     }
 
 }
