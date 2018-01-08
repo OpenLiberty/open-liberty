@@ -434,16 +434,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        boolean canceledByThisMethod = completableFuture.cancel(mayInterruptIfRunning);
+        boolean canceled = completableFuture.cancel(mayInterruptIfRunning);
 
         // If corresponding task has been submitted to an executor, attempt to cancel it
-        if (canceledByThisMethod && futureRef != null) {
+        if (canceled && futureRef != null) {
             Future<?> future = futureRef.get();
             if (future != null)
                 future.cancel(mayInterruptIfRunning);
         }
 
-        return canceledByThisMethod;
+        return canceled;
     }
 
     /**
