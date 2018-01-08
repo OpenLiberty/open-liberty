@@ -9,17 +9,15 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<web-app id="jwtWebApp" version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
-<!--     
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
-    xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"    
-    id="jwtWebApp" version="2.4">
--->    
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	      id="jwtWebApp"
+          version="3.0">    
+          
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>
@@ -47,21 +45,5 @@
         <filter-name>JwtRequestFilter</filter-name>
         <servlet-name>JwtEndpointServlet</servlet-name>
     </filter-mapping>
-    
-    <security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Token Endpoint</web-resource-name>
-			<url-pattern>/ibm/api/token/*</url-pattern>
-			<http-method>GET</http-method>
-			<http-method>POST</http-method>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>**</role-name>
-		</auth-constraint>
-		<user-data-constraint>
-			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint>
-	</security-constraint>
-
 
 </web-app>

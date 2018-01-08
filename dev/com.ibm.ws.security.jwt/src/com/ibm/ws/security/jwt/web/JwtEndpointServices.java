@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -158,6 +159,31 @@ public class JwtEndpointServices {
 			processJWKRequest(response, jwtConfig);
 			return;
 		case token:
+			try {
+				if (jwtConfig.isTokenEndpointHttpsRequired()) {
+					String url = request.getRequestURL().toString();
+					if (url != null && !url.startsWith("https")) {
+						Tr.error(tc, "SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME", new Object[] { url });
+						response.sendError(HttpServletResponse.SC_NOT_FOUND,
+								Tr.formatMessage(tc, "SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME", new Object[] { url }));
+						return;
+					}
+				}
+				boolean result = request.authenticate(response);
+				if (tc.isDebugEnabled()) {
+					Tr.debug(tc, "request.authenticate result: " + result);
+				}
+				// if false, then not authenticated,
+				// a 401 w. auth challenge will be sent back and
+				// the response will be committed.
+				// Requester can then try again with creds on a new request.
+				if (result == false) {
+					return;
+				}
+			} catch (ServletException e) {
+				// ffdc
+				return;
+			}
 			processTokenRequest(response, jwtConfig);
 			return;
 		default:
@@ -168,7 +194,7 @@ public class JwtEndpointServices {
 	/**
 	 * produces a JWT token based upon the jwt Configuration, and the security
 	 * credentials of the authenticated user that called this method. Returns
-	 * the token as a bare string in the response.(???)
+	 * the token as JSON in the response.
 	 *
 	 * @param response
 	 * @param jwtConfig

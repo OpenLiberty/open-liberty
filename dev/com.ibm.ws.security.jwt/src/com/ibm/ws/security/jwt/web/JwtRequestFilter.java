@@ -30,10 +30,9 @@ import com.ibm.ws.security.jwt.web.JwtRequest.EndpointType;
 public class JwtRequestFilter implements Filter {
 	private static TraceComponent tc = Tr.register(JwtRequestFilter.class);
 
-	public static final String REGEX_COMPONENT_ID = "/([\\w-]+)";
+	public static final String REGEX_COMPONENT_ID = "/([\\w-]+)/";
 
-	private static final Pattern PATH_JWK_REGEX = Pattern.compile("^" + REGEX_COMPONENT_ID + "/(jwk)$");
-	private static final Pattern PATH_TOKEN_REGEX = Pattern.compile("^/(token)" + REGEX_COMPONENT_ID + "$");;
+	private static final Pattern PATH_REGEX = Pattern.compile("^" + REGEX_COMPONENT_ID + "(jwk|token)$");
 
 	/**
 	 * Default constructor.
@@ -72,38 +71,22 @@ public class JwtRequestFilter implements Filter {
 			// nothing
 			return;
 		}
-		// We need jwk endpoint to be unsecured, unauthenticated.
-		// We need token endpoint to be authenticated & secured.
-		// We cannot change existing jwk endpoint.
-		// Servlet url mapping limitations require
-		// slightly inconsistent endpoints to achieve this.
-		// ibm/api/<configid>/jwk, and ibm/api/token/<configid>
-
-		// try to match jwk request
-		Matcher matcher = matchEndpointRequest(request, PATH_JWK_REGEX);
+		Matcher matcher = matchEndpointRequest(request);
 		if (matcher != null) {
-			invokeEndpointRequest(request, response, chain, matcher, false);
-			return;
+			invokeEndpointRequest(request, response, chain, matcher);
+		} else {
+			String message = Tr.formatMessage(tc, "JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND",
+					new Object[] { request.getPathInfo() });
+			Tr.warning(tc, message);
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
 		}
-		// try to match token request
-		matcher = matchEndpointRequest(request, PATH_TOKEN_REGEX);
-		if (matcher != null) {
-			invokeEndpointRequest(request, response, chain, matcher, true);
-			return;
-		}
-
-		String message = Tr.formatMessage(tc, "JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND",
-				new Object[] { request.getPathInfo() });
-		Tr.warning(tc, message); // CWWKS6004W
-		response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
-
 	}
 
 	/**
 	 * Creates a JwtRequest object based on the provided Matcher, sets it as the
 	 * value of the {@value WebConstants#JWT_REQUEST_ATTR} request attribute,
 	 * and applies the filter to the request.
-	 *
+	 * 
 	 * @param request
 	 * @param response
 	 * @param chain
@@ -111,24 +94,30 @@ public class JwtRequestFilter implements Filter {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	protected void invokeEndpointRequest(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-			Matcher matcher, boolean isTokenRequest) throws IOException, ServletException {
-		JwtRequest jwtRequest = null;
-		if (!isTokenRequest) {
-			jwtRequest = new JwtRequest(matcher.group(1), getType(matcher.group(2)), request);
-		} else {
-			jwtRequest = new JwtRequest(matcher.group(2), getType(matcher.group(1)), request);
-		}
+	public void invokeEndpointRequest(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+			Matcher matcher) throws IOException, ServletException {
+		JwtRequest jwtRequest = new JwtRequest(getJwtConfigIdFromUrl(matcher), getEndpointTypeFromUrl(matcher),
+				request);
 		request.setAttribute(WebConstants.JWT_REQUEST_ATTR, jwtRequest);
 		chain.doFilter(request, response);
 	}
 
-	private Matcher matchEndpointRequest(HttpServletRequest request, Pattern pattern) {
+	protected String getJwtConfigIdFromUrl(Matcher m) {
+		String componentId = m.group(1);
+		return componentId;
+	}
+
+	protected EndpointType getEndpointTypeFromUrl(Matcher m) {
+		EndpointType type = getType(m.group(2));
+		return type;
+	}
+
+	private Matcher matchEndpointRequest(HttpServletRequest request) {
 		String path = request.getPathInfo();
 		if (tc.isDebugEnabled()) {
 			Tr.debug(tc, "Path info: [" + path + "]");
 		}
-		Matcher m = pattern.matcher(path);
+		Matcher m = PATH_REGEX.matcher(path);
 		if (m.matches()) {
 			return m;
 		}
@@ -138,7 +127,7 @@ public class JwtRequestFilter implements Filter {
 	/**
 	 * Method to determine type of request based on known path values (ex: jwk,
 	 * others yet to be defined)
-	 *
+	 * 
 	 * @param pathType
 	 *            Known endpoint path value
 	 * @return enum type characterizing the request
