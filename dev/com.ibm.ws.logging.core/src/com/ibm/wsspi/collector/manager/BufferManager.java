@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.wsspi.collector.manager;
 
-import com.ibm.ws.collector.manager.buffer.Buffer;
+import java.util.Queue;
 
 /**
  * Buffer manager is a wrapper around the actual buffer, it controls access to the buffer.
@@ -20,10 +20,13 @@ import com.ibm.ws.collector.manager.buffer.Buffer;
 public abstract class BufferManager {
 
     /* Reference to ring buffer implementation */
-    protected final Buffer<Object> ringBuffer;
+//    protected final Buffer<Object> ringBuffer;
 
-    protected BufferManager(int capacity) {
-        ringBuffer = new Buffer<Object>(capacity);
+    // protected final Queue<Object> earlierTraces;
+    protected final Queue<Object> earlyMessageQueue;
+    
+    protected BufferManager() {
+        earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[1000]);
     }
 
     /**

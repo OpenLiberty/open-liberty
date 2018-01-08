@@ -18,14 +18,14 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.wsspi.collector.manager.BufferManager;
-import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class BufferManagerImpl extends BufferManager {
 
 	private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
+	
+    private Buffer<Object> ringBuffer;
 
 	private Set<SynchronousHandler> synchronizedHandlerSet = new HashSet<SynchronousHandler>();
 
@@ -34,10 +34,11 @@ public class BufferManagerImpl extends BufferManager {
 	private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
 
 	public BufferManagerImpl(int capacity, String sourceId) {
-		super(capacity);
+		super();
+		ringBuffer=null;
 		this.sourceId = sourceId;
 	}
-
+	
 	@Override
 	public void add(Object event) {
 		
@@ -49,15 +50,24 @@ public class BufferManagerImpl extends BufferManager {
 				synchronizedHandler.synchronousWrite(event);
 			}
 		}
+		
+		//If we have an async handler, then write to ringbuffer
+		if(handlerEventMap.size() > 0){
+			ringBuffer.add(event);
+		}
+		
 		if (event == null)
 			throw new NullPointerException();
 		
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Adding event to buffer " + event);
 		}
-		ringBuffer.add(event);
-
-
+		
+		/**
+		 * TODO
+		 * Get rid of early message queue after some specified time
+		 */
+		earlyMessageQueue.add(event);
 	}
 
 	@Override
@@ -103,11 +113,27 @@ public class BufferManagerImpl extends BufferManager {
 	}
 
 	public void addHandler(String handlerId) {
+		//New Asynchronous handler starts off with all events from EMQ
+		ringBuffer = new Buffer<Object>(10000);
+		Object holder[] = new Object[1000];
+		Object[] messagesList = earlyMessageQueue.toArray(holder);
+		for(Object message: messagesList) {
+			ringBuffer.add(message);
+		}
 		handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
 	}
 
-	public void addSyncHandler(SynchronousHandler syncHandler) {
-		synchronizedHandlerSet.add(syncHandler);
+	public synchronized void addSyncHandler(SynchronousHandler syncHandler) {
+		//Send messages from EMQ to synchronous handler when it subscribes to receive messages
+		if(!earlyMessageQueue.isEmpty() && !synchronizedHandlerSet.contains(syncHandler)) {
+			synchronizedHandlerSet.add(syncHandler);
+			System.out.println("Sending Early Messages to New Synchronized Handler: " + syncHandler.getHandlerName());
+			Object holder[] = new Object[1000];
+			Object[] messagesList = earlyMessageQueue.toArray(holder);
+			for(Object message: messagesList) {
+				syncHandler.synchronousWrite(message);
+			}
+		}
 	}
 	
 	public void removeSyncHandler(SynchronousHandler syncHandler) {
