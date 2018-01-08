@@ -117,20 +117,22 @@ public class BufferManagerImpl extends BufferManager {
 	}
 
 	public void addSyncHandler(SynchronousHandler syncHandler) {
-        /* There can be many Reader locks, but only one writer lock.
-        *  This ReaderWriter lock is needed to avoid CMException when the add() method is forwarding log events
-        *  to synchronized handlers and an addSyncHandler or removeSyncHandler is called
-        */
+		/*
+		 * There can be many Reader locks, but only one writer lock. This
+		 * ReaderWriter lock is needed to avoid CMException when the add()
+		 * method is forwarding log events to synchronized handlers and an
+		 * addSyncHandler or removeSyncHandler is called
+		 */
 		RERWLOCK.writeLock().lock();
-		try{
+		try {
 			synchronizedHandlerSet.add(syncHandler);
 		} finally {
-        RERWLOCK.writeLock().unlock();
-    	}
+			RERWLOCK.writeLock().unlock();
+		}
 	}
-	
+
 	public void removeSyncHandler(SynchronousHandler syncHandler) {
-        /*
+		/*
 		 * There can be many Reader locks, but only one writer lock. This
 		 * ReaderWriter lock is needed to avoid CMException when the add()
 		 * method is forwarding log events to synchronized handlers and an
