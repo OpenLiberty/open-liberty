@@ -127,7 +127,7 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Multiple resource adapters can
 J2CA8815.duplicate.resource.adapter.id.explanation=Multiple resource adapters are configured with or implicitly end up with the same unique identifier (id).
 J2CA8815.duplicate.resource.adapter.id.useraction=Assign unique identifiers to one or more of the resource adapters so that there is no longer a conflict.
 
-J2CA8816.reserved.resource.adapter.id=J2CA8816E: The id attribute of the resourceAdapter element for resource adapter module {0} cannot be one of the reserved identifiers {1}.
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: The id attribute of the resourceAdapter element for {0} resource adapter module cannot be one of the reserved identifiers {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=The id specified in the configuration or derived from the module name is a reserved identifier. Reserved identifiers are for internal use only.
 J2CA8816.reserved.resource.adapter.id.useraction=Provide an unreserved value for the id attribute of the resourceAdapter element or for the module name in the server configuration.
 
