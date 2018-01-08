@@ -110,6 +110,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private volatile UsePrivateHeaders usePrivateHeaders = UsePrivateHeaders.unknown;
     private volatile int configUpdate = 0;
 
+    private final Object WebConnCanCloseSync = new Object();
+    private boolean WebConnCanClose = true;
+
     /**
      * Constructor.
      *
@@ -147,53 +150,85 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Close called , vc ->" + this.vc);
         }
 
-        if (this.vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
-            // The only API available from connectionLink are close and destroy ,
-            // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
-            String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-            if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
-                Exception errorinClosing = this.closeStreams();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Error closing in strems" + errorinClosing);
-                }
-                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
-                return;
-            }
-
-            String upgradedListener = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "upgradedListener ->" + upgradedListener);
-            }
-            if (upgradedListener != null && upgradedListener.equalsIgnoreCase("true")) {
-                boolean closeCalledFromWebConnection = false;
-
-                synchronized (this) {
-                    //This sync block prevents both closes from happening, if they are happening at the same time.
-                    //This will check the new variable we have added to the VC during the WebConnection close.
-                    //If both the WebConnection and WebContainer close happen at the same time then only one will happen.
-                    //The first one will come in, check this new variable, then set it to false. The false will cause
-                    //the other close to not happen.
-
-                    String fromWebConnection = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));//Add a new variable here
-                    if (fromWebConnection != null && fromWebConnection.equalsIgnoreCase("true")) {
-                        closeCalledFromWebConnection = true;
-                        this.vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");//Add a new variable here
-                    }
-                }
-
-                if (!closeCalledFromWebConnection) {
-                    // we should not call close as this from webcontainer as Webconnection close will be called some point.
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Connection Not to be closed here because Servlet Upgrade.");
-                    }
-                    return;
-                }
-            }
-        } else {
+        if (this.vc == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connection must be already closed since vc is null");
             }
             return;
+        }
+
+        // This is added for Upgrade Servlet3.1 WebConnection
+        // The only API available from connectionLink are close and destroy ,
+        // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
+        String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+        if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "close streams from HttpDispatcherLink.close");
+            }
+
+            Exception errorinClosing = this.closeStreams();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error closing in streams" + errorinClosing);
+            }
+
+            vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+            return;
+        }
+
+        String upgradedListener = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "upgradedListener ->" + upgradedListener);
+        }
+        if (upgradedListener != null && upgradedListener.equalsIgnoreCase("true")) {
+            boolean closeCalledFromWebConnection = false;
+
+            synchronized (this) {
+                //This sync block prevents both closes from happening, if they are happening at the same time.
+                //This will check the new variable we have added to the VC during the WebConnection close.
+                //If both the WebConnection and WebContainer close happen at the same time then only one will happen.
+                //The first one will come in, check this new variable, then set it to false. The false will cause
+                //the other close to not happen.
+
+                String fromWebConnection = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));//Add a new variable here
+                if (fromWebConnection != null && fromWebConnection.equalsIgnoreCase("true")) {
+                    closeCalledFromWebConnection = true;
+                    this.vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");//Add a new variable here
+                }
+            }
+
+            if (!closeCalledFromWebConnection) {
+                // we should not call close as this from webcontainer as Webconnection close will be called some point.
+
+                // closeCalledFromWebConnection seems to be related to generic web connections and read async logic.
+                // but we need to handle the case where webconnection logic like HTTP/2 need to ensure close is called once, and only once.
+                // but we don't want to manipulate existing logic so a separate constant in the state map will be used for that below
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Connection Not to be closed here because Servlet Upgrade.");
+                }
+                return;
+            }
+        } else {
+            if (upgradedListener == null) {
+                String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
+                    // want to close down at least once, and only once, for this type of upgraded connection
+                    synchronized (WebConnCanCloseSync) {
+                        if (WebConnCanClose) {
+                            // fall through to close logic after setting flag to only fall through once
+                            // want to call close outside of the sync to avoid deadlocks.
+                            WebConnCanClose = false;
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Upgraded Web Connection closing Dispatcher Link");
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
@@ -898,10 +933,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         Exception error = null;
 
         if (finalRequest != null) {
-            Exception ex = tryToCloseStream(finalRequest.getBody());
-            if (null == error) {
-                error = ex;
-            }
+            error = tryToCloseStream(finalRequest.getBody());
         }
 
         if (finalResponse != null) {
