@@ -18,11 +18,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -643,6 +645,170 @@ public class ConcurrentRxTestServlet extends FATServlet {
             // allow threads to complete in case test fails
             blocker2.countDown();
             blocker1.countDown();
+        }
+    }
+
+    /**
+     * Verify that the complete operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled.
+     */
+    @Test
+    public void testComplete() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testComplete", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.complete("Intentionally completed prematurely"));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            assertFalse(cf.completeExceptionally(new Exception("Ignore this exception because already complete")));
+            assertFalse(cf.cancel(true));
+            assertEquals("Intentionally completed prematurely", cf.getNow("Value to return if not done yet"));
+            assertTrue(cf.isDone());
+            assertFalse(cf.isCompletedExceptionally());
+            assertFalse(cf.isCancelled());
+            assertEquals("Intentionally completed prematurely", cf.get(1, TimeUnit.NANOSECONDS));
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the cancel(false) operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled but not interrupted.
+     */
+    @Test
+    public void testCancelFalse() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        BlockableIncrementFunction increment = new BlockableIncrementFunction("testCancelFalse", beginLatch, continueLatch);
+        try {
+            CompletableFuture<Integer> cf = ManagedCompletableFuture
+                            .supplyAsync(() -> 30)
+                            .thenApplyAsync(increment);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.cancel(false));
+            assertFalse(cf.completeExceptionally(new ArrayIndexOutOfBoundsException("Should be ignored because already complete.")));
+            assertFalse(cf.complete(300));
+            try {
+                Integer i = cf.getNow(3000);
+                fail("Completable future that is canceled should raise exception, not return " + i);
+            } catch (CancellationException x) {
+                // expected
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCancelled());
+            assertTrue(cf.isCompletedExceptionally()); // cancel is a form of exceptional completion
+            try {
+                Integer i = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that is canceled should raise exception, not return " + i);
+            } catch (CancellationException x) {
+                // expected
+            }
+
+            // Increment function thread should not be interrupted by cancel(false)
+            assertNotNull(increment.executionThread);
+        } finally {
+            // unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the cancel(true) operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled and interrupted.
+     */
+    @Test
+    public void testCancelTrue() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testCancelTrue", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.cancel(true));
+            assertFalse(cf.completeExceptionally(new ArrayIndexOutOfBoundsException("Should be ignored because already complete.")));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            try {
+                String s = cf.getNow("Value to return if not done yet");
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCancelled());
+            assertTrue(cf.isCompletedExceptionally()); // cancel is a form of exceptional completion
+            try {
+                String s = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+
+            // Expect supplier thread to be interrupted due to cancellation
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the completeExceptionally operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled.
+     */
+    @Test
+    public void testCompleteExceptionally() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testCompleteExceptionally", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.completeExceptionally(new IOException("Intentionally created exception to complete the completable future.")));
+            assertFalse(cf.completeExceptionally(new ArrayIndexOutOfBoundsException("Should be ignored because already complete.")));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            assertFalse(cf.cancel(true));
+            try {
+                String s = cf.getNow("Value to return if not done yet");
+                fail("Completable future that completes exceptionally should raise exception, not return " + s);
+            } catch (CompletionException x) {
+                if (!(x.getCause() instanceof IOException) && !x.getCause().getMessage().equals("Intentionally created exception to complete the completable future."))
+                    throw x;
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCompletedExceptionally());
+            assertFalse(cf.isCancelled());
+            try {
+                String s = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that completes exceptionally should raise exception, not return " + s);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof IOException) && !x.getCause().getMessage().equals("Intentionally created exception to complete the completable future."))
+                    throw x;
+            }
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
         }
     }
 
