@@ -10,9 +10,6 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/liberty-release.props
 
-bVersion=1.0
-bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
-
 -sub: *.bnd
 
 globalize: false
