@@ -107,7 +107,6 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
         // verify that id isn't one of the reserved ids for wmq or was jms adapter
         if (reservedIds.contains(id))
             throw new UnableToAdaptException(Utils.getMessage("J2CA8816.reserved.resource.adapter.id", moduleName, reservedIds));
-        System.out.println("hello");
 
         processConfigElementCustomizations();
         metagenConfig.put(MetaGenConstants.KEY_ADAPTER_NAME, id);
