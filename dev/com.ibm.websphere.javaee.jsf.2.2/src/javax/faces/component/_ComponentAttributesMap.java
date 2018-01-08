@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
@@ -635,7 +636,7 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
                     throw new FacesException(e);
                 }
                 PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-                _propertyDescriptorMap = new HashMap<String, _PropertyDescriptorHolder>();
+                _propertyDescriptorMap = new ConcurrentHashMap<String, _PropertyDescriptorHolder>();
                 for (int i = 0; i < propertyDescriptors.length; i++)
                 {
                     PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
