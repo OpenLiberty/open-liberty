@@ -24,6 +24,4 @@ Export-Package: com.ibm.wsspi.kernel.embeddable,com.ibm.wsspi.kernel.security.th
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \
-	com.ibm.ws.kernel.boot;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest,\
-	com.ibm.ws.kernel.security.thread;version=latest
+	com.ibm.ws.kernel.boot;version=latest
