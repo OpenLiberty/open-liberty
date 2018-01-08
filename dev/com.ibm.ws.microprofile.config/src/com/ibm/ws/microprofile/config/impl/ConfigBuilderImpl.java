@@ -10,18 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
-import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.ScheduledExecutorService;
-
-import javax.annotation.Priority;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -32,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.DefaultConverters;
 import com.ibm.ws.microprofile.config.interfaces.DefaultSources;
+import com.ibm.ws.microprofile.config.interfaces.PriorityConverterMap;
 
 /**
  *
@@ -40,7 +33,7 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
 
     private static final TraceComponent tc = Tr.register(ConfigBuilderImpl.class);
 
-    private final Map<Type, List<Converter<?>>> userConverters = new HashMap<>();
+    private final PriorityConverterMap userConverters = new PriorityConverterMap();
     private final TreeSet<ConfigSource> userSources = new TreeSet<>(ConfigSourceComparator.INSTANCE);
     private ClassLoader classloader;
 
@@ -132,8 +125,15 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
     public ConfigBuilder withConverters(Converter<?>... converters) {
         synchronized (this) {
             for (Converter<?> con : converters) {
-                addConverter(con);
+                userConverters.addConverter(con);
             }
+        }
+        return this;
+    }
+
+    public <T> ConfigBuilder withConverter(Class<T> type, int priority, Converter<T> converter) {
+        synchronized (this) {
+            userConverters.addConverter(type, priority, converter);
         }
         return this;
     }
@@ -170,58 +170,24 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
      *
      * @return converters as a Map keyed on Type
      */
-    protected Map<Type, Converter<?>> getConverters() {
-        //the 1:1 map to be returned
-        Map<Type, Converter<?>> converters = new HashMap<>();
-
-        //a 1:many map of all converters. The nested converter list is in the order they were added.
-        Map<Type, List<Converter<?>>> allConverters = new HashMap<>();
+    protected PriorityConverterMap getConverters() {
+        //the map to be returned
+        PriorityConverterMap allConverters = new PriorityConverterMap();
 
         //add the default converters
         if (addDefaultConverters) {
-            addConverters(allConverters, DefaultConverters.getDefaultConverters());
+            allConverters.addAll(DefaultConverters.getDefaultConverters());
         }
         //add the discovered converters
         if (addDiscoveredConverters) {
-            addConverters(allConverters, DefaultConverters.getDiscoveredConverters(getClassLoader()));
+            allConverters.addAll(DefaultConverters.getDiscoveredConverters(getClassLoader()));
         }
         //finally add the programatically added converters
-        addConverterLists(allConverters, userConverters);
+        allConverters.addAll(userConverters);
 
-        //go through all of the converters
-        //for each type, find the one with the highest priority
-        //if more than one converter has the same priority then the one added last wins
-        for (Map.Entry<Type, List<Converter<?>>> entry : allConverters.entrySet()) {
-            Type type = entry.getKey();
-            List<Converter<?>> typeConverters = entry.getValue();
-            Converter<?> highest = null;
-            int highestPriority = Integer.MIN_VALUE;
-            if (typeConverters.size() == 1) {
-                highest = typeConverters.get(0);
-            } else {
-                for (Converter<?> converter : typeConverters) {
-                    int value = ConfigConstants.DEFAULT_CONVERTER_PRIORITY;
-                    //get Priority annotations from class only, not from the super-class
-                    Priority[] priorities = converter.getClass().getDeclaredAnnotationsByType(Priority.class);
-                    if (priorities != null && priorities.length > 0) {
-                        Priority priority = priorities[0];
-                        value = priority.value();
-                    }
-                    if (value >= highestPriority) {
-                        highest = converter;
-                        highestPriority = value;
-                    }
-                }
-            }
+        allConverters.setUnmodifiable();
 
-            //take this highest priority converter and put it in the final map
-            if (highest != null) {
-                converters.put(type, highest);
-            }
-        }
-
-        converters = Collections.unmodifiableMap(converters);
-        return converters;
+        return allConverters;
     }
 
     /**
@@ -264,75 +230,12 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
     }
 
     /**
-     * For each converter in the list call addConverter(converters, type, converter)
-     *
-     * Call this method only from within a 'synchronized(this) block
-     *
-     * @param converters
-     * @param additions
-     */
-    private static void addConverterLists(Map<Type, List<Converter<?>>> converters, Map<Type, List<Converter<?>>> additions) {
-        for (Map.Entry<Type, List<Converter<?>>> entry : additions.entrySet()) {
-            Type type = entry.getKey();
-            List<Converter<?>> converterList = entry.getValue();
-            for (Converter<?> converter : converterList) {
-                addConverter(converters, type, converter);
-            }
-        }
-    }
-
-    /**
-     *
-     * Call addConverter(converters, type, converter) for each converter in the additions entrySet
-     *
-     * Call this method only from within a 'synchronized(this) block
-     *
-     * @param converters
-     * @param additions
-     */
-    private static void addConverters(Map<Type, List<Converter<?>>> converters, Map<Type, Converter<?>> additions) {
-        for (Map.Entry<Type, Converter<?>> entry : additions.entrySet()) {
-            Type type = entry.getKey();
-            Converter<?> converter = entry.getValue();
-            addConverter(converters, type, converter);
-        }
-    }
-
-    /**
-     * Call addConverter(converters, type, converter) for each converter in the additions entrySet
-     *
-     * Call this method only from within a 'synchronized(this) block
-     *
-     * @param converters
-     * @param type
-     * @param converter
-     */
-    private static void addConverter(Map<Type, List<Converter<?>>> converters, Type type, Converter<?> converter) {
-        List<Converter<?>> converterList = converters.get(type);
-        if (converterList == null) {
-            converterList = new ArrayList<>();
-            converters.put(type, converterList);
-        }
-        converterList.add(converter);
-    }
-
-    /**
      * Call this method only from within a 'synchronized(this) block
      *
      * @param source
      */
     private void addSource(ConfigSource source) {
         this.userSources.add(source);
-    }
-
-    /**
-     * Call this method only from within a 'synchronized(this) block
-     *
-     * @param converter
-     */
-    private void addConverter(Converter<?> converter) {
-        Type type = DefaultConverters.getConverterType(converter);
-        addConverter(userConverters, type, converter);
     }
 
     /**

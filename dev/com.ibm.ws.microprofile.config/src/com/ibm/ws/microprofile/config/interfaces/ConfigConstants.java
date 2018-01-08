@@ -24,7 +24,11 @@ public class ConfigConstants {
     public static final int ORDINAL_ENVIRONMENT_VARIABLES = 300;
     public static final int ORDINAL_PROPERTIES_FILE = 100;
 
+    //Default Priority for USER Converters
     public static final int DEFAULT_CONVERTER_PRIORITY = 100;
+
+    //Priority for BUILT IN Converters
+    public static final int BUILTIN_CONVERTER_PRIORITY = 1;
 
     public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
     public static final long DEFAULT_DYNAMIC_REFRESH_INTERVAL = 500;
