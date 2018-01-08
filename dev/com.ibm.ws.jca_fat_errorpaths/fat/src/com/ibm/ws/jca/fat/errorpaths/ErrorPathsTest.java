@@ -45,7 +45,8 @@ public class ErrorPathsTest extends FATServletClient {
                               "CWWKG0032W", // EXPECTED: Unexpected value specified for property [month], value = [14]. Expected value(s) are: [0][1][2][3][4][5][6][7][8][9][10][11].
                               "CWWKG0058E", // EXPECTED: properties.ErrorPathRA with the unique identifier default-0 is missing required attribute requiredProp1
                               "CWWKG0075E", // EXPECTED: The value 1.01e-5 is not valid for attribute floatProp1 of configuration element adminObject. The validation message was: Value "1.01e-5" is out of range..
-                              "CWWKG0076W");// EXPECTED: The previous configuration for adminObject with id default-6 is still in use. (This is because the new config wasn't valid)
+                              "CWWKG0076W", // EXPECTED: The previous configuration for adminObject with id default-6 is still in use. (This is because the new config wasn't valid)
+                              "J2CA8816E"); // EXPECTED: The id attribute of the resourceAdapter element for resource adapter module ErrorPathRA_2 cannot be one of the reserved identifiers [wmqJms, wasJms].
         }
     }
 
@@ -159,4 +160,11 @@ public class ErrorPathsTest extends FATServletClient {
         if (null == server.waitForStringInLog(".*J2CA9919W.*com.ibm.test.errorpathadapter.InterfaceDoesNotExist.*"))
             throw new Exception("Did not find warning for unavailable interface");
     }
+
+    @Test
+    public void testReservedIdForResourceAdapter() throws Exception {
+        if (null == server.waitForStringInLog(".*J2CA8816E: The id attribute of the resourceAdapter element for.*"))
+            throw new Exception("Did not find error for reserved resource adapter id");
+    }
+
 }

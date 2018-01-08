@@ -9,6 +9,8 @@
     <include location="../fatTestPorts.xml"/>
 
     <resourceAdapter location="${server.config.dir}/connectors/ErrorPathRA.rar"/>
+    <!-- following adapter should fail to load because it uses a reserved id-->
+    <resourceAdapter id="wmqJms" location="${server.config.dir}/connectors/ErrorPathRA.rar"/>
 
     <activationSpec id="ActivationSpecMissingProp1">
       <properties.ErrorPathRA requiredProp2="TWO"/>

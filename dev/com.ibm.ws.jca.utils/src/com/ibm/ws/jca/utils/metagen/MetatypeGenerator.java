@@ -213,8 +213,6 @@ public class MetatypeGenerator {
         try {
             setup(configProps);
 
-            generalAdapterName = config.getInstance().adapterName;
-
             buildMetatype();
             postBuild(configProps);
 
@@ -1238,6 +1236,8 @@ public class MetatypeGenerator {
     private void setup(Map<String, Object> configProps) throws IOException, JAXBException, SAXException, ParserConfigurationException, ClassNotFoundException, ResourceAdapterInternalException, UnableToAdaptException, InstantiationException, InvalidPropertyException, UnavailableException, ResourceAdapterInstallException {
 
         config = new MetaGenConfig(configProps);
+        generalAdapterName = config.getInstance().adapterName;
+
         suffixOverridesByIntf = config.get(MetaGenConstants.KEY_SUFFIX_OVERRIDES_BY_INTERFACE, Collections.<String, String> emptyMap());
         suffixOverridesByImpl = config.get(MetaGenConstants.KEY_SUFFIX_OVERRIDES_BY_IMPL, Collections.<String, String> emptyMap());
         suffixOverridesByBoth = config.get(MetaGenConstants.KEY_SUFFIX_OVERRIDES_BY_BOTH, Collections.<String, String> emptyMap());
