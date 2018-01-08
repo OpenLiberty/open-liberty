@@ -14,9 +14,6 @@ package com.ibm.ws.security.wim.adapter.ldap.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -107,9 +104,4 @@ public class TDSLDAP_SSLRef_NoSSLTest {
                      "vmmtestuser", servlet.checkPassword(user, password));
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }
