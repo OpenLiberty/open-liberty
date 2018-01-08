@@ -174,6 +174,13 @@ public class InjectInjectionObjectFactory {
 
         }
 
+        if (references.size() == 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getObjectInstance null");
+            }
+            return null;
+        }
+
         debugInjectionObjects(references.toArray());
         if (references.size() == 1) {
             Object reference = references.get(0);
