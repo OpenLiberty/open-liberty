@@ -526,6 +526,8 @@ public class ProcessControlHelper {
             }
         } else if (pauseRc == ReturnCode.SERVER_UNKNOWN_STATUS) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
+        } else if (pauseRc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.server.pause.command.port.disabled"), serverName));
         } else {
             if (targetParm != null) {
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.pauseFailedException.target"), serverName));
@@ -591,6 +593,8 @@ public class ProcessControlHelper {
             }
         } else if (resumeRc == ReturnCode.SERVER_UNKNOWN_STATUS) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
+        } else if (resumeRc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.server.resume.command.port.disabled"), serverName));
         } else {
             if (targetParm != null) {
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.resumeFailedException.target"), serverName));
