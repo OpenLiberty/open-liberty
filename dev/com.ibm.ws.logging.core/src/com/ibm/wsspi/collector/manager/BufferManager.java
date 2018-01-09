@@ -19,14 +19,13 @@ import java.util.Queue;
  */
 public abstract class BufferManager {
 
-    /* Reference to ring buffer implementation */
-//    protected final Buffer<Object> ringBuffer;
+	protected static final int EARLY_MESSAGE_QUEUE_SIZE=1000;
+	protected static final int RING_BUFFER_SIZE=10000;
 
-    // protected final Queue<Object> earlierTraces;
     protected final Queue<Object> earlyMessageQueue;
     
     protected BufferManager() {
-        earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[1000]);
+        earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
     }
 
     /**

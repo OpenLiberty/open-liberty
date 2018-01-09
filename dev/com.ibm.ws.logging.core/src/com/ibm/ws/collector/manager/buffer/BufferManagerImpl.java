@@ -70,9 +70,6 @@ public class BufferManagerImpl extends BufferManager {
 			ringBuffer.add(event);
 		}
 		
-		if (event == null)
-			throw new NullPointerException();
-		
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Adding event to buffer " + event);
 		}
@@ -131,10 +128,10 @@ public class BufferManagerImpl extends BufferManager {
 		try {
 			//If it is first async handler subscribed, then create the main buffer
 			if(ringBuffer == null) {
-				ringBuffer = new Buffer<Object>(10000);
+				ringBuffer = new Buffer<Object>(RING_BUFFER_SIZE);
 			}
 			//Every new Asynchronous handler starts off with all events from EMQ
-			Object holder[] = new Object[1000];
+			Object holder[] = new Object[EARLY_MESSAGE_QUEUE_SIZE];
 			Object[] messagesList = earlyMessageQueue.toArray(holder);
 			for(Object message: messagesList) {
 				ringBuffer.add(message);
@@ -157,7 +154,7 @@ public class BufferManagerImpl extends BufferManager {
 			//Send messages from EMQ to synchronous handler when it subscribes to receive messages
 			if(!earlyMessageQueue.isEmpty() && !synchronizedHandlerSet.contains(syncHandler)) {
 				System.out.println("Sending Early Messages to New Synchronized Handler: " + syncHandler.getHandlerName());
-				Object holder[] = new Object[1000];
+				Object holder[] = new Object[EARLY_MESSAGE_QUEUE_SIZE];
 				Object[] messagesList = earlyMessageQueue.toArray(holder);
 				for(Object message: messagesList) {
 					syncHandler.synchronousWrite(message);
