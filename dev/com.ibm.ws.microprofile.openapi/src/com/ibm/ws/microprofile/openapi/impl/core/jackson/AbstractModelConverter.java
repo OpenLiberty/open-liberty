@@ -12,10 +12,11 @@ package com.ibm.ws.microprofile.openapi.impl.core.jackson;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
@@ -28,6 +29,9 @@ import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import com.ibm.ws.microprofile.openapi.impl.core.converter.ModelConverter;
 import com.ibm.ws.microprofile.openapi.impl.core.converter.ModelConverterContext;
 
@@ -39,7 +43,9 @@ public abstract class AbstractModelConverter implements ModelConverter {
      * Minor optimization: no need to keep on resolving same types over and over
      * again.
      */
-    protected Map<JavaType, String> _resolvedTypeNames = new ConcurrentHashMap<JavaType, String>();
+    protected Map<JavaType, String> _resolvedTypeNames = Collections.synchronizedMap(new WeakHashMap<JavaType, String>());
+
+    private static final TraceComponent tc = Tr.register(AbstractModelConverter.class);
 
     protected AbstractModelConverter(ObjectMapper mapper) {
         mapper.registerModule(
@@ -92,6 +98,9 @@ public abstract class AbstractModelConverter implements ModelConverter {
         }
         name = _findTypeName(type, beanDesc);
         _resolvedTypeNames.put(type, name);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, String.format("_resolvedTypeNames.put(%s,%s), size=%d", type, name, _resolvedTypeNames.keySet().size()));
+        }
         return name;
     }
 
