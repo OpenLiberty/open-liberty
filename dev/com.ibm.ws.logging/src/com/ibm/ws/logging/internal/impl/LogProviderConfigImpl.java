@@ -216,10 +216,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         hideMessageIds = InitConfgAttribute.HIDE_MESSAGES.getStringCollectionValue("hideMessage", c, hideMessageIds, isInit);
 
-        messageSource = InitConfgAttribute.MESSAGE_SOURCE.getStringCollectionValue("messageSource", c, messageSource, isInit);
-        messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValue(c, messageFormat, isInit);
-        consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValue("consoleSource", c, consoleSource, isInit);
-        consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValue(c, consoleFormat, isInit);
+        messageSource = InitConfgAttribute.MESSAGE_SOURCE.getStringCollectionValueAndSaveInit("messageSource", c, messageSource, isInit);
+        messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValueAndSaveInit(c, messageFormat, isInit);
+        consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValueAndSaveInit("consoleSource", c, consoleSource, isInit);
+        consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValueAndSaveInit(c, consoleFormat, isInit);
     }
 
     /**
@@ -444,6 +444,42 @@ public class LogProviderConfigImpl implements LogProviderConfig {
                 config.put(propertyKey, newValue.name());
             }
             return newValue;
+        }
+
+        /**
+         * Gets the string value. During initializing, the property value is set
+         * to the default if the config property is not found.
+         *
+         * @param config
+         * @param defaultValue
+         * @param isInit
+         * @return
+         */
+        String getStringValueAndSaveInit(Map<String, Object> config, String defaultValue, boolean isInit) {
+            Object value = config.get(isInit ? propertyKey : configKey);
+            String newValue = LoggingConfigUtils.getStringValue(value, defaultValue);
+            if (isInit && value == null) {
+                config.put(propertyKey, newValue);
+            }
+            return newValue;
+        }
+
+        /**
+         * Gets a collection from the config. During initializing, the property value is set
+         * to the default if the config property is not found.
+         *
+         * @param config
+         * @param defaultValue
+         * @param isInit
+         * @return
+         */
+        Collection<String> getStringCollectionValueAndSaveInit(String key, Map<String, Object> config, Collection<String> defaultValue, boolean isInit) {
+            Object value = config.get(isInit ? propertyKey : configKey);
+            Collection<String> collection = LoggingConfigUtils.parseStringCollection(key, value, defaultValue);
+            if (isInit && value == null) {
+                config.put(propertyKey, LoggingConfigUtils.getStringFromCollection(defaultValue));
+            }
+            return collection;
         }
 
         Level getLogLevelValue(Map<String, Object> config, Level defaultValue, boolean isInit) {

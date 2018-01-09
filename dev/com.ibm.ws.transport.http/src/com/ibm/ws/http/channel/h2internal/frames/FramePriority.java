@@ -115,6 +115,10 @@ public class FramePriority extends Frame {
         if (streamId == 0) {
             throw new ProtocolException("PRIORITY frame stream ID cannot be 0x0");
         }
+        if (this.streamId == this.streamDependency) {
+            throw new ProtocolException("PRIORITY frame stream cannot depend on itself");
+        }
+
     }
 
     public boolean isExclusive() {

@@ -61,6 +61,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -128,26 +130,18 @@ public class PluginGenerator {
     
     // save a reference to the previously-generated configuration hash
     private Integer previousConfigHash = null;
-    
-    private static final String JAVA_VERSION = 
-                    AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return System.getProperty("java.version");
-                        }
-                    });
 
-    private static final String JAVA_VENDOR = 
-                    AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return System.getProperty("java.vm.vendor");
-                        }
-                    });
-    
-    private static final boolean CHANGE_TRANSFORMER = (JAVA_VENDOR != null && JAVA_VENDOR.toLowerCase().contains("ibm") 
-                    && (JAVA_VERSION.startsWith("1.6") || JAVA_VERSION.startsWith("1.7") || JAVA_VERSION.startsWith("1.8"))); 
-   
+    private static final boolean CHANGE_TRANSFORMER;
+
+    static {
+        if (!JavaInfo.vendor().equals(Vendor.IBM)) {
+            CHANGE_TRANSFORMER = false;
+        } else {
+            int majorVersion = JavaInfo.majorVersion();
+            CHANGE_TRANSFORMER = majorVersion == 7 || majorVersion == 8;
+        }
+    }
+
     /**
      * Constructor.
      *
@@ -833,7 +827,7 @@ public class PluginGenerator {
                 final String defaultTransformerFactory = getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);    
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "JDK = " + JAVA_VENDOR + ", JDK level = " + JAVA_VERSION +", current TF jvm property value = " + defaultTransformerFactory);
+                    Tr.debug(tc, "JDK = " + JavaInfo.vendor() + ", JDK level = " + JavaInfo.majorVersion() + "." + JavaInfo.minorVersion() +", current TF jvm property value = " + defaultTransformerFactory);
                 }
                 
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {

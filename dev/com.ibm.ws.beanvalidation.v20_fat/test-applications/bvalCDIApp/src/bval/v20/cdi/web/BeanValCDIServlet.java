@@ -12,8 +12,12 @@ package bval.v20.cdi.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.time.Year;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
@@ -23,11 +27,24 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Negative;
+import javax.validation.constraints.NegativeOrZero;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import javax.xml.bind.ValidationException;
 
 import org.junit.Test;
 
+import bval.v20.cdi.web.MethodReturnValidatedBean.NestedBean;
 import componenttest.app.FATServlet;
+import junit.framework.Assert;
 
 @SuppressWarnings("serial")
 @WebServlet("/BeanValCDIServlet")
@@ -44,6 +61,43 @@ public class BeanValCDIServlet extends FATServlet {
 
     @Inject
     Validator injectVal;
+
+    @Inject
+    MethodReturnValidatedBean methodReturnBean;
+
+    @Test
+    public void testBasicMethodValidation() {
+        assertViolation(() -> methodReturnBean.email("bogus@bogus.com"), Email.class);
+        assertViolation(() -> methodReturnBean.future(Instant.now().minusSeconds(60)), Future.class);
+        assertViolation(() -> methodReturnBean.max100(101), Max.class);
+        assertViolation(() -> methodReturnBean.min5(4), Min.class);
+        assertViolation(() -> methodReturnBean.negative(1), Negative.class);
+        assertViolation(() -> methodReturnBean.negativeOrZero(1), NegativeOrZero.class);
+        assertViolation(() -> methodReturnBean.notNull(null), NotNull.class);
+        assertViolation(() -> methodReturnBean.past(Year.of(2222)), Past.class);
+        assertViolation(() -> methodReturnBean.positive((short) -1), Positive.class);
+        assertViolation(() -> methodReturnBean.positiveOrZero(-1), PositiveOrZero.class);
+        assertViolation(() -> methodReturnBean.size3to5("ab"), Size.class);
+        NestedBean b = methodReturnBean.new NestedBean();
+        b.positive = -1;
+        assertViolation(() -> methodReturnBean.validBean(b), Positive.class);;
+    }
+
+    private void assertViolation(Supplier<?> function, Class<?> expectedViolationClass) {
+        String expectedViolation = expectedViolationClass.getCanonicalName();
+        try {
+            function.get();
+            Assert.fail("Expected to get a constraint violation on " + expectedViolation);
+        } catch (ConstraintViolationException e) {
+            assertEquals("Did not fid expected number of constraints", 1, e.getConstraintViolations().size());
+            assertTrue("Did not find expected constraint " + expectedViolation + " in " + e.getConstraintViolations(),
+                       e.getConstraintViolations().stream().anyMatch(v -> v.getConstraintDescriptor()
+                                       .getAnnotation()
+                                       .toString()
+                                       .contains(expectedViolation)));
+            System.out.println("Found expected constraint violation " + expectedViolation);
+        }
+    }
 
     @Test
     public void testInjectVF() throws Exception {

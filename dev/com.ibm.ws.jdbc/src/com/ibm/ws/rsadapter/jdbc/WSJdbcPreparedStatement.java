@@ -545,6 +545,7 @@ public class WSJdbcPreparedStatement extends WSJdbcStatement implements Prepared
         return numUpdates;
     }
 
+    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
     public String getSql(){
         return sql;         
     }

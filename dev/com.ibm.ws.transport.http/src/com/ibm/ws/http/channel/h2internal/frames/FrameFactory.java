@@ -53,6 +53,9 @@ public class FrameFactory {
             case WINDOW_UPDATE:
                 return new FrameWindowUpdate(streamId, payloadLength, flags, reserveBit, direction);
 
+            case UNKNOWN:
+                return new FrameUnknown(streamId, payloadLength, flags, reserveBit, direction);
+
             default:
                 return null;
         }

@@ -45,6 +45,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.transport.iiop.yoko.DefaultSocketFactorySubsystemFactory, \
   com.ibm.ws.transport.iiop.yoko.DispatchSubsystemFactory, \
   com.ibm.ws.transport.iiop.yoko.ORBConfigAdapter
+-dsannotations-options: version;minimum=1.2
 
 instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 

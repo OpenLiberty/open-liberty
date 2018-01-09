@@ -18,15 +18,11 @@ src: \
 	test-applications/builtinAnnoLiteralsApp/src,\
 	test-applications/cdiContainerConfigApp/src,\
 	test-applications/configuratorApp/src,\
-	test-applications/interceptionFactoryApp/src
+	test-applications/interceptionFactoryApp/src,\
+	test-applications/trimTestApp/src,\
+	test-applications/secureAsyncEventsApp/src
 
 fat.project: true
-
-# To define a global minimum java level for the FAT, use the following property.
-# If unspecified, the default value is ${javac.source}
-runtime.minimum.java.level: 1.8
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 javac.source: 1.8
 javac.target: 1.8
@@ -37,5 +33,9 @@ javac.target: 1.8
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest
-	
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.ws.security.javaeesec.1.0;version=latest,\
+	com.ibm.websphere.javaee.security.1.0;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

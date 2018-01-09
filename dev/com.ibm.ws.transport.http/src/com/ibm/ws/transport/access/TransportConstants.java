@@ -20,6 +20,10 @@ public class TransportConstants {
 
     public static final String UPGRADED_WEB_CONNECTION_OBJECT = "UpgradedWebConnectionObject";
 
+    // for HTTP2 and other protocols that need the DispatcherLink to close when not using the more
+    // generic "user upgraded protocol" listeners below
+    public static final String UPGRADED_WEB_CONNECTION_NEEDS_CLOSE = "UpgradedWebConnectionNeedsClose";
+
     // following added for Upgrade
     public static final String CLOSE_NON_UPGRADED_STREAMS = "CloseNonUpgradedStreams";
     public static final String UPGRADED_LISTENER = "UpgradedListener";

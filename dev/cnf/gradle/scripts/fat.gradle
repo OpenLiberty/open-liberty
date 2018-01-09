@@ -25,17 +25,13 @@ publishing {
   }
 }
 
-task cleanFat() {
-  doLast {
-    delete autoFvtDir
-  }
+task cleanFat(type: Delete) {
+  delete autoFvtDir
 }
 
-task cleanBeforeRun() {
-  doLast {
-    delete new File(autoFvtDir, 'output')
-    delete new File(autoFvtDir, 'results')
-  }
+task cleanBeforeRun(type: Delete) {
+  delete new File(autoFvtDir, 'output')
+  delete new File(autoFvtDir, 'results')
 }
 
 configurations {
@@ -48,14 +44,12 @@ dependencies {
 }
 
 task addRequiredLibraries(type: Copy) {
-  shouldRunAfter cleanFat
   shouldRunAfter jar
   from configurations.requiredLibs
   into new File(autoFvtDir, 'lib')
 }
 
 task addDerby(type: Copy) {
-  shouldRunAfter cleanFat
   shouldRunAfter jar
   from configurations.derby
   into new File(autoFvtDir, 'publish/shared/resources/derby')
@@ -154,17 +148,18 @@ task autoFVT {
 
     // Create a fat.bnd.properties file that contains metadata about the FAT
     def bndProps = new Properties()
-    File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
-    // Check for minimum java level for test execution:
-    def minJavaLevel = bnd('runtime.minimum.java.level')
-    if(minJavaLevel == null)
-      minJavaLevel = bnd('javac.source')
-    bndProps.setProperty('runtime.minimum.java.level', minJavaLevel)
-    // Check if we should override wlp classpath
-    def wlpClasspath = bnd('test.classpath.wlp.include')
-    if(wlpClasspath != null)
-      bndProps.setProperty('test.classpath.wlp.include', wlpClasspath)
     
+    // By default, load up all properties with certain prefixes
+    bndWorkspace.getProject(project.getProjectDir()).getProperties().each { k, v ->
+      if(k.startsWith("test.") || k.startsWith("fat."))
+        bndProps.setProperty(k, v);
+    }
+    
+    // Check for minimum java level for test execution:
+    def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
+    bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    
+    File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def writer = new FileWriter(propsFile)
     try {
     	bndProps.store(writer, null)
@@ -321,12 +316,7 @@ if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
 	}
 }
 
-compileJava {
-  dependsOn cleanFat
-}
-
 assemble {
-  dependsOn zipProjectFVT
   // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
   if(!buildFatEnabled) {
     enabled = false;
@@ -343,7 +333,9 @@ build {
 }
 
 buildfat {
+  dependsOn cleanFat
   dependsOn build
+  dependsOn zipProjectFVT
 }
 
 task buildandrun {

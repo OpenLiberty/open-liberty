@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,62 +29,17 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
-import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
-import com.ibm.ws.util.ThreadContextAccessor;
-import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true)
 public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
-    private static final TraceComponent tc = Tr.register(ValidatorFactoryBuilderImpl.class);
 
-    private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
-    private static final String REFERENCE_VALIDATION_RELEASABLE_FACTORY = "ValidationReleasableFactory";
-
-    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
-    private final AtomicServiceReference<ValidationReleasableFactory> validationReleasableFactorySR = new AtomicServiceReference<ValidationReleasableFactory>(REFERENCE_VALIDATION_RELEASABLE_FACTORY);
-
-    /**
-     * Privileged action for creating a thread context class loader.
-     */
-    private class CreateThreadContextClassLoaderAction implements PrivilegedAction<ClassLoader> {
-        private final ClassLoader parentCL;
-
-        private CreateThreadContextClassLoaderAction(ClassLoader parentCL) {
-            this.parentCL = parentCL;
-        }
-
-        @Override
-        public ClassLoader run() {
-            return classLoadingServiceSR.getServiceWithException().createThreadContextClassLoader(parentCL);
-        }
-    }
-
-    /**
-     * Privileged action for destroying a thread context class loader.
-     */
-    private class DestroyThreadContextClassLoaderAction implements PrivilegedAction<Void> {
-        private final ClassLoader tccl;
-
-        private DestroyThreadContextClassLoaderAction(ClassLoader tccl) {
-            this.tccl = tccl;
-        }
-
-        @Override
-        public Void run() {
-            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
-            return null;
-        }
-    }
+    private static final String REFERENCE_BVAL_MANAGED_OBJECT_BUILDER = "BvalManagedObjectBuilder";
+    private final AtomicServiceReference<BvalManagedObjectBuilder> bvalManagedObjectBuilderSR = new AtomicServiceReference<BvalManagedObjectBuilder>(REFERENCE_BVAL_MANAGED_OBJECT_BUILDER);
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
@@ -95,122 +50,44 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Override
     public ValidatorFactory buildValidatorFactory(final ClassLoader appClassLoader, final String containerPath) {
-        ClassLoader tcclClassLoader = null;
-        SetContextClassLoaderPrivileged setClassLoader = null;
-        ClassLoader oldClassLoader = null;
-        try {
-            tcclClassLoader = configureBvalClassloader(this.getClass().getClassLoader());
 
-            // consider refactoring to combine multiple privileged actions into one
-            ClassLoader bvalClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                @Override
-                public ClassLoader run() {
-                    return new Validation20ClassLoader(appClassLoader, containerPath);
-                }
-            });
+        ClassLoader bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(appClassLoader, containerPath));
 
-            ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
+        Configuration<?> config = Validation.byDefaultProvider().configure();
 
-            // set the thread context class loader to be used, must be reset in finally block
-            setClassLoader = new SetContextClassLoaderPrivileged(tca);
-            oldClassLoader = setClassLoader.execute(tcclClassLoader);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Called setClassLoader with oldClassLoader of" + oldClassLoader + " and newClassLoader of " + tcclClassLoader);
-            }
-            Configuration<?> config = Validation.byDefaultProvider().configure();
-
-            if (config instanceof HibernateValidatorConfiguration) {
-                HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
-                hvConfig.externalClassLoader(bvalClassLoader);
-            }
-
-            if (validationReleasableFactorySR.getReference() != null) {
-                ValidationReleasableFactory releasableFactory = validationReleasableFactorySR.getServiceWithException();
-                return releasableFactory.injectValidatorFactoryResources(config, appClassLoader);
-            } else {
-                return config.buildValidatorFactory();
-            }
-        } finally {
-            if (setClassLoader != null) {
-                setClassLoader.execute(oldClassLoader);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
-                }
-            }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                releaseLoader(tcclClassLoader);
-            }
+        if (config instanceof HibernateValidatorConfiguration) {
+            HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
+            hvConfig.externalClassLoader(bvalClassLoader);
         }
 
-    }
-
-    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
-        @Override
-        public ThreadContextAccessor run() {
-            return ThreadContextAccessor.getThreadContextAccessor();
+        if (bvalManagedObjectBuilderSR.getReference() != null) {
+            BvalManagedObjectBuilder bvalManagedObjectBuilder = bvalManagedObjectBuilderSR.getServiceWithException();
+            return bvalManagedObjectBuilder.injectValidatorFactoryResources(config, appClassLoader);
+        } else {
+            return config.buildValidatorFactory();
         }
-    };
-
-    private void releaseLoader(ClassLoader tccl) {
-        AccessController.doPrivileged(new DestroyThreadContextClassLoaderAction(tccl));
-    }
-
-    private ClassLoader configureBvalClassloader(ClassLoader cl) {
-        if (cl == null) {
-            cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                @Override
-                public ClassLoader run() {
-                    return Thread.currentThread().getContextClassLoader();
-                }
-            });
-        }
-        if (cl != null) {
-            ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
-            if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
-            } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
-            }
-        }
-        return createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader());
-    }
-
-    private ClassLoader createTCCL(ClassLoader parentCL) {
-        return AccessController.doPrivileged(new CreateThreadContextClassLoaderAction(parentCL));
-    }
-
-    @Reference(name = REFERENCE_CLASSLOADING_SERVICE,
-               service = ClassLoadingService.class)
-    protected void setClassLoadingService(ServiceReference<ClassLoadingService> ref) {
-        classLoadingServiceSR.setReference(ref);
-    }
-
-    protected void unsetClassLoadingService(ServiceReference<ClassLoadingService> ref) {
-        classLoadingServiceSR.unsetReference(ref);
     }
 
     @Activate
     protected void activate(ComponentContext cc) {
-        classLoadingServiceSR.activate(cc);
-        validationReleasableFactorySR.activate(cc);
+        bvalManagedObjectBuilderSR.activate(cc);
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        classLoadingServiceSR.deactivate(cc);
-        validationReleasableFactorySR.deactivate(cc);
+        bvalManagedObjectBuilderSR.deactivate(cc);
     }
 
-    @Reference(name = REFERENCE_VALIDATION_RELEASABLE_FACTORY,
-               service = ValidationReleasableFactory.class,
+    @Reference(name = REFERENCE_BVAL_MANAGED_OBJECT_BUILDER,
+               service = BvalManagedObjectBuilder.class,
                cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.STATIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected void setValidationReleasableFactory(ServiceReference<ValidationReleasableFactory> factoryRef) {
-        validationReleasableFactorySR.setReference(factoryRef);
+    protected void setBvalManagedObjectBuilder(ServiceReference<BvalManagedObjectBuilder> builderRef) {
+        bvalManagedObjectBuilderSR.setReference(builderRef);
     }
 
-    protected void unsetValidationReleasableFactory(ServiceReference<ValidationReleasableFactory> factoryRef) {
-        validationReleasableFactorySR.unsetReference(factoryRef);
+    protected void unsetBvalManagedObjectBuilder(ServiceReference<BvalManagedObjectBuilder> builderRef) {
+        bvalManagedObjectBuilderSR.unsetReference(builderRef);
     }
 }

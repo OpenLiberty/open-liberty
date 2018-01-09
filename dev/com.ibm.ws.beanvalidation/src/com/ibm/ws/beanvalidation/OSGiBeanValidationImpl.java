@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,34 +118,47 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     }
 
     private ValidatorFactory getValidatorFactory(ModuleMetaData mmd, ClassLoader loader, ValidatorFactory validatorFactoryToSave) {
-        MetaDataSlot mmdSlot = ivModuleMetaDataSlot;
-        if (mmdSlot == null) {
+        if (ivModuleMetaDataSlot == null) {
             throw new ValidationException("Validation not enabled for module " +
                                           mmd.getName() + "; MetaDataSlotService not active");
         }
 
-        //TODO: What do we do if moduleClassLoader and moduleUri are null in the metadata slot?  ie Client container
-        //      Is MetaDataSlotService even available for the client container?
         if (isBeanValidationVersion20()) {
-            BeanValidationMetaData beanValMetaData = (BeanValidationMetaData) mmd.getMetaData(ivModuleMetaDataSlot);
-            if (beanValMetaData == null) {
-                throw new ValidationException("Validation not enabled for module " + mmd.getName());
-            }
+            return getValidatorFactoryHVProvider(mmd);
+        } else {
+            return getValidatorFactoryApacheProvider(mmd, loader, validatorFactoryToSave);
+        }
+    }
 
-            ValidatorFactory vf = beanValMetaData.getValidatorFactory();
-            if (vf == null) {
-                ValidatorFactoryBuilder validatorFactoryBuilder = validatorFactoryBuilderSR.getServiceWithException();
-                vf = validatorFactoryBuilder.buildValidatorFactory(beanValMetaData.getModuleClassLoader(), beanValMetaData.getModuleUri());
-                beanValMetaData.setValidatorFactory(vf);
-                mmd.setMetaData(mmdSlot, beanValMetaData);
-            }
-            if (vf == null) {
-                throw new ValidationException("Validation not enabled for module " + mmd.getName());
-            }
-            return vf;
+    private ValidatorFactory getValidatorFactoryHVProvider(ModuleMetaData mmd) {
+
+        BeanValidationMetaData beanValMetaData = (BeanValidationMetaData) mmd.getMetaData(ivModuleMetaDataSlot);
+        if (beanValMetaData == null) {
+            throw new ValidationException("Validation not enabled for module " + mmd.getName());
         }
 
-        OSGiBeanValidationScopeData scopeData = (OSGiBeanValidationScopeData) mmd.getMetaData(mmdSlot);
+        ValidatorFactory vf = beanValMetaData.getValidatorFactory();
+
+        if (vf == null) {
+            synchronized (beanValMetaData) {
+                vf = beanValMetaData.getValidatorFactory();
+                if (vf == null) {
+                    ValidatorFactoryBuilder validatorFactoryBuilder = validatorFactoryBuilderSR.getServiceWithException();
+                    vf = validatorFactoryBuilder.buildValidatorFactory(beanValMetaData.getModuleClassLoader(), beanValMetaData.getModuleUri());
+                    beanValMetaData.setValidatorFactory(vf);
+                    mmd.setMetaData(ivModuleMetaDataSlot, beanValMetaData);
+                }
+            }
+        }
+        if (vf == null) {
+            throw new ValidationException("Validation not enabled for module " + mmd.getName());
+        }
+        return vf;
+
+    }
+
+    private ValidatorFactory getValidatorFactoryApacheProvider(ModuleMetaData mmd, ClassLoader loader, ValidatorFactory validatorFactoryToSave) {
+        OSGiBeanValidationScopeData scopeData = (OSGiBeanValidationScopeData) mmd.getMetaData(ivModuleMetaDataSlot);
         if (scopeData == null) {
             throw new ValidationException("Validation not enabled for module " + mmd.getName());
         }

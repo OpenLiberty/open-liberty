@@ -11,14 +11,12 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -153,7 +151,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar3 {
         String user = "cn=vmmtestuser,o=ibm,c=us";
         String displayName = "cn=vmmtestuser,o=ibm,c=us";
         Log.info(c, "getUserDisplayName", "Checking with a valid user.");
-        equalDNs("External names should be equal ", displayName, servlet.getUserDisplayName(user));
+        assertDNsEqual("External names should be equal ", displayName, servlet.getUserDisplayName(user));
     }
 
     /**
@@ -165,7 +163,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar3 {
         String user = "cn=vmmtestuser,o=ibm,c=us";
         String uniqueUserId = "cn=vmmtestuser,o=ibm,c=us";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
-        equalDNs("External names should be equal ", uniqueUserId, servlet.getUniqueUserId(user));
+        assertDNsEqual("External names should be equal ", uniqueUserId, servlet.getUniqueUserId(user));
     }
 
     /**
@@ -181,7 +179,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar3 {
         String uniqueUserId = "vmmtestuser";
 
         Log.info(c, "getUserSecurityName", "Checking with a valid user.");
-        // equalDNs("External names should be equal ", uniqueUserId, servlet.getUserSecurityName(user));
+
         assertEquals("External names should be equal ", uniqueUserId, servlet.getUserSecurityName(user));
     }
 
@@ -232,7 +230,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar3 {
         String group = "cn=vmmgrp1,o=vmm";
         String uniqueGroupId = "cn=vmmgrp1,o=vmm";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        equalDNs("UniqueNames should be equal ", uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueNames should be equal ", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -272,9 +270,4 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar3 {
         assertEquals("There should only be 3 entries", 3, list.size());
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

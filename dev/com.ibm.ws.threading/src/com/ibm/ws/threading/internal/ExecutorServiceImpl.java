@@ -39,7 +39,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.threading.WSExecutorService;
 
@@ -51,10 +50,6 @@ import com.ibm.wsspi.threading.WSExecutorService;
            property = "service.vendor=IBM",
            service = { java.util.concurrent.ExecutorService.class, com.ibm.wsspi.threading.WSExecutorService.class })
 public final class ExecutorServiceImpl implements WSExecutorService {
-    /**
-     * Indicates whether we are on Java 6, because a workaround is needed for shutting down the thread pool in this case.
-     */
-    private static final boolean JAVA_6 = System.getProperty("java.version").equals("1.6.0");
 
     /**
      * The target ExecutorService.
@@ -350,47 +345,6 @@ public final class ExecutorServiceImpl implements WSExecutorService {
         // code has a reference to it
         oldThreadPool.setKeepAliveTime(0, TimeUnit.SECONDS);
         oldThreadPool.setCorePoolSize(0);
-
-        // The following is a workaround for Java 6 bug 6450200:  http://bugs.java.com/view_bug.do?bug_id=6450200
-        //
-        // The bug is that when you lower coreThreads, existing idle threads may not be interrupted and thus may
-        // never go away if no more work is submitted to the executor.
-        //
-        // The workaround I am using is to submit dummy work to the executor until all of the idle threads go
-        // away.
-        //
-        // Note that another workaround exists:
-        //  1.  Set keepAlive=0 before coreThreads=0 (we are doing that anyway, but technically the
-        //      order shouldn't matter)
-        //  2.  Use a custom LinkedBlockingQueue extension that overrides the remainingCapacity() method
-        //      to always return 0
-        //
-        // I'm not using that workaround on a matter of principle because it causes remainingCapacity() to
-        // return an incorrect value and in theory (although extremely unlikely) someone could add code in
-        // the future that relies on a correct return value for that method.
-        if (JAVA_6 && ((oldThreadPool.getPoolSize() - oldThreadPool.getActiveCount()) > 0)) {
-            oldThreadPool.execute(new Runnable() {
-                @Override
-                @FFDCIgnore(InterruptedException.class)
-                public void run() {
-                    // submit 1 dummy task per idle thread, but because it may be possible for any given thread to
-                    // process more than 1 dummy task, we need to sleep and try again until the idle threads are gone
-                    int idleThreads;
-                    while ((idleThreads = oldThreadPool.getPoolSize() - oldThreadPool.getActiveCount()) > 0) {
-                        for (int i = 0; i < idleThreads; i++) {
-                            oldThreadPool.execute(new Runnable() {
-                                @Override
-                                public void run() {}
-                            });
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ie) {
-                        }
-                    }
-                }
-            });
-        }
     }
 
     /**

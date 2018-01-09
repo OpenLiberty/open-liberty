@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -209,5 +210,18 @@ public class ShrinkHelper {
                         ? appName.substring(0, appName.length() - 4) : appName;
         server.addInstalledAppForValidation(installedAppName);
         return app;
+    }
+
+    public static ResourceAdapterArchive buildDefaultRar(String rarName, String... packages) throws Exception {
+        ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, rarName + ".rar")
+                        .addAsLibrary(ShrinkHelper.buildJavaArchive(rarName, packages));
+        ShrinkHelper.addDirectory(rar, "test-resourceadapters/" + rarName + "/resources/");
+        return rar;
+    }
+
+    public static ResourceAdapterArchive defaultRar(LibertyServer server, String rarName, String... packages) throws Exception {
+        ResourceAdapterArchive rar = buildDefaultRar(rarName, packages);
+        ShrinkHelper.exportToServer(server, "connectors", rar);
+        return rar;
     }
 }

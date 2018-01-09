@@ -21,7 +21,12 @@
     <include location="../fatTestPorts.xml"/>
     
     <application location="concurrentrxfat.war" />
-    
+
+    <managedScheduledExecutorService id="noContextExecutor" jndiName="concurrent/noContextExecutor">
+        <concurrencyPolicy max="2" maxQueueSize="2" runIfQueueFull="false"/>
+        <contextService/>
+    </managedScheduledExecutorService>
+
     <!-- Needed for application to shutdown the ExecutorService testThreads -->
     <javaPermission codebase="${server.config.dir}/apps/concurrentrxfat.war" className="java.lang.RuntimePermission" name="modifyThread"/>
     

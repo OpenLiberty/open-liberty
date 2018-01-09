@@ -39,7 +39,31 @@ task copyMavenLibs(type: Copy) {
     into cnf.file('mavenlibs')
 }
 
+void deleteRecursive(File file) {
+    if (file.isDirectory()) {
+        for (File entry : file.listFiles()) {
+            deleteRecursive(entry);
+        }
+    }
+    file.delete();
+}
+
+task cleanRepos(type: Delete) {
+    doLast {
+        deleteRecursive(file('release'))
+        delete 'release.mvn'
+        deleteRecursive(file('local'))
+        delete 'local.mvn'
+        delete fileTree('mavenlibs')
+    }
+}
+
+clean{
+    dependsOn cleanRepos
+}
+
 task initialize {
+    dependsOn cleanRepos
     dependsOn copyMavenLibs
     doLast {
         println "Gradle Initialized"
@@ -52,94 +76,58 @@ import org.apache.tools.ant.DirectoryScanner
 DirectoryScanner.removeDefaultExclude("**/.gitignore")
 DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
-/**
- * Writes two ivy.xml files:
- *  ivy.xml grabs specific versions so that local devs can switch which branches are consumed from, and
- *  ivy-latest.xml grabs latest.integration so most recent versions are downloaded.
- */
-task createIvyXml {
-    doLast {
-        String depsList = ""
-        String depsListLatest = ""
-
-        rootProject.fileTree(dir: '.', include: '*').visit { element ->
-            if (element.isDirectory()) {
-                String relativePath = "$element.relativePath"
-                def bndProject = bndWorkspace.getProject(relativePath)
-                if (bndProject != null && !bndProject.isNoBundles()) {
-                    String artifact = ""
-                    for (String bsn : bndProject.getBsns()) {
-                        String org = ""
-                        String name = ""
-                        if ('true'.equals(bndProject.get('test.project', 'false'))) {
-                            (org, name) = ['test', bsn]
-                        } else {
-                            (org, name) = ['dev', bsn]
-                        }
-                        depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '">\n'
-                        depsList = depsList + '          <artifact name="' + name + '" type="jar"/>\n'
-                        depsList = depsList + '          <artifact name="' + name + '" type="pom"/>\n'
-                        depsList = depsList + '        </dependency>\n'
-                        depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration">\n'
-                        depsListLatest = depsListLatest + '          <artifact name="' + name + '" type="jar"/>\n'
-                        depsListLatest = depsListLatest + '          <artifact name="' + name + '" type="pom"/>\n'
-                        depsListLatest = depsListLatest + '        </dependency>\n'
-                    }
-                }
-            }
+String getVersionFromReleaseRepo(String org, String name) {
+    def versions = []
+    cnf.project.fileTree(dir: 'release/' + org + '/' + name, include: '**/*.pom').visit { entry ->
+        if (entry.isDirectory()) {
+            String relPath = "$entry.relativePath"
+            versions.add(relPath)
         }
-
-        File ivyXml = new File(project.buildDir, 'ivy.xml')
-        ivyXml.createNewFile()
-        ivyXml.text = """<ivy-module version="2.0">
-  <info organisation="dev" module="prereq.published"/>
-  <dependencies>
-$depsList  </dependencies>
-</ivy-module>
-"""
-        File ivyXmlLatest = new File(project.buildDir, 'ivy-latest.xml')
-        ivyXmlLatest.createNewFile()
-        ivyXmlLatest.text = """<ivy-module version="2.0">
-  <info organisation="dev" module="prereq.published"/>
-  <dependencies>
-$depsListLatest  </dependencies>
-</ivy-module>
-"""
     }
+    if (versions.size() != 1) {
+        throw new GradleException('Unable to locate a distinct version for the artifact ' + org + ':' + name)
+    }
+    return versions[0]
+}
+
+task everythingElseHasBeenReleased {
+    dependsOn parent.subprojects.minus(project).release
 }
 
 task createGradleBootstrap {
+    dependsOn everythingElseHasBeenReleased
     doLast {
-        String depsList = ""
 
+        println 'Generating gradle bootstrap'
+
+        String depsList = ""
         rootProject.fileTree(dir: '.', include: '*').visit { element ->
             if (element.isDirectory()) {
                 String relativePath = "$element.relativePath"
                 def bndProject = bndWorkspace.getProject(relativePath)
                 if (bndProject != null && !bndProject.isNoBundles()) {
-                    String artifact = ""
+                    String org
+                    if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                        org = 'test'
+                    } else {
+                        org = 'dev'
+                    }
                     for (String bsn : bndProject.getBsns()) {
-                        String org = ""
-                        String name = ""
-                        if ('true'.equals(bndProject.get('test.project', 'false'))) {
-                            (org, name) = ['test', bsn]
-                        } else {
-                            (org, name) = ['dev', bsn]
-                        }
-                        depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '\'\n'
-                        depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '@pom\'\n'
+                        String version = getVersionFromReleaseRepo(org, bsn)
+                        depsList = depsList + '    compile \'' + org + ':' + bsn + ':' + version + '\'\n'
+                        depsList = depsList + '    compile \'' + org + ':' + bsn + ':' + version + '@pom\'\n'
                     }
                 }
             }
         }
 
-        String org = "dev"
         Map<String, String> projectPathToVersion = new HashMap<String, String>()
         rootProject.subprojects.each { p ->
             projectPathToVersion.put(p.name, p.version)
         }
 
-        rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
+        String org = 'dev'
+        rootProject.fileTree(dir: '.', include: '**/*.feature').visit { feature ->
             if (feature.isDirectory()) return
 
             String text = feature.getFile().getText()
@@ -170,13 +158,13 @@ task createGradleBootstrap {
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
         dependenciesFile.text = """dependencies {
-$depsList
-}
+$depsList}
 """
     }
 }
 
 task createGaESAList {
+    dependsOn everythingElseHasBeenReleased
     doLast {
         String features = ""
         rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
@@ -195,65 +183,62 @@ task createGaESAList {
 }
 
 task createGeneratedReplacementProjects {
+    dependsOn everythingElseHasBeenReleased
     doLast {
-        File templateDir = new File(projectDir, 'gradle/projects.for.ivy.ant')
+        File templateDir = new File(projectDir, 'gradle/replacement.project.templates')
+        def excludeList = []
         rootProject.fileTree(dir: '.', include: '*').visit { element ->
-            if (element.isDirectory()) {
-                String relativePath = "$element.relativePath"
-                def bndProject = bndWorkspace.getProject(relativePath)
-                if (bndProject == null) {
+            if (!element.isDirectory()) {
+                return
+            }
+            String relativePath = "$element.relativePath"
+            def bndProject = bndWorkspace.getProject(relativePath)
+            if (bndProject == null) {
+                return
+            }
+            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', 'false'))
+            String org
+            if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                if (!generateReplacement) {
                     return
                 }
-                if ('true'.equals(bndProject.get('test.project', 'false'))) {
-                    return
+                org = 'test'
+            } else {
+                org = 'dev'
+            }
+            List bsns = bndProject.getBsns()
+            int bsnCount = bndProject.isNoBundles() ? 0 : bsns.size()
+            if (bsnCount > 0) {
+                String classpathEntries = ""
+                String suffix = ""
+                for (String bsn : bsns) {
+                    String version = getVersionFromReleaseRepo(org, bsn)
+                    String artifact = bsn + '-' + version + '.jar'
+                    classpathEntries = '<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>' + suffix + classpathEntries
+                    suffix = '\n	'
                 }
-
-                List bsns = bndProject.getBsns()
-                int bsnCount = bndProject.isNoBundles() ? 0 : bndProject.getBsns().size()
-                if (bsnCount > 0) {
-                    String firstBsn = bndProject.getBsns()[0]
-                    String artifact = firstBsn + '-' + bndProject.getVersion(firstBsn) + '.jar'
-                    //println "projectName=" + relativePath + ", artifact=" + artifact
-                    File targetDir = new File(buildDir, 'replacements/' + relativePath)
-                    targetDir.mkdirs()
-                    copy {
-                        from templateDir
-                        into targetDir
-                        include '*.template'
-                        rename { String fileName ->
-                            fileName.replace('.template', '')
-                        }
-                        filter(ReplaceTokens, tokens: [PROJECT_NAME: relativePath, MAVEN_ARTIFACT: artifact])
+                if (relativePath.equals('com.ibm.ws.logging')) {
+                    classpathEntries = classpathEntries + '\n	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>'
+                }
+                excludeList.add('dev/' + relativePath + '/')
+                File targetDir = new File(buildDir, 'replacements/' + relativePath)
+                targetDir.mkdirs()
+                copy {
+                    from templateDir
+                    into targetDir
+                    include '*.template'
+                    rename { String fileName ->
+                        fileName.replace('.template', '')
                     }
-                    if (relativePath.equals('com.ibm.ws.logging')) {
-                        String classpathEntries = '	<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>\n' +
-                                                  '	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>\n'
-                        File classpathFile = new File(buildDir, "replacements/${relativePath}/.classpath")
-                        classpathFile.delete()
-                        classpathFile.createNewFile()
-                        classpathFile.text = """<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-$classpathEntries</classpath>
-"""
-                    }
-                    if (bndProject.getBsns().size() > 1) {
-                        String classpathEntries = ""
-                        //println bndProject.getBsns()
-                        for (String bsn : bndProject.getBsns()) {
-                            artifact = bsn + '-' + bndProject.getVersion(bsn) + '.jar'
-                            classpathEntries = '	<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>\n' + classpathEntries
-                        }
-                        File classpathFile = new File(buildDir, "replacements/${relativePath}/.classpath")
-                        classpathFile.delete()
-                        classpathFile.createNewFile()
-                        classpathFile.text = """<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-$classpathEntries</classpath>
-"""
-                    }
+                    filter(ReplaceTokens, tokens: [PROJECT_NAME: relativePath, CLASSPATH_ENTRIES: classpathEntries])
                 }
             }
         }
+        File excludeFile = new File(project.buildDir, 'excludeList.txt')
+        excludeFile.createNewFile()
+        String text = ""
+        excludeList.sort().each { text += it + '\n' }
+        excludeFile.text = text
     }
 }
 
@@ -261,6 +246,7 @@ def releaserepo = file(bnd('releaserepo', 'release')) /* Release repository. */
 
 task ('createIndex') {
     dependsOn copyMavenLibs
+    dependsOn everythingElseHasBeenReleased
     description 'Index the release repository.'
     group 'release'
 
@@ -284,41 +270,47 @@ task ('createIndex') {
         /* indexer */
         def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
 
-        def bundlesToIndex = bundles*.absolutePath.sort()
+        def tmpreleaserepo = cnf.file('tmpreleaserepo')
+        deleteRecursive(tmpreleaserepo)
 
-        /* index uncompressed. */
-        javaexec {
-            main = '-jar' // first arg must be the jar
-            args repoindexJar
-            args '--pretty'
-            args '-r', index_uncompressed
-            args '-d', releaserepo
-            args '-n', 'bnd'
-            args bundlesToIndex
-        }.assertNormalExitValue()
-        logger.info 'Generated index {}.', index_uncompressed
+        try {
+            copy {
+                from releaserepo
+                into tmpreleaserepo
+                include '**/*.jar'
+                exclude '**/*-latest.jar'
+                exclude '**/*-sources.jar'
+                exclude '**/*-javadoc.jar'
+            }
 
-        /* index compressed. */
-        javaexec {
-            main = '-jar' // first arg must be the jar
-            args repoindexJar
-            args '-r', index_compressed
-            args '-d', releaserepo
-            args '-n', 'bnd'
-            args bundlesToIndex
-        }.assertNormalExitValue()
-        logger.info 'Generated index {}.', index_compressed
+            println 'Generating index of release repo'
+
+            /* index uncompressed. */
+            javaexec {
+                main = '-jar' // first arg must be the jar
+                args repoindexJar
+                args '--pretty'
+                args '-r', index_uncompressed
+                args '-d', tmpreleaserepo
+                args '-n', 'bnd'
+                args tmpreleaserepo
+            }.assertNormalExitValue()
+            logger.info 'Generated index {}.', index_uncompressed
+
+            /* index compressed. */
+            javaexec {
+                main = '-jar' // first arg must be the jar
+                args repoindexJar
+                args '-r', index_compressed
+                args '-d', tmpreleaserepo
+                args '-n', 'bnd'
+                args tmpreleaserepo
+            }.assertNormalExitValue()
+            logger.info 'Generated index {}.', index_compressed
+        } finally {
+            deleteRecursive(tmpreleaserepo)
+        }
     }
-}
-
-task zipIvyBootstrap(type: Zip) {
-    dependsOn createIvyXml
-    dependsOn createGeneratedReplacementProjects
-    dependsOn createGaESAList
-    dependsOn createIndex
-    baseName 'ivy-bootstrap'
-    into 'prereq.published', {from new File(project.buildDir, 'ivy.xml'), new File(project.buildDir, 'ivy-latest.xml')}
-    from new File(project.buildDir, 'replacements')
 }
 
 task zipGradleBootstrap(type: Zip) {
@@ -327,17 +319,14 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGaESAList
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', {from new File(project.buildDir, 'dependencies.gradle'), new File(project.buildDir, 'gaFeatures.txt')}
+    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
+                                    new File(project.buildDir, 'gaFeatures.txt'),
+                                    new File(project.buildDir, 'excludeList.txt') }
     from new File(project.buildDir, 'replacements')
 }
 
 publishing {
   publications {
-    ivy(MavenPublication) {
-        artifactId 'ivy-bootstrap'
-        version project.version
-        artifact zipIvyBootstrap
-    }
     gradle(MavenPublication) {
         artifactId 'gradle-bootstrap'
         version project.version

@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,9 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -107,8 +105,8 @@ public class FATTestIDSNoFilters {
         String user = "vmmtestuser";
         String password = "vmmtestuserpwd";
         Log.info(c, "checkPasswordWithGoodCredentials", "Checking good credentials");
-        equalDNs("Authentication should succeed.",
-                 "cn=vmmtestuser,o=ibm,c=us", servlet.checkPassword(user, password));
+        assertDNsEqual("Authentication should succeed.",
+                       "cn=vmmtestuser,o=ibm,c=us", servlet.checkPassword(user, password));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -234,7 +232,7 @@ public class FATTestIDSNoFilters {
         String uniqueUserId = "cn=vmmtestuser,o=ibm,c=us";
 
         Log.info(c, "getUniqueUserIdWithValidUser", "Checking with a valid user.");
-        equalDNs(null, uniqueUserId, servlet.getUniqueUserId(user));
+        assertDNsEqual("UniqueUserId is incorrect", uniqueUserId, servlet.getUniqueUserId(user));
     }
 
     /**
@@ -383,7 +381,7 @@ public class FATTestIDSNoFilters {
         String uniqueGroupId = "cn=vmmgrp1,o=ibm,c=us";
 
         Log.info(c, "getUniqueGroupIdWithValidGroup", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -408,7 +406,7 @@ public class FATTestIDSNoFilters {
         String uniqueGroupId = "cn=vmmgrp1,o=ibm,c=us";
 
         Log.info(c, "getGroupSecurityNameWithValidGroup", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getGroupSecurityName(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getGroupSecurityName(group));
     }
 
     /**
@@ -447,10 +445,4 @@ public class FATTestIDSNoFilters {
         fail("An invalid group should cause EntryNotFoundException");
     }
 
-    // TODO Replace
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

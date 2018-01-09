@@ -11,6 +11,8 @@
 package com.ibm.ws.cdi.impl.weld;
 
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -660,7 +662,16 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             if (beansXmlResource != null) {
                 URL beansXmlUrl = beansXmlResource.getURL();
                 Bootstrap bootstrap = getCDIDeployment().getBootstrap();
-                beansXml = bootstrap.parse(beansXmlUrl);
+                final ClassLoader origTCCL = getContextClassLoader();
+                try {
+                    // Must use this class's loader as the context classloader to ensure
+                    // that we load Liberty's XML parser rather than any parser defined
+                    // in the application.
+                    setContextClassLoader(BeanDeploymentArchiveImpl.class.getClassLoader());
+                    beansXml = bootstrap.parse(beansXmlUrl);
+                } finally {
+                    setContextClassLoader(origTCCL);
+                }
             }
         }
         return this.beansXml;
@@ -1015,5 +1026,44 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public String getEEModuleDescriptorId() {
         return eeModuleDescptorId;
+    }
+
+    /**
+     * This method is used by Weld 3 for performance optimisation
+     *
+     * @return all bean classes
+     */
+    public Collection<Class<?>> getLoadedBeanClasses() {
+        return this.beanClasses.values();
+    }
+
+    /**
+     * This method is used by Weld 3 for performance optimisation
+     *
+     * @return all classes in the archive
+     */
+    public Collection<String> getKnownClasses() {
+        return getAllClazzes();
+    }
+
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
+    }
+
+    private static void setContextClassLoader(final ClassLoader newLoader) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+            @Override
+            public Void run() {
+                Thread.currentThread().setContextClassLoader(newLoader);
+                return null;
+            }
+        });
     }
 }

@@ -3018,15 +3018,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
 
         newThreadPriority = newThread.getPriority();
         if (newThreadPriority != 7) {
-            String osName = System.getProperty("os.name", "unknown").toLowerCase();
-            String javaVersion = System.getProperty("java.version");
-            boolean isMac = osName.indexOf("mac os") >= 0;
-            if (isMac && javaVersion.startsWith("1.6.")) {
-                System.out.println("Expecting new thread to have maximum priority of the thread group (7). Instead: " + newThreadPriority +
-                                   "\n This incorect result is expected on MAC OS with JDK 6 due to a bug in the JDK. See defect 115028 for more details. ");
-            } else {
-                throw new Exception("Expecting new thread to have maximum priority of the thread group (7). Instead: " + newThreadPriority);
-            }
+            throw new Exception("Expecting new thread to have maximum priority of the thread group (7). Instead: " + newThreadPriority);
         }
 
         Thread.currentThread().setPriority(2);
