@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1160,6 +1161,67 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * General test of obtruding values and exceptions.
+     */
+    @Test
+    public void testMultipleObtrude() throws Exception {
+        BlockableIncrementFunction increment = new BlockableIncrementFunction("testMultipleObtrude", null, null);
+
+        CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(() -> 80);
+
+        cf1.obtrudeValue(90);
+        CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
+        assertEquals(Integer.valueOf(91), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
+        assertFalse(cf2.isCancelled());
+
+        cf1.obtrudeValue(100);
+        CompletableFuture<Integer> cf3 = cf1.thenApplyAsync(increment);
+        assertEquals(Integer.valueOf(101), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf3.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
+        assertFalse(cf3.isCancelled());
+
+        cf1.obtrudeException(new IllegalAccessException("Intentionally raising exception for test."));
+        CompletableFuture<Integer> cf4 = cf1.thenApplyAsync(increment);
+        try {
+            Integer i = cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            throw new Exception("Should fail after result obtruded with an exception. Instead: " + i);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof IllegalAccessException) ||
+                !"Intentionally raising exception for test.".equals(x.getCause().getMessage()))
+                throw x;
+        }
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf4.isDone());
+        assertTrue(cf1.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertTrue(cf4.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
+        assertFalse(cf4.isCancelled());
+
+        cf3.obtrudeValue(110);
+        CompletableFuture<Integer> cf5 = cf3.thenApplyAsync(increment);
+        assertEquals(Integer.valueOf(111), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        cf4.obtrudeException(new CancellationException());
+        assertTrue(cf4.isCancelled());
+
+        cf4.obtrudeValue(120);
+        assertEquals(Integer.valueOf(120), cf4.getNow(121));
+    }
+
+    /**
      * Proxying an implementation class rather than an interface is a bit dangerous because when new methods are added to
      * the class, our proxy implementation won't be aware that it needs to be updated accordingly. This test exists to detect
      * any methods that are added so that we have the opportunity to properly implement.
@@ -1169,6 +1231,88 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertEquals("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture",
                      104, // WARNING: do not update this value unless you have properly implemented the new methods on ManagedCompletableFuture!
                      CompletableFuture.class.getMethods().length);
+    }
+
+    /**
+     * Obtrude the value of a future with an exception while the operation is still running.
+     * Verify that the value specified to the obtrude method is used, not the result of the operation.
+     */
+    @Test
+    public void testObtrudeExceptionWhileRunning() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(60, beginLatch, continueLatch);
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(new BlockableIncrementFunction("testObtrudeExceptionWhileRunning", null, null));
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            cf1.obtrudeException(new FileNotFoundException("Intentionally raising this exception to obtrude the result of the future."));
+
+            assertTrue(cf1.isDone());
+            assertFalse(cf1.isCancelled());
+            assertTrue(cf1.isCompletedExceptionally());
+
+            try {
+                Integer i = cf2.getNow(68);
+                fail("Value should have been obtruded: " + i);
+            } catch (CompletionException x) {
+                if (!(x.getCause() instanceof FileNotFoundException) ||
+                    !"Intentionally raising this exception to obtrude the result of the future.".equals(x.getCause().getMessage()))
+                    throw x;
+            }
+
+            try {
+                Integer i = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Value should have been obtruded with exception and caused the dependent future to raise exception. Instead: " + i);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof FileNotFoundException) ||
+                    !"Intentionally raising this exception to obtrude the result of the future.".equals(x.getCause().getMessage()))
+                    throw x;
+            }
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Obtrude the result of a future with a value while the operation is still running.
+     * Verify that the value specified to the obtrude method is used, not the result of the operation.
+     */
+    @Test
+    public void testObtrudeValueWhileRunning() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(70, beginLatch, continueLatch);
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(new BlockableIncrementFunction("testObtrudeValueWhileRunning", null, null));
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            cf1.obtrudeValue(77);
+
+            assertTrue(cf1.isDone());
+            assertFalse(cf1.isCancelled());
+            assertFalse(cf1.isCompletedExceptionally());
+
+            assertEquals(Integer.valueOf(77), cf1.getNow(79));
+
+            assertEquals(Integer.valueOf(78), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
     }
 
     /**
