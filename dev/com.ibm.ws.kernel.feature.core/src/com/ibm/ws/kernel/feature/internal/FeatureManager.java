@@ -85,6 +85,10 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.launch.service.FrameworkReady;
 import com.ibm.ws.kernel.launch.service.ProductExtensionServiceFingerprint;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryHolder;
 import com.ibm.ws.kernel.provisioning.LibertyBootRuntime;
@@ -139,6 +143,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     final static String FEATURE_DEF_CACHE_FILE = "platform/feature.cache";
     final static String FEATURE_PRODUCT_EXTENSIONS_INSTALL = "com.ibm.websphere.productInstall";
     final static String FEATURE_PRODUCT_EXTENSIONS_FILE_EXTENSION = ".properties";
+    final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
 
     final static Collection<String> ALLOWED_ON_ALL_FEATURES = Arrays.asList("com.ibm.websphere.appserver.timedexit-1.0", "com.ibm.websphere.appserver.osgiConsole-1.0");
@@ -1112,7 +1117,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         boolean continueOnError = onError != OnError.FAIL;
 
         Set<String> goodFeatures = null;
-
+        
         boolean featuresHaveChanges = true;
         boolean appForceRestartSet = false;
         try {
@@ -1455,7 +1460,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
         for (String missing : result.getMissing()) {
             reportedErrors = true;
-            if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
+            if (rootFeatures.contains(missing) && missing.indexOf(":") < 0 && !getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
                 // Only report this message for core features included as root features in the server.xml
                 Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
             } else {
@@ -1711,6 +1716,31 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             shutdownFramework();
         }
         return noExceptions;
+    }
+    
+    /**
+     * Return a display name for the currently running server.
+     */
+    protected String getProductInfoDisplayName() {
+        String result = null;
+        try {
+            Map<String, ProductInfo> products = ProductInfo.getAllProductInfo();
+            StringBuilder builder = new StringBuilder();
+            for (ProductInfo productInfo : products.values()) {
+                if (builder.length() != 0) {
+                    builder.append(", ");
+                }
+                builder.append(productInfo.getDisplayName());
+            }
+            result = builder.toString();
+        } catch (ProductInfoParseException e) {
+            // ignore exceptions-- best effort to get a pretty string
+        } catch (DuplicateProductInfoException e) {
+            // ignore exceptions-- best effort to get a pretty string
+        } catch (ProductInfoReplaceException e) {
+            // ignore exceptions-- best effort to get a pretty string
+        }
+        return result;
     }
 
     /**
