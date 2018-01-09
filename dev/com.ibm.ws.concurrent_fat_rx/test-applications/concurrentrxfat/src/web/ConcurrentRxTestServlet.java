@@ -649,32 +649,120 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
-     * Verify that the complete operation can be used to complete a running action prematurely,
-     * and that the corresponding task submitted to the policy executor is canceled.
+     * Verify that when a completable future is canceled, completable futures that depend on it are completed as canceled as well.
      */
     @Test
-    public void testComplete() throws Exception {
+    public void testAutoCompleteDependentFutures() throws Exception {
         CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch continueLatch = new CountDownLatch(1);
         try {
-            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testComplete", beginLatch, continueLatch);
-            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testAutoCompleteDependentFutures", beginLatch, continueLatch);
+            BlockableIncrementFunction increment = new BlockableIncrementFunction("testAutoCompleteDependentFutures", null, null);
+            CompletableFuture<String> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(s -> s.length());
+            CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment);
 
             assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
-            assertTrue(cf.complete("Intentionally completed prematurely"));
-            assertFalse(cf.complete("Should be ignored because already complete"));
-            assertFalse(cf.completeExceptionally(new Exception("Ignore this exception because already complete")));
-            assertFalse(cf.cancel(true));
-            assertEquals("Intentionally completed prematurely", cf.getNow("Value to return if not done yet"));
-            assertTrue(cf.isDone());
-            assertFalse(cf.isCompletedExceptionally());
-            assertFalse(cf.isCancelled());
-            assertEquals("Intentionally completed prematurely", cf.get(1, TimeUnit.NANOSECONDS));
+            assertTrue(cf1.cancel(true));
+
+            try {
+                Integer i = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Dependent completable future [2] should have been canceled. Instead: " + i);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof CancellationException))
+                    throw x;
+            }
+
+            assertTrue(cf2.isCompletedExceptionally());
+
+            try {
+                Integer i = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Dependent completable future [3] should have been canceled. Instead: " + i);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof CancellationException))
+                    throw x;
+            }
+
+            assertTrue(cf3.isCompletedExceptionally());
 
             // Expect supplier thread to be interrupted due to premature completion
             for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
             assertNull(supplier.executionThread);
+            assertNull(increment.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that completable future is canceled if completed with a CancellationException.
+     */
+    @Test
+    public void testCancelByException() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testCancelByException", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.completeExceptionally(new CancellationException()));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            try {
+                String s = cf.getNow("Value to return if not done yet");
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCancelled());
+            assertTrue(cf.isCompletedExceptionally());
+            try {
+                String s = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+
+            // Expect supplier thread to be interrupted due to cancellation
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that cancel on an already-completed future has no impact on dependent futures
+     */
+    @Test
+    public void testCancelDoesNotImpactDependentsIfAlreadyCompleted() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableIncrementFunction increment = new BlockableIncrementFunction("testCancelDoesNotImpactDependentsIfAlreadyCompleted", beginLatch, continueLatch);
+
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(() -> 40);
+            CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
+            CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment); // by using the same continueLatch as cf2, this will not be blocked if cf2 completes
+
+            // Wait for cf1 to complete and cf2 to start
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertFalse(cf1.cancel(true));
+
+            // Above should have no impact on dependent futures
+            assertFalse(cf2.isCancelled());
+            assertFalse(cf3.isCancelled());
+
+            continueLatch.countDown();
+
+            assertEquals(Integer.valueOf(41), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(42), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } finally {
             // in case the test fails, unblock the thread that is running the supplier
             continueLatch.countDown();
@@ -768,6 +856,39 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that the complete operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled.
+     */
+    @Test
+    public void testComplete() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testComplete", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.complete("Intentionally completed prematurely"));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            assertFalse(cf.completeExceptionally(new Exception("Ignore this exception because already complete")));
+            assertFalse(cf.cancel(true));
+            assertEquals("Intentionally completed prematurely", cf.getNow("Value to return if not done yet"));
+            assertTrue(cf.isDone());
+            assertFalse(cf.isCompletedExceptionally());
+            assertFalse(cf.isCancelled());
+            assertEquals("Intentionally completed prematurely", cf.get(1, TimeUnit.NANOSECONDS));
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
      * Verify that the completeExceptionally operation can be used to complete a running action prematurely,
      * and that the corresponding task submitted to the policy executor is canceled.
      */
@@ -802,6 +923,33 @@ public class ConcurrentRxTestServlet extends FATServlet {
                 if (!(x.getCause() instanceof IOException) && !x.getCause().getMessage().equals("Intentionally created exception to complete the completable future."))
                     throw x;
             }
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Complete a future while the operation is still running. Verify that the value specified to the complete method is used, not the result of the operation.
+     */
+    @Test
+    public void testCompletePrematurely() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(50, beginLatch, continueLatch);
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(new BlockableIncrementFunction("testCompletePrematurely", null, null));
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf1.complete(55));
+
+            assertEquals(Integer.valueOf(56), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
             // Expect supplier thread to be interrupted due to premature completion
             for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
