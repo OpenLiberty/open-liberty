@@ -129,7 +129,6 @@ public class BufferManagerImpl extends BufferManager {
 	public synchronized void addSyncHandler(SynchronousHandler syncHandler) {
 		//Send messages from EMQ to synchronous handler when it subscribes to receive messages
 		if(!earlyMessageQueue.isEmpty() && !synchronizedHandlerSet.contains(syncHandler)) {
-			synchronizedHandlerSet.add(syncHandler);
 			System.out.println("Sending Early Messages to New Synchronized Handler: " + syncHandler.getHandlerName());
 			Object holder[] = new Object[1000];
 			Object[] messagesList = earlyMessageQueue.toArray(holder);
@@ -137,6 +136,7 @@ public class BufferManagerImpl extends BufferManager {
 				syncHandler.synchronousWrite(message);
 			}
 		}
+		synchronizedHandlerSet.add(syncHandler);
 	}
 	
 	public void removeSyncHandler(SynchronousHandler syncHandler) {
