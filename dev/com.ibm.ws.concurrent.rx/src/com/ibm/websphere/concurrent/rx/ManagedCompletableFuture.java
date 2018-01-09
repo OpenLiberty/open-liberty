@@ -434,8 +434,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        // TODO also cancel from managed executor
-        return completableFuture.cancel(mayInterruptIfRunning);
+        boolean canceledByThisMethod = completableFuture.cancel(mayInterruptIfRunning);
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (canceledByThisMethod && futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(mayInterruptIfRunning);
+        }
+
+        return canceledByThisMethod;
     }
 
     /**
@@ -443,7 +451,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean complete(T value) {
-        return completableFuture.complete(value);
+        boolean completedByThisMethod = completableFuture.complete(value);
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (completedByThisMethod && futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
+
+        return completedByThisMethod;
     }
 
     /**
@@ -451,8 +468,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean completeExceptionally(Throwable x) {
-        // TODO also cancel from managed executor if completed with a CancellationException
-        return completableFuture.completeExceptionally(x);
+        boolean completedByThisMethod = completableFuture.completeExceptionally(x);
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (completedByThisMethod && futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
+
+        return completedByThisMethod;
     }
 
     /**
