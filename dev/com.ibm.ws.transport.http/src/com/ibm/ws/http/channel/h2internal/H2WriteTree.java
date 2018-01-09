@@ -385,11 +385,10 @@ public class H2WriteTree implements H2WorkQInterface {
             Tr.debug(tc, "incrementConnectionWindowUpdateLimit entry: inc value: " + x
                          + "current connectionWindowUpdateWriteLimit: " + connectionWindowUpdateWriteLimit);
         }
-        int temp = connectionWindowUpdateWriteLimit + x;
-        temp = temp & 0x10000000;
-        if (temp != 0) {
+        long proposedValue = (long) connectionWindowUpdateWriteLimit + (long) x;
+        if (proposedValue > Integer.MAX_VALUE) {
             String s = "processWindowUpdateFrame: out of bounds increment, current connection write limit: " + connectionWindowUpdateWriteLimit
-                       + " total would have been: " + temp;
+                       + " total would have been: " + proposedValue;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, s);
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.rules;
+package componenttest.rules.repeater;
 
 import static org.junit.Assert.assertTrue;
 
@@ -34,26 +34,24 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     static final String ALL_SERVERS = "ALL_SERVERS";
 
-    private static final String[] EE7_FEATURES_ARRAY = { "javaee-7.0", "webProfile-7.0", "servlet-3.1", "jdbc-4.1", "javaMail-1.5", "cdi-1.2", "jpa-2.1", "beanValidation-1.1",
-                                                         "jaxrs-2.0", "jsf-2.2", "appSecurity-2.0", "jsonp-1.0" };
-    private static final String[] EE8_FEATURES_ARRAY = { "javaee-8.0", "webProfile-8.0", "servlet-4.0", "jdbc-4.2", "javaMail-1.6", "cdi-2.0", "jpa-2.2", "beanValidation-2.0",
-                                                         "jaxrs-2.1", "jsf-2.3", "appSecurity-3.0", "jsonp-1.1", "jsonb-1.0", };
-
-    private static final Set<String> EE7_FEATURE_SET = new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY));
-    private static final Set<String> EE8_FEATURE_SET = new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY));
-
     /**
      * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
      */
-    public static final FeatureReplacementAction EE7_FEATURES = new FeatureReplacementAction(EE8_FEATURE_SET, EE7_FEATURE_SET).forceAddFeatures(false);
+    public static FeatureReplacementAction EE7_FEATURES() {
+        return new EE7FeatureReplacementAction();
+    }
+
     /**
      * Replaces any Java EE 7 features with the Java EE 8 equivalent feature.
      * Will automatically skip if running below Java 8.
      */
-    public static final FeatureReplacementAction EE8_FEATURES = new FeatureReplacementAction(EE7_FEATURE_SET, EE8_FEATURE_SET).withMinJavaLevel(8).forceAddFeatures(false);
+    public static FeatureReplacementAction EE8_FEATURES() {
+        return new EE8FeatureReplacementAction();
+    }
 
     private boolean forceAddFeatures = true;
     private int minJavaLevel = 7;
+    protected String currentID = toString();
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
@@ -95,6 +93,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction forceAddFeatures(boolean force) {
         this.forceAddFeatures = force;
+        return this;
+    }
+
+    public FeatureReplacementAction withID(String id) {
+        currentID = id;
         return this;
     }
 
@@ -201,10 +204,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public String toString() {
-        if (this == EE7_FEATURES)
-            return "Set all features to EE7 compatibility";
-        if (this == EE8_FEATURES)
-            return "Set all features to EE8 compatibility";
         return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
+    }
+
+    @Override
+    public String getID() {
+        return currentID;
     }
 }

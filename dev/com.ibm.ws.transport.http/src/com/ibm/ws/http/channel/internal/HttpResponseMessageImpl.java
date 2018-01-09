@@ -16,6 +16,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -23,6 +24,7 @@ import com.ibm.ws.genericbnf.internal.GenericConstants;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.genericbnf.internal.HeaderHandler;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
+import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
@@ -48,7 +50,7 @@ import com.ibm.wsspi.http.logging.DebugLog;
 /**
  * Class that contains all the code and logic specific to an HTTP response
  * message.
- * 
+ *
  */
 public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements HttpResponseMessage {
 
@@ -73,7 +75,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * Default constructor with no service context.
      * <P>
      * Warning: this object will be prone to NPEs if used prior to the init with a real service context.
-     * 
+     *
      */
     public HttpResponseMessageImpl() {
         super();
@@ -83,7 +85,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Constructor for an outgoing response.
-     * 
+     *
      * @param isc
      */
     public HttpResponseMessageImpl(HttpInboundServiceContext isc) {
@@ -95,7 +97,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Constructor for an incoming response.
-     * 
+     *
      * @param osc
      */
     public HttpResponseMessageImpl(HttpOutboundServiceContext osc) {
@@ -106,7 +108,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Initialize this outgoing HTTP response message.
-     * 
+     *
      * @param sc
      */
     public void init(HttpInboundServiceContext sc) {
@@ -117,7 +119,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Initialize this incoming HTTP response message.
-     * 
+     *
      * @param sc
      */
     public void init(HttpOutboundServiceContext sc) {
@@ -128,7 +130,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     /**
      * Initialize this outgoing response message with specific headers,
      * ie. ones stored in a cache perhaps.
-     * 
+     *
      * @param sc
      * @param hdrs
      */
@@ -144,7 +146,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     /**
      * Initialize this incoming response message with specific headers,
      * ie. ones stored in a cache perhaps.
-     * 
+     *
      * @param sc
      * @param hdrs
      */
@@ -178,7 +180,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * a message is being transfered from an inbound SC to and outbound SC, or
      * a channel wants to cache this message and would pass in null to this
      * method.
-     * 
+     *
      * @param hsc
      */
     public void setOwner(HttpServiceContext hsc) {
@@ -205,7 +207,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * check the necessary headers, status codes, etc, to see if any indicate
      * a body should be present. Without actually reading for a body, this
      * cannot be sure however.
-     * 
+     *
      * @return boolean (true -- a body is expected to be present)
      */
     @Override
@@ -243,7 +245,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * Query whether or not a body is allowed to be present for this
      * message. This is not whether a body is present, but rather only
      * whether it is allowed to be present.
-     * 
+     *
      * @return boolean (true if allowed)
      */
     @Override
@@ -269,7 +271,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * to be updated when a body is not allowed with the message. For example,
      * a response does not allow a body when the request was a HEAD method but
      * the length delimiters are not updated in that case.
-     * 
+     *
      * @return boolean (whether the caller should modify body headers)
      */
     @Override
@@ -316,8 +318,13 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     protected void setPseudoHeaders(HashMap<String, String> pseudoHeaders) throws Exception {
         //Only defined pseudo-header for a response is :status.
 
+        for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
+            H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
+            if (!isValidPseudoHeader(header)) {
+                throw new CompressionException("Invalid pseudo-header for decompression context: " + header.toString());
+            }
+        }
         setStatusCode(Integer.getInteger(pseudoHeaders.get(HpackConstants.STATUS)));
-
     }
 
     @Override
@@ -354,7 +361,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Set the response line first token.
-     * 
+     *
      * @param token
      * @throws Exception
      */
@@ -365,7 +372,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Set the response line second token.
-     * 
+     *
      * @param token
      * @throws Exception
      */
@@ -376,7 +383,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Set the response line third token.
-     * 
+     *
      * @param token
      * @throws Exception
      */
@@ -387,7 +394,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query the value of the first response token (version).
-     * 
+     *
      * @return byte[]
      */
     @Override
@@ -397,7 +404,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query the value of the second response token (status code).
-     * 
+     *
      * @return byte[]
      */
     @Override
@@ -407,7 +414,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query the value of the third response token (reason phrase).
-     * 
+     *
      * @return byte[]
      */
     @Override
@@ -418,7 +425,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     /**
      * Begin parsing line out from a given buffer. Returns boolean
      * as to whether it has found the end of the first line.
-     * 
+     *
      * @param buff
      * @return boolean
      * @throws MalformedMessageException
@@ -514,7 +521,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Marshall the first line.
-     * 
+     *
      * @return WsByteBuffer[] of line ready to be written.
      */
     @Override
@@ -591,7 +598,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Called for marshalling the first line of binary HTTP responses.
-     * 
+     *
      * @return WsByteBuffer[]
      */
     @Override
@@ -632,7 +639,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     /**
      * Called the parsing of the first line is complete. Performs checks
      * on whether all the necessary data has been found.
-     * 
+     *
      * @throws MalformedMessageException
      */
     @Override
@@ -657,7 +664,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * Before marshalling headers into a buffer, this will run the data
      * through a compliancy check and take appropriate action (throw
      * errors, add missing headers, etc).
-     * 
+     *
      * @throws MessageSentException
      */
     @Override
@@ -694,7 +701,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
                 if (bTrace && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Adding the Server header value: " + getHeader(HttpHeaderKeys.HDR_SERVER).asString());
                 }
-            }// PM87031 (PM75371) End
+            } // PM87031 (PM75371) End
         }
 
         // @PK20531 - add Cache-Control header if config says to
@@ -712,7 +719,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * will configure the message such that if Set-Cookie(2) information is
      * present then additional headers will be added to ensure that the message
      * is not cached on any intermediate caches.
-     * 
+     *
      */
     private void updateCacheControl() {
         // regular HTTP path, the Set-Cookie values are already put into BNFHdrs
@@ -761,7 +768,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query of the value of the status code as an integer.
-     * 
+     *
      * @return int
      */
     @Override
@@ -771,7 +778,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query the value of the status code.
-     * 
+     *
      * @return StatusCodes
      */
     @Override
@@ -784,7 +791,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * not match an existing defined StatusCode will create a new "Undefined"
      * code where the getByteArray() API will return the input code as a
      * byte[].
-     * 
+     *
      * @param code
      */
     @Override
@@ -807,7 +814,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Set the status code of the response message.
-     * 
+     *
      * @param code
      */
     @Override
@@ -829,7 +836,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     /**
      * Query whether this response message's status code represents a temporary
      * status of 1xx.
-     * 
+     *
      * @return boolean
      */
     public boolean isTemporaryStatusCode() {
@@ -844,7 +851,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query the value of the reason phrase.
-     * 
+     *
      * @return String
      */
     @Override
@@ -857,7 +864,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Query the value of the reason phrase.
-     * 
+     *
      * @return byte[]
      */
     @Override
@@ -870,7 +877,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Set the reason phrase of this response message.
-     * 
+     *
      * @param reason
      */
     @Override
@@ -885,7 +892,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Set the reason phrase of this response message.
-     * 
+     *
      * @param reason
      */
     @Override
@@ -1039,7 +1046,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Duplicate this entire message.
-     * 
+     *
      * @return HttpResponseMessage
      */
     @Override
@@ -1067,7 +1074,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Read an instance of this object from the input stream.
-     * 
+     *
      * @param input
      * @throws IOException
      * @throws ClassNotFoundException
@@ -1089,7 +1096,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
     /**
      * Write this object instance to the output stream.
-     * 
+     *
      * @param output
      * @throws IOException
      */

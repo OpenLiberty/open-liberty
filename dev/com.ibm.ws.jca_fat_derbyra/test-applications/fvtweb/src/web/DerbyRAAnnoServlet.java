@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
@@ -144,15 +145,26 @@ public class DerbyRAAnnoServlet extends FATServlet {
             DataSource ds = InitialContext.doLookup("eis/ds1");
             Connection con = ds.getConnection("ActvSpecUser", "ActvSpecPwd");
             try {
-                PreparedStatement pstmt = con.prepareStatement("select description from TestActivationSpecRecoveryTBL where id=?");
-                pstmt.setString(1, "mdbtestRecovery");
-                for (long start = System.nanoTime(); oldValueFromDB == null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200)) {
-                    ResultSet result = pstmt.executeQuery();
-                    if (result.next())
-                        oldValueFromDB = result.getString(1);
-                    result.close();
-                }
-                pstmt.close();
+                PreparedStatement pstmt = null;
+                for (long start = System.nanoTime(); oldValueFromDB == null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200))
+                    try {
+                        if (pstmt == null) {
+                            pstmt = con.prepareStatement("select description from TestActivationSpecRecoveryTBL where id=?");
+                            pstmt.setString(1, "mdbtestRecovery");
+                        }
+                        ResultSet result = pstmt.executeQuery();
+                        if (result.next())
+                            oldValueFromDB = result.getString(1);
+                        result.close();
+                    } catch (SQLSyntaxErrorException x) {
+                        if ("42X05".equals(x.getSQLState()) || // table does not exist
+                            "42Y07".equals(x.getSQLState())) // schema does not exist
+                            ; // keep trying until test case creates it
+                        else
+                            throw x;
+                    }
+                if (pstmt != null)
+                    pstmt.close();
             } finally {
                 con.close();
             }

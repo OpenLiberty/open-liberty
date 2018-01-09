@@ -15,6 +15,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.FrameReadProcessor;
 import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
+import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
@@ -43,6 +44,11 @@ public class FrameSettings extends Frame {
     private int maxFrameSize = -1;
     private int maxHeaderListSize = -1;
     private int initialWindowSize = -1;
+
+    // frame size setting constants
+    private final int MAX_INITIAL_WINDOW_SIZE = 2147483647;
+    private final int INITIAL_MAX_FRAME_SIZE = 16384;
+    private final int MAX_FRAME_SIZE = 16777215;
 
     // Payload IDs
     private final int HEADER_TABLE_SIZE_ID = 0x01;
@@ -112,6 +118,9 @@ public class FrameSettings extends Frame {
         // |                        Value (32)                             |
         // +---------------------------------------------------------------+
 
+        if (payloadLength % 6 != 0) {
+            throw new FrameSizeException("Settings frame is malformed");
+        }
         int numberOfSettings = this.payloadLength / 6;
         int settingId;
         int settingValue;
@@ -201,6 +210,24 @@ public class FrameSettings extends Frame {
         }
         if (this.ACK_FLAG == true && this.getPayloadLength() != 0) {
             throw new FrameSizeException("SETTINGS frame with ACK set cannot have an additional payload");
+        }
+        if (enablePush != -1 && enablePush != 0 && enablePush != 1) {
+            throw new ProtocolException("SETTINGS_ENABLE_PUSH must be set to 0 or 1 " + streamId);
+        }
+
+        long unsignedWindowSize = initialWindowSize & 0x00000000ffffffffL;
+        if (initialWindowSize != -1 && unsignedWindowSize > MAX_INITIAL_WINDOW_SIZE) {
+            throw new FlowControlException("FLOW_CONTROL_ERROR value exceeded the max allowable value" + streamId);
+        }
+
+        if (initialWindowSize != -1 && initialWindowSize > MAX_INITIAL_WINDOW_SIZE) {
+            throw new FlowControlException("FLOW_CONTROL_ERROR value exceeded the max allowable value" + streamId);
+        }
+        if (maxFrameSize != -1 && maxFrameSize < INITIAL_MAX_FRAME_SIZE) {
+            throw new ProtocolException("SETTINGS_MAX_FRAME_SIZE value is below the allowable minimum value" + streamId);
+        }
+        if (maxFrameSize != -1 && maxFrameSize > MAX_FRAME_SIZE) {
+            throw new ProtocolException("SETTINGS_MAX_FRAME_SIZE value exceeded the max allowable value" + streamId);
         }
     }
 

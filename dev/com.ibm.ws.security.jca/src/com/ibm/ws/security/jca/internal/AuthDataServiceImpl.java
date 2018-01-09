@@ -117,6 +117,7 @@ public class AuthDataServiceImpl implements AuthDataService {
 
     private Subject createSubjectUsingJAAS(String jaasEntryName, ManagedConnectionFactory managedConnectionFactory, Map<String, Object> loginData) throws LoginException {
         CallbackHandler callbackHandler = new WSMappingCallbackHandler(loginData, managedConnectionFactory);
+	// NOTE: Do NOT add a doPriv here -- users must explicitly grant authority to user-defined login modules
         LoginContext loginContext = new LoginContext(jaasEntryName, callbackHandler);
         loginContext.login();
         Subject subject = loginContext.getSubject();

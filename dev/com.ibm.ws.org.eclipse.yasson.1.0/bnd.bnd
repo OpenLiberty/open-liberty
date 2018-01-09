@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.eclipse:yasson;1.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+javac.source: 1.8
+javac.target: 1.8
+
 -includeresource: \
    @${repo;org.eclipse:yasson;1.0.0}!/org/eclipse/yasson/*,\
    @${repo;org.eclipse:yasson;1.0.0}!/META-INF/services/javax.json.bind.spi.JsonbProvider,\

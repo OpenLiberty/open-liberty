@@ -18,10 +18,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -36,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -86,80 +90,87 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Test
     public void testAcceptEither() throws Exception {
         CountDownLatch blocker1 = new CountDownLatch(1);
-        ManagedCompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
-            System.out.println("> supplyAsync[1] from testAcceptEither");
-            try {
-                boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
-                System.out.println("< supplyAsync[1] " + result);
-                return result;
-            } catch (InterruptedException x) {
-                System.out.println("< supplyAsync[1] " + x);
-                throw new CompletionException(x);
-            }
-        });
-
         CountDownLatch blocker2 = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf2 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("> supplyAsync[2] from testAcceptEither");
-            try {
-                boolean result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
-                System.out.println("< supplyAsync[2] " + result);
-                return result;
-            } catch (InterruptedException x) {
-                System.out.println("< supplyAsync[2] " + x);
-                throw new CompletionException(x);
-            }
-        });
 
-        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
-        ManagedCompletableFuture<Void> cf3 = cf1.acceptEither(cf2, (b) -> {
-            System.out.println("> lookup from testAcceptEither");
-            results.add(b);
-            results.add(Thread.currentThread().getName());
-            try {
-                ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
-                results.add(result);
-                System.out.println("< lookup: " + result);
-            } catch (NamingException x) {
-                System.out.println("< lookup failed");
-                x.printStackTrace(System.out);
-                throw new CompletionException(x);
-            }
-        });
-
-        assertFalse(cf3.isDone());
         try {
-            Object result = cf3.get(100, TimeUnit.MILLISECONDS);
-            fail("Dependent completion stage must not complete first");
-        } catch (TimeoutException x) {
+            ManagedCompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+                System.out.println("> supplyAsync[1] from testAcceptEither");
+                try {
+                    boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+                    System.out.println("< supplyAsync[1] " + result);
+                    return result;
+                } catch (InterruptedException x) {
+                    System.out.println("< supplyAsync[1] " + x);
+                    throw new CompletionException(x);
+                }
+            });
+
+            CompletableFuture<Boolean> cf2 = CompletableFuture.supplyAsync(() -> {
+                System.out.println("> supplyAsync[2] from testAcceptEither");
+                try {
+                    boolean result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+                    System.out.println("< supplyAsync[2] " + result);
+                    return result;
+                } catch (InterruptedException x) {
+                    System.out.println("< supplyAsync[2] " + x);
+                    throw new CompletionException(x);
+                }
+            });
+
+            LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+            ManagedCompletableFuture<Void> cf3 = cf1.acceptEither(cf2, (b) -> {
+                System.out.println("> lookup from testAcceptEither");
+                results.add(b);
+                results.add(Thread.currentThread().getName());
+                try {
+                    ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
+                    results.add(result);
+                    System.out.println("< lookup: " + result);
+                } catch (NamingException x) {
+                    System.out.println("< lookup failed");
+                    x.printStackTrace(System.out);
+                    throw new CompletionException(x);
+                }
+            });
+
+            assertFalse(cf3.isDone());
+            try {
+                Object result = cf3.get(100, TimeUnit.MILLISECONDS);
+                fail("Dependent completion stage must not complete first");
+            } catch (TimeoutException x) {
+            }
+
+            // Allow cf2 to complete
+            blocker2.countDown();
+
+            // Dependent stage must be able to complete now
+            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCancelled());
+            assertFalse(cf3.isCompletedExceptionally());
+
+            // Verify the parameter that is supplied to acceptEither's consumer
+            assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // acceptEither runs on the unmanaged thread of the stage that completed
+            String threadName;
+            assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(threadName, !threadName.startsWith(("Default Executor-thread-")));
+
+            // thread context is made available to acceptEither's consumer per the managed executor which is the default asynchronous execution facility,
+            // enabling java:module lookup to succeed from the unmanaged thread.
+            Object lookupResult;
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(noContextExecutor, lookupResult);
+
+            // allow cf1 to complete
+            blocker1.countDown();
+            assertEquals(Boolean.TRUE, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            // allow threads to complete in case test fails
+            blocker1.countDown();
+            blocker2.countDown();
         }
-
-        // Allow cf2 to complete
-        blocker2.countDown();
-
-        // Dependent stage must be able to complete now
-        assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf3.isDone());
-        assertFalse(cf3.isCancelled());
-        assertFalse(cf3.isCompletedExceptionally());
-
-        // Verify the parameter that is supplied to acceptEither's consumer
-        assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // acceptEither runs on the unmanaged thread of the stage that completed
-        String threadName;
-        assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(threadName, !threadName.startsWith(("Default Executor-thread-")));
-
-        // thread context is made available to acceptEither's consumer per the managed executor which is the default asynchronous execution facility,
-        // enabling java:module lookup to succeed from the unmanaged thread.
-        Object lookupResult;
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(noContextExecutor, lookupResult);
-
-        // allow cf1 to complete
-        blocker1.countDown();
-        assertEquals(Boolean.TRUE, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -169,79 +180,86 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Test
     public void testAcceptEitherAsync() throws Exception {
         CountDownLatch blocker1 = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
-            System.out.println("> supplyAsync[1] from testAcceptEitherAsync");
-            try {
-                boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
-                System.out.println("< supplyAsync[1] " + result);
-                return result;
-            } catch (InterruptedException x) {
-                System.out.println("< supplyAsync[1] " + x);
-                throw new CompletionException(x);
-            }
-        });
-
         CountDownLatch blocker2 = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf2 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("> supplyAsync[2] from testAcceptEitherAsync");
-            try {
-                boolean result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
-                System.out.println("< supplyAsync[2] " + result);
-                return result;
-            } catch (InterruptedException x) {
-                System.out.println("< supplyAsync[2] " + x);
-                throw new CompletionException(x);
-            }
-        });
 
-        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
-        CompletableFuture<Void> cf3 = cf1.acceptEitherAsync(cf2, (b) -> {
-            System.out.println("> lookup from testAcceptEitherAsyncOnExecutor");
-            results.add(b);
-            results.add(Thread.currentThread().getName());
-            try {
-                ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
-                results.add(result);
-                System.out.println("< lookup: " + result);
-            } catch (NamingException x) {
-                System.out.println("< lookup failed");
-                x.printStackTrace(System.out);
-                throw new CompletionException(x);
-            }
-        });
-
-        assertFalse(cf3.isDone());
         try {
-            Object result = cf3.get(100, TimeUnit.MILLISECONDS);
-            fail("Dependent completion stage must not complete first");
-        } catch (TimeoutException x) {
+            CompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+                System.out.println("> supplyAsync[1] from testAcceptEitherAsync");
+                try {
+                    boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+                    System.out.println("< supplyAsync[1] " + result);
+                    return result;
+                } catch (InterruptedException x) {
+                    System.out.println("< supplyAsync[1] " + x);
+                    throw new CompletionException(x);
+                }
+            });
+
+            CompletableFuture<Boolean> cf2 = CompletableFuture.supplyAsync(() -> {
+                System.out.println("> supplyAsync[2] from testAcceptEitherAsync");
+                try {
+                    boolean result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+                    System.out.println("< supplyAsync[2] " + result);
+                    return result;
+                } catch (InterruptedException x) {
+                    System.out.println("< supplyAsync[2] " + x);
+                    throw new CompletionException(x);
+                }
+            });
+
+            LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+            CompletableFuture<Void> cf3 = cf1.acceptEitherAsync(cf2, (b) -> {
+                System.out.println("> lookup from testAcceptEitherAsyncOnExecutor");
+                results.add(b);
+                results.add(Thread.currentThread().getName());
+                try {
+                    ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
+                    results.add(result);
+                    System.out.println("< lookup: " + result);
+                } catch (NamingException x) {
+                    System.out.println("< lookup failed");
+                    x.printStackTrace(System.out);
+                    throw new CompletionException(x);
+                }
+            });
+
+            assertFalse(cf3.isDone());
+            try {
+                Object result = cf3.get(100, TimeUnit.MILLISECONDS);
+                fail("Dependent completion stage must not complete first");
+            } catch (TimeoutException x) {
+            }
+
+            // Allow cf1 to complete
+            blocker1.countDown();
+
+            // Dependent stage must be able to complete now
+            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCancelled());
+            assertFalse(cf3.isCompletedExceptionally());
+
+            // Verify the parameter that is supplied to acceptEither's consumer
+            assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // acceptEither runs on the Liberty global thread pool
+            String threadName;
+            assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(threadName, threadName.startsWith(("Default Executor-thread-")));
+
+            // thread context is made available to acceptEither's consumer per the supplied managed executor, enabling java:module lookup to succeed
+            Object lookupResult;
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(noContextExecutor, lookupResult);
+
+            // allow cf2 to complete
+            blocker2.countDown();
+            assertEquals(Boolean.TRUE, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            // allow threads to complete in case test fails
+            blocker2.countDown();
+            blocker1.countDown();
         }
-
-        // Allow cf1 to complete
-        blocker1.countDown();
-
-        // Dependent stage must be able to complete now
-        assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf3.isDone());
-        assertFalse(cf3.isCancelled());
-        assertFalse(cf3.isCompletedExceptionally());
-
-        // Verify the parameter that is supplied to acceptEither's consumer
-        assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // acceptEither runs on the Liberty global thread pool
-        String threadName;
-        assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(threadName, threadName.startsWith(("Default Executor-thread-")));
-
-        // thread context is made available to acceptEither's consumer per the supplied managed executor, enabling java:module lookup to succeed
-        Object lookupResult;
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(noContextExecutor, lookupResult);
-
-        // allow cf2 to complete
-        blocker2.countDown();
-        assertEquals(Boolean.TRUE, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -251,79 +269,86 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Test
     public void testAcceptEitherAsyncOnExecutor() throws Exception {
         CountDownLatch blocker1 = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
-            System.out.println("> supplyAsync[1] from testAcceptEitherAsyncOnExecutor");
-            try {
-                boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
-                System.out.println("< supplyAsync[1] " + result);
-                return result;
-            } catch (InterruptedException x) {
-                System.out.println("< supplyAsync[1] " + x);
-                throw new CompletionException(x);
-            }
-        }, noContextExecutor);
-
         CountDownLatch blocker2 = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf2 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("> supplyAsync[2] from testAcceptEitherAsyncOnExecutor");
-            try {
-                boolean result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
-                System.out.println("< supplyAsync[2] " + result);
-                return result;
-            } catch (InterruptedException x) {
-                System.out.println("< supplyAsync[2] " + x);
-                throw new CompletionException(x);
-            }
-        });
 
-        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
-        CompletableFuture<Void> cf3 = cf1.acceptEitherAsync(cf2, (b) -> {
-            System.out.println("> lookup from testAcceptEitherAsyncOnExecutor");
-            results.add(b);
-            results.add(Thread.currentThread().getName());
-            try {
-                ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
-                results.add(result);
-                System.out.println("< lookup: " + result);
-            } catch (NamingException x) {
-                System.out.println("< lookup failed");
-                x.printStackTrace(System.out);
-                throw new CompletionException(x);
-            }
-        }, defaultManagedExecutor);
-
-        assertFalse(cf3.isDone());
         try {
-            Object result = cf3.get(100, TimeUnit.MILLISECONDS);
-            fail("Dependent completion stage must not complete first");
-        } catch (TimeoutException x) {
+            CompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+                System.out.println("> supplyAsync[1] from testAcceptEitherAsyncOnExecutor");
+                try {
+                    boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+                    System.out.println("< supplyAsync[1] " + result);
+                    return result;
+                } catch (InterruptedException x) {
+                    System.out.println("< supplyAsync[1] " + x);
+                    throw new CompletionException(x);
+                }
+            }, noContextExecutor);
+
+            CompletableFuture<Boolean> cf2 = CompletableFuture.supplyAsync(() -> {
+                System.out.println("> supplyAsync[2] from testAcceptEitherAsyncOnExecutor");
+                try {
+                    boolean result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+                    System.out.println("< supplyAsync[2] " + result);
+                    return result;
+                } catch (InterruptedException x) {
+                    System.out.println("< supplyAsync[2] " + x);
+                    throw new CompletionException(x);
+                }
+            });
+
+            LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+            CompletableFuture<Void> cf3 = cf1.acceptEitherAsync(cf2, (b) -> {
+                System.out.println("> lookup from testAcceptEitherAsyncOnExecutor");
+                results.add(b);
+                results.add(Thread.currentThread().getName());
+                try {
+                    ManagedExecutorService result = InitialContext.doLookup("java:module/noContextExecutorRef");
+                    results.add(result);
+                    System.out.println("< lookup: " + result);
+                } catch (NamingException x) {
+                    System.out.println("< lookup failed");
+                    x.printStackTrace(System.out);
+                    throw new CompletionException(x);
+                }
+            }, defaultManagedExecutor);
+
+            assertFalse(cf3.isDone());
+            try {
+                Object result = cf3.get(100, TimeUnit.MILLISECONDS);
+                fail("Dependent completion stage must not complete first");
+            } catch (TimeoutException x) {
+            }
+
+            // Allow cf2 to complete
+            blocker2.countDown();
+
+            // Dependent stage must be able to complete now
+            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCancelled());
+            assertFalse(cf3.isCompletedExceptionally());
+
+            // Verify the parameter that is supplied to acceptEither's consumer
+            assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // acceptEither runs on the Liberty global thread pool
+            String threadName;
+            assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(threadName, threadName.startsWith(("Default Executor-thread-")));
+
+            // thread context is made available to acceptEither's consumer per the supplied managed executor, enabling java:module lookup to succeed
+            Object lookupResult;
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(noContextExecutor, lookupResult);
+
+            // allow cf1 to complete
+            blocker1.countDown();
+            assertEquals(Boolean.TRUE, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            // allow threads to complete in case test fails
+            blocker2.countDown();
+            blocker1.countDown();
         }
-
-        // Allow cf2 to complete
-        blocker2.countDown();
-
-        // Dependent stage must be able to complete now
-        assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf3.isDone());
-        assertFalse(cf3.isCancelled());
-        assertFalse(cf3.isCompletedExceptionally());
-
-        // Verify the parameter that is supplied to acceptEither's consumer
-        assertEquals(Boolean.TRUE, results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        // acceptEither runs on the Liberty global thread pool
-        String threadName;
-        assertNotNull(threadName = (String) results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(threadName, threadName.startsWith(("Default Executor-thread-")));
-
-        // thread context is made available to acceptEither's consumer per the supplied managed executor, enabling java:module lookup to succeed
-        Object lookupResult;
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(noContextExecutor, lookupResult);
-
-        // allow cf1 to complete
-        blocker1.countDown();
-        assertEquals(Boolean.TRUE, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -487,6 +512,455 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify applyToEither and both forms of applyToEitherAsync.
+     */
+    @Test
+    public void testApplyToEither() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        Function<Integer, Integer> increment = (count) -> {
+            System.out.println("> increment #" + (++count) + " from testApplyToEither");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< increment");
+            return count;
+        };
+
+        CountDownLatch blocker1 = new CountDownLatch(1);
+        Supplier<Integer> awaitBlocker1 = () -> {
+            System.out.println("> awaitBlocker1 from testApplyToEither");
+            try {
+                int result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS) ? 100 : 1000;
+                System.out.println("< awaitBlocker1: " + result);
+                return result;
+            } catch (InterruptedException x) {
+                System.out.println("< awaitBlocker1: " + x);
+                throw new CompletionException(x);
+            }
+        };
+
+        CountDownLatch blocker2 = new CountDownLatch(1);
+        Supplier<Integer> awaitBlocker2 = () -> {
+            System.out.println("> awaitBlocker2 from testApplyToEither");
+            try {
+                int result = blocker2.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS) ? 200 : 2000;
+                System.out.println("< awaitBlocker2: " + result);
+                return result;
+            } catch (InterruptedException x) {
+                System.out.println("< awaitBlocker2: " + x);
+                throw new CompletionException(x);
+            }
+        };
+
+        try {
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(awaitBlocker1, defaultManagedExecutor);
+
+            CompletableFuture<Integer> cf2 = ManagedCompletableFuture.supplyAsync(awaitBlocker2, noContextExecutor);
+
+            CompletableFuture<Integer> cf3 = cf1.applyToEitherAsync(cf2, increment);
+
+            CompletableFuture<Integer> cf4 = cf3.applyToEitherAsync(cf2, increment, testThreads);
+
+            CompletableFuture<Integer> cf5 = cf4.applyToEither(cf2, increment);
+
+            CompletableFuture<Integer> cf6 = cf2.applyToEitherAsync(cf5, increment);
+
+            String threadName;
+            Object lookupResult;
+
+            assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+            assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+            assertTrue(cf4.toString(), cf4 instanceof ManagedCompletableFuture);
+            assertTrue(cf5.toString(), cf5 instanceof ManagedCompletableFuture);
+            assertTrue(cf6.toString(), cf6 instanceof ManagedCompletableFuture);
+
+            assertFalse(cf1.isDone());
+            try {
+                Object result = cf1.get(100, TimeUnit.MILLISECONDS);
+                fail("Dependent completion stage must not complete first");
+            } catch (TimeoutException x) {
+            }
+            assertFalse(cf1.isDone()); // still blocked
+            assertFalse(cf2.isDone()); // still blocked
+            assertEquals(Integer.valueOf(-1), cf1.getNow(-1));
+            assertEquals(Integer.valueOf(9999), cf2.getNow(9999));
+
+            // allow cf1 to complete
+            blocker1.countDown();
+
+            // [cf3] applyToEitherAsync on default execution facility
+            assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+            assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
+
+            // [cf4] applyToEitherAsync on unmanaged executor
+            assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof NamingException)
+                ; // pass
+            else if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            else
+                fail("Unexpected result of lookup: " + lookupResult);
+
+            // [cf5] applyToEither on unmanaged thread (or possibly servlet thread) - context should be applied from stage creation time
+            assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
+
+            // [cf6] applyToEitherAsync (second occurrence) on default execution facility, which does not propagate thread context
+            assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+            assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof NamingException)
+                ; // pass
+            else if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            else
+                fail("Unexpected result of lookup: " + lookupResult);
+
+            assertEquals(Integer.valueOf(100), cf1.get());
+            assertEquals(Integer.valueOf(101), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // result after 1 increment
+            assertEquals(Integer.valueOf(102), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // result after 2 increments
+            assertEquals(Integer.valueOf(103), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // result after 3 increments
+            assertEquals(Integer.valueOf(104), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS)); // result after 4 increments
+
+            blocker2.countDown();
+            assertEquals(Integer.valueOf(200), cf2.get());
+        } finally {
+            // allow threads to complete in case test fails
+            blocker2.countDown();
+            blocker1.countDown();
+        }
+    }
+
+    /**
+     * Verify that when a completable future is canceled, completable futures that depend on it are completed as canceled as well.
+     */
+    @Test
+    public void testAutoCompleteDependentFutures() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testAutoCompleteDependentFutures", beginLatch, continueLatch);
+            BlockableIncrementFunction increment = new BlockableIncrementFunction("testAutoCompleteDependentFutures", null, null);
+            CompletableFuture<String> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(s -> s.length());
+            CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf1.cancel(true));
+
+            try {
+                Integer i = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Dependent completable future [2] should have been canceled. Instead: " + i);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof CancellationException))
+                    throw x;
+            }
+
+            assertTrue(cf2.isCompletedExceptionally());
+
+            try {
+                Integer i = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Dependent completable future [3] should have been canceled. Instead: " + i);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof CancellationException))
+                    throw x;
+            }
+
+            assertTrue(cf3.isCompletedExceptionally());
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+            assertNull(increment.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that completable future is canceled if completed with a CancellationException.
+     */
+    @Test
+    public void testCancelByException() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testCancelByException", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.completeExceptionally(new CancellationException()));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            try {
+                String s = cf.getNow("Value to return if not done yet");
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCancelled());
+            assertTrue(cf.isCompletedExceptionally());
+            try {
+                String s = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+
+            // Expect supplier thread to be interrupted due to cancellation
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that cancel on an already-completed future has no impact on dependent futures
+     */
+    @Test
+    public void testCancelDoesNotImpactDependentsIfAlreadyCompleted() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableIncrementFunction increment = new BlockableIncrementFunction("testCancelDoesNotImpactDependentsIfAlreadyCompleted", beginLatch, continueLatch);
+
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(() -> 40);
+            CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
+            CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment); // by using the same continueLatch as cf2, this will not be blocked if cf2 completes
+
+            // Wait for cf1 to complete and cf2 to start
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertFalse(cf1.cancel(true));
+
+            // Above should have no impact on dependent futures
+            assertFalse(cf2.isCancelled());
+            assertFalse(cf3.isCancelled());
+
+            continueLatch.countDown();
+
+            assertEquals(Integer.valueOf(41), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(42), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the cancel(false) operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled but not interrupted.
+     */
+    @Test
+    public void testCancelFalse() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        BlockableIncrementFunction increment = new BlockableIncrementFunction("testCancelFalse", beginLatch, continueLatch);
+        try {
+            CompletableFuture<Integer> cf = ManagedCompletableFuture
+                            .supplyAsync(() -> 30)
+                            .thenApplyAsync(increment);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.cancel(false));
+            assertFalse(cf.completeExceptionally(new ArrayIndexOutOfBoundsException("Should be ignored because already complete.")));
+            assertFalse(cf.complete(300));
+            try {
+                Integer i = cf.getNow(3000);
+                fail("Completable future that is canceled should raise exception, not return " + i);
+            } catch (CancellationException x) {
+                // expected
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCancelled());
+            assertTrue(cf.isCompletedExceptionally()); // cancel is a form of exceptional completion
+            try {
+                Integer i = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that is canceled should raise exception, not return " + i);
+            } catch (CancellationException x) {
+                // expected
+            }
+
+            // Increment function thread should not be interrupted by cancel(false)
+            assertNotNull(increment.executionThread);
+        } finally {
+            // unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the cancel(true) operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled and interrupted.
+     */
+    @Test
+    public void testCancelTrue() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testCancelTrue", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.cancel(true));
+            assertFalse(cf.completeExceptionally(new ArrayIndexOutOfBoundsException("Should be ignored because already complete.")));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            try {
+                String s = cf.getNow("Value to return if not done yet");
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCancelled());
+            assertTrue(cf.isCompletedExceptionally()); // cancel is a form of exceptional completion
+            try {
+                String s = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that is canceled should raise exception, not return " + s);
+            } catch (CancellationException x) {
+                // expected
+            }
+
+            // Expect supplier thread to be interrupted due to cancellation
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the complete operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled.
+     */
+    @Test
+    public void testComplete() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testComplete", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.complete("Intentionally completed prematurely"));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            assertFalse(cf.completeExceptionally(new Exception("Ignore this exception because already complete")));
+            assertFalse(cf.cancel(true));
+            assertEquals("Intentionally completed prematurely", cf.getNow("Value to return if not done yet"));
+            assertTrue(cf.isDone());
+            assertFalse(cf.isCompletedExceptionally());
+            assertFalse(cf.isCancelled());
+            assertEquals("Intentionally completed prematurely", cf.get(1, TimeUnit.NANOSECONDS));
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that the completeExceptionally operation can be used to complete a running action prematurely,
+     * and that the corresponding task submitted to the policy executor is canceled.
+     */
+    @Test
+    public void testCompleteExceptionally() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<String> supplier = new BlockableSupplier<String>("testCompleteExceptionally", beginLatch, continueLatch);
+            CompletableFuture<String> cf = ManagedCompletableFuture.supplyAsync(supplier);
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf.completeExceptionally(new IOException("Intentionally created exception to complete the completable future.")));
+            assertFalse(cf.completeExceptionally(new ArrayIndexOutOfBoundsException("Should be ignored because already complete.")));
+            assertFalse(cf.complete("Should be ignored because already complete"));
+            assertFalse(cf.cancel(true));
+            try {
+                String s = cf.getNow("Value to return if not done yet");
+                fail("Completable future that completes exceptionally should raise exception, not return " + s);
+            } catch (CompletionException x) {
+                if (!(x.getCause() instanceof IOException) && !x.getCause().getMessage().equals("Intentionally created exception to complete the completable future."))
+                    throw x;
+            }
+            assertTrue(cf.isDone());
+            assertTrue(cf.isCompletedExceptionally());
+            assertFalse(cf.isCancelled());
+            try {
+                String s = cf.get(1, TimeUnit.NANOSECONDS);
+                fail("Completable future that completes exceptionally should raise exception, not return " + s);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof IOException) && !x.getCause().getMessage().equals("Intentionally created exception to complete the completable future."))
+                    throw x;
+            }
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Complete a future while the operation is still running. Verify that the value specified to the complete method is used, not the result of the operation.
+     */
+    @Test
+    public void testCompletePrematurely() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(50, beginLatch, continueLatch);
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(new BlockableIncrementFunction("testCompletePrematurely", null, null));
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf1.complete(55));
+
+            assertEquals(Integer.valueOf(56), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
      * Verify that dependent stage for exceptionally is invoked in the event of an exception during the prior stage
      * and runs with context captured from the thread that creates the dependent stage.
      * Verify that dependent stage for exceptionally is not invoked when prior stage is successful.
@@ -562,6 +1036,139 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(3, count.get()); // two additional executions of the lookup function
+    }
+
+    /**
+     * Verify the handle method and both forms of handleAsync.
+     */
+    @Test
+    public void testHandle() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+        AtomicInteger failureCount = new AtomicInteger();
+
+        BiFunction<Integer, Throwable, Integer> increment = (count, failure) -> {
+            if (failure != null)
+                count = failureCount.incrementAndGet() * 1000;
+            System.out.println("> increment #" + (++count) + " from testHandle");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+                System.out.println("< increment");
+                return count;
+            } catch (NamingException x) {
+                results.add(x);
+                System.out.println("< increment: " + x);
+                throw new CompletionException(x);
+            }
+        };
+
+        CompletableFuture<Integer> cf1 = ManagedCompletableFuture
+                        .supplyAsync(() -> 0, defaultManagedExecutor)
+                        .handleAsync(increment);
+
+        CompletableFuture<Integer> cf2 = cf1.handleAsync(increment, testThreads);
+
+        CompletableFuture<Integer> cf3 = cf2.handle(increment);
+
+        CompletableFuture<Integer> cf4 = cf3.handleAsync(increment);
+
+        LinkedBlockingQueue<CompletableFuture<Integer>> cf5q = new LinkedBlockingQueue<CompletableFuture<Integer>>();
+
+        // Submit from thread that lacks context
+        CompletableFuture.runAsync(() -> {
+            cf5q.add(cf4.handleAsync(increment));
+        });
+
+        String threadName;
+        Object lookupResult;
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+        assertTrue(cf2.toString(), cf2 instanceof ManagedCompletableFuture);
+        assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+        assertTrue(cf4.toString(), cf4 instanceof ManagedCompletableFuture);
+
+        // handleAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(1), cf1.get());
+
+        // handleAsync on unmanaged executor
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+        try {
+            Integer result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Action should fail, not return " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NamingException))
+                throw x;
+        }
+
+        // handle on unmanaged thread (context should be applied from stage creation time)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(1001), cf3.get());
+
+        // handleAsync (second occurrence) on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(1002), cf4.get());
+
+        // handleAsync requested from unmanaged thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        CompletableFuture<Integer> cf5 = cf5q.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        try {
+            Integer result = cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Action should fail, not return " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NamingException))
+                throw x;
+        }
+
+        assertEquals(Integer.valueOf(2001), cf5.handle(increment).get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Proxying an implementation class rather than an interface is a bit dangerous because when new methods are added to
+     * the class, our proxy implementation won't be aware that it needs to be updated accordingly. This test exists to detect
+     * any methods that are added so that we have the opportunity to properly implement.
+     */
+    @Test
+    public void testNoNewMethods() throws Exception {
+        assertEquals("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture",
+                     104, // WARNING: do not update this value unless you have properly implemented the new methods on ManagedCompletableFuture!
+                     CompletableFuture.class.getMethods().length);
     }
 
     /**
@@ -695,56 +1302,61 @@ public class ConcurrentRxTestServlet extends FATServlet {
             };
         };
 
-        List<Future<CompletableFuture<?>[]>> completableFutures = testThreads.invokeAll(Collections.singleton(submitWithoutContext));
-        CompletableFuture<?>[] cf = completableFutures.get(0).get();
+        try {
+            List<Future<CompletableFuture<?>[]>> completableFutures = testThreads.invokeAll(Collections.singleton(submitWithoutContext));
+            CompletableFuture<?>[] cf = completableFutures.get(0).get();
 
-        @SuppressWarnings("unchecked")
-        CompletableFuture<Boolean> cf1 = (CompletableFuture<Boolean>) cf[0];
+            @SuppressWarnings("unchecked")
+            CompletableFuture<Boolean> cf1 = (CompletableFuture<Boolean>) cf[0];
 
-        @SuppressWarnings("unchecked")
-        CompletableFuture<Void> cf2 = (CompletableFuture<Void>) cf[1];
+            @SuppressWarnings("unchecked")
+            CompletableFuture<Void> cf2 = (CompletableFuture<Void>) cf[1];
 
-        CompletableFuture<Void> cf3 = cf1.runAfterEither(cf2, runnable);
+            CompletableFuture<Void> cf3 = cf1.runAfterEither(cf2, runnable);
 
-        String threadName2, threadName3;
-        Object lookupResult;
+            String threadName2, threadName3;
+            Object lookupResult;
 
-        assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+            assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
 
-        // static runAsync
-        assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName2);
-        assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
-            throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+            // static runAsync
+            assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertNotSame(currentThreadName, threadName2);
+            assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof NamingException)
+                ; // pass
+            else if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            else
+                fail("Unexpected result of lookup: " + lookupResult);
 
-        // runAfterEither
-        assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        // runs on same thread as previous stage, or on current thread if both are complete:
-        assertTrue(threadName3, threadName3.equals(threadName2) || threadName3.equals(currentThreadName));
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
-            throw new Exception((Throwable) lookupResult);
-        assertEquals(defaultManagedExecutor, lookupResult);
+            // runAfterEither
+            assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            // runs on same thread as previous stage, or on current thread if both are complete:
+            assertTrue(threadName3, threadName3.equals(threadName2) || threadName3.equals(currentThreadName));
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
+                throw new Exception((Throwable) lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
 
-        assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf3.isDone());
-        assertFalse(cf3.isCancelled());
-        assertFalse(cf3.isCompletedExceptionally());
+            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCancelled());
+            assertFalse(cf3.isCompletedExceptionally());
 
-        // Blocked supplier does not run until we release the latch
-        assertNull(results.peek());
+            // Blocked supplier does not run until we release the latch
+            assertNull(results.peek());
 
-        blocker.countDown();
+            blocker.countDown();
 
-        // supplyAsync
-        assertTrue(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(Boolean.TRUE, results.poll());
+            // supplyAsync
+            assertTrue(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Boolean.TRUE, results.poll());
+        } finally {
+            // allow threads to complete in case test fails
+            blocker.countDown();
+        }
     }
 
     /**
@@ -781,52 +1393,57 @@ public class ConcurrentRxTestServlet extends FATServlet {
             }
         };
 
-        CompletableFuture<?> cf0 = ManagedCompletableFuture.completedFuture("Completed Result");
-        CompletableFuture<?> cf1 = cf0.thenRunAsync(blockedRunnable, noContextExecutor);
-        CompletableFuture<?> cf2 = cf0.thenRunAsync(runnable, noContextExecutor);
-        CompletableFuture<?> cf3 = cf1.runAfterEitherAsync(cf2, runnable);
+        try {
+            CompletableFuture<?> cf0 = ManagedCompletableFuture.completedFuture("Completed Result");
+            CompletableFuture<?> cf1 = cf0.thenRunAsync(blockedRunnable, noContextExecutor);
+            CompletableFuture<?> cf2 = cf0.thenRunAsync(runnable, noContextExecutor);
+            CompletableFuture<?> cf3 = cf1.runAfterEitherAsync(cf2, runnable);
 
-        String threadName2, threadName3;
-        Object lookupResult;
+            String threadName2, threadName3;
+            Object lookupResult;
 
-        assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+            assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
 
-        // runAsync on noContextExecutor (not blocked)
-        assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName2);
-        assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
-            throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+            // runAsync on noContextExecutor (not blocked)
+            assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertNotSame(currentThreadName, threadName2);
+            assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof NamingException)
+                ; // pass
+            else if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            else
+                fail("Unexpected result of lookup: " + lookupResult);
 
-        // runAfterEitherAsync
-        assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName3);
-        assertTrue(threadName3, threadName3.startsWith("Default Executor-thread-"));
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
-            throw new Exception((Throwable) lookupResult);
-        assertEquals(defaultManagedExecutor, lookupResult);
+            // runAfterEitherAsync
+            assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertNotSame(currentThreadName, threadName3);
+            assertTrue(threadName3, threadName3.startsWith("Default Executor-thread-"));
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
+                throw new Exception((Throwable) lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
 
-        assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf3.isDone());
-        assertFalse(cf3.isCancelled());
-        assertFalse(cf3.isCompletedExceptionally());
+            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCancelled());
+            assertFalse(cf3.isCompletedExceptionally());
 
-        // Blocked Runnable does not run until we release the latch
-        assertNull(results.peek());
+            // Blocked Runnable does not run until we release the latch
+            assertNull(results.peek());
 
-        blocker.countDown();
+            blocker.countDown();
 
-        // runAsync that was previously blocked now completes
-        assertNull(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf1.isDone());
-        assertFalse(cf1.isCompletedExceptionally());
-        assertEquals(Boolean.TRUE, results.poll());
+            // runAsync that was previously blocked now completes
+            assertNull(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf1.isDone());
+            assertFalse(cf1.isCompletedExceptionally());
+            assertEquals(Boolean.TRUE, results.poll());
+        } finally {
+            // allow threads to complete in case test fails
+            blocker.countDown();
+        }
     }
 
     /**
@@ -864,51 +1481,56 @@ public class ConcurrentRxTestServlet extends FATServlet {
             }
         };
 
-        CompletableFuture<?> cf1 = ManagedCompletableFuture.runAsync(blockedRunnable, noContextExecutor);
-        CompletableFuture<?> cf2 = ManagedCompletableFuture.runAsync(runnable, noContextExecutor);
-        CompletableFuture<?> cf3 = cf1.runAfterEitherAsync(cf2, runnable, defaultManagedExecutor);
+        try {
+            CompletableFuture<?> cf1 = ManagedCompletableFuture.runAsync(blockedRunnable, noContextExecutor);
+            CompletableFuture<?> cf2 = ManagedCompletableFuture.runAsync(runnable, noContextExecutor);
+            CompletableFuture<?> cf3 = cf1.runAfterEitherAsync(cf2, runnable, defaultManagedExecutor);
 
-        String threadName2, threadName3;
-        Object lookupResult;
+            String threadName2, threadName3;
+            Object lookupResult;
 
-        assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+            assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
 
-        // runAsync on noContextExecutor (not blocked)
-        assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName2);
-        assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof NamingException)
-            ; // pass
-        else if (lookupResult instanceof Throwable)
-            throw new Exception((Throwable) lookupResult);
-        else
-            fail("Unexpected result of lookup: " + lookupResult);
+            // runAsync on noContextExecutor (not blocked)
+            assertNotNull(threadName2 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertNotSame(currentThreadName, threadName2);
+            assertTrue(threadName2, threadName2.startsWith("Default Executor-thread-"));
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof NamingException)
+                ; // pass
+            else if (lookupResult instanceof Throwable)
+                throw new Exception((Throwable) lookupResult);
+            else
+                fail("Unexpected result of lookup: " + lookupResult);
 
-        // runAfterEitherAsync
-        assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
-        assertNotSame(currentThreadName, threadName3);
-        assertTrue(threadName3, threadName3.startsWith("Default Executor-thread-"));
-        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
-            throw new Exception((Throwable) lookupResult);
-        assertEquals(defaultManagedExecutor, lookupResult);
+            // runAfterEitherAsync
+            assertNotNull(threadName3 = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+            assertNotSame(currentThreadName, threadName3);
+            assertTrue(threadName3, threadName3.startsWith("Default Executor-thread-"));
+            assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            if (lookupResult instanceof Throwable) // thread context is available, even if it wasn't available to the previous stage
+                throw new Exception((Throwable) lookupResult);
+            assertEquals(defaultManagedExecutor, lookupResult);
 
-        assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf3.isDone());
-        assertFalse(cf3.isCancelled());
-        assertFalse(cf3.isCompletedExceptionally());
+            assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCancelled());
+            assertFalse(cf3.isCompletedExceptionally());
 
-        // Blocked Runnable does not run until we release the latch
-        assertNull(results.peek());
+            // Blocked Runnable does not run until we release the latch
+            assertNull(results.peek());
 
-        blocker.countDown();
+            blocker.countDown();
 
-        // runAsync that was previously blocked now completes
-        assertNull(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertTrue(cf1.isDone());
-        assertFalse(cf1.isCompletedExceptionally());
-        assertEquals(Boolean.TRUE, results.poll());
+            // runAsync that was previously blocked now completes
+            assertNull(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf1.isDone());
+            assertFalse(cf1.isCompletedExceptionally());
+            assertEquals(Boolean.TRUE, results.poll());
+        } finally {
+            // allow threads to complete in case test fails
+            blocker.countDown();
+        }
     }
 
     /**
@@ -992,6 +1614,94 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertEquals(defaultManagedExecutor, lookupResult);
 
         assertNull(cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Verify thenAcceptBoth and both forms of thenAcceptBothAsync.
+     */
+    @Test
+    public void testThenAcceptBoth() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        BiConsumer<Integer, Integer> action = (a, b) -> {
+            System.out.println("> sum " + a + "+" + b + " from testThenAcceptBoth");
+            results.add(a + b);
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< sum");
+        };
+
+        // The test logic requires that all of these completable futures run in order.
+        // To guarantee this, ensure that at least one of the completable futures supplied to thenAcceptBoth* is the previous one.
+
+        CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(() -> 1, defaultManagedExecutor);
+
+        CompletableFuture<Integer> cf2 = ManagedCompletableFuture.supplyAsync(() -> 2, noContextExecutor);
+
+        CompletableFuture<Integer> cf5 = cf1
+                        .thenAcceptBothAsync(cf2, action)
+                        .thenApply((unused) -> 3)
+                        .thenAcceptBothAsync(cf1, action, testThreads)
+                        .thenApply((unused) -> 4)
+                        .thenAcceptBoth(cf1, action)
+                        .thenApply((unused) -> 5);
+
+        CompletableFuture<Void> cf7 = cf2.thenAcceptBothAsync(cf5, action);
+
+        String threadName;
+        Object lookupResult;
+
+        // thenAcceptBothAsync on default execution facility
+        assertEquals(Integer.valueOf(3), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenAcceptBothAsync on unmanaged executor
+        assertEquals(Integer.valueOf(4), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        // thenAcceptBoth on unmanaged thread or servlet thread (context should be applied from stage creation time)
+        assertEquals(Integer.valueOf(5), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+
+        // thenAcceptBothAsync (second occurrence) on default execution facility
+        assertEquals(Integer.valueOf(7), results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        assertTrue(cf7.toString(), cf7 instanceof ManagedCompletableFuture);
+        assertNull(cf7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -1080,6 +1790,111 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         // result after 4 increments (the 5th increment is on a subsequent stage, and so would not be reflected in cf's result)
         assertEquals(Integer.valueOf(4), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Verify thenCombine and both forms of thenCombineAsync.
+     */
+    @Test
+    public void testThenCombine() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        BiFunction<Integer, Integer, Integer> sum = (a, b) -> {
+            System.out.println("> sum " + a + "+" + b + " from testThenCombine");
+            results.add(Thread.currentThread().getName());
+            try {
+                results.add(InitialContext.doLookup("java:comp/env/executorRef"));
+            } catch (NamingException x) {
+                results.add(x);
+            }
+            System.out.println("< sum: " + (a + b));
+            return a + b;
+        };
+
+        // The test logic requires that all of these completable futures run in order.
+        // To guarantee this, ensure that at least one of the completable futures supplied to thenCombine* is the previous one.
+
+        CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(() -> 1, defaultManagedExecutor);
+
+        CompletableFuture<Integer> cf2 = ManagedCompletableFuture.supplyAsync(() -> 2, noContextExecutor);
+
+        CompletableFuture<Integer> cf3 = cf1.thenCombineAsync(cf2, sum);
+
+        CompletableFuture<Integer> cf4 = cf1.thenCombineAsync(cf3, sum, testThreads);
+
+        CompletableFuture<Integer> cf5 = cf4.thenCombine(cf1, sum);
+
+        CompletableFuture<Integer> cf6 = cf5.thenCombineAsync(cf1, sum);
+
+        // Submit from thread that lacks context
+        CompletableFuture<CompletableFuture<Integer>> cfcf12 = CompletableFuture.supplyAsync(() -> cf6.thenCombineAsync(cf6, sum));
+
+        String threadName;
+        Object lookupResult;
+
+        assertTrue(cf1.toString(), cf1 instanceof ManagedCompletableFuture);
+        assertTrue(cf2.toString(), cf2 instanceof ManagedCompletableFuture);
+        assertTrue(cf3.toString(), cf3 instanceof ManagedCompletableFuture);
+        assertTrue(cf4.toString(), cf4 instanceof ManagedCompletableFuture);
+        assertTrue(cf5.toString(), cf5 instanceof ManagedCompletableFuture);
+        assertTrue(cf6.toString(), cf6 instanceof ManagedCompletableFuture);
+
+        // thenCombineAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(3), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // thenCombineAsync on unmanaged executor
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // must run async on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+        assertEquals(Integer.valueOf(4), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // thenCombine on unmanaged thread or servlet thread (context should be applied from stage creation time)
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(5), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // thenCombineAsync (second occurrence) on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        assertEquals(defaultManagedExecutor, lookupResult);
+        assertEquals(Integer.valueOf(6), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // thenCombineAsync requested from unmanaged thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+        assertNotNull(lookupResult = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (lookupResult instanceof NamingException)
+            ; // pass
+        else if (lookupResult instanceof Throwable)
+            throw new Exception((Throwable) lookupResult);
+        else
+            fail("Unexpected result of lookup: " + lookupResult);
+
+        CompletableFuture<Integer> cf12 = cfcf12.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(Integer.valueOf(12), cf12.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -1301,6 +2116,49 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Validate that toString of a ManagedCompletableFuture includes information about the state of the completable future,
+     * as well as indicating which PolicyExecutor Future it runs on and under which concurrency policy.
+     */
+    @Test
+    public void testToString() throws Exception {
+        CountDownLatch runningLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> cf = ManagedCompletableFuture.supplyAsync(() -> {
+            System.out.println("> supply from testToString");
+            runningLatch.countDown();
+            try {
+                boolean result = continueLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                System.out.println("< supply " + result);
+                return result;
+            } catch (InterruptedException x) {
+                System.out.println("< supply " + x);
+                throw new CompletionException(x);
+            }
+        }, noContextExecutor);
+
+        assertTrue(runningLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        String s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Not completed"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        assertTrue(s, s.contains("RUNNING on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+
+        continueLatch.countDown();
+
+        assertTrue(cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        s = cf.toString();
+        assertTrue(s, s.contains("ManagedCompletableFuture@"));
+        assertTrue(s, s.contains("Completed normally"));
+        assertTrue(s, s.contains("PolicyTaskFuture@"));
+        // possible for this to run during small timing window before policy task future transitions from RUNNING to SUCCESSFUL
+        assertTrue(s, s.contains("SUCCESSFUL") || s.contains("RUNNING"));
+        assertTrue(s, s.contains("on managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]"));
+    }
+
+    /**
      * Supply unmanaged CompletableFuture.runAfterBoth with a ManagedCompletableFuture and see if it can notice
      * when the ManagedCompletableFuture completes.
      */
@@ -1329,6 +2187,57 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertNotNull(results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         assertNull(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Supply unmanaged CompletableFuture as a parameter to thenCombineAsync and thenAcceptBothAsync of ManagedCompletableFuture.
+     */
+    @Test
+    public void testUnmanagedThenCombineThenAcceptBoth() {
+        LinkedList<String> results = new LinkedList<String>();
+        BiFunction<String, String, List<String>> fn = (item1, item2) -> {
+            results.add(item1);
+            results.add(item2);
+            return results;
+        };
+        CompletableFuture<String> cf1 = ManagedCompletableFuture.supplyAsync(() -> "param1", noContextExecutor);
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> "param2");
+        CompletableFuture<String> cf3 = CompletableFuture.supplyAsync(() -> "param3");
+        CompletableFuture<Void> cf = cf1
+                        .thenCombineAsync(cf2, (a, b) -> {
+                            results.add(Thread.currentThread().getName());
+                            results.add(a);
+                            results.add(b);
+                            return results;
+                        })
+                        .thenAcceptBothAsync(cf3, (a, b) -> {
+                            a.add(Thread.currentThread().getName());
+                            a.add(b);
+                        });
+
+        assertTrue(cf.toString(), cf instanceof ManagedCompletableFuture);
+
+        cf.join();
+
+        assertTrue(cf.isDone());
+        assertFalse(cf.isCompletedExceptionally());
+        assertFalse(cf.isCancelled());
+
+        String servletThreadName = Thread.currentThread().getName();
+        String threadName;
+
+        assertNotNull(threadName = results.poll());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertNotSame(servletThreadName, threadName);
+
+        assertEquals("param1", results.poll());
+        assertEquals("param2", results.poll());
+
+        assertNotNull(threadName = results.poll());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-"));
+        assertNotSame(servletThreadName, threadName);
+
+        assertEquals("param3", results.poll());
     }
 
     /**

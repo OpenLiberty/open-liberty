@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.wim.adapter.ldap.fat;
+package componenttest.topology.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -52,12 +52,14 @@ public class LDAPFatUtils {
         try {
             ln1 = new LdapName(dn1);
         } catch (Exception e) {
-            fail("Distinguished name 1 was invalid: " + dn1);
+            e.printStackTrace();
+            fail("Distinguished name 1 was invalid: " + dn1 + ". Exception " + e);
         }
         try {
             ln2 = new LdapName(dn2);
         } catch (Exception e) {
-            fail("Distinguished name 2 was invalid: " + dn2);
+            e.printStackTrace();
+            fail("Distinguished name 2 was invalid: " + dn2 + ". Exception " + e);
         }
 
         assertEquals(msg, ln1, ln2);

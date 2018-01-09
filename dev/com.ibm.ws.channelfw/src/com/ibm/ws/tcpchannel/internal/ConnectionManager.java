@@ -35,7 +35,7 @@ public class ConnectionManager implements TCPConfigConstants {
 
     /**
      * Constructor.
-     * 
+     *
      * @param _tcpChannel
      * @param wqm
      */
@@ -53,7 +53,7 @@ public class ConnectionManager implements TCPConfigConstants {
 
     /**
      * Get a connection.
-     * 
+     *
      * @param connectContext
      * @param tcpConnLink
      * @param blocking
@@ -66,7 +66,7 @@ public class ConnectionManager implements TCPConfigConstants {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc,
                      "getConnection for local: " + connectContext.getLocalAddress() + ", remote: " + connectContext.getRemoteAddress() + ", timeout: "
-                                     + connectContext.getConnectTimeout());
+                         + connectContext.getConnectTimeout());
         }
 
         // create will throw an IOException or return a non-null value
@@ -134,7 +134,7 @@ public class ConnectionManager implements TCPConfigConstants {
 
     /**
      * Do the real work of creating and configuring the SocketIOChannel.
-     * 
+     *
      * @param localAddress
      * @param tcpConnLink
      * @return SocketIOChannel
@@ -185,6 +185,14 @@ public class ConnectionManager implements TCPConfigConstants {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Bind error making outbound connection " + ioe);
                 }
+
+                if (socket != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Socket closed on bind exception.");
+                    }
+                    socket.close();
+                }
+
                 FFDCFilter.processException(ioe, getClass().getName(), "create", this);
                 throw ioe;
             }

@@ -39,6 +39,9 @@ subprojects {
       }
     }
   }
+  // Make the release task depend on assemble so that invoking 'release' or 'releaseNeeded'
+  // will publish jar updates to the local build.image/wlp image
+  release.dependsOn assemble
 }
 
 task wrapper(type: Wrapper) {

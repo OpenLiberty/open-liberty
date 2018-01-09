@@ -32,6 +32,11 @@
     	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
 
+    <dataSource id="NoDatabase" fat.modify="true" jndiName="jdbc/NoDatabase">
+    	<jdbcDriver libraryRef="DerbyLib"/>
+    	<properties.derby.embedded databaseName="memory:nodb" createDatabase="false" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
     <library id="DerbyLib" fat.modify="true">
     	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
     </library>

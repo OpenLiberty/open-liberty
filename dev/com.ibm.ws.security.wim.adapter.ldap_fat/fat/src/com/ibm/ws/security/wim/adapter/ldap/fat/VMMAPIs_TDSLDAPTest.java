@@ -11,15 +11,12 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
-import static org.junit.Assert.assertEquals;
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.rmi.RemoteException;
 import java.util.Map;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -156,12 +153,7 @@ public class VMMAPIs_TDSLDAPTest {
         String result = servlet.login(userName, password);
         System.out.println("Result from login : " + result.toString());
 
-        equalDNs("Returned uniqueName should be same ", "cn=vmmtestuser,o=ibm,c=us", result);
+        assertDNsEqual("Returned uniqueName should be same ", "cn=vmmtestuser,o=ibm,c=us", result);
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }
