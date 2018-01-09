@@ -20,10 +20,6 @@
 def loadBuildProps() {
   Properties props = new Properties()
 
-  // Property for Artifactory matrix parameters
-  def branchName = gitBranch()
-  def matrixParams = ";GIT_BRANCH=master;GIT_FEATURE_BRANCH=${branchName}"
-
   // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
   def isAutomatedBuild = false
   def isContinuousBuild = false
@@ -44,10 +40,7 @@ def loadBuildProps() {
   }
 
   if (usrHomeProps.exists()) {
-    usrHomeProps.withInputStream { props.load(it) }    
-    props.each {      
-      props.setProperty(it.key, it.value)      
-    }
+    usrHomeProps.withInputStream { props.load(it) }
   }
 
   // Retain properties from prior builds; used in automated build publishing
@@ -95,19 +88,23 @@ def loadBuildProps() {
     } else {
       jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
     }
-    isFirstPass = false;
+    isFirstPass = false
   }
 
   props.setProperty('javac.bootclasspath.1.4', jdkLibString)
   props.setProperty('javac.bootclasspath.1.6', jdkLibString)
   props.setProperty('javac.bootclasspath.1.7', jdkLibString)
   props.setProperty('javac.bootclasspath.1.8', jdkLibString)
- 
- 
+
+  // Property for Artifactory matrix parameters
+  def branchName = gitBranch()
+  def matrixParams = ";GIT_BRANCH=master;GIT_FEATURE_BRANCH=${branchName}"
+
+  def artifactoryExists = false
   if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
     //Some functionality is added if we are able to access particular internal systems.
     //This is to support more controlled dependency management, and multiple JDK paths for cross-compilation
-    def artifactoryExists = true;
+    artifactoryExists = true
     def repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
     def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
     fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;local=~/.ibmartifactory/repository;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
@@ -154,7 +151,7 @@ def loadBuildProps() {
   props.setProperty('is.automated.build', isAutomatedBuild.toString())
   props.setProperty('is.continuous.build', isContinuousBuild.toString())
   props.setProperty('is.release', isRelease.toString())
-  props.setProperty('maven.release.name', mavenLocalPath)
+  props.setProperty('maven.release.name', "release")
   props.setProperty('is.remote.publishing', isRemotePublishing.toString())
   props.setProperty('is.public.publishing', isPublicPublishing.toString())
 
@@ -175,10 +172,12 @@ def loadBuildProps() {
     rootProject.ext.isAutomatedBuild = parseBoolean(props.getProperty("is.automated.build"))
     rootProject.ext.isContinuousBuild = parseBoolean(props.getProperty("is.continuous.build"))
     rootProject.ext.isRelease = parseBoolean(props.getProperty('is.release'))
+    rootProject.ext.artifactoryExists = artifactoryExists
     rootProject.ext.isRemotePublishing = parseBoolean(props.getProperty('is.remote.publishing'))
     rootProject.ext.isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
     rootProject.ext.releaseVersionOverride = props.getProperty('release.version.override')
     rootProject.ext.usrHomeProps = usrHomeProps
+    rootProject.ext.generatedProps = props
 
     // Test results for this run
     rootProject.ext.testCountTotal = 0
