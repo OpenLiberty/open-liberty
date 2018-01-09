@@ -1117,7 +1117,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         boolean continueOnError = onError != OnError.FAIL;
 
         Set<String> goodFeatures = null;
-        
+
         boolean featuresHaveChanges = true;
         boolean appForceRestartSet = false;
         try {
@@ -1460,11 +1460,16 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
         for (String missing : result.getMissing()) {
             reportedErrors = true;
-            if (rootFeatures.contains(missing) && missing.indexOf(":") < 0 && !getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
-                // Only report this message for core features included as root features in the server.xml
-                Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
+            //Check if using Open Liberty before suggesting install util for missing features
+            if (!getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
+	            if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
+	                // Only report this message for core features included as root features in the server.xml
+	                Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
+	            } else {
+	                Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+	            }
             } else {
-                Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+            		Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
             }
             installStatus.addMissingFeature(missing);
         }
