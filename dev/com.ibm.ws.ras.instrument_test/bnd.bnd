@@ -8,6 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+#
+#******************************************************************************* 
+# NOTE that this is a separate test project because tests have a dependency
+# com.ibm.ws.junit.extensions and com.ibm.ws.junit.extensions has a
+# transitive dependency on com.ibm.ws.ras.instrument.  To avoid a circular
+# dependency the tests have been moved to a separate project.
+#*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props,
 bVersion=1.0
 
