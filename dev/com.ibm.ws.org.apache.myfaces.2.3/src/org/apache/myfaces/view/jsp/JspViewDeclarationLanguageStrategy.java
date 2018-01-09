@@ -48,9 +48,9 @@ public class JspViewDeclarationLanguageStrategy implements ViewDeclarationLangua
     public JspViewDeclarationLanguageStrategy()
     {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        _language = new JspViewDeclarationLanguage(facesContext, this);
         
         _suffixes = loadSuffixes (facesContext.getExternalContext());
+        _language = new JspViewDeclarationLanguage(facesContext, this, _suffixes);
     }
     
     /**

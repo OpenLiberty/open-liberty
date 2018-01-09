@@ -80,6 +80,7 @@ public class ExternalContextResourceLoaderIterator implements Iterator<String>
             if(option == ResourceVisitOption.TOP_LEVEL_VIEWS_ONLY) 
             {
                 isTopLevelViewsOnly = true;
+                break;
             }
         }
         
