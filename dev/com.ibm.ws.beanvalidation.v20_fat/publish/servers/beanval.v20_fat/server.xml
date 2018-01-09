@@ -20,4 +20,6 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
+    
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>
