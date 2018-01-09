@@ -10,8 +10,7 @@
  *******************************************************************************/
 
 /**
- * @version 1.2.0
+ * @version 1.3.0
  */
-@org.osgi.annotation.versioning.Version("1.2.0")
+@org.osgi.annotation.versioning.Version("1.3.0")
 package com.ibm.ws.beanvalidation.service;
-

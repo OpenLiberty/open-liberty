@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.service;
 
-import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
-import javax.validation.ValidatorFactory;
 
 import com.ibm.ws.managedobject.ManagedObject;
 
@@ -35,6 +33,4 @@ public interface ValidationReleasableFactory {
      * @return the releasable ConstraintValidatorFactory
      */
     public ValidationReleasable<ConstraintValidatorFactory> createConstraintValidatorFactory();
-
-    public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader);
 }

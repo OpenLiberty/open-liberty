@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import javax.validation.ConstraintValidatorFactory;
 import javax.validation.MessageInterpolator;
 import javax.validation.ParameterNameProvider;
 import javax.validation.TraversableResolver;
+import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 import javax.validation.valueextraction.ValueExtractor;
 
@@ -42,10 +43,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.beanvalidation.service.ValidationReleasable;
-import com.ibm.ws.beanvalidation.service.ValidationReleasableFactory;
+import com.ibm.ws.beanvalidation.BVNLSConstants;
+import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.ManagedObject;
@@ -59,27 +61,18 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * An implementation that is CDI aware.
  */
-@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL,
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           property = { "type=CDIValidationReleasableFactory" })
-public class ValidationReleasableFactoryImpl implements ValidationReleasableFactory {
+           property = { "type=BvalMOBuilder" })
+public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
 
-    private static final TraceComponent tc = Tr.register(ValidationReleasableFactoryImpl.class);
+    private static final TraceComponent tc = Tr.register(BvalManagedObjectBuilderImpl.class);
+    private static TraceNLS nls = TraceNLS.getTraceNLS(BvalManagedObjectBuilderImpl.class, BVNLSConstants.BV_RESOURCE_BUNDLE);
     private static final String REFERENCE_CDI_SERVICE = "cdiService";
     private static final String REFERENCE_MANAGED_OBJECT_SERVICE = "managedObjectService";
 
     private final AtomicServiceReference<CDIService> cdiService = new AtomicServiceReference<CDIService>(REFERENCE_CDI_SERVICE);
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>(REFERENCE_MANAGED_OBJECT_SERVICE);
-
-    @Override
-    public <T> ManagedObject<T> createValidationReleasable(Class<T> clazz) {
-        return null;
-    }
-
-    @Override
-    public ValidationReleasable<ConstraintValidatorFactory> createConstraintValidatorFactory() {
-        return null;
-    }
 
     @Override
     public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader) {
@@ -98,6 +91,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
     }
 
     private boolean isCurrentModuleCDIEnabled() {
+        //TODO: Update to use CDIService.isCurrentModuleCDIEnabled() when issue 1440 is resolved.
         CDIRuntime cdiRuntime = (CDIRuntime) cdiService.getServiceWithException();
         return cdiRuntime.isCurrentModuleCDIEnabled();
     }
@@ -148,11 +142,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             mi = createManagedObject(messageInterpolatorClass);
         }
 
-        if (mi != null) {
-            config.messageInterpolator(mi);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Failed to create a CDI managed object for MessageInterpolator class(null means default) " + messageInterpolatorClassName);
-        }
+        config.messageInterpolator(mi);
     }
 
     private void createManagedTraversableResolver(Configuration<?> config, ClassLoader appClassLoader) {
@@ -168,11 +158,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             tr = createManagedObject(traversableResolverClass);
         }
 
-        if (tr != null) {
-            config.traversableResolver(tr);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Failed to create a CDI managed object for TraversableResolver class(null means default) " + traversableResolverClassName);
-        }
+        config.traversableResolver(tr);
     }
 
     private void createManagedParameterNameProvider(Configuration<?> config, ClassLoader appClassLoader) {
@@ -188,11 +174,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             pnp = createManagedObject(parameterNameProviderClass);
         }
 
-        if (pnp != null) {
-            config.parameterNameProvider(pnp);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Failed to create a CDI managed object for ParameterNameProvider class(null means default) " + parameterNameProviderClassName);
-        }
+        config.parameterNameProvider(pnp);
     }
 
     private void createManagedClockProvider(Configuration<?> config, ClassLoader appClassLoader) {
@@ -208,11 +190,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             clockProvider = createManagedObject(clockProviderClass);
         }
 
-        if (clockProvider != null) {
-            config.clockProvider(clockProvider);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Failed to create a CDI managed object for ClockProvider class(null means default) " + clockProviderClassName);
-        }
+        config.clockProvider(clockProvider);
     }
 
     private void createManagedConstraintValidatorFactory(Configuration<?> config, ClassLoader appClassLoader) {
@@ -231,11 +209,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             cvf = createManagedObject(constraintValidatorFactoryClass);
         }
 
-        if (cvf != null) {
-            config.constraintValidatorFactory(cvf);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Failed to create a CDI managed object for ConstraintValidatorFactory class(null means default) " + constraintValidatorFactoryClassName);
-        }
+        config.constraintValidatorFactory(cvf);
     }
 
     private void addValueExtractorBeans(Configuration<?> config, ClassLoader appClassLoader) {
@@ -284,29 +258,17 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
         try {
             ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
-            if (factory.isManaged()) {
-                return factory;
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "ManagedObjectFactory for " + clazz.getName() + " was not managed.");
-                return null;
-            }
+            return factory;
         } catch (ManagedObjectException e) {
-            // ffdc
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Failed to create a ManagedObjectFactory for " + clazz.getName(), e);
-            return null;
+            throw new ValidationException(nls.getString("BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY", "BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY"), e);
         }
     }
 
     private <T> T createManagedObject(Class<T> clazz) {
         // The mof handles calling produce, inject, and postConstruct.
         ManagedObjectFactory<T> mof = getManagedBeanManagedObjectFactory(clazz);
-        if (mof == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "ManagedObjectFactory during createManagedObject() was null.");
-            return null;
-        }
 
         ManagedObject<T> mo;
         try {
@@ -314,7 +276,7 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Failed to create a ManagedObject using a ManagedObjectFactory for class type " + mof.getManagedObjectClass(), e);
-            return null;
+            throw new ValidationException(nls.getString("BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY", "BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY"), e);
         }
         return mo.getObject();
     }
@@ -324,8 +286,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
             return Class.forName(className, true, appClassLoader);
         } catch (ClassNotFoundException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Class not found during CDI enablement of the ValidatorFactory.", e);
-            return null;
+                Tr.debug(tc, "Class " + className + " not found during CDI enablement of the ValidatorFactory.", e);
+            throw new ValidationException(nls.getString("BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY", "BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY"), e);
         }
     }
 }
