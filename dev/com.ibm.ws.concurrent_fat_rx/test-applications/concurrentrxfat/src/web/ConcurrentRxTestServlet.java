@@ -1161,6 +1161,68 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Test a managed completable future using a managed executor with maximum concurrency of 2 and maximum policy of loose.
+     * This should limit concurrent async actions to 2, while not limiting synchronous actions.
+     */
+    @Test
+    public void testMaxPolicyLoose() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(2);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CompletableFuture<Integer> cf0 = ManagedCompletableFuture.supplyAsync(() -> 133, noContextExecutor); // max concurrency: 2, policy: loose
+        CompletableFuture<Integer> cf1, cf2, cf3, cf4, cf5, cf6;
+        try {
+            // Create 2 async stages that will block both max concurrency permits, and wait for both to start running
+            cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose1", beginLatch, continueLatch));
+            cf2 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose2", beginLatch, continueLatch));
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Another async stage should not be allowed to start,
+            cf3 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose3", null, null));
+
+            // However, additional synchronous stages should complete successfully
+            cf4 = cf0.thenApply(new BlockableIncrementFunction("testMaxPolicyLoose4", null, null));
+            cf5 = cf4.thenApply(new BlockableIncrementFunction("testMaxPolicyLoose5", null, null));
+
+            // Again, async stages will not be able to start
+            cf6 = cf5.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose6", null, null));
+
+            // Confirm that synchronous stages complete:
+            assertEquals(Integer.valueOf(134), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(135), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf4.isDone());
+            assertTrue(cf5.isDone());
+
+            // Confirm that asynchronous stages are not complete:
+            try {
+                cf3.get(100, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException x) {
+            }
+
+            try {
+                cf6.get(100, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException x) {
+            }
+
+            assertEquals(Integer.valueOf(-3), cf3.getNow(-3));
+            assertEquals(Integer.valueOf(-6), cf6.getNow(-6));
+        } finally {
+            // Allow the async stages to complete
+            continueLatch.countDown();
+        }
+
+        // Confirm that all asynchronous stages complete, once unblocked:
+        assertEquals(Integer.valueOf(134), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(134), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(134), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(136), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertTrue(cf3.isDone());
+        assertTrue(cf6.isDone());
+    }
+
+    /**
      * General test of obtruding values and exceptions.
      */
     @Test
