@@ -75,6 +75,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
     @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
     private ManagedExecutorService oneContextExecutor;
 
+    // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.
+    private Executor sameThreadExecutor = runnable -> {
+        runnable.run();
+    };
+
     // Executor that can be used when tests don't want to tie up threads from the Liberty global thread pool to perform concurrent test logic
     private ExecutorService testThreads;
 
@@ -354,6 +359,81 @@ public class ConcurrentRxTestServlet extends FATServlet {
             blocker2.countDown();
             blocker1.countDown();
         }
+    }
+
+    /**
+     * Test the constructor for managed completable future that has no underlying action, backed by the DefaultManagedExecutorService
+     * as its default asynchronous execution facility. Use the complete method to manually supply a value, and verify that dependent
+     * stage(s) execute on the managed executor.
+     */
+    @Test
+    public void testActionlessFutureWithDefaultManagedExecutor() throws Exception {
+        BlockableIncrementFunction increment = new BlockableIncrementFunction("testActionlessFutureWithDefaultManagedExecutor", null, null, false);
+        CompletableFuture<Integer> cf1 = new ManagedCompletableFuture<Integer>();
+        CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
+
+        assertEquals(Integer.valueOf(177), cf1.getNow(177));
+        assertEquals(Integer.valueOf(178), cf2.getNow(178));
+
+        assertFalse(cf1.isDone());
+        assertFalse(cf2.isDone());
+
+        assertTrue(cf1.complete(171));
+        assertEquals(Integer.valueOf(172), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCompletedExceptionally());
+
+        // Async action runs on a managed thread, but not on the servlet thread
+        String executorThreadName = increment.executionThread.getName();
+        assertTrue(executorThreadName, executorThreadName.startsWith("Default Executor-thread-"));
+        assertNotSame(Thread.currentThread(), increment.executionThread);
+    }
+
+    /**
+     * Test the constructor for managed completable future that has no underlying action, backed by the specified executor
+     * as its default asynchronous execution facility. This test specifies an unmanaged executor to validate that
+     * managed completable future can tolerate other executors.
+     */
+    @Test
+    public void testActionlessFutureWithSpecifiedExecutor() throws Exception {
+        BlockableIncrementFunction increment1 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor1", null, null, false);
+        BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor2", null, null, false);
+        BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
+        BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
+        CompletableFuture<Integer> cf0 = new ManagedCompletableFuture<Integer>(sameThreadExecutor);
+        CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(increment1);
+        CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment2);
+        CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment3, noContextExecutor);
+        CompletableFuture<Integer> cf4 = cf3.thenApplyAsync(increment4);
+
+        assertFalse(cf0.isDone());
+        assertFalse(cf1.isDone());
+        assertFalse(cf2.isDone());
+        assertFalse(cf3.isDone());
+        assertFalse(cf4.isDone());
+
+        assertTrue(cf0.complete(180));
+        assertEquals(Integer.valueOf(181), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(182), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(183), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(184), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        Thread servletThread = Thread.currentThread();
+
+        // Async actions 1 and 2 aren't actually async, due to sameThreadExecutor
+        assertEquals(servletThread, increment1.executionThread);
+        assertEquals(servletThread, increment2.executionThread);
+
+        // Async action 3 is async because we specified a different executor
+        String executorThreadName = increment3.executionThread.getName();
+        assertTrue(executorThreadName, executorThreadName.startsWith("Default Executor-thread-"));
+        assertNotSame(servletThread, increment3.executionThread);
+
+        // Async action 4 isn't actually async either. It runs from the thread that executed the previous stage, which tries to submit it
+        assertEquals(increment3.executionThread, increment4.executionThread);
     }
 
     /**
