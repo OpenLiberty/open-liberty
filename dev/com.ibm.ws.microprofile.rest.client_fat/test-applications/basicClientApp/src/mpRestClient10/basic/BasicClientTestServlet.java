@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mpRestClient10.basic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
@@ -27,7 +29,6 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import remoteApp.basic.Widget;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/BasicClientTestServlet")
@@ -60,6 +61,22 @@ public class BasicClientTestServlet extends FATServlet {
 //    public void destroy() {
 //        client.close();
 //    }
+
+    @Test
+    public void testSimplePostGetDelete(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        BasicServiceClient client = builder.build(BasicServiceClient.class);
+        try {
+            client.createNewWidget(new Widget("Pencils", 100, 0.2));
+            assertTrue("POSTed widget does not show up in query", client.getWidgetNames().contains("Pencils"));
+            Widget w = client.getWidget("Pencils");
+            assertEquals("Widget returned from GET does not match widget POSTed", "Pencils", w.getName());
+            assertEquals("Widget returned from GET does not match widget POSTed", 100, w.getQuantity());
+            assertEquals("Widget returned from GET does not match widget POSTed", 0.2, w.getWeight(), 0.0);
+        } finally {
+            //ensure we delete so as to not throw off other tests
+            client.removeWidget("Pencils");
+        }
+    }
 
     @Test
     public void testMaps404Exception(HttpServletRequest req, HttpServletResponse resp) throws Exception {

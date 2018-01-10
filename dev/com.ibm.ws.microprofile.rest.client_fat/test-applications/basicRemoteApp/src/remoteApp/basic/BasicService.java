@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -22,26 +23,30 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 /**
  *
  */
 @Path("/basic")
 @ApplicationPath("/")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class BasicService extends Application {
 
     private static Map<String, Widget> widgets = new HashMap<>();
 
     @GET
-    Set<String> getNames() {
+    public Set<String> getNames() {
         return widgets.keySet();
     }
 
     @GET
     @Path("/{name}")
-    Widget get(@PathParam("name") String name) {
+    public Widget get(@PathParam("name") String name) {
         Widget w = widgets.get(name);
         if (w == null) {
             throw new NotFoundException();
@@ -50,7 +55,7 @@ public class BasicService extends Application {
     }
 
     @POST
-    void createNewWidget(Widget widget) {
+    public void createNewWidget(Widget widget) {
         String name = widget.getName();
         if (widgets.containsKey(name)) {
             throw new WebApplicationException(409); // 409 Conflict
@@ -59,13 +64,13 @@ public class BasicService extends Application {
     }
 
     @PUT
-    Widget updateWidget(Widget widget) {
+    public Widget updateWidget(Widget widget) {
         return widgets.put(widget.getName(), widget);
     }
 
     @DELETE
     @Path("/{name}")
-    Widget delete(@PathParam("name") String name) {
+    public Widget delete(@PathParam("name") String name) {
         if (!widgets.containsKey(name)) {
             throw new NotFoundException();
         }

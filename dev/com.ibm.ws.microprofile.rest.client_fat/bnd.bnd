@@ -22,9 +22,10 @@ javac.source: 1.8
 javac.target: 1.8
 
 -buildpath: \
-  com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-  com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-  com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-  com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
-  com.ibm.ws.cdi.interfaces;version=latest
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest
