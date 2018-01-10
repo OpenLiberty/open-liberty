@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -157,7 +158,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
      * @return true if the input is a cookie parameter
      */
     private boolean isCookieParameter(Parameter parameter) {
-        return parameter != null && "cookie".equals(parameter.getIn());
+        return In.COOKIE == parameter.getIn();
     }
 
     /**
@@ -165,7 +166,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
      * @return true if the input is a header parameter
      */
     private boolean isHeaderParameter(Parameter parameter) {
-        return parameter != null && "header".equals(parameter.getIn());
+        return In.HEADER == parameter.getIn();
     }
 
     /**
@@ -173,7 +174,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
      * @return true if the input is a query parameter
      */
     private boolean isQueryParameter(Parameter parameter) {
-        return parameter != null && "query".equals(parameter.getIn());
+        return In.QUERY == parameter.getIn();
     }
 
     /**
@@ -181,7 +182,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
      * @return true if the input is a path parameter
      */
     private boolean isPathParameter(Parameter parameter) {
-        return parameter != null && "path".equals(parameter.getIn());
+        return In.PATH == parameter.getIn();
     }
 
     /**
