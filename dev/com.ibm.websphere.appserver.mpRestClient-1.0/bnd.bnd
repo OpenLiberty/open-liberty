@@ -14,4 +14,4 @@
 
 -dependson: \
   com.ibm.ws.require.java8;version=latest, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client;version=latest
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2;version=latest
