@@ -31,6 +31,10 @@ JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism for the {0} m
 JAVAEESEC_ERROR_NO_HAM.explanation=The HttpAuthenticationMechanism cannot be created.
 JAVAEESEC_ERROR_NO_HAM.useraction=Investigate any error messages from the HttpAuthenticationMechanism.
 
+JAVAEESEC_ERROR_NO_HAM_CONFIGURED=CWWKS1913W: The HttpAuthenticationMechanism object for the {0} module in the {1} application was not found. Make sure that the module contains a HttpAuthenticationMechanism object.
+JAVAEESEC_ERROR_NO_HAM_CONFIGURED.explanation=HttpAuthenticationMechanism object cannot be identified for authentication. It could be there is no object, or multiple objects which corresponds the specified condition. Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_HAM_CONFIGURED.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
+
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: There was an error evaluating the Expression Language (EL) expression for the ''{0}'' attribute of the identity store annotation. Ensure that the EL expression and the result are valid and ensure any referenced beans that are used in the expression are resolvable. The default attribute value ''{1}'' will be used.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The identity store attribute Expression Language expression cannot be resolved to a valid value.
@@ -67,3 +71,43 @@ JAVAEESEC_WARNING_NO_PWD.useraction=If a password was expected, review the calle
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: The ''{1}'' query returned multiple results for the {0} caller on the DatabaseIdentityStore.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=Multiple results were returned for the requested caller. The caller query should only return a single result.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=Review the caller query and database contents. Change the caller query to return one result.
+
+JAVAEESEC_ERROR_NO_URL=CWWKS3400E: No URL was provided to the LdapIdentityStore.
+JAVAEESEC_ERROR_NO_URL.explanation=No URL was provided to the LdapIdentityStore.
+JAVAEESEC_ERROR_NO_URL.useraction=Supply a valid URL to the LdapIdentityStore.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_BIND=CWWKS3401W: Binding with caller, {0}, has failed. The exception is {1}.
+JAVAEESEC_WARNING_EXCEPTION_ON_BIND.explanation=An exception occurred while binding with the provided caller.
+JAVAEESEC_WARNING_EXCEPTION_ON_BIND.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_SEARCH=CWWKS3402W: Searching for caller, {0}, with filter, {1}, and searchBase, {2}, has failed. The exception is {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_SEARCH.explanation=An exception occurred while searching for the provided caller.
+JAVAEESEC_WARNING_EXCEPTION_ON_SEARCH.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_NO_CALLERFILTER=CWWKS3403W: No callerSearchFilter was provided to the LdapIdentityStore.
+JAVAEESEC_WARNING_NO_CALLERFILTER.explanation=No callerSearchFilter was provided to the LdapIdentityStore.
+JAVAEESEC_WARNING_NO_CALLERFILTER.useraction=Supply a valid callerSearchFilter to the LdapIdentityStore.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS3404W: Multiple results were returned for caller, {0}, on the LdapIdentityStore using the filter, {1}, and searchBase, {2}.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Multiple results were returned for the requested caller. The caller search should only return a single result.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Review the callerSearchFilter, searchBase, and repository contents.
+
+JAVAEESEC_WARNING_NO_CALLER=CWWKS3405W: No results were returned searching for caller, {0}, using the filter, {1}, and searchBase, {2}.
+JAVAEESEC_WARNING_NO_CALLER.explanation=No results were returned for the requested caller.
+JAVAEESEC_WARNING_NO_CALLER.useraction=Review the callerSearchFilter, searchBase, and repository contents.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3406W: Caller, {0}, is missing the specified callerNameAttribute, {1}.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=The specified caller does not have the specified attribute as set on the LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Review the callerNameAttribute and repository contents.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3407W: Group, {0}, is missing the specified groupNameAttribute, {1}.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=The specified group does not have the specified attribute as set on the LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Review the groupNameAttribute and repository contents.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3408W: Searching for attribute, {1}, on entity, {0}, has failed. The exception is {2}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=An exception occurred searching for attributes on the specified entity.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUP_SEARCH=CWWKS3409W: Searching for groups of member, {0}, has failed. The exception is {1}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUP_SEARCH.explanation=An exception occurred searching for groups of the specified user.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUP_SEARCH.useraction=Review the provided exception.
