@@ -69,10 +69,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * one for the subclass itself, which includes the override logic, which delegates to another CompletableFuture
  * instance that does the actual work.
  *
- * TODO At this point, this class is just a skeleton and remains to be implemented. Methods are either rejected,
- * or provide no value above delegation back to the CompletableFuture. At first, we are just trying out
- * whether the approach is even a valid way of integrating with CompletableFuture.
- *
  * @param <T>
  */
 public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
@@ -636,19 +632,41 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * @see java.util.concurrent.CompletableFuture#obtrudeValue(java.lang.Object)
-     */
-    @Override
-    public void obtrudeValue(T value) {
-        completableFuture.obtrudeValue(value);
-    }
-
-    /**
      * @see java.util.concurrent.CompletableFuture#obtrudeException(java.lang.Throwable)
      */
     @Override
     public void obtrudeException(Throwable x) {
-        completableFuture.obtrudeException(x);
+        // disallow the possibility of concurrent obtrudes so as to keep the values consistent
+        synchronized (completableFuture) {
+            super.obtrudeException(x);
+            completableFuture.obtrudeException(x);
+        }
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#obtrudeValue(java.lang.Object)
+     */
+    @Override
+    public void obtrudeValue(T value) {
+        // disallow the possibility of concurrent obtrudes so as to keep the values consistent
+        synchronized (completableFuture) {
+            super.obtrudeValue(value);
+            completableFuture.obtrudeValue(value);
+        }
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
     }
 
     /**
