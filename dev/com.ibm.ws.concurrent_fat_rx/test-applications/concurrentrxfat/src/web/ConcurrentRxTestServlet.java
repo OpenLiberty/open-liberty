@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1220,6 +1221,88 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertTrue(cf2.isDone());
         assertTrue(cf3.isDone());
         assertTrue(cf6.isDone());
+    }
+
+    /**
+     * When runIfQueueFull is false, verify that additional async stages are rejected when all max concurrency permits are
+     * taken and the queue is at capacity.
+     */
+    @Test
+    public void testMaxQueueSizeExceededAndReject() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(2);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        // max concurrency: 2, max queue size: 2, runIfQueueFull: false
+        CompletableFuture<Integer> cf0 = ManagedCompletableFuture.supplyAsync(() -> 144, noContextExecutor);
+        CompletableFuture<Integer> cf1, cf2, cf3, cf4, cf5, cf6;
+        try {
+            // Create 2 async stages that will block both max concurrency permits, and wait for both to start running
+            cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject1", beginLatch, continueLatch));
+            cf2 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject2", beginLatch, continueLatch));
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Create 2 async stages to fill the queue
+            cf3 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject3", null, null));
+            cf4 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject4", null, null));
+
+            // Attempt to create async stage which it will not be possible to submit due exceeding queue capacity
+            cf5 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject5", null, null));
+            try {
+                Integer i = cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to submit task for cf5. Instead result is: " + i);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof RejectedExecutionException) {
+                    String message = x.getCause().getMessage();
+                    if (message == null
+                        || !message.contains("CWWKE1201E")
+                        || !message.contains("managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]")
+                        || !message.contains("maxQueueSize")
+                        || !message.contains(" 2")) // the maximum queue size
+                        throw x;
+                } else
+                    throw x;
+            }
+
+            // Create an async stage that will be a delayed submit (after cf3 runs)
+            cf6 = cf3.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject6", null, null));
+
+            // Confirm that asynchronous stages are not complete:
+            try {
+                cf3.get(100, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException x) {
+            }
+
+            assertFalse(cf1.isDone());
+            assertFalse(cf2.isDone());
+            assertFalse(cf3.isDone());
+            assertFalse(cf4.isDone());
+            assertTrue(cf5.isDone());
+            assertTrue(cf5.isCompletedExceptionally());
+            assertFalse(cf5.isCancelled());
+            assertFalse(cf6.isDone());
+        } finally {
+            // Allow the async stages to complete
+            continueLatch.countDown();
+        }
+
+        // Confirm that all asynchronous stages complete, once unblocked:
+        assertEquals(Integer.valueOf(145), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(145), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(145), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(145), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(146), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertTrue(cf3.isDone());
+        assertTrue(cf4.isDone());
+        assertTrue(cf6.isDone());
+
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertFalse(cf4.isCompletedExceptionally());
+        assertFalse(cf6.isCompletedExceptionally());
     }
 
     /**
