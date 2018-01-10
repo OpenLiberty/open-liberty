@@ -119,8 +119,10 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
-    protected static final boolean GLOBAL_JAVA2SECURITY = PrivHelper.getBoolean("global.java2.sec");
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = PrivHelper.getBoolean("global.debug.java2.sec");
+    protected static final boolean GLOBAL_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
+                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
+                    : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = Boolean.getBoolean("global.debug.java2.sec");
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
 
@@ -632,7 +634,7 @@ public class LibertyServer implements LogMonitorClient {
     public void refreshServerXMLFromPublish() throws Exception {
         RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
         LocalFile publishServerXML = new LocalFile(PATH_TO_AUTOFVT_SERVERS + "/" + getServerName() + "/" + SERVER_CONFIG_FILE_NAME);
-        
+
         publishServerXML.copyToDest(serverXML, false, true);
     }
 
@@ -986,8 +988,6 @@ public class LibertyServer implements LogMonitorClient {
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
         if (GLOBAL_JAVA2SECURITY) {
             RemoteFile f = getServerBootstrapPropertiesFile();
-            Log.info(c, "startServerWithArgs", "remoteFile: " + f.getAbsolutePath());
-
             if (serverNeedsToRunWithJava2Security()) {
                 addJava2SecurityPropertiesToBootstrapFile(f);
             } else {
@@ -995,11 +995,10 @@ public class LibertyServer implements LogMonitorClient {
                             " is exempt from Java 2 Security regression testing.");
             }
 
-            Log.info(c, "<clinit>", "JVM_ARGS = " + JVM_ARGS);
+            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_JAVA2SECURITY=true");
         } else if (GLOBAL_DEBUG_JAVA2SECURITY) {
             // update the bootstrap.properties file with the java 2 security property
             RemoteFile f = getServerBootstrapPropertiesFile();
-            Log.info(c, "startServerWithArgs", "remoteFile: " + f.getAbsolutePath());
             if (f.exists()) {
                 java.io.OutputStream w = f.openForWriting(true);
                 try {
@@ -1010,13 +1009,13 @@ public class LibertyServer implements LogMonitorClient {
                     w.write("\n".getBytes());
                     w.write("websphere.java.security.unique=true".getBytes());
                     w.write("\n".getBytes());
-                    Log.info(c, "getServerBootstrapPropertiesFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
                 } catch (Exception e) {
                     Log.info(c, "getServerBootstrapPropertiesFile", "caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
                 }
                 w.flush();
                 w.close();
             }
+            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_DEBUG_JAVA2SECURITY=true");
             isJava2SecurityEnabled = true;
         }
 
@@ -1134,6 +1133,7 @@ public class LibertyServer implements LogMonitorClient {
                     final ArrayList<String> startServiceParmList = makeParmList(parametersList, 1);
 
                     execServerCmd = new Runnable() {
+
                         @Override
                         public void run() {
                             try {
@@ -2078,7 +2078,7 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
-            if (GLOBAL_DEBUG_JAVA2SECURITY)
+            if (GLOBAL_JAVA2SECURITY)
                 new ACEScanner(this).run();
             if (postStopServerArchive)
                 postStopServerArchive();
@@ -4456,7 +4456,7 @@ public class LibertyServer implements LogMonitorClient {
                         if (!waitForFeatureUpdateCompleted) {
                             watchFor.add("CWWKF0008I:"); // Feature update completed in X seconds.
                         }
-                    } else
+                    } else {
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
                             String regexp = it.next();
@@ -4465,6 +4465,7 @@ public class LibertyServer implements LogMonitorClient {
                                 break;
                             }
                         }
+                    }
                 }
             }
             updateLogOffset(logFile.getAbsolutePath(), offset);
