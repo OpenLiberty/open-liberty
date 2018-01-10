@@ -85,6 +85,16 @@ public class UIInput extends UIOutput implements EditableValueHolder
     public static final String EMPTY_STRING_AS_NULL_PARAM_NAME
             = "javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL";
 
+    /** 
+     * When CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY is enabled, input fields will be cleared
+     * when null or empty values are submitted. When disabled, and INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL 
+     * is enabled, submitting null or empty values will cause the previous model value to be restored 
+     * to the input field.
+     **/
+    @JSFWebConfigParam(defaultValue="true", expectedValues="true, false", since="2.3.0", group="validation")
+    private static final String CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY_PARAM_NAME
+            = "org.apache.myfaces.CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY";
+
     /**
      * If set to true, validation is always performed when required is true.
      */
@@ -556,6 +566,46 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
         return validateEmptyFields;
     }
+
+    /**
+     * Get the value of context parameter
+     * org.apache.myfaces.CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY from the web.xml
+     * 
+     * @return the value of the context parameter
+     */
+    private boolean shouldClearInputWhenSubmittedValueIsNullOrEmpty(FacesContext context)
+    {
+        ExternalContext ec = context.getExternalContext();
+        Boolean clearInputWhenSubmittedValueIsNullOrEmpty = 
+                        (Boolean) ec.getApplicationMap().get(CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY_PARAM_NAME);
+
+        if (clearInputWhenSubmittedValueIsNullOrEmpty == null)
+        {
+            // parses the web.xml to get the
+            // "org.apache.myfaces.CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY" value
+            String param = ec.getInitParameter(CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY_PARAM_NAME);
+            
+            // evaluate the param
+            // NOTE: On JSF 2.3, this value will be set to true by default.
+            if (param == null)
+            {
+                clearInputWhenSubmittedValueIsNullOrEmpty = true; // default
+            }
+            else if ("false".equalsIgnoreCase(param))
+            {
+                clearInputWhenSubmittedValueIsNullOrEmpty = false;
+            }
+            else
+            {
+                clearInputWhenSubmittedValueIsNullOrEmpty = true;
+            }
+            
+            // cache the parsed value
+            ec.getApplicationMap().put(CLEAR_INPUT_WHEN_SUBMITTED_VALUE_IS_NULL_OR_EMPTY_PARAM_NAME, clearInputWhenSubmittedValueIsNullOrEmpty);
+        }
+        
+        return clearInputWhenSubmittedValueIsNullOrEmpty;
+    }
     
     private boolean shouldAlwaysPerformValidationWhenRequiredTrue(FacesContext context)
     {
@@ -639,17 +689,28 @@ public class UIInput extends UIOutput implements EditableValueHolder
         // Begin new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
         if (shouldInterpretEmptyStringSubmittedValuesAsNull(context) && isEmptyString(submittedValue))
         {   
-            // -= matzew = setSubmittedValue(null) is wrong, see:
-            // https://javaserverfaces-spec-public.dev.java.net/issues/show_bug.cgi?id=671
             setSubmittedValue(null);
-            submittedValue = null;
+
+            if (!shouldClearInputWhenSubmittedValueIsNullOrEmpty(context))
+            {
+                submittedValue = null;
+            }
         }
         // End new JSF 2.0 requirement (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
 
         Object convertedValue;
         try
         {
-            convertedValue = getConvertedValue(context, submittedValue);
+            if (shouldClearInputWhenSubmittedValueIsNullOrEmpty(context))
+            {
+                // don't use local variable submittedValue because of
+                // (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+                convertedValue = getConvertedValue(context, getSubmittedValue());
+            }
+            else
+            {
+                convertedValue = getConvertedValue(context, submittedValue);
+            }
         }
         catch (ConverterException e)
         {
@@ -673,6 +734,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
                 }
             }
             setValid(false);
+            if (shouldClearInputWhenSubmittedValueIsNullOrEmpty(context))
+            {
+                // set submitted value again if is invalid
+                // because of (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+                setSubmittedValue(submittedValue);
+            }
             return;
         }
 
@@ -680,6 +747,12 @@ public class UIInput extends UIOutput implements EditableValueHolder
 
         if (!isValid())
         {
+            if (shouldClearInputWhenSubmittedValueIsNullOrEmpty(context))
+            {
+                // set submitted value again  if is invalid
+                // because of (INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL)
+                setSubmittedValue(submittedValue);
+            }
             return;
         }
 
