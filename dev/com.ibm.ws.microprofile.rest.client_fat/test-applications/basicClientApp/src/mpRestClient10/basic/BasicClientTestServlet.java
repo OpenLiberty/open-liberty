@@ -52,9 +52,9 @@ public class BasicClientTestServlet extends FATServlet {
             throw new ServletException(ex);
         }
         builder = RestClientBuilder.newBuilder()
-                        .baseUrl(baseUrl)
                         .register(DuplicateWidgetExceptionMapper.class)
-                        .register(UnknownWidgetExceptionMapper.class);
+                        .register(UnknownWidgetExceptionMapper.class)
+                        .baseUrl(baseUrl);
     }
 
 //    @Override
