@@ -10,6 +10,7 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -168,6 +169,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         final String m = "setup";
         final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
         final String pathToAutoFVTTestServers = "publish/servers/";
+
+        //check that there are actually some features to be added or removed
+        assertFalse("No features were set to be added or removed", addFeatures.size() == 0 && removeFeatures.size() == 0);
 
         // Find all of the server configurations to replace features in
         Set<File> serverConfigs = new HashSet<>();

@@ -18,8 +18,6 @@ import org.junit.Test;
 import com.ibm.ws.microprofile.config12.converter.priority.beans.ConverterPriorityBean;
 
 import componenttest.app.FATServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet("/ConverterPriorityServlet")
@@ -29,19 +27,16 @@ public class ConverterPriorityServlet extends FATServlet {
     ConverterPriorityBean bean;
 
     @Test
-    @Mode(TestMode.LITE)
     public void noConversionTest() throws Exception {
         bean.noConversionTest();
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void converterPriorityTest() throws Exception {
         bean.converterPriorityTest();
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void converterPrioritySPITest() throws Exception {
         bean.converterPrioritySPITest();
     }
