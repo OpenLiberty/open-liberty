@@ -27,6 +27,13 @@
         <contextService/>
     </managedScheduledExecutorService>
 
+    <managedExecutorService id="oneContextExecutor" jndiName="concurrent/oneContextExecutor">
+        <concurrencyPolicy max="1" maxQueueSize="1" runIfQueueFull="true"/>
+        <contextService>
+            <jeeMetadataContext/>
+        </contextService>
+    </managedExecutorService>
+
     <!-- Needed for application to shutdown the ExecutorService testThreads -->
     <javaPermission codebase="${server.config.dir}/apps/concurrentrxfat.war" className="java.lang.RuntimePermission" name="modifyThread"/>
     
