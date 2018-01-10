@@ -22,7 +22,7 @@ public interface CDIService {
      * for the current module ({@link #getCurrentModuleBeanManager()}) if there are no BDA classes on the stack.
      *
      * In most cases getCurrentBeanManager should be used instead of ({@link #getCurrentModuleBeanManager()}) and all calls
-     * to getCurrentBeanManager should be cached. 
+     * to getCurrentBeanManager should be cached.
      *
      * @return the current bean manager
      */
@@ -34,4 +34,12 @@ public interface CDIService {
      * @return the bean manager for the current module
      */
     public BeanManager getCurrentModuleBeanManager();
+
+    /**
+     * Returns whether CDI is enabled for the current module.
+     *
+     * @return true if the current module, or any module or libraries it can access, has any CDI Beans
+     */
+    public boolean isCurrentModuleCDIEnabled();
+
 }
