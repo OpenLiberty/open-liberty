@@ -49,7 +49,6 @@ public class DDLGenerationUtility extends UtilityTemplate {
 
     /**
      * Return code for invalid option or argument, as defined in this WIKI on January 13th, 2015. This must remain 20.
-     * http://was.pok.ibm.com/xwiki/bin/view/Liberty/CommandLineUtilities
      */
     private static final int RC_INVALID_OPTION = 20;
 

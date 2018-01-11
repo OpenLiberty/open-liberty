@@ -1,0 +1,152 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/resources/MicroProfileJwtMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5500 - CWWKS5599
+
+MPJWT_CONFIG_PROCESSED=CWWKS5500I: A MicroProfile JWT konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
+MPJWT_CONFIG_PROCESSED.explanation=A jelzett konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
+MPJWT_CONFIG_PROCESSED.useraction=Semmit sem kell tennie.
+
+MPJWT_CONFIG_MODIFIED=CWWKS5501I: A MicroProfile JWT konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
+MPJWT_CONFIG_MODIFIED.explanation=A jelzett konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
+MPJWT_CONFIG_MODIFIED.useraction=Semmit sem kell tennie.
+
+MPJWT_CONFIG_DEACTIVATED=CWWKS5502I: A MicroProfile JWT konfigur\u00e1ci\u00f3 [{0}] sikeresen deaktiv\u00e1l\u00e1sra ker\u00fclt.
+MPJWT_CONFIG_DEACTIVATED.explanation=A jelzett konfigur\u00e1ci\u00f3 sikeresen deaktiv\u00e1l\u00e1sra ker\u00fclt.
+MPJWT_CONFIG_DEACTIVATED.useraction=Semmit sem kell tennie.
+
+# 0=Exception message
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING=CWWKS5503E: A MicroProfile JWT szolg\u00e1ltat\u00e1s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt az ig\u00e9nyek lek\u00e9rdez\u00e9se k\u00f6zben a biztos\u00edtott JWT karaktersorozatb\u00f3l. {0}
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING.explanation=A JWT karaktersorozat val\u00f3sz\u00edn\u0171leg rossz form\u00e1tum\u00fa \u00e9s nem \u00e9rtelmezhet\u0151.
+ERROR_GETTING_CLAIMS_FROM_JWT_STRING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JWT karaktersorozat \u00e9rv\u00e9nyes JSON objektum.
+
+# Do not translate "JsonWebToken"
+# 0=List of principal names
+TOO_MANY_JWT_PRINCIPALS=CWWKS5504W: A biztos\u00edtott t\u00e1rgy egyn\u00e9l t\u00f6bb JsonWebToken t\u00edpus\u00fa azonos\u00edt\u00f3t tartalmaz. A t\u00e1rgyban csak egy JsonWebToken azonos\u00edt\u00f3 l\u00e9tezhet. A JsonWebToken azonos\u00edt\u00f3k nevei a k\u00f6vetkez\u0151k: {0}
+TOO_MANY_JWT_PRINCIPALS.explanation=A t\u00e1rgy t\u00fal sok JsonWebToken t\u00edpus\u00fa azonos\u00edt\u00f3t tartalmaz. Csak egy ilyen t\u00edpus\u00fa azonos\u00edt\u00f3 t\u00e1mogatott.
+TOO_MANY_JWT_PRINCIPALS.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s nem sz\u00far-e be tov\u00e1bbi JsonWebToken azonos\u00edt\u00f3kat a t\u00e1rgyba.
+
+# Do not translate "mpjwt_login_hint"
+# 0=mpJwt configuration ID
+MPJWT_NO_SUCH_PROVIDER=CWWKS5505E: A k\u00e9r\u00e9sben megadott [{0}] MicroProfile JWT konfigur\u00e1ci\u00f3 hi\u00e1nyzik vagy nincs konfigur\u00e1lva ennek a k\u00e9r\u00e9snek a kiszolg\u00e1l\u00e1s\u00e1ra.
+MPJWT_NO_SUCH_PROVIDER.explanation=A k\u00e9r\u00e9s tartalmaz egy param\u00e9tert vagy fejl\u00e9cet, amely megadja a k\u00e9r\u00e9shez haszn\u00e1land\u00f3 MicroProfile JWT konfigur\u00e1ci\u00f3azonos\u00edt\u00f3t. Azonban az azonos\u00edt\u00f3nak megfelel\u0151 MicroProfile JWT konfigur\u00e1ci\u00f3 hi\u00e1nyzik vagy nincs be\u00e1ll\u00edtva a k\u00e9r\u00e9s kiszolg\u00e1l\u00e1s\u00e1hoz.
+MPJWT_NO_SUCH_PROVIDER.useraction=Ellen\u0151rizze, hogy van-e konfigur\u00e1lva egy  szolg\u00e1ltat\u00e1s a megjel\u00f6lt azonos\u00edt\u00f3val.
+
+USERNAME_NOT_FOUND=CWWKS5506E: A felhaszn\u00e1l\u00f3n\u00e9v nem nyerhet\u0151 ki a tokenb\u0151l.
+USERNAME_NOT_FOUND.explanation=A token nem tartalmaz az userNameAttribute konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9k\u00e9nek megfelel\u0151 ig\u00e9nyt, vagy a userNameAttribute konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e1ltal megadott \u00e9rt\u00e9k helytelen.
+USERNAME_NOT_FOUND.useraction=Ellen\u0151rizze, hogy token tartalmaz-e a userNameAttribute konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9k\u00e9nek megfelel\u0151 ig\u00e9nyt.
+
+# 0=Claim name, 1=Exception message
+CANNOT_GET_CLAIM_FROM_JSON=CWWKS5507E: A MicroProfile JWT szolg\u00e1ltat\u00e1s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt az ig\u00e9ny ([{0}]) lek\u00e9rdez\u00e9se k\u00f6zben a biztos\u00edtott JSON karaktersorozatb\u00f3l. {1}
+CANNOT_GET_CLAIM_FROM_JSON.explanation=A JSON adatok val\u00f3sz\u00edn\u0171leg hi\u00e1nyoznak vagy rossz form\u00e1tum\u00faak.
+CANNOT_GET_CLAIM_FROM_JSON.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy biztos\u00edtott JSON adatok \u00e9rv\u00e9nyes JSON objektumk\u00e9nt vannak form\u00e1zva.
+
+# 0=mpJwt element ID, 1=Error message
+ERROR_CREATING_RESULT=CWWKS5508E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tudott l\u00e9trehozni egy t\u00e1rgyat a felhaszn\u00e1l\u00f3hoz a megadott tokennel, a(z) [{0}] MicroProfile JWT konfigur\u00e1ci\u00f3 haszn\u00e1lat\u00e1val. {1}
+ERROR_CREATING_RESULT.explanation=A megadott felhaszn\u00e1l\u00f3 eset\u00e9n a t\u00e1rgy l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt n\u00e9h\u00e1ny adat hi\u00e1nyozhat vagy hib\u00e1s form\u00e1tum\u00fa lehet.
+ERROR_CREATING_RESULT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Claim name, 1=Exception message
+CLAIM_MALFORMED=CWWKS5509W: A(z) [{0}] ig\u00e9ny \u00e9rt\u00e9ke helytelen form\u00e1tum\u00fa. {1}
+CLAIM_MALFORMED.explanation=A megadott ig\u00e9ny \u00e9rt\u00e9ke nem felel meg az elv\u00e1rt adatt\u00edpusnak.
+CLAIM_MALFORMED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott ig\u00e9ny l\u00e9tezik \u00e9s \u00e9rt\u00e9ke helyes form\u00e1tum\u00fa.
+
+# 0=mpJwt element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5510E: A(z) [{0}] MicroProfile JWT konfigur\u00e1ci\u00f3 SSL kontextusa nem t\u00f6lthet\u0151 be. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Lehets\u00e9ges, hogy a megadott konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3 hi\u00e1nyzik vagy helytelen.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1ci\u00f3 SSL inform\u00e1ci\u00f3i pontosak. Ha a MicroProfile JWT konfigur\u00e1ci\u00f3ban meg van adva az sslRef konfigur\u00e1ci\u00f3s attrib\u00fatum, akkor ellen\u0151rizze, hogy a megfelel\u0151 SSL konfigur\u00e1ci\u00f3 helyes-e. M\u00e1sk\u00fcl\u00f6nben ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3 alap\u00e9rtelmezett SSL konfigur\u00e1ci\u00f3ja megfelel\u0151en van-e konfigur\u00e1lva.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=mpJwt element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5511E: Lehets\u00e9ges, hogy a JSON web token (JWT) fogyaszt\u00f3 funkcionalit\u00e1s nem \u00e9rhet\u0151 el a(z) [{0}] MicroProfile JWT konfigur\u00e1ci\u00f3hoz, mert a megadott konfigur\u00e1ci\u00f3hoz tartoz\u00f3 szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Lehets\u00e9ges, hogy a megadott MicroProfile JWT konfigur\u00e1ci\u00f3 m\u00e9g nem \u00e9rhet\u0151 el, vagy a konfigur\u00e1ci\u00f3 szolg\u00e1ltat\u00e1sa le lett \u00e1ll\u00edtva.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott konfigur\u00e1ci\u00f3 be van \u00e1ll\u00edtva \u00e9s el\u00e9rhet\u0151.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5512E: A MicroProfile JWT szolg\u00e1ltat\u00e1s SSL hivatkoz\u00e1s inform\u00e1ci\u00f3i nem t\u00f6lthet\u0151k be, mert hiba t\u00f6rt\u00e9nt az SSL tulajdons\u00e1gok bet\u00f6lt\u00e9sekor. {0}
+ERROR_LOADING_SSL_PROPS.explanation=A MicroProfile JWT konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3 nem \u00e9rhet\u0151 el, vagy hiba t\u00f6rt\u00e9nt az SSL konfigur\u00e1ci\u00f3 tulajdons\u00e1gainak bet\u00f6lt\u00e9sekor.
+ERROR_LOADING_SSL_PROPS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a MicroProfile JWT konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3 helyesen van be\u00e1ll\u00edtva \u00e9s sikeresen elindult.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5513E: A kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=A MicroProfile JWT szolg\u00e1ltat\u00e1s kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1sa nem \u00e9rhet\u0151 el.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a MicroProfile JWT konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s helyesen van be\u00e1ll\u00edtva \u00e9s sikeresen elindult.
+
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_PUBLIC_KEYS=CWWKS5514E: A nyilv\u00e1nos kulcsok nem t\u00f6lthet\u0151k be a megadott [{0}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {1}
+FAILED_TO_LOAD_PUBLIC_KEYS.explanation=A megb\u00edzhat\u00f3 t\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el vagy hiba t\u00f6rt\u00e9nt a tan\u00fas\u00edtv\u00e1nyok tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l t\u00f6rt\u00e9nt bet\u00f6lt\u00e9se k\u00f6zben.
+FAILED_TO_LOAD_PUBLIC_KEYS.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_PUBLIC_KEY=CWWKS5515E: A nyilv\u00e1nos kulcs nem t\u00f6lthet\u0151 be a megadott [{0}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {1}
+FAILED_TO_LOAD_PUBLIC_KEY.explanation=A keyAlias konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e1ltal megadott kulcs nem t\u00f6lthet\u0151 be, vagy hiba t\u00f6rt\u00e9nt az els\u0151 el\u00e9rhet\u0151 nyilv\u00e1nos kulcs bet\u00f6lt\u00e9se k\u00f6zben.
+FAILED_TO_LOAD_PUBLIC_KEY.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS
+# 0=Trust store name, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5516E: A MicroProfile JWT szolg\u00e1ltat\u00e1s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt a tan\u00fas\u00edtv\u00e1nyok bet\u00f6lt\u00e9se k\u00f6zben a(z) [{0}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Lehet, hogy a megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem l\u00e9tezik, vagy hiba t\u00f6rt\u00e9nt a megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nyok tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l t\u00f6rt\u00e9n\u0151 beszerz\u00e9se k\u00f6zben.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 l\u00e9tezik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a MicroProfile JWT konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s helyesen van be\u00e1ll\u00edtva \u00e9s sikeresen elindult.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEYS or FAILED_TO_LOAD_PUBLIC_KEY
+# 0=Certificate alias name, 1=Trust store name, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5517E: A(z) [{0}] \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny nem t\u00f6lthet\u0151 be a(z) [{1}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {2}
+ERROR_LOADING_CERTIFICATE.explanation=A megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem l\u00e9tezik, vagy a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem tartalmaz a megadott \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1nyt.
+ERROR_LOADING_CERTIFICATE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 l\u00e9tezik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 tartalmazza a megadott \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1nyt.
+
+# Intended to be a child of FAILED_TO_LOAD_PUBLIC_KEY
+# 0=Trust store name, 1=Exception message
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY=CWWKS5518E: A(z) [{0}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban tal\u00e1lhat\u00f3 els\u0151 nyilv\u00e1nos kulcs nem t\u00f6lthet\u0151 be. {1}
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.explanation=Val\u00f3sz\u00edn\u0171leg hiba t\u00f6rt\u00e9nt a nyilv\u00e1nos kulcsok bet\u00f6lt\u00e9se k\u00f6zben a megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l.
+FAILED_TO_LOAD_FIRST_AVAILABLE_KEY.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
+PRINCIPAL_MAPPING_MISSING_ATTR=CWWKS5519E: A hiteles\u00edtett felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k nem tartalmazz\u00e1k a MicroProfile JWT konfigur\u00e1ci\u00f3 [{1}] attrib\u00fatuma \u00e1ltal megadott [{0}] ig\u00e9nyt.
+PRINCIPAL_MAPPING_MISSING_ATTR.explanation=A megadott ig\u00e9nynek szerepelnie kellene a hiteles\u00edtett felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k k\u00f6z\u00f6tt, de az ig\u00e9ny nem tal\u00e1lhat\u00f3. Lehet, hogy a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k hi\u00e1nyoznak vagy rossz form\u00e1tum\u00faak, a megadott konfigur\u00e1ci\u00f3s attrib\u00fatum hi\u00e1nyzik vagy \u00fcres, vagy a megadott ig\u00e9ny nincs jelen a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k k\u00f6z\u00f6tt.
+PRINCIPAL_MAPPING_MISSING_ATTR.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1) Adjon meg m\u00e1sik ig\u00e9nyt a megadott attrib\u00fatum \u00e9rt\u00e9kek\u00e9nt a MicroProfile JWT konfigur\u00e1ci\u00f3ban. 2) Ellen\u0151rizze, hogy a szolg\u00e1ltat\u00f3 kibocs\u00e1tja-e a hiteles\u00edtett felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kat a megadott ig\u00e9nnyel.
+
+# 0=Claim name, 1=Name of the configuration attribute that specifies which claim to use
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE=CWWKS5520E: A hiteles\u00edtett felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kban szerepl\u0151 [{0}] ig\u00e9ny adatt\u00edpusa nem \u00e9rv\u00e9nyes. A megadott ig\u00e9ny a(z) [{1}] attrib\u00fatumhoz van t\u00e1rs\u00edtva a MicroProfile JWT konfigur\u00e1ci\u00f3ban.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.explanation=A hiteles\u00edtett felhaszn\u00e1l\u00f3 inform\u00e1ci\u00f3k k\u00f6z\u00f6tt megadott ig\u00e9ny nem felel  meg az elv\u00e1rt adatt\u00edpusnak, \u00edgy az ig\u00e9ny \u00e9rt\u00e9ke nem haszn\u00e1lhat\u00f3 azonos\u00edt\u00f3k lek\u00e9pez\u00e9s\u00e9hez.
+PRINCIPAL_MAPPING_INCORRECT_CLAIM_TYPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a MicroProfile JWT konfigur\u00e1ci\u00f3 a helyes ig\u00e9nynevet adja meg a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumhoz.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS5521E: T\u00fal sok MicroProfile JWT szolg\u00e1ltat\u00e1s [{0}] alkalmas a k\u00e9r\u00e9s kezel\u00e9s\u00e9re.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=A MicroProfile JWT \u00f6sszetev\u0151 nem tud MicroProfile JWT szolg\u00e1ltat\u00e1st kiv\u00e1lasztani a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez, ha t\u00f6bb szolg\u00e1ltat\u00e1s is alkalmas a k\u00e9r\u00e9s kezel\u00e9s\u00e9re.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nincs t\u00f6bb MicroProfile JWT szolg\u00e1ltat\u00e1s be\u00e1ll\u00edtva a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez.
+
+# Do not translate "Authorization", "Bearer", or "POST"
+JWT_NOT_FOUND_IN_REQUEST=CWWKS5522E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tud hiteles\u00edt\u00e9st v\u00e9gezni, mert a k\u00e9r\u00e9sben nem tal\u00e1lhat\u00f3 MicroProfile JWT.
+JWT_NOT_FOUND_IN_REQUEST.explanation=Hiteles\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz MicroProfile JWT-t kell hozz\u00e1adni az Authorization fejl\u00e9chez a Bearer jogosults\u00e1gs\u00e9ma seg\u00edts\u00e9g\u00e9vel vagy POST param\u00e9terk\u00e9nt. Az Authorization fejl\u00e9c hi\u00e1nyzik, az Authorization fejl\u00e9c jogosults\u00e1gs\u00e9m\u00e1ja nem Bearer \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, a k\u00e9r\u00e9s nem POST k\u00e9r\u00e9s, vagy nem tartalmaz MicroProfile JWT-t param\u00e9terk\u00e9nt.
+JWT_NOT_FOUND_IN_REQUEST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a MicroProfile JWT szerepel az Authorization fejl\u00e9cben vagy a k\u00e9r\u00e9s POST param\u00e9terek\u00e9nt.
+
+# 0=Exception message
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ=CWWKS5523E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tudja hiteles\u00edteni a k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben szerepl\u0151 tokenb\u0151l nem hozhat\u00f3 l\u00e9tre \u00e9rv\u00e9nyes JWT. {0}
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.explanation=A MicroProfile JWT szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt a JWT l\u00e9trehoz\u00e1sa k\u00f6zben a biztos\u00edtott token karaktersorozatb\u00f3l. A JWT fogyaszt\u00f3 nem hozhat\u00f3 l\u00e9tre vagy a JWT fogyaszt\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt a token karaktersorozat \u00e9rtelmez\u00e9se \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9se k\u00f6zben.
+ERROR_CREATING_JWT_USING_TOKEN_IN_REQ.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Configuration ID, 1=Exception message
+ERROR_CREATING_JWT=CWWKS5524E: A MicroProfile JWT szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt a JWT l\u00e9trehoz\u00e1sa k\u00f6zben a(z) [{0}] konfigur\u00e1ci\u00f3 \u00e9s a k\u00e9r\u00e9sben szerepl\u0151 token felhaszn\u00e1l\u00e1s\u00e1val. {1}
+ERROR_CREATING_JWT.explanation=A JWT fogyaszt\u00f3 nem hozhat\u00f3 l\u00e9tre vagy a JWT fogyaszt\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt a token karaktersorozat \u00e9rtelmez\u00e9se \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9se k\u00f6zben.
+ERROR_CREATING_JWT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott MicroProfile JWT konfigur\u00e1ci\u00f3 jelen van a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban. Ellen\u0151rizze, hogy a biztos\u00edtott token karaktersorozat helyesen van-e form\u00e1zva. \u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+MP_JWT_FRONT_END_ERROR=CWWKS5525E: Hiba t\u00f6rt\u00e9nt egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9sekor MicroProfile JSON Web Token (JWT) haszn\u00e1lat\u00e1val.
+MP_JWT_FRONT_END_ERROR.explanation=Probl\u00e9ma mer\u00fclt fel egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9sekor. Lehets\u00e9ges, hogy kapcsolati probl\u00e9ma l\u00e9pett fel az alkalmaz\u00e1s \u00e9s egy k\u00fcls\u0151 szolg\u00e1ltat\u00f3 k\u00f6z\u00f6tt, vagy probl\u00e9ma van a hiteles\u00edt\u00e9si adatokkal.
+MP_JWT_FRONT_END_ERROR.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+
+MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tud v\u00e9grehajtani hiteles\u00edt\u00e9st, mivel [{0}] hiteles\u00edt\u00e9si t\u00edpust v\u00e1r az alkalmaz\u00e1sban, de [{1}] t\u00edpust tal\u00e1lt. A(z) [{2}] attrib\u00fatum \u00e9rt\u00e9k [{3}]. 
+MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Sikeres hiteles\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz tegye a k\u00f6vetkez\u0151t: a) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az ignoreApplicationAuthMethod attrib\u00fatum \u00e9rt\u00e9ke is "true" b) a loginConfig feljegyz\u00e9s \u00e9rt\u00e9ke MP-JWT az alkalmaz\u00e1sban.
+MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 vagy alkalmaz\u00e1s friss\u00edtve lett.

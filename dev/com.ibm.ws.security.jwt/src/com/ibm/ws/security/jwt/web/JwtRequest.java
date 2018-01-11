@@ -15,37 +15,38 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 public class JwtRequest {
-    @Trivial
-    public static enum EndpointType {
-        jwk
-    };
+	@Trivial
+	public static enum EndpointType {
+		jwk, token
+	};
 
-    protected String jwtConfigId;
-    protected EndpointType type;
-    protected HttpServletRequest request;
+	protected String jwtConfigId;
+	protected EndpointType type;
+	protected HttpServletRequest request;
 
-    protected JwtRequest(String jwtConfigId, EndpointType type, HttpServletRequest request) {
-        this.jwtConfigId = jwtConfigId;
-        this.type = type;
-        this.request = request;
-    }
+	protected JwtRequest(String jwtConfigId, EndpointType type, HttpServletRequest request) {
+		this.jwtConfigId = jwtConfigId;
+		this.type = type;
+		this.request = request;
+	}
 
-    public EndpointType getType() {
-        return type;
-    }
+	public EndpointType getType() {
+		return type;
+	}
 
-    public String getJwtConfigId() {
-        return jwtConfigId;
-    }
+	public String getJwtConfigId() {
+		return jwtConfigId;
+	}
 
-    public HttpServletRequest getRequest() {
-        return request;
-    }
+	public HttpServletRequest getRequest() {
+		return request;
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("JwtRequest [jwtConfigId:").append(jwtConfigId).append(" type:").append(type).append(" request:").append(request).append("]");
-        return sb.toString();
-    }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("JwtRequest [jwtConfigId:").append(jwtConfigId).append(" type:").append(type).append(" request:")
+				.append(request).append("]");
+		return sb.toString();
+	}
 }

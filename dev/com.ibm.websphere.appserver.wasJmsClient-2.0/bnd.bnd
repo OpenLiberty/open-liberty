@@ -12,12 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.internal.jms-2.0;version=latest, \
-	com.ibm.websphere.appserver.channelfw-1.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
 	com.ibm.ws.messaging.common;version=latest, \
 	com.ibm.ws.resource;version=latest, \
 	com.ibm.ws.messaging.utils;version=latest, \

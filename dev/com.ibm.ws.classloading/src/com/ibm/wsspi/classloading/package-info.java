@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.4.0
+ * @version 1.5.0
  */
-@org.osgi.annotation.versioning.Version("1.4.0")
+@org.osgi.annotation.versioning.Version("1.5.0")
 @TraceOptions(traceGroup = "ClassLoadingService", messageBundle = "com.ibm.ws.classloading.internal.resources.ClassLoadingServiceMessages")
 package com.ibm.wsspi.classloading;
 

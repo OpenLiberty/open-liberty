@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: Us\u0142uga OSGi {0} jest niedost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Jest to wewn\u0119trzny b\u0142\u0105d serwera zg\u0142aszany w zwi\u0105zku z niedost\u0119pno\u015bci\u0105 okre\u015blonej us\u0142ugi.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer, u\u017cywaj\u0105c opcji clean.
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d interfejsu Health API: {0}
+temporary.CWMH9999E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d interfejsu Health API, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
+temporary.CWMH9999E.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: Metoda HealthCheck {0} w aplikacji {1} z modu\u0142u {2} zg\u0142osi\u0142a wyj\u0105tek {3} z nast\u0119puj\u0105cym komunikatem: {4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=Podana metoda wywo\u0142ania zg\u0142osi\u0142a wyj\u0105tek.
+healthcheck.bean.call.exception.CWMH0050E.useraction=Przejrzyj metod\u0119 wywo\u0142ania w komponencie bean HealthCheck, aby zidentyfikowa\u0107 zg\u0142oszony wyj\u0105tek.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: Metoda {0} implementuj\u0105ca klas\u0119 HealthCheckResponse w aplikacji {1} modu\u0142u {2} zg\u0142osi\u0142a wynik Wy\u0142\u0105czony {3} z danymi {4}.
+healthcheck.application.down.CWMH0051W.explanation=Wynik Wy\u0142\u0105czony mo\u017ce spowodowa\u0107 podj\u0119cie dzia\u0142ania wzgl\u0119dem tego serwera przez us\u0142ug\u0119 monitorowania.
+healthcheck.application.down.CWMH0051W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.   To ostrze\u017cenie jest rekordem wyniku Wy\u0142\u0105czony.

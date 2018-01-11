@@ -71,11 +71,10 @@ public class FramePing extends Frame {
 
         setFlags();
 
-        int payloadIndex = 0;
         // grab all the buffered data
         this.opaquePayload = new byte[payloadLength];
-        for (int i = 0; payloadIndex++ < payloadLength; i++)
-            opaquePayload[i] = frp.grabNextByte();
+        for (int payloadIndex = 0; payloadIndex < payloadLength; payloadIndex++)
+            opaquePayload[payloadIndex] = frp.grabNextByte();
     }
 
     @Override

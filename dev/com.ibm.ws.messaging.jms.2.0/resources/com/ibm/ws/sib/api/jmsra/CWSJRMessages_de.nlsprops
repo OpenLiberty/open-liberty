@@ -1,0 +1,643 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 284561          10-Aug-05 pnickoll Added extra data to the exception thrown when validating an activation spec
+# 320291                  04-Nov-05 ajw          Problem in message 1181
+# 344741                  08-Feb-06 ajw          Removed msgs CWSJR1115 and CWSJR1116
+# 342029                  09-Feb-06 ajw          Removed unused msgs
+# 352462          04-Jul-06 matrober SVT:CWSJR1067E has a misspelling
+# 387921          04-Sep-06 pnickoll Fixed misspellings and incorrect message ID
+# SIB0048c.ra.6   22-Jan-07 vaughton Tidy up policing of xa connections msgs
+# 446227          18-Jun-07 pnickoll merge updated from UT
+# 468221          19-Sep-07 pnickoll Changed 1072 so that it uses {0} instead of {1}
+# 99986           13-Jun-13 Chetan   Correcting nls message
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.api.jmsra.CWSJRMessages.nlsprops
+#
+# SIB.api.jmsra component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJR0001=CWSJR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes: TODO: CONFIRM THIS RANGE DOESN'T OVERLAP THE JMS API TEAMS RANGE
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSJR1000-CWSJR1500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSJR1001-CWSJR1020   com.ibm.ws.sib.api.jmsra.impl.JmsJcaResourceAdapterImpl
+#   CWSJR1021-CWSJR1040   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl
+#   CWSJR1041-CWSJR1060   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl / JmsJcaManagedTopicConnectionFactoryImpl
+#   CWSJR1061-CWSJR1080   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionFactoryImpl
+#   CWSJR1081-CWSJR1100   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionImpl
+#   CWSJR1101-CWSJR1120   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnection
+#   CWSJR1121-CWSJR1160   com.ibm.ws.sib.api.jmsra.impl.JmsJcaSessionImpl
+#   CWSJR1161-CWSJR1180   com.ibm.ws.sib.api.jmsra.JmsJcaReferenceUtils
+#   CWSJR1181-CWSJR1200   com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl
+#   CWSJR1201-CWSJR1220   com.ibm.ws.sib.api.jmsra.impl.JmsJcaDispatcher
+#   CWSJR1221-CWSJR1240   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointActivation
+#   CWSJR1241-CWSJR1260   com.ibm.ws.sib.api.jmsra.impl.JmsJcaTransactionalDispatcher
+#   CWSJR1441-CWSJR1460   com.ibm.ws.sib.api.jmsra.JmsJcaFactory
+#   CWSJR1461-CWSJR1480   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionSynchronizationProvider
+#   CWSJR1481-CWSJR1500   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointInvokerImpl
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.61,0,07/01/24,10:58:20
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jmsra/CWSJRMessages.nlsprops
+#COMPONENTPREFIX CWSJR
+#COMPONENTNAMEFOR CWSJR SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#
+# JmsJcaResourceAdapterImpl
+# -------------------------------------------------------------------------------------------------
+
+#
+# JmsJcaManagedConnectionFactoryImpl
+#
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1021=CWSJR1021E: Es wurde eine interne Ausnahme erstellt. Ausnahme {0} in Methode {1}.
+EXCEPTION_RECEIVED_CWSJR1021.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1021.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1022=CWSJR1022E: Es ist eine unerwartete Ausnahme beim Aufruf der Methode {0} eingetreten. Es wurde ein unerwarteter ConnectionRequest-Objekttyp ({2}) anstelle von {1} empfangen.
+EXCEPTION_RECEIVED_CWSJR1022.explanation=Es wurde eine interne Ausnahme erstellt. Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1022.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+SICORECONNECTION_ERROR_CWSJR1023=CWSJR1023E: Es ist ein interner Fehler aufgetreten. Es konnte keine g\u00fcltige SICoreConnectionFactory beim Aufruf der Methode {0} abgerufen werden.
+SICORECONNECTION_ERROR_CWSJR1023.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1023.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+JMS_CONNECTION_FAIL_CWSJR1024=CWSJR1024E: Es ist ein interner Fehler aufgetreten. Beim Aufruf der Methode {0} wurde ein unerwarteter Objekttyp ({2}) anstelle von {1} empfangen.
+JMS_CONNECTION_FAIL_CWSJR1024.explanation=Es wurde eine interne Ausnahme erstellt. Die Methode JmsFactoryFactory.getInstance() hat nicht den erwarteten JMSRAFactoryFactory-Typ empfangen.
+JMS_CONNECTION_FAIL_CWSJR1024.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1025=CWSJR1025E: Das Pr\u00e4fix {0} ist l\u00e4nger als 12 Zeichen.
+DESTINATION_PREFIX_LONG_CWSJR1025.explanation=Das Namenspr\u00e4fix f\u00fcr tempor\u00e4re Ziele darf nicht l\u00e4nger als zw\u00f6lf Zeichen sein.
+DESTINATION_PREFIX_LONG_CWSJR1025.useraction=Geben Sie ein Pr\u00e4fix mit maximal 12 Zeichen an.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1026=CWSJR1026E: Es ist ein interner Fehler aufgetreten. Die Ausnahme {0} wurde in Methode {1} abgefangen.
+EXCEPTION_RECEIVED_CWSJR1026.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1026.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1027=CWSJR1027E: Es ist ein interner Fehler aufgetreten. Die Ausnahme {0} wurde in Methode {1} abgefangen.
+EXCEPTION_RECEIVED_CWSJR1027.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1027.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1028=CWSJR1028E: Es ist ein interner Fehler aufgetreten. Die Ausnahme {0} wurde in Methode {1} abgefangen.
+EXCEPTION_RECEIVED_CWSJR1028.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1028.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1029=CWSJR1029E: Das Pr\u00e4fix {0} ist l\u00e4nger als 12 Zeichen.
+DESTINATION_PREFIX_LONG_CWSJR1029.explanation=Das Namenspr\u00e4fix f\u00fcr tempor\u00e4re Ziele darf nicht l\u00e4nger als zw\u00f6lf Zeichen sein.
+DESTINATION_PREFIX_LONG_CWSJR1029.useraction=Geben Sie ein Pr\u00e4fix mit maximal 12 Zeichen an.
+
+#
+# JmsJcaConnectionFactoryImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1061=CWSJR1061E: Es ist ein interner Fehler in Methode {0} aufgetreten. Es wurde keine g\u00fcltige Verbindung erstellt. Das Objekt {2} wurde anstelle von {1} empfangen.
+EXCEPTION_RECEIVED_CWSJR1061.explanation=CMSG0001
+EXCEPTION_RECEIVED_CWSJR1061.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1064=CWSJR1064E: Es ist ein interner Fehler aufgetreten. Die Ausnahme {0} wurde in Methode {1} abgefangen.
+EXCEPTION_RECEIVED_CWSJR1064.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1064.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1065=CWSJR1065E: Es ist ein interner Fehler aufgetreten. Die Ausnahme {0} wurde in Methode {1} abgefangen.
+EXCEPTION_RECEIVED_CWSJR1065.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1065.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+SICORECONNECTION_ERROR_CWSJR1066=CWSJR1066E: Es konnte keine g\u00fcltige SICoreConnectionFactory beim Aufruf der Methode {0} abgerufen werden.
+SICORECONNECTION_ERROR_CWSJR1066.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1066.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSJR1067=CWSJR1067E: Der folgende JCA-Verbindungsfehler ist beim Abrufen der Verbindung aufgetreten. Der Verbindungsversuch wird wiederholt. Ausnahme: {0}
+CONNECTION_ERROR_RETRY_CWSJR1067.explanation=Beim Abrufen einer Verbindung wurde eine Ausnahme erstellt. Das System gibt die Verbindung frei und versucht anschlie\u00dfend, eine andere Verbindung anzufordern.
+CONNECTION_ERROR_RETRY_CWSJR1067.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1068=CWSJR1068E: Eine Authentifizierung mit dem angegebenen Authentifizierungsalias {0} ist nicht m\u00f6glich.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer containergesteuerten Authentifizierung konfiguriert, aber die zugeordneten Authentifizierungsdaten sind nicht g\u00fcltig.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.useraction=Stellen Sie sicher, dass der Authentifizierungsalias, der dieser Ressourcenreferenz zugeordnet ist, g\u00fcltige Berechtigungsnachweise f\u00fcr den Bus enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1069=CWSJR1069E: Der angegebene Benutzername {0} konnte nicht authentifiziert werden.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer anwendungsgesteuerten Authentifizierung konfiguriert, aber die zugeordneten Komponentenauthentifizierungsdaten sind nicht g\u00fcltig.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.useraction=Stellen Sie sicher, dass der Komponentenauthentifzierungsalias g\u00fcltige Berechtigungsnachweise f\u00fcr den Bus enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1070=CWSJR1070E: Eine Authentifizierung ist nicht m\u00f6glich, weil kein Authentifizierungsalias angegeben wurde.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer containergesteuerten Authentifizierung konfiguriert, aber der Ressourcenreferenz ist kein Authentifizierungsalias zugeordnet.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.useraction=Stellen Sie sicher, dass dieser Ressourcenreferenz ein Authentifizierungsalias zugeordnet ist.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1071=CWSJR1071E: Eine Authentifizierung ist nicht m\u00f6glich, weil keine Berechtigungsnachweise angegeben wurden.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer anwendungsgesteuerten Authentifizierung konfiguriert, aber es wurden keine Komponentenauthentifizierungsdaten angegeben.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.useraction=Stellen Sie sicher, dass dieser Ressourcenreferenz ein Authentifizierungsalias zugeordnet ist.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1072=CWSJR1072E: Der angegebene Benutzername {0} konnte nicht authentifiziert werden.
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer anwendungsgesteuerten Authentifizierung konfiguriert, aber die von der Anwendung bereitgestellten Berechtigungsnachweise sind nicht g\u00fcltig.
+
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.useraction=Stellen Sie sicher, dass beim Erstellen einer Verbindung g\u00fcltige Berechtigungsnachweise bereitgestellt werden.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1073=CWSJR1073E: Eine Authentifizierung mit dem angegebenen Authentifizierungsalias {0} ist nicht m\u00f6glich.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer containergesteuerten Authentifizierung konfiguriert, aber die zugeordneten Authentifizierungsdaten sind nicht g\u00fcltig.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.useraction=Stellen Sie sicher, dass der Authentifizierungsalias, der dieser Ressourcenreferenz zugeordnet ist, g\u00fcltige Berechtigungsnachweise f\u00fcr den Bus enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1074=CWSJR1074E: Der angegebene Benutzername {0} konnte nicht authentifiziert werden.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer anwendungsgesteuerten Authentifizierung konfiguriert, aber die zugeordneten Komponentenauthentifizierungsdaten sind nicht g\u00fcltig.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.useraction=Stellen Sie sicher, dass der Komponentenauthentifzierungsalias g\u00fcltige Berechtigungsnachweise f\u00fcr den Bus enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1075=CWSJR1075E: Eine Authentifizierung ist nicht m\u00f6glich, weil kein Authentifizierungsalias angegeben wurde.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer containergesteuerten Authentifizierung konfiguriert, aber der Ressourcenreferenz ist kein Authentifizierungsalias zugeordnet.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.useraction=Stellen Sie sicher, dass dieser Ressourcenreferenz ein Authentifizierungsalias zugeordnet ist.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1076=CWSJR1076E: Eine Authentifizierung ist nicht m\u00f6glich, weil keine Berechtigungsnachweise angegeben wurden.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.explanation=Eine Anwendung hat eine Ressourcenreferenz verwendet, um eine Verbindungsfactory zu suchen. Die Ressourcenreferenz ist f\u00fcr die Verwendung einer anwendungsgesteuerten Authentifizierung konfiguriert, aber es wurden keine Komponentenauthentifizierungsdaten angegeben.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.useraction=Stellen Sie sicher, dass dieser Ressourcenreferenz ein Authentifizierungsalias zugeordnet ist.
+# -------------------------------------------------------------------------------------------------
+AUTHENTICATION_EXCEPTION_1077=CWSJR1077E: Die Authentifizierung des angegebenen Benutzernamens war nicht erfolgreich.
+AUTHENTICATION_EXCEPTION_1077.explanation=Die Authentifizierung mit den abgegebenen Details ist fehlgeschlagen, weil der Benutzername oder das Kennwort nicht korrekt ist.
+AUTHENTICATION_EXCEPTION_1077.useraction=Suchen Sie in der verkn\u00fcpften Fehlernachricht nach weiteren Informationen. Stellen Sie sicher, dass Benutzername und Kennwort korrekt sind und im System definiert wurden.
+
+#
+# JmsJcaConnectionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the number of sessions found
+EXCEPTION_RECEIVED_CWSJR1082=CWSJR1082E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Es wurde genau eine Sitzung erwartet, aber gefunden wurden {1} Sitzungen.
+EXCEPTION_RECEIVED_CWSJR1082.explanation=Die Sitzungsgruppe in der Verbindung enth\u00e4lt mehrere Sitzungen, ob wohl nur eine vorhanden sein d\u00fcrfte.
+EXCEPTION_RECEIVED_CWSJR1082.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1083=CWSJR1083E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Es wurde ein Objekt des Typs {1} gefunden, aber erwartet wurde ein Objekt des Typs {2}.
+EXCEPTION_RECEIVED_CWSJR1083.explanation=Es wurde ein Objekt mit einem ung\u00fcltigen Typ in der Sitzungsgruppe gefunden.
+EXCEPTION_RECEIVED_CWSJR1083.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1084=CWSJR1084E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Es wurde ein Objekt des Typs {1} gefunden, aber erwartet wurde ein Objekt des Typs {2}.
+EXCEPTION_RECEIVED_CWSJR1084.explanation=Es wurde ein Objekt mit einem ung\u00fcltigen Typ in der Sitzungsgruppe gefunden.
+EXCEPTION_RECEIVED_CWSJR1084.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1085=CWSJR1085E: Es ist ein interner Fehler aufgetreten. Die Methode {0} wurde aufgerufen, obwohl die Verbindung bereits geschlossen war.
+ILLEGAL_STATE_CWSJR1085.explanation=Die Methode darf nicht nach Verbindungsabbau aufgerufen werden.
+ILLEGAL_STATE_CWSJR1085.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1086=CWSJR1086E: Es ist ein interner Fehler aufgetreten. Die Methode {0} wurde aufgerufen, obwohl die Verbindung bereits geschlossen war.
+ILLEGAL_STATE_CWSJR1086.explanation=Die Methode darf nicht nach Verbindungsabbau aufgerufen werden.
+ILLEGAL_STATE_CWSJR1086.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnection
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+EXCEPTION_RECEIVED_CWSJR1101=CWSJR1101E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Die Verbindung ist fehlgeschlagen, weil ein Objekt des Typs {2} gefunden wurde, obwohl ein Objekt des Typs {1} erwartet wurde.
+EXCEPTION_RECEIVED_CWSJR1101.explanation=Die Anforderungsinformationen haben nicht den richtigen Typ.
+EXCEPTION_RECEIVED_CWSJR1101.useraction=CMSG0002
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+EXCEPTION_RECEIVED_CWSJR1102=CWSJR1102E: Es ist ein interner Fehler aufgetreten. Die Ausnahme {0} wurde ausgel\u00f6st.
+EXCEPTION_RECEIVED_CWSJR1102.explanation=Der Aufruf der Methode "lazyEnlist" f\u00fcr den Verbindungsmanager war nicht erfolgreich.
+EXCEPTION_RECEIVED_CWSJR1102.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+# {1} The username that was used in the objects constructor
+# {2} The username passed to the method
+AUTHENTICATION_ERROR_CWSJR1103=CWSJR1103E: Die Berechtigungsnachweise ({2}), die an die Methode {0} \u00fcbergeben wurden, stimmen nicht mit denen \u00fcberein, die an den Konstruktor ({1}) \u00fcbergeben wurden.
+AUTHENTICATION_ERROR_CWSJR1103.explanation=Die bereitgestellten Berechtigungsnachweise haben die Authentifizierungspr\u00fcfung nicht bestanden.
+AUTHENTICATION_ERROR_CWSJR1103.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+INVALID_SESSION_CWSJR1104=CWSJR1104E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Es wurde ein Objekt des Typs {2} anstelle eines Objekt des Typs {1} empfangen.
+INVALID_SESSION_CWSJR1104.explanation=Es wurde ein Objekt mit falschem Typ empfangen.
+INVALID_SESSION_CWSJR1104.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSJR1105=CWSJR1105E: Es ist ein interner Fehler aufgetreten. Es wurde versucht, eine lokale Transaktion zu starten, obwohl bereits eine solche Transaktion vorhanden ist.
+INVALID_SESSION_CWSJR1105.explanation=Es ist nicht m\u00f6glich, eine lokale Transaktion zu starten, wenn bereits eine solche vorhanden ist.
+INVALID_SESSION_CWSJR1105.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1106=CWSJR1106E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Ein erforderliches SICoreConnection-Objekt wurde nicht gefunden.
+EXCEPTION_RECEIVED_CWSJR1106.explanation=Es ist ein SICoreConnection-Objekt erforderlich, aber es wurde keines gefunden.
+EXCEPTION_RECEIVED_CWSJR1106.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1107=CWSJR1107E: Beim Aufruf der Methode {0} ist ein interner Fehler aufgetreten. Ein erforderliches SICoreConnection-Objekt wurde nicht gefunden.
+EXCEPTION_RECEIVED_CWSJR1107.explanation=Es ist ein SICoreConnection-Objekt erforderlich, aber es wurde keines gefunden.
+EXCEPTION_RECEIVED_CWSJR1107.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSJR1108=CWSJR1108E: Es muss eine bestimmte Messaging-Engine angegeben werden, wenn JMS-Ressourcen in einer Transaktion verwendet werden sollen. Die Verbindungseigenschaft {0} muss auf {1} gesetzt werden.
+ME_NAME_REQUIRED_CWSJR1108.explanation=Damit Transaktionen wiederhergestellt werden k\u00f6nnen, muss ein Verbindungsfactory eine bestimmte Messaging-Engine im Bus als Ziel angeben.
+ME_NAME_REQUIRED_CWSJR1108.useraction=\u00c4ndern Sie die Verbindungsfactoryeigenschaft "Ziel" in den Zeichenfolgewert des Namens der Ziel-Messaging-Engine, die Eigenschaft "Zieltyp" in den Pulldown-Wert "Name_der_Messaging-Engine" und die Eigenschaft "Zielsignifikanz" in den PulldownWert "Erforderlich".
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1110=CWSJR1110E: Es ist ein interner Fehler aufgetreten. Ausnahme {0} in Methode {1}.
+EXCEPTION_RECEIVED_CWSJR1110.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1110.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1111=CWSJR1111E: Es ist ein interner Fehler aufgetreten. Ausnahme {0} in Methode {1}.
+EXCEPTION_RECEIVED_CWSJR1111.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1111.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1112=CWSJR1112E: Es ist ein interner Fehler aufgetreten. Ausnahme {0} in Methode {1}.
+EXCEPTION_RECEIVED_CWSJR1112.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1112.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1113=CWSJR1113E: Es ist ein interner Fehler aufgetreten. Ausnahme {0} in Methode {1}.
+EXCEPTION_RECEIVED_CWSJR1113.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1113.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1114=CWSJR1114E: Es ist ein interner Fehler aufgetreten. Ausnahme {0} in Methode {1}.
+EXCEPTION_RECEIVED_CWSJR1114.explanation=Die Informationen zur Ausnahme k\u00f6nnen f\u00fcr die Diagnose verwendet werden.
+EXCEPTION_RECEIVED_CWSJR1114.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+AUTHENTICATION_ERROR_CWSJR1117=CWSJR1117E: Es ist ein interner Fehler aufgetreten. Die an die Methode {0} \u00fcbergebenen Berechtigungsnachweise stimmen nicht mit denen \u00fcberein, die an den Konstruktor \u00fcbergeben wurden.
+AUTHENTICATION_ERROR_CWSJR1117.explanation=Die bereitgestellten Berechtigungsnachweise haben die Authentifizierungspr\u00fcfung nicht bestanden.
+AUTHENTICATION_ERROR_CWSJR1117.useraction=CMSG0002
+
+#
+# JmsJcaSessionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the linked exception
+EXCEPTION_RECEIVED_CWSJR1121=CWSJR1121E: Es ist ein interner Fehler aufgetreten. Beim Aufruf der Methode {0} wurde die Ausnahme {1} ausgel\u00f6st.
+EXCEPTION_RECEIVED_CWSJR1121.explanation=Es wurde eine unerwartete Ausnahme erstellt, als die Sitzung versucht hat, sich erneut einem Verbindungsmanager zuzuordnen.
+EXCEPTION_RECEIVED_CWSJR1121.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the object we received
+# {2} is the object type we expected.
+EXCEPTION_RECEIVED_CWSJR1122=CWSJR1122E: Es ist ein interner Fehler aufgetreten. Beim Aufruf der Methode {0} wurde {2} erwartet, aber {1} wurde empfangen.
+EXCEPTION_RECEIVED_CWSJR1122.explanation=Der Verbindungsmanager wurde nicht verz\u00f6gert registriert.
+EXCEPTION_RECEIVED_CWSJR1122.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1123=CWSJR1123E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Schlie\u00dfen der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1123.explanation=Die Methode kann nicht aufgerufen werden, nachdem die Sitzung geschlossen wurde.
+ILLEGAL_STATE_CWSJR1123.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1124=CWSJR1124E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Invalidieren der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1124.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn die Sitzung nicht mehr g\u00fcltig ist.
+ILLEGAL_STATE_CWSJR1124.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1125=CWSJR1125E: Es ist ein interner Fehler aufgetreten. {0} wurde aufgerufen, aber es ist keine lokale Transaktion vorhanden.
+ILLEGAL_STATE_CWSJR1125.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn keine lokale Transaktion vorhanden ist.
+ILLEGAL_STATE_CWSJR1125.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+EXCEPTION_RECEIVED_CWSJR1126=CWSJR1126E: Es ist ein interner Fehler aufgetreten. Der Aufruf der Methode {0} ist nicht zul\u00e4ssig, weil es sich nicht um eine verwaltete Methode handelt. 
+EXCEPTION_RECEIVED_CWSJR1126.explanation=Der Anruf ist in einer nicht verwalteten Umgebung nicht zul\u00e4ssig.
+EXCEPTION_RECEIVED_CWSJR1126.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1130=CWSJR1130E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Schlie\u00dfen der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1130.explanation=Die Methode kann nicht aufgerufen werden, nachdem die Sitzung geschlossen wurde.
+ILLEGAL_STATE_CWSJR1130.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1131=CWSJR1131E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Schlie\u00dfen der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1131.explanation=Die Methode kann nicht aufgerufen werden, nachdem die Sitzung geschlossen wurde.
+ILLEGAL_STATE_CWSJR1131.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1132=CWSJR1132E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Schlie\u00dfen der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1132.explanation=Die Methode kann nicht aufgerufen werden, nachdem die Sitzung geschlossen wurde.
+ILLEGAL_STATE_CWSJR1132.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1133=CWSJR1133E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Schlie\u00dfen der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1133.explanation=Die Methode kann nicht aufgerufen werden, nachdem die Sitzung geschlossen wurde.
+ILLEGAL_STATE_CWSJR1133.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1134=CWSJR1134E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Invalidieren der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1134.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn die Sitzung nicht mehr g\u00fcltig ist.
+ILLEGAL_STATE_CWSJR1134.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1135=CWSJR1135E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Invalidieren der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1135.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn die Sitzung nicht mehr g\u00fcltig ist.
+ILLEGAL_STATE_CWSJR1135.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1136=CWSJR1136E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Invalidieren der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1136.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn die Sitzung nicht mehr g\u00fcltig ist.
+ILLEGAL_STATE_CWSJR1136.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1137=CWSJR1137E: Es ist ein interner Fehler aufgetreten. {0} wurde nach dem Invalidieren der Sitzung aufgerufen.
+ILLEGAL_STATE_CWSJR1137.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn die Sitzung nicht mehr g\u00fcltig ist.
+ILLEGAL_STATE_CWSJR1137.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1138=CWSJR1138E: Es ist ein interner Fehler aufgetreten. Es ist eine unerwartete Ausnahme eingetreten. {0} wurde aufgerufen, aber es ist keine lokale Transaktion vorhanden.
+ILLEGAL_STATE_CWSJR1138.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn eine globale Transaktion aktiv ist.
+ILLEGAL_STATE_CWSJR1138.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1139=CWSJR1139E: Es ist ein interner Fehler aufgetreten. Es ist eine unerwartete Ausnahme eingetreten. {0} wurde aufgerufen, aber es ist keine lokale Transaktion vorhanden.
+ILLEGAL_STATE_CWSJR1139.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn keine lokale Transaktion vorhanden ist.
+ILLEGAL_STATE_CWSJR1139.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1140=CWSJR1140E: Es ist ein interner Fehler aufgetreten. Es ist eine unerwartete Ausnahme eingetreten. {0} wurde aufgerufen, aber es ist keine lokale Transaktion vorhanden.
+ILLEGAL_STATE_CWSJR1140.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn eine globale Transaktion aktiv ist.
+ILLEGAL_STATE_CWSJR1140.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1141=CWSJR1141E: Es ist ein interner Fehler aufgetreten. Es ist eine unerwartete Ausnahme eingetreten. {0} wurde aufgerufen, aber es ist keine lokale Transaktion vorhanden.
+ILLEGAL_STATE_CWSJR1141.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn keine lokale Transaktion vorhanden ist.
+ILLEGAL_STATE_CWSJR1141.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1142=CWSJR1142E: Es ist ein interner Fehler aufgetreten. Es ist eine unerwartete Ausnahme eingetreten. {0} wurde aufgerufen, aber es ist keine lokale Transaktion vorhanden.
+ILLEGAL_STATE_CWSJR1142.explanation=Der Methodenaufruf ist nicht zul\u00e4ssig, wenn keine lokale Transaktion vorhanden ist.
+ILLEGAL_STATE_CWSJR1142.useraction=CMSG0002
+
+#
+# JmsJcaReferenceUtils
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the class where the error occurred
+EXCEPTION_RECEIVED_CWSJR1161=CWSJR1161E: Bei der Initialisierung der Klasse {1} ist ein interner Fehler aufgetreten. Ausnahme: {0}
+EXCEPTION_RECEIVED_CWSJR1161.explanation=Die Klasse "JmsJcaReferenceUtils" wurde nicht initialisiert.
+EXCEPTION_RECEIVED_CWSJR1161.useraction=CMSG0002
+
+#
+# JmsJcaActivationSpecImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179=CWSJR1179E: Das folgende Feld f\u00fcr die Zielsignifikanz in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{2}]. Die g\u00fcltigen Werte sind [{0}] und [{1}].
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Eigenschaft f\u00fcr die Zielsignifikanz nicht g\u00fcltig ist.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr den Zielsignifikanz in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180=CWSJR1180E: Das folgende Feld f\u00fcr den Zieltyp in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{3}]. Die g\u00fcltigen Werte sind [{0}], [{1}] und [{2}].
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Eigenschaft f\u00fcr den Zieltyp nicht g\u00fcltig ist.
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr den Zieltyp in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is a list of invalid properties
+INVALID_PROPERTIES_CWSJR1181=CWSJR1181E: Die JMS-Aktivierungsspezifikation enth\u00e4lt ung\u00fcltige Werte. Das Scheitern der Validierung der JMS-Aktivierungsspezifikation hat die folgenden Ursachen: {0}
+INVALID_PROPERTIES_CWSJR1181.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde mindestens eine ung\u00fcltige Eigenschaft gefunden.
+INVALID_PROPERTIES_CWSJR1181.useraction=Korrigieren Sie die Werte der Eigenschaften in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut. 
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1182=CWSJR1182E: Interner Fehler. Die folgende Ausnahme wurde bei dem Versuch, eine Dienstprogrammklasse zu erhalten, ausgel\u00f6st: {0}
+EXCEPTION_RECEIVED_CWSJR1182.explanation=W\u00e4hrend der Endpunktaktivierung hat der JMS-Ressourcenadapter versucht, eine Dienstprogrammklasse zu erhalten. Dabei wurde eine unerwartete Ausnahme ausgel\u00f6st.
+EXCEPTION_RECEIVED_CWSJR1182.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_CLIENTID_CWSJR1183=CWSJR1183E: Das Feld mit der Client-ID in einer JMS-Aktivierungsspezifikation muss gesetzt werden.
+INVALID_PROPERTY_CLIENTID_CWSJR1183.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Client-ID nicht g\u00fcltig ist.
+INVALID_PROPERTY_CLIENTID_CWSJR1183.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die Client-ID in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1185=CWSJR1185E: Es ist ein interner Fehler w\u00e4hrend der Validierung einer JMS-Aktivierungsspezifikation aufgetreten: {0}
+EXCEPTION_RECEIVED_CWSJR1185.explanation=W\u00e4hrend der Validierung einer JMS-Aktivierungsspezifikation wurde eine unerwartete Ausnahme ausgel\u00f6st.
+EXCEPTION_RECEIVED_CWSJR1185.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSJR1186=CWSJR1186E: Es ist ein interner Fehler w\u00e4hrend der Registrierung des WLM-Classifier f\u00fcr den JMS-Ressourcenadapter aufgetreten: {0}
+WLM_CLASSIFIER_REG_CWSJR1186.explanation=W\u00e4hrend der Registrierung des WLM-Classifier f\u00fcr den JMS-Ressourcenadapter bei der Handler-Registry wurde eine unerwartete Ausnahme empfangen.
+WLM_CLASSIFIER_REG_CWSJR1186.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSJR1187=CWSJR1187E: Der Busname in einer JMS-Aktivierungsspezifikation muss einen Wert haben.
+INVALID_PROPERTY_BUSNAME_CWSJR1187.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Busname nicht g\u00fcltig ist.
+INVALID_PROPERTY_BUSNAME_CWSJR1187.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die Busnamen in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DESTINATION_CWSJR1188=CWSJR1188E: Das Ziel in einer JMS-Aktivierungsspezifikation muss einen Wert haben.
+INVALID_PROPERTY_DESTINATION_CWSJR1188.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass das Ziel nicht g\u00fcltig ist.
+INVALID_PROPERTY_DESTINATION_CWSJR1188.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr das Ziel in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189=CWSJR1189E: Der folgende Zieltyp in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{2}]. Die g\u00fcltigen Werte sind [{0}] und [{1}].
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Zieltyp nicht g\u00fcltig ist.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr den Zieltyp in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the acknowledge mode
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190=CWSJR1190E: Der folgende Best\u00e4tigungsmodus in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{2}]. Die g\u00fcltigen Werte sind [{0}] und [{1}].
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Best\u00e4tigungsmodus nicht g\u00fcltig ist.
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr den Best\u00e4tigungsmodus in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the read ahead
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191=CWSJR1191E: Der folgende Wert f\u00fcr Vorauslesen in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{3}]. Die g\u00fcltigen Werte sind [{0}], [{1}] und [{2}].
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Wert f\u00fcr Vorauslesen nicht g\u00fcltig ist.
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr Vorauslesen in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the queue class expected
+# {1} is the queue class we were passed
+INVALID_PROPERTY_QUEUE_CWSJR1192=CWSJR1192E: JMS-Aktivierungsspezifikationen, die den Zieltyp ''Warteschlange'' verwenden, m\u00fcssen ein Ziel des Typs [{0}] verwenden, aber das \u00fcbergebene Ziel hat den Typ [{1}].
+INVALID_PROPERTY_QUEUE_CWSJR1192.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass das Ziel nicht g\u00fcltig ist.
+INVALID_PROPERTY_QUEUE_CWSJR1192.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr das Ziel in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic class expected
+# {1} is the topic class we were passed
+INVALID_PROPERTY_TOPIC_CWSJR1193=CWSJR1193E: JMS-Aktivierungsspezifikationen, die den Zieltyp "Topic" verwenden, m\u00fcssen ein Ziel des Typs [{0}] verwenden, aber das \u00fcbergebene Ziel hat den Typ [{1}].
+INVALID_PROPERTY_TOPIC_CWSJR1193.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass das Ziel nicht g\u00fcltig ist.
+INVALID_PROPERTY_TOPIC_CWSJR1193.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr das Ziel in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the subscription durability
+INVALID_PROPERTY_SUBDUR_CWSJR1194=CWSJR1194E: Der folgende Wert f\u00fcr die Subskriptionspermanenz in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{2}]. Die g\u00fcltigen Werte sind [{0}] und [{1}].
+INVALID_PROPERTY_SUBDUR_CWSJR1194.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Subskriptionspermanenz nicht g\u00fcltig ist.
+INVALID_PROPERTY_SUBDUR_CWSJR1194.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die Subskriptionspermanenz f\u00fcr permanente Subskriptionen in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195=CWSJR1195E: Das Feld f\u00fcr die Home-Schnittstelle f\u00fcr permanente Subskriptionen in einer JMS-Aktivierungsspezifikation muss einen Wert enthalten, wenn permanente Subskriptionen verwendet werden.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Home-Schnittstelle f\u00fcr permanente Subskriptionen nicht g\u00fcltig ist.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die Home-Schnittstelle f\u00fcr permanente Subskriptionen in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SUBNAME_CWSJR1196=CWSJR1196E: Das Feld f\u00fcr den Subskriptionsnamen in einer JMS-Aktivierungsspezifikation muss einen Wert enthalten, wenn permanente Subskriptionen verwendet werden.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Subskriptionsname nicht g\u00fcltig ist.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr den Subskriptionsnamen in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197=CWSJR1197E: Das folgende Feld f\u00fcr gemeinsam genutzte permanente Subskription in einer JMS-Aktivierungsspezifikation ist ung\u00fcltig: [{3}]. Die g\u00fcltigen Werte sind [{0}], [{1}] und [{2}].
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Eigenschaft f\u00fcr die gemeinsame Nutzung permanenter Subskriptionen nicht g\u00fcltig ist.
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die gemeinsame Nutzung permanenter Subskriptionen in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSJR1198=CWSJR1198E: Das Feld f\u00fcr die maximale Anzahl gleichzeitiger Zugriffe in einer JMS-Aktivierungsspezifikation muss einen positiven Wert enthalten.
+INVALID_PROPERTY_MAXCONC_CWSJR1198.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Wert f\u00fcr die maximale Anzahl gleichzeitiger Zugriffe nicht g\u00fcltig ist.
+INVALID_PROPERTY_MAXCONC_CWSJR1198.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die maximale Anzahl gleichzeitiger Zugriffe in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSJR1199=CWSJR1199E: Das Feld f\u00fcr die maximale Stapelgr\u00f6\u00dfe in einer JMS-Aktivierungsspezifikation muss einen positiven Wert enthalten.
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass der Wert f\u00fcr die maximale Stapelgr\u00f6\u00dfe nicht g\u00fcltig ist.
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die maximale Stapelgr\u00f6\u00dfe in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SHARECMP_CWSJR1200=CWSJR1200E: Das Feld f\u00fcr die Freigabe der Datenquelle mit CMP in einer JMS-Aktivierungsspezifikation muss gesetzt werden.
+INVALID_PROPERTY_SHARECMP_CWSJR1200.explanation=W\u00e4hrend der Validierung der in einer JMS-Aktivierungsspezifikation konfigurierten Eigenschaften wurde festgestellt, dass die Eigenschaft f\u00fcr die gemeinsame Nutzung einer Datenquelle mit \u00fcber Container realisierter Transaktionspersistenz nicht g\u00fcltig ist.
+INVALID_PROPERTY_SHARECMP_CWSJR1200.useraction=Korrigieren Sie den Wert der Eigenschaft f\u00fcr die gemeinsame Nutzung einer Datenquelle mit \u00fcber Container realisierter Transaktionspersistenz in der Aktivierungsspezifikation, und starten Sie anschlie\u00dfend den Server erneut.
+
+#
+# JmsJcaFactory
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+EXCEPTION_DURING_INIT_CWSJR1441=CWSJR1441E: Es ist ein interner Fehler aufgetreten. Das Erstellen des JmsJcaFactory-Objekts ist mit der Ausnahme {0} fehlgeschlagen.
+EXCEPTION_DURING_INIT_CWSJR1441.explanation=Beim Erstellen des JmsJcaFactory-Objekts ist ein Fehler aufgetreten. Suchen Sie in den Begleitnachrichten nach weiteren Informationen.
+EXCEPTION_DURING_INIT_CWSJR1441.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnectionSynchronizationProvider
+#
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461=CWSJR1461E: Es ist ein interner Fehler aufgetreten. Das Erstellen einer SIUncoordinatedTransaction ist mit der Ausnahme {0} fehlgeschlagen.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.explanation=Der JMS-Ressourcenadapter der Serviceintegrationstechnologien hat versucht, eine SIUncoordinatedTransaction zu erstellen, um sich f\u00fcr die Synchronisation bei einer Transaktion zu registrieren. Dabei wurde eine Ausnahme empfangen.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+NOT_SUPPORTED_EXCEPTION_CWSJR1462=CWSJR1462E: Die Verbindung zur Messaging-Engine unterst\u00fctzt keine gemeinsame CMP-Optimierung.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.explanation=Die Verbindung, die der JMS-Ressourcenadapter der Serviceintegrationstechnologien erhalten hat, unterst\u00fctzt keine CMP-Optimierung, weil eine ferne Messaging-Engine verwendet wird.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.useraction=Vergewissern Sie sich, dass eine lokale Messaging-Engine f\u00fcr den Ressourcenadapter verf\u00fcgbar ist, oder inaktivieren Sie die gemeinsame Optimierung in der Definition der Verbindungsfactory \u00fcber die Administrationskonsole.
+# -------------------------------------------------------------------------------------------------
+# {0} the managed connection
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463=CWSJR1463E: Es ist ein interner Fehler aufgetreten. Die verwaltete Verbindung {0} ist bereits als Synchronisation in einer Transaktion registriert.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.explanation=getSynchronization wurde aufgerufen, obwohl die verwaltete Verbindung bereits als Synchronisation in einer Transaktion registriert ist.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.useraction=CMSG0002
+
+#
+# JmsJcaEndpointInvokerImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+UTILITY_CLASS_CWSJR1481=CWSJR1481E: Interner Fehler. Die folgende Ausnahme wurde bei dem Versuch, eine Dienstprogrammklasse zu erhalten, ausgel\u00f6st: {0}
+UTILITY_CLASS_CWSJR1481.explanation=W\u00e4hrend der Endpunktaktivierung hat der JMS-Ressourcenadapter versucht, eine Dienstprogrammklasse zu erhalten. Dabei wurde eine unerwartete Ausnahme ausgel\u00f6st.
+UTILITY_CLASS_CWSJR1481.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSJR1482=CWSJR1482E: Interner Fehler. Der Nachrichtenendpunkt {0} implementiert nicht die erwartete Schnittstelle "{1}".
+UNEXPECTED_ENDPOINT_CWSJR1482.explanation=Die Nachrichtenendpunktfactory hat einen Nachrichtenendpunkt zur\u00fcckgegeben, der nicht wie erwartet die Schnittstelle "MessageListener" implementiert.
+UNEXPECTED_ENDPOINT_CWSJR1482.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSJR1483=CWSJR1483E: Interner Fehler. Beim Versuch, eine Instanz der Methode onMessage anzufordern, wurde die Ausnahme {0} ausgel\u00f6st.
+ON_MESSAGE_CWSJR1483.explanation=Bei dem Versuch, eine Instanz der Methode onMessage abzurufen, wurde eine Ausnahme erstellt.
+ON_MESSAGE_CWSJR1483.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJR9999=CWSJR9999E: {0}
+TEMPORARY_CWSJR9999.explanation=Falls die in der Nachricht enthaltenen Informationen nicht ausreichend sind, suchen Sie in Begleitnachrichten nach weiteren Informationen.
+TEMPORARY_CWSJR9999.useraction=Suchen Sie in den Begleitnachrichten nach weiteren Informationen.

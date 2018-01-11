@@ -10,16 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.statik.test;
 
-import static com.ibm.ws.microprofile.config.TestUtils.assertContains;
-import static com.ibm.ws.microprofile.config.TestUtils.assertNotContains;
-import static org.junit.Assert.assertEquals;
-
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.After;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.config.TestUtils;
 import com.ibm.ws.microprofile.config.dynamic.test.TestDynamicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
@@ -42,31 +39,52 @@ public class StaticSourceTest {
         Config config = builder.build();
 
         //check that initially that is all we can see
-        assertContent(config, key1, value1, key2);
+        TestUtils.assertContent(config, key1, value1, key2);
 
         //add a second entry
         configSource.put(key2, value2);
 
         //should not show up
-        assertContent(config, key1, value1, key2);
+        TestUtils.assertContent(config, key1, value1, key2);
 
         //remove the first entry
         configSource.remove(key1);
 
         //still should not have changed
-        assertContent(config, key1, value1, key2);
+        TestUtils.assertContent(config, key1, value1, key2);
 
     }
 
-    private void assertContent(Config config, String key1, String value1, String key2) {
-        Iterable<String> keys = config.getPropertyNames();
+    @Test
+    public void testStaticSourceCache() {
 
-        assertContains(keys, key1);
+        int numKeys = 20;
 
-        String value = config.getValue(key1, String.class);
-        assertEquals(value1, value);
+        //create a config with non-refreshed source
+        System.setProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
+        TestDynamicConfigSource configSource = new TestDynamicConfigSource();
+        for (int i = 0; i < numKeys; i++) {
+            configSource.put("key" + i, "value" + i);
+        }
+        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
+        builder.withSources(configSource);
+        Config config = builder.build();
 
-        assertNotContains(keys, key2);
+        //check that initially that is all we can see
+        for (int i = 0; i < numKeys; i++) {
+            TestUtils.assertValue(config, "key" + i, "value" + i);
+        }
+
+        //change all the values
+        for (int i = 0; i < numKeys; i++) {
+            configSource.put("key" + i, "changed" + i);
+        }
+
+        //check that initially that is all we can see
+        for (int i = 0; i < numKeys; i++) {
+            TestUtils.assertValue(config, "key" + i, "value" + i);
+        }
+
     }
 
     @After

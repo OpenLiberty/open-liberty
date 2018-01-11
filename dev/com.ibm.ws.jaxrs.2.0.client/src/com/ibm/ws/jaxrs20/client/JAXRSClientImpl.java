@@ -11,14 +11,18 @@
 package com.ibm.ws.jaxrs20.client;
 
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -51,6 +55,9 @@ import com.ibm.ws.jaxrs20.client.security.oauth.LibertyJaxRsClientOAuthIntercept
 import com.ibm.ws.jaxrs20.client.security.saml.PropagationHandler;
 import com.ibm.ws.jaxrs20.client.util.JaxRSClientUtil;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  *
@@ -58,14 +65,15 @@ import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 public class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
 
-    protected boolean closed;
-    protected Set<WebClient> baseClients = new HashSet<WebClient>();
+    protected final AtomicBoolean closed = new AtomicBoolean(false);
+    protected Set<WebClient> baseClients = Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
     protected boolean hasSSLConfigInfo = false;
     private TLSConfiguration secConfig = null;
     //Defect 202957 move busCache from ClientMetaData to JAXRSClientImpl
     //Before this change, all the WebTarget has same url in a web module share a bus
     //After this change, all the WebTarget has same url in a JAXRSClientImpl share a bus
-    private final Map<String, LibertyApplicationBus> busCache = new ConcurrentHashMap<String, LibertyApplicationBus>();
+    private static final Map<String, LibertyApplicationBus> busCache = new ConcurrentHashMap<>();
+    private static final Map<String, List<JAXRSClientImpl>> clientsPerModule = new HashMap<>();
 
     /**
      * @param config
@@ -85,8 +93,15 @@ public class JAXRSClientImpl extends ClientImpl {
         }
 
         try {
-            Bundle b = FrameworkUtil.getBundle(JAXRSClientImpl.class);
-            BundleContext bc = b == null ? null : b.getBundleContext();
+            BundleContext bc = AccessController.doPrivileged(new PrivilegedExceptionAction<BundleContext>() {
+
+                @Override
+                public BundleContext run() throws Exception {
+                    Bundle b = FrameworkUtil.getBundle(JAXRSClientImpl.class);
+                    return b == null ? null : b.getBundleContext();
+                }
+            });
+
             if (bc != null) {
                 final List<Object> providers = new ArrayList<>();
                 // we don't send feature list for client APIs
@@ -119,6 +134,16 @@ public class JAXRSClientImpl extends ClientImpl {
                 Tr.debug(tc, "<init> failed to find and install declared providers ", ex);
             }
         }
+
+        String moduleName = getModuleName();
+        synchronized (clientsPerModule) {
+            List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+            if (clients == null) {
+                clients = new ArrayList<>();
+                clientsPerModule.put(moduleName, clients);
+            }
+            clients.add(this);
+        }
     }
 
     /**
@@ -126,6 +151,7 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public WebTarget target(UriBuilder builder) {
+        checkClosed();
         WebTargetImpl wt = (WebTargetImpl) super.target(builder);
 
         //construct our own webclient
@@ -166,7 +192,8 @@ public class JAXRSClientImpl extends ClientImpl {
         LibertyApplicationBus bus;
         //202957 same url use same bus, add a lock to busCache to ensure only one bus will be created in concurrent mode.
         //ConcurrentHashMap can't ensure that.
-        String id = JaxRSClientUtil.convertURItoBusId(uri.toString());
+        String moduleName = getModuleName();
+        String id = moduleName + JaxRSClientUtil.convertURItoBusId(uri.toString());
         synchronized (busCache) {
             bus = busCache.get(id);
             if (bus == null) {
@@ -177,8 +204,10 @@ public class JAXRSClientImpl extends ClientImpl {
 
         ccfg.setBus(bus);
 
-        //add the webclient to managed set
-        this.baseClients.add(targetClient);
+        //add the root WebTarget to managed set so we can close it's associated WebClient
+        synchronized (baseClients) {
+            baseClients.add(targetClient);
+        }
 
         return new WebTargetImpl(wt.getUriBuilder(), wt.getConfiguration(), targetClient);
     }
@@ -188,36 +217,33 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public void close() {
-        super.close();
-        for (WebClient wc : baseClients) {
-//defec 202957 don't need bus counter any more, since the bus is not shared between jaxrs client any more
-            //if one webclient is closed, check if its bus is not used by any other webclient, and reduce counter
-//            String id = JaxRSClientUtil.convertURItoBusId(wc.getBaseURI().toString());
-//            synchronized (busCache) {
-//                LibertyApplicationBus bus = busCache.get(id);
-//                if (bus != null) {
-//                    AtomicInteger ai = bus.getBusCounter();
-//                    if (ai != null) {
-//                        //if no webclient uses the bus at this moment, then remove & release it
-//                        if (ai.decrementAndGet() == 0) {
-//                            busCache.remove(id);
-//                            //release bus
-//                            bus.shutdown(false);
-//                        }
-//                    }
-//                }
-//
-//            }
+        if (closed.compareAndSet(false, true)) {
+            super.close();
+            synchronized (baseClients) {
+                for (WebClient wc : baseClients) {
+                    wc.close();
+                }
+            }
 
-            //close webclient
-            wc.close();
+            String moduleName = getModuleName();
+            synchronized (clientsPerModule) {
+                List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
 
+                if (clients != null) { // the only way this isn't null is if the same client was closed twice
+                    clients.remove(this);
+                    if (clients.isEmpty()) {
+                        for (String id : busCache.keySet()) {
+                            if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                                busCache.remove(id).shutdown(false);
+                            }
+                        }
+                        clientsPerModule.remove(moduleName);
+                    }
+                }
+            }
+
+            baseClients = null;
         }
-        for (LibertyApplicationBus bus : busCache.values()) {
-            bus.shutdown(false);
-        }
-        busCache.clear();
-        baseClients = null;
     }
 
     /**
@@ -229,11 +255,29 @@ public class JAXRSClientImpl extends ClientImpl {
 
     @Override
     public Client property(String name, @Sensitive Object value) {
+        checkClosed();
         // need to convert proxy password to ProtectedString
         if (JAXRSClientConstants.PROXY_PASSWORD.equals(name) && value != null &&
             !(value instanceof ProtectedString)) {
             return super.property(name, new ProtectedString(value.toString().toCharArray()));
         }
         return super.property(name, value);
+    }
+
+    private String getModuleName() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd != null) {
+            ModuleMetaData mmd = cmd.getModuleMetaData();
+            if (mmd != null) {
+                return mmd.getName() + ":";
+            }
+        }
+        return "unknown:";
+    }
+
+    private void checkClosed() {
+        if (closed.get()) {
+            throw new IllegalStateException("client is closed");
+        }
     }
 }

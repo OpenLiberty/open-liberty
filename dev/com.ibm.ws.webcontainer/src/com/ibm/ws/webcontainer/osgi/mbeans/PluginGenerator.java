@@ -61,6 +61,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -128,26 +130,18 @@ public class PluginGenerator {
     
     // save a reference to the previously-generated configuration hash
     private Integer previousConfigHash = null;
-    
-    private static final String JAVA_VERSION = 
-                    AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return System.getProperty("java.version");
-                        }
-                    });
 
-    private static final String JAVA_VENDOR = 
-                    AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return System.getProperty("java.vm.vendor");
-                        }
-                    });
-    
-    private static final boolean CHANGE_TRANSFORMER = (JAVA_VENDOR != null && JAVA_VENDOR.toLowerCase().contains("ibm") 
-                    && (JAVA_VERSION.startsWith("1.6") || JAVA_VERSION.startsWith("1.7") || JAVA_VERSION.startsWith("1.8"))); 
-   
+    private static final boolean CHANGE_TRANSFORMER;
+
+    static {
+        if (!JavaInfo.vendor().equals(Vendor.IBM)) {
+            CHANGE_TRANSFORMER = false;
+        } else {
+            int majorVersion = JavaInfo.majorVersion();
+            CHANGE_TRANSFORMER = majorVersion == 7 || majorVersion == 8;
+        }
+    }
+
     /**
      * Constructor.
      *
@@ -198,9 +192,9 @@ public class PluginGenerator {
 
         // Because this method is synchronized there can become a queue of requests waiting which then don't get started
         // for a significant time period. As a result if the servers is now shutting down skip generation.
-        if (pcd == null || FrameworkState.isStopping()) {
+        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "generateXML", (FrameworkState.isStopping() ? "Framework is stopping" : "pcd is null"));
+                Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
             }
             // add error message in next update
             return;
@@ -249,6 +243,13 @@ public class PluginGenerator {
             // add in hardcoded properties and any extra properties from the user configuration
             if (!pcd.extraConfigProperties.isEmpty())
             {
+                if(pcd.TrustedProxyEnable != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Overriding TrustedProxyEnable from extra config properties with the specified value");
+                    }
+                    pcd.extraConfigProperties.put("TrustedProxyEnable", pcd.TrustedProxyEnable.toString());
+                }
+                
                 for (String key : pcd.extraConfigProperties.keySet()) {
                     String value = (String)pcd.extraConfigProperties.get(key);
                     rootElement.setAttribute(key, value);                    
@@ -338,20 +339,20 @@ public class PluginGenerator {
                 }
             }
 
-            if (pcd.TrustedProxyList != null) {
+            if (pcd.TrustedProxyGroup != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Adding custom property TrustedProxyGroup element and its associated proxy servers");
                 }
 
                 Element tproxyGroupElem = output.createElement("TrustedProxyGroup");
                 rootElement.appendChild(tproxyGroupElem);
-                for (String trustedProxy : pcd.TrustedProxyList) {
+                for (String trustedProxy : pcd.TrustedProxyGroup) {
                     Element tproxyElem = output.createElement("TrustedProxy");
                     if (trustedProxy.indexOf(":") != -1) {
                         // IPV6
-                        tproxyElem.setAttribute("Name", "[" + trustedProxy + "]" );
+                        tproxyElem.setAttribute("Name", "[" + trustedProxy.trim() + "]" );
                     } else {
-                        tproxyElem.setAttribute("Name", trustedProxy );
+                        tproxyElem.setAttribute("Name", trustedProxy.trim() );
                     }
                     tproxyGroupElem.appendChild(tproxyElem);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -826,7 +827,7 @@ public class PluginGenerator {
                 final String defaultTransformerFactory = getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);    
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "JDK = " + JAVA_VENDOR + ", JDK level = " + JAVA_VERSION +", current TF jvm property value = " + defaultTransformerFactory);
+                    Tr.debug(tc, "JDK = " + JavaInfo.vendor() + ", JDK level = " + JavaInfo.majorVersion() + "." + JavaInfo.minorVersion() +", current TF jvm property value = " + defaultTransformerFactory);
                 }
                 
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -1412,7 +1413,8 @@ public class PluginGenerator {
         protected Integer postBufferSize = Integer.valueOf(0);
         protected Boolean GetDWLMTable = Boolean.FALSE;
         protected Integer HTTPMaxHeaders = Integer.valueOf(300);
-        protected String[] TrustedProxyList = null;
+        protected Boolean TrustedProxyEnable = null;
+        protected String[] TrustedProxyGroup = null;
       
         // properties from server configuration -  see metatype-mbeans.properties file
         // properties that exist in metatype file should not have defaults specified here
@@ -1484,6 +1486,12 @@ public class PluginGenerator {
             if(config.get("ESIEnableToPassCookies") != null){
                 ESIEnableToPassCookies =  (Boolean) config.get("ESIEnableToPassCookies");
             }// PI76699 End
+            TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
+            String proxyList = (String) config.get("trustedProxyGroup");
+            if(proxyList != null) {
+                TrustedProxyGroup = proxyList.split(",");
+            }
+            
             
             // populate extra properties map with default values but allow override from user config
             extraConfigProperties.put("ASDisableNagle", "false");
@@ -1564,7 +1572,8 @@ public class PluginGenerator {
                 Tr.debug(trace, "   CertLabel               : " + CertLabel);
                 Tr.debug(trace, "   KeyringLocation         : " + KeyringLocation);
                 Tr.debug(trace, "   StashfileLocation       : " + StashfileLocation);
-                Tr.debug(trace, "   TrustedProxyList        : " + traceList(TrustedProxyList));
+                Tr.debug(trace, "   TrustedProxyEnable      : " + TrustedProxyEnable);
+                Tr.debug(trace, "   TrustedProxyGroup       : " + traceList(TrustedProxyGroup));
                 if (!extraConfigProperties.isEmpty())
                     Tr.debug(trace, "   AdditionalConfigProps   : " + extraConfigProperties.toString());
             }

@@ -10,8 +10,10 @@
  -->
 <server>
     <featureManager>
-        <feature>servlet-3.0</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
+
+    <application location="shutdownfat.war" />
 
     <include location="../fatTestPorts.xml"/>
 </server>

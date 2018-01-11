@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: A(z) {0} szolg\u00e1ltat\u00e1shoz nem tal\u00e1lhat\u00f3 szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s.
+UPDATE_MISSING_FEATURE_ERROR.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tal\u00e1lt meghat\u00e1roz\u00e1st a megadott szolg\u00e1ltat\u00e1shoz.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Ellen\u0151rizze a megadott szolg\u00e1ltat\u00e1s nev\u00e9nek helyes\u00edr\u00e1s\u00e1t, valamint azt, hogy a szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s l\u00e9tezik-e a lib/features k\u00f6nyvt\u00e1rban \u00e9s olvashat\u00f3-e.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: A(z) {0} szolg\u00e1ltat\u00e1shoz nem tal\u00e1lhat\u00f3 k\u00f6teg.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tal\u00e1lja az enged\u00e9lyezett szolg\u00e1ltat\u00e1shoz sz\u00fcks\u00e9ges k\u00f6teget.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lib k\u00f6nyvt\u00e1rban l\u00e9v\u0151 k\u00f6tegek olvashat\u00f3k, \u00e9s hogy a telep\u00edt\u0151k\u00e9szlet teljes.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} k\u00f6teg telep\u00edt\u00e9se vagy elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. Kiv\u00e9tel: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tudta telep\u00edteni vagy elt\u00e1vol\u00edtani a megadott k\u00f6teget.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Tekintse meg a hivatkozott kiv\u00e9telt, \u00e9s az egyes hib\u00e1khoz el\u0151\u00e1ll\u00edtott FFDC \u00fczeneteket.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: Ismeretlen kiv\u00e9tel t\u00f6rt\u00e9nt a szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9se vagy elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. Kiv\u00e9tel: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a szolg\u00e1ltat\u00e1sok hozz\u00e1ad\u00e1sakor vagy elt\u00e1vol\u00edt\u00e1sakor a k\u00f6tegb\u0151l.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt \u00e9s az el\u0151\u00e1ll\u00edtott FFDC \u00fczenetet.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} k\u00f6teg elind\u00edt\u00e1sa, le\u00e1ll\u00edt\u00e1sa vagy elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. Kiv\u00e9tel: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az er\u0151forr\u00e1s-kezel\u0151 \u00e1ltal fel\u00fcgyelt egyik k\u00f6teg \u00e1llapot\u00e1nak megv\u00e1ltoz\u00e1sakor.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=R\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt \u00e9s a hozz\u00e1 tartoz\u00f3 FFDC rekordokat.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: A rendszer nem tudta beolvasni vagy t\u00e1rolni a(z) {0} kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyhoz bet\u00f6lt\u00f6tt szolg\u00e1ltat\u00e1sk\u00f6tegek list\u00e1j\u00e1t, \u00edgy meleg ind\u00edt\u00e1shoz haszn\u00e1lt k\u00f6teg gyors\u00edt\u00f3t\u00e1r le lett tiltva. Kiv\u00e9tel: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=A k\u00f6teg gyors\u00edt\u00f3t\u00e1rf\u00e1jl nem hozhat\u00f3 l\u00e9tre vagy nem olvashat\u00f3. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt. 
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 k\u00f6nyvt\u00e1r \u00e9s a munkater\u00fclet alk\u00f6nyvt\u00e1r \u00edrhat\u00f3. 
+
+STARTING_AUDIT=CWWKF0007I: A szolg\u00e1ltat\u00e1sfriss\u00edt\u00e9s elindult.
+STARTING_AUDIT.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 elkezdte feldolgozni az enged\u00e9lyezett szolg\u00e1ltat\u00e1sokat. A m\u00e1sodpercekben megadott id\u0151tartam a platform ind\u00edt\u00e1s\u00e1hoz van viszony\u00edtva.
+STARTING_AUDIT.useraction=Semmit sem kell tennie.
+
+COMPLETE_AUDIT=CWWKF0008I: A szolg\u00e1ltat\u00e1sfriss\u00edt\u00e9s befejez\u0151d\u00f6tt {0} m\u00e1sodperc alatt.
+COMPLETE_AUDIT.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 befejezte az enged\u00e9lyezett szolg\u00e1ltat\u00e1sok feldolgoz\u00e1s\u00e1t. A m\u00e1sodpercekben megadott id\u0151tartam a platform ind\u00edt\u00e1s\u00e1hoz van viszony\u00edtva.
+COMPLETE_AUDIT.useraction=Semmit sem kell tennie.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: A kiszolg\u00e1l\u00f3 nem lett be\u00e1ll\u00edtva szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9re.
+EMPTY_FEATURES_WARNING.explanation=Nincsenek be\u00e1ll\u00edtva telep\u00edtend\u0151 szolg\u00e1ltat\u00e1sok. 
+EMPTY_FEATURES_WARNING.useraction=A sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok hozz\u00e1ad\u00e1s\u00e1hoz friss\u00edtse a konfigur\u00e1ci\u00f3t. 
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: T\u00f6bb k\u00f6teg felelt a megadott sz\u0171r\u0151nek ({0}), a(z) {1} haszn\u00e1lat\u00e1val. Egyez\u00e9sek: {2} 
+BUNDLE_MATCH_WARNING.explanation=A szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s elem t\u00f6bb k\u00f6tegnek is megfeleltethet\u0151. Ennek az lehet az oka, hogy a sz\u0171r\u0151 t\u00fal \u00e1ltal\u00e1nos, vagy vannak r\u00e9gi k\u00f6tegek a telep\u00edt\u0151k\u00e9szletben, amelyek megfelelnek a sz\u0171r\u0151nek.
+BUNDLE_MATCH_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u0171r\u0151 kell\u0151k\u00e9ppen specifikus, \u00e9s hogy egy tiszta telep\u00edt\u0151k\u00e9szletet haszn\u00e1l.
+
+SERVER_STARTED=CWWKF0011I: A(z) {0} kiszolg\u00e1l\u00f3 k\u00e9szen \u00e1ll egy intelligensebb planet futtat\u00e1s\u00e1ra.
+SERVER_STARTED.explanation=A kiszolg\u00e1l\u00f3 sikeresen elindult.
+SERVER_STARTED.useraction=Semmit sem kell tennie.
+
+FEATURES_ADDED=CWWKF0012I: A kiszolg\u00e1l\u00f3 telep\u00edtett a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sokat: {0}.
+FEATURES_ADDED.explanation=A kiszolg\u00e1l\u00f3 telep\u00edtett egy szolg\u00e1ltat\u00e1sk\u00e9szletet.
+FEATURES_ADDED.useraction=Semmit sem kell tennie.
+
+FEATURES_REMOVED=CWWKF0013I: A kiszolg\u00e1l\u00f3 elt\u00e1vol\u00edtotta a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sokat: {0}.
+FEATURES_REMOVED.explanation=A kiszolg\u00e1l\u00f3 elt\u00e1vol\u00edtott egy szolg\u00e1ltat\u00e1sk\u00e9szletet.
+FEATURES_REMOVED.useraction=Semmit sem kell tennie.
+
+TEST_FIX_DETECTED=CWWKF0014W: A kiszolg\u00e1l\u00f3 a k\u00f6vetkez\u0151, fut\u00e1si k\u00f6rnyezetben akt\u00edv tesztjav\u00edt\u00e1sokkal rendelkezik: {0}. \
+A telep\u00edtett jav\u00edt\u00e1sok teljes list\u00e1j\u00e1\u00e9rt futtassa a ''productInfo version --ifixes'' parancsot.
+TEST_FIX_DETECTED.explanation=A fut\u00e1si k\u00f6rnyezetbe bet\u00f6lt\u00f6tt OSGi k\u00f6tegeket n\u00e9h\u00e1ny telep\u00edtett tesztjav\u00edt\u00e1s m\u00f3dos\u00edtotta.  \
+A 'productInfo version --ifixes' parancs haszn\u00e1lat\u00e1val megkaphatja az \u00f6sszes telep\u00edtett jav\u00edt\u00e1s list\u00e1j\u00e1t.
+TEST_FIX_DETECTED.useraction=Az \u00e9les kiszolg\u00e1l\u00f3n nem lehetnek tesztjav\u00edt\u00e1sok telep\u00edtve. Ha ez egy \u00e9les kiszolg\u00e1l\u00f3, t\u00e1vol\u00edtsa el a tesztjav\u00edt\u00e1sokat, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: A kiszolg\u00e1l\u00f3 a k\u00f6vetkez\u0151, fut\u00e1si k\u00f6rnyezetben akt\u00edv k\u00f6ztes jav\u00edt\u00e1sokkal rendelkezik: {0}. \
+A telep\u00edtett jav\u00edt\u00e1sok teljes list\u00e1j\u00e1\u00e9rt futtassa a ''productInfo version --ifixes'' parancsot.
+INTERIM_FIX_DETECTED.explanation=A fut\u00e1si k\u00f6rnyezetbe bet\u00f6lt\u00f6tt OSGi k\u00f6tegeket n\u00e9h\u00e1ny telep\u00edtett k\u00f6ztes jav\u00edt\u00e1s m\u00f3dos\u00edtotta.  \
+A 'productInfo version --ifixes' parancs haszn\u00e1lat\u00e1val megkaphatja az \u00f6sszes telep\u00edtett jav\u00edt\u00e1s list\u00e1j\u00e1t.
+INTERIM_FIX_DETECTED.useraction=Semmit sem kell tennie.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: A(z) {0} sz\u0171r\u0151 a(z) {1} \u00f6sszetev\u0151 le\u00edr\u00f3f\u00e1jlj\u00e1nak fejl\u00e9c\u00e9ben helytelen: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=Az IBM-Provision-Capability fejl\u00e9c egy vagy t\u00f6bb \u00e9rv\u00e9nytelen szintaxis\u00fa OSGi sz\u0171r\u0151t tartalmaz.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Jav\u00edtsa a sz\u0171r\u0151 szintaxis\u00e1t az IBM-Provision-Capability fejl\u00e9cben.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: A(z) {1} term\u00e9k tulajdons\u00e1gf\u00e1jlban megadott {0} term\u00e9k telep\u00edt\u00e9si \u00fatvonal nem tal\u00e1lhat\u00f3.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tal\u00e1lta a megadott term\u00e9k telep\u00edt\u00e9si \u00fatvonalat.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Ellen\u0151rizze, hogy \u00e9rv\u00e9nyes term\u00e9k\u00fatvonal lett-e megadva a com.ibm.websphere.productInstall tulajdons\u00e1g sz\u00e1m\u00e1ra a term\u00e9k tulajdons\u00e1gf\u00e1jlj\u00e1ban.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: A com.ibm.websphere.productInstall tulajdons\u00e1g nem tal\u00e1lhat\u00f3 a(z) {0} term\u00e9k tulajdons\u00e1gf\u00e1jlban.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 olyan term\u00e9k tulajdons\u00e1gf\u00e1jlt tal\u00e1lt, amely nem tartalmazza a com.ibm.websphere.productInstall tulajdons\u00e1got.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=Adja hozz\u00e1 a com.ibm.websphere.productInstall tulajdons\u00e1got a term\u00e9k tulajdons\u00e1gf\u00e1jlhoz az etc/extensions k\u00f6nyvt\u00e1rban.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Kiv\u00e9tel: {1} t\u00f6rt\u00e9nt a(z) {0} term\u00e9k tulajdons\u00e1gf\u00e1jl bet\u00f6lt\u00e9se sor\u00e1n.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=A megadott kiv\u00e9tel t\u00f6rt\u00e9nt, amikor a szolg\u00e1ltat\u00e1skezel\u0151 tulajdons\u00e1gokat pr\u00f3b\u00e1lt kiolvasni a term\u00e9k tulajdons\u00e1gf\u00e1jlb\u00f3l.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=R\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt \u00e9s a hozz\u00e1 tartoz\u00f3 FFDC rekordokat.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: A(z) {0} szolg\u00e1ltat\u00e1s\u00e1nak superseded attrib\u00fatuma false, de a superseded-by attrib\u00fatum {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=Egy szolg\u00e1ltat\u00e1s Symbolic-Name fejl\u00e9ce be\u00e1ll\u00edtott superseded-by attrib\u00fatummal rendelkezik, de a superseded attrib\u00fatum \u00e9rt\u00e9ke false.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a Symbolic-Name fejl\u00e9c helyesen be\u00e1ll\u00edtott superseded \u00e9s superseded-by attrib\u00fatumokkal rendelkezzen.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: A server.xml f\u00e1jlban megadott {0} szolg\u00e1ltat\u00e1s nem nyilv\u00e1nos szolg\u00e1ltat\u00e1s, \u00edgy a kiszolg\u00e1l\u00f3 nem fogja futtatni.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=Csak nyilv\u00e1nos szolg\u00e1ltat\u00e1sok adhat\u00f3k meg a server.xml f\u00e1jlban.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=M\u00f3dos\u00edtsa a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1t, hogy a sz\u00fcks\u00e9ges funkci\u00f3t biztos\u00edt\u00f3 nyilv\u00e1nos szolg\u00e1ltat\u00e1st adjon meg.  Ha olyan szolg\u00e1ltat\u00e1st fejleszt, amelyet a felhaszn\u00e1l\u00f3knak meg kell adniuk a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sban, akkor m\u00f3dos\u00edtsa a szolg\u00e1ltat\u00e1s l\u00e1that\u00f3s\u00e1g\u00e1t nyilv\u00e1nosra visibility=public bejegyz\u00e9st attrib\u00fatumk\u00e9nt hozz\u00e1adva a szolg\u00e1ltat\u00e1s Subsystem-SymbolicName be\u00e1ll\u00edt\u00e1s\u00e1hoz.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: A(z) {0} szolg\u00e1ltat\u00e1s nem t\u00e1mogatott. Az IBM-Feature-Version fejl\u00e9c be\u00e1ll\u00edt\u00e1sa: {1}.
+UNSUPPORTED_FEATURE_VERSION.explanation=A kiszolg\u00e1l\u00f3 csak olyan szolg\u00e1ltat\u00e1sokat t\u00e1mogat, melyek eset\u00e9ben az IBM-Feature-Version \u00e9rt\u00e9ke 2. A 2-n\u00e9l nagyobb sz\u00e1m azt jelzi, hogy a szolg\u00e1ltat\u00e1s a term\u00e9k valamely k\u00e9s\u0151bbi v\u00e1ltozat\u00e1hoz lett tervezve.
+UNSUPPORTED_FEATURE_VERSION.useraction=Keresse meg a szolg\u00e1ltat\u00e1s szerz\u0151j\u00e9t a term\u00e9k jelen v\u00e1ltozat\u00e1hoz tervezett p\u00e9ld\u00e1ny beszerz\u00e9se \u00e9rdek\u00e9ben.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Egy szolg\u00e1ltat\u00e1s olyan {1} arch\u00edvumra hivatkozott, amely nem dolgozhat\u00f3 fel egy csomagol\u00e1si lek\u00e9rdez\u00e9s sor\u00e1n. Kiv\u00e9tel: {2}.
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a szolg\u00e1ltat\u00e1s jar f\u00e1jlj\u00e1nak olvas\u00e1sakor egy csomagol\u00e1si lek\u00e9rdez\u00e9s sor\u00e1n.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=R\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt \u00e9s a hozz\u00e1 tartoz\u00f3 FFDC rekordokat.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: A(z) {0} szolg\u00e1ltat\u00e1s olyan {1} er\u0151forr\u00e1sra hivatkozott, amely nem tal\u00e1lhat\u00f3 egy csomagol\u00e1si lek\u00e9rdez\u00e9s sor\u00e1n. 
+ERROR_MISSING_FEATURE_RESOURCE.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tal\u00e1lta a megadott szolg\u00e1ltat\u00e1startalmat.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Ellen\u0151rizze, hogy a term\u00e9k helyesen lett-e telep\u00edtve. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor forduljon a szervizk\u00e9pvisel\u0151h\u00f6z.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: A(z) {0} szolg\u00e1ltat\u00e1s egy csomagol\u00e1si lek\u00e9rdez\u00e9s sor\u00e1n olyan {1} er\u0151forr\u00e1sra hivatkozott, melynek {2} t\u00edpusa ismeretlen. 
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tudta \u00e9rtelmezni a megadott szolg\u00e1ltat\u00e1startalmat.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Ellen\u0151rizze, hogy a term\u00e9k helyesen lett-e telep\u00edtve. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor forduljon a szervizk\u00e9pvisel\u0151h\u00f6z.
+
+SERVER_MINIFY=CWWKF0026I: A(z) {0} kiszolg\u00e1l\u00f3 k\u00e9szen \u00e1ll egy kisebb csomag \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9re.
+SERVER_MINIFY.explanation=A kiszolg\u00e1l\u00f3 inform\u00e1ci\u00f3kat k\u00e9sz\u00edt el\u0151 egy f\u00fcgg\u0151ben l\u00e9v\u0151 kiszolg\u00e1l\u00f3 csomagol\u00e1si m\u0171velethez.
+SERVER_MINIFY.useraction=Semmit sem kell tennie.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Nem ker\u00fclnek telep\u00edt\u00e9sre term\u00e9kb\u0151v\u00edtm\u00e9ny szolg\u00e1ltat\u00e1sok, mert a term\u00e9kb\u0151v\u00edtm\u00e9ny {0} tulajdons\u00e1gf\u00e1jlj\u00e1ban megadott term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si \u00fatvonal {1} szimbolikus helyet tartalmaz.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=A term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si \u00fatvonal nem tartalmazhat szimbolikus helyeket.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Friss\u00edtse a com.ibm.websphere.productInstall tulajdons\u00e1got a megadott term\u00e9kb\u0151v\u00edtm\u00e9ny tulajdons\u00e1gf\u00e1jlban \u00fagy, hogy az ne tartalmazzon szimbolikus helyet.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Nem ker\u00fclnek telep\u00edt\u00e9sre term\u00e9kb\u0151v\u00edtm\u00e9ny szolg\u00e1ltat\u00e1sok, mert a term\u00e9kb\u0151v\u00edtm\u00e9ny {0} tulajdons\u00e1gf\u00e1jlj\u00e1ban megadott term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si \u00fatvonal megegyezik a k\u00f6vetkez\u0151vel: wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=Term\u00e9kb\u0151v\u00edtm\u00e9ny telep\u00edt\u00e9si \u00fatvonal nem lehet ugyanaz, mint a wlp.install.dir.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Friss\u00edtse a com.ibm.websphere.productInstall tulajdons\u00e1got a megadott term\u00e9kb\u0151v\u00edtm\u00e9ny tulajdons\u00e1gf\u00e1jlban \u00fagy, hogy az ne legyen ugyanaz, mint a wlp.install.dir.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=BundleException kiv\u00e9telt dobott az OSGi keretrendszer.
+BUNDLE_EXCEPTION_ERROR.useraction=Inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9tel\u00fczenetet.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: A(z) {2} szolg\u00e1ltat\u00e1sban a(z) {1} k\u00f6teg sz\u00e1m\u00e1ra megadott {0} ind\u00edt\u00e1si f\u00e1zis \u00e9rv\u00e9nytelen.
+INVALID_START_PHASE_WARNING.explanation=Az ind\u00edt\u00e1si f\u00e1zis sz\u00e1m\u00e1ra \u00e9rv\u00e9nytelen \u00e9rt\u00e9k lett megadva.
+INVALID_START_PHASE_WARNING.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az ind\u00edt\u00e1si f\u00e1zis sz\u00e1m\u00e1ra. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: A kiszolg\u00e1l\u00f3 kihagyta a(z) {0} szolg\u00e1ltat\u00e1s bet\u00f6lt\u00e9s\u00e9t, mert m\u00e1r l\u00e9tezik egyen\u00e9rt\u00e9k\u0171 funkcionalit\u00e1s.
+FEATURE_NOT_INSTALLED.explanation=Ha kifejezetten ugyanazon szolg\u00e1ltat\u00e1s k\u00e9t v\u00e1ltozata van megadva a server.xml f\u00e1jlban, \
+vagy a server.xml f\u00e1jl t\u00f6bbsz\u00f6r szerepl\u0151 funkcionalit\u00e1ssal rendelkez\u0151 alszolg\u00e1ltat\u00e1sokat tartalmaz\u00f3 szolg\u00e1ltat\u00e1sokat ad meg, akkor a kiszolg\u00e1l\u00f3 kihagyja a m\u00e1sodik v\u00e1ltozat bet\u00f6lt\u00e9s\u00e9t.
+FEATURE_NOT_INSTALLED.useraction=Ha kifejezetten ugyanazon szolg\u00e1ltat\u00e1s k\u00e9t v\u00e1ltozata van megadva a server.xml f\u00e1jlban, akkor t\u00f6r\u00f6lje a v\u00e1ltozatot, amely nem sz\u00fcks\u00e9ges.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: A(z) {0} szolg\u00e1ltat\u00e1s legal\u00e1bb {1} v\u00e1ltozat\u00fa Java fut\u00e1si k\u00f6rnyezetet k\u00f6vetel meg.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=A felsorolt szolg\u00e1ltat\u00e1s haszn\u00e1lat\u00e1hoz a k\u00f6rnyezet\u00e9ben telep\u00edtve kell lennie Java fut\u00e1si k\u00f6rnyezet (JRE) megadott vagy \u00fajabb v\u00e1ltozat\u00e1nak.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=Friss\u00edtse a Java fut\u00e1si k\u00f6rnyezet\u00e9t a megadott vagy \u00fajabb v\u00e1ltozatra.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: A(z) {0} \u00e9s {1} singleton szolg\u00e1ltat\u00e1sok nem t\u00f6lthet\u0151k be egyidej\u0171leg.  A konfigur\u00e1lt {2} \u00e9s {3} szolg\u00e1ltat\u00e1sok legal\u00e1bb egy olyan szolg\u00e1ltat\u00e1st tartalmaznak, melyek \u00fctk\u00f6z\u00e9st okoznak. A konfigur\u00e1ci\u00f3ja nem t\u00e1mogatott; a nem kompatibilis \u00f6sszetev\u0151k elt\u00e1vol\u00edt\u00e1sa \u00e9rdek\u00e9ben friss\u00edtse a server.xml f\u00e1jlt.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=Egy singleton szolg\u00e1ltat\u00e1s t\u00f6bb v\u00e1ltozata nem t\u00f6lthet\u0151 be egyidej\u0171leg.  Ez az \u00fctk\u00f6z\u00e9s akkor fordulhat el\u0151, amikor egy singleton k\u00e9t v\u00e1ltozata van be\u00e1ll\u00edtva k\u00f6zvetlen\u00fcl a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban. Vagy ha a konfigur\u00e1lt szolg\u00e1ltat\u00e1sok egy singleton k\u00fcl\u00f6nb\u00f6z\u0151 v\u00e1ltozat\u00e1t tartalmazz\u00e1k, \u00e9s nem k\u00e9pesek toler\u00e1lni a singleton szolg\u00e1ltat\u00e1s k\u00f6z\u00f6s v\u00e1ltozat\u00e1t.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Pr\u00f3b\u00e1lja meg megadni a server.xml f\u00e1jlban az \u00fctk\u00f6z\u00e9st okoz\u00f3 konfigur\u00e1lt szolg\u00e1ltat\u00e1sok m\u00e1sik v\u00e1ltozat\u00e1t.  Ha nem \u00e9rhet\u0151 el m\u00e1sik v\u00e1ltozat, akkor a konfigur\u00e1lt szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem \u00e1ll\u00edthat\u00f3k be egyidej\u0171leg.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: Az \u00fcgyf\u00e9l telep\u00edtette a k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sokat: {0}.
+FEATURES_ADDED_CLIENT.explanation=Az \u00fcgyf\u00e9l telep\u00edtett egy szolg\u00e1ltat\u00e1sk\u00e9szletet.
+FEATURES_ADDED_CLIENT.useraction=Semmit sem kell tennie.
+
+CLIENT_STARTED=CWWKF0035I: A(z){0} \u00fcgyf\u00e9l fut.
+CLIENT_STARTED.explanation=Az \u00fcgyf\u00e9l sikeresen elindult.
+CLIENT_STARTED.useraction=Semmit sem kell tennie.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: A(z) {0} kiszolg\u00e1l\u00f3 befejezte a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok list\u00e1j\u00e1nak \u00f6sszegy\u0171jt\u00e9s\u00e9t.
+SERVER_GATHER_FEATURES.explanation=A kiszolg\u00e1l\u00f3 \u00f6ssze\u00e1ll\u00edtotta a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok list\u00e1j\u00e1t.
+SERVER_GATHER_FEATURES.useraction=Semmit sem kell tennie.
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: A client.xml f\u00e1jlban megadott {0} szolg\u00e1ltat\u00e1s nem nyilv\u00e1nos szolg\u00e1ltat\u00e1s, \u00e9s az \u00fcgyf\u00e9l nem fogja futtatni.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=A client.xml f\u00e1jlban csak nyilv\u00e1nos szolg\u00e1ltat\u00e1sokat adhat meg.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=M\u00f3dos\u00edtsa az \u00fcgyf\u00e9l be\u00e1ll\u00edt\u00e1s\u00e1t, hogy a sz\u00fcks\u00e9ges funkci\u00f3t biztos\u00edt\u00f3 nyilv\u00e1nos szolg\u00e1ltat\u00e1st adjon meg.  Ha olyan szolg\u00e1ltat\u00e1st fejleszt, amelyet a felhaszn\u00e1l\u00f3knak meg kell adniuk az \u00fcgyf\u00e9l be\u00e1ll\u00edt\u00e1sban, akkor m\u00f3dos\u00edtsa a szolg\u00e1ltat\u00e1s l\u00e1that\u00f3s\u00e1g\u00e1t nyilv\u00e1nosra visibility=public bejegyz\u00e9st attrib\u00fatumk\u00e9nt hozz\u00e1adva a szolg\u00e1ltat\u00e1s Subsystem-SymbolicName be\u00e1ll\u00edt\u00e1s\u00e1hoz.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: A(z) {1} f\u00e1jlban megadott {0} szolg\u00e1ltat\u00e1s csak az \u00fcgyf\u00e9l folyamatt\u00edpusokat t\u00e1mogatja, amelynek eredm\u00e9nyek\u00e9nt ezt a szolg\u00e1ltat\u00e1st a kiszolg\u00e1l\u00f3folyamat nem futtatja.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=A be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1s nem t\u00e1mogatja a megadott folyamatt\u00edpust.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=T\u00e1vol\u00edtsa el a szolg\u00e1ltat\u00e1st a konfigur\u00e1ci\u00f3b\u00f3l vagy m\u00f3dos\u00edtsa a szolg\u00e1ltat\u00e1s le\u00edr\u00f3f\u00e1jlj\u00e1t \u00e9s enged\u00e9lyezze a k\u00edv\u00e1nt folyamatt\u00edpus t\u00e1mogat\u00e1s\u00e1t.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: A(z) {0} szolg\u00e1ltat\u00e1s csak az \u00fcgyf\u00e9l folyamatt\u00edpusokat t\u00e1mogatja, amelynek eredm\u00e9nyek\u00e9nt ezt a szolg\u00e1ltat\u00e1st a kiszolg\u00e1l\u00f3folyamat nem futtatja.  A(z) {2} f\u00e1jlban megadott {1} szolg\u00e1ltat\u00e1s val\u00f3sz\u00edn\u0171leg nem m\u0171k\u00f6dik megfelel\u0151en a(z) {0} szolg\u00e1ltat\u00e1s f\u00fcgg\u0151s\u00e9ge miatt.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=A be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1s nem t\u00e1mogatja a megadott folyamatt\u00edpust.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=T\u00e1vol\u00edtsa el a szolg\u00e1ltat\u00e1st a konfigur\u00e1ci\u00f3b\u00f3l vagy m\u00f3dos\u00edtsa a szolg\u00e1ltat\u00e1s le\u00edr\u00f3f\u00e1jlj\u00e1t \u00e9s enged\u00e9lyezze a k\u00edv\u00e1nt folyamatt\u00edpus t\u00e1mogat\u00e1s\u00e1t.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: A(z) {1} f\u00e1jlban megadott {0} szolg\u00e1ltat\u00e1s csak a kiszolg\u00e1l\u00f3 folyamatt\u00edpusokat t\u00e1mogatja, amelynek eredm\u00e9nyek\u00e9nt ezt a szolg\u00e1ltat\u00e1st az \u00fcgyf\u00e9lfolyamat nem futtatja.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=A be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1s nem t\u00e1mogatja a megadott folyamatt\u00edpust.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=T\u00e1vol\u00edtsa el a szolg\u00e1ltat\u00e1st a konfigur\u00e1ci\u00f3b\u00f3l vagy m\u00f3dos\u00edtsa a szolg\u00e1ltat\u00e1s le\u00edr\u00f3f\u00e1jlj\u00e1t \u00e9s enged\u00e9lyezze a k\u00edv\u00e1nt folyamatt\u00edpus t\u00e1mogat\u00e1s\u00e1t.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: A(z) {0} szolg\u00e1ltat\u00e1s csak a kiszolg\u00e1l\u00f3 folyamatt\u00edpusokat t\u00e1mogatja, amelynek eredm\u00e9nyek\u00e9nt ezt a szolg\u00e1ltat\u00e1st az \u00fcgyf\u00e9lfolyamat nem futtatja.  A(z) {2} f\u00e1jlban megadott {1} szolg\u00e1ltat\u00e1s val\u00f3sz\u00edn\u0171leg nem m\u0171k\u00f6dik megfelel\u0151en a(z) {0} szolg\u00e1ltat\u00e1s f\u00fcgg\u0151s\u00e9ge miatt.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=A be\u00e1ll\u00edtott szolg\u00e1ltat\u00e1s nem t\u00e1mogatja a megadott folyamatt\u00edpust.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=T\u00e1vol\u00edtsa el a szolg\u00e1ltat\u00e1st a konfigur\u00e1ci\u00f3b\u00f3l vagy m\u00f3dos\u00edtsa a szolg\u00e1ltat\u00e1s le\u00edr\u00f3f\u00e1jlj\u00e1t \u00e9s enged\u00e9lyezze a k\u00edv\u00e1nt folyamatt\u00edpus t\u00e1mogat\u00e1s\u00e1t.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: A(z) {0} szolg\u00e1ltat\u00e1shoz nem tal\u00e1lhat\u00f3 szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s.  A szolg\u00e1ltat\u00e1s telep\u00edt\u00e9se \u00e9rdek\u00e9ben pr\u00f3b\u00e1lja futtatni a bin/installUtility install {0} parancsot. Ennek alternat\u00edv\u00e1jak\u00e9nt a konfigur\u00e1ci\u00f3 \u00e1ltal hivatkozott szolg\u00e1ltat\u00e1sok mindegyik\u00e9nek telep\u00edt\u00e9s\u00e9hez a bin/installUtility install {1} parancsot is futtathatja.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=A szolg\u00e1ltat\u00e1skezel\u0151 nem tal\u00e1lt meghat\u00e1roz\u00e1st a megadott szolg\u00e1ltat\u00e1shoz.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=Ellen\u0151rizze, hogy a megadott szolg\u00e1ltat\u00e1s nev\u00e9nek \u00edr\u00e1sm\u00f3dja helyes-e.  \
+Ellen\u0151rizze tov\u00e1bb\u00e1, hogy l\u00e9tezik \u00e9s olvashat\u00f3-e a szolg\u00e1ltat\u00e1smeghat\u00e1roz\u00e1s a lib/features k\u00f6nyvt\u00e1rban. \
+Ha a szolg\u00e1ltat\u00e1s nem l\u00e9tezik, akkor a szolg\u00e1ltat\u00e1s telep\u00edt\u00e9se \u00e9rdek\u00e9ben pr\u00f3b\u00e1lja futtatni a bin/installUtility install szolg\u00e1ltat\u00e1sn\u00e9v, vagy az ezen konfigur\u00e1ci\u00f3 \u00e1ltal hivatkozott szolg\u00e1ltat\u00e1sok mindegyik\u00e9nek telep\u00edt\u00e9s\u00e9hez a bin/installUtility install kiszolg\u00e1l\u00f3n\u00e9v parancsot. 
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: A(z) {0} szolg\u00e1ltat\u00e1s m\u00e1r l\u00e9tezik. Ez nem ker\u00fclnek ism\u00e9t telep\u00edt\u00e9sre. Egy megl\u00e9v\u0151 szolg\u00e1ltat\u00e1s m\u00f3dos\u00edt\u00e1s\u00e1hoz el\u0151sz\u00f6r k\u00e9zileg el kell t\u00e1vol\u00edtania.
+tool.feature.exists.explanation=A telep\u00edteni k\u00edv\u00e1nt szolg\u00e1ltat\u00e1s m\u00e1r l\u00e9tezik.
+tool.feature.exists.useraction=Semmit sem kell tennie.
+tool.missing.args=CWWKF1001E: A(z) {0} {1} argumentumot ig\u00e9nyel, de {2} volt megadva.
+tool.missing.args.explanation=A m\u0171velet megh\u00edv\u00e1s\u00e1hoz nem a megfelel\u0151 sz\u00e1m\u00fa argumentum ker\u00fclt felhaszn\u00e1l\u00e1sra.
+tool.missing.args.useraction=Futtassa \u00fajra a parancsot a helyes argumentumokkal.
+tool.unknown.options=CWWKF1002E: A(z) {0} nem t\u00e1mogatja a k\u00f6vetkez\u0151 param\u00e9tereket: {1}.
+tool.unknown.options.explanation=\u00c9rv\u00e9nytelen argumentumokkal t\u00f6rt\u00e9nt k\u00eds\u00e9rlet egy parancs futtat\u00e1s\u00e1ra.
+tool.unknown.options.useraction=Futtassa \u00fajra a parancsot az \u00e9rv\u00e9nytelen argumentumok n\u00e9lk\u00fcl.
+
+tool.install.bad.extension=CWWKF1003E: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny nem l\u00e9tezik.
+tool.install.bad.extension.explanation=Nincs bejegyezve az a term\u00e9kb\u0151v\u00edtm\u00e9ny, melybe a szolg\u00e1ltat\u00e1st telep\u00edteni k\u00edv\u00e1nja.
+tool.install.bad.extension.useraction=A szolg\u00e1ltat\u00e1st olyan term\u00e9kb\u0151v\u00edtm\u00e9nybe telep\u00edtse, amely be van jegyezve, vagy regisztr\u00e1lja a hi\u00e1nyz\u00f3 term\u00e9kb\u0151v\u00edtm\u00e9nyt.
+tool.install.invalid.extension=CWWKF1004E: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny nem hat\u00e1roz meg helyet.
+tool.install.invalid.extension.explanation=A term\u00e9kb\u0151v\u00edtm\u00e9ny nem tal\u00e1lhat\u00f3, mert a bejegyz\u00e9sf\u00e1jl nem tartalmaz helyet.
+tool.install.invalid.extension.useraction=Jav\u00edtsa a term\u00e9kb\u0151v\u00edtm\u00e9ny bejegyz\u00e9s\u00e9t, hogy az tartalmazza a b\u0151v\u00edtm\u00e9ny hely\u00e9t.
+tool.install.ioexception.extension=CWWKF1005E: Nem v\u00e1rt hiba t\u00f6rt\u00e9nt a(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny olvas\u00e1sa sor\u00e1n, kiv\u00e9tel: {1}
+tool.install.ioexception.extension.explanation=Nem v\u00e1rt hiba t\u00f6rt\u00e9nt a hiba\u00fczenetben megadott term\u00e9kb\u0151v\u00edtm\u00e9ny tulajdons\u00e1gf\u00e1jlj\u00e1nak olvas\u00e1si k\u00eds\u00e9rlete sor\u00e1n.
+tool.install.ioexception.extension.useraction=Tekintse \u00e1t a kiv\u00e9tel\u00fczenetet magyar\u00e1zat\u00e9rt, hogy mi\u00e9rt nem olvashat\u00f3 a f\u00e1jl, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+tool.install.no.dir=CWWKF1006E: A szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151, mert a(z) {0} k\u00f6nyvt\u00e1r nem l\u00e9tezik.
+tool.install.no.dir.explanation=A term\u00e9kb\u0151v\u00edtm\u00e9ny k\u00f6nyvt\u00e1ra nem l\u00e9tezik, \u00edgy a szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151 oda.
+tool.install.no.dir.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6nyvt\u00e1r l\u00e9tezik, majd pr\u00f3b\u00e1lkozzon meg \u00fajra a szolg\u00e1ltat\u00e1s telep\u00edt\u00e9s\u00e9vel.
+tool.install.download.esa=CWWKF1007E: Hiba t\u00f6rt\u00e9nt az alrendszer arch\u00edvum let\u00f6lt\u00e9se sor\u00e1n a k\u00f6vetkez\u0151 helyre: {0}, kiv\u00e9tel: {1}
+tool.install.download.esa.explanation=Hiba t\u00f6rt\u00e9nt az alrendszer arch\u00edvum let\u00f6lt\u00e9se sor\u00e1n. Ez lehet \u00e9rv\u00e9nytelen URL c\u00edm vagy ideiglenes h\u00e1l\u00f3zati probl\u00e9ma miatt. A hiba\u00fczenet m\u00e1sodik mondata r\u00e9szlet inform\u00e1ci\u00f3kat ny\u00fajthat a hiba ok\u00e1r\u00f3l.
+tool.install.download.esa.useraction=Ellen\u0151rizze, hogy az alrendszer arch\u00edvum URL c\u00edme helyes, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+tool.install.download.tmpFile=CWWKF1008E: Nem hozhat\u00f3 l\u00e9tre ideiglenes f\u00e1jl az alrendszer arch\u00edvum let\u00f6lt\u00e9s\u00e9hez, kiv\u00e9tel: {0}
+tool.install.download.tmpFile.explanation=A szolg\u00e1ltat\u00e1stelep\u00edt\u00e9si m\u0171velet az alrendszer arch\u00edvum let\u00f6lt\u00e9s\u00e9t egy ideiglenes f\u00e1jlba val\u00f3s\u00edtja meg, de nem hozhat\u00f3 l\u00e9tre ideiglenes f\u00e1jl. Ezt val\u00f3sz\u00edn\u0171leg egy sz\u00e1m\u00edt\u00f3g\u00e9p megszor\u00edt\u00e1s okozza. A hiba\u00fczenet m\u00e1sodik mondata r\u00e9szlet inform\u00e1ci\u00f3kat ny\u00fajthat a hiba ok\u00e1r\u00f3l.
+tool.install.download.tmpFile.useraction=Lehets\u00e9ges, hogy az ideiglenes f\u00e1jlrendszer megtelt. Ha \u00edgy van, akkor a ter\u00fclet t\u00f6rl\u00e9se megoldja a probl\u00e9m\u00e1t.
+tool.install.file.notexist=CWWKF1009E: A(z) {0} f\u00e1jl nem l\u00e9tezik.
+tool.install.file.notexist.explanation=A telep\u00edt\u00e9si m\u0171velethez megadott alrendszer arch\u00edvum f\u00e1jl nem l\u00e9tezik.
+tool.install.file.notexist.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alrendszer arch\u00edvum f\u00e1jl neve helyesen van megadva, majd futtassa \u00fajra a telep\u00edt\u00e9si m\u0171veletet.
+tool.install.file.notafile=CWWKF1010E: A(z) {0} nem f\u00e1jl.
+tool.install.file.notafile.explanation=A megadott f\u00e1jln\u00e9v nem alrendszer arch\u00edvumot, hanem egy k\u00f6nyvt\u00e1rat azonos\u00edt.
+tool.install.file.notafile.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alrendszer arch\u00edvum f\u00e1jl neve helyesen van megadva, majd futtassa \u00fajra a telep\u00edt\u00e9si m\u0171veletet.
+tool.install.missing.feature=CWWKF1011E: A(z) {0} f\u00fcgg a k\u00f6vetkez\u0151t\u0151l: {1}, amely nincs telep\u00edtve.
+tool.install.missing.feature.explanation=A telep\u00edtend\u0151 szolg\u00e1ltat\u00e1s olyan m\u00e1s szolg\u00e1ltat\u00e1sokt\u00f3l f\u00fcgg, amelyek m\u00e9g nincsenek telep\u00edtve. A szolg\u00e1ltat\u00e1s nem haszn\u00e1lhat\u00f3, am\u00edg a hiba\u00fczenetben megnevezett szolg\u00e1ltat\u00e1s nincs telep\u00edtve.
+tool.install.missing.feature.useraction=Telep\u00edtse a hi\u00e1nyz\u00f3 szolg\u00e1ltat\u00e1st, majd futtassa \u00fajra a telep\u00edt\u00e9st.
+tool.install.missing.content=CWWKF1012E: A(z) {0} er\u0151forr\u00e1s nem l\u00e9tezik az alrendszer arch\u00edvumban a k\u00f6vetkez\u0151 helyen: {1}.
+tool.install.missing.content.explanation=Az alrendszer tartalom feldolgoz\u00e1sa sor\u00e1n egy hivatkozott f\u00e1jl nem tal\u00e1lhat\u00f3 az arch\u00edvumban.
+tool.install.missing.content.useraction=Keresse meg az alrendszer szerz\u0151j\u00e9t a sz\u00fcks\u00e9ges tartalmat tartalmaz\u00f3 friss\u00edtett arch\u00edvum beszerz\u00e9se \u00e9rdek\u00e9ben.
+tool.install.content.notfound=CWWKF1013E: Az alrendszerben {0} tartalma nem tal\u00e1lhat\u00f3 az alrendszer arch\u00edvumban.
+tool.install.content.notfound.explanation=Az alrendszer tartalom feldolgoz\u00e1sa sor\u00e1n n\u00e9h\u00e1ny k\u00f6telez\u0151 k\u00f6teg nem tal\u00e1lhat\u00f3 az alrendszer arch\u00edvumban.
+tool.install.content.notfound.useraction=Keresse meg az alrendszer szerz\u0151j\u00e9t a sz\u00fcks\u00e9ges tartalmat tartalmaz\u00f3 friss\u00edtett arch\u00edvum beszerz\u00e9se \u00e9rdek\u00e9ben.
+tool.install.bad.zip=CWWKF1014E: Hiba t\u00f6rt\u00e9nt a(z) {0} arch\u00edv f\u00e1jl olvas\u00e1sa sor\u00e1n, kiv\u00e9tel: {1}
+tool.install.bad.zip.explanation=Az alrendszer arch\u00edvum nem olvashat\u00f3.
+tool.install.bad.zip.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alrendszer arch\u00edvum egy \u00e9rv\u00e9nyes, teljes arch\u00edvum. Ha nem \u00e9rv\u00e9nyes, akkor szerezzen be egy friss arch\u00edvumot a szolg\u00e1ltat\u00f3t\u00f3l.
+tool.install.file.exists=CWWKF1015E: A(z) {0} f\u00e1jl m\u00e1r l\u00e9tezik.
+tool.install.file.exists.explanation=Az alrendszer arch\u00edvum telep\u00edt\u00e9se meghi\u00fasult, mert az arch\u00edvum egyik f\u00e1jlja m\u00e1r l\u00e9tezik a telep\u00edt\u00e9sben.
+tool.install.file.exists.useraction=Tekintse \u00e1t a m\u00e1r l\u00e9tez\u0151 f\u00e1jlokat. Ha a telep\u00edt\u00e9si m\u0171velet folytathat\u00f3, akkor futtassa  \u00fajra a m\u0171veletet vagy a--when-file-exists=replace param\u00e9terrel a megl\u00e9v\u0151 f\u00e1jl fel\u00fcl\u00edr\u00e1s\u00e1hoz, vagy a --when-file-exists=ignore param\u00e9terrel a megl\u00e9v\u0151 f\u00e1jl n\u00e9lk\u00fcli folytat\u00e1shoz.
+tool.install.dir.create.fail=CWWKF1016E: A(z) {0} k\u00f6nyvt\u00e1rszerkezet nem hozhat\u00f3 l\u00e9tre.
+tool.install.dir.create.fail.explanation=A telep\u00edt\u00e9s alatt l\u00e9v\u0151 szolg\u00e1ltat\u00e1s \u00e1ltal ig\u00e9nyelt k\u00f6nyvt\u00e1rak nem hozhat\u00f3k l\u00e9tre.
+tool.install.dir.create.fail.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott k\u00f6nyvt\u00e1r l\u00e9tezik, \u00e9s hogy a megvannak a k\u00f6nyvt\u00e1rszerkezet l\u00e9trehoz\u00e1s\u00e1t lehet\u0151v\u00e9 t\u00e9v\u0151 sz\u00fcks\u00e9ges enged\u00e9lyek. Futtassa \u00fajra a telep\u00edt\u00e9si m\u0171veletet.
+tool.install.feature.ok=CWWKF1017I: Legal\u00e1bb egy szolg\u00e1ltat\u00e1s sikeresen telep\u00edtve: {0}.
+tool.install.feature.ok.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+tool.install.feature.ok.useraction=Semmit sem kell tennie.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: A(z) {0} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1s a --when-file-exists param\u00e9terhez. Az \u00e9rv\u00e9nyes param\u00e9terek: fail, replace vagy ignore.
+tool.install.invalid.when.file.exists.value.explanation=A --when-file-exists param\u00e9ter be\u00e1ll\u00edt\u00e1sa csak fail, replace vagy ignore lehet.
+tool.install.invalid.when.file.exists.value.useraction=Adja meg az \u00e9rv\u00e9nyes fail, replace vagy ignore \u00e9rt\u00e9kek egyik\u00e9t.
+tool.product.ext.features.not.found=CWWKF1019E: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny nem tartalmaz \u00f6sszetev\u0151t.
+tool.product.ext.features.not.found.explanation=A megadott term\u00e9kb\u0151v\u00edtm\u00e9nyhez tartoz\u00f3 \u00f6sszetev\u0151 le\u00edr\u00f3f\u00e1jlok nem tal\u00e1lhat\u00f3k.
+tool.product.ext.features.not.found.useraction=Ellen\u0151rizze, hogy az \u00f6sszetev\u0151 le\u00edr\u00f3f\u00e1jlok hely\u00e9\u00fcl szolg\u00e1l\u00f3 k\u00f6nyvt\u00e1r \u00e9rv\u00e9nyes-e.
+tool.product.ext.not.found=CWWKF1020E: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}.
+tool.product.ext.not.found.explanation=A term\u00e9kb\u0151v\u00edtm\u00e9ny nem tal\u00e1lhat\u00f3 az eml\u00edtett helyen.
+tool.product.ext.not.found.useraction=Ellen\u0151rizze, hogy a term\u00e9ktelep\u00edt\u00e9s helye helyesen van-e megadva a term\u00e9ktelep\u00edt\u00e9s tulajdons\u00e1gf\u00e1jlj\u00e1ban.
+tool.product.ext.not.defined=CWWKF1021E: A(z) {0} nev\u0171 term\u00e9kb\u0151v\u00edtm\u00e9ny nem l\u00e9tezik.
+tool.product.ext.not.defined.explanation=A megadott n\u00e9vvel nem l\u00e9tezik term\u00e9kb\u0151v\u00edtm\u00e9ny.
+tool.product.ext.not.defined.useraction=Ellen\u0151rizze, hogy a megadott term\u00e9kb\u0151v\u00edtm\u00e9ny n\u00e9v \u00e9rv\u00e9nyes-e.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: Az OSGI-INF/SUBSYSTEM.MF f\u00e1jl nem tal\u00e1lhat\u00f3 az arch\u00edvumban.
+tool.install.content.no.subsystem.manifest.explanation=Az alrendszer arch\u00edvumban nem tal\u00e1lhat\u00f3 az OSGI-INF/SUBSYSTEM.MF f\u00e1jl, ami metaadatokat tartalmaz az alrendszerr\u0151l.
+tool.install.content.no.subsystem.manifest.useraction=Adja hozz\u00e1 az OSGI-INF/SUBSYSTEM.MF f\u00e1jlt az arch\u00edvumhoz.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: K\u00e9t f\u00e1jl l\u00e9tezik OSGI-INF/SUBSYSTEM.MF \u00fatvonallal, de k\u00fcl\u00f6nb\u00f6znek a kis- \u00e9s nagybet\u0171kben. A(z) {0} f\u00e1jl ker\u00fcl felhaszn\u00e1l\u00e1sra. 
+tool.install.two.subsystem.manifests.explanation=Egy szolg\u00e1ltat\u00e1s meghat\u00e1roz\u00e1s\u00e1hoz csak egy OSGI-INF/SUBSYSTEM.MF f\u00e1jlt kell haszn\u00e1lnia, de az arch\u00edvum k\u00e9t OSGI-INF/SUBSYSTEM.MF f\u00e1jlt tartalmaz, melyek a kis- \u00e9s nagybet\u0171kben k\u00fcl\u00f6nb\u00f6znek.
+tool.install.two.subsystem.manifests.useraction=T\u00f6r\u00f6lje az egyik SUBSYSTEM.MF f\u00e1jlt.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: A featureManager parancs nem tal\u00e1lta a features k\u00f6nyvt\u00e1rat \u00e9s a(z) {0} k\u00f6nyvt\u00e1r\u00fatvonalon sem tudta az l\u00e9trehozni.
+tool.feature.dir.not.found.explanation=A szerver features k\u00f6nyvt\u00e1ra nem l\u00e9tezik. Lehet, hogy a szolg\u00e1ltat\u00e1sok neveit tartalmaz\u00f3 k\u00f6nyvt\u00e1rat v\u00e9letlen\u00fcl f\u00e1jlk\u00e9nt hozt\u00e1k l\u00e9tre.   A featureManager parancs megpr\u00f3b\u00e1lta l\u00e9trehozni a features k\u00f6nyvt\u00e1rat, de nem tudta. Amikor a features k\u00f6nyvt\u00e1r nem hozhat\u00f3 l\u00e9tre, annak oka gyakran az, hogy a felhaszn\u00e1l\u00f3nak nincsenek \u00edr\u00e1si enged\u00e9lyei a k\u00f6nyvt\u00e1r-\u00fatvonalhoz. 
+tool.feature.dir.not.found.useraction=Tegye a k\u00f6vetkez\u0151k valamelyik\u00e9t: (1) Hozza l\u00e9tre a megadott k\u00f6nyvt\u00e1rat saj\u00e1t kez\u0171leg \u00e9s futtassa \u00fajra featureManager parancsot. (2) Futtassa \u00fajra a featureManager parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, amelynek megfelel\u0151 \u00edr\u00e1si hozz\u00e1f\u00e9r\u00e9se van a megadott k\u00f6nyvt\u00e1r-\u00fatvonalhoz.  
+
+tool.find.view.info.name=\ \ \ \ N\u00e9v: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Szimbolikus n\u00e9v: {0}
+tool.find.view.info.description=\ \ \ \ Le\u00edr\u00e1s: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Enged\u00e9lyezte:
+tool.find.no.feature=Nem tal\u00e1lhat\u00f3 szolg\u00e1ltat\u00e1s.
+
+tool.missing.option=CWWKF1025E: A(z) {0} m\u0171velet a(z) {1} param\u00e9tert k\u00f6veteli meg, de az ig\u00e9nyelt param\u00e9ter nincs megadva.
+tool.missing.option.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy parancs futtat\u00e1s\u00e1ra egy k\u00f6telez\u0151 param\u00e9ter megad\u00e1sa n\u00e9lk\u00fcl.
+tool.missing.option.useraction=Futtassa \u00fajra a parancsot a k\u00f6telez\u0151 param\u00e9terrel.
+
+tool.classpath.feature.not.found=CWWKF1026E: A(z) {0} szolg\u00e1ltat\u00e1s nem l\u00e9tezik.
+tool.classpath.feature.not.found.explanation=Nem l\u00e9tez\u0151 szolg\u00e1ltat\u00e1s lett megadva.
+tool.classpath.feature.not.found.useraction=Futtassa \u00fajra a parancsot a szolg\u00e1ltat\u00e1s megad\u00e1sa n\u00e9lk\u00fcl. 
+
+tool.classpath.feature.not.public=CWWKF1027E: A(z) {0} szolg\u00e1ltat\u00e1s nem nyilv\u00e1nos.
+tool.classpath.feature.not.public.explanation=Nem nyilv\u00e1nos szolg\u00e1ltat\u00e1s lett megadva.
+tool.classpath.feature.not.public.useraction=Futtassa \u00fajra a parancsot a szolg\u00e1ltat\u00e1s megad\u00e1sa n\u00e9lk\u00fcl.
+
+tool.classpath.wrong.drive=CWWKF1028E: A(z) {0} kimeneti f\u00e1jlnak ugyanazon a meghajt\u00f3n kell elhelyezkednie, mint ahol a(z) {1} f\u00e1jl.
+tool.classpath.wrong.drive.explanation=A kimeneti f\u00e1jlnak ugyanazon a meghajt\u00f3n kell elhelyezkednie, mint ahol a megadott szolg\u00e1ltat\u00e1sok \u00e1ltal hivatkozott \u00f6sszes f\u00e1jl.
+tool.classpath.wrong.drive.useraction=Futtassa \u00fajra a parancsot olyan kimeneti f\u00e1jllal, amely ugyanazon a meghajt\u00f3n helyezkedik el, mint ahol a megadott f\u00e1jl.
+
+tool.classpath.create.fail=CWWKF1029E: A(z) {0} kimeneti f\u00e1jl nem hozhat\u00f3 l\u00e9tre. A k\u00f6vetkez\u0151 hiba t\u00f6rt\u00e9nt: {1}
+tool.classpath.create.fail.explanation=Hiba t\u00f6rt\u00e9nt a kimeneti f\u00e1jl l\u00e9trehoz\u00e1sa sor\u00e1n.
+tool.classpath.create.fail.useraction=Tekintse \u00e1t a hiba\u00fczenetet, h\u00e1r\u00edtsa el a probl\u00e9m\u00e1t, majd futtassa \u00fajra a parancsot. 
+
+
+tool.userfeature.install.location.invalid=CWWKF1036E: A(z) {0} felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151 a t\u00f6rzsbe.
+tool.userfeature.install.location.invalid.explanation= A felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1s nem egy t\u00f6rzs szolg\u00e1ltat\u00e1s, ez\u00e9rt nem telep\u00edthet\u0151 a t\u00f6rzsbe.
+tool.userfeature.install.location.invalid.useraction= Telep\u00edtse a felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1st az usr mapp\u00e1ba. 
+
+
+
+

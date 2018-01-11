@@ -36,6 +36,8 @@ public class CircuitBreakerBean {
     private int executionCounterH = 0;
     private int executionCounterI = 0;
     private int executionCounterJ = 0;
+    private int executionCounterK = 0;
+    private int executionCounterL = 0;
 
     @CircuitBreaker(delay = 1, delayUnit = ChronoUnit.SECONDS, requestVolumeThreshold = 3, failureRatio = 1.0)
     @Timeout(value = 3, unit = ChronoUnit.SECONDS)
@@ -129,6 +131,36 @@ public class CircuitBreakerBean {
         return "serviceJ: " + executionCounterJ;
     }
 
+    /**
+     * Set the requestVolumeThreshold to 5 - which would lead to test failure - but this bean's config
+     * will be overridden in microprofile-config.properties to a value of 3.
+     */
+    @CircuitBreaker(delay = 2, delayUnit = ChronoUnit.SECONDS, requestVolumeThreshold = 5, failureRatio = 1.0)
+    public String serviceK() throws ConnectException {
+        executionCounterK++;
+
+        if (executionCounterK <= 5) {
+            throw new ConnectException("serviceK exception: " + executionCounterK);
+        }
+        return "serviceK: " + executionCounterK;
+    }
+
+    /**
+     * Set the delay to 1 minute - which would lead to test failure - but this bean's config
+     * will be overridden.
+     */
+    @CircuitBreaker(delay = 1, delayUnit = ChronoUnit.MINUTES, requestVolumeThreshold = 3, failureRatio = 1.0)
+    public String serviceL() throws ConnectException {
+        executionCounterL++;
+        System.out.println("serviceL: " + executionCounterL);
+
+        if (executionCounterL <= 3) {
+            System.out.println("serviceL: throw ConnectException on execution " + executionCounterL);
+            throw new ConnectException("serviceL exception: " + executionCounterL);
+        }
+        return "serviceL: " + executionCounterL;
+    }
+
     public Future<String> serviceDFallback() {
         return CompletableFuture.completedFuture("serviceDFallback");
     }
@@ -163,5 +195,9 @@ public class CircuitBreakerBean {
 
     public int getExecutionCounterJ() {
         return executionCounterJ;
+    }
+
+    public int getExecutionCounterK() {
+        return executionCounterK;
     }
 }

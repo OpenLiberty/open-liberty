@@ -8,26 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
-// Example of pulling down binary dependencies from Artifactory
-addRequiredLibraries {
-  doLast {
-    // Define dependency groups
-    configurations {
-      derby
-    }
-    // Define G:A:V coordinates of each dependency
-    dependencies {
-      derby 'org.apache.derby:derby:10.11.1'
-    }
-    // Copy the dependencies wherever they may be needed
-    copy {
-      // Adding jars to "autoFVT/lib/" will include them in a FAT bucket classpath at runtime
-      from configurations.derby
-      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.concurrent.persistent.fat.locking/derby"
-    }
-  }
-}
 
-	
+addRequiredLibraries.dependsOn addDerby

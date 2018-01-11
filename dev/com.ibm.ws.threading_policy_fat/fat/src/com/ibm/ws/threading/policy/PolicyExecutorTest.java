@@ -49,7 +49,7 @@ public class PolicyExecutorTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWWKE1205E:.*PolicyExecutorProvider-testStartTimeout.*"); // some tests intentionally exceed the startTimeout
         server1.deleteFileFromLibertyInstallRoot("lib/features/policyExecutorUser-1.0.mf");
         server1.deleteFileFromLibertyInstallRoot("lib/test.policyexecutor.bundle_fat.jar");
     }

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: Definicja u\u017cytkownika jest niepoprawna: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=Sk\u0142adnia definiowania u\u017cytkownika to <nazwa u\u017cytkownika="..." has\u0142o="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=Zmie\u0144 definicj\u0119 u\u017cytkownika w konfiguracji.
+USER_MUST_DEFINE_NAME=Element u\u017cytkownika musi definiowa\u0107 nazw\u0119.
+USER_MUST_DEFINE_PASSWORD=Element u\u017cytkownika o nazwie {0} musi definiowa\u0107 has\u0142o.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: Definicja grupy jest niepoprawna: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=Sk\u0142adnia definiowania grupy to <nazwa grupy="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=Zmie\u0144 definicj\u0119 grupy w konfiguracji.
+GROUP_MUST_DEFINE_NAME=Element grupy musi definiowa\u0107 nazw\u0119.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: Definicja elementu jest niepoprawna: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=Sk\u0142adnia definiowania elementu to <nazwa elementu="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=Zmie\u0144 definicj\u0119 elementu w konfiguracji.
+MEMBER_MUST_DEFINE_NAME=W elemencie konieczne jest zdefiniowanie nazwy.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Brak zdefiniowanych u\u017cytkownik\u00f3w dla konfiguracji elementu BasicRegistry o identyfikatorze {0}.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=Nie zdefiniowano \u017cadnych u\u017cytkownik\u00f3w dla konfiguracji. Taka sytuacja mo\u017ce by\u0107 zamierzona, ale prawdopodobnie jest to b\u0142\u0105d konfiguracji.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=W razie konieczno\u015bci zdefiniuj co najmniej jednego u\u017cytkownika w konfiguracji.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Zdefiniowano wielu u\u017cytkownik\u00f3w o nazwie {0}. Wpisy dla tego u\u017cytkownika nie zostan\u0105 u\u017cyte.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=Nazwy u\u017cytkownik\u00f3w musz\u0105 by\u0107 unikalne.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=Zdefiniuj tylko jednego u\u017cytkownika o okre\u015blonej nazwie.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Zdefiniowano wiele grup o nazwie {0}. Wpisy dla tej grupy nie zostan\u0105 u\u017cyte.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=Nazwy grup musz\u0105 by\u0107 unikalne.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=Zdefiniuj tylko jedn\u0105 grup\u0119 o okre\u015blonej nazwie.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Dla grupy {1} zdefiniowano wiele wpis\u00f3w element\u00f3w o nazwie {0}.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=W przypadku grup obs\u0142ugiwany jest tylko jeden wpis elementu na nazw\u0119 u\u017cytkownika.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Zdefiniuj tylko jeden wpis elementu dla u\u017cytkownika w okre\u015blonej grupie.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Wpis dotycz\u0105cy cz\u0142onka o nazwie {0} dla grupy {1} jest niezgodny ze zdefiniowanym u\u017cytkownikiem.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Nazwa podana dla wpisu dotycz\u0105cego cz\u0142onka jest niezgodna z \u017cadnym ze zdefiniowanych u\u017cytkownik\u00f3w.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Sprawd\u017a poprawno\u015b\u0107 zapisu nazwy cz\u0142onka i upewnij si\u0119, \u017ce jest ona zgodna z u\u017cytkownikiem zdefiniowanym w rejestrze.

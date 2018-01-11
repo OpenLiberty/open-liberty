@@ -316,6 +316,16 @@
     <Class name="com.ibm.ws.logging.internal.impl.FileLogHolder$DummyOutputStream"/>
     <Method name="&lt;clinit&gt;"/>
   </Match>
+    <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.utils.FileLogHolder"/>
+    <Method name="createStream"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.logging.utils.FileLogHolder$DummyOutputStream"/>
+    <Method name="&lt;clinit&gt;"/>
+  </Match>
   <Match>
     <Bug pattern="DM_DEFAULT_ENCODING"/>
     <Class name="com.ibm.ws.logging.internal.impl.IncidentStreamImpl"/>

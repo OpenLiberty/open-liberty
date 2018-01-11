@@ -1,0 +1,11 @@
+<server description="Server for testing a CDI app that contains a beans.xml file and it's own XML parser factory">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>webProfile-7.0</feature>
+    </featureManager>
+
+    <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:com.ibm.ws.weld*=all:org.jboss.*=all:Injection=all"/>
+
+</server>

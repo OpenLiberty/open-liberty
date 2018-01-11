@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: El producto no puede determinar el nombre de dominio completo del host. El nombre de host tomar\u00e1 el valor predeterminado de {0}. El error ha sido: {1}
+DETERMINE_HOST_ERROR.explanation=La direcci\u00f3n IP o el nombre de host del servidor no se puede determinar.
+DETERMINE_HOST_ERROR.useraction=Compruebe la configuraci\u00f3n de la red del servidor, y reinicie el servidor con la opci\u00f3n --clean.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: El servicio OSGi {0} no est\u00e1 disponible. Intente reiniciar el servidor con la opci\u00f3n --clean.
+OSGI_SERVICE_ERROR.explanation=El servicio especificado no est\u00e1 disponible, lo que provoca este error interno del servidor.
+OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n --clean.

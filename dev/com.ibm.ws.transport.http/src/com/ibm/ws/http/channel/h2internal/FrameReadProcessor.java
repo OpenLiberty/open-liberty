@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.util.Arrays;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -20,11 +22,13 @@ import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameFactory;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameReadProcessor {
 
-    private static final TraceComponent tc = Tr.register(FrameReadProcessor.class);
+    /** RAS tracing variable */
+    private static final TraceComponent tc = Tr.register(FrameReadProcessor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     /** starting size of the pending buffer array */
     private static final int BUFFER_ARRAY_INITIAL_SIZE = 10;
@@ -72,37 +76,24 @@ public class FrameReadProcessor {
                 // this is a connection error; we need to send a GOAWAY on the connection
                 throw e;
             }
+        } catch (Exception e) {
+            throw new ProtocolException("Error processing the payload for " + currentFrame);
         }
 
         // call the stream processor to process this stream. For now, don't return from here until the
         // frame has been fully processed.
         int streamId = currentFrame.getStreamId();
-        if (muxLink.isGoAwayInProgress() && streamId > muxLink.getLastStreamToProcess()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "GOAWAY previously received and the stream ID for the current frame is greater than the ID indicated in the GOAWAY frame");
-            }
-            throw new ProtocolException("Stream ID for current frame is greater than the ID indicated in GOAWAY frame");
-        }
-
-        //getStream will return a stream if it's active or in the closed table
-        //Null will be returned if it's in neither table, meaning it's new or has already been closed and removed
         H2StreamProcessor stream = muxLink.getStream(streamId);
 
         if (stream != null && stream.isStreamClosed() && muxLink.significantlyPastCloseTime(streamId)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Stream found, but it was closed and significantly past the close time. stream-id: " + streamId);
             }
-            muxLink.startProcessingGoAway();
             throw new ProtocolException("Stream significantly past close time");
-        }
-        if (stream == null && streamId < muxLink.getHighestClientStreamId()) {
-            muxLink.startProcessingGoAway();
-            throw new ProtocolException("Cannot initialize a stream with an ID lower than one previously created. stream-id: " + streamId);
         }
 
         // Even stream IDs can not originate from the client
         if (stream == null && (streamId != 0) && (streamId % 2 == 0)) {
-            muxLink.startProcessingGoAway();
             throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
         }
 
@@ -241,6 +232,11 @@ public class FrameReadProcessor {
             int streamId = new Integer(grabNext24BitInt(frameSixthByte));
 
             this.currentFrame = FrameFactory.getFrame(byteFrameType, streamId, payloadLength, flags, frameReserveBit == 1, Frame.FrameDirection.READ);
+            if (this.currentFrame.getFrameType() == FrameTypes.UNKNOWN) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "ignoring a frame of unknown type");
+                }
+            }
             frameState = FrameState.FIND_PAYLOAD;
         }
 
@@ -384,6 +380,16 @@ public class FrameReadProcessor {
     public boolean checkConnectionPreface() throws FrameSizeException {
         byte[] value = grabNextBytes(24);
         String valueString = new String(value);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "checkConnectionPreface: processNextFrame-:  stream: 0 frame type: Magic Preface  direction: "
+                         + Direction.READ_IN
+                         + " H2InboundLink hc: " + muxLink.hashCode());
+            if (value != null) {
+                Tr.debug(tc, "checkConnectionPreface: Preface String: " + Arrays.toString(valueString.getBytes()));
+            }
+        }
+
         return valueString.equals("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
     }
 

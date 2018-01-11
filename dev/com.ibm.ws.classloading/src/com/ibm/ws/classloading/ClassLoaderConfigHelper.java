@@ -96,7 +96,7 @@ public class ClassLoaderConfigHelper {
     private final Dictionary<String, Object> classLoaderConfigProps;
 
     @FFDCIgnore(InitWithoutConfig.class)
-    public ClassLoaderConfigHelper(NestedConfigHelper configHelper, ConfigurationAdmin configAdmin) {
+    public ClassLoaderConfigHelper(NestedConfigHelper configHelper, ConfigurationAdmin configAdmin, ClassLoadingService classLoadingSvc) {
         final String methodName = "ClassLoaderConfigHelper(): ";
         Configuration cfg;
         try {
@@ -314,7 +314,7 @@ public class ClassLoaderConfigHelper {
         gwConfig.setApiTypeVisibility(apiTypes);
         if (classLoaderConfigProps != null) {
             // if there is some <classloader> config, we need to read it out of the helper into the gateway and classloader configuration objects
-            config.setSharedLibraries(sharedLibraries);
+            config.addSharedLibraries(sharedLibraries);
             config.setCommonLibraries(commonLibraries);
             config.setClassProviders(classProviders);
             processCommonLibraries(classLoadingService, config, this.commonLibrariesPids);

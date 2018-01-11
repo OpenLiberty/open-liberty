@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
@@ -58,7 +59,7 @@ public class DerbyConnectionFactory implements DataSource {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
+        return AtomicInteger.class.equals(iface);
     }
 
     @Override
@@ -73,7 +74,11 @@ public class DerbyConnectionFactory implements DataSource {
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        throw new UnsupportedOperationException();
+        // convenient way of exposing the XA success limit to the application
+        if (AtomicInteger.class.equals(iface))
+            return iface.cast(mcf.xaSuccessLimitCountDown);
+        else
+            throw new UnsupportedOperationException();
     }
 
     //@Override // Java 7

@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: Soubor {0} nebylo mo\u017en\u00e9 zkop\u00edrovat do um\u00edst\u011bn\u00ed {1} b\u011bhem spou\u0161t\u011bn\u00ed aplikace {2}. 
+error.file.copy.failed.explanation=P\u0159ed spu\u0161t\u011bn\u00edm aplikace je soubor aplikace zkop\u00edrov\u00e1n do nov\u00e9ho um\u00edst\u011bn\u00ed. Operace kop\u00edrov\u00e1n\u00ed souboru se nezda\u0159ila, tak\u017ee aplikace nebude spu\u0161t\u011bna.
+error.file.copy.failed.useraction=Zkontrolujte um\u00edst\u011bn\u00ed zdrojov\u00e9ho a c\u00edlov\u00e9ho souboru, abyste vid\u011bli, zda byl probl\u00e9m vy\u0159e\u0161en.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: Soubor EAR {0} nebylo mo\u017en\u00e9 extrahovat do um\u00edst\u011bn\u00ed {1}. Zpr\u00e1va v\u00fdjimky byla: {2}
+error.ear.extraction.exception.explanation=Server nemohl spustit aplikace, proto\u017ee soubor EAR nebylo mo\u017en\u00e9 extrahovat.
+error.ear.extraction.exception.useraction=Informace naleznete ve zpr\u00e1v\u011b v\u00fdjimky. Dal\u0161\u00ed podrobnosti mohou b\u00fdt dostupn\u00e9 v protokolu v\u00fdjimek.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: Soubor EAR {0} nebylo mo\u017en\u00e9 extrahovat do um\u00edst\u011bn\u00ed {1}. 
+error.ear.extraction.failed.explanation=Server nemohl spustit aplikace, proto\u017ee soubor EAR nebylo mo\u017en\u00e9 extrahovat.
+error.ear.extraction.failed.useraction=Zkontrolujte soubor EAR, abyste se ujistili, \u017ee jde o platn\u00fd archiv.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: Adres\u00e1\u0159 {0} nebylo mo\u017en\u00e9 vytvo\u0159it b\u011bhem spou\u0161t\u011bn\u00ed aplikace {1}.
+error.dir.creation.failed.explanation=P\u0159ed spu\u0161t\u011bn\u00edm aplikace je vytvo\u0159en adres\u00e1\u0159. Operace vytvo\u0159en\u00ed adres\u00e1\u0159e se nezda\u0159ila, tak\u017ee aplikace nebude spu\u0161t\u011bna.
+error.dir.creation.failed.useraction=Zkontrolujte um\u00edst\u011bn\u00ed adres\u00e1\u0159e, abyste vid\u011bli, zda byl probl\u00e9m vy\u0159e\u0161en.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: Kontext bal\u00edku nebyl dostupn\u00fd pro spu\u0161t\u011bn\u00ed aplikace {0}.
+error.bundle.context.unavailable.explanation=Server nemohl spustit aplikaci. M\u016f\u017ee se jednat o intern\u00ed chybu.
+error.bundle.context.unavailable.useraction=Zkontrolujte protokoly v\u00fdjimek a zpr\u00e1v, zda v nich nejsou souvisej\u00edc\u00ed chyby.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: Nelze spustit webovou aplikaci {0}.
+error.not.installed.explanation=D\u0159\u00edv\u011bj\u0161\u00ed chyba zabr\u00e1nila v instalaci aplikace.
+error.not.installed.useraction=Zkontrolujte um\u00edst\u011bn\u00ed v konfiguraci aplikace.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze p\u0159izp\u016fsobit mezipam\u011b\u0165 pro webov\u00fd modul {0}.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: Aplikace {0} rozpoznala chybu p\u0159i p\u0159\u00edstupu ke knihovn\u011b aplikac\u00ed {1}: {2}
+error.application.library.container.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i p\u0159\u00edstupu k obsahu knihovny. Tato knihovna nebude dostupn\u00e1 pro pou\u017eit\u00ed.
+error.application.library.container.useraction=Zkontrolujte obsah aplikace a ujist\u011bte se, \u017ee je p\u0159\u00edtomen archiv knihovny.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: Aplikace {0} rozpoznala chybu p\u0159i vypisov\u00e1n\u00ed knihoven aplikac\u00ed: {1}
+error.application.libraries.explanation=Do\u0161lo k chyb\u011b p\u0159i vypisov\u00e1n\u00ed knihoven aplikac\u00ed. Seznam knihoven aplikac\u00ed bude ne\u00fapln\u00fd.
+error.application.libraries.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: Aplikace {0} rozpoznala chybu anal\u00fdzy p\u0159i zpracov\u00e1n\u00ed deskriptoru aplikace {1}: {2}
+error.application.parse.descriptor.explanation=Do\u0161lo k chyb\u011b p\u0159i syntaktick\u00e9 anal\u00fdze deskriptoru aplikace. Pro aplikaci nebudou dostupn\u00e9 \u017e\u00e1dn\u00e9 moduly.
+error.application.parse.descriptor.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. Zkontrolujte obsah deskriptoru aplikace a ujist\u011bte se, \u017ee obsah je platn\u00fd jako data XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: Aplikace {0} rozpoznala chybu p\u0159i p\u0159\u00edstupu k obsahu modulu {1} typu {2}: {3}
+error.module.container.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i p\u0159\u00edstupu k obsahu modulu. Modul nebude zp\u0159\u00edstupn\u011bn pro pou\u017eit\u00ed.
+error.module.container.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: Aplikace {0} z\u00edskala p\u0159i p\u0159\u00edstupu k obsahu kandid\u00e1tsk\u00e9ho modulu {1} typu {2} hodnotu null.
+error.module.container.null.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i p\u0159\u00edstupu k obsahu modulu. Je mo\u017en\u00e9, \u017ee v aplikaci chyb\u00ed archiv modulu. Modul nebude zp\u0159\u00edstupn\u011bn pro pou\u017eit\u00ed.
+error.module.container.null.useraction=Zkontrolujte obsah aplikace a ujist\u011bte se, \u017ee je p\u0159\u00edtomen archiv modulu.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: Aplikaci {0} se nepoda\u0159ilo dokon\u010dit vytvo\u0159en\u00ed modulu {1} typu {2}: {3}
+error.module.create.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i dokon\u010dov\u00e1n\u00ed vytvo\u0159en\u00ed modulu. Modul nebude zp\u0159\u00edstupn\u011bn pro pou\u017eit\u00ed.
+error.module.create.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: Aplikaci {0} se nepoda\u0159ilo vyhledat modul {1} typu {2}
+error.module.locate.failed.explanation=Pro modul uveden\u00fd v deskriptoru aplikace nen\u00ed k dispozici \u017e\u00e1dn\u00fd archiv. Modul nebude zp\u0159\u00edstupn\u011bn pro pou\u017eit\u00ed.
+error.module.locate.failed.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. Zkontrolujte obsah aplikace a ujist\u011bte se, \u017ee je p\u0159\u00edtomen archiv modulu.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: Aplikace {0} rozpoznala chybu anal\u00fdzy p\u0159i zpracov\u00e1n\u00ed deskriptoru {1} modulu {2} typu {3}: {4}
+error.module.parse.descriptor.explanation=Do\u0161lo k chyb\u011b p\u0159i anal\u00fdze deskriptoru implementace modulu. Modul nebude zp\u0159\u00edstupn\u011bn pro pou\u017eit\u00ed.
+error.module.parse.descriptor.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. Zkontrolujte obsah deskriptoru aplikace a ujist\u011bte se, \u017ee obsah je platn\u00fd jako data XML.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: Aplikaci {0} se nepoda\u0159ilo p\u0159istoupit k t\u0159\u00edd\u00e1m pro modul {1} typu {2}: {3}
+error.module.class.source.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i pokusu o vyhled\u00e1n\u00ed anotac\u00ed EJB v souboru JAR. Soubor JAR nebude k dispozici jako soubor JAR EJB.
+error.module.class.source.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: Aplikaci {0} se nepoda\u0159ilo p\u0159istoupit k anotac\u00edm pro modul {1} typu {2}: {3}
+error.module.annotation.targets.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i pokusu o vyhled\u00e1n\u00ed anotac\u00ed EJB v souboru JAR. Soubor JAR nebude k dispozici jako soubor JAR EJB.
+error.module.annotation.targets.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: Aplikace {0} deklaruje v\u00edce modul\u016f s identifik\u00e1torem URI {1} v souboru META-INF/application.xml.
+error.module.uri.duplicate.explanation=V\u00edce modul\u016f ukazuje na stejn\u00fd archiv. K pou\u017eit\u00ed bude zp\u0159\u00edstupn\u011bn pouze jedin\u00fd modul.
+error.module.uri.duplicate.useraction=Zkontrolujte obsah deskriptoru aplikace a zajist\u011bte, aby jednotliv\u00e9 moduly ukazovaly na jedine\u010dn\u00fd archiv.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: Aplikaci {0} se nezda\u0159ilo \u010d\u00edst ze souboru META-INF/MANIFEST.MF pro modul {1}. V\u00fdjimka: {2}
+error.module.manifest.read.failed.explanation=P\u0159i pokusu o ur\u010den\u00ed, zda je modul modulem EJB \u010di modulem aplika\u010dn\u00edho klienta, do\u0161lo k chyb\u011b p\u0159i pokusu o \u010dten\u00ed ze souboru META-INF/MANIFEST.MF. Tento modul nebude pova\u017eov\u00e1n za modul aplika\u010dn\u00edho klienta.
+error.module.manifest.read.failed.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. Zkontrolujte obsah aplikace a ujist\u011bte se, \u017ee je cesta META-INF/MANIFEST.MF souborem, a nikoli adres\u00e1\u0159em. Tak\u00e9 se ujist\u011bte, \u017ee je soubor MANIFEST.MF platn\u00fd.
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: Aplikace {0} neobsahuje \u017e\u00e1dn\u00e9 moduly.
+error.no.modules.explanation=Aplikace nedeklaruje v souboru application.xml \u017e\u00e1dn\u00e9 moduly a neobsahuje \u017e\u00e1dn\u00e9 archivy modul\u016f.
+error.no.modules.useraction=P\u0159idejte archiv modul\u016f do aplikace a restartujte aplikaci.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: Aplikace {0} neobsahuje atribut Main-Class v souboru META-INF/MANIFEST.MF modulu {1}.
+error.module.manifest.read.no.mainclass.explanation=Soubor META-INF/MANIFEST.MF v modulu bu\u010f neexistuje, nebo neobsahuje atribut Main-Class. Tento modul nebude pova\u017eov\u00e1n za modul aplika\u010dn\u00edho klienta.
+error.module.manifest.read.no.mainclass.useraction=Ujist\u011bte se, \u017ee soubor META-INF/MANIFEST.MF pro aplikaci obsahuje atribut Main-Class.
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  Hodnota kontextov\u00e9ho ko\u0159enov\u00e9ho adres\u00e1\u0159e {0}, kter\u00e1 je ur\u010dena v aplikaci {1}, nem\u00e1 \u017e\u00e1dn\u00fd vliv.
+warning.context.root.not.used.explanation=Vlastnost kontextov\u00e9ho ko\u0159enov\u00e9ho adres\u00e1\u0159e (context-root) nen\u00ed pro podnikovou aplikaci platn\u00e1. Hodnota se nepou\u017eije pro \u017e\u00e1dn\u00e9 webov\u00e9 moduly v podnikov\u00e9 aplikaci.
+warning.context.root.not.used.useraction=Odeberte vlastnost kontextov\u00e9ho ko\u0159enov\u00e9ho adres\u00e1\u0159e z prvku aplikace v konfiguraci serveru.
+
+error.module.no.defaultclient=CWWKZ0127E: V aplikaci existuje v\u00edce modul\u016f klienta. Zadejte n\u00e1zev v\u00fdchoz\u00edho modulu klienta.
+error.module.no.defaultclient.explanation=Pokud je s aplikac\u00ed v\u00edce modul\u016f klienta, zadejte n\u00e1zev spou\u0161t\u011bn\u00e9ho modulu klienta.
+error.module.no.defaultclient.useraction=Spou\u0161t\u011bn\u00fd modul klienta ur\u010dete zad\u00e1n\u00edm jeho n\u00e1zvu pomoc\u00ed atributu defaultClientModule v parametru <enterpriseApplication/>.
+
+error.module.dup.client=CWWKZ0128E: Existuje v\u00edce modul\u016f klienta se stejn\u00fdm n\u00e1zvem {0}.
+error.module.dup.client.explanation=Existuje v\u00edce modul\u016f klienta a n\u011bkter\u00e9 pou\u017e\u00edvaj\u00ed stejn\u00fd n\u00e1zev.
+error.module.dup.client.useraction=Zadejte jedine\u010dn\u00e9 n\u00e1zvy pro moduly klienta v aplikaci.
+
+error.module.client.notfound=CWWKZ0129E: Nelze naj\u00edt modul klienta {0} v aplikaci.
+error.module.client.notfound.explanation=Ur\u010den\u00fd modul klienta v aplikaci neexistuje.
+error.module.client.notfound.useraction=Ujist\u011bte se, \u017ee modul klienta v aplikaci existuje.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: Nelze spustit aplika\u010dn\u00edho klienta {0}.
+error.client.not.installed.explanation=D\u0159\u00edv\u011bj\u0161\u00ed chyba zabr\u00e1nila v instalaci aplikace.
+error.client.not.installed.useraction=Zkontrolujte um\u00edst\u011bn\u00ed v konfiguraci aplikace.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: Aplikaci {0} nelze rozbalit kv\u016fli v\u00fdjimce {1}.
+warning.could.not.expand.application.explanation=Aplikaci nelze rozbalit do do\u010dasn\u00e9ho adres\u00e1\u0159e. Aplikace bude nad\u00e1le pracovat, ale m\u016f\u017ee b\u00fdt dot\u010deno chov\u00e1n\u00ed jist\u00fdch metod, kter\u00e9 p\u0159istupuj\u00ed k soubor\u016fm aplikace. 
+warning.could.not.expand.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci. 

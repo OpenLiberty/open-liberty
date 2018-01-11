@@ -10,6 +10,8 @@
  *******************************************************************************/
 package jsonp.app.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -81,8 +83,7 @@ public class JSONPServlet extends FATServlet {
      */
     @Test
     public void testJsonStream() {
-        String outputDir = System.getenv("X_LOG_DIR") + "/json_stream_test_data.js";
-        FileOutputStream os = createFileOutputStream(outputDir);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(JsonGenerator.PRETTY_PRINTING, new Object());
         JsonGeneratorFactory factory = Json.createGeneratorFactory(props);
@@ -104,7 +105,7 @@ public class JSONPServlet extends FATServlet {
                         .writeEnd();
         generator.close();
 
-        JsonParser parser = getJsonParser(outputDir);
+        JsonParser parser = getJsonParser(os.toByteArray());
         parseJson(parser);
         checkJsonData();
     }
@@ -117,15 +118,15 @@ public class JSONPServlet extends FATServlet {
         InputStream originalInputStream = getServletContext().getResourceAsStream("/WEB-INF/json_read_test_data.js");
         JsonObject originalJsonData = readJsonFile(originalInputStream);
 
-        // Write json file
-        String outputDir = System.getenv("X_LOG_DIR") + "/json_write_test_data.js";
-        FileOutputStream os = createFileOutputStream(outputDir);
+        // Write json bytes
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         JsonWriter writer = Json.createWriter(os);
         writer.writeObject(originalJsonData);
         writer.close();
 
-        FileInputStream newInputStream = createFileInputStream(outputDir);
-        JsonObject newJsonData = readJsonFile(newInputStream);
+        ByteArrayInputStream newInputStream = new ByteArrayInputStream(os.toByteArray());
+        JsonReader jsonReader = Json.createReader(newInputStream);
+        JsonObject newJsonData = jsonReader.readObject();
         JsonParser parser = getJsonParser(newJsonData);
         parseJson(parser);
         checkJsonData();
@@ -137,10 +138,10 @@ public class JSONPServlet extends FATServlet {
         return value;
     }
 
-    protected JsonParser getJsonParser(String fileLocation) {
-        FileInputStream fis = createFileInputStream(fileLocation);
+    protected JsonParser getJsonParser(byte[] bytes) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         JsonParserFactory jsonParserFactory = Json.createParserFactory(new HashMap<String, Object>());
-        JsonParser parser = jsonParserFactory.createParser(fis);
+        JsonParser parser = jsonParserFactory.createParser(bis);
         return parser;
     }
 

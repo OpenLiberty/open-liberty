@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,53 +43,56 @@ import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
 import com.ibm.ws.beanvalidation.service.BeanValidationRuntimeVersion;
 import com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader;
+import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * OSGi specific implementation of the BeanValidation container integration
  * service. <p>
  */
 @Component(service = { ModuleMetaDataListener.class,
-                      BeanValidationUsingClassLoader.class,
-                      BeanValidation.class },
+                       BeanValidationUsingClassLoader.class,
+                       BeanValidation.class },
            immediate = true)
-public class OSGiBeanValidationImpl extends AbstractBeanValidation
-                implements ModuleMetaDataListener, BeanValidationUsingClassLoader {
+public class OSGiBeanValidationImpl extends AbstractBeanValidation implements ModuleMetaDataListener, BeanValidationUsingClassLoader {
     private static final TraceComponent tc = Tr.register(OSGiBeanValidationImpl.class);
 
     private static final String REFERENCE_VALIDATION_CONFIG_FACTORY = "validationConfigFactory";
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
+    private static final String REFERENCE_VALIDATOR_FACTORY_BUILDER = "ValidatorFactoryBuilder";
 
     private MetaDataSlot ivModuleMetaDataSlot;
 
-    private final AtomicServiceReference<ValidationConfigurationFactory> validationConfigFactorySR =
-                    new AtomicServiceReference<ValidationConfigurationFactory>(REFERENCE_VALIDATION_CONFIG_FACTORY);
+    private final AtomicServiceReference<ValidationConfigurationFactory> validationConfigFactorySR = new AtomicServiceReference<ValidationConfigurationFactory>(REFERENCE_VALIDATION_CONFIG_FACTORY);
 
-    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR =
-                    new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
+    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
+
+    private final AtomicServiceReference<ValidatorFactoryBuilder> validatorFactoryBuilderSR = new AtomicServiceReference<ValidatorFactoryBuilder>(REFERENCE_VALIDATOR_FACTORY_BUILDER);
 
     private static final Version DEFAULT_VERSION = BeanValidationRuntimeVersion.VERSION_1_0;
     private Version runtimeVersion = DEFAULT_VERSION;
 
-    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction =
-                    new PrivilegedAction<ThreadContextAccessor>() {
-                        @Override
-                        public ThreadContextAccessor run() {
-                            return ThreadContextAccessor.getThreadContextAccessor();
-                        }
-                    };
+    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
+        @Override
+        public ThreadContextAccessor run() {
+            return ThreadContextAccessor.getThreadContextAccessor();
+        }
+    };
 
     @Override
     public void registerValidatorFactory(ModuleMetaData mmd, ClassLoader cl, ValidatorFactory validatorFactory) {
@@ -115,13 +118,47 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
     }
 
     private ValidatorFactory getValidatorFactory(ModuleMetaData mmd, ClassLoader loader, ValidatorFactory validatorFactoryToSave) {
-        MetaDataSlot mmdSlot = ivModuleMetaDataSlot;
-        if (mmdSlot == null) {
+        if (ivModuleMetaDataSlot == null) {
             throw new ValidationException("Validation not enabled for module " +
                                           mmd.getName() + "; MetaDataSlotService not active");
         }
 
-        OSGiBeanValidationScopeData scopeData = (OSGiBeanValidationScopeData) mmd.getMetaData(mmdSlot);
+        if (isBeanValidationVersion20()) {
+            return getValidatorFactoryHVProvider(mmd);
+        } else {
+            return getValidatorFactoryApacheProvider(mmd, loader, validatorFactoryToSave);
+        }
+    }
+
+    private ValidatorFactory getValidatorFactoryHVProvider(ModuleMetaData mmd) {
+
+        BeanValidationMetaData beanValMetaData = (BeanValidationMetaData) mmd.getMetaData(ivModuleMetaDataSlot);
+        if (beanValMetaData == null) {
+            throw new ValidationException("Validation not enabled for module " + mmd.getName());
+        }
+
+        ValidatorFactory vf = beanValMetaData.getValidatorFactory();
+
+        if (vf == null) {
+            synchronized (beanValMetaData) {
+                vf = beanValMetaData.getValidatorFactory();
+                if (vf == null) {
+                    ValidatorFactoryBuilder validatorFactoryBuilder = validatorFactoryBuilderSR.getServiceWithException();
+                    vf = validatorFactoryBuilder.buildValidatorFactory(beanValMetaData.getModuleClassLoader(), beanValMetaData.getModuleUri());
+                    beanValMetaData.setValidatorFactory(vf);
+                    mmd.setMetaData(ivModuleMetaDataSlot, beanValMetaData);
+                }
+            }
+        }
+        if (vf == null) {
+            throw new ValidationException("Validation not enabled for module " + mmd.getName());
+        }
+        return vf;
+
+    }
+
+    private ValidatorFactory getValidatorFactoryApacheProvider(ModuleMetaData mmd, ClassLoader loader, ValidatorFactory validatorFactoryToSave) {
+        OSGiBeanValidationScopeData scopeData = (OSGiBeanValidationScopeData) mmd.getMetaData(ivModuleMetaDataSlot);
         if (scopeData == null) {
             throw new ValidationException("Validation not enabled for module " + mmd.getName());
         }
@@ -132,7 +169,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
             synchronized (scopeData) {
                 vf = scopeData.ivValidatorFactory;
                 if (vf == null) {
-                    // It's possible that the requesting component is doing so after the app 
+                    // It's possible that the requesting component is doing so after the app
                     // has been destroyed (i.e. moduleMetaDataDestroyed already called). If so,
                     // indicate by throwing an exception if the version>=11. For compatibility,
                     // leave the v10 case as is.
@@ -248,6 +285,35 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
 
     @Override
     public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) {
+        if (isBeanValidationVersion20()) {
+            moduleMetaDataCreatedHVProvider(event);
+        } else {
+            moduleMetaDataCreatedApacheProvider(event);
+        }
+    }
+
+    private void moduleMetaDataCreatedHVProvider(MetaDataEvent<ModuleMetaData> event) {
+        ModuleMetaData mmd = event.getMetaData();
+        Container container = event.getContainer();
+
+        MetaDataSlot mmdSlot = ivModuleMetaDataSlot;
+        if (mmdSlot == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "MetaDataSlotService not active... skipping start module action",
+                         mmd.getName());
+            return;
+        }
+
+        BeanValidationMetaData beanValMetaData = (BeanValidationMetaData) mmd.getMetaData(ivModuleMetaDataSlot);
+
+        if (beanValMetaData == null) {
+            ModuleInfo moduleInfo = getModuleInfo(container);
+            beanValMetaData = new BeanValidationMetaData(moduleInfo.getClassLoader(), moduleInfo.getURI());
+            mmd.setMetaData(mmdSlot, beanValMetaData);
+        }
+    }
+
+    private void moduleMetaDataCreatedApacheProvider(MetaDataEvent<ModuleMetaData> event) {
         ValidationConfig validationConfig = null;
         ModuleMetaData mmd = event.getMetaData();
         Container container = event.getContainer();
@@ -291,15 +357,31 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
 
             // store the module container in slot
             mmd.setMetaData(mmdSlot, scopeData);
-
-            // map used by ValidationReleasableImpl for looking up the ManagedObjectService
-            BeanValidationExtensionHelper.putContainer(mmd, container);
         }
 
     }
 
-    @Override
-    public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {
+    private void moduleMetaDataDestroyedHVProvider(MetaDataEvent<ModuleMetaData> event) {
+        //Make sure vf.close() is called for bval 2.0 to prevent classloader leaks.
+        ModuleMetaData mmd = event.getMetaData();
+        MetaDataSlot mmdSlot = ivModuleMetaDataSlot;
+
+        if (mmdSlot == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "MetaDataSlotService not active... skipping stop module action",
+                         mmd.getName());
+            return;
+        }
+
+        BeanValidationMetaData beanValMetaData = (BeanValidationMetaData) mmd.getMetaData(ivModuleMetaDataSlot);
+        if (beanValMetaData != null) {
+            ValidatorFactoryBuilder validatorFactoryBuilder = validatorFactoryBuilderSR.getServiceWithException();
+            validatorFactoryBuilder.closeValidatorFactory(beanValMetaData.getValidatorFactory());
+            beanValMetaData.close();
+        }
+    }
+
+    private void moduleMetaDataDestroyedApacheProvider(MetaDataEvent<ModuleMetaData> event) {
         ModuleMetaData mmd = event.getMetaData();
         moduleValidationXMLs.remove(mmd);
         MetaDataSlot mmdSlot = ivModuleMetaDataSlot;
@@ -326,11 +408,20 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
                     scopeData.configurator = null;
                     scopeData.ivValidatorFactory = null;
                 }
-                BeanValidationExtensionHelper.removeContainer(mmd);
             }
         }
 
         cleanBvalCache();
+    }
+
+    @Override
+    public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {
+
+        if (isBeanValidationVersion20()) {
+            moduleMetaDataDestroyedHVProvider(event);
+        } else {
+            moduleMetaDataDestroyedApacheProvider(event);
+        }
     }
 
     @Activate
@@ -338,6 +429,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
         setInstance(this);
         classLoadingServiceSR.activate(cc);
         validationConfigFactorySR.activate(cc);
+        validatorFactoryBuilderSR.activate(cc);
     }
 
     @Deactivate
@@ -345,6 +437,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
         setInstance(null);
         classLoadingServiceSR.deactivate(cc);
         validationConfigFactorySR.deactivate(cc);
+        validatorFactoryBuilderSR.deactivate(cc);
     }
 
     @Reference
@@ -381,6 +474,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
         classLoadingServiceSR.unsetReference(ref);
     }
 
+    @Reference(name = REFERENCE_VALIDATOR_FACTORY_BUILDER,
+               service = ValidatorFactoryBuilder.class,
+               cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.STATIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setValidatorFactoryBuilder(ServiceReference<ValidatorFactoryBuilder> ref) {
+        validatorFactoryBuilderSR.setReference(ref);
+    }
+
+    protected void unsetValidatorFactoryBuilder(ServiceReference<ValidatorFactoryBuilder> ref) {
+        validatorFactoryBuilderSR.unsetReference(ref);
+    }
+
     @Reference(name = REFERENCE_VALIDATION_CONFIG_FACTORY,
                service = ValidationConfigurationFactory.class,
                policy = ReferencePolicy.DYNAMIC,
@@ -394,13 +500,26 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
     }
 
     private boolean isBeanValidationVersion11OrGreater() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0 ? true : false;
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0;
+    }
+
+    private boolean isBeanValidationVersion11() {
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0;
+    }
+
+    private boolean isBeanValidationVersion20() {
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_2_0) == 0;
     }
 
     @Override
     public ClassLoader configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
-            cl = PrivHelper.getContextClassLoader();
+            cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
         }
         if (cl != null) {
             ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
@@ -418,7 +537,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
      * configuration updates.
      */
     private void cleanBvalCache() {
-        if (isBeanValidationVersion11OrGreater()) {
+        if (isBeanValidationVersion11() && !FrameworkState.isStopping()) {
             ClassLoader classLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
@@ -432,9 +551,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
                     wasTcclCreated = true;
                 }
 
-                ThreadContextAccessor tca = System.getSecurityManager() == null ?
-                                ThreadContextAccessor.getThreadContextAccessor() :
-                                AccessController.doPrivileged(getThreadContextAccessorAction);
+                ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
                 // set the thread context class loader to be used, must be reset in finally block
                 setClassLoader = new SetContextClassLoaderPrivileged(tca);
@@ -475,5 +592,17 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
                 }
             }
         }
+    }
+
+    private ExtendedModuleInfo getModuleInfo(Container container) throws ValidationException {
+        ExtendedModuleInfo moduleInfo = null;
+
+        try {
+            NonPersistentCache cache = container.adapt(NonPersistentCache.class);
+            moduleInfo = (ExtendedModuleInfo) cache.getFromCache(ModuleInfo.class);
+        } catch (UnableToAdaptException e) {
+            throw new ValidationException(e);
+        }
+        return moduleInfo;
     }
 }

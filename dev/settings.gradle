@@ -70,15 +70,14 @@ def loadBuildProps() {
   }
   
   def fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl=https://repo.maven.apache.org/maven2/;index=${build}/oss_dependencies.maven')
-  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/;index=${build}/oss_ibm.maven')
-  def fetchRepoIBMJava = fetchRepoIBM //Not yet supported to not have this set via gradle.startup.properties
+  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmdhe/repository;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/;index=${build}/oss_ibm.maven')
+  def fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = DummyRepo') //Not yet supported to not have this set via gradle.startup.properties
   def pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish')
 
   def javaHome = org.gradle.internal.jvm.Jvm.current().getJavaHome()
   props.setProperty('java.home', javaHome.getAbsolutePath())
 
   //scrape java.home JARs in jre/lib
-	
   FileTree jdkLibs = fileTree(System.properties['java.home'])
 
   //bin is needed for IBM JDKs
@@ -90,15 +89,13 @@ def loadBuildProps() {
   def jdkLibString = ""
   Boolean isFirstPass = true;
   
-  jdkLibs.each {File file -> 
-  
-
-  if (isFirstPass) {
-     jdkLibString = jdkLibString + file + ";version=file;boot=true"
-  } else {
-     jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
-  }
-	 isFirstPass = false;
+  jdkLibs.each { File file ->
+    if (isFirstPass) {
+      jdkLibString = jdkLibString + file + ";version=file;boot=true"
+    } else {
+      jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
+    }
+    isFirstPass = false;
   }
 
   props.setProperty('javac.bootclasspath.1.4', jdkLibString)
@@ -106,14 +103,15 @@ def loadBuildProps() {
   props.setProperty('javac.bootclasspath.1.7', jdkLibString)
   props.setProperty('javac.bootclasspath.1.8', jdkLibString)
  
+ 
   if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
     //Some functionality is added if we are able to access particular internal systems.
     //This is to support more controlled dependency management, and multiple JDK paths for cross-compilation
     def artifactoryExists = true;
     def repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
     def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
-    fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
-    fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_ibm.maven')
+    fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;local=~/.ibmartifactory/repository;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
+    fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmartifactory/repository;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_ibm.maven')
     fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository;local=~/.ibmjava/repository;name = IBMInternalJava;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/ibm_java.maven')
     pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish;releaseUrl='+ uploadRepoURL + matrixParams + ';snapshotUrl='+ uploadRepoURL + matrixParams + ';index=${build}/openliberty.maven')
 
@@ -139,7 +137,13 @@ def loadBuildProps() {
 
   // Must be run after isRelease is set
   def (qualifier, timestamp) = getVersionQualifier(isRelease)
-
+  
+  //For release builds we can use a consistent qualifier of the build label.
+  //This comes from the RTC build engines
+  if (isRelease && (props.getProperty('buildLabel') != null)) {
+    qualifier = props.getProperty('buildLabel')
+  }
+  
   props.setProperty('version.qualifier', qualifier)
   props.setProperty('buildLabel', timestamp)
   props.setProperty('artifactory.matrix.parameters', matrixParams)
@@ -153,6 +157,12 @@ def loadBuildProps() {
   props.setProperty('maven.release.name', mavenLocalPath)
   props.setProperty('is.remote.publishing', isRemotePublishing.toString())
   props.setProperty('is.public.publishing', isPublicPublishing.toString())
+
+  gradle.ext.bndWorkspaceConfigure = { workspace ->
+    props.each { prop ->
+      workspace.setProperty(prop.key, prop.value.toString())
+    }
+  }
 
   // Store props to file for bnd to use. Imported by cnf/build.bnd and props files in cnf/resources/bnd
   File propsFile = new File('generated.properties')
@@ -180,7 +190,7 @@ def loadBuildProps() {
 
 def getVersionQualifier(boolean isRelease) {
   //ex: 201708101600
-  def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+  def timestamp = new SimpleDateFormat("yyyyMMdd-HHmm").format(new java.util.Date())
   if (isRelease) {
     return [timestamp, timestamp]
   }
@@ -235,10 +245,14 @@ buildscript {
     }
   }
 
-  /* Pass bnd gradle plugin classpath to rootProject once created */
+  /* Add bnd gradle plugin to buildscript classpath of rootProject */
   def bndPlugin = files(configurations.classpath.files)
-  gradle.rootProject { rootProject ->
-    rootProject.ext.bndPlugin = bndPlugin
+  gradle.projectsLoaded { gradle ->
+    gradle.rootProject.buildscript {
+      dependencies {
+        classpath bndPlugin
+      }
+    }
   }
 }
 
@@ -250,10 +264,12 @@ import java.text.SimpleDateFormat
 
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
-def workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+gradle.bndWorkspaceConfigure(workspace)
 
 /* Add cnf project to the graph */
 include bnd_cnf
+include 'build.image'
 
 /* Start with the declared build project name */
 def defaultProjectName = bnd_build
@@ -285,7 +301,7 @@ if ((startParameter.currentDir != rootDir) || projectNames.empty) {
 if (projectNames.remove('')) {
   rootDir.eachDir {
     def projectName = it.name
-    if (!projectName.startsWith('.') && file(projectName + "/build.gradle").exists()) {
+    if (!projectName.startsWith('.')) {
       projectNames += projectName
     }
   }
@@ -293,41 +309,16 @@ if (projectNames.remove('')) {
 
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->
-  include projectName
-  def project = getBndProject(workspace, projectName)
-  project?.getDependson()*.getName().each {
-    include it
+  def project = workspace.getProject(projectName)
+  if (project) {
+    include projectName
+    project?.getDependson()*.getName().each {
+      include it
+    }
   }
 }
 
-/* Get the bnd project for the specified project name */
-def getBndProject(Workspace workspace, String projectName) {
-  def project = workspace.getProject(projectName)
-  if (project == null) {
-    return null
-  }
-  project.prepare()
-  if (project.isValid()) {
-    return project
-  }
-
-  project.getInfo(workspace, "${rootDir} :")
-  def errorCount = 0
-  project.getWarnings().each {
-    println "Warning: ${it}"
-  }
-  project.getErrors().each {
-    println "Error  : ${it}"
-    errorCount++
-  }
-  if (!project.isOk()) {
-    def str = 'even though no errors were reported'
-    if (errorCount == 1) {
-      str = 'one error was reported'
-    } else if (errorCount > 1) {
-      str = "${errorCount} errors were reported"
-    }
-    throw new GradleException("Project ${rootDir}/${projectName} is invalid, ${str}")
-  }
-  throw new GradleException("Project ${rootDir}/${projectName} is not a valid bnd project")
+/* Pass workspace to root project */
+gradle.projectsLoaded { gradle ->
+  gradle.rootProject.ext.bndWorkspace = workspace
 }

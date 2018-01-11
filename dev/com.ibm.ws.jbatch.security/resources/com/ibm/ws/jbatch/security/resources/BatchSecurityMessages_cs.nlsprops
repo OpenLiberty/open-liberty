@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: Zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed je zapnuto.
+BATCH_SECURITY_ENABLED.explanation=P\u0159i prov\u00e1d\u011bn\u00ed v\u0161ech d\u00e1vkov\u00fdch operac\u00ed jsou u\u017eivatel\u00e9 autorizov\u00e1ni pomoc\u00ed rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed.
+BATCH_SECURITY_ENABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: Zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed je vypnuto.
+BATCH_SECURITY_DISABLED.explanation=U\u017eivatel\u00e9 se NEAUTORIZUJ\u00cd pomoc\u00ed rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed.
+BATCH_SECURITY_DISABLED.useraction=Pokud v t\u00e9to konfiguraci serveru nen\u00ed po\u017eadov\u00e1no ov\u011b\u0159ov\u00e1n\u00ed pomoc\u00ed rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: U\u017eivatel {0} nem\u00e1 autorizaci k prov\u00e1d\u011bn\u00ed d\u00e1vkov\u00fdch operac\u00ed p\u0159idru\u017een\u00fdch k instanci \u00falohy {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=U\u017eivatel nen\u00ed obsazen v \u017e\u00e1dn\u00e9 roli d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, kter\u00e1 m\u00e1 autorizaci k prov\u00e1d\u011bn\u00ed po\u017eadovan\u00e9 d\u00e1vkov\u00e9 operace v t\u00e9to instanci \u00falohy.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Pokud m\u00e1 u\u017eivatel autorizaci k prov\u00e1d\u011bn\u00ed po\u017eadovan\u00e9 d\u00e1vkov\u00e9 operace, nakonfigurujte p\u0159\u00edslu\u0161nou autorizaci v r\u00e1mci zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed a p\u0159idejte tohoto u\u017eivatele do po\u017eadovan\u00fdch rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: U\u017eivatel {0} nem\u00e1 autorizaci k prov\u00e1d\u011bn\u00ed \u017e\u00e1dn\u00fdch d\u00e1vkov\u00fdch operac\u00ed.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=U\u017eivatel nen\u00ed obsazen v \u017e\u00e1dn\u00e9 roli d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed a nem\u00e1 autorizaci k prov\u00e1d\u011bn\u00ed d\u00e1vkov\u00fdch operac\u00ed.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Pokud u\u017eivatel nem\u00e1 autorizaci, aby byl u\u017eivatelem d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud m\u00e1 u\u017eivatel autorizaci k prov\u00e1d\u011bn\u00ed d\u00e1vkov\u00fdch operac\u00ed a je zapnuto zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, nakonfigurujte p\u0159\u00edslu\u0161nou autorizaci v r\u00e1mci zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed a p\u0159idejte tohoto u\u017eivatele do po\u017eadovan\u00fdch rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: U\u017eivatel {0} nem\u00e1 autorizaci ke spou\u0161t\u011bn\u00ed d\u00e1vkov\u00fdch \u00faloh.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=U\u017eivatel nen\u00ed obsazen v \u017e\u00e1dn\u00e9 roli d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, kter\u00e1 m\u00e1 autorizaci ke spou\u0161t\u011bn\u00ed d\u00e1vkov\u00fdch \u00faloh.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Pokud u\u017eivatel nem\u00e1 autorizaci ke spu\u0161t\u011bn\u00ed d\u00e1vkov\u00fdch \u00faloh, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud m\u00e1 u\u017eivatel autorizaci k prov\u00e1d\u011bn\u00ed po\u017eadovan\u00e9 d\u00e1vkov\u00e9 operace, nakonfigurujte p\u0159\u00edslu\u0161nou autorizaci v r\u00e1mci zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed a p\u0159idejte tohoto u\u017eivatele do po\u017eadovan\u00fdch rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed.

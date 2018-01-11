@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: O elemento de configura\u00e7\u00e3o {0} cont\u00e9m um atributo n\u00e3o reconhecido {1}.
+CWWKC1000.unrecognized.property.explanation=Uma propriedade n\u00e3o reconhecida est\u00e1 configurada em um servi\u00e7o de contexto.
+CWWKC1000.unrecognized.property.useraction=Remova ou corrija a propriedade n\u00e3o reconhecida.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: O contexto de encadeamento configurado {0} est\u00e1 indispon\u00edvel para o elemento de configura\u00e7\u00e3o {1}.
+CWWKC1001.context.providers.unavailable.explanation=O servidor de aplicativos n\u00e3o consegue localizar provedores dos tipos especificados de contexto de encadeamento.
+CWWKC1001.context.providers.unavailable.useraction=Assegure-se de que os provedores do contexto de encadeamento solicitado estejam ativados.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: O elemento de configura\u00e7\u00e3o {0} n\u00e3o pode ter mais de um subelemento do tipo {1}.
+CWWKC1002.provider.cardinality.violation.explanation=No m\u00e1ximo um elemento de cada tipo de provedor de contexto pode ser configurado em um servi\u00e7o de contexto.
+CWWKC1002.provider.cardinality.violation.useraction=Remova os elementos de provedor de contexto duplicados da configura\u00e7\u00e3o do servi\u00e7o de contexto.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: O atributo baseContextRef do elemento de configura\u00e7\u00e3o {0} causa uma cadeia infinita de depend\u00eancias.
+CWWKC1020.baseContextRef.infinite.explanation=Uma cadeia infinita de depend\u00eancias existe porque baseContextRef aponta direta ou indiretamente de volta para a mesma inst\u00e2ncia do servi\u00e7o de contexto.
+CWWKC1020.baseContextRef.infinite.useraction=Atualize a configura\u00e7\u00e3o do servi\u00e7o de contexto para quebrar a cadeia infinita de depend\u00eancias.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: O recurso {0} est\u00e1 indispon\u00edvel.
+CWWKC1100.resource.unavailable.explanation=Um recurso pode se tornar indispon\u00edvel devido ao encerramento do servidor ou devido a uma mudan\u00e7a na configura\u00e7\u00e3o, para ele mesmo ou para outro recurso do qual ele depende.
+CWWKC1100.resource.unavailable.useraction=Verifique a configura\u00e7\u00e3o do recurso e de todos os recursos dos quais ele depende.
+
+CWWKC1110.task.canceled=CWWKC1110I: A tarefa {0}, que foi enviada ao servi\u00e7o do executor {1}, est\u00e1 cancelada.
+CWWKC1110.task.canceled.explanation=A execu\u00e7\u00e3o da tarefa foi cancelada.
+CWWKC1110.task.canceled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CWWKC1101.task.failed=CWWKC1101E: A tarefa {0}, que foi enviada para o servi\u00e7o do executor {1}, falhou com o seguinte erro: {2}.
+CWWKC1101.task.failed.explanation=Uma tarefa enviada para um executor falhou. Consulte a mensagem de exce\u00e7\u00e3o para obter a causa.
+CWWKC1101.task.failed.useraction=Corrija a causa da falha e reenvie a tarefa.
+
+CWWKC1102.listener.failed=CWWKC1102E: O listener de tarefa gerenciada para a tarefa {0}, que foi enviada para o servi\u00e7o do executor {1}, falhou com o seguinte erro: {2}.
+CWWKC1102.listener.failed.explanation=Uma opera\u00e7\u00e3o do listener de tarefa gerenciada falhou. Consulte a mensagem de exce\u00e7\u00e3o para obter a causa.
+CWWKC1102.listener.failed.useraction=Corrija a causa da falha e decida se a tarefa ser\u00e1 reenviada ou n\u00e3o.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: A execu\u00e7\u00e3o da tarefa {0}, que foi enviada para o servi\u00e7o do executor {1}, foi ignorada porque a opera\u00e7\u00e3o Trigger.skipRun falhou com o seguinte erro: {2}.
+CWWKC1103.skip.run.failed.explanation=A opera\u00e7\u00e3o skipRun para o Acionador falhou, fazendo com que a tentativa de execu\u00e7\u00e3o atual para a tarefa fosse ignorada.
+CWWKC1103.skip.run.failed.useraction=Corrija a causa da falha e decida se a tarefa ser\u00e1 reenviada ou n\u00e3o.
+
+CWWKC1111.task.invalid=CWWKC1111E: A tarefa {0} n\u00e3o \u00e9 v\u00e1lida.
+CWWKC1111.task.invalid.explanation=A tarefa n\u00e3o pode ser submetida porque ela n\u00e3o \u00e9 v\u00e1lida.
+CWWKC1111.task.invalid.useraction=Atualize o aplicativo para submeter uma tarefa v\u00e1lida ao ExecutorService.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: Todas as tarefas est\u00e3o canceladas.
+CWWKC1112.all.tasks.canceled.explanation=Todas as tarefas foram canceladas antes de qualquer tarefa poder ser chamada.
+CWWKC1112.all.tasks.canceled.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: O Futuro fornecido aos m\u00e9todos taskSubmitted e taskStarting do ManagedTaskListener n\u00e3o pode ser usado para aguardar a conclus\u00e3o da tarefa.
+CWWKC1120.future.get.rejected.explanation=Os m\u00e9todos taskSubmitted e taskStarting do ManagedTaskListener s\u00e3o executados no encadeamento que enviar\u00e1 ou iniciar\u00e1 a tarefa. Portanto, o Futuro fornecido a esses m\u00e9todos n\u00e3o deve ser usado para aguardar pela tarefa.
+CWWKC1120.future.get.rejected.useraction=Atualize o aplicativo para evitar chamar get no Futuro que \u00e9 fornecido para taskSubmitted e taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: Uma tarefa enviada ao executor gerenciado{0} cont\u00e9m uma propriedade de execu\u00e7\u00e3o {1} com o valor {2} que n\u00e3o \u00e9 v\u00e1lido para executores gerenciados.
+CWWKC1130.xprop.value.invalid.explanation=Alguns valores da propriedade de execu\u00e7\u00e3o n\u00e3o s\u00e3o v\u00e1lidos para executores gerenciados, mas podem ser v\u00e1lidos para outros tipos de recursos, como servi\u00e7o de contexto ou factory de encadeamento gerenciado.
+CWWKC1130.xprop.value.invalid.useraction=Atualize o aplicativo para omitir a propriedade de execu\u00e7\u00e3o ou configure-o como um valor v\u00e1lido.

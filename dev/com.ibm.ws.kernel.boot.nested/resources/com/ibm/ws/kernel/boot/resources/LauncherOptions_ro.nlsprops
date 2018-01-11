@@ -1,0 +1,139 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=Utilizare: java [op\u0163iuni JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName [ac\u0163iuni] [op\u0163iuni]  
+scriptUsage=Utilizare: ac\u0163iune serverName {0} [op\u0163iuni]
+
+use.actions=Ac\u0163iuni:
+use.options=Op\u0163iuni:
+use.jvmarg=Op\u0163iuni JVM:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# ServerName
+processName.key=\ \ \ \ serverName
+processName.desc=\tUn nume unic local pentru server; numele poate fi construit    \n\
+\tfolosind caractere alfanumerice Unicode (de exemplu, A-Za-z0-9), liniu\u0163\u0103 \n\
+\tde subliniere (_), liniu\u0163\u0103 (-), plus (+) \u015fi punct (.). Un nume de server \n\
+\tnu poate \u00eencepe cu o liniu\u0163\u0103 (-) sau punct (.).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# JavaAgent 
+javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
+javaAgent.desc=\tAceasta este o op\u0163iune JVM folosit\u0103 pentru a specifica un agent pentru instrumentare.   \n\
+\tRuntime-ul folose\u015fte instrumentarea pentru a aduna urme \u015fi alte informa\u0163ii \n\
+\tde depanare. bootstrap-agent.jar treb uie s\u0103 fie \u00een acela\u015fi director ca  \n\
+\tJAR-ul folosit pentru a lansa runtime-ul.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Actions: create, stop, version, package, dump
+action-key.create=\ \ \ \ --create
+action-desc.create=\tCrea\u0163i un nou server dac\u0103 serverul specificat nu exist\u0103. Op\u0163iunea   \n\
+\t--template poate fi folosit\u0103 pentru a specifica un \u015fablon de folosit \n\
+\tla crearea unui nou server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.list=\ \ \ \ --list
+action-desc.list=\tLista\u0163i serverele de aplica\u0163ii de profil Liberty care sunt definite.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.start=\ \ \ \ --start
+action-desc.start=\tPorni\u0163i serverul indicat.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.run=\ \ \ \ --run
+action-desc.run=\tRula\u0163i serverul indicat \u00een consola din prim-plan.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.debug=\ \ \ \ --debug
+action-desc.debug=\tRula\u0163i serverul indicat \u00een consola din prim-plan dup\u0103 o depanare\n\
+\tse conecteaz\u0103 la portul de depanare (implicit: 7777).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.status=\ \ \ \ --status
+action-desc.status=\tVerifica\u0163i starea serverului indicat.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.stop=\ \ \ \ --stop
+action-desc.stop=\tOpri\u0163i instan\u0163a ce ruleaz\u0103 a serverului numit.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.version=\ \ \ \ --version
+action-desc.version=\tAfi\u015fa\u0163i informa\u0163iile de versiune server \u015fi ie\u015fi\u0163i.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.package=\ \ \ \ --package
+action-desc.package=\t\u00cempacheta\u0163i un server la o arhiv\u0103. Op\u0163iunea --archive poate fi folosit\u0103.    \n\
+\tOp\u0163iunea --include poate fi utilizat\u0103 cu valorile "all", "usr", "minify", \n\
+\t"wlp", "runnable", "all,runnable" \u015fi "minify,runnable". Valorile \n\
+\t"runnable" \u015fi "all,runnable" sunt echivalente. Valoarea "runnable"   \n\
+\tlucreaz\u0103 numai cu arhive de tip "jar".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.dump=\ \ \ \ --dump
+action-desc.dump=\tCrea\u0163i un dump al informa\u0163iilor diagnosticului de pe server \u00eentr-o arhiv\u0103. Op\u0163iunea\n\
+\t--archive poate fi utilizat\u0103.  Op\u0163iunea --include poate fi utilizat\u0103 cu\n\
+\tvalorile "heap", "system" \u015fi "thread".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.javadump=\ \ \ \ --javadump
+action-desc.javadump=\tInforma\u0163ii de diagnoz\u0103 dump de la serverul JVM. Op\u0163iunea --include\n\
+\tpoate fi utilizat\u0103 cu valorile "heap" \u015fi "system".
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.help=\ \ \ \ --help
+action-desc.help=\tTip\u0103ri\u0163i informa\u0163ii de ajutor.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.pause=\ \ \ \ --pause
+action-desc.pause=\tPune\u0163i \u00een pauz\u0103 toate componentele din server care pot fi puse \u00een pauz\u0103. Pute\u0163i   \n\
+\tpune \u00een pauz\u0103 un subset de componente specific\u00e2nd componentele pe \n\
+\top\u0163iunea --target.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.resume=\ \ \ \ --resume
+action-desc.resume=\tRepune\u0163i \u00een func\u0163iune toate componentele puse \u00een pauz\u0103 din server. Pute\u0163i specifica      \n\
+\top\u0163iunea --target pentru a repune \u00een func\u0163iune componentele puse \u00een pauz\u0103.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.clean=\ \ \ \ --clean
+option-desc.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile din cache legate de aceast\u0103 instan\u0163\u0103 de server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.archive=\ \ \ \ --archive="cale spre fi\u015fierul arhiv\u0103 \u0163int\u0103"
+option-desc.archive=\tSpecifica\u0163i \u0163inta arhiv\u0103 pentru a fi generat\u0103 de un pachet sau o  \n\
+\tac\u0163iune dump. \u0162inta poate fi spcificat\u0103 fie ca o cale absolut\u0103, fie ca o \n\
+\tcale relativ\u0103. Dac\u0103 aceast\u0103 op\u0163iune este omis\u0103, fi\u015fierul arhiv\u0103 va\n\
+\tfi creat \u00een directorul de ie\u015fire al serverului. Extensia de nume de fi\u015fier \u0163int\u0103      \n\
+\tar putea influen\u0163a formatul arhivei generate.       \n\
+\tFormatul implicit de arhiv\u0103 pentru ac\u0163iunea pachet este "pax" pe z/OS   \n\
+\t\u015fi "zip" pe toate celelalte platforme.                                    \n\
+\tFormatul de arhiv\u0103 "jar" va produce un fi\u015fier jar auto-extractiv similar cu   \n\
+\tarhiva original\u0103 de program de instalare.                                      \n\
+\tFormatul de arhiv\u0103 "jar" combinat cu "runnable" pe op\u0163iunea --include\n\
+\tproduce un fi\u015fier jar care poate rula pe serverul Liberty din fi\u015fierul    \n\
+\tjar folosind java -jar.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.include=\ \ \ \ --include=valoare,valoare,...
+option-desc.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide variaz\u0103 func\u0163ie de\n\
+\tac\u0163iune.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.target=\ \ \ \ --target=valoare,valoare
+option-desc.target=\tSpecific\u0103 o list\u0103 de componente separate prin virgule pe care le pute\u0163i pune \u00een pauz\u0103 \n\
+\tsau s\u0103 le repune\u0163i \u00een func\u0163ionare.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.template=\ \ \ \ --template="templateName"
+option-desc.template=\tSpecifica\u0163i numele \u015fablonului de folosit la crearea unui nou server. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.os=\ \ \ \ --os=valoare,valoare,...
+option-desc.os=\tSpecific\u0103 sistemele de operare pe care dori\u0163i s\u0103 le suporte serverul \n\
+\t\u00eempachetat. Furniza\u0163i o list\u0103 separat\u0103 cu virgule. Valoarea implicit\u0103 este any,    \n\
+\tcare indic\u0103 faptul c\u0103 serverul urmeaz\u0103 s\u0103 fie implementabil pe orice sistem de      \n\
+\toperare suportat de surs\u0103.                                      \n\
+\tPentru a specifica faptul c\u0103 un sistem de operare nu este suportat, ad\u0103uga\u0163i ca \n\
+\tprefix semnul minus ("-"). Pentru lista valorilor de sistem de operare, vizita\u0163i\n\
+\tsite-ul web OSGi Alliance la urm\u0103torul URL:                          \n\
+\thttp://www.osgi.org/Specifications/Reference#os                      \n\
+\tAceast\u0103 op\u0163iune este valabil\u0103 numai pentru opera\u015fia de \u00eempachetare \u015fi poate fi utilizat\u0103\n\
+\tnumai cu op\u0163iunea --include=minify. Dac\u0103 exclude\u0163i un sistem de  \n\
+\toperare, nu-l pute\u0163i include ulterior dac\u0103 repeta\u0163i opera\u0163ia minify  \n\
+\tpentru arhiv\u0103. 

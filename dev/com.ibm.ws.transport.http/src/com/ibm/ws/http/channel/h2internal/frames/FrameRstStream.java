@@ -81,7 +81,7 @@ public class FrameRstStream extends Frame {
     @Override
     public void validate(H2ConnectionSettings settings) throws ProtocolException {
         if (streamId == 0) {
-            throw new ProtocolException("RST_STREAM frame stream ID cannot be 0x0");
+            throw new ProtocolException("RST_STREAM frame stream ID cannot be 0");
         }
     }
 

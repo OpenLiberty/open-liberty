@@ -19,6 +19,8 @@
 //https://issues.apache.org/jira/browse/CXF-6307
 package org.apache.cxf.jaxrs.provider;
 
+import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -979,6 +981,7 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl
         }
         return ep.isReadable(type, genericType, annotations, mediaType);
     }
@@ -1023,6 +1026,7 @@ public abstract class ProviderFactory {
         MessageBodyWriter<?> ep = pi.getProvider();
         if (m.get(ACTIVE_JAXRS_PROVIDER_KEY) != ep) {
             injectContextValues(pi, m);
+            ep = pi.getProvider(); // now that CDI or EJB may have changed the provider impl
         }
         return ep.isWriteable(type, genericType, annotations, mediaType);
     }
@@ -1626,7 +1630,7 @@ public abstract class ProviderFactory {
              */
             JaxRsFactoryBeanCustomizer beanCustomizer = InjectionRuntimeContextHelper.findBeanCustomizer(o.getClass(), getBus());
             if (beanCustomizer != null) {
-                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())));
+                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(createCustomizerKey(beanCustomizer)));
 
                 if (proxyObject != null && (proxyObject != o || !proxyObject.equals(o))) {
                     pi.setProvider(proxyObject);

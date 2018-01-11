@@ -19,11 +19,11 @@ src: \
 javac.source: 1.8
 javac.target: 1.8
 	
-test.project: true
+fat.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
     org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
     org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\

@@ -12,12 +12,8 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-        com.ibm.ws.require.java8;version=latest, \
+	com.ibm.ws.require.java8;version=latest, \
 	com.ibm.ws.net.jodah.failsafe;version=latest, \
-	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest, \
-	com.ibm.ws.microprofile.faulttolerance.spi;version=latest, \
-        com.ibm.ws.microprofile.faulttolerance;version=latest
-
+	com.ibm.ws.microprofile.faulttolerance;version=latest, \
+	com.ibm.ws.microprofile.faulttolerance.spi;version=latest

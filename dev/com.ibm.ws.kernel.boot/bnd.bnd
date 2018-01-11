@@ -12,7 +12,7 @@
 # The kernel boot bundle has an extra include: it brings in the default
 # values for the kernel/os extensions/log provider versions.
 #
--include= ~../cnf/resources/bnd/bundle.props, publish/platform/defaults
+-include= ~../cnf/resources/bnd/bundle.props
 -nouses=true
 bVersion=1.0
 
@@ -28,6 +28,11 @@ Bundle-SymbolicName: com.ibm.ws.kernel.boot; singleton:=true
 Bundle-Description: WebSphere Liberty kernel launcher, version ${bVersion}
 
 Main-Class: com.ibm.ws.kernel.boot.cmdline.EnvCheck
+
+# This bundle emits messages before the OSGi runtime is fully started,
+# and so it needs to be able to load message translations from other
+# jar files using the jar manifest Class-Path attribute
+Class-Path: com.ibm.ws.kernel.boot.nls_${bFullVersion}.jar
 
 # Export-Package is used to generate extra system packages when preparing 
 # framework launch and to ensure bnd picks up platform/injected services
@@ -69,7 +74,8 @@ Private-Package: \
  com.ibm.ws.kernel.boot.*, \
  com.ibm.ws.kernel.launch.*, \
  com.ibm.ws.kernel.internal.*, \
- com.ibm.wsspi.kernel.embeddable.*
+ com.ibm.wsspi.kernel.embeddable.*, \
+ com.ibm.ws.staticvalue
 
 # security.policy file is pre-processed: the ${osgi-jar} variable in it will be replaced
 # with the name of the osgi jar specified above.

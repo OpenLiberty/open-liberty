@@ -1,0 +1,136 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security/resources/com/ibm/ws/webcontainer/security/resources/WebAppSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Web Application Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+MISSING_SEC_ROLE_REF_ROLE_LINK=CWWKS9100W: In Servlet {0} fehlt das entsprechende Element <role-link> f\u00fcr das Element <security-role-ref> f\u00fcr <role-name>{1}</role-name>.
+MISSING_SEC_ROLE_REF_ROLE_LINK.explanation=Der Eintrag <role-link> f\u00fcr das Element <security-role-ref> ist erforderlich, um <role-name> einer echten Sicherheitsrolle zuzuordnen.
+MISSING_SEC_ROLE_REF_ROLE_LINK.useraction=Definieren Sie den fehlenden Eintrag <role-link> f\u00fcr das Element <security-role-ref>.
+
+INVALID_SEC_ROLE_REF_ROLE_LINK=CWWKS9101W: Im Servlet {0} ist <role-link>{1}</role-link> f\u00fcr <role-name>{2}</role-name> kein definiertes Element <security-role>.
+INVALID_SEC_ROLE_REF_ROLE_LINK.explanation=Der Eintrag <role-link> f\u00fcr das Element <security-role-ref> ist erforderlich, um <role-name> einer echten Sicherheitsrolle zuzuordnen.
+INVALID_SEC_ROLE_REF_ROLE_LINK.useraction=Erstellen Sie ein Element <security-role> f\u00fcr den Namen <role-link>, oder \u00e4ndern Sie den Eintrag <role-link>, um einen vorhandenen Namen <security-role> zu benennen.
+
+MULTIPLE_URL_PATTERN_DEFINED=CWWKS9102W: Es sind mehrere <url-pattern>{0}</url-pattern> f\u00fcr <servlet-name>{1}</servlet-name> und <servlet-name>{2}</servlet-name> definiert.
+MULTIPLE_URL_PATTERN_DEFINED.explanation=Der Eintrag <url-pattern> im Element <servlet-mapping> ordnet einen bestimmten <servlet-name> dem angegebenen Muster zu. Durch die Verwendung desselben Musters wird eine mehrdeutige Zuordnung erstellt.
+MULTIPLE_URL_PATTERN_DEFINED.useraction=\u00c4ndern Sie <url-pattern> in einen eindeutigen Eintrag.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9103E: Die Berechtigungstabelle f\u00fcr die Anwendung {0} konnte nicht erstellt werden.
+AUTHZ_TABLE_NOT_CREATED.explanation=Die Berechtigungstabelle f\u00fcr eine Anwendung wurde nicht erstellt, und deshalb werden keine Benutzer berechtigt.
+AUTHZ_TABLE_NOT_CREATED.useraction=Untersuchen Sie die Protokolle, um festzustellen, warum die Berechtigungstabelle nicht erstellt wurde. 
+
+SEC_AUTHZ_FAILED=CWWKS9104A: Die Berechtigung f\u00fcr den Benutzer {0} ist beim Aufruf von {1} in {2} fehlgeschlagen. Dem Benutzer wurde kein Zugriff auf die erforderlichen Rollen erteilt: {3}
+SEC_AUTHZ_FAILED.explanation=Der Benutzer hat nicht die erforderlichen Berechtigungen f\u00fcr den Zugriff auf die Ressource.
+SEC_AUTHZ_FAILED.useraction=Wenden Sie sich an den Sicherheitsadministrator, wenn dieser Fehler unerwartet ist. Der Benutzer muss einer der Rollen zugeordnet werden, die die Ressource sch\u00fctzen, wenn ein Zugriff auf die gesch\u00fctzte Ressource erforderlich ist.
+
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Der SSL-Port f\u00fcr automatische Umleitung konnte nicht bestimmt werden. \u00dcberpr\u00fcfen Sie die Protokolle, um sicherzustellen, dass der HTTPS-(SSL-)Port gestartet ist, oder suchen Sie nach m\u00f6glichen Fehlern, die sich auf die SSL-Konfiguration beziehen, wie z. B. ein fehlendes oder falsches keyStore-Element.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=Interner Fehler. \
+Der SSL-Port konnte nicht bestimmt werden.
+SSL_CAN_NOT_DETERMINE_PORT.useraction=Es kann keine Aktion ausgef\u00fchrt werden.
+
+SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: SSO-Konfigurationsfehler. FormLogin ist f\u00fcr die Webanwendung {0} konfiguriert, aber SSO ist nicht in den Sicherheitseinstellungen aktiviert. F\u00fcr die Verwendung von FormLogin muss SSO aktiviert werden.
+SEC_FORM_LOGIN_BAD_CONFIG.explanation=Wenn LTPA als Authentifizierungsmechanismus definiert ist, muss SSO ebenfalls aktiviert werden, wenn eine Webanwendung FormLogin verwendet.
+SEC_FORM_LOGIN_BAD_CONFIG.useraction=Aktivieren Sie SSO in den Sicherheitseinstellungen, und starten Sie dann den Anwendungsserver erneut.
+
+SEC_FORM_POST_NULL_OR_TOO_LARGE=CWWKS9107W: Post-Parameter sind null oder zu gro\u00df, um in einem Cookie gespeichert zu werden.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Die post-Parameter sind null oder gr\u00f6\u00dfer als die konfigurierte maximale Gr\u00f6\u00dfe f\u00fcr die Option postParamCookieSize der Authentifizierung von Webanwendungen.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=Wenn die post-Parameter zu gro\u00df sind, erh\u00f6hen Sie die Gr\u00f6\u00dfe f\u00fcr die Option postParamCookieSize.
+
+SEC_TAI_VALIDATE_FAILED=CWWKS9107E: Bei der Initialisierung der Trust-Association konnte die Trust-Association-Klasse {0} nicht geladen werden.
+SEC_TAI_VALIDATE_FAILED.explanation=Wenn der entsprechende Interceptor f\u00fcr eine bestimmte Anforderung gefunden wird, validiert dieser Interceptor die Vertrauensstellung mit dem Reverse-Proxy-Server.\
+Diese Fehlernachricht zeigt an, dass die Validierung fehlgeschlagen ist und der Reverse-Proxy-Server deshalb nicht anerkannt werden kann. \
+Es ist beispielsweise m\u00f6glich, dass ein ung\u00fcltiges oder abgelaufenes Kennwort angegeben wurde.
+SEC_TAI_VALIDATE_FAILED.useraction=In einer Produktionsumgebung kann der Benutzer \u00fcber einen potenziellen Eindringlich im System benachrichtigt werden. \
+In einer Entwicklungsumgebung, in der Tests durchgef\u00fchrt werden, pr\u00fcfen Sie, ob die erwarteten Eingaben vom Reverse-Proxy-Server ordnungsgem\u00e4\u00df an den Interceptor \u00fcbergeben werden. \
+Die Spezifik dieser Eingaben richtet sich danach, wie die Trust-Association hergestellt wird. \
+Die einfachste Methode ist beispielsweise die \u00dcbergabe eines Benutzernamens und eines Kennworts im Basisauthentifizierungsheader. 
+
+SEC_TAI_USER_EXCEPTION=CWWKS9108E: Es wurde kein g\u00fcltiger Benutzer f\u00fcr die Trust-Association gefunden.
+SEC_TAI_USER_EXCEPTION.explanation=Ein Interceptor gibt den authentifizierten Benutzernamen zur\u00fcck. \
+Ein solcher Benutzername wurde nicht zur\u00fcckgegeben.
+SEC_TAI_USER_EXCEPTION.useraction=Vergewissern Sie sich, dass der Reverse-Proxy-Server den richtigen Benutzernamen in die HTTP-Anforderung einf\u00fcgt, bevor er die Anforderung an den Anwendungsserver sendet.
+
+SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: W\u00e4hrend der Trust-Association ist eine unerwartete Ausnahme eingetreten. Ausnahme: {0}
+SEC_TAI_GENERAL_EXCEPTION.explanation=Diese Ausnahme verweist auf alle anderen Ausnahmen, die von einem Interceptor erstellt werden k\u00f6nnen, wenn die Vertrauensstellung mit dem Reverse-Proxy-Server validiert wird und wenn der authentifizierte Benutzer abgerufen wird. Dies gilt nicht f\u00fcr WebTrustAssociationFailedException und WebTrustAssociationUserException.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Beheben Sie das Problem mithilfe des Stack-Trace, der zusammen mit dieser Fehlernachricht ausgegeben wird.\
+Au\u00dferdem k\u00f6nnen Sie die Erstellung des Debug-Trace aktivieren, um weitere Informationen zur Spezifik der Ausnahme abzurufen.
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Es sind mehrere Anwendungen mit dem Namen {0} vorhanden. Die Richtlinien f\u00fcr Sicherheitsberechtigung erfordern eindeutige Namen.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Anwendungsnamen m\u00fcssen eindeutig sein, damit die Richtlinien f\u00fcr Sicherheitsberechtigung durchgesetzt werden k\u00f6nnen.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Geben Sie den Anwendungen eindeutige Namen, und starten Sie die Anwendung erneut.
+
+AUTHZ_INVALID_SECURITYROLE_CONFIG=CWWKS9111E: Das Objekt, das f\u00fcr die Erstellung der Berechtigungstabelle verwendet wird, {0}, ist ung\u00fcltig, und die Tabelle wird nicht erstellt. Das Objekt muss eine Instanz der Klasse SecurityRoles sein.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.explanation=Das Objekt, das f\u00fcr die Erstellung der Berechtigungstabelle verwendet wird, muss eine Instanz der Klasse SecurityRoles sein.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.useraction=Stellen Sie sicher, dass das zur Erstellung der Berechtigungstabelle an die API \u00fcbergebene Objekt eine Instanz der Klasse SecurityRoles ist.
+
+WEB_APP_SECURITY_CONFIGURATION_UPDATED=CWWKS9112A: Die Sicherheitseinstellungen der Webanwendung haben sich ge\u00e4ndert. Die folgenden Eigenschaften wurden ge\u00e4ndert: {0}
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.explanation=Die Sicherheitseinstellungen der Webanwendung haben sich ge\u00e4ndert. Die Eigenschaftswerte in der Nachricht sind die neuen Werte.
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.useraction=Es ist keine Aktion erforderlich.
+
+SSL_PORT_IS_NULL=CWWKS9113E: Der SSL-Port ist nicht aktiv. Die eingehende HTTP-Anforderung kann nicht an einen sicheren Port umgeleitet werden. \u00dcberpr\u00fcfen Sie die Datei server.xml auf Konfigurationsfehler. Der HTTPS-Port ist m\u00f6glicherweise inaktiviert. M\u00f6glicherweise fehlt das Element keyStore, oder es ist falsch angegeben. Das SSL-Feature ist m\u00f6glicherweise nicht aktiviert.
+SSL_PORT_IS_NULL.explanation=Der SSL-Port konnte nicht bestimmt werden. Deshalb konnte die eingehende HTTP-Anforderung nicht an den HTTPS-Port umgeleitet werden. Dies kann passieren, wenn ein Konfigurationsfehler im Element keyStore vorliegt oder wenn das SSL-Feature fehlt.
+SSL_PORT_IS_NULL.useraction=Stellen Sie sicher, dass die richtigen SSL-Informationen in der Datei server.xml enthalten sind.
+
+SSL_REQ_URL_MALFORMED_EXCEPTION=CWWKS9114E: Die eingehende HTTP-Anforderung kann nicht an einen sicheren Port umgeleitet werden, weil der URL der Servletanforderung, {0}, fehlerhaft ist. Stellen Sie sicher, dass der Anforderungs-URL korrekt ist.
+SSL_REQ_URL_MALFORMED_EXCEPTION.explanation=Der URL der Servletanforderung ist fehlerhaft. Deshalb konnte die eingehende HTTP-Anforderung nicht an den HTTPS-Port umgeleitet werden.
+SSL_REQ_URL_MALFORMED_EXCEPTION.useraction=Stellen Sie sicher, dass der URL der Servletanforderung korrekt ist.
+
+SEC_WEB_INTERNAL_SERVER_ERROR=CWWKS9115E: Im Server ist eine unerwartete Bedingung eingetreten, die dazu gef\u00fchrt hat, dass der Server die Anforderung der Methode {0} f\u00fcr den URL {1} nicht verarbeiten konnte. Suchen Sie in den Serverprotokollen nach weiteren Informationen.
+SEC_WEB_INTERNAL_SERVER_ERROR.explanation=Die Servletantwort zeigt an, dass ein interner Serverfehler aufgetreten ist.
+SEC_WEB_INTERNAL_SERVER_ERROR.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an. 
+
+SEC_WEB_NULL_AUTHENTICATOR=CWWKS9116E: Die Anmeldung am URL {0} f\u00fcr den Benutzer {1} ist aufgrund eines internen Fehlers fehlgeschlagen. Suchen Sie in den Serverprotokollen nach weiteren Informationen.
+SEC_WEB_NULL_AUTHENTICATOR.explanation=Der Anmeldeprozess konnte aufgrund eines internen Fehlers nicht durchgef\u00fchrt werden. 
+SEC_WEB_NULL_AUTHENTICATOR.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an. 
+
+SEC_WEB_ILLEGAL_REQUEST=CWWKS9117E: Die Methode {0} kann f\u00fcr den URL {1} nicht verarbeitet werden. Wenn dieser Fehler nicht erwartet ist, stellen Sie sicher, dass die Anwendung die Methoden zul\u00e4sst, die der Client anfordert.
+SEC_WEB_ILLEGAL_REQUEST.explanation=Die Verarbeitung einer angeforderten Methode ist nicht zul\u00e4ssig.
+SEC_WEB_ILLEGAL_REQUEST.useraction=Wenn dieser Fehler nicht erwartet ist, stellen Sie sicher, dass die Anwendung die Methoden zul\u00e4sst, die der Client anfordert.
+
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION=CWWKS9118E: Es ist ein interner Fehler aufgetreten. Ausnahme: {0}
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.explanation=CMSG0001
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.useraction=CMSG0002
+
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: Die Abmeldung von Benutzer {0} wurde nicht erfolgreich durchgef\u00fchrt, weil beim Entfernen der Cookies des Benutzers aus dem Authentifizierungscache eine unerwartete Ausnahme eingetreten ist. Die Ausnahme lautet {1}. Suchen Sie in den Serverprotokollen nach weiteren Informationen, und melden Sie den Benutzer, sofern m\u00f6glich, erneut ab.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=Die Abmeldung des Benutzers wurde nicht erfolgreich durchgef\u00fchrt, weil beim Entfernen der Cookies des Benutzers aus dem Authentifizierungscache eine unerwartete Ausnahme eingetreten ist.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Suchen Sie in den Serverprotokollen nach weiteren Informationen, und melden Sie den Benutzer, sofern m\u00f6glich, erneut ab. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an. 
+
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: In der Konfiguration f\u00fcr die formulargest\u00fctzte Anmeldung fehlt die Definition f\u00fcr {0}. 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=In der Konfiguration f\u00fcr die formulargest\u00fctzte Anmeldung fehlt die Anmeldseite und/oder die Fehlerseite.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Stellen Sie sicher, dass die Konfiguration f\u00fcr die formulargest\u00fctzte Anmeldung Definitionen f\u00fcr die Anmeldeseite und die Fehlerseite enth\u00e4lt.
+
+OSGI_SERVICE_ERROR=CWWKS9121E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
+
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  F\u00fcr die URL {0} in der Anwendung {1} wurden die folgenden HTTP-Methoden erkannt, die zug\u00e4nglich sind: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=Das Element deny-uncovered-http-methods ist in der Datei web.xml f\u00fcr das Servlet nicht angegeben, und es sind HTTP-Methoden f\u00fcr ein URL-Muster vorhanden, die nicht gesch\u00fctzt sind. Diese nicht gesch\u00fctzten Methoden sind zug\u00e4nglich.
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Stellen Sie sicher, dass alle HTTP-Methoden in allen beschr\u00e4nkten URL-Mustern den gew\u00fcnschten Sicherheitsschutz haben.
+
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  F\u00fcr die URL {0} in der Anwendung {1} wurden die folgenden HTTP-Methoden erkannt, die nicht zug\u00e4nglich sind: {2}
+UNCOVERED_HTTP_METHODS_FOUND.explanation=Das Element deny-uncovered-http-methods ist in der Datei web.xml f\u00fcr das Servlet angegeben, und es sind HTTP-Methoden f\u00fcr ein URL-Muster vorhanden, die nicht gesch\u00fctzt sind. Diese nicht gesch\u00fctzten Methoden sind nicht zug\u00e4nglich.
+UNCOVERED_HTTP_METHODS_FOUND.useraction=Stellen Sie sicher, dass alle HTTP-Methoden in allen beschr\u00e4nkten URL-Mustern den gew\u00fcnschten Sicherheitsschutz haben.
+
+SEC_JACC_AUTHZ_FAILED=CWWKS9124A: Die Berechtigung durch den JACC-Provider f\u00fcr den Benutzer {0} ist beim Aufruf von {1} in {2} fehlgeschlagen.
+SEC_JACC_AUTHZ_FAILED.explanation=Der Benutzer hat nicht die erforderlichen Berechtigungen f\u00fcr den Zugriff auf die Ressource. Diese Berechtigungsentscheidung wurde vom benutzerdefinierten JACC-Provider (Java Authorization Contract for Containers) getroffen. 
+SEC_JACC_AUTHZ_FAILED.useraction=Wenden Sie sich an den Sicherheitsadministrator, wenn dieser Fehler unerwartet ist. Der Benutzer muss einer der Rollen zugeordnet werden, die die Ressource sch\u00fctzen, wenn ein Zugriff auf die gesch\u00fctzte Ressource erforderlich ist. Sie k\u00f6nnen diese Berechtigung \u00fcber den benutzerdefinierten JACC-Provider (Java Authorization Contract for Containers) konfigurieren.
+
+
+SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: Die f\u00fcr die angepasste logoutExitPage angegebene URL des Service f\u00fcr formulargest\u00fctzte Abmeldung kann nicht angezeigt werden: requestURL={0}, logoutExitPage={1}. Die Abmeldung war erfolgreich und die Standardseite f\u00fcr die formulargest\u00fctzte Abmeldung wurde angezeigt.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Der Service f\u00fcr die formulargest\u00fctzte Abmeldung (Form-Logout) konnte die Umleitung zu der mit dem Servletparameter logoutExitPage angegebenen Seite nicht erfolgreich durchf\u00fchren. Entweder ist das Format der angegebenen URL nicht g\u00fcltig oder der Hostname ist nicht in der Eigenschaft com.ibm.websphere.security.logoutExitPageDomainList angegeben.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Korrigieren Sie die im Parameter logoutExitPage angegebene URL.

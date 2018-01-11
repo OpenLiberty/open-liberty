@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: Brak zasobu {0} lub nie jest on katalogiem.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Nie mo\u017cna otworzy\u0107 implementacji kana\u0142u {0}: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: Implementacja kana\u0142u {0} nie ma deskryptora kana\u0142u.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Wygenerowano b\u0142\u0119dy podczas analizowania deskryptora kana\u0142u z {0}: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: W implementacji kana\u0142u {0} nie okre\u015blono klasy wykonawczej fabryki.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: W implementacji kana\u0142u {0} nie okre\u015blono klasy konfiguracji kana\u0142u.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: W implementacji kana\u0142u {0} nie okre\u015blono interfejs\u00f3w po stronie urz\u0105dzenia lub aplikacji.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: W implementacji kana\u0142u {0} okre\u015blono wag\u0119 domy\u015bln\u0105 {1}. To nie jest poprawna waga domy\u015blna.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: \u0141a\u0144cuch {0} nie zawiera \u017cadnych kana\u0142\u00f3w transportowych.
+chain.channels.empty.explanation=\u0141a\u0144cuchy musz\u0105 zawiera\u0107 kana\u0142y transportowe, aby mog\u0142y dzia\u0142a\u0107.
+chain.channels.empty.useraction=Dodaj kana\u0142y transportowe do okre\u015blonego \u0142a\u0144cucha.
+
+chain.flow.mismatch=CWWKO0010E: Przep\u0142yw we wszystkich kana\u0142ach transportowych \u0142a\u0144cucha {0} musi odbywa\u0107 si\u0119 w tym samym kierunku.
+chain.flow.mismatch.explanation=Kana\u0142y transportowe mog\u0105 wp\u0142ywa\u0107 do serwera (kana\u0142y przychodz\u0105ce) lub z niego wyp\u0142ywa\u0107 (kana\u0142y wychodz\u0105ce). Przep\u0142yw we wszystkich kana\u0142ach transportowych \u0142a\u0144cucha musi odbywa\u0107 si\u0119 w tym samym kierunku.
+chain.flow.mismatch.useraction=Upewnij si\u0119, \u017ce przep\u0142yw we wszystkich kana\u0142ach transportowych \u0142a\u0144cucha odbywa si\u0119 w tym samym kierunku.  Nie mieszaj kana\u0142\u00f3w przychodz\u0105cych i wychodz\u0105cych w tym samym \u0142a\u0144cuchu.
+
+chain.inbound.first.mismatch=CWWKO0011E: Pierwszy kana\u0142 transportowy w \u0142a\u0144cuchu {0} nie jest kana\u0142em konektora.
+chain.inbound.first.mismatch.explanation=Pierwszy kana\u0142 transportowy w \u0142a\u0144cuchu danych przychodz\u0105cych musi by\u0107 kana\u0142em konektora.
+chain.inbound.first.mismatch.useraction=Zmie\u0144 \u0142a\u0144cuch danych przychodz\u0105cych tak, aby jego pierwszy kana\u0142 transportowy by\u0142 kana\u0142em konektora.
+
+chain.inbound.last.mismatch=CWWKO0012E: Ostatni kana\u0142 transportowy w \u0142a\u0144cuchu {0} nie jest kana\u0142em akceptora.
+chain.inbound.last.mismatch.explanation=Ostatni kana\u0142 transportowy w \u0142a\u0144cuchu danych przychodz\u0105cych musi by\u0107 kana\u0142em akceptora.
+chain.inbound.last.mismatch.useraction=Zmie\u0144 \u0142a\u0144cuch danych przychodz\u0105cych tak, aby jego ostatni kana\u0142 transportowy by\u0142 kana\u0142em akceptora.
+
+chain.acceptor.determination.failure=CWWKO0013E: System nie mo\u017ce okre\u015bli\u0107 identyfikatora akceptora dla \u0142a\u0144cucha {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: System nie mo\u017ce znale\u017a\u0107 deskryptora kana\u0142u zgodnego z typem konfiguracji kana\u0142u {0}.
+channel.descriptor.notfound.explanation=Kana\u0142y musz\u0105 udost\u0119pnia\u0107 deskryptor w celu odwzorowania typ\u00f3w konfiguracji na typy wykonawcze. Nie znaleziono zgodnego deskryptora.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: System nie mo\u017ce uzyska\u0107 nast\u0119puj\u0105cego pocz\u0105tkowego kontekstu nazewnictwa: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: System nie mo\u017ce za\u0142adowa\u0107 nast\u0119puj\u0105cej fabryki kana\u0142\u00f3w transportowych: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: System nie mo\u017ce za\u0142adowa\u0107 nast\u0119puj\u0105cego kana\u0142u transportowego: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: System nie mo\u017ce za\u0142adowa\u0107 nast\u0119puj\u0105cego \u0142a\u0144cucha: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: Us\u0142uga kana\u0142\u00f3w transportowych uruchomi\u0142a \u0142a\u0144cuch {0}.
+chain.started.explanation=Us\u0142uga kana\u0142\u00f3w transportowych uruchomi\u0142a okre\u015blony \u0142a\u0144cuch.
+chain.started.useraction=Nie jest wymagane \u017cadne dzia\u0142anie.
+
+chain.stopped=CWWKO0020I: Us\u0142uga kana\u0142\u00f3w transportowych zatrzyma\u0142a \u0142a\u0144cuch o etykiecie {0}.
+chain.stopped.explanation=Us\u0142uga kana\u0142\u00f3w transportowych zatrzyma\u0142a okre\u015blony \u0142a\u0144cuch.
+chain.stopped.useraction=Nie jest wymagane \u017cadne dzia\u0142anie.
+
+chain.disabled=CWWKO0021I: \u0141a\u0144cuch danych przychodz\u0105cych {0} zosta\u0142 oznaczony jako wy\u0142\u0105czony.
+chain.disabled.explanation=\u0141a\u0144cuchy danych przychodz\u0105cych musz\u0105 by\u0107 jawnie oznaczone jako w\u0142\u0105czone, aby umo\u017cliwi\u0107 ich automatyczne uruchamianie. Wy\u0142\u0105czone \u0142a\u0144cuchy mo\u017cna uruchomi\u0107 tylko jawnie przy u\u017cyciu nazwy.
+chain.disabled.useraction=Nie jest wymagane \u017cadne dzia\u0142anie.
+
+config.load.error=CWWKO0022E: Us\u0142uga kana\u0142\u00f3w transportowych nie mog\u0142a znale\u017a\u0107 swojej konfiguracji z powodu wyj\u0105tku: {0}
+config.load.error.explanation=Us\u0142uga kana\u0142\u00f3w transportowych wygenerowa\u0142a wyj\u0105tek podczas pr\u00f3by wykrycia i za\u0142adowania swojej konfiguracji. Zostanie ona uruchomiona bez konfiguracji.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: Us\u0142uga kana\u0142\u00f3w transportowych nie mog\u0142a znale\u017a\u0107 swojej konfiguracji i zostanie uruchomiona bez niej.
+boot.no.config.explanation=Us\u0142uga kana\u0142\u00f3w transportowych nie mog\u0142a znale\u017a\u0107 swojej konfiguracji. Do pliku konfiguracyjnego server.xml nale\u017cy doda\u0107 szczeg\u00f3\u0142y konfiguracji domy\u015blnej dla us\u0142ugi kana\u0142\u00f3w transportowych.
+boot.no.config.useraction=Aby doda\u0107 konfiguracj\u0119 domy\u015bln\u0105 dla us\u0142ugi kana\u0142\u00f3w transportowych, u\u017cyj Konsoli administracyjnej lub narz\u0119dzia wsadmin.
+
+framework.disabled=CWWKO0024I: Us\u0142uga kana\u0142\u00f3w transportowych zosta\u0142a jawnie wy\u0142\u0105czona.
+framework.disabled.explanation=Us\u0142uga kana\u0142\u00f3w transportowych zosta\u0142a jawnie skonfigurowana jako wy\u0142\u0105czona i nie zostanie uruchomiona.
+framework.disabled.useraction=Nie jest wymagane \u017cadne dzia\u0142anie.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: W implementacji kana\u0142u {0} nie okre\u015blono klasy konfiguracji fabryki.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: System nie m\u00f3g\u0142 znale\u017a\u0107 deskryptora fabryki kana\u0142\u00f3w zgodnego z typem konfiguracji kana\u0142u transportowego {0}.
+factory.descriptor.notfound.explanation=Kana\u0142y musz\u0105 udost\u0119pnia\u0107 deskryptor w celu odwzorowania typ\u00f3w konfiguracji na typy wykonawcze. Nie znaleziono zgodnego deskryptora.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: Nie za\u0142adowano co najmniej jednej implementacji kana\u0142u transportowego.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: Ostatni kana\u0142 transportowy \u0142a\u0144cucha {0} nie jest kana\u0142em konektora.
+chain.outbound.last.mismatch.explanation=Ostatni kana\u0142 transportowy w \u0142a\u0144cuchu danych wychodz\u0105cych musi by\u0107 kana\u0142em konektora.
+chain.outbound.last.mismatch.useraction=Zmie\u0144 \u0142a\u0144cuch danych wychodz\u0105cych tak, aby jego ostatni kana\u0142 transportowy by\u0142 kana\u0142em konektora.
+
+chain.initialization.error=CWWKO0029E: Wygenerowano wyj\u0105tek podczas inicjowania \u0142a\u0144cucha {0} z powodu wyj\u0105tku {1}
+chain.initialization.error.explanation=Wygenerowano wyj\u0105tek w \u0142a\u0144cuchu lub w kana\u0142ach bazowych.
+chain.initialization.error.useraction=Sprawd\u017a, czy w \u0142a\u0144cuchu s\u0105 u\u017cywane odpowiednie kana\u0142y.
+
+chain.start.error=CWWKO0030E: Wygenerowano wyj\u0105tek podczas uruchamiania \u0142a\u0144cucha {0} z powodu wyj\u0105tku {1}
+chain.start.error.explanation=Wygenerowano wyj\u0105tek w \u0142a\u0144cuchu lub w kana\u0142ach bazowych.
+chain.start.error.useraction=Sprawd\u017a, czy w \u0142a\u0144cuchu s\u0105 u\u017cywane odpowiednie kana\u0142y.
+
+chain.stop.error=CWWKO0031E: Wygenerowano wyj\u0105tek podczas zatrzymywania \u0142a\u0144cucha {0} z powodu wyj\u0105tku {1}
+chain.stop.error.explanation=Wygenerowano wyj\u0105tek w \u0142a\u0144cuchu lub w kana\u0142ach bazowych.
+chain.stop.error.useraction=Sprawd\u017a, czy w \u0142a\u0144cuchu s\u0105 u\u017cywane odpowiednie kana\u0142y.
+
+chain.destroy.error=CWWKO0032E: Wygenerowano wyj\u0105tek podczas niszczenia \u0142a\u0144cucha {0} z powodu wyj\u0105tku {1}
+chain.destroy.error.explanation=Wygenerowano wyj\u0105tek w \u0142a\u0144cuchu lub w kana\u0142ach bazowych.
+chain.destroy.error.useraction=Sprawd\u017a, czy w \u0142a\u0144cuchu s\u0105 u\u017cywane odpowiednie kana\u0142y.
+
+chain.retrystart.error=CWWKO0033E: Operacja uruchamiania \u0142a\u0144cucha transportowego {0} przez us\u0142ug\u0119 kana\u0142\u00f3w transportowych nie powiod\u0142a si\u0119 (liczba pr\u00f3b: {1}).
+chain.retrystart.error.explanation=Skonfigurowana liczba ponownych pr\u00f3b nie by\u0142a wystarczaj\u0105ca do uruchomienia \u0142a\u0144cucha lub port u\u017cywany przez \u0142a\u0144cuch jest ju\u017c u\u017cywany.
+chain.retrystart.error.useraction=Upewnij si\u0119, \u017ce port, z kt\u00f3rego korzysta \u0142a\u0144cuch, nie jest ju\u017c u\u017cywany. Poprawnie ustaw w\u0142a\u015bciwo\u015bci niestandardowe na potrzeby restartowania \u0142a\u0144cuch\u00f3w.
+
+chain.retrystart.warning=CWWKO0034W: Us\u0142uga kana\u0142\u00f3w transportowych wykry\u0142a, \u017ce \u0142a\u0144cuch transportowy {0} nie zosta\u0142 uruchomiony.  Us\u0142uga b\u0119dzie pr\u00f3bowa\u0107 uruchomi\u0107 \u0142a\u0144cuch {0} co {1} ms. Maksymalna liczba pr\u00f3b: {2}.
+chain.retrystart.warning.explanation=Pocz\u0105tkowa pr\u00f3ba uruchomienia \u0142a\u0144cucha nie powiod\u0142a si\u0119. Zostan\u0105 podj\u0119te kolejne pr\u00f3by uruchomienia tego \u0142a\u0144cucha.
+chain.retrystart.warning.useraction=Zwr\u00f3\u0107 uwag\u0119 na komunikaty o b\u0142\u0119dach lub komunikaty kontrolne wskazuj\u0105ce wynik pr\u00f3b ponowienia.
+
+framework.property.error=CWWKO0035E: Us\u0142uga kana\u0142\u00f3w transportowych znalaz\u0142a warto\u015b\u0107 {0} dla w\u0142a\u015bciwo\u015bci {1}. Ta warto\u015b\u0107 jest niepoprawna.
+framework.property.error.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci znajduje si\u0119 poza oczekiwanym zakresem.
+framework.property.error.useraction=Dopasuj konfiguracj\u0119 tak, aby ustawia\u0142a poprawn\u0105 warto\u015b\u0107 dla w\u0142a\u015bciwo\u015bci.
+
+missing.factory=CWWKO0036W: Konfiguracja \u0142a\u0144cucha zawiera brakuj\u0105cy typ fabryki {0}, co uniemo\u017cliwia uruchomienie jednego lub kilku \u0142a\u0144cuch\u00f3w.
+missing.factory.explanation=\u015arodowisko wykonawcze nie zawiera fabryki kana\u0142\u00f3w zgodnego typu i dlatego nie mo\u017ce uruchamia\u0107 u\u017cywaj\u0105cych jej \u0142a\u0144cuch\u00f3w.
+missing.factory.useraction=Sprawd\u017a, czy na li\u015bcie sk\u0142adnik\u00f3w \u015brodowiska wykonawczego nie brakuje jednej lub kilku wymaganych pozycji.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Nie mo\u017cna utworzy\u0107 konfiguracji domy\u015blnej kana\u0142u TCP. Wyj\u0105tek: {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=Napotkano b\u0142\u0105d podczas tworzenia konfiguracji domy\u015blnej dla kana\u0142\u00f3w TCP.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Informacje opisuj\u0105ce niepowodzenie operacji tworzenia mo\u017cna znale\u017a\u0107 w wyj\u0105tku.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Nie mo\u017cna utworzy\u0107 konfiguracji domy\u015blnej kana\u0142u UDP. Wyj\u0105tek: {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=Napotkano b\u0142\u0105d podczas tworzenia konfiguracji domy\u015blnej dla kana\u0142\u00f3w UDP.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Informacje opisuj\u0105ce niepowodzenie operacji tworzenia mo\u017cna znale\u017a\u0107 w wyj\u0105tku.
+
+channel.shared.warning=CWWKO0039W: Niemo\u017cliwy do wsp\u00f3\u0142u\u017cytkowania kana\u0142 {0} jest wsp\u00f3\u0142u\u017cytkowany przez wiele region\u00f3w.
+channel.shared.warning.explanation=Kana\u0142 zosta\u0142 skonfigurowany jako niemo\u017cliwy do wsp\u00f3\u0142u\u017cytkowania. Jednak jest on wsp\u00f3\u0142u\u017cytkowany przez wiele region\u00f3w.
+channel.shared.warning.useraction=Przejrzyj konfiguracj\u0119 kana\u0142u i sprawd\u017a jego u\u017cycie.

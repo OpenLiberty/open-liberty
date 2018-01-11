@@ -4,5 +4,5 @@
 symbolicName=com.ibm.websphere.appserver.jsfProvider-2.2.0.Container
 singleton=true
 visibility=private
-kind=noship
-edition=full
+kind=ga
+edition=core

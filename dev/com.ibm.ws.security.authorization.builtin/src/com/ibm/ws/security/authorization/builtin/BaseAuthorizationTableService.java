@@ -56,6 +56,8 @@ public abstract class BaseAuthorizationTableService implements UserRegistryChang
     private boolean isIgnoreCaseSet = false;
     private boolean isIgnoreCase = false;
 
+    protected String bundleLocation;
+
     @Reference(service = SecurityService.class, name = KEY_SECURITY_SERVICE,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC)
@@ -80,11 +82,13 @@ public abstract class BaseAuthorizationTableService implements UserRegistryChang
     protected void activate(ComponentContext cc) {
         securityServiceRef.activate(cc);
         configAdminRef.activate(cc);
+        this.bundleLocation = cc.getBundleContext().getBundle().getLocation();
     }
 
     protected void deactivate(ComponentContext cc) {
         securityServiceRef.deactivate(cc);
         configAdminRef.deactivate(cc);
+        this.bundleLocation = null;
     }
 
     /** {@inheritDoc} */

@@ -1,0 +1,26 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+test.project: true
+
+
+#
+# If the version of ApacheDS should change, the build.gradle file will
+# need to be updated to reflect the version change.
+#
+# We depend on the 2.0.0-M15 version, but that can't be used here since
+# BND complains that it is an invalid version. So instead we use "latest".
+# The latest version is governed by cnf/oss_dependencies.maven.
+#
+-buildpath: \
+	org.apache.directory.server:apacheds-service;version=latest

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -20,41 +24,99 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.Trigger;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
-import com.ibm.ws.bnd.metatype.annotation.Ext;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.resource.ResourceFactory;
-
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", name = "%managedScheduledExecutorService",
-                       description = "%managedScheduledExecutorService.desc",
-                       localization = Ext.LOCALIZATION)
-@Ext.Alias("managedScheduledExecutorService")
-@Ext.SupportExtensions
-interface ManagedScheduledExecutorServiceConfig extends FullManagedExecutorServiceConfig {
-
-}
+import com.ibm.wsspi.threadcontext.ThreadContextProvider;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
                        ManagedScheduledExecutorService.class },
-           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class) ,
+           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
-@DSExt.ConfigureWithInterfaces
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
+    private static final TraceComponent tc = Tr.register(ManagedScheduledExecutorServiceImpl.class);
+
+    /**
+     * Controls how often we purge the list of tracked futures.
+     */
+    private static final int FUTURE_PURGE_INTERVAL = 20;
+
+    /**
+     * Count of futures. In combination with FUTURE_PURGE_INTERVAL, this determines when to purge completed futures from the list.
+     */
+    private volatile int futureCount;
+
+    /**
+     * Futures for tasks that might be scheduled or running. These are tracked so that we can meet the requirement
+     * of canceling or interrupting tasks that are scheduled or running when the managed executor service goes away.
+     * Futures from execute/submit/invokeAll/invokeAny methods are not tracked in this structure.
+     */
+    private final ConcurrentLinkedQueue<ScheduledFuture<?>> futures = new ConcurrentLinkedQueue<ScheduledFuture<?>>();
+
     /**
      * Reference to the (unmanaged) scheduled executor service for this managed scheduled executor service.
      */
     @Reference(target = "(deferrable=false)")
     ScheduledExecutorService scheduledExecSvc;
+
+    @Activate
+    @Override
+    @Trivial
+    protected void activate(ComponentContext context, Map<String, Object> properties) {
+        super.activate(context, properties);
+    }
+
+    @Deactivate
+    @Override
+    protected void deactivate(ComponentContext context) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Cancel scheduled or running tasks
+        for (Future<?> future = futures.poll(); future != null; future = futures.poll())
+            if (!future.isDone() && future.cancel(true))
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "canceled scheduled task", future);
+
+        super.deactivate(context);
+    }
+
+    @Modified
+    @Override
+    @Trivial
+    protected void modified(ComponentContext context, Map<String, Object> properties) {
+        super.modified(context, properties);
+    }
+
+    /**
+     * Purge completed futures from the list we are tracking.
+     * This method should be invoked every so often so that we don't leak memory.
+     */
+    @Trivial
+    private final void purgeFutures() {
+        for (Iterator<ScheduledFuture<?>> it = futures.iterator(); it.hasNext();)
+            if (it.next().isDone())
+                it.remove();
+    }
 
     /**
      * @see java.util.concurrent.ScheduledExecutorService#schedule(java.util.concurrent.Callable, long, java.util.concurrent.TimeUnit)
@@ -138,4 +200,55 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         return scheduledTask.future;
     }
 
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    @Trivial
+    protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
+        super.setConcurrencyPolicy(svc);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    @Trivial
+    protected void setContextService(ServiceReference<WSContextService> ref) {
+        super.setContextService(ref);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
+    @Trivial
+    protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
+        super.setLongRunningPolicy(svc);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
+    @Trivial
+    protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
+        super.setTransactionContextProvider(ref);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
+        super.unsetConcurrencyPolicy(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetContextService(ServiceReference<WSContextService> ref) {
+        super.unsetContextService(ref);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
+        super.unsetLongRunningPolicy(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
+        super.unsetTransactionContextProvider(ref);
+    }
 }

@@ -22,4 +22,8 @@ public interface MicroProfileJwtConfig {
 
     public String getGroupNameAttribute();
 
+    public boolean ignoreApplicationAuthMethod();
+
+    public boolean getMapToUserRegistry();
+
 }

@@ -451,5 +451,10 @@ error.extendsAlias.collision=CWWKG0100E: The {2} ibm:extendsAlias attribute is d
 error.extendsAlias.collision.explanation=The ibm:extendsAlias attribute must be unique within a single extends hierarchy.
 error.extendsAlias.collision.useraction=Make each ibm:extendsAlias attribute unique within the extends hierarchy.
 
+warning.binding.config=CWWKG0101W: The configuration with the persisted identity (PID) {0} is bound to the bundle {1}. The configuration is not visible to other bundles.  
+warning.binding.config.explanation=A configuration is bound to the calling bundle when the getConfiguration method of the ConfigurationAdmin interface is called for the first time. Once the configuration is bound, it is no longer visible to other bundles.  
+warning.binding.config.useraction=To ensure that the bundle location is the expected value, use the getConfiguration method on the ConfigurationAdmin interface that takes a bundle location as the second parameter.
+
+
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]

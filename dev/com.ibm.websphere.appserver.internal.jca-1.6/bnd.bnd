@@ -12,15 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.transaction-1.1;version=latest, \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
-	com.ibm.websphere.appserver.dynamicBundle-1.0;version=latest, \
-	com.ibm.websphere.appserver.appmanager-1.0;version=latest, \
-	com.ibm.websphere.appserver.contextService-1.0;version=latest, \
-	com.ibm.websphere.appserver.connectionManagement-1.0;version=latest, \
 	com.ibm.ws.jca;version=latest, \
 	com.ibm.ws.jca.utils;version=latest, \
 	com.ibm.ws.jca.feature;version=latest

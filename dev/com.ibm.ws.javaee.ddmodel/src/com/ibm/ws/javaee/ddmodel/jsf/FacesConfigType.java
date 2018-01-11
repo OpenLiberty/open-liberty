@@ -89,7 +89,7 @@ import com.ibm.ws.javaee.ddmodel.jsf.FacesConfigType.ManagedBeanType.ListType;
  *       <xsd:element name="component" type="javaee:faces-config-componentType"/>
  *       <xsd:element name="converter" type="javaee:faces-config-converterType"/>
  *       <xsd:element name="managed-bean" type="javaee:faces-config-managed-beanType"/>
- *       <xsd:element name="name" type="XSDTokenType" minOccurs="0" maxOccurs="1" />       
+ *       <xsd:element name="name" type="XSDTokenType" minOccurs="0" maxOccurs="1" />
  *       <xsd:element name="navigation-rule" type="javaee:faces-config-navigation-ruleType"/>
  *       <xsd:element name="referenced-bean" type="javaee:faces-config-referenced-beanType"/>
  *       <xsd:element name="render-kit" type="javaee:faces-config-render-kitType"/>
@@ -101,7 +101,7 @@ import com.ibm.ws.javaee.ddmodel.jsf.FacesConfigType.ManagedBeanType.ListType;
  *        <xsd:element name="flow-definition" type="javaee:faces-config-flow-definitionType"/>
  *        <xsd:element name="protected-views" type="javaee:faces-config-protected-viewsType" minOccurs="0" maxOccurs="unbounded"/>
  *    </xsd:choice>
- *    <xsd:attribute name="metadata-complete" type="xsd:boolean" use="optional"/> 
+ *    <xsd:attribute name="metadata-complete" type="xsd:boolean" use="optional"/>
  *   <xsd:attribute name="id" type="xsd:ID"/>
  *   <xsd:attribute name="version" type="javaee:faces-config-versionType" use="required"/>
  *</xsd:complexType>
@@ -141,7 +141,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
     }
 
     // Added to support CDI 1.2 - new injectable objects in jsf
-    // This method is only called from jsf 2.2 
+    // This method is only called from jsf 2.2
     @Override
     public List<String> getManagedObjects() {
         ArrayList<String> managedObjects = new ArrayList<String>();
@@ -424,7 +424,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      * <xsd:attribute name="id"
      * type="xsd:ID"/>
      * </xsd:complexType>
-     * 
+     *
      * Related types:
      * <xsd:complexType name="faces-config-application-extensionType">
      * <xsd:complexType name="faces-config-factory-extensionType">
@@ -791,6 +791,14 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      * <xsd:element name="resource-library-contracts"
      * type="javaee:faces-config-application-resource-library-contractsType">
      * </xsd:element>
+     * Added for JSF 2.3
+     * <xsd:element name="search-expression-handler"
+     * type="XSDTokenType">
+     * </xsd:element>
+     * Added for JSF 2.3
+     * <xsd:element name="search-keyword-resolver"
+     * type="XSDTokenType">
+     * </xsd:element>
      * <xsd:element name="system-event-listener"
      * type="javaee:faces-config-system-event-listenerType"
      * minOccurs="0"
@@ -824,6 +832,8 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
         XSDTokenType property_resolver;
         XSDTokenType variable_resolver;
         XSDTokenType resource_handler;
+        XSDTokenType search_expression_handler; // Added for JSF 2.3
+        XSDTokenType search_keyword_resolver; //  Added for JSF 2.3
         SystemEventListenerType.ListType system_event_listener;
         LocaleConfigType locale_config;
         ApplicationResourceBundleType resource_bundle;
@@ -941,6 +951,21 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
                 this.resource_library_contracts = resource_library_contracts;
                 return true;
             }
+            // Added for JSF 2.3
+            if ("search-expression-handler".equals(localName)) {
+                XSDTokenType search_expression_handler = new XSDTokenType();
+                parser.parse(search_expression_handler);
+                this.search_expression_handler = search_expression_handler;
+                return true;
+            }
+            // Added for JSF 2.3
+            if ("search-keyword-resolver".equals(localName)) {
+                XSDTokenType search_keyword_resolver = new XSDTokenType();
+                parser.parse(search_keyword_resolver);
+                this.search_keyword_resolver = search_keyword_resolver;
+                return true;
+            }
+
             return false;
         }
 
@@ -988,6 +1013,8 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
             diag.describeIfSet("resource-handler", resource_handler);
             diag.describeIfSet("system-event-listener", system_event_listener);
             diag.describeIfSet("resource-library-contracts", resource_library_contracts);
+            diag.describeIfSet("search-expression-handler", search_expression_handler); // Added for JSF 2.3
+            diag.describeIfSet("search-keyword-resolver", search_keyword_resolver); // Added for JSF 2.3
             diag.describeIfSet("locale-config", locale_config);
             diag.describeIfSet("resource-bundle", resource_bundle);
             diag.describeIfSet("application-extension", application_extension);
@@ -1090,6 +1117,14 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      * <xsd:element name="flash-factory" type="javaee:fully-qualified-classType" />
      * <xsd:element name="flow-handler-factory" type="javaee:fully-qualified-classType">
      * Complete for 2.2
+     * Added for JSF 2.3
+     * <xsd:element name="client-window-factory"
+     * type="XSDTokenType">
+     * </xsd:element>
+     * Added for JSF 2.3
+     * <xsd:element name="search-expression-context-factory"
+     * <type="XSDTokenType">
+     * </xsd:element>
      * <xsd:element name="factory-extension"
      * type="javaee:faces-config-extensionType"
      * minOccurs="0"
@@ -1115,6 +1150,8 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
         XSDTokenType visit_context_factory;
         XSDTokenType flash_factory;
         XSDTokenType flow_handler_factory;
+        XSDTokenType client_window_factory; // Added for JSF 2.3
+        XSDTokenType search_expression_context_factory; // Added for JSF 2.3
         ExtensionType.ListType factory_extension;
         XSDTokenType.ListType managed_object;
 
@@ -1220,6 +1257,21 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
                 addFactoryExtension(factory_extension);
                 return true;
             }
+            // Added for JSF 2.3
+            if ("client-window-factory".equals(localName)) {
+                XSDTokenType client_window_factory = new XSDTokenType();
+                parser.parse(client_window_factory);
+                this.client_window_factory = client_window_factory;
+                addManagedObject(parser, client_window_factory);
+                return true;
+            }
+            // Added for JSF 2.3
+            if ("search-expression-context-factory".equals(localName)) {
+                XSDTokenType search_expression_context_factory = new XSDTokenType();
+                parser.parse(search_expression_context_factory);
+                this.search_expression_context_factory = search_expression_context_factory;
+                return true;
+            }
             return false;
         }
 
@@ -1261,6 +1313,8 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
             diag.describeIfSet("visit-context-factory", visit_context_factory);
             diag.describeIfSet("flash-factory", flash_factory);
             diag.describeIfSet("flow-handler-factory", flow_handler_factory);
+            diag.describeIfSet("client-window-factory", client_window_factory); // Added for JSF 2.3
+            diag.describeIfSet("search-expression-context-factory", search_expression_context_factory); // Added for JSF 2.3
             diag.describeIfSet("factory-extension", factory_extension);
         }
     }
@@ -2612,7 +2666,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      * type="xsd:ID"/>
      * </xsd:complexType>
      */
-    static class NullValueType extends AnySimpleType/* DDParser.ElementContentParsable */{
+    static class NullValueType extends AnySimpleType/* DDParser.ElementContentParsable */ {
 
         protected NullValueType() {
             super(Whitespace.preserve);
@@ -3635,7 +3689,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      */
     static class ResourceLibraryContractsContractMappingType extends DescriptionGroup implements FacesConfigApplicationResourceLibraryContractsContractMapping {
 
-        // elements        
+        // elements
         StringType.ListType url_pattern = new StringType.ListType();
         StringType.ListType contracts = new StringType.ListType();
 
@@ -4013,7 +4067,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      */
     static class FlowDefinitionViewType extends DDParser.ElementContentParsable implements FacesConfigFlowDefinitionView {
 
-        // elems       
+        // elems
         XSDTokenType vdl_document;
         IDType id;
 
@@ -4042,7 +4096,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.javaee.ddmodel.DDParser.ParsableElement#handleChild(com.ibm.ws.javaee.ddmodel.DDParser, java.lang.String)
          */
         @Override
@@ -4058,7 +4112,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.javaee.ddmodel.DDParser.Parsable#describe(com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics)
          */
         @Override
@@ -4108,7 +4162,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.javaee.ddmodel.DDParser.ParsableElement#handleChild(com.ibm.ws.javaee.ddmodel.DDParser, java.lang.String)
          */
         @Override
@@ -4137,7 +4191,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.javaee.ddmodel.DDParser.Parsable#describe(com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics)
          */
         @Override
@@ -4164,7 +4218,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      */
     static class FlowDefinitionSwitchCaseType extends DescriptionGroup implements FacesConfigFlowDefinitionSwitchCase {
 
-        // elems        
+        // elems
         StringType from_outcome;
         ELExpressionWithIDType if_expr;
 
@@ -4220,7 +4274,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      */
     static class FlowDefinitionFlowReturnType extends DDParser.ElementContentParsable implements FacesConfigFlowDefinitionFlowReturn {
 
-        // elems       
+        // elems
         StringType from_outcome;
         //atribute required
         IDType id;
@@ -4250,7 +4304,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.javaee.ddmodel.DDParser.ParsableElement#handleChild(com.ibm.ws.javaee.ddmodel.DDParser, java.lang.String)
          */
         @Override
@@ -4266,7 +4320,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.javaee.ddmodel.DDParser.Parsable#describe(com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics)
          */
         @Override
@@ -4590,7 +4644,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
      */
     static class ProtectedViewsType extends DescriptionGroup implements FacesConfigProtectedViews {
 
-        // elements        
+        // elements
         StringType.ListType url_pattern = new StringType.ListType();
 
         public static class ListType extends ParsableListImplements<ProtectedViewsType, FacesConfigProtectedViews> {

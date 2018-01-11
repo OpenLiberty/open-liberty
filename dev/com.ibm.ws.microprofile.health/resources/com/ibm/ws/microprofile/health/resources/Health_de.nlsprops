@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler wurde ausgel\u00f6st, weil der angegebene Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option clean erneut.
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: Der folgende Health-API-Fehler ist aufgetreten: {0}
+temporary.CWMH9999E.explanation=Es ist ein Health-API-Fehler aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMH9999E.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: Die {0}-HealthCheck-Methode in der Anwendung {1} aus dem Modul {2} hat eine Ausnahme {3} mit der folgenden Nachricht ausgel\u00f6st: {4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=Die angegebene Aufrufmethode hat eine Ausnahme ausgel\u00f6st.
+healthcheck.bean.call.exception.CWMH0050E.useraction=\u00dcberpr\u00fcfen Sie Ihre Aufrufmethode innerhalb der HealthCheck-Bean, um die aufgetretene Ausnahme zu ermitteln.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: Die {0}, die die HealthCheckResponse in der {1}-Anwendung im Modul {2} implementiert, hat ein DOWN-Ergebnis {3} mit den folgenden Daten {4} berichtet.
+healthcheck.application.down.CWMH0051W.explanation=Das DOWN-Ergebnis kann dazu f\u00fchren, dass ein \u00dcberwachungsservice auf diesem Server Ma\u00dfnahmen ergreift.
+healthcheck.application.down.CWMH0051W.useraction=Es ist keine Benutzeraktion erforderlich. Diese Warnung hat ein DOWN-Ergebnis erfasst.

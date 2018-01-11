@@ -1,0 +1,94 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+		<feature>ldapRegistry-3.0</feature>
+	</featureManager>
+
+	<ldapRegistry realm="SampleLdapADRealm" host="${ldap.server.2.name}" port="${ldap.server.2.port}" ignoreCase="true"  baseDN="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindDN="cn=testuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindPassword="testuserpwd"
+		ldapType="Microsoft Active Directory"
+		searchTimeout="8m"
+		recursiveSearch="true" >
+		
+      <ldapEntityType name="Group" searchFilter="(ObjectCategory=Group)">
+        <objectClass>group</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="OrgContainer">
+        <rdnProperty name="o" objectClass="organization"/>
+        <rdnProperty name="ou" objectClass="organizationalUnit"/>
+        <rdnProperty name="dc" objectClass="domain"/>
+        <rdnProperty name="cn" objectClass="container"/>
+        <objectClass>organization</objectClass>
+        <objectClass>organizationalUnit</objectClass>
+        <objectClass>domain</objectClass>
+        <objectClass>container</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="PersonAccount" searchFilter="(|(ObjectCategory=User)(ObjectClass=User))">
+        <objectClass>user</objectClass>
+      </ldapEntityType>
+      <groupProperties>
+        <memberAttribute name="member" dummyMember="uid=dummy" objectClass="group" scope="direct"/>
+      </groupProperties>
+      <attributeConfiguration>
+      	<attribute defaultValue="544" name="userAccountControl" entityType="PersonAccount" />
+      	<attribute name="samAccountName" propertyName="uid" entityType="PersonAccount" />
+        <attribute substituteWithValueOf="cn" name="samAccountName" entityType="Group" />
+        <attribute defaultValue="8" name="groupType" entityType="Group" />
+        <attribute name="unicodePwd" propertyName="password" syntax="unicodePwd"/>
+        <attribute name="userprincipalname" propertyName="kerberosId" entityType="PersonAccount" />
+        <propertiesNotSupported name="description"/>
+        <propertiesNotSupported name="jpegPhoto"/>
+        <propertiesNotSupported name="labeledURI"/>
+        <propertiesNotSupported name="carLicense"/>
+        <propertiesNotSupported name="pager"/>
+        <propertiesNotSupported name="roomNumber"/>
+        <propertiesNotSupported name="localityName"/>
+        <propertiesNotSupported name="stateOrProvinceName"/>
+        <propertiesNotSupported name="countryName"/>
+        <propertiesNotSupported name="employeeNumber"/>
+        <propertiesNotSupported name="employeeType"/>
+        <propertiesNotSupported name="businessCategory"/>
+        <propertiesNotSupported name="departmentNumber"/>
+        <propertiesNotSupported name="homeAddress"/>
+        <propertiesNotSupported name="businessAddress"/>
+      </attributeConfiguration>
+      <loginProperty>cn</loginProperty>
+      <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
+          waitTime="3000ms" preferredSize="3"/>
+      <ldapCache>
+        <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
+        <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
+      </ldapCache>
+      <failoverServers name="failoverLdapServers">
+		   <server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
+        </failoverServers>
+	</ldapRegistry>
+	
+    <federatedRepository maxSearchResults="2000" searchTimeout="400000">
+        <primaryRealm name="ADNoIdRealm">
+            <participatingBaseEntry name="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"/>
+            <uniqueUserIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+        	<userSecurityNameMapping inputProperty="principalName" outputProperty="principalName"/>
+        	<userDisplayNameMapping inputProperty="principalName" outputProperty="principalName"/>
+        	<uniqueGroupIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+        	<groupSecurityNameMapping inputProperty="cn" outputProperty="cn"/>
+        	<groupDisplayNameMapping inputProperty="cn" outputProperty="cn"/>
+    	</primaryRealm>
+    </federatedRepository>
+</server>

@@ -12,13 +12,18 @@
 bVersion=1.0
 
 src: \
-	fat/src
+	fat/src,\
+	test-applications/checkJvmAppClasspath/src,\
+	test-applications/shutdownfat/src
 
-test.project: true
+
+fat.project: true
+test.classpath.wlp.include: api/spec/*.jar,api/ibm/*.jar
+
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
@@ -30,10 +35,13 @@ test.project: true
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.thirdparty.equinox;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.service.location;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \
 	com.ibm.ws.kernel.feature.core;version=latest, \
-	com.ibm.ws.kernel.feature;version=latest
+	com.ibm.ws.kernel.feature;version=latest, \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest

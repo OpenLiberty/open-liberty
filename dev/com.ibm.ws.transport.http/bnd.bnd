@@ -44,7 +44,8 @@ Export-Package: \
     com.ibm.ws.http.channel.h2internal.frames, \
     com.ibm.ws.http.channel.h2internal.exceptions, \
     com.ibm.ws.http.channel.h2internal.hpack, \
-    com.ibm.ws.http.channel.h2internal.huffman
+    com.ibm.ws.http.channel.h2internal.huffman, \
+    com.ibm.ws.http.logging.data
 
 Private-Package: \
   com.ibm.ws.http.*, \
@@ -72,7 +73,12 @@ Service-Component: \
         provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
         modified:='modified';\
         immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0"
+        properties:="service.vendor=IBM,service.ranking:Integer=0", \
+    com.ibm.ws.http.logging.source.accesslog;\
+        implementation:=com.ibm.ws.http.logging.source.AccessLogSource;\
+        provide:=com.ibm.wsspi.collector.manager.Source; \
+        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.http.logging.source.accesslog)'; \
+        properties:="service.vendor=IBM"
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF, \
@@ -92,13 +98,14 @@ instrument.classesExcludes: \
     **/com/ibm/wsspi/http/HttpInputStream.class
 
 -buildpath: \
+	com.ibm.ws.logging,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.event,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.kernel.boot.core,\
+    com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.timer;version=latest,\
@@ -111,7 +118,9 @@ instrument.classesExcludes: \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	cglib:cglib-nodep;version=2.1.0.3, \
 	org.jmock:jmock-legacy;version=2.5.0, \
-	com.ibm.ws.org.objenesis:objenesis;version=1.0
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.kernel.boot;version=latest

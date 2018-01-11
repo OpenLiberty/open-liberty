@@ -30,7 +30,7 @@
     </dataSource>
     
     <library id="DerbyLib" fat.modify="true">
-    	<fileset dir="${server.config.dir}/derby" includes="*.jar"/>
+    	<fileset dir="${server.config.dir}/derby" includes="derby.jar,slowdriver.jar"/>
     </library>
     
     <dataSource id="ds1" jndiName="jdbc/${id}" fat.modify="true">
@@ -60,7 +60,7 @@
     	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
     </dataSource>
     
-    <javaPermission codebase="${server.config.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

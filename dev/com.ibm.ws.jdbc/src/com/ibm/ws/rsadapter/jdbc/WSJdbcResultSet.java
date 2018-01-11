@@ -1105,7 +1105,8 @@ public class WSJdbcResultSet extends WSJdbcObject implements ResultSet, WSJdbcOb
     {
         return rsetImpl;
     }
-    
+
+    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
     /**
      * @see com.ibm.ws.jdbc.timedoperations.WSJdbcObjectHelper#getUniqueIdentifier()
      * 
@@ -1116,7 +1117,7 @@ public class WSJdbcResultSet extends WSJdbcObject implements ResultSet, WSJdbcOb
         return config.jndiName == null ? config.id : config.jndiName;
     }
     
-    
+    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
     public String getSql(){
         return sql;  
     }

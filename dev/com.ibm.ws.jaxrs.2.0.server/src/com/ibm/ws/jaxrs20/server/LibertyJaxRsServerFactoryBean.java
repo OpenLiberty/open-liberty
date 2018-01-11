@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.server;
 
+import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -67,7 +69,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
     private final static TraceComponent tc = Tr.register(LibertyJaxRsServerFactoryBean.class);
 
     private final List<JaxRsFactoryBeanCustomizer> beanCustomizers = new LinkedList<JaxRsFactoryBeanCustomizer>();
-    private final Map<String, Object> beanCustomizerContexts = new HashMap<String, Object>();
+    private Map<String, Object> beanCustomizerContexts;
     private final EndpointInfo endpointInfo;
     private final JaxRsModuleMetaData moduleMetadata;
     private ServletConfig servletConfig;
@@ -89,6 +91,17 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         this.moduleMetadata = moduleMetaData;
         this.servletConfig = servletConfig;
         this.providerFactoryService = providerFactoryService;
+
+        //set server bus for the endpoint
+        Bus serverBus = this.moduleMetadata.getServerMetaData().getServerBus();
+        this.setBus(serverBus);
+
+        //Get the beanCustomizerContexts from the bus or create a new map
+        this.beanCustomizerContexts = (Map<String, Object>) serverBus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
+        if (this.beanCustomizerContexts == null) {
+            this.beanCustomizerContexts = new HashMap<String, Object>();
+        }
+
 
         beanCustomizers.addAll(originalBeanCustomizers);
         Collections.sort(beanCustomizers, new Comparator<JaxRsFactoryBeanCustomizer>() {
@@ -231,11 +244,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
          * if no Bean Validation feature, no reason to import package org.apache.cxf.jaxrs.validation or javax.validation.*
          */
 
-        //create server bus to the endpoint
-        Bus serverBus = this.moduleMetadata.getServerMetaData().getServerBus();
-
-        //step 1: set bus, address, delay start
-        this.setBus(serverBus);
+        //step 1: set address, delay start
         this.setAddress(endpointInfo.getAddress());
         this.setStart(false);
         /**
@@ -281,12 +290,18 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
 
         //step 3: prepare the EJB or CDI provider & resources to EJB or CDI's beanCustomizer
         for (JaxRsFactoryBeanCustomizer customizer : beanCustomizers) {
+            String key = createCustomizerKey(customizer);
+            Object oldCustomizerContext = beanCustomizerContexts.get(key);
             BeanCustomizerContext context = new BeanCustomizerContext(endpointInfo, moduleMetadata, cxfPRHolder);
+
+            if (key != null && (oldCustomizerContext instanceof Map)) {
+                context.setContextObject(oldCustomizerContext);
+            }
             customizer.onPrepareProviderResource(context);
 
             Object customizerContext = context.getContextObject();
             if (customizerContext != null) {
-                beanCustomizerContexts.put(Integer.toString(customizer.hashCode()), customizerContext);
+                beanCustomizerContexts.put(createCustomizerKey(customizer), customizerContext);
             }
         }
 
@@ -592,7 +607,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
     }
 
     public Object getBeanCustomizerContext(JaxRsFactoryBeanCustomizer customizer) {
-        return beanCustomizerContexts.get(Integer.toString(customizer.hashCode()));
+        return beanCustomizerContexts.get(createCustomizerKey(customizer));
     }
 
     /**

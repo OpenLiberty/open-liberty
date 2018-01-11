@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config.fat.suite;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -34,6 +35,8 @@ import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
 import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
+
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Tests specific to appConfig
@@ -63,6 +66,10 @@ import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 })
 
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new Config12FeatureReplacementAction());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

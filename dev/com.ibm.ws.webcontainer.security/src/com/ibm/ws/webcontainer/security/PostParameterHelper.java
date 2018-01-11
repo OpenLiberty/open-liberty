@@ -80,6 +80,18 @@ public class PostParameterHelper {
 	 * @param authResult
 	 */
 	public void save(HttpServletRequest req, HttpServletResponse res, AuthenticationResult authResult) {
+		save(req, res, authResult, false);
+	}
+
+	/**
+	 * Save POST parameters to the cookie or session.
+	 * 
+	 * @param req
+	 * @param res
+	 * @param authResult
+	 * @param keepInput : preserve parameter buffer for further read operation. This is only valid for cookie.
+	 */
+	public void save(HttpServletRequest req, HttpServletResponse res, AuthenticationResult authResult, boolean keepInput) {
 		if (!req.getMethod().equalsIgnoreCase("POST")) {
 			return;
 		}
@@ -96,7 +108,7 @@ public class PostParameterHelper {
 		try {
 			String postParamSaveMethod = webAppSecurityConfig.getPostParamSaveMethod();
 			if (postParamSaveMethod.equalsIgnoreCase(WebAppSecurityConfig.POST_PARAM_SAVE_TO_COOKIE)) {
-				saveToCookie((IExtendedRequest) req, reqURL, authResult);
+				saveToCookie((IExtendedRequest) req, reqURL, authResult, keepInput);
 			} else if (postParamSaveMethod.equalsIgnoreCase(WebAppSecurityConfig.POST_PARAM_SAVE_TO_SESSION)) {
 				IExtendedRequest extRequest = (IExtendedRequest) req;
 				Map params = extRequest.getInputStreamData();
@@ -117,11 +129,11 @@ public class PostParameterHelper {
 	 * @param result
 	 */
 	@SuppressWarnings("unchecked")
-	private void saveToCookie(IExtendedRequest req, String reqURL, AuthenticationResult result) {
+	private void saveToCookie(IExtendedRequest req, String reqURL, AuthenticationResult result, boolean keepInput) {
 
 		String strParam = null;
 		try {
-			strParam = serializePostParam(req, reqURL);
+			strParam = serializePostParam(req, reqURL, keepInput);
 		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "IO Exception storing POST parameters onto a cookie: ", new Object[] { e });
@@ -289,9 +301,9 @@ public class PostParameterHelper {
 	 * The format of the data is as follows:
 	 * <base64 encoded byte array of the request URL>.<based64 encoded data[0] from serializeInputStreamData()>.<base 64 encoded data[1]>. and so on.
 	 */
-	private String serializePostParam(IExtendedRequest req, String reqURL) throws IOException, UnsupportedEncodingException, IllegalStateException {
+	private String serializePostParam(IExtendedRequest req, String reqURL, boolean keepInput) throws IOException, UnsupportedEncodingException, IllegalStateException {
 		String output = null;
-		Map params = req.getInputStreamData();
+		HashMap params = req.getInputStreamData();
 		if (params != null) {
 			long size = req.sizeInputStreamData(params);
 			byte[] reqURLBytes = reqURL.getBytes("UTF-8");
@@ -313,12 +325,17 @@ public class PostParameterHelper {
 				if (tc.isDebugEnabled()) {
 					Tr.debug(tc, "encoded length:" + output.length());
 				}
+			    if (keepInput) {
+			        // push back the data.
+					req.setInputStreamData(params);
+			    }
 			} else {
 				Tr.warning(tc, "SEC_FORM_POST_NULL_OR_TOO_LARGE");
 			}
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "encoded POST parameters: " + output);
 			}
+      
 		} else {
 			Tr.warning(tc, "SEC_FORM_POST_NULL_OR_TOO_LARGE");
 		}

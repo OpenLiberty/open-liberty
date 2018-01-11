@@ -28,8 +28,6 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.authorization.jacc.JaccService;
@@ -41,6 +39,8 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
+
+import test.common.SharedOutputManager;
 
 public class ServletStartedListenerTest {
     static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
@@ -100,7 +100,7 @@ public class ServletStartedListenerTest {
                     one(smd).getRoles();
                     will(returnValue(rm));
                     one(smd).setSecurityConstraintCollection(with(any(SecurityConstraintCollection.class)));
-                    // getServletInfos is invoked twice,and returns an iteration object, therefore the 2nd one needs to return 
+                    // getServletInfos is invoked twice,and returns an iteration object, therefore the 2nd one needs to return
                     // the fresh iterator. it seems like adding one(xx) twice works.
                     one(wac).getServletInfos();
                     will(returnValue(si));
@@ -130,7 +130,6 @@ public class ServletStartedListenerTest {
         } catch (UnableToAdaptException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
             fail("An exception is caught." + e);
         }

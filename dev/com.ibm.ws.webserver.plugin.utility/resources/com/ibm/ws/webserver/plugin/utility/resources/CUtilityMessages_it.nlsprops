@@ -1,0 +1,454 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Errore: {0}
+error.inputConsoleNotAvailable=La console di input non \u00e8 disponibile.
+error.missingIO=Errore; manca l''unit\u00e0 I/O: {0}.
+name=nome
+days=giorni
+serverNotFound=Il server specificato {0} non \u00e8 stato trovato all''ubicazione {1}
+userDirNotFound=La userDir specificata {0} non \u00e8 stata trovata
+installDirNotFound=La directory di installazione {0} non \u00e8 stata trovata
+
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Troppi argomenti.
+insufficientArgs=Argomenti insufficienti.
+missingServerName=La destinazione per questa attivit\u00e0 non \u00e8 stata specificata.
+invalidArg=Argomento non valido {0}.
+missingArg=Argomento mancante {0}.
+missingValue=Valore mancante per l''argomento {0}.
+missingPasswordArg=\u00c8 necessario specificare {0} o i rimanenti argomenti password {1}
+
+
+# Messages for FileUtility
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+fileUtility.failedDirCreate=Impossibile creare la directory {0}
+fileUtility.deleteSuccess={0} eliminato correttamente
+fileUtility.deleteFailure=Impossibile eliminare {0}
+
+
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Utilizzo: destinazione azione {0} [opzioni]
+task.unknown=Attivit\u00e0 sconosciuta: {0}
+
+
+# Messages for reading in a password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+password.enterText=Immettere la password {0}:
+password.reenterText=Reimmettere la password {0}:
+password.readError=Errore di lettura della password.
+password.entriesDidNotMatch=Le password non corrispondevano.
+
+
+# Messages common to collective utility tasks
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+common.encodeError=\n\
+Impossibile codificare la password per l''argomento: {0}
+
+common.hostError=\n Il nome host specificato non sembra essere valido: {0}\n Confermare che il nome host sia corretto e che il sistema disponga di una connessione di rete.
+
+common.portError=\n La porta specificata {0} non pu\u00f2 essere raggiunta. Verificare che la porta sia corretta.
+
+common.connectionError=\n\
+Impossibile completare l''operazione MBean.\n\
+Errore: {0}
+
+common.compatibilityError=\n\
+Impossibile accedere all''operazione MBean perch\u00e9 non \u00e8 definita sul controllore. Il controllore \u00e8 probabilmente di una versione precedente a quella del membro. \n\
+Errore: {0}
+
+common.renameFailed=\n\
+Impossibile rinominare {0} in {1}
+
+common.regenerateKey=Il file keystore HTTPS predefinito esiste in {0}.\n\
+Questo certificato verr\u00e0 rigenerato e l''originale verr\u00e0 conservato.\n
+
+common.regenerateTrust=Il file truststore HTTPS predefinito esiste in {0}.\n\
+Questo certificato verr\u00e0 rigenerato e l''originale verr\u00e0 conservato.\n
+
+common.validityTooShort=\n\
+La validit\u00e0 specificata {0} \u00e8 troppo breve. La validit\u00e0 minima \u00e8 365 giorni.
+
+common.invalidDN=\n\
+Il DN specificato per {0} non \u00e8 valido: {1}
+
+common.invalidEndpoint=L''endpoint di destinazione per la replica {0} non \u00e8 nel formato richiesto.\n\
+La destinazione \u00e8 la porta di replica della replica e deve essere nel\n\
+formato host:porta.
+
+common.updateServerXML=Aggiungere le seguenti righe al file server.xml per abilitare:\n
+
+
+# Messages for establishing SSL trust
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslTrust.autoAccept=Accettazione automatica della catena di certificati per il server di destinazione.\n\
+DN oggetto del certificato: {0}
+
+sslTrust.genDigestError=Impossibile generare il digest {0}. \
+Errore: {1}
+
+sslTrust.noDefaultTrust=Il trust SSL non \u00e8 stato stabilito con il server di destinazione.
+
+sslTrust.certInfo=Informazioni sulla catena di certificati:
+
+sslTrust.cert=Certificato {0}
+
+sslTrust.certSubjectDN=DN oggetto: {0}
+
+sslTrust.certIssueDN=DN emittente: {0}
+
+sslTrust.certSerial=Numero di serie: {0}
+
+sslTrust.certExpires=Scadenza: {0}
+
+sslTrust.certSHADigest=Digest SHA-1: {0}
+
+sslTrust.certMD5Digest=Digest MD5: {0}
+
+sslTrust.promptToAcceptTrust=Accettare la catena di certificati precedente? \
+(s/n) 
+# Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
+yes.response.short=s
+yes.response.full=si
+
+
+
+sslTrust.rejectTrust=L'utente ha rifiutato la richiesta di considerare affidabile la catena di certificati.
+
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+hostAuthInfo.bothCredentialsSet=Entrambi {0} e {1} sono impostati. Sceglierne uno.\n\
+\u00c8 possibile specificare un solo metodo di autenticazione.
+
+hostAuthInfo.sshKeyPasswordWithoutKey=La password della chiave privata SSH \u00e8 stata specificata senza la corrispondente chiave privata.
+
+hostAuthInfo.useSudoFalseWithSudoOptions=useSudo \u00e8 impostata su false, ma le altre opzioni sudo sono impostate.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+encoding.aesRequiresKey=La codifica aes richiede una chiave. \
+Specificarne una utilizzando --key.
+
+encoding.xorDoesNotSupportKey=La codifica xor non supporta una chiave. \
+Non specificare --key.
+
+encoding.unsupportedEncoding=Valore di codifica non supportato {0}.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+ssh.invalidSSHKeyPair=\n\
+La coppia di chiavi SSH specificata non era valida.\n\
+Errore: {0}
+
+ssh.couldNotCreateSSHKeys=\n\
+Impossibile creare le chiavi SSH predefinite per l''autenticazione host.\n\
+Errore: {0}
+
+ssh.couldNotReadSSHKeys=\n\
+Impossibile leggere (o scrivere) le chiavi SSH.\n\
+Errore: {0}
+
+ssh.updateAuthorizedKeys=Aggiornamento delle chiavi autorizzate con le nuove chiavi pubbliche in corso...
+
+ssh.cannotUpdateAuthorizedKeys=\n\
+Impossibile aggiornare il file delle chiavi autorizzate per l''utente: {0}\n\
+Controllato il file delle chiavi autorizzate nella home utente: {1}\n\
+Aggiornare il file delle chiavi autorizzate con la seguente chiave pubblica:\n\
+{2}\n\
+Errore: {3}
+
+
+# Messages for creation of a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+create.start=Creazione dei certificati richiesti per la creazione di un Collective in corso...\n\
+Questa operazione potrebbe richiedere un po' di tempo.
+
+create.abort=\n\
+Interruzione dell'impostazione del server Collective Controller.
+
+create.errGetHostName=\n\
+Impossibile determinare il nome host. Viene impostato sul valore predefinito {0}.\n\
+Causa: {1}\n\
+Per impostare esplicitamente il nome host, utilizzare l''opzione --hostName.
+
+create.errorAlreadyHasResources=\n\
+La directory di risorse/collective del server gi\u00e0 esiste. \n\
+Per ricreare il Collective, rimuovere l'intera directory.\n\
+Per estendere un Collective esistente, utilizzare l'attivit\u00e0 di replica.
+
+create.configLocationInDefaults=\n\
+L'ubicazione specificata dall'opzione --createConfigFile \u00e8 nella \n\
+directory configDropins/defaults del server. Non \u00e8 un'ubicazione valida per la configurazione \n di Collective generata perch\u00e9 tutti i controllori\n\
+ condividono l'ubicazione. Specificare un'ubicazione diversa.
+
+create.genCertControllerRoot=Il certificato root del controllore \u00e8 stato generato correttamente.
+
+create.genCertMemberRoot=Il certificato root del membro \u00e8 stato generato correttamente.
+
+create.genCertServerIdentity=Il certificato di identit\u00e0 del server \u00e8 stato generato correttamente.
+
+create.genCertHTTPS=Il certificato HTTPS \u00e8 stato generato correttamente.
+
+create.failedKSSave=\n\
+Impossibile salvare il keystore {0}
+
+create.cleanupFail=\n\
+Errore durante la ripulitura dei file generati. Impossibile eliminare {0}\n\
+Rimuovere la directory manualmente, controllare le autorizzazioni del file\n\
+\ e ripetere l''operazione.
+
+create.successful=La configurazione di Collective Controller per {0} \u00e8 stata impostata correttamente.\n
+
+create.configureSecurity=Verificare che la sicurezza di gestione sia configurata per il server.\n\
+Un utente di gestione \u00e8 necessario per unire i membri al Collective.
+
+create.certUtil.NotAvailable=L'operazione richiesta non \u00e8 disponibile con questa edizione di WebSphere.
+
+# Messages for joining a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+join.start=Unione del Collective con il controllore di destinazione {0}:{1}...\n\
+Questa operazione potrebbe richiedere un po'' di tempo.
+
+join.abort=\n\
+Interruzione dell'unione di Collective.
+
+join.errorAlreadyHasResources=La directory di risorse/collective gi\u00e0 esiste per questo server.\n\
+Il server potrebbe gi\u00e0 essere un membro.\n\
+Per prendere nuovamente parte al collective, eseguire l'attivit\u00e0 di rimozione o eliminare manualmente la\n\
+directory di risorse/collective e rieseguire l'operazione.
+
+join.writeKeystoreFail=\n\
+Errore durante la scrittura del keystore richiesto sul disco {0}
+
+join.cleanupFail=\n\
+Errore durante la ripulitura dei file generati. Impossibile eliminare {0}\n\
+Rimuovere la directory manualmente, controllare le autorizzazioni del file\ne ripetere l''operazione.
+
+join.mbeanComplete=La richiesta MBean \u00e8 stata completata correttamente sul controllore.
+
+join.registeredAlready=Il server specificato {0} appare gi\u00e0 come un membro.\n\
+Per prendere nuovamente parte al collective, eseguire l''attivit\u00e0 di rimozione e ritentare l''operazione.
+
+join.successful=Unione del Collective riuscita per il server {0}.\n
+
+join.useHostCredentialsButOtherCtedentialsAreSet=Se useHostCredentials \u00e8 impostato, non fornire altre credenziali host.
+
+deployAdminMetadata.mbeanComplete=La richiesta AdminMetadataManagerMBean \u00e8 stata completata correttamente sul controller.
+
+deployAdminMetadata.start=Distribuzione dei metadati di gestione al repository Collective in corso...\n\
+Questa operazione potrebbe richiedere un po' di tempo.
+
+allocateDeployVariables.mbeanComplete=La richiesta CollectiveRepositoryMBean \u00e8 stata completata correttamente sul controllore.
+
+allocateDeployVariables.start=Assegnazione delle variabili di distribuzione nel repository Collective...\n\
+Questa operazione potrebbe richiedere un po' di tempo.
+
+AllocatedDeployVars=La variabile di distribuzione allocata:
+deployVarsNotFound=La variabile di distribuzione non definita: {0}
+deployVarsAreAllocated=Le variabili di distribuzione sono state assegnate e deployVariables.xml \u00e8 stato creato nella directory server /configDropins/overrides.
+
+# Messages for generating a collective key
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+genKey.start=Generazione keystore con controllore di destinazione {0}:{1}...\n
+genKey.abort=\n\
+Interruzione di genKey.
+
+genKey.writeKeystoreFail=\n\
+Errore durante la scrittura del keystore richiesto sul disco {0}
+
+genKey.cleanupFail=\n\
+Errore durante la ripulitura dei file generati. Impossibile eliminare {0}\n\
+Rimuovere il file manualmente, controllare le autorizzazioni del file\n e ripetere l''operazione.
+
+genKey.mbeanComplete=La richiesta MBean \u00e8 stata completata correttamente sul controllore.
+
+genKey.generatedKeystore=Keystore {0} generato correttamente.
+
+
+# Messages for replicating a controller 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+replicate.start=Replica del Collective Controller di destinazione {0}:{1} in corso...\n\
+Questa operazione potrebbe richiedere un po'' di tempo.
+
+replicate.abort=\n\
+Interruzione della replica del controllore.
+
+replicate.errorAlreadyHasResources=La directory di risorse/collective gi\u00e0 esiste per questo server.\n\
+\u00c8 possibile che il server sia gi\u00e0 un controllore.\n\
+Per replicare il controllore, eseguire l'attivit\u00e0 di rimozione oppure eliminare manualmente la\n\
+directory resources/collective e provare di nuovo.
+
+replicate.writeKeystoreFail=\n\
+Errore durante la scrittura del keystore richiesto sul disco {0}
+
+replicate.writeFileFail=\n\
+Errore durante la scrittura del file richiesto sul disco {0}
+
+replicate.cleanupFail=\n\
+Errore durante la ripulitura dei file generati. Impossibile eliminare {0}\n\
+Rimuovere la directory manualmente, controllare le autorizzazioni del file\ne ripetere l''operazione.
+
+replicate.mbeanComplete=La richiesta MBean \u00e8 stata completata correttamente sul controllore.
+
+replicate.registeredAlready=Il server specificato {0} appare gi\u00e0 come un membro.\n\
+Per replicare il controllore, eseguire l''attivit\u00e0 di rimozione e ritentare.
+
+replicate.success=Controllore replicato correttamente come server {0}.\n
+
+
+replicate.configureSecurity=Verificare che la sicurezza amministrativa sia configurata per il nuovo server\n\
+allo stesso modo del Collective Controller corrente. Inoltre, impostare la password per\n\
+collectiveRootKeys sulla password corretta.\n
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+remove.attemptUnregister=Tentativo di annullamento della registrazione del server dal collective in corso...
+
+remove.unregisteredAlready=Il server {0} non \u00e8 registrato.\n\
+Potrebbe essere registrato con un altro nome host.
+
+remove.unregisterFailed=Impossibile annullare la registrazione del server {0} a causa di un errore.
+
+remove.unregisterSuccess=Annullamento della registrazione del server {0} riuscito.
+
+remove.attemptResourceDelete=Tentativo di rimuovere le risorse per il Collective dal server in corso...
+
+remove.noFilesRemoved=Non \u00e8 stata rimossa alcuna risorsa di collective.
+remove.noResources=Non \u00e8 stata trovata alcuna risorsa di collective.
+
+remove.manuallyRemove=Non \u00e8 stato possibile rimuovere alcuni file in {0}.\n\
+Sar\u00e0 necessario rimuoverli manualmente.
+
+remove.filesSuccess=Le risorse per l'appartenenza a Collective sono state rimosse correttamente.
+
+remove.updateXML=\n\
+Aggiornare il file server.xml e rimuovere i seguenti elementi:
+
+removeAllAdminMetadata.mbeanComplete=La richiesta AdminMetadataManagerMBean \u00e8 stata completata correttamente sul controller.
+
+removeAllAdminMetadata.start=Rimozione di tutti i metadati di gestione dal repository Collective in corso...\n\
+Questa operazione potrebbe richiedere un po' di tempo.
+
+remove.removeAllAdminMetadataFailed=I metadati di gestione con il tipo di risorsa {0} e l''identit\u00e0 {1} non possono essere rimossi dal repository Collective a causa di un errore.
+
+getAdminMetadata.mbeanComplete=La richiesta AdminMetadataManagerMBean \u00e8 stata completata correttamente sul controller.
+
+releaseDeployVariables.start=Rilascio di tutte le variabili di distribuzione dal repository Collective...\n\
+Questa operazione potrebbe richiedere un po' di tempo.
+
+releaseDeployVariables.mbeanComplete=La richiesta CollectiveRepositoryMBean \u00e8 stata completata correttamente sul controllore.
+
+remove.releaseDeployVariablesFailed=Le variabili di distribuzione {0} sul nome host {1} non possono essere rimosse dal repository Collective a causa di un errore.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+registerHost.abort=\n\
+Interruzione di registerHost.
+
+registerHost.attemptRegister=Registrazione dell'host nel Collective...
+
+registerHost.registeredAlready=L''host {0} \u00e8 gi\u00e0 registrato.
+
+registerHost.registerFailed=Non \u00e8 stato possibile registrare {0} a causa di un errore.
+
+registerHost.registerSuccess=Host {0} registrato correttamente.
+
+
+# Messages for updating a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+updateHost.abort=\n\
+Interruzione di updateHost.
+
+updateHost.attemptRegister=Aggiornamento delle informazioni di autenticazione per l'host...
+
+updateHost.notRegistered=L''host {0} non \u00e8 registrato.
+updateHost.updateFailed=Non \u00e8 stato possibile aggiornare l''host {0} a causa di un errore.
+updateHost.updateSuccess=Informazioni di autenticazione dell''host {0} aggiornate correttamente.
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unregisterHost.attemptUnregister=Annullamento della registrazione dell'host dal Collective...
+
+unregisterHost.unregisteredAlready=L''host {0} non \u00e8 registrato.
+
+unregisterHost.unregisterFailed=Non \u00e8 stato possibile registrare l''host {0} a causa di un errore.
+
+unregisterHost.unregisterSuccess=Annullamento della registrazione dell''host {0} eseguito correttamente.
+
+
+# Messages for adding a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+addReplica.attempt=Aggiunta dell'endpoint all'insieme di repliche...
+
+addReplica.alreadyAdded=Endpoint replica {0} gi\u00e0 presente nell''insieme di repliche.
+
+addReplica.invalidEndpoint=Impossibile aggiungere l''endpoint replica {0} all''insieme di repliche. \n\
+Verificare che l''endpoint replica sia corretto e che la replica sia in esecuzione.
+
+addReplica.error=Impossibile aggiungere l''endpoint replica {0} a causa di un errore.
+
+addReplica.success=Endpoint replica {0} aggiunto correttamente all''insieme di repliche.
+
+
+# Messages for removing a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+removeReplica.attemptUnregister=Tentativo di rimuovere l'endpoint dall'insieme di repliche...
+
+removeReplica.alreadyRemoved=L''endpoint replica {0} non fa parte dell''insieme di repliche oppure l''insieme risultante dell''operazione non \u00e8 valido.
+
+removeReplica.error=Impossibile rimuovere l''endpoint replica {0} a causa di un errore.
+
+removeReplica.success=Endpoint replica {0} rimosso correttamente dall''insieme di repliche.
+
+# Message for setting a host/server into maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+setMaintenanceMode.connectionError=Impossibile impostare la modalit\u00e0 di manutenzione a causa di un errore di connessione alla macchina di destinazione {0}.
+
+setMaintenanceMode.error=Impossibile impostare la modalit\u00e0 di manutenzione per {0} a causa di un errore.
+
+setMaintenanceMode.success=Impostazione della modalit\u00e0 di manutenzione per {0} riuscita.
+
+setMaintenanceMode.alt=Deve essere avviato un server alterantivo. \
+La modalit\u00e0 di manutenzione verr\u00e0 impostata per {0} quando sar\u00e0 avviato il server alternativo.
+
+setMaintenanceMode.noAltServer=Impossibile impostare la modalit\u00e0 di manutenzione per {0} poich\u00e9 un server alternativo non \u00e8 disponibile.
+
+# Message for taking a host/server out of maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unsetMaintenanceMode.error=Impossibile annullare l''impostazione della modalit\u00e0 di manutenzione per {0} a causa di un errore.
+
+unsetMaintenanceMode.success=Annullamento impostazione della modalit\u00e0 di manutenzione per {0} riuscito.
+
+unsetMaintenanceMode.connectionError=Impossibile annullare l''impostazione della modalit\u00e0 di manutenzione a causa di un errore di connessione alla macchina di destinazione {0}.
+
+# Message for displaying if a host/server is in maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+getMaintenanceMode.connectionError=Impossibile ottenere la modalit\u00e0 di manutenzione a causa di un errore di connessione alla macchina di destinazione {0}.
+
+getMaintenanceMode.inMM={0} \u00e8 in modalit\u00e0 di manutenzione.
+
+getMaintenanceMode.notInMM={0} non \u00e8 in modalit\u00e0 di manutenzione.
+
+getMaintenanceMode.alt=Deve essere avviato un server alterantivo. \
+La modalit\u00e0 di manutenzione verr\u00e0 impostata per {0} quando sar\u00e0 avviato il server alternativo.
+
+getMaintenanceMode.error=Impossibile ottenere la modalit\u00e0 di manutenzione per {0} a causa di un errore.

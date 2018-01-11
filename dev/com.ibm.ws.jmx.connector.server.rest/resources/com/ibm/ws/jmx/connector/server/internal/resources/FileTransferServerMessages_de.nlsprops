@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Der Zugriff auf den Pfad {0} wurde verweigert.
+SERVER_ACCESS_DENIED_ERROR.explanation=Es wurde versucht, auf einen Pfad au\u00dferhalb der konfigurierten Lese-/Schreibregion zuzugreifen.
+SERVER_ACCESS_DENIED_ERROR.useraction=\u00c4ndern Sie den Pfad in einen Pfad in der konfigurierten zu lesenden/zu beschreibenden Region.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
+OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler wurde ausgel\u00f6st, weil der angegeben Service nicht verf\u00fcgbar ist.
+OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: Die Anforderung zum Herunterladen der Datei {0} wurde erfolgreich ausgef\u00fchrt.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=Die Anforderung zum Herunterladen der angegebenen Datei wurde erfolgreich ausgef\u00fchrt.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: Die Anforderung zum Hochladen der Datei {0} wurde erfolgreich ausgef\u00fchrt.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=Die Anforderung zum Hochladen der angegebenen Datei wurde erfolgreich ausgef\u00fchrt.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: Die Anforderung zum L\u00f6schen der Datei {0} wurde erfolgreich ausgef\u00fchrt.
+DELETE_REQUEST_COMPLETE_INFO.explanation=Die Anforderung zum L\u00f6schen der angegebenen Datei wurde erfolgreich ausgef\u00fchrt.
+DELETE_REQUEST_COMPLETE_INFO.useraction=Dies ist eine Informationsnachricht. Es ist keine Aktion erforderlich.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: Die Anforderung zum L\u00f6schen der Datei {0} konnte nicht erfolgreich ausgef\u00fchrt wurden.
+DELETE_REQUEST_ERROR.explanation=Die Anforderung zum L\u00f6schen der angegebenen Datei wurde nicht erfolgreich ausgef\u00fchrt. M\u00f6glicherweise wird die Datei von einem anderen Prozess verwendet.
+DELETE_REQUEST_ERROR.useraction=Stellen Sie sicher, dass die Datei von keinem anderen Prozess verwendet wird und die erforderlichen Berechtigungen zum L\u00f6schen der Datei erteilt wurden.
+
+PATH_NOT_VALID=CWWKX0127E: Der Pfad {0} ist nicht g\u00fcltig.
+PATH_NOT_VALID.explanation=Der angegebene Pfad ist nicht g\u00fcltig und wurde nicht gefunden.
+PATH_NOT_VALID.useraction=Stellen Sie sicher, dass ein Pfad angegeben ist, der keine ung\u00fcltigen Zeichen oder Werte enth\u00e4lt.
+
+NO_WRITE_LOCATION=CWWKX0128E: Im Routing-Server sind keine beschreibbaren Positionen konfiguriert.
+NO_WRITE_LOCATION.explanation=Im Routing-Server sind keine beschreibbaren Positionen konfiguriert.
+NO_WRITE_LOCATION.useraction=Stellen Sie sicher, dass mindestens eine beschreibbare Position im Routing-Server konfiguriert ist.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: Das hochgeladene Archiv {0} konnte nicht erweitert werden.
+UPLOAD_EXPANSION_ERROR.explanation=Die Erweiterung f\u00fcr das angegebene hochgeladene Archiv konnte nicht durchgef\u00fchrt werden.
+UPLOAD_EXPANSION_ERROR.useraction=Stellen Sie sicher, dass das Archiv nicht besch\u00e4digt ist.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: Das Expander-Dienstprogramm f\u00fcr Archive wurde nicht gefunden.
+ARCHIVE_EXPANDER_ERROR.explanation=Das erforderliche Expander-Dienstprogramm f\u00fcr Archive wurde nicht gefunden.
+ARCHIVE_EXPANDER_ERROR.useraction=Stellen Sie sicher, ass das Liberty-Installationsverzeichnis nicht besch\u00e4digt ist.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: Die Task mit der ID {0} wurde nicht gefunden.
+UNKNOWN_TASK_ID_ERROR.explanation=Die angegebene ID stimmt mit keiner der Tasks \u00fcberein, die momentan in der Task-Registry enthalten sind.
+UNKNOWN_TASK_ID_ERROR.useraction=Fragen Sie eine g\u00fcltige ID ab, die noch nicht verwendet wurde.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: Die Optionen f\u00fcr die Aktion nach der \u00dcbertragung, {0}, sind nicht g\u00fcltig.
+INVALID_ACTION_OPTIONS.explanation=Die Optionen f\u00fcr die Aktion nach der \u00dcbertragung m\u00fcssen n null, leer oder eine durch Kommas getrennte Liste sein, die dieselbe L\u00e4nge hat wie die Aktionsliste.
+INVALID_ACTION_OPTIONS.useraction=Die Optionen f\u00fcr die Aktion nach der \u00dcbertragung g\u00fcltig sind.

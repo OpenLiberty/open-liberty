@@ -1,0 +1,10 @@
+Implementation-Title: Mojarra
+Specification-Title: JavaServer Faces
+Extension-Name: com.sun.faces
+Implementation-Version: 2.2.14
+Bundle-Name: Mojarra JSF Implementation 2.2.14 (20161114-2154)
+Bundle-Version: 2.2.14
+Bundle-ManifestVersion: 2
+Bundle-Description: Mojarra JSF Implementation (javax.faces/2.2) 2.2.14 (20161114-2154)
+Specification-Version: 2.1
+Include-Resource: META-INF=build/classes/META-INF,build/classes

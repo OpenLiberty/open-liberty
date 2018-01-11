@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.wim.adapter.file.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,9 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,10 +32,13 @@ import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class WithRepoConfiguredWithoutIDTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.file.fat.repowithoutid");
     private static final Class<?> c = WithRepoConfiguredWithoutIDTest.class;
@@ -79,9 +80,12 @@ public class WithRepoConfiguredWithoutIDTest {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        server.stopServer();
-        server.deleteFileFromLibertyInstallRoot("lib/features/testfileadapter-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("lib/com.ibm.ws.security.wim.adapter.file_1.0.jar");
+        try {
+            server.stopServer("CWIML4537E");
+        } finally {
+            server.deleteFileFromLibertyInstallRoot("lib/features/testfileadapter-1.0.mf");
+            server.deleteFileFromLibertyInstallRoot("lib/com.ibm.ws.security.wim.adapter.file_1.0.jar");
+        }
     }
 
     /**
@@ -120,7 +124,6 @@ public class WithRepoConfiguredWithoutIDTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4537E");
@@ -233,7 +236,7 @@ public class WithRepoConfiguredWithoutIDTest {
         String user = "admin";
         String uniqueUserId = "uid=admin,o=defaultWIMFileBasedRealm";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
-        equalDNs("", uniqueUserId, servlet.getUniqueUserId(user));
+        assertDNsEqual("UniqueUserId is incorrect", uniqueUserId, servlet.getUniqueUserId(user));
     }
 
     /**
@@ -439,7 +442,7 @@ public class WithRepoConfiguredWithoutIDTest {
         String group = "group1";
         String uniqueGroupId = "cn=group1,o=defaultWIMFileBasedRealm";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -665,9 +668,4 @@ public class WithRepoConfiguredWithoutIDTest {
         }
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

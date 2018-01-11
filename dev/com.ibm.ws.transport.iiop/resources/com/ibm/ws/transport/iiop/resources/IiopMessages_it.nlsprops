@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: Il server dei nomi CORBA \u00e8 ora disponibile in {0}.
+NAME_SERVER_AVAILABLE.explanation=Messaggio a solo scopo informativo.
+NAME_SERVER_AVAILABLE.useraction=Non sono richieste azioni.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: Il server dei nomi CORBA non \u00e8 pi\u00f9 disponibile in {0}.
+NAME_SERVER_UNAVAILABLE.explanation=Messaggio a solo scopo informativo.
+NAME_SERVER_UNAVAILABLE.useraction=Non sono richieste azioni.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: La richiesta al server protetto sull''host {0} non \u00e8 riuscita perch\u00e9 la configurazione corrente non ha la sicurezza abilitata. Occorre configurare CSIv2 (Common Secure Interoperability Version 2) lato client (in uscita) includendo un elemento keyStore e aggiungendo la versione appropriata della funzione appSecurity in un server o la versione appropriata della funzione appSecurityClient in un contenitore client dell''applicazione. 
+PORT_ZERO.explanation= Una richiesta al server sull'host indicato non \u00e8 riuscita. Il server cui viene inviata la richiesta ha la sicurezza CSIv2 abilitata, ma la configurazione corrente no. Anche il client che si connette a tale server deve essere configurato con SSL (Secure Sockets Layer) e CSIv2.
+PORT_ZERO.useraction= Occorre configurare CSIv2 (Common Secure Interoperability Version 2) lato client (in uscita) includendo un elemento keyStore e aggiungendo la versione appropriata della funzione appSecurity in un server o la versione appropriata della funzione appSecurityClient in un contenitore client dell'applicazione. Consultare la documentazione per determinare la versione corrente delle funzioni appSecurity o appSecurityClient da aggiungere alla configurazione ed eventuali configurazioni richieste. 

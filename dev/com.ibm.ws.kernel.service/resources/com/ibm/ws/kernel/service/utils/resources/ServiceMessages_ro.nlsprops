@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Parametrul specificat nu este un \u015fir sau matrice de \u015firuri. {1}={2} pentru {0}
+invalidStringArray.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, un \u015fir sau matrice de \u015firuri.
+invalidStringArray.useraction=Verifica\u0163i valoarea specificat\u0103 \u00een configura\u0163ia serverului \u015fi asigura\u0163i-v\u0103 c\u0103 valoarea este o reprezentare valid\u0103 a unui \u015fir sau a unei matrici de \u015firuri.
+
+invalidStringCollection=CWWKE0102W: Parametrul specificat nu este un \u015fir sau colec\u0163ie de \u015firuri. {1}={2} pentru {0}
+invalidStringCollection.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, un \u015fir sau colec\u0163ie de \u015firuri.
+invalidStringCollection.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unui \u015fir sau colec\u0163ii de \u015firuri.
+
+invalidBoolean=CWWKE0103W: Parametrul specificat nu reprezint\u0103 o valoare boolean\u0103. {1}={2} pentru {0}
+invalidBoolean.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare boolean.
+invalidBoolean.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unei valori boolean.
+
+invalidLong=CWWKE0104W: Parametrul specificat nu reprezint\u0103 o valoare lung\u0103. {1}={2} pentru {0}
+invalidLong.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare long.
+invalidLong.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unei valori long.
+
+invalidInteger=CWWKE0105W: Parametrul specificat nu reprezint\u0103 o valoare \u00eentreag\u0103. {1}={2} pentru {0}
+invalidInteger.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare \u00eentreg.
+invalidInteger.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 an unei valori \u00eentregi.
+
+invalidIntegerArray=CWWKE0106W: Parametrul specificat nu reprezint\u0103 o matrice de \u00eentregi. {1}={2} pentru {0}
+invalidIntegerArray.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o matrice de \u00eentregi.
+invalidIntegerArray.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 an unei matrici de \u00eentregi.
+
+invalidDuration=CWWKE0107W: Parametrul specificat nu reprezint\u0103 o valoarea de durat\u0103. {1}={2} pentru {0}
+invalidDuration.explanation=Valoarea pentru parametrul de configurare specificat nu este, sau nu poate fi convertit\u0103 la, o valoare de durat\u0103.
+invalidDuration.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 \u00een configura\u0163ia serverului este o reprezentare valid\u0103 a unei valori de durat\u0103.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

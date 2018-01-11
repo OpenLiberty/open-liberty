@@ -38,7 +38,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.jsp;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component, \

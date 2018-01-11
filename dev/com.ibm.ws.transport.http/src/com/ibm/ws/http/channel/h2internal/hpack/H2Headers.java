@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.genericbnf.internal.GenericConstants;
+import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.ByteFormatType;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
@@ -31,7 +32,30 @@ public class H2Headers {
                                                          GenericConstants.GENERIC_TRACE_NAME,
                                                          null);
 
+    /**
+     * Decode header bytes without validating against connection settings
+     *
+     * @param WsByteBuffer
+     * @param H2HeaderTable
+     * @return H2HeaderField
+     * @throws CompressionException
+     */
     public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table) throws CompressionException {
+        return decodeHeader(buffer, table, true, false, null);
+    }
+
+    /**
+     * Decode header bytes, validating against a given H2ConnectionSettings
+     *
+     * @param WsByteBuffer
+     * @param H2HeaderTable
+     * @param isFirstHeader
+     * @param H2ConnectionSettings
+     * @return H2HeaderField
+     * @throws CompressionException if invalid header names or values are found
+     */
+    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, boolean isFirstHeader,
+                                             boolean isTrailerBlock, H2ConnectionSettings settings) throws CompressionException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "decodeHeader");
@@ -84,6 +108,11 @@ public class H2Headers {
 
             header = table.getHeaderEntry(decodedInteger);
 
+            if (header == null) {
+                throw new CompressionException("Received an invalid header index");
+            }
+            checkIsValidH2Header(header, isTrailerBlock);
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Found header: [" + header.getName() + ", " + header.getValue() + "]");
             }
@@ -120,8 +149,17 @@ public class H2Headers {
                 header = decodeHeader(buffer, table, ByteFormatType.INCREMENTAL);
 
             } else if (maskedByte >= HpackConstants.MASK_2F) {
-                //TODO: throw exception, shouldn't update table size unless it is the
-                //beginning of the header frame.
+                if (!isFirstHeader) {
+                    throw new CompressionException("dynamic table size update must occur at the beginning of the first header block");
+                }
+
+                int fragmentLength = IntegerRepresentation.decode(buffer, ByteFormatType.TABLE_UPDATE);
+                if (settings != null && fragmentLength > settings.headerTableSize) {
+                    throw new CompressionException("dynamic table size update size was larger than SETTINGS_HEADER_TABLE_SIZE");
+                }
+                table.updateTableSize(fragmentLength);
+
+                return null;
             }
 
             /*
@@ -153,6 +191,8 @@ public class H2Headers {
             }
 
         }
+
+        checkIsValidH2Header(header, isTrailerBlock);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Decoded the header: [" + header.getName() + ", " + header.getValue() + "]");
@@ -234,40 +274,38 @@ public class H2Headers {
      * @param buffer Contains all bytes that will be decoded into this <HeaderField>
      * @return String representation of the fragment. Stored as either the key or value of this <HeaderField>
      * @throws CompressionException
-     * @throws HeaderFieldDecodingException
-     * @throws Exception
      */
     private static String decodeFragment(WsByteBuffer buffer) throws CompressionException {
         String decodedResult = null;
 
-        //TODO: throw exception if !buffer.remaining();
+        try {
+            byte currentByte = buffer.get();
 
-        byte currentByte = buffer.get();
+            //Reset back position to decode the integer length of this segment.
+            buffer.position(buffer.position() - 1);
+            boolean huffman = (HpackUtils.getBit(currentByte, 7) == 1);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Decoding using huffman encoding: " + huffman);
+            }
 
-        //Reset back position to decode the integer length of this segment.
-        buffer.position(buffer.position() - 1);
-        boolean huffman = (HpackUtils.getBit(currentByte, 7) == 1);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Decoding using huffman encoding: " + huffman);
+            //HUFFMAN and NOHUFFMAN ByteFormatTypes have the same
+            //integer decoding bits (N=7). Therefore, either enum value
+            //is valid for the integer representation decoder.
+            int fragmentLength = IntegerRepresentation.decode(buffer, ByteFormatType.HUFFMAN);
+
+            byte[] bytes = new byte[fragmentLength];
+            //Transfer bytes from the buffer into byte array.
+            buffer.get(bytes);
+
+            if (huffman) {
+                HuffmanDecoder decoder = new HuffmanDecoder();
+                bytes = decoder.convertHuffmanToAscii(bytes);
+            }
+            decodedResult = new String(bytes, Charset.forName(HpackConstants.HPACK_CHAR_SET));
+
+        } catch (Exception e) {
+            throw new CompressionException("Received an invalid header block fragment");
         }
-
-        //HUFFMAN and NOHUFFMAN ByteFormatTypes have the same
-        //integer decoding bits (N=7). Therefore, either enum value
-        //is valid for the integer representation decoder.
-        int fragmentLength = IntegerRepresentation.decode(buffer, ByteFormatType.HUFFMAN);
-
-        byte[] bytes = new byte[fragmentLength];
-        //Transfer bytes from the buffer into byte array.
-        buffer.get(bytes);
-
-        if (huffman) {
-            HuffmanDecoder decoder = new HuffmanDecoder();
-
-            bytes = decoder.convertHuffmanToAscii(bytes);
-
-        }
-
-        decodedResult = new String(bytes, Charset.forName(HpackConstants.HPACK_CHAR_SET));
 
         return decodedResult;
 
@@ -388,6 +426,66 @@ public class H2Headers {
         //Put encode value in buffer
         encodedHeader.write(fragmentBytes);
 
+    }
+
+    /**
+     * Validate a H2HeaderField object
+     *
+     * @param H2HeaderField
+     * @throws CompressionException if the H2HeaderField is not valid
+     */
+    private static void checkIsValidH2Header(H2HeaderField header, boolean isTrailerField) throws CompressionException {
+        if (!header.getName().startsWith(":")) {
+            String headerName = header.getName();
+            String headerValue = header.getValue();
+
+            for (String name : HpackConstants.connectionSpecificHeaderList) {
+                if (name.equalsIgnoreCase(headerName)) {
+                    throw new CompressionException("Invalid Connection header received: " + header.toString());
+                }
+            }
+            if ("Connection".equalsIgnoreCase(headerName) && !"TE".equalsIgnoreCase(headerValue)) {
+                throw new CompressionException("Invalid Connection header received: " + header.toString());
+            }
+            if ("TE".equalsIgnoreCase(headerName) && !"trailers".equalsIgnoreCase(headerValue)) {
+                throw new CompressionException("Invalid header: TE header must have value \"trailers\": " + header.toString());
+            }
+        } else {
+            if (isTrailerField) {
+                throw new CompressionException("Psuedo-headers are not allowed in trailers: " + header.toString());
+            }
+        }
+        if (isTrailerField) {
+            checkIsValidTrailerHeader(header);
+        }
+    }
+
+    /**
+     * Validate headers in a header block fragment. From the HTTP/1.1 spec, trailer block headers MUST NOT
+     * contain the following fields: Transfer-Encoding, Content-Length, or Trailer
+     *
+     * @param H2HeaderField
+     * @throws CompressionException if the header field was Transfer-Encoding, Content-Length, or Trailer
+     */
+    private static void checkIsValidTrailerHeader(H2HeaderField header) throws CompressionException {
+        String name = header.getName();
+        if ("Content-Length".equalsIgnoreCase(name) || "Transfer-Encoding".equalsIgnoreCase(name) ||
+            "Trailer".equalsIgnoreCase(name)) {
+            throw new CompressionException("Invalid trailer header received: " + header.toString());
+        }
+    }
+
+    /**
+     * Get the content length value from a header, if one exists
+     *
+     * @param H2HeaderField
+     * @return the content-length value, or -1 if no content-length is found
+     */
+    public static int getContentLengthValue(H2HeaderField header) {
+        if ("content-length".equalsIgnoreCase(header.getName())) {
+            return Integer.parseInt(header.getValue());
+        }
+        return -1;
     }
 
 }

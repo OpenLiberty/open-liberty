@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -43,11 +44,16 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     private String _pathQueryString = null;
 
     private static final String HDR_REFERER = HttpHeaderKeys.HDR_REFERER.getName();
+    private static final String HDR_IF_MATCH = HttpHeaderKeys.HDR_IF_MATCH.getName();
+    private static final String HDR_IF_MODIFIED_SINCE = HttpHeaderKeys.HDR_IF_MODIFIED_SINCE.getName();
+    private static final String HDR_IF_NONE_MATCH = HttpHeaderKeys.HDR_IF_NONE_MATCH.getName();
+    private static final String HDR_IF_RANGE = HttpHeaderKeys.HDR_IF_RANGE.getName();
+    private static final String HDR_IF_UNMODIFIED_SINCE = HttpHeaderKeys.HDR_IF_UNMODIFIED_SINCE.getName();
 
     private final SRTServletRequest40 _inboundRequest;
 
     // Used to store headers for the push request
-    HashMap<String, HttpHeaderField> _headers = new HashMap<String, HttpHeaderField>();
+    HashMap<String, HashSet<HttpHeaderField>> _headers = new HashMap<String, HashSet<HttpHeaderField>>();
     // Used to store cookies for the push request
     HashSet<HttpCookie> _cookies;
 
@@ -150,7 +156,14 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "addHeader()", "name = " + name + ", value = " + value);
         }
-        _headers.put(name, new HttpHeaderField(name, value));
+        if (_headers.containsKey(name)) {
+            HashSet<HttpHeaderField> values = _headers.get(name);
+            values.add(new HttpHeaderField(name, value));
+        } else {
+            HashSet<HttpHeaderField> values = new HashSet<HttpHeaderField>();
+            values.add(new HttpHeaderField(name, value));
+            _headers.put(name, values);
+        }
         return this;
     }
 
@@ -223,18 +236,12 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
                 Tr.debug(tc, "push()", "exception from push request : " + e);
             }
 
-            _path = null;
-            _pathURI = null;
-            _queryString = null;
-            _pathQueryString = null;
+            reset();
 
             throw new IllegalStateException(e);
         }
 
-        _path = null;
-        _pathURI = null;
-        _queryString = null;
-        _pathQueryString = null;
+        reset();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "push()");
@@ -274,8 +281,11 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
 
     @Override
     public String getHeader(String name) {
-        HttpHeaderField field = _headers.get(name);
-        if (field != null) {
+        HashSet<HttpHeaderField> values = _headers.get(name);
+        if (values != null) {
+            Iterator<HttpHeaderField> valuesIterator = values.iterator();
+            // return the first value
+            HttpHeaderField field = valuesIterator.next();
             return field.asString();
         } else
             return null;
@@ -292,7 +302,23 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     // Methods required by com.ibm.wsspi.http.ee8.HttpPushBuilder
     @Override
     public Set<HeaderField> getHeaders() {
-        return new HashSet<HeaderField>(_headers.values());
+        HashSet<HeaderField> headerFields = new HashSet<HeaderField>();
+
+        if (_headers.size() > 0) {
+            Iterator<String> headerNames = _headers.keySet().iterator();
+            while (headerNames.hasNext()) {
+                Iterator<HttpHeaderField> headers = _headers.get(headerNames.next()).iterator();
+                while (headers.hasNext()) {
+                    HttpHeaderField field = headers.next();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "getHeaders()", "add header name = " + field.getName() + ", value = " + field.asString());
+                    }
+                    headerFields.add(field);
+                }
+            }
+        }
+
+        return headerFields;
     }
 
     @Override
@@ -303,6 +329,26 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     @Override
     public Set<HttpCookie> getCookies() {
         return _cookies;
+    }
+
+    // Reset the "state" of this PushBuilder before next push
+    private void reset() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "reset()", "Clearing the path and removing conditional headers");
+        }
+
+        //clear the path
+        _path = null;
+        _pathURI = null;
+        _queryString = null;
+        _pathQueryString = null;
+
+        //remove conditional headers
+        removeHeader(HDR_IF_MATCH);
+        removeHeader(HDR_IF_MODIFIED_SINCE);
+        removeHeader(HDR_IF_NONE_MATCH);
+        removeHeader(HDR_IF_RANGE);
+        removeHeader(HDR_IF_UNMODIFIED_SINCE);
     }
 
 }

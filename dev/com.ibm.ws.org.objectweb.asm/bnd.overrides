@@ -2,3 +2,8 @@
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.objectweb.asm
+Bundle-Name: ASM all classes with debug info
+Implementation-Title: ASM all classes
+
+Export-Package: \
+  org.objectweb.asm.*;version="6.0"

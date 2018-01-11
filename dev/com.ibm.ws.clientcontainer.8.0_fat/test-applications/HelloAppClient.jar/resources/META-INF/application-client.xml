@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
+   <application-client id="Application-client_ID">
+      <display-name>HelloApplicationClient</display-name>
+      <post-construct>
+         <lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+      </post-construct>	      
+      <post-construct>
+         <lifecycle-callback-class>com.ibm.ws.clientcontainer.HelloAppClient.test.MyWSCallbackHandlerImpl</lifecycle-callback-class>
+         <lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+      </post-construct>	
+      <pre-destroy>
+         <lifecycle-callback-class>com.ibm.ws.clientcontainer.HelloAppClient.test.MyWSCallbackHandlerImpl</lifecycle-callback-class>
+         <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+      </pre-destroy>
+      <callback-handler>com.ibm.ws.clientcontainer.HelloAppClient.test.MyWSCallbackHandlerImpl
+      </callback-handler>
+   </application-client>

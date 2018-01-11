@@ -15,9 +15,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
@@ -40,11 +43,14 @@ public class ServerClasspathTest {
                                                         "org.omg.CORBA", "com.sun", "org.xml.sax", "com.ibm.jit",
                                                         "com.ibm.jsse2", "com.ibm.lang.management", "com.ibm.tools.attach",
                                                         "com.ibm.virtualization.management", "com.ibm.wsspi.kernel",
+                                                        "com.ibm.ws.staticvalue",
                                                         "jdk." // Java 9
     };
 
     @BeforeClass
     public static void before() throws Exception {
+        JavaArchive archive = ShrinkHelper.buildJavaArchive("checkJvmAppClasspath", "com.ibm.ws.kernel.boot.app.classpath");
+        ShrinkHelper.exportAppToServer(server, archive);
         server.startServer();
     }
 

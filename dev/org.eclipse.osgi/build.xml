@@ -18,10 +18,10 @@
   <target name="package">
     <!-- Don't munge the symbolic name for the eclipse core bundle to avoid breaking all the Eclipse bundles that uses
     Require-Bundle and depends on the Eclipse SPI we export. The version we pass through is ignored. -->
-    <rejar version="3.11.4" 
+    <rejar version="3.12.50" 
            src.jar="lib/org.eclipse.osgi_*.jar" 
            original.jar.name="org.eclipse.osgi"
-           original.jar.version="3.11.4"
+           original.jar.version="3.12.50"
            skip.ibmise.name="true"
            singleton="true"
            no.import.package="true"

@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: A e\u015fuat crearea HttpUpgradeHandler: {0}.  Asigura\u0163i-v\u0103 c\u0103 are un constructor implicit \u015fi poate fi instan\u0163iat.
+failed.to.create.httpupgradehandler.explanation=A e\u015fuat crearea HttpUpgradeHandler.
+failed.to.create.httpupgradehandler.useraction=Verifica\u0163i istoricele FFDC pentru detalii suplimentare despre aceast\u0103 eroare.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: Caracteristica servlet-3.1 nu este \u00een uz.
+servlet.31.not.in.use.explanation=Caracteristica servlet-3.1 nu este \u00een uz.  Este posibbil ca o versiune anterioar\u0103 a servetului s\u0103 fie deja \u00een uz.
+servlet.31.not.in.use.useraction=Ad\u0103uga\u0163i caracteristica servlet-3.1 a fi\u015fierul dumneavoastr\u0103 server.xml.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: Nu pute\u0163i porni aceast\u0103 opera\u0163ie dintr-un ascult\u0103tor ad\u0103ugat programat c\u00e2nd folosi\u0163i caracteristica servlet-3.1. (Opera\u0163ie: {0} | Ascult\u0103tor: {1} | Aplica\u0163ie: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=Nu pute\u0163i porni anumite opera\u0163ii dintr-un ascult\u0103tor ad\u0103ugat programatic deorece nu exist\u0103 nicio opiune pentru a le restric\u0163iona lansarea c\u00e2nd sunt definite \u00eentr-un TLD (Tag Library Descriptor).
+Unsupported.op.from.servlet.context.listener.31.useraction=Ad\u0103uga\u0163i ascult\u0103torul utiliz\u00e2nd o adnotare sau \u00een fi\u015fierul web.xml pentru a permite pornirea acestei metode.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null=SRVE9003E: Obiectul HttpUpgradeHandler transmis este null cu aplica\u0163ia web: {0}.
+handlerClass.is.null.explanation=S-a e\u015fuat modernizarea cererii deoarece obiectul HttpUpgradeHandler transmis este nul.
+handlerClass.is.null.useraction= Asigura\u0163i-v\u0103 c\u0103 este furnizat obiectul HttpUpgradeHandler corect.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: O \u00eencercare de a seta un ReadListener a e\u015fuat pentru c\u0103 obiectul ReadListener era null.
+readlistener.is.null.explanation=Argumentul variabilei transmis la API-ul setReadListener trebuie s\u0103 fie un obiect readListener valid.
+readlistener.is.null.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+writelistener.is.null=SRVE9005E: O \u00eencercare de a seta un WriteListener a e\u015fuat pentru c\u0103 obiectul WriteListener era null.
+writelistener.is.null.explanation=Argumentul variabilei transmis la API-ul WriteListener trebuie s\u0103 fie un obiect writeListener valid.
+writelistener.is.null.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: O \u00eencercare de a seta un ReadListener a e\u015fuat pentru c\u0103 cererea asociat\u0103 nu are asincronizarea pornit\u0103 sau cererea nu este modernizat\u0103.
+readlistener.async.not.started.explanation=Pute\u0163i seta ReadListener pe cerere numai dac\u0103 asincronizarea este pornit\u0103 sau metoda init a unui UpgradeHandler este apelat\u0103.
+readlistener.async.not.started.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: O \u00eencercare de a seta un WriteListener a e\u015fuat pentru c\u0103 cererea asociat\u0103 nu are asincronizarea pornit\u0103 sau cererea nu este modernizat\u0103.
+writelistener.async.not.started.explanation=Pute\u0163i seta WriteListener pe cerere numai dac\u0103 asincronizarea este pornit\u0103 sau metoda init a unui UpgradeHandler este apelat\u0103.
+writelistener.async.not.started.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+readlistener.already.started=SRVE9008E: O \u00eencercare de a seta un ReadListener a e\u015fuat pentru c\u0103 ReadListener este deja setat.
+readlistener.already.started.explanation=ReadListener nu poate fi setat mai mult de o dat\u0103.
+readlistener.already.started.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+writelistener.already.started=SRVE9009E: O \u00eencercare de a seta un WriteListener a e\u015fuat pentru c\u0103 WriteListener este deja setat.
+writelistener.already.started.explanation=WriteListener nu poate fi setat mai mult de o dat\u0103.
+writelistener.already.started.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: O \u00eencercare de a citi a e\u015fuat pentru c\u0103 API-ul isReady returneaz\u0103 fals.
+read.failed.isReady.false.explanation= Dac\u0103 isReady returneaz\u0103 fals, este ilegal s\u0103 apela\u0163i o metod\u0103 de citire.
+read.failed.isReady.false.useraction= Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: O \u00eencercare de a citi de la un InputStream sau de a scrie \u00eentr-un OutputStream a e\u015fuat pentru c\u0103 un argument de variabil\u0103 byte[] era null.
+read.write.bytearray.null.explanation=Argumentul de variabil\u0103 byte[] transmis la API-ul de citire sau scriere nu trebuie s\u0103 fie null.
+read.write.bytearray.null.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: O \u00eencercare de a citi sau de a scrie a e\u015fuat pentru c\u0103 offset-ul {0} sau lungimea: {1} unui argument de variabil\u0103 este negativ(\u0103) sau offset+lungime este mai mare dec\u00e2t lungimea furnizat\u0103 byte[]: {2}.
+read.write.offset.length.bytearraylength.explanation= Fie offset-ul argumentului de variabil\u0103 era negativ, fie lungimea era negativ\u0103, fie lungimea era mai mare dec\u00e2t byte[].length - offset.
+read.write.offset.length.bytearraylength.useraction=Modifica\u0163i codul aplica\u0163iei \u015fi verifica\u0163i c\u0103 valoarea offset care este furnizat\u0103 API-ului de citire sau scriere nu este negativ\u0103. Asigura\u0163i-v\u0103 c\u0103 valoarea lungimii furnizat\u0103 API-ului de citire nu este negativ\u0103. De asemenea, asigura\u0163i-v\u0103 c\u0103 valoarea lungimii furnizat\u0103 este mai mare dec\u00e2t lungimea byte[] minus valoarea offset care este furnizat\u0103.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: \u00cen timpul set\u0103rii ReadListener pe o cerere modernizat\u0103, a ap\u0103rut o excep\u0163ie \u00een timpul citirii ini\u0163iale: {0}
+setReadListener.initialread.failed.explanation=\u00cen timpul set\u0103rii ReadListener, ascult\u0103torul \u00eencearc\u0103 s\u0103 citeasc\u0103, dar a e\u015fuat.
+setReadListener.initialread.failed.useraction=Examina\u0163i istoricele JVM pentru excep\u0163ie.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: O \u00eencercare de a modifica ID-ul sesiunii a e\u015fuat pentru c\u0103 nu a fost asociat\u0103 nicio sesiune cu cererea pentru: {0}
+changeSessionId.no.session.associated.with.request.explanation=Pentru a modifica ID-ul sesiunii pentru o cerere, mai \u00eent\u00e2i asigura\u0163i-v\u0103 c\u0103 cererea \u00een curs de utilizare are asociat\u0103 o sesiune.
+changeSessionId.no.session.associated.with.request.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: Nu se poate ob\u0163ine obiectul de r\u0103spuns sau cerere dup\u0103 AsyncContext.dispatch() sau AsyncContext.complete().
+asynccontext.getRequestResponse.illegalstateexception.explanation= Din Servlet 3.1 AsyncContext.getRequest() \u015fi AsyncContext.getResponse() trebuie s\u0103 arunce o IllegalStateException dac\u0103 complete() sau oricare dintre metodele dispatch() au fost apelate \u00een ciclul asincron. 
+asynccontext.getRequestResponse.illegalstateexception.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: O \u00eencercare de a citi sau scrie a e\u015fuat pentru c\u0103 fluxul a fost \u00eenchis.
+stream.is.closed.no.read.write.explanation=API-ul de scriere pe obiectul OutputStream \u015fi API-ul de citire pe starea obiectului InputStream c\u0103 ar putea fi aruncat\u0103 o IOException dac\u0103 fluxul a fost \u00eenchis.
+stream.is.closed.no.read.write.useraction=Modifica\u0163i codul aplica\u0163iei conform explica\u0163iei erorii.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: corpul post\u0103rii con\u0163ine mai pu\u0163ini octe\u0163i dec\u00e2t este specificat \u00een lungimea con\u0163inutului.
+post.body.contains.less.bytes.than.specified.explanation=Cererea de intrare poate fi format\u0103 gre\u015fit sau corupt\u0103 din cauza unei erori de re\u0163ea sau de aplica\u0163ie pe partea de client.
+post.body.contains.less.bytes.than.specified.useraction=Examina\u0163i re\u0163eaua sau aplica\u0163ia pe partea de client, pentru a determina de ce a fost trunchiat\u0103 cererea.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: \u00cencercarea de blocare scriere nu este permis\u0103 deoarece I/E neblocant\u0103 a fost deja pornit\u0103 de aplica\u0163ia care \u00eenregistreaz\u0103 WriteListener [{0}].
+blocking.write.not.allowed.explanation=Blocarea scrierii cerut\u0103 nu poate fi finalizat\u0103 deoarece I/E nonblocare este deja pornit.
+blocking.write.not.allowed.useraction=Examina\u0163i aplica\u0163ia pentru a determina unde a fost realizat\u0103 blocarea scrierii. De exemplu aceasta poate fi de la un servlet dup\u0103 \u00eenregistrarea WriteListener sau de la un WriteListener care face o a doua scriere dup\u0103 apelarea isReady() API. O dat\u0103 ce blocarea scrierii este determinat\u0103, modifica\u0163i aplica\u0163ia pentru a v\u0103 asigura c\u0103 este realizat\u0103 ca parte component\u0103 a WriteListener \u015fi/sau dup\u0103 apelarea isReady().
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: A ap\u0103rut o excep\u0163ie \u00een timpul aplica\u0163iei WriteListener [{0}] onError() API, cu excep\u0163ia [{1}]
+writeListener.onError.failed.explanation= A ap\u0103rut o excep\u0163ie \u00een timpul aplica\u0163iei WriteListener  onError() API.
+writeListener.onError.failed.useraction=Examina\u0163i fi\u015fierele istorice pentru a determina excep\u0163ia aruncat\u0103 de la implementarea aplica\u0163iei a onError() API \u015fi cum s\u0103 adresa\u0163i problema. Re\u0163ine\u0163i c\u0103 dac\u0103 a ap\u0103rut o excep\u0163ie I/E, atunci onError() API nu poate scrie ie\u015firea.
+# --------------------------------
+ 

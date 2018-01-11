@@ -8,8 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -33,6 +31,7 @@ Import-Package: \
     com.ibm.ws.jca.utils.metagen, \
     com.ibm.ws.jca.utils.xml.metatype, \
     com.ibm.wsspi.application.*, \
+    com.ibm.wsspi.kernel.service.utils.*, \
     !com.ibm.websphere.ssl.*, \
     !com.ibm.wsspi.ssl.*, \
     !javax.validation.*, \
@@ -49,7 +48,7 @@ Private-Package: \
 	com.ibm.ws.jca.internal, \
 	com.ibm.ws.jca.internal.resources
 
--dsannotations: \
+-dsannotations: com.ibm.ws.jca.service.JCAQuiesceListener, \
   com.ibm.ws.jca.internal.ConnectorModuleRuntimeContainer
 
 Include-Resource: \

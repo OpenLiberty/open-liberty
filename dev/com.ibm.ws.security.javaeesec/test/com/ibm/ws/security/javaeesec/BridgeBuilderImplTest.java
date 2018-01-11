@@ -10,15 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.NamingException;
+import javax.enterprise.inject.Instance;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
@@ -28,8 +31,15 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
+
+import test.common.SharedOutputManager;
 
 public class BridgeBuilderImplTest {
 
@@ -44,36 +54,60 @@ public class BridgeBuilderImplTest {
     private BridgeBuilderImpl bridgeBuilder;
     private AuthConfigFactory providerFactory;
     private AuthConfigProvider authConfigProvider;
-    private BeanManager beanManager;
-    private Set<Bean<HttpAuthenticationMechanism>> httpAuthMechs;
+    private Instance<HttpAuthenticationMechanism> hami;
+    private HttpAuthenticationMechanism ham;
+    private ModulePropertiesProvider mpp;
+    private Iterator itl;
+    private boolean isHAM;
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.dumpStreams();
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+    }
 
     @Before
     public void setUp() throws Exception {
         bridgeBuilder = new BridgeBuilderImplTestDouble();
         providerFactory = mockery.mock(AuthConfigFactory.class);
         authConfigProvider = null;
-        beanManager = mockery.mock(BeanManager.class);
-        httpAuthMechs = new HashSet<Bean<HttpAuthenticationMechanism>>();
+        mpp = mockery.mock(ModulePropertiesProvider.class);
+        hami = mockery.mock(Instance.class, "hami");
+        ham = mockery.mock(HttpAuthenticationMechanism.class, "ham");
+        itl = mockery.mock(Iterator.class, "itl");
     }
 
     @After
     public void tearDown() throws Exception {
+        outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
 
     @Test
     public void testNoAuthMechDoesNotRegisterProvider() throws Exception {
-        withNoCachedProvider().withBeanManager().doesNotRegisterProvider();
-
+        withNoCachedProvider().doesNotRegisterProvider();
+        isHAM = false;
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
     }
 
     @Test
     public void testOneAuthMechRegistersProvider() throws Exception {
-        Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean = mockery.mock(Bean.class);
-        httpAuthMechs.add(httpAuthenticationMechanismBean);
-
-        withNoCachedProvider().withBeanManager();
+        isHAM = true;
+        withNoCachedProvider();
 
         mockery.checking(new Expectations() {
             {
@@ -81,26 +115,6 @@ public class BridgeBuilderImplTest {
                                                             with(aNonNull(String.class)));
             }
         });
-
-        bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
-    }
-
-    @Test
-    public void testMoreThanOneAuthMechDoesNotRegisterProvider() throws Exception {
-        Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean1 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean1");
-        Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean2 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean2");
-        httpAuthMechs.add(httpAuthenticationMechanismBean1);
-        httpAuthMechs.add(httpAuthenticationMechanismBean2);
-
-        withNoCachedProvider().withBeanManager().doesNotRegisterProvider();
-
-        bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
-        // TODO: Assert serviceability message is issued.
-    }
-
-    @Test
-    public void testNoBeanManagerDoesNotRegisterProvider() throws Exception {
-        withNoCachedProvider().withNoBeanManager().doesNotRegisterProvider();
 
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
     }
@@ -133,26 +147,6 @@ public class BridgeBuilderImplTest {
         return this;
     }
 
-    private BridgeBuilderImplTest withBeanManager() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                allowing(beanManager).getBeans((Type) with(HttpAuthenticationMechanism.class), (Annotation[]) with(Collections.EMPTY_LIST.toArray()));
-                will(returnValue(httpAuthMechs));
-            }
-        });
-        return this;
-    }
-
-    private BridgeBuilderImplTest withNoBeanManager() throws Exception {
-        bridgeBuilder = new BridgeBuilderImpl() {
-            @Override
-            protected BeanManager getBeanManager() throws NamingException {
-                throw new NamingException();
-            }
-        };
-        return this;
-    }
-
     private BridgeBuilderImplTest doesNotRegisterProvider() throws Exception {
         mockery.checking(new Expectations() {
             {
@@ -166,8 +160,18 @@ public class BridgeBuilderImplTest {
     class BridgeBuilderImplTestDouble extends BridgeBuilderImpl {
 
         @Override
-        protected BeanManager getBeanManager() throws NamingException {
-            return beanManager;
+        protected ModulePropertiesUtils getModulePropertiesUtils() {
+            return new ModulePropertiesUtilsDouble();
         }
     }
+
+    class ModulePropertiesUtilsDouble extends ModulePropertiesUtils {
+        @Override
+        public boolean isHttpAuthenticationMechanism() {
+            return isHAM;
+        }
+        
+    
+    }
+
 }

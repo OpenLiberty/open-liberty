@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: Konfigurace je zav\u0159ena.
+config.closed.CWMCG0001E.explanation=Operace nelze prov\u00e9st u instance konfigurace, kter\u00e1 je zav\u0159ena.
+config.closed.CWMCG0001E.useraction=Z\u00edskejte novou instanci konfigurace a pokuste se operaci zopakovat.
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: Zavad\u011b\u010d t\u0159\u00edd nesm\u00ed b\u00fdt null.
+null.classloader.CWMCG0002E.explanation=Zavad\u011b\u010d t\u0159\u00edd pou\u017eit\u00fd tv\u016frcem konfigurace nesm\u00ed b\u00fdt null.
+null.classloader.CWMCG0002E.useraction=Nastavte zavad\u011b\u010d t\u0159\u00edd na hodnotu jinou ne\u017e null.
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: Instance konfigurace ji\u017e pro ur\u010den\u00fd zavad\u011b\u010d t\u0159\u00edd existuje.
+config.already.exists.CWMCG0003E.explanation=Instance konfigurace ji\u017e byla nastavena pro ur\u010den\u00fd zavad\u011b\u010d t\u0159\u00edd.
+config.already.exists.CWMCG0003E.useraction=Pomoc\u00ed metody 'releaseConfig' odeberte p\u0159edchoz\u00ed instanci a potom zopakujte metodu.
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: Nelze zav\u0159\u00edt instanci konfigurace. V\u00fdjimka je: {0}.
+could.not.close.CWMCG0004E.explanation=Do\u0161lo k v\u00fdjimce p\u0159i pokusu zav\u0159\u00edt instanci konfigurace. Jej\u00ed prost\u0159edky nemusej\u00ed b\u00fdt uvoln\u011bny.
+could.not.close.CWMCG0004E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: Nelze p\u0159ev\u00e9st \u0159et\u011bzec "{0}" na hodnotu typu {1}.
+unable.to.convert.CWMCG0006E.explanation=Pro dan\u00fd typ nebyl nalezen vhodn\u00fd p\u0159evodn\u00edk.
+unable.to.convert.CWMCG0006E.useraction=P\u0159idejte vhodn\u00fd p\u0159evodn\u00edk nebo se ujist\u011bte, \u017ee t\u0159\u00edda m\u00e1 ve\u0159ejn\u00fd konstruktor \u0159et\u011bzce nebo statickou metodu valueOf(String).
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: P\u0159evodn\u00edk typu {0} vr\u00e1til v\u00fdjimku. Vstupn\u00ed \u0159et\u011bzec byl: "{1}". V\u00fdjimka je: {2}.
+conversion.exception.CWMCG0007E.explanation=P\u0159evodn\u00edk vr\u00e1til v\u00fdjimku.
+conversion.exception.CWMCG0007E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: Nelze p\u0159ev\u00e9st \u0159et\u011bzec "{0}" na hodnotu typu Boolean. O\u010dek\u00e1valo se: [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E.explanation=Vstupn\u00ed \u0159et\u011bzec nebyl platnou hodnotou typu Boolean.
+unable.to.convert.boolean.CWMCG0008E.useraction=Aktualizujte zdrojov\u00fd vstupn\u00ed \u0159et\u011bzec a zopakujte operaci.
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: Nelze ur\u010dit typ p\u0159evodu t\u0159\u00eddy p\u0159evodn\u00edku {0}.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=Implementa\u010dn\u00ed t\u0159\u00edda p\u0159evodn\u00edku nem\u011bla vhodn\u00fd generick\u00fd typ.
+unable.to.determine.conversion.type.CWMCG0009E.useraction=Ujist\u011bte se, \u017ee implementa\u010dn\u00ed t\u0159\u00edda m\u00e1 prom\u011bnnou vhodn\u00e9ho generick\u00e9ho typu pro rozhran\u00ed p\u0159evodn\u00edku.
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: Nelze zjistit ConfigSources. V\u00fdjimka je: {0}.
+unable.to.discover.config.sources.CWMCG0010E.explanation=Modul Java ServiceLoader vytvo\u0159il v\u00fdjimku. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou je, \u017ee jedna z jmenovan\u00e9 t\u0159\u00eddy ConfigSource nebyla nalezena.
+unable.to.discover.config.sources.CWMCG0010E.useraction=Zkontrolujte t\u0159\u00eddy uveden\u00e9 v souborech slu\u017eby Java v r\u00e1mci aplikace. Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: Nelze zjistit ConfigSourceProviders. V\u00fdjimka je: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=Modul Java ServiceLoader vytvo\u0159il v\u00fdjimku. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou je, \u017ee jedna z jmenovan\u00e9 t\u0159\u00eddy ConfigSourceProvider nebyla nalezena.
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=Zkontrolujte t\u0159\u00eddy uveden\u00e9 v souborech slu\u017eby Java v r\u00e1mci aplikace. Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Nelze zjistit p\u0159evodn\u00edky. V\u00fdjimka je: {0}.
+unable.to.discover.converters.CWMCG0012E.explanation=Modul Java ServiceLoader vytvo\u0159il v\u00fdjimku. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou je, \u017ee jedna z jmenovan\u00e9 t\u0159\u00eddy Converter nebyla nalezena.
+unable.to.discover.converters.CWMCG0012E.useraction=Zkontrolujte t\u0159\u00eddy uveden\u00e9 v souborech slu\u017eby Java v r\u00e1mci aplikace. Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: Server nen\u00ed schopen stornoval podproces asynchronn\u00ed aktualizace.
+future.update.not.cancelled.CWMCG0013E.explanation=Pokus zru\u0161it budouc\u00ed asynchronn\u00ed aktualizaci se nezda\u0159il. Obvykle je to zp\u016fsobeno p\u0159eru\u0161iteln\u00fdm vol\u00e1n\u00edm  aktualizace na instanci ConfigSource.
+future.update.not.cancelled.CWMCG0013E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: P\u0159evodn\u00edk nelze naj\u00edt pro typ {0}.
+could.not.find.converter.CWMCG0014E.explanation=Nelze naj\u00edt konvertor pro p\u0159evod \u0159et\u011bzce vlastnosti typu raw do po\u017eadovan\u00e9ho typu.
+could.not.find.converter.CWMCG0014E.useraction=Ujist\u011bte se, \u017ee vhodn\u00e1 t\u0159\u00edda p\u0159evodn\u00edku je t\u0159\u00edda k dispozici a je uvedena v souboru slu\u017eeb Java.
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: Vlastnost {0} nebyla nalezena v konfiguraci.
+no.such.element.CWMCG0015E.explanation=Po\u017eadovan\u00e1 vlastnost neexistovala v \u017e\u00e1dn\u00e9m z nakonfigurovan\u00fdch zdroj\u016f.
+no.such.element.CWMCG0015E.useraction=P\u0159idejte vlastnost do jednoho z existuj\u00edc\u00edch zdroj\u016f nebo p\u0159idejte nov\u00fd zdroj, kter\u00fd obsahuje vlastnost.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: Do\u0161lo k chyb\u011b rozhran\u00ed API konfigurace: {0}
+temporary.CWMCG9999E.explanation=Do\u0161lo k chyb\u011b rozhran\u00ed API konfigurace, kter\u00e1 br\u00e1n\u00ed norm\u00e1ln\u00ed operaci.
+temporary.CWMCG9999E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.

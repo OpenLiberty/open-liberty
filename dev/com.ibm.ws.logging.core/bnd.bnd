@@ -20,11 +20,14 @@ Export-Package: \
 	com.ibm.ws.ffdc,\
 	com.ibm.ws.ffdc.annotation,\
 	com.ibm.ws.kernel.provisioning.packages,\
+	com.ibm.ws.staticvalue,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.logging.internal,\
 	com.ibm.wsspi.logging,\
-	com.ibm.wsspi.logprovider
-
+	com.ibm.wsspi.logprovider,\
+	com.ibm.wsspi.collector.manager,\
+	com.ibm.ws.logging.synch,\
+	com.ibm.ws.collector.manager.buffer
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true

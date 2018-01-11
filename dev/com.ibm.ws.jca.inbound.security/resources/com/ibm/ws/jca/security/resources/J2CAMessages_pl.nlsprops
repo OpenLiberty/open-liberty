@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: Mened\u017cer pracy nie mo\u017ce zape\u0142ni\u0107 tematu wykonywania przy u\u017cyciu nazwy u\u017cytkownika lub referencji programu wywo\u0142uj\u0105cego niezb\u0119dnych do ustanowienia kontekstu zabezpiecze\u0144 dla danej instancji roboczej.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=Pr\u00f3ba zape\u0142nienia nazwy u\u017cytkownika lub niestandardowych referencji tematu wykonywania przez procedur\u0119 obs\u0142ugi wywo\u0142a\u0144 zwrotnych JASPIC mened\u017cera pracy nie powiod\u0142a si\u0119 z powodu wyst\u0105pienia wyj\u0105tku podczas przetwarzania wywo\u0142a\u0144 zwrotnych JASPIC dostarczonych przez adapter zasob\u00f3w.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=W celu okre\u015blenia przyczyny problemu sprawd\u017a dzienniki FFDC i dzienniki systemu pod k\u0105tem komunikat\u00f3w wyemitowanych bezpo\u015brednio przed komunikatem J2CA0672E. Je\u015bli nie mo\u017cna ustali\u0107 przyczyny na podstawie wcze\u015bniejszych komunikat\u00f3w o b\u0142\u0119dach, zbierz dane diagnostyczne i odwied\u017a serwis WWW wsparcia IBM, aby uzyska\u0107 wi\u0119cej informacji.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: Temat wykonywania udost\u0119pniony przez mened\u017cer pracy nie jest zgodny z tematem dostarczonym przez element {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=Instancja tematu wykonywania udost\u0119pniona przez mened\u017cer pracy w celu ustanowienia kontekstu zabezpiecze\u0144 instancji roboczej nie jest t\u0105 sam\u0105 instancj\u0105, kt\u00f3ra zosta\u0142a uzyskana z odpowiedniego wywo\u0142ania. Mened\u017cer pracy zignorowa\u0142 temat uzyskany z wywo\u0142ania zwrotnego i kontynuuje ustanawianie kontekstu zabezpiecze\u0144 przy u\u017cyciu udost\u0119pnionej przez niego instancji.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w w celu zmodyfikowania metody getSubject() wywo\u0142ania zwrotnego JASPIC w taki spos\u00f3b, aby zwracany by\u0142 temat wykonywania udost\u0119pniony instancji kontekstu zabezpiecze\u0144 za po\u015brednictwem wywo\u0142ania metody setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: Dzia\u0142anie procedury obs\u0142ugi wywo\u0142a\u0144 zwrotnych JASPIC mened\u017cera pracy zako\u0144czy\u0142o si\u0119 niepowodzeniem. Podczas obs\u0142ugi wywo\u0142a\u0144 zwrotnych udost\u0119pnionych przez kontekst zabezpiecze\u0144 zosta\u0142 zg\u0142oszony wyj\u0105tek {0}. Komunikat o wyj\u0105tku: {1}.
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=Mened\u017cer pracy napotka\u0142 wyj\u0105tek podczas obs\u0142ugi wywo\u0142a\u0144 zwrotnych JASPIC udost\u0119pnionych przez adapter zasob\u00f3w w ramach przekazywanego kontekstu zabezpiecze\u0144. Ten wyj\u0105tek mo\u017ce mie\u0107 nast\u0119puj\u0105ce przyczyny: 1) Wywo\u0142anie CallerPrincipalCallback udost\u0119pni\u0142o nazw\u0119 u\u017cytkownika, kt\u00f3ra nie istnieje w rejestrze u\u017cytkownik\u00f3w. 2) Wywo\u0142anie PasswordValidationCallback udost\u0119pni\u0142o niepoprawn\u0105 nazw\u0119 u\u017cytkownika lub has\u0142o. 3) Wywo\u0142ania CallerPrincipalCallback i PasswordValidationCallback udost\u0119pni\u0142y r\u00f3\u017cne nazwy u\u017cytkownika. 4) Adapter zasob\u00f3w udost\u0119pni\u0142 wywo\u0142anie, kt\u00f3re nie jest obecnie obs\u0142ugiwane przez serwer aplikacji. 5) Adapter zasob\u00f3w udost\u0119pni\u0142 wi\u0119cej ni\u017c jedno wywo\u0142anie CallerPrincipalCallback.  6) Mened\u017cer pracy napotka\u0142 nieoczekiwany b\u0142\u0105d.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Je\u015bli komunikat dotycz\u0105cy wyj\u0105tku zawiera kod b\u0142\u0119du, sprawd\u017a czynno\u015b\u0107 u\u017cytkownika zalecan\u0105 dla tego kodu. Je\u015bli wygenerowanym wyj\u0105tkiem jest wyj\u0105tek UnsupportedCallbackException, skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w, poniewa\u017c procedura obs\u0142ugi wywo\u0142a\u0144 zwrotnych JASPIC mened\u017cera pracy nie obs\u0142uguje obecnie udost\u0119pnionego wywo\u0142ania zwrotnego. W pozosta\u0142ych przypadkach zbierz dane diagnostyczne i uzyskaj dodatkowe informacje z serwisu dzia\u0142u wsparcia IBM.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: Grupa {0} nie nale\u017cy do domeny powi\u0105zanej z aplikacj\u0105.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=Kontekst zabezpiecze\u0144 przekazany z instancj\u0105 robocz\u0105 udost\u0119pni\u0142 nazw\u0119 grupy, kt\u00f3ra nie istnieje w danej dziedzinie (rejestrze u\u017cytkownik\u00f3w) domeny zabezpiecze\u0144 powi\u0105zanej z aplikacj\u0105.  Mened\u017cer pracy uzyskuje niepoprawn\u0105 nazw\u0119 grupy z instancji wywo\u0142ania JASPIC GroupPrincipalCallback (za ka\u017cdym razem, gdy instancja jest dostarczana przez adapter zasob\u00f3w).
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Sprawd\u017a, czy grupa pochodzi z tej samej dziedziny. W tym celu potwierd\u017a istnienie grupy w rejestrze u\u017cytkownik\u00f3w tej dziedziny. Je\u015bli grupa pochodzi z innej dziedziny, skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w, poniewa\u017c mened\u017cer pracy nie obs\u0142uguje grup z innych dziedzin.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Nie znaleziono grup dla u\u017cytkownika o identyfikatorze uniqueId {0}.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=Kontekst zabezpiecze\u0144 przekazany z instancj\u0105 robocz\u0105 udost\u0119pni\u0142 u\u017cytkownika, kt\u00f3ry nie nale\u017cy do \u017cadnej z grup zdefiniowanych w rejestrze u\u017cytkownik\u00f3w.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: Nazwa u\u017cytkownika {0} lub has\u0142o podane w wywo\u0142aniu PasswordValidationCallback jest niepoprawne.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=Nazwa u\u017cytkownika i has\u0142o nie istniej\u0105 w rejestrze u\u017cytkownik\u00f3w dziedziny skonfigurowanej dla domeny zabezpiecze\u0144 powi\u0105zanej z dan\u0105 aplikacj\u0105.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Skonfiguruj adapter zasob\u00f3w i system informacyjny przedsi\u0119biorstwa pod k\u0105tem u\u017cycia poprawnej nazwy u\u017cytkownika i has\u0142a. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci nazwy u\u017cytkownika {0} i has\u0142a podanego w wywo\u0142aniu PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=Mened\u017cer pracy nie mo\u017ce sprawdzi\u0107 poprawno\u015bci nazwy u\u017cytkownika i has\u0142a podanego w wywo\u0142aniu PasswordValidationCallback z powodu wyst\u0105pienia wyj\u0105tku CustomRegistryException. Ten wyj\u0105tek zosta\u0142 spowodowany przez podanie niepoprawnego has\u0142a lub wyst\u0105pienie problemu z rejestrem u\u017cytkownik\u00f3w danej dziedziny aplikacji.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=Je\u015bli przyczyn\u0105 wyj\u0105tku CustomRegistryException jest niepoprawne has\u0142o, skonfiguruj adapter zasob\u00f3w lub system informacyjny przedsi\u0119biorstwa pod k\u0105tem u\u017cycia poprawnej nazwy u\u017cytkownika i has\u0142a. W przeciwnym razie rozwi\u0105\u017c problem z rejestrem u\u017cytkownik\u00f3w.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: Nazwa u\u017cytkownika {0} podana w wywo\u0142aniu nie jest zgodna z nazw\u0105 u\u017cytkownika {1} podan\u0105 w wywo\u0142aniu CallerPrincipalCallback.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=Nazwy u\u017cytkownika podane w wywo\u0142aniach PasswordValidationCallback i CallerPrincipalCallback musz\u0105 by\u0107 ze sob\u0105 zgodne. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w i administratorem systemu w celu upewnienia si\u0119, \u017ce adapter zasob\u00f3w zosta\u0142 zaprojektowany skonfigurowany w taki spos\u00f3b, aby zwraca\u0142 t\u0119 sam\u0105 nazw\u0119 u\u017cytkownika w obu wywo\u0142aniach.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: Mened\u017cer pracy nie mo\u017ce powi\u0105za\u0107 udost\u0119pnionego kontekstu zabezpiecze\u0144 z instancj\u0105 robocz\u0105.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=Mened\u017cer pracy napotka\u0142 problem podczas ustanawiania i konfigurowania kontekstu zabezpiecze\u0144 dla przychodz\u0105cego \u017c\u0105dania roboczego. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=W celu okre\u015blenia przyczyny problemu sprawd\u017a dzienniki FFDC i dzienniki systemu pod k\u0105tem komunikat\u00f3w J2CA0668E i J2CA0669E.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: Metoda {0} wychwyci\u0142a wyj\u0105tek {1}.
+METHOD_FAILED_J2CA0132.explanation=Metoda wychwyci\u0142a wyj\u0105tek, kt\u00f3ry jest najprawdopodobniej b\u0142\u0119dem wewn\u0119trznym.
+METHOD_FAILED_J2CA0132.useraction=CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

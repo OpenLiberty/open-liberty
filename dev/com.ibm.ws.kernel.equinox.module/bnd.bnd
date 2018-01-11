@@ -8,8 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -22,7 +20,7 @@ WS-TraceGroup: kernelEquinoxModule
 Export-Package: com.ibm.wsspi.kernel.equinox.module
 Private-Package: com.ibm.ws.kernel.equinox.module.internal
 
-#Fragment-Host: org.eclipse.osgi; bundle-version="[3.10.0, 3.12.0)"
+#Fragment-Host: org.eclipse.osgi; bundle-version="[3.10.0, 3.13.0)"
 Fragment-Host: org.eclipse.osgi
 Import-Package: !*
 

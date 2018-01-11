@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.webservices.javaee.common/resources/com/ibm/ws/webservices/javaee/common/resources/WsEECommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere WebServices EE Common Code
+#RANGE 0300-0399
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#{0}=service impl bean link
+warn.dd.invalid.portcomponentname=CWWKW0300W: Valoarea elementului <port-component-name> este null sau goal\u0103 pentru {0} \u00een webservices.xml.
+warn.dd.invalid.portcomponentname.explanation=Valoarea elementului <port-component-name> nu trebuie s\u0103 fie null sau goal\u0103.
+warn.dd.invalid.portcomponentname.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea elementului <port-component-name> nu este null sau goal\u0103.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.protocolbinding=CWWKW0301W: Caloarea {0} a elementului <protocol-binding> nu este o valoare valid\u0103 pentru componenta port {1} din webservices.xml.
+warn.dd.invalid.protocolbinding.explanation=Valoarea elementului <protocol-binding> din webservices.xml trebuie s\u0103 fie una dintre urm\u0103toarele URL-uri("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") sau aliasul ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP.
+warn.dd.invalid.protocolbinding.useraction=Folosi\u0163i unul din urm\u0103toarele URL-uri ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") sau aliasul lor ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP pentru legarea protocolului.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlservice=CWWKW0302W: Valoarea {0} a elementului <wsdl-service> ete necalificat\u0103 pentru o component\u0103 de port {1} \u00een webservices.xml.
+warn.dd.invalid.wsdlservice.explanation=Valoare elementului <wsdl-service> din webservices.xml trebuie s\u0103 fie un nume calificat.
+warn.dd.invalid.wsdlservice.useraction=Utiliza\u0163i un nume calificat pentru elementul <wsdl-service> \u00een webservices.xml. Un nume calificat ar trebui s\u0103 con\u0163in\u0103 un spa\u0163iu nume XML \u015fi un nume local. De exemplu, <wsdl-service> ar trebui definit ca <wsdl-service xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLService</wsdl-service> \u00een webservices.xml.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlport=CWWKW0303W: Valoarea {0} a elementului <wsdl-port> nu este calificat\u0103 pentru componenta port {1} \u00een webservices.xml.
+warn.dd.invalid.wsdlport.explanation=Valoarea elementului <wsdl-port> din webservices.xml trebuie s\u0103 fie un nume calificat. 
+warn.dd.invalid.wsdlport.useraction=Utiliza\u0163i un nume calificat pentru elementul <wsdl-port> \u00een webservices.xml. Un nume calificat ar trebui s\u0103 con\u0163in\u0103 un spa\u0163iu nume XML \u015fi un nume local. De exemplu, <wsdl-port> ar trebui definit ca <wsdl-port xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLPort</wsdl-port> \u00een webservices.xml.
+
+#{0}=namespace of the port qname
+#{1}=value
+#{2}=port component name
+warn.dd.invalid.namespace.of.wsdlport=CWWKW0304W: Spa\u0163iul nume {0} al valorii {1} din elementul <wsdl-port> este invalid pentru componenta port {2} \u00een webservices.xml.
+warn.dd.invalid.namespace.of.wsdlport.explanation=Dac\u0103 numele spa\u0163iu al elementului <wsdl-port> este specificat, trebuie s\u0103 se potriveasc\u0103 cu numele spa\u0163iu specificat \u00een elementul <wsdl-service>. 
+warn.dd.invalid.namespace.of.wsdlport.useraction=Specifica\u0163i un spa\u0163iu nume ce se potrive\u015fte cu cel specificat \u00een elementul <wsdl-service>. 
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.serviceendpointinterface=CWWKW0305W: Valoarea {0} a elementului <service-endpoint-interface> nu este un nume clas\u0103 complet calificat pentru componenta port {1} din webservices.xml.
+warn.dd.invalid.serviceendpointinterface.explanation=Valoarea elementului <service-endpoint-interface> din webservices.xml trebuie s\u0103 fie un nume de clas\u0103 complet calificat.
+warn.dd.invalid.serviceendpointinterface.useraction=Utiliza\u0163i un nume de clas\u0103 complet calificat pentru elelementul <service-endpoint-interface> din webservices.xml. Numele de clas\u0103 complet calificat ar trebui s\u0103 fie ca \u015fi <package_name>.<class_name>, de exemplu, com.ibm.ws.example.MyService.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.mtomthreshold=CWWKW0306W: Valoarea {0} elementului <mtom-threshold> este un \u00eentreg negativ pentru componenta de port {1} din webservices.xml.
+warn.dd.invalid.mtomthreshold.explanation=Valoarea elementului <mtom-threshold> din webservices.xml trebuie s\u0103 fie un \u00eentreg non-negativ.
+warn.dd.invalid.mtomthreshold.useraction=Utiliza\u0163i un \u00eentreg non-negativ pentru elementul <mtom-threshold> din webservices.xml.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.enablemtom=CWWKW0307W: Valoarea {0} a elementului <enable-mtom> nu este o valoarea boolean\u0103 pentru componenta de port {1} din webservices.xml.
+warn.dd.invalid.enablemtom.explanation=Valoarea elementului <enable-mtom> \u00een webservices.xml trebuie s\u0103 fie o valoare boolean.
+warn.dd.invalid.enablemtom.useraction=Seta\u0163i valoarea elementului <enable-mtom> pe true sau false.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.respectbinding=CWWKW0308W: Valoarea {0} elementului <enabled> din elementul <respect-binding> nu este o valoare boolean\u0103 pentru componenta port {1} din webservices.xml.
+warn.dd.invalid.respectbinding.explanation=Valoarea elementului <enabled> definit \u00een elementul <respect-binding> trebuie s\u0103 fie o valoare boolean\u0103.
+warn.dd.invalid.respectbinding.useraction=Seta\u0163i valoarea elementului <enabled> pe true sau false.
+
+#{0}=value
+#{1}=element tag
+#{2}=port component name
+warn.dd.invalid.addressing=CWWKW0309W: Valoarea {0} a {1} din elementul <addressing> nu este o valoare boolean\u0103 pentru componentaport {2} din webservices.xml.
+warn.dd.invalid.addressing.explanation=Valoarea <enabled> sau elementul <required> definit \u00een elementul <addressing> trebuie s\u0103 fie o valoare boolean\u0103.
+warn.dd.invalid.addressing.useraction=Seta\u0163i valoarea <enabled> sau elementul <required> pe true sau false.
+
+#{0}=element tag
+#{1}=port component name
+warn.dd.invalid.handler=CWWKW0310W: Elementul {0} lipse\u015fte din elementul <handler> pentru componenta port {1} din webservices.xml.
+warn.dd.invalid.handler.explanation=Elementul <handler-class> \u015fi elementul <handler-name> sunt necesare c\u00e2nd este setat un handler.
+warn.dd.invalid.handler.useraction=Seta\u0163i elementul <handler-class> \u015fi elementul <handler-name> la un handler valid. Valorea elementului <handler-name> trebuie s\u0103 fie un nume unic din acela\u015fi webservices.xml. Valoarea elementului <handler-class> trebuie s\u0103 fie un nume de clas\u0103 complet calificat. Numele de clas\u0103 complet calificat\u0103 ar trebui s\u0103 fie de forma <package_name>.<class_name>, de exemplu, com.ibm.ws.example.MyHandler.

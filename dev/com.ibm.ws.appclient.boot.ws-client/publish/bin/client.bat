@@ -114,7 +114,7 @@ if "help" == "%ACTION%" (
   call:runClient
 ) else if "debug" == "%ACTION%" (
   if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7778
-  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address="!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
+  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address="!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
   call:runClient
 ) else if "package" == "%ACTION%" (
   call:package
@@ -155,7 +155,7 @@ goto:eof
 
 :help
   call:installEnv
-  !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --help
+  !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --help !CLIENT_NAME!
   set RC=%errorlevel%
   call:javaCmdResult
 goto:eof
@@ -300,6 +300,9 @@ goto:eof
   if exist "%JAVA_HOME%\lib\modules" (
     call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java9.options"
   )
+  
+  set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
+  
 goto:eof
 
 @REM

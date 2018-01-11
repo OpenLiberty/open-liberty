@@ -41,8 +41,6 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 public class TestUtils {
 
-    static Field bootLibDirField = null;
-    static Field utilsInstallDirField = null;
     static Field bundleRepository = null;
 
     public static void clearBundleRepositoryRegistry() throws Exception {
@@ -55,25 +53,17 @@ public class TestUtils {
 
     /** Replace the location of the kernel lib directory (usually calculated) */
     public static void setKernelUtilsBootstrapLibDir(File bootLibDir) throws Exception {
-        if (bootLibDirField == null) {
-            bootLibDirField = KernelUtils.class.getDeclaredField("libDir");
-            bootLibDirField.setAccessible(true);
-        }
-        bootLibDirField.set(null, bootLibDir);
+        KernelUtils.setBootStrapLibDir(bootLibDir);
     }
 
     /** Replace the location of the utils install directory (usually calculated) */
     public static void setUtilsInstallDir(File installDir) throws Exception {
-        if (utilsInstallDirField == null) {
-            utilsInstallDirField = Utils.class.getDeclaredField("installDir");
-            utilsInstallDirField.setAccessible(true);
-        }
-        utilsInstallDirField.set(null, installDir);
+        Utils.setInstallDir(installDir);
     }
 
     /**
      * Return an input stream containing a valid feature manifest
-     * 
+     *
      * @param symbolicNameString flattened symbolic name string. e.g. com.ibm.websphere.dummy;visibility:=protected
      * @param subsystemContentString flattened subsystem content string (including leading whitespace and
      *            middle line endings if wrapped): notexist1;location:="lib/notexist1"
@@ -85,7 +75,7 @@ public class TestUtils {
 
     /**
      * Return an input stream containing a valid feature manifest
-     * 
+     *
      * @param shortName - the short name for the feature.
      * @param symbolicNameString flattened symbolic name string. e.g. com.ibm.websphere.dummy;visibility:=protected
      * @param subsystemContentString flattened subsystem content string (including leading whitespace and
@@ -191,7 +181,7 @@ public class TestUtils {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.osgi.framework.wiring.FrameworkWiring#findProviders(org.osgi.resource.Requirement)
          */
         @Override

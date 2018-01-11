@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.osgi.framework.BundleContext;
@@ -50,7 +52,9 @@ import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo.LibraryType;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.java2sec.PermissionManager;
+import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -292,7 +296,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         this.globalSharedLibrary = factory.getGlobalSharedLibrary();
         this.futureMonitor = factory.getFutureMonitor();
         this.configAdmin = factory.getConfigurationAdmin();
-        this.libraryConfigHelper = new ClassLoaderConfigHelper(getConfigHelper(), configAdmin);
+        this.libraryConfigHelper = new ClassLoaderConfigHelper(getConfigHelper(), configAdmin, classLoadingService);
         this.isDelegateLast = libraryConfigHelper.isDelegateLast();
         this.permissionManager = factory.getPermissionManager();
         try {
@@ -358,9 +362,12 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             return false;
         }
 
+        Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
         for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
             try {
-                modInfo.createModuleMetaData(appInfo, this, this);
+                ModuleMetaData mmd = modInfo.createModuleMetaData(appInfo, this, this);
+                URL location = modInfo.getContainer().getURLs().iterator().next();
+                mmds.put(location, mmd);
             } catch (Throwable ex) {
                 uninstallApp();
                 futureMonitor.setResult(result, ex);
@@ -372,11 +379,14 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
         starting = true;
         try {
+            ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().beginContext(mmds);
             stateChangeService.fireApplicationStarting(appInfo);
         } catch (Throwable ex) {
             uninstallApp();
             futureMonitor.setResult(result, ex);
             return false;
+        } finally {
+            ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().endContext();
         }
         return true;
     }

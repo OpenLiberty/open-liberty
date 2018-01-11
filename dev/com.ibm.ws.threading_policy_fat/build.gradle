@@ -8,17 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
 
-task copyFeatureBundle {
-  doLast {
-    copy {
-      from "${buildDir}/test.policyexecutor.bundle_fat.jar"
-      into "${buildDir}/autoFVT/lib/LibertyFATTestFiles/bundles"
-    }
-  }
+dependencies {
+  requiredLibs project(':com.ibm.ws.threading')
 }
-      
+
+task copyFeatureBundle(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'test.policyexecutor.bundle_fat.jar'
+}
+
 autoFVT {
   dependsOn copyFeatureBundle
 }

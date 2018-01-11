@@ -1,0 +1,467 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session.db/resources/com/ibm/ws/session/db/resources/WASSession.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.invalidateError=SESN0015E: Az adatb\u00e1zis lej\u00e1rt munkameneteinek \u00e9rv\u00e9nytelen\u00edt\u00e9se sor\u00e1n hiba t\u00f6rt\u00e9nt.
+DatabaseHashMap.invalidateError.explanation=Hiba t\u00f6rt\u00e9nt egy id\u0151korl\u00e1tot t\u00fall\u00e9p\u0151 adatb\u00e1zis-munkamenet \u00e9rv\u00e9nytelen\u00edt\u00e9sekor.
+DatabaseHashMap.invalidateError.useraction=Ha SQLException t\u00f6rt\u00e9nt, akkor olvassa el a k\u00f6rnyezet\u00e9nek megfelel\u0151 dokument\u00e1ci\u00f3t. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.performInvalidationError=SESN0016E: Az adatb\u00e1zis lej\u00e1rt munkameneteinek \u00e9rv\u00e9nytelen\u00edt\u00e9se sor\u00e1n hiba t\u00f6rt\u00e9nt.
+DatabaseHashMap.performInvalidationError.explanation=Hiba t\u00f6rt\u00e9nt egy id\u0151korl\u00e1tot t\u00fall\u00e9p\u0151 adatb\u00e1zis-munkamenet \u00e9rv\u00e9nytelen\u00edt\u00e9sekor.
+DatabaseHashMap.performInvalidationError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.checkMinimumInvalidationError=SESN0019E: A munkamenet id\u0151korl\u00e1tja nem legal\u00e1bb h\u00e1romszorosa az id\u0151 alap\u00fa \u00edr\u00e1si id\u0151k\u00f6znek.
+WsSessionContext.checkMinimumInvalidationError.explanation=Ha id\u0151 alap\u00fa \u00edr\u00e1sokat haszn\u00e1l, akkor a munkamenet id\u0151korl\u00e1tj\u00e1nak legal\u00e1bb az \u00edr\u00e1si id\u0151k\u00f6z h\u00e1romszoros\u00e1nak kell lennie. A munkamenet id\u0151korl\u00e1tja ideiglenesen jav\u00edt\u00e1sra ker\u00fclt.
+WsSessionContext.checkMinimumInvalidationError.useraction=Friss\u00edtse a munkamenet-kezel\u0151 be\u00e1ll\u00edt\u00e1si \u00e9rt\u00e9keit \u00fagy, hogy az \u00e9rv\u00e9nytelen\u00edt\u00e9si id\u0151 legal\u00e1bb h\u00e1romszorosa legyen az id\u0151 alap\u00fa \u00edr\u00e1si id\u0151szaknak.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.checkListErr=SESN0026E: Probl\u00e9ma mer\u00fclt fel az adatb\u00e1zisban t\u00e1rolt HttpSessionBindingListeners feldolgoz\u00e1sakor.
+DatabaseHashMapMR.checkListErr.explanation=Hiba t\u00f6rt\u00e9nt az adatb\u00e1zisban t\u00e1rolt HttpSessionBindingListeners feldolgoz\u00e1sakor.
+DatabaseHashMapMR.checkListErr.useraction=Ha SQLException t\u00f6rt\u00e9nt, akkor olvassa el a k\u00f6rnyezet\u00e9nek megfelel\u0151 dokument\u00e1ci\u00f3t. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHandleErr=SESN0028E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy EJB objektum EJB kezel\u0151 seg\u00edts\u00e9g\u00e9vel v\u00e9gzett lek\u00e9r\u00e9sekor. Az EJBObject el\u0151z\u0151leg hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. RemoteException t\u00f6rt\u00e9nt a getEJBObject met\u00f3dus kiad\u00e1sakor a kezel\u0151b\u0151l.
+BackedSession.convertObjectHandleErr.explanation=Hiba t\u00f6rt\u00e9nt egy EJB-komponens objektum EJB kezel\u0151 seg\u00edts\u00e9g\u00e9vel v\u00e9gzett lek\u00e9r\u00e9se sor\u00e1n. Az EJBObject el\u0151z\u0151leg hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. RemoteException t\u00f6rt\u00e9nt a getEJBObject met\u00f3dus kiad\u00e1sakor a kezel\u0151b\u0151l.
+BackedSession.convertObjectHandleErr.useraction=T\u00e1j\u00e9koz\u00f3djon az EJB dokument\u00e1ci\u00f3b\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHomeErr=SESN0029E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy EJB saj\u00e1t k\u00f6nyvt\u00e1r EJB saj\u00e1t k\u00f6nyvt\u00e1r kezel\u0151 seg\u00edts\u00e9g\u00e9vel v\u00e9gzett lek\u00e9r\u00e9sekor. Az EJBHome el\u0151z\u0151leg hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. RemoteException t\u00f6rt\u00e9nt a getEJBHome met\u00f3dus kiad\u00e1sakor a kezel\u0151b\u0151l.
+BackedSession.convertObjectHomeErr.explanation=Hiba t\u00f6rt\u00e9nt egy EJB-komponens saj\u00e1t k\u00f6nyvt\u00e1r  EJB saj\u00e1t k\u00f6nyvt\u00e1r kezel\u0151 seg\u00edts\u00e9g\u00e9vel v\u00e9gzett lek\u00e9r\u00e9se sor\u00e1n. Az EJBHome el\u0151z\u0151leg hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. RemoteException t\u00f6rt\u00e9nt a getEJBHome met\u00f3dus kiad\u00e1sakor a kezel\u0151b\u0151l.
+BackedSession.convertObjectHomeErr.useraction=T\u00e1j\u00e9koz\u00f3djon az EJB dokument\u00e1ci\u00f3b\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectContextErr=SESN0030E: Kiv\u00e9tel t\u00f6rt\u00e9nt a kiindul\u00f3 kontextus lek\u00e9r\u00e9sekor. Az InitialContext el\u0151z\u0151leg hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. NamingException t\u00f6rt\u00e9nt a javax.naming.InitialContext met\u00f3dus rekonstru\u00e1l\u00e1sa sor\u00e1n.
+BackedSession.convertObjectContextErr.explanation=Hiba t\u00f6rt\u00e9nt a kiindul\u00f3 kontextus lek\u00e9r\u00e9sekor. Az InitialContext el\u0151z\u0151leg hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. NamingException t\u00f6rt\u00e9nt a javax.naming.InitialContext met\u00f3dus rekonstru\u00e1l\u00e1sa sor\u00e1n.
+BackedSession.convertObjectContextErr.useraction=A hiba\u00fczenet magyar\u00e1zata a n\u00e9vkiszolg\u00e1l\u00f3 dokument\u00e1ci\u00f3j\u00e1ban tal\u00e1lhat\u00f3.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHandleErr=SESN0031E: Kiv\u00e9tel t\u00f6rt\u00e9nt az EJB saj\u00e1t k\u00f6nyvt\u00e1r lek\u00e9r\u00e9sekor. Az EJBHome hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. RemoteException t\u00f6rt\u00e9nt a getHomeHandle met\u00f3dus kiad\u00e1sa sor\u00e1n.
+BackedSession.putValueGutsHandleErr.explanation=Hiba t\u00f6rt\u00e9nt az EJB saj\u00e1t k\u00f6nyvt\u00e1r lek\u00e9r\u00e9sekor. Az EJBHome hozz\u00e1ad\u00e1sra ker\u00fclt a munkamenethez. RemoteException t\u00f6rt\u00e9nt a getHomeHandle met\u00f3dus kiad\u00e1sa sor\u00e1n.
+BackedSession.putValueGutsHandleErr.useraction=T\u00e1j\u00e9koz\u00f3djon az EJB dokument\u00e1ci\u00f3b\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHomeErr=SESN0032E: Kiv\u00e9tel t\u00f6rt\u00e9nt az EJB kezel\u0151 lek\u00e9r\u00e9sekor. Egy EJBObject m\u00e1r elhelyez\u00e9sre ker\u00fclt a munkamenetben. RemoteException t\u00f6rt\u00e9nt a getHandle met\u00f3dus kiad\u00e1sa sor\u00e1n.
+BackedSession.putValueGutsHomeErr.explanation=Hiba t\u00f6rt\u00e9nt az EJB kezel\u0151 lek\u00e9r\u00e9sekor. Egy EJBObject m\u00e1r elhelyez\u00e9sre ker\u00fclt a munkamenetben. RemoteException t\u00f6rt\u00e9nt a getHandle met\u00f3dus kiad\u00e1sa sor\u00e1n.
+BackedSession.putValueGutsHomeErr.useraction=T\u00e1j\u00e9koz\u00f3djon az EJB dokument\u00e1ci\u00f3b\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsContextErr=SESN0033E: Egy javax.naming.Context ker\u00fclt elhelyez\u00e9sre a munkamenetben, \u00e9s RemoteException t\u00f6rt\u00e9nt a getEnvironment() kiad\u00e1sakor a javax.naming.Context objektumon.
+BackedSession.putValueGutsContextErr.explanation=Egy javax.naming.Context ker\u00fclt elhelyez\u00e9sre a munkamenetben, \u00e9s RemoteException t\u00f6rt\u00e9nt a getEnvironment() kiad\u00e1sakor a javax.naming.Context objektumon.
+BackedSession.putValueGutsContextErr.useraction=A hiba\u00fczenet magyar\u00e1zata a n\u00e9vkiszolg\u00e1l\u00f3 dokument\u00e1ci\u00f3j\u00e1ban tal\u00e1lhat\u00f3.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.getSwappableListenersErr=SESN0034E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy munkamenet objektum visszafejt\u00e9s\u00e9re az adatb\u00e1zisb\u00f3l, \u00e9s ennek eredm\u00e9nye ClassNotFoundException. A visszafejteni k\u00edv\u00e1nt objektumnak a munkamenetet el\u00e9r\u0151 minden JVM oszt\u00e1ly\u00fatvonal\u00e1ban benne kell lennie.
+DatabaseHashMapMR.getSwappableListenersErr.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy munkamenet objektum visszafejt\u00e9s\u00e9re az adatb\u00e1zisb\u00f3l, \u00e9s ennek eredm\u00e9nye ClassNotFoundException. A visszaalak\u00edtani k\u00edv\u00e1nt objektumnak a munkamenetet el\u00e9r\u0151 minden JVM oszt\u00e1ly\u00fatvonal\u00e1ban benne kell lennie.
+DatabaseHashMapMR.getSwappableListenersErr.useraction=Friss\u00edtse az oszt\u00e1ly\u00fatvonalat, hogy a visszafejtett attrib\u00fatum benne legyen az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1ban.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.removeSessionsError=SESN0035E: Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisb\u00f3l v\u00e9gzett elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.removeSessionsError.explanation=Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisb\u00f3l v\u00e9gzett elt\u00e1vol\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.removeSessionsError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.doInvalidationsError=SESN0036E: Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisban v\u00e9gzett \u00e9rv\u00e9nytelen\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.doInvalidationsError.explanation=Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisban v\u00e9gzett \u00e9rv\u00e9nytelen\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.doInvalidationsError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.pollForInvalidsError=SESN0037E: Hiba t\u00f6rt\u00e9nt az adatb\u00e1zis \u00e9rv\u00e9nytelen munkameneteinek lek\u00e9rdez\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.pollForInvalidsError.explanation=Hiba t\u00f6rt\u00e9nt az adatb\u00e1zis \u00e9rv\u00e9nytelen munkameneteinek lek\u00e9rdez\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.pollForInvalidsError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getConnectionError=SESN0038E: Hiba t\u00f6rt\u00e9nt egy adatb\u00e1zis-kapcsolat lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.getConnectionError.explanation=Hiba t\u00f6rt\u00e9nt egy adatb\u00e1zis-kapcsolat lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.getConnectionError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectAndLockError=SESN0039E: Adatb\u00e1zis hiba t\u00f6rt\u00e9nt.
+DatabaseHashMap.selectAndLockError.explanation=Adatb\u00e1zis hiba t\u00f6rt\u00e9nt.
+DatabaseHashMap.selectAndLockError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.commonSetupError=SESN0040E: Kiv\u00e9tel \u00e9rkezett, mik\u00f6zben a rendszer megpr\u00f3b\u00e1lta p\u00e9ld\u00e1nyos\u00edtani a munkamenet adatokat a soron k\u00f6vetkez\u0151 adatb\u00e1zis\u00edr\u00e1shoz.
+DatabaseHashMap.commonSetupError.explanation=Lehet, hogy a munkamenet adatok t\u00fal nagyok a p\u00e9ld\u00e1nyos\u00edt\u00e1shoz.
+DatabaseHashMap.commonSetupError.useraction=Vagy helyezzen el kevesebb adatot a munkamenetben, vagy vegye fontol\u00f3ra a munkamenet-kezel\u0151 \u00e1talak\u00edt\u00e1s\u00e1t multi-row adatb\u00e1zism\u00f3dra.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbStoreError=SESN0041E: Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisban v\u00e9gzett t\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.ejbStoreError.explanation=Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisban v\u00e9gzett t\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.ejbStoreError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbCreateError=SESN0042E: Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisba v\u00e9gzett beilleszt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.ejbCreateError.explanation=Hiba t\u00f6rt\u00e9nt egy munkamenet adatb\u00e1zisba v\u00e9gzett beilleszt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.ejbCreateError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.dataSrcErr=SESN0043E: Hiba t\u00f6rt\u00e9nt a be\u00e1ll\u00edtott adatforr\u00e1s lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.dataSrcErr.explanation=Hiba t\u00f6rt\u00e9nt a be\u00e1ll\u00edtott adatforr\u00e1s lek\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.dataSrcErr.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151en be\u00e1ll\u00edtott egy adatforr\u00e1st. Ha a szekci\u00f3kezel\u0151 \u00e1lland\u00f3s\u00e1ga enged\u00e9lyezett, akkor a szekci\u00f3kezel\u0151 be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00f6tt lennie kell egy \u00e9rv\u00e9nyes adatforr\u00e1snak.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getValueErrBH=SESN0044E: Hiba t\u00f6rt\u00e9nt, mikor a rendszer megk\u00eds\u00e9relt beolvasni egy munkamenet alkalmaz\u00e1s-adatait tartalmaz\u00f3 objektumot az adatb\u00e1zisb\u00f3l. 
+DatabaseHashMap.getValueErrBH.explanation=Hiba t\u00f6rt\u00e9nt, mikor a rendszer megk\u00eds\u00e9relt beolvasni egy munkamenet alkalmaz\u00e1s-adatait tartalmaz\u00f3 objektumot az adatb\u00e1zisb\u00f3l. 
+DatabaseHashMap.getValueErrBH.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.createTableError=SESN0047E: Hiba t\u00f6rt\u00e9nt az adatb\u00e1zis inicializ\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.createTableError.explanation=Hiba t\u00f6rt\u00e9nt az adatb\u00e1zis inicializ\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.createTableError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+BackedHashtable.classNotFoundError=SESN0051E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy munkamenet objektum visszaalak\u00edt\u00e1s\u00e1ra az adatb\u00e1zisb\u00f3l, \u00e9s ennek eredm\u00e9nye ClassNotFoundException.
+BackedHashtable.classNotFoundError.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy munkamenet objektum visszaalak\u00edt\u00e1s\u00e1ra az adatb\u00e1zisb\u00f3l, \u00e9s ennek eredm\u00e9nye ClassNotFoundException. A visszaalak\u00edtani k\u00edv\u00e1nt objektumnak a munkamenetet el\u00e9r\u0151 minden JVM oszt\u00e1ly\u00fatvonal\u00e1ban benne kell lennie.
+BackedHashtable.classNotFoundError.useraction=Friss\u00edtse az oszt\u00e1ly\u00fatvonalat, hogy a visszafejtett attrib\u00fatum benne legyen az alkalmaz\u00e1s oszt\u00e1ly\u00fatvonal\u00e1ban.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.db2LongVarCharErr=SESN0055E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt 2 M-n\u00e1l t\u00f6bb \u00edr\u00e1s\u00e1ra nagy oszlopba.
+DatabaseHashMap.db2LongVarCharErr.explanation=Lehet, hogy a munkamenet-adatok t\u00fal nagyok az adatb\u00e1zisoszlophoz.
+DatabaseHashMap.db2LongVarCharErr.useraction=Vagy helyezzen el kevesebb adatot a munkamenetben, vagy vegye fontol\u00f3ra a munkamenet-kezel\u0151 \u00e1talak\u00edt\u00e1s\u00e1t MultiRow adatb\u00e1zism\u00f3dra.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.oracleGetValueError=SESN0056E: A rendszer kiv\u00e9telt \u00e9szlelt a getValue/getAttribute met\u00f3dus megh\u00edv\u00e1sakor az \u00e9rt\u00e9k kiolvas\u00e1s\u00e1hoz az adatb\u00e1zisb\u00f3l.
+DatabaseHashMap.oracleGetValueError.explanation=A rendszer kiv\u00e9telt \u00e9szlelt a getValue/getAttribute met\u00f3dus megh\u00edv\u00e1sakor az \u00e9rt\u00e9k kiolvas\u00e1s\u00e1hoz az adatb\u00e1zisb\u00f3l.
+DatabaseHashMap.oracleGetValueError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propHitErr=SESN0057E: Hiba t\u00f6rt\u00e9nt alkalmaz\u00e1s-adatok m\u00f3dos\u00edt\u00e1s\u00e1nak t\u00e1rol\u00e1sakor az adatb\u00e1zisban.
+DatabaseHashMapMR.propHitErr.explanation=Hiba t\u00f6rt\u00e9nt alkalmaz\u00e1s-adatok m\u00f3dos\u00edt\u00e1s\u00e1nak t\u00e1rol\u00e1sakor az adatb\u00e1zisban.
+DatabaseHashMapMR.propHitErr.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.handleAsyncError=SESN0062E: A rendszer kiv\u00e9telt \u00e9szlelt, mik\u00f6zben megk\u00eds\u00e9relte friss\u00edteni az adatb\u00e1zist a munkamenet utols\u00f3 el\u00e9r\u00e9si idej\u00e9vel.
+DatabaseHashMap.handleAsyncError.explanation=A rendszer kiv\u00e9telt \u00e9szlelt, mik\u00f6zben megk\u00eds\u00e9relte friss\u00edteni az adatb\u00e1zist a munkamenet utols\u00f3 el\u00e9r\u00e9si idej\u00e9vel.
+DatabaseHashMap.handleAsyncError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectNoUpdateError=SESN0063E: A rendszer kiv\u00e9telt \u00e9szlelt az adatb\u00e1zis el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.selectNoUpdateError.explanation=A rendszer kiv\u00e9telt \u00e9szlelt az adatb\u00e1zis el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.selectNoUpdateError.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt 2 M-n\u00e1l t\u00f6bb \u00edr\u00e1s\u00e1ra nagy oszlopba.
+DatabaseHashMapMR.db2LongVarCharErr.explanation=Lehet, hogy a munkamenet-adatok t\u00fal nagyok az adatb\u00e1zisoszlophoz.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=Cs\u00f6kkentse az attrib\u00fatum m\u00e9ret\u00e9t, miel\u0151tt megk\u00eds\u00e9rli t\u00e1rolni azt a munkamenetben.
+
+
+ControllerSession.Initialized=SESN0126I: {0} szolg\u00e1ltat\u00e1s sikeresen inicializ\u00e1lva lett.
+ControllerSession.Initialized.explanation=A z/OS Controller Service for HttpSession t\u00e1mogat\u00e1s a DRS-ben sikeresen inicializ\u00e1l\u00e1sra ker\u00fclt.
+ControllerSession.Initialized.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CaughtException=SESN0127E: elfogott kiv\u00e9tel:
+ControllerSession.CaughtException.explanation=A megadott met\u00f3dusban kiv\u00e9tel t\u00f6rt\u00e9nt.
+ControllerSession.CaughtException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyException=SESN0128E: HIBA a DRSControllerProxy l\u00e9trehoz\u00e1sakor: elfogott kiv\u00e9tel 
+ControllerSession.ProxyException.explanation=A megadott met\u00f3dus kiv\u00e9tel fogott el a DRSControllerProxy l\u00e9trehoz\u00e1sa sor\u00e1n.
+ControllerSession.ProxyException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyRefException=SESN0129E: HIBA a DRSControllerProxy hivatkoz\u00e1s l\u00e9trehoz\u00e1sakor: elfogott kiv\u00e9tel 
+ControllerSession.ProxyRefException.explanation=A megadott met\u00f3dus kiv\u00e9telt fogott el a DRSControllerProxy hivatkoz\u00e1s l\u00e9trehoz\u00e1sa sor\u00e1n.
+ControllerSession.ProxyRefException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullJoinHAGroup=SESN0130E: a joinHAGroup null\u00e9rt\u00e9ket adott vissza
+ControllerSession.NullJoinHAGroup.explanation=A megadott met\u00f3dusban a joinHAGroup megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott vissza.
+ControllerSession.NullJoinHAGroup.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CallbackException=SESN0131E: elfogott kiv\u00e9tel visszah\u00edv\u00e1s l\u00e9trehoz\u00e1sa sor\u00e1n: 
+ControllerSession.CallbackException.explanation=A megadott met\u00f3dus kiv\u00e9tel fogott el egy visszah\u00edv\u00e1s l\u00e9trehoz\u00e1sa sor\u00e1n.
+ControllerSession.CallbackException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryKey=SESN0132E: az \u00e1tadott param\u00e9ter entryKey = null: A bejegyz\u00e9s l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet megszak\u00edt\u00e1sra ker\u00fclt.
+ControllerSession.NullEntryKey.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9k\u0171 entryKey param\u00e9tert adott \u00e1t. A bejegyz\u00e9sl\u00e9trehoz\u00e1si k\u00eds\u00e9rlet megszakadt.
+ControllerSession.NullEntryKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryValue=SESN0133E: az \u00e1tadott param\u00e9ter value = null: A bejegyz\u00e9s l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet megszak\u00edt\u00e1sra ker\u00fclt.
+ControllerSession.NullEntryValue.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9ket adott \u00e1t az \u00e9rt\u00e9k param\u00e9ternek. A bejegyz\u00e9sl\u00e9trehoz\u00e1si k\u00eds\u00e9rlet megszakadt.
+ControllerSession.NullEntryValue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceRemException=SESN0134E: Hiba a DRS p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n a vez\u00e9rl\u0151ter\u00fcleten: elfogott t\u00e1voli kiv\u00e9tel: 
+ControllerSession.DRSInstanceRemException.explanation=A megadott met\u00f3dus t\u00e1voli kiv\u00e9tel fogott el a DRS p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n a vez\u00e9rl\u0151ter\u00fcleten.
+ControllerSession.DRSInstanceRemException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceException=SESN0135E: Hiba a DRS p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n a vez\u00e9rl\u0151ter\u00fcleten: elfogott kiv\u00e9tel: 
+ControllerSession.DRSInstanceException.explanation=A megadott met\u00f3dus kiv\u00e9tel fogott el egy DRS p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n a vez\u00e9rl\u0151ter\u00fcleten.
+ControllerSession.DRSInstanceException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.SessContextGroupException=SESN0136E: Hiba a SessionContext csoport p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n a vez\u00e9rl\u0151ter\u00fcleten: elfogott kiv\u00e9tel: 
+ControllerSession.SessContextGroupException.explanation=A megadott met\u00f3dus kiv\u00e9tel fogott el egy SessionContext csoport p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1sa sor\u00e1n a vez\u00e9rl\u0151ter\u00fcleten.
+ControllerSession.SessContextGroupException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nulldbmParm=SESN0137E: DRSBootstrapMsg param\u00e9ter = null.
+ControllerSession.nulldbmParm.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9ket adott \u00e1t a DRSBootstrapMsg param\u00e9ternek. 
+ControllerSession.nulldbmParm.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.Nullevent=SESN0138E: esem\u00e9nyparam\u00e9ter = null.
+ControllerSession.Nullevent.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9ket adott \u00e1t az esem\u00e9ny param\u00e9ternek. 
+ControllerSession.Nullevent.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoProxy=SESN0139E: nem lehet proxy-t k\u00e9rni a(z) {0} tokenhez.
+ControllerSession.NoProxy.explanation=A megadott met\u00f3dus nem k\u00e9pes proxyt k\u00e9rni az adott tokenhez. 
+ControllerSession.NoProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.TokenToBytes=SESN0140E: nem lehet a tokent byte-t\u00f6mbb\u00e9 konvert\u00e1lni: token = {0}. 
+ControllerSession.TokenToBytes.explanation=A megadott met\u00f3dus nem k\u00e9pes a tokent byte-t\u00f6mbb\u00e9 konvert\u00e1lni. 
+ControllerSession.TokenToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventToBytes=SESN0141E: nem lehet a(z) {0} esem\u00e9nyt byte-t\u00f6mbb\u00e9 alak\u00edtani. 
+ControllerSession.EventToBytes.explanation=A megadott met\u00f3dus nem k\u00e9pes az esem\u00e9nyt byte-t\u00f6mbb\u00e9 konvert\u00e1lni. 
+ControllerSession.EventToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONUP=SESN0142I: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny ({0}) REPLICATION_UP esem\u00e9nyt kapott. 
+ControllerSession.EventREPLICATIONUP.explanation=The: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny REPLICATION_UP esem\u00e9nyt kapott. 
+ControllerSession.EventREPLICATIONUP.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONDOWN=SESN0143I: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny ({0}) REPLICATION_DOWN esem\u00e9nyt kapott. 
+ControllerSession.EventREPLICATIONDOWN.explanation=The: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny REPLICATION_DOWN esem\u00e9nyt kapott. 
+ControllerSession.EventREPLICATIONDOWN.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventISCONGESTED=SESN0144I: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny ({0}) IS_CONGESTED esem\u00e9nyt kapott. 
+ControllerSession.EventISCONGESTED.explanation=The: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny IS_CONGESTED esem\u00e9nyt kapott. 
+ControllerSession.EventISCONGESTED.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventNOTCONGESTED=SESN0145I: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny ({0}) NOT_CONGESTED esem\u00e9nyt kapott. 
+ControllerSession.EventNOTCONGESTED.explanation=The: A HttpSessDRSControllerVars DRS p\u00e9ld\u00e1ny NOT_CONGESTED esem\u00e9nyt kapott. 
+ControllerSession.EventNOTCONGESTED.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullKey=SESN0146E: A karaktersorozat kulccs\u00e1 konvert\u00e1lt entryKey null. 
+ControllerSession.NullKey.explanation=A megadott met\u00f3dusban az entryKey elemb\u0151l konvert\u00e1lt karaktersorozat kulcs null\u00e9rt\u00e9k.
+ControllerSession.NullKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regInUnregtable=SESN0147E: Hiba: A(z) {0} token\u0171 al\u00e1rendelt bejegyz\u00e9sre ker\u00fclt, de a bejegyzetlen t\u00e1bl\u00e1ban jelenik meg. 
+ControllerSession.regInUnregtable.explanation=Az al\u00e1rendelt be van jegyezve, de a token a nem bejegyzett t\u00e1bl\u00e1ban jelenik meg.
+ControllerSession.regInUnregtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regNotinRegtable=SESN0148E: Hiba: A(z) {0} token\u0171 al\u00e1rendelt bejegyz\u00e9sre ker\u00fclt, de nem jelenik meg a bejegyzett t\u00e1bl\u00e1ban. 
+ControllerSession.regNotinRegtable.explanation=Az al\u00e1rendelt be van jegyezve, de a token nem jelenik meg a bejegyzett t\u00e1bl\u00e1ban.
+ControllerSession.regNotinRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.unregInRegtable=SESN0149E: Hiba: A(z) {0} token\u0171 al\u00e1rendelt nincs bejegyezve, de a bejegyzett t\u00e1bl\u00e1ban jelenik meg. 
+ControllerSession.unregInRegtable.explanation=Az al\u00e1rendelt nincs bejegyezve, de a token megjelenik a bejegyzett t\u00e1bl\u00e1ban.
+ControllerSession.unregInRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullContext=SESN0150E: Hiba: a(z) {0} p\u00e9ld\u00e1ny eset\u00e9ben visszaadott kontextus null\u00e9rt\u00e9k. 
+ControllerSession.nullContext.explanation=A p\u00e9ld\u00e1ny kikeres\u00e9sekor visszaadott kontextus null\u00e9rt\u00e9k.
+ControllerSession.nullContext.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullToken=SESN0151E: token param\u00e9ter = null. 
+ControllerSession.nullToken.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9ket adott \u00e1t a token param\u00e9ternek.
+ControllerSession.nullToken.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenExists=SESN0152E: Hiba: k\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy olyan token hozz\u00e1ad\u00e1s\u00e1ra, amely m\u00e1r l\u00e9tezik. 
+ControllerSession.tokenExists.explanation=A megadott met\u00f3dus olyan tokent adott \u00e1t hozz\u00e1ad\u00e1sra, ami m\u00e1r l\u00e9tezik.
+ControllerSession.tokenExists.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNoMatch=SESN0153E: Hiba: A v\u00e1rt token ({0}) nem egyezik meg a tmp2-vel ({1}). 
+ControllerSession.tokenNoMatch.explanation=A megadott token nem egyezik meg a tmp2-ben tal\u00e1lhat\u00f3 tokennek. 
+ControllerSession.tokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.arrayToObject=SESN0154E: Hiba: a visszaadott byte-t\u00f6mb nem konvert\u00e1lhat\u00f3 objektumm\u00e1. 
+ControllerSession.arrayToObject.explanation=A visszaadott byte-t\u00f6mb nem konvert\u00e1lhat\u00f3 objektumm\u00e1. 
+ControllerSession.arrayToObject.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.byteArrayNull=SESN0155E: Hiba: a visszaadott byte-t\u00f6mb null\u00e9rt\u00e9k. 
+ControllerSession.byteArrayNull.explanation=A visszaadott byte-t\u00f6mb null\u00e9rt\u00e9k.  
+ControllerSession.byteArrayNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoCreateProxy=SESN0156E: nem lehet proxy-t l\u00e9trehozni a(z) {0} tokenhez.
+ControllerSession.NoCreateProxy.explanation=A megadott met\u00f3dus nem k\u00e9pes proxyt l\u00e9trehozni az adott tokenhez. 
+ControllerSession.NoCreateProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.environ=SESN0157E: Hiba: A met\u00f3dus helytelen k\u00f6rnyezetben ker\u00fclt megh\u00edv\u00e1sra.
+ControllerSession.environ.explanation=A megadott met\u00f3dus egy nem vez\u00e9rl\u0151 ter\u00fcleti k\u00f6rnyezetben ker\u00fclt megh\u00edv\u00e1sra. 
+ControllerSession.environ.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokencontextNull=SESN0158E: Hiba: A kontextus null\u00e9rt\u00e9k a k\u00f6vetkez\u0151k eset\u00e9ben: stoken = {0}, azonos\u00edt\u00f3 = {1}.
+ControllerSession.stokencontextNull.explanation=A kontextus null\u00e9rt\u00e9k a megadott stoken \u00e9s azonos\u00edt\u00f3 eset\u00e9ben. 
+ControllerSession.stokencontextNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.getUnregisteredErr=SESN0159E: Hiba: nem k\u00e9rhet\u0151 le be nem jegyzett bejegyz\u00e9s a k\u00f6vetkez\u0151 stokenhez: {0}.
+ControllerSession.getUnregisteredErr.explanation=A stokenhez nem k\u00e9rhet\u0151 le regisztr\u00e1ci\u00f3 n\u00e9lk\u00fcli bejegyz\u00e9se. 
+ControllerSession.getUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.locateUnregisteredErr=SESN0160E: Hiba: nem tal\u00e1lhat\u00f3 be nem jegyzett bejegyz\u00e9s a k\u00f6vetkez\u0151 stokenhez: {0}.
+ControllerSession.locateUnregisteredErr.explanation=A stokenhez nem tal\u00e1lhat\u00f3 meg regisztr\u00e1ci\u00f3 n\u00e9lk\u00fcli bejegyz\u00e9se. 
+ControllerSession.locateUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullGroupName=SESN0161E: A GroupName param\u00e9ter \u00fcres. 
+ControllerSession.nullGroupName.explanation=A megadott met\u00f3dus null\u00e9rt\u00e9ket adott \u00e1t a GroupName param\u00e9ternek.
+ControllerSession.nullGroupName.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.instanceCreateFail=SESN0162E: token = null: vez\u00e9rl\u0151ter\u00fclet-p\u00e9ld\u00e1ny nem hozhat\u00f3 l\u00e9tre. 
+ControllerSession.instanceCreateFail.explanation=A megadott met\u00f3dus nem tudott vez\u00e9rl\u0151ter\u00fclet-p\u00e9ld\u00e1nyt l\u00e9trehozni.
+ControllerSession.instanceCreateFail.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.registerServantNullReturn=SESN0163E: Hiba: a registerServant null\u00e9rt\u00e9ket adott vissza. 
+ControllerSession.registerServantNullReturn.explanation=A registerServant megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott vissza.
+ControllerSession.registerServantNullReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokenNoMatch=SESN0164E: Hiba: a(z) {0} stoken nem felel meg a stokenTest {1} elemnek. 
+ControllerSession.stokenNoMatch.explanation=A megadott stoken nem felel meg a stokenTest tokennek. 
+ControllerSession.stokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNotinArray=SESN0165E: Hiba:  a(z) {0} token nincs benne a tokenm\u00e1trixban. 
+ControllerSession.tokenNotinArray.explanation=A megadott stoken nincs benne a tokenm\u00e1trixban.  
+ControllerSession.tokenNotinArray.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenInstanceOffset=SESN0166E: instanceOffset hiba a tokent\u00e1bl\u00e1ban: token = {0}, instanceOffset  nem >= 0. 
+ControllerSession.tokenInstanceOffset.explanation=A megadott met\u00f3dus instanceOffset hib\u00e1t \u00e9szlelt a token feldolgoz\u00e1sa sor\u00e1n. 
+ControllerSession.tokenInstanceOffset.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.confirmServantRegistration=SESN0167E: Hiba: a confirmServantRegistration null\u00e9rt\u00e9ket adott vissza. 
+ControllerSession.confirmServantRegistration.explanation=A confirmServantRegistration egyik h\u00edv\u00e1sa null\u00e9rt\u00e9ket adott vissza. 
+ControllerSession.confirmServantRegistration.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullSessvalue=SESN0168E: Hiba: a munkamenet\u00e9 konvert\u00e1lt \u00e9rt\u00e9kparam\u00e9ter null. 
+ControllerSession.nullSessvalue.explanation=A megadott met\u00f3dusban az \u00e9rt\u00e9kparam\u00e9terb\u0151l \u00e1talak\u00edtott munkamenet null\u00e9rt\u00e9k. 
+ControllerSession.nullSessvalue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.wrongTableDef=SESN0181E: A t\u00e1bla l\u00e9tezik, de helytelen defin\u00edci\u00f3val.
+DatabaseHashMap.wrongTableDef.explanation=A munkamenet adatb\u00e1zis-t\u00e1bla helytelen\u00fcl lett l\u00e9trehozva.
+DatabaseHashMap.wrongTableDef.useraction=Sz\u00fcntesse meg a t\u00e1bl\u00e1t k\u00e9zi \u00faton.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cantstartLTC=SESN0182E: Nem ind\u00edthat\u00f3 helyi tranzakci\u00f3.
+DatabaseHashMap.cantstartLTC.explanation=Hiba t\u00f6rt\u00e9nt egy helyi tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+DatabaseHashMap.cantstartLTC.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.localRollBack=SESN0183E: Helyi tranzakci\u00f3 setRollbackOnly miatt visszag\u00f6rgetve
+DatabaseHashMap.localRollBack.explanation=Hiba t\u00f6rt\u00e9nt egy helyi tranzakci\u00f3 takar\u00edt\u00e1sa sor\u00e1n, ami a tranzakci\u00f3 visszag\u00f6rget\u00e9s\u00e9t okozta.
+DatabaseHashMap.localRollBack.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.deferWrite=SESN0184I: K\u00e9sleltesse az \u00edr\u00e1st a k\u00f6vetkez\u0151 alkalomig, mivel a munkamenet a(z) {0} szervizmet\u00f3dusban van
+DatabaseHashMap.deferWrite.explanation=A munkamenet most nem t\u00e1rolhat\u00f3, mert pillanatnyilag egy kiszolg\u00e1l\u00f3 kisalkalmaz\u00e1s f\u00e9r hozz\u00e1.  Az id\u0151 alap\u00fa \u00edr\u00f3 sz\u00e1l k\u00f6vetkez\u0151 fut\u00e1sakor ker\u00fcl t\u00e1rol\u00e1sra.
+DatabaseHashMap.deferWrite.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.nullConnection=SESN0185E: Null adatb\u00e1zis-kapcsolat ker\u00fcl lek\u00e9r\u00e9sre.
+DatabaseHashMap.nullConnection.explanation=Null adatb\u00e1zis-kapcsolat ker\u00fcl lek\u00e9r\u00e9sre.
+DatabaseHashMap.nullConnection.useraction=SQLException eset\u00e9n t\u00e1j\u00e9koz\u00f3djon k\u00f6rnyezete megfelel\u0151 adatb\u00e1zis-dokument\u00e1ci\u00f3j\u00e1b\u00f3l. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy megfelel\u0151en konfigur\u00e1lt egy adatforr\u00e1st a Munkamenet-kezel\u0151h\u00f6z.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cmdaNull=SESN0186W: A ComponentMetaDataAccessor null.
+DatabaseHashMap.cmdaNull.explanation=A ComponentMetaDataAccessor nem \u00e9rhet\u0151 el.
+DatabaseHashMap.cmdaNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propertyTooBig=SESN0187I: Ez a tulajdons\u00e1g t\u00fal nagy {0}
+DatabaseHashMapMR.propertyTooBig.explanation=A megadott tulajdons\u00e1g t\u00fal nagy az adatb\u00e1zishoz.
+DatabaseHashMapMR.propertyTooBig.useraction=Cs\u00f6kkentse a tulajdons\u00e1g m\u00e9ret\u00e9t vagy ne t\u00e1rolja azt a munkamenetben.
+# -------------------------------------------------------------------------------------------------
+MTMStore.drsContext=SESN0188I: A(z) {0} alkalmaz\u00e1s mem\u00f3ria-mem\u00f3ria m\u00f3dja {1}
+MTMStore.drsContext.explanation=Az alkalmaz\u00e1s mem\u00f3ri\u00e1n bel\u00fcli replik\u00e1ci\u00f3j\u00e1nak m\u00f3dj\u00e1t adja meg.
+MTMStore.drsContext.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.timeOut=SESN0189E: Id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt a munkamenet el\u00e9r\u00e9s\u00e9re v\u00e1rakoz\u00e1s sor\u00e1n.  A Munkamenet hozz\u00e1f\u00e9r\u00e9s soros\u00edt\u00e1sa szolg\u00e1ltat\u00e1s \u00fagy van be\u00e1ll\u00edtva, hogy ne enged\u00e9lyezzen hozz\u00e1f\u00e9r\u00e9st.
+WsSessionContext.timeOut.explanation=A Munkamenet hozz\u00e1f\u00e9r\u00e9s soros\u00edt\u00e1sa szolg\u00e1ltat\u00e1s enged\u00e9lyezett \u00e9s \u00fagy van be\u00e1ll\u00edtva, hogy ne enged\u00e9lyezzen hozz\u00e1f\u00e9r\u00e9st id\u0151t\u00fall\u00e9p\u00e9s eset\u00e9n.
+WsSessionContext.timeOut.useraction=Keressen lefagyott alkalmaz\u00e1sokat, amelyek esetleg az alkalmaz\u00e1skiszolg\u00e1l\u00f3 sz\u00e1lainak ki\u00edrat\u00e1sa miatt fagytak le.  Fontolja meg az id\u0151korl\u00e1t n\u00f6vel\u00e9s\u00e9t vagy a munkamenet hozz\u00e1f\u00e9r\u00e9s enged\u00e9lyez\u00e9s\u00e9t id\u0151t\u00fall\u00e9p\u00e9s eset\u00e9n.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serviceNull=SESN0190E: A CoreStack szolg\u00e1ltat\u00e1s null, nem lehet csatlakozni a(z) {0} HAGroup csoportj\u00e1hoz
+WsSessionMgrComponentImpl.serviceNull.explanation=A CoreStack szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el \u00e9s nem lehet csatlakozni a HAGroup csoporthoz.
+WsSessionMgrComponentImpl.serviceNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerMTMCacheMsgListener.unableCreate=SESN0191E: zOS rendszeren nem lehet munkamenet ment\u00e9si t\u00e1rol\u00f3t l\u00e9trehozni.  A rendszer kil\u00e9p a(z) {0} munkamenet createEntry met\u00f3dus\u00e1b\u00f3l.
+ControllerMTMCacheMsgListener.unableCreate.explanation=Hiba t\u00f6rt\u00e9nt a munkamenet ment\u00e9si t\u00e1rol\u00f3 l\u00e9trehoz\u00e1sakor zOS rendszeren.
+ControllerMTMCacheMsgListener.unableCreate.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.registerSessionFailed=SESN0192E: A registerSession met\u00f3dus h\u00edv\u00e1sa a(z) {0} azonos\u00edt\u00f3 eset\u00e9ben {1} visszat\u00e9r\u00e9si k\u00f3ddal meghi\u00fasult
+SessionServantAffinityManager.registerSessionFailed.explanation=Nem lehet zOS al\u00e1rendelt rokont l\u00e9trehozni ehhez a munkamenethez.
+SessionServantAffinityManager.registerSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.unregisterSessionFailed=SESN0193E: Az unregisterSession met\u00f3dus h\u00edv\u00e1sa a(z) {0} azonos\u00edt\u00f3 eset\u00e9ben {1} visszat\u00e9r\u00e9si k\u00f3ddal meghi\u00fasult
+SessionServantAffinityManager.unregisterSessionFailed.explanation=Nem lehet zOS al\u00e1rendelt rokont felszabad\u00edtani ehhez a munkamenethez.
+SessionServantAffinityManager.unregisterSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdNotFound=SESN0197W: A zOS kiszolg\u00e1l\u00f3azonos\u00edt\u00f3 nem \u00e1llap\u00edthat\u00f3 meg, \u00edgy az alap\u00e9rtelmezett -1 \u00e9rt\u00e9ket veszi fel.
+WsSessionMgrComponentImpl.serverIdNotFound.explanation=A kiszolg\u00e1l\u00f3azonos\u00edt\u00f3t nem siker\u00fcl lek\u00e9rdezni a server.xml f\u00e1jlb\u00f3l.
+WsSessionMgrComponentImpl.serverIdNotFound.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3t, ha sz\u00fcks\u00e9ges.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdException=SESN0198E: Kiv\u00e9tel ker\u00fclt elfog\u00e1sra a zOS kiszolg\u00e1l\u00f3azonos\u00edt\u00f3 lek\u00e9rdez\u00e9sekor \u00edgy az alap\u00e9rtelmezett -1 \u00e9rt\u00e9ket veszi fel.
+WsSessionMgrComponentImpl.serverIdException.explanation=Hiba t\u00f6rt\u00e9nt a zOS kiszolg\u00e1l\u00f3 azonos\u00edt\u00f3j\u00e1nak beolvas\u00e1sakor.
+WsSessionMgrComponentImpl.serverIdException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled=SESN0199I: A HttpSession fel\u00fcgyelet n\u00e9lk\u00fcli kiszolg\u00e1l\u00f3 replik\u00e1ci\u00f3 enged\u00e9lyez\u00e9sre ker\u00fclt.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.explanation=A zOS alap kiszolg\u00e1l\u00f3 replik\u00e1lni fogja a munkamenet adatokat az al\u00e1rendelt \u00e1t\u00e1ll\u00e1s \u00e9rdek\u00e9ben.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.useraction=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+# -------------------------------------------------------------------------------------------------
+MTMBuffWrapper.serializationException=SESN0200E: Kiv\u00e9tel t\u00f6rt\u00e9nt a soros\u00edt\u00e1sra tett k\u00eds\u00e9rlet sor\u00e1n.
+MTMBuffWrapper.serializationException.explanation=Az objektumot nem siker\u00fclt soros\u00edtani.
+MTMBuffWrapper.serializationException.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az objektum soros\u00edthat\u00f3.
+# -------------------------------------------------------------------------------------------------
+MTMDataXfer.attributeConversionException=SESN0201E: A(z) {0} attrib\u00fatum konvert\u00e1l\u00e1sa meghi\u00fasult
+MTMDataXfer.attributeConversionException.explanation=Az attrib\u00fatum nem soros\u00edthat\u00f3.
+MTMDataXfer.attributeConversionException.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az objektum soros\u00edthat\u00f3.
+# -------------------------------------------------------------------------------------------------
+MTMHashMap.attributeReplicationFailure=SESN0202E: A(z) {0} attrib\u00fatum replik\u00e1l\u00e1sa meghi\u00fasult
+MTMHashMap.attributeReplicationFailure.explanation=Az attrib\u00fatum nem soros\u00edthat\u00f3
+MTMHashMap.attributeReplicationFailure.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az objektum soros\u00edthat\u00f3.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning=SESN0203W: A(z) {0} attrib\u00fatum adatb\u00e1zis t\u00f6bbsoros konfigur\u00e1ci\u00f3ban nem t\u00e1rolhat\u00f3 ugyanolyan n\u00e9vvel, mint a munkamenet-azonos\u00edt\u00f3.  Az attrib\u00fatum nem ker\u00fcl t\u00e1rol\u00e1sra.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.explanation=Egy munkamenet attrib\u00fatum neve adatb\u00e1zis t\u00f6bbsoros konfigur\u00e1ci\u00f3ban nem egyezhet meg a munkamenet-azonos\u00edt\u00f3val.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.useraction=Az attrib\u00fatum t\u00e1rol\u00e1sa \u00e9rdek\u00e9ben m\u00f3dos\u00edtsa a munkamenet attrib\u00fatum nev\u00e9t.
+# -------------------------------------------------------------------------------------------------
+MTMVars.DRSNotStarted=SESN0204E: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tudja a munkamenet-kezel\u0151t mem\u00f3ri\u00e1k k\u00f6z\u00f6tti replik\u00e1ci\u00f3val ind\u00edtani, mert a(z) {0} replik\u00e1ci\u00f3s tartom\u00e1nyban probl\u00e9ma mer\u00fclt fel.
+MTMVars.DRSNotStarted.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem tal\u00e1lja a megadott replik\u00e1ci\u00f3s tartom\u00e1nyt.
+MTMVars.DRSNotStarted.useraction=Hozza l\u00e9tre a replik\u00e1ci\u00f3s tartom\u00e1nyt \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, vagy tiltsa le a mem\u00f3ri\u00e1k k\u00f6zti munkamenet replik\u00e1ci\u00f3t az \u00f6sszes alkalmaz\u00e1sra.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.IndexIncorrect=SESN0205W: Helytelen index van abban az adatb\u00e1zisban, amely a munkamenethez haszn\u00e1lt.
+DatabaseHashMap.IndexIncorrect.explanation=\u00dagy t\u0171nik, hogy t\u00e1bl\u00e1zata munkamenetindexe az alkalmaz\u00e1skiszolg\u00e1l\u00f3n k\u00edv\u00fcl k\u00e9sz\u00fclt.
+DatabaseHashMap.IndexIncorrect.useraction=Sz\u00fcntesse meg az indexet \u00e9s ind\u00edtsa \u00fajra az alkalmaz\u00e1skiszolg\u00e1l\u00f3t.
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=A munkamenet objektum: {0}
+CommonMessage.sessionid=A munkamenet azonos\u00edt\u00f3: {0}
+CommonMessage.miscData=Vegyes adatok: {0}
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.propertyError=SESN8000W: Hiba t\u00f6rt\u00e9nt a munkamenet-kezel\u0151 egy\u00e9ni tulajdons\u00e1g\u00e1nak bet\u00f6lt\u00e9sekor: {0}
+WsSessionMgrComponentImpl.propertyError.explanation= A munkamenet egy\u00e9ni tulajdons\u00e1ga nem lett bet\u00f6ltve.
+WsSessionMgrComponentImpl.propertyError.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a munkamenet-kezel\u0151 egy\u00e9ni tulajdons\u00e1g\u00e1nak \u00e9rt\u00e9ke helyes, \u00e9s nem hivatkozik meghat\u00e1rozatlan v\u00e1ltoz\u00f3ra.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=Kiv\u00e9tel: 
+#----------AdminTask messages----------
+AdminTask.sessiongroup.description=A munkamenetekkel kapcsolatos rendszergazdai feladatok csoportja.
+AdminTask.addDisabledSessionCookie.title=AddDisabledSessionCookie
+AdminTask.addDisabledSessionCookie.description=Olyan cookie-be\u00e1ll\u00edt\u00e1st ad a munkamenethez, amely nem engedi programoz\u00e1stechnikai \u00faton m\u00f3dos\u00edtani az alkalmaz\u00e1sokat.
+AdminTask.cookieDomain.parm.title=cookieDomain
+AdminTask.cookieDomain.parm.description=A cookie tartom\u00e1ny\u00e1nak, nev\u00e9nek \u00e9s el\u00e9r\u00e9si \u00fatj\u00e1nak helyesnek kell lennie, hogy a cookie letiltsa a tov\u00e1bbi be\u00e1ll\u00edt\u00e1sokat.  Ez a tartom\u00e1ny param\u00e9ter.
+AdminTask.cookieName.parm.title=cookieName
+AdminTask.cookieName.parm.description=A cookie tartom\u00e1ny\u00e1nak, nev\u00e9nek \u00e9s el\u00e9r\u00e9si \u00fatj\u00e1nak helyesnek kell lennie, hogy a cookie letiltsa a tov\u00e1bbi be\u00e1ll\u00edt\u00e1sokat.  Ez a n\u00e9v param\u00e9ter.
+AdminTask.cookiePath.parm.title=cookiePath
+AdminTask.cookiePath.parm.description=A cookie tartom\u00e1ny\u00e1nak, nev\u00e9nek \u00e9s el\u00e9r\u00e9si \u00fatj\u00e1nak helyesnek kell lennie, hogy a cookie letiltsa a tov\u00e1bbi be\u00e1ll\u00edt\u00e1sokat.  Ez az el\u00e9r\u00e9si \u00fat param\u00e9ter.
+AdminTask.removeDisabledSessionCookie.title=removeDisabledSessionCookie
+AdminTask.removeDisabledSessionCookie.description=Elt\u00e1vol\u00edtja az alkalmaz\u00e1sok programoz\u00e1stechnikai \u00faton t\u00f6rt\u00e9n\u0151 m\u00f3dos\u00edt\u00e1s\u00e1t letilt\u00f3 cookie-be\u00e1ll\u00edt\u00e1st.
+AdminTask.cookieId.parm.title=cookieId
+AdminTask.cookieId.parm.description=A cookie azonos\u00edt\u00f3ja.
+AdminTask.listDisabledSessionCookie.title=listDisabledSessionCookie
+AdminTask.listDisabledSessionCookie.description=Kilist\u00e1zza azokat a cookie-be\u00e1ll\u00edt\u00e1sk\u00e9szleteket, amelyeket nem lehet programoz\u00e1stechnikai \u00faton m\u00f3dos\u00edtani.
+AdminTask.modifyDisabledSessionCookie.title=modifyDisabledSessionCookie
+AdminTask.modifyDisabledSessionCookie.description=M\u00f3dos\u00edt egy megl\u00e9v\u0151 cookie-be\u00e1ll\u00edt\u00e1st.
+
+AdminTask.targetObject.title=SessionSecurity
+AdminTask.targetObject.description=Nincs sz\u00fcks\u00e9g c\u00e9lra.  A SessionSecurity a cella alatt lesz m\u00f3dos\u00edtva.
+
+AdminTask.element.already.exists=SESN0800E: Ez az elem m\u00e1r l\u00e9tezik.
+AdminTask.element.already.exists.explanation=Az \u00d6n \u00e1ltal hozz\u00e1adott elem megegyezik egy m\u00e1r l\u00e9tez\u0151 elemmel.
+AdminTask.element.already.exists.useraction=
+
+AdminTask.element.id.not.found=SESN0801E: Ilyen azonos\u00edt\u00f3j\u00fa elem nem tal\u00e1lhat\u00f3.
+AdminTask.element.id.not.found.explanation=Ilyen azonos\u00edt\u00f3j\u00fa elem nem tal\u00e1lhat\u00f3.
+AdminTask.element.id.not.found.useraction=
+#----------AdminTask messages----------

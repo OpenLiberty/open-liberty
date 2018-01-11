@@ -4,25 +4,31 @@
 
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/OpenLibertyIO)
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg)](https://search.maven.org/#artifactdetails%7Cio.openliberty%7Copenliberty-runtime%7C17.0.0.4%7Czip)
 
 # Summary
 Open Liberty is a highly composable, fast to start, dynamic application server runtime environment.
 
 # Table of Contents
 * [Getting Started](https://github.com/OpenLiberty/open-liberty#getting-started)
-* [Contribute to open liberty](https://github.com/OpenLiberty/open-liberty#contribute-to-open-liberty)
+* [Contribute to Open Liberty](https://github.com/OpenLiberty/open-liberty#contribute-to-open-liberty)
 * [Community](https://github.com/OpenLiberty/open-liberty#community)
 
-## Downloading
-You can download released versions and nightly build artifacts from: http://www.openliberty.io/downloads/
+## Getting Started
 
-## Quick start
+### Downloading
+You can download released versions and nightly build artifacts from: https://www.openliberty.io/downloads/
+
+### Quick start
     git clone https://github.com/OpenLiberty/sample-mpconf.git
     cd sample-mpconf
     mvn clean package -P start
-    
-## Open Liberty Guides
-Visit the [OpenLiberty website](http://openliberty.io/guides/) for a number of step by step guides.
+
+Open browser to http://localhost:8080/ and explore the demo application. Afterwards run `mvn liberty:stop-server` to stop the server.
+
+### Open Liberty Guides
+Visit the [OpenLiberty website](https://openliberty.io/guides/) for a number of step by step guides.
 
 
 ## Contribute to Open Liberty
@@ -44,7 +50,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 
    ```./gradlew test``` for unit tests
    
-   ```./gradlew buildandrun``` for FAT tests
+   ```./gradlew build.example_fat:buildandrun``` to run a [FAT project](https://github.com/OpenLiberty/open-liberty/wiki/FAT-tests)
    
    **NOTE:** ```./gradlew build``` runs assemble and test targets
    

@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: Security Microprofile JWT proxy
 Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.proxy
 Bundle-Description: Security Microprofile JWT proxy service, version=${bVersion}
@@ -40,7 +38,7 @@ Import-Package: !*.internal.*, *
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    ../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
     cglib:cglib-nodep;version=2.1.0.3, \
     org.hamcrest:hamcrest-all;version=1.3, \

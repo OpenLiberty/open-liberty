@@ -1,0 +1,70 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A CDI error has occurred: {0}
+cdi.resource.injection.error.CWOWB1000E=CWOWB1000E: Ocorreu um erro de CDI: {0}
+cdi.resource.injection.error.CWOWB1000E.explanation=Ocorreu um erro de CDI que impedir\u00e1 a opera\u00e7\u00e3o normal.
+cdi.resource.injection.error.CWOWB1000E.useraction=Revise os logs FFDC e o texto de exce\u00e7\u00e3o para identificar o problema.
+
+# Web Application Archive "{0}" contains more than one beans.xml file. Using "{1}". Ignoring "{2}".
+multiple.beans.xml.warning.CWOWB1001W=CWOWB1001W: O Web Application Archive {0} cont\u00e9m mais de um arquivo beans.xml. Usando {1}. Ignorando {2}.
+multiple.beans.xml.warning.CWOWB1001W.explanation=O CDI localizou mais de um arquivo beans.xml.
+multiple.beans.xml.warning.CWOWB1001W.useraction=Assegure-se de que o archive de aplicativo contenha apenas um arquivo beans.xml.
+
+managed.class.bean.class.mismatch.CWOWB1002E=CWOWB1002E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+managed.class.bean.class.mismatch.CWOWB1002E.explanation=CMSG0001
+managed.class.bean.class.mismatch.CWOWB1002E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.class.CWOWB1003E=CWOWB1003E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0} {1}
+error.loading.class.CWOWB1003E.explanation=CMSG0001
+error.loading.class.CWOWB1003E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+unknown.container.type.CWOWB1004E=CWOWB1004E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0}
+unknown.container.type.CWOWB1004E.explanation=CMSG0001
+unknown.container.type.CWOWB1004E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
+error.loading.resource.CWOWB1005E=CWOWB1005E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0}
+error.loading.resource.CWOWB1005E.explanation=CMSG0001
+error.loading.resource.CWOWB1005E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+no.injection.target.context.CWOWB1006E=CWOWB1006E: Ocorreu um erro interno do WebSphere Application Server. Entre em contato com suporte do WebSphere Application Server com os dados a seguir: {0}
+no.injection.target.context.CWOWB1006E.explanation=CMSG0001
+no.injection.target.context.CWOWB1006E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+resource.producer.validation.error.CWOWB1007E=CWOWB1007E: O campo produtor, {0}, tem o tipo {1}, que n\u00e3o corresponde ao tipo do objeto injetado.
+resource.producer.validation.error.CWOWB1007E.explanation=CDI localizou um campo produtor de recursos no qual o tipo do campo n\u00e3o correspondia ao tipo de recurso Java EE injetado nela.
+resource.producer.validation.error.CWOWB1007E.useraction=Certifique-se de que o recurso Java EE correto est\u00e1 sendo injetado no campo produtor de recursos e que o tipo do campo corresponda ao tipo do recurso injetado nele.
+
+no.injection.target.CWOWB1008E=CWOWB1008E: O membro {0} da classe {1} n\u00e3o pode ser injetado, pois a classe {1} n\u00e3o est\u00e1 em um archive bean.
+no.injection.target.CWOWB1008E.explanation=A inje\u00e7\u00e3o n\u00e3o foi bem-sucedida, pois o gerenciador de bean do archive ao qual a classe pertence \u00e9 nulo.
+no.injection.target.CWOWB1008E.useraction=Assegure-se de que o archive ao qual a classe pertence seja um archive bean. Consulte a especifica\u00e7\u00e3o de CDI sobre como fazer com que um archive se torne um archive bean.
+
+implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Archives bean impl\u00edcitos s\u00e3o desativados.
+implicit.bean.scanning.disabled.CWOWB1009W.explanation=Os archives n\u00e3o s\u00e3o varridos para beans CDI, a menos que tenham um arquivo beans.xml.
+implicit.bean.scanning.disabled.CWOWB1009W.useraction=Assegure-se de que cada archive que usa CDI tenha um arquivo beans.xml ou reative a varredura de beans impl\u00edcitos em seu arquivo server.xml.

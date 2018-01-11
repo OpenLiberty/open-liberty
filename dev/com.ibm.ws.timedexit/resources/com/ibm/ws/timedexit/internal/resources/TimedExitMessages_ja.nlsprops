@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/timedexit/internal/resources/TimedExitMessages.nlsprops
+#COMPONENTPREFIX TE
+#COMPONENTNAMEFOR TE TE
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+TE9900.timedexit.enabled=TE9900A: \u6642\u9593\u306b\u3088\u308b\u7d42\u4e86\u304c\u6709\u52b9\u306b\u306a\u3063\u3066\u3044\u307e\u3059\u3002
+TE9900.timedexit.enabled.explanation=\u6642\u9593\u306b\u3088\u308b\u7d42\u4e86\u304c\u6709\u52b9\u306b\u306a\u3063\u3066\u3044\u307e\u3059\u3002
+TE9900.timedexit.enabled.useraction=\u30a2\u30af\u30b7\u30e7\u30f3\u306f\u4e0d\u8981\u3067\u3059\u3002

@@ -165,8 +165,8 @@ public class LibertyFileManager {
      * @return List of Strings which match the pattern. No match results in an empty list.
      * @throws Exception
      */
-    static List<String> findStringsInFile(String regexp,
-                                          RemoteFile fileToSearch) throws Exception {
+    public static List<String> findStringsInFile(String regexp,
+                                                 RemoteFile fileToSearch) throws Exception {
         final String method = "findStringsInFile";
         Log.entering(c, method);
 
@@ -369,18 +369,13 @@ public class LibertyFileManager {
 
     public static void deleteLibertyDirectoryAndContents(Machine machine, String dirToDeleteAbsPath) throws Exception {
         final String method = "deleteLibertyDirectoryAndContents";
-        Log.info(c, method, "deleting Directory and Contents: " + dirToDeleteAbsPath);
+        Log.finer(c, method, "deleting Directory and Contents: " + dirToDeleteAbsPath);
         try {
             RemoteFile fileToDelete = getLibertyFile(machine, dirToDeleteAbsPath);
             if (fileToDelete.exists()) {
                 recursivelyDeleteDirectory(machine, fileToDelete);
-            } else {
-                Log.info(c, method, "File \'" + dirToDeleteAbsPath
-                                    + "\' does not exist so cannot be deleted");
             }
         } catch (FileNotFoundException e) {
-            Log.info(c, method, "File \'" + dirToDeleteAbsPath
-                                + "\' does not exist so cannot be deleted");
         }
     }
 
@@ -542,13 +537,13 @@ public class LibertyFileManager {
 
                 throw new TopologyException("Failed to rename " + tmpFile.getAbsolutePath() + " to " + destFile.getAbsolutePath() + extraMessage, cause);
             }
-            Log.info(c, "copyFileIntoLiberty", "Done: copied " + destFile.length() + " / " + destFile.length() + " bytes");
+            Log.finer(c, "copyFileIntoLiberty", "Done: copied " + destFile.length() + " / " + destFile.length() + " bytes");
         } else {
             Log.info(c, "copyFileIntoLiberty", "Copying: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
             if (!src.copyToDest(dest, recursivelyCopy, true)) {
                 throw new TopologyException("Failed to copy " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
             }
-            Log.info(c, "copyFileIntoLiberty", "Done: copied " + dest.length() + " / " + src.length() + " bytes");
+            Log.finer(c, "copyFileIntoLiberty", "Done: copied " + dest.length() + " / " + src.length() + " bytes");
         }
 
         Log.finer(c, "copyFileIntoLiberty", "Copy successfull!");

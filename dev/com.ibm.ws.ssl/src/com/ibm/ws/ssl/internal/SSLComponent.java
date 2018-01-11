@@ -55,8 +55,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 @Component(immediate = true,
            configurationPid = "com.ibm.ws.ssl.default",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = "service.vendor=IBM",
-           xmlns = "http://felix.apache.org/xmlns/scr/v1.2.0-felix")
+           property = "service.vendor=IBM")
 public class SSLComponent extends GenericSSLConfigService implements SSLSupportOptional {
 
     /** Value for the SSLSupport property that indicates an active instance */
@@ -77,6 +76,8 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
     private volatile WsLocationAdmin locSvc;
 
     private FeatureProvisioner provisionerService;
+    private SSLConfigValidator validator;
+
     private boolean transportSecurityEnabled;
 
     private ExtComponentContext componentContext;
@@ -109,6 +110,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
 
         this.componentContext = (ExtComponentContext) ctx;
 
+        SSLConfigManager.getInstance().setConfigValidator(validator);
         processConfig(true);
 
     }
@@ -275,13 +277,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      */
     protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
 
-    /**
-     * Set the reference to the location manager.
-     * Dynamic service: always use the most recent.
-     *
-     * @param locSvc Location service
-     */
-
     @Reference(service = FeatureProvisioner.class)
     protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {
         this.provisionerService = provisionerService;
@@ -290,6 +285,15 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
     protected synchronized void unsetKernelProvisioner(FeatureProvisioner provisionerService) {
         transportSecurityEnabled = false;
         this.provisionerService = null;
+    }
+
+    @Reference(service = SSLConfigValidator.class)
+    protected synchronized void setSSLConfigValidator(SSLConfigValidator validator) {
+        this.validator = validator;
+    }
+
+    protected synchronized void unsetSSLConfigValidator(SSLConfigValidator validator) {
+        this.validator = null;
     }
 
     /**

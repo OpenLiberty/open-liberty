@@ -12,6 +12,9 @@ package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
@@ -20,6 +23,9 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
 
     H2InboundLink connLink = null;
 
+    /** RAS tracing variable */
+    private static final TraceComponent tc = Tr.register(H2MuxTCPReadCallback.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
     public void setConnLinkCallback(H2InboundLink _link) {
         connLink = _link;
     }
@@ -27,20 +33,21 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
     @Override
     public void complete(VirtualConnection vc, TCPReadRequestContext rrc) {
 
-        try {
-            if (connLink != null) {
-                connLink.processRead(vc, rrc);
-            }
-        } catch (Exception e) {
-            //CMM TODO
-            //Something bad happened, do something about it
+        if (connLink != null) {
+            connLink.processRead(vc, rrc);
         }
-
     }
 
     @Override
-    public void error(VirtualConnection vc, TCPReadRequestContext rrc, IOException arg2) {
+    public void error(VirtualConnection vc, TCPReadRequestContext rrc, IOException exception) {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "H2MuxTCPReadCallback error callback called with exception: " + exception);
+        }
+
+        if (connLink != null) {
+            connLink.closeConnectionLink(exception);
+        }
     }
 
 }

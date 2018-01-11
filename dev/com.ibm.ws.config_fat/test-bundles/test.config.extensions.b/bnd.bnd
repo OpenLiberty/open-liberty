@@ -11,8 +11,6 @@
 -include= ~../../../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: Test Config Extensions B
 Bundle-SymbolicName: test.config.extensions.b; singleton:=true
 Bundle-Description: This bundle provides some services to use for testing; version=${bVersion}

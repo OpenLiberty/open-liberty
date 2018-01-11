@@ -12,11 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.cdi-1.2;version=latest, \
-	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
-	com.ibm.websphere.appserver.clientContainerRemoteSupportCommon-1.0;version=latest, \
 	com.ibm.ws.jndi.remote.client;version=latest

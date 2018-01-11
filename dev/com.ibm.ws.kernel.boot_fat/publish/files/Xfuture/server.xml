@@ -9,11 +9,10 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
-	<include location="../fatTestPorts.xml"/>
+    <include location="../fatTestPorts.xml"/>
 	
     <featureManager>
-        <feature>webProfile-6.0</feature>
+        <feature>webProfile-7.0</feature>
     </featureManager>
 
     <logging traceSpecification="*=info:logservice=event"/>

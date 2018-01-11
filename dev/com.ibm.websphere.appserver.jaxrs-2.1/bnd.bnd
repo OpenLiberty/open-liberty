@@ -11,10 +11,3 @@
 -include= ~../cnf/resources/bnd/liberty-release.props
 
 -nobundles=true
-
-publish.feature.resources: **
-
--dependson: \
-	com.ibm.websphere.appserver.jaxrsClient-2.1;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
-	com.ibm.websphere.appserver.internal.jaxrs-2.1;version=latest

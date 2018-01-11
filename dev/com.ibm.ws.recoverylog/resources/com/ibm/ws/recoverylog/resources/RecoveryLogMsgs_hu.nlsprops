@@ -1,0 +1,319 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s felf\u00fcggesztve ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s f\u00fcgg\u0151 \u00e1llapotban van, hogy a rendszer biztons\u00e1gi ment\u00e9st k\u00e9sz\u00edthessen a helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlokr\u00f3l.
+CWRLS0001_SUSPEND_RLS.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s folytat\u00e1sa ({0}).
+CWRLS0002_RESUME_RLS.explanation=A kor\u00e1bban felf\u00fcggesztett Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s \u00fajb\u00f3l fut\u00f3 \u00e1llapotba ker\u00fclt.
+CWRLS0002_RESUME_RLS.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Ez az \u00fczenetk\u00f3d azon \u00fczenetek t\u00e1mogat\u00e1s\u00e1ra haszn\u00e1latos, amelyeknek m\u00e9g nincs saj\u00e1t \u00fczenetk\u00f3d kiosztva.
+CWRLS0003_GENERIC_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt forduljon az \u00fczenet sz\u00f6veg\u00e9hez.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: Nem lehet l\u00e9trehozni a(z) {0} helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlt.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s nem tudta l\u00e9trehozni az \u00fczenetben jelzett f\u00e1jlt. Vagy a c\u00e9l k\u00f6nyvt\u00e1r nem \u00e9rhet\u0151 el, vagy a rendszer nem rendelkezik elegend\u0151 jogosults\u00e1ggal a k\u00edv\u00e1nt f\u00e1jl l\u00e9trehoz\u00e1s\u00e1hoz.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00fcks\u00e9ges k\u00f6nyvt\u00e1r-hierarchia \u00e9rv\u00e9nyes \u00e9s el\u00e9rhet\u0151 a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: Nem lehet kiz\u00e1r\u00f3lagos f\u00e1jlz\u00e1rat megszerezni a k\u00f6vetkez\u0151re: {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s nem tudta kiz\u00e1r\u00f3lagosan z\u00e1rolni az \u00fczenetben jelzett f\u00e1jlt.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: A(z) {0} \u00faj helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jl l\u00e9trehoz\u00e1sa.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=\u00daj helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jl j\u00f6tt l\u00e9tre az \u00e1lland\u00f3 adatok t\u00e1rol\u00e1s\u00e1hoz.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: Nem tal\u00e1lhat\u00f3ak l\u00e9tez\u0151 helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlok a k\u00f6vetkez\u0151 helyen: {0}. A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 hidegind\u00edt\u00e1sa.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Vagy t\u00f6r\u00f6lve lettek a kor\u00e1bbi helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlok, vagy ez az els\u0151 alkalom, amikor ezen a helyen helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlok lesznek t\u00e1rolva. A t\u00e1rs\u00edtott szolg\u00e1ltat\u00e1s egyik esetben sem indul el, \u00e9s nem v\u00e9gez helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1st.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sodottnak van megjel\u00f6lve. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sodott \u00e9s nincs tov\u00e1bbi hozz\u00e1f\u00e9r\u00e9s a helyre\u00e1ll\u00edt\u00e1si napl\u00f3hoz. Az \u00fczenet megjelen\u00edti a komponenst \u00e9s az \u00e9rintett kiv\u00e9telt.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, hogy a napl\u00f3t meg lehessen jav\u00edtani. Pr\u00f3b\u00e1lja meg kijav\u00edtani az \u00f6sszes felt\u00e9telt, amelyet a kiv\u00e9tel jelez az \u00fczenetben.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sod\u00e1s\u00e1nak r\u00e9szletei: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Ez az \u00fczenet a CWRLS0008E \u00fczenettel egy\u00fctt ker\u00fclt kiad\u00e1sra \u00e9s a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sod\u00e1s\u00e1nak r\u00e9szleteit jelzi.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghib\u00e1sod\u00e1s\u00e1hoz vezet\u0151 felt\u00e9telek jav\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a jelen \u00fczenetben, \u00e9s a CWRLS0008E \u00fczenetben l\u00e9v\u0151 inform\u00e1ci\u00f3kat.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s v\u00e9grehajt\u00e1sa a helyi WebSphere kiszolg\u00e1l\u00f3n ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s a t\u00e1rs\u00edtott \u00fcgyf\u00e9lszolg\u00e1ltat\u00e1sok helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s\u00e1t ir\u00e1ny\u00edtja.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s v\u00e9grehajt\u00e1sa a partner WebSphere kiszolg\u00e1l\u00f3n ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s a t\u00e1rs\u00edtott \u00fcgyf\u00e9lszolg\u00e1ltat\u00e1sok helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s\u00e1t ir\u00e1ny\u00edtja a partnerkiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Az \u00f6sszes \u00e1lland\u00f3 szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s v\u00e9grehajt\u00e1s\u00e1ra lett ir\u00e1ny\u00edtva ezen WebSphere kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s a helyre\u00e1ll\u00edt\u00e1s megkezd\u00e9s\u00e9re sz\u00f3l\u00edtotta fel az \u00f6sszes t\u00e1rs\u00edtott \u00fcgyf\u00e9lszolg\u00e1ltat\u00e1st.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Az \u00f6sszes \u00e1lland\u00f3 szolg\u00e1ltat\u00e1s helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s v\u00e9grehajt\u00e1s\u00e1ra lett ir\u00e1ny\u00edtva egy partner WebSphere kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s a helyre\u00e1ll\u00edt\u00e1s megkezd\u00e9s\u00e9re sz\u00f3l\u00edtotta fel az \u00f6sszes t\u00e1rs\u00edtott \u00fcgyf\u00e9lszolg\u00e1ltat\u00e1st a partnerkiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Minden jelenlegi helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s meg\u00e1ll\u00edt\u00e1sa a partner WebSphere kiszolg\u00e1l\u00f3n ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=A helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s \u00e1tker\u00fcl egy m\u00e1sik alkalmaz\u00e1skiszolg\u00e1l\u00f3ra. Tipikusan ez akkor t\u00f6rt\u00e9nik, ha egy kiszolg\u00e1l\u00f3 \u00fajraindul \u00e9s visszaveszi a helyre\u00e1ll\u00edt\u00e1si napl\u00f3inak tulajdonjog\u00e1t.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: A helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jl z\u00e1rol\u00e1sa le lett tiltva a tranzakci\u00f3s szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1gain\u00e1l.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s \u00e1ltal a helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jlokhoz val\u00f3 kiz\u00e1r\u00f3lagos hozz\u00e1f\u00e9r\u00e9s biztos\u00edt\u00e1s\u00e1ra haszn\u00e1lt f\u00e1jlz\u00e1rol\u00e1si mechanizmus kifejezetten le lett tiltva.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 megszor\u00edt\u00e1sok a hely\u00fck\u00f6n vannak ezen konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s t\u00e1mogat\u00e1s\u00e1hoz.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: Nem lehet a(z) {0} kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra v\u00e9grehajtand\u00f3 helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1shoz sz\u00fcks\u00e9ges kiz\u00e1r\u00f3lagos f\u00e1jlz\u00e1rat megszerezni.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=Vagy a c\u00e9l kiszolg\u00e1l\u00f3 akt\u00edv, vagy a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 konfigur\u00e1ci\u00f3ja helytelen.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 konfigur\u00e1ci\u00f3ja \u00e9rv\u00e9nyes.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Egy, a(z) {0} kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra v\u00e9grehajtand\u00f3 helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1shoz sz\u00fcks\u00e9ges kiz\u00e1r\u00f3lagos f\u00e1jlz\u00e1r megszerz\u00e9s\u00e9re ir\u00e1nyul\u00f3 k\u00eds\u00e9rlet meg lett szak\u00edtva.   Egy m\u00e1sik kiszolg\u00e1l\u00f3 ker\u00fclt aktiv\u00e1l\u00e1sra ezen helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s v\u00e9grehajt\u00e1s\u00e1ra.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Egy helyre\u00e1ll\u00edt\u00e1si napl\u00f3 ir\u00e1ny\u00edt\u00e1sa \u00e1t lett adva k\u00e9t alkalmaz\u00e1skiszolg\u00e1l\u00f3 k\u00f6z\u00f6tt.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: A tranzakci\u00f3s helyre\u00e1ll\u00edt\u00e1s meg\u00e1ll\u00edt\u00e1s\u00e1ra \u00e9s a feldolgoz\u00e1s tov\u00e1bb\u00edt\u00e1s\u00e1ra a helyi kiszolg\u00e1l\u00f3 ({0}) sz\u00e1m\u00e1ra tett k\u00eds\u00e9rlet megszak\u00edtva.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s megakad\u00e1lyozta, hogy a helyi kiszolg\u00e1l\u00f3 lemondjon a saj\u00e1t napl\u00f3i ir\u00e1ny\u00edt\u00e1s\u00e1r\u00f3l. Lehets\u00e9ges, hogy ezt a t\u00f6rzs csoport h\u00e1zirend konfigur\u00e1ci\u00f3ja okozta.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a h\u00e1zirend nem rendeli hozz\u00e1 egy akt\u00edv kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3j\u00e1nak tulajdonjog\u00e1t egy alternat\u00edv kiszolg\u00e1l\u00f3hoz.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s a tranzakci\u00f3s szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1gai alatt pillanatk\u00e9p-biztons\u00e1gosk\u00e9nt lett be\u00e1ll\u00edtva.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Amikor pillanatk\u00e9pet kell k\u00e9sz\u00edteni a napl\u00f3f\u00e1jlokr\u00f3l, minden tranzakci\u00f3s tev\u00e9kenys\u00e9g felf\u00fcggeszt\u00e9sre ker\u00fcl, am\u00edg a pillanatk\u00e9p elk\u00e9sz\u00fcl, hogy a napl\u00f3f\u00e1jlok olyan ismert \u00e1llapotban maradjanak, ami konzisztens a pillanatk\u00e9pben \u00e9rintett m\u00e1s rendszerekkel.
+CWRLS0019_SNAPSHOT_SAFE.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s a tranzakci\u00f3s szolg\u00e1ltat\u00e1s egy\u00e9ni tulajdons\u00e1gai alatt NEM pillanatk\u00e9p-biztons\u00e1gosk\u00e9nt lett be\u00e1ll\u00edtva.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Amikor pillanatk\u00e9p k\u00e9sz\u00fcl a napl\u00f3f\u00e1jlokr\u00f3l, azok nem lehetnek olyan \u00e1llapotban, amely \u00f6sszef\u00fcgg a pillanatk\u00e9pben \u00e9rintett m\u00e1s rendszerekkel.
+CWRLS0020_SNAPSHOT_SAFE.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s folytat\u00e1sra lett megh\u00edvva ({0}), de m\u00e1s f\u00fcgg\u0151ben l\u00e9v\u0151 felf\u00fcggeszt\u00e9sek is vannak.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s csak akkor folytat\u00f3dik, ha m\u00e1r nincsenek f\u00fcgg\u0151ben l\u00e9v\u0151 felf\u00fcggeszt\u00e9s m\u0171veletek.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: Egy Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s felf\u00fcggeszt\u00e9si m\u0171velete t\u00fall\u00e9pte az id\u0151korl\u00e1tot ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Ha nincsenek f\u00fcgg\u0151ben l\u00e9v\u0151 felf\u00fcggeszt\u00e9s m\u0171veletek, akkor a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s folytat\u00f3dik.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: A Helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s folytat\u00e1sa egy felf\u00fcggeszt\u00e9s m\u0171velet id\u0151t\u00fall\u00e9p\u00e9s\u00e9t k\u00f6vet\u0151en.
+CWRLS0023_RESUME_RLS.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+CWRLS0023_RESUME_RLS.useraction=Semmit sem kell tennie.
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: A rendszer kiv\u00e9telt \u00e9szlelt a helyre\u00e1ll\u00edt\u00e1s k\u00f6zben. {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= Kiv\u00e9tel t\u00f6rt\u00e9nt egy el\u0151z\u0151 kiszolg\u00e1l\u00f3 hib\u00e1b\u00f3l t\u00f6rt\u00e9n\u0151 helyre\u00e1ll\u00edt\u00e1si pr\u00f3b\u00e1lkoz\u00e1s k\u00f6zben.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa helyre\u00e1ll\u00edt\u00e1si m\u00f3dban nem kompatibilis a HA felk\u00e9sz\u00edt\u00e9ssel.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=Egy magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s\u00fa konfigur\u00e1ci\u00f3ban, a kiszolg\u00e1l\u00f3-helyre\u00e1ll\u00edt\u00e1s automatikusan kezdem\u00e9nyezhet\u0151 egy partner kiszolg\u00e1l\u00f3n.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=Helyre\u00e1ll\u00edt\u00e1si m\u00f3dban ne pr\u00f3b\u00e1ljon meg elind\u00edtani olyan kiszolg\u00e1l\u00f3t, ahol enged\u00e9lyezett a magas szint\u0171 rendelkez\u00e9sre \u00e1ll\u00e1s.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: Nem lehet kiz\u00e1r\u00f3lagos f\u00e1jlz\u00e1rat megszerezni a k\u00f6vetkez\u0151re: {0} - \u00fajrapr\u00f3b\u00e1lkoz\u00e1s.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s nem tudja kiz\u00e1r\u00f3lagosan z\u00e1rolni az \u00fczenetben jelzett f\u00e1jlt a helyre\u00e1ll\u00edt\u00e1s sor\u00e1n, mivel az haszn\u00e1latban l\u00e9v\u0151nek l\u00e1tszik. A helyre\u00e1ll\u00edt\u00e1si szolg\u00e1ltat\u00e1s rendszeres id\u0151k\u00f6z\u00f6nk\u00e9nt megpr\u00f3b\u00e1lja majd megszerezni a kiz\u00e1r\u00f3lagos z\u00e1rat, hogy a helyre\u00e1ll\u00edt\u00e1s folytat\u00f3dhasson. Ha a helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jl a f\u0151 kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3inak egyike, akkor az ind\u00edt\u00e1s fel lesz f\u00fcggesztve, am\u00edg nem lehet hozz\u00e1f\u00e9rni a napl\u00f3khoz.  Ha a helyre\u00e1ll\u00edt\u00e1si napl\u00f3f\u00e1jl egy m\u00e1sik partner kiszolg\u00e1l\u00f3hoz tartozik, akkor egy m\u00e1sik kiszolg\u00e1l\u00f3 megszerezheti a z\u00e1rakat \u00e9s partner helyre\u00e1ll\u00edt\u00e1st v\u00e9gezhet; ebben az esetben ez a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edtja a helyre\u00e1ll\u00edt\u00e1si pr\u00f3b\u00e1lkoz\u00e1sokat.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, ellen\u0151rizze a helyre\u00e1ll\u00edt\u00e1si napl\u00f3k hely\u00e9t \u00e9s biztos\u00edtsa, hogy m\u00e1sik kiszolg\u00e1l\u00f3 ne f\u00e9rjen hozz\u00e1juk. Ez a helyzet el\u0151fordulhat p\u00e9ld\u00e1ul akkor, ha t\u00f6bb kiszolg\u00e1l\u00f3 is \u00fagy van be\u00e1ll\u00edtva, hogy egy m\u00e1sik kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3it haszn\u00e1lja.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: A(z) {0} k\u00f6z\u00f6s tranzakci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r lett meghat\u00e1rozva a(z) {1} \u00e9s {2} kiszolg\u00e1l\u00f3k sz\u00e1m\u00e1ra.
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=K\u00e9t kiszolg\u00e1l\u00f3 tranzakci\u00f3s napl\u00f3i k\u00f6z\u00f6s k\u00f6nyvt\u00e1rbe\u00e1ll\u00edt\u00e1st haszn\u00e1lnak. Ez helyre\u00e1ll\u00edt\u00e1si z\u00e1rakkal kapcsolatos versenyhelyzethez, vagy az adatok integrit\u00e1s\u00e1nak hib\u00e1j\u00e1hoz vezethet. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=\u00c1ll\u00edtson be k\u00fcl\u00f6n napl\u00f3k\u00f6nyvt\u00e1r-\u00fatvonalakat minden egyes kiszolg\u00e1l\u00f3hoz.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: A(z) {0} k\u00f6z\u00f6s kompenz\u00e1ci\u00f3s napl\u00f3k\u00f6nyvt\u00e1r lett meghat\u00e1rozva a(z) {1} \u00e9s {2} kiszolg\u00e1l\u00f3k sz\u00e1m\u00e1ra.
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=K\u00e9t kiszolg\u00e1l\u00f3 kompenz\u00e1ci\u00f3s napl\u00f3i k\u00f6z\u00f6s k\u00f6nyvt\u00e1rbe\u00e1ll\u00edt\u00e1st haszn\u00e1lnak. Ez helyre\u00e1ll\u00edt\u00e1si z\u00e1rakkal kapcsolatos versenyhelyzethez, vagy az adatok integrit\u00e1s\u00e1nak hib\u00e1j\u00e1hoz vezethet. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=\u00c1ll\u00edtson be k\u00fcl\u00f6n napl\u00f3k\u00f6nyvt\u00e1r-\u00fatvonalakat minden egyes kiszolg\u00e1l\u00f3hoz.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: Nem lehet v\u00e9grehajtani a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1st a helyi WebSphere kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra - a kiszolg\u00e1l\u00f3 lez\u00e1r\u00e1sa
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s nem tudja v\u00e9grehajtani vagy befejezni a helyre\u00e1ll\u00edt\u00e1st a helyi kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra \u00e9s nem folytathat\u00f3 tov\u00e1bbi munka, \u00edgy a kiszolg\u00e1l\u00f3 le\u00e1ll.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: V\u00e1rakoz\u00e1s a HAManager eszk\u00f6zre, hogy aktiv\u00e1lja a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1st a helyi WebSphere kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s nem k\u00e9pes kezdem\u00e9nyezni a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1st a helyi kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra, mivel az a HAManager eszk\u00f6zre v\u00e1r, hogy az aktiv\u00e1lja a csoporttags\u00e1got ezen helyi kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3ihoz.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a kapcsol\u00f3d\u00f3 \u00fczeneteket. Ha nincsenek kapcsol\u00f3d\u00f3 \u00fczenetek, ellen\u0151rizze a DefaultCoreGroup be\u00e1ll\u00edt\u00e1sok konfigur\u00e1ci\u00f3j\u00e1t \u00e9s t\u00e1rs\u00edtott h\u00e1zirend meghat\u00e1roz\u00e1sokat a kiszolg\u00e1l\u00f3 helyre\u00e1ll\u00edt\u00e1si napl\u00f3 szolg\u00e1ltat\u00e1s\u00e1hoz. Ha p\u00e9ld\u00e1ul a Clustered TM h\u00e1zirend \u00fagy van be\u00e1ll\u00edtva, hogy ne t\u00e1mogassa a visszat\u00e9r\u00e9st, akkor egy m\u00e1sik kiszolg\u00e1l\u00f3 rendelkezhet a napl\u00f3kkal \u00e9s megakad\u00e1lyozhatja ezen kiszolg\u00e1l\u00f3 aktiv\u00e1l\u00e1s\u00e1t.
+

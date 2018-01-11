@@ -73,6 +73,7 @@ public class ServerStartJVMOptionsTest {
                                              File.separator + "configDropins" + File.separator + "overrides" + File.separator + "jvm.options");
         etcjvmoptions = new File(executionDir + File.separator + "etc" + File.separator + "jvm.options");
         sharedjvmoptions = new File(executionDir + File.separator + "usr" + File.separator + "shared" + File.separator + "jvm.options");
+        sharedjvmoptions.getParentFile().mkdirs();
         bootstrapPropFile = new File(executionDir + File.separator + "usr" + File.separator + "servers" + File.separator + SERVER_NAME +
                                      File.separator + "bootstrap.properties");
     }

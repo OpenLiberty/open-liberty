@@ -105,8 +105,8 @@ public class PrometheusMetricWriter implements OutputWriter {
 
             String description = "";
 
-            if (metricMetaData.getDescription() == null || metricMetaData.getDescription().isEmpty()) {
-
+            if (metricMetaData.getDescription() == null || metricMetaData.getDescription().trim().isEmpty()) {
+                description = "";
             } else {
                 description = Tr.formatMessage(tc, locale, metricMetaData.getDescription());
             }

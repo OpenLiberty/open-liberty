@@ -40,7 +40,7 @@
     <properties.ExampleRA.InteractionSpec functionName="REMOVE"/>
   </adminObject>
 
-  <activationSpec id="ExampleApp/ExampleWeb/ExampleMessageDrivenBean">
+  <activationSpec id="ExampleApp/ExampleMessageDrivenBean">
     <properties.ExampleRA functionName="ADD"/>
   </activationSpec>
 

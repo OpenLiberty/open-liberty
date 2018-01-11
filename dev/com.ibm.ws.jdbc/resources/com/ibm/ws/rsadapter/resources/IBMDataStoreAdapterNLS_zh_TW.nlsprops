@@ -1,0 +1,611 @@
+###############################################################################
+# Copyright (c) 2001, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Notes:
+#
+#   Message Ranges for this file are as follows:
+#
+#       0000 - 0299       General exception messages and warnings.
+#       0300 - 0999       XA exceptions and warnings.
+#       1000 - 1999       Additional general exception messages and warnings.
+#       2000 - 3999       Currently unused.
+#       4000 - 4999       Messages for Liberty only.
+#       5000 - 6999       Currently unused.
+#       7000 - 7599       Database Helper exception messages and warnings.
+#       8000 - 8499       DataSource configuration exception messages and warnings.
+#       8500 - 8999       JDBC Wrapper warnings.
+#       9000 - 9999       JDBC Wrapper exception messages.
+#
+#CMVCPATHNAME com.ibm.ws.jdbc/resources/com/ibm/ws/rsadapter/resources/IBMDataStoreAdapterNLS.nlsprops
+#COMPONENTPREFIX DSRA
+#COMPONENTNAMEFOR DSRA JDBC Integration Layer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#-----------------------------------------------------------------------------------------#
+# 
+# Using 0000-0299 for General DataStore Adapter exception messages and warnings
+# 
+# ----------------------------------------------------------------------------
+# 0010E      SQL_STATE_ERROR_CODE
+# 
+# {0}        The SQLSTATE.
+# {1}        The ERRORCODE
+SQL_STATE_ERROR_CODE=DSRA0010E: SQL \u72c0\u614b = {0}\uff0c\u932f\u8aa4\u78bc = {1}
+SQL_STATE_ERROR_CODE.explanation=\u767c\u751f\u8cc7\u6599\u5eab\u932f\u8aa4\uff0c\u5df2\u5217\u51fa SQL \u72c0\u614b\u548c\u932f\u8aa4\u78bc\u3002
+SQL_STATE_ERROR_CODE.useraction=\u8acb\u5229\u7528\u932f\u8aa4\u78bc\u7684\u76f8\u95dc\u8cc7\u8a0a\u4f86\u4fee\u6b63\u8cc7\u6599\u5eab\u4e2d\u7684\u554f\u984c\u3002
+
+# 0011 deleted
+# 0015 deleted
+# 0020-0027 deleted
+
+# General purpose template for messages that will not be translated
+DSA_INTERNAL_ERROR=DSRA0030E: \u767c\u751f Data Store Adapter \u5167\u90e8\u932f\u8aa4\u3002\u8acb\u806f\u7d61 WebSphere \u652f\u63f4\u4e2d\u5fc3\uff0c\u4e26\u63d0\u4f9b\u4e0b\u5217\u8cc7\u6599\uff1a{0} {1} {2}
+DSA_INTERNAL_ERROR.explanation=CMSG0001
+DSA_INTERNAL_ERROR.useraction=\u8acb\u9020\u8a2a IBM \u652f\u63f4\u7db2\u7ad9\uff0c\u4ee5\u53d6\u5f97\u554f\u984c\u5224\u65b7\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+# 0035 deleted
+
+# General purpose template for messages that will not be translated
+WS_INTERNAL_ERROR=DSRA0040E: \u767c\u751f WebSphere \u5167\u90e8\u932f\u8aa4\u3002\u8acb\u806f\u7d61 WebSphere \u652f\u63f4\u4e2d\u5fc3\uff0c\u4e26\u63d0\u4f9b\u4e0b\u5217\u8cc7\u6599\uff1a{0} {1} {2}
+WS_INTERNAL_ERROR.explanation=WebSphere \u7a0b\u5f0f\u78bc\u767c\u751f\u932f\u8aa4\u3002
+WS_INTERNAL_ERROR.useraction=\u8acb\u6536\u96c6\u6240\u6709\u8ffd\u8e64\u548c\u7cfb\u7d71\u65e5\u8a8c\uff0c\u4ee5\u53ca\u60a8\u8a66\u5716\u57f7\u884c\u7684\u4f5c\u696d\u8aaa\u660e\u3002\u8acb\u9020\u8a2a IBM \u652f\u63f4\u7db2\u7ad9\uff0c\u4ee5\u53d6\u5f97\u554f\u984c\u5224\u65b7\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+# General purpose template for messages that will not be translated
+DSA_INTERNAL_WARNING=DSRA0050W: \u767c\u751f Data Store Adapter \u5167\u90e8\u8b66\u544a\u3002\u8acb\u806f\u7d61 WebSphere \u652f\u63f4\u4e2d\u5fc3\uff0c\u4e26\u63d0\u4f9b\u4e0b\u5217\u8cc7\u6599\uff1a{0} {1} {2}
+DSA_INTERNAL_WARNING.explanation=CMSG0001
+DSA_INTERNAL_WARNING.useraction=\u8acb\u9020\u8a2a IBM \u652f\u63f4\u7db2\u7ad9\uff0c\u4ee5\u53d6\u5f97\u554f\u984c\u5224\u65b7\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+# 0060 deleted
+# 0070 deleted
+
+# 0080E      DSA_ERROR
+# 
+# {0}        The exception.
+DSA_ERROR=DSRA0080E: Data Store Adapter \u6536\u5230\u7570\u5e38\u72c0\u6cc1\u3002\u8acb\u53c3\u95b1\u539f\u59cb\u7570\u5e38\u72c0\u6cc1\u8a0a\u606f\uff1a{0}\u3002
+DSA_ERROR.explanation=\u8cc7\u6599\u5eab\u5f8c\u7aef\u7522\u751f Data Store Adapter \u6355\u6349\u5230\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+DSA_ERROR.useraction=\u8acb\u53c3\u95b1\u8cc7\u6599\u5eab\u8edf\u9ad4\u6240\u5831\u544a\u7684\u932f\u8aa4\u6587\u5b57\uff0c\u627e\u51fa\u53ef\u80fd\u7684\u932f\u8aa4\u4f86\u6e90\u3002
+
+# 0081-0087 deleted
+
+DSA_GENERIC_MSG=DSRA0086E: \u4f5c\u696d\u9020\u6210\u7570\u5e38\u72c0\u6cc1\u3002\u4f5c\u696d\u662f\uff1a{0}\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a{1}\u3002\u53ef\u80fd\u7684\u539f\u56e0\u662f\uff1a{2}
+DSA_GENERIC_MSG.explanation= \u4f5c\u696d\u9020\u6210\u7570\u5e38\u72c0\u6cc1\u3002
+DSA_GENERIC_MSG.useraction=\u8acb\u6aa2\u67e5\u4f5c\u696d\u3001\u7570\u5e38\u72c0\u6cc1\u548c\u8cc7\u6599\u5eab\u65e5\u8a8c\u6a94\u3002
+
+# 0090 deleted
+
+UNSUPPORTED_METHOD=DSRA0091I: \u4e0d\u652f\u63f4\u9019\u500b\u5f8c\u7aef\u7cfb\u7d71\u8cc7\u6599\u5eab\u4f7f\u7528 {0} \u65b9\u6cd5
+UNSUPPORTED_METHOD.explanation=\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002
+UNSUPPORTED_METHOD.useraction=\u8acb\u9020\u8a2a IBM \u652f\u63f4\u7db2\u7ad9\uff0c\u4ee5\u53d6\u5f97\u554f\u984c\u5224\u65b7\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+#TRANSLATOR Do Not Translate: DataSource
+RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: \u5075\u6e2c\u5230\u96b1\u542b\u7684\u8cc7\u6599\u5eab\u4ea4\u6613\u3002WebSphere \u5c07{0}\u4ea4\u6613\u3002\u6bcf\u500b DataSource \u90fd\u6703\u8a18\u8f09\u9019\u500b\u8a0a\u606f\u3002\u5c07\u81ea\u52d5\u89e3\u6790\u5f8c\u7e8c\u7684\u96b1\u542b\u4ea4\u6613\u3002
+
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5075\u6e2c\u5230\u8cc7\u6599\u5eab\u5df2\u555f\u52d5\u4e00\u9805\u4ea4\u6613\u3002\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5c07\u4f9d\u7167\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9\u7684\u914d\u7f6e\uff0c\u5617\u8a66\u89e3\u6790\u9019\u9805\u4ea4\u6613\u3002
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+
+
+#TRANSLATOR Do Not Translate: Datasource, FFDC
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: \u5075\u6e2c\u5230\u96b1\u542b\u7684\u8cc7\u6599\u5eab\u4ea4\u6613\u3002WebSphere \u8a66\u5716{0}\u4ea4\u6613\uff0c\u4f46{1}\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5075\u6e2c\u5230\u8cc7\u6599\u5eab\u5df2\u555f\u52d5\u4e00\u9805\u4ea4\u6613\u3002\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5c07\u4f9d\u7167\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9\u7684\u914d\u7f6e\uff0c\u5617\u8a66\u89e3\u6790\u9019\u9805\u4ea4\u6613\u3002\u767c\u751f\u932f\u8aa4\uff0c\u9020\u6210\u7121\u6cd5\u89e3\u6790\u4ea4\u6613\u3002
+ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=\u8acb\u6536\u96c6 FFDC \u65e5\u8a8c\u6a94\u53ca\u4efb\u4f55\u4f3a\u670d\u5668\u65e5\u8a8c\u6a94\u3002\u5982\u679c\u932f\u8aa4\u8207\u8cc7\u6599\u5eab\u4e2d\u65b7\u7121\u95dc\uff0c\u8acb\u9020\u8a2a IBM \u652f\u63f4\u7db2\u7ad9\u4f86\u5224\u65b7\u554f\u984c\u3002
+
+#TRANSLATOR Do Not Translate: Datasource
+IMPLICIT_TRANSACTION_FOUND=DSRA0095I: \u627e\u4e0d\u5230 WebSphere \u6240\u8ffd\u8e64\u7684\u8cc7\u6599\u5eab\u4ea4\u6613\uff0c\u8a66\u5716\u5728\u6e05\u9664\u9023\u7dda\u4e4b\u524d\u56de\u5fa9\u3002\u6bcf\u500b DataSource \u90fd\u6703\u8a18\u8f09\u9019\u500b\u8a0a\u606f\u3002\u5c07\u81ea\u52d5\u89e3\u6790\u5f8c\u7e8c\u7684\u96b1\u542b\u4ea4\u6613\u3002
+
+IMPLICIT_TRANSACTION_FOUND.explanation=\u8cc7\u6599\u5eab\u5df2\u5728\u9023\u7dda\u4e0a\u555f\u52d5\u4ea4\u6613\u3002\u5728\u9023\u7dda\u50b3\u56de\u5132\u5b58\u5340\u4e4b\u524d\uff0c\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u6703\u5148\u56de\u5fa9\u4ea4\u6613\u3002
+IMPLICIT_TRANSACTION_FOUND.useraction=\u8acb\u8a55\u4f30\u61c9\u7528\u7a0b\u5f0f\u78bc\u4f86\u5224\u65b7\u53ef\u80fd\u9020\u6210\u96b1\u542b\u4ea4\u6613\u7684\u539f\u56e0\u3002\u61c9\u7528\u7a0b\u5f0f\u78bc\u4e5f\u8a31\u80fd\u660e\u78ba\u9632\u6b62\u9032\u4e00\u6b65\u7684\u96b1\u542b\u4ea4\u6613\uff0c\u60a8\u4e5f\u53ef\u4ee5\u914d\u7f6e\u91dd\u5c0d\u8cc7\u6599\u4f86\u6e90\u800c\u660e\u78ba\u63a1\u53d6\u7684\u52d5\u4f5c\u3002
+
+
+# 0096-0101 deleted
+# 0110 deleted
+# 0174 deleted
+
+# TRANSLATOR Do not translate: ManagedConnection.destroy()
+DSTRY_ERROR_EX=DSRA0180W: \u5728 ManagedConnection.destroy() \u671f\u9593\uff0c\u5075\u6e2c\u5230\u7570\u5e38\u72c0\u6cc1\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a{0}\u3002
+DSTRY_ERROR_EX.explanation=\u5728\u6e05\u9664\u6bc0\u640d\u4f5c\u696d\u7684 ManagedConnection \u6642\uff0c\u5075\u6e2c\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+DSTRY_ERROR_EX.useraction=\u8acb\u53c3\u95b1\u8cc7\u6599\u5eab\u8edf\u9ad4\u6240\u5831\u544a\u7684\u932f\u8aa4\uff0c\u4ee5\u5229\u65bc\u5224\u65b7\u932f\u8aa4\u7684\u539f\u56e0\u3002
+
+# 0230E      INVALID_TX_STATE
+# 
+# {0}        The operation.
+# {1}        The transaction state.
+INVALID_TX_STATE=DSRA0230E: \u4e0d\u5141\u8a31\u8a66\u5716\u57f7\u884c {0} \u4f5c\u696d\uff0c\u56e0\u70ba\u4ea4\u6613\u72c0\u614b\u662f {1}\u3002
+INVALID_TX_STATE.explanation=\u5728\u4ea4\u6613\u671f\u9593\uff0c\u4e0d\u5141\u8a31\u57f7\u884c\u6240\u8981\u6c42\u7684\u4f5c\u696d\u3002
+INVALID_TX_STATE.useraction=\u8acb\u5728\u555f\u52d5\u4ea4\u6613\u4e4b\u524d\u6216\u5b8c\u6210\u4ea4\u6613\u4e4b\u5f8c\uff0c\u57f7\u884c\u9019\u9805\u4f5c\u696d\u3002
+
+# 0240E      INVALID_CONNECTION
+#
+INVALID_CONNECTION=DSRA0240E: \u9023\u7dda\u7121\u6548\u3002\u6b63\u5728\u6e05\u9664\u9023\u7dda\u5132\u5b58\u5340\u3002
+INVALID_CONNECTION.explanation=\u4f7f\u7528\u8005\u8d77\u59cb\u4e86\u300c\u6e05\u9664\u5132\u5b58\u5340\u300d\u8981\u6c42\u3002\u9019\u9805\u8981\u6c42\u6703\u4f7f\u5132\u5b58\u5340\u4e2d\u7684\u73fe\u6709\u9023\u7dda\u5931\u6548\u3002
+INVALID_CONNECTION.useraction=\u8acb\u7d50\u675f\u4ea4\u6613\u548c\u65b9\u6cd5\u754c\u9650\uff0c\u4e26\u4ee5\u65b0\u9023\u7dda\u4f86\u91cd\u8a66\u908f\u8f2f\u3002
+
+# 0244 deleted
+
+# 0250E		WS_ERROR
+#
+# General purpose template for messages that will not be translated
+WS_ERROR=DSRA0250E: Data Store Adapter \u6536\u5230\u7570\u5e38\u72c0\u6cc1\u3002\u8acb\u53c3\u95b1\u539f\u59cb\u7570\u5e38\u72c0\u6cc1\u8a0a\u606f\uff1a{0}\u3002
+WS_ERROR.explanation=CMSG0001
+WS_ERROR.useraction=CMSG0002
+
+# 0280 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 0300-0999 for XA Exceptions and Warnings
+# 
+# 
+THROW_XAEXCEPTION=DSRA0302E:  \u767c\u751f XAException\u3002\u932f\u8aa4\u78bc\u662f\uff1a{0}\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a{1}
+THROW_XAEXCEPTION.explanation=\u8cc7\u6599\u5eab\u4e2d\u7684\u5169\u6bb5\u5f0f\u4f5c\u696d\u9020\u6210\u7570\u5e38\u72c0\u6cc1\u3002
+
+THROW_XAEXCEPTION.useraction=CMSG0002
+
+
+
+DISPLAY_XAEX_CONTENT=DSRA0304E:  \u767c\u751f XAException\u3002XAException \u5167\u5bb9\u548c\u8a73\u7d30\u8cc7\u6599\u5982\u4e0b\uff1a{0}\u3002
+DISPLAY_XAEX_CONTENT.explanation=\u8cc7\u6599\u5eab\u4e2d\u7684\u5169\u6bb5\u5f0f\u4f5c\u696d\u9020\u6210\u7570\u5e38\u72c0\u6cc1\u3002
+DISPLAY_XAEX_CONTENT.useraction=CMSG0002
+
+# 0310E      XID_MISMATCH
+# 
+# {0}        The Xid from the XAResource.start method.
+# {1}        An XAResource method name.
+# {2}        The Xid for the above XAResource method.
+XID_MISMATCH=DSRA0310E: Xid \u4e0d\u7b26\u3002\nXAResource.start\uff1a{0}\nXAResource.{1}\uff1a{2}
+XID_MISMATCH.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u8a66\u5716\u5229\u7528 XAResource.start \u6240\u7528\u7684 Xid \u4ee5\u5916\u7684 Xid \u4f86\u57f7\u884c XAResource \u4f5c\u696d\u3002
+XID_MISMATCH.useraction=\u8acb\u53d6\u5f97\u65b0\u9023\u7dda\uff0c\u518d\u91cd\u8a66\u4ea4\u6613\u3002
+
+# 0330E      ORACLE_RAC_RETRY
+# 
+# {0}        The operation being delayed.
+# {1}        Number of milliseconds from the last stale connection.
+# {2}        The value (in milliseconds) of the oracleRACXARecoveryDelay.
+ORACLE_RAC_RETRY=DSRA0330E: \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u6b63\u5728\u5ef6\u9072 {0} \u8981\u6c42\uff0c\u56e0\u70ba\u6700\u8fd1\u4e00\u500b\u820a\u6709\u9023\u7dda\u96d6\u5df2\u7d93\u6b77 {1} \u6beb\u79d2\uff0c\u4f46\u5c1a\u5728 oracleRACXARecoveryDelay \u503c\uff08{2} \u6beb\u79d2\uff09\u7684\u7bc4\u570d\u5167\u3002
+ORACLE_RAC_RETRY.explanation=\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9 oracleRACXARecoveryDelay \u5c0e\u81f4\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5728\u91cd\u8a66\u9593\u9694\u671f\u9593\u5ef6\u9072 xa.commit \u548c xa.rollback \u4f5c\u696d\u3002
+ORACLE_RAC_RETRY.useraction=\u8acb\u7b49\u5f85\u4ea4\u6613\u7ba1\u7406\u7a0b\u5f0f\u91cd\u8a66\u4f5c\u696d\u3002\u60a8\u5fc5\u9808\u5728\u4ea4\u6613\u7ba1\u7406\u7a0b\u5f0f\u4e0a\u914d\u7f6e\u63a2\u7d22\u6027\u7684\u91cd\u8a66\uff0c\u4ee5\u4fbf\u8b93 oracleRACXARecoveryDelay \u904b\u4f5c\u6b63\u5e38\u3002
+
+# 0400W      TBC_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_NOT_SUPPORTED=DSRA0400W: Datasource {0}\uff1a\u4e0d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50
+TBC_NOT_SUPPORTED.explanation=\u8cc7\u6599\u4f86\u6e90  \u6240\u6307\u5b9a\u7684\u8cc7\u6599\u5eab\u6216 JDBC \u63d0\u4f9b\u8005\u4e0d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50\u9078\u9805\u3002\u53ea\u6709\u5728\u4f7f\u7528 DB2 Universal JCC \u9a45\u52d5\u7a0b\u5f0f\u6240\u5b58\u53d6\u7684 DB2 for z/OS \u8cc7\u6599\u5eab\u6642\uff0c\u624d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50\u3002\u5c07\u4f7f\u7528\u9810\u8a2d\u7684\u9b06\u6563\u5206\u652f\u806f\u7d50\u9078\u9805\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u662f\u5c08\u70ba\u4e86\u56b4\u683c\u5206\u652f\u806f\u7d50\u800c\u8a2d\u8a08\uff0c\u53ef\u80fd\u6703\u56e0\u70ba\u76f8\u540c\u5ee3\u57df\u4ea4\u6613\u5167\u7684\u5404\u500b\u4ea4\u6613\u5206\u652f\u4e26\u4e0d\u5171\u7528\u8cc7\u6599\u5eab\u9396\u5b9a\uff0c\u800c\u9020\u6210\u9396\u5b9a\u903e\u6642\u3001\u6b7b\u9396\u53ca/\u6216\u4ea4\u6613\u56de\u5fa9\u3002
+TBC_NOT_SUPPORTED.useraction=\u60a8\u5fc5\u9808\u914d\u7f6e DataSource \u4f86\u4f7f\u7528\u53d7\u652f\u63f4\u5c64\u6b21\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u548c\u8cc7\u6599\u5eab\uff0c\u6216\u5c07\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u6210\u4e0d\u9700\u8981\u56b4\u683c\u5206\u652f\u806f\u7d50\u3002
+
+# 0401 deleted
+
+# 0402W      TBC_DB_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_DB_NOT_SUPPORTED=DSRA0402W: Datasource {0}\uff1a\u8cc7\u6599\u5eab\u7248\u672c\u4e0d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50
+TBC_DB_NOT_SUPPORTED.explanation=\u8cc7\u6599\u4f86\u6e90\u6240\u6307\u5b9a\u7684\u8cc7\u6599\u5eab\u4e0d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50\u9078\u9805\u3002\u53ea\u6709\u5c0d DB2 for z/OS V8 (+ APAR PK47713) \u6216 DB2 for Linux, UNIX, Windows V8 \u53ca\u66f4\u65b0\u7248\u672c\u7684\u7b2c 4 \u985e\u9023\u7dda\u624d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50\u3002\u5c07\u4f7f\u7528\u9810\u8a2d\u7684\u9b06\u6563\u5206\u652f\u806f\u7d50\u9078\u9805\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u662f\u5c08\u70ba\u4e86\u56b4\u683c\u5206\u652f\u806f\u7d50\u800c\u8a2d\u8a08\uff0c\u53ef\u80fd\u6703\u56e0\u70ba\u76f8\u540c\u5ee3\u57df\u4ea4\u6613\u5167\u7684\u5404\u500b\u4ea4\u6613\u5206\u652f\u4e26\u4e0d\u5171\u7528\u8cc7\u6599\u5eab\u9396\u5b9a\uff0c\u800c\u9020\u6210\u9396\u5b9a\u903e\u6642\u3001\u6b7b\u9396\u53ca/\u6216\u4ea4\u6613\u56de\u5fa9\u3002
+TBC_DB_NOT_SUPPORTED.useraction=\u60a8\u5fc5\u9808\u914d\u7f6e Datasource \u4f86\u4f7f\u7528\u53d7\u652f\u63f4\u5c64\u6b21\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u548c\u8cc7\u6599\u5eab\uff0c\u6216\u5c07\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u6210\u4e0d\u9700\u8981\u56b4\u683c\u5206\u652f\u806f\u7d50\u3002
+
+# 0403W      TBC_JCC_NOT_SUPPORTED
+#
+# {0}        The datasource JNDI name.
+TBC_JCC_NOT_SUPPORTED=DSRA0403W: Datasource {0}\uff1a\u56e0\u70ba DB2 JCC \u9a45\u52d5\u7a0b\u5f0f\u7684\u5c64\u6b21\u4e0d\u6b63\u78ba\uff0c\u4e0d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50
+TBC_JCC_NOT_SUPPORTED.explanation=\u8cc7\u6599\u4f86\u6e90  \u6240\u6307\u5b9a\u7684 JDBC \u63d0\u4f9b\u8005\u4e0d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50\u9078\u9805\u3002\u53ea\u6709\u5728\u9023\u7d50 DB2 9.5 \u6216 9 \u670d\u52d9\u7b49\u7d1a\uff0c\u4e14\u81f3\u5c11\u4f7f\u7528 DB2 Universal JCC \u9a45\u52d5\u7a0b\u5f0f 3.51 \u6216 3.6 \u7248\u5c64\u6b21\u6642\uff0c\u6216\u5728\u4f7f\u7528 JCC4 \u9a45\u52d5\u7a0b\u5f0f 4.1 \u7248\u6642\uff0c\u624d\u652f\u63f4\u56b4\u683c\u5206\u652f\u806f\u7d50\u3002\u5c07\u4f7f\u7528\u9810\u8a2d\u7684\u9b06\u6563\u5206\u652f\u806f\u7d50\u9078\u9805\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u662f\u5c08\u70ba\u4e86\u56b4\u683c\u5206\u652f\u806f\u7d50\u800c\u8a2d\u8a08\uff0c\u53ef\u80fd\u6703\u56e0\u70ba\u76f8\u540c\u5ee3\u57df\u4ea4\u6613\u5167\u7684\u5404\u500b\u4ea4\u6613\u5206\u652f\u4e26\u4e0d\u5171\u7528\u8cc7\u6599\u5eab\u9396\u5b9a\uff0c\u800c\u9020\u6210\u9396\u5b9a\u903e\u6642\u3001\u6b7b\u9396\u53ca/\u6216\u4ea4\u6613\u56de\u5fa9\u3002
+TBC_JCC_NOT_SUPPORTED.useraction=\u60a8\u5fc5\u9808\u914d\u7f6e DataSource \u4f86\u4f7f\u7528\u53d7\u652f\u63f4\u5c64\u6b21\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u548c\u8cc7\u6599\u5eab\uff0c\u6216\u5c07\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u6210\u4e0d\u9700\u8981\u56b4\u683c\u5206\u652f\u806f\u7d50\u3002
+
+# ----------------------------------------------------------------------------
+# 
+# Using 1000-1999 for additional general DataStore Adapter exception messages and warnings.
+# 
+# 1000 deleted
+# 1100-1102 deleted
+# 1110 deleted
+
+# 1120E      CONN_NEVER_CLOSED
+# 
+CONN_NEVER_CLOSED=DSRA1120E: \u61c9\u7528\u7a0b\u5f0f\u672a\u660e\u78ba\u95dc\u9589\u9019\u500b\u9023\u7dda\u7684\u6240\u6709\u63a7\u9ede\u3002\u9023\u7dda\u7121\u6cd5\u653e\u5165\u5132\u5b58\u5340\u3002
+CONN_NEVER_CLOSED.explanation=\u4e0d\u6703\u91cd\u8a2d\u9023\u7dda\u4f86\u653e\u5165\u9023\u7dda\u5132\u5b58\u5340\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u660e\u78ba\u95dc\u9589\u6240\u6709\u63a7\u9ede\u3002
+CONN_NEVER_CLOSED.useraction=\u8acb\u4fee\u6539\u61c9\u7528\u7a0b\u5f0f\uff0c\u4e00\u5f8b\u95dc\u9589\u6240\u6709\u9023\u7dda\u63a7\u9ede\u3002
+
+# 1130 deleted
+# 1200 deleted
+# 1210-1213 deleted
+
+# 1300E      FEATURE_NOT_IMPLEMENTED
+# 
+# {0}        The feature (usually a JDBC API method)
+FEATURE_NOT_IMPLEMENTED=DSRA1300E: \u672a\u5be6\u4f5c\u7279\u6027\uff1a{0}
+FEATURE_NOT_IMPLEMENTED.explanation=\u8981\u6c42\u7684\u7279\u6027\u7121\u6cd5\u4f7f\u7528\u3002
+FEATURE_NOT_IMPLEMENTED.useraction=\u8acb\u907f\u514d\u4f7f\u7528\u9019\u500b\u7279\u6027\uff0c\u53ef\u80fd\u7684\u8a71\uff0c\u5207\u63db\u81f3\u652f\u63f4\u9019\u500b\u7279\u6027\u7684\u9a45\u52d5\u7a0b\u5f0f\u7248\u672c\u3002
+
+# 1301 deleted
+# 3000-3020 deleted
+# 3100-3127 deleted
+# 3200-3202 deleted
+# 3250-3262 deleted
+# 3600-3616 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 4000-4999 for Liberty-only messages
+# 
+
+DSRA4000.no.suitable.driver=DSRA4000E: \u5229\u7528\u7a0b\u5f0f\u5eab {1} \u627e\u4e0d\u5230 jdbcDriver {0} \u7684\u6709\u6548 JDBC \u9a45\u52d5\u7a0b\u5f0f\u5be6\u4f5c\u985e\u5225\u3002
+DSRA4000.no.suitable.driver.explanation=\u627e\u4e0d\u5230\u6709\u6548\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u5be6\u4f5c\u985e\u5225\u3002
+DSRA4000.no.suitable.driver.useraction=\u8acb\u66f4\u65b0\u914d\u7f6e\uff0c\u4f7f\u7a0b\u5f0f\u5eab\u5305\u542b\u6240\u8fa8\u8b58\u4e4b JDBC \u9a45\u52d5\u7a0b\u5f0f\u7684\u8def\u5f91\uff0c\u6216\u5c07\u5be6\u4f5c\u985e\u5225\u6307\u5b9a\u65bc\u8cc7\u6599\u4f86\u6e90\u3002
+
+DSRA4001.no.suitable.driver.nested=DSRA4001E: \u5728 jdbcDriver {0} \u4f7f\u7528\u7684\u5de2\u72c0\u7a0b\u5f0f\u5eab\u4e2d\uff0c\u627e\u4e0d\u5230\u6709\u6548\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u5be6\u4f5c\u985e\u5225\u3002
+DSRA4001.no.suitable.driver.nested.explanation=\u627e\u4e0d\u5230\u6709\u6548\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u5be6\u4f5c\u985e\u5225\u3002
+DSRA4001.no.suitable.driver.nested.useraction=\u8acb\u66f4\u65b0\u914d\u7f6e\uff0c\u4f7f\u5de2\u72c0\u7a0b\u5f0f\u5eab\u5305\u542b\u6240\u8fa8\u8b58\u4e4b JDBC \u9a45\u52d5\u7a0b\u5f0f\u7684\u8def\u5f91\uff0c\u6216\u5c07\u5be6\u4f5c\u985e\u5225\u6307\u5b9a\u65bc\u8cc7\u6599\u4f86\u6e90\u3002
+
+DSRA4003.driver.null=DSRA4003E: \u627e\u4e0d\u5230 dataSource {0} \u7684\u6709\u6548 jdbcDriver \u5143\u7d20\u3002
+DSRA4003.driver.null.explanation=\u6709\u6548\u7684 jdbcDriver \u5143\u7d20\u627e\u4e0d\u5230\u6307\u5b9a\u7684 dataSource\u3002
+DSRA4003.driver.null.useraction=\u8acb\u66f4\u65b0\u914d\u7f6e\u4f86\u5305\u542b\u6709\u6548\u7684\u5de2\u72c0 jdbcDriver \u5143\u7d20\uff0c\u6216\u8207 dataSource \u4e0a\u7684 jdbcDriverRef \u5c6c\u6027\u540c\u540d\u7684\u6700\u4e0a\u5c64 jdbcDriver \u5143\u7d20\u3002
+# {0} SQL command
+# {1} data source JNDI name or config display id 
+DSRA4004.onconnect.sql=DSRA4004E: \u7121\u6cd5\u5c0d\u5f9e dataSource {1} \u53d6\u5f97\u7684\u9023\u7dda\u4e0a\uff0c\u57f7\u884c onConnect SQL \u6307\u4ee4 \"{0}\"\u3002\u5982\u9700\u76f8\u95dc\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1\u539f\u56e0\u7570\u5e38\u72c0\u6cc1\u3002
+DSRA4004.onconnect.sql.explanation=\u5617\u8a66\u57f7\u884c\u6307\u5b9a\u7684 SQL \u6307\u4ee4\u6642\u767c\u751f\u932f\u8aa4\u3002
+DSRA4004.onconnect.sql.useraction=\u8acb\u53c3\u95b1\u7570\u5e38\u72c0\u6cc1\u8a0a\u606f\u4f86\u5354\u52a9\u5224\u65b7\u554f\u984c\u7684\u539f\u56e0\u3002
+
+# ----------------------------------------------------------------------------
+# 
+# Using 7000-7599 for DataStore Helper exception messages and warnings
+# 
+# 7000-7009 deleted
+
+# No Comment Provided
+DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: \u8ffd\u8e64\u6a94\u6307\u5b9a\u7684 {0} \u4e0d\u5b58\u5728\uff0c\u5982\u679c\u6c92\u6709\u66f4\u6b63\u554f\u984c\uff0c\u8cc7\u6599\u5eab\u6703\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\u3002
+DB2_FILE_OUTSTREAM_ERROR.explanation=\u60a8\u5728\u8cc7\u6599\u4f86\u6e90\u4e0a\u6307\u5b9a\u7684\u8ffd\u8e64\u6a94\u4e0d\u5b58\u5728\u3002
+DB2_FILE_OUTSTREAM_ERROR.useraction=\u8acb\u4f7f\u7528\u73fe\u6709\u7684\u6a94\u6848\u4f5c\u70ba\u8ffd\u8e64\u6a94\u3002
+
+# 7011-7013 deleted
+
+# TRANSLATOR Do not translate: DB2 Universal JDBC
+DB2ZOS_CONFIG_INFO=DSRA7014I: DB2 Universal JDBC \u9a45\u52d5\u7a0b\u5f0f\u5728 RRS \u74b0\u5883\u4e2d\u57f7\u884c
+DB2ZOS_CONFIG_INFO.explanation=\u5df2\u5207\u63db DB2 Universal JDBC \u9a45\u52d5\u7a0b\u5f0f\uff0c\u4ee5\u5728 DB2 for z/OS \u7684 RRS \u74b0\u5883\u4e2d\u57f7\u884c\u3002
+
+DB2ZOS_CONFIG_INFO.useraction=\u9019\u662f\u6b63\u5728\u57f7\u884c\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u74b0\u5883\u7684\u53c3\u8003\u8a0a\u606f\u3002
+
+
+# TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
+DB2ZOS_TYPE2_ERROR=DSRA7015E: \u5728 DB2 for z/OS \u4e0b\uff0cDB2 \u4e0d\u652f\u63f4\u5c0d DB2XADataSource \u4f7f\u7528\u7b2c 2 \u985e\u9a45\u52d5\u7a0b\u5f0f
+DB2ZOS_TYPE2_ERROR.explanation=\u5df2\u5728 DB2XADatasource \u4e0a\uff0c\u5c07\u8cc7\u6599\u4f86\u6e90\u7684 driverType \u81ea\u8a02\u5167\u5bb9\u503c\u8a2d\u70ba 2\u3002DB2 for z/OS \u4e0d\u652f\u63f4\u9019\u500b\u914d\u7f6e\u3002
+DB2ZOS_TYPE2_ERROR.useraction=\u8acb\u4f7f\u7528 DB2ConnectionPoolDatasource\uff0c\u5982\u679c\u60a8\u7684\u914d\u7f6e\u53ef\u4ee5\u4f7f\u7528\u7b2c 4 \u985e DB2 Universal JDBC \u9a45\u52d5\u7a0b\u5f0f\uff0c\u8acb\u5207\u63db\u6210\u9019\u500b\u9a45\u52d5\u7a0b\u5f0f\u3002
+
+# 7016 deleted
+
+# DSRA7017I      ORACLE_TRACE_WARNING
+# TRANSLATOR Do not translate: IOException
+ORACLE_TRACE_WARNING=DSRA7017I: \u7121\u6cd5\u8a18\u8f09\u5230 {0} \u6a94\uff0c\u56e0\u70ba\u767c\u751f IOException {1}
+ORACLE_TRACE_WARNING.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u8a66\u5716\u958b\u555f\u6307\u5b9a\u7684\u8ffd\u8e64\u6a94\u6642\uff0c\u767c\u751f IOException\u3002
+ORACLE_TRACE_WARNING.useraction=\u8acb\u6aa2\u67e5\u7570\u5e38\u72c0\u6cc1\u3001\u4fee\u6b63 IO \u554f\u984c\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u3002
+
+# DSRA7018I      META_DATA_EXCEPTION
+# 
+META_DATA_EXCEPTION=DSRA7018I: \u8cc7\u6599\u5eab metadata \u5b58\u53d6\u5c0e\u81f4 non-stale \u9023\u7dda\u7570\u5e38\u72c0\u6cc1\u3002\u5df2\u56de\u5fa9\u6b63\u5e38\u57f7\u884c\u3002\u7570\u5e38\u72c0\u6cc1\u662f\uff1a{0}
+META_DATA_EXCEPTION.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u8a66\u5716\u53d6\u5f97\u6216\u5b58\u53d6\u8cc7\u6599\u5eab\u7684 meta \u8cc7\u6599\u7269\u4ef6\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+META_DATA_EXCEPTION.useraction=\u8acb\u78ba\u8a8d\u5f8c\u7aef\u8cc7\u6599\u5eab\u5df2\u555f\u7528 meta \u8cc7\u6599\u3002
+
+# 7019-7039 deleted
+
+# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
+WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5df2\u505c\u7528\u5167\u90e8\u9023\u7dda\u5132\u5b58\u5340\u3002
+WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5075\u6e2c\u5230\u5df2\u900f\u904e\u8cc7\u6599\u5eab\u555f\u7528\u9023\u7dda\u5feb\u53d6\u3002\u5c07\u505c\u7528\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e2d\u7684\u9023\u7dda\u5132\u5b58\u5340\u3002
+WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=\u5982\u679c\u60a8\u4e0d\u60f3\u5728\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e2d\u505c\u7528\u9023\u7dda\u5132\u5b58\u5340\uff0c\u8acb\u505c\u7528\u8cc7\u6599\u5eab\u4f3a\u670d\u5668\u7684\u9023\u7dda\u5132\u5b58\u5340\u3002
+
+# 7041-7042 deleted
+# 7600-7606 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using 8000-8499 for DataSource configuration messages.
+# 
+# 8000-8001 deleted
+# 8010 deleted
+
+# 8011E      NO_SETTER_METHOD
+# 
+# {0}        The property we cannot find a setter method for.
+NO_SETTER_METHOD=DSRA8011E: ''{0}'' \u5167\u5bb9\u6c92\u6709 setter \u65b9\u6cd5\u3002
+NO_SETTER_METHOD.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u7121\u6cd5\u5728\u8cc7\u6599\u4f86\u6e90\u4e0a\u627e\u5230 setter \u65b9\u6cd5\u4f86\u8a2d\u5b9a\u6240\u8981\u6c42\u7684\u5167\u5bb9\u3002
+NO_SETTER_METHOD.useraction=\u8acb\u78ba\u8a8d\u6307\u5b9a\u7684\u5167\u5bb9\u540d\u7a31\u6b63\u78ba\u3002
+
+# 8020E      PROP_NOT_FOUND
+# 
+# TRANSLATOR Do not translate: JDBC.
+# {0}        The DataSource class name.
+# {1}        The property name.
+PROP_NOT_FOUND=DSRA8020E: \u8b66\u544a\uff1aDataSource \u985e\u5225 {0} \u6c92\u6709 ''{1}'' \u5167\u5bb9\u3002
+PROP_NOT_FOUND.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u8cc7\u6599\u4f86\u6e90\u5167\u5bb9\u3002\u53ef\u80fd\u7684\u539f\u56e0\u5982\u4e0b\uff1a1) \u8cc7\u6599\u4f86\u6e90\u5167\u5bb9\u62fc\u5b57\u6216\u5927\u5c0f\u5beb\u4e0d\u6b63\u78ba\uff0c2) \u6307\u5b9a\u7684\u5167\u5bb9\u4e0d\u9069\u5408\u6240\u914d\u7f6e\u7684\u8cc7\u6599\u4f86\u6e90\u6216 3) \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u542b\u6709\u6307\u5b9a\u7684\u4e0d\u540c JDBC \u9a45\u52d5\u7a0b\u5f0f\u7248\u672c\u7684\u9810\u8a2d\u914d\u7f6e\uff0c\u9020\u6210\u8cc7\u6599\u4f86\u6e90\u5167\u5bb9\u4e0d\u7b26\u3002
+PROP_NOT_FOUND.useraction=\u8acb\u78ba\u8a8d\u6307\u5b9a\u7d66\u8cc7\u6599\u4f86\u6e90\u7684\u5167\u5bb9\u6b63\u78ba\u3002\u8acb\u66f4\u6b63\u4efb\u4f55\u62fc\u5b57\u6216\u5927\u5c0f\u5beb\u932f\u8aa4\u3002\u5982\u679c\u5167\u5bb9\u4e0d\u9069\u5408\uff08\u6216\u4e0d\u518d\u9069\u5408\uff09\u6240\u7528\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\uff0c\u8acb\u522a\u9664\u5167\u5bb9\u3002
+
+# 8021W      PROP_SET_ERROR
+# 
+# {0}        The property name.
+# {1}        The Exception class, if not already included in the exception message.
+# {2}        The Exception.
+PROP_SET_ERROR=DSRA8021W: \u8b66\u544a\uff1a\u8a2d\u5b9a ''{0}''{1} \u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a{2}
+PROP_SET_ERROR.explanation=\u5728\u8a2d\u5b9a\u8cc7\u6599\u4f86\u6e90\u7684\u6307\u5b9a\u5167\u5bb9\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+PROP_SET_ERROR.useraction=\u8acb\u78ba\u8a8d\u6307\u5b9a\u7684\u503c\u5c0d\u5167\u5bb9\u6709\u6548\u3002
+
+# 8023-8035 deleted
+# 8040-8043 deleted
+# 8050-8055 deleted
+# 8060 deleted
+# 8065 deleted
+
+# 8100E      JAVAX_CONN_ERR
+# 
+# {0}        Type of Connection: XAConnection or PooledConnection.
+JAVAX_CONN_ERR=DSRA8100E: \u7121\u6cd5\u5f9e DataSource \u4e2d\u53d6\u5f97 {0}\u3002
+JAVAX_CONN_ERR.explanation=\u8acb\u53c3\u95b1 linkedException\uff0c\u4ee5\u53d6\u5f97\u8a73\u7d30\u8cc7\u8a0a\u3002
+JAVAX_CONN_ERR.useraction=\u8acb\u53c3\u95b1 linkedException\uff0c\u4ee5\u53d6\u5f97\u8a73\u7d30\u8cc7\u8a0a\u3002
+
+# 8101E      NOT_A_1_PHASE_DS
+# 
+# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# {0}        ClassCastException message.
+NOT_A_1_PHASE_DS=DSRA8101E: \u7121\u6cd5\u4ee5\u4e00\u6bb5\u5f0f\u4f86\u4f7f\u7528 DataSource \u985e\u5225\uff1aClassCastException\uff1a{0}
+NOT_A_1_PHASE_DS.explanation=\u8cc7\u6599\u4f86\u6e90\u985e\u5225\u5fc5\u9808\u5be6\u4f5c ConnectionPoolDatasource \u4ecb\u9762\uff0c'enable2Phase' \u5167\u5bb9\u624d\u80fd\u8a2d\u70ba false\u3002
+NOT_A_1_PHASE_DS.useraction=\u8acb\u5c07 XADataSource \u7684 'enable2Phase' \u8a2d\u70ba true\uff0c\u5c07 ConnectionPoolDataSource \u7684 'enable2Phase' \u8a2d\u70ba false\u3002
+
+# 8102E      NOT_A_2_PHASE_DS
+# 
+# TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
+# {0}        ClassCastException message.
+NOT_A_2_PHASE_DS=DSRA8102E: \u7121\u6cd5\u4ee5\u5169\u6bb5\u5f0f\u4f86\u4f7f\u7528 DataSource \u985e\u5225\uff1aClassCastException\uff1a{0}
+NOT_A_2_PHASE_DS.explanation=\u8cc7\u6599\u4f86\u6e90\u985e\u5225\u5fc5\u9808\u5be6\u4f5c XADatasource \u4ecb\u9762\uff0c'enable2Phase' \u5167\u5bb9\u624d\u80fd\u8a2d\u70ba true\u3002
+NOT_A_2_PHASE_DS.useraction=\u8acb\u5c07 XADataSource \u7684 'enable2Phase' \u8a2d\u70ba true\uff0c\u5c07 ConnectionPoolDataSource \u7684 'enable2Phase' \u8a2d\u70ba false\u3002
+
+# 8150 deleted
+# 8160 deleted
+# 8200-8202 deleted
+
+# 8203I      DB_PRODUCT_NAME
+# 
+# TRANSLATOR Do not translate: Database.
+DB_PRODUCT_NAME=DSRA8203I: Database \u7522\u54c1\u540d\u7a31\uff1a{0}
+DB_PRODUCT_NAME.explanation=\u9019\u500b\u8a0a\u606f\u986f\u793a Database \u7684\u7522\u54c1\u540d\u7a31\u3002
+DB_PRODUCT_NAME.useraction=\u61c9\u7528\u7a0b\u5f0f\u73fe\u5728\u6b63\u5728\u4f7f\u7528\u4e0a\u9762\u5217\u51fa\u7684 Database \u540d\u7a31\u3002
+
+# 8204I      DB_PRODUCT_VERSION
+# 
+DB_PRODUCT_VERSION=DSRA8204I: \u8cc7\u6599\u5eab\u7522\u54c1\u7248\u672c\uff1a{0}
+DB_PRODUCT_VERSION.explanation=\u9019\u500b\u8a0a\u606f\u986f\u793a Database \u7684\u7522\u54c1\u7248\u672c\u3002
+DB_PRODUCT_VERSION.useraction=\u61c9\u7528\u7a0b\u5f0f\u73fe\u5728\u6b63\u5728\u4f7f\u7528\u4e0a\u9762\u5217\u51fa\u7684 Database \u7248\u672c\u3002
+
+# 8205I      JDBC_DRIVER_NAME
+# 
+# TRANSLATOR Do not translate: JDBC.
+JDBC_DRIVER_NAME=DSRA8205I: JDBC \u9a45\u52d5\u7a0b\u5f0f\u540d\u7a31\uff1a{0}
+JDBC_DRIVER_NAME.explanation=\u9019\u500b\u8a0a\u606f\u986f\u793a Java \u8cc7\u6599\u5eab\u9023\u7dda\u529f\u80fd (JDBC) \u9a45\u52d5\u7a0b\u5f0f\u7684\u540d\u7a31\u3002
+JDBC_DRIVER_NAME.useraction=\u61c9\u7528\u7a0b\u5f0f\u73fe\u5728\u6b63\u5728\u4f7f\u7528\u4e0a\u9762\u5217\u51fa\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u540d\u7a31\u3002
+
+# 8206I      JDBC_DRIVER_VERSION
+# 
+# TRANSLATOR Do not translate: JDBC.
+JDBC_DRIVER_VERSION=DSRA8206I: JDBC \u9a45\u52d5\u7a0b\u5f0f\u7248\u672c\uff1a{0}
+JDBC_DRIVER_VERSION.explanation=Java \u8cc7\u6599\u5eab\u9023\u7dda\u529f\u80fd (JDBC) \u9a45\u52d5\u7a0b\u5f0f\u7684\u7248\u672c\u3002
+JDBC_DRIVER_VERSION.useraction=\u61c9\u7528\u7a0b\u5f0f\u73fe\u5728\u6b63\u5728\u4f7f\u7528\u4e0a\u9762\u5217\u51fa\u7684 JDBC \u9a45\u52d5\u7a0b\u5f0f\u7248\u672c\u3002
+
+# 8207I      ORA_READONLY
+# 
+ORA_READONLY=DSRA8207I: \u5ffd\u7565 setReadOnly(false) \u65b9\u6cd5\u3002\u4e0d\u6703\u555f\u52d5\u4efb\u4f55 Oracle \u4ea4\u6613\u3002
+ORA_READONLY.explanation=Oracle \u8cc7\u6599\u5eab\u672a\u5be6\u4f5c setReadOnly \u65b9\u6cd5\u3002setReadOnly(true) \u65b9\u6cd5\u4e0d\u6703\u4f7f\u9023\u7dda\u6210\u70ba\u552f\u8b80\u9023\u7dda\u3002\u4e5f\u4e0d\u6703\u5be6\u4f5c setReadOnly(false)\uff0c\u4ea4\u6613\u662f\u7531 Oracle \u8cc7\u6599\u5eab\u4ee5\u96b1\u542b\u7684\u65b9\u5f0f\u4f86\u555f\u52d5\u3002\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u6703\u5728 Oracle \u8cc7\u6599\u5eab\u4e0a\u547c\u53eb setReadOnly(false) \u65b9\u6cd5\uff0c\u4ee5\u9632\u6b62\u555f\u52d5\u4e0d\u5fc5\u8981\u7684\u4ea4\u6613\u3002
+
+ORA_READONLY.useraction=\u8acb\u6aa2\u67e5\u60a8\u7684\u61c9\u7528\u7a0b\u5f0f\uff0c\u78ba\u5b9a\u5728\u547c\u53eb setReadOnly(false) \u65b9\u6cd5\u4e4b\u5f8c\uff0c\u60a8\u7684\u61c9\u7528\u7a0b\u5f0f\u4e0d\u6703\u76f8\u4f9d\u65bc\u67d0\u9805\u4ea4\u6613\u3002
+
+# 8208-8212 deleted
+
+# 8213W     PROVIDER_NOT_SUPPORTED
+PROVIDER_NOT_SUPPORTED=DSRA8213W: WebSphere Application Server \u4e0d\u518d\u652f\u63f4 JDBC \u63d0\u4f9b\u8005 {0}\u3002\u61c9\u7528\u7a0b\u5f0f\u61c9\u8a72\u4f7f\u7528 {1}\u3002
+PROVIDER_NOT_SUPPORTED.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u518d\u652f\u63f4\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528\u7684 JDBC \u63d0\u4f9b\u8005\u3002
+PROVIDER_NOT_SUPPORTED.useraction=\u8acb\u4f7f\u7528\u932f\u8aa4\u6587\u5b57\u6240\u63d0\u4f9b\u7684 JDBC \u63d0\u4f9b\u8005\u3002
+
+# 8214-8222 deleted
+
+# 8230W     NONTRAN_DATASOURCE_WARNING
+# 
+# {0}       The name of the data source property for nontransactional behavior
+# {1}       The name of the data source property for configuring commit or rollback on connection cleanup
+NONTRAN_DATASOURCE_WARNING=DSRA8230W: \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u7121\u6cd5\u5224\u65b7\u662f\u5426\u61c9\u89e3\u6790\u4ea4\u6613\uff0c\u56e0\u70ba\u5df2\u914d\u7f6e\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9 {0}\uff0c\u4f46\u672a\u914d\u7f6e\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9 {1}\u3002
+NONTRAN_DATASOURCE_WARNING.explanation=\u8a66\u5716\u5171\u7528 AutoCommit \u503c\u70ba False \u7684\u9023\u7dda\u3002\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u7121\u6cd5\u5224\u65b7\u4ea4\u6613\u662f\u5426\u4f5c\u7528\u4e2d\uff0c\u56e0\u70ba\u8cc7\u6599\u4f86\u6e90\u914d\u7f6e\u70ba\u975e\u4ea4\u6613\u5f0f\u3002\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5c07\u4e0d\u6703\u89e3\u6790\u4ea4\u6613\uff0c\u56e0\u70ba\u8cc7\u6599\u4f86\u6e90\u672a\u914d\u7f6e\u6210\u5728\u9023\u7dda\u6e05\u9664\u671f\u9593\u81ea\u52d5\u78ba\u5b9a\u6216\u56de\u5fa9\u3002
+NONTRAN_DATASOURCE_WARNING.useraction=\u8acb\u5c07\u8cc7\u6599\u4f86\u6e90\u914d\u7f6e\u6210\u5728\u9023\u7dda\u6e05\u9664\u6642\u81ea\u52d5\u78ba\u5b9a\u6216\u56de\u5fa9\uff0c\u6216\u4e00\u5f8b\u91cd\u8a2d AutoCommit \u503c\u70ba True\u3002
+
+# ----------------------------------------------------------------------------
+# 
+# Using 8500-8999 for JDBC wrapper warnings.
+# 
+# 8520 deleted
+
+# 8600W      ERR_CLOSING_OBJECT
+# 
+# TRANSLATOR Do not translate: JDBC.
+# {0}        The object
+# {1}        The error
+ERR_CLOSING_OBJECT=DSRA8600W: \u95dc\u9589 {0} \u6642\u767c\u751f\u932f\u8aa4\n{1}
+ERR_CLOSING_OBJECT.explanation=\u95dc\u9589\u6307\u5b9a\u7684 JDBC \u7269\u4ef6\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+ERR_CLOSING_OBJECT.useraction=CMSG0002
+
+# 8650 deleted
+# 8660 deleted
+# 8680 deleted
+# 8710 deleted
+
+# 8720W      MULTITHREADED_ACCESS_DETECTED
+#
+# TRANSLATOR Do not translate: Statements, ResultSets, metadata, Datasource
+# 
+# {0}        Object on which multithreaded access was detected.
+# {1}        The thread id on which access is permissible.
+# {2}        The current thread id.
+# {3}        Stack trace of the current thread.
+MULTITHREADED_ACCESS_DETECTED=DSRA8720W: \u5728 {0} \u4e2d\uff0c\u5075\u6e2c\u5230\u591a\u91cd\u57f7\u884c\u7dd2\u7684\u5b58\u53d6\u3002\n\u6700\u5f8c\u4f7f\u7528\u7684\u57f7\u884c\u7dd2 ID\uff1a {1}\n\u73fe\u884c\u57f7\u884c\u7dd2 ID\uff1a       {2}\n\u73fe\u884c\u57f7\u884c\u7dd2\u7684\u5806\u758a\u8ffd\u8e64\uff1a{3}
+MULTITHREADED_ACCESS_DETECTED.explanation=\u61c9\u7528\u7a0b\u5f0f\u8a66\u5716\u5f9e\u4e0d\u540c\u7684\u57f7\u884c\u7dd2\u5b58\u53d6\u9023\u7dda\u6216\u9023\u7dda\u6240\u5c0d\u61c9\u7684 Statements\u3001ResultSets \u6216 metadata\u3002\u9019\u500b\u884c\u70ba\u9055\u53cd\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u7684\u7a0b\u5f0f\u8a2d\u8a08\u6a21\u578b\u3002\u5728 finalize() \u65b9\u6cd5\u4e2d\u95dc\u9589\u61c9\u7528\u7a0b\u5f0f\u8a66\u5716\u5b58\u53d6\u7684\u7269\u4ef6\uff0c\u4e5f\u7b97\u9055\u53cd\u7a0b\u5f0f\u8a2d\u8a08\u6a21\u578b\uff0c\u56e0\u70ba finalize() \u65b9\u6cd5\u662f\u5728\u53e6\u4e00\u500b\u57f7\u884c\u7dd2\u4e2d\uff0c\u7531 JVM \u4f86\u57f7\u884c\u3002
+MULTITHREADED_ACCESS_DETECTED.useraction=\u8acb\u8abf\u6574\u61c9\u7528\u7a0b\u5f0f\u4f86\u907f\u514d\u591a\u91cd\u57f7\u884c\u7dd2\u7684\u5b58\u53d6\u3002
+
+# 8730 deleted
+
+# 8750W      UNSUPPORTED_JDBC30_METHOD
+# 
+# {0}        The method trying to be invoked
+UNSUPPORTED_JDBC30_METHOD=DSRA8750W: \u672a\u5728\u9019\u500b JDBC \u63d0\u4f9b\u8005\u4e0a\u5be6\u4f5c JDBC 3.0 \u65b9\u6cd5 {0}\u3002
+UNSUPPORTED_JDBC30_METHOD.explanation=\u547c\u53eb\u7684\u65b9\u6cd5\u662f Java \u8cc7\u6599\u5eab\u9023\u7dda\u529f\u80fd (JDBC) \u898f\u683c 3.0 \u7248\u7684\u4e00\u90e8\u5206\uff0c\u4f46\u5728\u9019\u500b\u63d0\u4f9b\u8005\u4e0a\uff0c\u9019\u500b\u65b9\u6cd5\u4e0d\u5b58\u5728\u3002
+UNSUPPORTED_JDBC30_METHOD.useraction=\u8acb\u78ba\u5b9a\u60a8\u7684 JDBC \u63d0\u4f9b\u8005\u652f\u63f4\u9019\u500b JDBC \u898f\u683c 3.0 \u7248\uff0c\u6216\u4e0d\u4f7f\u7528\u9019\u500b\u65b9\u6cd5\u3002
+
+# 8760W      VENDOR_IMPL_NOT_FOUND
+#
+# {0}        The vendor interface requested for the wrapper.
+# {1}        The underlying connection implementation class of the pooled connection.
+VENDOR_IMPL_NOT_FOUND=DSRA8760W: \u5728\u5207\u63db\u81f3\u53e6\u4e00\u500b\u5132\u5b58\u9023\u7dda\u4e4b\u5f8c\uff0c\u627e\u4e0d\u5230\u4f9b\u61c9\u5546\u4ecb\u9762 {0} \u7684\u5be6\u4f5c\u3002\u672a\u5c01\u88dd\u7684\u9023\u7dda\u63a7\u9ede\u5df2\u7121\u6cd5\u7528\u4f86\u4f5c\u70ba\u9019\u500b\u4ecb\u9762\u3002\u65b0\u7684\u9023\u7dda\u5be6\u4f5c\u985e\u5225\u5982\u4e0b\uff1a{1}
+VENDOR_IMPL_NOT_FOUND.explanation=\u9023\u7dda\u63a7\u9ede\u73fe\u5728\u662f\u95dc\u806f\u65bc\u53e6\u4e00\u500b\u5132\u5b58\u9023\u7dda\uff0c\u4e14\u9019\u500b\u9023\u7dda\u4e26\u672a\u5be6\u4f5c\u91dd\u5c0d\u5c01\u5957\u800c\u8981\u6c42\u7684\u4ecb\u9762\u3002
+VENDOR_IMPL_NOT_FOUND.useraction=\u7576 Wrapper.isWrapperFor \u65b9\u6cd5\u6307\u51fa\u9023\u7dda\u4e0d\u662f\u4ecb\u9762\u5c01\u5957\u6642\uff0c\u4e0d\u53ef\u4f7f\u7528\u6307\u5b9a\u4ecb\u9762\u7684\u5c01\u5957\u3002
+
+# 8770I      DEFAULT_MATCH_ORIGINAL
+# 
+# {0}        The name of the connection property.
+# {1}        The name of the data source custom property.
+DEFAULT_MATCH_ORIGINAL=DSRA8770I: \u4f9d\u9810\u8a2d\uff0c\u4ee5\u539f\u59cb\u9023\u7dda\u8981\u6c42\u800c\u975e\u73fe\u884c\u9023\u7dda\u72c0\u614b\u70ba\u4f9d\u64da\u7684\u53ef\u5171\u7528\u9023\u7dda\uff0c\u5176\u9023\u7dda\u5167\u5bb9 {0} \u76f8\u7b26\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9 {1} \u4f86\u914d\u7f6e\u9019\u500b\u884c\u70ba\u3002
+DEFAULT_MATCH_ORIGINAL.explanation=\u8cc7\u6599\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9\u53ef\u8b93\u60a8\u9078\u64c7\u6240\u8981\u7684\u9023\u7dda\u5171\u7528\u884c\u70ba\u3002
+DEFAULT_MATCH_ORIGINAL.useraction=\u8acb\u78ba\u8a8d\u8cc7\u6e90\u4f86\u6e90\u81ea\u8a02\u5167\u5bb9\u5df2\u914d\u7f6e\u70ba\u60a8\u6240\u8981\u7684\u884c\u70ba\u3002
+
+# 8780 deleted
+
+# ----------------------------------------------------------------------------
+# 
+# Using the 9000's for JDBC wrapper messages.
+# 
+# 9000-9001 deleted
+
+# 9002E      RESX_TO_SQLX		Reserved, do not use 342913
+#RESX_TO_SQLX=DSRA9002E
+
+# 9010E      METHOD_UNSUPPORTED
+# 
+# {0}        The method name.
+# {1}        The interface class.
+METHOD_UNSUPPORTED=DSRA9010E: WebSphere {1} \u5be6\u4f5c\u4e0d\u652f\u63f4 ''{0}''\u3002
+METHOD_UNSUPPORTED.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5be6\u4f5c\u4e0d\u652f\u63f4\u6307\u5b9a\u7684\u65b9\u6cd5\u3002
+METHOD_UNSUPPORTED.useraction=\u8acb\u52ff\u4f7f\u7528\u9019\u500b\u65b9\u6cd5\u3002
+
+# 9020E      NOT_A_JDBC_METHOD
+# 
+# TRANSLATOR Do not translate: JDBC.
+NOT_A_JDBC_METHOD=DSRA9020E: \u547c\u53eb\u7684\u65b9\u6cd5\u4e0d\u662f JDBC \u65b9\u6cd5\u3002WebSphere \u7a0b\u5f0f\u78bc\u5fc5\u9808\u50b3\u905e\u6709\u6548\u7684\u7d22\u5f15\u9375\u624d\u80fd\u5b58\u53d6\u9019\u500b\u65b9\u6cd5\u3002
+NOT_A_JDBC_METHOD.explanation=\u9019\u500b\u65b9\u6cd5\u53ea\u4f9b\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5167\u90e8\u4f7f\u7528\u3002
+NOT_A_JDBC_METHOD.useraction=\u8acb\u52ff\u547c\u53eb\u9019\u500b\u65b9\u6cd5\u3002
+
+# 9110E      OBJECT_CLOSED
+# 
+# {0}        The object class (such as Connection).
+OBJECT_CLOSED=DSRA9110E: \u5df2\u95dc\u9589 {0}\u3002
+OBJECT_CLOSED.explanation=\u8a66\u5716\u5728\u5df2\u95dc\u9589\u7684\u7269\u4ef6\u4e0a\u57f7\u884c\u4f5c\u696d\u3002
+OBJECT_CLOSED.useraction=\u8acb\u64f7\u53d6\u8981\u57f7\u884c\u4f5c\u696d\u7684\u65b0\u7269\u4ef6\u5be6\u4f8b\u3002
+
+# 9115 deleted
+# 9120-9121 - deleted
+
+# 9122E      NO_WRAPPED_OBJECT
+# 
+# {0}        The WebSphere wrapper object.
+# {1}        The Class of the wrapped object.
+NO_WRAPPED_OBJECT=DSRA9122E: {0} \u4e0d\u6703\u5305\u88dd {1} \u985e\u578b\u7684\u4efb\u4f55\u7269\u4ef6\u3002
+NO_WRAPPED_OBJECT.explanation=\u6307\u5b9a\u7684\u5c01\u5957\u4e0d\u5305\u542b\u6307\u5b9a\u7684\u5c01\u88dd\u7269\u4ef6\u985e\u578b\u3002
+NO_WRAPPED_OBJECT.useraction=\u8acb\u78ba\u8a8d\u5df2\u6b63\u78ba\u6307\u5b9a\u5c01\u88dd\u7269\u4ef6\u7684\u5c01\u5957\u548c\u53c3\u6578\u3002
+
+# 9123 deleted
+
+# 9130E      OPERATION_NOT_PERMITTED
+# 
+# {0}        The operation.
+OPERATION_NOT_PERMITTED=DSRA9130E: \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u5141\u8a31\u4f5c\u696d\uff1a{0}
+OPERATION_NOT_PERMITTED.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u5141\u8a31\u8981\u6c42\u7684\u4f5c\u696d\u3002
+OPERATION_NOT_PERMITTED.useraction=\u8acb\u52ff\u4f7f\u7528\u6307\u5b9a\u7684\u4f5c\u696d\u3002
+
+# 9210 deleted
+
+# 9250E      OP_NOT_SHAREABLE
+# 
+# TRANSLATOR Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
+# {0}        The operation being performed (such as setTypeMap, setReadOnly and setCatalog)
+OP_NOT_SHAREABLE=DSRA9250E: \u5728\u5ee3\u57df\u4ea4\u6613\u671f\u9593\uff0c\u4e0d\u5141\u8a31\u57f7\u884c {0} \u4f5c\u696d\u4f86\u8655\u7406 Shareable Connection\u3002
+OP_NOT_SHAREABLE.explanation=\u7576\u5ee3\u57df\u4ea4\u6613\u5728\u4f5c\u7528\u4e2d\uff0c\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u5bb9\u8a31\u5728 Shareable Connections \u4e0a\u547c\u53eb setTypeMap\u3001setReadOnly \u6216 setCatalog \u65b9\u6cd5\u3002
+OP_NOT_SHAREABLE.useraction=\u8acb\u52ff\u5728\u5ee3\u57df\u4ea4\u6613\u4e2d\u547c\u53eb Shareable Connections \u7684 setTypeMap\u3001setReadOnly \u6216 setCatalog\uff0c\u6216\u5207\u63db\u81f3 Unshareable Connections\u3002
+
+# 9300 deleted
+# 9310 deleted
+# 9312 deleted
+# 9316 deleted
+# 9320 deleted
+# 9330 deleted
+# 9340 deleted
+
+# 9350E      OP_NOT_VALID_IN_GT
+# 
+# TRANSLATOR Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
+# {0}        The operation being performed (such as Connection.commit)
+OP_NOT_VALID_IN_GT=DSRA9350E: \u5728\u5ee3\u57df\u4ea4\u6613\u671f\u9593\uff0c\u4e0d\u5141\u8a31\u57f7\u884c {0} \u4f5c\u696d\u3002
+OP_NOT_VALID_IN_GT.explanation=\u7576\u5ee3\u57df\u4ea4\u6613\u5728\u4f5c\u7528\u4e2d\uff0c\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u5bb9\u8a31\u5728 Connection \u4e0a\u547c\u53eb commit\u3001rollback\u3001setSavepoint \u6216 releaseSavepoint \u65b9\u6cd5\u3002
+OP_NOT_VALID_IN_GT.useraction=\u7576\u5728\u5ee3\u57df\u4ea4\u6613\u4e2d\uff0c\u8acb\u52ff\u5728 Connection \u4e0a\u547c\u53eb commit\u3001rollback\u3001setSavepoint \u6216 releaseSavepoint \u65b9\u6cd5\u3002\u5982\u679c\u4f7f\u7528\u975e\u4ea4\u6613\u5f0f\u8cc7\u6599\u4f86\u6e90\uff08\u5982 Java \u6301\u7e8c\u6027 API \u7684 non-jta-data-source\uff09\uff0c\u8acb\u5728 persistence.xml \u4e2d\u914d\u7f6e non-jta-data-source\uff0c\u53e6\u5916\uff0c\u4e5f\u8acb\u5728\u8cc7\u6599\u4f86\u6e90\u4e0a\u914d\u7f6e nonTransactionalDataSource \u81ea\u8a02\u5167\u5bb9\u3002
+
+# 9360E      INVALID_TRAN_STATE
+# 
+# {0}        String representing the current ManagedConnection transaction state.
+# TRANSLATOR Do not translate: Connection.
+INVALID_TRAN_STATE=DSRA9360E: \u7121\u6cd5\u5f9e\u4e0b\u5217\u4ea4\u6613\u72c0\u614b\u4f86\u57f7\u884c\u6240\u8981\u6c42\u7684\u4f5c\u696d\uff1a{0}\u3002
+INVALID_TRAN_STATE.explanation=\u7576\u61c9\u7528\u7a0b\u5f0f\u5728\u73fe\u884c\u4ea4\u6613\u72c0\u614b\u4e2d\uff0c\u60a8\u7121\u6cd5\u57f7\u884c\u4f5c\u696d\u3002
+INVALID_TRAN_STATE.useraction=\u8acb\u53d6\u5f97\u8981\u57f7\u884c\u4f5c\u696d\u7684\u65b0 Connection\u3002
+
+# 9380 deleted
+
+# 9400E      REASSOCIATION_ERR
+# 
+# TRANSLATOR Do not translate: Connection.
+# {0}        The error.
+REASSOCIATION_ERR=DSRA9400E: \u5728 Connection \u91cd\u65b0\u95dc\u806f\u671f\u9593\uff0c\u767c\u751f\u56b4\u91cd\u932f\u8aa4\uff1a{0}
+REASSOCIATION_ERR.explanation=\u7121\u6cd5\u91cd\u65b0\u95dc\u806f\u73fe\u884c Connection \u63a7\u9ede\u3002
+REASSOCIATION_ERR.useraction=\u8acb\u5617\u8a66\u53d6\u5f97\u65b0\u7684 Connection\u3002
+
+# 9410E      CANNOT_REASSOCIATE
+# 
+# TRANSLATOR Do not translate: Connection.
+# {0}        Current Connection state.
+CANNOT_REASSOCIATE=DSRA9410E: \u53ea\u5141\u8a31\u5f9e INACTIVE \u72c0\u614b\u4f86\u91cd\u65b0\u95dc\u806f\u63a7\u9ede\u3002\u73fe\u884c Connection \u72c0\u614b\u662f {0}\u3002
+CANNOT_REASSOCIATE.explanation=\u53ea\u80fd\u5f9e INACTIVE \u72c0\u614b\u91cd\u5efa Connection \u63a7\u9ede\u7684\u95dc\u806f\u6027\u3002
+CANNOT_REASSOCIATE.useraction=\u8acb\u95dc\u9589\u60a8\u7684\u73fe\u884c Connection \u63a7\u9ede\uff0c\u518d\u53d6\u5f97\u65b0\u7684 Connection \u63a7\u9ede\u3002
+
+# 9420E      CHILDREN_STILL_OPEN
+# 
+# TRANSLATOR Do not translate: Connection.
+CHILDREN_STILL_OPEN=DSRA9420E: \u7121\u6cd5\u91cd\u65b0\u95dc\u806f Connection\uff0c\u56e0\u70ba\u5b50\u9805\u7269\u4ef6\u4ecd\u5728\u958b\u555f\u72c0\u614b\u3002
+CHILDREN_STILL_OPEN.explanation=\u53ea\u6709\u5728\u6240\u6709\u5b50\u9805\u7269\u4ef6\u90fd\u95dc\u9589\u6642\uff0c\u624d\u80fd\u91cd\u5efa Connection \u63a7\u9ede\u7684\u95dc\u806f\u6027\u3002
+CHILDREN_STILL_OPEN.useraction=\u8acb\u95dc\u9589\u60a8\u7684\u73fe\u884c Connection \u63a7\u9ede\uff0c\u518d\u53d6\u5f97\u65b0\u7684 Connection \u63a7\u9ede\u3002
+
+# 9430E      HANDLE_IN_USE
+# 
+# TRANSLATOR Do not translate: Connection.
+HANDLE_IN_USE=DSRA9430E: \u7121\u6cd5\u5207\u65b7 Connection \u63a7\u9ede\u7684\u95dc\u806f\uff0c\u56e0\u70ba\u5b83\u76ee\u524d\u5728\u4f7f\u7528\u5b83\u3002
+HANDLE_IN_USE.explanation=\u76ee\u524d\u6b63\u5728 Connection \u63a7\u9ede\u4e0a\u57f7\u884c\u4f5c\u696d\u3002\u5728\u4f5c\u696d\u671f\u9593\uff0c\u7121\u6cd5\u5c07\u5b83\u5207\u65b7\u95dc\u806f\u3002
+HANDLE_IN_USE.useraction=\u8acb\u7b49\u5230\u63a7\u9ede\u7684\u6240\u6709\u4f5c\u696d\u90fd\u5b8c\u6210\u4e4b\u5f8c\uff0c\u518d\u5207\u65b7\u8207\u63a7\u9ede\u7684\u95dc\u806f\u3002
+
+# 9500E      NO_NEGATIVE_FETCH_SIZES
+# 
+NO_NEGATIVE_FETCH_SIZES=DSRA9500E: \u63d0\u53d6\u5927\u5c0f\u4e0d\u80fd\u662f\u8ca0\u503c\u3002
+NO_NEGATIVE_FETCH_SIZES.explanation=\u63d0\u53d6\u5927\u5c0f\u53ea\u80fd\u8a2d\u70ba\u975e\u8ca0\u503c\u3002
+NO_NEGATIVE_FETCH_SIZES.useraction=\u8acb\u9078\u64c7\u4e0d\u662f\u8ca0\u7684\u63d0\u53d6\u5927\u5c0f\u503c\u3002
+
+# 9510 deleted
+# 9520 deleted
+# 9530-9542 deleted
+
+# DSRA9543W      KERBEROS_NOT_SUPPORTED_WARNING
+# TRANSLATOR Do not translate: Kerberos
+KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u91dd\u5c0d\u6240\u7528\u7684\u5f8c\u7aef\u8cc7\u6599\u5eab\u4f86\u652f\u63f4 Kerberos\u3002\u4e0d\u6703\u5229\u7528\u4f7f\u7528\u8005\u540d\u7a31\u548c\u5bc6\u78bc\u4f86\u53d6\u5f97\u9023\u7dda\u3002
+KERBEROS_NOT_SUPPORTED_WARNING.explanation= \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u4e0d\u652f\u63f4\u5728\u6240\u7528\u7684\u8cc7\u6599\u5eab\u4e0a\u9032\u884c Kerberos \u9451\u5225\u3002\u7576\u53d6\u5f97\u9023\u7dda\u6642\uff0c\u4e0d\u6703\u7528\u5230\u4f7f\u7528\u8005\u540d\u7a31\u548c\u5bc6\u78bc\u3002
+KERBEROS_NOT_SUPPORTED_WARNING.useraction= \u8acb\u505c\u7528 Kerberos\uff0c\u6216\u642d\u914d DB2 Universal JDBC \u9a45\u52d5\u7a0b\u5f0f\u4f86\u4f7f\u7528 DB2 \u5f8c\u7aef\u7cfb\u7d71\u3002
+
+# 9544-9548 deleted
+# 9600-9603 deleted 
+# 9900 deleted

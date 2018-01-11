@@ -547,11 +547,23 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.2.9", defaultValue="false", expectedValues="true,false", group="EL")
     protected static final String SUPPORT_EL_3_IMPORT_HANDLER = "org.apache.myfaces.SUPPORT_EL_3_IMPORT_HANDLER";
     public final static boolean SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT = false;
+    
+    /**
+     * This parameter specifies whether or not the Origin header app path should be checked 
+     */
+    @JSFWebConfigParam(since="2.2.13", defaultValue="false", expectedValues="true,false")
+    protected static final String STRICT_JSF_2_ORIGIN_HEADER_APP_PATH = 
+            "org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH";
+    public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
     // PI30335
     @JSFWebConfigParam(expectedValues="true, false", defaultValue="true")
     public final static String DELAY_POST_CONSTRUCT = "com.ibm.ws.jsf.delayManagedBeanPostConstruct";
     public final static boolean DELAY_POST_CONSTRUCT_DEFAULT = true;
+    
+    @JSFWebConfigParam(expectedValues="true, false", defaultValue="false")
+    public final static String DISABLE_FACELET_ACTION_LISTENER_PREDESTROY = "com.ibm.ws.jsf.DisableFaceletActionListenerPreDestroy";
+    public final static boolean DISABLE_FACELET_ACTION_LISTENER_PREDESTROY_DEFAULT = false;
     
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -597,6 +609,8 @@ public class MyfacesConfig
     private Integer _numberOfFacesFlowClientWindowIdsInSession;
     private boolean _delayManagedBeanPostConstruct; //PI30335
     private boolean _supportEL3ImportHandler;
+    private boolean _strictJsf2OriginHeaderAppPath;
+    private boolean _disableFaceletActionListenerPreDestroy;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -711,6 +725,8 @@ public class MyfacesConfig
                         INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT)+1);
         setDelayManagedBeanPostConstruct(DELAY_POST_CONSTRUCT_DEFAULT); //PI30335
         setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);
+        setStrictJsf2OriginHeaderAppPath(STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT);
+        setDisableFaceletActionListenerPreDestroy(DISABLE_FACELET_ACTION_LISTENER_PREDESTROY_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -913,6 +929,14 @@ public class MyfacesConfig
         myfacesConfig.setSupportEL3ImportHandler(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                        SUPPORT_EL_3_IMPORT_HANDLER, 
                        SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT));
+        
+        myfacesConfig.setStrictJsf2OriginHeaderAppPath(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                        STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
+                        STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT));
+        
+        myfacesConfig.setDisableFaceletActionListenerPreDestroy(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                        DISABLE_FACELET_ACTION_LISTENER_PREDESTROY, 
+                        DISABLE_FACELET_ACTION_LISTENER_PREDESTROY_DEFAULT));
 
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1586,5 +1610,25 @@ public class MyfacesConfig
     public void setSupportEL3ImportHandler(boolean supportEL3ImportHandler)
     {
         this._supportEL3ImportHandler = supportEL3ImportHandler;
+    }
+    
+    public boolean isStrictJsf2OriginHeaderAppPath()
+    {
+        return _strictJsf2OriginHeaderAppPath;
+    }
+    
+    public void setStrictJsf2OriginHeaderAppPath(boolean strictJsf2OriginHeaderAppPath)
+    {
+        this._strictJsf2OriginHeaderAppPath = strictJsf2OriginHeaderAppPath;
+    }
+    
+    public boolean isDisableFaceletActionListenerPreDestroy()
+    {
+        return _disableFaceletActionListenerPreDestroy;
+    }
+    
+    public void setDisableFaceletActionListenerPreDestroy(boolean disableFaceletActionListenerPreDestroy)
+    {
+        this._disableFaceletActionListenerPreDestroy = disableFaceletActionListenerPreDestroy;
     }
 }

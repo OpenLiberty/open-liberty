@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.tools/resources/com/ibm/ws/jaxrs20/tools/internal/resources/JaxRsToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS 2.0 Tools Code
+#RANGE 0900-9999
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.badVersion=CWWKW0900E: Neb\u011b\u017e\u00ed spr\u00e1vn\u00e1 verze prost\u0159ed\u00ed Java. B\u011bhov\u00e9 prost\u0159ed\u00ed vy\u017eaduje prost\u0159ed\u00ed Java 7 nebo vy\u0161\u0161\u00ed.
+error.badVersion.explanation=Bu\u010f b\u011b\u017e\u00ed nepodporovan\u00e1 verze prost\u0159ed\u00ed Java, nebo byla syst\u00e9mov\u00e1 prom\u011bnn\u00e1 JAVA_HOME nastavena na star\u0161\u00ed verzi prost\u0159ed\u00ed Java.
+error.badVersion.useraction= Prove\u010fte upgrade verze Java na verzi Java 7, nebo upravte syst\u00e9movou prom\u011bnnou JAVA_HOME tak, aby ukazovala na prost\u0159ed\u00ed Java 7.

@@ -1,0 +1,311 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: L''esecuzione del lavoro {0} viene arrestata perch\u00e9 il componente batch \u00e8 in fase di disattivazione.
+stopping.job.at.shutdown.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+stopping.job.at.shutdown.useraction=Non sono richieste azioni.
+
+jobs.running.at.shutdown=CWWKY0002I: Il componente batch \u00e8 in fase di disattivazione. \
+Sono state emesse richieste di arresto per tutte le esecuzioni lavoro attive. \
+Le seguenti esecuzioni lavoro erano ancora in corso al momento della disattivazione: {0}. 
+jobs.running.at.shutdown.explanation=Quando il componente batch viene disattivato, invia richieste di arresto per tutte le esecuzioni lavoro attive e attende brevemente che si arrestino.  \
+Le esecuzioni lavoro che non sono state arrestate sono riportate nel messaggio. \
+Per le esecuzioni lavoro che continuano dopo la disattivazione del componente batch potrebbero verificarsi comportamenti imprevisti.
+jobs.running.at.shutdown.useraction=Si consiglia di attendere il completamento di tutti i lavori prima di disattivare il componente batch. \
+Il componente batch viene disattivato quando il server viene arrestato, quando la funzione batch viene rimossa o quando la configurazione batch viene aggiornata.
+ 
+jsl.schema.invalid=CWWKY0003E: Il JSL (documento XML lavoro) all''URL {0} non \u00e8 valido in base allo schema XML lavoro. \
+Il primo errore di convalida registrato dal programma di convalida JAXB era: {1}.
+jsl.schema.invalid.explanation=Il documento XML non era conforme allo schema XSD.
+jsl.schema.invalid.useraction=Utilizzare uno strumento di convalida XML per comprendere quale costrutto viola i requisiti di schema.
+
+jsl.not.found.batch-jobs=CWWKY0004E: Il nome JSL (documento XML lavoro): {0} non \u00e8 stato trovato nell''ubicazione: {1} nell''archivio dell''applicazione.
+jsl.not.found.batch-jobs.explanation=Non \u00e8 stato possibile individuare il documento all'ubicazione identificata dai parametri utilizzati per inoltrare (ossia \
+avviare) il lavoro.
+jsl.not.found.batch-jobs.useraction=Assicurarsi che i parametri utilizzati per identificare l'ubicazione JSL siano corretti. \
+Quando si utilizza l'inoltro lavoro remoto per inoltrare un lavoro definito in un JSL incluso in un package all'interno di un modulo applicazione, assicurarsi che il modulo applicazione sia stato identificato correttamente dai parametri passati all'interfaccia REST (direttamente o utilizzando il programma di utilit\u00e0 di riga comandi).
+
+persistence.service.status=CWWKY0005I: Il servizio di persistenza batch {0} \u00e8 {1}.
+persistence.service.status.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+persistence.service.status.useraction=Non sono richieste azioni.
+
+job.recovery.failed=CWWKY0006W: Il servizio di ripristino del lavoro batch non \u00e8 in grado di correggere lo stato del batch per un''istanza di lavoro precedentemente in esecuzione {0} che \u00e8 terminata. La correzione non \u00e8 riuscita per l''eccezione {1}.
+job.recovery.failed.explanation=Il servizio di ripristino del lavoro batch, che corregge lo stato dei lavori che erano in esecuzione quando una precedente istanza di questo server \u00e8 terminata in modo anomalo, non \u00e8 riuscito a correggere lo stato dell'istanza di lavoro fornita a causa dell'eccezione indicata.
+job.recovery.failed.useraction=Risolvere la causa dell'eccezione, se possibile, e riavviare il server per eseguire il servizio di ripristino del lavoro batch nuovamente.
+
+recovery.failed=CWWKY0007W: Il servizio di ripristino del lavoro batch non \u00e8 in grado di correggere lo stato del batch per lavori precedentemente in esecuzione che sono terminati. La correzione non \u00e8 riuscita per l''eccezione {0}.
+recovery.failed.explanation=Il servizio di ripristino del lavoro batch, che corregge lo stato dei lavori che erano in esecuzione quando una precedente istanza di questo server \u00e8 terminata in modo anomalo, non \u00e8 riuscito a causa dell'eccezione indicata.
+recovery.failed.useraction=Risolvere la causa dell'eccezione, se possibile, e riavviare il server per eseguire il servizio di ripristino del lavoro batch nuovamente.
+
+batch.kernel.persistence=CWWKY0008I: La funzione batch sta utilizzando il tipo di persistenza {0}.
+batch.kernel.persistence.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
+batch.kernel.persistence.useraction=Non sono richieste azioni.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Lavoro {0} avviato per istanza lavoro {1} ed esecuzione lavoro {2}.
+job.started.explanation=\u00c8 stato avviato un nuovo thread di esecuzione lavoro.
+job.started.useraction=Non sono richieste azioni.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Lavoro {0} terminato con stato batch {1} e stato uscita {2} per istanza lavoro {3} ed esecuzione lavoro {4}.
+job.ended.explanation=L'esecuzione lavoro \u00e8 terminata.
+job.ended.useraction=Non sono richieste azioni.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Lavoro {0} non riuscito con stato batch {1} e stato uscita {2} per istanza lavoro {3} ed esecuzione lavoro {4}.
+job.failed.explanation=L'esecuzione del lavoro non \u00e8 terminata correttamente.
+job.failed.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Partizione {0} avviata per il passo {1} per l''istanza lavoro {2} ed esecuzione lavoro {3}.
+partition.started.explanation=\u00c8 stata avviata una nuova partizione.
+partition.started.useraction=Non sono richieste azioni.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Partizione {0} terminata con stato batch {1} e stato uscita {2} per il passo {3} per l''istanza lavoro {4} ed esecuzione lavoro {5}.
+partition.ended.explanation=La partizione \u00e8 terminata.
+partition.ended.useraction=Non sono richieste azioni.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Partizione {0} non riuscita con stato batch {1} e stato uscita {2} per il passo {3} per l''istanza lavoro {4} ed esecuzione lavoro {5}.
+partition.failed.explanation=La partizione non \u00e8 terminata correttamente.
+partition.failed.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Flusso {0} avviato per istanza lavoro {1} ed esecuzione lavoro {2}.
+flow.started.explanation=Il flusso \u00e8 stato avviato.
+flow.started.useraction=Non sono richieste azioni.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Flusso {0} terminato per istanza lavoro {1} ed esecuzione lavoro {2}.
+flow.ended.explanation=Il flusso \u00e8 terminato.
+flow.ended.useraction=Non sono richieste azioni.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Flusso {0} non riuscito per istanza lavoro {1} ed esecuzione lavoro {2}.
+flow.failed.explanation=Il flusso non \u00e8 terminato correttamente.
+flow.failed.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Passo {0} avviato per istanza lavoro {1} ed esecuzione lavoro {2}.
+step.started.explanation=\u00c8 iniziata l'esecuzione su un thread del passo indicato.
+step.started.useraction=Non sono richieste azioni.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Passo {0} non riuscito con stato batch {1} e stato uscita {2} per istanza lavoro {3} ed esecuzione lavoro {4}.
+step.failed.explanation=Il passo non \u00e8 terminato correttamente.
+step.failed.useraction=Esaminare i log lavoro dell'esecuzione passo associata per determinare la causa dell'errore.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Passo {0} terminato con stato batch {1} e stato uscita {2} per istanza lavoro {3} ed esecuzione lavoro {4}.
+step.ended.explanation=L'elaborazione del passo \u00e8 terminata.
+step.ended.useraction=Non sono richieste azioni.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Avviata nuova sezione per il passo {0} nell''istanza lavoro {1} ed esecuzione lavoro {2}. Metriche passo = {3}
+chunk.started.explanation= \u00c8 stata avviata una nuova transazione per elaborare questa sezione.
+chunk.started.useraction=Non sono richieste azioni.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: Sezione terminata correttamente per il passo {0} nell''istanza lavoro {1} ed esecuzione lavoro {2}. Metriche passo = {3}
+chunk.ended.explanation= La transazione associata a questa sezione \u00e8 stata sottoposta a commit correttamente.
+chunk.ended.useraction=Non sono richieste azioni.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: La sezione corrente \u00e8 stata ripristinata al precedente punto di controllo per il passo {0} nell''istanza lavoro {1} ed esecuzione lavoro {2}. Metriche passo = {3}
+chunk.rollback.explanation= Si \u00e8 verificato un errore durante la sezione, che ha causato il ripristino della transazione al precedente punto di controllo.
+chunk.rollback.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Viene eseguito il rollback per la sezione corrente dopo un''eccezione ritentabile per il passo {0} nell''istanza lavoro {1} ed esecuzione lavoro {2}. Metriche passo = {3}
+chunk.rollback.and.retry.explanation= Si \u00e8 verificata un'eccezione ritentabile durante l'elaborazione della sezione, che verr\u00e0 ripristinata al precedente punto di controllo e ritentata.
+chunk.rollback.and.retry.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: Programma lettura elemento per il passo {0} aperto.
+item.reader.opened.explanation=Il programma di lettura elemento associato a questo passo \u00e8 stato aperto.
+item.reader.opened.useraction=Non sono richieste azioni.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Programma lettura elemento per il passo {0} chiuso.
+item.reader.closed.explanation=Il programma di lettura elemento associato a questo passo \u00e8 stato chiuso.
+item.reader.closed.useraction=Non sono richieste azioni.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: Programma scrittura elemento per il passo {0} aperto.
+item.writer.opened.explanation=Il programma di scrittura elemento associato a questo passo \u00e8 stato aperto.
+item.writer.opened.useraction=Non sono richieste azioni.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: Programma scrittura elemento per il passo {0} chiuso.
+item.writer.closed.explanation=Il programma di scrittura elemento associato a questo passo \u00e8 stato chiuso.
+item.writer.closed.useraction=Non sono richieste azioni.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Si \u00e8 verificata un''eccezione durante l''esecuzione del passo {0}.\n\
+{1}
+exception.executing.step.explanation=Potrebbe trattarsi di un errore dell'applicazione. Si \u00e8 verificata un'eccezione durante l'esecuzione della parte centrale del passo, dopo che il contenitore batch ha richiamato le risorse applicazione batch relative.
+exception.executing.step.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.  Potrebbe richiedere il debug dell'applicazione.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Si \u00e8 verificata un''eccezione durante l''esecuzione della parte finale del passo {0}.\n\
+{1}
+exception.after.step.explanation=Potrebbe trattarsi di un errore dell'applicazione. Si \u00e8 verificata un'eccezione durante l'esecuzione della parte finale del passo (ad es. durante l'inclusione del metodo StepListener afterStep()), dopo che il contenitore batch ha richiamato le risorse applicazione batch relative.
+exception.after.step.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.  Potrebbe richiedere il debug dell'applicazione.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Si \u00e8 verificata un''eccezione durante il tentativo di rendere persistente lo stato di esecuzione del passo e i relativi dati. \n\
+{0}
+error.persisting.stepExecution.explanation=Se accade ci\u00f2, \u00e8 solito che lo stato del passo finale non viene correttamente reso persistente nel database e lo stato batch pu\u00f2 rimanere bloccato in stato AVVIATO bench\u00e9 non sia pi\u00f9 in esecuzione. Ci\u00f2 pu\u00f2 interferire con un tentativo di riavvio causando errori di incongruenza di stato al riavvio. 
+error.persisting.stepExecution.useraction=Assicurarsi che il database sia configurato e connesso correttamente.   Successivamente, se necessario \u00e8 possibile riavviare il server executor (quello su cui \u00e8 in esecuzione il lavoro), che attiver\u00e0 il ripristino e contrassegner\u00e0 i lavori e i passi associati come NON RIUSCITI in modo da poter eseguire un riavvio del lavoro correttamente. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Si \u00e8 verificata un''eccezione durante l''esecuzione del lavoro.\n\
+{0}
+exception.executing.job.explanation=Potrebbe trattarsi di un errore dell'applicazione. Si \u00e8 verificata un'eccezione durante l'esecuzione della parte centrale del lavoro, dopo che il contenitore batch ha richiamato le risorse applicazione batch relative.
+exception.executing.job.useraction=Esaminare i log lavoro dell'esecuzione lavoro associata per determinare la causa dell'errore.  Potrebbe richiedere il debug dell'applicazione.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Si \u00e8 verificata un''eccezione durante l''esecuzione della parte finale del lavoro.\n\
+{0}
+exception.after.job.explanation=Potrebbe trattarsi di un errore dell'applicazione. Si \u00e8 verificata un'eccezione durante l'esecuzione della parte finale del lavoro (ad es. durante l'inclusione del metodo JobListener afterJob()), dopo che il contenitore batch ha richiamato le risorse applicazione batch relative.
+exception.after.job.useraction=Esaminare i log lavoro del lavoro associato per determinare la causa dell'errore.  Potrebbe richiedere il debug dell'applicazione.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Si \u00e8 verificata un''eccezione durante il tentativo di rendere persistente lo stato di esecuzione del lavoro e i relativi dati. \n\
+{0}
+error.persisting.jobExecution.explanation=Se accade ci\u00f2, \u00e8 solito che lo stato del lavoro finale non viene correttamente reso persistente nel database e lo stato batch pu\u00f2 rimanere bloccato in stato AVVIATO bench\u00e9 non sia pi\u00f9 in esecuzione. Ci\u00f2 pu\u00f2 interferire con un tentativo di riavvio causando errori di incongruenza di stato al riavvio.
+error.persisting.jobExecution.useraction=Assicurarsi che il database sia configurato e connesso correttamente.   Successivamente, se necessario \u00e8 possibile riavviare il server executor (quello su cui \u00e8 in esecuzione il lavoro), che attiver\u00e0 il ripristino e contrassegner\u00e0 i lavori e i passi associati come NON RIUSCITI in modo da poter eseguire un riavvio del lavoro correttamente.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Valore id istanza lavoro non valido {0} generato come valore della chiave primaria per una tabella batch. Il valore id deve essere un numero intero positivo.\n\
+{1}
+error.invalid.persisted.job.id.explanation=Esecuzione lavoro non riuscita perch\u00e9 \u00e8 stato generato un id non valido in una tabella batch. Un id batch deve essere un numero intero positivo.
+error.invalid.persisted.job.id.useraction=Verificare che la definizione della tabella di database batch utilizzata consente solo numeri interi positivi per i valori id utilizzati come chiavi primarie.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Valore id esecuzione lavoro non valido {0} generato come valore della chiave primaria per una tabella batch. Il valore id deve essere un numero intero positivo.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=Esecuzione lavoro non riuscita perch\u00e9 \u00e8 stato generato un id non valido in una tabella batch. Un id batch deve essere un numero intero positivo.
+error.invalid.persisted.exe.id.useraction=Verificare che la definizione della tabella di database batch utilizzata consente solo numeri interi positivi per i valori id utilizzati come chiavi primarie.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Valore id esecuzione passo non valido {0} generato come valore della chiave primaria per una tabella batch. Il valore id deve essere un numero intero positivo.\n\
+{1}
+error.invalid.persisted.step.id.explanation=Esecuzione lavoro non riuscita perch\u00e9 \u00e8 stato generato un id non valido in una tabella batch. Un id batch deve essere un numero intero positivo.
+error.invalid.persisted.step.id.useraction=Verificare che la definizione della tabella di database batch utilizzata consente solo numeri interi positivi per i valori id utilizzati come chiavi primarie.
+
+partition.recovery.failed=CWWKY0039W: Il servizio di ripristino del lavoro batch non \u00e8 in grado di correggere lo stato del batch per una partizione precedentemente in esecuzione {0} che \u00e8 terminata. La correzione non \u00e8 riuscita per l''eccezione {1}.
+partition.recovery.failed.explanation=Il servizio di ripristino del lavoro batch, che corregge lo stato delle partizioni che erano in esecuzione quando una precedente istanza di questo server \u00e8 terminata in modo anomalo, non \u00e8 riuscito a correggere lo stato della partizione fornita a causa dell'eccezione indicata.
+partition.recovery.failed.useraction=Risolvere la causa dell'eccezione, se possibile, e riavviare il server per eseguire il servizio di ripristino del lavoro batch nuovamente.
+
+info.batch.events.publish.topic=CWWKY0040I: Il runtime batch pubblicher\u00e0 gli eventi sulla root del topic JMS {0}.
+info.batch.events.publish.topic.explanation=Messaggio informativo. Il runtime batch pubblicher\u00e0 gli eventi sulla root del topic JMS batch elencati.
+info.batch.events.publish.topic.useraction=La root del topic JMS batch pu\u00f2 essere modificato. Controllare le opzioni di configurazione utilizzate per batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: Il contenitore batch \u00e8 in esecuzione con una funzione CDI attiva, ma il motore CDI non \u00e8 stato in grado di caricare la risorsa batch come un bean gestito da CDI ed eseguire altre injection CDI. Questo problema pu\u00f2 verificarsi a causa di una annotazione di definizione del bean mancante, ad esempio @Dependent, una modalit\u00e0 di rilevamento bean involontaria o un valore 'ref' ambiguo.
+cdi.ambiguous.artifact.names.explanation=Quando il runtime batch carica le risorse utilizzando il motore CDI, le propriet\u00e0\u00a0batch (@BatchProperty) e i contesti batch (JobContext e StepContext) sono inseriti e vengono rese disponibili le capacit\u00e0 complete di CDI. Tali capacit\u00e0 includono l'injection di altri MBean in base ai qualificatori e alle altre funzioni di programmazione del modello diprogrammazione CDI. Quando il runtime batch carica le risorse senza utilizzare il motore CDI, inserisce solo le propriet\u00e0 e i contesti batch. Poich\u00e9 non c'\u00e8 un bean gestito da CDI in questo percorso, nessuna altra injection o funzione del modello di programmazione CDI \u00e8 disponibile senza tale risorsa batch. Questo messaggio indica che sebbene il server sia configurato in modo che la funzione CDI sia attiva, la risorsa batch non pu\u00f2 essere caricata come bean gestito da CDI perch\u00e9 il valore dell'attributo 'ref' corrispondente a questo riferimento risorsa nell'XML non punta a un singolo, inequivocabile bean gestito da CDI.
+cdi.ambiguous.artifact.names.useraction=Aggiungere l'annotazione @Dependent o un'altra annotazione di definizione bean adatta alla risorsa batch. In alternativa, \u00e8 possibile impostare la modalit\u00e0 di rilevamento bean su 'all' nel file beans.xml, sebbene questa soluzione pu\u00f2 rallenatre l'applicazione. Se tutte le risorse ambigue non sono necessarie, \u00e8 anche possibile rimuovere gli attributi 'ref' ambigui dall'applicazione in modo che rimanga un solo riferimento non ambiguo.
+
+#{0} job/flow/partition
+#{1} The JSL
+display.resolved.jsl=CWWKY0042I:  Il JSL risolto per questo {0} \u00e8 \n\
+\ {1}.
+display.resolved.jsl.explanation=Il JSL utilizzato per il lavoro, il flusso o la partizione viene visualizzato una volta risolti i parametri e le propriet\u00e0.  Il JSL del lavoro non le propriet\u00e0 del piano di partizione.  Ricercare questo messaggio nei log delle singole partizioni per la risoluzione della propriet\u00e0 del piano di partizione.
+display.resolved.jsl.useraction=Verificare che il JSL e la risoluzione del parametro siano quelli previsti.
+
+#{0} The JSL
+display.unresolved.jsl=CWWKY0043I:  Il JSL non risolto per questo lavoro \u00e8 \n\
+\ {0}.
+display.unresolved.jsl.explanation=Il JSL utilizzato per il lavoro viene visualizzato prima che i parametri e le propriet\u00e0 siano risolti.
+display.unresolved.jsl.useraction=Accertarsi che il nome del file per il JSL sia corretto e verificare che l'origine del JSL contenga il JSL corretto.
+

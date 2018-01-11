@@ -15,10 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
 import javax.security.auth.message.config.RegistrationListener;
@@ -34,6 +32,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jaspi.BridgeBuilderService;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
 @Component(service = { BridgeBuilderService.class },
            name = "com.ibm.ws.security.javaeesec",
@@ -46,15 +45,12 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
 
     private static final String JASPIC_LAYER_HTTP_SERVLET = "HttpServlet";
 
-    private BeanManager beanManager;
-
     @Activate
     protected void activate(ComponentContext cc) {}
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {}
 
-    @FFDCIgnore(NamingException.class)
     @Override
     public void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory) {
         AuthConfigProvider authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
@@ -63,25 +59,20 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
             return;
         }
 
-        try {
-            beanManager = getBeanManager();
-            Set<Bean<?>> httpAuthMechs = beanManager.getBeans(HttpAuthenticationMechanism.class);
-
-            if (httpAuthMechs.size() == 1) {
-                // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
-                Map<String, String> props = new ConcurrentHashMap<String, String>();
-                authConfigProvider = new AuthProvider(props, providerFactory);
-                providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, "Built-in JSR-375 Bridge Provider");
-            } else {
-                // TODO: Issue serviceability message
+        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
+            // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
+            Map<String, String> props = new ConcurrentHashMap<String, String>();
+            authConfigProvider = new AuthProvider(props, providerFactory);
+            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, "Built-in JSR-375 Bridge Provider");
+        } else{
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
-        } catch (NamingException e) {
-            // TODO: Issue serviceability message
         }
     }
 
-    protected BeanManager getBeanManager() throws NamingException {
-        return (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
+    protected ModulePropertiesUtils getModulePropertiesUtils() {
+        return ModulePropertiesUtils.getInstance();
     }
 
 }

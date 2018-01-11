@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=1.30,0,02/04/15,09:57:59
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.jpa/resources/EJBJPAMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Le bean session avec \u00e9tat {0} du module {1} dans l''application {2} n''a pas d\u00e9clar\u00e9 de d\u00e9pendance \u00e0 la r\u00e9f\u00e9rence de persistance {3}.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=Lorsqu'un bean session avec \u00e9tat se trouve dans un fichier WAR, il doit d\u00e9clarer les d\u00e9pendances \u00e0 toutes les r\u00e9f\u00e9rences de contexte de persistance et d'unit\u00e9 de persistance auxquelles il pr\u00e9voit d'acc\u00e9der.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Ajoutez l'annotation de code source @PersistenceContext ou @PersistenceUnit appropri\u00e9e au bean session avec \u00e9tat ou ajoutez l'\u00e9l\u00e9ment <persistence-context-ref> ou <persistence-unit-ref> \u00e0 l'\u00e9l\u00e9ment <session> appropri\u00e9 dans le fichier ejb-jar.xml.

@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E: Si \u00e8 verificato un errore di autenticazione durante la rigenerazione del soggetto del contesto di sicurezza deserializzato. L''eccezione \u00e8:  {0}. Di conseguenza, per questo contesto di sicurezza verr\u00e0 utilizzato il soggetto non autenticato. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation=Durante la rigenerazione dei soggetti che erano nel contesto di sicurezza, si \u00e8 verificato un errore di autenticazione. Di conseguenza, verr\u00e0 invece utilizzato il soggetto non autenticato.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction=Esaminare l'eccezione ed i log per capire perch\u00e9 l'autenticazione non \u00e8 riuscita.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E: Durante il richiamo del principal del soggetto, \u00e8 stato rilevato che il soggetto ha pi\u00f9 di un principal del tipo WSPrincipal. Nel soggetto pu\u00f2 esistere solo un WSPrincipal. I nomi dei WSPrincipal sono: {0}. Di conseguenza, il contesto di sicurezza non verr\u00e0 deserializzato sul thread.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation=Non \u00e8 stato possibile deserializzare il contesto di sicurezza perch\u00e9 il soggetto ha troppi principal del tipo WSPrincipal. \u00c8 supportato solo un principal di questo tipo.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Riesaminare l'applicazione per capire perch\u00e9 il soggetto contiene pi\u00f9 di un WSPrincipal.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: Durante la serializzare del contesto di sicurezza, non \u00e8 stato possibile serializzare la chiave cache personalizzata {0} a causa della seguente eccezione: {1}. Di conseguenza, il contesto di sicurezza non conterr\u00e0 la chiave cache personalizzata.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=Non \u00e8 stato possibile serializzare la chiave cache personalizzata per il soggetto durante la serializzazione del contesto di sicurezza. Sebbene il contesto di sicurezza non conterr\u00e0 la chiave cache personalizzata, ci\u00f2 non influenza la serializzazione del contesto di sicurezza stesso.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Esaminare i log per conoscere il motivo per cui la serializzazione della chiave cache personalizzata ha avuto esito negativo. 

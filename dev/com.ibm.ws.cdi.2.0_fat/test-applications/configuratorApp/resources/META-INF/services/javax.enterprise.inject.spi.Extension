@@ -1,0 +1,8 @@
+###########
+configuratorApp.web.bean.AfterBeanDiscoveryObserver
+configuratorApp.web.beanAttributes.ProcessBeanAttributesObserver
+configuratorApp.web.injectionPoint.ProcessInjectionPointObserver
+configuratorApp.web.observerMethod.ProcessObserverMethodObserver
+configuratorApp.web.producer.ProcessProducerObserver
+configuratorApp.web.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver
+###########

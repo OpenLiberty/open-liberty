@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: \u00c9rv\u00e9nytelen le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonal ({0}) a(z) {1} jar f\u00e1jlban.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Az oszt\u00e1ly\u00fatvonal helytelen\u00fcl van megadva. Olyan relat\u00edv URI karaktersorozatnak kell lennie, amely jar f\u00e1jlra vagy mapp\u00e1ra mutat.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Friss\u00edtse a jar f\u00e1jl MANIFEST.MF \u00e1llom\u00e1ny\u00e1t \u00e9s jav\u00edtsa az oszt\u00e1ly\u00fatvonal-meghat\u00e1roz\u00e1st.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: A le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonala ({0}) nem tal\u00e1lhat\u00f3 a(z) {1} jar f\u00e1jlban vagy annak sz\u00fcl\u0151j\u00e9ben.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=A le\u00edr\u00f3f\u00e1jl oszt\u00e1ly\u00fatvonala nem tal\u00e1lhat\u00f3 a jar f\u00e1jlban vagy abban az arch\u00edvumban, amely a jar f\u00e1jlt tartalmazza.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=Vegye fel az oszt\u00e1ly\u00fatvonal c\u00e9lt az arch\u00edvumba.
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: T\u00f6bbsz\u00f6r szerepl\u0151 nevek ({0}) ker\u00fcltek felhaszn\u00e1l\u00e1sra a(z) {1} \u00e9s a(z) {2}  web-fragment.xml f\u00e1jljaiban relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor egyedi nevet kell haszn\u00e1lni az elemhez minden web-fragment.xml f\u00e1jlban.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Rendeljen hozz\u00e1 egyedi nevet minden web-fragment.xml f\u00e1jlhoz relat\u00edv rendez\u00e9s alkalmaz\u00e1sakor vagy \u00e1ll\u00edtsa be az abszol\u00fat rendez\u00e9s haszn\u00e1lat\u00e1t az <absolute-ordering> elem seg\u00edts\u00e9g\u00e9vel a web.xml f\u00e1jlban.
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+annotation.service.not.available.CWWKM0451E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0451E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+annotation.service.not.available.CWWKM0452E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0452E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+container.is.not.a.module.CWWKM0453E.explanation=CMSG0001
+container.is.not.a.module.CWWKM0453E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0454E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0455E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=CMSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+annotation.service.not.available.CWWKM0463E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0463E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+container.is.not.a.web.module.CWWKM0464E.explanation=CMSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0465E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2}
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=CMSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2} {3}
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=CMSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2}
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=CMSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=CMSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+two.fragments.have.the.same.name.CWWKM0479E.explanation=CMSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. Az al\u00e1bbi adatok megad\u00e1s\u00e1val l\u00e9pjen kapcsolatba a WebSphere Application Server t\u00e1mogat\u00e1ssal:  {0} {1} {2}
+conflicting.relative.order.metadata.CWWKM0480E.explanation=CMSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0}
+loop.found.in.list.CWWKM0481E.explanation=CMSG0001
+loop.found.in.list.CWWKM0481E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Bels\u0151 hiba t\u00f6rt\u00e9nt a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3ban. A k\u00f6vetkez\u0151 adatokkal l\u00e9pjen kapcsolatba a WebSphere alkalmaz\u00e1skiszolg\u00e1l\u00f3 term\u00e9kt\u00e1mogat\u00e1s\u00e1val: {0} {1}
+ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+

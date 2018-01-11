@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.crypto.passwordutil/resources/com/ibm/ws/crypto/util/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security passwordUtil
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+# Message prefix block: CWWKS1850 - CWWKS1899
+
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED=CWWKS1850I: Az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1s elindult. Az oszt\u00e1ly neve: {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+PASSWORDUTIL_CUSTOM_SERVICE_STARTED.useraction=Nincs teend\u0151.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED=CWWKS1851I: Az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1s le\u00e1llt. Az oszt\u00e1ly neve: {0}.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+PASSWORDUTIL_CUSTOM_SERVICE_STOPPED.useraction=Nincs teend\u0151.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR=CWWKS1852E: Az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1ssal v\u00e9gzett jelsz\u00f3visszafejt\u00e9s sor\u00e1n v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.explanation=A visszafejt\u00e9s egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1ssal v\u00e9gzett feldolgoz\u00e1sa k\u00f6zben v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+PASSWORDUTIL_CUSTOM_DECRYPTION_ERROR.useraction=A kiv\u00e9tel ok\u00e1val kapcsolatban tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1s napl\u00f3it, valamint a kiszolg\u00e1l\u00f3napl\u00f3kat.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR=CWWKS1853E: Az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1ssal v\u00e9gzett jelsz\u00f3titkos\u00edt\u00e1s sor\u00e1n v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.explanation=A titkos\u00edt\u00e1s egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1ssal v\u00e9gzett feldolgoz\u00e1sa k\u00f6zben v\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt.
+PASSWORDUTIL_CUSTOM_ENCRYPTION_ERROR.useraction=A kiv\u00e9tel ok\u00e1val kapcsolatban tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt vizsg\u00e1lja meg az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si szolg\u00e1ltat\u00e1s napl\u00f3it, valamint a kiszolg\u00e1l\u00f3napl\u00f3kat.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST=CWWKS1854E: A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 egy\u00e9ni jelsz\u00f3szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el az egy\u00e9ni k\u00f3dolt jelsz\u00f3 feldolgoz\u00e1s\u00e1hoz.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.explanation=Az egy\u00e9ni k\u00f3dolt jelsz\u00f3 nem dolgozhat\u00f3 fel, mivel az egy\u00e9ni jelsz\u00f3szolg\u00e1ltat\u00e1s el\u00e9rhetetlen.
+PASSWORDUTIL_CUSTOM_SERVICE_DOES_NOT_EXIST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a com.ibm.wsspi.security.crypto.CustomPasswordEncryption fel\u00fcletet megval\u00f3s\u00edt\u00f3 egy\u00e9nijelsz\u00f3-felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1sra \u00e9s elind\u00edt\u00e1sra ker\u00fclt.
+PASSWORDUTIL_UNKNOWN_ALGORITHM=CWWKS1855E: A jelsz\u00f3 nem ker\u00fclt feldolgoz\u00e1sra, mivel a jelsz\u00f3algoritmus neve ({0}) nincs megadva. A t\u00e1mogatott t\u00edpusok a k\u00f6vetkez\u0151k: {1}.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.explanation=A jelsz\u00f3 nem ker\u00fclt titkos\u00edt\u00e1sra vagy visszafejt\u00e9sre, mivel a jelsz\u00f3algoritmus megadott neve nem t\u00e1mogatott.
+PASSWORDUTIL_UNKNOWN_ALGORITHM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a t\u00e1mogatott algoritmusok egyike ker\u00fcl felhaszn\u00e1l\u00e1sra.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION=CWWKS1856E: A jelsz\u00f3 nem ker\u00fclt feldolgoz\u00e1sra, mivel ismeretlen jelsz\u00f3algoritmus-kiv\u00e9telr\u0151l \u00e9rkezett jelent\u00e9s.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.explanation=A megadott algoritmus nem t\u00e1mogatott.
+PASSWORDUTIL_UNKNOWN_ALGORITHM_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3t, \u00e9s az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s haszn\u00e1lata eset\u00e9n az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si napl\u00f3kat is vizsg\u00e1lja meg.
+PASSWORDUTIL_CYPHER_EXCEPTION=CWWKS1857E: A jelsz\u00f3 nem ker\u00fclt feldolgoz\u00e1sra, mivel \u00e9rv\u00e9nytelen jelsz\u00f3rejtjel-kiv\u00e9telr\u0151l \u00e9rkezett jelent\u00e9s.
+PASSWORDUTIL_CYPHER_EXCEPTION.explanation=A jelsz\u00f3 nem ker\u00fclt titkos\u00edt\u00e1sra vagy visszafejt\u00e9sre, mivel a jelsz\u00f3 feldolgoz\u00e1sa sor\u00e1n kiv\u00e9telr\u0151l \u00e9rkezett jelent\u00e9s.
+PASSWORDUTIL_CYPHER_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3t, \u00e9s az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s haszn\u00e1lata eset\u00e9n az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si napl\u00f3kat is vizsg\u00e1lja meg.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION=CWWKS1858E: A jelsz\u00f3 nem ker\u00fclt feldolgoz\u00e1sra, mivel nem t\u00e1mogatott k\u00f3dol\u00e1si kiv\u00e9telr\u0151l \u00e9rkezett jelent\u00e9s.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=A jelsz\u00f3 nem ker\u00fclt titkos\u00edt\u00e1sra vagy visszafejt\u00e9sre, mivel a jelsz\u00f3 feldolgoz\u00e1sa sor\u00e1n kiv\u00e9telr\u0151l \u00e9rkezett jelent\u00e9s.
+PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3t, \u00e9s az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s haszn\u00e1lata eset\u00e9n az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si napl\u00f3kat is vizsg\u00e1lja meg.
+PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: A jelsz\u00f3 nem ker\u00fclt visszafejt\u00e9sre, mivel visszafejt\u00e9si hib\u00e1r\u00f3l \u00e9rkezett jelent\u00e9s.
+PASSWORDUTIL_INVALID_BASE64_STRING.explanation=A titkos\u00edtott jelsz\u00f3 nem ker\u00fclt megfelel\u0151en k\u00f3dol\u00e1sra.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a titkos\u00edtott jelsz\u00f3 nincs csonkolva, illetve Base64 k\u00f3dol\u00e1s felhaszn\u00e1l\u00e1s\u00e1val k\u00f3dolva.
+
+
+# ---------------- This is an exception message ------------
+PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=T\u00f6bb CustomPasswordEncryption megval\u00f3s\u00edt\u00e1s \u00e9szlelhet\u0151. Csak egyetlen CustomPasswordEncryption megval\u00f3s\u00edt\u00e1s t\u00e1mogatott. Az \u00e9szlelt CustomPasswordEncryption megval\u00f3s\u00edt\u00e1sok list\u00e1ja a k\u00f6vetkez\u0151:
+PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Hiba t\u00f6rt\u00e9nt a kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jl feldolgoz\u00e1sakor: {0}. A f\u00e1jl figyelmen k\u00edv\u00fcl maradt. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el. A hiba\u00fczenet: {1}.
+PASSWORDUTIL_ERROR_MISSING_HEADER=A k\u00f6telez\u0151 {0} fejl\u00e9c nem tal\u00e1lhat\u00f3 a(z) {1} kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jlban. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el.
+PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=A(z) {0} kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jlnak megfelel\u0151 szolg\u00e1ltat\u00e1s le\u00edr\u00f3f\u00e1jl nem tal\u00e1lhat\u00f3. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el.
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=A kivonat algoritmus nem t\u00e1mogatja a visszafejt\u00e9si m\u0171veletet. 

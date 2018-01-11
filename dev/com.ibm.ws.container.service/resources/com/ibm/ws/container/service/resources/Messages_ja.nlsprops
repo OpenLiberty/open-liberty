@@ -1,0 +1,167 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The first three messages in this file have a SRVE code prefix since they were ported from the old
+# WAS Classic Servlet Engine (see CMVC info above).
+#
+# The rest of the messages are new to Liberty and use the new Liberty message codes.
+# See http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# The range assigned to the Container Service is CWWKM 0451-0550.
+#
+#COMPONENTPREFIX CWWKM
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: \u7121\u52b9\u306a\u30de\u30cb\u30d5\u30a7\u30b9\u30c8\u30fb\u30af\u30e9\u30b9\u30d1\u30b9 {0} \u304c JAR \u30d5\u30a1\u30a4\u30eb {1} \u306b\u898b\u3064\u304b\u308a\u307e\u3057\u305f\u3002
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=\u30af\u30e9\u30b9\u30d1\u30b9\u304c\u6b63\u3057\u304f\u6307\u5b9a\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002 \u3053\u308c\u306f\u3001JAR \u30d5\u30a1\u30a4\u30eb\u307e\u305f\u306f\u30d5\u30a9\u30eb\u30c0\u30fc\u3092\u6307\u3059\u76f8\u5bfe URI \u30b9\u30c8\u30ea\u30f3\u30b0\u3067\u3042\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=\u6b63\u3057\u3044\u30af\u30e9\u30b9\u30d1\u30b9\u5b9a\u7fa9\u3092\u63d0\u4f9b\u3059\u308b\u3088\u3046\u306b JAR \u30d5\u30a1\u30a4\u30eb\u306e MANIFEST.MF \u3092\u66f4\u65b0\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: \u30de\u30cb\u30d5\u30a7\u30b9\u30c8\u30fb\u30af\u30e9\u30b9\u30d1\u30b9 {0} \u304c\u3001JAR \u30d5\u30a1\u30a4\u30eb {1} \u307e\u305f\u306f\u305d\u306e\u89aa\u306b\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=\u30de\u30cb\u30d5\u30a7\u30b9\u30c8\u30fb\u30af\u30e9\u30b9\u30d1\u30b9\u304c\u3001JAR \u30d5\u30a1\u30a4\u30eb\u3001\u307e\u305f\u306f JAR \u30d5\u30a1\u30a4\u30eb\u3092\u542b\u3080\u30a2\u30fc\u30ab\u30a4\u30d6\u306b\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=\u30af\u30e9\u30b9\u30d1\u30b9\u30fb\u30bf\u30fc\u30b2\u30c3\u30c8\u3092\u30a2\u30fc\u30ab\u30a4\u30d6\u306b\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: \u76f8\u5bfe\u9806\u5e8f\u4ed8\u3051\u3092\u4f7f\u7528\u3057\u3066\u3044\u308b\u3068\u304d\u306b\u3001{1} \u304a\u3088\u3073 {2} \u306e web-fragment.xml \u30d5\u30a1\u30a4\u30eb\u306e\u4e2d\u3067\u3001\u91cd\u8907\u3057\u305f\u540d\u524d {0} \u304c\u4f7f\u7528\u3055\u308c\u3066\u3044\u307e\u3059\u3002
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=\u76f8\u5bfe\u30bd\u30fc\u30c8\u9806\u3092\u4f7f\u7528\u3057\u3066\u3044\u308b\u5834\u5408\u306f\u3001\u5404 web-fragment.xml \u30d5\u30a1\u30a4\u30eb\u306e\u30a8\u30ec\u30e1\u30f3\u30c8\u306b\u306f\u56fa\u6709\u306e\u540d\u524d\u304c\u5fc5\u8981\u3067\u3059\u3002
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=\u76f8\u5bfe\u30bd\u30fc\u30c8\u9806\u3092\u4f7f\u7528\u3057\u3066\u3044\u308b\u5834\u5408\u306f\u5404 web-fragment.xml \u306b\u56fa\u6709\u306e\u540d\u524d\u3092\u5272\u308a\u5f53\u3066\u308b\u304b\u3001web.xml \u30d5\u30a1\u30a4\u30eb\u3067\u7d76\u5bfe\u30bd\u30fc\u30c8\u306e <absolute-ordering> \u30a8\u30ec\u30e1\u30f3\u30c8\u3092\u4f7f\u7528\u3059\u308b\u3088\u3046\u306b\u69cb\u6210\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+annotation.service.not.available.CWWKM0451E=CWWKM0451E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+annotation.service.not.available.CWWKM0451E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0451E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+annotation.service.not.available.CWWKM0452E=CWWKM0452E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+annotation.service.not.available.CWWKM0452E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0452E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+container.is.not.a.module.CWWKM0453E=CWWKM0453E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+container.is.not.a.module.CWWKM0453E.explanation=CMSG0001
+container.is.not.a.module.CWWKM0453E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.create.module.class.source.CWWKM0454E=CWWKM0454E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0454E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0454E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.create.module.class.source.CWWKM0455E=CWWKM0455E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0455E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0455E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0456E=CWWKM0456E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0456E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0456E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0457E=CWWKM0457E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0457E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0457E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.info.store.CWWKM0458E=CWWKM0458E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.info.store.CWWKM0458E.explanation=CMSG0001
+failed.to.obtain.module.info.store.CWWKM0458E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0459E=CWWKM0459E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0459E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0459E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0460E=CWWKM0460E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0460E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0460E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.open.web.module.info.store.CWWKM0461E=CWWKM0461E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0461E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0461E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.close.web.module.info.store.CWWKM0462E=CWWKM0462E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0462E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0462E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+annotation.service.not.available.CWWKM0463E=CWWKM0463E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+annotation.service.not.available.CWWKM0463E.explanation=CMSG0001
+annotation.service.not.available.CWWKM0463E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+container.is.not.a.web.module.CWWKM0464E=CWWKM0464E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+container.is.not.a.web.module.CWWKM0464E.explanation=CMSG0001
+container.is.not.a.web.module.CWWKM0464E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.create.module.class.source.CWWKM0465E=CWWKM0465E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2}
+failed.to.create.module.class.source.CWWKM0465E.explanation=CMSG0001
+failed.to.create.module.class.source.CWWKM0465E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E=CWWKM0466E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2}
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.explanation=CMSG0001
+canonical.name.does.not.match.original.name.for.module.CWWKM0466E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.create.module.fragment.class.source.CWWKM0467E=CWWKM0467E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0467E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0467E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.create.module.fragment.class.source.CWWKM0468E=CWWKM0468E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2} {3}
+failed.to.create.module.fragment.class.source.CWWKM0468E.explanation=CMSG0001
+failed.to.create.module.fragment.class.source.CWWKM0468E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.create.class.source.for.module.classloader.CWWKM0469E=CWWKM0469E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2} {3}
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.explanation=CMSG0001
+failed.to.create.class.source.for.module.classloader.CWWKM0469E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0470E=CWWKM0470E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0470E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0470E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0471E=CWWKM0471E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0471E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0471E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0472E=CWWKM0472E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0472E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0472E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0473E=CWWKM0473E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.obtain.module.annotation.targets.CWWKM0473E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0473E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.obtain.module.annotation.targets.CWWKM0474E=CWWKM0474E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2}
+failed.to.obtain.module.annotation.targets.CWWKM0474E.explanation=CMSG0001
+failed.to.obtain.module.annotation.targets.CWWKM0474E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.open.web.module.info.store.CWWKM0475E=CWWKM0475E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.open.web.module.info.store.CWWKM0475E.explanation=CMSG0001
+failed.to.open.web.module.info.store.CWWKM0475E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+failed.to.close.web.module.info.store.CWWKM0476E=CWWKM0476E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+failed.to.close.web.module.info.store.CWWKM0476E.explanation=CMSG0001
+failed.to.close.web.module.info.store.CWWKM0476E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E=CWWKM0477E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.explanation=CMSG0001
+duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E=CWWKM0478E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.explanation=CMSG0001
+relative.ordering.metadata.is.before.and.after.others.CWWKM0478E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+two.fragments.have.the.same.name.CWWKM0479E=CWWKM0479E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+two.fragments.have.the.same.name.CWWKM0479E.explanation=CMSG0001
+two.fragments.have.the.same.name.CWWKM0479E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+conflicting.relative.order.metadata.CWWKM0480E=CWWKM0480E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1} {2}
+conflicting.relative.order.metadata.CWWKM0480E.explanation=CMSG0001
+conflicting.relative.order.metadata.CWWKM0480E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+loop.found.in.list.CWWKM0481E=CWWKM0481E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0}
+loop.found.in.list.CWWKM0481E.explanation=CMSG0001
+loop.found.in.list.CWWKM0481E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+ordered.list.already.contains.CWWKM0482E=CWWKM0482E: WebSphere Application Server \u306e\u5185\u90e8\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 WebSphere Application Server \u30b5\u30dd\u30fc\u30c8\u306b\u9023\u7d61\u3057\u3001\u6b21\u306e\u30c7\u30fc\u30bf\u3092\u63d0\u793a\u3057\u3066\u304f\u3060\u3055\u3044: {0} {1}
+ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
+ordered.list.already.contains.CWWKM0482E.useraction=WebSphere Application Server \u30b5\u30dd\u30fc\u30c8 Web \u30da\u30fc\u30b8 (http://www.ibm.com/software/webservers/appserv/was/support) \u3067\u554f\u984c\u5224\u5225\u60c5\u5831\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+

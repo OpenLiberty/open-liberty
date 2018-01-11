@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+src: \
+	fat/src,\
+	test-applications/bvalApp/src,\
+	test-applications/bvalCDIApp/src,\
+	test-applications/bvalValueExtractorApp/src,\
+	test-applications/HibernateConfig.war/src,\
+	test-applications/MultipleValidationXmlEjb1.jar/src,\
+	test-applications/MultipleValidationXmlEjb2.jar/src,\
+	test-applications/MultipleValidationXmlWeb.war/src
+
+fat.project: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest

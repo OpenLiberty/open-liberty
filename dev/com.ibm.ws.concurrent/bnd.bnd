@@ -8,8 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -20,12 +18,16 @@ Bundle-Description: Application server-managed concurrency utilities; version=${
 WS-TraceGroup: concurrent
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Export-Package:\
+  com.ibm.ws.concurrent
     
 Private-Package:\
-     com.ibm.ws.concurrent.*
+  com.ibm.ws.concurrent.internal.*,\
+  com.ibm.ws.concurrent.resources.*
 
 Include-Resource:\
-    OSGI-INF=resources/OSGI-INF
+  OSGI-INF=resources/OSGI-INF
 
 Service-Component:\
   com.ibm.ws.concurrent.managedThreadFactory;\
@@ -55,26 +57,21 @@ Service-Component:\
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
--dsannotations-options:inherit,felixExtensions
-
--metatypeannotations: \
-  com.ibm.ws.concurrent.internal.ManagedExecutorServiceConfig,\
-  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceConfig
-
 instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 
 -buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.ws.context;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
-	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.resource;version=latest,\
-	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
-	com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.ws.bnd.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.concurrency.policy;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest

@@ -1,0 +1,1582 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE CWWWC
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: V\u00fdjimka - nepovolen\u00fd argument: Do\u0161lo k pokusu o z\u00e1pis m\u00e9n\u011b ne\u017e 0 znak\u016f.
+Illegal.Argument.Trying.to.write.chars.explanation=Do\u0161lo k pokusu o v\u00fdstup pro vyrovn\u00e1vac\u00ed pam\u011b\u0165 o velikosti men\u0161\u00ed ne\u017e 0. Jde o chybu aplikace.
+Illegal.Argument.Trying.to.write.chars.useraction=Zapisujte pouze vyrovn\u00e1vac\u00ed pam\u011bti o velikosti 0 nebo v\u011bt\u0161\u00ed.
+
+# --------------------------------
+Uncaught.service().exception.root.cause=SRVE0014E: Nezachycen\u00e1 v\u00fdjimka metody service() s hlavn\u00ed p\u0159\u00ed\u010dinou {0}: {1}
+Uncaught.service().exception.root.cause.explanation=V metod\u011b slu\u017eby servletu byla vytvo\u0159ena nezachyt\u00e1van\u00e1 v\u00fdjimka. Jde o chybu aplikace.
+Uncaught.service().exception.root.cause.useraction=Li\u0161\u00ed se v z\u00e1vislosti na hlavn\u00ed p\u0159\u00ed\u010din\u011b.
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: Selhala inicializace webov\u00e9 aplikace {0}
+Failed.to.initialize.webapp.{0}.explanation=Nelze inicializovat webovou aplikace ur\u010denou ve zpr\u00e1v\u011b. Dal\u0161\u00ed informace najdete v protokolu chyb.
+Failed.to.initialize.webapp.{0}.useraction=Zjist\u011bte hlavn\u00ed p\u0159\u00ed\u010dinu tohoto probl\u00e9mu na z\u00e1klad\u011b protokolu chyb.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: V\u00fdjimka - nepovolen\u00fd argument: Neplatn\u00fd form\u00e1t z\u00e1hlav\u00ed
+Illegal.Argument\:.Invalid.Header.Format.explanation=Form\u00e1t nalezen\u00fd pro z\u00e1hlav\u00ed po\u017eadavku nen\u00ed platn\u00fd.
+Illegal.Argument\:.Invalid.Header.Format.useraction=Zkontrolujte zp\u016fsob vytvo\u0159en\u00ed z\u00e1hlav\u00ed na stran\u011b klienta.
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: Servlet byl uvoln\u011bn: {0}
+Servlet.unloaded\:.{0}.explanation=Ur\u010den\u00fd servlet byl uvoln\u011bn po vol\u00e1n\u00ed metody destroy.
+Servlet.unloaded\:.{0}.useraction=Nen\u00ed.
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: V\u00fdjimka - nepovolen\u00fd argument: {0} nen\u00ed adres\u00e1\u0159.
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=Ur\u010den\u00e1 cesta nen\u00ed adres\u00e1\u0159em.
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=Ov\u011b\u0159te, \u017ee adres\u00e1\u0159 existuje a \u017ee po\u017eadujete spr\u00e1vn\u00fd adres\u00e1\u0159.
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Jedn\u00e1 se o chybu syst\u00e9mu. 
+WebAppSecurityCollaborator.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: V\u00fdjimka - nepovolen\u00fd argument: Nebyl nalezen soubor samozaveden\u00ed
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Illegal.Argument.Invalid.Content.Length=SRVE0042E: V\u00fdjimka - nepovolen\u00fd argument: Neplatn\u00e1 d\u00e9lka obsahu
+Illegal.Argument.Invalid.Content.Length.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm. Jde o chybu aplikace.
+Illegal.Argument.Invalid.Content.Length.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: V\u00fdjimka - nepovolen\u00fd argument: Neplatn\u00fd form\u00e1t data
+Illegal.Argument\:.Invalid.Date.Format.explanation=Form\u00e1t data nen\u00ed platn\u00fd.
+Illegal.Argument\:.Invalid.Date.Format.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: \u010casov\u00fd limit \u010dek\u00e1n\u00ed servletu na likvidaci vypr\u0161el, likvidace bude vynucena: {0}
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=Prob\u00edh\u00e1 likvidace servletu po vypr\u0161en\u00ed \u010dasov\u00e9ho limitu \u010dek\u00e1n\u00ed.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=Nen\u00ed.
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: V\u00fdjimka - nepovolen\u00fd argument: Nepodporovan\u00fd p\u0159\u00edznak
+Illegal.Argument\:.Unsupported.flag.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+Illegal.Argument\:.Unsupported.flag.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet=SRVE0058E: Nebyla realizov\u00e1na v\u00fdjimka destroy() vytvo\u0159en\u00e1 servletem {0} v aplikaci {1}: {2}
+Uncaught.destroy().exception.thrown.by.servlet.explanation=Nezda\u0159ilo se zlikvidovat uveden\u00fd servlet. Jde o chybu aplikace.
+Uncaught.destroy().exception.thrown.by.servlet.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: Nepoda\u0159ilo se sv\u00e1zat n\u00e1zev hostitele [{0}] s hostitelem servletu [{1}]
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=Nezda\u0159ilo se sv\u00e1zat uveden\u00fd n\u00e1zev hostitele s uveden\u00fdm hostitelem servletu.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=Ov\u011b\u0159te, zda byl spr\u00e1vn\u011b zad\u00e1n n\u00e1zev hostitele a zda je hostitel servletu uveden v souboru virtualhosts.xml.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: V\u00fdjimka - nepovolen\u00fd argument: Byl zad\u00e1n neplatn\u00fd adres\u00e1\u0159 {0}
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=Zadan\u00fd adres\u00e1\u0159 je neplatn\u00fd.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=Najd\u011bte chyby ve specifikaci adres\u00e1\u0159e.
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: Syst\u00e9m \u010dek\u00e1, a\u017e servlet dokon\u010d\u00ed zpracov\u00e1n\u00ed po\u017eadavk\u016f: {0}
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=Servlet st\u00e1le prov\u00e1d\u00ed zpracov\u00e1n\u00ed po\u017eadavku. Prob\u00edh\u00e1 \u010dek\u00e1n\u00ed na po\u017eadavek na dokon\u010den\u00ed p\u0159ed vol\u00e1n\u00edm metody destroy.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=Nen\u00ed.
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet=SRVE0068E: N\u011bkter\u00e1 z metod slu\u017eeb servletu [{0}] v aplikaci [{1}] vygenerovala v\u00fdjimku. Vytvo\u0159en\u00e1 v\u00fdjimka: [{2}]
+Uncaught.service().exception.thrown.by.servlet.explanation=N\u011bkter\u00e1 z metod slu\u017eeb servletu vygenerovala v\u00fdjimku. Jde o chybu aplikace.
+Uncaught.service().exception.thrown.by.servlet.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: Chyba p\u0159i inicializaci dal\u0161\u00edho po\u017eadavku
+Error.Initializing.for.Next.Request.explanation=Intern\u00ed chyba webov\u00e9ho kontejneru.
+Error.Initializing.for.Next.Request.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: Neplatn\u00e1 d\u00e9lka obsahu.
+Invalid.Content.Length.explanation=Intern\u00ed chyba serveru. M\u016f\u017ee k n\u00ed doj\u00edt kv\u016fli probl\u00e9m\u016fm s vylad\u011bn\u00edm s\u00edt\u011b, chybn\u00e9 specifikaci d\u00e9lky obsahu nebo d\u00e9lky \u010di velikosti p\u0159\u00edlohy. Jde o chybu aplikace.
+Invalid.Content.Length.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na servis spole\u010dnosti IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: V\u00fdjimka - nepovolen\u00fd argument: Chyb\u00ed vlastnosti samozaveden\u00ed prost\u0159edku.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=Intern\u00ed chyba serveru.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na servis spole\u010dnosti IBM.
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: Bylo zah\u00e1jeno uvoln\u011bn\u00ed servletu: {0}
+Servlet.unload.initiated\:.{0}.explanation=Prob\u00edh\u00e1 uvol\u0148ov\u00e1n\u00ed uveden\u00e9ho servletu ze slu\u017eby.
+Servlet.unload.initiated\:.{0}.useraction=Nen\u00ed.
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: V\u00fdjimka fondu objekt\u016f: Nelze vytvo\u0159it instanci t\u0159\u00eddy [{0}].
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=Nelze vytvo\u0159it instanci t\u0159\u00eddy pro pot\u0159eby fondu objekt\u016f. Jedn\u00e1 se o chybu syst\u00e9mu.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=Ov\u011b\u0159te, zda t\u0159\u00edda existuje a zda je viditeln\u00e1 v cest\u011b ke t\u0159\u00edd\u00e1m aplikace.
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: Nezachycen\u00e1 v\u00fdjimka init() vytvo\u0159en\u00e1 servletem {0} v aplikaci {1}: {2}
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=Nezda\u0159ilo se inicializovat uveden\u00fd servlet. Jde o chybu aplikace.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=Ov\u011b\u0159te, zda je soubor t\u0159\u00eddy servletu dostupn\u00fd v cest\u011b ke t\u0159\u00edd\u00e1m aplikace.
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: SRVE0103E: V\u00fdjimka - nepovolen\u00fd argument: Parametr ScriptName (n\u00e1zev skriptu) mus\u00ed b\u00fdt prvn\u00ed \u010d\u00e1st\u00ed identifik\u00e1toru URI
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: Byla vyvol\u00e1na v\u00fdjimka v metod\u011b Session.releaseSession()
+Session.releaseSession().threw.an.unexpected.exception.explanation=Vyskytl se probl\u00e9m s uvoln\u011bn\u00edm relace.
+Session.releaseSession().threw.an.unexpected.exception.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: V\u00fdjimka - nepovolen\u00fd argument: Chyb\u00ed hodnota p\u0159\u00edznaku
+Illegal.Argument\:.Missing.flag.value.explanation=Chyb\u00ed hodnota p\u0159\u00edznaku.
+Illegal.Argument\:.Missing.flag.value.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: V\u00fdjimka - nepovolen\u00fd argument: Byla vytvo\u0159ena instance neplatn\u00e9ho fondu objekt\u016f.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed vykazuj\u00edc\u00edho modulu chyb {0}
+Error.occurred.while.invoking.error.reporter.explanation=Vyskytl se probl\u00e9m s vyvol\u00e1n\u00edm uveden\u00e9ho vykazuj\u00edc\u00edho modulu chyb.
+Error.occurred.while.invoking.error.reporter.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+IO.Error=SRVE0120E: Chyba vstupu/v\u00fdstupu {0}.
+IO.Error.explanation=Do\u0161lo k chyb\u011b vstupu/v\u00fdstupu.
+IO.Error.useraction=Z\u00e1vis\u00ed na ohl\u00e1\u0161en\u00e9 hlavn\u00ed p\u0159\u00ed\u010din\u011b.
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: V\u00fdjimka - nepovolen\u00fd argument: Do\u0161lo k pokusu o z\u00e1pis m\u00e9n\u011b ne\u017e 0 bajt\u016f.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=Do\u0161lo k pokusu o v\u00fdstup pro vyrovn\u00e1vac\u00ed pam\u011b\u0165 o velikosti men\u0161\u00ed ne\u017e 0. Jde o chybu aplikace.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=Zapisujte pouze vyrovn\u00e1vac\u00ed pam\u011bti o velikosti 0 nebo v\u011bt\u0161\u00ed.
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: V\u00fdjimka neplatnosti: {0} byl vytvo\u0159en
+Invalidation.Exception\:.{0}.was.created.explanation=Jde o intern\u00ed syst\u00e9movou chybu, kter\u00e1 je pravd\u011bpodobn\u011b zp\u016fsobena d\u0159\u00edv\u011bj\u0161\u00edm selh\u00e1n\u00edm.
+Invalidation.Exception\:.{0}.was.created.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: Do\u0161lo k chyb\u011b p\u0159i anal\u00fdze parametr\u016f. {0}
+Error.Parsing.Parameters.explanation=Vyskytl se probl\u00e9m p\u0159i anal\u00fdze parametr\u016f servletu.
+Error.Parsing.Parameters.useraction=Ov\u011b\u0159te, zda klient odes\u00edl\u00e1 pln\u00fd po\u017eadavek.
+
+# --------------------------------
+postInvoke.Security.Exception=SRVE0138E: V\u00fdjimka zabezpe\u010den\u00ed postInvoke
+postInvoke.Security.Exception.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku do\u0161lo k probl\u00e9mu se zabezpe\u010den\u00edm. Jedn\u00e1 se o chybu syst\u00e9mu.
+postInvoke.Security.Exception.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+preInvoke.Security.Exception=SRVE0139E: V\u00fdjimka v metod\u011b zabezpe\u010den\u00ed preInvoke {0}
+preInvoke.Security.Exception.explanation=B\u011bhem zpracov\u00e1n\u00ed po\u017eadavku do\u0161lo k probl\u00e9mu se zabezpe\u010den\u00edm. Jedn\u00e1 se o chybu syst\u00e9mu.
+preInvoke.Security.Exception.useraction=Li\u0161\u00ed se v z\u00e1vislosti na hlavn\u00ed p\u0159\u00ed\u010din\u011b.
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: Nepoda\u0159ilo se vytvo\u0159it instanci kolabor\u00e1toru zabezpe\u010den\u00ed {0}
+instantiate.collaborator.exception.explanation=Intern\u00ed chyba serveru.
+instantiate.collaborator.exception.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na servis spole\u010dnosti IBM.
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: Nepoda\u0159ilo se na\u010d\u00edst soubor encoding.properties {0}
+failed.to.load.encoding.properties.explanation=Ur\u010den\u00fd soubor nebylo mo\u017en\u00e9 na\u010d\u00edst. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+failed.to.load.encoding.properties.useraction=Ov\u011b\u0159te, \u017ee ur\u010den\u00fd soubor existuje a \u017ee m\u00e1 spr\u00e1vn\u00fd form\u00e1t podle specifikace java.utils.Properties.
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: Nepoda\u0159ilo se na\u010d\u00edst soubor converter.properties {0}
+failed.to.load.converter.properties.explanation=Ur\u010den\u00fd soubor nebylo mo\u017en\u00e9 na\u010d\u00edst. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+failed.to.load.converter.properties.useraction=Ov\u011b\u0159te, \u017ee ur\u010den\u00fd soubor existuje a \u017ee m\u00e1 spr\u00e1vn\u00fd form\u00e1t podle specifikace java.utils.Properties.
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: Po prvn\u00edm z\u00e1pisu do v\u00fdstupn\u00edho proudu/zapisova\u010de byla vol\u00e1na metoda setBufferSize()
+setbuffer.size.called.after.write.explanation=Do\u0161lo k pokusu o nastaven\u00ed velikosti vyrovn\u00e1vac\u00ed pam\u011bti odezvy pot\u00e9, co ji\u017e byla potvrzena odezva. Jde o chybu aplikace.
+setbuffer.size.called.after.write.useraction=Odeberte vol\u00e1n\u00ed metody setBufferSize() nebo je p\u0159esu\u0148te p\u0159ed potvrzen\u00ed odezvy.
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: V\u00fdjimka p\u0159i odvol\u00e1n\u00ed u\u017eivatelsk\u00e9 transakce: {0}
+usertransaction.rollback.exception.explanation=Vyskytl se probl\u00e9m p\u0159i odvol\u00e1n\u00ed uveden\u00e9 u\u017eivatelsk\u00e9 transakce. Jde o chybu aplikace.
+usertransaction.rollback.exception.useraction=Prozkoumejte protokoly serveru, abyste mohli ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Pokud nejsou \u017e\u00e1dn\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy k dispozici, nebo pokud v\u00e1m nepomohou p\u0159i \u0159e\u0161en\u00ed probl\u00e9mu, obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# --------------------------------
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - webov\u00fd kontejner. Copyright IBM Corp. 1998-2012
+web.container.copyright.explanation=Identifik\u00e1tor aplika\u010dn\u00edho serveru.
+web.container.copyright.useraction=Nen\u00ed.
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: \u00darove\u0148 specifikace servletu: 3.0
+web.container.servlet.spec.level.explanation=\u00darove\u0148 specifikace servletu podporovan\u00e1 aplika\u010dn\u00edm serverem.
+web.container.servlet.spec.level.useraction=Nen\u00ed.
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: Podporovan\u00e1 \u00farove\u0148 specifikace JSP: 2.2
+web.container.jsp.spec.level.explanation=\u00darove\u0148 specifikace JSP podporovan\u00e1 aplika\u010dn\u00edm serverem.
+web.container.jsp.spec.level.useraction=Nen\u00ed.
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: Webov\u00e1 aplikace {0} pou\u017e\u00edv\u00e1 kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 {1}, kter\u00fd je ji\u017e vyu\u017e\u00edv\u00e1n webovou aplikac\u00ed {2}. Webov\u00e1 aplikace {3} nebude na\u010dtena.
+context.root.already.in.use.explanation=Dv\u011b webov\u00e9 aplikace se stejn\u00fdm virtu\u00e1ln\u00edm hostitelem pou\u017e\u00edvaj\u00ed stejn\u00fd kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159. Jde o chybu aplikace.
+context.root.already.in.use.useraction=Zm\u011b\u0148te kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 jedn\u00e9 z webov\u00fdch aplikac\u00ed nebo ji p\u0159esu\u0148te pod jin\u00e9ho virtu\u00e1ln\u00edho hostitele.
+
+# --------------------------------
+loading.web.module=SRVE0169I: Prob\u00edh\u00e1 na\u010d\u00edt\u00e1n\u00ed webov\u00e9ho modulu: {0}.
+loading.web.module.explanation=Prob\u00edh\u00e1 spou\u0161t\u011bn\u00ed webov\u00e9ho modulu a jeho povolen\u00ed pro p\u0159\u00edslu\u0161nou slu\u017ebu.
+loading.web.module.useraction=Nen\u00ed.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=Prost\u0159ednictv\u00edm protokolu ServletContext.log byla zaznamen\u00e1na informa\u010dn\u00ed zpr\u00e1va z aplikace.
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=Nen\u00ed.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=Prost\u0159ednictv\u00edm protokolu ServletContext.log byla zaznamen\u00e1na informa\u010dn\u00ed zpr\u00e1va a trasov\u00e1n\u00ed z\u00e1sobn\u00edku z aplikace.
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=Nen\u00ed.
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: P\u0159i zpracov\u00e1n\u00ed po\u017eadavku do\u0161lo k chyb\u011b:
+error.occurred.processing.request.explanation=V\u00fdjimka, k n\u00ed\u017e do\u0161lo p\u0159i zpracov\u00e1n\u00ed po\u017eadavku.
+error.occurred.processing.request.useraction=Prozkoumejte zpr\u00e1vu a ur\u010dete hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: Po z\u00e1pisu dat do proudu nelze nastavit velikost vyrovn\u00e1vac\u00ed pam\u011bti.
+Cannot.set.buffer.size.after.data.explanation=Do proudu ji\u017e byla zaps\u00e1na data, a proto nelze m\u011bnit velikost vyrovn\u00e1vac\u00ed pam\u011bti. Jde o chybu aplikace.
+Cannot.set.buffer.size.after.data.useraction=Nastavte velikost vyrovn\u00e1vac\u00ed pam\u011bti je\u0161t\u011b p\u0159ed prvn\u00edm z\u00e1pisem dat nebo vyrovn\u00e1vac\u00ed pam\u011b\u0165 p\u0159ed nastaven\u00edm velikosti resetujte.
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: Ov\u011b\u0159te, zda jsou v cest\u011b ke t\u0159\u00edd\u00e1m p\u0159\u00edtomny v\u0161echny t\u0159\u00eddy po\u017eadovan\u00e9 servletem.
+Check.your.classpath.ensure.all.classes.present.explanation=Nebyla nalezena vy\u017eadovan\u00e1 t\u0159\u00edda. Jde o chybu aplikace.
+Check.your.classpath.ensure.all.classes.present.useraction=Ov\u011b\u0159te, zda cesta ke t\u0159\u00edd\u00e1m obsahuje v\u0161echny t\u0159\u00eddy, s nimi\u017e budete pracovat.
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: T\u0159\u00edda {0} neimplementuje servlet
+Class.{0}.does.not.implement.servlet.explanation=Jde o chybu aplikace.
+Class.{0}.does.not.implement.servlet.useraction==Uveden\u00e1 t\u0159\u00edda mus\u00ed implementovat objekt javax.servlet.Servlet nebo roz\u0161i\u0159ovat jeden z objekt\u016f javax.servlet.GenericServlet a javax.servlet.http.HttpServlet
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: Do\u0161lo k chyb\u011b p\u0159i dokon\u010dov\u00e1n\u00ed po\u017eadavku
+Error.occurred.while.finishing.request.explanation=Tato chyba se m\u016f\u017ee vyskytnout v dob\u011b dokon\u010dov\u00e1n\u00ed po\u017eadavku. Mo\u017enou p\u0159\u00ed\u010dinou je chyba komunikace s aplika\u010dn\u00edm serverem, zpracov\u00e1n\u00ed po\u017eadavku by j\u00ed v\u0161ak nem\u011blo b\u00fdt ovlivn\u011bno. Jedn\u00e1 se o chybu syst\u00e9mu.
+Error.occurred.while.finishing.request.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: Soubor nenalezen: {0}
+File.not.found.explanation=Nebyl nalezen uveden\u00fd soubor. Jde o chybu aplikace.
+File.not.found.useraction=Ov\u011b\u0159te, zda se uveden\u00fd soubor nach\u00e1z\u00ed ve spr\u00e1vn\u00e9m adres\u00e1\u0159i.
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: Nepovoleno ze zahrnut\u00e9ho servletu
+Illegal.from.included.servlet.explanation=Po\u017eadovanou operaci nelze prov\u00e9st v zahrnut\u00e9m servletu/souboru JSP (viz specifikace servletu). Jde o chybu aplikace.
+Illegal.from.included.servlet.useraction=Upravte selh\u00e1vaj\u00edc\u00ed servlet nebo soubor JSP.
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: Chyb\u011bj\u00edc\u00ed po\u017eadovan\u00fd inicializa\u010dn\u00ed parametr: {0}
+Missing.required.initialization.parameter.explanation=Parametr s uveden\u00fdm n\u00e1zvem nem\u00e1 \u017e\u00e1dnou hodnotu. Tento parametr je povinn\u00fd. Jde o chybu aplikace.
+Missing.required.initialization.parameter.useraction=Zadejte hodnotu uveden\u00e9ho parametru.
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: V\u00fdstupn\u00ed proud ji\u017e byl z\u00edsk\u00e1n
+OutputStream.already.obtained.explanation=Aplikace po\u017e\u00e1dala o t\u0159\u00eddu PrintWriter pot\u00e9, co byl v\u00fdstupn\u00ed proud pro odpov\u011b\u010f serveru ji\u017e z\u00edsk\u00e1n. Jde o chybu aplikace.
+OutputStream.already.obtained.useraction=Zkontrolujte aplikaci a ov\u011b\u0159te, zda byla z\u00edsk\u00e1na t\u0159\u00edda PrintWriter i v\u00fdstupn\u00ed proud. Upravte selh\u00e1vaj\u00edc\u00ed servlet \u010di soubor JSP tak, aby z\u00edsk\u00e1val pouze jeden z uveden\u00fdch objekt\u016f.
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: Servlet [{0}]: Nebyla nalezena po\u017eadovan\u00e1 t\u0159\u00edda - {1}
+Servlet.Could.not.find.required.servlet.class.explanation=Server nenalezl po\u017eadovanou t\u0159\u00eddu pot\u0159ebnou pro zpracov\u00e1n\u00ed po\u017eadavku. Jde o chybu aplikace.
+Servlet.Could.not.find.required.servlet.class.useraction=Ov\u011b\u0159te, zda dan\u00e1 t\u0159\u00edda v r\u00e1mci aplikace existuje.
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Servlet [{0}]: nejedn\u00e1 se o t\u0159\u00eddu servletu
+Servlet.not.a.servlet.class.explanation=Jde o chybu aplikace.
+Servlet.not.a.servlet.class.useraction=Upravte selh\u00e1vaj\u00edc\u00ed t\u0159\u00eddu tak, aby implementovala objekt javax.servlet.Servlet nebo roz\u0161i\u0159ovala jeden z objekt\u016f javax.servlet.GenericServlet a javax.servlet.http.HttpServlet.
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: Servlet [{0}]: {1} byl nalezen, ale je po\u0161kozen\u00fd:\n
+Servlet.found.but.corrupt.explanation=Bylo zji\u0161t\u011bno po\u0161kozen\u00ed t\u0159\u00eddy servletu. Jde o chybu aplikace.
+Servlet.found.but.corrupt.useraction=Zkompilujte znovu t\u0159\u00eddu a zopakujte akci.
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Servlet [{0}]: {1} byl nalezen, ale chyb\u00ed v n\u011bm jin\u00e1 po\u017eadovan\u00e1 t\u0159\u00edda.\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=Nebyla nalezena vy\u017eadovan\u00e1 t\u0159\u00edda. Jde o chybu aplikace.
+Servlet.was.found.but.is.missing.another.required.class.useraction=Ov\u011b\u0159te, zda jsou v\u0161echny vy\u017eadovan\u00e9 t\u0159\u00eddy um\u00edst\u011bny ve slo\u017ek\u00e1ch/souborech JAR reprezentuj\u00edc\u00edch cestu ke t\u0159\u00edd\u00e1m.
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: Hostitel {0} nen\u00ed definov\u00e1n
+host.has.not.been.defined.explanation=Virtu\u00e1ln\u00ed hostitel nebyl nalezen. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+host.has.not.been.defined.useraction=Zkontrolujte konfiguraci virtu\u00e1ln\u00edho hostitele v souboru virtualhosts.xml nebo prost\u0159ednictv\u00edm administrativn\u00ed konzoly.
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: Hostitel {0} na portu {1} nen\u00ed definov\u00e1n. 
+host.on.port.has.not.been.defined.explanation=Virtu\u00e1ln\u00ed host definovan\u00fd pro zpracov\u00e1n\u00ed tohoto identifik\u00e1toru URI po\u017eadavku nebyl nalezen. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+host.on.port.has.not.been.defined.useraction=Zkontrolujte konfiguraci virtu\u00e1ln\u00edho hostitele v souboru virtualhosts.xml nebo prost\u0159ednictv\u00edm administrativn\u00ed konzoly.
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: Tato chyba se obvykle vyskytuje tehdy, jestli\u017ee byl servlet p\u016fvodn\u011b zkompilov\u00e1n s pou\u017eit\u00edm t\u0159\u00edd, k nim\u017e server nem\u00e1 p\u0159\u00edstup.\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=Jde o chybu aplikace.
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=Zkompilujte servlet znovu se v\u0161emi vy\u017eadovan\u00fdmi komponentami um\u00edst\u011bn\u00fdmi v cest\u011b ke t\u0159\u00edd\u00e1m.
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: Servlet vytvo\u0159il nezachyt\u00e1vanou v\u00fdjimku inicializace
+Uncaught.initialization.exception.thrown.by.servlet.explanation=C\u00edl vyvolal b\u011bhem inicializace v\u00fdjimku, kterou u\u017eivatelsk\u00fd k\u00f3d nezachyt\u00e1v\u00e1. Jde o chybu aplikace.
+Uncaught.initialization.exception.thrown.by.servlet.useraction=Dopl\u0148te do c\u00edlov\u00e9ho k\u00f3du obsluhu uveden\u00e9 v\u00fdjimky.
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: Nepodporovan\u00fd p\u0159evod
+Unsupported.conversion.explanation=K\u00f3d se pokusil o nepovolen\u00fd p\u0159evod hodnoty v z\u00e1hlav\u00ed, nap\u0159\u00edklad z cel\u00e9ho \u010d\u00edsla na typ Data. Takov\u00fd p\u0159evod nelze prov\u00e9st. Jde o chybu aplikace.
+Unsupported.conversion.useraction=Upravte selh\u00e1vaj\u00edc\u00ed servlet nebo soubor JSP.
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: Zapisova\u010d ji\u017e byl z\u00edsk\u00e1n
+Writer.already.obtained.explanation=Zapisova\u010d pro tuto odezvu ji\u017e byl z\u00edsk\u00e1n. Pou\u017eijte st\u00e1vaj\u00edc\u00ed zapisova\u010d. Jde o chybu aplikace.
+Writer.already.obtained.useraction=Zkontrolujte aplikaci a ov\u011b\u0159te, zda byla z\u00edsk\u00e1na t\u0159\u00edda PrintWriter i v\u00fdstupn\u00ed proud. Upravte selh\u00e1vaj\u00edc\u00ed servlet \u010di soubor JSP tak, aby z\u00edsk\u00e1val pouze jeden z uveden\u00fdch objekt\u016f.
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: Tento probl\u00e9m lze odladit p\u0159ekompilov\u00e1n\u00edm servletu pouze s pou\u017eit\u00edm t\u0159\u00edd um\u00edst\u011bn\u00fdch v cest\u011b k b\u011bhov\u00fdm t\u0159\u00edd\u00e1m aplikace\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=Jde o chybu aplikace.
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=P\u0159ekompilujte servlet s pou\u017eit\u00edm pouze t\u0159\u00edd obsa\u017een\u00fdch v cest\u011b k b\u011bhov\u00fdm t\u0159\u00edd\u00e1m aplikace.
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: Nelze vytvo\u0159it instanci t\u0159\u00eddy {0}
+class.{0}.could.not.be.instantiated.explanation=Intern\u00ed v\u00fdjimka.
+class.{0}.could.not.be.instantiated.useraction=CMSG0002
+
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: T\u0159\u00edda {0} nen\u00ed p\u0159\u00edstupn\u00e1.
+class.{0}.not.accessible.explanation=Intern\u00ed v\u00fdjimka.
+class.{0}.not.accessible.useraction=CMSG0002
+
+# -----------------------------------------------
+class.not.found=SRVE0213E: t\u0159\u00edda nebyla nalezena
+class.not.found.explanation=Intern\u00ed v\u00fdjimka.
+class.not.found.useraction=CMSG0002
+
+# -----------------------------------------------
+invalid.count=SRVE0214E: neplatn\u00fd po\u010det
+invalid.count.explanation=Intern\u00ed v\u00fdjimka.
+invalid.count.useraction=CMSG0002
+
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: po\u017eadavek nebo odpov\u011b\u010f mimo HTTP
+non-HTTP.request.or.response.explanation=Definovan\u00fd \u0159et\u011bzec servlet\u016f m\u016f\u017ee zpracov\u00e1vat pouze po\u017eadavky HTTP. Jde o chybu aplikace.
+non-HTTP.request.or.response.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: t\u011blo p\u0159\u00edsp\u011bvku obsahuje m\u00e9n\u011b bajt\u016f, ne\u017e ur\u010duje prom\u011bnn\u00e1 content-length
+post.body.contains.less.bytes.than.specified.explanation=P\u0159\u00edchoz\u00ed po\u017eadavek je z\u0159ejm\u011b po\u0161kozen. Jde o chybu aplikace.
+post.body.contains.less.bytes.than.specified.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} nen\u00ed platn\u00e1 t\u0159\u00edda
+{0}.is.not.a.valid.class.explanation=K t\u00e9to chyb\u011b do\u0161lo p\u0159i pokusu webov\u00e9ho kontejneru o na\u010dten\u00ed intern\u00ed implementa\u010dn\u00ed t\u0159\u00eddy. Jedn\u00e1 se o chybu syst\u00e9mu.
+{0}.is.not.a.valid.class.useraction=Ov\u011b\u0159te, zda nebyla zm\u011bn\u011bna p\u016fvodn\u00ed cesta ke t\u0159\u00edd\u00e1m produktu.
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: Zak\u00e1z\u00e1no: v\u00fdjimka webov\u00e9ho zabezpe\u010den\u00ed
+Forbidden.Web.Security.Exception.explanation=Po\u017eadavek se pokusil o p\u0159\u00edstup k zak\u00e1zan\u00e9mu prost\u0159edku.
+Forbidden.Web.Security.Exception.useraction=Ov\u011b\u0159te, zda m\u00e1 \u017e\u00e1daj\u00edc\u00ed entita pot\u0159ebn\u00e1 opr\u00e1vn\u011bn\u00ed.
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: \u017d\u00e1dn\u00e1 chyba sestavy
+No.Error.to.Report.explanation=Byl vol\u00e1n modul DefaultErrorReport, nebyla v\u0161ak zji\u0161t\u011bna \u017e\u00e1dn\u00e1 chyba. Jedn\u00e1 se o chybu syst\u00e9mu.
+No.Error.to.Report.useraction=Prozkoumejte aplikaci a ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: Zabalen\u00e1 chyba -
+Wrapped.Error.explanation=Chyba, kter\u00e1 probl\u00e9m zp\u016fsobila.
+Wrapped.Error.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: Poskytovan\u00fd obsah soubor\u016f JSP nen\u00ed povolen.
+Serving.JSP.Not.Allowed.explanation=Nelze poskytovat obsah souboru JSP
+Serving.JSP.Not.Allowed.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: Trasov\u00e1n\u00ed z\u00e1sobn\u00edku:
+StackTrace.explanation=Nen\u00ed.
+StackTrace.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: C\u00edlov\u00fd servlet:
+Target.Servlet.explanation=Nen\u00ed.
+Target.Servlet.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: Hlavn\u00ed chyba -
+Root.Error.explanation=Nen\u00ed.
+Root.Error.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: Ov\u011b\u0159te, zda je t\u0159\u00edda um\u00edst\u011bna ve spr\u00e1vn\u00e9m adres\u00e1\u0159i sady.\n
+class.resides.in.proper.package.directory.explanation=N\u00e1zev bal\u00edku prost\u0159edku se neshoduje s bal\u00edkem kompilovan\u00e9ho souboru t\u0159\u00eddy. Jde o chybu aplikace.
+class.resides.in.proper.package.directory.useraction=Ov\u011b\u0159te, zda je t\u0159\u00edda um\u00edst\u011bna ve spr\u00e1vn\u00e9m adres\u00e1\u0159i bal\u00edku.
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: Ov\u011b\u0159te, zda byl na serveru definov\u00e1n n\u00e1zev t\u0159\u00eddy s pou\u017eit\u00edm spr\u00e1vn\u00e9ho rozlo\u017een\u00ed velk\u00fdch a mal\u00fdch p\u00edsmen a pln\u011b kvalifikovan\u00e9 sady.\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=Jde o chybu aplikace.
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=Ov\u011b\u0159te, zda byl na serveru definov\u00e1n n\u00e1zev t\u0159\u00eddy s pou\u017eit\u00edm spr\u00e1vn\u00e9ho rozlo\u017een\u00ed velk\u00fdch a mal\u00fdch p\u00edsmen a pln\u011b kvalifikovan\u00e9ho bal\u00edku.
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: Ov\u011b\u0159te, zda byla t\u0159\u00edda do syst\u00e9mu soubor\u016f p\u0159enesena v bin\u00e1rn\u00edm p\u0159enosov\u00e9m re\u017eimu.\n
+class.transfered.using.binary.mode.explanation=Jde o chybu aplikace.
+class.transfered.using.binary.mode.useraction=Ov\u011b\u0159te, zda byla t\u0159\u00edda do syst\u00e9mu soubor\u016f p\u0159enesena v bin\u00e1rn\u00edm p\u0159enosov\u00e9m re\u017eimu.
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: Ov\u011b\u0159te, zda bylo p\u0159i kompilov\u00e1n\u00ed t\u0159\u00eddy pou\u017eito spr\u00e1vn\u00e9 rozlo\u017een\u00ed velk\u00fdch a mal\u00fdch p\u00edsmen (dle definice t\u0159\u00eddy).\n
+class.compiled.using.proper.case.explanation=Jde o chybu aplikace.
+class.compiled.using.proper.case.useraction=Ov\u011b\u0159te, zda bylo p\u0159i kompilov\u00e1n\u00ed t\u0159\u00eddy pou\u017eito spr\u00e1vn\u00e9 rozlo\u017een\u00ed velk\u00fdch a mal\u00fdch p\u00edsmen (dle definice t\u0159\u00eddy).
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: Ov\u011b\u0159te, zda nebyl soubor t\u0159\u00eddy po zkompilov\u00e1n\u00ed p\u0159ejmenov\u00e1n.
+class.not.renamed.after.compiled.explanation=Jde o chybu aplikace.
+class.not.renamed.after.compiled.useraction=Ov\u011b\u0159te, zda nebyl soubor t\u0159\u00eddy po zkompilov\u00e1n\u00ed p\u0159ejmenov\u00e1n.
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: Intern\u00ed chyba serveru. <br> Zpr\u00e1va v\u00fdjimky: [{0}]
+Engine.Exception.[{0}].explanation=Vyskytla se neo\u010dek\u00e1van\u00e1 v\u00fdjimka. Podrobn\u00e9 informace jsou k dispozici na v\u00fdsledn\u00e9 chybov\u00e9 str\u00e1nce. Jedn\u00e1 se o chybu syst\u00e9mu.
+Engine.Exception.[{0}].useraction=Dal\u0161\u00ed informace o vygenerovan\u00e9 v\u00fdjimce vyhledejte v protokolech System.out a System.err.
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: Hl\u00e1\u0161en\u00ed o chyb\u011b
+Error.Report.explanation=nen\u00ed
+Error.Report.useraction=nen\u00ed
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: Cesta ke t\u0159\u00edd\u00e1m aplikace=[{0}]
+Application.classpath.explanation=nen\u00ed
+Application.classpath.useraction=nen\u00ed
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: [{0}] vyk\u00e1zal chybu
+[{0}].reported.an.error.explanation=Viz ohl\u00e1\u0161en\u00e1 chyba.
+[{0}].reported.an.error.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed kolabor\u00e1toru inicializace ve vol\u00e1n\u00ed metody starting()
+error.on.collaborator.starting.call.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.on.collaborator.starting.call.useraction=Prozkoumejte protokoly s informacemi FFDC a vyhledejte dal\u0161\u00ed podrobnosti o chyb\u011b.
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: Do\u0161lo k chyb\u011b p\u0159i vyvol\u00e1n\u00ed kolabor\u00e1toru inicializace ve vol\u00e1n\u00ed metody started()
+error.on.collaborator.started.call.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.on.collaborator.started.call.useraction=Prozkoumejte protokoly s informacemi FFDC a vyhledejte dal\u0161\u00ed podrobnosti o chyb\u011b
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: Cesty k prost\u0159edk\u016fm by m\u011bly na za\u010d\u00e1tku obsahovat znak lom\u00edtko
+resource.path.has.to.start.with.slash.explanation=Jde o chybu aplikace.
+resource.path.has.to.start.with.slash.useraction=Zadejte p\u0159ed cestu znak lom\u00edtko a operaci zopakujte.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: Tov\u00e1rna roz\u0161\u00ed\u0159en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zaregistrov\u00e1na.
+ExtensionFactory.[{0}].registered.successfully.explanation=Nen\u00ed.
+ExtensionFactory.[{0}].registered.successfully.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: Tov\u00e1rna roz\u0161\u00ed\u0159en\u00ed [{0}] byla p\u0159idru\u017eena ke vzor\u016fm [{1}].
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=Nen\u00ed.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=Nen\u00ed.
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: V metod\u011b getTempDirectory() bude pou\u017eit ko\u0159en serveru [{0}].
+Using.[{0}].as.server.root.explanation=Nen\u00ed.
+Using.[{0}].as.server.root.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: Inicializace prob\u011bhla \u00fasp\u011b\u0161n\u011b.
+[{0}].Initialization.successful.explanation=Metoda init() c\u00edlov\u00e9ho prost\u0159edku byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna a c\u00edl byl um\u00edst\u011bn do prost\u0159ed\u00ed slu\u017eby.
+[{0}].Initialization.successful.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: Byl spu\u0161t\u011bn podproces modulu reaper s intervalem [{0}] a limitem neaktivity [{1}].
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=Nen\u00ed.
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: Podproces modulu reaper uvol\u0148uje servlet: [{0}].
+reaper.unloading.servlet.[{0}].explanation=Podproces modulu reaper odeb\u00edr\u00e1 servlety, jejich\u017e neaktivita p\u0159ekro\u010dila limit neaktivity modulu reaper.
+reaper.unloading.servlet.[{0}].useraction=Nen\u00ed.
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: Podproces modulu reaper odeb\u00edr\u00e1 mapov\u00e1n\u00ed [{0}] pro servlet [{0}].
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=Podproces modulu reaper odeb\u00edr\u00e1 mapov\u00e1n\u00ed pro str\u00e1nky JSP a dal\u0161\u00ed roz\u0161\u00ed\u0159en\u00ed, u nich\u017e doba neaktivity p\u0159ekro\u010dila limit stanoven\u00fd modulem reaper.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=Nen\u00ed.
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: Podproces modulu reaper likviduje servlet: [{0}].
+reaper.destroying.servlet.[{0}].explanation=Nen\u00ed.
+reaper.destroying.servlet.[{0}].useraction=Nen\u00ed.
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: Chyba p\u0159i prov\u00e1d\u011bn\u00ed podprocesu modulu reaper.
+reaper.thread.error.explanation=Vyskytla se v\u00fdjimka p\u0159i zpracov\u00e1n\u00ed podprocesu modulu reaper. Jedn\u00e1 se o chybu syst\u00e9mu. 
+reaper.thread.error.useraction=Zpracov\u00e1n\u00ed modulu reaper je pouze jinou uvol\u0148ov\u00e1n\u00edm pam\u011bti.
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: V sou\u010dasn\u00e9 dob\u011b prob\u00edh\u00e1 zpracov\u00e1n\u00ed po\u017eadavk\u016f. Po uplynut\u00ed nejv\u00fd\u0161e 60 sekund bude vynucena likvidace filtru.
+waiting.to.destroy.filter.[{0}].explanation=Nen\u00ed.
+waiting.to.destroy.filter.[{0}].useraction=Nen\u00ed.
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: Aplikace {0} po\u017eaduje pou\u017eit\u00ed funkce SyncToOSThread, server v\u0161ak tuto funkci nepodporuje
+sync.tothread.not.set.for.server.[{0}].explanation=Funkce SyncToOSThread synchronizuje identitu role Java EE s podprocesem opera\u010dn\u00edho syst\u00e9mu, tj. identita podprocesu OS je po dobu zpracov\u00e1n\u00ed po\u017eadavku zm\u011bn\u011bna tak, aby se rovnala identit\u011b role Java EE. Tato zpr\u00e1va informuje o tom, \u017ee a\u010dkoli byla aplikace konfigurov\u00e1na pro vyu\u017eit\u00ed funkce SyncToOSThread, server, na kter\u00e9m je tato aplikace nainstalov\u00e1na, nen\u00ed konfigurov\u00e1n pro podporu funkce SyncToOSThread. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+sync.tothread.not.set.for.server.[{0}].useraction=Pokud chcete u dan\u00e9ho serveru pou\u017e\u00edvat funkci SyncToOSThread, vyhledejte v Informa\u010dn\u00edm centru popis povolen\u00ed funkce SyncToOSThread na serveru.
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: Webov\u00fd modul {0} byl sv\u00e1z\u00e1n s virtu\u00e1ln\u00edm hostitelem {1}.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=Uveden\u00fd webov\u00fd modul byl p\u0159idru\u017een k uveden\u00e9mu virtu\u00e1ln\u00edmu hostiteli a je dostupn\u00fd s pou\u017eit\u00edm libovoln\u00e9 kombinace hostitele a portu platn\u00e9 pro dan\u00e9ho virtu\u00e1ln\u00edho hostitele.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=Nen\u00ed.
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: Fond podproces\u016f konfigurovan\u00fd v r\u00e1mci webov\u00e9ho kontejneru nen\u00ed vyu\u017e\u00edv\u00e1n.
+threadpool.not.used.explanation=V r\u00e1mci webov\u00e9ho kontejneru existuje konfigurace fondu podproces\u016f. Zm\u011bny proveden\u00e9 v t\u00e9to polo\u017ece konfigurace nezp\u016fsob\u00ed zm\u011bny v syst\u00e9mu.
+threadpool.not.used.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: Byly nalezeny transporty a \u0159et\u011bzce! Transporty byly zm\u011bn\u011bny tak, aby bylo mo\u017en\u00e9 vyu\u017e\u00edvat nov\u00fd model. Pou\u017eijte migra\u010dn\u00ed pom\u016fcky k migraci transport\u016f do nov\u00e9ho modelu. S t\u011bmito transporty nebude pou\u017eita konfigurace fondu podproces\u016f v r\u00e1mci webov\u00e9ho kontejneru.
+transports.detected.explanation= Transporty byly zm\u011bn\u011bny tak, aby vyu\u017e\u00edvaly \u0159et\u011bzy kan\u00e1l\u016f. Informace o \u0159et\u011bzech kan\u00e1l\u016f a o postupu p\u0159i p\u0159evodu existuj\u00edc\u00edch transport\u016f na transporty vyu\u017e\u00edvaj\u00edc\u00ed \u0159et\u011bzy kan\u00e1l\u016f naleznete v Informa\u010dn\u00edm centru. Pro tyto transporty nebude pou\u017eita konfigurace fondu podproces\u016f v r\u00e1mci webov\u00e9ho kontejneru.
+transports.detected.useraction= Pou\u017eijte migra\u010dn\u00ed pom\u016fcky k migraci konfigura\u010dn\u00edho modelu z transport\u016f na nov\u00e9 \u0159et\u011bzy kan\u00e1l\u016f.
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]: Likvidace prob\u011bhla \u00fasp\u011b\u0161n\u011b.
+[{0}].Destroy.successful.explanation=Metoda destroy() c\u00edlov\u00e9ho prost\u0159edku byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna a c\u00edl byl odebr\u00e1n z prost\u0159ed\u00ed slu\u017eby.
+[{0}].Destroy.successful.useraction=Nen\u00ed.
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: Nepoda\u0159ilo se nastavit k\u00f3dov\u00e1n\u00ed znak\u016f pro po\u017eadavek: [{0}].
+unsupported.request.encoding.[{0}].explanation=K\u00f3dov\u00e1n\u00ed po\u017eadavku ur\u010den\u00e9 v po\u017eadavku nen\u00ed platn\u00e9. Jde o chybu aplikace.
+unsupported.request.encoding.[{0}].useraction=Prohl\u00e9dn\u011bte si protokoly a ur\u010dete, zda je ur\u010den\u00e9 k\u00f3dov\u00e1n\u00ed platn\u00e9.
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: Nebyla definov\u00e1na webov\u00e1 skupina nebo virtu\u00e1ln\u00ed hostitel pro zpracov\u00e1n\u00ed po\u017eadavku {0}.
+Web.Group.VHost.Not.Found.explanation=Nebyla nalezena webov\u00e1 skupina (webov\u00fd modul) nebo virtu\u00e1ln\u00ed hostitel pro zpracov\u00e1n\u00ed po\u017eadavku. Jde o chybu aplikace.
+Web.Group.VHost.Not.Found.useraction=Definujte a implementujte pot\u0159ebnou webovou skupinu a virtu\u00e1ln\u00edho hostitele.
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: Webov\u00fd kontejner nebyl inicializov\u00e1n.
+webcontainer.not.initialized.explanation=Webov\u00fd kontejner nen\u00ed inicializov\u00e1n, dokud nebyla instalov\u00e1na aplikace. Jedn\u00e1 se o chybu syst\u00e9mu.
+webcontainer.not.initialized.useraction=Instalujte aplikaci, aby byl inicializov\u00e1n webov\u00fd kontejner.
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: S\u00e9mantika vlastnosti {0} pro transport se zm\u011bnila.
+property.has.changed.explanation=Podproces ji\u017e nen\u00ed v\u00e1z\u00e1n na jedno p\u0159ipojen\u00ed. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+property.has.changed.useraction=Dal\u0161\u00ed informace naleznete v Informa\u010dn\u00edm centru.
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: Atribut {0} pro transport se ji\u017e nepou\u017e\u00edv\u00e1.
+property.not.applicable.explanation=Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+property.not.applicable.useraction=Tuto vlastnost konfigurujte v r\u00e1mci slu\u017eby protokolov\u00e1n\u00ed (informace o modulu protokolov\u00e1n\u00ed p\u0159\u00edstupu HTTP najdete v Informa\u010dn\u00edm centru).
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: Vlastnost {0} lze nyn\u00ed konfigurovat pouze na \u00farovni webov\u00e9ho kontejneru.
+property.configuration.change.explanation=Vlastnost ji\u017e nelze konfigurovat na \u00farovni transportu a je t\u0159eba ji konfigurovat na \u00farovni webov\u00e9ho kontejneru. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+property.configuration.change.useraction=Konfigurujte tuto vlastnost na \u00farovni webov\u00e9ho kontejneru.
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: Server nem\u016f\u017ee pou\u017e\u00edt chybovou str\u00e1nku ur\u010denou pro danou aplikaci pro zpracov\u00e1n\u00ed n\u00ed\u017ee uveden\u00e9 p\u016fvodn\u00ed v\u00fdjimky.
+cannot.use.error.page.explanation=Nen\u00ed.
+cannot.use.error.page.useraction=Popis probl\u00e9mu s danou chybovou str\u00e1nkou naleznete ve v\u00fdjimce chybov\u00e9 str\u00e1nky.
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: Pomocn\u00edk anotace {0} nebyl definov\u00e1n.
+annotation.helper.not.defined.explanation=Uveden\u00fd pomocn\u00edk anotace nebyl definov\u00e1n. Jedn\u00e1 se o chybu syst\u00e9mu.
+annotation.helper.not.defined.useraction=Ov\u011b\u0159te, zda existuje definice uveden\u00e9ho pomocn\u00edka anotace a v p\u0159\u00edpad\u011b pot\u0159eby ji p\u0159idejte.
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: Pomocn\u00edk anotace {0} nen\u00ed typu com.ibm.wsspi.webcontainer.AnnotationHelper.
+annotation.helper.wrong.type.explanation=Uveden\u00fd pomocn\u00edk anotace nen\u00ed o\u010dek\u00e1van\u00e9ho typu. Jedn\u00e1 se o chybu syst\u00e9mu.
+annotation.helper.wrong.type.useraction=Zkontrolujte a opravte implementa\u010dn\u00ed t\u0159\u00eddu pomocn\u00edka anotace.
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: Nelze vytvo\u0159it instanci pomocn\u00edka anotace {0}.
+annotation.helper.cannot.create.explanation=Vytvo\u0159en\u00ed instance uveden\u00e9ho pomocn\u00edka anotace se nezda\u0159ilo. Jedn\u00e1 se o chybu syst\u00e9mu.
+annotation.helper.cannot.create.useraction=Prozkoumejte protokoly v\u00fdjimek a zjist\u011bte, pro\u010d se vytvo\u0159en\u00ed instance uveden\u00e9ho pomocn\u00edka anotace nezda\u0159ilo.
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: Do\u0161lo k chyb\u011b p\u0159i inicializaci tov\u00e1ren roz\u0161\u00ed\u0159en\u00ed: {0}
+error.initializing.extension.factories.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.initializing.extension.factories.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: Do\u0161lo k chyb\u011b p\u0159i spu\u0161t\u011bn\u00ed oznamov\u00e1n\u00ed spu\u0161t\u011bn\u00ed webov\u00e9 aplikace modul\u016fm listener: {0}
+error.notifying.listeners.of.WebApp.start.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.notifying.listeners.of.WebApp.start.useraction=Zkontrolujte protokoly.
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: Do\u0161lo k chyb\u011b p\u0159i inicializaci servlet\u016f: {0}
+error.while.initializing.servlets.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.while.initializing.servlets.useraction=Zkontrolujte protokoly.
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: Do\u0161lo k chyb\u011b p\u0159i inicializaci filtr\u016f: {0}
+error.initializing.filters.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.initializing.filters.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: Do\u0161lo k chyb\u011b p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed kontextu relace pro webovou aplikaci: {0}
+error.obtaining.session.context.explanation=Nebyl z\u00edsk\u00e1n platn\u00fd kontext relace pro webovou aplikaci. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce. 
+error.obtaining.session.context.useraction=Ov\u011b\u0159te, zda je spr\u00e1vn\u011b konfigurov\u00e1n spr\u00e1vce relac\u00ed.
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: Nebyl nalezen \u017e\u00e1dn\u00fd procesor roz\u0161\u00ed\u0159en\u00ed pro zpracov\u00e1n\u00ed str\u00e1nek JSP
+no.jsp.extension.handler.found.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+no.jsp.extension.handler.found.useraction=Zkontrolujte protokoly.
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: Pro servlet {0} bylo zji\u0161t\u011bno neplatn\u00e9 mapov\u00e1n\u00ed servletu.
+illegal.servlet.mapping.explanation=Mapov\u00e1n\u00ed servletu ur\u010den\u00e9 v souboru webconfig.xml je neplatn\u00e9. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+illegal.servlet.mapping.useraction=Zkontrolujte mapov\u00e1n\u00ed servlet\u016f v souboru webconfig.xml a prove\u010fte pot\u0159ebn\u00e9 zm\u011bny.
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: Nezachycen\u00e1 v\u00fdjimka init() vytvo\u0159en\u00e1 servletem [{0}] v aplikaci [{1}]: {2}
+uncaught.init.exception.thrown.by.servlet.explanation=Jde o chybu aplikace.
+uncaught.init.exception.thrown.by.servlet.useraction=Zkontrolujte protokoly.
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: Procesor str\u00e1nek JSP nen\u00ed definov\u00e1n. P\u0159eskakov\u00e1no: {0}
+jsp.processor.not.defined.skipping.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+jsp.processor.not.defined.skipping.useraction=Nen\u00ed.
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: Do\u0161lo k chyb\u011b p\u0159i inicializaci str\u00e1nky JSP jako servletu [{0}] v aplikaci [{1}]: {1}
+error.while.initializing.jsp.as.servlet.explanation=Jde o chybu aplikace.
+error.while.initializing.jsp.as.servlet.useraction=Zkontrolujte protokoly.
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: Do\u0161lo k chyb\u011b p\u0159i p\u0159id\u00e1v\u00e1n\u00ed mapov\u00e1n\u00ed servletu s parametry path-->{0}, wrapper-->{1}, application-->{2}.
+error.while.adding.servlet.mapping.for.path.explanation=Jde o chybu aplikace.
+error.while.adding.servlet.mapping.for.path.useraction=Ov\u011b\u0159te, zda soubor webconfig.xml neobsahuje kolize mapov\u00e1n\u00ed.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: Do\u0161lo k chyb\u011b p\u0159i p\u0159id\u00e1v\u00e1n\u00ed mapov\u00e1n\u00ed servletu pro servlet [{0}] v aplikaci [{1}]: {2}
+error.adding.servlet.mapping.for.servlet.explanation=Jde o chybu aplikace.
+error.adding.servlet.mapping.for.servlet.useraction=Ov\u011b\u0159te platnost mapov\u00e1n\u00ed.
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: Chyba p\u0159i inicializaci servletu [{0}]: {1}
+error.initializing.servlet.explanation=Jde o chybu aplikace.
+error.initializing.servlet.useraction=Zkontrolujte protokoly.
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: Mapov\u00e1n\u00ed pro objekt DirectoryBrowsingServlet ji\u017e existuje.
+mapping.for.directorybrowsingservlet.already.exists.explanation=Jde o chybu aplikace.
+mapping.for.directorybrowsingservlet.already.exists.useraction=Odeberte duplicitn\u00ed mapov\u00e1n\u00ed.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: Chyba p\u0159i p\u0159id\u00e1v\u00e1n\u00ed mapov\u00e1n\u00ed servletu --> {0}.
+error.adding.servlet.mapping.file.handler.explanation=Jde o chybu aplikace.
+error.adding.servlet.mapping.file.handler.useraction=Nastavte atribut fileServingEnabled=false v souboru ibm-web-ext.xmi nach\u00e1zej\u00edc\u00edm se ve slo\u017ece WEB-INF.
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed glob\u00e1ln\u00edch modul\u016f listener pro aplikaci {0}: {1}
+error.processing.global.listeners.for.webapp.explanation=Jde o chybu aplikace.
+error.processing.global.listeners.for.webapp.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: Procesor roz\u0161\u00ed\u0159en\u00ed se nepoda\u0159ilo inicializovat v tov\u00e1rn\u011b [{0}]: {1}.
+extension.processor.failed.to.initialize.in.factory.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+extension.processor.failed.to.initialize.in.factory.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: Procesor roz\u0161\u00ed\u0159en\u00ed ji\u017e existuje pro mapov\u00e1n\u00ed: {0}
+request.processor.already.present.for.mapping.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+request.processor.already.present.for.mapping.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: Do\u0161lo k chyb\u011b p\u0159i nastavov\u00e1n\u00ed atribut\u016f webov\u00e9 aplikace: {0} 
+error.while.setting.WebAppAttributes.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.while.setting.WebAppAttributes.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: Byla zachycena v\u00fdjimka p\u0159i inicializaci kontextu: {0}
+exception.while.initializing.context.explanation=Jde o chybu aplikace.
+exception.while.initializing.context.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: Byla zachycena v\u00fdjimka v metod\u011b notifyServletContextCreated: {0}
+exception.caught.in.notifyServletContextCreated.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+exception.caught.in.notifyServletContextCreated.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: Byla zachycena v\u00fdjimka p\u0159i likvidaci kontextu: {0}
+exception.caught.destroying.context.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+exception.caught.destroying.context.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: Byla zachycena v\u00fdjimka v metod\u011b notifyServletContextDestroyed: {0}
+exception.caught.in.notifyServletContextDestroyed.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+exception.caught.in.notifyServletContextDestroyed.useraction=Zkontrolujte protokoly.
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: Objekt server.root m\u00e1 hodnotu Null
+server.root.is.null.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+server.root.is.null.useraction=Nen\u00ed.
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: P\u0159\u00edkaz chown se nezda\u0159il p\u0159i pokusu o spu\u0161t\u011bn\u00ed p\u0159\u00edkazu: [{0}] Ukon\u010dovac\u00ed k\u00f3d: [{1}]
+chown.failed.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+chown.failed.useraction=Nen\u00ed.
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: Vytvo\u0159en\u00ed do\u010dasn\u00e9ho adres\u00e1\u0159e se nezda\u0159ilo: {0}
+failed.to.create.temp.directory.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+failed.to.create.temp.directory.useraction=Nen\u00ed.
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: Nelze pou\u017e\u00edt ur\u010den\u00fd do\u010dasn\u00fd adres\u00e1\u0159: {0} \u010dten\u00ed:{1} z\u00e1pis:{2}
+unable.to.use.specified.temp.directory.explanation=Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+unable.to.use.specified.temp.directory.useraction=Zkontrolujte existenci adres\u00e1\u0159e a jeho stav, v\u010detn\u011b p\u0159\u00edstupov\u00fdch opr\u00e1vn\u011bn\u00ed a dostupn\u00e9ho m\u00edsta.
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: Nelze pou\u017e\u00edt v\u00fdchoz\u00ed do\u010dasn\u00fd adres\u00e1\u0159: {0} \u010dten\u00ed:{1} z\u00e1pis:{2}
+unable.to.use.default.temp.directory.explanation=Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+unable.to.use.default.temp.directory.useraction=Zkontrolujte existenci adres\u00e1\u0159e a jeho stav, v\u010detn\u011b p\u0159\u00edstupov\u00fdch opr\u00e1vn\u011bn\u00ed a dostupn\u00e9ho m\u00edsta.
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Zpr\u00e1va servletu - [{0}]:.{1}
+log.servlet.message.explanation=Prost\u0159ednictv\u00edm objektu ServletContext byla zaznamen\u00e1na informa\u010dn\u00ed zpr\u00e1va pro servlet.
+log.servlet.message.useraction=Nen\u00ed.
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [Chyba servletu]-[{0}]: {1}
+log.servlet.error.explanation=Prost\u0159ednictv\u00edm objektu ServletContext byla zaznamen\u00e1na v\u00fdjimka s chybou pro servlet.
+log.servlet.error.useraction=P\u0159ezkoumejte v\u00fdjimku a ur\u010dete p\u0159\u00ed\u010dinu chyby a po\u017eadovanou akci. Dal\u0161\u00ed informace mohou b\u00fdt uvedeny v protokolech serveru.
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [Chyba servletu]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=Prost\u0159ednictv\u00edm objektu ServletContext byla zaznamen\u00e1na chybov\u00e1 zpr\u00e1va a v\u00fdjimka pro servlet.
+log.servlet.error.and.message.useraction=P\u0159ezkoumejte zpr\u00e1vu a v\u00fdjimku a ur\u010dete p\u0159\u00ed\u010dinu chyby a po\u017eadovanou akci. Dal\u0161\u00ed informace mohou b\u00fdt uvedeny v protokolech serveru.
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: Ohl\u00e1\u0161en\u00e1 chyba: {0}
+Error.reported.{0}.explanation=Metoda HttpServletResponse.sendError byla vol\u00e1na se stavov\u00fdm k\u00f3dem, ale bez vysv\u011btlen\u00ed.
+Error.reported.{0}.useraction=Prozkoumejte protokoly a ur\u010dete stavov\u00fd k\u00f3d chyby.
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Servlet.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=Prost\u0159ednictv\u00edm objektu ServletContext byla zaznamen\u00e1na informa\u010dn\u00ed zpr\u00e1va a v\u00fdjimka pro servlet.
+log.servlet.message.with.throwable.useraction=P\u0159ezkoumejte zpr\u00e1vu a v\u00fdjimku a ur\u010dete, zda je pot\u0159ebn\u00e1 akce. Dal\u0161\u00ed informace mohou b\u00fdt uvedeny v protokolech serveru.
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: Do\u0161lo k chyb\u00e1m p\u0159i operaci destroy pro webovou aplikaci {0}: {1}
+WebApp.destroy.encountered.errors.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+WebApp.destroy.encountered.errors.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Do\u0161lo k v\u00fdjimce p\u0159i vytv\u00e1\u0159en\u00ed modulu wrapper pro servlet [{0}]: {1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+exception.occured.while.creating.wrapper.for.servlet.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: Nelze vytvo\u0159it modul wrapper pro servlet [{0}].
+could.not.create.wrapper.for.servlet.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+could.not.create.wrapper.for.servlet.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: Mapov\u00e1n\u00ed ji\u017e existuje [{0}][{1}]: {2}
+mapping.already.exists.explanation=Po\u017eadovan\u00e1 cesta je ji\u017e p\u0159i\u0159azena v mapov\u00e1n\u00ed servletu. Jde o chybu aplikace.
+mapping.already.exists.useraction=Zm\u011b\u0148te mapov\u00e1n\u00ed nebo je odeberte z konfigurace aplikace.
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: Do\u0161lo k probl\u00e9m\u016fm p\u0159i odeb\u00edr\u00e1n\u00ed servletu {0}. Podrobnosti: {1}
+encountered.problems.while.removing.servlet.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+encountered.problems.while.removing.servlet.useraction=Zkontrolujte protokoly.
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: Chyba p\u0159i p\u0159id\u00e1v\u00e1n\u00ed procesoru statick\u00fdch soubor\u016f {0}.
+error.while.adding.static.file.processor.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.while.adding.static.file.processor.useraction=Zkontrolujte protokoly.
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: Pro n\u00e1zev servletu nebylo nalezeno p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed servletu; n\u00e1zev servletu={0}; vzor URL={1}; modul={2}; aplikace={3}
+servlet.name.for.servlet.mapping.not.found.explanation=Pro dan\u00e9 mapov\u00e1n\u00ed servletu neexistuje \u017e\u00e1dn\u00e1 definice servletu.
+servlet.name.for.servlet.mapping.not.found.useraction=Ov\u011b\u0159te, zda soubor web.xml obsahuje definici servletu pro dan\u00e9 mapov\u00e1n\u00ed servletu.
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: Objekt ServletRequestWrapper [{0}] nen\u00ed instanc\u00ed objektu [{1}]; vno\u0159en\u00e1 logika proto m\u016f\u017ee b\u00fdt vynech\u00e1na.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=Webov\u00fd kontejner o\u010dek\u00e1v\u00e1, \u017ee vno\u0159en\u00fd objekt bude instance jin\u00e9 t\u0159\u00eddy, ne\u017e je tomu ve skute\u010dnosti. Jde o chybu aplikace.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=Zm\u011b\u0148te k\u00f3d tak, aby implementoval o\u010dek\u00e1van\u00e9 rozhran\u00ed.
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: Objekt ObjectPoolService nen\u00ed k dispozici. Syst\u00e9m fond\u016f SRTConnectionContext je zak\u00e1z\u00e1n.
+Object.Pool.Disabled.explanation=Slu\u017eba fondu objekt\u016f, kter\u00e1 zlep\u0161uje v\u00fdkonnost webov\u00e9ho kontejneru, byla zak\u00e1z\u00e1na. Jedn\u00e1 se o chybu syst\u00e9mu.
+Object.Pool.Disabled.useraction=Je doporu\u010deno slu\u017ebu fondu objekt\u016f povolit.
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: Slu\u017eba ARD nen\u00ed povolena, asynchronn\u00ed za\u010dlen\u011bn\u00ed nebo vol\u00e1n\u00ed insertFragment bude tedy provedeno synchronn\u011b.
+ARD.Not.Enabled.explanation=Slu\u017eba ARD nen\u00ed spr\u00e1vn\u011b povolena. Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+ARD.Not.Enabled.useraction=Zajist\u011bte, aby byla v nastaven\u00ed webov\u00e9ho kontejneru povolena slu\u017eba ARD a aby byla v nastaven\u00ed aplikace uvedena jako typ dispe\u010dera hodnota CLIENT_SIDE nebo SERVER_SIDE.
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: Mapov\u00e1n\u00ed pro filtr m\u00e1 hodnotu Null. K tomu m\u016f\u017ee doj\u00edt p\u0159i pokusu o ur\u010den\u00ed mapov\u00e1n\u00ed * pro aplikace \u00farovn\u011b ni\u017e\u0161\u00ed ne\u017e 2.5.
+Null.Filter.Mapping.explanation=Nebylo mo\u017eno p\u0159idat k filtru mapov\u00e1n\u00ed servletu, proto\u017ee \u017e\u00e1dn\u00e9 neexistovalo. Jde o chybu aplikace.
+Null.Filter.Mapping.useraction=Pokud pou\u017e\u00edv\u00e1te mapov\u00e1n\u00ed *, zm\u011b\u0148te deskriptory aplikace na \u00farove\u0148 2.5.
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: Filtrov\u00e1n\u00ed nen\u00ed povoleno. 
+filtering.by.asterisk.explanation=Filtrov\u00e1n\u00ed pomoc\u00ed hv\u011bzdi\u010dky nen\u00ed povoleno, proto\u017ee zak\u00e1z\u00e1n\u00ed obsluhy v\u0161ech servlet\u016f podle n\u00e1zvu t\u0159\u00eddy je \u0159\u00edzeno vlastn\u00ed vlastnost\u00ed com.ibm.ws.webcontainer.disallowserveservletsbyclassname. Jde o chybu aplikace.
+filtering.by.asterisk.useraction=Chcete-li zak\u00e1zat obsluhu v\u0161ech t\u0159\u00edd podle n\u00e1zvu t\u0159\u00eddy, nastavte vlastnost com.ibm.ws.webcontainer.disallowserveservletsbyclassname na hodnotu true.
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: Servlet ve seznamu blokovan\u00fdch: {0}
+servlet.on.blocked.list.{0}.explanation=Po\u017eadovan\u00fd servlet je uveden v seznamu blokovan\u00fdch, kter\u00fd obsahuje vlastn\u00ed vlastnost com.ibm.ws.webcontainer.donotservebyclassname. Jde o chybu aplikace.
+servlet.on.blocked.list.{0}.useraction=Pokud je toto chov\u00e1n\u00ed ne\u017e\u00e1douc\u00ed, aktualizuje vlastnost com.ibm.ws.webcontainer.donotservebyclassname.
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: Do\u0161lo k chyb\u011b v p\u0159izp\u016fsoben\u00e9 vlastnosti: {1}
+Error.in.WebContainer.custom.property.value.explanation=Je po\u017eadov\u00e1na syst\u00e9mov\u00e1 akce.
+Error.in.WebContainer.custom.property.value.useraction=Ov\u011b\u0159te spr\u00e1vnost p\u0159izp\u016fsoben\u00e9 vlastnosti.
+
+#------------------------------------------------
+transport.error=SRVE0311E: Do\u0161lo k chyb\u011b v transportu: {0}
+transport.error.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+transport.error.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: Do\u0161lo k chyb\u011b p\u0159i p\u0159id\u00e1v\u00e1n\u00ed kan\u00e1lu: {0}
+error.adding.channel.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+error.adding.channel.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: Do\u0161lo k chyb\u011b p\u0159i migraci transportu v portu {0} do odpov\u00eddaj\u00edc\u00edho \u0159et\u011bzu: {1}
+transport.migration.error.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+transport.migration.error.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: Odebr\u00e1n\u00ed webov\u00e9ho modulu {0} se nezda\u0159ilo: {1}
+failed.to.remove.webmodule.explanation=Jedn\u00e1 se o chybu syst\u00e9mu.
+failed.to.remove.webmodule.useraction=Zkontrolujte protokoly.
+
+#------------------------------------------------
+Exception=SRVE0315E: Do\u0161lo k v\u00fdjimce: {0}
+Exception.explanation=Do\u0161lo k v\u00fdjimce.
+Exception.useraction=Zkontrolujte protokoly.
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Webov\u00fd kontejner
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=\u00dadaje o v\u00fdkonnosti pro webov\u00e9 aplikace, servlety a soubory JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=Po\u010det na\u010dten\u00fdch servlet\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=Po\u010det znovu na\u010dten\u00fdch servlet\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=Kolekce obsahuj\u00edc\u00ed \u00fadaje o v\u00fdkonnosti pro servlet a soubor JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=Celkov\u00fd po\u010det po\u017eadavk\u016f zpracovan\u00fdch servletem.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=Po\u010det soub\u011b\u017en\u011b zpracov\u00e1van\u00fdch po\u017eadavk\u016f.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=Pr\u016fm\u011brn\u00e1 doba odezvy pro dokon\u010den\u00ed po\u017eadavku servletu ur\u010den\u00e1 v milisekund\u00e1ch.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=Celkov\u00fd po\u010det chyb p\u0159ijat\u00fdch ze servletu nebo souboru JSP.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=Celkov\u00fd po\u010det po\u017eadavk\u016f zpracovan\u00fdch pro identifik\u00e1tor URI p\u0159idru\u017een\u00fd k servletu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=Po\u010det po\u017eadavk\u016f zpracov\u00e1van\u00fdch sou\u010dasn\u011b pro identifik\u00e1tor URI p\u0159idru\u017een\u00fd k servletu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=Pr\u016fm\u011brn\u00fd \u010das odezvy slu\u017eby v milisekund\u00e1ch pro identifik\u00e1tor URI p\u0159idru\u017een\u00fd k servletu.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servlets
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=Adresy URL
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+webAppModule.servlets.asyncContextResponseTime=Doba odezvy odbaven\u00ed AsyncContext
+webAppModule.servlets.asyncContextResponseTime.desc=Tato metrika slou\u017e\u00ed k zaznamen\u00e1n\u00ed doby odezvy (v ms) na servlet pro dokon\u010den\u00ed odbaven\u00ed AsyncContext.
+
+webAppModule.url.asyncContextResponseTime=Doba odezvy odbaven\u00ed AsyncContext
+webAppModule.url.asyncContextResponseTime.desc=Tato metrika slou\u017e\u00ed k zaznamen\u00e1n\u00ed doby odezvy (v ms) na adresu URL pro dokon\u010den\u00ed odbaven\u00ed AsyncContext.
+
+webAppModule=Webov\u00e9 aplikace
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=Nen\u00ed k dispozici
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=MILISEKUNDA
+
+request.matches.context.root=SRVE0316W: Po\u017eadavek odpov\u00edd\u00e1 kontextov\u00e9mu ko\u0159enov\u00e9mu adres\u00e1\u0159i [{0}] v r\u00e1mci aliasu virtu\u00e1ln\u00edho hostitele [{1}].
+request.matches.context.root.explanation=Cesta k po\u017eadavku je mapov\u00e1na na kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 neodpov\u00eddaj\u00edc\u00edho virtu\u00e1ln\u00edho hostitele.
+request.matches.context.root.useraction=Ov\u011b\u0159te, zda nen\u00ed t\u0159eba p\u0159idat alias virtu\u00e1ln\u00edho hostitele.
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: M\u016f\u017ee b\u00fdt t\u0159eba p\u0159idat nov\u00fd alias virtu\u00e1ln\u00edho hostitele *:<port> pro virtu\u00e1ln\u00edho hostitele, v jeho\u017e struktu\u0159e se nach\u00e1z\u00ed polo\u017eka [{0}].
+need.to.add.a.new.virtual.host.alias.explanation=Cesta k po\u017eadavku je mapov\u00e1na na kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 neodpov\u00eddaj\u00edc\u00edho virtu\u00e1ln\u00edho hostitele.
+need.to.add.a.new.virtual.host.alias.useraction=Chcete-li p\u0159idat nov\u00fd alias virtu\u00e1ln\u00edho hostitele, postupujte podle pokyn\u016f uveden\u00fdch v Informa\u010dn\u00edm centru.
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: Servlet je do\u010dasn\u011b nedostupn\u00fd pro slu\u017ebu {0}
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=Ur\u010den\u00fd servlet je do\u010dasn\u011b nedostupn\u00fd.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Po\u010dkejte a operaci zopakujte. Je mo\u017en\u00e9, \u017ee byl servlet odebr\u00e1n ze slu\u017eby administr\u00e1torem serveru.
+
+Session.Feature.Set.Not.Started=SRVE0096E: K relaci nelze p\u0159istupovat. Sada funkc\u00ed spr\u00e1vce relac\u00ed nebyla spu\u0161t\u011bna.
+Session.Feature.Set.Not.Started.explanation=K relaci nelze p\u0159istupovat. Sada funkc\u00ed spr\u00e1vce relac\u00ed nebyla spu\u0161t\u011bna.
+Session.Feature.Set.Not.Started.useraction=P\u0159esv\u011bd\u010dte se, zda konfigurace serveru z\u00e1vis\u00ed na sad\u011b funkc\u00ed relace.
+# --------------------------------
+invalid.query.string=SRVE0318W: Neplatn\u00fd znak v \u0159et\u011bzci dotazu.
+invalid.query.string.explanation=V \u0159et\u011bzci dotazu je neplatn\u00fd znak, kter\u00fd byl ignorov\u00e1n.
+invalid.query.string.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+#Version 8 messages start with 8
+
+ClassNotFound.check.web.xml=SRVE8000W: Do\u0161lo k p\u0159esko\u010den\u00ed t\u0159\u00eddy, u kter\u00e9 se nepoda\u0159ilo inicializovat proch\u00e1zen\u00ed anotac\u00ed.
+ClassNotFound.check.web.xml.explanation=T\u0159\u00eddu nelze inicializovat ve webov\u00e9m modulu, tak\u017ee ji nelze proch\u00e1zet a vyhled\u00e1vat anotace.
+ClassNotFound.check.web.xml.useraction=Ov\u011b\u0159te, \u017ee t\u0159\u00edda existuje a obsahuje v\u0161echny z\u00e1vislosti v cest\u011b ke t\u0159\u00edd\u00e1m.
+
+error.adding.servlet.after.initialization=SRVE8001E: Byl proveden pokus o dynamick\u00e9 p\u0159id\u00e1n\u00ed servletu po inicializaci objektu ServletContext.
+error.adding.servlet.after.initialization.explanation=Servlety lze dynamicky p\u0159idat pouze p\u0159ed inicializac\u00ed objektu ServletContext.
+error.adding.servlet.after.initialization.useraction=P\u0159esu\u0148te k\u00f3d, kter\u00fd vol\u00e1 aktu\u00e1ln\u00ed metodu, do metody onStartup t\u0159\u00eddy ServletContainerInitalizer nebo metody contextInitialized t\u0159\u00eddy ServletContextListener.
+
+error.adding.filter.after.initialization=SRVE8002E: Byl proveden pokus o dynamick\u00e9 p\u0159id\u00e1n\u00ed filtru po inicializaci objektu ServletContext.
+error.adding.filter.after.initialization.explanation=Filtry lze dynamicky p\u0159idat pouze p\u0159ed inicializac\u00ed objektu ServletContext.
+error.adding.filter.after.initialization.useraction=P\u0159esu\u0148te k\u00f3d, kter\u00fd vol\u00e1 aktu\u00e1ln\u00ed metodu, do metody onStartup t\u0159\u00eddy ServletContainerInitalizer nebo metody contextInitialized t\u0159\u00eddy ServletContextListener.
+
+add.servlet.mapping.to.null.url.patterns=SRVE8003E: Byl proveden pokus o p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed servletu s parametrem vzorku adresy URL s prom\u011bnn\u00fdm argumentem nastaven\u00fdm na hodnotu Null.
+add.servlet.mapping.to.null.url.patterns.explanation=Parametr vzorku adresy URL s prom\u011bnn\u00fdm argumentem p\u0159edan\u00fd metod\u011b ServletRegistration.addMapping mus\u00ed m\u00edt jinou hodnotu ne\u017e Null a nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+add.servlet.mapping.to.null.url.patterns.useraction=Upravte k\u00f3d aplikace podle vysv\u011btlen\u00ed v chybov\u00e9 zpr\u00e1v\u011b.
+
+add.servlet.mapping.to.empty.url.patterns=SRVE8004E: Byl proveden pokus o p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed servletu pou\u017eit\u00edm parametru vzorku adresy URL s prom\u011bnn\u00fdm argumentem.
+add.servlet.mapping.to.empty.url.patterns.explanation=Parametr vzorku adresy URL s prom\u011bnn\u00fdm argumentem p\u0159edan\u00fd metod\u011b ServletRegistration.addMapping mus\u00ed m\u00edt jinou hodnotu ne\u017e Null a nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+add.servlet.mapping.to.empty.url.patterns.useraction=Upravte k\u00f3d aplikace podle vysv\u011btlen\u00ed v chybov\u00e9 zpr\u00e1v\u011b.
+
+add.filter.mapping.to.null.url.patterns=SRVE8005E: Byl proveden pokus o p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed filtru s parametrem vzorku adresy URL s prom\u011bnn\u00fdm argumentem nastaven\u00fdm na hodnotu Null.
+add.filter.mapping.to.null.url.patterns.explanation=Parametr vzorku adresy URL s prom\u011bnn\u00fdm argumentem p\u0159edan\u00fd metod\u011b FilterRegistration.addMappingForUrlPatterns mus\u00ed m\u00edt jinou hodnotu ne\u017e Null a nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+add.filter.mapping.to.null.url.patterns.useraction=Upravte k\u00f3d aplikace podle vysv\u011btlen\u00ed v chybov\u00e9 zpr\u00e1v\u011b.
+
+add.filter.mapping.to.empty.url.patterns=SRVE8006E: Byl proveden pokus o p\u0159id\u00e1n\u00ed pr\u00e1zdn\u00e9ho parametru vzorku adresy URL s prom\u011bnn\u00fdm argumentem.
+add.filter.mapping.to.empty.url.patterns.explanation=Parametr vzorku adresy URL s prom\u011bnn\u00fdm argumentem p\u0159edan\u00fd metod\u011b FilterRegistration.addMappingForUrlPatterns mus\u00ed m\u00edt jinou hodnotu ne\u017e Null a nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+add.filter.mapping.to.empty.url.patterns.useraction=Upravte k\u00f3d aplikace podle vysv\u011btlen\u00ed v chybov\u00e9 zpr\u00e1v\u011b.
+
+add.filter.mapping.to.null.servlet.names=SRVE8007E: Byl proveden pokus o p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed filtru s parametrem n\u00e1zvu servletu s prom\u011bnn\u00fdm argumentem nastaven\u00fdm na hodnotu Null.
+add.filter.mapping.to.null.servlet.names.explanation=Parametr n\u00e1zvu servletu s prom\u011bnn\u00fdm argumentem p\u0159edan\u00fd metod\u011b FilterRegistration.addMappingForServletNames mus\u00ed m\u00edt jinou hodnotu ne\u017e Null a nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+add.filter.mapping.to.null.servlet.names.useraction=Upravte k\u00f3d aplikace podle vysv\u011btlen\u00ed v chybov\u00e9 zpr\u00e1v\u011b.
+
+add.filter.mapping.to.empty.servlet.names=SRVE8008E: Byl proveden pokus o p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed filtru s parametrem n\u00e1zvu servletu s prom\u011bnn\u00fdm argumentem.
+add.filter.mapping.to.empty.servlet.names.explanation=Parametr n\u00e1zvu servletu s prom\u011bnn\u00fdm argumentem p\u0159edan\u00fd metod\u011b FilterRegistration.addMappingForServletNames mus\u00ed m\u00edt jinou hodnotu ne\u017e Null a nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+add.filter.mapping.to.empty.servlet.names.useraction=Upravte k\u00f3d aplikace podle vysv\u011btlen\u00ed v chybov\u00e9 zpr\u00e1v\u011b.
+
+error.while.initializing.target.mappings=SRVE8009E: P\u0159i inicializaci mapov\u00e1n\u00ed c\u00edl\u016f do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+error.while.initializing.target.mappings.explanation=P\u0159i inicializaci mapov\u00e1n\u00ed c\u00edl\u016f do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+error.while.initializing.target.mappings.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na podporu spole\u010dnosti IBM.
+
+
+request.does.not.support.async.servlet.processing=SRVE8010E: Aktu\u00e1ln\u00ed po\u017eadavek nepodporuje asynchronn\u00ed zpracov\u00e1n\u00ed servletu.
+request.does.not.support.async.servlet.processing.explanation=Jeden ze servlet\u016f nebo filtr\u016f v po\u017eadavku nepodporuje asynchronn\u00ed servlety.
+request.does.not.support.async.servlet.processing.useraction=Nepou\u017e\u00edvejte asynchronn\u00ed servlety nebo neuv\u00e1d\u011bjte v definic\u00edch komponent prvek async-supported, kter\u00fdm povol\u00edte asynchronn\u00ed zpracov\u00e1n\u00ed pro v\u0161echny servlety a filtry v \u0159et\u011bzu.
+
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE8011E: This operation cannot be executed from a programmatically added listener. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener=SRVE8011E: Tuto operaci nelze spustit z modulu listener p\u0159idan\u00e9ho z programu. (Operace: {0} | Listener: {1} | Aplikace: {2})
+Unsupported.op.from.servlet.context.listener.explanation=N\u011bkter\u00e9 operace nelze spustit z modulu listener p\u0159idan\u00e9ho z programu, proto\u017ee nen\u00ed k dispozici \u017e\u00e1dn\u00e1 volba konfigurace, kter\u00e1 by omezila jejich prov\u00e1d\u011bn\u00ed v p\u0159\u00edpad\u011b definice v deskriptoru TLD (Tag Library Descriptor).
+Unsupported.op.from.servlet.context.listener.useraction=Proveden\u00ed t\u00e9to metody povol\u00edte p\u0159id\u00e1n\u00edm modulu listener prost\u0159ednictv\u00edm anotac\u00ed nebo souboru web.xml.
+
+Error.adding.ServletContextListener=SRVE8012E: Chyba p\u0159i p\u0159id\u00e1n\u00ed modulu ServletContextListener
+Error.adding.ServletContextListener.explanation=Modul ServletContextListener nelze p\u0159idat z jin\u00e9ho modulu ServletContextListener.
+Error.adding.ServletContextListener.useraction=P\u0159idejte modul ServletContextListener do souboru web.xml nebo web-fragment.xml, uve\u010fte jej v anotaci @WebListener nebo jej p\u0159idejte programov\u011b do metody ServletContainerInitializer#onStartup.
+
+Invalid.Listener=SRVE8013E: Nejedn\u00e1 se o platn\u00fd modul listener, kter\u00fd lze p\u0159idat programov\u011b.
+Invalid.Listener.explanation=Programov\u011b p\u0159id\u00e1van\u00fd modul listener neimplementuje platn\u00fd typ modulu listener.
+Invalid.Listener.useraction=Upravte k\u00f3d aplikace a p\u0159idejte modul listener p\u0159ijateln\u00e9ho typu.
+
+exception.occurred.while.creating.listener.instance=SRVE8014E: P\u0159i vytv\u00e1\u0159en\u00ed instance modulu listener do\u0161lo k v\u00fdjimce.
+exception.occurred.while.creating.listener.instance.explanation=P\u0159i vytv\u00e1\u0159en\u00ed instance modulu listener do\u0161lo k v\u00fdjimce.
+exception.occurred.while.creating.listener.instance.useraction=P\u0159i vytv\u00e1\u0159en\u00ed instance modulu listener do\u0161lo k v\u00fdjimce.
+
+exception.occurred.while.adding.listener=SRVE8015E: P\u0159i pokusu o p\u0159id\u00e1n\u00ed modulu listener typu {0} do\u0161lo k v\u00fdjimce.
+exception.occurred.while.adding.listener.explanation=P\u0159i pokusu o p\u0159id\u00e1n\u00ed modulu listener do\u0161lo k v\u00fdjimce.
+exception.occurred.while.adding.listener.useraction=Ov\u011b\u0159te, zda je modul listener platn\u00e9ho typu a je k dispozici pro aplikaci.
+
+error.validate.annotation.extension.class=SRVE8016E: Anotaci {0} nelze pou\u017e\u00edt na t\u0159\u00eddu {1}, proto\u017ee roz\u0161i\u0159uje nespr\u00e1vnou supert\u0159\u00eddu.
+error.validate.annotation.extension.class.explanation=N\u011bkter\u00e9 anotace lze pou\u017e\u00edt pouze pro t\u0159\u00eddy, kter\u00e9 roz\u0161i\u0159uj\u00ed spr\u00e1vn\u00fd typ.
+error.validate.annotation.extension.class.useraction=Upravte t\u0159\u00eddu, kter\u00e1 roz\u0161i\u0159uje spr\u00e1vnou supert\u0159\u00eddu.
+
+error.validate.webServlet.urlPatterns.and.value=SRVE8017E: T\u0159\u00edda {0} nem\u016f\u017ee v anotaci ur\u010dit parametr urlPatterns i hodnotu.
+error.validate.webServlet.urlPatterns.and.value.explanation=T\u0159\u00edda nem\u016f\u017ee v anotaci ur\u010dit parametr urlPatterns i hodnotu.
+error.validate.webServlet.urlPatterns.and.value.useraction=Upravte t\u0159\u00eddu tak, aby obsahovala bu\u010f pouze parametr urlPatterns, nebo pouze atribut hodnoty.
+
+error.validate.webServlet.zero.mappings=SRVE8018E: T\u0159\u00edda {0} neobsahuje vzorky ur\u010den\u00e9 v anotaci.
+error.validate.webServlet.zero.mappings.explanation=T\u0159\u00edda mus\u00ed ur\u010dovat vzorky v anotaci prost\u0159ednictv\u00edm parametru urlPatterns nebo atributu hodnoty.
+error.validate.webServlet.zero.mappings.useraction=Upravte t\u0159\u00eddu a p\u0159idejte bu\u010f parametr urlPatterns, anebo atribut hodnoty.
+
+error.validate.webServlet.name.empty=SRVE8019E: T\u0159\u00edda {0} s anotac\u00ed nem\u00e1 platn\u00fd n\u00e1zev.
+error.validate.webServlet.name.empty.explanation=V anotaci t\u0159\u00eddy mus\u00ed b\u00fdt uveden platn\u00fd n\u00e1zev.
+error.validate.webServlet.name.empty.useraction=Upravte t\u0159\u00eddu tak, aby byl v anotaci uveden platn\u00fd n\u00e1zev.
+
+multipart.no.multipart.config=SRVE8020E: Servlet nep\u0159ij\u00edm\u00e1 po\u017eadavky s v\u00edce \u010d\u00e1stmi.
+multipart.no.multipart.config.explanation=Servlet nep\u0159ij\u00edm\u00e1 po\u017eadavky s v\u00edce \u010d\u00e1stmi. 
+multipart.no.multipart.config.useraction=Do tohoto servletu p\u0159idejte anotaci @MultipartConfig nebo vlo\u017ete prvek multipart-config do souboru web.xml. 
+
+multipart.file.size.too.big=SRVE8021E: Odes\u00edlan\u00fd soubor je p\u0159\u00edli\u0161 velk\u00fd.
+multipart.file.size.too.big.explanation=Soubor odes\u00edlan\u00fd prost\u0159ednictv\u00edm po\u017eadavku multipart/form-data je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed konfigurovan\u00e1 velikost.
+multipart.file.size.too.big.useraction=Zv\u011bt\u0161ete atribut velikosti souboru, kter\u00fd konfiguruje funkci v\u00edce \u010d\u00e1st\u00ed pro dan\u00fd servlet.
+
+multipart.request.size.too.big=SRVE8022E: Po\u017eadavek je p\u0159\u00edli\u0161 velk\u00fd.
+multipart.request.size.too.big.explanation=Po\u017eadavek multipart/form-data je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed konfigurovan\u00e1 velikost.
+multipart.request.size.too.big.useraction=Zv\u011bt\u0161ete atribut velikosti po\u017eadavku v konfiguraci v\u00edce \u010d\u00e1st\u00ed pro dan\u00fd servlet.
+
+multipart.file.upload.exception=SRVE8023E: P\u0159i odes\u00edl\u00e1n\u00ed souboru do\u0161lo k v\u00fdjimce.
+multipart.file.upload.exception.explanation=P\u0159i odes\u00edl\u00e1n\u00ed souboru do\u0161lo k v\u00fdjimce.
+multipart.file.upload.exception.useraction=Analyzujte vno\u0159enou chybu a prove\u010fte opravnou akci.
+
+multipart.request.not.multipart=SRVE8024E: Po\u017eadavek nen\u00ed typu multipart/form-data.
+multipart.request.not.multipart.explanation=Po\u017eadavek dok\u00e1\u017ee tuto metodu zpracovat pouze v p\u0159\u00edpad\u011b, \u017ee je typu multipart/form-data.
+multipart.request.not.multipart.useraction=Upravte servlety, kter\u00e9 odes\u00edlaly p\u0159edchoz\u00ed po\u017eadavky, takov\u00fdm zp\u016fsobem, aby aktu\u00e1ln\u00ed po\u017eadavek byl typu multipart/form-data.
+
+error.occurred.during.async.servlet.handling=SRVE8025E: P\u0159i asynchronn\u00edm zpracov\u00e1n\u00ed servletu do\u0161lo k chyb\u011b nebo vypr\u0161en\u00ed \u010dasov\u00e9ho limitu.
+error.occurred.during.async.servlet.handling.explanation=Chyba nebo vypr\u0161en\u00ed \u010dasov\u00e9ho limitu zp\u016fsoben\u00e1 asynchronn\u00edm zpracov\u00e1n\u00edm vyvol\u00e1 registrovan\u00fd asynchronn\u00ed modul listener a v p\u0159\u00edpad\u011b, \u017ee modul listener nen\u00ed proveden \u010di dokon\u010den, je aktivov\u00e1n mechanizmus chybov\u00e9 str\u00e1nky.
+error.occurred.during.async.servlet.handling.useraction=Analyzujte v\u00fdjimku a upravte k\u00f3d aplikace tak, abyste opravili p\u0159\u00ed\u010dinu chyby, nebo pou\u017eijte modul AsyncListener \u010di chybovou str\u00e1nku, kter\u00e1 inteligentn\u011b o\u0161et\u0159\u00ed chybovou situaci.
+
+thread.interrupted.scheduling.async.runnable.on.thread.pool=SRVE8026E: P\u0159i pl\u00e1nov\u00e1n\u00ed pr\u00e1ce souvisej\u00edc\u00ed s asynchronn\u00edm zpracov\u00e1n\u00edm servletu do\u0161lo k v\u00fdjimce.
+thread.interrupted.scheduling.async.runnable.on.thread.pool.explanation=Tato v\u00fdjimka by nem\u011bla nikdy nastat, proto\u017ee fond podproces\u016f za\u0159azuje pr\u00e1ci do fronty.
+thread.interrupted.scheduling.async.runnable.on.thread.pool.useraction=Pokud k t\u00e9to v\u00fdjimce dojde, obra\u0165te se na podporu.
+
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent=SRVE8027E: P\u0159i zpracov\u00e1n\u00ed dan\u00e9 ud\u00e1losti AsyncEvent do\u0161lo k souvisej\u00edc\u00ed chyb\u011b I/O.
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.explanation=Chyby I/O se mohou vyskytnout p\u0159i vyvol\u00e1n\u00ed modulu AsyncListener, pokud doch\u00e1z\u00ed k z\u00e1pisu do odpov\u011bdi sou\u010dasn\u011b s jin\u00fdm podprocesem, nebo v p\u0159\u00edpad\u011b, \u017ee odpov\u011b\u010f zav\u0159el jin\u00fd objekt.
+an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.useraction=Doporu\u010den\u00fdm postupem je, aby modul AsyncListeners volal pouze metody complete nebo dispatch, ale neprov\u00e1d\u011bl z\u00e1pis do odpov\u011bdi. Jinak je z\u00e1kazn\u00edk odpov\u011bdn\u00fd za vlastn\u00ed synchronizaci, kter\u00e1 zabr\u00e1n\u00ed v\u00fdjimce IOException.
+
+default.extension.exception.adding.mapping.target=SRVE8028W: P\u0159i p\u0159id\u00e1v\u00e1n\u00ed c\u00edle mapov\u00e1n\u00ed pro v\u00fdchoz\u00ed procesor roz\u0161\u00ed\u0159en\u00ed do\u0161lo k v\u00fdjimce.
+default.extension.exception.adding.mapping.target.explanation=Kdy\u017e dojde k prvn\u00edm dv\u011bma po\u017eadavk\u016fm na stejn\u00fd prost\u0159edek, m\u016f\u017ee se p\u0159i pokusu o p\u0159id\u00e1n\u00ed mapov\u00e1n\u00ed k webov\u00e9 aplikaci vyskytnout konflikt \u010dasov\u00e1n\u00ed.
+default.extension.exception.adding.mapping.target.useraction=Obvykle se jedn\u00e1 o m\u00e1lo z\u00e1va\u017en\u00fd stav, kter\u00fd lze ignorovat. Ohlaste jej pouze v p\u0159\u00edpad\u011b, pokud doch\u00e1z\u00ed k pot\u00ed\u017e\u00edm se zpracov\u00e1n\u00edm po\u017eadavk\u016f na vy\u017eadovan\u00e9 prost\u0159edky.
+
+exception.creating.search.path=SRVE8029E: Do\u0161lo k v\u00fdjimce IOException p\u0159i vytv\u00e1\u0159en\u00ed vyhled\u00e1vac\u00ed cesty ko\u0159enov\u00e9ho adres\u00e1\u0159e roz\u0161\u00ed\u0159en\u00fdch dokument\u016f.
+exception.creating.search.path.explanation=Vzhledem k tomu, \u017ee vytv\u00e1\u0159en\u00ed vyhled\u00e1vac\u00ed cesty zahrnuje p\u0159\u00edstup k syst\u00e9mu soubor\u016f, m\u016f\u017ee doj\u00edt k v\u00fdjimce IOExceptions.
+exception.creating.search.path.useraction=Ov\u011b\u0159te, zda je cesta spr\u00e1vn\u00e1 a nem\u00e1te \u017e\u00e1dn\u00e9 pot\u00ed\u017ee s hardwarem.
+
+exception.occured.while.adding.servlet=SRVE8030E: P\u0159i dynamick\u00e9m p\u0159id\u00e1v\u00e1n\u00ed servletu do\u0161lo k v\u00fdjimce ServletException.
+exception.occured.while.adding.servlet.explanation=P\u0159i dynamick\u00e9m p\u0159id\u00e1v\u00e1n\u00ed servletu do\u0161lo k v\u00fdjimce ServletException. Tato v\u00fdjimka vznik\u00e1 nap\u0159\u00edklad p\u0159i konfliktu n\u00e1zv\u016f MBean dvou servlet\u016f.
+exception.occured.while.adding.servlet.useraction=Prohl\u00e9dn\u011bte protokoly a obra\u0165te se na podporu.
+
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup=SRVE8031W: Do\u0161lo k pot\u00ed\u017e\u00edm p\u0159i hled\u00e1n\u00ed t\u0159\u00eddy {0} p\u0159i proch\u00e1zen\u00ed objekt\u016f ServletContainerInitializer HandlesTypes pro {1}.
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup.explanation=T\u0159\u00edda nebyla nalezena v zavad\u011b\u010di t\u0159\u00edd p\u0159i zpracov\u00e1n\u00ed anotace ServletContainerInitializer HandlesTypes.
+exception.occurred.while.initializing.ServletContainerInitializers.class.lookup.useraction=Ujist\u011bte se, \u017ee t\u0159\u00edda existuje v zavad\u011b\u010di t\u0159\u00edd webov\u00e9ho modulu.
+
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes=SRVE8032W: Do\u0161lo k pot\u00ed\u017e\u00edm p\u0159i vyhled\u00e1v\u00e1n\u00ed t\u0159\u00eddy HandlesTypes p\u0159i proch\u00e1zen\u00ed t\u0159\u00eddy ServletContainerInitializer {0} pro polo\u017eku {1}.
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes.explanation=T\u0159\u00edda nebyla nalezena v zavad\u011b\u010di t\u0159\u00edd p\u0159i zpracov\u00e1n\u00ed anotace ServletContainerInitializer HandlesTypes.
+exception.occurred.while.initializing.ServletContainerInitializers.HandlesTypes.useraction=Ujist\u011bte se, \u017ee t\u0159\u00edda existuje v zavad\u011b\u010di t\u0159\u00edd webov\u00e9ho modulu.
+
+exception.occurred.while.initializing.ServletContainerInitializers=SRVE8033W: Probl\u00e9m se vyskytl p\u0159i inicializaci t\u0159\u00edd ServletContainerInitializer aplikace.
+exception.occurred.while.initializing.ServletContainerInitializers.explanation=Probl\u00e9m se vyskytl p\u0159i inicializaci t\u0159\u00edd ServletContainerInitializer aplikace.
+exception.occurred.while.initializing.ServletContainerInitializers.useraction=Ov\u011b\u0159te, zda je spr\u00e1vn\u011b nakonfigurov\u00e1na t\u0159\u00edda ServletContainerInitializer.
+
+IOException.loading.servlet=SRVE8034E: Servlet [{0}]: {1} nelze na\u010d\u00edst kv\u016fli v\u00fdjimce IOException.
+IOException.loading.servlet.explanation=V\u00fdjimka IOException se m\u016f\u017ee vyskytnout pro libovoln\u00fd po\u010det p\u0159\u00ed\u010din souvisej\u00edc\u00edch s operac\u00ed vstupu nebo v\u00fdstupu.
+IOException.loading.servlet.useraction=Ov\u011b\u0159te, zda byla odebr\u00e1na t\u0159\u00edda.
+
+IllegalAccessException.loading.servlet=SRVE8035E: Servlet [{0}]: {1} nelze na\u010d\u00edst kv\u016fli v\u00fdjimce IllegalAccessException.
+IllegalAccessException.loading.servlet.explanation=V\u00fdjimka IllegalAccessException vznikla p\u0159i vol\u00e1n\u00ed metody newInstance servletu.
+IllegalAccessException.loading.servlet.useraction=Ov\u011b\u0159te, zda je v servletu definov\u00e1n ve\u0159ejn\u00fd konstruktor bez argument\u016f.
+
+InstantiationException.loading.servlet=SRVE8036E: Servlet [{0}]: {1} nelze na\u010d\u00edst kv\u016fli v\u00fdjimce InstantiationException.
+InstantiationException.loading.servlet.explanation=P\u0159i pokusu o vytvo\u0159en\u00ed nov\u00e9 instance rozhran\u00ed nebo abstraktn\u00ed t\u0159\u00eddy do\u0161lo k v\u00fdjimce InstantiationException.
+InstantiationException.loading.servlet.useraction=Upravte t\u0159\u00eddu, pro kterou vytv\u00e1\u0159\u00edte instanci, na konkr\u00e9tn\u00ed t\u0159\u00eddu nebo odeberte definici ur\u010duj\u00edc\u00ed servlet.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the servlet name
+# {1} is the servlet class name
+
+Servlet.found.but.injection.failure=SRVE0319E: Pro servlet [{0}] byla nalezena t\u0159\u00edda servlet\u016f {1}, do\u0161lo v\u0161ak k selh\u00e1n\u00ed vlo\u017een\u00ed prost\u0159edk\u016f. {2}
+Servlet.found.but.injection.failure.explanation=Servlet se nezda\u0159ilo inicializovat, proto\u017ee do\u0161lo k chyb\u011b p\u0159i vkl\u00e1d\u00e1n\u00ed prost\u0159edku.
+Servlet.found.but.injection.failure.useraction=Ov\u011b\u0159te, \u017ee vlo\u017een\u00e9 prost\u0159edky existuj\u00ed a \u017ee jsou pro servlet p\u0159\u00edstupn\u00e9.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the filter name
+
+Filter.found.but.injection.failure=SRVE0320E: Filtr [{0}] byl nalezen, do\u0161lo v\u0161ak k selh\u00e1n\u00ed vlo\u017een\u00ed prost\u0159edk\u016f.
+Filter.found.but.injection.failure.explanation=Filtr se nezda\u0159ilo inicializovat, proto\u017ee do\u0161lo k chyb\u011b p\u0159i vkl\u00e1d\u00e1n\u00ed prost\u0159edku.
+Filter.found.but.injection.failure.useraction=Ov\u011b\u0159te, \u017ee vlo\u017een\u00e9 prost\u0159edky existuj\u00ed a \u017ee jsou pro filtr p\u0159\u00edstupn\u00e9.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the filter name
+
+init.exception.thrown.by.filter.at.startup=SRVE0321E: Filtr [{0}] se p\u0159i spou\u0161t\u011bn\u00ed nena\u010detl.
+init.exception.thrown.by.filter.at.startup.explanation=Filtr se p\u0159i spu\u0161t\u011bn\u00ed nena\u010detl.
+init.exception.thrown.by.filter.at.startup.useraction=Prozkoumejte protokoly serveru a ur\u010dete hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the listener class name
+
+Listener.found.but.injection.failure=SRVE0322E: T\u0159\u00edda modul\u016f listener [{0}] byla nalezena, do\u0161lo v\u0161ak k selh\u00e1n\u00ed vlo\u017een\u00ed prost\u0159edk\u016f.
+Listener.found.but.injection.failure.explanation=Modul listener se nezda\u0159ilo inicializovat, proto\u017ee do\u0161lo k chyb\u011b p\u0159i vkl\u00e1d\u00e1n\u00ed prost\u0159edku.
+Listener.found.but.injection.failure.useraction=Ov\u011b\u0159te, \u017ee vlo\u017een\u00e9 prost\u0159edky existuj\u00ed a \u017ee jsou pro modul listener p\u0159\u00edstupn\u00e9. Chcete-li modul listener inicializovat znovu, restartujte aplikaci modulu listener.
+
+# --------------------------------
+# Notes for translation:
+# none
+
+ARD.not.enabled.these.chains.not.supported=SRVE0323I: Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f nen\u00ed povolen\u00fd. Po\u017eadavky odeslan\u00e9 prost\u0159ednictv\u00edm \u0159et\u011bzce HttpQueueInboundDefault \u010di HttpQueueInboundDefaultSecure nemus\u00ed b\u00fdt \u0159\u00e1dn\u011b zpracov\u00e1ny.
+ARD.not.enabled.these.chains.not.supported.explanation=Po\u017eadavky odeslan\u00e9 prost\u0159ednictv\u00edm \u0159et\u011bzce HttpQueueInboundDefault \u010di HttpQueueInboundDefaultSecure nemus\u00ed b\u00fdt \u0159\u00e1dn\u011b zpracov\u00e1ny, pokud nen\u00ed na \u00farovni serveru povolen Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f.
+ARD.not.enabled.these.chains.not.supported.useraction=Pokud nen\u00ed na \u00farovni serveru povolen\u00fd Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f, ujist\u011bte se, \u017ee je povolen\u00fd a spu\u0161t\u011bn\u00fd \u0159et\u011bzec WCInboundDefault nebo WCInboundDefaultSecure. -Pokud nen\u00ed spu\u0161t\u011bn\u00fd ani jeden z t\u011bchto \u0159et\u011bzc\u016f, mus\u00edte povolit Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f, pokud ji\u017e povolen\u00fd nen\u00ed, proto\u017ee server po\u017eadavky ode\u0161le prost\u0159ednictv\u00edm \u0159et\u011bzce HttpQueueInboundDefault nebo HttpQueueInboundDefaultSecure.
+
+# --------------------------------
+# Notes for translation:
+# none
+
+ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f nen\u00ed povolen\u00fd. \u0158et\u011bzec HttpQueueInboundDefault a HttpQueueInboundDefaultSecure tak proto nemus\u00ed zpracovat va\u0161e po\u017eadavky \u0159\u00e1dn\u011b.
+ARD.not.enabled.request.on.chains.not.supported.explanation=Va\u0161e po\u017eadavky se nach\u00e1z\u00ed v \u0159et\u011bzci HttpQueueInboundDefault nebo HttpQueueInboundDefaultSecure, ale Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f nen\u00ed povolen\u00fd na \u00farovni serveru. \u0158et\u011bzce HttpQueueInboundDefault a HttpQueueInboundDefaultSecure tak proto nemus\u00ed zpracovat tyto po\u017eadavky \u0159\u00e1dn\u011b.
+ARD.not.enabled.request.on.chains.not.supported.useraction=Bu\u010f povolte Dispe\u010der asynchronn\u00edch po\u017eadavk\u016f na \u00farovni serveru, nebo povolte bu\u010f \u0159et\u011bzec WCInboundDefault, \u010di WCInboundDefaultSecure a ujist\u011bte se, \u017ee je spu\u0161t\u011bn\u00fd.
+# --------------------------------
+# Notes for translation:
+# {0} is the total count allowed
+# {1} is the current count
+
+Exceeding.maximum.parameters=SRVE0325E: Do\u0161lo k p\u0159ekro\u010den\u00ed maxim\u00e1ln\u00edho po\u010dtu parametr\u016f po\u017eadavku {0}, aktu\u00e1ln\u00ed stav: {1}, nelze p\u0159idat dal\u0161\u00ed parametr.
+Exceeding.maximum.parameters.explanation=Po\u010det parametr\u016f v p\u0159\u00edchoz\u00edm po\u017eadavku p\u0159ekra\u010duje maxim\u00e1ln\u00ed po\u010det parametr\u016f, kter\u00e9 lze zahrnout do p\u0159\u00edchoz\u00edho po\u017eadavku.
+Exceeding.maximum.parameters.useraction=Zajist\u011bte platnost v\u0161ech parametr\u016f v p\u0159\u00edchoz\u00edm po\u017eadavku a zamezte p\u0159ekro\u010den\u00ed maxim\u00e1ln\u00edho po\u010dtu po\u017eadavk\u016f povolen\u00fdch v po\u017eadavku.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the total count allowed
+
+Exceeding.maximum.hash.collisions=SRVE0326E: Do\u0161lo k p\u0159ekro\u010den\u00ed maxim\u00e1ln\u00edho po\u010dtu koliz\u00ed kl\u00ed\u010d\u016f ha\u0161ovac\u00edho k\u00f3du povolen\u00fdch pro po\u017eadavek {0}.
+Exceeding.maximum.hash.collisions.explanation=Po\u010det koliz\u00ed kl\u00ed\u010d\u016f ha\u0161ovac\u00edho k\u00f3du p\u0159ekra\u010duje maxim\u00e1ln\u00ed po\u010det koliz\u00ed povolen\u00fd pro p\u0159\u00edchoz\u00ed po\u017eadavek. Mohlo doj\u00edt ke zlomysln\u00e9mu p\u0159id\u00e1n\u00ed kl\u00ed\u010d\u016f parametru, je\u017e generuj\u00ed duplicitn\u00ed ha\u0161ovac\u00ed k\u00f3dy, do po\u017eadavku, co\u017e zp\u016fsobuje vysok\u00fd po\u010det koliz\u00ed kl\u00ed\u010d\u016f parametru ha\u0161ovac\u00edho k\u00f3du.
+Exceeding.maximum.hash.collisions.useraction=Zajist\u011bte platnost v\u0161ech parametr\u016f v p\u0159\u00edchoz\u00edm po\u017eadavku.
+
+# --------------------------------
+exception.handing.off.reference.data=SRVE8037E: V\u00fdjimka p\u0159i zpracov\u00e1n\u00ed referen\u010dn\u00edch dat
+exception.handing.off.reference.data.explanation=P\u0159i zpracov\u00e1n\u00ed referen\u010dn\u00edch dat do\u0161lo k v\u00fdjimce. Aplikace se p\u0159esto pokus\u00ed o spu\u0161t\u011bn\u00ed.
+exception.handing.off.reference.data.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu v\u00fdjimky a ur\u010dete, zda m\u016f\u017ee aplikace spr\u00e1vn\u011b pracovat navzdory uveden\u00fdm selh\u00e1n\u00edm.
+
+trying.to.do.startAsync.after.a.complete=SRVE8038E: Byl proveden pokus o spu\u0161t\u011bn\u00ed metody startAsync po dokon\u010den\u00ed.
+trying.to.do.startAsync.after.a.complete.explanation=Specifikace servletu nedovoluje spu\u0161t\u011bn\u00ed metody startAsync po dokon\u010den\u00ed.
+trying.to.do.startAsync.after.a.complete.useraction=Ov\u011b\u0159te, \u017ee toto nespr\u00e1vn\u00e9 chov\u00e1n\u00ed nen\u00ed zp\u016fsobeno logikou k\u00f3du nebo \u010dasov\u00e1n\u00edm.
+
+not.called.from.within.the.context.of.a.dispatch.for.this.request=SRVE8039E: Metoda startAsync nebyla vyvol\u00e1na z kontextu odbaven\u00ed tohoto po\u017eadavku.
+not.called.from.within.the.context.of.a.dispatch.for.this.request.explanation=Metodu startAsync je nutn\u00e9 vyvolat v kontextu odbaven\u00ed kontejneru p\u016fvodn\u00edho po\u017eadavku nebo n\u00e1sledn\u00e9ho asynchronn\u00edho zpracov\u00e1n\u00ed.
+not.called.from.within.the.context.of.a.dispatch.for.this.request.useraction=Ov\u011b\u0159te, \u017ee toto nespr\u00e1vn\u00e9 chov\u00e1n\u00ed nen\u00ed zp\u016fsobeno logikou k\u00f3du nebo \u010dasov\u00e1n\u00edm.
+
+cannot.call.startAsync.multiple.times.within.same.dispatch=SRVE8040E: Metodu startAsync nelze volat n\u011bkolikr\u00e1t v r\u00e1mci stejn\u00e9ho odbaven\u00ed.
+cannot.call.startAsync.multiple.times.within.same.dispatch.explanation=Metodu startAsync nelze volat n\u011bkolikr\u00e1t ze stejn\u00e9ho odbaven\u00ed. Metodu startAsync lze op\u011btovn\u011b volat pomoc\u00ed syntaxeAsyncContext.dispatch.
+cannot.call.startAsync.multiple.times.within.same.dispatch.useraction=Ov\u011b\u0159te, \u017ee toto nespr\u00e1vn\u00e9 chov\u00e1n\u00ed nen\u00ed zp\u016fsobeno logikou k\u00f3du nebo \u010dasov\u00e1n\u00edm.
+
+trying.to.call.dispatch.twice.for.the.same.async.operation=SRVE8041E: Byl proveden pokus o dvoj\u00ed vol\u00e1n\u00ed odbaven\u00ed pro stejnou asynchronn\u00ed operaci.
+trying.to.call.dispatch.twice.for.the.same.async.operation.explanation=Specifikace servletu definuje, \u017ee m\u016f\u017eete vyvolat metodu startAsync pouze jednou v r\u00e1mci odbaven\u00ed.
+trying.to.call.dispatch.twice.for.the.same.async.operation.useraction=Odeberte dal\u0161\u00ed vol\u00e1n\u00ed metody dispatch.
+
+reference.context.not.set=SRVE8042E: Intern\u00ed chyba zp\u016fsobila nespr\u00e1vnou inicializaci kontextu odkazu, kter\u00fd umo\u017enil vlo\u017een\u00ed.
+reference.context.not.set.explanation=Intern\u00ed chyba zp\u016fsobila nespr\u00e1vnou inicializaci kontextu odkazu, kter\u00fd umo\u017enil vlo\u017een\u00ed.
+reference.context.not.set.useraction=Vyhledejte chyby v p\u0159edchoz\u00edch \u010d\u00e1stech protokolu, kter\u00e9 mohly zp\u016fsobit selh\u00e1n\u00ed inicializace.
+
+ioexception.searching.jar.for.resource=SRVE8043E: V\u00fdjimka IOException p\u0159i vyhled\u00e1v\u00e1n\u00ed souboru JAR [{1}] pro n\u00e1zev souboru [{2}] {0}
+ioexception.searching.jar.for.resource.explanation=V\u00fdjimky IOException se p\u0159i vyhled\u00e1v\u00e1n\u00ed soubor\u016f JAR vyskytuj\u00ed v p\u0159\u00edpad\u011b, \u017ee je soubor upraven nebo zav\u0159en v pr\u016fb\u011bhu proch\u00e1zen\u00ed.
+ioexception.searching.jar.for.resource.useraction=Ov\u011b\u0159te, zda je soubor JAR platn\u00fd a sou\u010dasn\u011b s proch\u00e1zen\u00edm neprob\u00edh\u00e1 jeho aktualizace.
+
+programmatic.sessions.already.been.initialized=SRVE8044E: Kontext ji\u017e byl inicializov\u00e1n. Pro konfiguraci relace nejsou povoleny \u017e\u00e1dn\u00e9 aktualizace.
+programmatic.sessions.already.been.initialized.explanation=Kontext ji\u017e byl inicializov\u00e1n. Pro konfiguraci relace nejsou povoleny \u017e\u00e1dn\u00e9 aktualizace.
+programmatic.sessions.already.been.initialized.useraction=Konfiguraci relace lze upravit pouze p\u0159ed inicializac\u00ed aplikace.
+
+programmatic.sessions.disabled=SRVE8045E: Programov\u00e1 konfigurace relace byla na tomto serveru zak\u00e1z\u00e1na.
+programmatic.sessions.disabled.explanation=Programov\u00e1 konfigurace relace byla na tomto serveru zak\u00e1z\u00e1na.
+programmatic.sessions.disabled.useraction=Povolte konfiguraci relace z programu.
+
+error.calling.async.dispatch=SRVE8046E: P\u0159i vyvol\u00e1n\u00ed odbaven\u00ed AsyncContext do\u0161lo k chyb\u011b.
+error.calling.async.dispatch.explanation=P\u0159i vyvol\u00e1n\u00ed odbaven\u00ed AsyncContext do\u0161lo k chyb\u011b.
+error.calling.async.dispatch.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving=SRVE8047E: V\u00fdjimka NumberFormatException pro velikost souboru, p\u0159i kter\u00e9 p\u0159epnete na optimalizovanou obsluhu soubor\u016f.
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving.explanation=Atribut obsluhy soubor\u016f com.ibm.ws.webcontainer.optimizefileservingsize nelze spr\u00e1vn\u011b analyzovat.
+NumberFormatException.for.file.size.at.which.you.switch.to.optimized.file.serving.useraction=Zm\u011b\u0148te hodnotu atributu na platnou celo\u010d\u00edselnou hodnotu.
+
+mapping.clash.occurred=SRVE8048E: P\u0159i p\u0159id\u00e1v\u00e1n\u00ed vzorku adresy URL [{0}] do\u0161lo k chyb\u011b mapov\u00e1n\u00ed.
+mapping.clash.occurred.explanation=Stejn\u00fd vzorek byl uveden dvakr\u00e1t pro vzorky adresy URL, jejich\u017e v\u00fdsledkem je odm\u00edtnut\u00ed obsluhy soubor\u016f.
+mapping.clash.occurred.useraction=Zkontrolujte atributy obsluhy soubor\u016f v souboru ibm-web-ext.xmi nebo ibm-web-ext.xml.
+
+Exception.occured.during.servlet.destroy=SRVE8049E: Do\u0161lo k intern\u00ed chyb\u011b serveru, kter\u00e1 zru\u0161ila servlet.
+Exception.occured.during.servlet.destroy.explanation=Do\u0161lo k intern\u00ed chyb\u011b serveru, kter\u00e1 zru\u0161ila servlet.
+Exception.occured.during.servlet.destroy.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+Place.servlet.class.on.classpath.of.the.application.server=SRVE8050E: Ulo\u017ete t\u0159\u00eddu servletu do cesty ke t\u0159\u00edd\u00e1m na aplika\u010dn\u00edm serveru {0}, {1}: {2}.
+Place.servlet.class.on.classpath.of.the.application.server.explanation=P\u0159i zpracov\u00e1n\u00ed servletu do\u0161lo k chyb\u00e1m cesty ke t\u0159\u00edd\u00e1m.
+Place.servlet.class.on.classpath.of.the.application.server.useraction=Ulo\u017ete t\u0159\u00eddu servletu do cesty ke t\u0159\u00edd\u00e1m na aplika\u010dn\u00edm serveru.
+
+Exception.occured.during.servlet.unload=SRVE8051E: P\u0159i uvol\u0148ov\u00e1n\u00ed servletu do\u0161lo k intern\u00ed chyb\u011b serveru.
+Exception.occured.during.servlet.unload.explanation=P\u0159i uvol\u0148ov\u00e1n\u00ed servletu do\u0161lo k intern\u00ed chyb\u011b serveru.
+Exception.occured.during.servlet.unload.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu v\u00fdjimky.
+
+classnotfoundexception.loading.servlet.class=SRVE8052E: V\u00fdjimka protokolov\u00e1n\u00ed ClassNotFoundException
+classnotfoundexception.loading.servlet.class.explanation=Server nenalezl po\u017eadovanou t\u0159\u00eddu pot\u0159ebnou pro zpracov\u00e1n\u00ed po\u017eadavku. Jde o chybu aplikace.
+classnotfoundexception.loading.servlet.class.useraction=Ov\u011b\u0159te, zda dan\u00e1 t\u0159\u00edda v r\u00e1mci aplikace existuje.
+
+setting.initialPoolSize.to.default.value.of.5=SRVE8053E: P\u0159i pokusu o nastaven\u00ed jednotn\u00e9 velikosti fondu pro model podproces\u016f do\u0161lo k v\u00fdjimce NumberFormatException.
+setting.initialPoolSize.to.default.value.of.5.explanation=P\u0159i pokusu o nastaven\u00ed jednotn\u00e9 velikosti fondu pro model podproces\u016f do\u0161lo k v\u00fdjimce NumberFormatException.
+setting.initialPoolSize.to.default.value.of.5.useraction=Ov\u011b\u0159te, zda je hodnotou jednotn\u00e9 velikosti fondu pro model podproces\u016f platn\u00e9 cel\u00e9 \u010d\u00edslo.
+
+setting.maxIdleTime.to.default.value.of.60000=SRVE8054E: P\u0159i pokusu o nastaven\u00ed jednotn\u00e9ho maxim\u00e1ln\u00edho \u010dasu ne\u010dinnosti servletu pro model podproces\u016f do\u0161lo k v\u00fdjimce NumberFormatException.
+setting.maxIdleTime.to.default.value.of.60000.explanation=P\u0159i pokusu o nastaven\u00ed jednotn\u00e9ho maxim\u00e1ln\u00edho \u010dasu ne\u010dinnosti servletu pro model podproces\u016f do\u0161lo k v\u00fdjimce NumberFormatException.
+setting.maxIdleTime.to.default.value.of.60000.useraction=Ov\u011b\u0159te, zda je hodnotou pro jednotn\u00fd maxim\u00e1ln\u00ed \u010das ne\u010dinnosti servletu pro model podproces\u016f platn\u00e9 cel\u00e9 \u010d\u00edslo.
+
+Error.while.flushing.last.response=SRVE8055E: P\u0159i odkl\u00e1d\u00e1n\u00ed zb\u00fdvaj\u00edc\u00edch dat odpov\u011bdi do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Error.while.flushing.last.response.explanation=P\u0159i odkl\u00e1d\u00e1n\u00ed zb\u00fdvaj\u00edc\u00edch dat odpov\u011bdi do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Error.while.flushing.last.response.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Error.while.closing.response.output=SRVE8056E: P\u0159i zav\u00edr\u00e1n\u00ed v\u00fdstupn\u00edho proudu do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Error.while.closing.response.output.explanation=P\u0159i zav\u00edr\u00e1n\u00ed v\u00fdstupn\u00edho proudu do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Error.while.closing.response.output.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+error.initializing.output.stream=SRVE8057E: P\u0159i inicializaci v\u00fdstupn\u00edho proudu do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+error.initializing.output.stream.explanation=P\u0159i inicializaci v\u00fdstupn\u00edho proudu do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+error.initializing.output.stream.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Did.not.have.access.to.delete.Directory=SRVE8058E: P\u0159\u00edstup pro odstran\u011bn\u00ed do\u010dasn\u00e9ho adres\u00e1\u0159e nen\u00ed k dispozici.
+Did.not.have.access.to.delete.Directory.explanation=Z\u00e1sada zabezpe\u010den\u00ed Java 2 zabr\u00e1nila odstran\u011bn\u00ed do\u010dasn\u00e9ho adres\u00e1\u0159e.
+Did.not.have.access.to.delete.Directory.useraction=Ov\u011b\u0159te z\u00e1sadu zabezpe\u010den\u00ed Java 2 a ur\u010dete, zda by m\u011bl b\u00fdt tento p\u0159\u00edstup povolen.
+
+unable.to.get.sessionContext=SRVE8059E: P\u0159i pokusu o na\u010dten\u00ed kontextu relace do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+unable.to.get.sessionContext.explanation=P\u0159i pokusu o na\u010dten\u00ed kontextu relace do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+unable.to.get.sessionContext.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+exception.while.injecting.resource=SRVE8060E: P\u0159i vkl\u00e1d\u00e1n\u00ed prost\u0159edku do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+exception.while.injecting.resource.explanation=P\u0159i vkl\u00e1d\u00e1n\u00ed prost\u0159edku do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+exception.while.injecting.resource.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+unable.to.invoke.method=SRVE8061E: Nelze vyvolat metodu --> [{0}] pro t\u0159\u00eddu --> [{1}].
+unable.to.invoke.method.explanation=Probl\u00e9m p\u0159i vyvol\u00e1n\u00ed metody postConstruct nebo preDestroy.
+unable.to.invoke.method.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+                         
+exception.initializing.security.collaborator=SRVE8062E: P\u0159i inicializaci kolabor\u00e1toru zabezpe\u010den\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+exception.initializing.security.collaborator.explanation=P\u0159i inicializaci kolabor\u00e1toru zabezpe\u010den\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+exception.initializing.security.collaborator.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Could.not.create.LoginProcessor=SRVE8063E: P\u0159i inicializaci procesoru p\u0159ihl\u00e1\u0161en\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Could.not.create.LoginProcessor.explanation=P\u0159i inicializaci procesoru p\u0159ihl\u00e1\u0161en\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Could.not.create.LoginProcessor.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Could.not.create.LogoutProcessor=SRVE8064E: P\u0159i inicializaci procesoru odhl\u00e1\u0161en\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Could.not.create.LogoutProcessor.explanation=P\u0159i inicializaci procesoru odhl\u00e1\u0161en\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Could.not.create.LogoutProcessor.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+webcontianer.configuration.error=SRVE8065E: Nezn\u00e1m\u00e1 chyba souvisej\u00edc\u00ed s konfigurac\u00ed webov\u00e9ho kontejneru
+webcontianer.configuration.error.explanation=Nezn\u00e1m\u00e1 chyba souvisej\u00edc\u00ed s konfigurac\u00ed webov\u00e9ho kontejneru
+webcontianer.configuration.error.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Failed.to.add.WebContainerService=SRVE8066E: P\u0159i p\u0159id\u00e1v\u00e1n\u00ed slu\u017eby WebContainerService do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Failed.to.add.WebContainerService.explanation=P\u0159i p\u0159id\u00e1v\u00e1n\u00ed slu\u017eby WebContainerService do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Failed.to.add.WebContainerService.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Failed.to.handle.extension.point=SRVE8067E: P\u0159i zpracov\u00e1n\u00ed bodu roz\u0161\u00ed\u0159en\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Failed.to.handle.extension.point.explanation=P\u0159i zpracov\u00e1n\u00ed bodu roz\u0161\u00ed\u0159en\u00ed do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Failed.to.handle.extension.point.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Could.not.remove.webmodule=SRVE8068E: Nelze odebrat webov\u00fd modul [{0}].
+Could.not.remove.webmodule.explanation=P\u0159i odebr\u00e1n\u00ed webov\u00e9ho modulu do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+Could.not.remove.webmodule.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+null.session.registry=SRVE8069E: Registr relace m\u00e1 hodnotu Null.
+null.session.registry.explanation=Registr relace m\u00e1 hodnotu Null pravd\u011bpodobn\u011b z p\u0159\u00ed\u010diny nespr\u00e1vn\u00e9ho spu\u0161t\u011bn\u00ed spr\u00e1vce SessionManager. Webov\u00e9 aplikace SEL\u017dOU.
+null.session.registry.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+failed.to.initialize.webcontainer.required.to.start.chains=SRVE8070E: P\u0159i spou\u0161t\u011bn\u00ed \u0159et\u011bz\u016f kan\u00e1lu webov\u00e9ho kontejneru do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+failed.to.initialize.webcontainer.required.to.start.chains.explanation=P\u0159i spou\u0161t\u011bn\u00ed \u0159et\u011bz\u016f kan\u00e1lu webov\u00e9ho kontejneru do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b.
+failed.to.initialize.webcontainer.required.to.start.chains.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.webcontainer.config.object=SRVE8071E: Objekt konfigurace webov\u00e9ho kontejneru m\u00e1 hodnotu Null.
+Null.webcontainer.config.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.webcontainer.config.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.virtual.host.config.object=SRVE8072E: Objekt konfigurace virtu\u00e1ln\u00edho hostitele m\u00e1 hodnotu Null.
+Null.virtual.host.config.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.virtual.host.config.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.webApp.configuration.object=SRVE8073E: Objekt konfigurace webov\u00e9 aplikace m\u00e1 hodnotu Null.
+Null.webApp.configuration.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.webApp.configuration.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.webApp.object=SRVE8074E: Objekt webov\u00e9 aplikace m\u00e1 hodnotu Null.
+Null.webApp.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.webApp.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.cachedServlet.object=SRVE8075E: Objekt servletu mezipam\u011bti m\u00e1 hodnotu Null.
+Null.cachedServlet.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.cachedServlet.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.AsyncRequestDispatcherConfigImpl.object=SRVE8076E: Objekt AsyncRequestDispatcherConfigImpl m\u00e1 hodnotu Null.
+Null.AsyncRequestDispatcherConfigImpl.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.AsyncRequestDispatcherConfigImpl.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.webApp.config.object=SRVE8077E: Objekt konfigurace webov\u00e9 aplikace m\u00e1 hodnotu Null.
+Null.webApp.config.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.webApp.config.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.servlet.config.object=SRVE8078E: Objekt konfigurace servletu m\u00e1 hodnotu Null.
+Null.servlet.config.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.servlet.config.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Null.filter.config.object=SRVE8079E: Objekt konfigurace filtru m\u00e1 hodnotu Null.
+Null.filter.config.object.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce konfigurace.
+Null.filter.config.object.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+isUserInRole.caught.exception=SRVE8080E: Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce vol\u00e1n\u00ed isUserInRole. N\u00e1vratov\u00fd k\u00f3d vol\u00e1n\u00ed isUserInRole je false.
+isUserInRole.caught.exception.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce vol\u00e1n\u00ed isUserInRole. N\u00e1vratov\u00fd k\u00f3d vol\u00e1n\u00ed isUserInRole je false.
+isUserInRole.caught.exception.useraction=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce vol\u00e1n\u00ed isUserInRole. N\u00e1vratov\u00fd k\u00f3d vol\u00e1n\u00ed isUserInRole je false.
+
+Error.occurred.while.adding.WebAppCollaborator=SRVE8081E: P\u0159i p\u0159id\u00e1v\u00e1n\u00ed kolabor\u00e1toru webov\u00e9 aplikace do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.occurred.while.adding.WebAppCollaborator.explanation=P\u0159i p\u0159id\u00e1v\u00e1n\u00ed kolabor\u00e1toru webov\u00e9 aplikace do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.occurred.while.adding.WebAppCollaborator.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Error.while.adding.static.file.processor=SRVE8082E: P\u0159i p\u0159id\u00e1v\u00e1n\u00ed procesoru statick\u00e9ho souboru do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.while.adding.static.file.processor.explanation=P\u0159i p\u0159id\u00e1v\u00e1n\u00ed procesoru statick\u00e9ho souboru do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.while.adding.static.file.processor.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Error.occurred.while.registering.WebModule.MBean=SRVE8083E: P\u0159i registraci objektu MBean webov\u00e9ho modulu do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.occurred.while.registering.WebModule.MBean.explanation=P\u0159i registraci objektu MBean webov\u00e9ho modulu do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.occurred.while.registering.WebModule.MBean.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Error.occurred.while.populating.the.namespace=SRVE8084E: P\u0159i napl\u0148ov\u00e1n\u00ed oboru n\u00e1zv\u016f do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.occurred.while.populating.the.namespace.explanation=P\u0159i napl\u0148ov\u00e1n\u00ed oboru n\u00e1zv\u016f do\u0161lo k neo\u010dek\u00e1van\u00e9 intern\u00ed chyb\u011b serveru.
+Error.occurred.while.populating.the.namespace.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+handleRequest.threw.IOException=SRVE8085E: Metoda handleRequest webov\u00e9ho kontejneru vyvolala v\u00fdjimku IOException.
+handleRequest.threw.IOException.explanation=Metoda handleRequest webov\u00e9ho kontejneru vyvolala v\u00fdjimku IOException.
+handleRequest.threw.IOException.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na podporu spole\u010dnosti IBM.
+
+invalid.peer.certificate=SRVE8086E: Neplatn\u00fd rovnocenn\u00fd certifik\u00e1t
+invalid.peer.certificate.explanation=P\u0159i na\u010d\u00edt\u00e1n\u00ed rovnocenn\u00e9ho certifik\u00e1tu do\u0161lo k v\u00fdjimce.
+invalid.peer.certificate.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+error.creating.stats.instance=SRVE8087E: Chyba p\u0159i vytv\u00e1\u0159en\u00ed instance statistiky PMI
+error.creating.stats.instance.explanation=Chyba p\u0159i vytv\u00e1\u0159en\u00ed instance statistiky PMI
+error.creating.stats.instance.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+failed.to.remove.pmi.stats=SRVE8088E: Chyba p\u0159i odeb\u00edr\u00e1n\u00ed instance statistiky PMI
+failed.to.remove.pmi.stats.explanation=Chyba p\u0159i odeb\u00edr\u00e1n\u00ed instance statistiky PMI
+failed.to.remove.pmi.stats.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Error.creating.stats.group=SRVE8089E: Chyba p\u0159i vytv\u00e1\u0159en\u00ed skupiny statistiky PMI
+Error.creating.stats.group.explanation=Chyba p\u0159i vytv\u00e1\u0159en\u00ed skupiny statistiky PMI
+Error.creating.stats.group.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Error.occurred.while.preparing.the.servlet.for.initialization=SRVE8090E: P\u0159i p\u0159\u00edprav\u011b ob\u00e1lky servletu pro inicializaci do\u0161lo k chyb\u011b.
+Error.occurred.while.preparing.the.servlet.for.initialization.explanation=P\u0159i p\u0159\u00edprav\u011b ob\u00e1lky servletu pro inicializaci do\u0161lo k chyb\u011b. 
+Error.occurred.while.preparing.the.servlet.for.initialization.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+servlet.wrapper.unavailable=SRVE8091W: Servlet {0} nen\u00ed aktu\u00e1ln\u011b k dispozici: {1}.
+servlet.wrapper.unavailable.explanation=Servlet vyvolal v\u00fdjimku UnavailableException.
+servlet.wrapper.unavailable.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+exception.invoking.asnyc.error.mechanism=SRVE8092W: Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed asynchronn\u00edho chybov\u00e9ho mechanizmu.
+exception.invoking.asnyc.error.mechanism.explanation=Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed asynchronn\u00edho chybov\u00e9ho mechanizmu.
+exception.invoking.asnyc.error.mechanism.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+servlet.classname.is.null=SRVE8093W: N\u00e1zev t\u0159\u00eddy servletu pro servlet s n\u00e1zvem [{0}] m\u00e1 hodnotu Null, tak\u017ee po\u017eadavek nelze zpracovat.
+servlet.classname.is.null.explanation=N\u00e1zev t\u0159\u00eddy servletu m\u00e1 hodnotu Null, tak\u017ee po\u017eadavek nelze zpracovat.
+servlet.classname.is.null.useraction=Ov\u011b\u0159te, zda byla pro servlet uvedena platn\u00e1 t\u0159\u00edda servletu.
+
+Cannot.set.header.Response.already.committed=SRVE8094W: VAROV\u00c1N\u00cd: Nelze nastavit z\u00e1hlav\u00ed. Odpov\u011b\u010f ji\u017e byla potvrzena. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku nepoveden\u00e9ho pokusu nastavit z\u00e1hlav\u00ed: {0}
+Cannot.set.header.Response.already.committed.explanation=Po potvrzen\u00ed odpov\u011bdi nelze nastavit dal\u0161\u00ed z\u00e1hlav\u00ed odpov\u011bdi.
+Cannot.set.header.Response.already.committed.useraction=Ov\u011b\u0159te, zda je toto vol\u00e1n\u00ed pot\u0159ebn\u00e9. Pokud je z\u00e1hlav\u00ed skute\u010dn\u011b t\u0159eba odeslat, je t\u0159eba odeslat je p\u0159ed potvrzen\u00edm odpov\u011bdi.
+
+async.servlet.work.rejected=SRVE8095W: Byla vyvol\u00e1na metoda workRejected pro spustitelnou metodu [{0}].
+async.servlet.work.rejected.explanation=P\u0159i pl\u00e1nov\u00e1n\u00ed pracovn\u00ed polo\u017eky pomoc\u00ed spr\u00e1vce pracovn\u00edch polo\u017eek asynchronn\u00edho objektu bean lze vyvolat metodu workRejected v p\u0159\u00edpad\u011b, \u017ee p\u0159i spou\u0161t\u011bn\u00ed pracovn\u00ed polo\u017eky do\u0161lo k chyb\u011b.
+async.servlet.work.rejected.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+exception.scheduling.work.item=SRVE8096W: P\u0159i pl\u00e1nov\u00e1n\u00ed spustiteln\u00e9ho modulu [{0}] do\u0161lo k v\u00fdjimce.
+exception.scheduling.work.item.explanation=P\u0159i pl\u00e1nov\u00e1n\u00ed pracovn\u00ed polo\u017eky pomoc\u00ed spr\u00e1vce pracovn\u00edch polo\u017eek asynchronn\u00edho objektu bean m\u016f\u017ee doj\u00edt k v\u00fdjimce v p\u0159\u00edpad\u011b, \u017ee je zapln\u011bna pracovn\u00ed fronta a sel\u017ee konfigurovan\u00e1 akce spu\u0161t\u011bn\u00e1 p\u0159i zapln\u011bn\u00ed pracovn\u00ed fronty.
+exception.scheduling.work.item.useraction=Rozhodn\u011bte, zda se m\u00e1 akce pln\u00e9 pracovn\u00ed fronty zablokovat, dokud nedojde k uvoln\u011bn\u00ed m\u00edsta ve front\u011b, nebo zda chcete tuto v\u00fdjimku o\u0161et\u0159it v k\u00f3du aplikace.
+
+null.url.pattern.and.servlet.name.for.filter.mapping=SRVE8097W: Nebyl nalezen \u017e\u00e1dn\u00fd vzorek URL nebo n\u00e1zev servletu pro mapov\u00e1n\u00ed filtru s n\u00e1zvem [{0}].
+null.url.pattern.and.servlet.name.for.filter.mapping.explanation=Mapov\u00e1n\u00ed filtru je ne\u00fapln\u00e9 \u2013 chyb\u00ed vzorek URL nebo n\u00e1zev mapovan\u00e9ho servletu.
+null.url.pattern.and.servlet.name.for.filter.mapping.useraction=P\u0159idejte vzorek URL nebo n\u00e1zev servletu do mapov\u00e1n\u00ed filtru.
+
+null.url.pattern.for.servlet.mapping=SRVE8098W: Nelze vlo\u017eit mapov\u00e1n\u00ed pro servlet s n\u00e1zvem [{0}]. Vzorek URL m\u00e1 hodnotu Null.
+null.url.pattern.for.servlet.mapping.explanation=Mapov\u00e1n\u00ed je ne\u00fapln\u00e9 \u2013 chyb\u00ed mapovan\u00fd vzorek URL.
+null.url.pattern.for.servlet.mapping.useraction=P\u0159idejte vzorek URL do mapov\u00e1n\u00ed servletu.
+
+stub.restart.web.application=SRVE8099W: Metoda restartWebApplication ji\u017e neprov\u00e1d\u00ed \u017e\u00e1dnou akci. Spus\u0165te nebo restartujte aplikaci pomoc\u00ed objektu MBean ApplicationManager.
+stub.restart.web.application.explanation=Metoda restartWebApplication ji\u017e neprov\u00e1d\u00ed \u017e\u00e1dnou akci. Spus\u0165te nebo restartujte aplikaci pomoc\u00ed objektu MBean ApplicationManager.
+stub.restart.web.application.useraction=Metoda restartWebApplication ji\u017e neprov\u00e1d\u00ed \u017e\u00e1dnou akci. Spus\u0165te nebo restartujte aplikaci pomoc\u00ed objektu MBean ApplicationManager.
+
+virtual.host.alias.clash=SRVE8100W: Alias VirtualHost ji\u017e pro tohoto virtu\u00e1ln\u00edho hostitele existuje -->[{0}].
+virtual.host.alias.clash.explanation=P\u0159i p\u0159id\u00e1n\u00ed aliasu virtu\u00e1ln\u00edho hostitele do\u0161lo k chyb\u011b, proto\u017ee alias se stejn\u00fdm vzorem ji\u017e existuje.
+virtual.host.alias.clash.useraction=Upravte alias virtu\u00e1ln\u00edho hostitele a odeberte v\u0161echny duplicity.
+
+Response.buffer.corruption.detected=SRVE8101E: Bylo zji\u0161t\u011bno po\u0161kozen\u00ed vyrovn\u00e1vac\u00ed pam\u011bti odpov\u011bdi. O\u010dek\u00e1van\u00e9 zb\u00fdvaj\u00edc\u00ed mno\u017estv\u00ed: {0}, skute\u010dn\u00e9 mno\u017estv\u00ed: {1}.
+Response.buffer.corruption.detected.explanation=Neo\u010dek\u00e1van\u00e1 intern\u00ed chyba zp\u016fsobila, \u017ee o\u010dek\u00e1van\u00fd stav v\u00fdstupn\u00ed vyrovn\u00e1vac\u00ed pam\u011bti neodpov\u00edd\u00e1 skute\u010dnosti.
+Response.buffer.corruption.detected.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na servis spole\u010dnosti IBM.
+
+Illegal.value.for.ResponseBuffer=SRVE8102E: Neplatn\u00e1 hodnota pro p\u0159izp\u016fsobenou vlastnost responsebuffersize [{0}]
+Illegal.value.for.ResponseBuffer.explanation=Neplatn\u00e1 hodnota pro p\u0159izp\u016fsobenou vlastnost responsebuffersize
+Illegal.value.for.ResponseBuffer.useraction=Zkontrolujte hodnotu p\u0159izp\u016fsoben\u00e9 vlastnosti responsebuffersize.
+
+Exception.creating.channel=SRVE8103E: P\u0159i vytv\u00e1\u0159en\u00ed objektu kan\u00e1lu do\u0161lo k intern\u00ed chyb\u011b serveru.
+Exception.creating.channel.explanation=P\u0159i vytv\u00e1\u0159en\u00ed objektu kan\u00e1lu do\u0161lo k intern\u00ed chyb\u011b serveru.
+Exception.creating.channel.useraction=Shrom\u00e1\u017ed\u011bte protokoly serveru a obra\u0165te se na podporu spole\u010dnosti IBM.
+
+Servlet.Engine.Exception=SRVE8104E: Intern\u00ed chyba serveru. Zpr\u00e1va v\u00fdjimky: [{0}]
+Servlet.Engine.Exception.explanation=Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce stroje servletu. Jedn\u00e1 se o chybu syst\u00e9mu.
+Servlet.Engine.Exception.useraction=Dal\u0161\u00ed informace o vygenerovan\u00e9 v\u00fdjimce vyhledejte v protokolech System.out a System.err.
+
+unable.to.retrieve.timer.manager=SRVE8105W: P\u0159i na\u010d\u00edt\u00e1n\u00ed spr\u00e1vce \u010dasova\u010d\u016f pro spu\u0161t\u011bn\u00ed \u010dasov\u00fdch limit\u016f asynchronn\u00edho servletu do\u0161lo k chyb\u011b. Bude pou\u017eit v\u00fdchoz\u00ed \u010dasova\u010d spu\u0161t\u011bn\u00fd v jednom podprocesu.
+unable.to.retrieve.timer.manager.explanation=Administrativn\u00ed konzola by nem\u011bla povolit v\u00fdb\u011br neplatn\u00e9ho n\u00e1zvu JNDI spr\u00e1vce \u010dasova\u010de.
+unable.to.retrieve.timer.manager.useraction=Ov\u011b\u0159te, \u017ee spr\u00e1vce \u010dasova\u010d\u016f vybran\u00fd na panelu webov\u00e9ho kontejneru je platn\u00fd.
+
+exception.invoking.async.listener=SRVE8106W: Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed asynchronn\u00edch modul\u016f listener.
+exception.invoking.async.listener.explanation=Do\u0161lo k v\u00fdjimce p\u0159i vyvol\u00e1n\u00ed asynchronn\u00edch modul\u016f listener.
+exception.invoking.async.listener.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+trying.to.schedule.timeout.without.cancelling.previous.timeout=SRVE8107W: Odbaven\u00ed AsyncContext se pokusilo o napl\u00e1nov\u00e1n\u00ed podprocesu \u010dasov\u00e9ho limitu bez zru\u0161en\u00ed p\u0159edchoz\u00edho \u010dasov\u00e9ho limitu.
+trying.to.schedule.timeout.without.cancelling.previous.timeout.explanation=Jedn\u00e1 se o neo\u010dek\u00e1vanou intern\u00ed chybu.
+trying.to.schedule.timeout.without.cancelling.previous.timeout.useraction=Shrom\u00e1\u017ed\u011bte informace trasov\u00e1n\u00ed pro webov\u00fd kontejner a obra\u0165te se na podporu spole\u010dnosti IBM.
+
+trying.to.set.number.of.async.timer.threads.to.less.than.one=SRVE8108W: Do\u0161lo k pokusu o nastaven\u00ed po\u010dtu podproces\u016f asynchronn\u00edho \u010dasova\u010de na hodnotu men\u0161\u00ed ne\u017e jedna.
+trying.to.set.number.of.async.timer.threads.to.less.than.one.explanation=Mus\u00ed existovat alespo\u0148 jeden podproces asynchronn\u00edho \u010dasova\u010de.
+trying.to.set.number.of.async.timer.threads.to.less.than.one.useraction=Zkontrolujte konfiguraci serveru a ov\u011b\u0159te, jak\u00e1 hodnota je nastavena.
+
+uncaught.filter.exception=SRVE8109W: Filtr {0} vygeneroval nezachycenou v\u00fdjimku: {1}
+uncaught.filter.exception.explanation=Filtr vygeneroval v\u00fdjimku.
+uncaught.filter.exception.useraction=Analyzujte hlavn\u00ed p\u0159\u00ed\u010dinu.
+
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs=SRVE8110E: Nelze inicializovat objekt ServletContainerInitializer: n\u00e1zev t\u0159\u00eddy: [{0}].
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs.explanation=Objekt ServletContainerInitializer ur\u010den\u00fd bodem roz\u0161\u00ed\u0159en\u00ed se nezda\u0159ilo inicializovat.
+exception.occured.while.processing.ServletContainerInitializer.initializeExtensionPointSCIs.useraction=Zkontrolujte t\u0159\u00eddu ur\u010denou v r\u00e1mci bodu roz\u0161\u00ed\u0159en\u00ed.
+
+programmatic.session.cookie.restricted.match=SRVE8111E: Aplikace {0} se pokou\u0161\u00ed upravit soubor cookie, kter\u00fd odpov\u00edd\u00e1 vzorku v seznamu soubor\u016f cookie s omezen\u00edm pro relaci programov\u00e1n\u00ed [dom\u00e9na: {1}, n\u00e1zev: {2}, cesta: {3}].
+programmatic.session.cookie.restricted.match.explanation=Administr\u00e1tor zak\u00e1zal zm\u011bnu konfigurace souboru cookie odpov\u00eddaj\u00edc\u00edho dom\u00e9n\u011b, n\u00e1zvu a cest\u011b.
+programmatic.session.cookie.restricted.match.useraction=Upravte aplikaci tak, aby pou\u017e\u00edvala jin\u00fd n\u00e1zev, dom\u00e9nu nebo cestu souboru cookie, nebo upravte hodnoty souboru cookie s omezen\u00edm pro relaci programov\u00e1n\u00ed. 
+
+programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: P\u0159i na\u010d\u00edt\u00e1n\u00ed vzork\u016f soubor\u016f cookie s omezen\u00edm se vyskytl probl\u00e9m. Pro konfiguraci relace programov\u00e1n\u00ed se neuplat\u0148uj\u00ed \u017e\u00e1dn\u00e1 omezen\u00ed.
+programmatic.session.cookie.retrieve.cell.xml.failure.explanation=P\u0159i na\u010d\u00edt\u00e1n\u00ed vzork\u016f soubor\u016f cookie s omezen\u00edm z konfigurace se vyskytl probl\u00e9m.
+programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Ov\u011b\u0159te, \u017ee soubor cell.xml existuje a lze jej \u010d\u00edst.
+
+AsyncContext.lock.already.held=SRVE8113W: Nelze z\u00edskat z\u00e1mek. Chyba zpracov\u00e1n\u00ed ji\u017e byla vyvol\u00e1na jin\u00fdm podprocesem.
+AsyncContext.lock.already.held.explanation=Chyba zpracov\u00e1n\u00ed ji\u017e byla vyvol\u00e1na jin\u00fdm podprocesem.
+AsyncContext.lock.already.held.useraction=Ov\u011b\u0159te, \u017ee aplikace zde m\u016f\u017ee zpracovat v\u00fdjimku. Pokud je nezbytn\u00e9, aby se provedl n\u00e1vrat z t\u00e9to metody i v p\u0159\u00edpad\u011b ne\u00fasp\u011b\u0161n\u00e9ho vol\u00e1n\u00ed, kontaktujte podporu IBM.
+
+servlet.with.same.name.already.exists=SRVE8500W: Servlet s n\u00e1zvem {0} nelze dynamicky p\u0159idat, proto\u017ee konfigurace servletu s t\u00edmto n\u00e1zvem ji\u017e existuje. 
+servlet.with.same.name.already.exists.explanation=Servlet s t\u00edmto n\u00e1zvem ji\u017e pro tuto aplikaci existuje.
+servlet.with.same.name.already.exists.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 akce. Zjist\u011bte konflikty v deskriptoru implementace, anotac\u00edch a zdrojov\u00e9m k\u00f3du, kter\u00e9 mohou dynamicky p\u0159id\u00e1vat tuto konfiguraci servletu. 
+
+servlet.feature.not.loaded.correctly=SRVE8501E: Kontejner servlet\u016f se nena\u010detl s akceptovatelnou verz\u00ed.
+servlet.feature.not.loaded.correctly.explanation=Kontejner servlet\u016f se na\u010detl s verz\u00ed, kter\u00e1 odpov\u00edd\u00e1 specifikaci Java EE funkce servletu. Kontejner nebyl na\u010dten se \u017e\u00e1dnou definovanou verz\u00ed.
+servlet.feature.not.loaded.correctly.useraction=Zkontrolujte soubor server.xml, zda v n\u011bm existuje funkce servlet-3.0 nebo servlet-3.1. Jedna z t\u011bchto funkc\u00ed by m\u011bla b\u00fdt definov\u00e1na, ale ne ob\u011b.
+
+filter.failed.app.destroyed=SRVE8502W: Po\u017eadavek pro {0} nelze dokon\u010dit, proto\u017ee aplikace byla zastavena.
+filter.failed.app.destroyed.explanation=Webov\u00e1 aplikace se zastavuje a po\u017eadavek nelze dokon\u010dit. Tato akce mohla b\u00fdt zp\u016fsobena vypnut\u00edm serveru b\u011bhem zpracov\u00e1n\u00ed po\u017eadavku.
+filter.failed.app.destroyed.useraction=Znovu ode\u0161lete po\u017eadavek, jakmile bude aplikace dostupn\u00e1.
+
+# Notes for translation:
+# {0} is a servlet or filter name, in the current request chain, which does not support asynchronous processing.
+resource.does.not.support.async=SRVE8503E: N\u00e1sleduj\u00edc\u00ed prost\u0159edek v \u0159et\u011bzu po\u017eadavku nepodporuje asynchronn\u00ed zpracov\u00e1n\u00ed [{0}]
+resource.does.not.support.async.explanation=V\u0161echny filtry a c\u00edlov\u00fd servlet pro po\u017eadavek po\u017eaduje podporu asynchronn\u00edho zpracov\u00e1n\u00ed, aby se pou\u017eil asynchronn\u00ed re\u017eim pro po\u017eadavky na servlet.
+resource.does.not.support.async.useraction=Bu\u010f aktualizujte zadan\u00fd filtr nebo servlet k podpo\u0159e asynchronn\u00edho zpracov\u00e1n\u00ed, nebo aktualizujte servlet tak, aby nepou\u017e\u00edval asynchronn\u00ed programovac\u00ed rozhran\u00ed API.
+
+# Notes for translation:
+# {0} is the name of the AsyncListener that threw an Exception
+# {1} is the Exception thrown by the AsyncListener
+uncaught.exception.during.AsyncListener.onComplete=SRVE8504W: Modul AsyncListener: [{0}] vr\u00e1til n\u00e1sleduj\u00edc\u00ed nezachycenou v\u00fdjimku b\u011bhem metody onComplete: [{1}]
+uncaught.exception.during.AsyncListener.onComplete.explanation=Modul AsyncListener, na kter\u00fd je odkazov\u00e1no v chybov\u00e9 zpr\u00e1v\u011b, vyvolal v\u00fdjimku. V\u00fdjimkou je chyba aplikace.
+uncaught.exception.during.AsyncListener.onComplete.useraction=Pro vyhled\u00e1n\u00ed ko\u0159enov\u00e9 p\u0159\u00ed\u010diny chyby aplikace zkontrolujte zdrojov\u00fd k\u00f3d modulu AsyncListener a protokoly serveru.
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+#name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
+#name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+#name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.

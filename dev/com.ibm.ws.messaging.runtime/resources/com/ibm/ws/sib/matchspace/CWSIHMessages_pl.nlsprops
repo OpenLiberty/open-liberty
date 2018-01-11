@@ -1,0 +1,110 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: Sk\u0142adnia tematu {0} jest niepoprawna. W miejscu znaku {1} znaleziono nieoczekiwany znak gwiazdki (*).
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=Temat jest niepoprawnie sformatowany. Znak zast\u0119pczy pojedynczego poziomu * mo\u017ce wyst\u0119powa\u0107 tylko jako pojedynczy znak na poziomie tematu (np. */a, a/*/b lub a/*).
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=Popraw niepoprawn\u0105 specyfikacj\u0119 tematu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: Sk\u0142adnia tematu {0} jest niepoprawna. W miejscu znaku {1} znaleziono nieoczekiwany znak kropki (.).
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=Temat jest niepoprawnie sformatowany. Znak '.' mo\u017ce wyst\u0119powa\u0107 tylko jako pojedynczy znak na poziomie tematu lub na ko\u0144cu wyra\u017cenia tematycznego (np. /./a lub a//.) .
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=Popraw niepoprawn\u0105 specyfikacj\u0119 tematu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: Sk\u0142adnia tematu {0} jest niepoprawna. W miejscu znaku {1} znaleziono nieoczekiwany znak uko\u015bnika (/).
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=Temat jest niepoprawnie sformatowany. Obok siebie nie mog\u0105 wyst\u0119powa\u0107 trzy znaki uko\u015bnika (/).
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=Popraw niepoprawn\u0105 specyfikacj\u0119 tematu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: Sk\u0142adnia tematu {0} jest niepoprawna. W miejscu znaku {1} po znaku uko\u015bnika (/) znaleziono nieoczekiwany znak.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=Temat jest niepoprawnie sformatowany. Po znakach zast\u0119pczych nie mog\u0105 wyst\u0119powa\u0107 znaki inne ni\u017c uko\u015bnik (/).  Przyk\u0142ady niepoprawnych temat\u00f3w: a//.a lub a/*b 
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=Popraw niepoprawn\u0105 specyfikacj\u0119 tematu.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: Temat jest niepoprawny.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=Podany temat jest niepoprawny, poniewa\u017c ma niedozwolon\u0105 warto\u015b\u0107 NULL.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=Sprawd\u017a, czy temat jest poprawnym obiektem typu String.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: Sk\u0142adnia tematu publikowanego komunikatu jest niepoprawna: {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=Podany temat nie mo\u017ce zawiera\u0107 znak\u00f3w zast\u0119pczych, poniewa\u017c ma zosta\u0107 opublikowany.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=Usu\u0144 znaki zast\u0119pcze z komunikatu przeznaczonego do publikacji.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: Nie mo\u017cna utworzy\u0107 instancji klasy Matching. Wyj\u0105tek: {0}.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=Nie mo\u017cna utworzy\u0107 instancji klasy Matching, poniewa\u017c brakuje pliku sib.matchspaceImpl.jar lub jest on uszkodzony.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=Je\u015bli te informacje s\u0105 niewystarczaj\u0105ce, przejrzyj wcze\u015bniejsze komunikaty, aby uzyska\u0107 dodatkow\u0105 pomoc.
+TEMPORARY_CWSIH9999.useraction=Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w poprzednich komunikatach.

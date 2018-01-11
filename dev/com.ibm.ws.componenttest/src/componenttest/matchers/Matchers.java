@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.hasItem;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -43,7 +44,7 @@ public final class Matchers {
 
     /**
      * Creates a matcher for {@code Iterable}s that matches when the given items are a <a href="http://en.wikipedia.org/wiki/Subsequence">subsequence</a> of the {@code Iterable}.
-     * 
+     *
      * @see <a href="http://en.wikipedia.org/wiki/Subsequence">Subsequence</a>
      */
     public static final <T> Matcher<Iterable<T>> hasSubsequence(T... items) {
@@ -73,6 +74,20 @@ public final class Matchers {
         public Matcher<Iterable<T>> isAfter(T item2) {
             return hasSubsequence(item2, item1);
         }
+    }
+
+    /**
+     * Creates a matcher that matches if a string contains a substring which matches the given regex pattern
+     */
+    public static final Matcher<String> containsPattern(Pattern pattern) {
+        return new ContainsPattern(pattern);
+    }
+
+    /**
+     * Creates a matcher that matches if a string contains a substring which matches the given regex
+     */
+    public static final Matcher<String> containsPattern(String regex) {
+        return new ContainsPattern(Pattern.compile(regex));
     }
 
     /**
@@ -118,6 +133,28 @@ public final class Matchers {
         @Override
         public boolean matchesSafely(final Iterable<T> item) {
             return findInOrder(item, elements.iterator());
+        }
+    }
+
+    /**
+     * Checks whether the a given regex pattern can be found anywhere in a string
+     */
+    public static final class ContainsPattern extends TypeSafeMatcher<String> {
+
+        private final Pattern pattern;
+
+        public ContainsPattern(Pattern pattern) {
+            this.pattern = pattern;
+        }
+
+        @Override
+        protected boolean matchesSafely(String item) {
+            return pattern.matcher(item).find();
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("String containing text matching ").appendValue(pattern);
         }
     }
 

@@ -56,6 +56,9 @@
 # WLP_ZOS_PROCEDURE - The name of the STC procedure to be used to start the 
 #                     server in a z/OS environment.
 #
+# WLP_ZOS_JOBNAME - The job name to use when starting the server in
+#                   a z/OS environment.
+#
 ###############################################################################
 
 SERVER_UNKNOWN_STATUS=5
@@ -134,8 +137,8 @@ case ${uname} in
 
     WLP_NLS_PATH="${WLP_INSTALL_DIR}/lib/native/zos/s390x/nls/%N.cat"
     if [ ${NLSPATH} ]
-    then          
-      NLSPATH="${WLP_NLS_PATH}:${NLSPATH}" 
+    then
+      NLSPATH="${WLP_NLS_PATH}:${NLSPATH}"
     else
       NLSPATH="${WLP_NLS_PATH}"
     fi
@@ -192,7 +195,7 @@ else
   ## escapeForEval: Escape the first parameter to be safe for use in eval,
   ##                and set escapeForEvalResult with the result.
   ##
-  escapeForEval() 
+  escapeForEval()
   {
     escapeForEvalResult=\'`safeEcho "$1" | sed s/\'/\'\"\'\"\'/g`\'
   }
@@ -227,8 +230,8 @@ WLP_INSTALL_DIR_QUOTED=${escapeForEvalResult}
 READ_ETC=1
 
 ##
-## Consume script parameters: 
-##   action is required/positional, 
+## Consume script parameters:
+##   action is required/positional,
 ##   serverName is optional, --options following
 ##
 if [ $# -lt 1 ]
@@ -284,7 +287,7 @@ createServer()
       if [ -d "${WLP_USER_DIR}/servers/${SERVER_NAME}/apps" ]; then
          chgautOS400 "${WLP_USER_DIR}/servers/${SERVER_NAME}/apps" "*RWX"
       fi
-      
+
     fi
   fi
 
@@ -483,11 +486,11 @@ installEnvDefaults()
   if $os400lib
   then
     if [ -z "${WAS_PRODUCT_LIB}" ] || [ -z "${WAS_SHARED_LIB}" ]
-    then 
+    then
       os400lib=false
     fi
-  fi  
-  
+  fi
+
   export WLP_USER_DIR
   export WLP_OUTPUT_DIR
 }
@@ -516,7 +519,7 @@ serverEnvDefaults()
     unset LOG_FILE
   fi
   export X_LOG_FILE
-  
+
   if [ -z "$PID_DIR" ]; then
     X_PID_DIR=${WLP_OUTPUT_DIR}/.pid
   else
@@ -531,7 +534,7 @@ serverEnvDefaults()
     X_PID_DIR=`dirname "${X_PID_FILE}"`
     unset PID_FILE
   fi
-  
+
   if [ -z "${JAVA_HOME}" ]
   then
     if [ -z "${JRE_HOME}" ]
@@ -628,7 +631,7 @@ serverEnvDefaults()
       JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
     fi
   fi
-  
+
   serverUmask
 }
 
@@ -661,14 +664,14 @@ serverEnvAndJVMOptions()
   fi
 
   rc=0
-  
-  
-  # The order of merging the jvm.option files sets the precedence. 
+
+
+  # The order of merging the jvm.option files sets the precedence.
   # Once a given jvm option is set, it will be overridden if a duplicate
   # is seen later. They will both be written in to the options parameter
   # but the last one written will take precedence.  If none are read
   # the script will try to read the jvm.options in etc
-   
+
   TEMP_SAVED_OPTIONS=$SERVER_JVM_OPTIONS_QUOTED
   mergeJVMOptions "${WLP_INSTALL_DIR}/usr/shared/jvm.options"
   if [ $rc -ne 0 ]; then
@@ -686,19 +689,19 @@ serverEnvAndJVMOptions()
   if [ $rc -ne 0 ]; then
     return $rc
   fi
-  
+
   # If none of the four files above are seen we will check for an options
   # file in the etc folder.
   if [ $READ_ETC -eq 1 ]; then
     SERVER_JVM_OPTIONS_QUOTED=$TEMP_SAVED_OPTIONS
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
-  
+
   # If we are running on Java 9, apply Liberty's built-in java 9 options
   if [ -f "${JAVA_HOME}/lib/modules" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
-  
+
   return $rc
 }
 
@@ -706,12 +709,12 @@ serverEnvAndJVMOptions()
 mergeJVMOptions()
 {
     jvmOptions=$1
-     
+
     if [ -f "$jvmOptions" ]; then
       READ_ETC=0
       saveIFS=$IFS
       IFS=$newline
-      
+
       for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
         if [ -n "$option" ]; then
           case $option in
@@ -725,7 +728,7 @@ mergeJVMOptions()
       done
       IFS=$saveIFS
     fi
-   
+
 }
 
 ##
@@ -740,7 +743,7 @@ readServerEnv()
       \#*);;
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then 
+        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
            case $var in
 	   *=*)
                SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
@@ -835,7 +838,7 @@ javaCmd()
 }
 
 ##
-## Issue a translated warning message. The java command will use the same options as javaCmd, 
+## Issue a translated warning message. The java command will use the same options as javaCmd,
 ## but will ignore debug settings and will not exit after running the command when 'run'
 ## or 'debug' is used
 ##
@@ -896,7 +899,7 @@ serverCmdOS400()
       -logdir  "${X_LOG_DIR}"  \
       -serveroutputdir "${SERVER_OUTPUT_DIR}" \
       "$@"
-  fi      
+  fi
 }
 
 ##
@@ -912,7 +915,7 @@ serverCmdOS400()
 serverCmd()
 {
 
-   ## If one or more variables in server.env contains non-alphanumeric characters 
+   ## If one or more variables in server.env contains non-alphanumeric characters
    ## SERVER_ENV_SETUP_FAILURE will contain the invalid entries. We have to
    ## temporarily set ACTION to 'start' so that the process will not exit after
    ## the error message when ACTION is 'run' or 'debug'
@@ -922,7 +925,7 @@ serverCmd()
             issueMessage --message:warning.variable.invalid "$i"
 	done
    fi
-  
+
   SERVER_CMD_BACKGROUND_LOG=$1
   shift
 
@@ -955,45 +958,67 @@ serverCmd()
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
       rc=$?
     fi
-    
-  elif [ "${uname}" = OS/390 ] && [ -n "${WLP_ZOS_PROCEDURE}" ]; then 
-    # Start the STC procedure
-    "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" "${WLP_ZOS_PROCEDURE}" "${SERVER_NAME}" "${X_PID_FILE}" "$@"
-    rc=$?
 
-    JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
-    IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
-    
-    if [ $rc = 0 ]; then
-      # Verify/wait for the process to start
-      PID=`cat "${X_PID_FILE}"`
-      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
-      rc=$?
-    
-    elif [ $rc = 1 ]; then
-      #PID file not created
-      javaCmd '' --message:error.zosProcStart.create.pidfile "${SERVER_NAME}" "${WLP_ZOS_PROCEDURE}"
-      rc=$?
-      if [ $rc = 0 ]; then
-         rc=22
+  elif [ "${uname}" = OS/390 ] && [ -n "${WLP_ZOS_PROCEDURE}" ] && [ -e "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" ]; then
+      # Start the STC procedure
+      if [ -n "${WLP_ZOS_JOBNAME}" ]; then
+        "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" "${WLP_ZOS_PROCEDURE}" "${SERVER_NAME}" "${X_PID_FILE}" "${WLP_ZOS_JOBNAME}" "$@"
+      else
+          "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" "${WLP_ZOS_PROCEDURE}" "${SERVER_NAME}" "${X_PID_FILE}" "$@"
       fi
-    
-    elif [ $rc = 2 ]; then
-      #Command has exceeded the max allowable length for MGCRE
-      javaCmd '' --message:error.zosProcStart.start.length "${WLP_ZOS_PROCEDURE}"
+
       rc=$?
+
+      JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+      IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+
       if [ $rc = 0 ]; then
-         rc=22
+        # Verify/wait for the process to start
+        PID=`cat "${X_PID_FILE}"`
+        javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
+        rc=$?
+
+      elif [ $rc = 20 ]; then
+        # PID file not created
+        javaCmd '' --message:error.zosProcStart.create.pidfile "${SERVER_NAME}" "${WLP_ZOS_PROCEDURE}"
+        rc=$?
+        if [ $rc = 0 ]; then
+           rc=22
+        fi
+
+      elif [ $rc = 21 ]; then
+        # Command has exceeded the max allowable length for MGCRE
+        javaCmd '' --message:error.zosProcStart.start.length "${WLP_ZOS_PROCEDURE}"
+        rc=$?
+        if [ $rc = 0 ]; then
+           rc=22
+        fi
+
+      elif [ $rc = 22 ]; then
+        # The specified z/OS procedure name is invalid
+        javaCmd '' --message:error.zosProcStart.procedure.invalid "${WLP_ZOS_PROCEDURE}"
+        rc=$?
+        if [ $rc = 0 ]; then
+           rc=22
+        fi
+
+      elif [ $rc = 23 ]; then
+        # The specified z/OS jobname is invalid
+        javaCmd '' --message:error.zosProcStart.jobname.invalid "${WLP_ZOS_PROCEDURE}" "${WLP_ZOS_JOBNAME}"
+        rc=$?
+        if [ $rc = 0 ]; then
+           rc=22
+        fi
+
+      else
+        # Problem issuing MGCRE
+        javaCmd '' --message:error.zosProcStart.mvs.start "${WLP_ZOS_PROCEDURE}" "$rc"
+        rc=$?
+        if [ $rc = 0 ]; then
+           rc=22
+        fi
       fi
-    
-    else
-      #Problem issuing MGCRE
-      javaCmd '' --message:error.zosProcStart.mvs.start "${WLP_ZOS_PROCEDURE}" "$rc"
-      rc=$?
-      if [ $rc = 0 ]; then
-         rc=22
-      fi
-    fi
+
   
   else
     X_CMD="${JAVA_CMD} ${ARGS}"
@@ -1047,7 +1072,7 @@ case "$ACTION" in
         then
           WLP_DEBUG_ADDRESS=7777
         fi
-        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${WLP_DEBUG_ADDRESS}"
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${WLP_DEBUG_ADDRESS}"
       fi
 
       serverWorkingDirectory
@@ -1276,7 +1301,7 @@ case "$ACTION" in
   
   help)
     installEnv
-    javaCmd '' --help
+    javaCmd '' --help ${SERVER_NAME}
   ;;  
 
   help:usage)

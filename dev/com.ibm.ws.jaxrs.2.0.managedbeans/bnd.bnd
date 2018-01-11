@@ -30,9 +30,10 @@ Private-Package:\
 -dsannotations: com.ibm.ws.jaxrs20.managedbeans.component.*    
  
 -buildpath: \
-	org.apache.cxf.cxf-core;strategy=exact;version=3.1.11,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.14,\
 	com.ibm.ws.jaxrs.2.0.common;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\

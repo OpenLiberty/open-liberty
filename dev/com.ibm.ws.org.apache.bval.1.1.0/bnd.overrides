@@ -21,6 +21,7 @@ Export-Package: \
 # org.apache.bval.xml is for Legacy Agimatec XML support and is optional to use the xstream
 # module from apache bval. We don't use it so we optionally resolve it.
 Import-Package: \
+  javax.validation.*;version="[1.1,3)",\
   !javax.persistence, \
   org.apache.bval.xml;resolution:=optional, \
   !javax.xml.bind.*, \

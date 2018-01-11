@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.example;
 
-import java.io.File;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static org.junit.Assert.assertTrue;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import app1.web.TestServletA;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -47,31 +50,54 @@ public class SimpleTest extends FATServletClient {
     public static final String APP_NAME = "app1";
 
     @Server("FATServer")
-    @TestServlet(servlet = TestServletA.class, path = APP_NAME + "/TestServletA")
-    public static LibertyServer server1;
+    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
         // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Include a simple index.jsp static file in the root of the WebArchive
-        WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "app1.web")
-                        .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
-        // Write the WebArchive to 'publish/servers/FATServer/apps/app1.war' and print the contents
-        ShrinkHelper.exportAppToServer(server1, app1);
+        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
+        // Exports the resulting application to the ${server.config.dir}/apps/ directory
+        ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
 
-        server1.startServer();
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server.stopServer();
     }
 
     @Test
     public void verifyArtifactoryDependency() throws Exception {
         // Confirm that the example Artifactory dependency was download and is available on the classpath
-        org.apache.derby.drda.NetworkServerControl.class.getName();
+        org.apache.commons.logging.Log.class.getName();
+    }
+
+    @Test
+    @SkipForRepeat(EE8_FEATURES)
+    public void testEE7Only() throws Exception {
+        // This test will skip for the EE8 feature iteration
+
+        // Verify only EE7 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected the Java EE 7 feature 'servlet-3.1' to be enabled but was not: " + features,
+                   features.contains("servlet-3.1"));
+        assertTrue("No EE8 features should be enabled when this test runs: " + features,
+                   !features.contains("servlet-4.0"));
+    }
+
+    @Test
+    @SkipForRepeat(NO_MODIFICATION)
+    public void testEE8Only() throws Exception {
+        // This test will skip for the EE7 feature (i.e. NO_MODIFICATION) iteration
+
+        // Verify only EE8 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected the Java EE 8 feature 'servlet-4.0' to be enabled but was not: " + features,
+                   features.contains("servlet-4.0"));
+        assertTrue("No EE7 features should be enabled when this test runs: " + features,
+                   !features.contains("servlet-3.1"));
     }
 }

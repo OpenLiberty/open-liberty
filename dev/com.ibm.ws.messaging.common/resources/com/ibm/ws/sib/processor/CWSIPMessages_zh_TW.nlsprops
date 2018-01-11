@@ -1,0 +1,1853 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d673319         18/10/2010 lohit    Addressed issues related to nls translations.
+# 91911           30/01/2013 Sharath  Liberty: Added new information message for Message Discard
+# 98292           23/05/2013 Chetan   New nls message for invalid temporary prefix
+# 114553          06/11/13   balgirid Fixing message threshold not shown in messages.log
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.processor.CWSIPMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIP0001=CWSIP0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIP0001-CWSIP0020 General Internal Errors for Message Processor
+#
+#   - Msgs in the range CWSIP0021-CWSIP0030 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0031-CWSIP0040 belong to class com.ibm.ws.sib.processor.impl.BaseDestinationHandler
+#   - Msgs in the range CWSIP0041-CWSIP0070 belong to class com.ibm.ws.sib.processor.impl.DestinationManager
+#   - Msgs in the range CWSIP0071-CWSIP0080 belong to class com.ibm.ws.sib.processor.impl.AdministratorImpl
+#   - Msgs in the range CWSIP0081-CWSIP0090 belong to class com.ibm.ws.sib.processor.impl.BrowserSessionImpl
+#   - Msgs in the range CWSIP0091-CWSIP0110 belong to class com.ibm.ws.sib.processor.impl.ConnectionImpl
+#   - Msgs in the range CWSIP0111-CWSIP0120 belong to class com.ibm.ws.sib.processor.impl.ConsumerDispatcher
+#   - Msgs in the range CWSIP0121-CWSIP0130 belong to class com.ibm.ws.sib.processor.impl.AbstractDestinationHandler
+#   - Msgs in the range CWSIP0131-CWSIP0140 belong to class com.ibm.ws.sib.processor.impl.ConsumerSessionImpl
+#   - Msgs in the range CWSIP0141-CWSIP0170 belong to class com.ibm.ws.sib.processor.impl.DestinationHandler
+#   - Msgs in the range CWSIP0171-CWSIP0190 belong to class com.ibm.ws.sib.processor.impl.LocalConsumerPoint
+#   - Msgs in the range CWSIP0191-CWSIP0200 belong to class com.ibm.ws.sib.processor.impl.LockedMessageEnumerationImpl
+#   - Msgs in the range CWSIP0201-CWSIP0210 belong to class com.ibm.ws.sib.processor.runtime.MediatedMessageHandlerControl
+#   - Msgs in the range CWSIP0211-CWSIP0220 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor
+#   - Msgs in the range CWSIP0221-CWSIP0230 belong to class com.ibm.ws.sib.processor.impl.ConsumerKey
+#   - Msgs in the range CWSIP0231-CWSIP0240 belong to class com.ibm.ws.sib.processor.impl.ProducerSessionImpl
+#   - Msgs in the range CWSIP0241-CWSIP0260 belong to class com.ibm.ws.sib.processor.impl.PtoPInputHandler
+#   - Msgs in the range CWSIP0261-CWSIP0270 belong to class com.ibm.ws.sib.processor.store.items.SIMPItem
+#   - Msgs in the range CWSIP0271-CWSIP0280 belong to class com.ibm.ws.sib.processor.runtime.Topicspace
+#   - Msgs in the range CWSIP0281-CWSIP0290 belong to class com.ibm.ws.sib.processor.io.impl.MessageBuffer
+#   - Msgs in the range CWSIP0291-CWSIP0300 belong to class com.ibm.ws.sib.processor.impl.ExceptionDestination
+#   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
+#   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
+#   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
+#
+#   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
+#   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
+#   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
+#
+#   - Msgs in the range CWSIP0421-CWSIP0430 belong to class com.ibm.ws.sib.processor.impl.AbstractInputHandler
+#
+#
+#   - Msgs in the range CWSIP0451-CWSIP0460 belong to class com.ibm.ws.sib.processor.impl.AnycastOutputHandler
+#
+#   - Msgs in the range CWSIP0471-CWSIP0480 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher
+#   - Msgs in the range CWSIP0481-CWSIP0490 belong to class com.ibm.ws.sib.processor.impl.RemoteConsumerKey
+#
+#
+#   - Msgs in the range CWSIP0511-CWSIP0520 belong to class com.ibm.ws.sib.processor.impl.AnycastInputHandler
+#
+#   - Msgs in the range CWSIP0531-CWSIP0540 belong to class com.ibm.ws.sib.processor.impl.AIBrowseCoursor
+#   - Msgs in the range CWSIP0541-CWSIP0550 belong to class com.ibm.ws.sib.processor.utils.SIMPUtils
+#   - Msgs in the range CWSIP0551-CWSIP0560 belong to class com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPLocalMsgsItemStream
+#   - Msgs in the range CWSIP0561-CWSIP0570 belong to class com.ibm.ws.sib.processor.impl.AsynchConsumer
+#   - Msgs in the range CWSIP0571-CWSIP0579 belong to class com.ibm.ws.sib.processor.impl.mediation.MessagePump
+#
+#
+#
+#
+#   - Msgs in the range CWSIP0621-CWSIP0630 belong to class com.ibm.ws.sib.processor.utils.AliasChainValidator
+#   - Msgs in the range CWSIP0631-CWSIP0640 belong to classes com.ibm.ws.sib.processor.impl.Durable(Input|Output)Handler
+#   - Msgs in the range CWSIP0641-CWSIP0650 belong to classes com.ibm.ws.sib.processor.impl.MediationInputItemStream
+#   - Msgs in the range CWSIP0651-CWSIP0660 belong to classes com.ibm.ws.sib.processor.impl.mediation.MediationStateMachine
+#   - Msgs in the range CWSIP0661-CWSIP0670 belong to classes com.ibm.ws.sib.processor.impl.mediation.ExceptionDestinationImpl
+#
+#   - Msgs in the range CWSIP0701-CWSIP0800 are reserved.
+#   - Msgs in the range CWSIP0801-CWSIP0810 are reserved.
+#   - Msgs in the range CWSIP0811-CWSIP0850 belong to Remote MQ errors for Message Processor
+#   - Msgs in the range CWSIP0851-CWSIP0860 belong to XD integration
+#
+#   - CWSIP9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.274
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/processor/CWSIPMessages.nlsprops
+#COMPONENTPREFIX CWSIP
+#COMPONENTNAMEFOR CWSIP Message Processor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The following messages have moved to sib.mfp.api\com\ibm\websphere\sib\CWSIKMessages.nlsprops
+#
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0154
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0155
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0158
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0159
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0160
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0161
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0162
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0163
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0164
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0165
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0166
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0167
+# INCORRECT_DESTINATION_USAGE_ERROR_CWSIP0168
+# DESTINATION_NOT_FOUND_ERROR_CWSIP0042
+# TRANSACTION_SEND_USAGE_ERROR_CWSIP0093
+# DESTINATION_LOCKED_ERROR_CWSIP0232
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0306
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0307
+# USER_NOT_AUTH_SEND_ERROR_CWSIP0308
+# OBJECT_CLOSED_ERROR_CWSIP0233
+# OBJECT_CLOSED_ERROR_CWSIP0091
+# EXCEPTION_DESTINATION_ERROR_CWSIP0296
+# DESTINATION_SEND_DISALLOWED_CWSIP0252
+# DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0250
+# NO_LOCALISATIONS_FOUND_ERROR_CWSIP0032
+# DESTINATION_CORRUPT_ERROR_CWSIP0058
+# ALIAS_TARGET_DESTINATION_NOT_FOUND_EXCEPTION_CWSIP0057
+# ALIAS_TARGETS_SERVICE_DESTINATION_ERROR_CWSIP0622
+# LINK_NOT_FOUND_ERROR_CWSIP0047
+# DESTINATION_ALREADY_EXISTS_ERROR_CWSIP0045
+# DESTINATION_DELETED_ERROR_CWSIP0421
+# MESSAGE_RELIABILITY_ERROR_CWSIP0231
+# FORWARD_ROUTING_PATH_ERROR_CWSIP0254
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+INTERNAL_MESSAGING_ERROR_CWSIP0001=CWSIP0001E: \u5728 {0} {1} \u4e2d\u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4
+INTERNAL_MESSAGING_ERROR_CWSIP0001.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+INTERNAL_MESSAGING_ERROR_CWSIP0002=CWSIP0002E: \u5728 {0} {1} \u4e2d\u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+INTERNAL_MESSAGING_ERROR_CWSIP0002.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} The related exception
+# {3} Related Parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0003=CWSIP0003E: \u5728 {0} {1} \u4e2d\u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4 {3}\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+INTERNAL_MESSAGING_ERROR_CWSIP0003.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+INTERNAL_MESSAGING_ERROR_CWSIP0005=CWSIP0005E: \u5728 {0} {1} \u4e2d\u7684 {2} \u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4
+INTERNAL_MESSAGING_ERROR_CWSIP0005.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} destination name
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006=CWSIP0006E: \u5728 {0} {1} \u4e2d\u767c\u751f\u5c0d\u65bc\u76ee\u7684\u5730 {2} \u7684\u5167\u90e8\u76ee\u7684\u5730\u914d\u7f6e\u932f\u8aa4
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.explanation=CMSG0001
+INTERNAL_CONFIGURATION_ERROR_CWSIP0006.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007=CWSIP0007E: \u7121\u6cd5\u5efa\u7acb\u540d\u7a31\u70ba {0}\u3001UUID \u70ba {1} \u7684\u93c8\u7d50\uff0c\u56e0\u70ba\u914d\u7f6e\u4e0d\u6b63\u78ba\u3002
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.explanation=CMSG0001
+INTERNAL_LINK_CONFIGURATION_ERROR_CWSIP0007.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The class name
+# {1} The PROBE ID.
+# {2} Related parameter
+# {3} Related parameter2
+INTERNAL_MESSAGING_ERROR_CWSIP0008=CWSIP0008E: {0}\uff0c{1} \u4e2d\u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\uff1a\u76f8\u95dc\u7684\u503c\u70ba {2}\uff0c{3}
+INTERNAL_MESSAGING_ERROR_CWSIP0008.explanation=CMSG0001
+INTERNAL_MESSAGING_ERROR_CWSIP0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021=CWSIP0021E: \u7121\u6cd5\u5efa\u7acb\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u540d\u7a31\u70ba {0} \u4e4b\u670d\u52d9\u76ee\u7684\u5730\u7684\u6d88\u8cbb\u8005\u3002
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.explanation=\u670d\u52d9\u76ee\u7684\u5730\u4e0d\u80fd\u6709\u9023\u63a5\u7684\u6d88\u8cbb\u8005\u3002\u4efb\u4f55\u5617\u8a66\u5efa\u7acb\u670d\u52d9\u76ee\u7684\u5730\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u90fd\u6703\u5efa\u7acb\u7570\u5e38\u72c0\u6cc1
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0021.useraction=\u8acb\u5efa\u7acb\u4e00\u500b\u4e0d\u662f\u670d\u52d9\u76ee\u7684\u5730\u4e4b\u76ee\u7684\u5730\uff0c\u518d\u91dd\u5c0d\u9019\u500b\u76ee\u7684\u5730\u4f86\u5efa\u7acb\u4e00\u500b\u6d88\u8cbb\u8005\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022=CWSIP0022E: \u7121\u6cd5\u5efa\u7acb\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u540d\u7a31\u70ba {0} \u4e4b\u670d\u52d9\u76ee\u7684\u5730\u7684\u700f\u89bd\u5668\u3002
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.explanation=\u670d\u52d9\u76ee\u7684\u5730\u4e0d\u80fd\u6709\u9023\u63a5\u7684\u700f\u89bd\u5668\u3002\u4efb\u4f55\u5617\u8a66\u5efa\u7acb\u670d\u52d9\u76ee\u7684\u5730\u700f\u89bd\u5668\u968e\u6bb5\u4f5c\u696d\u90fd\u6703\u5efa\u7acb\u7570\u5e38\u72c0\u6cc1
+INVALID_DESTINATION_USAGE_ERROR_CWSIP0022.useraction=\u8acb\u5efa\u7acb\u4e00\u500b\u4e0d\u662f\u670d\u52d9\u76ee\u7684\u5730\u4e4b\u76ee\u7684\u5730\uff0c\u518d\u91dd\u5c0d\u9019\u500b\u76ee\u7684\u5730\u4f86\u5efa\u7acb\u4e00\u500b\u700f\u89bd\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023=CWSIP0023E: \u76ee\u7684\u5730\u5b57\u9996 {0} \u5c0d\u7cfb\u7d71\u76ee\u7684\u5730\u800c\u8a00\u4e0d\u6b63\u78ba\u3002
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.explanation=\u63d0\u4f9b\u7d66\u7cfb\u7d71\u76ee\u7684\u5730\u7684\u5b57\u9996\u8d85\u904e 24 \u500b\u5b57\u5143\uff0c\u6216\u5305\u542b\u4e0d\u5728 a-z\u3001A-Z\u30010-9\u3001.\u3001/ \u548c % \u7bc4\u570d\u5167\u7684\u5b57\u5143\u3002
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0023.useraction=\u8acb\u78ba\u5b9a\u7cfb\u7d71\u76ee\u7684\u5730\u4e4b\u76ee\u7684\u5730\u5b57\u9996\u6c92\u6709\u8d85\u51fa 24 \u500b\u5b57\u5143\uff0c\u4e14\u53ea\u5305\u542b\u5728 a-z\u3001A-Z\u30010-9\u3001.\u3001/ \u548c % \u7bc4\u570d\u5167\u7684\u5b57\u5143\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024=CWSIP0024E: \u8a66\u5716\u5728\u50b3\u8a0a\u5f15\u64ce\u4e2d\uff0c\u5f9e\u7cfb\u7d71\u9023\u7dda\u5b58\u53d6\u975e\u7cfb\u7d71\u76ee\u7684\u5730 {0}\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.explanation=CMSG0001
+SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the subscriptions destination
+# {2} The durable Subscription name
+# {3} The messaging engine name
+DURABLE_MISMATCH_ERROR_CWSIP0025=CWSIP0025E: \u767c\u751f\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u4e0d\u7b26\u7684\u932f\u8aa4\uff0c\u76ee\u7684\u5730\u540d\u7a31 {0} \u4e0d\u7b26\u5408\u50b3\u8a0a\u5f15\u64ce {3} \u4e2d\uff0c\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1 {2} \u4e4b\u8a02\u95b1\u76ee\u7684\u5730 {1}
+DURABLE_MISMATCH_ERROR_CWSIP0025.explanation= \u8a66\u5716\u5efa\u7acb\u6307\u5b9a\u7684\u53ef\u5ef6\u7e8c\u8a02\u95b1\u540d\u7a31\u7684\u6d88\u8cbb\u8005\u5931\u6557\uff0c\u56e0\u70ba\u6307\u5b9a\u7684\u76ee\u7684\u5730\u4e0d\u7b26\u5408\u7528\u4f86\u5efa\u7acb\u53ef\u5ef6\u7e8c\u8a02\u95b1\u7684\u76ee\u7684\u5730\u3002
+DURABLE_MISMATCH_ERROR_CWSIP0025.useraction=\u8acb\u5229\u7528\u5efa\u7acb\u8a02\u95b1\u6642\u6240\u7528\u7684\u76f8\u540c\u76ee\u7684\u5730\u4f86\u9023\u63a5\u81f3\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_ERROR_CWSIP0026=CWSIP0026E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u627e\u4e0d\u5230 UUID \u70ba {0} \u7684 MQ \u93c8\u7d50
+MQLINK_ERROR_CWSIP0026.explanation= \u8a66\u5716\u4f7f\u7528 MQ \u93c8\u7d50\uff0c\u4f46\u5728\u6307\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\u4e2d\u627e\u4e0d\u5230\u5b83\u3002
+MQLINK_ERROR_CWSIP0026.useraction=\u8acb\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u5b9a\u7fa9 MQ \u93c8\u7d50\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {1} The MQLink UUID
+# {2} The messaging engine name
+MQLINK_PSB_ERROR_CWSIP0027=CWSIP0027E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u627e\u4e0d\u5230 UUID \u70ba {0} \u7684\u767c\u4f48/\u8a02\u95b1 MQ \u93c8\u7d50
+MQLINK_PSB_ERROR_CWSIP0027.explanation= \u8a66\u5716\u4f7f\u7528\u767c\u4f48/\u8a02\u95b1 MQ \u93c8\u7d50\uff0c\u4f46\u5728\u6307\u5b9a\u7684\u50b3\u8a0a\u5f15\u64ce\u4e2d\u627e\u4e0d\u5230\u5b83\u3002
+MQLINK_PSB_ERROR_CWSIP0027.useraction=\u8acb\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u5b9a\u7fa9 MQ \u93c8\u7d50\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} subscription id
+# {1} destination name
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028=CWSIP0028W: \u76ee\u7684\u5730 {1} \u5df2\u505c\u7528\u5c0d\u8a02\u95b1 {0} \u652f\u63f4\u591a\u500b\u8a02\u95b1\u8005\u3002
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.explanation=\u76ee\u7684\u5730\u5df2\u8a2d\u70ba\u7dad\u6301\u8a0a\u606f\u6392\u5e8f\u3002\u56e0\u6b64\u5728\u76ee\u7684\u5730\u4e0a\u7684\u4efb\u4f55\u8a02\u95b1\uff0c\u90fd\u53ea\u80fd\u6709\u4e00\u500b\u8a02\u95b1\u8005\u3002
+CLONED_SUBSCRIBER_OVERRIDE_CWSIP0028.useraction=\u5982\u679c\u4e0d\u9700\u8981\u6392\u5e8f\uff0c\u5247\u53d6\u6d88 maintainMessageOrder \u5c6c\u6027\u7684\u8a2d\u5b9a\uff0c\u4ee5\u505c\u7528\u591a\u500b\u8a02\u95b1\u8005\u7f6e\u63db\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} code token to identify exception location
+MISSING_PARAM_ERROR_CWSIP0029=CWSIP0029W: \u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\u3002\u5c1a\u672a\u5728 {0} \u4f4d\u7f6e\u63d0\u4f9b\u540d\u7a31\u70ba mqLinkUuidStr \u7684\u53c3\u6578
+MISSING_PARAM_ERROR_CWSIP0029.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0029.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the destination
+# {1} the foreign bus
+# {2} the local bus
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030=CWSIP0030E: \u9023\u63a5\u81f3\u532f\u6d41\u6392 {2} \u6642\uff0c\u4e0d\u5141\u8a31\u5f9e\u532f\u6d41\u6392 {1} \u7684\u76ee\u7684\u5730 {0} \u4f7f\u7528\u8a0a\u606f\u3002
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.explanation=\u53ea\u63a5\u53d7\u5f9e\u672c\u7aef\u9023\u63a5\u7684\u532f\u6d41\u6392\u4e2d\u7684\u76ee\u7684\u5730\u4f7f\u7528\u8a0a\u606f\uff0c\u5f9e\u5916\u90e8\u532f\u6d41\u6392\u5247\u4e0d\u63a5\u53d7\u3002
+CONSUME_FROM_FOREIGN_BUS_ERROR_CWSIP0030.useraction=\u8acb\u4fee\u6539\u6d88\u8cbb\u8005\u8a66\u5716\u5f9e\u4e2d\u4f7f\u7528\u7684\u76ee\u7684\u5730\uff0c\u6216\u4fee\u6539\u9023\u7dda\u4f86\u9023\u63a5\u81f3\u76ee\u7684\u5730\u6240\u5728\u7684\u532f\u6d41\u6392\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031=CWSIP0031E: \u8a66\u5716\u5728 {0} \u76ee\u7684\u5730\u5efa\u7acb\u8a02\u95b1\u5931\u6557\uff0c\u56e0\u70ba\u767c\u751f {1} \u932f\u8aa4
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.explanation=CMSG0001
+SUBSCRIPTION_CREATION_FAILED_CWSIP0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The name of the durable subscription
+# {2} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033=CWSIP0033E: \u8a66\u5716\u5728 {0} \u76ee\u7684\u5730\u5efa\u7acb\u540d\u7a31\u70ba {1} \u7684\u8a02\u95b1\u5931\u6557\uff0c\u56e0\u70ba\u767c\u751f\u8cc7\u6599\u5132\u5b58\u5eab\u8cc7\u6e90\u554f\u984c {2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.explanation=\u7576\u5efa\u7acb\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u6642\uff0c\u6703\u5728\u8cc7\u6599\u5132\u5b58\u5eab\u4e2d\u65b0\u589e\u4e00\u500b\u9805\u76ee\u3002\u9019\u9805\u4f5c\u696d\u5931\u6557\uff0c\u56e0\u70ba\u767c\u751f\u5feb\u53d6\u8cc7\u6e90\u554f\u984c\u3002
+SUBSCRIPTION_CREATION_FAILED_CWSIP0033.useraction=\u8acb\u5229\u7528\u7ba1\u7406\u4e3b\u63a7\u53f0\u4f86\u589e\u52a0\u8cc7\u6599\u5132\u5b58\u5eab\u7684\u5feb\u53d6\u8a18\u61b6\u9ad4\u5927\u5c0f
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} The Related exception
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034=CWSIP0034E: \u8a66\u5716\u5728 {0} \u76ee\u7684\u5730\u5efa\u7acb\u8a02\u95b1\u5931\u6557\uff0c\u56e0\u70ba\u767c\u751f\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u8cc7\u6e90\u554f\u984c\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.explanation=\u7576\u5efa\u7acb\u8a02\u95b1\u6642\uff0c\u6703\u5728\u8cc7\u6599\u5132\u5b58\u5eab\u4e2d\u65b0\u589e\u4e00\u500b\u9805\u76ee\u3002\u9019\u9805\u4f5c\u696d\u5931\u6557\uff0c\u56e0\u70ba\u767c\u751f\u5feb\u53d6\u8cc7\u6e90\u554f\u984c\u3002
+SUBSCRIPTION_CREATION_FAILED_CWSIP0034.useraction=\u8acb\u5229\u7528\u7ba1\u7406\u4e3b\u63a7\u53f0\u4f86\u589e\u52a0\u8cc7\u6599\u5132\u5b58\u5eab\u7684\u5feb\u53d6\u8a18\u61b6\u9ad4\u5927\u5c0f
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription
+# {1} is the durable home of the durable subscription
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035=CWSIP0035E: \u8a66\u5716\u5c07\u6d88\u8cbb\u8005\u9023\u63a5\u81f3\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u8a02\u95b1\u4f5c\u696d {0} \u5931\u6557\uff0c\u56e0\u70ba\u8a02\u95b1\u5df2\u5b9a\u4f4d\u5728\u672c\u7aef\u3002
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.explanation=\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u4f5c\u696d\u53ea\u80fd\u5728\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u4f5c\u7528\u3002\u76ee\u524d\uff0c\u985e\u4f3c\u540d\u7a31\u7684\u8a02\u95b1\u5df2\u5b9a\u4f4d\u5728\u672c\u7aef ME\uff0c\u56e0\u6b64\u7121\u6cd5\u5b9a\u4f4d\u5728\u9060\u7aef ME\u3002
+SUBSCRIPTION_ATTACH_FAILED_CWSIP0035.useraction=\u8acb\u8b8a\u66f4\u53ef\u5ef6\u7e8c\u8a02\u95b1\u4e4b\u53ef\u5ef6\u7e8c\u8a02\u95b1 Home \u5167\u5bb9\uff0c\u6216\u522a\u9664\u672c\u7aef\u8a02\u95b1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the system destination
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036=CWSIP0036E: \u5617\u8a66\u50b3\u9001\u63a7\u5236\u8a0a\u606f\u81f3\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u5167\u90e8\u7cfb\u7d71\u76ee\u7684\u5730 {0}\uff0c\u4f46\u50b3\u9001\u5931\u6557\uff0c\u56e0\u70ba\u76ee\u7684\u5730\u5df2\u7d93\u6eff\u4e86\u3002
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.explanation=\u56e0\u70ba\u76ee\u7684\u5730\u5df2\u7d93\u6eff\u4e86\uff0c\u56e0\u6b64\u7121\u6cd5\u50b3\u9001\u63a7\u5236\u8a0a\u606f\u81f3\u76ee\u7684\u5730\u3002\u9019\u8868\u793a\u300c\u767c\u4f48\u8a02\u95b1\u300d\u62d3\u8e7c\u73fe\u5728\u662f\u4e0d\u4e00\u81f4\u7684\u3002
+PROXY_LIMIT_EXCEEDED_WARNING_CWSIP0036.useraction=\u5f9e\u7cfb\u7d71\u76ee\u7684\u5730\u6e05\u9664\u8a0a\u606f\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002\u8acb\u78ba\u4fdd\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u5df2\u7d93\u555f\u52d5\uff0c\u4e26\u4e14\u5169\u8005\u4e4b\u9593\u5df2\u5efa\u7acb\u901a\u8a0a\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038=CWSIP0038E: \u76ee\u7684\u5730\u5b57\u9996 {0} \u5c0d\u66ab\u6642\u76ee\u7684\u5730\u800c\u8a00\u4e0d\u6b63\u78ba\u3002
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.explanation=\u63d0\u4f9b\u7d66\u66ab\u6642\u76ee\u7684\u5730\u7684\u5b57\u9996\u8d85\u904e 12 \u500b\u5b57\u5143\uff0c\u6216\u5305\u542b\u4e0d\u5728 a-z\u3001A-Z\u30010-9\u3001.\u3001/ \u548c % \u7bc4\u570d\u5167\u7684\u5b57\u5143\u3002
+INVALID_DESTINATION_PREFIX_ERROR_CWSIP0038.useraction=\u8acb\u78ba\u5b9a\u66ab\u6642\u76ee\u7684\u5730\u4e4b\u76ee\u7684\u5730\u5b57\u9996\u6c92\u6709\u8d85\u51fa 12 \u500b\u5b57\u5143\uff0c\u4e14\u53ea\u5305\u542b\u5728 a-z\u3001A-Z\u30010-9\u3001.\u3001/ \u548c % \u7bc4\u570d\u5167\u7684\u5b57\u5143\u3002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039=CWSIP0039E: \u63d0\u4f9b\u7d66\u66ab\u6642\u76ee\u7684\u5730\u7684\u5b57\u9996\u8d85\u904e 12 \u500b\u5b57\u5143\u3002
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.explanation=\u63d0\u4f9b\u7d66\u66ab\u6642\u76ee\u7684\u5730\u7684\u5b57\u9996\u8d85\u904e 12 \u500b\u5b57\u5143\u3002
+INVALID_DESTINATION_PREFIX_MAX_LENGTH_ERROR_CWSIP0039.useraction=\u8acb\u78ba\u5b9a\u66ab\u6642\u76ee\u7684\u5730\u4e4b\u76ee\u7684\u5730\u5b57\u9996\u6c92\u6709\u8d85\u51fa 12 \u500b\u5b57\u5143\u3002
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} the destination prefix supplied by the user
+# {1} the invalid character
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040=CWSIP0040E: \u76ee\u7684\u5730\u5b57\u9996 {0} \u5c0d\u66ab\u6642\u76ee\u7684\u5730\u800c\u8a00\u4e0d\u6b63\u78ba\u3002\u4e0d\u5141\u8a31\u4f7f\u7528\u5b57\u5143 {1}\u3002
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.explanation=\u63d0\u4f9b\u7d66\u66ab\u6642\u76ee\u7684\u5730\u7684\u5b57\u9996\u5305\u542b\u4e0d\u5728 a-z\u3001A-Z\u30010-9\u3001.\u3001/ \u548c % \u7bc4\u570d\u5167\u7684\u5b57\u5143\u3002
+INVALID_DESTINATION_PREFIX_CHAR_ERROR_CWSIP0040.useraction=\u8acb\u78ba\u5b9a\u66ab\u6642\u76ee\u7684\u5730\u4e4b\u76ee\u7684\u5730\u5b57\u9996\u53ea\u5305\u542b\u5728 a-z\u3001A-Z\u30010-9\u3001.\u3001/ \u548c % \u7bc4\u570d\u5167\u7684\u5b57\u5143\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_NOT_FOUND_ERROR_CWSIP0041=CWSIP0041E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u627e\u4e0d\u5230\u540d\u7a31\u70ba {0} \u7684\u93c8\u7d50\u3002
+LINK_NOT_FOUND_ERROR_CWSIP0041.explanation=\u8a0a\u606f\u5230\u9054\u4e86\u6307\u5b9a\u7d66\u6307\u540d\u93c8\u7d50\u7684\u6307\u540d\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u9019\u500b\u93c8\u7d50\u4e0d\u660e\u3002
+LINK_NOT_FOUND_ERROR_CWSIP0041.useraction=\u8acb\u9a57\u8b49\u93c8\u7d50\u540d\u7a31\u6b63\u78ba\uff0c\u4e14\u5df2\u5b9a\u7fa9\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u3002\u8acb\u9a57\u8b49\u50b3\u8a0a\u5f15\u64ce\u5957\u7528\u4e86\u6700\u65b0\u7684\u914d\u7f6e\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the link
+# {1} is the name of the messaging engine.
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043=CWSIP0043E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u5df2\u6709\u540d\u7a31\u70ba {0} \u7684\u93c8\u7d50\u3002
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.explanation=\u8a66\u5716\u5efa\u7acb\u93c8\u7d50\uff0c\u4f46\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\u4e2d\u5df2\u6709\u6307\u540d\u7684\u93c8\u7d50\u3002
+LINK_ALREADY_EXISTS_ERROR_CWSIP0043.useraction=\u8acb\u9a57\u8b49\u93c8\u7d50\u540d\u7a31\u6b63\u78ba\uff0c\u4e14\u5df2\u5b9a\u7fa9\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u3002\u8acb\u9a57\u8b49\u50b3\u8a0a\u5f15\u64ce\u5957\u7528\u4e86\u6700\u65b0\u7684\u914d\u7f6e\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} messaging engine name
+MISSING_PARAM_ERROR_CWSIP0044=CWSIP0044W: \u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\u3002\u5c1a\u672a\u5728\u50b3\u8a0a\u5f15\u64ce {0} \u63d0\u4f9b destinationName
+MISSING_PARAM_ERROR_CWSIP0044.explanation=CMSG0001
+MISSING_PARAM_ERROR_CWSIP0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+INVALID_DEST_ALTER_ERROR_CWSIP0045=CWSIP0045W: \u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\u3002\u91dd\u5c0d\u50b3\u8a0a\u5f15\u64ce {1}\u3001\u76ee\u7684\u5730 {0} \u63d0\u4f9b\u4e86\u7121\u6548\u7684\u76ee\u7684\u5730\u8b8a\u66f4\u6307\u4ee4
+INVALID_DEST_ALTER_ERROR_CWSIP0045.explanation=CMSG0001
+INVALID_DEST_ALTER_ERROR_CWSIP0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+# {1} messaging engine name
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046=CWSIP0046W: \u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\u3002\u7121\u6cd5\u522a\u9664\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u7cfb\u7d71\u76ee\u7684\u5730 {0}
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.explanation=CMSG0001
+DELETE_SYSTEM_DEST_ERROR_CWSIP0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048=CWSIP0048E: \u7121\u6cd5\u5f9e\u8cc7\u6599\u5132\u5b58\u5eab\u56de\u5fa9\u76ee\u7684\u5730 {0}\u3002
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049=CWSIP0049E: \u7121\u6cd5\u5f9e\u8cc7\u6599\u5132\u5b58\u5eab\u56de\u5fa9 {0} \u93c8\u7d50\u3002
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.explanation=CMSG0001
+LINK_HANDLER_RECOVERY_ERROR_CWSIP0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050=CWSIP0050W: \u66ab\u6642\u76ee\u7684\u5730\u552f\u4e00\u8a08\u6578\u5df2\u9054\u5230\u5b83\u7684\u4e0a\u9650\u3002
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.explanation=\u66ab\u6642\u76ee\u7684\u5730\u552f\u4e00\u8a08\u6578\u5df2\u9054\u5230\u5b83\u7684\u4e0a\u9650\uff0c\u5df2\u7d93\u6298\u8fd4\u3002\u66ab\u6642\u76ee\u7684\u5730\u4e0d\u518d\u4fdd\u8b49\u662f\u552f\u4e00\u7684\u3002
+TEMPORARY_DESTINATION_UNIQUE_COUNT_WARNING_CWSIP0050.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051=CWSIP0051E: \u7531\u65bc\u932f\u8aa4 {1}\uff0c\u7121\u6cd5\u5f9e\u8cc7\u6599\u5132\u5b58\u5eab\u56de\u5fa9\u76ee\u7684\u5730 {0}\u3002
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.explanation=CMSG0001
+DESTINATION_HANDLER_RECOVERY_ERROR_CWSIP0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052=CWSIP0052E: \u53e6\u4e00\u500b\u61c9\u7528\u7a0b\u5f0f\u6b63\u5728\u4f7f\u7528\u540d\u7a31\u70ba {0} \u7684\u66ab\u6642\u76ee\u7684\u5730\uff0c\u7121\u6cd5\u522a\u9664\u5b83\u3002
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.explanation=\u66ab\u6642\u76ee\u7684\u5730\u5728\u4f7f\u7528\u4e2d\u3002\u5728\u6240\u6709\u6d88\u8cbb\u8005\u90fd\u5207\u65b7\u9023\u7dda\u4e4b\u524d\uff0c\u7121\u6cd5\u522a\u9664\u66ab\u6642\u76ee\u7684\u5730\u3002
+TEMPORARY_DESTINATION_IN_USE_ERROR_CWSIP0052.useraction=\u8acb\u95dc\u9589\u6307\u540d\u7684\u66ab\u6642\u76ee\u7684\u5730\u7684\u6240\u6709\u4f5c\u7528\u4e2d\u7684\u6d88\u8cbb\u8005\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054=CWSIP0054E: \u540d\u7a31\u70ba {0}\u3001UUID \u70ba {1} \u7684 WebSphere MQ \u93c8\u7d50\u5df2\u6bc0\u640d
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.explanation=CMSG0001
+LINK_HANDLER_CORRUPT_ERROR_CWSIP0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the link name
+# {1} is the link UUID
+# {2} The related exception
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056=CWSIP0056E: \u7121\u6cd5\u5f9e\u8cc7\u6599\u5132\u5b58\u5eab\u56de\u5fa9\u540d\u7a31\u70ba {0}\u3001UUID \u70ba {1} \u7684\u93c8\u7d50\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.explanation=CMSG0001
+LINK_HANDLER_WARM_START_ERROR_CWSIP0056.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the publish/subscribe broker profile name
+# {1} is the MQLink name
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057=CWSIP0057E: \u627e\u4e0d\u5230 MQLink {1} \u4e2d\u7684\u767c\u4f48/\u8a02\u95b1\u5206\u914d\u7ba1\u7406\u7cfb\u7d71\u8a2d\u5b9a\u6a94 {0}\u3002
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.explanation=CMSG0001
+PUB_SUB_BROKER_PROFILE_NOT_FOUND_ERROR_CWSIP0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+DESTINATION_INDOUBT_ERROR_CWSIP0062=CWSIP0062E: \u7121\u6cd5\u56de\u5fa9 UUID \u70ba {1} \u7684 {0} \u76ee\u7684\u5730\uff0c\u56e0\u70ba\u53ef\u80fd\u767c\u751f WCCM \u914d\u7f6e\u932f\u8aa4
+DESTINATION_INDOUBT_ERROR_CWSIP0062.explanation=\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b\u76ee\u7684\u5730\u7684 WCCM \u914d\u7f6e\u5df2\u4e0d\u6b63\u78ba\uff0c\u56e0\u6b64\uff0c\u5c07\u7121\u6cd5\u5728\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u63d0\u4f9b\u9019\u500b\u76ee\u7684\u5730\u3002
+DESTINATION_INDOUBT_ERROR_CWSIP0062.useraction=\u8acb\u66f4\u6b63 WCCM \u914d\u7f6e\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002\u4e4b\u5f8c\uff0c\u5c31\u80fd\u5728\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u91cd\u65b0\u63d0\u4f9b\u9019\u500b\u76ee\u7684\u5730\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+LOCAL_DEST_DELETE_INFO_CWSIP0063=CWSIP0063I: UUID \u70ba {1} \u7684\u672c\u7aef\u76ee\u7684\u5730 {0} \u5df2\u6a19\u793a\u70ba\u8981\u522a\u9664\u3002
+LOCAL_DEST_DELETE_INFO_CWSIP0063.explanation=\u5df2\u79fb\u9664\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b\u76ee\u7684\u5730\u7684 WCCM \u914d\u7f6e\uff0c\u56e0\u6b64\uff0c\u5c07\u6392\u5b9a\u522a\u9664\u5b83\u7684\u8cc7\u6e90\u3002
+LOCAL_DEST_DELETE_INFO_CWSIP0063.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} is the WebSphere MQ link UUID
+MQLINK_DEST_DELETE_INFO_CWSIP0064=CWSIP0064I: UUID \u70ba {1} \u7684 WebSphere MQ \u93c8\u7d50 {0} \u5df2\u6a19\u793a\u70ba\u8981\u522a\u9664\u3002
+MQLINK_DEST_DELETE_INFO_CWSIP0064.explanation=\u5df2\u79fb\u9664\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b WebSphere MQ \u93c8\u7d50\u7684 WCCM \u914d\u7f6e\uff0c\u56e0\u6b64\uff0c\u5c07\u6392\u5b9a\u522a\u9664\u5b83\u7684\u8cc7\u6e90\u3002
+MQLINK_DEST_DELETE_INFO_CWSIP0064.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+LOCAL_LINK_DELETE_INFO_CWSIP0065=CWSIP0065I: UUID \u70ba {1} \u7684\u672c\u7aef\u93c8\u7d50 {0} \u5df2\u6a19\u793a\u70ba\u8981\u522a\u9664\u3002
+LOCAL_LINK_DELETE_INFO_CWSIP0065.explanation=\u5df2\u79fb\u9664\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b\u93c8\u7d50\u7684 WCCM \u914d\u7f6e\uff0c\u56e0\u6b64\uff0c\u5c07\u6392\u5b9a\u522a\u9664\u5b83\u7684\u8cc7\u6e90\u3002
+LOCAL_LINK_DELETE_INFO_CWSIP0065.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the destination UUID
+REMOTE_DEST_DELETE_INFO_CWSIP0066=CWSIP0066I: UUID \u70ba {1} \u7684\u9060\u7aef\u76ee\u7684\u5730 {0} \u5df2\u6a19\u793a\u70ba\u8981\u522a\u9664\u3002
+REMOTE_DEST_DELETE_INFO_CWSIP0066.explanation=\u5df2\u79fb\u9664\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b\u76ee\u7684\u5730\u7684 WCCM \u914d\u7f6e\uff0c\u56e0\u6b64\uff0c\u5c07\u6392\u5b9a\u522a\u9664\u5b83\u7684\u8cc7\u6e90\u3002
+REMOTE_DEST_DELETE_INFO_CWSIP0066.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Link name
+# {1} is the Link UUID
+REMOTE_LINK_DELETE_INFO_CWSIP0067=CWSIP0067I: UUID \u70ba {1} \u7684\u9060\u7aef\u93c8\u7d50 {0} \u5df2\u6a19\u793a\u70ba\u8981\u522a\u9664\u3002
+REMOTE_LINK_DELETE_INFO_CWSIP0067.explanation=\u5df2\u79fb\u9664\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b\u93c8\u7d50\u7684 WCCM \u914d\u7f6e\uff0c\u56e0\u6b64\uff0c\u5c07\u6392\u5b9a\u522a\u9664\u5b83\u7684\u8cc7\u6e90\u3002
+REMOTE_LINK_DELETE_INFO_CWSIP0067.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068=CWSIP0068I: \u7121\u6548\u7684\u91cd\u65b0\u5efa\u69cb\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u5927\u5c0f\uff1b{0}
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.explanation=\u81ea\u8a02\u5167\u5bb9 sib.processor.maxReconstituteThreadpoolSize \u6240\u63d0\u4f9b\u7684\u300c\u91cd\u65b0\u5efa\u69cb\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u300d\u5927\u5c0f\u7121\u6548
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0068.useraction=\u8acb\u5c07\u81ea\u8a02\u5167\u5bb9 sib.processor.maxReconstituteThreadpoolSize \u7684\u503c\u8b8a\u66f4\u70ba\u6709\u6548\u503c\u3002
+
+# -------------------------------------------------------------------------------------------------
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069=CWSIP0069W: \u300c\u91cd\u65b0\u5efa\u69cb\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u5927\u5c0f\u300d\u5927\u65bc numberOfCores\u3002
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.explanation=\u300c\u91cd\u65b0\u5efa\u69cb\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u5927\u5c0f\u300d\u5927\u65bc numberOfCores\u3002
+INVALID_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0069.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the max thread pool size
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070=CWSIP0070I: \u91cd\u65b0\u5efa\u69cb\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u4e0a\u9650\u5927\u5c0f\uff1a{0}
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.explanation=\u91cd\u65b0\u5efa\u69cb\u57f7\u884c\u7dd2\u5132\u5b58\u5340\u4e0a\u9650\u5927\u5c0f
+MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} Is the durable subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072=CWSIP0072E: \u540d\u7a31\u70ba {0} \u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u4e0d\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u3002
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.explanation=\u8a66\u5716\u5229\u7528\u7d66\u5b9a\u7684\u540d\u7a31\u4f86\u5b58\u53d6\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u9019\u500b\u8a02\u95b1\u4e0d\u5b58\u5728\u3002
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.useraction=\u8acb\u7528\u7d66\u5b9a\u7684\u540d\u7a31\u4f86\u5efa\u7acb\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u6216\u7528\u6709\u6548\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1 ID \u4f86\u91cd\u8a66\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name
+# {1} The messaging engine name
+OBJECT_CLOSED_ERROR_CWSIP0081=CWSIP0081E: {0} \u76ee\u7684\u5730\u7684\u700f\u89bd\u5668\u968e\u6bb5\u4f5c\u696d\u662f\u95dc\u9589\u7684\uff0c\u7121\u6cd5\u4f7f\u7528\u3002
+OBJECT_CLOSED_ERROR_CWSIP0081.explanation=\u700f\u89bd\u5668\u5df2\u95dc\u9589\uff0c\u6307\u5b9a\u7684\u76ee\u7684\u5730\u7121\u6cd5\u4f7f\u7528\u5b83\u3002
+OBJECT_CLOSED_ERROR_CWSIP0081.useraction=\u8acb\u5efa\u7acb\u4e00\u500b\u65b0\u700f\u89bd\u5668\u968e\u6bb5\u4f5c\u696d\u4f86\u6307\u5411\u6307\u5b9a\u7684\u76ee\u7684\u5730\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The messaging engine name
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085=CWSIP0085E: \u8a66\u5716\u958b\u555f {0} \u76ee\u7684\u5730\uff0c\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u9032\u884c\u700f\u89bd\u3002\u76ee\u7684\u5730\u66ab\u6642\u9396\u5b9a\u3002
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.explanation=\u5728\u67d0\u4e9b\u7ba1\u7406\u52d5\u4f5c\uff08\u5982\u522a\u9664\uff09\u671f\u9593\uff0c\u76ee\u7684\u5730\u88ab\u9396\u5b9a\u3002
+DESTINATION_IS_LOCKED_ERROR_CWSIP0085.useraction=\u8acb\u5617\u8a66\u91cd\u65b0\u9023\u63a5\u76ee\u7684\u5730\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The id for the originating consumer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_CONSUMER_ERROR_CWSIP0092=CWSIP0092E: \u7121\u6cd5\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\uff0c\u5efa\u7acb\u539f\u59cb\u6d88\u8cbb\u8005 {0} \u7684 BifurcatedConsumer\u3002
+CREATE_CONSUMER_ERROR_CWSIP0092.explanation=\u8a66\u5716\u5efa\u7acb BifurcatedConsumer\uff0c\u4f46\u7528\u6240\u63d0\u4f9b\u7684 ID \u627e\u4e0d\u5230\u539f\u59cb\u6d88\u8cbb\u8005\u3002
+CREATE_CONSUMER_ERROR_CWSIP0092.useraction=\u8acb\u78ba\u5b9a\u539f\u59cb\u6d88\u8cbb\u8005\u5728\u4f5c\u7528\u4e2d\uff0c\u518d\u7528\u6b63\u78ba\u7684 ID \u4f86\u91cd\u8a66\u4f5c\u696d\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The id for the originating conusmer
+# {1} The messaging engine name
+# The term BifurcatedConsumer is a technical term that should not be translated.
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094=CWSIP0094E: \u7121\u6cd5\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\uff0c\u5efa\u7acb\u539f\u59cb\u6d88\u8cbb\u8005 {0} \u7684 BifurcatedConsumer\uff0c\u56e0\u70ba\u4ed6\u5011\u6709\u4e0d\u540c\u7684\u4f7f\u7528\u8005 ID\u3002
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.explanation=\u8a66\u5716\u5efa\u7acb BifurcatedConsumer\uff0c\u4f46\u7528\u4f86\u5efa\u7acb BifurcatedConsumer \u548c\u539f\u59cb\u6d88\u8cbb\u8005\u7684\u5b89\u5168\u74b0\u5883\u5b9a\u7fa9\u4e0d\u540c\u3002
+CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.useraction=\u8acb\u78ba\u5b9a\u539f\u59cb\u6d88\u8cbb\u8005\u548c BifurcatedConsumer \u4f7f\u7528\u76f8\u540c\u5b89\u5168\u74b0\u5883\u5b9a\u7fa9\u6216\u9023\u7dda\uff0c\u518d\u91cd\u8a66\u6307\u4ee4\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097=CWSIP0097E: \u627e\u4e0d\u5230\u540d\u7a31\u70ba {0} \u7684\u66ab\u6642\u76ee\u7684\u5730\u3002
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.explanation=\u8a66\u5716\u522a\u9664\u6307\u540d\u7684\u66ab\u6642\u76ee\u7684\u5730\uff0c\u4f46\u627e\u4e0d\u5230\u6307\u540d\u7684\u76ee\u7684\u5730\u3002
+TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097.useraction=\u8acb\u78ba\u5b9a\u66ab\u6642\u76ee\u7684\u5730\u5b58\u5728\uff0c\u518d\u91cd\u8a66\u522a\u9664\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the subscription name.
+# {1} The destination name.
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098=CWSIP0098E: \u7121\u6cd5\u5efa\u7acb\u6307\u5411\u66ab\u6642\u76ee\u7684\u5730 {1} \u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1 {0}\u3002
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.explanation=\u8a66\u5716\u5efa\u7acb\u6307\u5411\u66ab\u6642\u76ee\u7684\u5730\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u4e0d\u5141\u8a31\u9019\u9ebc\u505a\u3002
+DURABLE_SUBSCRIPTION_USAGE_ERROR_CWSIP0098.useraction=\u8acb\u5728\u4e0d\u662f\u66ab\u6642\u7684\u4e3b\u984c\u7a7a\u9593\u4e0a\u5efa\u7acb\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002\u8acb\u6aa2\u67e5\u7ba1\u7406\u4e3b\u63a7\u53f0\u4f86\u627e\u51fa\u53ef\u7528\u7684\u4e3b\u984c\u7a7a\u9593\u76ee\u7684\u5730\u6e05\u55ae\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099=CWSIP0099E: \u627e\u4e0d\u5230\u540d\u7a31\u70ba {0} \u7684\u66ab\u6642\u76ee\u7684\u5730\uff0c\u56e0\u70ba\u66ab\u6642\u76ee\u7684\u5730\u5efa\u7acb\u5728\u4e0d\u540c\u7684\u9023\u7dda\u4e0a\u3002
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.explanation=\u53ea\u80fd\u5f9e\u76f8\u540c\u7684\u9023\u7dda\u5b58\u53d6\u66ab\u6642\u76ee\u7684\u5730\u3002
+TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.useraction=\u8acb\u9a57\u8b49\u6240\u7528\u7684\u76ee\u7684\u5730\u5efa\u7acb\u5728\u73fe\u884c\u9023\u7dda\u4e4b\u4e0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name.
+# {1} is the messaging engine name
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100=CWSIP0100E: \u63d0\u4f9b\u7684\u53c3\u6578\u7d44\u5408\u5c0d\u65bc\u5728\u50b3\u8a0a\u5f15\u64ce {2} \u7684 {1} \u76ee\u7684\u5730\u4e2d\u5efa\u7acb\u8907\u88fd\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1 {0} \u7121\u6548\u3002
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.explanation=\u8a66\u5716\u5efa\u7acb\u8907\u88fd\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u5931\u6557\uff0c\u56e0\u70ba\u8981\u6c42 noLocal \u884c\u70ba\uff0c\u4f46\u4e0d\u652f\u63f4\u8907\u88fd\u7684\u8a02\u95b1\u8005\u7684\u9019\u500b\u884c\u70ba\u3002
+INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.useraction=\u8acb\u79fb\u9664 noLocal \u9078\u9805\u4f86\u91cd\u65b0\u914d\u7f6e\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} the destination name.
+# {1} The name of the messaging engine
+DESTINATION_DELETED_ERROR_CWSIP0111=CWSIP0111E: \u6b63\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u522a\u9664\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u3002
+DESTINATION_DELETED_ERROR_CWSIP0111.explanation=\u8a66\u5716\u5728\u522a\u9664\u76ee\u7684\u5730\u6642\u4f7f\u7528\u76ee\u7684\u5730\u3002
+DESTINATION_DELETED_ERROR_CWSIP0111.useraction=\u8acb\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u91cd\u5efa\u76ee\u7684\u5730\u6216\u4f7f\u7528\u53e6\u4e00\u500b\u76ee\u7684\u5730\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} The name of the messaging engine
+DESTINATION_DELETION_ERROR_CWSIP0112=CWSIP0112E: \u7576\u9023\u63a5\u6d88\u8cbb\u8005\u6642\uff0c\u7121\u6cd5\u522a\u9664\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u3002
+DESTINATION_DELETION_ERROR_CWSIP0112.explanation=\u8a66\u5716\u522a\u9664\u6d88\u8cbb\u8005\u4ecd\u9023\u63a5\u7684\u76ee\u7684\u5730\u3002
+DESTINATION_DELETION_ERROR_CWSIP0112.useraction=\u7576\u76ee\u7684\u5730\u9023\u63a5\u6d88\u8cbb\u61c9\u7528\u7a0b\u5f0f\u6642\uff0c\u7121\u6cd5\u522a\u9664\u76ee\u7684\u5730\u3002\u8acb\u5f9e\u76ee\u7684\u5730\u79fb\u9664\u6240\u6709\u5728\u6d88\u8cbb\u7684\u61c9\u7528\u7a0b\u5f0f\u5f8c\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114=CWSIP0114E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u63a5\u6536\u4e92\u65a5\u3002
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.explanation=\u8a66\u5716\u5efa\u7acb\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u4f86\u6307\u5411\u914d\u7f6e\u4e86\u63a5\u6536\u4e92\u65a5\u7684\u76ee\u7684\u5730\u3002\u9019\u9805\u4f5c\u696d\u5931\u6557\uff0c\u56e0\u70ba\u5df2\u6709\u6d88\u8cbb\u8005\u9023\u63a5\u9019\u500b\u76ee\u7684\u5730\u3002
+DESTINATION_RECEIVE_EXCLUSIVE_CWSIP0114.useraction=\u8acb\u5728\u6c92\u6709\u9023\u63a5\u6d88\u8cbb\u8005\u6642\uff0c\u518d\u91cd\u8a66\u4f5c\u696d\uff1b\u60a8\u4e5f\u53ef\u4ee5\u66f4\u65b0\u76ee\u7684\u5730\uff0c\u4f7f\u5b83\u4e0d\u518d\u662f\u63a5\u6536\u4e92\u65a5\uff0c\u518d\u91cd\u8a66\u5efa\u7acb\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the internal subscription
+# {1} is the name of the messaging engine
+# {2} is the name of the target destination
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115=CWSIP0115E: \u7531\u65bc\u627e\u4e0d\u5230\u76ee\u7684\u5730\uff0c\u56e0\u6b64\u8207 {1} \u50b3\u8a0a\u5f15\u64ce\u4e0a\u7684 {0} \u8a02\u95b1\u76f8\u7b26\u7684\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3 {2} \u76ee\u7684\u5730\u3002
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.explanation=\u5617\u8a66\u5c07\u8a0a\u606f\u8207\u5167\u90e8\u8a02\u95b1\u6bd4\u5c0d\uff0c\u4e26\u8f49\u905e\u81f3\u5176\u76ee\u6a19\u76ee\u7684\u5730\u3002\u4f46\u537b\u627e\u4e0d\u5230\u76ee\u6a19\u76ee\u7684\u5730\u3002
+INTERNAL_SUBSCRIPTION_TARGET_NOT_FOUND_CWSIP0115.useraction=\u53ef\u80fd\u662f\u76ee\u7684\u5730\u4e0d\u5b58\u5728\uff0c\u6216\u5df2\u88ab\u522a\u9664\u3002\u8acb\u6aa2\u67e5\u76ee\u7684\u5730\u78ba\u5be6\u5b58\u5728\uff0c\u4e26\u4e14\u53ef\u4ee5\u5b58\u53d6\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_DESTINATION_IN_USE_CWSIP0116=CWSIP0116E: \u5728 {1} \u50b3\u8a0a\u5f15\u64ce\u4e2d\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u5df2\u6392\u5e8f\uff0c\u4e26\u4e14\u5df2\u7d93\u6709\u9023\u63a5\u7684\u6d88\u8cbb\u8005
+ORDERED_DESTINATION_IN_USE_CWSIP0116.explanation=\u8a66\u5716\u5efa\u7acb\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u4f86\u6307\u5411\u914d\u7f6e\u4e86\u7dad\u6301\u6392\u5e8f\u7684\u76ee\u7684\u5730\u3002\u9019\u9805\u4f5c\u696d\u5931\u6557\uff0c\u56e0\u70ba\u5df2\u6709\u6d88\u8cbb\u8005\u9023\u63a5\u9019\u500b\u76ee\u7684\u5730\u3002
+ORDERED_DESTINATION_IN_USE_CWSIP0116.useraction=\u5148\u89e3\u958b\u6240\u6709\u5176\u4ed6\u6d88\u8cbb\u8005\uff0c\u518d\u5617\u8a66\u91cd\u65b0\u9023\u63a5\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine
+ORDERED_MESSAGING_ERROR_CWSIP0117=CWSIP0117E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u5df2\u7121\u6cd5\u4fdd\u8b49\u8a0a\u606f\u7684\u6392\u5e8f\u3002
+ORDERED_MESSAGING_ERROR_CWSIP0117.explanation=\u767c\u751f\u5167\u90e8\u932f\u8aa4\uff0c\u9019\u53ef\u80fd\u6703\u5f71\u97ff\u7dad\u6301\u8a0a\u606f\u6392\u5e8f\u7684\u80fd\u529b\u3002
+ORDERED_MESSAGING_ERROR_CWSIP0117.useraction=\u91cd\u65b0\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u5c07\u53ef\u4ee5\u56de\u5fa9\u7dad\u6301\u8a0a\u606f\u6b21\u5e8f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+OPERATION_IS_INVALID_ERROR_CWSIP0121=CWSIP0121E: \u8a66\u5716\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e0a\u57f7\u884c\u4e0d\u6b63\u78ba\u7684\u4f5c\u696d\u3002
+OPERATION_IS_INVALID_ERROR_CWSIP0121.explanation=\u76ee\u7684\u5730\u4e0d\u652f\u63f4\u9019\u9805\u4f5c\u696d\u3002
+OPERATION_IS_INVALID_ERROR_CWSIP0121.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133=CWSIP0133E: \u8a66\u5716\u958b\u555f\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4f86\u6d88\u8cbb\u3002\u76ee\u7684\u5730\u66ab\u6642\u9396\u5b9a\u3002
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.explanation=\u5728\u67d0\u4e9b\u7ba1\u7406\u52d5\u4f5c\uff08\u5982\u522a\u9664\uff09\u671f\u9593\uff0c\u76ee\u7684\u5730\u88ab\u9396\u5b9a\u3002
+DESTINATION_IS_LOCKED_ERROR_CWSIP0133.useraction=\u8acb\u518d\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The name of the messaging engine.
+# {2} The Subscription name
+DESTINATION_USEAGE_ERROR_CWSIP0141=CWSIP0141E: \u76ee\u7684\u5730\u914d\u932f\u932f\u8aa4\uff0c{2} \u8a02\u95b1\u8a66\u5716\u4f7f\u7528\u5df2\u5b9a\u7fa9\u6210\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u4e4b\u4f47\u5217\u7684 {0} \u76ee\u7684\u5730\u3002
+DESTINATION_USEAGE_ERROR_CWSIP0141.explanation=\u8a66\u5716\u5c07\u8a02\u95b1\u95dc\u806f\u65bc\u5b9a\u7fa9\u70ba\u4f47\u5217\u7684\u76ee\u7684\u5730\u3002\u53ea\u80fd\u91dd\u5c0d\u4e3b\u984c\u7a7a\u9593\u4f86\u5efa\u7acb\u8a02\u95b1\u3002
+DESTINATION_USEAGE_ERROR_CWSIP0141.useraction=\u8acb\u5c07\u76ee\u7684\u5730\u91cd\u65b0\u5b9a\u7fa9\u70ba\u4e3b\u984c\u7a7a\u9593\u76ee\u7684\u5730\uff0c\u6216\u5efa\u7acb\u4e3b\u984c\u7a7a\u9593\u985e\u578b\u7684\u65b0\u76ee\u7684\u5730\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine.
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143=CWSIP0143E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u5df2\u6709\u540d\u7a31\u70ba {0} \u7684\u8a02\u95b1\u3002
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.explanation=\u8a66\u5716\u7528\u7d66\u5b9a\u7684\u540d\u7a31\u4f86\u5efa\u7acb\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u9019\u500b\u8a02\u95b1\u5df2\u7d93\u5b58\u5728\u3002
+SUBSCRIPTION_ALREADY_EXISTS_ERROR_CWSIP0143.useraction=\u8acb\u522a\u9664\u73fe\u6709\u7684\u8a02\u95b1\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\uff0c\u6216\u5efa\u7acb\u65b0\u540d\u7a31\u7684\u8a02\u95b1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146=CWSIP0146E: \u540d\u7a31\u70ba {0} \u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u4e0d\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u3002
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.explanation=\u8a66\u5716\u5b58\u53d6\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u9019\u500b\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u4e0d\u5b58\u5728\u3002
+SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0146.useraction=\u8a02\u95b1\u4e5f\u8a31\u662f\u522a\u9664\u4e86\uff0c\u4e5f\u8a31\u662f\u5c1a\u672a\u5efa\u7acb\u3002\u8acb\u9a57\u8b49\u8a02\u95b1\u5b58\u5728\uff0c\u518d\u91cd\u8a66\u9019\u500b\u6307\u4ee4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The name of the messaging engine
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147=CWSIP0147E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u540d\u7a31\u70ba {0} \u7684\u53ef\u5ef6\u7e8c\u8a02\u95b1\u662f\u5167\u90e8\u8a02\u95b1\uff0c\u56e0\u6b64\u7121\u6cd5\u9023\u63a5\u5230\u5176\u4e2d
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.explanation=\u8a66\u5716\u5b58\u53d6\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u9019\u500b\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u662f\u5167\u90e8\u8a02\u95b1\uff0c\u56e0\u6b64\u4e0d\u80fd\u4f7f\u7528\u3002
+INTERNAL_SUBSCRIPTION_ACCESS_DISALLOWED_CWSIP0147.useraction=\u300c\u5167\u90e8\u8a02\u95b1\u300d\u662f\u7528\u4f86\u5c07\u767c\u4f48\u8cc7\u8a0a\u5c0d\u6620\u5230\u76ee\u6a19\u76ee\u7684\u5730\u3002\u5916\u90e8\u6d88\u8cbb\u8005\u4e0d\u53ef\u9023\u63a5\u5230\u5167\u90e8\u8a02\u95b1\u3002\u8acb\u6539\u7528\u6709\u6548\u7684\u8a02\u95b1\u540d\u7a31\u91cd\u8a66\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152=CWSIP0152E: \u50b3\u8a0a\u5f15\u64ce {1} \u7684\u5176\u4ed6\u6d88\u8cbb\u8005\u6b63\u5728\u4f7f\u7528\u540d\u7a31\u70ba {0} \u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.explanation=\u5176\u4ed6\u6d88\u8cbb\u8005\u6b63\u5728\u4f7f\u7528\u6307\u5b9a\u540d\u7a31\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002\u5728\u6240\u6709\u6d88\u8cbb\u8005\u90fd\u5207\u65b7\u9023\u7dda\u4e4b\u524d\uff0c\u7121\u6cd5\u5728\u8a02\u95b1\u4e0a\u57f7\u884c\u4f5c\u696d\u3002
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0152.useraction=\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u53ea\u80fd\u9023\u63a5\u55ae\u4e00\u6d88\u8cbb\u8005\u3002\u8acb\u5c07\u6240\u6709\u6d88\u8cbb\u8005\u5206\u958b\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the subscription id
+# {1} The messaging engine Name
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153=CWSIP0153E: \u540d\u7a31\u70ba {0} \u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u6709\u672a\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u78ba\u5b9a\u7684\u8a0a\u606f\u3002
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.explanation=\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u6709\u672a\u78ba\u5b9a\u7684\u8a0a\u606f\uff0c\u56e0\u6b64\u8a66\u5716\u522a\u9664\u5931\u6557\u3002
+SUBSCRIPTION_IN_USE_ERROR_CWSIP0153.useraction=\u8acb\u78ba\u5b9a\u5df2\u5f9e\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u6d88\u8cbb\u61c9\u7528\u7a0b\u5f0f\u50b3\u9001\u6216\u63a5\u6536\u5f9e\u800c\u5efa\u7acb\u8d77\u4f86\uff0c\u4f46\u5c1a\u672a\u5b8c\u6210\u7684\u4efb\u4f55\u5de5\u4f5c\u55ae\u5143\uff0c\u518d\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+#
+# {0} The name of the remote messaging engine we attempt to map.
+REMOTE_ME_MAPPING_ERROR_CWSIP0156=CWSIP0156E: \u7576\u5c0b\u627e\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce {0} \u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.explanation=\u8655\u7406\u7a0b\u5e8f\u7121\u6cd5\u5b8c\u6210\uff0c\u56e0\u70ba\u627e\u4e0d\u5230\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u3002
+REMOTE_ME_MAPPING_ERROR_CWSIP0156.useraction=\u8acb\u9a57\u8b49\u50b3\u8a0a\u5f15\u64ce\u540d\u7a31\u6709\u6548\uff0c\u4e14\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u5728\u57f7\u884c\u4e2d\uff0c\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u901a\u8a0a\u5728\u4f5c\u7528\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+#
+RECEIVE_USAGE_ERROR_CWSIP0171=CWSIP0171E: \u7576\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u767b\u9304\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u6642\uff0c\u63a5\u53d7\u6307\u4ee4\u4e0d\u662f\u53ef\u80fd\u7684
+RECEIVE_USAGE_ERROR_CWSIP0171.explanation=\u7576\u6d88\u8cbb\u8005\u9023\u63a5\u70ba\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u6642\uff0c\u7121\u6cd5\u63a5\u6536\u8a0a\u606f\u3002
+RECEIVE_USAGE_ERROR_CWSIP0171.useraction=\u8acb\u78ba\u5b9a\u6d88\u8cbb\u8005\u6c92\u6709\u767b\u9304\u70ba\u975e\u540c\u6b65\u6d88\u8cbb\u8005\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the message that was not found.
+# {1} the name of the destination.
+# {2} The name of the messaging engine.
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173=CWSIP0173E: \u5728\u50b3\u8a0a\u5f15\u64ce {2} \u7684 {1} \u76ee\u7684\u5730\u4e2d\uff0c\u627e\u4e0d\u5230 {0} \u8a0a\u606f
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.explanation=\u8981\u6c42\u5728\u76ee\u7684\u5730\u4e2d\u627e\u51fa\u8a0a\u606f\uff0c\u4f46\u8a0a\u606f\u4e0d\u5b58\u5728\u3002
+CORE_MESSAGE_NOT_FOUND_ERROR_CWSIP0173.useraction=\u4e5f\u8a31\u662f\u5148\u524d\u522a\u9664\u4e86\u8a0a\u606f\uff0c\u4e5f\u53ef\u80fd\u662f\u8a0a\u606f\u5230\u671f\u3002\u8acb\u9a57\u8b49\u8a0a\u606f\u5728\u6307\u5b9a\u7684\u76ee\u7684\u5730\uff0c\u518d\u91cd\u8a66\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination.
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0174=CWSIP0174E: \u7576\u767c\u51fa\u540c\u6b65\u63a5\u6536\u6307\u4ee4\u6642\uff0c\u7121\u6cd5\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u767b\u9304\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u3002
+RECEIVE_USAGE_ERROR_CWSIP0174.explanation=\u8a66\u5716\u5728\u767c\u51fa\u63a5\u6536\u6307\u4ee4\u6642\uff0c\u767b\u9304\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u3002
+RECEIVE_USAGE_ERROR_CWSIP0174.useraction=\u8acb\u7b49\u5230\u63a5\u6536\u6307\u4ee4\u5b8c\u6210\u4e86\uff0c\u518d\u767b\u9304\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ASYNCH_CONSUMER_ERROR_CWSIP0175=CWSIP0175E: \u8a66\u5716\u57f7\u884c\u975e\u540c\u6b65\u6d88\u8cbb\u8005\uff0c\u4f46\u6c92\u6709\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e2d\u767b\u9304\u4efb\u4f55\u6d88\u8cbb\u8005\u3002
+ASYNCH_CONSUMER_ERROR_CWSIP0175.explanation=\u61c9\u7528\u7a0b\u5f0f\u8981\u6c42\u57f7\u884c\u4e00\u500b\u975e\u540c\u6b65\u6d88\u8cbb\u8005\uff0c\u4f46\u6307\u5b9a\u7684\u76ee\u7684\u5730\u6c92\u6709\u767b\u9304\u4efb\u4f55\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u3002
+ASYNCH_CONSUMER_ERROR_CWSIP0175.useraction=\u8acb\u5728\u76ee\u7684\u5730\u767b\u9304\u4e00\u500b\u975e\u540c\u6b65\u6d88\u8cbb\u8005\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The messaging engine name
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176=CWSIP0176E: \u7576\u555f\u52d5\u968e\u6bb5\u4f5c\u696d\u6642\uff0c\u7121\u6cd5\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e2d\u767b\u9304\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u3002
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.explanation=\u7576\u7528\u4f86\u5efa\u7acb\u6d88\u8cbb\u8005\u7684\u968e\u6bb5\u4f5c\u696d\u4e0d\u5728\u5df2\u505c\u6b62\u7684\u72c0\u614b\uff0c\u8a66\u5716\u5728\u76ee\u7684\u5730\u4e2d\u767b\u9304\u975e\u540c\u6b65\u6d88\u8cbb\u8005\u3002
+ASYNCH_CONSUMER_RUN_ERROR_CWSIP0176.useraction=\u8acb\u505c\u6b62\u6d88\u8cbb\u8005\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+CONSUMER_CLOSED_ERROR_CWSIP0177=CWSIP0177E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e4b {0} \u76ee\u7684\u5730\u7684\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u5df2\u95dc\u9589\u3002
+CONSUMER_CLOSED_ERROR_CWSIP0177.explanation=\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u95dc\u9589\u4e4b\u5f8c\uff0c\u7121\u6cd5\u57f7\u884c\u9019\u500b\u6d88\u8cbb\u8005\u7684\u4f5c\u696d\u3002
+CONSUMER_CLOSED_ERROR_CWSIP0177.useraction=\u8acb\u5efa\u7acb\u4e00\u500b\u65b0\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u7d66\u6307\u5b9a\u7684\u76ee\u7684\u5730\uff0c\u6216\u5728\u95dc\u9589\u6d88\u8cbb\u8005\u4e4b\u524d\u57f7\u884c\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+RECEIVE_USAGE_ERROR_CWSIP0178=CWSIP0178E: \u9019\u6642\u63a5\u6536\u4f5c\u696d\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e0a\u7121\u6548\u3002
+RECEIVE_USAGE_ERROR_CWSIP0178.explanation=\u5728\u6307\u5b9a\u76ee\u7684\u5730\u4e2d\uff0c\u9019\u500b\u6d88\u8cbb\u8005\u968e\u6bb5\u4f5c\u696d\u5df2\u6709\u53e6\u4e00\u500b\u63a5\u6536\u4f5c\u696d\u5728\u9032\u884c\u4e2d\u3002
+RECEIVE_USAGE_ERROR_CWSIP0178.useraction=\u8acb\u8b93\u539f\u59cb\u63a5\u6536\u4f5c\u696d\u5b8c\u6210\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} is the name of the messaging engine.
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180=CWSIP0180E: \u7531\u65bc\u76ee\u524d\u6b63\u5728\u9032\u884c\u4ea4\u6613\u63a5\u6536\uff0c\u56e0\u6b64\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u4e0d\u5141\u8a31\u63a5\u6536\u3002
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.explanation=\u8a66\u5716\u5f9e\u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\uff0c\u4f46\u76ee\u7684\u5730\u914d\u7f6e\u6210\u7dad\u6301\u6392\u5e8f\u3002\u6b64\u76ee\u7684\u5730\u4e2d\u76ee\u524d\u4ecd\u6709\u5176\u4ed6\u672a\u5b8c\u6210\u7684\u4ea4\u6613\u5b58\u5728\u3002
+ORDERED_TRANSACTED_RECEIVE_ERROR_CWSIP0180.useraction=\u5148\u5b8c\u6210\u6b64\u76ee\u7684\u5730\u4e2d\u7684\u6240\u6709\u5176\u4ed6\u4ea4\u6613\u5f8c\uff0c\u518d\u5617\u8a66\u63a5\u6536\u65b0\u7684\u4ea4\u6613\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181=CWSIP0181W: \u4f4d\u5728\u76ee\u7684\u5730 {0} \u7684\u6d88\u8cbb\u8005\u6279\u6b21\u5927\u5c0f\u4e0a\u9650\u5df2\u7d93\u8a2d\u5b9a\u70ba 1\u3002
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.explanation=\u76ee\u7684\u5730\u5df2\u8a2d\u70ba\u7dad\u6301\u8a0a\u606f\u6392\u5e8f\u3002\u56e0\u6b64\uff0c\u6d88\u8cbb\u8005\u7684\u6279\u6b21\u5927\u5c0f\u4e0a\u9650\u5df2\u7d93\u8a2d\u5b9a\u70ba 1\u3002
+MAX_BATCH_SIZE_OVERRIDE_WARNING_CWSIP0181.useraction=\u5982\u679c\u4e0d\u9700\u8981\u6392\u5e8f\uff0c\u5247\u53d6\u6d88 maintainMessageOrder \u5c6c\u6027\u7684\u8a2d\u5b9a\uff0c\u4ee5\u505c\u7528\u6279\u6b21\u5927\u5c0f\u4e0a\u9650\u7f6e\u63db\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+# {3} elapsed time in seconds
+MSG_BLOCK_WARNING_CWSIP0182=CWSIP0182W: \u50b3\u8a0a\u5f15\u64ce {2} \u4e2d\u4e4b\u8cc7\u6e90 {1} \u7684\u6d88\u8cbb\u8005 {0} \u5df2\u88ab\u5c01\u9396\u9054 {3} \u79d2\u3002
+MSG_BLOCK_WARNING_CWSIP0182.explanation=\u6b63\u5728\u8655\u7406\u540c\u4e00\u7d44\u7684\u8a0a\u606f\u6642\uff0c\u6307\u540d\u8cc7\u6e90\u4e2d\u7684\u8a0a\u606f\u6d88\u8cbb\u8005\u88ab\u5c01\u9396\u7684\u6642\u9593\u91cf\u8d85\u4e4e\u9810\u671f\u3002\u5728\u9019\u7a2e\u72c0\u614b\u4e0b\uff0c\u7121\u6cd5\u8655\u7406\u4efb\u4f55\u9032\u4e00\u6b65\u7684\u8a0a\u606f\u3002
+MSG_BLOCK_WARNING_CWSIP0182.useraction=\u8acb\u89e3\u6c7a\u8a0a\u606f\u6d88\u8cbb\u8005\u7684\u5c01\u9396\u539f\u56e0\uff0c\u63a2\u7d22\u76ee\u524d\u6b63\u5728\u6d88\u8cbb\u8cc7\u6e90\u8a0a\u606f\u7684\u61c9\u7528\u7a0b\u5f0f\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} consumer ID
+# {1} resource name, e.g. queue or subscription name
+# {2} messaging engine name
+MSG_BLOCK_CLEARED_CWSIP0183=CWSIP0183I: \u50b3\u8a0a\u5f15\u64ce {2} \u4e2d\u4e4b\u8cc7\u6e90 {1} \u7684\u6d88\u8cbb\u8005 {0} \u4e0d\u518d\u88ab\u5c01\u9396\u3002
+MSG_BLOCK_CLEARED_CWSIP0183.explanation=\u6307\u540d\u8cc7\u6e90\u4e2d\u7684\u8a0a\u606f\u6d88\u8cbb\u8005\u4e0d\u518d\u88ab\u5c01\u9396\u65bc\u4e00\u7d44\u8a0a\u606f\u4e2d\u3002\u9019\u662f\u56e0\u70ba\u5c01\u9396\u539f\u56e0\u5df2\u89e3\u6c7a\uff0c\u6216\u662f\u5df2\u95dc\u9589\u6d88\u8cbb\u8005\u3002
+MSG_BLOCK_CLEARED_CWSIP0183.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0191=CWSIP0191E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e2d\u73fe\u884c\u8a0a\u606f\u7121\u6548\u3002
+INVALID_MESSAGE_ERROR_CWSIP0191.explanation=\u8a66\u5716\u89e3\u958b\u9396\u5b9a\u73fe\u884c\u8a0a\u606f\uff0c\u4f46\u6c92\u6709\u53ef\u4f9b\u89e3\u958b\u9396\u5b9a\u7684\u8a0a\u606f\u3002
+INVALID_MESSAGE_ERROR_CWSIP0191.useraction=\u73fe\u884c\u6d88\u8cbb\u8005\u53ef\u80fd\u5df2\u5c07\u8a0a\u606f\u89e3\u958b\u9396\u5b9a\u6216\u522a\u9664\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+INVALID_MESSAGE_ERROR_CWSIP0192=CWSIP0192E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e2d\u73fe\u884c\u8a0a\u606f\u7121\u6548\u3002
+INVALID_MESSAGE_ERROR_CWSIP0192.explanation=\u8a66\u5716\u522a\u9664\u73fe\u884c\u8a0a\u606f\uff0c\u4f46\u6c92\u6709\u53ef\u4f9b\u522a\u9664\u7684\u8a0a\u606f\u3002
+INVALID_MESSAGE_ERROR_CWSIP0192.useraction=\u73fe\u884c\u6d88\u8cbb\u8005\u53ef\u80fd\u5df2\u5c07\u8a0a\u606f\u89e3\u958b\u9396\u5b9a\u6216\u522a\u9664\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The name of the messaging engine.
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193=CWSIP0193E: \u50b3\u8a0a\u5f15\u64ce {1} \u4e2d ID \u70ba {0} \u4e4b\u8a0a\u606f\u7684\u9396\u5b9a\u5df2\u904e\u671f\u3002
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.explanation=\u8a66\u5716\u5728\u6d88\u8cbb\u8005\u5167\u4f7f\u7528\u8a0a\u606f\uff0c\u4f46\u9396\u5b9a\u903e\u6642\u904e\u671f\uff0c\u5df2\u91cd\u65b0\u63d0\u4f9b\u8a0a\u606f\u3002
+MESSAGE_LOCK_EXPIRED_ERROR_CWSIP0193.useraction=\u7576\u9396\u5b9a\u5230\u671f\u6642\uff0c\u6703\u91cd\u65b0\u63d0\u4f9b\u8a0a\u606f\u7d66\u53e6\u4e00\u500b\u6d88\u8cbb\u8005\u8655\u7406\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The name of the messaging engine.
+ORDERED_MESSAGING_ERROR_CWSIP0194=CWSIP0194E: \u7531\u65bc\u76ee\u524d\u6b63\u5728\u9032\u884c\u4ea4\u6613\u63a5\u6536\uff0c\u56e0\u6b64\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u7121\u6cd5\u63a5\u6536\u8a0a\u606f\u3002
+ORDERED_MESSAGING_ERROR_CWSIP0194.explanation=\u8a66\u5716\u5f9e\u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\uff0c\u4f46\u76ee\u7684\u5730\u914d\u7f6e\u6210\u7dad\u6301\u6392\u5e8f\u3002\u6b64\u76ee\u7684\u5730\u4e2d\u76ee\u524d\u4ecd\u6709\u5176\u4ed6\u672a\u5b8c\u6210\u7684\u4ea4\u6613\u5b58\u5728\u3002
+ORDERED_MESSAGING_ERROR_CWSIP0194.useraction=\u5148\u5b8c\u6210\u6b64\u76ee\u7684\u5730\u4e2d\u7684\u6240\u6709\u5176\u4ed6\u4ea4\u6613\u5f8c\uff0c\u518d\u5617\u8a66\u63a5\u6536\u65b0\u7684\u4ea4\u6613\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201=CWSIP0201E: \u7121\u6cd5\u4f7f\u7528\u9019\u9805\u4f5c\u696d
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.explanation=\u9019\u500b\u8a0a\u606f\u8655\u7406\u7a0b\u5f0f\u5df2\u6bc0\u640d\uff0c\u6216\u5728\u91cd\u8a2d\u72c0\u614b\u4e2d\u3002
+MESSAGE_HANDLER_CORRUPT_ERROR_CWSIP0201.useraction=\u5982\u679c\u8a0a\u606f\u8655\u7406\u7a0b\u5f0f\u5c1a\u672a\u5728\u91cd\u8a2d\u72c0\u614b\u4e2d\uff0c\u8acb\u91cd\u8a2d\u8a0a\u606f\u8655\u7406\u7a0b\u5f0f\u3002\u4e4b\u5f8c\uff0c\u518d\u91cd\u65b0\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211=CWSIP0211E: \u672a\u555f\u52d5\u5728\u532f\u6d41\u6392 {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0}\u3002
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.explanation=\u8981\u6c42\u5b58\u53d6\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u5b83\u5c1a\u672a\u555f\u52d5
+MESSAGE_PROCESSOR_NOT_STARTED_ERROR_CWSIP0211.useraction=\u8acb\u555f\u52d5\u6307\u540d\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_STARTED_INFO_CWSIP00212=CWSIP0212I: \u5728\u532f\u6d41\u6392 {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0} \u6b63\u5728\u958b\u59cb\u4f7f WCCM \u76ee\u7684\u5730\u8207\u93c8\u7d50\u914d\u7f6e\u4e00\u81f4\u3002
+RECONCILE_STARTED_INFO_CWSIP00212.explanation=\u6b63\u5728\u5229\u7528\u50b3\u8a0a\u5f15\u64ce\u505c\u6b62\u6642\u6240\u5132\u5b58\u7684\u914d\u7f6e\uff0c\u4f7f WCCM \u76ee\u7684\u5730\u8207\u93c8\u7d50\u914d\u7f6e\u4e00\u81f4\u3002
+RECONCILE_STARTED_INFO_CWSIP00212.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+RECONCILE_COMPLETED_INFO_CWSIP00213=CWSIP0213I: \u5728\u532f\u6d41\u6392 {1} \u7684\u50b3\u8a0a\u5f15\u64ce {0} \u5df2\u5b8c\u6210\u4f7f WCCM \u76ee\u7684\u5730\u8207\u93c8\u7d50\u914d\u7f6e\u4e00\u81f4\u3002
+RECONCILE_COMPLETED_INFO_CWSIP00213.explanation=\u5df2\u5229\u7528\u50b3\u8a0a\u5f15\u64ce\u505c\u6b62\u6642\u6240\u5132\u5b58\u7684\u914d\u7f6e\uff0c\u4f7f WCCM \u76ee\u7684\u5730\u8207\u93c8\u7d50\u914d\u7f6e\u4e00\u81f4\u3002\u5df2\u8b8a\u66f4\u3001\u5efa\u7acb\u6216\u6392\u5b9a\u522a\u9664\u9069\u7576\u7684\u8cc7\u6e90\u3002
+RECONCILE_COMPLETED_INFO_CWSIP00213.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_DELETED_ERROR_CWSIP00221=CWSIP0221E: \u5df2\u522a\u9664\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u3002
+DESTINATION_DELETED_ERROR_CWSIP00221.explanation=\u9023\u63a5\u81f3\u6307\u5b9a\u76ee\u7684\u5730\u4e4b\u61c9\u7528\u7a0b\u5f0f\u7684\u9023\u7dda\u5df2\u7d93\u5207\u65b7\uff0c\u56e0\u70ba\u5df2\u522a\u9664\u76ee\u7684\u5730\u3002
+DESTINATION_DELETED_ERROR_CWSIP00221.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222=CWSIP0222E: \u5df2\u5c07\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u6539\u6210\u300c\u63a5\u6536\u4e92\u65a5\u300d\u3002
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.explanation=\u9023\u63a5\u81f3\u6307\u5b9a\u76ee\u7684\u5730\u4e4b\u61c9\u7528\u7a0b\u5f0f\u7684\u9023\u7dda\u5df2\u7d93\u5207\u65b7\uff0c\u56e0\u70ba\u76ee\u7684\u5730\u5df2\u6539\u6210\u63a5\u6536\u4e92\u65a5\u3002\u6240\u6709\u9023\u63a5\u81f3\u9019\u500b\u76ee\u7684\u5730\u4e4b\u61c9\u7528\u7a0b\u5f0f\u7684\u9023\u7dda\u90fd\u5c07\u5207\u65b7\uff0c\u53ea\u6709\u55ae\u4e00\u61c9\u7528\u7a0b\u5f0f\u80fd\u5920\u91cd\u65b0\u9023\u7dda\u3002
+DESTINATION_EXCLUSIVE_ERROR_CWSIP00222.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+# {1} is the name of the messaging engine bus
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223=CWSIP0223E: \u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u540d\u7a31\u70ba {0} \u7684\u76ee\u7684\u5730\u542b\u6709\u8a0a\u606f\u9ede\uff0c\u4f46\u7121\u6cd5\u547c\u53eb\u5230\u5b83\u3002
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.explanation=\u9023\u63a5\u81f3\u6307\u5b9a\u76ee\u7684\u5730\u7684\u61c9\u7528\u7a0b\u5f0f\u9023\u7dda\u5df2\u7d93\u5207\u65b7\uff0c\u56e0\u70ba\u7121\u6cd5\u547c\u53eb\u5230\u5c07\u76ee\u7684\u5730\u5340\u57df\u5316\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+DESTINATION_UNREACHABLE_ERROR_CWSIP00223.useraction=\u8acb\u78ba\u5b9a\u5c07\u76ee\u7684\u5730\u5340\u57df\u5316\u7684\u50b3\u8a0a\u5f15\u64ce\u53ef\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The reason code for not being able to put message to exception destination
+DESTINATION_DELETED_ERROR_CWSIP0247=CWSIP0247E: \u5df2\u522a\u9664 {0} \u76ee\u7684\u5730\uff0c\u8a0a\u606f\u56e0 {1} \u539f\u56e0\u800c\u7121\u6cd5\u653e\u5165\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u3002
+DESTINATION_DELETED_ERROR_CWSIP0247.explanation=\u8a66\u5716\u5728\u5df2\u522a\u9664\u7684\u76ee\u7684\u5730\u4e0a\u78ba\u5b9a\u8a0a\u606f\u9020\u6210\u932f\u8aa4\u3002
+DESTINATION_DELETED_ERROR_CWSIP0247.useraction=\u76ee\u7684\u5730\u5df2\u7d93\u522a\u9664\uff0c\u5df2\u7121\u6cd5\u4f7f\u7528\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the topic space
+# {1} The messaging engine Name
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249=CWSIP0249E: \u7121\u6cd5\u5728\u6b63\u5411\u905e\u9001\u8def\u5f91\u4e2d\u5c07\u8a0a\u606f\u905e\u9001\u5230\u76ee\u7684\u5730\uff0c\u56e0\u70ba {0} \u76ee\u7684\u5730\u662f\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u4e3b\u984c\u7a7a\u9593
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.explanation=\u6b63\u5411\u905e\u9001\u8def\u5f91\u5305\u542b\u4e3b\u984c\u7a7a\u9593\uff0c\u5b83\u4e0d\u662f\u8def\u5f91\u4e2d\u7684\u6700\u7d42\u5143\u7d20\u3002\u7121\u6cd5\u905e\u9001\u5230\u4efb\u4f55\u5f8c\u7e8c\u7684\u76ee\u7684\u5730\u3002
+FORWARD_ROUTING_PATH_ERROR_CWSIP0249.useraction=\u4e3b\u984c\u7a7a\u9593\u53ea\u80fd\u662f\u6b63\u5411\u905e\u9001\u8def\u5f91\u4e2d\u7684\u6700\u7d42\u5143\u7d20\u3002\u8acb\u66f4\u6b63\u8def\u5f91\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Destination
+# {1} identifies the high limit for the topic space
+# {2} the messaging engine name
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251=CWSIP0251E: \u5728\u50b3\u8a0a\u5f15\u64ce {2} \u4e2d\u7684 {0} \u76ee\u7684\u5730\u7121\u6cd5\u4f7f\u7528\uff0c\u56e0\u70ba\u9019\u500b\u76ee\u7684\u5730\u5df2\u9054\u5230\u5176\u8a0a\u606f\u6578\u76ee\u7684\u4e0a\u9650 {1}\u3002
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.explanation=\u6307\u5411\u6307\u540d\u76ee\u7684\u5730\u7684\u6240\u6709\u4f47\u5217\u90fd\u5df2\u5230\u9054\u6240\u914d\u7f6e\u7684\u4e0a\u9650\uff0c\u56e0\u6b64\u7121\u6cd5\u63a5\u53d7\u8a0a\u606f\u3002
+DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.useraction=\u8acb\u9a57\u8b49\u6240\u914d\u7f6e\u7684\u76ee\u7684\u5730\u8a0a\u606f\u4e0a\u9650\u6b63\u78ba\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+DESTINATION_SEND_DISALLOWED_CWSIP0253=CWSIP0253E: \u5c0d\u65bc\u50b3\u8a0a\u5f15\u64ce {1}\uff0c{0} \u76ee\u7684\u5730\u4e0d\u5141\u8a31\u50b3\u9001\u3002
+DESTINATION_SEND_DISALLOWED_CWSIP0253.explanation=\u8a66\u5716\u5c07\u8a0a\u606f\u50b3\u9001\u5230\u76ee\u7684\u5730\uff0c\u4e14\u5df2\u9032\u884c\u6aa2\u67e5\uff0c\u4ee5\u4fbf\u78ba\u8a8d\u9019\u500b\u76ee\u7684\u5730\u7684\u767c\u4f48\u9ede\u53ef\u4ee5\u4f7f\u7528\u3002\u9019\u9805\u6aa2\u67e5\u5931\u6557\uff0c\u56e0\u70ba\u9019\u500b\u76ee\u7684\u5730\u7684\u767c\u4f48\u9ede\u4e0d\u5141\u8a31\u50b3\u9001\u3002
+DESTINATION_SEND_DISALLOWED_CWSIP0253.useraction=\u8acb\u66f4\u65b0\u76ee\u7684\u5730\u7684\u767c\u4f48\u9ede\uff0c\u4f7f\u5b83\u5141\u8a31\u50b3\u9001\uff0c\u518d\u91cd\u8a66\u50b3\u9001\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+ITEM_RESTORE_ERROR_CWSIP0261=CWSIP0261E: \u50b3\u8a0a\u5f15\u64ce\u56de\u5fa9\u932f\u8aa4\u3002\u539f\u9810\u671f\u7684\u7248\u672c\u662f {0}\uff0c\u4f46\u6536\u5230 {1}
+ITEM_RESTORE_ERROR_CWSIP0261.explanation=\u7576\u5f9e\u50b3\u8a0a\u5f15\u64ce\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u56de\u5fa9\u9805\u76ee\u6642\uff0c\u6703\u6aa2\u67e5\u7248\u672c\u3002\u9019\u9805\u6aa2\u67e5\u5931\u6557\u3002\u932f\u8aa4\u539f\u56e0\u53ef\u80fd\u662f\u5728\u5b89\u88dd WebSphere \u7684\u65b0\u7248\u672c\u4e4b\u5f8c\uff0c\u53c8\u5c07\u5b83\u79fb\u9664\u3002\u53e6\u5916\uff0c\u4e5f\u53ef\u80fd\u662f\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u6bc0\u640d\u3002
+ITEM_RESTORE_ERROR_CWSIP0261.useraction=\u8acb\u5f9e\u5099\u4efd\u9084\u539f\u50b3\u8a0a\u5f15\u64ce\u72c0\u614b\uff0c\u4e26\u53c3\u8003\u8cc7\u8a0a\u4e2d\u5fc3\uff0c\u53d6\u5f97\u57f7\u884c\u6b64\u52d5\u4f5c\u7684\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MESSAGE_CORRUPT_ERROR_CWSIP0262=CWSIP0262E: \u7531\u65bc\u7570\u5e38\u72c0\u6cc1 {0}\uff0c\u5c0e\u81f4\u73fe\u884c\u8a0a\u606f\u6bc0\u640d\uff0c\u56e0\u6b64\u4e0d\u80fd\u65b0\u589e\u81f3\u6301\u7e8c\u5132\u5b58\u5eab
+MESSAGE_CORRUPT_ERROR_CWSIP0262.explanation=\u65b0\u589e\u8a0a\u606f\u81f3\u6301\u7e8c\u5132\u5b58\u5eab\uff0c\u4f46\u537b\u56e0\u70ba\u6240\u9047\u5230\u7684\u554f\u984c\uff0c\u4f7f\u4f5c\u696d\u5931\u6557\u3002
+MESSAGE_CORRUPT_ERROR_CWSIP0262.useraction= \u5728\u91cd\u9001\u8a0a\u606f\u4e4b\u524d\uff0c\u8acb\u6aa2\u67e5\u93c8\u7d50\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4e26\u66f4\u6b63\u4efb\u4f55\u554f\u984c
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271=CWSIP0271E: \u627e\u4e0d\u5230 ID \u70ba {0} \u7684\u8a02\u95b1
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.explanation=\u5c07\u57f7\u884c\u6642\u671f\u9023\u63a5\u65bc\u8a02\u95b1\u5931\u6557\uff0c\u56e0\u70ba\u627e\u4e0d\u5230\u8a02\u95b1\u3002\u9019\u53ef\u80fd\u662f\u6b63\u5728\u522a\u9664\u7684\u8a02\u95b1\u6240\u9020\u6210\u7684\u3002
+SUBSCRIPTION_NOT_FOUND_ERROR_CWSIP0271.useraction=\u8acb\u5229\u7528\u7ba1\u7406\u4e3b\u63a7\u53f0\u91cd\u65b0\u9023\u63a5\u81f3\u53e6\u4e00\u500b\u8a02\u95b1\u4f86\u6aa2\u8996\u72c0\u614b
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272=CWSIP0272E: \u7121\u6cd5\u522a\u9664 ID \u70ba {0} \u7684\u8a02\u95b1\uff0c\u56e0\u70ba\u5b83\u4e0d\u53ef\u5ef6\u7e8c
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.explanation=\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u5229\u7528\u300c\u57f7\u884c\u6642\u671f\u300d\u756b\u9762\u4f86\u522a\u9664\u8a02\u95b1\uff0c\u53ea\u6703\u522a\u9664\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002\u5982\u679c\u5617\u8a66\u522a\u9664\u4e0d\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u522a\u9664\u4f5c\u696d\u4fbf\u6703\u5931\u6557
+SUBSCRIPTION_DELETE_ERROR_CWSIP0272.useraction=\u8acb\u91cd\u8a66\u522a\u9664\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine
+# {1} the name of the destination
+# {2} Tick Value (internal object)
+# {3} The Stream id (internal object)
+# {4} The exception
+ENCODE_FAIL_ERROR_CWSIP0281=CWSIP0281E: \u7121\u6cd5\u5c07\u8a0a\u606f\u7de8\u78bc\uff0c\u4ee5\u4fbf\u5229\u7528 {2}\u3001{3} \u503c\uff0c\u5c07\u5b83\u50b3\u8f38\u81f3 {1} \u76ee\u7684\u5730\u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce {0}\uff0c\u932f\u8aa4\u70ba {4}
+ENCODE_FAIL_ERROR_CWSIP0281.explanation=\u91dd\u5c0d\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u7684\u8a0a\u606f\u7121\u6cd5\u7de8\u78bc\uff0c\u56e0\u6b64\u7121\u6cd5\u50b3\u9001
+ENCODE_FAIL_ERROR_CWSIP0281.useraction=\u8acb\u6aa2\u67e5 ffdc \u65e5\u8a8c\uff0c\u627e\u51fa\u7121\u6cd5\u7de8\u78bc\u8a0a\u606f\u7684\u539f\u56e0\uff0c\u518d\u66f4\u6b63\u932f\u8aa4\u3002\u60a8\u5fc5\u9808\u5f9e\u51fa\u57e0\u4e32\u6d41\u4e2d\u79fb\u9664\u73fe\u884c\u8a0a\u606f\u3002\u9019\u53ef\u4ee5\u4f7f\u7528\u300c\u7ba1\u7406\u4e3b\u63a7\u53f0\u300d\uff0c\u5f9e\u300c\u9060\u7aef\u4f47\u5217\u9ede\u300d\u4e2d\u79fb\u9664\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The exception destination name
+# {1} The name of the messaging engine
+# {2} The reason exception
+EXCEPTION_DESTINATION_WARNING_CWSIP0291=CWSIP0291W: \u8a66\u5716\u5c07\u8a0a\u606f\u50b3\u9001\u81f3\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u7684\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730 {0}\uff0c\u4f46\u5931\u6557\uff0c\u5176\u539f\u56e0\u5982\u4e0b\uff1a{2}
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.explanation=\u8a66\u5716\u5c07\u8a0a\u606f\u50b3\u5230\u6307\u5b9a\u7684\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u5931\u6557\u3002\u5c07\u5229\u7528\u9810\u8a2d\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u91cd\u8a66\u9019\u9805\u4f5c\u696d\u3002
+EXCEPTION_DESTINATION_WARNING_CWSIP0291.useraction=\u8acb\u9a57\u8b49\u6307\u5b9a\u7684\u76ee\u7684\u5730\u5b58\u5728\u4e14\u80fd\u5920\u904b\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The default exception destination name
+# {1} The messaging engine name
+EXCEPTION_DESTINATION_ERROR_CWSIP0295=CWSIP0295E: \u8a66\u5716\u7522\u751f\u7570\u5e38\u72c0\u6cc1\u5831\u544a\u5931\u6557\uff0c\u56e0\u6b64\u539f\u59cb\u7684\u8a0a\u606f\u672a\u50b3\u9001\u5230\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730 {0}\u3002
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.explanation=\u8a66\u5716\u5c07\u8a0a\u606f\u905e\u9001\u5230\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u5931\u6557\uff0c\u56e0\u70ba\u8981\u6c42\u8a0a\u606f\u7684\u7570\u5e38\u72c0\u6cc1\u5831\u544a\uff0c\u4f46\u7121\u6cd5\u50b3\u9001\u9019\u4efd\u5831\u544a\u3002
+EXCEPTION_DESTINATION_ERROR_CWSIP0295.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user ID creating the connection
+# {1} The messaging engine name
+# {2} The bus Name
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301=CWSIP0301E: \u7576\u5efa\u7acb\u9023\u7dda\u4f86\u7dad\u8b77 {2} \u532f\u6d41\u6392 {1} \u50b3\u8a0a\u5f15\u64ce\u7684\u5b89\u5168\u6642\uff0c\u7121\u6cd5\u9451\u5225 {0} \u4f7f\u7528\u8005\u3002
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.explanation=\u8a66\u5716\u5efa\u7acb\u901a\u5f80\u50b3\u8a0a\u5f15\u64ce\u532f\u6d41\u6392\u7684\u9023\u7dda\u6642\uff0c\u7121\u6cd5\u9451\u5225\u6307\u5b9a\u7684\u4f7f\u7528\u8005
+USER_NOT_AUTHORIZED_ERROR_CWSIP0301.useraction=\u8acb\u9a57\u8b49\u4f7f\u7528\u8005\u5df2\u65b0\u589e\u81f3 WebSphere Application Server \u5b89\u5168\u5132\u5b58\u5eab\u4e2d\uff0c\u4e14\u5df2\u6307\u5b9a\u4e86\u6b63\u78ba\u7684\u5bc6\u78bc
+
+# -------------------------------------------------------------------------------------------------
+# {0}  The user attempting to access the messaging engine bus.
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302=CWSIP0302E: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u5b58\u53d6\u5728 {2} \u532f\u6d41\u6392\u7684\u50b3\u8a0a\u5f15\u64ce {1}\u3002
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.explanation=\u6307\u5b9a\u7684\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5b58\u53d6\u50b3\u8a0a\u5f15\u64ce\u532f\u6d41\u6392\u3002
+USER_NOT_AUTHORIZED_ERROR_CWSIP0302.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u5b58\u53d6\u50b3\u8a0a\u5f15\u64ce\u532f\u6d41\u6392\uff0c\u8acb\u66f4\u65b0\u50b3\u8a0a\u5f15\u64ce\u532f\u6d41\u6392\u7684\u6388\u6b0a\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The bus Name
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303=CWSIP0303E: \u7576\u5efa\u7acb\u9023\u7dda\u4f86\u7dad\u8b77 {1} \u532f\u6d41\u6392 {0} \u50b3\u8a0a\u5f15\u64ce\u7684\u5b89\u5168\u6642\uff0c\u672a\u6307\u5b9a\u4f7f\u7528\u8005\u3002
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.explanation=\u8a66\u5716\u5728\u5b89\u5168\u50b3\u8a0a\u5f15\u64ce\u4e0a\u5efa\u7acb\u9023\u7dda\uff0c\u4f46\u672a\u63d0\u4f9b\u4efb\u4f55\u4f7f\u7528\u8005\u3002
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.useraction=\u8acb\u63d0\u4f9b\u4f7f\u7528\u8005\u548c\u5bc6\u78bc\u4f86\u5efa\u7acb\u901a\u5f80\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304=CWSIP0304E: \u5df2\u62d2\u7d55 {1} \u4e3b\u984c\u7684 {0} \u76ee\u7684\u5730\u700f\u89bd\u5b58\u53d6\u3002
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u700f\u89bd\u76ee\u7684\u5730\u3002
+USER_NOT_AUTH_BROWSE_ERROR_CWSIP0304.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u700f\u89bd\u5728\u7d66\u5b9a\u76ee\u7684\u5730\u7684\u8a0a\u606f\uff0c\u8acb\u66f4\u65b0\u76ee\u7684\u5730\u4f7f\u7528\u8005\u6b0a\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination prefix
+# {1} The subject attempting the operation
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305=CWSIP0305E: {1} \u4e3b\u984c\u7684\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5efa\u7acb\u5b57\u9996\u70ba {0} \u7684\u66ab\u6642\u76ee\u7684\u5730\u3002
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5efa\u7acb\u542b\u6307\u540d\u5b57\u9996\u7684\u66ab\u6642\u76ee\u7684\u5730\u3002
+USER_NOT_AUTH_CREATE_ERROR_CWSIP0305.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u5efa\u7acb\u542b\u6307\u540d\u5b57\u9996\u7684\u66ab\u6642\u76ee\u7684\u5730\uff0c\u8acb\u66f4\u65b0\u6307\u540d\u5b57\u9996\u7684\u4f7f\u7528\u8005\u6b0a\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309=CWSIP0309E: \u5df2\u62d2\u7d55 {1} \u4e3b\u984c\u4e4b\u4f7f\u7528\u8005\u7684 {0} \u76ee\u7684\u5730\u63a5\u6536\u5b58\u53d6\u3002
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5f9e\u9019\u500b\u76ee\u7684\u5730\u63a5\u6536\u3002
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0309.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u5728\u7d66\u5b9a\u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\uff0c\u8acb\u66f4\u65b0\u76ee\u7684\u5730\u4f7f\u7528\u8005\u6b0a\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The discriminator name
+# {2} The subject attempting the operation
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310=CWSIP0310E: \u5df2\u62d2\u7d55 {2} \u4e3b\u984c\u7684\u4f7f\u7528\u8005\u4e4b {0} \u76ee\u7684\u5730 {1} \u9451\u5225\u5668\u7684\u63a5\u6536\u5b58\u53d6\u5617\u8a66\u3002
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5229\u7528\u6307\u5b9a\u7684\u4e3b\u984c\u5f9e\u9019\u500b\u76ee\u7684\u5730\u63a5\u6536\u3002
+USER_NOT_AUTH_RECEIVE_ERROR_CWSIP0310.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u5728\u7d66\u5b9a\u4e3b\u984c\u4e0a\u63a5\u6536\u8a0a\u606f\uff0c\u8acb\u66f4\u65b0\u7d66\u5b9a\u76ee\u7684\u5730\u7684\u4e3b\u984c\u4e4b\u4f7f\u7528\u8005\u6b0a\u9650\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID deleting the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311=CWSIP0311E: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u5728 {2} \u76ee\u7684\u5730\u4e0a\u522a\u9664\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1 {1}\u3002
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.explanation=\u4f7f\u7528\u8005\u8a66\u5716\u522a\u9664\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u4e0d\u662f\u5efa\u7acb\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u7684\u4f7f\u7528\u8005\u3002
+USER_NOT_AUTH_DELETE_ERROR_CWSIP0311.useraction=\u8acb\u522a\u9664\u542b\u539f\u59cb\u4f7f\u7528\u8005\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The subscription name
+# {2} The Destination name
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312=CWSIP0312E: \u4f7f\u7528\u8005 {0} \u672a\u7372\u6388\u6b0a\u5728 {2} \u76ee\u7684\u5730\u4e0a\u555f\u52d5\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1 {1}\u3002
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u555f\u52d5\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\uff0c\u4f46\u4ed6\u4e0d\u662f\u5efa\u7acb\u4e86\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u7684\u4f7f\u7528\u8005\u3002
+USER_NOT_AUTH_ACTIVATE_ERROR_CWSIP0312.useraction=\u8acb\u555f\u52d5\u542b\u539f\u59cb\u4f7f\u7528\u8005\u7684\u53ef\u5ef6\u7e8c\u7684\u8a02\u95b1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user ID activating the durable subscription
+# {1} The exception destination name
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313=CWSIP0313E: {0} \u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5b58\u53d6\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730 {1}\u3002
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5c07\u8a0a\u606f\u653e\u5165\u6307\u5b9a\u7684\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u4e2d\u3002
+USER_NOT_AUTH_EXCEPTION_DEST_ERROR_CWSIP0313.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u80fd\u5920\u5b58\u53d6\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\uff0c\u8acb\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\uff0c\u65b0\u589e\u6307\u5b9a\u7684\u4f7f\u7528\u8005\u4f86\u7de8\u8f2f\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u5b58\u53d6\u63a7\u5236\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} destination name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314=CWSIP0314E: \u5df2\u62d2\u7d55\u4f7f\u7528\u8005\u4f7f\u7528 {1} \u4e3b\u984c\u67e5\u8a62\u5b58\u53d6 {0} \u76ee\u7684\u5730\u3002
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u67e5\u8a62\u95dc\u65bc\u76ee\u7684\u5730\u7684\u914d\u7f6e
+USER_NOT_AUTH_INQUIRE_ERROR_CWSIP0314.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u9650\u53ef\u4ee5\u67e5\u8a62\u76ee\u7684\u5730\u7684\u914d\u7f6e\uff0c\u8acb\u65b0\u589e\u6307\u5b9a\u7684\u4f7f\u7528\u8005\uff0c\u4ee5\u4fbf\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u7de8\u8f2f\u67e5\u8a62\u5b58\u53d6\u63a7\u5236\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The foreign bus name
+# {1} the user name
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315=CWSIP0315E: \u5df2\u62d2\u7d55\u4f7f\u7528\u8005\u4f7f\u7528 {1} \u4e3b\u984c\u67e5\u8a62\u5b58\u53d6 {0} \u5916\u90e8\u532f\u6d41\u6392\u3002
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u67e5\u8a62\u95dc\u65bc\u6307\u5b9a\u7684\u5916\u90e8\u532f\u6d41\u6392\u7684\u914d\u7f6e
+USER_NOT_AUTH_INQUIRE_FB_ERROR_CWSIP0315.useraction=\u5982\u679c\u4f7f\u7528\u8005\u61c9\u8a72\u6709\u6b0a\u9650\u53ef\u4ee5\u67e5\u8a62\u5916\u90e8\u532f\u6d41\u6392\u7684\u914d\u7f6e\uff0c\u8acb\u65b0\u589e\u6307\u5b9a\u7684\u4f7f\u7528\u8005\uff0c\u4ee5\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\u7de8\u8f2f\u67e5\u8a62\u5b58\u53d6\u63a7\u5236\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316=CWSIP0316E: \u4f7f\u7528\u8005 {0} \u5fc5\u9808\u662f SIBServerSubject\uff0c\u624d\u80fd\u4f7f\u7528 invokeCommand() \u65b9\u6cd5
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.explanation=\u4f7f\u7528\u8005\u672a\u7372\u6388\u6b0a\u5728\u9023\u7dda\u4e2d\u547c\u53eb invokeCommand() \u65b9\u6cd5
+USER_NOT_AUTH_INVOKE_ERROR_CWSIP0316.useraction=\u4f7f\u7528 SIBServerSubject \u5b58\u53d6\u6b0a\uff0c\u5728\u9023\u7dda\u4e2d\u547c\u53eb\u65b9\u6cd5
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_DELETE_ERROR_CWSIP0331=CWSIP0331W: \u5df2\u6a19\u793a\u522a\u9664\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u76ee\u7684\u5730 {0}\u3002
+DESTINATION_DELETE_ERROR_CWSIP0331.explanation=\u767c\u51fa\u522a\u9664\u76ee\u7684\u5730\u7684\u8981\u6c42\uff0c\u4f46\u9019\u500b\u76ee\u7684\u5730\u5df2\u6709\u522a\u9664\u6a19\u793a\u3002
+DESTINATION_DELETE_ERROR_CWSIP0331.useraction=\u7cfb\u7d71\u61c9\u8a72\u5df2\u7d93\u5f9e\u50b3\u8a0a\u5f15\u64ce\u4e2d\u79fb\u9664\u76ee\u7684\u5730\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the user name
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341=CWSIP0341W: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\uff0c\u627e\u4e0d\u5230\u76ee\u7684\u5730 {0}\u3002
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=\u5728\u672c\u7aef\u50b3\u8a0a\u5f15\u64ce\u4e2d\uff0c\u5177\u540d\u76ee\u7684\u5730\u4e0d\u660e\u3002
+DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=\u8acb\u78ba\u8a8d\u76ee\u7684\u5730\u540d\u7a31\u6b63\u78ba\u3002\u5982\u679c\u76ee\u7684\u5730\u5728\u53e6\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\uff0c\u8acb\u78ba\u5b9a\u8207\u53e6\u4e00\u50b3\u8a0a\u5f15\u64ce\u7684\u901a\u8a0a\u80fd\u5920\u904b\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: \u7121\u6cd5\u522a\u9664 ID \u70ba {0} \u7684\u8a0a\u606f\uff0c\u56e0\u70ba\u7528\u4f86\u5c07\u5b83\u52a0\u5165 {1} \u76ee\u7684\u5730\u7684\u4ea4\u6613\u5c1a\u672a\u78ba\u5b9a\u3002
+MESSAGE_INDOUBT_WARNING_CWSIP0361.explanation=\u5df2\u5229\u7528 MessageProducer \u548c\u4ea4\u6613\uff0c\u5c07\u8a0a\u606f\u50b3\u9001\u7d66\u6307\u5b9a\u7684\u76ee\u7684\u5730\u3002\u672a\u5728\u76ee\u7684\u5730\u4e2d\u78ba\u5b9a\u9019\u9805\u4ea4\u6613\uff0c\u56e0\u6b64\u7121\u6cd5\u522a\u9664\u8a0a\u606f\u3002
+MESSAGE_INDOUBT_WARNING_CWSIP0361.useraction=\u8acb\u6aa2\u8996\u8cc7\u8a0a\u4e2d\u5fc3\u7684\u300c\u89e3\u6c7a\u4e0d\u80fd\u78ba\u5b9a\u7684\u4ea4\u6613\u300d\u4e00\u7bc0\uff0c\u4ee5\u78ba\u5b9a\u6216\u56de\u5fa9\u4ea4\u6613\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id.
+# {1} The destination name
+MESSAGE_INDOUBT_WARNING_CWSIP0362=CWSIP0362W: \u7121\u6cd5\u5f9e\u76ee\u7684\u5730 {1} \u522a\u9664 ID \u70ba {0} \u7684\u8a0a\u606f\uff0c\u56e0\u70ba\u8a72\u8a0a\u606f\u5df2\u905e\u9001\u7d66\u6d88\u8cbb\u8005\u3002
+MESSAGE_INDOUBT_WARNING_CWSIP0362.explanation=\u7121\u6cd5\u522a\u9664\u8a0a\u606f\uff0c\u56e0\u70ba\u5176\u5df2\u905e\u9001\u7d66\u6d88\u8cbb\u8005\u3002
+MESSAGE_INDOUBT_WARNING_CWSIP0362.useraction=\u8acb\u505c\u6b62\u4efb\u4f55\u5f9e\u76ee\u7684\u5730\u8017\u7528\u7684 MDB \u6216\u61c9\u7528\u7a0b\u5f0f\uff0c\u518d\u5617\u8a66\u522a\u9664\u3002\u5982\u679c\u4ecd\u7136\u7121\u6cd5\u522a\u9664\u8a0a\u606f\uff0c\u8acb\u6aa2\u8996\u8cc7\u8a0a\u4e2d\u5fc3\u7684\u300c\u89e3\u6c7a\u4e0d\u80fd\u78ba\u5b9a\u7684\u4ea4\u6613\u300d\u4e00\u7bc0\uff0c\u4ee5\u78ba\u5b9a\u6216\u56de\u5fa9\u4ea4\u6613\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The selector supplied.
+INVALID_SELECTOR_ERROR_CWSIP0371=CWSIP0371E: \u9078\u53d6\u5668\u8a9e\u6cd5 {0} \u7121\u6548\u3002
+INVALID_SELECTOR_ERROR_CWSIP0371.explanation=\u63d0\u4f9b\u7684\u9078\u53d6\u5668\u8a9e\u6cd5\u7121\u6548\u3002
+INVALID_SELECTOR_ERROR_CWSIP0371.useraction=\u8acb\u66f4\u6b63\u9078\u53d6\u5668\u7684\u8a9e\u6cd5\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The topic supplied.
+INVALID_TOPIC_ERROR_CWSIP0372=CWSIP0372E: \u4e3b\u984c\u8a9e\u6cd5 {0} \u7121\u6548\u3002
+INVALID_TOPIC_ERROR_CWSIP0372.explanation=\u63d0\u4f9b\u7684\u4e3b\u984c\u8a9e\u6cd5\u7121\u6548\u3002
+INVALID_TOPIC_ERROR_CWSIP0372.useraction=\u8acb\u66f4\u6b63\u4e3b\u984c\u7684\u8a9e\u6cd5\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} related Exception.
+ACL_ADD_WARNING_CWSIP0373=CWSIP0373W: \u7121\u6cd5\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\uff0c\u56e0\u70ba\u767c\u751f {0} \u7570\u5e38\u72c0\u6cc1\u3002
+ACL_ADD_WARNING_CWSIP0373.explanation=\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+ACL_ADD_WARNING_CWSIP0373.useraction=\u8acb\u6aa2\u67e5\u548c\u66f4\u6b63\u76f8\u95dc\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4ee5\u4fbf\u6b63\u78ba\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} user
+# {2} related Exception.
+ACL_ADD_WARNING_CWSIP0374=CWSIP0374W: \u7121\u6cd5\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\uff0c\u56e0\u70ba {0} \u9451\u5225\u5668 {1} \u4f7f\u7528\u8005\u767c\u751f {2} \u7570\u5e38\u72c0\u6cc1\u3002
+ACL_ADD_WARNING_CWSIP0374.explanation=\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+ACL_ADD_WARNING_CWSIP0374.useraction=\u8acb\u6aa2\u67e5\u548c\u66f4\u6b63\u76f8\u95dc\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4ee5\u4fbf\u6b63\u78ba\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} Discriminator name
+# {1} related Exception.
+ACL_ADD_WARNING_CWSIP0375=CWSIP0375W: \u7121\u6cd5\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\uff0c\u56e0\u70ba {0} \u9451\u5225\u5668\u767c\u751f {1} \u7570\u5e38\u72c0\u6cc1\u3002
+ACL_ADD_WARNING_CWSIP0375.explanation=\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+ACL_ADD_WARNING_CWSIP0375.useraction=\u8acb\u6aa2\u67e5\u548c\u66f4\u6b63\u76f8\u95dc\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4ee5\u4fbf\u6b63\u78ba\u8f09\u5165\u5b58\u53d6\u63a7\u5236\u6e05\u55ae\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception.
+INVALID_SELECTOR_ERROR_CWSIP0376=CWSIP0376E: \u7121\u6cd5\u5256\u6790\u9078\u53d6\u5668\uff0c\u56e0\u70ba\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002
+INVALID_SELECTOR_ERROR_CWSIP0376.explanation=\u9078\u53d6\u5668\u7684\u5256\u6790\u74b0\u5883\u7121\u6548\u3002
+INVALID_SELECTOR_ERROR_CWSIP0376.useraction=\u8acb\u6aa2\u67e5\u4e26\u66f4\u6b63\u76f8\u95dc\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value provided for the custom property
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377=CWSIP0377I: \u300cXPath \u6700\u4f73\u5316\u532f\u6d41\u6392\u300d\u81ea\u8a02\u5167\u5bb9\u4e0d\u6b63\u78ba\u5730\u8a2d\u5b9a\u70ba {0}\u3002\u5c07\u555f\u7528\u300cXPath \u6700\u4f73\u5316\u300d\u3002
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.explanation=\u5df2\u4e0d\u6b63\u78ba\u5730\u8a2d\u5b9a\u4e86\u300cXPath \u6700\u4f73\u5316\u532f\u6d41\u6392\u300d\u81ea\u8a02\u5167\u5bb9\u3002 \u671f\u671b\u503c\u70ba\u300c\u5df2\u555f\u7528\u300d\u6216\u300c\u5df2\u5931\u6548\u300d\u3002ME \u5c07\u555f\u52d5\uff0c\u4e26\u5df2\u555f\u7528\u6700\u4f73\u5316\u3002
+INVALID_XPATH_CUSTOM_PROPERTY_CWSIP0377.useraction=\u8acb\u6aa2\u67e5\u4e26\u66f4\u6b63\u81ea\u8a02\u5167\u5bb9\u7684\u503c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381=CWSIP0381W: \u6c92\u6709\u5f9e\u50b3\u8a0a\u5f15\u64ce {0} \u6536\u5230\u8a02\u95b1\u8981\u6c42\u8a0a\u606f\u7684\u56de\u61c9\u3002
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.explanation=\u5df2\u5c07\u8981\u6c42\u8a0a\u606f\u50b3\u7d66\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u6c92\u6709\u5373\u6642\u56de\u61c9\u3002\u9019\u8868\u793a\u50b3\u8a0a\u5f15\u64ce\u767c\u4f48\u8a02\u95b1\u62d3\u8e7c\u53ef\u80fd\u4e0d\u4e00\u81f4\u3002
+NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=\u8acb\u78ba\u5b9a\u5df2\u555f\u52d5\u5217\u51fa\u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u3002\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u6d3d\u8a62 IBM \u652f\u63f4\u4ee3\u8868\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The UUID of the Remote messaging engine
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: \u50b3\u8a0a\u5f15\u64ce {0} \u5df2\u56de\u61c9\u8a02\u95b1\u8981\u6c42\uff0c\u73fe\u5728\u300c\u767c\u4f48\u8a02\u95b1\u300d\u62d3\u8e7c\u662f\u4e00\u81f4\u7684\u3002
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=\u5df2\u9806\u5229\u5b8c\u6210\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u901a\u8a0a\uff0c\u767c\u4f48\u8a02\u95b1\u62d3\u8e7c\u662f\u4e00\u81f4\u7684\u3002
+NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} The remote messaging engine name
+# {1} The related exception
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383=CWSIP0383E: \u7121\u6cd5\u5c07\u8d77\u59cb\u8a02\u95b1\u72c0\u614b\u8a0a\u606f\u50b3\u9001\u7d66 {0} \u50b3\u8a0a\u5f15\u64ce\u3002\u5728\u9019\u500b\u554f\u984c\u89e3\u6c7a\u4e4b\u524d\uff0c\u300c\u767c\u4f48\u8a02\u95b1\u300d\u50b3\u8a0a\u5c07\u4e0d\u4e00\u81f4\u3002{1}\u3002
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.explanation=\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u901a\u8a0a\u4e0d\u6210\u529f\u3002\u300c\u767c\u4f48\u8a02\u95b1\u300d\u62d3\u8e7c\u5c07\u4e0d\u4e00\u81f4\u3002
+PUBSUB_CONSISTENCY_ERROR_CWSIP0383.useraction=\u8acb\u89e3\u6c7a\u8a72\u932f\u8aa4\u5f37\u8abf\u986f\u793a\u7684\u554f\u984c\uff0c\u7136\u5f8c\u91cd\u65b0\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name.
+# {1} The related exception
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391=CWSIP0391E: \u7576\u8a66\u5716\u914d\u7f6e\u50b3\u8a0a\u5f15\u64ce {0} \u7684\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u6e05\u55ae\u6642\u767c\u751f\u932f\u8aa4\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{1}\u3002
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.explanation=CMSG0001
+MESSAGE_PROCESSOR_CONFIGURE_NEIGHBOURS_ERROR_CWSIP0391.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0422=CWSIP0422E: \u7121\u6cd5\u5728\u50b3\u8a0a\u5f15\u64ce {0} \u4e0a\u50b3\u9001\u8981\u6c42\u7684\u671f\u9650\u5831\u544a\u8a0a\u606f\u985e\u578b\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+REPORT_MESSAGE_ERROR_CWSIP0422.explanation=\u7522\u751f\u300c\u671f\u9650\u300d\u5831\u544a\u8a0a\u606f\u985e\u578b\u6642\uff0c\u767c\u751f\u554f\u984c\u3002
+REPORT_MESSAGE_ERROR_CWSIP0422.useraction=\u8acb\u66f4\u6b63\u4efb\u4f55\u76f8\u95dc\u7684\u932f\u8aa4\u3002\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u6d3d\u8a62\u60a8\u7684 IBM \u652f\u63f4\u4ee3\u8868\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the report message type
+# {1} The related exception
+REPORT_MESSAGE_ERROR_CWSIP0423=CWSIP0423E: \u7121\u6cd5\u5728\u50b3\u8a0a\u5f15\u64ce {0} \u4e0a\u50b3\u9001\u6240\u8981\u6c42\u7684\u300c\u78ba\u8a8d\u4ea4\u4ed8\u300d\u5831\u544a\u8a0a\u606f\u985e\u578b\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{1}
+REPORT_MESSAGE_ERROR_CWSIP0423.explanation=\u7522\u751f\u300c\u78ba\u8a8d\u4ea4\u4ed8\u300d\u5831\u544a\u8a0a\u606f\u985e\u578b\u6642\uff0c\u767c\u751f\u554f\u984c\u3002
+REPORT_MESSAGE_ERROR_CWSIP0423.useraction=\u8acb\u66f4\u6b63\u4efb\u4f55\u76f8\u95dc\u7684\u932f\u8aa4\u3002\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u6d3d\u8a62\u60a8\u7684 IBM \u652f\u63f4\u4ee3\u8868\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The Messaging engine name
+# {1} The destination name
+FLUSH_COMPLETE_CWSIP0451=CWSIP0451I: \u5df2\u5b8c\u6210\u5f37\u5236\u6c96\u5beb\u7d66\u5b9a ME {0} \u548c\u5728\u9019\u88e1\u5340\u57df\u5316\u4e4b\u76ee\u7684\u5730 {1} \u7684 Anycast \u4e32\u6d41\u3002
+FLUSH_COMPLETE_CWSIP0451.explanation=\u7121
+FLUSH_COMPLETE_CWSIP0451.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The Messaging engine name
+# {2} The remote messaging engine name
+FLUSH_COMPLETE_CWSIP0452=CWSIP0452I: \u5df2\u5b8c\u6210\u5f37\u5236\u6c96\u5beb\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u5340\u57df\u5316\u4e4b\u76ee\u7684\u5730 {0} \u7684 Anycast \u4e32\u6d41\uff0c\u56e0\u70ba\u5df2\u522a\u9664\u9060\u7aef ME {2}
+FLUSH_COMPLETE_CWSIP0452.explanation=\u7121
+FLUSH_COMPLETE_CWSIP0452.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0457=CWSIP0457E: \u7121\u6cd5\u6301\u7e8c\u4fdd\u5b58\u5728\u9019\u500b ME \u5340\u57df\u5316\u7684 {0} \u76ee\u7684\u5730\u4e4b\u9060\u7aef\u6d88\u8cbb\u8005\u5b58\u53d6\u72c0\u614b\u3002
+MSGSTORE_STOP_RETRY_CWSIP0457.explanation=\u5f9e\u9060\u7aef\u9023\u63a5\u76ee\u7684\u5730\u7684\u6d88\u8cbb\u8005\u4e4b\u5340\u57df\u72c0\u614b\u53ef\u80fd\u5df2\u6bc0\u640d\uff0c\u56e0\u70ba\u7121\u6cd5\u5728\u591a\u6b21\u91cd\u8a66\u4e4b\u5f8c\u78ba\u5b9a\u5340\u57df\u4ea4\u6613\u3002
+MSGSTORE_STOP_RETRY_CWSIP0457.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471=CWSIP0471E: \u7121\u6cd5\u8207\u76ee\u7684\u5730 {0} \u5df2\u7d93\u300c\u5340\u57df\u5316\u300d\u7684\u300c\u50b3\u8a0a\u5f15\u64ce\u300d{1} \u901a\u8a0a\u3002
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.explanation=\u7121\u6cd5\u8207\u76ee\u7684\u5730\u7684\u5340\u57df\u5316\u300c\u50b3\u8a0a\u5f15\u64ce\u300d\u901a\u8a0a\u3002\u539f\u56e0\u53ef\u80fd\u662f\u50b3\u8a0a\u5f15\u64ce\u4ecd\u5728\u8d77\u59cb\u8a2d\u5b9a\u4e2d\uff0c\u4e5f\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u5206\u5272\u3002
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0471.useraction=\u8acb\u78ba\u5b9a\u53ef\u4ee5\u548c\u5340\u57df\u5316\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\uff0c\u7136\u5f8c\u91cd\u8a66\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472=CWSIP0472E: \u4e0d\u5141\u8a31\u9023\u63a5\u6d88\u8cbb\u8005\uff0c\u6216\u5b83\u6b63\u5728\u5206\u96e2\u4e2d\uff0c\u56e0\u70ba\u5df2\u9054\u5230\u5728 ME {1} \u5340\u57df\u5316\u7684 {0} \u76ee\u7684\u5730\u7684\u6d88\u8cbb\u8005\u57fa\u6578\u9650\u5236\u3002
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.explanation=\u76ee\u7684\u5730\u7684\u6d88\u8cbb\u8005\u57fa\u6578\u9650\u5236\u662f\u4e00\u500b\u6d88\u8cbb\u8005\u3002\u5df2\u9054\u5230\u9019\u500b\u9650\u5236\u3002
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0472.useraction=\u8acb\u5728\u73fe\u6709\u7684\u6d88\u8cbb\u8005\u5207\u65b7\u9023\u7dda\u4e4b\u5f8c\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+# {2} The exception
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473=CWSIP0473E: \u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u5340\u57df\u5316\u7684\u76ee\u7684\u5730 {0} \u4e0a\uff0c\u5c07\u9060\u7aef\u8a0a\u606f\u653e\u5230\u672c\u7aef\u300c\u6301\u7e8c\u5132\u5b58\u5eab\u300d\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1 {2}\u3002
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.explanation=\u5c07\u9060\u7aef\u8a0a\u606f\u653e\u5230\u672c\u7aef\u6301\u7e8c\u6027\u5132\u5b58\u5eab\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u5982\u679c\u8981\u9632\u6b62\u8a0a\u606f\u6392\u5e8f\u9055\u898f\uff0c\u6d88\u8cbb\u8005\u61c9\u8a72\u5207\u65b7\u9023\u7dda\u3002
+PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=\u5982\u679c\u8981\u9632\u6b62\u8a0a\u606f\u6392\u5e8f\u9055\u898f\uff0c\u6d88\u8cbb\u8005\u61c9\u8a72\u5207\u65b7\u9023\u7dda\u3002\u7570\u5e38\u72c0\u6cc1\u61c9\u8a72\u6703\u8aaa\u660e\u554f\u984c\u7684\u539f\u56e0\u3002\u8acb\u91cd\u8a66\u4e00\u6b21\uff0c\u518d\u4fee\u6b63\u539f\u56e0\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: \u7121\u6cd5\u4f7f\u7528\u8207\u76ee\u7684\u5730 {0} \u7684\u5340\u57df\u5316\u300c\u50b3\u8a0a\u5f15\u64ce\u300d{1} \u901a\u8a0a\u7684\u4e32\u6d41\u3002
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=\u7121\u6cd5\u4f7f\u7528\u8207\u76ee\u7684\u5730\u5340\u57df\u5316\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\u7684\u4e32\u6d41\u3002\u539f\u56e0\u53ef\u80fd\u662f\u4e32\u6d41\u4ecd\u5728\u8d77\u59cb\u8a2d\u5b9a\u4e2d\uff0c\u4e5f\u53ef\u80fd\u662f\u56e0\u70ba\u7db2\u8def\u5206\u5272\u3002
+ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=\u8acb\u78ba\u5b9a\u53ef\u4ee5\u548c\u5340\u57df\u5316\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\uff0c\u7136\u5f8c\u91cd\u8a66\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine we are trying to reach
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512=CWSIP0512E: \u7121\u6cd5\u4f7f\u7528\u8207\u76ee\u7684\u5730 {0} \u7684\u5340\u57df\u5316\u300c\u50b3\u8a0a\u5f15\u64ce\u300d{1} \u901a\u8a0a\u7684\u4e32\u6d41\u3002
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.explanation=\u7121\u6cd5\u4f7f\u7528\u8207\u76ee\u7684\u5730\u7684\u5340\u57df\u5316\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\u7684\u4e32\u6d41\uff0c\u56e0\u70ba\u9700\u8981\u5efa\u7acb\u65b0\u4e32\u6d41\uff0c\u4f46\u9084\u6c92\u6709\u6c96\u5beb\u5148\u524d\u7684\u4e32\u6d41\u3002\u9019\u53ef\u80fd\u662f\u7db2\u8def\u5206\u5272\u6240\u9020\u6210\u7684\u3002
+ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512.useraction=\u8acb\u78ba\u5b9a\u53ef\u4ee5\u548c\u5340\u57df\u5316\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\uff0c\u7136\u5f8c\u91cd\u8a66\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The messaging engine where it is localised
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514=CWSIP0514E: \u4e0d\u5141\u8a31\u9023\u63a5\u6d88\u8cbb\u8005\uff0c\u6216\u5b83\u6b63\u5728\u5206\u96e2\u4e2d\uff0c\u56e0\u70ba\u5df2\u9054\u5230\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u5340\u57df\u5316\u7684\u76ee\u7684\u5730 {0} \u7684\u6d88\u8cbb\u8005\u57fa\u6578\u9650\u5236\u3002
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.explanation=\u76ee\u7684\u5730\u7684\u6d88\u8cbb\u8005\u57fa\u6578\u9650\u5236\u662f\u4e00\u500b\u6d88\u8cbb\u8005\u3002\u5df2\u9054\u5230\u9019\u500b\u9650\u5236\u3002
+CONSUMERCARDINALITY_LIMIT_REACHED_CWSIP0514.useraction=\u8acb\u5728\u73fe\u6709\u7684\u6d88\u8cbb\u8005\u5207\u65b7\u9023\u7dda\u4e4b\u5f8c\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination for which for which the transaction failed
+# {1} The number of retries attempted
+MSGSTORE_STOP_RETRY_CWSIP0515=CWSIP0515E: \u7121\u6cd5\u6301\u7e8c\u4fdd\u5b58 {0} \u76ee\u7684\u5730\u7684\u9060\u7aef\u4f47\u5217\u5b58\u53d6\u72c0\u614b\u3002
+MSGSTORE_STOP_RETRY_CWSIP0515.explanation=\u9023\u63a5\u76ee\u7684\u5730\u7684\u5340\u57df\u72c0\u614b\u53ef\u80fd\u5df2\u6bc0\u640d\uff0c\u56e0\u70ba\u7121\u6cd5\u5728\u591a\u6b21\u91cd\u8a66\u4e4b\u5f8c\u78ba\u5b9a\u5340\u57df\u4ea4\u6613\u3002
+MSGSTORE_STOP_RETRY_CWSIP0515.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517=CWSIP0517E: \u7121\u6cd5\u9023\u63a5\u81f3\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u7684 {0} \u76ee\u7684\u5730\u4e4b\u4f47\u5217\u9ede\u3002
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.explanation=\u7121\u6cd5\u547c\u53eb\u5230\u4ee3\u7ba1\u76ee\u7684\u5730\u4f47\u5217\u9ede\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+ANYCAST_CANNOT_CREATE_STREAM_CWSIP0517.useraction=\u8acb\u9a57\u8b49\u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\uff0c\u4e14\u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u901a\u8a0a\uff0c\u518d\u91cd\u8a66\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518=CWSIP0518E: \u7121\u6cd5\u9023\u63a5\u81f3\u5728\u50b3\u8a0a\u5f15\u64ce {1} \u4e2d\u7684 {0} \u76ee\u7684\u5730\u4e4b\u4f47\u5217\u9ede\u3002
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.explanation=\u7121\u6cd5\u547c\u53eb\u5230\u4ee3\u7ba1\u76ee\u7684\u5730\u4f47\u5217\u9ede\u7684\u50b3\u8a0a\u5f15\u64ce\u3002
+ANYCAST_CANNOT_REQUEST_FLUSH_CWSIP0518.useraction=\u8acb\u9a57\u8b49\u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\uff0c\u4e14\u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u901a\u8a0a\uff0c\u518d\u91cd\u8a66\u4f5c\u696d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+BROWSE_TIMEOUT_CWSIP0532=CWSIP0532E: \u5728\u9060\u7aef\u700f\u89bd {0} \u76ee\u7684\u5730\u6642\uff0c\u767c\u751f\u903e\u6642\u3002
+BROWSE_TIMEOUT_CWSIP0532.explanation=\u4ee3\u7ba1\u76ee\u7684\u5730\u8a0a\u606f\u9ede\u7684\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u56de\u8986\u700f\u89bd\u8981\u6c42\u3002
+BROWSE_TIMEOUT_CWSIP0532.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to browse.
+# {1} the failure reason
+BROWSE_FAILED_CWSIP0533=CWSIP0533E: \u9060\u7aef\u700f\u89bd {0} \u76ee\u7684\u5730\u5931\u6557\uff0c\u539f\u56e0\u5982\u4e0b\uff1a{1}
+BROWSE_FAILED_CWSIP0533.explanation=\u5728\u700f\u89bd\u8981\u6c42\u671f\u9593\uff0c\u4ee3\u7ba1\u76ee\u7684\u5730\u8a0a\u606f\u9ede\u7684\u50b3\u8a0a\u5f15\u64ce\u50b3\u56de\u932f\u8aa4\u78bc\u3002
+BROWSE_FAILED_CWSIP0533.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+DESTINATION_DELETED_ERROR_CWSIP0550=CWSIP0550E: \u5df2\u522a\u9664 UUID \u662f {1} \u7684 {0} \u76ee\u7684\u5730\uff0c\u8a0a\u606f\u7121\u6cd5\u653e\u5165\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u3002
+DESTINATION_DELETED_ERROR_CWSIP0550.explanation=\u8a66\u5716\u5728\u6307\u5b9a\u7684\u76ee\u7684\u5730\u4e2d\u6e05\u9664\u8a0a\u606f\uff0c\u9020\u6210\u932f\u8aa4\u3002
+DESTINATION_DELETED_ERROR_CWSIP0550.useraction=\u7a0d\u5f8c\u5c07\u91cd\u8a66\u6e05\u9664\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551=CWSIP0551I: UUID \u70ba {1} \u4e4b {0} \u76ee\u7684\u5730\u7684\u5141\u8a31\u50b3\u9001\u72c0\u614b\u5df2\u6539\u6210 {2}\u3002
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.explanation=\u5df2\u6539\u8b8a\u76ee\u7684\u5730\u76f8\u95dc\u8a0a\u606f\u9ede\u7684\u884c\u70ba\u3002
+NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the UUID of the destination
+# {2} the state
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552=CWSIP0552I: UUID \u70ba {1} \u4e4b {0} \u76ee\u7684\u5730\u7684\u5141\u8a31\u63a5\u6536\u72c0\u614b\u5df2\u6539\u6210 {2}\u3002
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.explanation=\u5df2\u6539\u8b8a\u76ee\u7684\u5730\u76f8\u95dc\u8a0a\u606f\u9ede\u7684\u884c\u70ba\u3002
+NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553=CWSIP0553W: \u5728 {1} \u672c\u5730\u5316\u7684\u76ee\u7684\u5730 {0} \u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c {2}\u3002
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.explanation=\u5132\u5b58\u5728\u8a0a\u606f\u9ede\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u8d85\u51fa\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the messaging engine
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554=CWSIP0554W: \u5728 {1} \u672c\u5730\u5316\u7684\u76ee\u7684\u5730 {0} \u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c {2}\u3002
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.explanation=\u76ee\u7684\u5730\u7684\u8a0a\u606f\u6578\u5df2\u5f9e\u9ad8\u81e8\u754c\u503c\u5c64\u6b21\u964d\u5230\u4f4e\u81e8\u754c\u503c\u5c64\u6b21\uff1b\u56e0\u6b64\uff0c\u76ee\u7684\u5730\u53ef\u4ee5\u63a5\u53d7\u65b0\u8a0a\u606f\u3002
+NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555=CWSIP0555W: \u5728 {2} \u5340\u57df\u5316\u7684 {1} \u76ee\u7684\u5730\u4e4b ME {0} \u7684\u9060\u7aef\u8a0a\u606f\u9ede\u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.explanation=\u5132\u5b58\u5728\u8a0a\u606f\u9ede\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u8d85\u51fa\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the messaging engine that hosts the remote messaging point.
+# {1} the name of the destination
+# {2} the name of the messaging engine where the destination is localised
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556=CWSIP0556W: \u5728 {2} \u5340\u57df\u5316\u7684 {1} \u76ee\u7684\u5730\u4e4b ME {0} \u7684\u9060\u7aef\u8a0a\u606f\u9ede\u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c\u3002
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.explanation=\u5132\u5b58\u5728\u8a0a\u606f\u9ede\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u4f4e\u65bc\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c\u3002
+NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557=CWSIP0557W: \u5728 {2} \u5340\u57df\u5316\u7684 WebSphere MQ \u93c8\u7d50 {0} \u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.explanation=\u5132\u5b58\u5728 MQ \u93c8\u7d50\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u8d85\u51fa\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WebSphere MQ link name
+# {1} the name of the messaging engine
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558=CWSIP0558W: \u5728 {1} \u5340\u57df\u5316\u7684 WebSphere MQ \u93c8\u7d50 {0} \u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c\u3002
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.explanation=\u5132\u5b58\u5728 MQ \u93c8\u7d50\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u4f4e\u65bc\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c\u3002
+NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559=CWSIP0559W: \u5728 ME {2} \u7684 {1} \u532f\u6d41\u6392 {0} \u93c8\u7d50\u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.explanation=\u5132\u5b58\u5728\u93c8\u7d50\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u8d85\u51fa\u6df1\u5ea6\u7684\u9ad8\u81e8\u754c\u503c\u3002
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the SIB link name
+# {1} the name of the foreign bus
+# {2} the name of the messaging engine
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560=CWSIP0560W: \u5728 ME {2} \u7684 {1} \u532f\u6d41\u6392 {0} \u93c8\u7d50\u5df2\u9054\u5230\u8a0a\u606f\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c\u3002
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.explanation=\u5132\u5b58\u5728\u93c8\u7d50\u7684\u8a0a\u606f\u6578\u76ee\u5df2\u6539\u8b8a\u6df1\u5ea6\uff0c\u4f7f\u5f97\u6240\u5132\u5b58\u7684\u6578\u76ee\u4f4e\u65bc\u6df1\u5ea6\u7684\u4f4e\u81e8\u754c\u503c\u3002
+NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571=CWSIP0571E: \u9023\u7dda\u7269\u4ef6\u5df2\u4e0d\u5b58\u5728\u3002
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.explanation=\u8a66\u5716\u5b58\u53d6\u9023\u7dda\u5931\u6557\uff0c\u56e0\u70ba\u9023\u7dda\u5df2\u4e0d\u5b58\u5728\u3002\u539f\u56e0\u53ef\u80fd\u662f\u61c9\u7528\u7a0b\u5f0f\u95dc\u9589\u9023\u7dda\u3002
+CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+MESSAGE_EXISTS_ERROR_CWSIP0572=CWSIP0572E: ID \u70ba {0} \u7684\u8a0a\u606f\u5df2\u4e0d\u5728 {1} \u76ee\u7684\u5730\u4e2d\u3002
+MESSAGE_EXISTS_ERROR_CWSIP0572.explanation=\u8a66\u5716\u5b58\u53d6\u6307\u5b9a ID \u7684\u8a0a\u606f\u5931\u6557\u3002\u53ef\u80fd\u662f\u56e0\u70ba\u8a0a\u606f\u5df2\u904e\u671f\uff0c\u6216\u61c9\u7528\u7a0b\u5f0f\u5df2\u5c07\u5b83\u79fb\u9664\u3002
+MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: \u758a\u4ee3\u5b50\u4e2d\u6c92\u6709\u5176\u4ed6\u5143\u7d20\u3002
+NO_ELEMENTS_ERROR_CWSIP0601.explanation=\u7121\u3002
+NO_ELEMENTS_ERROR_CWSIP0601.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+NO_ELEMENTS_ERROR_CWSIP0602=CWSIP0602E: \u758a\u4ee3\u5b50\u4e2d\u6c92\u6709\u53ef\u79fb\u9664\u7684\u5143\u7d20\u3002
+NO_ELEMENTS_ERROR_CWSIP0602.explanation=\u7121\u3002
+NO_ELEMENTS_ERROR_CWSIP0602.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the alias destination
+# {1} is the alias resolution path
+# {2} The name of the messaging engine bus
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621=CWSIP0621E: \u7576\u89e3\u6790\u5225\u540d\u76ee\u7684\u5730 {0} \u6642\u767c\u751f\u932f\u8aa4\uff0c\u56e0\u70ba\u50b3\u8a0a\u5f15\u64ce\u532f\u6d41\u6392 {2} \u51fa\u73fe\u4e0b\u5217\u5faa\u74b0\u76f8\u4f9d\u95dc\u4fc2 {1}
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.explanation=\u7121\u6cd5\u89e3\u6790\u5225\u540d\u76ee\u7684\u5730\uff0c\u56e0\u70ba\u51fa\u73fe\u5faa\u74b0\u76f8\u4f9d\u95dc\u4fc2
+ALIAS_CIRCULAR_DEPENDENCY_ERROR_CWSIP0621.useraction=\u8acb\u5728\u7ba1\u7406\u4e3b\u63a7\u53f0\u4e2d\uff0c\u8b8a\u66f4\u89e3\u6790\u8def\u5f91\u4e2d\u7684\u5225\u540d\u4f86\u4e2d\u65b7\u5faa\u74b0\u76f8\u4f9d\u95dc\u4fc2\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request type
+# {1} The subscription ID, i.e. client##subName
+# {2} The ME the request was sent to
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631=CWSIP0631E: \u7576\u7b49\u5f85\u50b3\u8a0a\u5f15\u64ce {2} \u6642\uff0c{1} \u8a02\u95b1\u7684\u9060\u7aef\u53ef\u5ef6\u7e8c\u4f5c\u696d {0} \u903e\u6642\u3002
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.explanation=\u7576\u7b49\u5f85\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u6642\uff0c\u9060\u7aef\u53ef\u5ef6\u7e8c\u7684\u8981\u6c42\u903e\u6642\u3002
+REMOTE_DURABLE_TIMEOUT_ERROR_CWSIP0631.useraction=\u8acb\u9a57\u8b49\u5df2\u9069\u7576\u8a2d\u7f6e DURABLE_HOME\uff0c\u4e14\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u5728\u4f5c\u7528\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_POINT_DELETED_ERROR_SIMP0641=CWSIP0641E: \u5df2\u522a\u9664 {0} \u76ee\u7684\u5730\u7684\u672c\u7aef\u8abf\u89e3\u9ede\uff0c\u8a0a\u606f\u7121\u6cd5\u653e\u5165\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u3002
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.explanation=\u8a66\u5716\u5f9e\u5df2\u522a\u9664\u7684\u76ee\u7684\u5730\u672c\u7aef\u8abf\u89e3\u9ede\u79fb\u52d5\u8a0a\u606f\u9020\u6210\u932f\u8aa4\u3002
+MEDIATION_POINT_DELETED_ERROR_SIMP0641.useraction=\u7a0d\u5f8c\u5c07\u91cd\u8a66\u6e05\u9664\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_ERROR_SIMP0651=CWSIP0651E: \u5df2\u901a\u77e5 {0} \u76ee\u7684\u5730\u7684\u672c\u7aef\u8abf\u89e3\u9ede\u958b\u59cb\u8abf\u89e3\u8a0a\u606f\uff0c\u4f46\u7121\u6cd5\u4f5c\u696d\uff0c\u56e0\u70ba\u914d\u7f6e\u767c\u751f\u4e86\u5f9e\u76ee\u7684\u5730\u79fb\u9664\u9019\u9805\u8abf\u89e3\u7684\u8b8a\u5316\u3002
+MEDIATION_START_ERROR_SIMP0651.explanation=\u8abf\u89e3\u5df2\u4e0d\u518d\u5b9a\u7fa9\u5728\u76ee\u7684\u5730\u4e2d\uff0c\u56e0\u6b64\uff0c\u8981\u6c42\u555f\u52d5\u8abf\u89e3\u9ede\u9020\u6210\u932f\u8aa4\u3002
+MEDIATION_START_ERROR_SIMP0651.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u5c07\u7acb\u5373\u79fb\u9664\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652=CWSIP0652I: {0} \u76ee\u7684\u5730\u7684\u672c\u7aef\u8abf\u89e3\u9ede\u5df2\u505c\u6b62\uff0c\u56e0\u70ba\u50b3\u8a0a\u5f15\u64ce\u505c\u6b62\u4f5c\u696d\u3002
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.explanation=\u8abf\u89e3\u9ede\u5df2\u7121\u6cd5\u904b\u4f5c\uff0c\u56e0\u70ba\u50b3\u8a0a\u5f15\u64ce\u505c\u6b62\u4f5c\u696d\u3002\u6b63\u5728\u505c\u6b62\u8abf\u89e3\u9ede\u3002
+MEDIATION_STOPPED_BY_SHUTDOWN_SIMP0652.useraction=\u4f7f\u7528\u8005\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u5982\u679c\u9069\u7576\u914d\u7f6e\u7684\u8a71\uff0c\u7a0d\u5f8c\u91cd\u65b0\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce\u6642\uff0c\u6703\u56de\u5fa9\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0654=CWSIP0654E: {0} \u76ee\u7684\u5730\u7684\u672c\u7aef\u8abf\u89e3\u9ede\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u767c\u751f\u932f\u8aa4\u3002\u8abf\u89e3\u5b9a\u7fa9\u4e0d\u6b63\u78ba\u3002\u932f\u8aa4\u662f {1}\u3002
+MEDIATION_FAILED_TO_START_SIMP0654.explanation=\u8abf\u89e3\u9ede\u4ecd\u5728\u5df2\u505c\u6b62\u72c0\u614b\u3002
+MEDIATION_FAILED_TO_START_SIMP0654.useraction=\u5728\u932f\u8aa4\u72c0\u6cc1\u8b8a\u66f4\u4e4b\u5f8c\uff0c\u5c31\u53ef\u4ee5\u91cd\u65b0\u555f\u52d5\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation we were looking for
+# {2} the exception which caused the failure.
+MEDIATION_FAILED_TO_START_SIMP0655=CWSIP0655E: {0} \u76ee\u7684\u5730\u7684\u672c\u7aef\u8abf\u89e3\u9ede\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u767c\u751f\u932f\u8aa4\u3002\u627e\u4e0d\u5230 {1} \u8abf\u89e3\u3002\u932f\u8aa4\u662f {2}\u3002
+MEDIATION_FAILED_TO_START_SIMP0655.explanation=\u8abf\u89e3\u9ede\u4ecd\u5728\u5df2\u505c\u6b62\u72c0\u614b\u3002
+MEDIATION_FAILED_TO_START_SIMP0655.useraction=\u5728\u932f\u8aa4\u72c0\u6cc1\u8b8a\u66f4\u4e4b\u5f8c\uff0c\u5c31\u53ef\u4ee5\u91cd\u65b0\u555f\u52d5\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The name of the destination
+# {1} The exception string why the message flow can't start. Not the stack trace.
+#
+MESSAGE_PUMP_START_WARNING_CWSIP0656W=CWSIP0656W: \u8abf\u89e3\u9ede\u7121\u6cd5\u50b3\u9001 {0} \u76ee\u7684\u5730\u7684\u8a0a\u606f\uff0c\u56e0\u70ba\u767c\u751f {1} \u932f\u8aa4\u3002
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.explanation=\u8abf\u89e3\u9ede\u8a66\u5716\u958b\u59cb\u5c07\u8a0a\u606f\u50b3\u9001\u5230\u8abf\u89e3\u548c\u76ee\u7684\u5730\u7aef\u9ede\u3002\u958b\u59cb\u50b3\u9001\u8a0a\u606f\u5931\u6557\u3002
+MESSAGE_PUMP_START_WARNING_CWSIP0656W.useraction=\u5728\u932f\u8aa4\u72c0\u6cc1\u8b8a\u66f4\u4e4b\u5f8c\uff0c\u5c31\u53ef\u4ee5\u91cd\u65b0\u555f\u52d5\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the name of the mediation
+# {2} the state change.
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657=CWSIP0657I: {0} \u76ee\u7684\u5730\u548c {1} \u8abf\u89e3\u7684\u672c\u7aef\u8abf\u89e3\u9ede\u5df2\u79fb\u81f3 {2} \u72c0\u614b\u3002
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.explanation=\u8abf\u89e3\u9ede\u5df2\u79fb\u81f3\u65b0\u72c0\u614b\u3002
+NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661=CWSIP0661E: {0} \u76ee\u7684\u5730\u7684\u8abf\u89e3\u8a66\u5716\u5728\u8abf\u89e3\u5df2\u505c\u6b62\u4e4b\u5f8c\uff0c\u5c07\u8a0a\u606f\u653e\u5728\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u4e2d\u3002
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.explanation=\u8a0a\u606f\u672a\u653e\u5728\u7570\u5e38\u72c0\u6cc1\u76ee\u7684\u5730\u4e2d\u3002
+MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661.useraction=\u8abf\u89e3\u53ef\u4ee5\u5728\u91cd\u65b0\u555f\u52d5\u4e4b\u5f8c\uff0c\u91cd\u65b0\u5617\u8a66\u653e\u7f6e\u8a0a\u606f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662=CWSIP0662E: {0} \u76ee\u7684\u5730\u7684\u8abf\u89e3\u9ede\u8a66\u5716\u5c07\u8a0a\u606f\u79fb\u5230\u76ee\u7684\u5730\u7684\u5f8c\u7f6e\u8abf\u89e3\u7aef\u3002\u9019\u9805\u4f5c\u696d\u5931\u6557\u3002
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.explanation=\u8a0a\u606f\u672a\u653e\u5728\u76ee\u7684\u5730\u7684\u5f8c\u7f6e\u8abf\u89e3\u7aef\u3002\u5df2\u505c\u6b62\u8abf\u89e3\u9ede\u3002
+MEDIATION_STOPPED_BY_FAILURE_TO_MOVE_UNMEDIATED_MESSAGE_SIMP0662.useraction=\u8abf\u89e3\u53ef\u4ee5\u5728\u91cd\u65b0\u555f\u52d5\u4e4b\u5f8c\uff0c\u91cd\u65b0\u5617\u8a66\u79fb\u52d5\u8a0a\u606f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the selector passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663=CWSIP0663E: {0} \u76ee\u7684\u5730\u7684\u8abf\u89e3\u9ede\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u9078\u53d6\u5668\u4e0d\u6b63\u78ba\u3002\u9078\u53d6\u5668\u5df2\u8a2d\u70ba {1}\u3002\u932f\u8aa4\u662f {2}\u3002
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.explanation=\u8abf\u89e3\u914d\u7f6e\u6240\u6307\u5b9a\u7684\u9078\u53d6\u5668\u4e0d\u6b63\u78ba\u3002
+MEDIATION_START_FAILURE_INVALID_SELECTOR_SIMP0663.useraction=\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u6709\u6548\u9078\u53d6\u5668\u7684\u69cb\u6210\u8981\u7d20\u3002\u8acb\u8b8a\u66f4\u8abf\u89e3\u914d\u7f6e\u4f86\u8a2d\u5b9a\u6709\u6548\u7684\u9078\u53d6\u5668\u3002\u8acb\u91cd\u65b0\u555f\u52d5\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the discriminator passed to MP by the configuration
+# {2} the parse failure when the selector was turned into a parse tree.
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664=CWSIP0664E: {0} \u76ee\u7684\u5730\u7684\u8abf\u89e3\u9ede\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u9451\u5225\u5668\u4e0d\u6b63\u78ba\u3002\u9451\u5225\u5668\u5df2\u8a2d\u70ba {1}\u3002\u932f\u8aa4\u662f {2}\u3002
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.explanation=\u8abf\u89e3\u914d\u7f6e\u6240\u6307\u5b9a\u7684\u9451\u5225\u5668\u4e0d\u6b63\u78ba\u3002
+MEDIATION_START_FAILURE_INVALID_DISCRIMINATOR_SIMP0664.useraction=\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u6709\u6548\u9451\u5225\u5668\u7684\u69cb\u6210\u8981\u7d20\u3002\u8acb\u8b8a\u66f4\u8abf\u89e3\u914d\u7f6e\u4f86\u8a2d\u5b9a\u6709\u6548\u7684\u9451\u5225\u5668\u3002\u8acb\u91cd\u65b0\u555f\u52d5\u8abf\u89e3\u9ede\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665=CWSIP0665E: {0} \u76ee\u7684\u5730\u7684\u8abf\u89e3\u9ede\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5df2\u505c\u7528\u9019\u500b\u76ee\u7684\u5730\u7684\u8abf\u89e3\u3002
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.explanation=\u914d\u7f6e\u8cc7\u8a0a\u6307\u51fa\u5df2\u505c\u7528\u9019\u500b\u76ee\u7684\u5730\u7684\u6240\u6709\u8abf\u89e3\u6d3b\u52d5\u3002
+MEDIATION_START_PREVENTED_DISABLED_SIMP0665.useraction=\u7576\u8abf\u89e3\u8981\u958b\u59cb\u904b\u4f5c\u6642\uff0c\u76ee\u7684\u5730\u5fc5\u9808\u6307\u793a\u5df2\u555f\u7528\u9019\u9805\u8abf\u89e3\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} The bus name
+# {2} The related exception
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666=CWSIP0666W: {1} \u532f\u6d41\u6392\u4e2d\u4e4b {0} \u76ee\u7684\u5730\u7684\u8abf\u89e3\u9ede\u7121\u6cd5\u5efa\u7acb\u7522\u751f\u8005\uff0c\u56e0\u70ba\u767c\u751f {2} \u932f\u8aa4
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.explanation=\u5982\u679c\u8981\u5c07\u8a0a\u606f\u905e\u9001\u5230\u67d0\u9805\u8abf\u89e3\uff0c\u5c31\u9700\u8981\u4e00\u500b\u7522\u751f\u8005\u3002\u7576\u5efa\u7acb\u7522\u751f\u8005\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+MEDIATION_MESSAGE_PUMP_START_PRODUCER_FAILED_SIMP0666.useraction=\u8acb\u6aa2\u67e5\u76f8\u95dc\u7570\u5e38\u72c0\u6cc1\uff0c\u518d\u66f4\u6b63\u4efb\u4f55\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667=CWSIP0667E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002registerConsumerSetMonitor \u6307\u4ee4\u5931\u6557\uff0c\u56e0\u70ba\u50b3\u905e\u7684 ConsumerSetChangeCallback \u53c3\u6578\u662f\u7a7a\u503c\u3002
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.explanation=CMSG0001
+NULL_CONSUMERSETCHANGECALLBACK_CWSIP0667.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DESTINATIONADDRESS_CWSIP0668=CWSIP0668E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002destinationAddress \u6307\u4ee4\u5931\u6557\uff0c\u56e0\u70ba\u50b3\u905e\u7684 ConsumerSetChangeCallback \u53c3\u6578\u662f\u7a7a\u503c\u3002
+NULL_DESTINATIONADDRESS_CWSIP0668.explanation=CMSG0001
+NULL_DESTINATIONADDRESS_CWSIP0668.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Used in ConnectionImpl.java
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669=CWSIP0669E: \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002discriminatorExpression \u6307\u4ee4\u5931\u6557\uff0c\u56e0\u70ba\u50b3\u905e\u7684 ConsumerSetChangeCallback \u53c3\u6578\u662f\u7a7a\u503c\u3002
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.explanation=CMSG0001
+NULL_DISCRIMINATOREXPRESSION_CWSIP0669.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the destination
+# {1} the messaging engine
+ORDERING_INITIALISATION_ERROR_CWSIP0671=CWSIP0671E: \u50b3\u8a0a\u5f15\u64ce {1} \u7684\u76ee\u7684\u5730 {0} \u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u4ee5\u7dad\u8b77\u9806\u5e8f\u3002
+ORDERING_INITIALISATION_ERROR_CWSIP0671.explanation=\u8a66\u5716\u8d77\u59cb\u8a2d\u5b9a\u5df2\u4f9d\u5e8f\u7684\u76ee\u7684\u5730\uff0c\u4f46\u662f\u76ee\u7684\u5730\u6709\u591a\u500b\u672a\u5b8c\u6210\u7684\u4ea4\u6613\u3002
+ORDERING_INITIALISATION_ERROR_CWSIP0671.useraction=\u8acb\u5148\u5b8c\u6210\u76ee\u7684\u5730\u4e2d\u7684\u6240\u6709\u4ea4\u6613\uff0c\u624d\u80fd\u555f\u52d5\u6392\u5e8f\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination prefix supplied by the user
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680=CWSIP0680E: \u7121\u6cd5\u5f9e\u6d88\u8cbb\u8005 {0} \u5efa\u7acb\u5206\u652f\u7684\u6d88\u8cbb\u8005\uff0c\u6d88\u8cbb\u8005 {0} \u7121\u6cd5\u5206\u652f\u3002
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.explanation=\u53ea\u80fd\u5f9e\u4e00\u958b\u59cb\u5c31\u5efa\u7acb\u6210\u53ef\u5206\u652f\u7684\u6d88\u8cbb\u8005\uff0c\u4f86\u5efa\u7acb\u5206\u652f\u7684\u6d88\u8cbb\u8005\u3002
+CONSUMER_NOT_BIFURCATABLE_CWSIP0680.useraction=\u8acb\u8b8a\u66f4\u5efa\u7acb\u6d88\u8cbb\u8005\u7684\u61c9\u7528\u7a0b\u5f0f\uff0c\u4ee5\u5bb9\u8a31\u5efa\u7acb\u5206\u652f\u7684\u6d88\u8cbb\u8005\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771=CWSIP0771I: \u7ba1\u7406\u8005\u52d5\u4f5c\u3002
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.explanation=\u8abf\u89e3\u9ede\u662f\u7531\u65bc\u7ba1\u7406\u8005\u7684\u52d5\u4f5c\u800c\u9032\u5165\u67d0\u500b\u72c0\u614b\u3002
+MEDIATION_CHANGE_REASON_ADMIN_ACTION_SIMP0771.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u5982\u4f55\u6539\u8b8a\u8abf\u89e3\u9ede\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772=CWSIP0772I: \u8abf\u89e3\u52d5\u4f5c\u3002
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.explanation=\u8abf\u89e3\u9ede\u662f\u7531\u65bc\u8abf\u89e3\u7684\u52d5\u4f5c\u800c\u9032\u5165\u67d0\u500b\u72c0\u614b\u3002
+MEDIATION_CHANGE_REASON_MEDIATION_ACTION_SIMP0772.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u5982\u4f55\u6539\u8b8a\u8abf\u89e3\u9ede\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773=CWSIP0773I: \u4f7f\u7528\u914d\u7f6e\u7684\u8d77\u59cb\u72c0\u614b\u3002
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.explanation=\u7576\u8a66\u5716\u5230\u9054\u914d\u7f6e\u7684\u8d77\u59cb\u72c0\u614b\u6642\uff0c\u8abf\u89e3\u9ede\u9032\u5165\u67d0\u7a2e\u72c0\u614b\u3002
+MEDIATION_CHANGE_REASON_CONFIG_ACTION_SIMP0773.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u5982\u4f55\u6539\u8b8a\u8abf\u89e3\u9ede\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774=CWSIP0774I: \u6b63\u5728\u7b49\u5019 WebSphere \u4f3a\u670d\u5668\u555f\u52d5
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.explanation=\u8abf\u89e3\u9ede\u9032\u5165\u5728\u7b49\u5019 WebSphere \u4f3a\u670d\u5668\u555f\u52d5\u7684\u72c0\u614b\u3002
+MEDIATION_CHANGE_REASON_WAIT_WAS_SIMP0774.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u5982\u4f55\u6539\u8b8a\u8abf\u89e3\u9ede\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775=CWSIP0775I: \u6b63\u5728\u7b49\u5f85\u5728\u9019\u500b\u76ee\u7684\u5730\u522a\u9664\u53e6\u4e00\u500b\u8abf\u89e3\u9ede\u3002
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.explanation=\u5728\u5b8c\u5168\u79fb\u9664\u5148\u524d\u7684\u8abf\u89e3\u9ede\u5be6\u4f8b\u4e4b\u524d\uff0c\u5c31\u5c07\u8abf\u89e3\u9ede\u52a0\u5230\u76ee\u7684\u5730\u4e2d\u3002\u8abf\u89e3\u5c07\u7b49\u5230\u5148\u524d\u7684\u8abf\u89e3\u5b8c\u5168\u79fb\u9664\u4e4b\u5f8c\uff0c\u624d\u80fd\u7e7c\u7e8c\u4f5c\u696d\u3002
+MEDIATION_CHANGE_REASON_WAIT_DELETE_SIMP0775.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u5982\u4f55\u6539\u8b8a\u8abf\u89e3\u9ede\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776=CWSIP0776I: \u6b63\u5728\u5957\u7528\u914d\u7f6e\u8b8a\u66f4\u3002
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.explanation=\u8abf\u89e3\u9ede\u5df2\u56e0\u70ba\u914d\u7f6e\u8b8a\u66f4\u800c\u9032\u5165\u9019\u500b\u72c0\u614b\u3002
+MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u8aaa\u660e\u6587\u4ef6\u4f86\u63a2\u7d22\u5982\u4f55\u6539\u8b8a\u8abf\u89e3\u9ede\u7684\u72c0\u614b\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777=CWSIP0777E: \u5728 {0} \u76ee\u7684\u5730\u4e0a\u7528\u4f86\u9032\u884c\u63a5\u6536\u7684\u4ea4\u6613\u5df2\u7d93\u5b8c\u6210\u3002
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.explanation=\u8a66\u5716\u4f7f\u7528\u5df2\u5b8c\u6210\u7684\u4ea4\u6613\u3002
+TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.useraction=\u8acb\u78ba\u5b9a\u6240\u7528\u7684\u4ea4\u6613\u662f\u4e00\u9805\u65b0\u4ea4\u6613\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The destination address
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778=CWSIP0778E: \u5728 {0} \u76ee\u7684\u5730\u4e0a\u7528\u4f86\u9032\u884c\u522a\u9664\u7684\u4ea4\u6613\u5df2\u7d93\u5b8c\u6210\u3002
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.explanation=\u8a66\u5716\u4f7f\u7528\u5df2\u5b8c\u6210\u7684\u4ea4\u6613\u3002
+TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.useraction=\u8acb\u78ba\u5b9a\u6240\u7528\u7684\u4ea4\u6613\u662f\u4e00\u9805\u65b0\u4ea4\u6613\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_REQUESTED_MESSAGE_CWSIP0780=CWSIP0780I: \u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff0c\u8981\u6c42\u6c96\u5beb\u6240\u6709\u905e\u9001\u4e32\u6d41\u3002
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.explanation=\u50b3\u8a0a\u5f15\u64ce\u8fa8\u8a8d\u51fa\u8981\u6c42\u6c96\u5beb\u5b83\u7684\u905e\u9001\u4e32\u6d41\u3002
+FLUSH_REQUESTED_MESSAGE_CWSIP0780.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+FLUSH_INITIATED_MESSAGE_CWSIP0781=CWSIP0781I: \u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff0c\u5df2\u8d77\u59cb {1} \u4e32\u6d41\u548c {2} \u76ee\u7684\u5730\u7684\u6c96\u5beb\u4f5c\u696d\u3002
+FLUSH_INITIATED_MESSAGE_CWSIP0781.explanation=\u50b3\u8a0a\u5f15\u64ce\u5df2\u958b\u59cb\u6c96\u5beb\u4e32\u6d41\u3002
+FLUSH_INITIATED_MESSAGE_CWSIP0781.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+# {1} The Stream ID
+# {2} The Destination Name
+# {3} The Exception causing the problem
+FLUSH_FAILED_MESSAGE_CWSIP0782=CWSIP0782E: \u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff0c{1} \u4e32\u6d41\u548c {2} \u76ee\u7684\u5730\u7684\u6c96\u5beb\u4f5c\u696d\u5931\u6557\uff0c\u7570\u5e38\u72c0\u6cc1\uff1a{3}\u3002
+FLUSH_FAILED_MESSAGE_CWSIP0782.explanation=\u6c96\u5beb\u4e32\u6d41\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+FLUSH_FAILED_MESSAGE_CWSIP0782.useraction=\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u6d3d\u8a62 IBM \u652f\u63f4\u4ee3\u8868\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The messaging engine name
+FLUSH_COMPLETED_MESSAGE_CWSIP0783=CWSIP0783I: \u5df2\u555f\u52d5\u50b3\u8a0a\u5f15\u64ce {0}\uff0c\u5df2\u5b8c\u6210\u6c96\u5beb\u6240\u6709\u905e\u9001\u4e32\u6d41\u3002
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.explanation=\u50b3\u8a0a\u5f15\u64ce\u5df2\u6c96\u5beb\u5b83\u7684\u6240\u6709\u905e\u9001\u4e32\u6d41\u3002
+FLUSH_COMPLETED_MESSAGE_CWSIP0783.useraction=\u7121\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+# {1} is the uuid of the remote engine
+# {2} is the stream id in the remote engine
+# {3} is the name of the receiving engine
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784=CWSIP0784W: \u5f9e\u50b3\u8a0a\u5f15\u64ce {3} \u81f3 {1}\uff0c\u76ee\u7684\u5730\uff08ID \u70ba {1}\uff09\u4e0a\u7684\u9060\u7aef\u8a0a\u606f\u8981\u6c42\uff08ID \u70ba {2}\uff09\u7121\u6548\u3002\u53ef\u80fd\u9700\u8981\u6e05\u7406\u52d5\u4f5c\u3002
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.explanation=\u5728\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u5171\u7528\u7684\u9060\u7aef\u8a0a\u606f\u8981\u6c42\u72c0\u614b\u4e0d\u4e00\u81f4\uff0c\u53ef\u80fd\u56e0\u70ba\u5176\u4e2d\u4e00\u500b\u50b3\u8a0a\u5f15\u64ce\u7684\u8a0a\u606f\u5132\u5b58\u5eab\u5df2\u9084\u539f/\u522a\u9664\uff0c\u4f46\u53e6\u4e00\u500b\u537b\u6c92\u6709\u3002
+UNEXPECTED_MESSAGE_RECEIVED_CWSIP0784.useraction=\u8acb\u8b93\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u72c0\u614b\u4e00\u81f4\u3002\u8acb\u5c07\u5169\u500b\u8a0a\u606f\u5132\u5b58\u5eab\u56de\u5fa9\u81f3\u76f8\u540c\u7684\u6642\u9593\u9ede\uff0c\u6216\u5728\u63a5\u6536\u7684\u50b3\u8a0a\u5f15\u64ce\u4e0a\u53d6\u6d88\u6b64\u8981\u6c42\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785=CWSIP0785W: \u4fdd\u7559\u65bc\u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u8981\u50b3\u8f38\u81f3\u9060\u7aef\u76ee\u7684\u5730\u6216\u5916\u90e8\u532f\u6d41\u6392 {0} \u7684\u8a0a\u606f\uff0c\u5728\u4ea4\u6613 {3} \u4e0b\u8655\u65bc\u78ba\u5b9a\u4e2d\u72c0\u614b\u9054 {2} \u79d2\u7684\u6642\u9593\u3002\u5728\u6b64\u4ea4\u6613\u5b8c\u6210\u4e4b\u524d\uff0c\u53ef\u80fd\u7121\u6cd5\u50b3\u9001\u4efb\u4f55\u5176\u4ed6\u8a0a\u606f\u3002
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.explanation=\u5728\u89e3\u6790\u4ea4\u6613\u4e4b\u524d\uff0c\u4e0d\u6703\u50b3\u8f38\u5728\u5c01\u9396\u7684\u8a0a\u606f\u4e4b\u5f8c\u5c0d\u9060\u7aef\u76ee\u7684\u5730\u6216\u5916\u90e8\u532f\u6d41\u6392\u9001\u51fa\u7684\u4efb\u4f55\u8a0a\u606f\u3002
+STREAM_BLOCKED_BY_COMMITTING_MESSAGE_CWSIP0785.useraction=\u8acb\u89e3\u6c7a\u8b58\u5225\u70ba\u5c01\u9396\u8a0a\u606f\u7684\u4ea4\u6613
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination or foreign bus name
+# {1} Messaging engine name
+# {2} Number of seconds since the blockage was noticed
+# {3} Transaction ID blocking the message
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786=CWSIP0786I: \u4ea4\u6613 {2} \u4e0d\u518d\u5c01\u9396\u5f9e\u50b3\u8a0a\u5f15\u64ce {1} \u50b3\u9001\u81f3\u9060\u7aef\u76ee\u7684\u5730\u6216\u5916\u90e8\u532f\u6d41\u6392 {0} \u7684\u8a0a\u606f\u3002
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.explanation=\u5148\u524d\u6240\u5831\u544a\u672a\u89e3\u6c7a\u7684\u4ea4\u6613\u73fe\u5df2\u89e3\u6c7a\uff0c\u8a0a\u606f\u50b3\u8f38\u4e5f\u5df2\u56de\u5fa9\u3002
+STREAM_UNBLOCKED_BY_COMMITTING_MESSAGE_CWSIP0786.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} Messaging engine name
+# {2} Number of messages queued
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787=CWSIP0787I: \u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u7684\u76ee\u7684\u5730 {0} \u5df2\u9054\u5230 {2} \u8a0a\u606f\u6df1\u5ea6\u3002
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.explanation=\u76ee\u7684\u5730\u7684\u8a0a\u606f\u9ede\u5df2\u9054\u5230\u6307\u5b9a\u7684\u8a0a\u606f\u6df1\u5ea6
+DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0787.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The destination name
+# {3} Target messaging engine name
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788=CWSIP0788I: \u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u6709 {0} \u500b\u4f47\u5217\u8a0a\u606f\u8981\u50b3\u8f38\u81f3\u50b3\u8a0a\u5f15\u64ce {3} \u4e0a\u7684\u76ee\u7684\u5730 {2}\u3002
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.explanation=\u76ee\u7684\u5730\u7684\u9060\u7aef\u8a0a\u606f\u9ede\u5df2\u9054\u5230\u6307\u5b9a\u7684\u8a0a\u606f\u6df1\u5ea6
+REMOTE_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0788.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Number of messages queued
+# {1} Messaging engine with the queued messages
+# {2} The next target foreign bus
+# {3} The link connecting the foreign bus
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789=CWSIP0789I: \u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u6709 {0} \u500b\u4f47\u5217\u8a0a\u606f\u8981\u50b3\u8f38\u81f3\u93c8\u7d50 {3} \u4e0a\u7684\u5916\u90e8\u532f\u6d41\u6392 {2}\u3002
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.explanation=\u5916\u90e8\u532f\u6d41\u6392\u7684\u93c8\u7d50\u5df2\u9054\u5230\u6307\u5b9a\u7684\u8a0a\u606f\u6df1\u5ea6
+REMOTE_LINK_DESTINATION_DEPTH_INTERVAL_REACHED_CWSIP0789.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790=CWSIP0790W: \u50b3\u8a0a\u5f15\u64ce {3} \u5728\u5f9e\u93c8\u7d50 {2} \u4e0a\u532f\u6d41\u6392 {1} \u63a5\u6536\u7684\u8a0a\u606f\u4e32\u6d41\u4e2d\u5075\u6e2c\u5230\u9593\u9699\u3002\u5c1a\u672a\u6eff\u8db3\u586b\u88dc\u6b64\u9593\u9699\u7684\u8981\u6c42\u3002\u6b64\u9593\u9699\u8d77\u59cb\u65bc\u9806\u5e8f ID {0}\u3002
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.explanation=\u900f\u904e\u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u63a5\u6536\u8a0a\u606f\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u5728\u6240\u63a5\u6536\u7684\u8a0a\u606f\u4e4b\u9806\u5e8f ID \u4e2d\u5075\u6e2c\u5230\u9593\u9699\u3002\u66fe\u7d93\u5c0d\u50b3\u9001\u7aef\u50b3\u8a0a\u5f15\u64ce\u63d0\u51fa\u91cd\u65b0\u50b3\u905e\u4e00\u6216\u591a\u500b\u8a0a\u606f\u7684\u8981\u6c42\uff0c\u4f46\u672a\u586b\u88dc\u9593\u9699\u3002\u5982\u679c\u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u76ee\u524d\u672a\u57f7\u884c\uff0c\u5247\u8981\u7b49\u5230\u91cd\u65b0\u555f\u52d5\u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u4e4b\u5f8c\u624d\u6703\u89e3\u6c7a\u6b64\u9593\u9699\u3002
+UNRESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0790.useraction=\u5982\u679c\u93c8\u7d50\u5df2\u505c\u6b62\uff0c\u8acb\u91cd\u65b0\u555f\u52d5\u5b83\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791=CWSIP0791I: \u5f9e\u93c8\u7d50 {2} \u4e0a\u4e4b\u532f\u6d41\u6392 {1} \u7684\u8a0a\u606f\u4e32\u6d41\u4e2d\u7684\u9806\u5e8f ID {0} \u958b\u59cb\u7684\u9593\u9699\uff0c\u5df2\u5728\u50b3\u8a0a\u5f15\u64ce {3} \u7372\u5f97\u89e3\u6c7a\u3002
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.explanation=\u5728\u8a0a\u606f\u9806\u5e8f\u4e2d\u5148\u524d\u5831\u544a\u7684\u9593\u9699\u76ee\u524d\u5df2\u89e3\u6c7a\uff0c\u73fe\u5728\u6703\u8655\u7406\u5f8c\u7e8c\u8a0a\u606f\u3002
+RESOLVED_GAP_IN_LINK_TRANSMITTER_CWSIP0791.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792=CWSIP0792W: \u50b3\u8a0a\u5f15\u64ce {3} \u5728\u5f9e\u76ee\u7684\u5730 {1} \u7684\u50b3\u8a0a\u5f15\u64ce {2} \u63a5\u6536\u7684\u8a0a\u606f\u4e32\u6d41\u4e2d\u5075\u6e2c\u5230\u9593\u9699\u3002\u5c1a\u672a\u6eff\u8db3\u586b\u88dc\u6b64\u9593\u9699\u7684\u8981\u6c42\u3002\u6b64\u9593\u9699\u8d77\u59cb\u65bc\u9806\u5e8f ID {0}\u3002
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.explanation=\u63a5\u6536\u76ee\u7684\u5730\u8a0a\u606f\u7684\u50b3\u8a0a\u5f15\u64ce\uff0c\u5728\u6240\u63a5\u6536\u7684\u8a0a\u606f\u4e4b\u9806\u5e8f ID \u4e2d\u5075\u6e2c\u5230\u9593\u9699\u3002\u66fe\u7d93\u5c0d\u50b3\u9001\u7aef\u50b3\u8a0a\u5f15\u64ce\u63d0\u51fa\u91cd\u65b0\u50b3\u905e\u4e00\u6216\u591a\u500b\u8a0a\u606f\u7684\u8981\u6c42\uff0c\u4f46\u672a\u586b\u88dc\u9593\u9699\u3002\u5982\u679c\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u901a\u8a0a\uff0c\u5247\u8981\u7b49\u5230\u901a\u8a0a\u554f\u984c\u89e3\u6c7a\u4e4b\u5f8c\u624d\u6703\u89e3\u6c7a\u6b64\u9593\u9699\u3002
+UNRESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0792.useraction=\u5982\u679c\u50b3\u9001\u7aef\u50b3\u8a0a\u5f15\u64ce\u5df2\u505c\u6b62\uff0c\u8acb\u91cd\u65b0\u555f\u52d5\u5b83\uff0c\u4e26\u78ba\u5b9a\u5169\u500b\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u7684\u9023\u7dda\u5728\u4f5c\u7528\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} First missing sequence id
+# {1} Destination name
+# {2} sending messaging engine
+# {3} Receiving messaging engine
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793=CWSIP0793I: \u5f9e\u50b3\u8a0a\u5f15\u64ce {2} \u4e2d\u76ee\u7684\u5730 {1} \u7684\u8a0a\u606f\u4e32\u6d41\u4e2d\u7684\u9806\u5e8f ID {0} \u958b\u59cb\u7684\u9593\u9699\uff0c\u5df2\u5728\u50b3\u8a0a\u5f15\u64ce {3} \u7372\u5f97\u89e3\u6c7a\u3002
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.explanation=\u5728\u8a0a\u606f\u9806\u5e8f\u4e2d\u5148\u524d\u5831\u544a\u7684\u9593\u9699\u76ee\u524d\u5df2\u89e3\u6c7a\uff0c\u73fe\u5728\u6703\u8655\u7406\u5f8c\u7e8c\u8a0a\u606f\u3002
+RESOLVED_GAP_IN_DESTINATION_TRANSMITTER_CWSIP0793.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} Sending bus name
+# {2} link name
+# {3} Receiving messaging engine
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794=CWSIP0794W: \u50b3\u8a0a\u5f15\u64ce {3} \u900f\u904e\u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50 {2} \u5f9e\u532f\u6d41\u6392 {1} \u63a5\u6536\u5230\u7684\u8a0a\u606f\u7684\u767e\u5206\u4e4b {0}\uff0c\u5df2\u900f\u904e\u532f\u6d41\u6392\u4ea4\u4e92\u93c8\u7d50\u91cd\u8907\u50b3\u8f38\u3002
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.explanation=\u6b64\u50b3\u8a0a\u5f15\u64ce\u5148\u524d\u5df2\u63a5\u6536\u5230\u5f9e\u5916\u90e8\u532f\u6d41\u6392\u50b3\u9001\u4e14\u4f54\u5f88\u9ad8\u767e\u5206\u6bd4\u7684\u8a0a\u606f\uff0c\u5c07\u4e0d\u6703\u91cd\u8907\u8a0a\u606f\uff0c\u4f46\u50b3\u8a0a\u7cfb\u7d71\u7684\u6548\u80fd\u6703\u964d\u4f4e\u3002\u7576\u900f\u904e\u93c8\u7d50\u50b3\u9001\u7a81\u7136\u6e67\u5165\u7684\u8a0a\u606f\u6642\uff0c\u6703\u51fa\u73fe\u6b64\u8a0a\u606f\uff0c\u82e5\u91cd\u8907\u51fa\u73fe\u6b64\u8a0a\u606f\uff0c\u8868\u793a\u93c8\u7d50\u7684\u7522\u91cf\u4e00\u76f4\u8d85\u904e\u53ef\u627f\u53d7\u7684\u57fa\u6e96\u4e86\u3002
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.useraction=\u8acb\u8abf\u67e5\u900f\u904e\u6b64\u93c8\u7d50\u50b3\u9001\u7684\u8a0a\u606f\u7522\u751f\u901f\u7387\u662f\u5426\u592a\u9ad8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Percentage of messages repeated
+# {1} sending messaging engine
+# {2} Receiving messaging engine
+# {3} Destination name
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795=CWSIP0795W: \u4ee5\u50b3\u8a0a\u5f15\u64ce {2}\uff08\u76ee\u7684\u5730\u70ba {3}\uff09\u5f9e\u50b3\u8a0a\u5f15\u64ce {1} \u6240\u63a5\u6536\u7684\u8a0a\u606f\u4f86\u8aaa\uff0c\u6709 {0} \u767e\u5206\u6bd4\u7684\u8a0a\u606f\u5df2\u91cd\u8907\u50b3\u8f38\u81f3\u50b3\u8a0a\u5f15\u64ce\u3002
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.explanation=\u6b64\u50b3\u8a0a\u5f15\u64ce\u5148\u524d\u5df2\u63a5\u6536\u5230\u5f9e\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\u50b3\u9001\u4e14\u4f54\u5f88\u9ad8\u767e\u5206\u6bd4\u7684\u8a0a\u606f\uff0c\u5c07\u4e0d\u6703\u91cd\u8907\u8a0a\u606f\uff0c\u4f46\u50b3\u8a0a\u7cfb\u7d71\u7684\u6548\u80fd\u6703\u964d\u4f4e\u3002\u7576\u6709\u7a81\u7136\u6e67\u5165\u7684\u8a0a\u606f\u50b3\u8f38\u81f3\u50b3\u8a0a\u5f15\u64ce\u6642\uff0c\u4fbf\u6703\u51fa\u73fe\u6b64\u8a0a\u606f\u3002\u82e5\u91cd\u8907\u51fa\u73fe\u6b64\u8a0a\u606f\uff0c\u8868\u793a\u4e00\u76f4\u8d85\u904e\u8a0a\u606f\u7522\u91cf\u4e0a\u9650\u3002
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.useraction=\u8acb\u8abf\u67e5\u6b64\u50b3\u8a0a\u5f15\u64ce\u7684\u8a0a\u606f\u7522\u751f\u901f\u7387\u662f\u5426\u592a\u9ad8\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The key
+INVOKE_COMMAND_ERROR_CWSIP0801=CWSIP0801E: \u7531\u65bc\u7d22\u5f15\u9375 {0} \u7121\u6548\uff0c\u56e0\u6b64\u6307\u4ee4\u547c\u53eb\u5931\u6557
+INVOKE_COMMAND_ERROR_CWSIP0801.explanation=\u7531\u65bc\u7d22\u5f15\u9375\u7121\u6548\uff0c\u56e0\u6b64\u7121\u6cd5\u547c\u53eb\u6307\u4ee4
+INVOKE_COMMAND_ERROR_CWSIP0801.useraction=\u8acb\u6aa2\u67e5\u5728 invokeCommand \u4e0a\u63d0\u4f9b\u7684\u7d22\u5f15\u9375
+
+# -------------------------------------------------------------------------------------------------
+# {0} The null parameter
+INVOKE_COMMAND_ERROR_CWSIP0802=CWSIP0802E: \u7531\u65bc\u4e0b\u5217\u53c3\u6578\u70ba\u7a7a\u503c {0}\uff0c\u56e0\u6b64\u6307\u4ee4\u547c\u53eb\u5931\u6557
+INVOKE_COMMAND_ERROR_CWSIP0802.explanation=\u7531\u65bc\u5176\u4e2d\u4e00\u500b\u53c3\u6578\u70ba\u7a7a\u503c\uff0c\u56e0\u6b64\u7121\u6cd5\u547c\u53eb\u6307\u4ee4
+INVOKE_COMMAND_ERROR_CWSIP0802.useraction=\u8acb\u5c07\u6307\u5b9a\u7684\u53c3\u6578\u8a2d\u6210\u6709\u6548\u7684\u503c\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# -------------------------------------------------------------------------------------------------
+# no parameters.
+ADD_DEST_LISTENER_ERROR_CWSIP0803=CWSIP0803E: addDestinationListener \u6307\u4ee4\u5931\u6557\uff0c\u56e0\u70ba\u6c92\u6709\u6307\u5b9a DestinationListener
+ADD_DEST_LISTENER_ERROR_CWSIP0803.explanation=\u7531\u65bc DestinationListener \u53c3\u6578\u70ba\u7a7a\u503c\uff0c\u56e0\u6b64\u7121\u6cd5\u547c\u53eb\u6307\u4ee4
+ADD_DEST_LISTENER_ERROR_CWSIP0803.useraction=\u8acb\u6307\u5b9a\u6709\u6548\u7684 DestinationListener \u503c\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_SENT_CWSIP0811=CWSIP0811W: \u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3\u5df2\u6307\u6d3e\u7d66 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {1} \u7684 {0} \u76ee\u7684\u5730\u3002WebSphere MQ \u5b8c\u6210\u78bc\u662f {2}\u3002WebSphere MQ \u539f\u56e0\u78bc\u662f {3}\u3002
+MSG_NOT_SENT_CWSIP0811.explanation=\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3\u6307\u5b9a\u7684\u76ee\u7684\u5730\uff0c\u8a72\u76ee\u7684\u5730\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere MQ \u5b8c\u6210\u78bc\u548c\u539f\u56e0\u78bc\uff0c\u4f86\u5224\u65b7\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u7684\u539f\u56e0\u3002
+MSG_NOT_SENT_CWSIP0811.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u5b8c\u6210\u78bc\u8207\u539f\u56e0\u78bc\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_SENT_CWSIP0812=CWSIP0812W: \u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3\u548c {0} \u76ee\u7684\u5730\uff08\u548c WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {1} \u76f8\u95dc\u806f\uff09\u76f8\u95dc\u806f\u7684\u8abf\u89e3\u9ede\u3002WebSphere MQ \u5b8c\u6210\u78bc\u662f {2}\u3002WebSphere MQ \u539f\u56e0\u78bc\u662f {3}\u3002
+MEDIATION_MSG_NOT_SENT_CWSIP0812.explanation=\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3\u548c\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\u76f8\u95dc\u806f\u7684\u6307\u5b9a\u8abf\u89e3\u57f7\u884c\u9ede\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere MQ \u5b8c\u6210\u78bc\u548c\u539f\u56e0\u78bc\uff0c\u4f86\u5224\u65b7\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u7684\u539f\u56e0\u3002
+MEDIATION_MSG_NOT_SENT_CWSIP0812.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u5b8c\u6210\u78bc\u8207\u539f\u56e0\u78bc\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+EXCEPTION_CWSIP0813=CWSIP0813W: \u8a66\u5716\u50b3\u9001\u8a0a\u606f\u81f3\u5df2\u6307\u6d3e\u7d66 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {2} \u7684 {1} \u76ee\u7684\u5730\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+EXCEPTION_CWSIP0813.explanation=\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3\u6307\u5b9a\u7684\u76ee\u7684\u5730\uff0c\u8a72\u76ee\u7684\u5730\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere \u7570\u5e38\u72c0\u6cc1\uff0c\u5224\u65b7\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u7684\u539f\u56e0\u3002
+EXCEPTION_CWSIP0813.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u7570\u5e38\u72c0\u6cc1\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the websphere MQ Server bus member name
+MEDIATION_EXCEPTION_CWSIP0814=CWSIP0814W: \u8a66\u5716\u50b3\u9001\u8a0a\u606f\u81f3\u548c {1} \u76ee\u7684\u5730\uff08\u548c WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {2} \u76f8\u95dc\u806f\uff09\u76f8\u95dc\u806f\u7684\u8abf\u89e3\u9ede\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+MEDIATION_EXCEPTION_CWSIP0814.explanation=\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u81f3\u6307\u5b9a\u7684\u76ee\u7684\u5730\u4e4b\u8abf\u89e3\u9ede\uff0c\u8a72\u76ee\u7684\u5730\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere \u7570\u5e38\u72c0\u6cc1\uff0c\u5224\u65b7\u8a0a\u606f\u7121\u6cd5\u50b3\u9001\u7684\u539f\u56e0\u3002
+MEDIATION_EXCEPTION_CWSIP0814.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u7570\u5e38\u72c0\u6cc1\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MSG_NOT_RECEIVED_CWSIP0815=CWSIP0815W: \u7121\u6cd5\u5f9e\u5df2\u6307\u6d3e\u7d66 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {1} \u7684 {0} \u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\u3002WebSphere MQ \u5b8c\u6210\u78bc\u662f {2}\u3002WebSphere MQ \u539f\u56e0\u78bc\u662f {3}\u3002
+MSG_NOT_RECEIVED_CWSIP0815.explanation=\u7121\u6cd5\u5f9e\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\u4e4b\u6307\u5b9a\u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere MQ \u5b8c\u6210\u78bc\u548c\u539f\u56e0\u78bc\uff0c\u4f86\u5224\u65b7\u7121\u6cd5\u63a5\u6536\u8a0a\u606f\u7684\u539f\u56e0\u3002
+MSG_NOT_RECEIVED_CWSIP0815.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u5b8c\u6210\u78bc\u8207\u539f\u56e0\u78bc\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+# {1} is the Websphere MQ Server bus member name
+# {2} is the websphere MQ completion code
+# {3} is the websphere MQ reason code
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816=CWSIP0816W: \u7121\u6cd5\u5f9e\u548c\u5df2\u6307\u6d3e\u7d66 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {1} \u7684 {0} \u76ee\u7684\u5730\u76f8\u95dc\u806f\u7684\u8abf\u89e3\u9ede\u63a5\u6536\u8a0a\u606f\u3002WebSphere MQ \u5b8c\u6210\u78bc\u662f {2}\u3002WebSphere MQ \u539f\u56e0\u78bc\u662f {3}\u3002
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.explanation=\u7121\u6cd5\u5f9e\u548c\u6307\u5b9a\u7684\u76ee\u7684\u5730\uff08\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\uff09\u76f8\u95dc\u806f\u7684\u8abf\u89e3\u9ede\u63a5\u6536\u8a0a\u606f\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere MQ \u5b8c\u6210\u78bc\u548c\u539f\u56e0\u78bc\uff0c\u4f86\u5224\u65b7\u7121\u6cd5\u63a5\u6536\u8a0a\u606f\u7684\u539f\u56e0\u3002
+MEDIATION_MSG_NOT_RECEIVED_CWSIP0816.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u5b8c\u6210\u78bc\u8207\u539f\u56e0\u78bc\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817=CWSIP0817W: \u8a66\u5716\u5f9e\u5df2\u6307\u6d3e\u7d66 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {2} \u7684 {1} \u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.explanation=\u7121\u6cd5\u5f9e\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1\u4e4b\u6307\u5b9a\u76ee\u7684\u5730\u63a5\u6536\u8a0a\u606f\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere \u7570\u5e38\u72c0\u6cc1\uff0c\u5224\u65b7\u7121\u6cd5\u63a5\u6536\u8a0a\u606f\u7684\u539f\u56e0\u3002
+EXCEPTION_MSG_NOT_RECEIVED_CWSIP0817.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u7570\u5e38\u72c0\u6cc1\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the destination name
+# {2} is the Websphere MQ Server bus member name
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818=CWSIP0818W: \u8a66\u5716\u5f9e\u548c\u5df2\u6307\u6d3e\u7d66 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {2} \u7684 {1} \u76ee\u7684\u5730\u76f8\u95dc\u806f\u7684\u8abf\u89e3\u9ede\u63a5\u6536\u8a0a\u606f\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1 {0}\u3002
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.explanation=\u7121\u6cd5\u5f9e\u548c\u6307\u5b9a\u7684\u76ee\u7684\u5730\uff08\u5df2\u6307\u6d3e\u7d66\u6307\u5b9a\u7684 WebSphere MQ \u4f3a\u670d\u5668\uff09\u76f8\u95dc\u806f\u7684\u8abf\u89e3\u9ede\u63a5\u6536\u8a0a\u606f\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u9019\u88e1\u6307\u5b9a\u7684 WebSphere \u7570\u5e38\u72c0\u6cc1\uff0c\u5224\u65b7\u7121\u6cd5\u63a5\u6536\u8a0a\u606f\u7684\u539f\u56e0\u3002
+MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.useraction=\u8acb\u53c3\u8003 WebSphere MQ \u8aaa\u660e\u6587\u4ef6\uff0c\u5224\u65b7\u7570\u5e38\u72c0\u6cc1\u7684\u610f\u7fa9\u3002\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+RMQ_DISABLED_CWSIP0819=CWSIP0819W: \u7531\u65bc\u5df2\u505c\u7528 WebSphere MQ \u50b3\u8a0a\uff0c\u56e0\u6b64\u7121\u6cd5\u548c Websphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {0} \u5efa\u7acb\u9023\u7dda\u3002
+RMQ_DISABLED_CWSIP0819.explanation=\u7531\u65bc\u50b3\u8a0a\u5f15\u64ce\u555f\u52d5\u671f\u9593\u767c\u751f\u932f\u8aa4\uff0c\u56e0\u6b64\u7121\u6cd5\u4f7f\u7528 Websphere MQ \u50b3\u8a0a\u529f\u80fd\u3002
+RMQ_DISABLED_CWSIP0819.useraction=\u78ba\u5b9a\u5df2\u5728\u50b3\u8a0a\u5f15\u64ce\u4e0a\u8a2d\u5b9a\u9069\u7576\u7684 WebSphere MQ \u7528\u6236\u7aef\u3002\u6aa2\u8996\u50b3\u8a0a\u5f15\u64ce\u555f\u52d5\u65e5\u8a8c\uff0c\u4ee5\u5224\u65b7\u555f\u52d5\u932f\u8aa4\u539f\u56e0\uff0c\u4e26\u57f7\u884c\u9069\u7576\u7684\u66f4\u6b63\u52d5\u4f5c\u3002
+# -------------------------------------------------------------------------------------------------
+# {0} is the Websphere MQ Server bus member name
+# {1} is the error
+RMQ_INTERNAL_ERROR_CWSIP0820=CWSIP0820W: \u4f7f\u7528 WebSphere MQ \u4f3a\u670d\u5668\u532f\u6d41\u6392\u6210\u54e1 {0} \u6642\uff0c\u767c\u751f\u5167\u90e8\u50b3\u8a0a\u932f\u8aa4\uff1a{1}
+RMQ_INTERNAL_ERROR_CWSIP0820.explanation=CMSG0001
+RMQ_INTERNAL_ERROR_CWSIP0820.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the Resource Manager
+# {1} The UUID of the messaging engine
+# {2} The name of the bus
+FAILED_XA_CONNECTION_CWSIP0821=CWSIP0821W: \u64f7\u53d6\u4ea4\u6613\u6642\uff0c\u7121\u6cd5\u5728\u532f\u6d41\u6392 {2} \u5efa\u7acb\u5f9e\u8cc7\u6e90\u7ba1\u7406\u7a0b\u5f0f {0} \u5230\u50b3\u8a0a\u5f15\u64ce {1} \u7684\u9023\u7dda\u3002
+FAILED_XA_CONNECTION_CWSIP0821.explanation=\u7121\u6cd5\u5efa\u7acb\u8207\u50b3\u8a0a\u5f15\u64ce\u7684\u5167\u90e8\u9023\u7dda\uff0c\u7a0d\u5f8c\u5c07\u6703\u91cd\u8a66\u9023\u7dda\u3002
+FAILED_XA_CONNECTION_CWSIP0821.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822=CWSIP0822E: \u5728\u4e3b\u984c\u7a7a\u9593 {0} \u4e0a\u5efa\u7acb\u767c\u4f48\u9ede\u7684\u53ef\u63a7\u5236\u914d\u63a5\u5668\u6642\uff0c\u7121\u6cd5\u627e\u5230\u93c8\u7d50\u8cc7\u6e90
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.explanation=CMSG0001
+LINK_CONTROLLABLE_NOT_FOUND_CWSIP0822.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Messages for XD Integration
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851=CWSIP0851E: \u56e0\u70ba\u6c92\u6709\u6307\u5b9a\u300c\u8a0a\u606f\u5206\u985e\u6d41\u7a0b\u300d\uff0c\u6240\u4ee5\u5c0d\u300c\u6d88\u8cbb\u8005\u96c6\u300d{0} \u57f7\u884c\u7684 setFlowProperties \u6307\u4ee4\u5931\u6557
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.explanation=\u7121\u6cd5\u914d\u7f6e\u300c\u8a0a\u606f\u6d41\u7a0b\u300d\u5167\u5bb9\uff0c\u56e0\u70ba\u300c\u6d41\u7a0b\u300d\u53c3\u6578\u70ba\u7a7a\u503c
+NULL_FLOW_CLASSIFICATIONS_CWSIP0851.useraction=\u8acb\u6307\u5b9a\u6709\u6548\u7684\u300c\u6d41\u7a0b\u300d\u503c\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the label of the consumer set
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852=CWSIP0852E: \u56e0\u70ba\u6307\u5b9a\u7684\u300c\u8a0a\u606f\u5206\u985e\u6d41\u7a0b\u300d\u7121\u6548\uff0c\u6240\u4ee5\u5c0d\u300c\u6d88\u8cbb\u8005\u96c6\u300d{0} \u57f7\u884c\u7684 setFlowProperties \u6307\u4ee4\u5931\u6557
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.explanation=\u7121\u6cd5\u914d\u7f6e\u300c\u8a0a\u606f\u6d41\u7a0b\u300d\u5167\u5bb9\uff0c\u56e0\u70ba\u300c\u6d41\u7a0b\u300d\u53c3\u6578\u7121\u6548
+INVALID_FLOW_CLASSIFICATIONS_CWSIP0852.useraction=\u8acb\u6aa2\u67e5\u5728\u300c\u6d41\u7a0b\u300d\u4e2d\u6307\u5b9a\u7684\u5206\u985e\u662f\u552f\u4e00\u7684\uff0c\u7136\u5f8c\u518d\u8a66\u4e00\u6b21
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of ME Control Listeners registered
+# {1} is the list of registered ME Control Listeners
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853=CWSIP0853W: \u767c\u73fe {0} \u500b\u767b\u9304\u7684MessagingEngineControlListeners\uff0c\u4f46\u53ea\u80fd\u6709\u4e00\u500b\u3002\u767c\u73fe\u7684\u63a5\u807d\u5668\u70ba {1}
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.explanation=\u53ea\u80fd\u767b\u9304\u4e00\u500b\u63a5\u807d\u5668\u3002\u7cfb\u7d71\u53ea\u6703\u5229\u7528\u6e05\u55ae\u4e2d\u7684\u7b2c\u4e00\u500bMessagingEngineControlListener\u3002
+MORE_THAN_ONE_ME_CONTROL_LISTENER_CWSIP0853.useraction=\u53ea\u6307\u5b9a\u4e00\u500b MessagingEngineControlListener
+
+# -------------------------------------------------------------------------------------------------
+# {0} The related exception
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854=CWSIP0854E: \u767c\u73feMessagingEngineControlListener \u4f46\u7121\u6cd5\u767b\u9304\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1 {0}
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.explanation=CMSG0001
+ME_CONTROL_LISTENER_REGISTRATION_FAILED_CWSIP0854.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topicpsace 
+# {1} The bus target
+# {2} The related exception
+PUBSUB_LINK_FORWARD_CWSIP0855=CWSIP0855E: \u7121\u6cd5\u5c07\u4e3b\u984c\u7a7a\u9593 {0} \u7684\u767c\u4f48\u8cc7\u8a0a\u50b3\u9001\u5230\u532f\u6d41\u6392 {1}\uff0c\u56e0\u70ba\u767c\u751f\u7570\u5e38\u72c0\u6cc1 {2}
+PUBSUB_LINK_FORWARD_CWSIP0855.explanation=CMSG0001
+PUBSUB_LINK_FORWARD_CWSIP0855.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination we are trying to attach to.
+# {1} The messaging engine we are trying to reach.
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856=CWSIP0856E: \u7121\u6cd5\u9023\u63a5\u81f3\u50b3\u8a0a\u5f15\u64ce {1} \u4e0a\u76ee\u7684\u5730 {0} \u7684\u4f47\u5217\u9ede\u9032\u884c\u8a0a\u606f\u6536\u96c6\uff0c\u56e0\u70ba\u50b3\u8a0a\u5f15\u64ce\u7248\u672c\u4e0d\u6b63\u78ba\u3002
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.explanation=\u4ee3\u7ba1\u76ee\u7684\u5730\u4f47\u5217\u9ede\u7684\u50b3\u8a0a\u5f15\u64ce\u662f\u820a\u7248\u672c\u4e14\u4e0d\u652f\u63f4\u8a0a\u606f\u6536\u96c6\u3002
+GATHERING_ME_VERSION_INCOMPATIBLE_CWSIP0856.useraction=\u8acb\u4f7f\u7528\u975e\u6536\u96c6\u6d88\u8cbb\u8005\u6216\u5c07\u4ee3\u7ba1\u50b3\u8a0a\u5f15\u64ce\u79fb\u8f49\u81f3\u65b0\u7684\u7522\u54c1\u7248\u672c\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# Messages for HealthStates - CWSIP09XY
+# Where X is the HealthState colour (0=RED, 1=AMBER, 2=GREEN)
+# Y is the HealthState reason (See HealthStateListener interface)
+# -------------------------------------------------------------------------------------------------
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the ME
+HEALTHSTATE_STATUS_CWSIP0920=CWSIP0920I: \u72c0\u614b OK
+HEALTHSTATE_STATUS_CWSIP0920.explanation=\u672a\u5075\u6e2c\u5230\u8a0a\u606f\u50b3\u8f38\u7684\u554f\u984c
+HEALTHSTATE_STATUS_CWSIP0920.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0911=CWSIP0911W: \u63a5\u6536\u7aef\u672a\u56de\u61c9\uff0c\u6240\u50b3\u9001\u8a0a\u606f\u7684\u8a8d\u53ef\u5df2\u903e\u671f
+HEALTHSTATE_STATUS_CWSIP0911.explanation=\u8a0a\u606f\u5df2\u50b3\u9001\u81f3\u9060\u7aef\u50b3\u8a0a\u5f15\u64ce\uff0c\u4f46\u6709\u8d85\u9577\u7684\u4e00\u6bb5\u6642\u9593\u672a\u63a5\u6536\u5230\u90a3\u4e9b\u8a0a\u606f\u7684\u8a8d\u53ef\u3002
+HEALTHSTATE_STATUS_CWSIP0911.useraction=\u8acb\u78ba\u5b9a\u63a5\u6536\u7aef\u50b3\u8a0a\u5f15\u64ce\u5df2\u555f\u52d5\uff0c\u4e26\u4e14\u80fd\u5920\u8207\u50b3\u9001\u7aef\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\u3002\u5982\u679c\u662f\u9019\u6a23\uff0c\u9019\u6642\u7cfb\u7d71\u53ef\u80fd\u6703\u8d85\u8f09\uff0c\u6e1b\u5c11\u8a0a\u606f\u8cc7\u6599\u6d41\u91cf\u53ef\u89e3\u6c7a\u6b64\u554f\u984c\u3002
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0912=CWSIP0912W: \u5df2\u5c01\u9396\u8f49\u9001\u5668\uff0c\u524d\u5c0e\u8a0a\u606f\u5df2\u4fdd\u7559\u5728\u4e00\u7b46\u4e0d\u78ba\u5b9a\u7684\u4ea4\u6613\u4e4b\u4e0b\u4e00\u6bb5\u8d85\u9577\u7684\u6642\u9593
+HEALTHSTATE_STATUS_CWSIP0912.explanation=\u50b3\u8f38\u4e32\u6d41\u524d\u9762\u7684\u8a0a\u606f\u50c5\u90e8\u5206\u78ba\u5b9a\uff0c\u4ea4\u6613\u53ef\u80fd\u6709\u554f\u984c\u3002\u5176\u9918\u8a0a\u606f\u5c07\u906d\u5230\u5c01\u9396\uff0c\u76f4\u5230\u6b64\u4ea4\u6613\u89e3\u6c7a\u70ba\u6b62\u3002
+HEALTHSTATE_STATUS_CWSIP0912.useraction=\u8acb\u5c0b\u627e\u5c01\u9396\u7684\u8a0a\u606f\uff0c\u4e26\u91dd\u5c0d\u5728\u6b64\u72c0\u614b\u4e0b\u7684\u6240\u8b58\u5225\u4ea4\u6613\u8a3a\u65b7\u5176\u539f\u56e0\u3002\u89e3\u6c7a\u8a72\u4ea4\u6613\u4e4b\u5f8c\uff0c\u8a0a\u606f\u5c31\u6703\u89e3\u9664\u5c01\u9396
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0913=CWSIP0913W: \u8a0a\u606f\u8f49\u9001\u5668\u5df2\u6eff
+HEALTHSTATE_STATUS_CWSIP0913.explanation=\u8a0a\u606f\u8f49\u9001\u5668\u5df2\u9054\u5230\u50b3\u8a0a\u5f15\u64ce\u7684\u9ad8\u8a0a\u606f\u81e8\u754c\u503c\u3002\u8a0a\u606f\u5f85\u8fa6\u4e8b\u9805\u5c07\u6eff\uff0c\u56e0\u70ba\u63a5\u6536\u7aef\u50b3\u8a0a\u5f15\u64ce\u76ee\u524d\u4e0d\u63a5\u53d7\u8a0a\u606f\uff0c\u6216\u8a0a\u606f\u7522\u751f\u901f\u7387\u8d85\u51fa\u50b3\u8f38\u8a0a\u606f\u7684\u80fd\u529b\u3002
+HEALTHSTATE_STATUS_CWSIP0913.useraction=\u8acb\u78ba\u5b9a\u901a\u8a0a\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u5728\u4f5c\u7528\u4e2d\uff0c\u4e26\u4e14\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u5177\u6709\u7db2\u8def\u9023\u7dda\u3002\u5982\u679c\u9019\u500b\u72c0\u614b\u6301\u7e8c\u5b58\u5728\uff0c\u8acb\u964d\u4f4e\u8a0a\u606f\u7522\u751f\u901f\u7387\uff08\u5982\u679c\u9069\u7576\u7684\u8a71\uff09\uff0c\u6216\u6aa2\u67e5\u7cfb\u7d71\u65e5\u8a8c\u4ee5\u627e\u51fa\u932f\u8aa4\u3002
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0914=CWSIP0914W: \u767c\u73fe\u5230\u56e0\u70ba\u91cd\u65b0\u50b3\u905e\u8a0a\u606f\uff0c\u800c\u4f7f\u5f97\u8a0a\u606f\u50b3\u905e\u6c92\u6709\u6548\u7387\u3002
+HEALTHSTATE_STATUS_CWSIP0914.explanation=\u6709\u4e00\u6216\u591a\u500b\u8a0a\u606f\u5df2\u8981\u6c42\u91cd\u65b0\u50b3\u905e\u81f3\u63a5\u6536\u7aef\u50b3\u8a0a\u5f15\u64ce\uff0c\u9019\u662f\u53ef\u63a5\u53d7\u7684\uff0c\u4f46\u6c92\u6709\u6548\u7387\u3002\u9700\u8981\u91cd\u65b0\u905e\u9001\u7684\u53ef\u80fd\u7406\u7531\u70ba\uff1a\u5931\u53bb\u8207\u76ee\u6a19\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u6216\u6b64\u9023\u7dda\u70ba\u9593\u6b47\u6027\u9023\u7dda\uff0c\u6216\u8a0a\u606f\u7522\u751f\u901f\u7387\u8d85\u51fa\u50b3\u9001\u8a0a\u606f\u7684\u80fd\u529b\u3002
+HEALTHSTATE_STATUS_CWSIP0914.useraction=\u8acb\u78ba\u5b9a\u901a\u8a0a\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u5728\u4f5c\u7528\u4e2d\uff0c\u4e26\u4e14\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u5177\u6709\u7db2\u8def\u9023\u7dda\u3002\u5982\u679c\u9019\u500b\u72c0\u614b\u6301\u7e8c\u5b58\u5728\uff0c\u8acb\u964d\u4f4e\u8a0a\u606f\u7522\u751f\u901f\u7387\uff08\u5982\u679c\u9069\u7576\u7684\u8a71\uff09\uff0c\u6216\u6aa2\u67e5\u7cfb\u7d71\u65e5\u8a8c\u4ee5\u627e\u51fa\u932f\u8aa4\u3002
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0905=CWSIP0905W: \u672a\u5efa\u7acb\u9023\u7dda
+HEALTHSTATE_STATUS_CWSIP0905.explanation=\u6b64\u50b3\u8a0a\u5f15\u64ce\u8207\u5916\u90e8\u532f\u6d41\u6392\u4e4b\u9593\u7684\u9023\u7dda\u76ee\u524d\u7121\u6cd5\u4f7f\u7528\uff0c\u53ef\u80fd\u662f\u56e0\u70ba\u93c8\u7d50\u5c1a\u672a\u555f\u52d5\uff0c\u6216\u50b3\u8a0a\u5f15\u64ce\u7121\u6cd5\u8207\u5916\u90e8\u532f\u6d41\u6392\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u901a\u8a0a\u3002
+HEALTHSTATE_STATUS_CWSIP0905.useraction=\u8acb\u78ba\u5b9a\u93c8\u7d50\u5df2\u555f\u52d5\u4e14\u7ba1\u7406\u93c8\u7d50\u7684\u50b3\u8a0a\u5f15\u64ce\u5728\u4f5c\u7528\u4e2d\uff0c\u4e26\u4e14\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u5177\u6709\u904b\u4f5c\u4e2d\u7684\u7db2\u8def\u9023\u7dda\u3002
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0916=CWSIP0916W: \u767c\u73fe\u5230\u56e0\u70ba\u91cd\u65b0\u50b3\u905e\u8a0a\u606f\uff0c\u800c\u4f7f\u5f97\u8a0a\u606f\u50b3\u905e\u6c92\u6709\u6548\u7387\u3002
+HEALTHSTATE_STATUS_CWSIP0916.explanation=\u8a0a\u606f\u7684\u91cd\u65b0\u905e\u9001\u662f\u53ef\u63a5\u53d7\u7684\uff0c\u552f\u6548\u7387\u4e0d\u5f70\u3002\u9700\u8981\u91cd\u65b0\u905e\u9001\u7684\u53ef\u80fd\u7406\u7531\u70ba\uff1a\u5931\u53bb\u8207\u4f86\u6e90\u50b3\u8a0a\u5f15\u64ce\u7684\u9023\u7dda\u6216\u6b64\u9023\u7dda\u70ba\u9593\u6b47\u6027\u9023\u7dda\uff0c\u6216\u8a0a\u606f\u7522\u751f\u901f\u7387\u8d85\u51fa\u63a5\u6536\u8a0a\u606f\u7684\u80fd\u529b\u3002
+HEALTHSTATE_STATUS_CWSIP0916.useraction=\u8acb\u78ba\u5b9a\u901a\u8a0a\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u5728\u4f5c\u7528\u4e2d\uff0c\u4e26\u4e14\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u5177\u6709\u7db2\u8def\u9023\u7dda\u3002\u5982\u679c\u9019\u500b\u72c0\u614b\u6301\u7e8c\u5b58\u5728\uff0c\u8acb\u964d\u4f4e\u8a0a\u606f\u7522\u751f\u901f\u7387\uff08\u5982\u679c\u9069\u7576\u7684\u8a71\uff09\uff0c\u6216\u6aa2\u67e5\u7cfb\u7d71\u65e5\u8a8c\u4ee5\u627e\u51fa\u932f\u8aa4\u3002
+
+# -------------------------------------------------------------------------------------------------
+HEALTHSTATE_STATUS_CWSIP0917=CWSIP0917W: \u91cd\u65b0\u5efa\u7acb\u8a0a\u606f\u50b3\u905e
+HEALTHSTATE_STATUS_CWSIP0917.explanation=\u767c\u73fe\u5230\u8a0a\u606f\u50b3\u8f38\u4e2d\u65b7\uff0c\u6b63\u5728\u89e3\u6c7a\u7576\u4e2d\uff0c\u9019\u53ef\u80fd\u662f\u56e0\u70ba\u901a\u8a0a\u4e2d\u65b7\uff0c\u6216\u8a0a\u606f\u7522\u751f\u901f\u7387\u5df2\u8d85\u51fa\u63a5\u6536\u8a0a\u606f\u7684\u80fd\u529b\u3002
+HEALTHSTATE_STATUS_CWSIP0917.useraction=\u8acb\u78ba\u5b9a\u901a\u8a0a\u4e2d\u7684\u50b3\u8a0a\u5f15\u64ce\u5728\u4f5c\u7528\u4e2d\uff0c\u4e26\u4e14\u50b3\u8a0a\u5f15\u64ce\u4e4b\u9593\u5177\u6709\u7db2\u8def\u9023\u7dda\u3002\u5982\u679c\u9019\u500b\u72c0\u614b\u6301\u7e8c\u5b58\u5728\uff0c\u8acb\u964d\u4f4e\u8a0a\u606f\u7522\u751f\u901f\u7387\uff08\u5982\u679c\u9069\u7576\u7684\u8a71\uff09\uff0c\u6216\u6aa2\u67e5\u7cfb\u7d71\u65e5\u8a8c\u4ee5\u627e\u51fa\u932f\u8aa4\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Error ID
+HEALTHSTATE_STATUS_CWSIP0908=CWSIP0908E: \u5075\u6e2c\u5230\u932f\u8aa4 ({0})
+HEALTHSTATE_STATUS_CWSIP0908.explanation=\u5075\u6e2c\u5230\u4e00\u6216\u591a\u500b\u932f\u8aa4\uff0c\u9019\u53ef\u80fd\u6703\u963b\u6b62\u8a0a\u606f\u50b3\u9001\u6216\u63a5\u6536\u3002\u8acb\u6aa2\u67e5\u7cfb\u7d71\u65e5\u8a8c\u4ee5\u627e\u51fa\u932f\u8aa4\u3002
+HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Exception class causing the blockage
+# {1} Target destination
+HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: \u5df2\u5c01\u9396\u63a5\u6536\u7aef\uff0c\u63a5\u6536\u7aef\u7121\u6cd5\u5c0d\u76ee\u7684\u5730 {1} \u50b3\u905e\u73fe\u884c\u5165\u57e0\u8a0a\u606f\uff0c\u539f\u56e0\u662f {0}
+HEALTHSTATE_STATUS_CWSIP0919.explanation=\u63a5\u6536\u7aef\u56e0\u70ba\u7d66\u5b9a\u7684\u539f\u56e0\u800c\u7121\u6cd5\u50b3\u905e\u8a0a\u606f\u81f3\u76ee\u6a19\u76ee\u7684\u5730\uff0c\u5728\u6b64\u554f\u984c\u89e3\u6c7a\u4e4b\u524d\uff0c\u5c07\u5c01\u9396\u5f8c\u7e8c\u8a0a\u606f\u7684\u50b3\u905e\u3002
+HEALTHSTATE_STATUS_CWSIP0919.useraction=\u5982\u679c\u9019\u500b\u72c0\u614b\u6301\u7e8c\u5b58\u5728\uff0c\u8acb\u63a1\u53d6\u9069\u7576\u52d5\u4f5c\u4f86\u89e3\u6c7a\u8a0a\u606f\u76f8\u95dc\u554f\u984c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIP9999=CWSIP9999E: {0}
+TEMPORARY_CWSIP9999.explanation=\u5982\u679c\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8aaa\u660e\u3002
+TEMPORARY_CWSIP9999.useraction=\u8acb\u53c3\u95b1\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002
+# -------------------------------------------------------------------------------------------------
+
+# New messages for Liberty
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_STARTED_INFO_CWSIP00214=CWSIP0214I: \u50b3\u8a0a\u5f15\u64ce {0} \u6b63\u958b\u59cb\u8b93\u76ee\u7684\u5730\u9054\u6210\u4e00\u81f4\u3002
+RECONCILE_STARTED_INFO_CWSIP00214.explanation=\u6b63\u5728\u8b93\u76ee\u7684\u5730\u8207\u50b3\u8a0a\u5f15\u64ce\u505c\u6b62\u6642\u6240\u5132\u5b58\u7684\u914d\u7f6e\u9054\u6210\u4e00\u81f4\u3002
+RECONCILE_STARTED_INFO_CWSIP00214.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the messaging engine
+RECONCILE_COMPLETED_INFO_CWSIP00215=CWSIP0215I: \u50b3\u8a0a\u5f15\u64ce {0} \u5df2\u5b8c\u6210\u8207\u76ee\u7684\u5730\u9054\u6210\u4e00\u81f4\u3002
+RECONCILE_COMPLETED_INFO_CWSIP00215.explanation=\u76ee\u7684\u5730\u5df2\u8207\u50b3\u8a0a\u5f15\u64ce\u505c\u6b62\u6642\u6240\u5132\u5b58\u7684\u914d\u7f6e\u9054\u6210\u4e00\u81f4\u3002\u5df2\u8b8a\u66f4\u3001\u5efa\u7acb\u6216\u6392\u5b9a\u522a\u9664\u9069\u7576\u7684\u8cc7\u6e90\u3002
+RECONCILE_COMPLETED_INFO_CWSIP00215.useraction=\u7121
+
+# -------------------------------------------------------------------------------------------------
+# {0} message id
+DISCARD_MESSAGE_INFO_CWSIP00216=CWSIP0216I: \u5df2\u6368\u68c4\u8a0a\u606f {0}\uff0c\u56e0\u70ba\u5df2\u904e\u4e86\u5176\u5617\u8a66\u91cd\u65b0\u905e\u9001\u7684\u5931\u6557\u6b21\u6578\u4e0a\u9650\u3002
+DISCARD_MESSAGE_INFO_CWSIP00216.explanation=\u5df2\u6368\u68c4\u8a0a\u606f\uff0c\u56e0\u70ba\u5617\u8a66\u905e\u9001\u8a0a\u606f\u7684\u5931\u6557\u6b21\u6578\u5df2\u9054\u4e0a\u9650\u3002
+DISCARD_MESSAGE_INFO_CWSIP00216.useraction=\u8acb\u6aa2\u67e5\u6d88\u8cbb\u8005\u61c9\u7528\u7a0b\u5f0f\u6240\u64f2\u51fa\u7684\u932f\u8aa4\uff0c\u78ba\u5b9a\u6d88\u8cbb\u8005\u61c9\u7528\u7a0b\u5f0f\u7684\u914d\u7f6e\u6b63\u78ba\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the destination name
+LOCAL_DEST_DELETE_INFO_CWSIP00217=CWSIP0217I: \u672c\u7aef\u76ee\u7684\u5730 {0} \u5df2\u6a19\u793a\u70ba\u8981\u522a\u9664\u3002
+LOCAL_DEST_DELETE_INFO_CWSIP00217.explanation=\u5df2\u79fb\u9664\u9019\u500b\u50b3\u8a0a\u5f15\u64ce\u4e2d\u9019\u500b\u76ee\u7684\u5730\u7684\u914d\u7f6e\uff0c\u56e0\u6b64\uff0c\u5c07\u6392\u5b9a\u522a\u9664\u5b83\u3002
+LOCAL_DEST_DELETE_INFO_CWSIP00217.useraction=\u7121

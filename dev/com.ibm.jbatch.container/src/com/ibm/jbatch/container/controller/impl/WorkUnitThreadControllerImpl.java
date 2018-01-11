@@ -36,7 +36,10 @@ import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeSplitFlowExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution.StopLock;
+import com.ibm.jbatch.container.jsl.ModelSerializer;
+import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
 import com.ibm.jbatch.container.navigator.ModelNavigator;
+import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 import com.ibm.jbatch.container.status.ExecutionStatus;
@@ -122,6 +125,26 @@ public class WorkUnitThreadControllerImpl implements IThreadRootController {
                                                                                              runtimeWorkUnitExecution.getTopLevelInstanceId(),
                                                                                              runtimeWorkUnitExecution.getTopLevelExecutionId() },
                                                    logger);
+
+                // If we're not a split/flow we're a job, so log the original JSL
+                if (!(runtimeWorkUnitExecution instanceof RuntimeSplitFlowExecution)) {
+
+                    JobInstanceEntity instanceEntity = getPersistenceManagerService().getJobInstance(runtimeWorkUnitExecution.getTopLevelInstanceId());
+                    String jsl = instanceEntity.getJobXml();
+                    JoblogUtil.logToJobLogAndTraceOnly(Level.INFO, "display.unresolved.jsl", new Object[] { jsl }, logger);
+                }
+
+                // Print the resolved JSL for the job or flow
+                JSLJob jslJob = jobNavigator.getRootModelElement();
+                ModelSerializer<JSLJob> ms = ModelSerializerFactory.createJobModelSerializer();
+                String prettyXml = ms.prettySerializeModel(jslJob);
+
+                // Set the type.  Partitions are handled elsewhere, step doesn't go through here
+                String type = "job";
+                if (runtimeWorkUnitExecution instanceof RuntimeSplitFlowExecution) {
+                    type = "flow";
+                }
+                JoblogUtil.logToJobLogAndTraceOnly(Level.INFO, "display.resolved.jsl", new Object[] { type, prettyXml }, logger);
             }
 
             listenersCalled = true;

@@ -43,7 +43,6 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -101,7 +100,6 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
 
             //TODO make the ID more human readable
             PolicyExecutor policyExecutor = policyExecutorProvider.create("FaultTolerance_" + UUID.randomUUID().toString());
-            policyExecutor.queueFullAction(QueueFullAction.Abort);
 
             //if there is supposed to be a bulkhead then restrict the size of the policy executor
             if (this.bulkheadPolicy != null) {

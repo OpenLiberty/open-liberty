@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: bnd meta-annoations
+Bundle-Name: bnd meta-annotations
 Bundle-SymbolicName: com.ibm.ws.bnd.annotations
 Bundle-Description: bnd meta annotations for metatype and ds
 
@@ -24,5 +24,5 @@ Private-Package: com.ibm.ws.bnd.metatype.annotation, \
 publish.wlp.jar.disabled: true
 
 -buildpath: \
-	biz.aQute.bnd:biz.aQute.bnd.annotation;version=3.3.0, \
+	biz.aQute.bnd.annotation;version=3.5.0, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

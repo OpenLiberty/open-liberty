@@ -17,12 +17,13 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.api.jaxrs20
 
 Import-Package: com.ibm.websphere.jaxrs.providers.json4j, \
 		com.ibm.websphere.jaxrs20.multipart, \
+		javax.activation, \
 		javax.ws.rs, \
 		javax.ws.rs.client, \
 		javax.ws.rs.container, \
 		javax.ws.rs.core, \
 		javax.ws.rs.ext, \
-		javax.ws.rs.sse;resolution:=optional			
+		javax.ws.rs.sse;resolution:=optional
 
 Export-Package: com.ibm.websphere.jaxrs.providers.json4j,com.ibm.websphere.jaxrs20.multipart
 

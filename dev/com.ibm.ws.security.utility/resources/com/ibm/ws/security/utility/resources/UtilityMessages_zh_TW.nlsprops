@@ -1,0 +1,98 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=\u932f\u8aa4\uff1a{0}
+error.inputConsoleNotAvailable=\u8f38\u5165\u4e3b\u63a7\u53f0\u7121\u6cd5\u4f7f\u7528\u3002
+error.missingIO=\u932f\u8aa4\uff0c\u907a\u6f0f I/O \u88dd\u7f6e\uff1a{0}\u3002
+
+usage=\u7528\u6cd5\uff1a{0}
+task.unknown=\u4e0d\u660e\u4f5c\u696d\uff1a{0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+tooManyArgs=\u5f15\u6578\u592a\u591a\u3002
+insufficientArgs=\u5f15\u6578\u4e0d\u8db3\u3002
+invalidArg=\u5f15\u6578 {0} \u7121\u6548\u3002
+missingArg=\u907a\u6f0f\u5f15\u6578 {0}\u3002
+missingValue=\u907a\u6f0f\u5f15\u6578 {0} \u7684\u503c\u3002
+missingArg2=\u5fc5\u9808\u63d0\u4f9b {0} \u5f15\u6578\u6216 {1} \u5f15\u6578\u3002
+exclusiveArg=\u5fc5\u9808\u6307\u5b9a {0} \u5f15\u6578\u6216 {1} \u5f15\u6578\uff0c\u4f46\u4e0d\u80fd\u540c\u6642\u90fd\u6307\u5b9a\u3002
+serverNotFound=\u5728\u4f4d\u7f6e {1} \u4e0a\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u4f3a\u670d\u5668 {0}
+
+
+encode.enterText=\u8f38\u5165\u6587\u5b57\uff1a
+encode.reenterText=\u518d\u6b21\u8f38\u5165\u6587\u5b57\uff1a
+encode.readError=\u8b80\u53d6\u6587\u5b57\u6642\u767c\u751f\u932f\u8aa4\u3002
+encode.entriesDidNotMatch=\u9805\u76ee\u4e0d\u7b26\u3002
+
+
+password.enterText=\u8f38\u5165\u5bc6\u78bc\uff1a
+password.reenterText=\u518d\u6b21\u8f38\u5165\u5bc6\u78bc\uff1a
+password.readError=\u8b80\u53d6\u5bc6\u78bc\u6642\u767c\u751f\u932f\u8aa4\u3002
+password.entriesDidNotMatch=\u5bc6\u78bc\u4e0d\u7b26\u3002
+
+name=\u540d\u7a31
+days=\u5929\u6578
+
+sslCert.abort=\u6b63\u5728\u4e2d\u65b7\u6191\u8b49\u5efa\u7acb\uff1a
+sslCert.createFailed=\u7121\u6cd5\u5efa\u7acb\u9810\u8a2d SSL \u6191\u8b49\uff1a\n\
+{0}
+sslCert.errorEncodePassword=\u5c07\u5bc6\u78bc\u7de8\u78bc\u6642\u767c\u751f\u932f\u8aa4\uff08\u672a\u5efa\u7acb\u6191\u8b49\uff09\uff1a\n\
+{0}
+sslCert.createKeyStore=\u6b63\u5728\u5efa\u7acb\u91d1\u9470\u5132\u5b58\u5eab {0}\n
+sslCert.oneType=\u4e0d\u80fd\u540c\u6642\u6307\u5b9a {0} \u548c {1} \u5f15\u6578\u3002
+sslCert.clientNotFound=\u5728\u4f4d\u7f6e {1} \u4e0a\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u7528\u6236\u7aef {0}
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.serverXML=\u5df2\u70ba\u4f3a\u670d\u5668 {0} \u5efa\u7acb SSL \u6191\u8b49\u3002\u5efa\u7acb\u7684\u6191\u8b49\u4ee5 {1} \u4f5c\u70ba SubjectDN\u3002\n\
+\n\
+\u8acb\u5c07\u4e0b\u5217\u5e7e\u884c\u65b0\u589e\u81f3 server.xml \u4ee5\u555f\u7528 SSL\uff1a
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslCert.clientXML=\u5df2\u70ba\u7528\u6236\u7aef {0} \u5efa\u7acb SSL \u6191\u8b49\u3002\u5efa\u7acb\u7684\u6191\u8b49\u4ee5 {1} \u4f5c\u70ba SubjectDN\u3002\n\
+\n\
+\u8acb\u5c07\u4e0b\u5217\u5e7e\u884c\u65b0\u589e\u81f3 client.xml \u4ee5\u555f\u7528 SSL\uff1a
+
+fileUtility.failedDirCreate=\u7121\u6cd5\u5efa\u7acb {0} \u76ee\u9304
+file.exists={0} \u91d1\u9470\u5132\u5b58\u5eab\u6a94\u5df2\u5b58\u5728\u3002\u7121\u6cd5\u5728\u8a72\u4f4d\u7f6e\u5efa\u7acb\u91d1\u9470\u5132\u5b58\u5eab\u6a94\u3002
+file.requiredDirNotCreated=\u7121\u6cd5\u70ba {0} \u5efa\u7acb\u6240\u9700\u7684\u76ee\u9304\u7d50\u69cb
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# The following string will be appended after encode.option-desc.encoding
+# message in UtilityOptions.nlsprops file.
+encode.option-custom.encryption=\n\
+\t\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\u4e5f\u53ef\u4f9b\u4f7f\u7528\u3002
+encode.option-desc.custom.feature=\n\
+\t{0} \u7684\u7279\u6027\u540d\u7a31\u5982\u4e0b\uff1a\n\
+\t
+encode.option-desc.custom.description=\n\
+\t{0} \u7684\u8aaa\u660e\u5982\u4e0b\uff1a\n\
+\t
+
+# The following message is shown when there is no custom password
+# encryption is enabled.
+no.custom.encyption=\u5075\u6e2c\u4e0d\u5230\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\u3002
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+createLTPAKeys.abort=LTPA \u91d1\u9470\u6a94\u5efa\u7acb\u4e2d\u65b7\uff1a
+createLTPAKeys.fileExists={0} \u6a94\u6848\u5df2\u5b58\u5728\u3002\u7121\u6cd5\u5728\u8a72\u4f4d\u7f6e\u5efa\u7acb LTPA \u91d1\u9470\u6a94\u3002
+createLTPAKeys.createdFile=\u5df2\u5efa\u7acb LTPA \u91d1\u9470\u6a94\uff1a{0}\n\
+\u5c07\u4e0b\u5217\u914d\u7f6e\u4f75\u5165\u60a8\u7684 server.xml \u4e2d\n\
+{1}\n

@@ -1,0 +1,110 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: Syntaxe t\u00e9matu {0} je nespr\u00e1vn\u00e1. Na pozici {1} byl nalezen neo\u010dek\u00e1van\u00fd znak ''*''.
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=T\u00e9ma je nespr\u00e1vn\u011b form\u00e1tov\u00e1no. Z\u00e1stupn\u00fd znak jedn\u00e9 \u00farovn\u011b '*' m\u016f\u017ee b\u00fdt pou\u017eit pouze jako jeden z\u00e1stupn\u00fd znak na \u00farovni t\u00e9matu, nap\u0159\u00edklad: */a nebo a/*/b \u010di a/* .
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=Opravte nespr\u00e1vnou specifikaci t\u00e9matu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: Syntaxe t\u00e9matu {0} je nespr\u00e1vn\u00e1. Na pozici {1} byl nalezen neo\u010dek\u00e1van\u00fd znak ''.''.
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=T\u00e9ma je nespr\u00e1vn\u011b form\u00e1tov\u00e1no. Znak '.' m\u016f\u017ee b\u00fdt pou\u017eit pouze jako jeden znak na \u00farovni pro t\u00e9ma nebo na konci v\u00fdraz\u016f t\u00e9matu, nap\u0159\u00edklad: /./a nebo a//. .
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=Opravte nespr\u00e1vnou specifikaci t\u00e9matu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: Syntaxe t\u00e9matu {0} je nespr\u00e1vn\u00e1. Na pozici {1} byl nalezen neo\u010dek\u00e1van\u00fd znak ''/''.
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=T\u00e9ma je nespr\u00e1vn\u011b form\u00e1tov\u00e1no. Nelze pou\u017e\u00edt t\u0159i znaky '/' vedle sebe.
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=Opravte nespr\u00e1vnou specifikaci t\u00e9matu.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: Syntaxe t\u00e9matu {0} je nespr\u00e1vn\u00e1. Na pozici {1} byl nalezen neo\u010dek\u00e1van\u00fd znak n\u00e1sleduj\u00edc\u00ed po znaku ''/''.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=T\u00e9ma je nespr\u00e1vn\u011b form\u00e1tov\u00e1no. Za z\u00e1stupn\u00fdmi znaky nelze pou\u017e\u00edt jin\u00e9 znaky ne\u017e '/'. P\u0159\u00edklady nespr\u00e1vn\u00fdch t\u00e9mat jsou a//.a nebo a/*b . 
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=Opravte nespr\u00e1vnou specifikaci t\u00e9matu.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: T\u00e9ma nen\u00ed platn\u00e9.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=Zadan\u00e9 t\u00e9ma nen\u00ed platn\u00e9, proto\u017ee m\u00e1 hodnotu null. To nen\u00ed povoleno.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=Ov\u011b\u0159te, zda je t\u00e9ma platn\u00fdm objektem \u0159et\u011bzce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: Syntaxe t\u00e9matu pro publikovanou zpr\u00e1vu je nespr\u00e1vn\u00e1: {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=Zadan\u00e9 t\u00e9ma nem\u016f\u017ee obsahovat z\u00e1stupn\u00e9 znaky, proto\u017ee se jedn\u00e1 o publikaci.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=Odeberte z\u00e1stupn\u00e9 znaky z publikovan\u00fdch zpr\u00e1v. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: Odpov\u00eddaj\u00edc\u00ed instanci nelze vytvo\u0159it: v\u00fdjimka {0}.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=Odpov\u00eddaj\u00edc\u00ed instanci nelze vytvo\u0159it, proto\u017ee soubor sib.matchspaceImpl.jar chyb\u00ed nebo je po\u0161kozen.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002  
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed n\u00e1pov\u011bdu v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIH9999.useraction=Dal\u0161\u00ed informace naleznete v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.

@@ -276,8 +276,10 @@ final class JaxbUnmarshaller extends DefaultHandler {
                 ivPersistence = new JaxbPersistence10(ivJPAPXml);
             } else if (JaxbPersistence20.SCHEMA_VERSION.equals(version)) {
                 ivPersistence = new JaxbPersistence20(ivJPAPXml);
-            } else {
+            } else if (JaxbPersistence21.SCHEMA_VERSION.equals(version)) {
                 ivPersistence = new JaxbPersistence21(ivJPAPXml);
+            } else {
+                ivPersistence = new JaxbPersistence22(ivJPAPXml);
             }
 
             // Now that we've determined which JAXBContext to use, create a
@@ -328,23 +330,25 @@ final class JaxbUnmarshaller extends DefaultHandler {
             ivURI = uri;
         }
     }
-    
+
     private static class DelegateToJVMClassLoader extends ClassLoader {
         final ClassLoader jvmCL;
+
         DelegateToJVMClassLoader(ClassLoader parent) {
             super(parent);
-            jvmCL = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>(){
+            jvmCL = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
                 @Override
                 public ClassLoader run() {
                     return ClassLoader.getSystemClassLoader();
-                }});
+                }
+            });
         }
-        
+
         @FFDCIgnore(ClassNotFoundException.class)
         @Override
         public Class<?> findClass(String className) throws ClassNotFoundException {
-                return jvmCL.loadClass(className);
+            return jvmCL.loadClass(className);
         }
     }
 }

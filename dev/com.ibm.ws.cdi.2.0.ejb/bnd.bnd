@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: com.ibm.ws.cdi.2.0.ejb
+Bundle-SymbolicName: com.ibm.ws.cdi.2.0.ejb
+Bundle-Description: CDI 2.0 EJB, version ${bVersion}
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+javac.source: 1.8
+javac.target: 1.8
+
+-dsannotations: com.ibm.ws.cdi.ejb.interceptor.liberty.EjbEndpointServiceImpl,\
+  com.ibm.ws.cdi.ejb.security.EjbSecurityContextStore,\
+  com.ibm.ws.cdi.ejb.interceptor.liberty.JCDIHelperFactoryImpl
+
+
+Service-Component: \
+ com.ibm.ws.cdi.2.0.ejb.deserializationClassProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="service.vendor=IBM,\
+      packages=com.ibm.ws.cdi.ejb.interceptor\
+              |com.ibm.ws.cdi.ejb.interceptor.liberty\
+              |com.ibm.ws.cdi.ejb.security"
+
+Private-Package: \
+  com.ibm.ws.cdi.ejb.interceptor,\
+  com.ibm.ws.cdi.ejb.interceptor.liberty,\
+  com.ibm.ws.cdi.ejb.security
+
+Import-Package: \
+  com.ibm.ws.cdi.internal.interfaces, \
+  com.ibm.ws.cdi.ejb.resources, \
+  *
+
+WS-TraceGroup: JCDI
+
+-buildpath: \
+        com.ibm.ws.cdi.weld;version=latest, \
+        com.ibm.ws.cdi.internal;version=latest, \
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.ejbcontainer;version=latest,\
+	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.jboss.weld.3.0.2;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest, \
+	com.ibm.ws.cdi.ejb.common;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

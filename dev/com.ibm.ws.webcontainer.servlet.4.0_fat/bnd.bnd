@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/TestServlet40.war/src,\
+	test-applications/TestServlet40.jar/src,\
+	test-applications/TestGetMapping.war/src,\
+	test-applications/TestAddJspFile.war/src, \
+	test-applications/TestEncoding.war/src
+	
+fat.project: true
+
+javac.source: 1.8
+javac.target: 1.8
+
+
+-buildpath:\
+    com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	com.ibm.ws.org.apache.commons.codec.1.3;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	commons-httpclient:commons-httpclient;version=3.1,\
+    httpunit:httpunit;version=1.5.4,\
+    net.sf.jtidy:jtidy;version=9.3.8,\
+    org.apache.httpcomponents.client5:httpclient5;version=5.0,\
+    org.apache.httpcomponents.core5:httpcore5;version=5.0

@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -43,24 +42,6 @@ public class BootstrapManifest {
 
     static final String BUNDLE_VERSION = "Bundle-Version";
     static final String JAR_PROTOCOL = "jar";
-
-    /** Manifest header for the default kernel version */
-    static final String MANIFEST_KERNEL = "WebSphere-DefaultKernel";
-
-    /** Manifest header for the default log provider */
-    static final String MANIFEST_LOG_PROVIDER = "WebSphere-DefaultLogProvider";
-
-    /** Manifest header for the default OS Extensions */
-    static final String MANIFEST_OS_EXTENSION = "WebSphere-DefaultExtension-";
-
-    /** bootstrap property to override kernel version */
-    static final String BOOTPROP_KERNEL = "websphere.kernel";
-
-    /** bootstrap property to override log provider */
-    static final String BOOTPROP_LOG_PROVIDER = "websphere.log.provider";
-
-    /** bootstrap property to override os extension */
-    static final String BOOTPROP_OS_EXTENSIONS = "websphere.os.extension";
 
     /** prefix for system-package files */
     static final String SYSTEM_PKG_PREFIX = "OSGI-OPT/websphere/system-packages_";
@@ -160,65 +141,6 @@ public class BootstrapManifest {
     private JarFile getBootJar() throws IOException {
         // For liberty boot don't try to find the bootstrap jar.
         return libertyBoot ? getLibertBootJarFile() : new JarFile(KernelUtils.getBootstrapJar());
-    }
-
-    /**
-     * Find and return the name of the core/kernel feature. Look in
-     * bootstrap properties first, if not explicitly defined there, get
-     * the default from the manifest.
-     *
-     * @return the selected kernel version
-     */
-    public String getKernelDefinition(BootstrapConfig bootProps) {
-        String kernelDef = bootProps.get(BOOTPROP_KERNEL);
-
-        if (kernelDef == null)
-            kernelDef = manifestAttributes.getValue(MANIFEST_KERNEL);
-
-        if (kernelDef != null)
-            bootProps.put(BOOTPROP_KERNEL, kernelDef);
-
-        return kernelDef;
-    }
-
-    /**
-     * Find and return the name of the log provider. Look in
-     * bootstrap properties first, if not explicitly defined there, get
-     * the default from the manifest.
-     *
-     * @return the selected log provider
-     */
-    public String getLogProviderDefinition(BootstrapConfig bootProps) {
-        String logProvider = bootProps.get(BOOTPROP_LOG_PROVIDER);
-
-        if (logProvider == null)
-            logProvider = manifestAttributes.getValue(MANIFEST_LOG_PROVIDER);
-
-        if (logProvider != null)
-            bootProps.put(BOOTPROP_LOG_PROVIDER, logProvider);
-
-        return logProvider;
-    }
-
-    /**
-     * Find and return the name of the os extension. Look in
-     * bootstrap properties first, if not explicitly defined there, get
-     * the default from the manifest.
-     *
-     * @return the selected log provider
-     */
-    public String getOSExtensionDefinition(BootstrapConfig bootProps) {
-        String osExtension = bootProps.get(BOOTPROP_OS_EXTENSIONS);
-
-        if (osExtension == null) {
-            String normalizedName = getNormalizedOperatingSystemName(bootProps.get("os.name"));
-            osExtension = manifestAttributes.getValue(MANIFEST_OS_EXTENSION + normalizedName);
-        }
-
-        if (osExtension != null)
-            bootProps.put(BOOTPROP_OS_EXTENSIONS, osExtension);
-
-        return osExtension;
     }
 
     /**
@@ -324,9 +246,8 @@ public class BootstrapManifest {
                     bootProps.put(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES, syspackages);
 
             } catch (IOException ioe) {
-                throw new LaunchException("Unable to find or read specified properties file; " + pkgListFileName,
-                                    MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), ioe.toString()),
-                                    ioe);
+                throw new LaunchException("Unable to find or read specified properties file; "
+                                          + pkgListFileName, MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), ioe.toString()), ioe);
             } finally {
                 Utils.tryToClose(jarFile);
             }
@@ -355,18 +276,5 @@ public class BootstrapManifest {
             }
         }
         return packages;
-    }
-
-    /**
-     * Normalize the value associated with the &quot;os.name&quot; system
-     * property by putting it in lower case and removing characters that
-     * cannot be used with {@link java.util.jar.Attributes.Name}.
-     *
-     * @return the normalized OS name
-     */
-    static String getNormalizedOperatingSystemName(final String osName) {
-        String name = osName.toLowerCase(Locale.ENGLISH);
-        name = name.replaceAll("[^0-9a-zA-Z_-]", "");
-        return name;
     }
 }

@@ -1,0 +1,309 @@
+###############################################################################
+# Copyright (c) 2016, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWT
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6000 - CWWKS6100
+JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Die JWT-Konfiguration {0} wurde erfolgreich verarbeitet.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=Die JWT-Konfiguration (JSON Web Token) wurde erfolgreich verarbeitet.
+JWT_BUILDER_CONFIG_PROCESSED.useraction=Keine.
+
+JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Die \u00c4nderung der JWT-Konfiguration {0} wurde erfolgreich verarbeitet.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=Die JWT-Konfiguration (JSON Web Token) wurde erfolgreich ge\u00e4ndert.
+JWT_BUILDER_CONFIG_MODIFIED.useraction=Keine. 
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: Der JWT-Endpunktservice (JSON Web Token) ist verf\u00fcgbar.
+JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Es ist keine Aktion erforderlich. 
+# Do not translate "JSON Web Token", "JWT", "jwt-1.0"
+JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Ein Konfigurationsfehler ist aufgetreten. Der JWT-Endpunktservice (JSON Web Token) ist nicht verf\u00fcgbar. Stellen Sie sicher, dass das Feature jwt-1.0 konfiguriert ist.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Der JWT-Service (JSON Web Token) ist nicht in der OSGi-Service-Registry verf\u00fcgbar.
+JWT_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Schlie\u00dfen Sie das Feature jwt-1.0 in Ihre Serverkonfiguration ein.
+
+# Do not translate "jwt-1.0"
+# 0=URL to which the request was directed
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND=CWWKS6004W: Die an die Endpunkt-URL [{0}] gesendete Anforderung wurde nicht als g\u00fcltige Anforderung erkannt.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.explanation=Die angegebene URL stimmt nicht mit dem erwarteten URL-Muster f\u00fcr Anforderungen \u00fcberein, die von diesem Filter bereitgestellt werden sollen.
+JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Stellen Sie sicher, dass der URL-Pfad auf den erwarteten Endpunkt verweist und mit einem Endpunkt \u00fcbereinstimmt, der vom Feature jwt-1.0 bereitgestellt wird.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Config ID of JWT provider
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Der JWT-Konfigurationsservice (JSON Web Token) ist f\u00fcr den Provider [{0}] nicht verf\u00fcgbar.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Der in der Nachricht angegebene Provider ist nicht in der Serverkonfiguration enthalten oder die Konfiguration f\u00fcr den angegebenen Provider wurde vom Konfigurationsservice nicht verarbeitet.
+JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, um sicherzustellen, dass der angegebene Provider konfiguriert ist.
+
+# 0=URL to which the request was directed, 1=Required attribute name
+JWT_REQUEST_ATTRIBUTE_MISSING=CWWKS6006E: Die an den Endpunkt [{0}] \u00fcbertragene Anforderung hat kein Attribut [{1}].
+JWT_REQUEST_ATTRIBUTE_MISSING.explanation=Die Anforderung wurde vor der Verarbeitung m\u00f6glicherweise nicht vom entsprechenden Filter behandelt. Der Anforderungsfilter erstellt das angegebene Attribut basierend auf den Informationen in der Anforderung. Danach leitet der Filter diese Anforderung zur weiteren Verarbeitung weiter.
+JWT_REQUEST_ATTRIBUTE_MISSING.useraction=Vergewissern Sie sich, dass die Anforderung an den erwarteten Endpunkt \u00fcbertragen wurde. 
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=key, 2=exception or error message if any
+JWT_NULL_SIGNING_KEY_WITH_ERROR=CWWKS6007E: Der f\u00fcr den Signaturalgorithmus [{0}] und den Schl\u00fcsseltyp [{1}] erforderliche Signierschl\u00fcssel ist nicht verf\u00fcgbar. Vergewissern Sie sich, dass der Signaturalgorithmus und der Schl\u00fcssel ordnungsgem\u00e4\u00df konfiguriert sind. {2}
+JWT_NULL_SIGNING_KEY_WITH_ERROR.explanation=Es wurde kein Signierschl\u00fcssel gefunden oder es wurde kein Schl\u00fcssel gefunden, der den konfigurierten Signaturalgorithmus verwendet. Dieser Fehler kann auftreten, weil Informationen in der JWT-Konfiguration fehlen oder falsch sind.
+JWT_NULL_SIGNING_KEY_WITH_ERROR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Wenn Sie JSON Web Key (JWK) f\u00fcr die Signierung verwenden, stellen Sie sicher, dass RS256 im Attribut signatureAlgorithm konfiguriert ist. 2) Wenn Sie X.509-Zertifikate f\u00fcr die Signierung verwenden, stellen Sie sicher, dass die Attribute signatureAlgorithm, KeyStoreRef und KeyStoreAlias ordnungsgem\u00e4\u00df konfiguriert sind. 3) Wenn Sie gemeinsam genutzte Schl\u00fcssel f\u00fcr die Signierung verwenden, stellen Sie sicher, dass die Attribute signatureAlgorithm und sharedKey ordnungsgem\u00e4\u00df konfiguriert sind.
+
+# Do not translate "JSON Web Token", "JWT", "jwtBuilder"
+JWT_BUILDER_INVALID=CWWKS6008E: Die angegebene JWT-Builder-ID (JSON Web Token) [{0}] ist nicht g\u00fcltig. Vergewissern Sie sich, dass ein JWT-Builder mit der angegebenen ID konfiguriert ist.
+JWT_BUILDER_INVALID.explanation=Es ist kein JWT-Builder (JSON Web Token) mit der angegebenen ID in der Serverkonfiguration vorhanden.
+JWT_BUILDER_INVALID.useraction=Konfigurieren Sie in der Datei server.xml ein jwtBuilder-Element mit der angegebenen ID.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Der Wert [{1}] im JWT-Anspruch (JSON Web Token) [{0}] ist nicht g\u00fcltig.
+JWT_INVALID_CLAIM_VALUE_ERR.explanation=Der angegebene Wert im JWT-Anspruch (JSON Web Token) entspricht nicht der JWT-Spezifikation.
+JWT_INVALID_CLAIM_VALUE_ERR.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr den angegebenen Anspruch an. Weitere Informationen finden Sie in der JWT-Spezifikation.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_BUILDER_NOT_ACTIVE=CWWKS6010E: Die JWT-Builder-API (JSON Web Token) konnte kein g\u00fcltiges Builderobjekt mit der ID [{0}] erstellen. Vergewissern Sie sich, dass das Feature jwt-1.0 konfiguriert ist.
+JWT_BUILDER_NOT_ACTIVE.explanation=Die JWT-Builder-API (JSON Web Token) konnte kein g\u00fcltiges Builderobjekt erstellen, weil der Builder-Service nicht verf\u00fcgbar ist.
+JWT_BUILDER_NOT_ACTIVE.useraction=Stellen Sie sicher, dass das Feature jwt-1.0 konfiguriert ist.
+
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE=CWWKS6011W: Die angegebene Zuordnung f\u00fcr die JWT-Anspr\u00fcche (JSON Web Token) enth\u00e4lt einen Anspruchsnamen oder -wert, der nicht g\u00fcltig ist.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.explanation=Der JWT-Builder (JSON Web Token) hat die vorhandenen Anspr\u00fcche nicht ge\u00e4ndert, weil die angegebene Anspruchszuordnung einen Nullwert f\u00fcr einen Anspruchsnamen oder -wert enth\u00e4lt.
+JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Stellen Sie sicher, dass eine g\u00fcltige Anspruchszuordnung \u00fcbergeben wird.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: Der JWT-Konsumentenservice (JSON Web Token) ist verf\u00fcgbar.
+JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Es ist keine Aktion erforderlich. 
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: Der JWT-Konsument (JSON Web Token) kann nicht erstellt werden, weil der Konsumentenservice nicht aktiviert wurde.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.explanation=Der JWT-Konsumentenservice muss aktiviert werden, bevor er verwendet werden kann. Entweder wurde der Service nicht gestartet oder der Service wurde inaktiviert, weil das Feature jwt-1.0 entfernt wurde.
+JWT_CONSUMER_SERVICE_NOT_ACTIVATED.useraction=Stellen Sie sicher, dass das Feature jwt-1.0 konfiguriert und der JWT-Konsumentenservice verwendungsbereit ist.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_CONSUMER_NULL_ID=CWWKS6014E: Der JWT-Konsument (JSON Web Token) kann nicht erstellt werden, weil die angegebene Konfigurations-ID null ist.
+JWT_CONSUMER_NULL_ID.explanation=Es kann kein JWT-Konsument erstellt werden, weil die Konfigurations-ID null ist. Es muss eine g\u00fcltige ID angegeben werden, damit die entsprechende JWT-Konsumentenkonfiguration verarbeitet werden kann.
+JWT_CONSUMER_NULL_ID.useraction=Geben Sie eine ID an, die nicht null ist und die mit der ID eines JWT-Konsumenten \u00fcbereinstimmt, der in der Serverkonfiguration vorhanden ist.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_ERR=CWWKS6015E: Der JWT-Anspruch (JSON Web Token) [{0}] ist nicht g\u00fcltig. Geben Sie einen g\u00fcltigen Anspruchsnamen an.
+JWT_INVALID_CLAIM_ERR.explanation=Der angegebene Anspruch ist leer oder null und deshalb kann die JWT-Builder-API die Verarbeitung nicht fortsetzen.
+JWT_INVALID_CLAIM_ERR.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Anspruchsname \u00fcbergeben wird.
+
+# Do not translate "JSON Web Token", "JWT", "JSON Web Key"
+#0=signatureAlgorithm, 1=jwkEnabled, 2=exception or error message if any
+JWT_NO_SIGNING_KEY_WITH_ERROR=CWWKS6016E: Der f\u00fcr den Signaturalgorithmus [{0}] erforderliche Signierschl\u00fcssel ist nicht verf\u00fcgbar. Vergewissern Sie sich, dass der Signaturalgorithmus und jwkEnabled [{1}] ordnungsgem\u00e4\u00df konfiguriert sind. {2}
+JWT_NO_SIGNING_KEY_WITH_ERROR.explanation=Es wurde kein Signierschl\u00fcssel gefunden oder es wurde kein Schl\u00fcssel gefunden, der den konfigurierten Signaturalgorithmus verwendet. Dieser Fehler kann auftreten, weil Informationen in der JWT-Konfiguration fehlen oder falsch sind.
+JWT_NO_SIGNING_KEY_WITH_ERROR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Wenn Sie JSON Web Key (JWK) f\u00fcr die Signierung verwenden, stellen Sie sicher, dass RS256 im Attribut signatureAlgorithm konfiguriert ist. 2) Wenn Sie JWK nicht verwenden, stellen Sie sicher, dass die Attribute KeyStoreRef und KeyStoreAlias ordnungsgem\u00e4\u00df f\u00fcr RS256 konfiguriert sind. 3) Wenn Sie gemeinsam genutzte Schl\u00fcssel f\u00fcr die Signierung verwenden, stellen Sie sicher, dass die Attribute signatureAlgorithm und sharedKey ordnungsgem\u00e4\u00df konfiguriert sind.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_TOKEN_ERR=CWWKS6017E: Es gibt Inhalt im JSON Web Token (JWT), der leer, null oder nicht g\u00fcltig ist.
+JWT_INVALID_TOKEN_ERR.explanation=Der angegebene Tokeninhalt ist nicht g\u00fcltig und deshalb kann die JWT-Builder-API die Verarbeitung nicht fortsetzen.
+JWT_INVALID_TOKEN_ERR.useraction=Stellen Sie sicher, dass die f\u00fcr die Relying Party konfigurierten URLs g\u00fcltig sind. Stellen Sie sicher, dass g\u00fcltiger Inhalt f\u00fcr das Token \u00fcbergeben wird. Weitere Informationen finden Sie in der API-Dokumentation.
+
+JWT_INVALID_TIME_CLAIM_ERR=CWWKS6018E: Der Anspruch [{0}] muss eine Zahl gr\u00f6\u00dfer als null sein.
+JWT_INVALID_TIME_CLAIM_ERR.explanation=Der angegebene Anspruchswert ist nicht g\u00fcltig und deshalb kann die JWT-Builder-API die Verarbeitung nicht fortsetzen.
+JWT_INVALID_TIME_CLAIM_ERR.useraction=Stellen Sie sicher, dass der Wert f\u00fcr den angegebenen Anspruch eine positive Zahl ungleich null ist.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIM_VALUE_TYPE=CWWKS6019E: Der Datentyp des JWT-Anspruchs (JSON Web Token) [{0}] ist f\u00fcr den Wert nicht g\u00fcltig. 
+JWT_INVALID_CLAIM_VALUE_TYPE.explanation=Der angegebene Anspruchswert ist f\u00fcr den angegebenen Anspruch nicht g\u00fcltig und deshalb kann die JWT-Builder-API die Verarbeitung nicht fortsetzen.
+JWT_INVALID_CLAIM_VALUE_TYPE.useraction=Stellen Sie sicher, dass der Anspruchswert den richtigen Datentyp hat. Weitere Informationen finden Sie in der API-Dokumentation.
+
+# Do not translate "JSON Web Token", "JWT"
+#0=exception or error message
+JWT_CREATE_FAIL=CWWKS6020E: Die JWT-Builder-API (JSON Web Token) konnte kein JSON Web Token (JWT) erstellen. Ursache: [{0}]
+JWT_CREATE_FAIL.explanation=In der JWT-Builder-API (JSON Web Token) ist ein Fehler aufgetreten, der die Erstellung des JWT verhindert.
+JWT_CREATE_FAIL.useraction=Sehen Sie sich die empfohlene Benutzeraktion zu dem Fehler an, der vor dieser Nachricht angezeigt wird.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_INVALID_CLAIMS_ERR=CWWKS6021E: Die angegebenen JWT-Anspr\u00fcche (JSON Web Token) sind nicht g\u00fcltig. Geben Sie einen g\u00fcltigen Anspruch an.
+JWT_INVALID_CLAIMS_ERR.explanation=Sie angegebenen Anspr\u00fcche sind nicht g\u00fcltig und deshalb kann die JWT-Builder-API die Verarbeitung nicht fortsetzen.
+JWT_INVALID_CLAIMS_ERR.useraction=Stellen Sie sicher, dass die richtige Gruppe von Anspr\u00fcchen angegeben wird. Weitere Informationen finden Sie in der API-Dokumentation.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: Der Aussteller [{0}] des angegebenen JSON Web Token (JWT) ist nicht als vertrauensw\u00fcrdiger Aussteller in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen Aussteller sind [{2}].
+JWT_ISSUER_NOT_TRUSTED.explanation=In der Serverkonfiguration sind die Aussteller angegeben, die bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token stammt nicht von einem dieser vertrauensw\u00fcrdigen Aussteller und deshalb kann das Token nicht validiert werden.
+JWT_ISSUER_NOT_TRUSTED.useraction=Fordern Sie ein neues Token von einem der vertrauensw\u00fcrdigen Aussteller an, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie den in der Nachricht angegebenen Aussteller als vertrauensw\u00fcrdigen Aussteller in Ihrer JWT-Konfiguration hinzu.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: Die Zielgruppe [{0}] des angegebenen JSON Web Token (JWT) ist nicht als vertrauensw\u00fcrdige Zielgruppe in der JWT-Konfiguration [{1}] aufgelistet. Die vertrauensw\u00fcrdigen Zielgruppen sind [{2}].
+JWT_AUDIENCE_NOT_TRUSTED.explanation=In der Serverkonfiguration sind die Zielgruppen angegeben, die bei der Validierung von JWTs als vertrauensw\u00fcrdig eingestuft werden. Das angegebene Token ist nicht f\u00fcr eine dieser vertrauensw\u00fcrdigen Zielgruppen bestimmt und deshalb kann das Token nicht validiert werden.
+JWT_AUDIENCE_NOT_TRUSTED.useraction=Fordern Sie ein neues Token f\u00fcr eine der vertrauensw\u00fcrdigen Zielgruppen an, die in Ihrer JWT-Konfiguration angegeben sind, oder f\u00fcgen Sie die in der Nachricht angegebene Zielgruppe als vertrauensw\u00fcrdige Zielgruppe in Ihrer JWT-Konfiguration hinzu.
+
+# Do not translate "JSON Web Token", "JWT", "iat", "exp"
+# 0=iat date, 1=exp date
+JWT_IAT_AFTER_EXP=CWWKS6024E: Das JSON Web Token (JWT) ist nicht g\u00fcltig, weil im iat-Anspruch (issued at, ausgestellt um) ein Datum angegeben ist, das nach dem exp-Anspruch (expiration, Ablauf) liegt. Die Zeit im iat-Anspruch ist [{0}] und die Zeit im exp-Anspruch ist [{1}].
+JWT_IAT_AFTER_EXP.explanation=Das JWT ist nicht g\u00fcltig, weil es nach seinem eigenen Ablaufdatum ausgestellt wurde.
+JWT_IAT_AFTER_EXP.useraction=Fordern Sie ein neues Token mit einem g\u00fcltigen iat-Anspruch an, in dem eine Zeit angegeben ist, das vor der Zeit im exp-Anspruch liegt.
+
+# Do not translate "JSON Web Token", "JWT", "exp"
+# 0=exp claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_EXPIRED=CWWKS6025E: Das JSON Web Token (JWT) ist nicht g\u00fcltig, weil der exp-Anspruch (expiration, Ablauf) fehlt oder weil das Token abgelaufen ist. Der exp-Anspruch ist [{0}]. Die aktuelle Zeit plus Zeitabweichung ist [{1}]. Die konfigurierte Zeitabweichung sind [{2}] Sekunden.
+JWT_TOKEN_EXPIRED.explanation=Abgelaufene Token und Token, die keinen exp-Anspruch haben, sind nicht g\u00fcltig.
+JWT_TOKEN_EXPIRED.useraction=Fordern Sie ein neues Token an, das einen exp-Anspruch enth\u00e4lt und nicht abgelaufen ist. Synchronisieren Sie die Zeiten des Tokenausstellers und des Tokenkonsumenten oder erh\u00f6hen Sie die Zeitabweichung in der JWT-Konfiguration.
+
+# Do not translate "JSON Web Token", "JWT", "nbf"
+# 0=nbf claim date, 1=Current time, 2=Clock skew in seconds
+JWT_TOKEN_BEFORE_NBF=CWWKS6026E: Das JSON Web Token (JWT) kann nicht verwendet werden, weil der nbf-Anspruchswert [{0}] eine Zeit angibt, die nach der aktuellen Zeit liegt. Die aktuelle Zeit plus Zeitabweichung ist [{1}]. Die konfigurierte Zeitabweichung sind [{2}] Sekunden.
+JWT_TOKEN_BEFORE_NBF.explanation=Das JWT enth\u00e4lt einen nbf-Anspruch (not-before, nicht vor), der die Zeit angibt, zu der das Token g\u00fcltig wird. Die aktuelle Zeit liegt vor der nbf-Zeit und deshalb ist das Token noch nicht g\u00fcltig.
+JWT_TOKEN_BEFORE_NBF.useraction=Warten Sie, bis die mit dem nbf-Anspruch angegebene Zeit erreicht ist, bevor Sie dieses Token verwenden, oder fordern Sie ein neues Token an, das einen nbf-Anspruch mit einer Zeit enth\u00e4lt, die vor der aktuellen Zeit liegt. Synchronisieren Sie die Zeiten des Tokenausstellers und des Tokenkonsumenten oder erh\u00f6hen Sie die Zeitabweichung in der JWT-Konfiguration.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm (e.g. RS256)
+JWT_MISSING_ALG_HEADER=CWWKS6027E: Das JSON Web Token (JWT) ist nicht g\u00fcltig, weil es mit dem Algorithmus [{0}] signiert werden muss, aber keine Signaturinformationen enth\u00e4lt.
+JWT_MISSING_ALG_HEADER.explanation=Das Token ist entweder fehlerhaft, nicht signiert oder es enth\u00e4lt keine Signaturinformationen. Token m\u00fcssen mit dem angegebenen Algorithmus signiert werden.
+JWT_MISSING_ALG_HEADER.useraction=Fordern Sie ein neues Token an, das mit dem angegebenen Algorithmus signiert ist.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm used to sign the token (e.g. RS256), 1=Signature algorithm required for signing (e.g. RS256)
+JWT_ALGORITHM_MISMATCH=CWWKS6028E: Das JSON Web Token (JWT) ist nicht g\u00fcltig, weil es mit dem Algorithmus [{0}] signiert wurde. Token m\u00fcssen mit dem Algorithmus [{1}] signiert werden.
+JWT_ALGORITHM_MISMATCH.explanation=Token m\u00fcssen mit dem in der Nachricht angegebenen Algorithmus signiert werden. Mit einem anderen Signaturalgorithmus signierte Token k\u00f6nnen nicht validiert werden.
+JWT_ALGORITHM_MISMATCH.useraction=Fordern Sie ein neues Token an, das mit dem in der Nachricht angegebenen erforderlichen Algorithmus signiert ist, oder aktualisieren Sie Ihre JWT-Konfiguration so, dass Token zugelassen werden, die mit dem anderen Signaturalgorithmus signiert sind.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Signature algorithm required for signing (e.g. RS256)
+JWT_MISSING_KEY=CWWKS6029E: Das JSON Web Token (JWT) kann nicht validiert werden, weil kein Signierschl\u00fcssel gefunden wurde. Der konfigurierte Signaturalgorithmus [{0}] setzt einen Schl\u00fcssel f\u00fcr die Validierung des Tokens voraus.
+JWT_MISSING_KEY.explanation=Wenn Sie den HS256-Signaturalgorithmus verwenden, wurde m\u00f6glicherweise kein gemeinsam genutzter Schl\u00fcssel oder ein leerer Wert in der JWT-Konsumentenkonfiguration angegeben. Wenn Sie den Signaturalgorithmus RS256 verwenden, ist der Keystore-Service m\u00f6glicherweise nicht verf\u00fcgbar oder es wurde kein Schl\u00fcssel im Truststore gefunden, der dem in der JWT-Konsumentenkonfiguration angegebenen vertrauensw\u00fcrdigen Alias entspricht.
+JWT_MISSING_KEY.useraction=Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten, die erl\u00e4utern, warum kein Schl\u00fcssel gefunden wurde. Wenn Sie den Signaturalgorithmus HS256 verwenden, stellen Sie sicher, dass ein gemeinsam genutzter Schl\u00fcssel in der JWT-Konfiguration angegeben ist. Wenn Sie den Signaturalgorithmus RS256 verwenden, stellen Sie sicher, dass der Truststore und der vertrauensw\u00fcrdige Alias in Ihrer Konsumentenkonfiguration ordnungsgem\u00e4\u00df konfiguriert sind.
+
+# Do not translate "JSON Web Token", "JWT", "jwtConsumer"
+# 0=JWT config identifier ("id" attribute)
+JWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6030E: Die JWT-Konsumentenkonfiguration (JSON Web Token) mit der ID [{0}] wurde nicht gefunden. Vergewissern Sie sich, dass ein JWT-Konsument mit der angegebenen ID in der Serverkonfiguration konfiguriert ist.
+JWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Es wurde keine JWT-Konsumentenkonfiguration mit der angegebenen ID in der Serverkonfiguration gefunden.
+JWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Stellen Sie sicher, dass ein Element jwtConsumer mit der angegebenen ID in der Serverkonfiguration konfiguriert ist.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=JWT consumer config ID, 1=Error message (if present)
+JWT_ERROR_PROCESSING_JWT=CWWKS6031E: Der JWT-Konsument (JSON Web Token) [{0}] kann die Tokenzeichenfolge nicht verarbeiten. {1} 
+JWT_ERROR_PROCESSING_JWT.explanation=Es ist ein Fehler aufgetreten, der die erfolgreiche Verarbeitung der Tokenzeichenfolge durch den Konsumenten verhindert.
+JWT_ERROR_PROCESSING_JWT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den in der Nachricht angegebenen Fehler an.
+
+# 0=Error message (if present)
+JWT_ERROR_GETTING_SHARED_KEY=CWWKS6032E: Der gemeinsam genutzte Schl\u00fcssel kann nicht abgerufen werden. {0}
+JWT_ERROR_GETTING_SHARED_KEY.explanation=Der gemeinsam genutzte Schl\u00fcssel kann wegen eines Fehlers nicht abgerufen werden.
+JWT_ERROR_GETTING_SHARED_KEY.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den in der Nachricht angegebenen Fehler an. Vergewissern Sie sich, dass ein gemeinsam genutzter Schl\u00fcssel in der JWT-Konsumentenkonfiguration konfiguriert ist.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Trusted alias, 1=truststore reference, 2=Error message (if present)
+JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS6033E: Der \u00f6ffentliche Schl\u00fcssel, der dem Alias [{0}] im Truststore [{1}] entspricht, kann nicht abgerufen werden. {2}
+JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Dieser Fehler kann auf ein Problem beim Abrufen des Truststores oder beim Suchen eines Schl\u00fcssels, der dem in der Nachricht angegebenen Alias entspricht, zur\u00fcckzuf\u00fchren sein.
+JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den in der Nachricht angegebenen Fehler an. Vergewissern Sie sich, dass der entsprechende vertrauensw\u00fcrdige Alias und Truststore in der JWT-Konsumentenkonfiguration (JSON Web Token) konfiguriert sind.
+
+# Intended to be a child of JWT_ERROR_GETTING_SHARED_KEY
+# Do not translate "JSON Web Token", "JWT", "sharedKey"
+JWT_MISSING_SHARED_KEY=CWWKS6034E: Es wurde kein gemeinsam genutzter Schl\u00fcssel in der JWT-Konsumentenkonfiguration (JSON Web Token) angegeben.
+JWT_MISSING_SHARED_KEY.explanation=Das Attribut sharedKey in der JWT-Konsumentenkonfiguration fehlt oder es hat keinen Wert.
+JWT_MISSING_SHARED_KEY.useraction=Vergewissern Sie sich, dass ein nicht leerer sharedKey-Wert in Ihrer JWT-Konsumentenkonfiguration konfiguriert ist.
+
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE=CWWKS6035E: Der Truststore-Service ist nicht verf\u00fcgbar. Vergewissern Sie sich, dass eine Truststore-Referenz in Ihrer JWT-Konsumentenkonfiguration angegeben ist.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.explanation=Entweder wurde kein Truststore konfiguriert oder der konfigurierte Truststore wurde nicht vom Konfigurationsservice verarbeitet.
+JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE.useraction=Vergewissern Sie sich, dass eine Truststore-Referenz in Ihrer JWT-Konsumentenkonfiguration angegeben ist.
+
+# 0=Signature algorithm (HS256, RS256), 1=Key object (string or Java object)
+# Do not translate "HS256", "RS256", "java.security.interfaces.RSAPrivateKey"
+JWT_INVALID_KEY_ERR=CWWKS6036E: Der Signaturalgorithmus [{0}] setzt einen g\u00fcltigen Schl\u00fcssel f\u00fcr die Tokensignatur voraus. Der angegebene Schl\u00fcssel [{1}] ist jedoch nicht g\u00fcltig.
+JWT_INVALID_KEY_ERR.explanation=Wenn Sie den Signaturalgorithmus HS256 verwenden, ist der gemeinsam genutzte Schl\u00fcssel entweder null oder eine leere Zeichenfolge. Wenn Sie den Signaturalgorithmus RS256 verwenden, war der Schl\u00fcssel entweder null oder er war keine Instanz von java.security.interfaces.RSAPrivateKey.
+JWT_INVALID_KEY_ERR.useraction=Wenn Sie den Signaturalgorithmus HS256 verwenden, stellen Sie sicher, dass als Signaturschl\u00fcssel eine Zeichenfolge angegeben wird, die nicht null und nicht leer ist. Wenn Sie den Signaturalgorithmus RS256 verwenden, stellen Sie sicher, dass als Signaturschl\u00fcssel eine Instanz der Klasse, die nicht null ist, angegeben wird, die die Schnittstelle java.security.interfaces.RSAPrivateKey implementiert.
+
+# 0=Signature algorithm string (null, empty, HS256, RS256), 1=Valid signature algorithm string (HS256, RS256)
+JWT_INVALID_ALGORITHM_ERR=CWWKS6037E: Der angegebene Signaturalgorithmus [{0}] ist nicht g\u00fcltig. G\u00fcltiger Algorithmussatz: [{1}].
+JWT_INVALID_ALGORITHM_ERR.explanation=Der angegebene Signaturalgorithmus ist entweder null, leer oder er stimmt nicht mit dem in der Nachricht angegebenen erforderlichen Algorithmussatz \u00fcberein.
+JWT_INVALID_ALGORITHM_ERR.useraction=Vergewissern Sie sich, dass der angegebene Signaturalgorithmus mit dem g\u00fcltigen Algorithmussatz \u00fcbereinstimmt.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT", "jwkEnabled"
+# 0=JWT builder config ID
+JWK_ENDPOINT_JWK_NOT_ENABLED=CWWKS6038E: Der JWK-Validierungsendpunkt (JSON Web Key) kann nicht verwendet werden, weil die JWK-Unterst\u00fctzung nicht f\u00fcr die JWT-Builderkonfiguration [{0}] aktiviert ist.
+JWK_ENDPOINT_JWK_NOT_ENABLED.explanation=Die Unterst\u00fctzung f\u00fcr JWK muss f\u00fcr die Verwendung des JWK-Validierungsendpunkts aktiviert sein. Das Attribut jwkEnabled ist m\u00f6glicherweise nicht in der angegebenen JWT-Builderkonfiguration konfiguriert oder das Attribut ist auf false gesetzt.
+JWK_ENDPOINT_JWK_NOT_ENABLED.useraction=Vergewissern Sie sich, dass das Konfigurationsattribut jwkEnabled f\u00fcr die angegebene JWT-Builderkonfiguration auf true gesetzt ist.
+
+# Do not translate "JSON Web Key", "JWK", "JSON Web Token", "JWT"
+# 0=JWT builder config ID, 1=JWT builder's configured signature algorithm (HS256, RS256), 2=Valid signature algorithm (RS256)
+JWK_ENDPOINT_WRONG_ALGORITHM=CWWKS6039E: F\u00fcr Validierungen mit JWK-Validierungsendpunkt (JSON Web Key) muss die JWT-Builderkonfiguration (JSON Web Token) [{0}] den Signaturalgorithmus [{2}] verwenden. Die JWT-Builderkonfiguration ist f\u00fcr die Verwendung des Signaturalgorithmus [{1}] konfiguriert.
+JWK_ENDPOINT_WRONG_ALGORITHM.explanation=Die JWK-Funktionalit\u00e4t setzt die Verwendung des in der Nachricht angegebenen Signaturalgorithmus voraus. Die angegebene JWT-Builderkonfiguration verwendet nicht den erforderlichen Signaturalgorithmus.
+JWK_ENDPOINT_WRONG_ALGORITHM.useraction=\u00c4ndern Sie die JWT-Builderkonfiguration so, dass der erforderliche Signaturalgorithmus verwendet wird.
+
+# Do not translate "JSON Web Token", "JWT", "Base64"
+# 0=JWT consumer config ID, 1=JWT string
+JWT_CONSUMER_NULL_OR_EMPTY_STRING=CWWKS6040E: Der JWT-Konsument (JSON Web Token) [{0}] kann keinen JWT erstellen, da die angegebene Zeichenfolge [{1}] null oder leer war.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.explanation=Wenn Sie ein JWT-Objekt erstellen m\u00f6chten, m\u00fcssen Sie eine entsprechend codierte Tokenzeichenfolge angeben.
+JWT_CONSUMER_NULL_OR_EMPTY_STRING.useraction=Geben Sie eine ordnungsgem\u00e4\u00df codierte JWT-Zeichenfolge an. Das Format der Zeichenfolge muss dem auf der Webseite unter https://tools.ietf.org/html/rfc7519#section-3 beschriebenen Format entsprechen, d. h., die Zeichenfolge ist eine Folge von URL-konformen Teilen mit Base64-Codierung, die durch Punkte ('.') von einander getrennt sind.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Exception message, if present
+JWT_INVALID_SIGNATURE=CWWKS6041E: Die JWT-Signatur (JSON Web Token) ist nicht g\u00fcltig. {0}
+JWT_INVALID_SIGNATURE.explanation=Beim Verarbeiten der Signatur der angegebenen JWT-Zeichenfolge ist ein Fehler aufgetreten.
+JWT_INVALID_SIGNATURE.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den in der Nachricht angegebenen Fehler an. Vergewissern Sie sich, dass das JWT mit dem richtigen Signaturalgorithmus und dem richtigen Schl\u00fcssel signiert wurde.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0="exp", 1=exp claim value, 2=exp claim converted to readable date, 3=Current time
+JWT_INVALID_EXP_CLAIM_ERR=CWWKS6042E: Der [{0}]-Anspruchswert [{1}] [{2}] muss der aktuellen Zeit [{3}] entsprechen oder ein Zeitpunkt in der Zukunft sein.
+JWT_INVALID_EXP_CLAIM_ERR.explanation=Die Ablaufzeit des JWT-Token (JSON Web Token) muss entweder auf die aktuelle Zeit oder auf einen Zeitpunkt in der Zukunft gesetzt sein. Es wurde eine Zeit in der Vergangenheit angegeben.
+JWT_INVALID_EXP_CLAIM_ERR.useraction=Setzen Sie die Tokenablaufzeit auf die aktuelle Zeit oder auf einen Zeitpunkt in der Zukunft.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Claim that is malformed ("exp", "iat", "sub", etc.), 1=Exception message, if present
+JWT_CONSUMER_MALFORMED_CLAIM=CWWKS6043E: Der JWT-Konsument (JSON Web Token) kann das Token nicht verarbeiten, weil der Anspruch [{0}] fehlerhaft ist. [{1}]
+JWT_CONSUMER_MALFORMED_CLAIM.explanation=Der Wert f\u00fcr den angegebenen Anspruch ist nicht ordnungsgem\u00e4\u00df formatiert oder es ist nicht der erwartete Typ.
+JWT_CONSUMER_MALFORMED_CLAIM.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den in der Nachricht angegebenen Fehler an. Stellen Sie sicher, dass der Wert f\u00fcr den angegebenen Anspruch der g\u00fcltige Typ ist.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value
+JWT_IAT_AFTER_CURRENT_TIME=CWWKS6044E: Das JSON Web Token (JWT) ist nicht g\u00fcltig, weil im iat-Anspruch (issued at, ausgestellt um) ein Datum angegeben ist, das nach der aktuellen Zeit liegt. Die iat-Anspruchszeit ist [{0}]. Die aktuelle Zeit plus Zeitabweichung ist [{1}]. Die konfigurierte Zeitabweichung sind [{2}] Sekunden.
+JWT_IAT_AFTER_CURRENT_TIME.explanation=Ein Token ist nur g\u00fcltig, wenn der zugeh\u00f6rige iat-Anspruch eine Zeit in der Vergangenheit angibt. Der iat-Anspruch des angegebenen Tokens ist eine Uhrzeit in der Zukunft, daher ist das Token noch nicht g\u00fcltig.
+JWT_IAT_AFTER_CURRENT_TIME.useraction=Warten Sie, bis die mit dem iat-Anspruch angegebene Zeit erreicht ist, bevor Sie dieses Token verwenden, oder fordern Sie ein neues Token an, das einen iat-Wert mit einer Zeit enth\u00e4lt, die in der Vergangenheit liegt.
+
+# Do not translate "JSON Web Token", "JWT", "iss", "jti"
+# 0=iss claim value (string), 1=jti claim value (string)
+JWT_DUP_JTI_ERR=CWWKS6045E: Es wurde bereits ein JSON Web Token (JWT) mit demselben iss-Anspruch [{0}] und demselben jti-Anspruch [{1}] empfangen. Es k\u00f6nnte sich um eine Attacke durch Nachrichtenaufzeichnung und -wiederholung handeln. Vergewissern Sie sich, dass der Tokenaussteller ein Token mit einem eindeutigen jti-Anspruch bereitstellt.
+JWT_DUP_JTI_ERR.explanation=Das angegebene Token beinhaltet einen jti-Anspruch, der das Token eindeutig angibt. Zuvor wurde ein weiteres Token mit demselben iss- und jti-Wert empfangen und verarbeitet. Doppelte Anspr\u00fcche k\u00f6nnen auf eine m\u00f6gliche Attacke durch Nachrichtenaufzeichnung und -wiederholung hinweisen.
+JWT_DUP_JTI_ERR.useraction=Stellen Sie sicher, dass der Tokenaussteller ein neues Token mit einem eindeutigen jti-Anspruch erstellt.
+
+# Do not translate "JWT", "trustStoreRef" 
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Es kann kein Signierschl\u00fcssel aus dem Truststore abgerufen werden. Es gibt keine Unterzeichnerzertifikate im angegebenen Truststore.
+JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Der \u00fcber die JWT-Konsumentenkonfiguration angegebene Truststore enth\u00e4lt keine Unterzeichnerzertifikate. Ein Unterzeichnerzertifikat ist f\u00fcr die Validierung des JWT-Token erforderlich.
+JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie, dass der in der JWT-Konsumentenkonfiguration verwendete Truststore mindestens ein Unterzeichnerzertifikat enth\u00e4lt. Der Truststore kann \u00fcber das Attribut 'trustStoreRef' in der JWT-Konsumentenkonfiguration konfiguriert werden oder im Rahmen der allgemeinen Server-SSL-Konfiguration erfolgen.
+
+# Do not translate "JWT", "trustedAlias"
+# single quoted terms do NOT use double single quotes when there are no replacement variables
+# Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Es kann kein Signierschl\u00fcssel aus dem Truststore abgerufen werden. Das Attribut 'trustedAlias' wurde nicht in der JWT-Konsumentenkonfiguration angegeben und im Truststore sind mehrere Unterzeichnerzertifikate vorhanden.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration angegeben werden, um festzulegen, welches der Zertifikate verwendet werden soll.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie in der JWT-Konsumentenkonfiguration das Attribut 'trustedAlias' mit dem Alias f\u00fcr das entsprechende Unterzeichnerzertifikat an.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Die Filter-API f\u00fcr Clientanforderungen hat das JSON Web Token (JWT) nicht weitergegeben.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.explanation=Die Filter-API f\u00fcr Clientanforderungen hat kein g\u00fcltiges JWT-Token vom authentifizierten Subjekt erhalten. Die API kann die JWT-Tokenweitergabe nicht fortsetzen, weil das Token nicht g\u00fcltig ist.
+JWT_PROPAGATION_INVALID_TOKEN_ERR.useraction=Stellen Sie f\u00fcr eine erfolgreiche Weitergabe sicher, dass der Authentifizierungsablauf eingehalten wird. Suchen Sie in den Protokolle nach Authentifizierungs- oder Berechtigungsfehlern, die die Tokenerstellung oder den Einschluss des Tokens in das Subjekt m\u00f6glicherweise verhindert haben.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: jwk url, 1:http status, 2: error message or the responding content
+JWT_JWK_RETRIEVE_FAILED=CWWKS6049E: Es wurde kein JSON Web Key (JWK) \u00fcber die URL [{0}] zur\u00fcckgegeben. Der Antwortstatus [{1}] und Inhalt [{2}] wurden zur\u00fcckgegeben.
+JWT_JWK_RETRIEVE_FAILED.explanation=Der Abruf des JWK \u00fcber die angegebene URL ist fehlgeschlagen. Der Statuscode und der Inhalt der Antwort sind in der Fehlernachricht angegeben.
+JWT_JWK_RETRIEVE_FAILED.useraction=Stellen Sie sicher, dass der Netzbetrieb ordnungsgem\u00e4\u00df konfiguriert ist und \u00fcberpr\u00fcfen Sie die JWK-URL in der Konfiguration.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0: error
+JWT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS6050E: Der Konsument des JSON Web Token (JWT) [{1}] konnte keinen SSL-Kontext erstellen. Ursache: [{0}]. Stellen Sie sicher, dass Ihr SSL-Feature ordnungsgem\u00e4\u00df konfiguriert ist.
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=In der JWT-Konsumentenkonfiguration ist die Verwendung des HTTPS-Schemas konfiguriert, aber es konnte keine HTTPS-Verbindung hergestellt werden. Das SSL-Feature ist m\u00f6glicherweise nicht aktiviert. M\u00f6glicherweise fehlt das Element keyStore oder es ist falsch angegeben. 
+JWT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Stellen Sie sicher, dass die richtigen Informationen in der Datei server.xml enthalten sind. Sehen Sie sich die empfohlene Benutzeraktion zu dem Fehler an, der vor dieser Nachricht angezeigt wird.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=jwks uri, 1=Error message (if present)
+JWT_ERROR_GETTING_JWK_KEY=CWWKS6051E: Der JSON Web Key (JWK) konnte \u00fcber die URL [{0}] nicht abgerufen werden. {1}
+JWT_ERROR_GETTING_JWK_KEY.explanation=Der Abruf des JWK \u00fcber die angegebene URL ist fehlgeschlagen.
+JWT_ERROR_GETTING_JWK_KEY.useraction=Stellen Sie sicher, dass der Netzbetrieb ordnungsgem\u00e4\u00df konfiguriert ist und \u00fcberpr\u00fcfen Sie die JWK-URL in der Konfiguration.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Issuer claim of the token, 1=JWT configuration ID
+JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Der Aussteller [{0}] des angegebenen JSON Web Token (JWT) wird nicht anerkannt, weil in der JWT-Konfiguration [{1}] keine anerkannten Aussteller angegeben sind.
+JWT_TRUSTED_ISSUERS_NULL.explanation=In der Serverkonfiguration werden die Aussteller angegeben, die f\u00fcr die Validierung von JWTs anerkannt werden. Da in der JWT-Konfiguration jedoch keine anerkannten Aussteller angegeben sind, kann das Token nicht validiert werden.
+JWT_TRUSTED_ISSUERS_NULL.useraction=Stellen Sie sicher, dass in der in der Nachricht angegebenen JWT-Konfiguration mindestens ein anerkannter Aussteller definiert ist. Stellen Sie sicher, dass der Aussteller des JWT mit einem der in der JWT-Konfiguration angegebenen anerkannten Aussteller \u00fcbereinstimmt.

@@ -30,6 +30,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.SharedServer;
 
@@ -44,6 +45,7 @@ import com.ibm.ws.fat.util.SharedServer;
                 CDIAnnotationsDisabledTest.class,
                 TestMultiModuleConfigLoad.class,
                 TestMultiModuleClassLoading.class,
+                ValidationTest.class,
 })
 public class FATSuite {
 
@@ -68,7 +70,8 @@ public class FATSuite {
     @AfterClass
     public static void shutdownMultiModuleServer() throws Exception {
         if (MULTI_MODULE_SERVER.getLibertyServer().isStarted()) {
-            MULTI_MODULE_SERVER.getLibertyServer().stopServer();
+            MULTI_MODULE_SERVER.getLibertyServer().stopServer("CWMFT50[01][0-9]E.*badMethod",
+                                                              "CWMFT5019W.*badMethod");
         }
     }
 

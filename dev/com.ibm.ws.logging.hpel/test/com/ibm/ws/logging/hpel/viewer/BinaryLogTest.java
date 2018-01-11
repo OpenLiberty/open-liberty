@@ -313,7 +313,6 @@ public class BinaryLogTest {
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         testParseCmdLine(action, expectedMinDate, expectedMaxDate, commandArgs, repositoryDir, true);
@@ -337,7 +336,6 @@ public class BinaryLogTest {
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         testParseCmdLine(action, expectedMinDate, expectedMaxDate, commandArgs, repositoryDir, true);
@@ -548,7 +546,7 @@ public class BinaryLogTest {
 
         int exitValue = p.exitValue();
         if (exitValue != 0) {
-            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + output);
+            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + output + " ERROR: " + error);
         }
 
         List[] returnList = new List[2];

@@ -47,10 +47,10 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
 
     /**
      * Create aggregate fragment information for a web module.
-     * 
+     *
      * @param containerToAdapt The container of the web module.
      * @param servletSpecLevel The schema level of the web module descriptor.
-     * 
+     *
      * @throws UnableToAdaptException Thrown if a failure occurs
      */
     WebFragmentsInfoImpl(Container containerToAdapt, int servletSpecLevel) throws UnableToAdaptException {
@@ -63,7 +63,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         WebApp webApp = containerToAdapt.adapt(WebApp.class); // throws UnableToAdaptException
         if (webApp != null) {
             this.servletSchemaLevel = webApp.getVersion();
-            if ("3.1".equals(servletSchemaLevel) || "3.0".equals(servletSchemaLevel) || "2.5".equals(servletSchemaLevel)) {
+            if ("4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel) || "3.0".equals(servletSchemaLevel) || "2.5".equals(servletSchemaLevel)) {
                 this.isMetadataComplete = webApp.isSetMetadataComplete() && webApp.isMetadataComplete();
             } else {
                 this.isMetadataComplete = true; // Default to true for earlier versions.
@@ -177,7 +177,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                 String webFragmentName = null;
                 if (webFragment != null) {
                     webFragmentName = webFragment.getName();
-                    //Add all the before/after names configured, in case users configure an internal generated web fragment name 
+                    //Add all the before/after names configured, in case users configure an internal generated web fragment name
                     if (webFragment.getOrdering() != null) {
                         Ordering order = webFragment.getOrdering();
                         if (order.isSetBefore()) {
@@ -208,7 +208,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                 }
 
                 webFragmentItemMap.put(webFragmentName, new WebFragmentItemImpl(container, webFragment, libraryURI, webFragmentName, isSeed));
-            }//else type is not webinf_classes or webinf_lib
+            } //else type is not webinf_classes or webinf_lib
         }
 
         // 'original' and 'relative' ordering generates no excluded fragment items.
@@ -637,8 +637,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
 
     //
 
-    public static List<RelativeOrderMetaData> getRelativeOrdering(Map<String, RelativeOrderMetaData> relativeOrderMap)
-                    throws UnableToAdaptException {
+    public static List<RelativeOrderMetaData> getRelativeOrdering(Map<String, RelativeOrderMetaData> relativeOrderMap) throws UnableToAdaptException {
 
         boolean isTracing = TraceComponent.isAnyTracingEnabled();
         Set<Map.Entry<String, RelativeOrderMetaData>> relativeOrderSet = relativeOrderMap.entrySet();
@@ -768,8 +767,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
     private static void setChildOthersMetaData(List<String> nameList,
                                                OthersEnum parentOthersEnum,
                                                Map<String, RelativeOrderMetaData> relativeOrderMap,
-                                               RelativeOrderMetaData parentRelativeOrderMetaData)
-                    throws UnableToAdaptException {
+                                               RelativeOrderMetaData parentRelativeOrderMetaData) throws UnableToAdaptException {
 
         boolean isTracing = TraceComponent.isAnyTracingEnabled();
         if (nameList != null) {
@@ -806,7 +804,8 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
     }
 
     private static void traverseAfter(RelativeOrderMetaData parentRelOrdMetaData,
-                                      LinkedList<String> orderedList, LinkedList<String> stack, Map<String, RelativeOrderMetaData> relativeOrderMap, boolean isUnspecifiedList) throws UnableToAdaptException {
+                                      LinkedList<String> orderedList, LinkedList<String> stack, Map<String, RelativeOrderMetaData> relativeOrderMap,
+                                      boolean isUnspecifiedList) throws UnableToAdaptException {
         boolean isTracing = TraceComponent.isAnyTracingEnabled();
         String parentName = parentRelOrdMetaData.getName();
         if (stack.contains(parentName)) {

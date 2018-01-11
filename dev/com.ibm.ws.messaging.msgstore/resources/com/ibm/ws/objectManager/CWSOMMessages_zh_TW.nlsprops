@@ -1,0 +1,495 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSOMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSOM0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSOM
+#COMPONENTNAMEFOR CWSOM ObjectManager
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} name of the log file.
+ObjectManagerState_ColdStart=CWSOM0001I: \u5df2\u51b7\u555f\u52d5\u4f7f\u7528 logFile {0} \u7684 ObjectManager\u3002
+ObjectManagerState_ColdStart.explanation=\u63d0\u4f9b\u4e86\u7a7a\u7684\u65e5\u8a8c\u6a94\u7d66 ObjectManager\uff0c\u56e0\u6b64\uff0c\u5b83\u5df2\u51b7\u555f\u52d5\u3002
+ObjectManagerState_ColdStart.useraction= \u7121\uff0c\u9664\u975e\u60a8\u9810\u671f\u6696\u555f\u52d5 ObjectManager\u3002\
+\u4e0d\u8ad6\u662f\u4efb\u4f55\u4e00\u7a2e\u60c5\u6cc1\uff0c\u8acb\u8abf\u67e5\u65e5\u8a8c\u6a94\u70ba\u4ec0\u9ebc\u662f\u7a7a\u7684\u3002
+ 
+# {0} name of the log file.
+# {1) The LOG_FILE_TYPE used for the warm start.
+ObjectManagerState_WarmStart=CWSOM0002I: \u5df2\u6696\u555f\u52d5\u4f7f\u7528 logFile {0} \u7684 ObjectManager\uff0clogFileType={1}\u3002
+ObjectManagerState_WarmStart.explanation=\u5df2\u63d0\u4f9b\u6709\u6548\u7684\u65e5\u8a8c\u6a94\u7d66\u5b83\u53ef\u5f9e\u4e2d\u91cd\u65b0\u555f\u52d5\u7684 ObjectManager\u3002
+ObjectManagerState_WarmStart.useraction=\u7121\uff0c\u9664\u975e\u60a8\u9810\u671f\u51b7\u555f\u52d5 ObjectManager\u3002\
+\u4e0d\u8ad6\u662f\u4efb\u4f55\u4e00\u7a2e\u60c5\u6cc1\uff0c\u8acb\u8abf\u67e5\u65e5\u8a8c\u6a94\u70ba\u4ec0\u9ebc\u4e0d\u662f\u7a7a\u7684\u3002
+ 
+# {0} name of the log file.
+ObjectManagerState_Shutdown=CWSOM0003I: \u5df2\u95dc\u9589\u4f7f\u7528 logFile {0} \u7684 ObjectManager\u3002
+ObjectManagerState_Shutdown.explanation=\u5df2\u8981\u6c42\u95dc\u9589 ObjectManager\u3002
+ObjectManagerState_Shutdown.useraction=\u7121\uff0c\u9664\u975e\u60a8\u672a\u9810\u671f\u95dc\u9589 ObjectManager\u3002
+
+# {0} name of the log file.
+ObjectManagerState_ShutdownFast=CWSOM0004I: \u5df2\u95dc\u9589\u4f7f\u7528 logFile {0} \u7684 ObjectManager\uff0c\u672a\u57f7\u884c\u6700\u7d42\u7684\u6838\u5c0d\u9ede\u3002
+ObjectManagerState_ShutdownFast.explanation=\u5df2\u8981\u6c42\u95dc\u9589 ObjectManager \u800c\u672a\u57f7\u884c\u6700\u7d42\u7684\u6838\u5c0d\u9ede\uff0c\u6216\u56e0\u5148\u524d\u7684\u67d0\u500b\u932f\u8aa4\u800c\u95dc\u9589\u5b83\u3002
+ObjectManagerState_ShutdownFast.useraction=\u7121\uff0c\u9664\u975e\u60a8\u672a\u9810\u671f\u5728\u6c92\u6709\u57f7\u884c\u6700\u7d42\u7684\u6838\u5c0d\u9ede\u5373\u95dc\u9589 ObjectManager\u3002\
+\
+\u8acb\u6aa2\u67e5\u8a3a\u65b7\u8f38\u51fa\uff0c\u5224\u65b7\u975e\u9810\u671f\u95dc\u9589\u7684\u539f\u56e0\u3002
+
+# {0} Descriptive name of the transaction to be backed out.
+ObjectManagerState_LogTooFull=CWSOM0005W: ObjectManager \u767c\u73fe logFile \u592a\u6eff\u4e86\uff0c\u5c07\u53d6\u6d88 {0} \u4ea4\u6613\u3002
+ObjectManagerState_LogTooFull.explanation=ObjectManager \u5728\u5b8c\u6210\u6838\u5c0d\u9ede\u4e4b\u5f8c\uff0c\u65e5\u8a8c\u6a94\u7a7a\u9593\u4e0d\u8db3\uff0c\u5b83\u53d6\u6d88\u4e86\u65e5\u8a8c\u4e2d\u7684\u6700\u5927\u4ea4\u6613\uff0c\u4ee5\u4fbf\u91cb\u51fa\u4e00\u4e9b\u7a7a\u9593\u3002
+ObjectManagerState_LogTooFull.useraction=\u5c0d\u65bc\u6240\u914d\u7f6e\u7684\u65e5\u8a8c\u6a94\u5927\u5c0f\uff0c\u60a8\u8a66\u5716\u57f7\u884c\u592a\u591a\u4ea4\u6613\u5de5\u4f5c\u3002\
+\u8acb\u8003\u91cf\u60a8\u7684\u4ea4\u6613\u662f\u5426\u8a66\u5716\u57f7\u884c\u592a\u591a\u66f4\u65b0\uff0c\u6216\u60a8\u662f\u5426\u8a66\u5716\u66f4\u65b0\u592a\u591a\u5927\u578b\u7269\u4ef6\uff0c\u6216\u60a8\u662f\u5426\u8a66\u5716\u540c\u6642\u57f7\u884c\u592a\u591a\u4ea4\u6613\uff0c\u6216\u60a8\u7684\u65e5\u8a8c\u6a94\u662f\u5426\u592a\u5c0f\uff0c\u61c9\u8a72\u653e\u5927\u3002
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} Descriptive name of the transaction to be backed out.
+InternalTransaction_BackoutOrphan=CWSOM0100W: \u5728\u8a18\u61b6\u9ad4\u56de\u6536\u671f\u9593\uff0c\u767c\u73fe {0} \u4ea4\u6613\uff0c\u5c07\u53d6\u6d88\u9019\u9805\u4ea4\u6613\u3002
+InternalTransaction_BackoutOrphan.explanation=\u61c9\u7528\u7a0b\u5f0f\u907a\u5931\u5b83\u7684\u4ea4\u6613\u53c3\u7167\uff0c\u7121\u6cd5\u5b8c\u6210\u4ea4\u6613\u3002\
+\u56e0\u6b64\uff0cObjectManager \u5c07\u53d6\u6d88\u9019\u9805\u4ea4\u6613\uff0c\u4ee5\u4fbf\u91cb\u51fa\u5b83\u7684\u8cc7\u6e90\u3002
+InternalTransaction_BackoutOrphan.useraction=\u60a8\u7684\u61c9\u7528\u7a0b\u5f0f\u907a\u5931\u5b83\u7684\u4ea4\u6613\u53c3\u7167\u3002\
+\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u5728\u9019\u88e1\u7570\u5e38\u7d42\u6b62\uff0c\u4fbf\u7121\u6cd5\u57f7\u884c\u9032\u4e00\u6b65\u7684\u52d5\u4f5c\u3002\
+\u4e0d\u904e\uff0c\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u907a\u5931\u5b83\u7684\u53c3\u7167\uff0c\u4f46\u4e26\u672a\u7570\u5e38\u7d42\u6b62\uff0c\u5c31\u53ef\u4ee5\u5c07\u9019\u500b\u60c5\u6cc1\u8996\u70ba\u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684\u908f\u8f2f\u932f\u8aa4\u3002
+              
+# ----------------------------------------------------------------------------------------------------
+
+# {0} ObjectStore which could not safely be closed.
+ObjectStore_UnsafeToFlush=CWSOM0200W: \u7121\u6cd5\u5b89\u5168\u95dc\u9589\u542b\u6709 STRATEGY_SAVE_ONLY_ON_SHUTDOWN \u7b56\u7565\u7684 ObjectStore {0}\u3002
+ObjectStore_UnsafeToFlush.explanation=\u5982\u679c\u95dc\u9589\u6642\u6709\u4f5c\u7528\u4e2d\u7684\u4ea4\u6613\uff0c\
+\u542b\u6709 STRATEGY_SAVE_ONLY_ON_SHUTDOWN \u7b56\u7565\u7684 ObjectStores \u7121\u6cd5\u5b89\u5168\u95dc\u9589\uff0c\u56e0\u70ba\u6709\u4f5c\u7528\u4e2d\u4ea4\u6613\u5b58\u5728\u3002\
+\u95dc\u9589 ObjectStore \u53ef\u80fd\u9020\u6210\u5132\u5b58\u4e0d\u4e00\u81f4\u7684\u8cc7\u6599\u3002\
+ObjectStore \u6703\u7dad\u6301\u4e0d\u8b8a\u3002
+ObjectStore_UnsafeToFlush.useraction=\u8acb\u6aa2\u67e5\u4f5c\u7528\u4e2d\u4ea4\u6613\u5b58\u5728\u7684\u539f\u56e0\u3002\
+\u9019\u4e9b\u4f5c\u7528\u4e2d\u7684\u4ea4\u6613\u5b58\u5728\uff0c\u53ef\u80fd\u662f\u56e0\u70ba\u60a8\u4f7f\u7528\u5916\u90e8\u4ea4\u6613\u7ba1\u7406\u7a0b\u5f0f\u3002\
+\u5982\u679c\u7121\u6cd5\u907f\u514d\u5728\u95dc\u9589\u6642\u6709\u4f5c\u7528\u4e2d\u7684\u4ea4\u6613\uff0c\u8acb\u4f7f\u7528\u6709\u4e0d\u540c\u5132\u5b58\u9ad4\u7b56\u7565\u7684 ObjectStore\u3002
+
+# {0} Bytes required in the file system.
+# {1} Bytes currently used in the file system.
+# {2} Exception caught when trying to reserved the bytes.
+ObjectStore_AllocateFileSpaceFailed=CWSOM0201W: \u7576 ObjectStore \u76ee\u524d\u6709 {1} \u4f4d\u5143\u7d44\u6642\uff0c\u8981\u6c42 {0} \u4f4d\u5143\u7d44\u7684\u5132\u5b58\u9ad4\uff0c\u4f46\u6536\u5230 {2} \u7570\u5e38\u72c0\u6cc1\u3002
+ObjectStore_AllocateFileSpaceFailed.explanation=\u6a94\u6848\u7cfb\u7d71\u7121\u6cd5\u914d\u7f6e\u5fc5\u8981\u7684\u7a7a\u9593\u3002\
+\u5728 ObjectStore \u4e2d\u914d\u7f6e\u7269\u4ef6\u7684\u5617\u8a66\u5c07\u6703\u5931\u6557\u3002
+ObjectStore_AllocateFileSpaceFailed.useraction=\u8acb\u6aa2\u67e5\u7570\u5e38\u72c0\u6cc1\uff0c\u5224\u65b7\u70ba\u4ec0\u9ebc\u5728\u6a94\u6848\u7cfb\u7d71\u4e2d\u7121\u6cd5\u914d\u7f6e\u7a7a\u9593\u3002
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by ObjectManagerException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The ClassNotFoundException that was caught by the ObjectManager.
+ClassNotFoundException_info=CWSOM1001E: \u8a66\u5716\u5c07 ManagedObject \u89e3\u9664\u5e8f\u5217\u5316\u6642\uff0cObjectManager \u6355\u6349\u5230 ClassNotFoundException={0}(java.lang.ClassNotFoundException)\u3002
+
+ClassNotFoundException_info.explanation=ObjectManager \u8a66\u5716\u5c07 ManagedObject \u89e3\u9664\u5e8f\u5217\u5316\u6642\uff0c\u6355\u6349\u5230 java.lang.ClassNotFoundException\u3002
+ClassNotFoundException_info.useraction=\u7570\u5e38\u72c0\u6cc1\u5305\u542b\u627e\u4e0d\u5230\u7684\u985e\u5225\u540d\u7a31\u3002\
+\u8acb\u5c07\u5b83\u63d0\u4f9b\u7d66 ObjectManagers \u985e\u5225\u8f09\u5165\u5668\uff0c\u4f8b\u5982\uff0c\u5c07\u985e\u5225\u6a94\u4f75\u5165\u985e\u5225\u8def\u5f91\u3002
+
+# {0} The Name of the new and existing ObjectStore.
+# {1} ObjectStore already using the name.
+DuplicateObjectStoreNameException_info=CWSOM1002E: \u8a66\u5716\u5229\u7528 ObjectStore={1} \u5df2\u7528\u7684 storeName={0}(String) \u4f86\u5efa\u69cb ObjectStore\u3002
+DuplicateObjectStoreNameException_info.explanation=\u5728 ObjectManager \u4e4b\u5167\uff0cObjectStore \u540d\u7a31\u5fc5\u9808\u662f\u552f\u4e00\u7684\u3002
+DuplicateObjectStoreNameException_info.useraction=\u8acb\u9078\u64c7\u53e6\u4e00\u500b ObjectStore \u540d\u7a31\u3002
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object was in.
+# {2} The descriptive name of the state.
+StateErrorException_info=CWSOM1003E: {0} \u7269\u4ef6\u76ee\u524d\u5728\u932f\u8aa4\u72c0\u614b\u4e2d\uff0c\u5b83\u5148\u524d\u7684 state={1}(int) {2}(String) \u7121\u6548\u3002
+
+StateErrorException_info.explanation=\u5df2\u8981\u6c42\u5728\u7269\u4ef6\u4e0a\u9032\u884c\u4f5c\u696d\uff0c\u4f46\u7269\u4ef6\u7684\u72c0\u614b\u5c0d\u65bc\u9019\u9805\u4f5c\u696d\u7121\u6548\u3002\
+\u4f5c\u696d\u5931\u6557\uff0c\u7269\u4ef6\u8f49\u79fb\u6210\u932f\u8aa4\u72c0\u614b\u3002
+StateErrorException_info.useraction=CMSG0002
+
+
+# {0} The IOException that was caught by the ObjectManager.
+PermanentIOException_info=CWSOM1004E: ObjectManager \u6355\u6349\u5230 IOException={0}(java.io.IOException)\u3002
+PermanentIOException_info.explanation=ObjectManager \u6355\u6349\u5230 IOException\uff0c\u7121\u6cd5\u5b89\u5168\u91cd\u8a66 IO \u4f5c\u696d\uff0c\u5df2\u653e\u68c4\u5b83\u3002
+PermanentIOException_info.useraction=IOException \u8aaa\u660e\u7279\u5b9a\u932f\u8aa4\u3002\
+\u8acb\u8abf\u67e5\u548c\u4fee\u6b63\u57fa\u790e IOException \u7684\u539f\u56e0\u3002
+
+# {0} The IOException that was caught by the ObjectManager.
+TemporaryIOException_info=CWSOM1005E: ObjectManager \u6355\u6349\u5230 IOException={0}(java.io.IOException)\u3002
+TemporaryIOException_info.explanation=ObjectManager \u6355\u6349\u5230 IOException\uff0c\u5df2\u653e\u68c4 IO \u4f5c\u696d\uff1b\u4f46\u662f\uff0c\u7b49\u6839\u672c\u539f\u56e0\u4fee\u6b63\u4e4b\u5f8c\uff0c\u5c31\u53ef\u4ee5\u91cd\u8a66 ObjectManager \u61c9\u7528\u7a0b\u5f0f\u8a2d\u8a08\u4ecb\u9762 (API) \u4f86\u5b89\u5168\u91cd\u8a66\u9019\u9805\u4f5c\u696d\u3002
+TemporaryIOException_info.useraction=IOException \u8aaa\u660e\u7279\u5b9a\u932f\u8aa4\u3002\
+\u8acb\u8abf\u67e5\u548c\u4fee\u6b63 IOException \u7684\u6839\u672c\u539f\u56e0\uff0c\u518d\u91cd\u8a66\u4e00\u6b21\u3002
+
+# {0} The ObjectStore being constructed.
+# {1} The name.
+InvalidObjectStoreNameException_info=CWSOM1006E: \u50b3\u905e\u7121\u6548\u7684 name={1}(String) \u7d66 ObjectStore={0}(ObjectStore)\u3002
+
+InvalidObjectStoreNameException_info.explanation=\u7528\u4f86\u5efa\u69cb ObjectStore \u7684\u540d\u7a31\u7121\u6548\u3002\
+ObjectManager \u672a\u5efa\u7acb ObjectStore\u3002
+InvalidObjectStoreNameException_info.useraction=\u8acb\u6aa2\u67e5\u540d\u7a31\u4f86\u5224\u65b7\u5b83\u70ba\u4ec0\u9ebc\u7121\u6548\u3002
+
+# {0} The unrecognized statistics set.
+StatisticsNameNotFoundException_info=CWSOM1007E: \u7121\u6cd5\u8fa8\u8b58 named={0}(String) \u7684\u7d71\u8a08\u8cc7\u6599\u3002
+
+StatisticsNameNotFoundException_info.explanation=\u61c9\u7528\u7a0b\u5f0f\u8981\u6c42\u4e00\u7d44\u7121\u6cd5\u8fa8\u8b58\u7684\u7d71\u8a08\u8cc7\u6599\u3002
+StatisticsNameNotFoundException_info.useraction=\u8acb\u66f4\u6b63\u6240\u8981\u6c42\u4e4b\u7d71\u8a08\u8cc7\u6599\u96c6\u7684\u540d\u7a31\u3002
+
+# {0} The ObjectStore detecting the error.
+# {1} The ManagedObject.
+InvalidObjectToStoreException_info=CWSOM1008E: \u8981\u6c42 ObjectStore={0}(ObjectStore) \u5132\u5b58\u7121\u6548\u7684 ManagedObject={1} (ManagedObject)\u3002
+
+InvalidObjectToStoreException_info.explanation=\u8981\u6c42 ObjectStore \u5132\u5b58\u7121\u6548\u7684 ManagedObject\u3002\
+Objectstore \u672a\u5132\u5b58 ManagedObject\u3002
+InvalidObjectToStoreException_info.useraction=\u8acb\u6aa2\u67e5\u8981\u5132\u5b58\u7684 ManagedObject\uff0c\u5224\u65b7\u5b83\u70ba\u4ec0\u9ebc\u7121\u6548\u3002\
+\u6bd4\u65b9\u8aaa\uff0c\u5b83\u53ef\u80fd\u662f\u7a7a\u503c\u7684 ManagedObject\u3002
+
+# {0} The ObjectStore reporting the sequence error.
+# {1} The non unique sequence number.
+# {2} The ManagedObject already using the sequence number.
+StoreSequenceException_info=CWSOM1009E: ObjectStore={0}(ObjectStore) \u7522\u751f {2}(ManagedObject) \u5df2\u4f7f\u7528\u7684 sequenceNumber={1}(Long)\u3002
+
+StoreSequenceException_info.explanation=ObjectStore \u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002
+StoreSequenceException_info.useraction=CMSG0002
+
+# {0} ObjectStore throwing the replacementException.
+# {1} The ManagedObject being replaced.
+# {2} The Token referencing the replacement.
+# {3} The existing Token attempting the replacement.
+ReplacementException_info=CWSOM1010E: \u8981\u6c42 ObjectStore {0} \u53d6\u4ee3 {2} \u8a18\u865f\u6240\u53c3\u7167\u7684 ManagedObject {1}\uff0c\u4f46\u5132\u5b58\u5eab\u4e2d\u5df2\u6709\u4e0d\u540c\u7684 {3} \u8a18\u865f\u3002
+
+ReplacementException_info.explanation=\u8a18\u865f\u7531 objectStoreIdentifier \u548c storedObjectIdentifier \u4f86\u8b58\u5225\u3002\
+\u6bcf\u500b\u8eab\u5206\u5132\u5b58\u5eab\u53ea\u80fd\u6709\u4e00\u500b\u8a18\u865f\uff0c\u4f46\u65b0\u8a18\u865f\u548c\u73fe\u6709\u8a18\u865f\u5171\u7528\u76f8\u540c\u7684\u8eab\u5206\u3002
+ReplacementException_info.useraction=CMSG0002
+
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object is in.
+# {2} The descriptive name of the state.
+InvalidStateException_info=CWSOM1011E: \u8a66\u5716\u5728 Object={0} \u7684 state={1}(int) {2} (String) \u6642\uff0c\u5c0d\u5b83\u57f7\u884c\u7121\u6548\u7684\u4f5c\u696d\u3002
+
+InvalidStateException_info.explanation=\u8a66\u5716\u5728\u7269\u4ef6\u4e0a\u57f7\u884c\u4f5c\u696d\u3002\
+\u7576\u7269\u4ef6\u5728\u73fe\u884c\u72c0\u614b\u4e2d\uff0c\u4f5c\u696d\u7121\u6548\u3002\
+\u6bd4\u65b9\u8aaa\uff0c\u60a8\u53ef\u80fd\u662f\u8a66\u5716\u522a\u9664\u5df2\u522a\u9664\u7684 ManagedObject\u3002\
+\u4f5c\u696d\u906d\u5230\u62d2\u7d55\uff0c\u7269\u4ef6\u7dad\u6301\u4e0d\u8b8a\u3002
+InvalidStateException_info.useraction=\u8acb\u8abf\u67e5\u7269\u4ef6\u7684\u72c0\u614b\u53ca\u8a66\u5716\u57f7\u884c\u9019\u9805\u4f5c\u696d\u7684\u539f\u56e0\u3002
+
+# {0} ObjecManagerState which has detected the duplicate.
+# {1} The new duplicate InternalTransaction.
+# {2} The old existing InternalTransaction.
+DuplicateTransactionException_info=CWSOM1012E: ObjectManagerState={0}(ObjectManagerState) \u8a66\u5716\u767b\u9304\u6216\u91cb\u51fa LogicalUnitOfWork ID \u8207 transaction={2}(InternalTransaction) \u76f8\u540c\u7684\u65b0 transaction={1}(InternalTransaction)\u3002
+DuplicateTransactionException_info.explanation=ObjectManager \u767c\u73fe\u65b0\u4ea4\u6613\u548c\u73fe\u6709\u4ea4\u6613\u6709\u76f8\u540c\u7684\u4ea4\u6613 ID\u3002\u9019\u662f\u4e00\u500b\u4e0d\u61c9\u767c\u751f\u7684\u5167\u90e8\u932f\u8aa4\u3002
+DuplicateTransactionException_info.useraction=CMSG0002
+
+
+# {0} The internal transaction trying to unregister.
+NonExistentTransactionException_info=CWSOM1013E: \u8a66\u5716\u53d6\u6d88\u767b\u9304\u5c1a\u672a\u767b\u9304\u7684\u4ea4\u6613\uff0ctransaction={0}(InternalTransaction)\u3002
+
+NonExistentTransactionException_info.explanation=\u5728 ObjectManager \u5167\uff0c\u5075\u6e2c\u5230\u5167\u90e8\u932f\u8aa4\u3002\u4e0d\u5141\u8a31\u5728\u4ea4\u6613\u4e0a\u9032\u4e00\u6b65\u7684\u52d5\u4f5c\u3002
+NonExistentTransactionException_info.useraction=CMG0002
+
+# {0} The ObjectStoreIdentifier of the ObjectStore that was not known to the ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info=CWSOM1014E: \u8a66\u5716\u5c0b\u627e\u5c1a\u672a\u767b\u9304\u7684 ObjectStore\uff0cstoreIdentifier={0}(int)\u3002
+NonExistentObjectStoreTemporaryIOException_info.explanation=\u8a18\u865f\u53c3\u7167 ObjectManager \u6240\u7121\u6cd5\u8b58\u5225\u7684 ObjectStore\u3002
+NonExistentObjectStoreTemporaryIOException_info.useraction=\u5982\u679c\u5f9e ObjectManager \u79fb\u9664 ObjectStore\uff0c\u6bcf\u7576\u73fe\u6709\u7684\u8a18\u865f\u53c3\u7167 ObjectStore \u6642\uff0c\u90fd\u6703\u6355\u6349\u5230\u9019\u500b\u7570\u5e38\u72c0\u6cc1\u3002\
+\u8acb\u5fa9\u539f ObjectStore\uff0c\u6216\u505c\u6b62\u4f7f\u7528\u8a66\u5716\u5b58\u53d6\u5b83\u7684\u8a18\u865f\u3002
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSOM1015E: ObjectManager \u975e\u9810\u671f\u5730\u6355\u6349\u5230 exception={0}(Exception)\u3002
+
+UnexpectedExceptionException_info.explanation=ObjectManager \u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\uff0cObjectManager \u7121\u6cd5\u63a1\u53d6\u5408\u7406\u7684\u52d5\u4f5c\u4f86\u56de\u61c9\u7570\u5e38\u72c0\u6cc1\u3002
+UnexpectedExceptionException_info.useraction=\u8acb\u8abf\u67e5\u548c\u89e3\u6c7a\u7570\u5e38\u72c0\u6cc1\u7684\u6839\u672c\u539f\u56e0\u3002
+
+# {0} The managedObject being unlocked.
+# {1} Internal transaction trying to release the lock on the ManagedObject.
+# {2} The existing lock on the ManagedObject.
+InvalidTransactionException_info=CWSOM1016E: InternalTransaction={1}(InternalTransaction) \u8a66\u5716\u89e3\u958b\u9396\u5b9a\u6216\u53d6\u4ee3 ManagedObject={0}(ManagedObject)\uff0c\u4f46\u5b83\u662f\u9396\u5728 transactionLock={2}(TransactionLock) \u4e4b\u4e0b\u3002
+
+InvalidTransactionException_info.explanation=\u8a66\u5716\u89e3\u958b\u9396\u5b9a\u6216\u53d6\u4ee3 ManagedObject\uff0c\u4f46\u6240\u7528\u7684\u4ea4\u6613\u4e0d\u662f\u539f\u5148\u7528\u4f86\u9396\u5b9a\u7684\u4ea4\u6613\u3002\
+\u5df2\u62d2\u7d55\u9019\u9805\u5617\u8a66\u3002
+InvalidTransactionException_info.useraction=\u8acb\u6aa2\u67e5\u4f7f\u7528 ObjectManager Transaction.unlock(ManagedObject) \u4ecb\u9762\u4e4b\u61c9\u7528\u7a0b\u5f0f\u7684\u908f\u8f2f\uff0c\u5224\u65b7\u9019\u5169\u500b\u4ea4\u6613\u70ba\u4ec0\u9ebc\u4e0d\u540c\u3002
+
+# {0} ObjectManagerState which is unable to locate the log file.
+# {1} The exception caught by the ObjectManagerState when trying to locate the log file.
+# {2} The log file name.
+NonExistentLogFileException_info=CWSOM1017E: \u8a66\u5716\u5c0b\u627e\u6216\u5efa\u7acb\u65e5\u8a8c\u6a94 name={2}(String) \u6642\uff0cObjectManagerState={0}(ObjectManagerState) \u6355\u6349\u5230 exception={1}(Exception)\u3002
+
+NonExistentLogFileException_info.explanation=\u7576 ObjectManager \u8a66\u5716\u958b\u555f\u5177\u540d\u65e5\u8a8c\u6a94\u6642\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002\
+\u5c07\u4e0d\u6703\u555f\u52d5 ObjectManager\u3002
+NonExistentLogFileException_info.useraction=\u8acb\u78ba\u8a8d\u65e5\u8a8c\u6a94\u540d\u7a31\u6709\u6548\uff0c\u4e14 ObjectManager \u6709\u9069\u7576\u7684\u5beb\u5165\u8a31\u53ef\u6b0a\u3002
+
+# {0} The Object raising the exception.
+# {1} The underlying Exception.
+LogFileExhaustedException_info=CWSOM1018E: Object={0}(Object) \u5075\u6e2c\u5230\u8f38\u5165\u65e5\u8a8c\u6a94\u7684\u7d50\u5c3e\uff0c\u56e0\u70ba\u57fa\u790e Exception={1}(Exception)\u3002
+
+LogFileExhaustedException_info.explanation=ObjectManager \u5075\u6e2c\u5230\u8f38\u5165\u65e5\u8a8c\u6a94\u7684\u7d50\u5c3e\u3002
+LogFileExhaustedException_info.useraction=\u5982\u679c\u662f\u56e0\u70ba\u91cd\u65b0\u555f\u52d5 ObjectManager \u6642\uff0c\u8b80\u53d6\u65e5\u8a8c\u5230\u7d50\u5c3e\u800c\u767c\u751f\u9019\u500b\u7570\u5e38\u72c0\u6cc1\uff0c\u4fbf\u4e0d\u9700\u8981\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# {0} The type of logRecord that was read from the log but not recognized.
+InvalidLogRecordTypeException_info=CWSOM1019E: \u5f9e\u4ea4\u6613\u65e5\u8a8c\u4e2d\uff0c\u8b80\u53d6\u5230\u7121\u6548\u7684\u65e5\u8a8c\u8a18\u9304 type={0}(int) \u3002
+
+InvalidLogRecordTypeException_info.explanation=ObjectManager \u5728\u56de\u5fa9\u4e2d\uff0c\u627e\u5230\u4e00\u500b\u5b83\u7121\u6cd5\u8fa8\u8b58\u985e\u578b\u7684\u65e5\u8a8c\u8a18\u9304\uff0c\u672a\u5efa\u7acb ObjectManager \u7684\u5be6\u4f8b\u3002
+InvalidLogRecordTypeException_info.useraction=CMSG0002
+
+
+# {0} The name of the ObjectStore that is not registered with the ObjectManager.
+UnknownObjectStoreException_info=CWSOM1020E: \u8a66\u5716\u5c0b\u627e\u5c1a\u672a\u767b\u9304\u7684 ObjectStore\uff0cstoreName={0}(String)\u3002
+UnknownObjectStoreException_info.explanation=\u8981\u6c42 ObjectManager \u5c0b\u627e\u5c1a\u672a\u767b\u9304\u7684 ObjectStore\u3002
+UnknownObjectStoreException_info.useraction=\u53ef\u80fd\u5df2\u5f9e ObjectManager \u4e2d\u79fb\u9664 ObjectStore\u3002\u8acb\u91cd\u5efa ObjectStore\u3002
+
+# {0} The Object detecting the condition that is not valid.
+# {1} The variable name containing the condition that is not valid.
+# {2} The data assigned to the variable giving the condition that is not valid.
+InvalidConditionException_info=CWSOM1021E: {0}(Object) \u5075\u6e2c\u5230\u7121\u6548\u7684\u72c0\u6cc1\u3002Variable={1}\uff0c\u5305\u542b\u7684 value={2}\u3002
+
+InvalidConditionException_info.explanation=\u767c\u751f\u5167\u90e8\u932f\u8aa4\uff0c\u627e\u5230\u7121\u6548\u72c0\u6cc1\u3002
+InvalidConditionException_info.useraction=CMSG0002
+
+
+# {0} The name of the log file.
+LogFileInUseException_info=CWSOM1022E: \u65e5\u8a8c\u6a94 name={0}(String) \u5df2\u5728\u4f7f\u7528\u4e2d\u3002
+LogFileInUseException_info.explanation=ObjectManager \u8a66\u5716\u53d6\u5f97\u65e5\u8a8c\u6a94\u7684\u7368\u4f54\u6027\u9396\u5b9a\uff0c\u4f46\u65e5\u8a8c\u6a94\u5df2\u5728\u4f7f\u7528\u4e2d\u3002
+LogFileInUseException_info.useraction=\u8acb\u5224\u65b7\u662f\u5426\u6709\u53e6\u4e00\u500b ObjectManager \u6216\u53e6\u4e00\u500b\u7a0b\u5f0f\u8a66\u5716\u4f7f\u7528\u76f8\u540c\u7684\u65e5\u8a8c\u6a94\u3002
+
+LogFileHeaderCorruptException_info=CWSOM1023E: \u65e5\u8a8c\u6a94\u6c92\u6709\u6709\u6548\u7684\u6a19\u982d\u3002
+LogFileHeaderCorruptException_info.explanation=\u4ea4\u6613\u65e5\u8a8c\u6a94\u5305\u542b ObjectManager \u7121\u6cd5\u89e3\u8b6f\u7684\u8cc7\u6599\u3002
+LogFileHeaderCorruptException_info.useraction=\u8acb\u78ba\u8a8d\u65e5\u8a8c\u6a94\u662f\u6b63\u78ba\u7684\u6a94\u6848\u3002
+
+# {0} The current XID.
+# {1} The rejected XID.
+XIDModificationException_info=CWSOM1024E: \u8a66\u5716\u8a2d\u5b9a\u4ea4\u6613 XID\uff0c\u4f46\u5b83\u5df2\u8a2d\u5b9a\u3002\u73fe\u6709\u7684 XID={0}([]byte)\uff0c\u5df2\u62d2\u7d55\u7684 XID={1}([]byte)\u3002
+XIDModificationException_info.explanation=\u4ea4\u6613\u53ea\u80fd\u6709\u4e00\u500b X/Open \u4ea4\u6613 ID (XID)\u3002\
+\u8a2d\u597d\u4e4b\u5f8c\uff0c\u5c31\u4e0d\u80fd\u4fee\u6539\u3002
+XIDModificationException_info.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\u7684\u908f\u8f2f\uff0c\u5224\u65b7\u5b83\u70ba\u4ec0\u9ebc\u8a66\u5716\u8b8a\u66f4\u61c9\u7528\u7a0b\u5f0f\u5df2\u8a2d\u5b9a\u4e4b\u4ea4\u6613\u7684 XID\u3002
+
+# {0} The length of the XID passed to the ObjectManager.
+XIDTooLongException_info=CWSOM1025E: \u8a66\u5716\u8a2d\u5b9a\u4ea4\u6613 XID\uff0c\u4f46\u5b83\u592a\u9577\u3002XID.length={0}(int)\u3002
+XIDTooLongException_info.explanation=X/Open \u4ea4\u6613 ID (XID) \u53ef\u4ee5\u6709 java.lang.Short.MAX_VALUE \u6240\u6307\u5b9a\u7684\u9577\u5ea6\u4e0a\u9650\u3002
+XIDTooLongException_info.useraction=\u8acb\u4f7f\u7528\u9577\u5ea6\u8f03\u77ed\u7684 XID\u3002
+
+# {0} The object containing the disabled interface.
+# {1} The method name of the interface that is disabled.
+InterfaceDisabledExceptionException_info=CWSOM1026E: \u8a66\u5716\u4f7f\u7528 source={0}(Object) \u4e2d\u5df2\u505c\u7528\u7684 methodName={1}(String)\u3002
+InterfaceDisabledExceptionException_info.explanation=\u8a66\u5716\u4f7f\u7528\u5df2\u505c\u7528\u7684\u4ecb\u9762\u3002
+InterfaceDisabledExceptionException_info.useraction=\u8acb\u505c\u6b62\u4f7f\u7528\u9019\u500b\u4ecb\u9762\uff0c\u6216\u5207\u63db\u5230\u652f\u63f4\u9019\u500b\u4ecb\u9762\u7684 ObjectManager \u7248\u672c\u3002
+
+# {0} The number of bytes to be written to the log.
+# {1} The number of reserved bytes included in the request.
+# {2} The number of bytes available in the log file.
+LogFileFullException_info=CWSOM1027E: \u65e5\u8a8c\u6a94\u592a\u6eff\uff0c\u7121\u6cd5\u5bb9\u7d0d\u7e3d\u8a08 {0}(long) \u4f4d\u5143\u7d44\uff0c\u8981\u6c42\u4fdd\u7559\u4e86 {1}(long) \u500b\u984d\u5916\u4f4d\u5143\u7d44\uff0c\u53ef\u7528\u7a7a\u9593\u662f {2}(long) \u500b\u4f4d\u5143\u7d44\u3002
+LogFileFullException_info.explanation=\u8a66\u5716\u5c07\u8d85\u51fa\u5141\u8a31\u4f7f\u7528\u7684\u6a94\u6848\u7a7a\u9593\u4e4b\u8cc7\u6599\u5beb\u5165\u65e5\u8a8c\u4e2d\u3002\
+\u5df2\u62d2\u7d55\u9019\u9805\u5617\u8a66\uff0c\u4ea4\u6613\u72c0\u614b\u7dad\u6301\u4e0d\u8b8a\u3002
+LogFileFullException_info.useraction=\u8acb\u6e1b\u5c11\u5728\u4ea4\u6613\u5167\u66f4\u65b0\u7684\u7269\u4ef6\u6578\u3002\
+\u8acb\u6e1b\u5c11\u540c\u6642\u5728\u4f5c\u7528\u4e2d\u7684\u4ea4\u6613\u6578\u76ee\u3002\
+\u8acb\u7e2e\u6e1b\u66f4\u65b0\u7684 ManagedObjects \u5927\u5c0f\u3002\
+\u8acb\u589e\u52a0\u65e5\u8a8c\u6a94\u7684\u5927\u5c0f\u3002
+
+# {0} The part type found in the log that is not valid.
+InvalidLogRecordPartTypeException_info=CWSOM1028E: \u65e5\u8a8c\u8a18\u9304\u7d44\u4ef6 type={0}(byte) \u7121\u6548\u3002
+
+InvalidLogRecordPartTypeException_info.explanation=\u7121\u6cd5\u8fa8\u8b58\u65e5\u8a8c\u8a18\u9304\u7d44\u4ef6\u7684\u985e\u578b\u65d7\u6a19\u3002
+InvalidLogRecordPartTypeException_info.useraction=\u8acb\u5224\u65b7\u65e5\u8a8c\u6a94\u5982\u4f55\u6bc0\u640d\uff0c\u518d\u9084\u539f\u5099\u4efd\u65e5\u8a8c\u6a94\u3002
+
+# {0} The name of the log file.
+CheckpointEndNotFoundException_info=CWSOM1029E: \u5728 log file={0}(String) \u4e2d\uff0c\u627e\u4e0d\u5230 CheckpointEndLogRecord\u3002
+CheckpointEndNotFoundException_info.explanation=\u5728\u627e\u5230\u6838\u5c0d\u9ede\u7d50\u675f\u8a18\u9304\u4e4b\u524d\uff0c\u65e5\u8a8c\u6a94\u4fbf\u544a\u7d50\u675f\u3002\
+\u65e5\u8a8c\u6a94\u61c9\u8a72\u5305\u542b\u81f3\u5c11\u4e00\u500b\u6838\u5c0d\u9ede\u958b\u59cb\u53ca\u4e00\u500b\u6838\u5c0d\u9ede\u7d50\u675f\u7684 LogRecord\u3002
+CheckpointEndNotFoundException_info.useraction=\u8acb\u5224\u65b7\u65e5\u8a8c\u6a94\u5982\u4f55\u6bc0\u640d\uff0c\u518d\u9084\u539f\u5099\u4efd\u65e5\u8a8c\u6a94\u3002
+
+# {0} The ObjectStore raising the exception.
+# {1} The Token requesting the ManagedObject.
+InMemoryObjectNotAvailableException_info=CWSOM1030E: \u8981\u6c42\u8a18\u61b6\u9ad4\u578b ObjectStore {0} \u64f7\u53d6\u4e0d\u5728\u8a18\u61b6\u9ad4\u5167\u7684 Token={0}(Token) \u4e4b ManagedObject\u3002
+
+InMemoryObjectNotAvailableException_info.explanation=\u8981\u6c42 ObjectManager \u64f7\u53d6\u61c9\u8a72\u5df2\u5728\u8a18\u61b6\u9ad4\u5167\uff0c\u4f46\u627e\u4e0d\u5230\u7684 ManagedObject\u3002
+InMemoryObjectNotAvailableException_info.useraction=CMSG0002
+
+# {0} The maximum size in bytes the serialized ManagedObject should be.
+# {1} The actual size in bytes of the ManagedObject in bytes.
+SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: \u7c21\u5316\u7684\u5e8f\u5217\u5316\u5927\u5c0f\u8d85\u51fa maximumSize={0}(long)\uff0cactualSize={1}(long)\u3002
+
+SimplifiedSerializationSizeExceptionException_info.explanation=\u5e8f\u5217\u5316\u7684 MgagecObject \u5927\u5c0f\u8d85\u51fa\u9810\u671f\u7684\u5927\u5c0f\u4e0a\u9650\u3002
+SimplifiedSerializationSizeExceptionException_info.useraction=CMSG0002
+
+# {0} The current size of the log.
+# {1} The requested size of the log.
+# {2} The space available in the log.
+# {3} the predicted occupancy of the new log file.
+# {4} The threshold occupancy above which the ObjectManager triggers a checkpoint. 
+LogFileSizeTooSmallException_info=CWSOM1032E: \u65e5\u8a8c fileSize \u592a\u5c0f\uff0c\u73fe\u6709\u7684 size={0}(long)\uff0c\u8981\u6c42\u7684 size ={1}(long)\uff0c\u53ef\u7528\u7684 space={2}(long)\uff0c\u9810\u671f\u7684 occupancy={3}(float)\uff0coccupancy threshold={4}(float)\u3002
+
+LogFileSizeTooSmallException_info.explanation=\u8981\u6c42 ObjectManager \u5c07\u4ea4\u6613\u65e5\u8a8c\u7e2e\u5c0f\u3002\
+\u8981\u6c42\u7684\u5927\u5c0f\u4e0d\u8db3\u4ee5\u5305\u542b\u73fe\u6709\u7684\u65e5\u8a8c\u8cc7\u6599\u3002\
+\u65b0\u7684\u5927\u5c0f\u5728\u76ee\u524d\u5bb9\u8a31 ObjectManager \u5728\u6c92\u6709\u9023\u7e8c\u57f7\u884c\u6838\u5c0d\u9ede\u7684\u60c5\u6cc1\u4e0b\u904b\u4f5c\u7684\u9650\u5236\u4e4b\u4e0b\u3002
+LogFileSizeTooSmallException_info.useraction=\u8acb\u5c07\u8981\u6c42\u653e\u5927\uff0c\u6216\u64b0\u5beb\u8f03\u5c11\u6216\u8f03\u5c0f\u7684 ManagedObject \u4f86\u7e2e\u6e1b\u65e5\u8a8c\u8ca0\u8f09\u3002
+
+# {0} The non empty collection.
+# {1} The number of items, committed and uncommitted, in the collection.
+# {2} The transaction trying to delete the collection.
+CollectionNotEmptyException_info=CWSOM1033E: {0} \u96c6\u5408\u4e26\u975e\u7a7a\u767d\uff0cdirty size={1}(long)\uff0ctransaction={2}(Transaction)\u3002
+
+CollectionNotEmptyException_info.explanation=\u8981\u6c42 ObjectManager \u522a\u9664\u4e0d\u662f\u7a7a\u767d\u7684\u96c6\u5408\uff08\u5c0d\u6620\u6216\u6e05\u55ae\uff09\u3002\u9019\u500b\u96c6\u5408\u5305\u542b\u4e00\u4e9b\u5c1a\u672a\u522a\u9664\u7684\u9805\u76ee\uff0c\u6216\u522a\u9664\u9805\u76ee\u7684\u4ea4\u6613\u4e26\u975e\u8a66\u5716\u522a\u9664\u96c6\u5408\u7684\u4ea4\u6613\u3002
+CollectionNotEmptyException_info.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\u7684\u908f\u8f2f\uff0c\u63a2\u7d22\u4ea4\u6613\u70ba\u4ec0\u9ebc\u8a66\u5716\u522a\u9664\u542b\u6709\u9805\u76ee\u7684\u96c6\u5408\u3002
+
+# {0} The defined maximum number of transactions.
+TooManyTransactionsException_info=CWSOM1034E: \u61c9\u7528\u7a0b\u5f0f\u8a66\u5716\u555f\u52d5\u7684\u4ea4\u6613\u6578\u76ee\u8d85\u51fa\u6240\u5b9a\u7fa9\u7684 maximum={0}(long)\u3002
+
+TooManyTransactionsException_info.explanation=\u8981\u6c42 ObjectManager \u555f\u52d5\u7684\u4ea4\u6613\u6578\u76ee\u8d85\u51fa\u5b83\u7684\u914d\u7f6e\u6240\u6307\u5b9a\u7684\u6578\u76ee\u3002\u5c1a\u672a\u8d77\u59cb\u65b0\u4ea4\u6613\u3002
+TooManyTransactionsException_info.useraction=\u8acb\u6aa2\u67e5\u61c9\u7528\u7a0b\u5f0f\u7684\u908f\u8f2f\uff0c\u63a2\u7d22\u5b83\u70ba\u4ec0\u9ebc\u8a66\u5716\u555f\u52d5\u592a\u591a\u4ea4\u6613\u3002\
+\u6709\u53ef\u80fd\u61c9\u7528\u7a0b\u5f0f\u6b63\u5728\u555f\u52d5\u4ea4\u6613\uff0c\u4f46\u5c1a\u672a\u78ba\u5b9a\u6216\u53d6\u6d88\u5b83\u5011\u3002
+
+# {0} The number of active transactions.
+# {1} The number of transactons the ObjectManager can currently run.
+TransactionCapacityExceededException_info=CWSOM1035E: \u4f5c\u7528\u4e2d\u4ea4\u6613\u7684\u6578\u76ee\u4e0a\u9650\u5df2\u66ab\u6642\u6e1b\u5c11\uff0c\u73fe\u884c active transactions={0}(long)\uff0c\u73fe\u884c capacity={1}(long)\u3002
+TransactionCapacityExceededException_info.explanation=\u8981\u6c42 ObjectManager \u555f\u52d5\u7684\u4ea4\u6613\u6578\u76ee\u8d85\u51fa\u5b83\u7684\u53ef\u7528\u8cc7\u6e90\u6240\u80fd\u652f\u63f4\u7684\u6578\u76ee\u3002\
+ObjectManager \u6e1b\u5c11\u4e86\u5b83\u5c07\u555f\u52d5\u7684\u4ea4\u6613\u6578\u76ee\uff0c\u4ee5\u4fbf\u80fd\u5920\u5728\u65e5\u8a8c\u6a94\u586b\u6eff\u4e4b\u524d\uff0c\u5b8c\u6210\u6838\u5c0d\u9ede\u4f5c\u696d\u3002\u672a\u555f\u52d5\u65b0\u4ea4\u6613\u3002
+TransactionCapacityExceededException_info.useraction=\u8acb\u589e\u52a0\u65e5\u8a8c\u6a94\u5927\u5c0f\uff0c\u6216\u555f\u52d5\u8f03\u5c11\u7684\u4ea4\u6613\u3002
+
+# {0} The ObjectStore throwing the exception.
+# {1} the name of the ObjectStore.
+StoreFileInUseExceptionException_info=CWSOM1036E: ObjectStore={0}(ObjectStore) name={1}(String) \u5df2\u5728\u4f7f\u7528\u4e2d\u3002
+
+StoreFileInUseExceptionException_info.explanation=ObjectStore \u8a66\u5716\u53d6\u5f97\u5b83\u7684\u6a94\u6848\u7684\u7368\u4f54\u6027\u9396\u5b9a\u6642\uff0c\u767c\u73fe\u5b83\u5df2\u88ab\u9396\u5b9a\u3002
+StoreFileInUseExceptionException_info.useraction=\u8acb\u5224\u65b7\u662f\u5426\u6709\u53e6\u4e00\u500b ObjectManager \u5728\u4f7f\u7528\u9019\u500b ObjectStore \u6a94\uff0c\u6216\u6709\u53e6\u4e00\u500b\u7a0b\u5f0f\u5728\u4f7f\u7528\u9019\u500b\u6a94\u6848\u3002
+
+# {0} The Name of the log file.
+# {1} The expected size of the log file.
+# {2} Byte found not to exist in the physical file.
+PrematureEndOfLogFileException_info=CWSOM1037E: \u65e5\u8a8c\u6a94 name={0}(String)\uff0c\u8a66\u5716\u5b58\u53d6 byte={2}(Long) \u6642\uff0c\u627e\u5230\u7684\u5be6\u9ad4\u5c0f\u65bc\u9810\u671f\u7684 size={1}(long)\u3002
+PrematureEndOfLogFileException_info.explanation=\u65e5\u8a8c\u6a94\u672a\u6b63\u5e38\u7d50\u675f\uff0c\u5be6\u9ad4\u6a94\u53ef\u80fd\u5df2\u622a\u65b7\u3002
+PrematureEndOfLogFileException_info.useraction=\u8acb\u5224\u65b7\u65e5\u8a8c\u6a94\u662f\u5426\u5df2\u640d\u58de\uff0c\u9084\u539f\u672a\u640d\u58de\u7684\u539f\u59cb\u6a94\u6848\u3002
+
+# {0} The ObjectManager throwing the exception.
+NoRestartableObjectStoresAvailableException_info=CWSOM1038E: ObjectManager={0} \u767c\u73fe\u6c92\u6709\u53ef\u91cd\u65b0\u555f\u52d5\u7684 ObjectStores\u3002
+
+NoRestartableObjectStoresAvailableException_info.explanation=\u8981\u6c42 ObjectManager \u5132\u5b58\u5c0d\u6307\u540d ManagedObject \u7684\u53c3\u7167\u3002\
+\u4e0d\u904e\uff0c\u6c92\u6709\u53ef\u91cd\u65b0\u555f\u52d5\u7684 ObjectStores \u53ef\u7528\u4f86\u5132\u5b58\u5b83\u3002
+NoRestartableObjectStoresAvailableException_info.useraction=\u8acb\u5224\u65b7\u60a8\u662f\u5426\u9700\u8981\u4f7f\u7528\u6307\u540d\u7684 ManagedObject\u3002\
+\u5982\u679c\u9700\u8981\u4f7f\u7528\u6307\u540d\u7684 ManagedObject\uff0c\u8acb\u5efa\u7acb\u53ef\u91cd\u65b0\u555f\u52d5\u7684 ObjectStore\u3002
+
+# {0} The key which already exists in the map.
+# {1} The existing entry in the map.
+# {2} The transaction locking the duplicate entry or null.
+DuplicateKeyExceptionException_info=CWSOM1039E: \u91cd\u8907\u7684 key={0}(Object) \u8207 transaction={3}(InternalTransaction) \u6240\u9396\u5b9a\u7684\u73fe\u6709 entry={1}(Map.Entry) \u885d\u7a81\u3002
+
+DuplicateKeyExceptionException_info.explanation=\u8a66\u5716\u65b0\u589e\u552f\u4e00\u7d22\u5f15\u9375\u5230\u5c0d\u6620\uff0c\u4f46\u5c0d\u6620\u4e2d\u5df2\u6709\u76f8\u540c\u7684\u7d22\u5f15\u9375\u3002\u73fe\u6709\u7684\u7d22\u5f15\u9375\u662f\u53e6\u4e00\u9805\u4ea4\u6613\u7684\u4e00\u90e8\u5206\uff0c\u65b0\u7d22\u5f15\u9375\u7121\u6cd5\u53d6\u4ee3\u5b83\u3002
+DuplicateKeyExceptionException_info.useraction=\u8acb\u5229\u7528 putDuplicate \u65b9\u6cd5\u4f86\u8981\u6c42\u65b0\u589e\u91cd\u8907\u7d22\u5f15\u9375\uff0c\u6216\u77ad\u89e3\u61c9\u7528\u7a0b\u5f0f\u70ba\u4ec0\u9ebc\u8a66\u5716\u53d6\u4ee3\u73fe\u6709\u7684\u7d22\u5f15\u9375\u3002
+
+# {0} Number of bytes requested in the store file.
+# {1} Existing store file size in bytes.
+# {2} Number of bytes currently used in the store file.
+StoreFileSizeTooSmallException_info=CWSOM1040E: ObjectStore fileSize \u592a\u5c0f\uff0c\u8981\u6c42\u7684 size={0}(long)\uff0c\u73fe\u6709\u7684 size={1}(long)\uff0c\u6240\u7528\u7684 size={2}(long)\u3002
+
+StoreFileSizeTooSmallException_info.explanation=\u8981\u6c42 ObjectManager \u5c07\u5132\u5b58\u6a94\u7e2e\u5c0f\u70ba\u9577\u5ea6\u4e0d\u8db3\u4ee5\u5c07\u73fe\u6709\u7684 ManagedObjects \u5305\u542b\u5728\u6a94\u6848\u4e2d\u3002
+StoreFileSizeTooSmallException_info.useraction=\u8acb\u767c\u51fa\u7a7a\u9593\u8db3\u4ee5\u5305\u542b\u73fe\u6709 ManagedObjects \u7684\u8981\u6c42\u3002
+
+
+# {0} The java.nio.XXXX Exception that was caught by the ObjectManager.
+PermanentNIOException_info=CWSOM1041E: ObjectManager \u6355\u6349\u5230 Exception={0}(java.nio.XXX Exception)\u3002
+
+PermanentNIOException_info.explanation=ObjectManager \u6355\u6349\u5230 nio \u7570\u5e38\u72c0\u6cc1\uff0c\u7121\u6cd5\u5b89\u5168\u91cd\u8a66\u8f38\u5165/\u8f38\u51fa\u4f5c\u696d\uff0c\u5df2\u653e\u68c4\u5b83\u3002
+PermanentNIOException_info.useraction=nio \u7570\u5e38\u72c0\u6cc1\u5305\u542b\u554f\u984c\u7684\u6839\u672c\u539f\u56e0\u3002\
+\u8acb\u8abf\u67e5\u548c\u4fee\u6b63 nio \u7570\u5e38\u72c0\u6cc1\u7684\u6839\u672c\u539f\u56e0\u3002
+
+# {0} The ObjectStore asked to fulfill the allocation request.
+# {1} The ManagedObject requesting the allocation.
+ObjectStoreFullException_info=CWSOM1042E: \u8981\u6c42 ObjectStore={0}(ObjectStore) \u5c07\u7a7a\u9593\u914d\u7f6e\u7d66 ManagedObject={1}(ManagedObject)\uff0c\u4f46\u5b83\u5df2\u6eff\u3002
+
+ObjectStoreFullException_info.explanation=\u7576\u767c\u51fa\u65b0\u7684\u914d\u7f6e\u8981\u6c42\u6642\uff0cObjectStore \u5df2\u6eff\u3002\
+\u5df2\u62d2\u7d55\u914d\u7f6e\u8981\u6c42\u3002
+ObjectStoreFullException_info.useraction=\u8acb\u6c7a\u5b9a\u662f\u8981\u64f4\u5927 ObjectStore\uff0c\u9084\u662f\u8981\u79fb\u9664\u4e00\u4e9b\u73fe\u6709\u7684\u7269\u4ef6\u3002\
+\u53e6\u5916\uff0c\u4e5f\u53ef\u80fd\u662f\u60a8\u8a66\u5716\u5132\u5b58\u6bd4\u539f\u8a08\u5283\u591a\u6216\u5927\u7684\u7269\u4ef6\u3002
+
+# {0} The logfiletype that was passed to the ObjectManager constructor.
+InvalidLogFileTypeException_info=CWSOM1043E: \u50b3\u905e\u7121\u6548\u7684 log file type={0}(int) \u7d66 ObjectManager\u3002
+
+InvalidLogFileTypeException_info.explanation=\u5c07\u4e26\u672a\u8fa8\u8b58\u70ba LOG_FILE_TYPE_XXXX \u985e\u578b\u7684\u65e5\u8a8c\u6a94\u985e\u578b\u50b3\u7d66 ObjectManager \u5efa\u69cb\u5b50\u3002\
+\u672a\u5efa\u7acb ObjectManager \u7684\u5be6\u4f8b\u3002
+InvalidLogFileTypeException_info.useraction=\u8acb\u8b8a\u66f4\u5efa\u69cb\u5b50\u547c\u53eb\u4f86\u4f7f\u7528\u6240\u8fa8\u8b58\u7684\u65e5\u8a8c\u6a94\u985e\u578b\u3002
+
+# {0} The List from which the sublist is to be created.
+# {1} The entry which is not in the list.
+SubListEntryNotInListException_info=CWSOM1044E: \u8981\u6c42 List={0}(List) \u5efa\u7acb\u4e00\u4efd\u5b50\u6e05\u55ae\uff0c\u7528\u5b83\u4e26\u672a\u5305\u542b\u7684 List.Entry={1}(List.Entry) \u4f86\u5b9a\u754c\u3002
+
+SubListEntryNotInListException_info.explanation=\u8981\u6c42\u6e05\u55ae\u5efa\u7acb\u5b50\u6e05\u55ae\uff0c\u7528\u5b83\u4e26\u672a\u5305\u542b\u7684\u9805\u76ee\u4f86\u5b9a\u754c\u3002\
+\u672a\u5efa\u7acb\u5b50\u6e05\u55ae\u3002
+SubListEntryNotInListException_info.useraction=\u8acb\u6aa2\u95b1\u61c9\u7528\u7a0b\u5f0f\u78bc\u4f86\u5224\u65b7\u70ba\u4ec0\u9ebc\u9805\u76ee\u4e0d\u5728\u6e05\u55ae\u4e2d\u3002\
+\u6bd4\u65b9\u8aaa\uff0c\u53ef\u80fd\u5df2\u5f9e\u6e05\u55ae\u4e2d\u79fb\u9664\u9805\u76ee\u3002
+
+# {0} The List from which the sublist is to be created.
+ObjectSignatureNotFoundException_info=CWSOM1045E: ObjectManager \u8a66\u5716\u5c07\u5176\u7121\u6cd5\u8fa6\u8b58\u4e14\u542b\u6709 signature={0}(int) \u7684 ManagedObject \u89e3\u9664\u5e8f\u5217\u5316\u3002
+ObjectSignatureNotFoundException_info.explanation=\u5728 ManagedObject \u4e2d\uff0c\u627e\u5230\u7121\u6cd5\u8fa8\u8b58\u7684\u7c3d\u7ae0\u3002\u56e0\u6b64\uff0c\u5df2\u653e\u68c4\u89e3\u9664\u5e8f\u5217\u5316\u3002
+ObjectSignatureNotFoundException_info.useraction=CMSG0002
+
+# {0} The ObjectStore being constructed.
+# {1} The store strategy value that is not valid.
+InvalidStoreStrategyException_info=CWSOM1046E: \u5229\u7528\u7121\u6548\u7684 store strategy={1}(int) \u4f86\u5efa\u69cb ObjectStore={0}\u3002
+
+InvalidStoreStrategyException_info.explanation=\u60a8\u53ea\u80fd\u5229\u7528\u6709\u6548\u7684\u5132\u5b58\u5eab\u7b56\u7565\u4f86\u5efa\u69cb ObjectStore\u3002
+InvalidStoreStrategyException_info.useraction=\u8acb\u5229\u7528\u6709\u6548\u7684\u5132\u5b58\u5eab\u7b56\u7565\u4f86\u5efa\u69cb ObjectStore\u3002\
+\
+\u8acb\u53c3\u95b1 ObjectManagerjavadoc\uff0c\u4ee5\u77ad\u89e3\u6709\u6548\u7684\u7b56\u7565\u3002
+
+# {0} The Name of the new ObjectStore.
+# {1} The objectStoreIdentifier of the new and existing store.
+# {2} ObjectStore already using the identifier.
+DuplicateObjectStoreIdentifierException_info=CWSOM1047E: \u8a66\u5716\u5229\u7528 ObjectStore={2} \u5df2\u7528\u7684 storeName={0}(String) \u548c ID {1} \u4f86\u5efa\u69cb ObjectStore
+DuplicateObjectStoreIdentifierException_info.explanation=\u5728 ObjectManager \u4e4b\u5167\uff0cObjectStore ID \u5fc5\u9808\u662f\u552f\u4e00\u7684\u3002
+DuplicateObjectStoreIdentifierException_info.useraction=\u8acb\u5148\u5c07\u73fe\u6709\u7684 ObjectStores \u65b0\u589e\u81f3 ObjectManager\uff0c\u518d\u5efa\u7acb\u65b0\u7684 Objectstores\u3002\
+\u9019\u500b\u7a0b\u5e8f\u4f7f ObjectManager \u907f\u514d\u91cd\u8907\u4f7f\u7528 ID\u3002
+
+# {0} The Object discovering data corruption.
+# {1} The corrupted object.
+GuardBytesException_info=CWSOM1048E: Object={0} \u5728 Object={1}(Object) \u4e2d\u767c\u73fe\u53ef\u80fd\u5df2\u6bc0\u640d\u7684\u8cc7\u6599\u3002
+
+GuardBytesException_info.explanation=\u5c0d\u65bc\u5b88\u8b77\u4f4d\u5143\u7d44\u6240\u4fdd\u8b77\u7684\u8cc7\u6599\uff0cObjectManager \u5728\u5b88\u8b77\u4f4d\u5143\u7d44\u503c\u4e2d\u627e\u5230\u4e0d\u7b26\u7684\u60c5\u6cc1\u3002
+GuardBytesException_info.useraction=CMSG0002
+
+# {0} The name of the ObjectStore discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidStoreSignatureException_info=CWSOM1049E: ObjectStore name={0} \u767c\u73fe\u6bc0\u640d\u7684 signature={1}(String)\uff0c\u800c\u4e0d\u662f\u6b63\u78ba\u7684 signature={2}(String)\u3002
+
+InvalidStoreSignatureException_info.explanation=ObjectStore \u6a19\u982d\u6bc0\u640d\uff0c\u7121\u6cd5\u8655\u7406\u3002
+InvalidStoreSignatureException_info.useraction=\u8acb\u5224\u65b7\u6a94\u6848\u5982\u4f55\u6bc0\u640d\uff0c\u518d\u9084\u539f\u5099\u4efd\u3002
+
+# {0} The LogFileHeader discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidLogFileSignatureException_info=CWSOM1050E: \u5728\u65e5\u8a8c\u6a94\u4e2d\u627e\u5230\u6bc0\u640d\u7684 signature={0}(String)\uff0c\u800c\u4e0d\u662f\u6b63\u78ba\u7684 signature={1}(String)\u3002
+
+InvalidLogFileSignatureException_info.explanation=\u65e5\u8a8c\u6a94\u6a19\u982d\u6bc0\u640d\uff0c\u7121\u6cd5\u8655\u7406\u3002
+InvalidLogFileSignatureException_info.useraction=\u8acb\u5224\u65b7\u6a94\u6848\u5982\u4f55\u6bc0\u640d\uff0c\u518d\u9084\u539f\u5099\u4efd\u3002
+
+# {0} The name of the thread which is being asked to perform the request.
+# {1} The name of the request the thread is being asked to perform.
+ThreadNotRunningException_info=CWSOM1051E: \u5728 Thread={0} \u505c\u6b62\u57f7\u884c\u4e4b\u5f8c\uff0c\u8981\u6c42\u5b83\u57f7\u884c request={1}\u3002
+
+ThreadNotRunningException_info.explanation=\u7576\u767c\u51fa\u8981\u6c42\u6642\uff0c\u6307\u5b9a\u7684\u57f7\u884c\u7dd2\u5931\u6557\u6216\u5df2\u88ab\u8981\u6c42\u505c\u6b62\u3002
+ThreadNotRunningException_info.useraction=CMSG0002
+
+# {0} ObjectStore which is unable to locate the file.
+# {1} The exception caught by the ObjectStore when trying to locate the file, or null.
+# {2} The file name of the file that cannot be found.
+NonExistentObjectStoreFileException_info=CWSOM1052E: \u8a66\u5716\u5c0b\u627e\u6216\u5efa\u7acb file name={2}(String) \u6642\uff0cObjectStore={0}(ObjectStore) \u6355\u6349\u5230 exception={1}(Exception)\u3002
+NonExistentObjectStoreFileException_info.explanation=\u7576 ObjectStore \u8a66\u5716\u958b\u555f\u5177\u540d\u6a94\u6848\u6642\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002\u5c07\u4e0d\u6703\u555f\u52d5 ObjectManager\u3002
+NonExistentObjectStoreFileException_info.useraction=\u8acb\u9a57\u8b49\u6a94\u540d\u6709\u6548\u3001\u6a94\u6848\u5b58\u5728\uff0c\u4e14 ObjectManager \u6709\u9069\u7576\u7684\u8a31\u53ef\u6b0a\u53ef\u5beb\u5165\u6a94\u6848\u3002\
+\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u5728 ObjectManager \u555f\u52d5\u6642\u63d0\u4f9b\u908f\u8f2f\u5132\u5b58\u5eab\u540d\u7a31\u5230\u6a94\u6848\u5be6\u9ad4\u4f4d\u7f6e\u7684\u5c0d\u6620\u3002
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIOM9999=CWSOM9999E: {0}
+TEMPORARY_SIOM9999.explanation=\u5982\u679c\u8a0a\u606f\u6c92\u6709\u63d0\u4f9b\u8db3\u5920\u7684\u8cc7\u8a0a\uff0c\u8acb\u6aa2\u67e5\u76f8\u95dc\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8aaa\u660e\u3002
+TEMPORARY_SIOM9999.useraction=\u8acb\u53c3\u95b1\u5148\u524d\u7684\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u7684\u8cc7\u8a0a\u3002

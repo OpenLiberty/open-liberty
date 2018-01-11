@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: V\u00e1rakoz\u00e1s legfeljebb 30 m\u00e1sodpercig a kiszolg\u00e1l\u00f3 fokozatos le\u00e1ll\u00edt\u00e1s\u00e1ra.
+quiesce.begin.explanation=A kiszolg\u00e1l\u00f3 legfeljebb 30 m\u00e1sodpercig v\u00e1r, hogy a szolg\u00e1ltat\u00e1sok fokozatosan le\u00e1lljanak, miel\u0151tt folytatn\u00e1 a le\u00e1ll\u00edt\u00e1st.
+quiesce.begin.useraction=Semmit sem kell tennie.
+
+quiesce.end=CWWKE1101I: Kiszolg\u00e1l\u00f3 fokozatos le\u00e1ll\u00edt\u00e1sa befejez\u0151d\u00f6tt.
+quiesce.end.explanation=A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete sikeresen befejez\u0151d\u00f6tt.
+quiesce.end.useraction=Semmit sem kell tennie.
+
+quiece.warning=CWWKE1102W: A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete nem fejez\u0151d\u00f6tt be. A kiszolg\u00e1l\u00f3 most le\u00e1ll.
+quiece.warning.explanation=A folyamat nem tudta az \u00f6sszes szolg\u00e1ltat\u00e1s nyugalmi \u00e1llapot\u00e1t el\u00e9rni 30 m\u00e1sodpercen bel\u00fcl.
+quiece.warning.useraction=Nyugodtan figyelmen k\u00edv\u00fcl hagyhatja a nem el\u00e9rhet\u0151 sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok eredm\u00e9nyek\u00e9nt kapott hiba\u00fczeneteket.
+
+client.quiesce.begin=CWWKE1103I: V\u00e1rakoz\u00e1s legfeljebb 30 m\u00e1sodpercig az \u00fcgyf\u00e9l fokozatos le\u00e1ll\u00edt\u00e1s\u00e1ra.
+client.quiesce.begin.explanation=Az \u00fcgyf\u00e9l legfeljebb 30 m\u00e1sodpercig v\u00e1r, hogy a szolg\u00e1ltat\u00e1sok fokozatosan le\u00e1lljanak, miel\u0151tt folytatn\u00e1 a le\u00e1ll\u00edt\u00e1st.
+client.quiesce.begin.useraction=Nincs teend\u0151.
+
+client.quiesce.end=CWWKE1104I: \u00dcgyf\u00e9l fokozatos le\u00e1ll\u00edt\u00e1sa befejez\u0151d\u00f6tt.
+client.quiesce.end.explanation=A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete sikeresen befejez\u0151d\u00f6tt.
+client.quiesce.end.useraction=Nincs teend\u0151.

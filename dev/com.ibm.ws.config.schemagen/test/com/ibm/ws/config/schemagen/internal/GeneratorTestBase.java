@@ -139,10 +139,8 @@ public abstract class GeneratorTestBase {
 
   protected static void setInstallDir(File file) throws SecurityException,
       NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        Field installDirField = Utils.class.getDeclaredField("installDir");
-        installDirField.setAccessible(true);
-        installDirField.set(null, file);
-        installDirField = SchemaWriter.class.getDeclaredField("installDir");
+        Utils.setInstallDir(file);
+        Field installDirField = SchemaWriter.class.getDeclaredField("installDir");
         installDirField.setAccessible(true);
         installDirField.set(null, file);
         System.setProperty("wlp.install.dir", file.getAbsolutePath());

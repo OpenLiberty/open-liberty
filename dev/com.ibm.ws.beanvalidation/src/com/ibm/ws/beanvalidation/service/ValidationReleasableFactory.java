@@ -21,7 +21,7 @@ public interface ValidationReleasableFactory {
 
     /**
      * Create a validation releasable object out of the class type passed in.
-     * 
+     *
      * @param clazz the type of validation releasable to create
      * @return the releasable object
      */
@@ -29,7 +29,7 @@ public interface ValidationReleasableFactory {
 
     /**
      * Create a ConstraintValidatorFactory as a ValidationReleasable.
-     * 
+     *
      * @return the releasable ConstraintValidatorFactory
      */
     public ValidationReleasable<ConstraintValidatorFactory> createConstraintValidatorFactory();

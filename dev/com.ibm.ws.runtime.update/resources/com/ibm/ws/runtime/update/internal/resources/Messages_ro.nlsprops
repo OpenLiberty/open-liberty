@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.runtime.update/resources/com/ibm/ws/runtime/update/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel: runtime update notifications
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
+# -------------------------------------------------------------------------------------------------
+
+quiesce.begin=CWWKE1100I: A\u015fteptare de p\u00e2n\u0103 la 30 de secunde pentru ca serverul s\u0103 devin\u0103 inactiv.
+quiesce.begin.explanation=Serverul a\u015fteapt\u0103 p\u00e2n\u0103 la 30 de secunde pentru ca serviciile s\u0103 s\u0103 devin\u0103 inactive \u00eenainte de a se opri.
+quiesce.begin.useraction=Nicio ac\u0163iune necesar\u0103.
+
+quiesce.end=CWWKE1101I: Dezactivare server complet\u0103.
+quiesce.end.explanation=Opera\u0163ia de dezactivare s-a finalizat cu succes.
+quiesce.end.useraction=Nicio ac\u0163iune necesar\u0103.
+
+quiece.warning=CWWKE1102W: Opera\u0163ia de dezactivare nu s-a finalizat. Serverul se va opri acum.
+quiece.warning.explanation=Procesul nu a putut s\u0103 dezactiveze toate serviciile \u00een 30 de secunde.
+quiece.warning.useraction=Pute\u0163i ignora f\u0103r\u0103 probleme mesajele de eroare care rezult\u0103 din serviciile necesare indisponibile.
+
+client.quiesce.begin=CWWKE1103I: A\u015fteptare de p\u00e2n\u0103 la 30 de secunde pentru ca clientul s\u0103 devin\u0103 inactiv.
+client.quiesce.begin.explanation=Clientul  a\u015fteapt\u0103 p\u00e2n\u0103 la 30 de secunde pentru ca serviciile s\u0103 s\u0103 devin\u0103 inactive \u00eenainte de a se opri.
+client.quiesce.begin.useraction=Nicio ac\u0163iune necesar\u0103.
+
+client.quiesce.end=CWWKE1104I: Dezactivare client complet\u0103.
+client.quiesce.end.explanation=Opera\u0163ia de dezactivare s-a finalizat cu succes.
+client.quiesce.end.useraction=Nicio ac\u0163iune necesar\u0103.

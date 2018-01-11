@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.NotificationHelper;
 import com.ibm.ws.app.manager.internal.ApplicationInstallInfo;
@@ -49,6 +51,8 @@ import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
 public class ApplicationMonitor {
+    private final static TraceComponent tc = Tr.register(ApplicationMonitor.class);
+
     public interface UpdateHandler {
         public void handleMonitorUpdate(boolean shouldRemove);
     }
@@ -92,7 +96,7 @@ public class ApplicationMonitor {
 
     /**
      * Starts the service with properties
-     * 
+     *
      * @param properties - a collection of optional variables set by the user in the server xml
      */
     public void refresh(ApplicationMonitorConfig config) {
@@ -177,7 +181,7 @@ public class ApplicationMonitor {
 
     /**
      * Removes an application from the update monitor
-     * 
+     *
      * @param pid
      */
     public void removeApplication(String pid) {
@@ -207,7 +211,7 @@ public class ApplicationMonitor {
 
         /**
          * Constructs a new instance of the application listeners.
-         * 
+         *
          * @param applicationLocation The location for this application
          */
         public ApplicationListeners(ApplicationMonitor.UpdateHandler updateHandler, AtomicReference<ExecutorService> executorService) {
@@ -217,7 +221,7 @@ public class ApplicationMonitor {
 
         /**
          * This will add a new listener to the collection of listeners for this application.
-         * 
+         *
          * @param listener The new listener
          */
         private void addListener(BaseApplicationListener listener) {
@@ -256,7 +260,7 @@ public class ApplicationMonitor {
          * This method will queue up an event to be done on the application being managed by this object. It will not perform the event immediately, instead it will wait 200ms to
          * see if a second request comes in, this way if an update and delete happen simultaneously (or through two different listeners) then only one update is sent back to the
          * application configuration manager.
-         * 
+         *
          * @param eventToPerform
          */
         public synchronized void queueEvent(final EventType eventToPerform) {
@@ -272,7 +276,7 @@ public class ApplicationMonitor {
 
             ExecutorService executor = executorService.get();
             if (executor != null) {
-                // Now create the future that will do the sleep waiting for a second request 
+                // Now create the future that will do the sleep waiting for a second request
                 future = new FutureTask<Object>(new Callable<Object>() {
                     @Override
                     @FFDCIgnore(value = InterruptedException.class)
@@ -327,7 +331,7 @@ public class ApplicationMonitor {
 
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
-         * 
+         *
          * @param applicationProperties The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
          *            be listening to
@@ -373,7 +377,7 @@ public class ApplicationMonitor {
 
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
-         * 
+         *
          * @param applicationProperties The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
          *            be listening to
@@ -392,12 +396,12 @@ public class ApplicationMonitor {
             if (removed.getPaths().contains("/")) {
                 listeners.queueEvent(EventType.REMOVE);
             } else if (this.listenForRootStructuralChanges && (!added.getPaths().isEmpty() || !removed.getPaths().isEmpty())) {
-                // We are listening for structural changes to this application (i.e. WARs being added/removed to the root 
+                // We are listening for structural changes to this application (i.e. WARs being added/removed to the root
                 // of an EAR) and one of these has occurred so update the application
                 listeners.queueEvent(EventType.UPDATE);
             } else if (modified.getPaths().contains("/")) {
-                // The root element itself has changed, this will happen, for instance if the Loose XML itself has changed, 
-                // in which case we need to do an update of the app as anything might of happened!   
+                // The root element itself has changed, this will happen, for instance if the Loose XML itself has changed,
+                // in which case we need to do an update of the app as anything might of happened!
                 listeners.queueEvent(EventType.UPDATE);
             }
 
@@ -411,12 +415,24 @@ public class ApplicationMonitor {
      */
     private static final class ApplicationListener extends BaseApplicationListener {
 
+        private final static String[] MINOR_UPDATE_FILE_EXTENSIONS;
+        static {
+            String builtInPatterns = ".class,.jsp,.jspx,.jsw,.jsv,.jspf,.tld,.tag";
+            String userPatterns = System.getProperty("com.ibm.ws.app.manager.minorUpdateFileExtensions");
+            String minorUpdatePatterns = builtInPatterns + (userPatterns == null ? "" : "," + userPatterns);
+            MINOR_UPDATE_FILE_EXTENSIONS = minorUpdatePatterns.split(",");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "minor file patterns: ", new Object[] { MINOR_UPDATE_FILE_EXTENSIONS });
+            }
+
+        }
+
         private final ApplicationInstallInfo appInfo;
         private final ClassLoadingButler butler;
 
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
-         * 
+         *
          * @param applicationProperties The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
          *            be listening to
@@ -435,20 +451,37 @@ public class ApplicationMonitor {
                 return true;
             }
 
-            // check for non-class files - for now, modification of a non-class file will require
-            // an app restart - in the future, we should try to avoid the restart if possible:
+            // Check for files with file extensions that designate them as a
+            // minor (or potentially minor in the case of *.class files) change
+            // that does not require a restart - i.e. changes to JSP files
+            // should not require a restart.  Changes to a web.xml should.
             for (String path : modified.getPaths()) {
-                if (!path.endsWith(".class")) {
+                boolean hasMinorExtension = false;
+                for (String pattern : MINOR_UPDATE_FILE_EXTENSIONS) {
+                    if (path.toLowerCase().endsWith(pattern)) {
+                        hasMinorExtension = true;
+                        break;
+                    }
+                }
+
+                if (!hasMinorExtension) {
                     return false;
                 }
             }
 
+            // Now check to see if the classes being modified can do so without
+            // requiring a restart.  This is only possible if class redefining
+            // is enabled AND if the changes to the class allows it to be
+            // redefined - usually this means just changes to the internals of
+            // a method body.
             boolean isMinor = butler.redefineClasses(modified);
 
             if (isMinor) {
-                NotificationHelper.broadcastChange(appInfo.getMBeanNotifier(), appInfo.getMBeanName(), "application.update", Boolean.TRUE,
-                                                   AppMessageHelper.get(appInfo.getHandler()).formatMessage("APPLICATION_UPDATED", appInfo.getName()));
-                AppMessageHelper.get(appInfo.getHandler()).audit("APPLICATION_UPDATED", appInfo.getName());
+                String msg = AppMessageHelper.get(appInfo.getHandler()).formatMessage("APPLICATION_UPDATED", appInfo.getName());
+                NotificationHelper.broadcastChange(appInfo.getMBeanNotifier(), appInfo.getMBeanName(), "application.update", Boolean.TRUE, msg);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, msg);
+                }
             }
             return isMinor;
 
@@ -475,7 +508,7 @@ public class ApplicationMonitor {
 
         /**
          * Constructs a new instance of this listener and creates the notifier to which we'll be registered. It does not actually start the listener though.
-         * 
+         *
          * @param applicationProperties The properties for the application being monitored
          * @param monitoringContainerInformation Information about which containers notification mechanism we should be using and which entries and containers within it we should
          *            be listening to

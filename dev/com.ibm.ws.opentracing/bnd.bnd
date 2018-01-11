@@ -21,7 +21,8 @@ Bundle-Description:Opentracing 1.0, version ${bVersion}
 WS-TraceGroup: OPENTRACING
 
 -dsannotations: com.ibm.ws.opentracing.OpentracingUserFeatureAccessService, \
-                com.ibm.ws.opentracing.OpentracingJaxRsProviderRegister
+                com.ibm.ws.opentracing.OpentracingJaxRsProviderRegister, \
+                com.ibm.ws.opentracing.OpentracingService
                 
 -includeresource: \
    @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
@@ -29,6 +30,7 @@ WS-TraceGroup: OPENTRACING
 Import-Package: *
 
 Export-Package:  com.ibm.ws.opentracing, \
+                 com.ibm.ws.opentracing.filters, \
                  com.ibm.ws.opentracing.tracer;provide=true, \
                  io.opentracing;version=0.30.0, \
                  io.opentracing.propagation;version=0.30.0, \
@@ -46,6 +48,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
         com.ibm.ws.jaxrs.2.0.common;version=latest, \
         com.ibm.wsspi.org.osgi.service.component;version=latest, \
         com.ibm.wsspi.org.osgi.core;version=latest, \
-        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+        com.ibm.websphere.org.osgi.service.cm;version=latest
 
 

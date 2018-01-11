@@ -1,0 +1,1260 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
+#COMPONENTPREFIX JSPG
+#COMPONENTNAMEFOR JSPG jsp
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+jsp.params.invalid.parent=JSPG0001E: jsp:params are un tag p\u0103rinte nevalid
+jsp.params.invalid.parent.explanation=
+jsp.params.invalid.parent.useraction=
+
+jsp.fallback.invalid.parent=JSPG0002E: jsp:fallback are un tag p\u0103rinte nevalid
+jsp.fallback.invalid.parent.explanation=
+jsp.fallback.invalid.parent.useraction=
+
+jsp.param.invalid.parent=JSPG0003E: jsp:param are un tag p\u0103rinte nevalid
+jsp.param.invalid.parent.explanation=
+jsp.param.invalid.parent.useraction=
+
+jsp.param.name.empty=JSPG0004E: atributul nume din jsp:param nu poate fi gol
+jsp.param.name.empty.explanation=
+jsp.param.name.empty.useraction=
+
+jsp.error.tld.not.found=JSPG0005E: fi\u015fierul tld nu a putut fi g\u0103sit pentru uri[{0}] prefix [{1}]
+jsp.error.tld.not.found.explanation=
+jsp.error.tld.not.found.useraction=
+
+jsp.error.missing.attribute=JSPG0006E: Tagului Custom \u00eei lipse\u015fte atributul necesar {0}
+jsp.error.missing.attribute.explanation=
+jsp.error.missing.attribute.useraction=
+
+jsp.error.bad.attribute=JSPG0007E: Tagul Custom are lips\u0103 atributul {0}
+jsp.error.bad.attribute.explanation=
+jsp.error.bad.attribute.useraction=
+
+jsp.error.invalid.attributes=JSPG0008E: Tagul Custom are atribute nevalide
+jsp.error.invalid.attributes.explanation=
+jsp.error.invalid.attributes.useraction=
+
+jsp.error.unable.loadclass=JSPG0009E: Nu poate s\u0103 \u00eencarce clasa de manipulare a tag-ului {0}
+jsp.error.unable.loadclass.explanation=
+jsp.error.unable.loadclass.useraction=
+
+jsp.root.has.no.attributes=JSPG0010E: elementul jsp:root nu are atribute
+jsp.root.has.no.attributes.explanation=
+jsp.root.has.no.attributes.useraction=
+
+jsp.error.usebean.missing.attribute=JSPG0011E: jsp:useBean are lips\u0103 un atribut id
+jsp.error.usebean.missing.attribute.explanation=
+jsp.error.usebean.missing.attribute.useraction=
+
+jsp.error.usebean.missing.type=JSPG0012E: jsp:useBean are lips\u0103 un atribut type sau un atribut class
+jsp.error.usebean.missing.type.explanation=
+jsp.error.usebean.missing.type.useraction=
+
+jsp.error.usebean.duplicate=JSPG0013E: Un bean cu id-ul {0} a fost deja definit 
+jsp.error.usebean.duplicate.explanation=
+jsp.error.usebean.duplicate.useraction=
+
+jsp.error.usebean.prohibited.as.session=JSPG0014E: atributul scope nu poate avea valoarea "session" \u00een cazul \u00een care directiva paginii de sesiune este fals\u0103
+jsp.error.usebean.prohibited.as.session.explanation=
+jsp.error.usebean.prohibited.as.session.useraction=
+
+jsp.error.usebean.not.both=JSPG0015E: jsp:useBean nu poate avea ambele atributele class \u015fi beanName (class = [{0}] beanName =[{1}]). 
+jsp.error.usebean.not.both.explanation=
+jsp.error.usebean.not.both.useraction=
+
+jsp.error.usebean.invalid.scope=JSPG0016E: valoare nevalid\u0103 pentru atribultul de domeniu. Trebuie pagin\u0103, cerere, sesiune sau aplica\u0163ie. Domeniu specificat {0}.
+jsp.error.usebean.invalid.scope.explanation=
+jsp.error.usebean.invalid.scope.useraction=
+
+jsp.error.usebean.contains.no.attributes=JSPG0017E: jsp:useBean nu con\u0163ine atribute
+jsp.error.usebean.contains.no.attributes.explanation=
+jsp.error.usebean.contains.no.attributes.useraction=
+
+jsp.error.expression.contains.no.cdata=JSPG0018E: Expresia nu con\u0163ine text
+jsp.error.expression.contains.no.cdata.explanation=
+jsp.error.expression.contains.no.cdata.useraction=
+
+jsp.error.invalid.value.for.session=JSPG0019E: Valoare nevalid\u0103 pentru directiva de sesiune
+jsp.error.invalid.value.for.session.explanation=
+jsp.error.invalid.value.for.session.useraction=
+
+jsp.error.page.invalid.buffer=JSPG0020E: Valoare nevalid\u0103 pentru directiva de buffer
+jsp.error.page.invalid.buffer.explanation=
+jsp.error.page.invalid.buffer.useraction=
+
+jsp.error.page.invalid.autoflush=JSPG0021E: Valoare nevalid\u0103 pentru directiva de autoflush
+jsp.error.page.invalid.autoflush.explanation=
+jsp.error.page.invalid.autoflush.useraction=
+
+jsp.error.page.invalid.threadsafe=JSPG0022E: Valoare nevalid\u0103 pentru directiva threadsafe
+jsp.error.page.invalid.threadsafe.explanation=
+jsp.error.page.invalid.threadsafe.useraction=
+
+jsp.error.page.invalid.iserrorpage=JSPG0023E: Valoare nevalid\u0103 pentru atributul iserrorpage
+jsp.error.page.invalid.iserrorpage.explanation=
+jsp.error.page.invalid.iserrorpage.useraction=
+
+jsp.error.page.directive.unknown=JSPG0024E: Directiv\u0103 necunoscut\u0103 {0}
+jsp.error.page.directive.unknown.explanation=
+jsp.error.page.directive.unknown.useraction=
+
+jsp.error.page.directive.contains.no.attributes=JSPG0025E: Directiva page nu con\u0163ine atribute
+jsp.error.page.directive.contains.no.attributes.explanation=
+jsp.error.page.directive.contains.no.attributes.useraction=
+
+jsp.error.scriptlet.contains.no.cdata=JSPG0026E: Scriptlet nu con\u0163ine text
+jsp.error.scriptlet.contains.no.cdata.explanation=
+jsp.error.scriptlet.contains.no.cdata.useraction=
+
+jsp.error.declaration.contains.no.cdata=JSPG0027E: Declara\u0163ia nu con\u0163ine text
+jsp.error.declaration.contains.no.cdata.explanation=
+jsp.error.declaration.contains.no.cdata.useraction=
+
+jsp.error.jsptext.contains.no.cdata=JSPG0028E: jsp:text nu con\u0163ine text
+jsp.error.jsptext.contains.no.cdata.explanation=
+jsp.error.jsptext.contains.no.cdata.useraction=
+
+jsp.error.invoke.only.in.tagfiles=JSPG0029E: ac\u0163iunea de invocare poate fi utilizat\u0103 doar \u00een fi\u015fiere tag
+jsp.error.invoke.only.in.tagfiles.explanation=
+jsp.error.invoke.only.in.tagfiles.useraction=
+
+jsp.error.dobody.only.in.tagfiles=JSPG0030E: ac\u0163iunea doBody poate fi utilizat\u0103 doar \u00een fi\u015fiere tag
+jsp.error.dobody.only.in.tagfiles.explanation=
+jsp.error.dobody.only.in.tagfiles.useraction=
+
+jsp.error.tag.directive.only.in.tagfiles=JSPG0031E: directiva tag poate fi utilizat\u0103 doar \u00een fi\u015fiere tag
+jsp.error.tag.directive.only.in.tagfiles.explanation=
+jsp.error.tag.directive.only.in.tagfiles.useraction=
+
+jsp.error.attribute.directive.only.in.tagfiles=JSPG0032E: directiva attribute poate fi utilizat\u0103 doar \u00een fi\u015fiere tag
+jsp.error.attribute.directive.only.in.tagfiles.explanation=
+jsp.error.attribute.directive.only.in.tagfiles.useraction=
+
+jsp.error.variable.directive.only.in.tagfiles=JSPG0033E: directiva variable poate fi utilizat\u0103 doar \u00een fi\u015fiere tag
+jsp.error.variable.directive.only.in.tagfiles.explanation=
+jsp.error.variable.directive.only.in.tagfiles.useraction=
+
+jsp.error.internal.dtd.not.found=JSPG0034E: xml dtd sau schema nu au fost g\u0103site
+jsp.error.internal.dtd.not.found.explanation=
+jsp.error.internal.dtd.not.found.useraction=
+
+jsp.error.page.encoding.mismatch=JSPG0035E: codarea paginii \u00een configura\u0163ia jsp nu se potrive\u015fte cu una din jsp
+jsp.error.page.encoding.mismatch.explanation=
+jsp.error.page.encoding.mismatch.useraction=
+
+jsp.error.failed.to.find.resource=JSPG0036E: Nu a reu\u015fit s\u0103 g\u0103seasc\u0103 resursa {0}
+jsp.error.failed.to.find.resource.explanation=
+jsp.error.failed.to.find.resource.useraction=
+
+jsp.error.page.invalid.iselignored=JSPG0037E: Valoare nevalid\u0103 pentru atributul isELIgnored
+jsp.error.page.invalid.iselignored.explanation=
+jsp.error.page.invalid.iselignored.useraction=
+
+jsp.error.page.invalid.dynamicattributes= JSPG0038E: Valoare nevalid\u0103 pentru directiva dynamicAttributes
+jsp.error.page.invalid.dynamicattributes.explanation=
+jsp.error.page.invalid.dynamicattributes.useraction=
+
+jsp.error.page.directive.only.in.jsps=JSPG0039E: directiva page poate fi utilizat\u0103 doar \u00een fi\u015fiere pagin\u0103
+jsp.error.page.directive.only.in.jsps.explanation=
+jsp.error.page.directive.only.in.jsps.useraction=
+
+jsp.error.static.include.circular.dependency=JSPG0040E: {0} a fost deja inclus static
+jsp.error.static.include.circular.dependency.explanation=
+jsp.error.static.include.circular.dependency.useraction=
+
+jsp.error.tld.fn.invalid.signature.classnotfound=JSPG0041E: Clasa expresiei func\u0163iei de limb\u0103 nu a fost g\u0103sit\u0103. {0} {1} {2}
+jsp.error.tld.fn.invalid.signature.classnotfound.explanation=
+jsp.error.tld.fn.invalid.signature.classnotfound.useraction=
+
+jsp.error.tld.fn.invalid.signature.parenexpected=JSPG0042E: Sunt a\u015fteptate paranteze pentru expresia func\u0163iei de limb\u0103 {0} {1}
+jsp.error.tld.fn.invalid.signature.parenexpected.explanation=
+jsp.error.tld.fn.invalid.signature.parenexpected.useraction=
+
+jsp.error.tld.fn.invalid.signature=JSPG0043E: Semn\u0103tur\u0103 nevalid\u0103 pentru expresia func\u0163iei de limb\u0103 {0} {1}
+jsp.error.tld.fn.invalid.signature.explanation=
+jsp.error.tld.fn.invalid.signature.useraction=
+
+jsp.error.tld.fn.invalid.signature.commaexpected=JSPG0044E: Este a\u015fteptat\u0103 o virgul\u0103 pentru expresia func\u0163iei de limb\u0103 {0} {1}
+jsp.error.tld.fn.invalid.signature.commaexpected.explanation=
+jsp.error.tld.fn.invalid.signature.commaexpected.useraction=
+
+jsp.error.introspect.taghandler=JSPG0045E: Eroare \u00een timp ce se primeau informa\u0163ii despre bean pentru {0}
+jsp.error.introspect.taghandler.explanation=
+jsp.error.introspect.taghandler.useraction=
+
+jsp.error.tagfile.not.found=JSPG0046E: Nu poate s\u0103 localizeze fi\u015fierul tag pentru tagul {0} 
+jsp.error.tagfile.not.found.explanation=
+jsp.error.tagfile.not.found.useraction=
+
+jsp.error.taglib.not.found=JSPG0047E: Nu poate s\u0103 localizeze libr\u0103ria tag pentru uri-ul {0} 
+jsp.error.taglib.not.found.explanation=
+jsp.error.taglib.not.found.useraction=
+
+jsp.error.tlv.invalid.page=JSPG0048E: Pagina a e\u015fuat la validare folosind validatorul taglib pentru {0} : {1}
+jsp.error.tlv.invalid.page.explanation=
+jsp.error.tlv.invalid.page.useraction=
+
+jsp.error.compile.failed=JSPG0049E: {0} a e\u015fuat s\u0103 compileze: {1}
+jsp.error.compile.failed.explanation=
+jsp.error.compile.failed.useraction=
+
+jsp.error.tld.not.found.at.location=JSPG0050E: fi\u015fierul tld nu a putut fi g\u0103sit la loca\u0163ia {0}
+jsp.error.tld.not.found.at.location.explanation=
+jsp.error.tld.not.found.at.location.useraction=
+
+jsp.error.page.directive.dup.value=JSPG0051E: Valoare duplicat\u0103 pentru directiva paginii : {0}
+jsp.error.page.directive.dup.value.explanation=
+jsp.error.page.directive.dup.value.useraction=
+
+jsp.error.tag.directive.dup.value=JSPG0052E: Valoare duplicat\u0103 pentru directiva Tag : {0}
+jsp.error.tag.directive.dup.value.explanation=
+jsp.error.tag.directive.dup.value.useraction=
+
+jsp.error.xml.no.prelude=JSPG0053E: Includeri de introduceri nu sunt permise \u00een documentele Jsp
+jsp.error.xml.no.prelude.explanation=
+jsp.error.xml.no.prelude.useraction=
+
+jsp.error.xml.no.coda=JSPG0054E: Includeri de coduri nu sunt permise \u00een documentele Jsp
+jsp.error.xml.no.coda.explanation=
+jsp.error.xml.no.coda.useraction=
+
+jsp.error.unable.to.create.xml.attr=JSPG0055E: Nu poate s\u0103 creeze un atribut xml de la numele [{0}] valoare [{1}]
+jsp.error.unable.to.create.xml.attr.explanation=
+jsp.error.unable.to.create.xml.attr.useraction=
+
+jsp.error.unable.to.create.xml.element=JSPG0056E: u poate s\u0103 creeze un atribut xml de la numele de spa\u0163iu [{0}] nume [{1}]
+jsp.error.unable.to.create.xml.element.explanation=
+jsp.error.unable.to.create.xml.element.useraction=
+
+jsp.jspmodc.usage=JSPG0057I: JspModC -appDir <cale> -tmpDir <cale> -forceTranslation <true/false> -additionalClasspath <cale de clas\u0103> -jspFile <jspFile>
+jsp.jspmodc.usage.explanation=
+jsp.jspmodc.usage.useraction=
+
+jsp.engine.info=JSPG0058I: IBM JSP 2.1 Engine
+jsp.engine.info.explanation=
+jsp.engine.info.useraction=
+
+jsp.error.invalid.jsp.syntax=JSPG0060E: Sintax\u0103 jsp nevalid\u0103 [{0}]
+jsp.error.invalid.jsp.syntax.explanation=
+jsp.error.invalid.jsp.syntax.useraction=
+
+jsp.error.unknown.attribute=JSPG0061E: Atributul {0} este de nerecunoscut pentru elementul JSP {1}
+jsp.error.unknown.attribute.explanation=
+jsp.error.unknown.attribute.useraction=
+
+jsp.error.unknown.runtime.attribute=JSPG0062E: Atributul Request-time {0} este de nerecunoscut pentru elementul JSP {1}
+jsp.error.unknown.runtime.attribute.explanation=
+jsp.error.unknown.runtime.attribute.useraction=
+
+jsp.error.invalid.value.for.language=JSPG0063E: Valoare nevalid\u0103 pentru directiva language {0}
+jsp.error.invalid.value.for.language.explanation=
+jsp.error.invalid.value.for.language.useraction=
+
+# keep this around so at least NLS is done if this is added at a later time.
+jsp.error.invalid.value.for.buffer=JSPG0064E: Valoare nevalabil\u0103 pentru valorile valide ale directivei buffer. Dac\u0103 valoarea este alta dec\u00e2t nimic, este necesar sufixul kb
+jsp.error.invalid.value.for.buffer.explanation=
+jsp.error.invalid.value.for.buffer.useraction=
+
+
+jsp.error.validating.el.nesting.el.not.allowed=JSPG0065E: Utilizare ilegal\u0103 a tagului EL. Imbricarea tag-urilor EL nu este permis\u0103
+jsp.error.validating.el.nesting.el.not.allowed.explanation=
+jsp.error.validating.el.nesting.el.not.allowed.useraction=
+
+
+failed.to.parse.el.expression=JSPG0066E: Parsarea tagului Expression Language {0} a e\u015fuat
+failed.to.parse.el.expression.explanation=
+failed.to.parse.el.expression.useraction=
+
+
+el.expression.not.allowed.for.attribute=JSPG0067E: Utilizare ilegal\u0103 a tagului EL.  Valoarea "{2}" nu este permis\u0103 pentru atributul "{1}" pentru elementul jsp {0}
+el.expression.not.allowed.for.attribute.explanation=
+el.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.unmatched.tag=JSPG0068E: A fost g\u0103sit un tag nepotrivit \u00een timpul pars\u0103rii jsp [{0}]
+jsp.error.unmatched.tag.explanation=
+jsp.error.unmatched.tag.useraction=
+
+jsp.error.unmatched.end.tag=JSPG0069E: A fost g\u0103sit un tag de terminare nepotrivit \u00een timpul pars\u0103rii jsp. {0} a\u015fteptat a g\u0103sit {1} la {2}
+jsp.error.unmatched.end.tag.explanation=
+jsp.error.unmatched.end.tag.useraction=
+
+jsp.error.dup.url.pattern=JSPG0070E: A fost g\u0103sit un model duplicat pentru url-ul [{0}] \u00een Configura\u0163ia aplica\u0163iei Web Jsp
+jsp.error.dup.url.pattern.explanation=
+jsp.error.dup.url.pattern.useraction=
+
+jsp.error.tld.load.failed=JSPG0071E: A e\u015fuat \u00eenc\u0103rcarea tld din webinf, resursa {0} msg: {1}
+jsp.error.tld.load.failed.explanation=
+jsp.error.tld.load.failed.useraction=
+
+jsp.error.tld.load.failed.from.jar=JSPG0072E: A e\u015fuat \u00eenc\u0103rcarea tld din jar {0}, resursa {1} msg: {2}
+jsp.error.tld.load.failed.from.jar.explanation=
+jsp.error.tld.load.failed.from.jar.useraction=
+
+jsp.error.usebean.class.must.be.assignable.to.type=JSPG0073E: clasei useBean "{0}" trebuie s\u0103 i se poat\u0103 atribui tipul "{1}" pentru elementul jsp {2} 
+jsp.error.usebean.class.must.be.assignable.to.type.explanation=
+jsp.error.usebean.class.must.be.assignable.to.type.useraction=
+
+jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: Nu poate localiza clasa pentru a determina dac\u0103 clasei useBean "{0}" i se poate atribui tipul "{1}" pentru elementul jsp {2}
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+
+jsp.error.multiple.attribute.definitions=JSPG0075E: Apari\u0163iile multiple ale atributului {0} nu sunt permise pentru elementul jsp {1}
+jsp.error.multiple.attribute.definitions.explanation=
+jsp.error.multiple.attribute.definitions.useraction=
+
+jsp.error.missing.required.attribute=JSPG0076E: Lipse\u015fte atributul necesar {0} pentru elementul JSP {1} 
+jsp.error.missing.required.attribute.explanation=
+jsp.error.missing.required.attribute.useraction=
+
+jsp.error.end.of.file.reached=JSPG0077E: Sf\u00e2r\u015fitul de fi\u015fier a fost ajuns \u00een timp ce se procesa {0} la {1}
+jsp.error.end.of.file.reached.explanation=
+jsp.error.end.of.file.reached.useraction=
+
+
+jsp.body-content.directive.value.invalid=JSPG0078E: Valoare nevalid\u0103 pentru directiva tag, atribut body-content.  Valoarea {0}
+jsp.body-content.directive.value.invalid.explanation=
+jsp.body-content.directive.value.invalid.useraction=
+
+multiple.occurences.attribute.tagfile.name=JSPG0079E:  Apari\u0163iile multiple ale numelui atributului sau aliasului sau numelui-dat "{2}" nu sunt permise. "{2}" specificat \u00een elemente jsp "{0}" \u015fi "{1}"
+multiple.occurences.attribute.tagfile.name.explanation=
+multiple.occurences.attribute.tagfile.name.useraction=
+
+variable.attribute.nameGiven.nameFromAttribute.not.both=JSPG0080E:  Directiva variabil\u0103 a fi\u015fierului tag nu poate avea ambele atribute name-given \u015fi name-from-attribute (name-given=[{1}] name-from-attribute=[{2}]) \u00een elementul jsp {0}. 
+variable.attribute.nameGiven.nameFromAttribute.not.both.explanation=
+variable.attribute.nameGiven.nameFromAttribute.not.both.useraction=
+
+missing.required.variable.attribute.nameGiven.nameFromAttribute=JSPG0081E:  Directiva variabil\u0103 a fi\u015fierului tag necesot\u0103 fie un atribut name-given, fie un atribut name-from-attribute pentru elementul jsp {0}. 
+missing.required.variable.attribute.nameGiven.nameFromAttribute.explanation=
+missing.required.variable.attribute.nameGiven.nameFromAttribute.useraction=
+
+invalid.value.for.variable.directive.attribute.scope=JSPG0082E:  Valoare nevalid\u0103 pentru domeniul atributului din directiva variabil\u0103 "{1}" a elementului jsp {0}. 
+invalid.value.for.variable.directive.attribute.scope.explanation=
+invalid.value.for.variable.directive.attribute.scope.useraction=
+
+required.attribute.alias.required.if.nameFromAttribute.specified=JSPG0083E: Lipse\u015fte aliasul atributului necesar c\u00e2nd name-from-attribute "{1}" a specificat elementul jsp {0}
+required.attribute.alias.required.if.nameFromAttribute.specified.explanation=
+required.attribute.alias.required.if.nameFromAttribute.specified.useraction=
+
+attribute.alias.not.permitted.if.namegiven.specified=JSPG0084E: Aliasul atributului "{2}" nu este permis dac\u0103 name-given "{1}" este specificat. elementul jsp {0}
+attribute.alias.not.permitted.if.namegiven.specified.explanation=
+attribute.alias.not.permitted.if.namegiven.specified.useraction=
+
+jsp.error.loadclass.taghandler.attr=JSPG0085E: Eroare \u00een timp ce se \u00eenc\u0103rca clasa specifivat\u0103 pentru atributul tag pentru {0}
+jsp.error.loadclass.taghandler.attr.explanation=
+jsp.error.loadclass.taghandler.attr.useraction=
+
+jsp.error.include.type.invalid=JSPG0086E: {0} inclus static trebuie s\u0103 fie de acela\u015fi tip ca JSP-ul inclus. 
+jsp.error.include.type.invalid.explanation=
+jsp.error.include.type.invalid.useraction=
+
+jsp.error.encoding.mismatch.config.xml=JSPG0087E: A fost g\u0103sit\u0103 o nepotrivire \u00eentre codarea configur\u0103rii jsp {0} \u015fi codarea prologului xml {1}
+jsp.error.encoding.mismatch.config.xml.explanation=
+jsp.error.encoding.mismatch.config.xml.useraction=
+
+jsp.error.encoding.mismatch.config.pageencoding=JSPG0088E: A fost g\u0103sit\u0103 o nepotrivire \u00eentre codarea configur\u0103rii jsp {0} \u015fi codarea directivei de pagin\u0103 {1}
+jsp.error.encoding.mismatch.config.pageencoding.explanation=
+jsp.error.encoding.mismatch.config.pageencoding.useraction=
+
+jsp.error.encoding.mismatch.pageencoding.xml=JSPG0089E: A fost g\u0103sit\u0103 o nepotrivire \u00eentre odarea directivei de pagin\u0103 {0} \u015fi codarea prologului xml {1}
+jsp.error.encoding.mismatch.pageencoding.xml.explanation=
+jsp.error.encoding.mismatch.pageencoding.xml.useraction=
+
+jsp.error.encoding.already.supplied=JSPG0090E: Eroarea pageEncoding a fost deja furnizat\u0103 pentru acest JSP
+jsp.error.encoding.already.supplied.explanation=
+jsp.error.encoding.already.supplied.useraction=
+
+jsp.error.single.line.number=JSPG0091E: A ap\u0103rut o eroare la linia: {0} \u00een fi\u015fierul: {1}
+jsp.error.single.line.number.explanation=
+jsp.error.single.line.number.useraction=
+
+jsp.error.multiple.line.number=JSPG0092E: O eroare a avut loc \u00eentre liniile: {0} \u015fi {1} \u00een fi\u015fierul: {2}
+jsp.error.multiple.line.number.explanation=
+jsp.error.multiple.line.number.useraction=
+
+jsp.error.corresponding.servlet=JSPG0093E: Eroare de servlet generat\u0103 din fi\u015fierul: {0} 
+jsp.error.corresponding.servlet.explanation=
+jsp.error.corresponding.servlet.useraction=
+
+jsp.error.el.function.prefix.not.found=JSPG0094E: Nu poate s\u0103 localizeze prefixul pentru func\u0163ia el {0}
+jsp.error.el.function.prefix.not.found.explanation=
+jsp.error.el.function.prefix.not.found.useraction=
+
+jsp.error.el.function.not.found=JSPG0095E: Nu poate s\u0103 localizeze func\u0163ia el {0} \u00een tld cu uri {1}
+jsp.error.el.function.not.found.explanation=
+jsp.error.el.function.not.found.useraction=
+
+jsp.error.function.classnotfound=JSPG0096E: A e\u015fuat s\u0103 \u00eencarce {0}
+jsp.error.function.classnotfound.explanation=
+jsp.error.function.classnotfound.useraction=
+
+jsp.error.noFunctionMethod=JSPG0097E: A e\u015fuat s\u0103 \u00eencarce metoda func\u0163iei el {0}
+jsp.error.noFunctionMethod.explanation=
+jsp.error.noFunctionMethod.useraction=
+
+jsp.error.output.has.body=JSPG0098E: tagul jsp:output nu poate avea un corp
+jsp.error.output.has.body.explanation=
+jsp.error.output.has.body.useraction=
+
+jsp.error.root.invalid.version=JSPG0099E: atributul versiune din jsp:root este nevalid : {0}
+jsp.error.root.invalid.version.explanation=
+jsp.error.root.invalid.version.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name=JSPG0100E: Numele h\u0103r\u0163ii cu atribute dinamice este acela\u015fi cu cel din atributul nume al directivei variabile a tag-ului 
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_attr_name.useraction=
+
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given=JSPG0101E: Numele h\u0103r\u0163ii cu atribute dinamice este acela\u015fi cu cel din atributul cu nume dat al directivei variabile a tag-ului 
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.explanation=
+jsp.error.tagfile.tag_dynamic_attrs_equals_var_name_given.useraction=
+
+jsp.error.jsptext.has.child.elements=JSPG0102E: jsp:text nu poate avea elemente copil
+jsp.error.jsptext.has.child.elements.explanation=
+jsp.error.jsptext.has.child.elements.useraction=
+
+
+jsp.error.jspbody.emptybody.only=JSPG0105E: Tagul {0} poate avea doar elementul jsp:attribute \u00een corpul s\u0103u.  G\u0103sit: {1}
+jsp.error.jspbody.emptybody.only.explanation=
+jsp.error.jspbody.emptybody.only.useraction=
+
+jsp.error.jspoutput.xml.only=JSPG0106E: Elementul jsp:output poate fi folosit doar \u00een documentele JSP \u015fi \u00een fi\u015fierele tag \u00een sintaxa XML.
+jsp.error.jspoutput.xml.only.explanation=
+jsp.error.jspoutput.xml.only.useraction=
+
+jsp.error.attribute.fragment.cannot.be.scriplet=JSPG0107E: Elementul jsp:attribute cu valoarea de tipul JspFragment nu poate con\u0163ine scriptlete {0}.
+jsp.error.attribute.fragment.cannot.be.scriplet.explanation=
+jsp.error.attribute.fragment.cannot.be.scriplet.useraction=
+
+jsp.error.illegal.fragment.and.rtexprvalue=JSPG0108E: Este illegal\u0103 specificarea rtexprvalue pentru atributul de tip fragment. rtexprvalue: {0}
+jsp.error.illegal.fragment.and.rtexprvalue.explanation=
+jsp.error.illegal.fragment.and.rtexprvalue.useraction=
+
+jsp.error.illegal.fragment.and.type=JSPG0109E: Este illegal\u0103 specificarea tipului pentru atributul de tip fragment. tip: {0}
+jsp.error.illegal.fragment.and.type.explanation=
+jsp.error.illegal.fragment.and.type.useraction=
+
+jsp.error.illegal.type.primitive=JSPG0110E: Este illegal\u0103 specificarea tipului ca \u015fi clas\u0103 primitiv\u0103 pentru atributul tag-ului de fi\u015fier. primitiv {0}
+jsp.error.illegal.type.primitive.explanation=
+jsp.error.illegal.type.primitive.useraction=
+
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive=JSPG0111E: Nu poate s\u0103 verifice dac\u0103 tipul atributului din tag-ul fi\u015fierului {0} nu este o clas\u0103 primitiv\u0103.
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.explanation=
+jsp.error.tagfile.cannot.locate.class.to.validate.primitive.useraction=
+
+jsp.error.scripting.disabled.for.translation.unit=JSPG0112E: Scripting-ul \u00een expresiile de runtime sunt dezactivate pentru aceast\u0103 unitate de traducere. 
+jsp.error.scripting.disabled.for.translation.unit.explanation=
+jsp.error.scripting.disabled.for.translation.unit.useraction=
+
+jsp.error.scriptlets.disabled.for.translation.unit=JSPG0113E: Scriptletele sunt dezactivate pentru aceast\u0103 unitate de traducere. 
+jsp.error.scriptlets.disabled.for.translation.unit.explanation=
+jsp.error.scriptlets.disabled.for.translation.unit.useraction=
+
+jsp.error.declarations.disabled.for.translation.unit=JSPG0114E: Declara\u0163iile sunt dezactivate pentru aceast\u0103 unitate de traducere. 
+jsp.error.declarations.disabled.for.translation.unit.explanation=
+jsp.error.declarations.disabled.for.translation.unit.useraction=
+
+jsp.error.expressions.disabled.for.translation.unit=JSPG0115E: Expresiile sunt dezactivate pentru aceast\u0103 unitate de traducere. 
+jsp.error.expressions.disabled.for.translation.unit.explanation=
+jsp.error.expressions.disabled.for.translation.unit.useraction=
+
+jsp.error.multiple.occurrences.directive=JSPG0116E: Este illegal\u0103 specificarea directivei paginii {0} mai mult dec\u00e2t o dat\u0103, dac\u0103 acestea au valori diferite.  primul: {1} al doilea: {2}
+jsp.error.multiple.occurrences.directive.explanation=
+jsp.error.multiple.occurrences.directive.useraction=
+
+jsp.error.invalid.taglib.directive.tagdir.uri=JSPG0117E: Este illegal\u0103 specificarea uri-ului \u00een conjunc\u0163ie cu tagdir \u00een directiva taglib. uri: "[{0}]" tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.tagdir.uri.explanation=
+jsp.error.invalid.taglib.directive.tagdir.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.uri=JSPG0118E: Este illegal\u0103 specificarea mai multor uri \u00een directiva taglib. uri: "[{0}]" uri: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.uri.explanation=
+jsp.error.invalid.taglib.directive.duplicate.uri.useraction=
+
+jsp.error.invalid.taglib.directive.duplicate.tagdir=JSPG0119E: Este illegal\u0103 specificarea mai multor tagdir-uri \u00een directiva taglib. tagdir: "[{0}]" tagdir: "[{1}]"
+jsp.error.invalid.taglib.directive.duplicate.tagdir.explanation=
+jsp.error.invalid.taglib.directive.duplicate.tagdir.useraction=
+
+jsp.error.page.pageencoding.mismatch=JSPG0120E: Este illegal\u0103 specificarea de valori diferite pentru atributul pageEncoding \u015fi pentru elementul deconfigurare pentru potrivirea modelului URI. directiv\u0103: "[{0}]" configura\u0163ie: "[{1}]"
+jsp.error.page.pageencoding.mismatch.explanation=
+jsp.error.page.pageencoding.mismatch.useraction=
+
+jsp.error.jsp.attribute.defined.value.jsp.attribute=JSPG0121E: Este illegal\u0103 utilizarea <jsp:attribute> pentru a defini valoarea unui atribut al <jsp:attribute>
+jsp.error.jsp.attribute.defined.value.jsp.attribute.explanation=
+jsp.error.jsp.attribute.defined.value.jsp.attribute.useraction=
+
+jsp.error.el.function.cannot.parse=JSPG0122E: Nu poate s\u0103 parseze func\u0163ia EL {0}.
+jsp.error.el.function.cannot.parse.explanation=
+jsp.error.el.function.cannot.parse.useraction=
+
+jsp.error.unable.locate.tagname=JSPG0123E: Nu poate s\u0103 localizeze informa\u0163iile atributului tag pentru {0}.
+jsp.error.unable.locate.tagname.explanation=
+jsp.error.unable.locate.tagname.useraction=
+
+# jsp2.1ELwork
+jsp.error.attribute.cannot.be.request.time=JSPG0124E: Conform cu TLD sau directiva atributului din fi\u015fierul tag, atributul "[{0}]" nu accept\u0103 nici oexpresie. Valoarea expresiei este: "[{1}]".
+jsp.error.attribute.cannot.be.request.time.explanation=
+jsp.error.attribute.cannot.be.request.time.useraction=
+
+jsp.error.attribute.cannot.be.request.time.fragment=JSPG0125E: Atributul tag personalizat {0} nu poate fi fragmentat la runtime.
+jsp.error.attribute.cannot.be.request.time.fragment.explanation=
+jsp.error.attribute.cannot.be.request.time.fragment.useraction=
+
+jsp.error.page.pageencoding.dup=JSPG0126E: jsp-ul {0} nu poate con\u0163ine mai mult de o directiv\u0103 pageEncoding
+jsp.error.page.pageencoding.dup.explanation=
+jsp.error.page.pageencoding.dup.useraction=
+
+jsp.error.multiple.occurrences.tag.directive=JSPG0127E: Este illegal\u0103 specificarea directivei tag {0} de mai multe ori.  primul: {1} al doilea: {2}
+jsp.error.multiple.occurrences.tag.directive.explanation=
+jsp.error.multiple.occurrences.tag.directive.useraction=
+
+jsp.error.translation.failed=JSPG0128E: Nu poate s\u0103 traduc\u0103 JSP-ul {0}.
+jsp.error.translation.failed.explanation=
+jsp.error.translation.failed.useraction=
+
+jsp.error.jsp.servlet.init.failed=JSPG0129E: JspServlet a e\u015fuat la ini\u0163ializare
+jsp.error.jsp.servlet.init.failed.explanation=
+jsp.error.jsp.servlet.init.failed.useraction=
+
+jsp.error.include.flush.invalid.value=JSPG0130E: Valoare nevalid\u0103 pentru atributul flush:  {0}
+jsp.error.include.flush.invalid.value.explanation=
+jsp.error.include.flush.invalid.value.useraction=
+
+jsp.error.non_null_tei_and_var_subelems=JSPG0131E: A fost g\u0103sit\u0103 eroare tei non-null \u015fi subelemente variabile
+jsp.error.non_null_tei_and_var_subelems.explanation=
+jsp.error.non_null_tei_and_var_subelems.useraction=
+
+jsp.error.tei.invalid.attributes=JSPG0132E: Atribute nevalide g\u0103site pentru {0} {1}. Eroarea este {2}
+jsp.error.tei.invalid.attributes.explanation=
+jsp.error.tei.invalid.attributes.useraction=
+
+jsp.error.jsp.attribute.invalid.parent=JSPG0133E: P\u0103rintele elementului jsp:attribute trebuie s\u0103 fie o ac\u0163iune standard sau personalizat\u0103
+jsp.error.jsp.attribute.invalid.parent.explanation=
+jsp.error.jsp.attribute.invalid.parent.useraction=
+
+jsp.error.jsp.body.invalid.parent=JSPG0134E: P\u0103rintele elementului jsp:body este nevalid
+jsp.error.jsp.body.invalid.parent.explanation=
+jsp.error.jsp.body.invalid.parent.useraction=
+
+jsp.error.jsp.body.parent.nobody=JSPG0135E: P\u0103rintele elementului jsp:body este un tag personalizat care a precizat c\u0103 nu are un corp \u00een tld-ul s\u0103u
+jsp.error.jsp.body.parent.nobody.explanation=
+jsp.error.jsp.body.parent.nobody.useraction=
+
+jsp.error.tagfile.invoke.var_varreader=JSPG0136E: jsp:invoke nu pot avea setat at\u00e2t var, c\u00e2t \u015fi varReader
+jsp.error.tagfile.invoke.var_varreader.explanation=
+jsp.error.tagfile.invoke.var_varreader.useraction=
+
+jsp.error.tagfile.dobody.var_varreader=JSPG0137E: jsp:doBody nu pot avea setat at\u00e2t var, c\u00e2t \u015fi varReader
+jsp.error.tagfile.dobody.var_varreader.explanation=
+jsp.error.tagfile.dobody.var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_var_varreader=JSPG0138E: jsp:invoke trebuie s\u0103 aib\u0103 setat fie var, fie varReader atunci c\u00e2nd este setat domeniul
+jsp.error.tagfile.invoke.scope_var_varreader.explanation=
+jsp.error.tagfile.invoke.scope_var_varreader.useraction=
+
+jsp.error.tagfile.dobody.scope_var_varreader=JSPG0139E: jsp:doBody trebuie s\u0103 aib\u0103 setat fie var, fie varReader atunci c\u00e2nd este setat domeniul
+jsp.error.tagfile.dobody.scope_var_varreader.explanation=
+jsp.error.tagfile.dobody.scope_var_varreader.useraction=
+
+jsp.error.tagfile.invoke.scope_invalid=JSPG0140E: jsp:invoke valoarea domeniului este nevalid\u0103
+jsp.error.tagfile.invoke.scope_invalid.explanation=
+jsp.error.tagfile.invoke.scope_invalid.useraction=
+
+jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: jsp:doBody valoarea domeniului este nevalid\u0103 
+jsp.error.tagfile.dobody.scope_invalid.explanation=
+jsp.error.tagfile.dobody.scope_invalid.useraction=
+
+rt.expression.not.allowed.for.attribute=JSPG0142E: Valoarea expresiei runtime "{2}" nu este permis\u0103 pentru atributul "{1}" pentru elementul jsp {0}
+rt.expression.not.allowed.for.attribute.explanation=
+rt.expression.not.allowed.for.attribute.useraction=
+
+jsp.error.jsp.attribute.prefix.mismatch=JSPG0143E: Atributul name din jsp:attribute are prefix diferit pentru p\u0103rintele: {0} nu este egal cu {1}
+jsp.error.jsp.attribute.prefix.mismatch.explanation=
+jsp.error.jsp.attribute.prefix.mismatch.useraction=
+
+jsp.error.plugin.invalid.type=JSPG0144E: Valoare nevalid\u0103 pentru atributul "type" din plug-in: {0}
+jsp.error.plugin.invalid.type.explanation=
+jsp.error.plugin.invalid.type.useraction=
+
+jsp.error.element.unknown=JSPG0145E: Element JSP necunoscut : {0}
+jsp.error.element.unknown.explanation=
+jsp.error.element.unknown.useraction=
+
+jsp.error.include.directive.attribute.invalid=JSPG0146E: Atribut nevalid pentru directiva de includere : {0}
+jsp.error.include.directive.attribute.invalid.explanation=
+jsp.error.include.directive.attribute.invalid.useraction=
+
+jsp.error.static.include.value.missing=JSPG0147E: Lipse\u015fte atributul "file" necesar pentru includerea directivei.
+jsp.error.static.include.value.missing.explanation=
+jsp.error.static.include.value.missing.useraction=
+
+jsp.batchcompilerbase.jspfile.does.not.exist=JSPG0148E: Fi\u015fierul JSP nu exist\u0103: {0}
+jsp.batchcompilerbase.jspfile.does.not.exist.explanation=
+jsp.batchcompilerbase.jspfile.does.not.exist.useraction=
+
+jsp.batchcompilerbase.docroot.not.found=JSPG0149E: Directorul vizat nu exist\u0103: {0}
+jsp.batchcompilerbase.docroot.not.found.explanation=
+jsp.batchcompilerbase.docroot.not.found.useraction=
+
+jsp.batchcompilerbase.docroot.not.directory=JSPG0150E: Numele directorului vizat nu este un director: {0}
+jsp.batchcompilerbase.docroot.not.directory.explanation=
+jsp.batchcompilerbase.docroot.not.directory.useraction=
+
+jsp.batchcompilerbase.return.code=JSPG0151I: Cod retur: {0}
+jsp.batchcompilerbase.return.code.explanation=
+jsp.batchcompilerbase.return.code.useraction=
+
+jsp.batchcompilerbase.unable.to.create.classloader=JSPG0152E: Nu poate s\u0103 creeze classloader.
+jsp.batchcompilerbase.unable.to.create.classloader.explanation=
+jsp.batchcompilerbase.unable.to.create.classloader.useraction=
+
+jsp.batchcompiler.initializing.server=JSPG0153I: Ini\u0163ializare server...
+jsp.batchcompiler.initializing.server.explanation=
+jsp.batchcompiler.initializing.server.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments=JSPG0154E: Excep\u0163ie prins\u0103 \u00een timpul proces\u0103rii argumentelor din linia de comand\u0103.
+jsp.batchcompiler.exception.while.processing.arguments.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.useraction=
+
+jsp.batchcompiler.unknown.argument=JSPG0155E: Argumente necunoscute \u00een linia de comand\u0103: {0}
+jsp.batchcompiler.unknown.argument.explanation=
+jsp.batchcompiler.unknown.argument.useraction=
+
+jsp.batchcompiler.using.default.log.level=JSPG0156W: Nivel de \u00eenregistrare \u00een istoric necunoscut {0}, folosire valoare implicit\u0103 {1}
+jsp.batchcompiler.using.default.log.level.explanation=
+jsp.batchcompiler.using.default.log.level.useraction=
+
+jsp.batchcompiler.using.default.cell.name=JSPG0157I: Numele celulei nu este furnizat; folosire valoare implicit\u0103: {0}
+jsp.batchcompiler.using.default.cell.name.explanation=
+jsp.batchcompiler.using.default.cell.name.useraction=
+
+jsp.batchcompiler.using.default.node.name=JSPG0158I: Numele nodului nu este furnizat; folosire valoare implicit\u0103: {0}
+jsp.batchcompiler.using.default.node.name.explanation=
+jsp.batchcompiler.using.default.node.name.useraction=
+
+jsp.batchcompiler.using.default.server.name=JSPG0159I: Numele server-lui nu este furnizat; folosire valoare implicit\u0103: {0}
+jsp.batchcompiler.using.default.server.name.explanation=
+jsp.batchcompiler.using.default.server.name.useraction=
+
+jsp.batchcompiler.compiling.all.webmodules=JSPG0160I: Compilarea tuturor webmodules
+jsp.batchcompiler.compiling.all.webmodules.explanation=
+jsp.batchcompiler.compiling.all.webmodules.useraction=
+
+jsp.batchcompiler.unable.to.initialize.server=JSPG0161E: Nu poate s\u0103 ini\u0163ializeze server-ul.
+jsp.batchcompiler.unable.to.initialize.server.explanation=
+jsp.batchcompiler.unable.to.initialize.server.useraction=
+
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service=JSPG0162E: Excep\u0163ie prins\u0103 \u00een timpul ad\u0103ug\u0103rii serviciului ComponentManager.
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.explanation=
+jsp.batchcompiler.exception.caught.while.adding.componentmanager.service.useraction=
+
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service=JSPG0163E: Excep\u0163ie prins\u0103 \u00een timpul ini\u0163ializ\u0103rii serviciului de compilare batch.
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.explanation=
+jsp.batchcompiler.exception.caught.while.initializing.batchcompiler.service.useraction=
+
+jsp.batchcompiler.repository.not.available=JSPG0164E: Serviciul de arhivare nu este disponibil.
+jsp.batchcompiler.repository.not.available.explanation=
+jsp.batchcompiler.repository.not.available.useraction=
+
+jsp.batchcompiler.reading.configfile=JSPG0165I: Citirea fi\u015fierului config... \n
+jsp.batchcompiler.reading.configfile.explanation=
+jsp.batchcompiler.reading.configfile.useraction=
+
+jsp.batchcompiler.enterpriseapp.not.found=JSPG0166E: Aplica\u0163ia de \u00eentreprindere nu este g\u0103sit\u0103: {0}
+jsp.batchcompiler.enterpriseapp.not.found.explanation=
+jsp.batchcompiler.enterpriseapp.not.found.useraction=
+
+jsp.batchcompiler.finished.reading.configfile=JSPG0167I: A terminat citirea fi\u015fierului de configurare.
+jsp.batchcompiler.finished.reading.configfile.explanation=
+jsp.batchcompiler.finished.reading.configfile.useraction=
+
+jsp.batchcompiler.successfully.exiting=JSPG0168I: Batch Compiler a ie\u015fit cu succes f\u0103r\u0103 erori.
+jsp.batchcompiler.successfully.exiting.explanation=
+jsp.batchcompiler.successfully.exiting.useraction=
+
+jsp.batchcompiler.exiting.with.errors=JSPG0169I: Batch Compiler a ie\u015fit cu erori.
+jsp.batchcompiler.exiting.with.errors.explanation=
+jsp.batchcompiler.exiting.with.errors.useraction=
+
+jsp.batchcompiler.error.reading.configuration=JSPG0170E: Eroare \u00een timpul citirii configura\u0163iei: {0} {1}
+jsp.batchcompiler.error.reading.configuration.explanation=
+jsp.batchcompiler.error.reading.configuration.useraction=
+
+jsp.batchcompiler.error.while.finding.server=JSPG0171E: Eroare \u00een timpul g\u0103sirii Server-lui.
+jsp.batchcompiler.error.while.finding.server.explanation=
+jsp.batchcompiler.error.while.finding.server.useraction=
+
+jsp.batchcompiler.error.while.finding.enterpriseapp=JSPG0172E: Eroare \u00een timp ce g\u0103sea aplica\u0163ia de \u00eentreprindere.
+jsp.batchcompiler.error.while.finding.enterpriseapp.explanation=
+jsp.batchcompiler.error.while.finding.enterpriseapp.useraction=
+
+jsp.batchcompiler.extracttodir.not.writable=JSPG0173E: diretorul extractToDir nu poate fi scris: {0}
+jsp.batchcompiler.extracttodir.not.writable.explanation=
+jsp.batchcompiler.extracttodir.not.writable.useraction=
+
+jsp.batchcompiler.extracttodir.not.a.directory=JSPG0174E: directorul extractToDir nu este un director: {0}
+jsp.batchcompiler.extracttodir.not.a.directory.explanation=
+jsp.batchcompiler.extracttodir.not.a.directory.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.earfile=JSPG0175E: Excep\u0163ie prins\u0103 \u00een timpul extragerii fi\u015fierului EAR {0}.
+jsp.batchcompiler.exception.caught.extracting.earfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.earfile.useraction=
+
+jsp.batchcompiler.war.path.does.not.exist=JSPG0176E: Calea WAR nu exist\u0103t: {0}
+jsp.batchcompiler.war.path.does.not.exist.explanation=
+jsp.batchcompiler.war.path.does.not.exist.useraction=
+
+jsp.batchcompiler.war.path.is.not.a.file=JSPG0177E: Calea WAR nu este un fi\u015fier: {0}
+jsp.batchcompiler.war.path.is.not.a.file.explanation=
+jsp.batchcompiler.war.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.ear.path.does.not.exist=JSPG0178E: Calea EAR nu exist\u0103: {0}
+jsp.batchcompiler.ear.path.does.not.exist.explanation=
+jsp.batchcompiler.ear.path.does.not.exist.useraction=
+
+jsp.batchcompiler.ear.path.is.not.a.file=JSPG0179E: Calea EAR nu este un fi\u015fier: {0}
+jsp.batchcompiler.ear.path.is.not.a.file.explanation=
+jsp.batchcompiler.ear.path.is.not.a.file.useraction=
+
+jsp.batchcompiler.webmodule.not.found=JSPG0180E: Webmodule nu a fost g\u0103sit: {0}
+jsp.batchcompiler.webmodule.not.found.explanation=
+jsp.batchcompiler.webmodule.not.found.useraction=
+
+jsp.batchcompiler.removing.file=JSPG0183I: \u00cenl\u0103turare {0}
+jsp.batchcompiler.removing.file.explanation=
+jsp.batchcompiler.removing.file.useraction=
+
+jsp.batchcompiler.extracting=JSPG0184I: Extragere {0} \u00een {1}
+jsp.batchcompiler.extracting.explanation=
+jsp.batchcompiler.extracting.useraction=
+
+jsp.batchcompiler.done.extracting=JSPG0185I: Extragerea este gata.
+jsp.batchcompiler.done.extracting.explanation=
+jsp.batchcompiler.done.extracting.useraction=
+
+jsp.batchcompiler.saving.zipfile=JSPG0186I: Salvare {0}
+jsp.batchcompiler.saving.zipfile.explanation=
+jsp.batchcompiler.saving.zipfile.useraction=
+
+jsp.batchcompiler.done.saving=JSPG0187I: Salvarea este gata.
+jsp.batchcompiler.done.saving.explanation=
+jsp.batchcompiler.done.saving.useraction=
+
+jsp.batchcompiler.exception.while.saving=JSPG0188E: Excep\u0163ie \u00eent\u00e2lnit\u0103 \u00een timpul opera\u0163iei de salvare.
+jsp.batchcompiler.exception.while.saving.explanation=
+jsp.batchcompiler.exception.while.saving.useraction=
+
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp=JSPG0192E: Nu a fost dat\u0103 nici o cale EAR sau cale WAR sau un nume pentru Aplica\u0163ia de \u00eentreprindere.  Trebuie livrat\u0103 una din acestea.
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp=JSPG0193E: Trebuie s\u0103 furniza\u0163i numai unul dintre: cale EAR sau cale WAR sau Aplica\u0163ie de \u00eentreprindere.
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.explanation=
+jsp.batchcompiler.must.supply.only.one.of.ear.path.or.war.path.or.enterpriseapp.useraction=
+
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given=JSPG0194W: Numele modulului web {0} este ignorat deoarece a fost dat\u0103 calea WAR.
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.explanation=
+jsp.batchcompiler.webmodule.name.being.ignored.because.war.path.given.useraction=
+
+jsp.batchcompiler.exception.caught.extracting.warfile=JSPG0195E: Excep\u0163ie prins\u0103 \u00een timpul extragerii fi\u015fierului war: {0}.
+jsp.batchcompiler.exception.caught.extracting.warfile.explanation=
+jsp.batchcompiler.exception.caught.extracting.warfile.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path=JSPG0196E: JSP Batch Compiler extractToDir trebuie s\u0103 nu se suprapun\u0103 cu calea ear.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.ear.path.useraction=
+
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path=JSPG0197E: JSP Batch Compiler extractToDir trebuie s\u0103 nu se suprapun\u0103 cu calea war.
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.explanation=
+jsp.batchcompiler.extracttodir.must.not.overlap.with.war.path.useraction=
+
+jsp.batchcompiler.extracttodir.does.not.exist=JSPG0198E: extractToDir nu exist\u0103t: {0}
+jsp.batchcompiler.extracttodir.does.not.exist.explanation=
+jsp.batchcompiler.extracttodir.does.not.exist.useraction=
+
+jsp.batchcompiler.exception.caught.getting.warfile.list=JSPG0199E: Excep\u0163ie prins\u0103 \u00een timpul ob\u0163inerii listei warfile
+jsp.batchcompiler.exception.caught.getting.warfile.list.explanation=
+jsp.batchcompiler.exception.caught.getting.warfile.list.useraction=
+
+jsp.batchcompiler.exception.caught.opening.earfile=JSPG0200E: Excep\u0163ie prins\u0103 \u00een timpul deschierii fi\u015fierlului EAR
+jsp.batchcompiler.exception.caught.opening.earfile.explanation=
+jsp.batchcompiler.exception.caught.opening.earfile.useraction=
+
+jsp.batchcompiler.exception.caught.opening.warfile=JSPG0202E: Excep\u0163ie prins\u0103 \u00een timpul deschierii fi\u015fierlului war
+jsp.batchcompiler.exception.caught.opening.warfile.explanation=
+jsp.batchcompiler.exception.caught.opening.warfile.useraction=
+
+jsp.batchcompiler.ignoring.extracttodir=JSPG0203W: ExtractToDir {0} ste ignorat deoarece a fost dat enterpriseapp.name.
+jsp.batchcompiler.ignoring.extracttodir.explanation=
+jsp.batchcompiler.ignoring.extracttodir.useraction=
+
+jsp.batchcompiler.error.adding.variable.map=JSPG0204W: Excep\u0163ie prins\u0103 la ad\u0103ugarea h\u0103r\u0163ii variabile. ''{0}''
+jsp.batchcompiler.error.adding.variable.map.explanation=
+jsp.batchcompiler.error.adding.variable.map.useraction=
+
+jsp.error.building.visitor.order=JSPG0205W: Eroare la crearea ordinii de vizitatori JSP. ''{0}''
+jsp.error.building.visitor.order.explanation=
+jsp.error.building.visitor.order.useraction=
+
+jsp.error.failed.load.jsp-visitor-definition=JSPG0206E: Eroare la \u00eenc\u0103rcarea jsp-visitor-definition
+jsp.error.failed.load.jsp-visitor-definition.explanation=
+jsp.error.failed.load.jsp-visitor-definition.useraction=
+
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound=JSPG0207E: Excep\u0163ie prins\u0103 \u00een timpul proces\u0103rii argumentelor din linia de comand\u0103 : Fi\u015fier: {0} Mesaj: {1}
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.explanation=
+jsp.batchcompiler.exception.while.processing.arguments.filenotfound.useraction=
+
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given=JSPG0208W: compileToWebInf  este ignorat deoarece compileToDir {0} a fost dat.
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.explanation=
+jsp.batchcompiler.compiletowebinf.being.ignored.because.compiletodir.given.useraction=
+
+jsp.error.failed.read.jsp=JSPG0209E: {0}(0,0) a e\u015fuat s\u0103 citeasc\u0103 JSP: {1}
+jsp.error.failed.read.jsp.explanation=
+jsp.error.failed.read.jsp.useraction=
+
+jsp.error.page.invalid.autoflush.buffer=JSPG0210E: autoFlush nu poate fi setat cu fals atunci c\u00e2nd buffer-ul este setat la nimic
+jsp.error.page.invalid.autoflush.buffer.explanation=
+jsp.error.page.invalid.autoflush.buffer.useraction=
+
+jsp.error.root.must.be.top=JSPG0211E: jsp:root trebuie s\u0103 fie elementul de sus \u00een document
+jsp.error.root.must.be.top.explanation=
+jsp.error.root.must.be.top.useraction=
+
+jsp.error.root.only.in.jsp.document=JSPG0212E: jsp:root poate fi folosit doar \u00een documente JSP
+jsp.error.root.only.in.jsp.document.explanation=
+jsp.error.root.only.in.jsp.document.useraction=
+
+jsp.error.no.doctype-root-element.attr=JSPG0213E: Eroarea trebuie s\u0103 furnizeze un element r\u0103d\u0103cin\u0103 doctzpe atunci c\u00e2nd se utilizeaz\u0103 un atribut doctype-system
+jsp.error.no.doctype-root-element.attr.explanation=
+jsp.error.no.doctype-root-element.attr.useraction=
+
+jsp.error.no.doctype-system.attr=JSPG0214E: Nu este furnizat\u0103 eroare pentru doctype-system. 
+jsp.error.no.doctype-system.attr.explanation=
+jsp.error.no.doctype-system.attr.useraction=
+
+jsp.error.failed.translation.context.creation=JSPG0215E: Eroare: a e\u015fuat s\u0103 creeze context de traducere configurat din {0}. Excep\u0163ie : {2}
+jsp.error.failed.translation.context.creation.explanation=
+jsp.error.failed.translation.context.creation.useraction=
+
+jsp.error.failed.load.context.class=JSPG0216E: Eroare: a e\u015fuat s\u0103 \u00eencarce clasa context configurat {0}
+jsp.error.failed.load.context.class.explanation=
+jsp.error.failed.load.context.class.useraction=
+
+jsp.error.failed.load.extension.processor.class=JSPG0217E: Eroare: a e\u015fuat s\u0103 \u00eencarce clasa pentru extensie de procesor {0}
+jsp.error.failed.load.extension.processor.class.explanation=
+jsp.error.failed.load.extension.processor.class.useraction=
+
+
+jsp.error.unable.locate.setter.method.attribute.for.tagname=JSPG0218E: Eroare: a e\u015fuat s\u0103 localizeze metoda setter pentru atributul {1} \u00een clasa tag {0}
+jsp.error.unable.locate.setter.method.attribute.for.tagname.explanation=
+jsp.error.unable.locate.setter.method.attribute.for.tagname.useraction=
+
+jsp.error.invalid.taglib.directive.attribute=JSPG0219E: Eroare: atributul directivei taglib {0} cu valoarea {1} este necunoscut.
+jsp.error.invalid.taglib.directive.attribute.explanation=
+jsp.error.invalid.taglib.directive.attribute.useraction=
+
+jsp.error.invalid.taglib.directive.missing.required.prefix=JSPG0220E: Eroare: directivei taglib \u00eei lipse\u015fte prefixul necesar atributului.
+jsp.error.invalid.taglib.directive.missing.required.prefix.explanation=
+jsp.error.invalid.taglib.directive.missing.required.prefix.useraction=
+
+jsp.batchcompiler.compiling.in.metainf.not.allowed=JSPG0221E: Compilarea unui JSP \u00een META-INF nu este permis\u0103.  Fi\u015fierul: {0}
+jsp.batchcompiler.compiling.in.metainf.not.allowed.explanation=
+jsp.batchcompiler.compiling.in.metainf.not.allowed.useraction=
+
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given=JSPG0222E: Dac\u0103 removeTempDir este adev\u0103rat, enterpriseApp.name trebuie s\u0103 fie dat.
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.explanation=
+jsp.batchcompiler.if.removetempdir.true.enterpriseapp.must.be.given.useraction=
+
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true=JSPG0223E: Dac\u0103 translate este fals, removeTempDir trebuie s\u0103 fie adev\u0103rat.
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.explanation=
+jsp.batchcompiler.if.translatejsps.false.removetempdir.must.be.true.useraction=
+
+jsp.batchcompiler.ignoring.scratchdir=JSPG0224W: JSP Engine parametrul scratchdir [{0}] este ignorat deoarece au fost date ear.path sau war.path.
+jsp.batchcompiler.ignoring.scratchdir.explanation=
+jsp.batchcompiler.ignoring.scratchdir.useraction=
+
+jsp.error.single.line.number.included.file=JSPG0225E: A ap\u0103rut o eroare la linia: {0} \u00een fi\u015fierul inclus static: {1}
+jsp.error.single.line.number.included.file.explanation=
+jsp.error.single.line.number.included.file.useraction=
+
+jsp.error.multiple.line.number.included.file=JSPG0226E: O eroare a avut loc \u00eentre liniile: {0} \u015fi {1} \u00een fi\u015fierul inclus static: {2}
+jsp.error.multiple.line.number.included.file.explanation=
+jsp.error.multiple.line.number.included.file.useraction=
+
+jsp.error.exception.caught.translating=JSPG0227E: Excep\u0163ie prins\u0103 \u00een timpul traducerii {0}
+jsp.error.exception.caught.translating.explanation=
+jsp.error.exception.caught.translating.useraction=
+
+jsp.error.exception.caught.translating.included.file=JSPG0228E: Excep\u0163ie prins\u0103 \u00een timpul traducerii {0}: eroare \u00een fi\u015fierul inclus static {1}
+jsp.error.exception.caught.translating.included.file.explanation=
+jsp.error.exception.caught.translating.included.file.useraction=
+
+JSPG0229=JSP eroare la procesare
+JSPG0230=HTTP eroare la cod:
+JSPG0231=Mesaj eroare:
+JSPG0232=Cauz\u0103 r\u0103d\u0103cin\u0103:
+
+jsp.batchcompiler.exception.caught.while.getting.configuration.options=JSPG0233E: Excep\u0163ie prins\u0103 \u00een timpul ob\u0163inerii op\u0163iunilor de configurare.
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.explanation=
+jsp.batchcompiler.exception.caught.while.getting.configuration.options.useraction=
+
+jsp.error.unable.to.locate.tld.jar.file=JSPG0234E: Containerul JSP nu este capabil de a localiza resursa arhivei Java (JAR) [{0}] pentru a parsa descriptorii libr\u0103riei tag (TLDs).
+jsp.error.unable.to.locate.tld.jar.file.explanation=Un URI de bibliotec\u0103 de taguri care este definit ca loca\u0163ie JAR (fi\u015fier web.xml sau directiv\u0103 de pagin\u0103) nu poate fi localizat.
+jsp.error.unable.to.locate.tld.jar.file.useraction=Verifica\u0163i c\u0103 fi\u015fierul JAR exist\u0103 \u015fi este accesibil pentru acest modul web.
+
+jsp.error.failed.load.tei.class=JSPG0235E: Containerul JSP a e\u015fuat la \u00eenc\u0103rcarea clasei TagExtraInfo [{0}] 
+jsp.error.failed.load.tei.class.explanation=Containerul JSP nu poate \u00eenc\u0103rca clasa TagExtraInfo care este specificat\u0103 \u00een descriptorul bibliotecii de taguri (TLD).
+jsp.error.failed.load.tei.class.useraction=Verifica\u0163i c\u0103 clasa TagExtraInfo exist\u0103 \u015fi este accesibil\u0103 pentru acest modul web.
+
+jsp.error.failed.load.tlv.class=JSPG0236E: Containerul JSP a e\u015fuat la \u00eenc\u0103rcarea clasei TagLibraryValidator [{0}]
+jsp.error.failed.load.tlv.class.explanation=Containerul JSP nu poate \u00eenc\u0103rca clasa TagLibraryValidator care este specificat\u0103 \u00een descriptorul bibliotecii de taguri (TLD).
+jsp.error.failed.load.tlv.class.useraction=Verifica\u0163i c\u0103 clasa TagLibraryValidator exist\u0103 \u015fi este accesibil\u0103 pentru acest modul web.
+
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: Nu poate g\u0103si o directiv\u0103 de atribut cu un atribut nume cu o valoare \"{0}\", valoarea acestui atribut name-from-attribut.
+jsp.error.tagfile.nameFrom.noAttribute.explanation=Explica\u0163ie
+jsp.error.tagfile.nameFrom.noAttribute.useraction=Ac\u0163iune utilizator
+
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: Directiva atribut (declarat\u0103 \u00een linia {0} \u015fi a c\u0103rui nume de atribut este \"{1}\", valoarea acestui atribut name-from-attribute) trebuie s\u0103 fie de tipul java.lang.String, este \"required\" \u015fi nu un \"rtexprvalue\".
+jsp.error.tagfile.nameFrom.badAttribute.explanation=Explica\u0163ie
+jsp.error.tagfile.nameFrom.badAttribute.useraction=Ac\u0163iune utilizator
+
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de \"{0}\"valori diferite (vechi: {1}, nou: {2})
+jsp.error.jspoutput.conflict.explanation=<jsp:output> con\u0163ine mai multe apari\u0163ii ale atributului \u015fi acestea au valori diferite.
+jsp.error.jspoutput.conflict.useraction=Asigura\u0163i-v\u0103 c\u0103 apari\u0163iile multiple ale atributului au aceea\u015fi valoare.
+
+# defect 396002
+jsp.error.prefix.redefined=JSPG0240E: \u00cencercarea de a redefini prefixul \"{0}\" \u00een \"{1}\", c\u00e2nd a fost deja definit ca \"{2}\" \u00een domeniul  actual.
+jsp.error.prefix.redefined.explanation= Prefixul taglibrary a fost deja definit cu un URI diferit.
+jsp.error.prefix.redefined.useraction= Asigura\u0163i-v\u0103 c\u0103 prefixul este definit cu un singur URI.
+
+# defect 396002
+jsp.error.prefix.use_before_dcl=JSPG0241E: Prefixul \"{0}\" specificat\u0103 \u00een aceast\u0103 directiv\u0103 tag a fost utilizat anterior de o ac\u0163iune \u00een fi\u015fierul {1}.
+jsp.error.prefix.use_before_dcl.explanation= Prefixul taglibrary a fost folosit \u00eenainte de directiva tag care define\u015fte prefixul.
+jsp.error.prefix.use_before_dcl.useraction= Muta\u0163i directiva tag deasupra tuturor ac\u0163iunilor care folosesc prefixul.
+
+# jsp2.1work
+jsp.error.page.invalid.trimdirectivewhitespaces=JSPG0242E: Valoare nevalid\u0103 pentru atributul trimDirectiveWhitespaces
+jsp.error.page.invalid.trimdirectivewhitespaces.explanation=
+jsp.error.page.invalid.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.invalid.deferredsyntaxallowedasliteral=JSPG0243E: Valoare nevalid\u0103 pentru atributul deferredSyntaxAllowedAsLiteral
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.el.template.deferred=JSPG0244E: \"{0}\"  nu este permis\u0103 \u00een textul \u015fablon.
+jsp.error.el.template.deferred.explanation=
+jsp.error.el.template.deferred.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.deferredsyntaxallowedasliteral=JSPG0245E: Directiv\u0103 Page: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de ''deferredSyntaxAllowedAsLiteral'' cu valori diferite (vechi: {0}, nou: {1})
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.page.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral=JSPG0246E: Directiv\u0103 Tag: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de ''deferredSyntaxAllowedAsLiteral'' cu valori diferite (vechi: {0}, nou: {1})
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.explanation=
+jsp.error.tag.conflict.deferredsyntaxallowedasliteral.useraction=
+
+# jsp2.1ELwork
+jsp.error.page.conflict.trimdirectivewhitespaces=JSPG0247E: Directiv\u0103 Page: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de ''trimDirectiveWhitespaces'' cu valori diferite (vechi: {0}, nou: {1})
+jsp.error.page.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.page.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.trimdirectivewhitespaces=JSPG0248E: Directiv\u0103 Tag: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii de ''trimDirectiveWhitespaces'' cu valori diferite (vechi: {0}, nou: {1})
+jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
+jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
+
+# jsp2.1ELwork
+jsp.error.tag.conflict.attr=JSPG0249E: TDirectiv\u0103 Tag: este ilegal s\u0103 aib\u0103 mai multe apari\u0163ii ale atributului \"{0}\" cu valori diferite (vechi: {1}, nou: {2})
+jsp.error.tag.conflict.attr.explanation=
+jsp.error.tag.conflict.attr.useraction=
+
+# jsp2.1ELwork
+jsp.error.tagdirective.badbodycontent=JSPG0250E: Corp cu con\u0163inut nevalid ({0}) \u00een directiva tag.
+jsp.error.tagdirective.badbodycontent.explanation=
+jsp.error.tagdirective.badbodycontent.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredvaluetypewithoutdeferredvalue=JSPG0251E: Nu se poate specifica un tip de valoare dac\u0103 'deferredValue' nu este 'true'
+jsp.error.deferredvaluetypewithoutdeferredvalue.explanation=
+jsp.error.deferredvaluetypewithoutdeferredvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodsignaturewithoutdeferredmethod=JSPG0252E: Nu se poate specifica o semn\u0103tur\u0103 de metod\u0103 dac\u0103 'deferredMethod' nu este 'true'
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.explanation=
+jsp.error.deferredmethodsignaturewithoutdeferredmethod.useraction=
+
+# jsp2.1ELwork
+jsp.error.deferredmethodandvalue=JSPG0253E: 'deferredValue' \u015fi 'deferredMethod' nu pot fi ambele 'true'
+jsp.error.deferredmethodandvalue.explanation=
+jsp.error.deferredmethodandvalue.useraction=
+
+# jsp2.1ELwork
+jsp.error.invalid.version=JSPG0254E: Versiune JSP nevalid\u0103 definit\u0103 pentru fi\u015fierul tag la {0}
+jsp.error.invalid.version.explanation=
+jsp.error.invalid.version.useraction=
+
+# jsp2.1ELwork
+jsp.error.unknown_attribute_type=JSPG0255E: Tip de atribut necunoscut ({1}) pentru {0}.
+jsp.error.unknown_attribute_type.explanation=
+jsp.error.unknown_attribute_type.useraction=
+
+# jsp2.1ELwork
+jsp.error.coerce_to_type=JSPG0256E: Nu poate constr\u00e2nge valoarea ({2}) la tipul ({1}) pentru atributul {0}.
+jsp.error.coerce_to_type.explanation=
+jsp.error.coerce_to_type.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl=JSPG0257E: Este necesar spa\u0163iu alb \u00eenainte de atributul de pseudo versiune \u00een declara\u0163ia de text.
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl=JSPG0258E: Este necesar spa\u0163iu alb \u00eenainte de atributul de pseudo versiune \u00een declara\u0163ia XML.
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionNotSupported=JSPG0259E: Versiunea XML \"{0}\" nu este suportat\u0103, doar XML 1.0.
+jsp.error.xml.versionNotSupported.explanation=
+jsp.error.xml.versionNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclRequired=JSPG0260E: Declara\u0163ia de codificare este necesar\u0103 \u00een declara\u0163ia de text.
+jsp.error.xml.encodingDeclRequired.explanation=
+jsp.error.xml.encodingDeclRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.versionInfoRequired=JSPG0261E: Versiunea este necesar\u0103 \u00een declara\u0163ia XML.
+jsp.error.xml.versionInfoRequired.explanation=
+jsp.error.xml.versionInfoRequired.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl=JSPG0262E: Este necesar spa\u0163iu alb \u00eenainte de atributul de pseudo codare  \u00een declara\u0163ia de text.
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl=JSPG0263E: Este necesar spa\u0163iu alb \u00eenainte de atributul de pseudo codare  \u00een declara\u0163ia de XML.
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
+jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: Caracterul '' = '' trebuie s\u0103 urmeze dup\u0103 \"{0}\" \u00een declara\u0163ia de text.
+jsp.error.xml.eqRequiredInTextDecl.explanation=
+jsp.error.xml.eqRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: Caracterul '' = '' trebuie s\u0103 urmeze dup\u0103 \"{0}\" \u00een declara\u0163ia XML.
+jsp.error.xml.eqRequiredInXMLDecl.explanation=
+jsp.error.xml.eqRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: Valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia de text trebuie s\u0103 fie un \u015fir pus \u00eentre ghilimele.
+jsp.error.xml.quoteRequiredInTextDecl.explanation=
+jsp.error.xml.quoteRequiredInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: Valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia XML trebuie s\u0103 fie un \u015fir pus \u00eentre ghilimele.
+jsp.error.xml.quoteRequiredInXMLDecl.explanation=
+jsp.error.xml.quoteRequiredInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInTextDecl=JSPG0268E: Un caracter XML nevalid (Unicode: 0x{0}) a fost g\u0103sit \u00een declara\u0163ia de text.
+jsp.error.xml.invalidCharInTextDecl.explanation=
+jsp.error.xml.invalidCharInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInXMLDecl=JSPG0269E: Un caracter XML nevalid (Unicode: 0x{0})  a fost g\u0103sit \u00een declara\u0163ia XML.
+jsp.error.xml.invalidCharInXMLDecl.explanation=
+jsp.error.xml.invalidCharInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: lipse\u015fte ghilimeaua de \u00eenchidere \u00een valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia de text.
+jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
+jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: lipse\u015fte ghilimeaua de \u00eenchidere \u00een valoarea urm\u0103toare \"{0}\" \u00een declara\u0163ia de XML.
+jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
+jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: Ordinea octe\u0163ilor da\u0163i pentru codarea \"{0}\" nu este siportat\u0103.
+jsp.error.xml.encodingByteOrderUnsupported.explanation=
+jsp.error.xml.encodingByteOrderUnsupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: Nume de codificare nevalid \"{0}\".
+jsp.error.xml.encodingDeclInvalid.explanation=
+jsp.error.xml.encodingDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredBeforeStandalone=JSPG0274E: Un spa\u0163iu este necesar \u00eenainte de pseudo atributul standalone \u00een declara\u0163ia XML.
+jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
+jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
+
+# jsp2.1work
+jsp.error.xml.sdDeclInvalid=JSPG0275E: Valoarea Declara\u0163iei documentului autonom trebuie s\u0103 fie \"yes\" sau \"no\", nu \"{0}\".
+jsp.error.xml.sdDeclInvalid.explanation=
+jsp.error.xml.sdDeclInvalid.useraction=
+
+# jsp2.1work
+jsp.error.xml.noMorePseudoAttributes=JSPG0276E: nu sunt permise mai multe atribute pseudo.
+jsp.error.xml.noMorePseudoAttributes.explanation=
+jsp.error.xml.noMorePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.morePseudoAttributes=JSPG0277E: sunt a\u015fteptate mai multe atribute pseudo.
+jsp.error.xml.morePseudoAttributes.explanation=
+jsp.error.xml.morePseudoAttributes.useraction=
+
+# jsp2.1work
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: Declara\u0163ia XML trebuie s\u0103 se termine cu \"?>\".
+jsp.error.xml.xmlDeclUnterminated.explanation=
+jsp.error.xml.xmlDeclUnterminated.useraction=
+
+# jsp2.1work
+jsp.error.xml.pseudoAttrNameExpected=JSPG0279E: este a\u015fteptat numele unui atribut pseudo.
+jsp.error.xml.pseudoAttrNameExpected.explanation=
+jsp.error.xml.pseudoAttrNameExpected.useraction=
+
+# jsp2.1work
+jsp.error.xml.reservedPITarget=JSPG0280E: Destina\u0163ia instruc\u0163iunii de procesare care se potrive\u015fte cu \"[xX][mM][lL]\" nu este permis\u0103.
+jsp.error.xml.reservedPITarget.explanation=
+jsp.error.xml.reservedPITarget.useraction=
+
+# jsp2.1work
+jsp.error.xml.spaceRequiredInPI=JSPG0281E: Este necesar spa\u0163iu alb \u00eentre destina\u0163ia instruc\u0163iunii de procesare \u015fi date.
+jsp.error.xml.spaceRequiredInPI.explanation=
+jsp.error.xml.spaceRequiredInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInPI=JSPG0282E: Un caracter XML nevalid (Unicode: 0x{0}) a fost g\u0103sit \u00een instruc\u0163iune de procesare.
+jsp.error.xml.invalidCharInPI.explanation=
+jsp.error.xml.invalidCharInPI.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidCharInContent=JSPG0283E: Un caracter XML nevalid (Unicode: 0x{0}) a fost g\u0103sit \u00een con\u0163inutul elementului documentului.
+jsp.error.xml.invalidCharInContent.explanation=
+jsp.error.xml.invalidCharInContent.useraction=
+
+# jsp2.1work
+jsp.error.xml.operationNotSupported=JSPG0284E: Opera\u0163ia \"{0}\" nu este suportat\u0103 de cititorul {1}.
+jsp.error.xml.operationNotSupported.explanation=
+jsp.error.xml.operationNotSupported.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidASCII=JSPG0285E: Octetul \"{0}\" nu este un ASCII pe 7 bi\u0163i.
+jsp.error.xml.invalidASCII.explanation=
+jsp.error.xml.invalidASCII.useraction=
+
+# jsp2.1work
+jsp.error.xml.expectedByte=JSPG0286E: Octetul a\u015fteptat {0} de secven\u0163a UTF-8 {1}-octet.
+jsp.error.xml.expectedByte.explanation=
+jsp.error.xml.expectedByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidByte=JSPG0287E: Octet nevalid {0} \u00een secven\u0163a UTF-8 {1}-octet.
+jsp.error.xml.invalidByte.explanation=
+jsp.error.xml.invalidByte.useraction=
+
+# jsp2.1work
+jsp.error.xml.invalidHighSurrogate=JSPG0288E: Bi\u0163ii surogat de ordin superior \u00een secven\u0163a UTF-8 nu trebuie s\u0103 dep\u0103\u015feasc\u0103 0x10, dat s-a g\u0103sit 0x{0}.
+jsp.error.xml.invalidHighSurrogate.explanation=
+jsp.error.xml.invalidHighSurrogate.useraction=
+
+# jsp2.1work
+jsp.error.prolog_config_encoding_mismatch=JSPG0289E: Codarea paginii specificat\u0103 \u00een prologul XML ({0}) este diferit\u0103 de cea specificat\u0103 \u00een jsp-property-group ({1})
+jsp.error.prolog_config_encoding_mismatch.explanation=
+jsp.error.prolog_config_encoding_mismatch.useraction=
+
+# jsp2.1work
+jsp.error.invalid.tagdir=JSPG0290E: Directorul de fi\u015fiere {0} nu \u00eencepe cu \"/WEB-INF/tags\"
+jsp.error.invalid.tagdir.explanation=
+jsp.error.invalid.tagdir.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit=JSPG0291E: TLD implicit nevalid pentru tagul fi\u015fierului la {0}; element nevalid= [{1}].
+jsp.error.invalid.implicit.explanation=
+jsp.error.invalid.implicit.useraction=
+
+# jsp2.1work
+jsp.error.invalid.implicit.version=JSPG0292E: Versiune JSP nevalid\u0103 definit\u0103 \u00een TLD-ul implicit pentru tagul fi\u015fierului la {0}; versiune=[{1}].
+jsp.error.invalid.implicit.version.explanation=
+jsp.error.invalid.implicit.version.useraction=
+
+jsp.ard.nullRequestDispatcher=JSPG0293E: ARDRequestDispatcher este null.
+jsp.ard.nullRequestDispatcher.explanation=
+jsp.ard.nullRequestDispatcher.useraction=
+
+jsp.ard.executionError=JSPG0294E: ARD Fragment este null.
+jsp.ard.executionError.explanation=
+jsp.ard.executionError.useraction=
+
+jsp.ard.notAFragmentResponse=JSPG0295E: Obiectul nu este un FragmentResponse.
+jsp.ard.notAFragmentResponse.explanation=
+jsp.ard.notAFragmentResponse.useraction=
+
+jsp.ard.nullFragmentResponse=JSPG0296E: ARD Fragment nu exist\u0103 \u00een domeniul specificat.
+jsp.ard.nullFragmentResponse.explanation=
+jsp.ard.nullFragmentResponse.useraction=
+
+jsp.ard.importTagValidationError=JSPG0297E: Exist\u0103 o problem\u0103 cu tag-ul import.  Atributul url \u015fi/sau atributul var necesit\u0103 s\u0103 fie setat.
+jsp.ard.importTagValidationError.explanation=
+jsp.ard.importTagValidationError.useraction=
+
+jsp.error.pageContext.multipleInitOrRelease=JSPG0298E: PageContext a fost deja ini\u0163ializat\u0103 sau eliberat\u0103.  
+jsp.error.pageContext.multipleInitOrRelease.explanation=Containerul JSP trateaz\u0103 ini\u0163ializarea \u015fi eliberarea obiectelor PageContext.
+jsp.error.pageContext.multipleInitOrRelease.useraction=Conform specifica\u0163iei, verifica\u0163i c\u0103 nu sunt aplica\u0163ii ce folosesc obiecte JspFactory.
+
+jsp.error.dynamicAttributes.translationException=JSPG0299E: Atributul dinamic {0} are un prefix care nu se mapeaz\u0103 la un spa\u0163iu nume.
+jsp.error.dynamicAttributes.translationException.explanation=Prefixul atributului dinamic nu se mapeaz\u0103 la un spa\u0163iu nume.
+jsp.error.dynamicAttributes.translationException.useraction=Asigura\u0163i-v\u0103 c\u0103 prefixul se mapeaz\u0103 la un spa\u0163iu nume existent.
+
+jsp.ard.badContext = JSPG0300E: Nu poate s\u0103 ob\u0163in\u0103 un RequestDispatcher pentru contextul: {0}
+jsp.ard.badContext.explanation=Nu se poate ob\u0163ine un RequestDispatcher pentru contextul solicitat.
+jsp.ard.badContext.useraction=Verifica\u0163i c\u0103 valorile tag sunt corecte \u015fi verifica\u0163i c\u0103 exist\u0103 contextul solicitat.
+
+jsp.error.translation.invalid.void.deferredMethodClass = JSPG0301E: Atribut nevalid, {0}, pentru metoda am\u00e2nat\u0103 ce returneaz\u0103 void.
+jsp.error.translation.invalid.void.deferredMethodClass.explanation=Atributul transmis la o metod\u0103 am\u00e2nat\u0103 ce returneaz\u0103 void nu poate fi un literal \u015fir.
+jsp.error.translation.invalid.void.deferredMethodClass.useraction=Modifica\u0163i valoarea transmis\u0103 pentru atribut.
+
+jsp.jdk.not.at.17=JSPG8500W: JDK 7 nu se afl\u0103 \u00een utilizare chiar dac\u0103 jdkSourceLevel a fost specificat s\u0103 fie 17.
+jsp.jdk.not.at.17.explanation=S-a f\u0103cut o cerere de a compila jsp-uri la un nivel care nu este suportat.
+jsp.jdk.not.at.17.useraction=Fie instala\u0163i JDK 7, fie modifica\u0163i jdkSourceLevel la 16.
+
+jsp.jdk.version.exception=JSPG8501W: Excep\u0163ie aruncat\u0103 la verificarea propriet\u0103\u0163ii java.version
+jsp.jdk.version.exception.explanation=A fost o problem\u0103 la parsarea propriet\u0103\u0163ii java.version.
+jsp.jdk.version.exception.useraction=Verifica\u0163i c\u0103 versiunea java este valid\u0103.
+
+jsp.load.class.exception=JSPG0302W: A e\u015fuat \u00eenc\u0103rcarea urm\u0103toarei clase JSP: {0}, excep\u0163ia este: {1}
+jsp.load.class.exception.explanation=A fost o problem\u0103 la \u00eenc\u0103rcarea clasei JSP.  Containerul JSP va \u00eencerca s\u0103 \u00eencarce fi\u015fierul clas\u0103 cu numele de pachet org.apache.jsp \u00een schimb.
+jsp.load.class.exception.useraction=Dac\u0103 problema persist\u0103, reporni\u0163i aplica\u0163ia.
+
+jsp.jdksourcelevel.value =JSPG8502I: Valoarea atributului JSP jdkSourceLevel este \"{0}\".
+jsp.jdksourcelevel.value.explanation =
+jsp.jdksourcelevel.value.useraction =
+
+jsp.parse.tld.exception=JSPG0303W: Sistemul nu a putut parsa urm\u0103torul JSP Tag Library Descriptor: {0}. Excep\u0163ia pentru eroarea de parsare este: {1}
+jsp.parse.tld.exception.explanation=A ap\u0103rut o problem\u0103 la parsarea fi\u015fierului JSP Tag Library Descriptor. Aceast\u0103 eroare poate fi cauzat\u0103 de un fi\u015fier XML format gre\u015fit.
+jsp.parse.tld.exception.useraction=Verifica\u0163i fi\u015fierul JSP Tag Library Descriptor pentru XML-ul format gre\u015fit. Dac\u0103 problema persist\u0103 dup\u0103 corectarea fi\u015fierului XML format gre\u015fit, reporni\u0163i aplica\u0163ia.
+
+system.java.compiler.not.found=JSPG0304W: Atributul JSP, useJDKCompiler, este setat la true, dar compilatorul Java SDK nu a fost g\u0103sit. Containerul JSP con\u0163ine compilatorul care este \u00eenglobat \u00een produs pentru a compila fi\u015fierele JSP din modulul web: {0}.
+system.java.compiler.not.found.explanation=Containerul JSP nu a putut g\u0103si compilatorul sistemului, care de obicei indic\u0103 faptul c\u0103 fi\u015fierul Java SDK jar, tools.jar, nu a fost g\u0103sit \u00een calea clasei.
+system.java.compiler.not.found.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul Java SDK jar, tools.jar, este \u00een calea clasei \u015fi verifica\u0163i c\u0103 Java SDK suport\u0103 Java Compiler API. Vede\u0163i Java Specification Request 199 pentru informa\u0163ii suplimentare.

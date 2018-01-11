@@ -14,6 +14,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,9 +27,10 @@ import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
     private final static ProtectionDomain DEFAULT_PROTECTION_DOMAIN = new ProtectionDomain(new CodeSource((URL) null, (Certificate[]) null), null);
     private boolean delegateLast;
+    private boolean includeAppExtensions;
     private ClassLoaderIdentity id;
     private ClassLoaderIdentity parentId;
-    private List<String> sharedLibraries = Collections.emptyList();
+    private List<String> sharedLibraries = new ArrayList<String>();
     private List<String> commonLibraries = Collections.emptyList();
     private List<String> providers = Collections.emptyList();
     private List<Container> nativeLibraryContainers = Collections.emptyList();
@@ -61,6 +63,19 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
     @Override
     public ClassLoaderConfiguration setSharedLibraries(String... libs) {
         return setSharedLibraries(libs == null ? null : Arrays.asList(libs));
+    }
+
+    @Override
+    public ClassLoaderConfiguration addSharedLibraries(List<String> libs) {
+        for (String lib : libs)
+            if (!this.sharedLibraries.contains(lib))
+                this.sharedLibraries.add(lib);
+        return this;
+    }
+
+    @Override
+    public ClassLoaderConfiguration addSharedLibraries(String... libs) {
+        return libs == null ? this : this.addSharedLibraries(Arrays.asList(libs));
     }
 
     @Override
@@ -141,17 +156,17 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(id)
-                        .append(" [child of ").append(parentId).append("]")
-                        .append(" privateLibraries = ").append(sharedLibraries)
-                        .append(" commonLibraries = ").append(commonLibraries)
-                        .append(" providers = ").append(providers)
-                        .append(" nativeLibraries = ").append(nativeLibraryContainers);
+          .append(" [child of ").append(parentId).append("]")
+          .append(" privateLibraries = ").append(sharedLibraries)
+          .append(" commonLibraries = ").append(commonLibraries)
+          .append(" providers = ").append(providers)
+          .append(" nativeLibraries = ").append(nativeLibraryContainers);
         return sb.toString();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.classloading.ClassLoaderConfiguration#setProtectionDomain(java.security.ProtectionDomain)
      */
     @Override
@@ -162,11 +177,22 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.classloading.ClassLoaderConfiguration#getProtectionDomain()
      */
     @Override
     public ProtectionDomain getProtectionDomain() {
         return protectionDomain;
+    }
+
+    @Override
+    public ClassLoaderConfiguration setIncludeAppExtensions(boolean include) {
+        includeAppExtensions = include;
+        return this;
+    }
+
+    @Override
+    public boolean getIncludeAppExtensions() {
+        return includeAppExtensions;
     }
 }

@@ -18,6 +18,7 @@ Bundle-SymbolicName: com.ibm.ws.logging; singleton:=true
 Private-Package: \
  !com.ibm.ws.logging.internal.osgi.*,\
  com.ibm.ws.logging.*,\
+ com.ibm.ws.collector.manager.internal.*,\
  com.ibm.wsspi.logprovider.*
 
 # For each exported package, create (in that package) a package-info.java
@@ -25,17 +26,26 @@ Private-Package: \
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
- com.ibm.ejs.ras;provide:=true, \
- com.ibm.websphere.logging;provide:=true, \
- com.ibm.websphere.logging.hpel;provide:=true, \
- com.ibm.websphere.ras;provide:=true, \
- com.ibm.websphere.ras.annotation;provide:=true, \
- com.ibm.ws.ffdc;provide:=true, \
- com.ibm.ws.ffdc.annotation;provide:=true, \
- com.ibm.ws.logging;provide:=true, \
- com.ibm.ws.ras.instrument.annotation, \
- com.ibm.ws.logging.internal, \
- com.ibm.wsspi.logging;provide:=true
+	com.ibm.ejs.ras;provide:=true,\
+	com.ibm.websphere.logging;provide:=true,\
+	com.ibm.websphere.logging.hpel;provide:=true,\
+	com.ibm.websphere.ras;provide:=true,\
+	com.ibm.websphere.ras.annotation;provide:=true,\
+	com.ibm.ws.ffdc;provide:=true,\
+	com.ibm.ws.ffdc.annotation;provide:=true,\
+	com.ibm.ws.staticvalue;provide:=true,\
+	com.ibm.ws.logging;provide:=true,\
+	com.ibm.ws.ras.instrument.annotation,\
+	com.ibm.ws.logging.internal,\
+	com.ibm.wsspi.collector.manager,\
+	com.ibm.ws.collector.manager.buffer,\
+	com.ibm.ws.logging.synch,\
+	com.ibm.ws.logging.utils,\
+	com.ibm.ws.logging.source,\
+	com.ibm.ws.health.center.data,\
+	com.ibm.ws.http.logging.data,\
+	com.ibm.ws.logging.collector,\
+	com.ibm.wsspi.logging;provide:=true
 
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
@@ -56,15 +66,3 @@ instrument.disabled: true
 	com.ibm.wsspi.org.osgi.service.log;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
--nojunit: true
-
--testpath: \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
-	org.hamcrest:hamcrest-all;version=1.3, \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	org.jmock:jmock;strategy=exact;version=2.5.1, \
-	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
-	cglib:cglib-nodep;version=2.1.0.3, \
-	org.jmock:jmock-legacy;version=2.5.0, \
-	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	org.eclipse.osgi;version=latest

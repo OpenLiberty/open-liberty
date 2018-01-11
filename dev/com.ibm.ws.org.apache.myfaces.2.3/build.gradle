@@ -8,3 +8,34 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+// Local vars
+File downloadSrcDir = project.file('build/source')
+
+configurations {
+    sourceJar
+}
+
+dependencies {
+    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20180110-104402-374:sources'
+}
+
+task copySource(type: Copy) {
+    from configurations.sourceJar
+    into downloadSrcDir
+}
+
+assemble {
+    dependsOn copySource
+}
+
+task deleteJars(type:Delete) {
+    doLast {
+        println "deleteJars task, deleting " + downloadSrcDir
+        file(downloadSrcDir).deleteDir()
+    }
+}
+
+clean {
+    dependsOn deleteJars
+}

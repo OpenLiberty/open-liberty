@@ -35,7 +35,8 @@ Private-Package: \
   OSGI-INF/permissions.perm=resources/permissions.perm
 
 -dsannotations: \
-  com.ibm.ws.kernel.server.internal.ServerInfoMBeanImpl
+  com.ibm.ws.kernel.server.internal.ServerInfoMBeanImpl, \
+  com.ibm.ws.kernel.server.internal.ServerEndpointControlMBeanImpl
 
 instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class
 
@@ -45,6 +46,7 @@ instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

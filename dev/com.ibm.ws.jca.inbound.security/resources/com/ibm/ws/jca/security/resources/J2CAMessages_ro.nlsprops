@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# cmvc_en_version_level=1.123,0,13/01/21,12:35:39
+#
+#CMVCPATHNAME ws/code/j2c/src/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+# Start inbound security feature messages.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668=J2CA0668E: WorkManager nu a putut popula subiectul execu\u0163iei cu apelantul principal sau cu acredit\u0103rile necesare pentru a stabili contextul de securitate pentru aceast\u0103 instan\u0163\u0103 de lucru.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.explanation=Handlerul de apeluri de r\u0103spuns JASPIC al WorkManager a e\u015fuat s\u0103 populeze acredit\u0103rile principale sau personalizate ale subiectului execu\u0163iei deoarece a ap\u0103rut o excep\u0163ie \u00een timpul proces\u0103rii apelurilor de r\u0103spuns JASPIC furnizate de adaptorul de resurse.
+CUSTOM_CREDENTIALS_MISSING_J2CA0668.useraction=Verifica\u0163i istoricele FFDC \u015fi de server care au fost emise imediat \u00eenainte ca mesajul J2CA0672E s\u0103 determine cauza. C\u00e2nd cauza nu poate fi determinat\u0103 din mesajele anterioare de eroare, colecta\u0163i datele de diagnostic \u015fi vizita\u0163i site-ul web de suport IBM pentru informa\u0163ii suplimentare.
+
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673=J2CA0673W: Subiectul execu\u0163iei furnizat de WorkManager nu se potrive\u015fte cu subiectul furnizat de {0}.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.explanation=Instan\u0163a subiectului execu\u0163iei furnizat de WorkManager pentru a stabili contextul de securitate al instan\u0163ei Lucru nu este aceea\u015fi instan\u0163\u0103 ob\u0163inut\u0103 din apelul de r\u0103spuns respectiv. WorkManager a ignorat subiectul ob\u0163inut din apelul de r\u0103spuns \u015fi a continuat s\u0103 stabileasc\u0103 contextul de securitate utiliz\u00e2nd instan\u0163a pe care a furnizat-o.
+EXECUTION_CALLBACK_SUBJECT_MISMATCH_J2CA0673.useraction=Contacta\u0163i v\u00e2nz\u0103torul de adaptoare de resurse pentru a modifica metoda JASPIC a apelului de r\u0103spuns getSubject() pentru a returna subiectul de execu\u0163ie furnizat c\u0103tre instan\u0163a SecurityContext prin apelul la metoda setupSecurityContext.
+
+ERROR_HANDLING_CALLBACK_J2CA0672=J2CA0672E: Handlerul de apeluri de r\u0103spuns JASPIC al WorkManager a e\u015fuat cu excep\u0163ia {0} \u00een timpul manipul\u0103rii apelurilor de r\u0103spuns furnizate de contextul de securitate. Mesajul excep\u0163iei este: {1}
+ERROR_HANDLING_CALLBACK_J2CA0672.explanation=WorkManager a \u00eent\u00e2lnit o excep\u0163ie \u00een timpul manipul\u0103rii apelurilor de r\u0103spuns JASPIC furnizate de adaptorul de resurse din contextul de securitate transferat. Excep\u0163ia poate fi unul din cazurile urm\u0103toare: 1) Un CallerPrincipalCallback a furnizat un principal cu un nume utilizator care nu exist\u0103 \u00een registrul de utilizatori. 2) Un PasswordValidationCallback a furnizat un nume utilizator invalid sau o parol\u0103 invalid\u0103. 3) Un CallerPrincipalCallback \u015fi un PasswordValidationCallback au furnizat nume diferite de utilizator. 4) Adaptorul de resurse a furnizat un apel de r\u0103spuns pe care serverul de aplica\u0163ii nu-l suport\u0103 curent. 5) Adaptorul de resurse a furnizat mai mult de un CallerPrincipalCallback.  6) WorkManager a \u00eent\u00e2lnit o eroare nea\u015fteptat\u0103.
+ERROR_HANDLING_CALLBACK_J2CA0672.useraction=Dac\u0103 mesajul de excep\u0163ie are un cod de eroare, atunci verifica\u0163i ac\u0163iunea utilizatorului pentru acel cod de eroare. Dac\u0103 excep\u0163ia este una UnsupportedCallbackException, atunci contacta\u0163i v\u00e2nz\u0103torul de adaptoare de resurse deoarece handlerul de apeluri de r\u0103spuns JASPIC al WorkManager nu suport\u0103 curent apelul de r\u0103spuns furnizat. Dac\u0103 excep\u0163ia nu este niciuna dintre problemele men\u0163ionate, colecta\u0163i date de diagnostic \u015fi referi\u0163i-v\u0103 la site-ul de suport IBM pentru informa\u0163ii suplimentare.
+
+INVALID_GROUP_ENCOUNTERED_J2CA0678=J2CA0678W: Grupul {0} nu apar\u0163ine domeniului asociat aplica\u0163iei.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.explanation=Contextul de securitate transferat cu instan\u0163a de lucru a furnizat un nume de grup care nu exist\u0103 \u00een regiunea (registrul de utilizatori) domeniului de securitate asociat aplica\u0163iei.  WorkManager a ob\u0163inut numele invalid de grup dintr-o instan\u0163\u0103 de JASPIC GroupPrincipalCallback, oric\u00e2nd este furnizat\u0103 o instan\u0163\u0103 de adaptorul de resurse.
+INVALID_GROUP_ENCOUNTERED_J2CA0678.useraction=Verifica\u0163i dac\u0103 grupul este din aceea\u015fi regiune confirm\u00e2nd existen\u0163a grupului \u00een registrul de utilizatori pentru acea regiune. Dac\u0103 grupul este dintr-o regiune diferit\u0103, contacta\u0163i v\u00e2nz\u0103torul de adaptoare de resurse deoarece WorkManager nu suport\u0103 grupuri din regiuni diferite.
+
+NO_GROUPS_FOR_UNIQUEID_J2CA0679=J2CA0679W: Nu a fost g\u0103sit niciun grup pentru utilizatorul cu uniqueId {0}
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.explanation=Contextul de securitate transferat cu instan\u0163a de lucru a furnizat un utilizator care nu apar\u0163ine niciunui grup definit \u00een registrul de utilizatori.
+NO_GROUPS_FOR_UNIQUEID_J2CA0679.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674=J2CA0674E: Numele de utilizator {0} sau parola furnizate de PasswordValidationCallback este invalid.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.explanation=Numele de utilizator \u015fi parola nu exist\u0103 \u00een registrul de utilizatori al regiunii care este configurat\u0103 pentru domeniul de securitate asociat cu aplica\u0163ia.
+INVALID_USERNAME_PASSWORD_INBOUND_J2CA0674.useraction=Configura\u0163i adaptorul de resurse \u015fi sistemul de informa\u0163ii de \u00eentreprindere s\u0103 utilizeze un nume de utilizator valid \u015fi o parol\u0103 valid\u0103. 
+
+VALIDATION_FAILED_INBOUND_J2CA0684=J2CA0684E: Nu se poate valida numele de utilizator {0} \u015fi parola furnizate de PasswordValidationCallback.
+VALIDATION_FAILED_INBOUND_J2CA0684.explanation=WorkManager nu a putut valida numele de utilizator \u015fi parola furnizate de PasswordValidationCallback din cauza unei CustomRegistryException. Aceast\u0103 excep\u0163ie este determinat\u0103 de o parol\u0103 invalid\u0103 sau de o problem\u0103 cu registrul de utilizatori pentru regiunea aplica\u0163iei.
+VALIDATION_FAILED_INBOUND_J2CA0684.useraction=C\u00e2nd cauza CustomRegistryException este o parol\u0103 invalid\u0103, configura\u0163i adaptorul de resurse sau sistemul de informa\u0163ii de \u00eentreprindere s\u0103 utilizeze o combina\u0163ie valid\u0103 de nume de utilizator \u015fi parol\u0103. Altfel, rezolva\u0163i problema cu registrul de utilizatori.
+
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675=J2CA0675E: Numele de utilizator {0}, furnizat de PasswordValidationCallback, \u015fi numele de utilizator {1}, furnizat de CallerPrincipalCallback, nu se potrivesc.
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.explanation=Numele de utilizatori furnizate de PasswordValidationCallback \u015fi de CallerPrincipalCallback trebuie s\u0103 se potriveasc\u0103. 
+CALLBACK_SECURITY_NAME_MISMATCH_J2CA0675.useraction=Contacta\u0163i v\u00e2nz\u0103torul de adaptoare de resurse \u015fi administratorul de sistem pentru a v\u0103 asigura c\u0103 adaptorul de resurse este proiectat \u015fi configurat s\u0103 returneze acela\u015fi nume de utilizator fdin cele dou\u0103 apeluri de r\u0103spuns.
+
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671=J2CA0671E: WorkManager nu a putut asocia SecurityContext furnizat c\u0103tre instan\u0163a Lucru.
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.explanation=WorkManager a \u00eent\u00e2lnit o problem\u0103 \u00een timpul stabilirii \u015fi set\u0103rii contextului de securitate pentru cererea de intrare Lucru. 
+SECURITY_CONTEXT_NOT_ASSOCIATED_J2CA0671.useraction=Verifica\u0163i istoricele FFDC \u015fi de server pentru mesaje J2CA0668E \u015fi J2CA0669E pentru a determina cauza.
+
+METHOD_FAILED_J2CA0132=J2CA0132E: Metoda {0} a prins excep\u0163ia {1}.
+METHOD_FAILED_J2CA0132.explanation=Metoda a prins o excep\u0163ie care este cel mai probabil o eroare intern\u0103.
+METHOD_FAILED_J2CA0132.useraction=-CMSG0002
+
+
+
+# End inbound security feature messages.
+
+
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

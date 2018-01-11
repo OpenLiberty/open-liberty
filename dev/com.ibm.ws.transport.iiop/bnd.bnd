@@ -8,8 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -47,6 +45,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.transport.iiop.yoko.DefaultSocketFactorySubsystemFactory, \
   com.ibm.ws.transport.iiop.yoko.DispatchSubsystemFactory, \
   com.ibm.ws.transport.iiop.yoko.ORBConfigAdapter
+-dsannotations-options: version;minimum=1.2
 
 instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 

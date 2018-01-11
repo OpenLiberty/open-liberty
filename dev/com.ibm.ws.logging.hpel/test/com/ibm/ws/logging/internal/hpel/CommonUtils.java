@@ -33,9 +33,9 @@ public class CommonUtils {
     // Assumed product info (don't have to match real version)
     public final static String PRODUCT_INFO = "Liberty in Unittest";
     // It should be usable in both this project and build.image project runs.
-    public final static File LOG_DIR = new File("../com.ibm.ws.logging.hpel_test/build/logs");
+    public final static File LOG_DIR = new File("../com.ibm.ws.logging.hpel/build/logs");
     // Unittest logs should have different location than server logs
-    public final static File UNITTEST_LOGS = new File("../com.ibm.ws.logging.hpel_test/build/unittest-logs");
+    public final static File UNITTEST_LOGS = new File("../com.ibm.ws.logging.hpel/build/unittest-logs");
     // File line of text files created by LogProvider
     public final static String STREAM_TAG = "This is text file generated with the help of TextFileOutputStreamFactory";
 

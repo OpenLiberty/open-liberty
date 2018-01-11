@@ -40,10 +40,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.Currency;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -68,6 +65,9 @@ public class DefaultConverters {
     public final static Converter<String> STRING_CONVERTER = v -> v;
 
     public final static Converter<Boolean> BOOLEAN_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         if (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes") || v.equalsIgnoreCase("y") || v.equalsIgnoreCase("on") || v.equalsIgnoreCase("1")) {
             return Boolean.TRUE;
         } else {
@@ -75,86 +75,163 @@ public class DefaultConverters {
         }
     };
 
-    public final static Converter<Integer> INTEGER_CONVERTER = Integer::valueOf;
-    public final static Converter<Long> LONG_CONVERTER = Long::valueOf;
-    public final static Converter<Short> SHORT_CONVERTER = Short::valueOf;
-    public final static Converter<Byte> BYTE_CONVERTER = Byte::valueOf;
-    public final static Converter<Double> DOUBLE_CONVERTER = Double::valueOf;
-    public final static Converter<Float> FLOAT_CONVERTER = Float::valueOf;
+    public final static Converter<Integer> INTEGER_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Integer.valueOf(v);
+    };
+    public final static Converter<Long> LONG_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Long.valueOf(v);
+    };
+    public final static Converter<Short> SHORT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Short.valueOf(v);
+    };
+    public final static Converter<Byte> BYTE_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Byte.valueOf(v);
+    };
+    public final static Converter<Double> DOUBLE_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Double.valueOf(v);
+    };
+    public final static Converter<Float> FLOAT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Float.valueOf(v);
+    };
 
-    public final static Converter<BigInteger> BIG_INTEGER_CONVERTER = BigInteger::new;
-    public final static Converter<BigDecimal> BIG_DECIMAL_CONVERTER = BigDecimal::new;
+    public final static Converter<BigInteger> BIG_INTEGER_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new BigInteger(v);
+    };
+    public final static Converter<BigDecimal> BIG_DECIMAL_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new BigDecimal(v);
+    };
 
-    public final static Converter<AtomicInteger> ATOMIC_INTEGER_CONVERTER = s -> new AtomicInteger(Integer.parseInt(s));
-    public final static Converter<AtomicLong> ATOMIC_LONG_CONVERTER = s -> new AtomicLong(Long.parseLong(s));
+    public final static Converter<AtomicInteger> ATOMIC_INTEGER_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new AtomicInteger(Integer.parseInt(v));
+    };
+    public final static Converter<AtomicLong> ATOMIC_LONG_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new AtomicLong(Long.parseLong(v));
+    };
 
-    public final static Converter<Duration> DURATION_CONVERTER = (String value) -> {
+    public final static Converter<Duration> DURATION_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return Duration.parse(value);
+            return Duration.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<Period> PERIOD_CONVERTER = (String value) -> {
+    public final static Converter<Period> PERIOD_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return Period.parse(value);
+            return Period.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = (String value) -> {
+    public final static Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return LocalDateTime.parse(value);
+            return LocalDateTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<LocalDate> LOCAL_DATE_CONVERTER = (String value) -> {
+    public final static Converter<LocalDate> LOCAL_DATE_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return LocalDate.parse(value);
+            return LocalDate.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<LocalTime> LOCAL_TIME_CONVERTER = (String value) -> {
+    public final static Converter<LocalTime> LOCAL_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return LocalTime.parse(value);
+            return LocalTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<OffsetDateTime> OFFSET_DATE_TIME_CONVERTER = (String value) -> {
+    public final static Converter<OffsetDateTime> OFFSET_DATE_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return OffsetDateTime.parse(value);
+            return OffsetDateTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<OffsetTime> OFFSET_TIME_CONVERTER = (String value) -> {
+    public final static Converter<OffsetTime> OFFSET_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return OffsetTime.parse(value);
+            return OffsetTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<ZonedDateTime> ZONED_DATE_TIME_CONVERTER = (String value) -> {
+    public final static Converter<ZonedDateTime> ZONED_DATE_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return ZonedDateTime.parse(value);
+            return ZonedDateTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<Instant> INSTANT_CONVERTER = (String value) -> {
+    public final static Converter<Instant> INSTANT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return Instant.from(OffsetDateTime.parse(value));
+            return Instant.from(OffsetDateTime.parse(v));
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
@@ -196,93 +273,114 @@ public class DefaultConverters {
         return instant;
     }
 
-    public final static Converter<Currency> CURRENCY_CONVERTER = Currency::getInstance;
+    public final static Converter<Currency> CURRENCY_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Currency.getInstance(v);
+    };
 
-    public final static Converter<BitSet> BIT_SET_CONVERTER = v -> BitSet.valueOf(DatatypeConverter.parseHexBinary(v));
+    public final static Converter<BitSet> BIT_SET_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return BitSet.valueOf(DatatypeConverter.parseHexBinary(v));
+    };
 
     /**
      * Convert the string to a URI or throw ConvertException if unable to convert
      *
      */
-    public final static Converter<URI> URI_CONVERTER = (String value) -> {
+    public final static Converter<URI> URI_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         URI uri = null;
         try {
-            uri = new URI(value);
+            uri = new URI(v);
         } catch (URISyntaxException use) {
             throw new IllegalArgumentException(use);
         }
         return uri;
     };
 
-    public final static Converter<ChronoUnit> CHRONO_UNIT_CONVERTER = ChronoUnit::valueOf;
+    public final static Converter<ChronoUnit> CHRONO_UNIT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return ChronoUnit.valueOf(v);
+    };
 
     /**
      * Convert the string to a URL or throw ConvertException if unable to convert
      */
-    public final static Converter<URL> URL_CONVERTER = (String value) -> {
+    public final static Converter<URL> URL_CONVERTER = (String v) -> {
+        if (v == null) {
+            return null;
+        }
         URL url = null;
         try {
-            url = new URL(value);
+            url = new URL(v);
         } catch (MalformedURLException mfue) {
             throw new IllegalArgumentException(mfue);
         }
         return url;
     };
 
-    private static Map<Type, Converter<?>> defaultConverters = new HashMap<Type, Converter<?>>();
+    private static PriorityConverterMap defaultConverters = new PriorityConverterMap();
 
     static {
-        defaultConverters.put(String.class, STRING_CONVERTER);
+        defaultConverters.addConverter(String.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, STRING_CONVERTER);
 
-        defaultConverters.put(Boolean.class, BOOLEAN_CONVERTER);
-        defaultConverters.put(boolean.class, BOOLEAN_CONVERTER);
+        defaultConverters.addConverter(Boolean.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BOOLEAN_CONVERTER);
+        defaultConverters.addConverter(boolean.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BOOLEAN_CONVERTER);
 
-        defaultConverters.put(Integer.class, INTEGER_CONVERTER);
-        defaultConverters.put(int.class, INTEGER_CONVERTER);
+        defaultConverters.addConverter(Integer.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, INTEGER_CONVERTER);
+        defaultConverters.addConverter(int.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, INTEGER_CONVERTER);
 
-        defaultConverters.put(Long.class, LONG_CONVERTER);
-        defaultConverters.put(long.class, LONG_CONVERTER);
+        defaultConverters.addConverter(Long.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, LONG_CONVERTER);
+        defaultConverters.addConverter(long.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, LONG_CONVERTER);
 
-        defaultConverters.put(Short.class, SHORT_CONVERTER);
-        defaultConverters.put(short.class, SHORT_CONVERTER);
+        defaultConverters.addConverter(Short.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, SHORT_CONVERTER);
+        defaultConverters.addConverter(short.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, SHORT_CONVERTER);
 
-        defaultConverters.put(Byte.class, BYTE_CONVERTER);
-        defaultConverters.put(byte.class, BYTE_CONVERTER);
+        defaultConverters.addConverter(Byte.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BYTE_CONVERTER);
+        defaultConverters.addConverter(byte.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BYTE_CONVERTER);
 
-        defaultConverters.put(Double.class, DOUBLE_CONVERTER);
-        defaultConverters.put(double.class, DOUBLE_CONVERTER);
+        defaultConverters.addConverter(Double.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, DOUBLE_CONVERTER);
+        defaultConverters.addConverter(double.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, DOUBLE_CONVERTER);
 
-        defaultConverters.put(Float.class, FLOAT_CONVERTER);
-        defaultConverters.put(float.class, FLOAT_CONVERTER);
+        defaultConverters.addConverter(Float.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, FLOAT_CONVERTER);
+        defaultConverters.addConverter(float.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, FLOAT_CONVERTER);
 
-        defaultConverters.put(BigInteger.class, BIG_INTEGER_CONVERTER);
-        defaultConverters.put(BigDecimal.class, BIG_DECIMAL_CONVERTER);
+        defaultConverters.addConverter(BigInteger.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BIG_INTEGER_CONVERTER);
+        defaultConverters.addConverter(BigDecimal.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BIG_DECIMAL_CONVERTER);
 
-        defaultConverters.put(AtomicInteger.class, ATOMIC_INTEGER_CONVERTER);
-        defaultConverters.put(AtomicLong.class, ATOMIC_LONG_CONVERTER);
+        defaultConverters.addConverter(AtomicInteger.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, ATOMIC_INTEGER_CONVERTER);
+        defaultConverters.addConverter(AtomicLong.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, ATOMIC_LONG_CONVERTER);
 
-        defaultConverters.put(Duration.class, DURATION_CONVERTER);
-        defaultConverters.put(Period.class, PERIOD_CONVERTER);
+        defaultConverters.addConverter(Duration.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, DURATION_CONVERTER);
+        defaultConverters.addConverter(Period.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, PERIOD_CONVERTER);
 
-        defaultConverters.put(LocalDateTime.class, LOCAL_DATE_TIME_CONVERTER);
-        defaultConverters.put(LocalDate.class, LOCAL_DATE_CONVERTER);
-        defaultConverters.put(LocalTime.class, LOCAL_TIME_CONVERTER);
+        defaultConverters.addConverter(LocalDateTime.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, LOCAL_DATE_TIME_CONVERTER);
+        defaultConverters.addConverter(LocalDate.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, LOCAL_DATE_CONVERTER);
+        defaultConverters.addConverter(LocalTime.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, LOCAL_TIME_CONVERTER);
 
-        defaultConverters.put(OffsetDateTime.class, OFFSET_DATE_TIME_CONVERTER);
-        defaultConverters.put(OffsetTime.class, OFFSET_TIME_CONVERTER);
-        defaultConverters.put(ZonedDateTime.class, ZONED_DATE_TIME_CONVERTER);
+        defaultConverters.addConverter(OffsetDateTime.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, OFFSET_DATE_TIME_CONVERTER);
+        defaultConverters.addConverter(OffsetTime.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, OFFSET_TIME_CONVERTER);
+        defaultConverters.addConverter(ZonedDateTime.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, ZONED_DATE_TIME_CONVERTER);
 
-        defaultConverters.put(Instant.class, INSTANT_CONVERTER);
+        defaultConverters.addConverter(Instant.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, INSTANT_CONVERTER);
 
-        defaultConverters.put(Currency.class, CURRENCY_CONVERTER);
-        defaultConverters.put(BitSet.class, BIT_SET_CONVERTER);
+        defaultConverters.addConverter(Currency.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, CURRENCY_CONVERTER);
+        defaultConverters.addConverter(BitSet.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, BIT_SET_CONVERTER);
 
-        defaultConverters.put(URL.class, URL_CONVERTER);
-        defaultConverters.put(URI.class, URI_CONVERTER);
+        defaultConverters.addConverter(URL.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, URL_CONVERTER);
+        defaultConverters.addConverter(URI.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, URI_CONVERTER);
 
-        defaultConverters.put(ChronoUnit.class, CHRONO_UNIT_CONVERTER);
+        defaultConverters.addConverter(ChronoUnit.class, ConfigConstants.BUILTIN_CONVERTER_PRIORITY, CHRONO_UNIT_CONVERTER);
 
-        defaultConverters = Collections.unmodifiableMap(defaultConverters);
+        defaultConverters.setUnmodifiable();
 
     }
 
@@ -318,23 +416,22 @@ public class DefaultConverters {
     /**
      * @return defaultConverters
      */
-    public static Map<Type, Converter<?>> getDefaultConverters() {
+    public static PriorityConverterMap getDefaultConverters() {
         return defaultConverters;
     }
 
     /**
      * @return discoveredInventors
      */
-    public static Map<Type, Converter<?>> getDiscoveredConverters(ClassLoader classLoader) {
-        Map<Type, Converter<?>> discoveredConverters = new HashMap<Type, Converter<?>>();
+    public static PriorityConverterMap getDiscoveredConverters(ClassLoader classLoader) {
+        PriorityConverterMap discoveredConverters = new PriorityConverterMap();
 
         //load config sources using the service loader
         try {
             @SuppressWarnings("rawtypes")
             ServiceLoader<Converter> sl = ServiceLoader.load(Converter.class, classLoader);
             for (Converter<?> converter : sl) {
-                Type converterType = getConverterType(converter);
-                discoveredConverters.put(converterType, converter);
+                discoveredConverters.addConverter(converter);
             }
         } catch (ServiceConfigurationError e) {
             throw new ConfigException(Tr.formatMessage(tc, "unable.to.discover.converters.CWMCG0012E", e), e);
@@ -343,10 +440,10 @@ public class DefaultConverters {
         return discoveredConverters;
     }
 
-    public static Map<Type, Converter<?>> getConverters(ClassLoader classLoader) {
-        Map<Type, Converter<?>> converters = new HashMap<Type, Converter<?>>();
-        converters.putAll(getDefaultConverters());
-        converters.putAll(getDiscoveredConverters(classLoader));
+    public static PriorityConverterMap getConverters(ClassLoader classLoader) {
+        PriorityConverterMap converters = new PriorityConverterMap();
+        converters.addAll(getDefaultConverters());
+        converters.addAll(getDiscoveredConverters(classLoader));
         return converters;
     }
 

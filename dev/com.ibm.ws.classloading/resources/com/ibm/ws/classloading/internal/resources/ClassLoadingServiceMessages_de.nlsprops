@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: Das System konnte die Klasse [{0}] nicht als Ressource  [{1}] finden.
+cls.class.file.not.found.explanation=Ein Versuch, die Klassendatei als Ressource f\u00fcr eine Anwendung zu laden, war nicht erfolgreich.
+cls.class.file.not.found.useraction=Stellen Sie sicher, dass die Klasse f\u00fcr die Anwendung verf\u00fcgbar ist.
+
+cls.class.file.not.readable=CWWKL0002E: Das System konnte die Klasse [{0}] nicht als Ressource  [{1}] lesen.
+cls.class.file.not.readable.explanation=Ein Versuch, die Klassendatei als Ressource f\u00fcr eine Anwendung zu lesen, war nicht erfolgreich.
+cls.class.file.not.readable.useraction=\u00dcberpr\u00fcfen Sie die Dateisystemintegrit\u00e4t. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+cls.gateway.not.resolvable=CWWKL0003E: Das System konnte kein Klassenladeprogramm f\u00fcr die Anwendung [{0}] der Version [{1}] erstellen.
+cls.gateway.not.resolvable.explanation=Das System hat versucht, ein Anwendungsklasseladeprogramm zu erstellen, aber der Server stellt die erforderlichen Pakete nicht bereit. 
+cls.gateway.not.resolvable.useraction=Vergewissern Sie sich, dass der Server mit allen Features konfiguriert ist, die f\u00fcr die Unterst\u00fctzung dieser Anwendung erforderlich sind.
+
+cls.library.id.missing=CWWKL0004E: Das System konnte keine gemeinsam genutzte Bibliothek erstellen.
+cls.library.id.missing.explanation=Zum Definieren einer gemeinsam genutzten Bibliothek in der Serverkonfiguration m\u00fcssen Sie ein Attribut ID angeben.
+cls.library.id.missing.useraction=Bearbeiten Sie die Serverkonfiguration, und f\u00fcgen Sie dem Element library ein Attribut ID hinzu.
+
+cls.library.missing=CWWKL0005E: Das System konnte keine gemeinsam genutzte Bibliothek mit der ID [{0}] finden.
+cls.library.missing.explanation=Zum Referenzieren einer Bibliothek in der Serverkonfiguration m\u00fcssen Sie die ID einer vorhandenen Bibliothek angeben.
+cls.library.missing.useraction=Bearbeiten Sie die Serverkonfiguration, und stellen Sie sicher, dass die referenzierte Bibliothek definiert und die ID korrekt ist.
+
+cls.library.id.invalid=CWWKL0006E: Eine gemeinsam genutzte Bibliothek hat die ung\u00fcltige ID [{0}] wegen des Fehlers  [{1}]. 
+cls.library.id.invalid.explanation=Zum Angeben der ID f\u00fcr eine gemeinsam genutzte Bibliothek in der Serverkonfiguration m\u00fcssen Sie die Namenskonventionen f\u00fcr Attribute beachten.
+cls.library.id.invalid.useraction=Bearbeiten Sie die Serverkonfiguration, und \u00e4ndern Sie das Attribut ID des Elements library.
+
+cls.fileset.missing=CWWKL0007E: Die gemeinsam genutzte Bibliothek [{0}] referenziert eine Dateigruppe [{1}], die nicht vorhanden ist.
+cls.fileset.missing.explanation=Zum Referenzieren einer Dateigruppe aus einer gemeinsam genutzten Bibliothek in der Serverkonfiguration m\u00fcssen Sie die ID einer vorhandenen Dateigruppe angeben.
+cls.fileset.missing.useraction=Suchen Sie das Element library in der Serverkonfiguration, und stellen Sie sicher, dass die referenzierte Dateigruppe vorhanden ist.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: Die Anwendung [{0}] ist mit dem allgemeinen Klassenladeprogramm f\u00fcr die Bibliothek [{2}] nicht kompatibel, weil die Anwendung und das Klassenladeprogramm inkonsistente Konfigurationen f\u00fcr die API-Sichtbarkeit haben. Die Bibliothek [{2}] ist mit [{3}] und die Anwendung [{0}] mit [{1}] konfiguriert.
+cls.class.space.conflict.explanation=Eine Anwendung referenziert eine Bibliothek \u00fcber ein allgemeines Klassenladeprogramm und muss deshalb Klasseninstanzen gemeinsam nutzen. Anwendung und Klassenladeprogramm wurden jedoch f\u00fcr verschiedene API-S\u00e4tze konfiguriert. Die Anwendung und die Bibliothek m\u00fcssen mit demselben API-Satz konfiguriert werden, damit ein konsistentes Anwendungsverhalten gew\u00e4hrleistet ist.
+cls.class.space.conflict.useraction=Aktualisieren Sie die Konfiguration so, dass die Anwendung und die Bibliothek denselben API-Satz sehen, oder konfigurieren Sie die Anwendung so, dass sie die Bibliothek privat verwendet.
+
+cls.api.type.unknown=CWWKL0009W: Die Anwendung [{0}] ist f\u00fcr die Verwendung des unbekannten API-Typs [{1}] konfiguriert, der ignoriert wird. Die g\u00fcltigen Typen sind [{2}].
+cls.api.type.unknown.explanation=In der Konfiguration von Anwendungen kann angegeben werden, auf welche API-Typen sie zugreifen m\u00f6chten.
+cls.api.type.unknown.useraction=Stellen Sie sicher, dass in der Konfiguration nur g\u00fcltige Typen aufgelistet werden.
+
+cls.classloader.missing=CWWKL0010E: Das System konnte das Klassenladeprogramm mit der ID [{0}] nicht finden.
+cls.classloader.missing.explanation=Zum Referenzieren eines Klassenladeprogramms in der Serverkonfiguration m\u00fcssen Sie die ID eines vorhandenen Klassenladeprogramms angeben. 
+cls.classloader.missing.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, und stellen Sie sicher, dass das Klassenladeprogramm definiert wurde und dass die ID korrekt ist.
+
+cls.fileset.not.ready=CWWKL0011W: Das System konnte die Dateigruppe [{0}] f\u00fcr die gemeinsam genutzte Bibliothek [{1}] nicht abrufen.
+cls.fileset.not.ready.explanation=Eine gemeinsam genutzte Bibliothek wird verwendet, aber eine der zugeordneten Dateigruppen kann nicht rechtzeitig abgerufen werden.
+cls.fileset.not.ready.useraction=Suchen Sie nach Fehlern und Warnungen, die sich auf die Datengruppe beziehen, und beheben Sie sie.
+
+cls.library.file.invalid=CWWKL0012W: Die Bibliothek [{0}] gibt eine Datei mit dem Namen [{1}] an. Diese Datei ist nicht vorhanden oder falsch angegeben.
+cls.library.file.invalid.explanation=Wenn Sie einer Bibliothek in der Serverkonfiguration eine Datei hinzuf\u00fcgen m\u00f6chten, m\u00fcssen Sie den vollst\u00e4ndig qualifizierten Namen einer vorhandenen Datei angeben.
+cls.library.file.invalid.useraction=Bearbeiten Sie die Serverkonfiguration, und \u00e4ndern Sie das Attribut file des Elements library.
+
+cls.library.folder.invalid=CWWKL0013W: Die Bibliothek [{0}] gibt einen Ordner mit dem Namen [{1}] an. Dieser Ordner ist nicht vorhanden oder kein g\u00fcltiger Ordner.
+cls.library.folder.invalid.explanation=Wenn Sie einer Bibliothek in der Serverkonfiguration eine Datei hinzuf\u00fcgen m\u00f6chten, m\u00fcssen Sie den vollst\u00e4ndig qualifizierten Pfad zu einem vorhandenen Ordner angeben.
+cls.library.folder.invalid.useraction=Bearbeiten Sie die Serverkonfiguration, und \u00e4ndern Sie das Attribut folder des Elements library.
+
+cls.library.file.forbidden=CWWKL0014I: Die Datei [{0}] kann dem Klassenpfad nicht hinzugef\u00fcgt werden.
+cls.library.file.forbidden.explanation=Wenn Sie einem Klassenpfad eine Datei hinzuf\u00fcgen m\u00f6chten, muss diese Datei ein g\u00fcltiger Container mit Klassen und Ressourcen sein, z. B. eine JAR-Datei.
+cls.library.file.forbidden.useraction=Bearbeiten Sie die Serverkonfiguration, und stellen Sie sicher, dass alle file- und fileset-Attributes auf g\u00fcltige Klassen- und Ressourcencontainer verweisen.
+
+cls.library.created=CWWKL0015I: Die Bibliothek [{0}] ist verf\u00fcgbar.
+cls.library.created.explanation=Ein Bibliothek ist verf\u00fcgbar, z. B. aufgrund der Verarbeitung der Serverkonfiguration.
+cls.library.created.useraction=Es ist keine Benutzeraktion erforderlich. 
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: Die JAR-Dateien k\u00f6nnen nicht zum L\u00f6schen vorbereitet werden. Anwendungen, die JARs enthalten, k\u00f6nnen nicht gel\u00f6scht werden.
+WARN_JARS_STILL_CACHED.explanation=Der Server konnte das Sperren der JAR-Dateien in installierten Anwendungen nicht verhindern. Die JAR-Dateien k\u00f6nnen gesperrt bleiben, bis der Server gestoppt wird.
+WARN_JARS_STILL_CACHED.useraction=Zum L\u00f6schen von JAR-Dateien in einer installierten Anwendung muss der Server vor dem L\u00f6schen gestoppt werden.
+
+cls.library.archive=CWWKL0017W: Die Datei [{0}] kann dem Klassenpfad nicht hinzugef\u00fcgt werden, weil der folgende Fehler aufgetreten ist: [{1}]
+cls.library.archive.explanation=Dem Klassenpfad k\u00f6nnen nur Archivdateien wie JAR- oder ZIP-Dateien hinzugef\u00fcgt werden.
+cls.library.archive.useraction=Bearbeiten Sie die Serverkonfiguration, und stellen Sie sicher, dass alle \u00fcber das Element classloader referenzierten Dateien Archivdateien sind.
+
+cls.library.destroyed=CWWKL0018I: Die Bibliothek [{0}] ist nicht verf\u00fcgbar.
+cls.library.destroyed.explanation=Eine Bibliothek ist nicht verf\u00fcgbar, z. B., weil sie aus der Serverkonfiguration entfernt wurde.
+cls.library.destroyed.useraction=Wenn die Bibliothek weiterhin ben\u00f6tigt wird, stellen Sie sicher, dass sie weiterhin ordnungsgem\u00e4\u00df konfiguriert ist.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: Das Klassenladeprogramm [{0}] hat den Klassenprovider [{1}] nicht gefunden. Die Suche ist mit der Syntaxfehlernachricht [{2}] fehlgeschlagen.
+cls.provider.id.invalid.explanation=Ein Klassenladeprogramm wurde f\u00fcr die Delegierung an einen Klassenprovider konfiguriert, aber das Klassenladeprogramm konnte den entsprechenden Klassenprovider nicht abrufen. Das Klassenladeprogramm funktioniert zwar, kann aber keine Klassen oder Ressourcen vom angegebenen Klassenprovider abrufen.
+cls.provider.id.invalid.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf der Support-Webseite f\u00fcr WebSphere Application Server Support (http://www.ibm.com/software/webservers/appserv/was/support) an.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: Das Klassenladeprogramm [{0}] kann nicht an den Klassenprovider [{1}] delegiert werden. Der Klassenprovider hat einen Nullwert f\u00fcr das Klassenladeprogramm zur\u00fcckgegeben. Der Serviceanbieter des Klassenproviders ist [{2}].
+cls.provider.loader.null.explanation=Ein Klassenladeprogramm wurde f\u00fcr die Delegierung an einen Klassenprovider konfiguriert, aber der Klassenprovider hat kein kompatibles Klassenladeprogramm bereitgestellt und kann deshalb nicht verwendet werden. Das Klassenladeprogramm funktioniert zwar, kann aber keine Klassen oder Ressourcen vom angegebenen Klassenprovider abrufen.
+cls.provider.loader.null.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf der Support-Webseite f\u00fcr WebSphere Application Server Support (http://www.ibm.com/software/webservers/appserv/was/support) an oder wenden Sie sich an den Serviceanbieter des Klassenproviders.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: Das Klassenladeprogramm [{0}] kann nicht an den Klassenprovider [{1}] delegiert werden. Der Klassenprovider hat ein nicht erwartetes Klassenladeprogramm des Typs [{2}] zur\u00fcckgegeben. Der Serviceanbieter des Klassenproviders ist [{3}].
+cls.provider.loader.unknown.explanation=Ein Klassenladeprogramm wurde f\u00fcr die Delegierung an einen Klassenprovider konfiguriert, aber der Klassenprovider hat kein kompatibles Klassenladeprogramm bereitgestellt und kann deshalb nicht verwendet werden. Das Klassenladeprogramm funktioniert zwar, kann aber keine Klassen oder Ressourcen vom angegebenen Klassenprovider abrufen.
+cls.provider.loader.unknown.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf der Support-Webseite f\u00fcr WebSphere Application Server Support (http://www.ibm.com/software/webservers/appserv/was/support) an oder wenden Sie sich an den Serviceanbieter des Klassenproviders.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: Das Klassenladeprogramm [{0}] ist mit dem Klassenprovider [{2}] nicht kompatibel, weil ihre Konfigurationen f\u00fcr die API-Sichtbarkeit nicht konsistent sind. Das Klassenladeprogramm ist mit [{1}] und der Klassenprovider mit [{3}] konfiguriert.
+cls.provider.class.space.conflict.explanation=Ein Klassenladeprogramm wurde zum Delegieren an einen bestimmten Klassenprovider konfiguriert und soll Klasseninstanzen gemeinsam verwenden. Sie wurden jedoch f\u00fcr verschiedene API-S\u00e4tze konfiguriert. Das delegierende Klassenladeprogramm und der Klassenprovider m\u00fcssen mit demselben API-Satz konfiguriert werden, damit ein konsistentes Anwendungsverhalten gew\u00e4hrleistet ist.
+cls.provider.class.space.conflict.useraction=Aktualisieren Sie die Konfiguration so, dass das delegierende Klassenladeprogramm und der Klassenprovider denselben API-Satz sehen.
+
+slf.no.cache=CWWKL0070E: Das Cacheverzeichnis wurde nicht erstellt.
+slf.no.cache.explanation=Das System konnte keinen Ordner auf der Platte erstellen.
+slf.no.cache.useraction=Stellen Sie sicher, dass das Laufwerk die erforderlichen Schreibberechtigungen besitzt und dass gen\u00fcgend Speicherplatz auf der Platte verf\u00fcgbar ist.
+slf.no.acf=CWWKL0071E: Es wurde ein Nullwert f\u00fcr das ArtifactContainerFactory-Objekt gefunden.
+slf.no.acf.explanation=Das ArtifactContainerFactory-Objekt darf nicht null sein, wenn der Server aktiv ist.
+slf.no.acf.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf der Support-Webseite f\u00fcr WebSphere Application Server Support (http://www.ibm.com/software/webservers/appserv/was/support) an oder wenden Sie sich an den Serviceanbieter des Klassenproviders.
+slf.failed.delete=CWWKL0072W: Die Cachedatei [{0}] kann nicht gel\u00f6scht werden. Dieses Ergebnis kann zur Besch\u00e4digung verschachtelter Archive f\u00fchren.
+slf.failed.delete.explanation=Das System konnte die Cachedatei nicht l\u00f6schen. Weil die Datei immer noch im System vorhanden ist, kann dies zu einer Besch\u00e4digung der verschachtelten Archive f\u00fchren.
+slf.failed.delete.useraction=Vergewissern Sie sich, dass die Cachedatei nicht gesperrt ist, weil dies dazu f\u00fchrt, dass das L\u00f6schen der Datei fehlschl\u00e4gt. 

@@ -1,6 +1,0 @@
-# This file is used to determine which files in the build component get loaded when running an async build. 
-# All we're after is a thin bootstrapping layer. 
-
-versionableName=/fattest.simplicity/
-versionableName=/test_prereqs/
-versionableName=/test_build/

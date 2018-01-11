@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
@@ -29,6 +30,8 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.javaeesec.CDIHelper;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
 @Default
 @ApplicationScoped
@@ -38,7 +41,8 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
     /**
      * list of identityStore sorted by priority. the first is the highest and the last is the lowest.
      */
-    private final TreeSet<IdentityStore> identityStores = new TreeSet<IdentityStore>(priorityComparator);
+//    private final TreeSet<IdentityStore> identityStores = new TreeSet<IdentityStore>(priorityComparator);
+    private final ConcurrentHashMap<String, Set<IdentityStore>> identityStoreMap = new ConcurrentHashMap<String, Set<IdentityStore>>();
 
     public IdentityStoreHandlerImpl() {}
 
@@ -49,19 +53,18 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
      */
     @Override
     public CredentialValidationResult validate(Credential credential) {
-        return validate(identityStores, credential);
+        return validate(getIdentityStores(identityStoreMap), credential);
     }
 
     public CredentialValidationResult validate(Set<IdentityStore> identityStores, Credential credential) {
         CredentialValidationResult firstInvalid = null;
         CredentialValidationResult result = CredentialValidationResult.NOT_VALIDATED_RESULT;
         boolean supportGroups = false;
-        if (identityStores.isEmpty()) {
-            scanIdentityStores(identityStores);
-        }
+        boolean isValidated = false;
         if (!identityStores.isEmpty()) {
             for (IdentityStore is : identityStores) {
                 if (is.validationTypes().contains(IdentityStore.ValidationType.VALIDATE)) {
+                    isValidated = true;
                     result = is.validate(credential);
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "validation status : " + result.getStatus() + ", identityStore : " + is);
@@ -81,11 +84,17 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             // at this point, result contains the result of the last IdentityStore.
             if (result != null && result.getStatus() == CredentialValidationResult.Status.VALID) {
                 Set<String> groups = getGroups(identityStores, result, supportGroups);
-                result = new CredentialValidationResult(null, result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                             "IdentityStore ID : " + result.getIdentityStoreId() + ", CallerPrincipal : "
+                                 + (result.getCallerPrincipal() != null ? result.getCallerPrincipal().getName() : "null") + ", CallerDN : " + result.getCallerDn()
+                                 + ", CallerUniqueId : " + result.getCallerUniqueId() + ", Groups : " + groups);
+                }
+                result = new CredentialValidationResult(result.getIdentityStoreId(), result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
             } else if (firstInvalid != null) {
                 result = firstInvalid;
-            } else if (result == null) {
-                // something funny happened. return NOT_VALIDATED.
+            } else if (!isValidated) {
+                Tr.error(tc, "JAVAEESEC_ERROR_NO_VALIDATION");
                 result = CredentialValidationResult.NOT_VALIDATED_RESULT;
             }
         } else {
@@ -99,7 +108,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return result;
     }
 
-    private Set<String> getGroups(Set<IdentityStore> identityStores, CredentialValidationResult result, boolean supportGroups) {
+    protected Set<String> getGroups(Set<IdentityStore> identityStores, CredentialValidationResult result, boolean supportGroups) {
         Set<String> combinedGroups = new HashSet<String>();
         if (supportGroups) {
             Set<String> groups = result.getCallerGroups();
@@ -133,39 +142,85 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return AccessController.doPrivileged(action);
     }
 
-    private void scanIdentityStores(Set<IdentityStore> identityStores) {
-        Instance<IdentityStore> beanInstances = CDI.current().select(IdentityStore.class);
-        if (beanInstances != null) {
-            for (IdentityStore is : beanInstances) {
+    protected CDI<Object> getCDI() {
+        return CDI.current();
+    }
+
+    protected Set<IdentityStore> getIdentityStores(ConcurrentHashMap<String, Set<IdentityStore>> identityStoreMap) {
+        String moduleName = getModuleName();
+        Set<IdentityStore> stores = identityStoreMap.get(moduleName);
+        if (stores == null) {
+            stores = new TreeSet<IdentityStore>(priorityComparator);
+            scanIdentityStores(stores);
+            identityStoreMap.put(moduleName, stores);
+        } else if (stores.size() > 1) {
+            /*
+             * We need to re-sort since priority can change due to deferred EL expressions.
+             */
+            Set<IdentityStore> oldStores = stores;
+            stores = new TreeSet<IdentityStore>(priorityComparator);
+            stores.addAll(oldStores);
+        }
+        return stores;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected void scanIdentityStores(Set<IdentityStore> identityStores) {
+        CDI cdi = getCDI();
+        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        if (identityStoreInstances != null) {
+            for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore : " + is + ", validationTypes : " + is.validationTypes() + ", priority : " + is.priority());
+                    Tr.debug(tc, "IdentityStore from the CDI: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : "
+                                 + identityStore.priority());
                 }
-                identityStores.add(is);
+                identityStores.add(identityStore);
             }
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "BeanManager not found.");
+        }
+        // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
+        if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore from module BeanManager: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : "
+                                 + identityStore.priority());
+                }
+                identityStores.add(identityStore);
             }
+        }
+
+        if (identityStores.isEmpty()) {
+            Tr.error(tc, "JAVAEESEC_ERROR_NO_IDENTITYSTORES");
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Number of identityStore : " + identityStores.size());
         }
         return;
     }
 
     private final static Comparator<IdentityStore> priorityComparator = new Comparator<IdentityStore>() {
         // Sort priority in ascending order
-        // Comparator returning 0 should leave elements in list alone, preserving original order.
+        // Comparator returns 0 if both objects are identical.
         @Override
         public int compare(IdentityStore o1, IdentityStore o2) {
-            int result = 0;
-            int p1 = o1.priority();
-            int p2 = o2.priority();
-            if (p1 < p2)
+            int result = 1;
+            if (o1.equals(o2)) {
+                result = 0;
+            } else if (o1.priority() < o2.priority()) {
                 result = -1;
-            else if (p1 > p2)
-                result = 1;
+            }
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "compare", new Object[] { o1, o2, result, this });
             }
             return result;
         }
     };
+
+    protected String getModuleName() {
+        return ModulePropertiesUtils.getInstance().getJ2EEModuleName();
+    }
+
+    protected void clearIdentityStoreMap() {
+        identityStoreMap.clear();
+    }
+
 }

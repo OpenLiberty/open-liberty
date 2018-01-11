@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: No se ha podido crear HttpUpgradeHandler: {0}.  Aseg\u00farese de que tiene un constructor por omisi\u00f3n y de que puede crearse una instancia.
+failed.to.create.httpupgradehandler.explanation=No se ha podido crear HttpUpgradeHandler.
+failed.to.create.httpupgradehandler.useraction=Compruebe los registros de captura de datos en primer error para obtener m\u00e1s detalles sobre el error.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: La caracter\u00edstica servlet-3.1 no est\u00e1 en uso.
+servlet.31.not.in.use.explanation=La caracter\u00edstica servlet-3.1 no est\u00e1 en uso.  Es posible que ya est\u00e9 en uso una versi\u00f3n anterior de servlet.
+servlet.31.not.in.use.useraction=A\u00f1ada la caracter\u00edstica servlet-3.1 al archivo server.xml.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: No puede iniciar esta operaci\u00f3n desde una escucha a\u00f1adida mediante programaci\u00f3n cuando se utiliza la caracter\u00edstica servlet-3.1. (Operaci\u00f3n: {0} | Escucha: {1} | Aplicaci\u00f3n: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=No puede iniciar algunas operaciones desde una escucha a\u00f1adida mediante programaci\u00f3n puesto que no hay ninguna opci\u00f3n de configuraci\u00f3n que restrinja su inicio cuando se definen en un Descriptor de bibliotecas de c\u00f3digos (TLD).
+Unsupported.op.from.servlet.context.listener.31.useraction=A\u00f1ada la escucha mediante una anotaci\u00f3n o en el archivo web.xml para permitir que se inicie este m\u00e9todo.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null=SRVE9003E: El objeto HttpUpgradeHandler pasado es NULL con la aplicaci\u00f3n web: {0}.
+handlerClass.is.null.explanation=No se ha podido actualizar la solicitud porque el objeto HttpUpgradeHandler pasado es NULL.
+handlerClass.is.null.useraction= Aseg\u00farese de que se proporciona el objeto HttpUpgradeHandler correcto.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: El intento de establecer un ReadListener ha fallado porque el objeto ReadListener era nulo.
+readlistener.is.null.explanation=El argumento variable pasado a la API setReadListener debe ser un objeto readListener v\u00e1lido.
+readlistener.is.null.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+writelistener.is.null=SRVE9005E: Un intento de establecer un WriteListener ha fallado porque el objeto WriteListener era nulo.
+writelistener.is.null.explanation=El argumento variable pasado a la API WriteListener debe ser un objeto writeListener v\u00e1lido.
+writelistener.is.null.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: Un intento de establecer un ReadListener ha fallado porque la solicitud asociada no async iniciada o la solicitud no se ha actualizado.
+readlistener.async.not.started.explanation=Puede establecer el ReadListener en la solicitud solo si se ha iniciado async o se invoca el m\u00e9todo init de un UpgradeHandler.
+readlistener.async.not.started.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: Un intento de establecer un WriteListener ha fallado porque la solicitud asociada no tiene async iniciado o la solicitud no se ha actualizado.
+writelistener.async.not.started.explanation=Puede establecer el WriteListener s\u00f3lo en la solicitud si async se ha iniciado o se invoca un m\u00e9todo init de un UpgradeHandler.
+writelistener.async.not.started.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+readlistener.already.started=SRVE9008E: Un intento de establecer un ReadListener ha fallado porque el ReadListener ya est\u00e1 establecido.
+readlistener.already.started.explanation=El ReadListener no se puede establecer m\u00e1s de una vez.
+readlistener.already.started.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+writelistener.already.started=SRVE9009E: Un intento de establecer un WriteListener ha fallado porque el WriteListener ya est\u00e1 establecido.
+writelistener.already.started.explanation=El WriteListener no se puede establecer m\u00e1s de una vez.
+writelistener.already.started.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: Un intento de leer ha fallado porque la API isReady devuelve false.
+read.failed.isReady.false.explanation= Si isReady devuelve false no est\u00e1 permitido invocar un m\u00e9todo de lectura.
+read.failed.isReady.false.useraction= Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: Un intento de leer de una InputStream o de escribir en una OutputStream ha fallado porque un argumento variable byte[] era nulo.
+read.write.bytearray.null.explanation=El argumento variable byte[] pasado a la API de lectura o escritura debe ser nulo.
+read.write.bytearray.null.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: Un intento de leer o escribir ha fallado porque el desplazamiento {0} o la longitud {1} de uno de los argumentos variables es negativo, o bien desplazamiento+longitud es mayor que la longitud de byte[] proporcionada: {2}.
+read.write.offset.length.bytearraylength.explanation= El desplazamiento de argumentos variables era negativo, la longitud era negativa, o la longitud era mayor que byte[].longitud - desplazamiento.
+read.write.offset.length.bytearraylength.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n y verifique que el valor de desplazamiento proporcionado para la API de lectura o escritura no es negativo. Aseg\u00farese de que el valor de longitud proporcionado a la API de lectura no es negativo. Asimismo, aseg\u00farese de que el valor de longitud proporcionado es mayor que el valor de byte[] longitud menos desplazamiento proporcionado.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: Al establecer el ReadListener en una solicitud actualizada, se ha producido una excepci\u00f3n durante la lectura inicial: {0}
+setReadListener.initialread.failed.explanation=Al establecer el ReadListener, el escucha intenta leer, lo que ha fallado.
+setReadListener.initialread.failed.useraction=Revise los registros de la JVM para ver la excepci\u00f3n.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: Un intento de cambiar el ID de sesi\u00f3n ha fallado porque no hab\u00eda ninguna sesi\u00f3n asociada con la solicitud de: {0}
+changeSessionId.no.session.associated.with.request.explanation=Para cambiar el ID de sesi\u00f3n de una solicitud, aseg\u00farese primero de que la solicitud que utiliza tiene una sesi\u00f3n asociada.
+changeSessionId.no.session.associated.with.request.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: No se puede obtener el objeto de solicitud o respuesta despu\u00e9s de un AsyncContext.dispatch() o AsyncContext.complete().
+asynccontext.getRequestResponse.illegalstateexception.explanation= Desde Servlet 3.1 AsyncContext.getRequest() y AsyncContext.getResponse() debe lanzar una IllegalStateException si complete() o se ha invocado cualquiera de los m\u00e9todos dispatch() en el ciclo as\u00edncrono. 
+asynccontext.getRequestResponse.illegalstateexception.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: No se ha podido leer ni escribir porque la secuencia se ha cerrado.
+stream.is.closed.no.read.write.explanation=La API de escritura en el objeto OutputStream y la API de lectura en el objeto InputStream indican que se podr\u00eda lanzar una IOException si se ha cerrado la secuencia.
+stream.is.closed.no.read.write.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n seg\u00fan la explicaci\u00f3n del error.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: El cuerpo enviado contiene menos bytes que los especificados en content-length.
+post.body.contains.less.bytes.than.specified.explanation=Puede que la petici\u00f3n entrante est\u00e9 mal formada o da\u00f1ada como consecuencia de una aplicaci\u00f3n de lado del cliente o de un error de red.
+post.body.contains.less.bytes.than.specified.useraction=Revise la aplicaci\u00f3n de lado del cliente o la red para determinar por qu\u00e9 se ha truncado la petici\u00f3n.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: El intento de bloqueo de escritura no est\u00e1 permitido porque la E/S sin bloqueo ya lo ha iniciado la aplicaci\u00f3n que registra WriteListener [{0}].
+blocking.write.not.allowed.explanation=La escritura de bloqueo solicitada no se puede completar porque la E/S sin bloqueo completada ya se ha iniciado.
+blocking.write.not.allowed.useraction=Revise la aplicaci\u00f3n para determinar d\u00f3nde se ha realizado el bloqueo de escritura. Por ejemplo, podr\u00eda deberse a un servlet tras registrar WriteListener, o bien a un WriteListener que realiza una segunda escritura tras llamar a la API isReady(). Una vez que se determina la escritura de bloqueo, cambie la aplicaci\u00f3n para asegurarse de que se realiza como parte de WriteListener y/o despu\u00e9s de llamar a isReady().
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: Se ha producido una excepci\u00f3n durante la aplicaci\u00f3n WriteListener [{0}] onError() API, excepci\u00f3n [{1}]
+writeListener.onError.failed.explanation= Se ha producido una excepci\u00f3n durante la aplicaci\u00f3n WriteListener onError() API.
+writeListener.onError.failed.useraction=Revise los registros para determinar la excepci\u00f3n emitida desde la implementaci\u00f3n de la aplicaci\u00f3n de onError() API y c\u00f3mo resolver el problema. Tenga en cuenta que si se ha producido una excepci\u00f3n de E/S, la API onError() no puede escribir la salida.
+# --------------------------------
+ 

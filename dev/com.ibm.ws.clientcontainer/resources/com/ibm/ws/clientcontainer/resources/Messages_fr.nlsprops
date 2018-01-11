@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: La classe doit avoir un constructeur no-arguments.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=La classe doit avoir un constructeur no-arguments et doit impl\u00e9menter l'interface javax.security.auth.callback.CallbackHandler.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=Ajoutez un constructeur no-arguments \u00e0 la classe de gestionnaire d'appel.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: L''exception d''injection suivante est survenue pour la m\u00e9thode de gestion PostConstruct : {0}.
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=Une exception est g\u00e9n\u00e9r\u00e9e lorsque le conteneur appelle la m\u00e9thode PostConstruct.   
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=V\u00e9rifiez que la m\u00e9thode PostConstruct est correctement d\u00e9finie dans le descripteur de d\u00e9ploiement ou qu'elle est correctement annot\u00e9e dans la classe.    
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: L''exception d''injection suivante est survenue pour la m\u00e9thode de gestion PreDestroy : {0}.
+INJECTION_PREDESTROY_CWWKC2453E.explanation=Une exception est g\u00e9n\u00e9r\u00e9e lorsque le conteneur appelle la m\u00e9thode PreDestroy. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=V\u00e9rifiez que la m\u00e9thode PreDestroy est correctement d\u00e9finie dans le descripteur de d\u00e9ploiement ou qu'elle est correctement annot\u00e9e dans la classe. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: La classe {1} comporte plusieurs m\u00e9thodes PostConstruct ou PreDestroy. La m\u00e9thode PostConstruct ou PreDestroy {0} ne sera pas appel\u00e9e par le conteneur.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=Plusieurs m\u00e9thodes PostConstruct ou PreDestroy sont d\u00e9clar\u00e9es dans la classe.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=Aucune action n'est requise. Le conteneur appelle la premi\u00e8re m\u00e9thode qu'il d\u00e9tecte.

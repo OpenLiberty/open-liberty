@@ -139,8 +139,9 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
             WebReply reply = new DenyReply("AuthenticationFailed");
             Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(reply.getStatusCode()));
             handleError(request, response);
+        } else {
+            postFormLoginProcess(request, response, authResult.getSubject());
         }
-        postFormLoginProcess(request, response, authResult.getSubject());
         return true;
     }
 

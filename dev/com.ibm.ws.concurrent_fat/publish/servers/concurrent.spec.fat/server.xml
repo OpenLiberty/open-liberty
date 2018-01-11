@@ -1,0 +1,41 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>concurrent-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>jndi-1.0</feature>
+    <feature>usr:concurrenttest-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+  <variable name="onError" value="FAIL"/>
+
+  <managedExecutorService jndiName="concurrent/jeeMetadataContextSvc">
+    <contextService>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedExecutorService>
+
+  <managedExecutorService jndiName="concurrent/xsvc-empty-context">
+    <contextService/>
+  </managedExecutorService>
+
+  <managedScheduledExecutorService jndiName="concurrent/schedxsvc-classloader-context">
+    <contextService>
+      <classloaderContext/>
+    </contextService>
+  </managedScheduledExecutorService>
+
+  <managedThreadFactory jndiName="concurrent/threadFactory-jee-metadata-context" maxPriority="7">
+    <contextService>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedThreadFactory>
+
+  <!-- Test application needs these permissions to help verify thread context -->
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="getContextClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  
+</server>

@@ -150,6 +150,9 @@
         <AD name="%http.noCacheCookiesControl" description="%http.noCacheCookiesControl.desc"
             id="NoCacheCookiesControl" required="false" type="Boolean" default="true" />   
             
+        <AD name="%http.autoDecompression" description="%http.autoDecompression.desc"
+            id="AutoDecompression" required="false" type="Boolean" default="true" />    
+            
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"
             id="v0CookieDateRFC1123compat" required="false" type="Boolean" default="true" />

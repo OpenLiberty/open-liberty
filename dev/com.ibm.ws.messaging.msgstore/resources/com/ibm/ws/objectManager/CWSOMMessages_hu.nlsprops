@@ -1,0 +1,454 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.example.CWSOMMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+# 
+# Instructions to translation will precede the line to which it applies
+# {0} description of each insert field
+# ClassName_MessageName=CWSOM0001I: This is a message with insert {0}
+# ClassName_MessageName.explanation=Explanation text for the message.
+# ClassName_MessageName.useraction=User action text for the message.
+#
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSOMIS9999 is for emergency use if any new messages are required after the messages file is finalized
+# -------------------------------------------------------------------------------------------------
+#
+#
+#CMVCPATHNAME %Z%%W% %I%
+#COMPONENTPREFIX CWSOM
+#COMPONENTNAMEFOR CWSOM ObjectManager
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+
+# {0} name of the log file.
+ObjectManagerState_ColdStart=CWSOM0001I: {0} napl\u00f3f\u00e1jlt haszn\u00e1l\u00f3 objektumkezel\u0151 hidegen lett elind\u00edtva.
+ObjectManagerState_ColdStart.explanation=Az objektumkezel\u0151h\u00f6z egy \u00fcres napl\u00f3f\u00e1jl lett hozz\u00e1adva, \u00edgy az hidegen lett elind\u00edtva.
+ObjectManagerState_ColdStart.useraction= Nincs, kiv\u00e9ve, ha az objektumkezel\u0151 melegind\u00edt\u00e1s\u00e1t v\u00e1rta. \
+Vizsg\u00e1lja meg, hogy melyik esetben mi\u00e9rt volt a napl\u00f3f\u00e1jl \u00fcres.
+ 
+# {0} name of the log file.
+# {1) The LOG_FILE_TYPE used for the warm start.
+ObjectManagerState_WarmStart=CWSOM0002I: {0} napl\u00f3f\u00e1jlt haszn\u00e1l\u00f3 objektumkezel\u0151 melegen lett elind\u00edtva. A napl\u00f3f\u00e1jl t\u00edpusa {1}.
+ObjectManagerState_WarmStart.explanation=Az objektumkezel\u0151h\u00f6z egy \u00e9rv\u00e9nyes napl\u00f3f\u00e1jl lett hozz\u00e1adva, amelyikb\u0151l az k\u00e9pes volt \u00fajraindulni.
+ObjectManagerState_WarmStart.useraction=Nincs, kiv\u00e9ve, ha az objektumkezel\u0151 hidegind\u00edt\u00e1s\u00e1t v\u00e1rta. \
+Vizsg\u00e1lja meg, hogy melyik esetben mi\u00e9rt nem volt a napl\u00f3f\u00e1jl \u00fcres.
+ 
+# {0} name of the log file.
+ObjectManagerState_Shutdown=CWSOM0003I: {0} napl\u00f3f\u00e1jlt haszn\u00e1l\u00f3 objektumkezel\u0151 le\u00e1llt.
+ObjectManagerState_Shutdown.explanation=Az objektumkezel\u0151 le\u00e1ll\u00edt\u00e1sa lett k\u00e9rve.
+ObjectManagerState_Shutdown.useraction=Nincs, hacsak nem v\u00e1rta az objektumkezel\u0151 le\u00e1ll\u00edt\u00e1s\u00e1t.
+
+# {0} name of the log file.
+ObjectManagerState_ShutdownFast=CWSOM0004I: {0} napl\u00f3f\u00e1jlt haszn\u00e1l\u00f3 objektumkezel\u0151 v\u00e9gs\u0151 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sa n\u00e9lk\u00fcl le\u00e1llt.
+ObjectManagerState_ShutdownFast.explanation=Az objektumkezel\u0151 v\u00e9gs\u0151 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sa n\u00e9lk\u00fcli le\u00e1ll\u00edt\u00e1sa lett k\u00e9rve, vagy bizonyos ezt megel\u0151z\u0151 hib\u00e1k miatt \u00e1llt le.
+ObjectManagerState_ShutdownFast.useraction=Nincs, hacsak nem v\u00e1rta az objektumkezel\u0151 v\u00e9gs\u0151 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sa n\u00e9lk\u00fcli le\u00e1ll\u00edt\u00e1s\u00e1t. \
+Vizsg\u00e1lja meg a diagnosztikai kimenetet a v\u00e1ratlan le\u00e1ll\u00e1s ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz.
+
+# {0} Descriptive name of the transaction to be backed out.
+ObjectManagerState_LogTooFull=CWSOM0005W: Az objektumkezel\u0151 a napl\u00f3f\u00e1jlt t\u00fals\u00e1gosan telinek tal\u00e1lta, \u00e9s a(z) {0} tranzakci\u00f3t visszal\u00e9pteti.
+ObjectManagerState_LogTooFull.explanation=Az objektumkezel\u0151 miut\u00e1n k\u00e9sz lett az ellen\u0151rz\u00e9si ponttal, kev\u00e9s napl\u00f3f\u00e1jl ter\u00fclettel rendelkezett, ez\u00e9rt ter\u00fcletfelszabad\u00edt\u00e1s \u00e9rdek\u00e9ben visszal\u00e9ptette a legnagyobb tranzakci\u00f3t a napl\u00f3ban.
+ObjectManagerState_LogTooFull.useraction=A be\u00e1ll\u00edtott napl\u00f3f\u00e1jl m\u00e9ret\u00e9hez k\u00e9pest t\u00fal sok tranzakci\u00f3s munk\u00e1t pr\u00f3b\u00e1l elv\u00e9gezni. \
+Gondolja \u00e1t, hogy a tranzakci\u00f3i pr\u00f3b\u00e1lnak-e t\u00fal sok friss\u00edt\u00e9st elv\u00e9gezni, vagy \u00d6n pr\u00f3b\u00e1l-e t\u00fal nagy objektumokat friss\u00edteni, vagy \u00d6n pr\u00f3b\u00e1l-e egyidej\u0171leg t\u00fal sok tranzakci\u00f3t futtatni, vagy a napl\u00f3f\u00e1jlja t\u00fal kicsi \u00e9s nagyobbra kellene k\u00e9sz\u00edteni. 
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} Descriptive name of the transaction to be backed out.
+InternalTransaction_BackoutOrphan=CWSOM0100W: Szem\u00e9tgy\u0171jt\u00e9s k\u00f6zben egy {0} tranzakci\u00f3 lett felt\u00e9rk\u00e9pezve \u00e9s vissza lesz l\u00e9ptetve.
+InternalTransaction_BackoutOrphan.explanation=Az alkalmaz\u00e1s elvesztette hivatkoz\u00e1s\u00e1t egy tranzakci\u00f3hoz, \u00e9s nem tudja teljes\u00edteni a tranzakci\u00f3t. \
+Ez\u00e9rt az objektumkezel\u0151 az er\u0151forr\u00e1sai felszabad\u00edt\u00e1sa \u00e9rdek\u00e9ben visszal\u00e9pteti a tranzakci\u00f3t.
+InternalTransaction_BackoutOrphan.useraction=Az alkalmaz\u00e1sa elvesztette hivatkoz\u00e1s\u00e1t egy tranzakci\u00f3hoz. \
+Ha az alkalmaz\u00e1s rendellenesen fejez\u0151d\u00f6tt be, akkor nincs tov\u00e1bbi teend\u0151. \
+Ha az alkalmaz\u00e1s an\u00e9lk\u00fcl veszti el hivatkoz\u00e1s\u00e1t, hogy rendellenesen fejez\u0151dne be, akkor ez az alkalmaz\u00e1sbeli hib\u00e1nak tekinthet\u0151.
+              
+# ----------------------------------------------------------------------------------------------------
+
+# {0} ObjectStore which could not safely be closed.
+ObjectStore_UnsafeToFlush=CWSOM0200W: A(z) {0} objektumt\u00e1rol\u00f3t STRATEGY_SAVE_ONLY_ON_SHUTDOWN strat\u00e9gi\u00e1val nem lehet biztons\u00e1gosan bez\u00e1rni.
+ObjectStore_UnsafeToFlush.explanation=Ha a le\u00e1ll\u00edt\u00e1sn\u00e1l akt\u00edv tranzakci\u00f3k vannak. \
+Az objektumt\u00e1rol\u00f3t STRATEGY_SAVE_ONLY_ON_SHUTDOWN strat\u00e9gi\u00e1val nem lehet biztons\u00e1gosan bez\u00e1rni, mivel l\u00e9teznek m\u00e9g akt\u00edv tranzakci\u00f3k. \
+Az objektumt\u00e1rol\u00f3 bez\u00e1r\u00e1sa \u00f6sszef\u00e9rhetetlen adatok ment\u00e9s\u00e9hez vezethet.  \
+Az objektumt\u00e1rol\u00f3 v\u00e1ltozatlanul van hagyva.
+ObjectStore_UnsafeToFlush.useraction=Vizsg\u00e1lja meg, hogy mi\u00e9rt l\u00e9teznek m\u00e9g akt\u00edv tranzakci\u00f3k. \
+Ezek az akt\u00edv tranzakci\u00f3k az\u00e9rt l\u00e9tezhetnek, mert k\u00fcls\u0151 tranzakci\u00f3kezel\u0151t haszn\u00e1l. \
+Ha nem tudja elker\u00fclni, hogy le\u00e1ll\u00edt\u00e1skor akt\u00edv tranzakci\u00f3i legyenek, akkor elt\u00e9r\u0151 t\u00e1rol\u00e1si strat\u00e9gi\u00e1j\u00fa objektumt\u00e1rol\u00f3t haszn\u00e1ljon.
+
+# {0} Bytes required in the file system.
+# {1} Bytes currently used in the file system.
+# {2} Exception caught when trying to reserved the bytes.
+ObjectStore_AllocateFileSpaceFailed=CWSOM0201W: Az objektumt\u00e1rol\u00f3 {0} byte t\u00e1rter\u00fcletet ig\u00e9nyel, amikor jelenleg {1} byte foglalt, azonban az {2} kiv\u00e9telt fogadott.
+ObjectStore_AllocateFileSpaceFailed.explanation=A f\u00e1jlrendszer nem tudja lefoglalni a sz\u00fcks\u00e9ges ter\u00fcletet. \
+A pr\u00f3b\u00e1lkoz\u00e1sok az objektumok lefoglal\u00e1s\u00e1ra az objektumt\u00e1rol\u00f3ban nem fognak siker\u00fclni.
+ObjectStore_AllocateFileSpaceFailed.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt, \u00e9s hat\u00e1rozza meg, hogy mi\u00e9rt nem lehetett ter\u00fcletet lefoglalni a f\u00e1jlrendszerben.
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# Messages used by ObjectManagerException.
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# {0} The ClassNotFoundException that was caught by the ObjectManager.
+ClassNotFoundException_info=CWSOM1001E: Az objektumkezel\u0151 elfogta a ClassNotFoundException={0}(java.lang.ClassNotFoundException) kiv\u00e9telt egy kezelt objektum p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1nak megsz\u00fcntet\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. 
+ClassNotFoundException_info.explanation=Egy java.lang.ClassNotFoundException kiv\u00e9tel lett elfogva, mik\u00f6zben az objektumkezel\u0151 megpr\u00f3b\u00e1lt visszaalak\u00edtani egy kezelt objektumot.
+ClassNotFoundException_info.useraction=A kiv\u00e9tel tartalmazza az oszt\u00e1ly nev\u00e9t, amely nem tal\u00e1lhat\u00f3. \
+Tegye el\u00e9rhet\u0151v\u00e9 azt az ObjectManagers oszt\u00e1lybet\u00f6lt\u0151 sz\u00e1m\u00e1ra, p\u00e9ld\u00e1ul az oszt\u00e1lyf\u00e1jl elhelyez\u00e9s\u00e9vel az oszt\u00e1ly\u00fatvonalon.
+
+# {0} The Name of the new and existing ObjectStore.
+# {1} ObjectStore already using the name.
+DuplicateObjectStoreNameException_info=CWSOM1002E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy objektumt\u00e1rol\u00f3 \u00f6ssze\u00e1ll\u00edt\u00e1s\u00e1ra a(z) {1} objektumt\u00e1rol\u00f3 \u00e1ltal haszn\u00e1lt {0} t\u00e1rol\u00f3n\u00e9v (karakterl\u00e1nc) haszn\u00e1lat\u00e1val.
+DuplicateObjectStoreNameException_info.explanation=Egy objektumkezel\u0151n bel\u00fcli objektumt\u00e1rol\u00f3k neveinek egyedieknek kell lenni\u00fck.
+DuplicateObjectStoreNameException_info.useraction=V\u00e1lasszon m\u00e1sik nevet az objektumt\u00e1rol\u00f3 sz\u00e1m\u00e1ra.
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object was in.
+# {2} The descriptive name of the state.
+StateErrorException_info=CWSOM1003E: A(z) {0} objektum hiba \u00e1llapotban van, az el\u0151z\u0151 \u00e9rv\u00e9nytelen \u00e1llapota {1} {2} volt. 
+StateErrorException_info.explanation=Egy m\u0171velet lett k\u00e9rve egy olyan objektumon, amelynek \u00e1llapota \u00e9rv\u00e9nytelen a m\u0171velet sz\u00e1m\u00e1ra. \
+A m\u0171velet meghi\u00fasul, \u00e9s az objektum \u00e1tl\u00e9p hib\u00e1s \u00e1llapotba.
+StateErrorException_info.useraction=CMSG0002 
+
+# {0} The IOException that was caught by the ObjectManager.
+PermanentIOException_info=CWSOM1004E: Az objektumkezel\u0151 elfogott egy {0} IOException (java.io.IOException) kiv\u00e9telt. 
+PermanentIOException_info.explanation=Az objektumkezel\u0151 elfogott egy I/O kiv\u00e9telt, az I/O m\u0171velet nem k\u00eds\u00e9relhet\u0151 meg biztons\u00e1gosan \u00fajra \u00e9s el lett hagyva.
+PermanentIOException_info.useraction=Az I/O Kiv\u00e9tel le\u00edrja az adott hib\u00e1t. \
+Vizsg\u00e1lja meg \u00e9s sz\u00fcntesse meg az alapul szolg\u00e1l\u00f3 I/O kiv\u00e9tel ok\u00e1t.
+
+# {0} The IOException that was caught by the ObjectManager.
+TemporaryIOException_info=CWSOM1005E: Az objektumkezel\u0151 elfogott egy {0} IOException (java.io.IOException) kiv\u00e9telt. 
+TemporaryIOException_info.explanation=Az objektumkezel\u0151 elfogott egy I/O kiv\u00e9telt, az I/O m\u0171velet el lett hagyva, de biztons\u00e1gosan \u00fajb\u00f3l megk\u00eds\u00e9relhet\u0151 az objektumkezel\u0151 alkalmaz\u00e1sprogramoz\u00e1si fel\u00fclet (API) \u00fajra megpr\u00f3b\u00e1l\u00e1sa \u00e1ltal, mihelyt az alapul szolg\u00e1l\u00f3 ok meg lesz sz\u00fcntetve.
+TemporaryIOException_info.useraction=Az I/O Kiv\u00e9tel le\u00edrja az adott hib\u00e1t. \
+Vizsg\u00e1lja meg \u00e9s sz\u00fcntesse meg az alapul szolg\u00e1l\u00f3 I/O kiv\u00e9tel ok\u00e1t, majd k\u00eds\u00e9relje meg \u00fajra a m\u0171veletet.
+
+# {0} The ObjectStore being constructed.
+# {1} The name.
+InvalidObjectStoreNameException_info=CWSOM1006E: A(z) {0} ObjectStore (objektumt\u00e1rol\u00f3) egy {1} \u00e9rv\u00e9nytelen nevet kapott. 
+InvalidObjectStoreNameException_info.explanation=Egy objektumt\u00e1rol\u00f3 \u00e9rv\u00e9nytelen n\u00e9vvel ker\u00fclt \u00f6ssze\u00e1ll\u00edt\u00e1sra. \
+Az ObjectManager nem hozta l\u00e9tre az ObjectStore t\u00e1rol\u00f3t.
+InvalidObjectStoreNameException_info.useraction=Vizsg\u00e1lja meg a nevet, hogy eld\u00f6ntse mi\u00e9rt \u00e9rv\u00e9nytelen.
+
+# {0} The unrecognized statistics set.
+StatisticsNameNotFoundException_info=CWSOM1007E: A(z) {0} nev\u0171 statisztika nem ismerhet\u0151 fel. 
+StatisticsNameNotFoundException_info.explanation=Az alkalmaz\u00e1s olyan statisztikak\u00e9szletet k\u00e9rt, amely nem felismerhet\u0151.
+StatisticsNameNotFoundException_info.useraction=Jav\u00edtsa ki a k\u00e9rt statisztikak\u00e9szlet nev\u00e9t.
+
+# {0} The ObjectStore detecting the error.
+# {1} The ManagedObject.
+InvalidObjectToStoreException_info=CWSOM1008E: A(z) {0} ObjectStore (objektumt\u00e1rol\u00f3) \u00e9rv\u00e9nytelen {1} ManagedObject (kezelt objektum) t\u00e1rol\u00e1s\u00e1ra lett megk\u00e9rve. 
+InvalidObjectToStoreException_info.explanation=Az ObjectStore egy \u00e9rv\u00e9nytelen ManagedObject (kezelt objektum) t\u00e1rol\u00e1s\u00e1ra lett megk\u00e9rve. \
+Az Objectstore nem t\u00e1rolta a ManagedObject objektumot.
+InvalidObjectToStoreException_info.useraction=Vizsg\u00e1lja meg a t\u00e1roland\u00f3 kezelt objektumot, \u00e9s hat\u00e1rozza meg, hogy az mi\u00e9rt \u00e9rv\u00e9nytelen. \
+P\u00e9ld\u00e1ul, null\u00e9rt\u00e9k\u0171 ManagedObject lehet.
+
+# {0} The ObjectStore reporting the sequence error.
+# {1} The non unique sequence number.
+# {2} The ManagedObject already using the sequence number.
+StoreSequenceException_info=CWSOM1009E: A(z) {0} objektumt\u00e1rol\u00f3 {1} sequenceNumber sz\u00e1mot \u00e1ll\u00edtott el\u0151, amit m\u00e1r a(z) {2} kezelt objektum haszn\u00e1lt. 
+StoreSequenceException_info.explanation=Az objektumt\u00e1rol\u00f3ban bels\u0151 hiba t\u00f6rt\u00e9nt.
+StoreSequenceException_info.useraction=CMSG0002
+
+# {0} ObjectStore throwing the replacementException.
+# {1} The ManagedObject being replaced.
+# {2} The Token referencing the replacement.
+# {3} The existing Token attempting the replacement.
+ReplacementException_info=CWSOM1010E: A(z) {2} tokenre hivatkozva a(z) {0} objektumt\u00e1rol\u00f3 a(z) {1} ManagedObject (kezelt objektum) cser\u00e9l\u00e9s\u00e9re lett megk\u00e9rve, amikor a(z) {3} token m\u00e1r l\u00e9tezik a t\u00e1rol\u00f3ban. 
+ReplacementException_info.explanation=Egy tokent egy objectStoreIdentifier \u00e9s egy storedObjectIdentifier azonos\u00edtja. \
+Minden azonoss\u00e1gt\u00e1rol\u00f3nak csak egy tokenje lehet, azonban az \u00faj \u00e9s a l\u00e9tez\u0151 token ugyanazt az azonoss\u00e1got osztj\u00e1k meg.
+ReplacementException_info.useraction=CMSG0002 
+
+# {0} Object which is not in a valid state for the operation.
+# {1} The state the object is in.
+# {2} The descriptive name of the state.
+InvalidStateException_info=CWSOM1011E: A(z) {0} objektumon egy \u00e9rv\u00e9nytelen m\u0171velet k\u00eds\u00e9relt meg lefutni, mialatt az objektum \u00e1llapota {1}(int) {2}(String) volt. 
+InvalidStateException_info.explanation=M\u0171velet v\u00e9grehajt\u00e1s\u00e1ra t\u00f6rt\u00e9nt k\u00eds\u00e9rlet az objektumon. \
+A m\u0171velet \u00e9rv\u00e9nytelen, ha az objektum a jelenlegi \u00e1llapotban van. \
+P\u00e9ld\u00e1ul lehet, hogy egy olyan ManagedObject t\u00f6rl\u00e9s\u00e9t kezdem\u00e9nyezte, amely m\u00e1r el van t\u00e1vol\u00edtva. \
+A m\u0171velet visszautas\u00edt\u00e1sra ker\u00fclt, az objektum v\u00e1ltozatlan marad.
+InvalidStateException_info.useraction=Vizsg\u00e1lja meg az objektum \u00e1llapot\u00e1t, \u00e9s hogy a m\u0171velet futtat\u00e1s\u00e1ra mi\u00e9rt t\u00f6rt\u00e9nt k\u00eds\u00e9rlet.
+
+# {0} ObjecManagerState which has detected the duplicate.
+# {1} The new duplicate InternalTransaction.
+# {2} The old existing InternalTransaction.
+DuplicateTransactionException_info=CWSOM1012E: A(z) {0} ObjectManagerState megk\u00eds\u00e9relt bejegyezni vagy felszabad\u00edtani egy olyan {1} \u00faj tranzakci\u00f3t (InternalTransaction), amelynek ugyanaz a LogicalUnitOfWork azonos\u00edt\u00f3ja, mint a(z) {2} (InternalTransaction) tranzakci\u00f3nak.
+DuplicateTransactionException_info.explanation=Az ObjectManager egy \u00faj \u00e9s egy l\u00e9tez\u0151 tranzakci\u00f3t fedezett fel, amelyeknek ugyanaz a tranzakci\u00f3azonos\u00edt\u00f3ja. Ez egy bels\u0151 hiba \u00e9s nem kellene megt\u00f6rt\u00e9nnie.
+DuplicateTransactionException_info.useraction=CMSG0002 
+
+# {0} The internal transaction trying to unregister.
+NonExistentTransactionException_info=CWSOM1013E: K\u00eds\u00e9rlet egy olyan tranzakci\u00f3 bejegyez\u00e9s\u00e9nek megsz\u00fcntet\u00e9s\u00e9re, amelyik nem volt bejegyezve. Tranzakci\u00f3: {0} (InternalTransaction). 
+NonExistentTransactionException_info.explanation=Az objektumkezel\u0151ben bels\u0151 hiba jelentkezett. Tov\u00e1bbi tev\u00e9kenys\u00e9g nem enged\u00e9lyezett a tranzakci\u00f3n.
+NonExistentTransactionException_info.useraction=CMG0002
+
+# {0} The ObjectStoreIdentifier of the ObjectStore that was not known to the ObjectManager.
+NonExistentObjectStoreTemporaryIOException_info=CWSOM1014E: K\u00eds\u00e9rlet egy olyan ObjectStore megkeres\u00e9s\u00e9re, ami nem volt bejegyezve. T\u00e1rol\u00f3 azonos\u00edt\u00f3 (storeIdentifier): {0}.
+NonExistentObjectStoreTemporaryIOException_info.explanation=Egy token olyan objektumt\u00e1rol\u00f3ra hivatkozott, amet az objektumkezel\u0151 nem ismer.
+NonExistentObjectStoreTemporaryIOException_info.useraction=Ha az objektumt\u00e1rol\u00f3 el lett t\u00e1vol\u00edtva az objektumkezel\u0151b\u0151l, akkor ez a kiv\u00e9tel mindig meg fog t\u00f6rt\u00e9nni, valah\u00e1nyszor egy l\u00e9tez\u0151 token hivatkozik az objektumt\u00e1rol\u00f3ra. \
+P\u00e9ld\u00e1nyos\u00edtsa \u00fajra az objektumt\u00e1rol\u00f3t vagy hagyja abba azon tokenek haszn\u00e1lat\u00e1t, amelyek megpr\u00f3b\u00e1ltak hozz\u00e1f\u00e9rni.
+
+# {0} The Exception that was caught by the ObjectManager.
+UnexpectedExceptionException_info=CWSOM1015E: Az objektumkezel\u0151 v\u00e1ratlanul elfogott egy kiv\u00e9telt: {0}. 
+UnexpectedExceptionException_info.explanation=Az objektumkezel\u0151 elfogott egy kiv\u00e9telt, az objektumkezel\u0151 nem volt k\u00e9pes elfogadhat\u00f3 v\u00e1laszm\u0171veletet tenni a kiv\u00e9telre.
+UnexpectedExceptionException_info.useraction=Der\u00edtse ki \u00e9s oldja meg az alapul szolg\u00e1l\u00f3 kiv\u00e9tel ok\u00e1t.
+
+# {0} The managedObject being unlocked.
+# {1} Internal transaction trying to release the lock on the ManagedObject.
+# {2} The existing lock on the ManagedObject.
+InvalidTransactionException_info=CWSOM1016E: K\u00eds\u00e9rlet egy {0} ManagedObject (kezelt objektum) z\u00e1rol\u00e1s\u00e1nak felold\u00e1s\u00e1ra vagy helyettes\u00edt\u00e9s\u00e9re egy {1} InternalTransaction (bels\u0151 tranzakci\u00f3) \u00e1ltal, m\u00edg a(z) {2} transactionLock (tranzakci\u00f3z\u00e1r) z\u00e1rol\u00e1sa alatt volt. 
+InvalidTransactionException_info.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy ManagedObject z\u00e1rol\u00e1s\u00e1nak felold\u00e1s\u00e1ra vagy helyettes\u00edt\u00e9s\u00e9re egy k\u00fcl\u00f6nb\u00f6z\u0151 tranzakci\u00f3 alatt egy olyanhoz, ami z\u00e1rolta azt. \
+A k\u00eds\u00e9rlet visszautas\u00edt\u00e1sra ker\u00fclt.
+InvalidTransactionException_info.useraction=Vizsg\u00e1lja meg az ObjectManager Transaction.unlock(ManagedObject) fel\u00fcletet haszn\u00e1l\u00f3 alkalmaz\u00e1st, \u00e9s \u00e1llap\u00edtsa meg, hogy a k\u00e9t tranzakci\u00f3 mi\u00e9rt k\u00fcl\u00f6nb\u00f6z\u0151.
+
+# {0} ObjectManagerState which is unable to locate the log file.
+# {1} The exception caught by the ObjectManagerState when trying to locate the log file.
+# {2} The log file name.
+NonExistentLogFileException_info=CWSOM1017E: A(z) {0} ObjectManagerState elfogott egy {1} kiv\u00e9telt, amely megpr\u00f3b\u00e1lta megkeresni vagy l\u00e9trehozni a(z) {2}(String) nev\u0171 napl\u00f3f\u00e1jlt. 
+NonExistentLogFileException_info.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az objektumkezel\u0151 megpr\u00f3b\u00e1lta megnyitni a megnevezett napl\u00f3f\u00e1jlt. \
+Az ObjectManager nem lesz elind\u00edtva.
+NonExistentLogFileException_info.useraction=Ellen\u0151rizze, hogy a napl\u00f3f\u00e1jl neve \u00e9rv\u00e9nyes legyen, \u00e9s annak \u00edr\u00e1s\u00e1hoz az ObjectManager megfelel\u0151 enged\u00e9llyel rendelkezzen.
+
+# {0} The Object raising the exception.
+# {1} The underlying Exception.
+LogFileExhaustedException_info=CWSOM1018E: A(z) {0} objektum a bemeneti napl\u00f3f\u00e1jl v\u00e9g\u00e9t \u00e9szlelte az alapul szolg\u00e1l\u00f3 {1} kiv\u00e9tel miatt. 
+LogFileExhaustedException_info.explanation=Az ObjectManager \u00e9szlelte a bemeneti napl\u00f3f\u00e1jl v\u00e9g\u00e9t.
+LogFileExhaustedException_info.useraction=Semmit sem kell tennie, ha ez a kiv\u00e9tel az ObjectManager \u00fajraind\u00edt\u00e1sakor a napl\u00f3 v\u00e9gigolvas\u00e1s\u00e1nak eredm\u00e9nye.
+
+# {0} The type of logRecord that was read from the log but not recognized.
+InvalidLogRecordTypeException_info=CWSOM1019E: \u00c9rv\u00e9nytelen {0} napl\u00f3bejegyz\u00e9s lett kiolvasva a tranzakci\u00f3napl\u00f3b\u00f3l. 
+InvalidLogRecordTypeException_info.explanation=Az ObjectManager a helyre\u00e1ll\u00edt\u00e1sa k\u00f6zben olyan t\u00edpus\u00fa napl\u00f3bejegyz\u00e9st tal\u00e1lt, amit nem ismert fel. Az ObjectManager nem lett p\u00e9ld\u00e1nyos\u00edtva.
+InvalidLogRecordTypeException_info.useraction=CMSG0002 
+
+# {0} The name of the ObjectStore that is not registered with the ObjectManager.
+UnknownObjectStoreException_info=CWSOM1020E: K\u00eds\u00e9rlet egy olyan ObjectStore megkeres\u00e9s\u00e9re, ami nem volt bejegyezve. T\u00e1rol\u00f3n\u00e9v (storeName): {0}.
+UnknownObjectStoreException_info.explanation=Az ObjectManager egy olyan ObjectStore megkeres\u00e9s\u00e9re lett megk\u00e9rve, ami nem volt azzal bejegyezve.
+UnknownObjectStoreException_info.useraction=Lehets\u00e9ges, hogy az objektumt\u00e1rol\u00f3 (ObjectStore) m\u00e1r elt\u00e1vol\u00edt\u00e1sra ker\u00fclt az objektumkezel\u0151b\u0151l (ObjectManager). Hozza l\u00e9tre \u00fajra az objektumt\u00e1rol\u00f3t (ObjectStore).
+
+# {0} The Object detecting the condition that is not valid.
+# {1} The variable name containing the condition that is not valid.
+# {2} The data assigned to the variable giving the condition that is not valid.
+InvalidConditionException_info=CWSOM1021E: A(z) {0} objektum \u00e9rv\u00e9nytelen felt\u00e9telt \u00e9szlelt. V\u00e1ltoz\u00f3: {1}, tartalmazott \u00e9rt\u00e9k: {2}. 
+InvalidConditionException_info.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt, \u00e9s a rendszer \u00e9rv\u00e9nytelen felt\u00e9telt tal\u00e1lt.
+InvalidConditionException_info.useraction=CMSG0002 
+
+# {0} The name of the log file.
+LogFileInUseException_info=CWSOM1022E: A(z) {0} nev\u0171 napl\u00f3f\u00e1jl m\u00e1r haszn\u00e1latban van.
+LogFileInUseException_info.explanation=Az ObjectManager megpr\u00f3b\u00e1lt egy kiz\u00e1r\u00f3lagos z\u00e1rol\u00e1st megszerezni a napl\u00f3f\u00e1jlra, de az m\u00e1r haszn\u00e1latban volt.
+LogFileInUseException_info.useraction=\u00c1llap\u00edtsa meg, hogy egy m\u00e1sik ObjectManager vagy egy m\u00e1sik program pr\u00f3b\u00e1lja-e ugyanazt a napl\u00f3f\u00e1jlt haszn\u00e1lni.
+
+LogFileHeaderCorruptException_info=CWSOM1023E: A napl\u00f3f\u00e1jlnak nincs \u00e9rv\u00e9nyes fejl\u00e9ce. 
+LogFileHeaderCorruptException_info.explanation=A tranzakci\u00f3 napl\u00f3f\u00e1jlja az ObjectManager sz\u00e1m\u00e1ra \u00e9rtelmezhetetlen adatokat tartalmaz.
+LogFileHeaderCorruptException_info.useraction=Ellen\u0151rizze, hogy a napl\u00f3f\u00e1jl a helyes f\u00e1jl-e.
+
+# {0} The current XID.
+# {1} The rejected XID.
+XIDModificationException_info=CWSOM1024E: K\u00eds\u00e9rlet egy tranzakci\u00f3 XID azonos\u00edt\u00f3j\u00e1nak be\u00e1ll\u00edt\u00e1s\u00e1ra, mikor annak m\u00e1r be van \u00e1ll\u00edtva egy. A jelenlegi XID={0}([]byte), a visszautas\u00edtott XID={1}([]byte).
+XIDModificationException_info.explanation=Egy tranzakci\u00f3 csak egy X/Open tranzakci\u00f3azonos\u00edt\u00f3 XID-vel rendelkezhet. \
+Ez nem m\u00f3dos\u00edthat\u00f3 a be\u00e1ll\u00edt\u00e1sa ut\u00e1n.
+XIDModificationException_info.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, \u00e9s hat\u00e1rozza meg, hogy az mi\u00e9rt pr\u00f3b\u00e1lta meg m\u00f3dos\u00edtani a tranzakci\u00f3 XID azonos\u00edt\u00f3j\u00e1t, amelyet az alkalmaz\u00e1s m\u00e1r be\u00e1ll\u00edtott.
+
+# {0} The length of the XID passed to the ObjectManager.
+XIDTooLongException_info=CWSOM1025E: K\u00eds\u00e9rlet egy olyan XID be\u00e1ll\u00edt\u00e1s\u00e1ra a tranzakci\u00f3nak, amelyik t\u00fal hossz\u00fa: XID.hossz={0}.
+XIDTooLongException_info.explanation=Egy X/Open tranzakci\u00f3azonos\u00edt\u00f3 XID a java.lang.Short.MAX_VALUE \u00e9rt\u00e9k \u00e1ltal meghat\u00e1rozott maxim\u00e1lis hossz\u00fas\u00e1g\u00fa lehet.
+XIDTooLongException_info.useraction=Haszn\u00e1ljon r\u00f6videbb XID hossz\u00fas\u00e1got.
+
+# {0} The object containing the disabled interface.
+# {1} The method name of the interface that is disabled.
+InterfaceDisabledExceptionException_info=CWSOM1026E: K\u00eds\u00e9rlet a tiltott {1} met\u00f3dusnev\u0171 fel\u00fclet haszn\u00e1lat\u00e1ra a(z) {0} forr\u00e1sobjektumban.
+InterfaceDisabledExceptionException_info.explanation=Egy tiltott tiltott haszn\u00e1lat\u00e1ra tett k\u00eds\u00e9rlet t\u00f6rt\u00e9nt.
+InterfaceDisabledExceptionException_info.useraction=\u00c1ll\u00edtsa le a fel\u00fcletet, vagy v\u00e1ltson olyan v\u00e1ltozat\u00fa objektumkezel\u0151re (ObjectManager), ami t\u00e1mogatja a fel\u00fcletet.
+
+# {0} The number of bytes to be written to the log.
+# {1} The number of reserved bytes included in the request.
+# {2} The number of bytes available in the log file.
+LogFileFullException_info=CWSOM1027E: A napl\u00f3f\u00e1jl t\u00fals\u00e1gosan megtelt {0}(long) b\u00e1jt befogad\u00e1s\u00e1hoz, a k\u00e9r\u00e9s tov\u00e1bbi {1}(long) b\u00e1jtot foglalt, \u00e9s a rendelkez\u00e9sre \u00e1ll\u00f3 ter\u00fclet {2}(long) b\u00e1jt.
+LogFileFullException_info.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00f6bb adat \u00edr\u00e1s\u00e1ra a napl\u00f3ba, mint amennyit a szabad ter\u00fclet megenged. \
+A k\u00eds\u00e9rlet visszautas\u00edt\u00e1sra ker\u00fclt, \u00e9s a tranzakci\u00f3 \u00e1llapota v\u00e1ltozatlan.
+LogFileFullException_info.useraction=Cs\u00f6kkentse a tranzakci\u00f3kban friss\u00edteni k\u00edv\u00e1nt objektumok sz\u00e1m\u00e1t. \
+Cs\u00f6kkentse az egyidej\u0171leg akt\u00edv tranzakci\u00f3k sz\u00e1m\u00e1t. \
+Cs\u00f6kkentse a friss\u00edtett ManagedObjects objektumok sz\u00e1m\u00e1t. \
+N\u00f6velje meg a napl\u00f3f\u00e1jl m\u00e9ret\u00e9t.
+
+# {0} The part type found in the log that is not valid.
+InvalidLogRecordPartTypeException_info=CWSOM1028E: \u00c9rv\u00e9nytelen napl\u00f3bejegyz\u00e9s r\u00e9szt\u00edpus: {0}. 
+InvalidLogRecordPartTypeException_info.explanation=Egy t\u00edpusjelz\u0151 a napl\u00f3bejegyz\u00e9s r\u00e9szen nem lett felismerve.
+InvalidLogRecordPartTypeException_info.useraction=Hat\u00e1rozza meg, hogy a napl\u00f3f\u00e1jl hogyan s\u00e9r\u00fclt meg, \u00e9s \u00e1ll\u00edtson vissza egy biztons\u00e1gi ment\u00e9st a napl\u00f3f\u00e1jlr\u00f3l.
+
+# {0} The name of the log file.
+CheckpointEndNotFoundException_info=CWSOM1029E: A(z) {0} napl\u00f3f\u00e1jlban CheckpointEndLogRecord nem tal\u00e1lhat\u00f3.
+CheckpointEndNotFoundException_info.explanation=A napl\u00f3f\u00e1jl befejez\u0151d\u00f6tt, az ellen\u0151rz\u00e9si pont v\u00e9ge bejegyz\u00e9s megtal\u00e1l\u00e1sa el\u0151tt. \
+A napl\u00f3f\u00e1jloknak legal\u00e1bb egy kezdet ellen\u0151rz\u00e9si pont, \u00e9s egy v\u00e9ge ellen\u0151rz\u00e9si pont LogRecord bejegyz\u00e9st kell tartalmazniuk.
+CheckpointEndNotFoundException_info.useraction=Hat\u00e1rozza meg, hogy a napl\u00f3f\u00e1jl hogyan s\u00e9r\u00fclt meg, \u00e9s \u00e1ll\u00edtson vissza egy biztons\u00e1gi ment\u00e9st a napl\u00f3f\u00e1jlr\u00f3l.
+
+# {0} The ObjectStore raising the exception.
+# {1} The Token requesting the ManagedObject.
+InMemoryObjectNotAvailableException_info=CWSOM1030E: A(z) {0} mem\u00f3riaalap\u00fa objektumt\u00e1rol\u00f3 egy olyan ManagedObject lek\u00e9r\u00e9se lett megk\u00e9rve a(z) {0} token eset\u00e9ben, amely m\u00e1r nem volt a mem\u00f3ri\u00e1ban. 
+InMemoryObjectNotAvailableException_info.explanation=Az ObjectManager egy olyan ManagedObject lek\u00e9r\u00e9s\u00e9re lett megk\u00e9rve, aminek a mem\u00f3ri\u00e1ban kellett volna lennie, de az nem volt megtal\u00e1lhat\u00f3.
+InMemoryObjectNotAvailableException_info.useraction=CMSG0002
+
+# {0} The maximum size in bytes the serialized ManagedObject should be.
+# {1} The actual size in bytes of the ManagedObject in bytes.
+SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: Az egyszer\u0171s\u00edtett p\u00e9ld\u00e1nyk\u00e9pz\u00e9s m\u00e9rete meghaladta a(z) {0} maxim\u00e1lsi m\u00e9retet, az aktu\u00e1lis m\u00e9ret: {1}. 
+SimplifiedSerializationSizeExceptionException_info.explanation=Egy p\u00e9ld\u00e1nyos\u00edtott ManagedObject m\u00e9rete meghaladta a maxim\u00e1lisan elv\u00e1rt m\u00e9retet.
+SimplifiedSerializationSizeExceptionException_info.useraction=CMSG0002
+
+# {0} The current size of the log.
+# {1} The requested size of the log.
+# {2} The space available in the log.
+# {3} the predicted occupancy of the new log file.
+# {4} The threshold occupancy above which the ObjectManager triggers a checkpoint. 
+LogFileSizeTooSmallException_info=CWSOM1032E: A napl\u00f3f\u00e1jl m\u00e9rete t\u00fal kicsi, a jelenlegi m\u00e9ret: {0}(long), a k\u00e9rt m\u00e9ret: {1}(long), szabad ter\u00fclet: {2}(long), el\u0151re l\u00e1that\u00f3 foglalts\u00e1g: {3}(float), foglalts\u00e1gi k\u00fcsz\u00f6b\u00e9rt\u00e9k: {4}(float). 
+LogFileSizeTooSmallException_info.explanation=Az ObjectManager a tranzakci\u00f3s napl\u00f3 m\u00e9ret\u00e9nek cs\u00f6kkent\u00e9s\u00e9re lett k\u00e9rve. \
+Az ig\u00e9nyelt m\u00e9ret t\u00fal kicsi a megl\u00e9v\u0151 napl\u00f3adatok t\u00e1rol\u00e1s\u00e1ra. \
+Az \u00faj m\u00e9ret az alatt a hat\u00e1r van, ami jelenleg lehet\u0151v\u00e9 tenn\u00e9, hogy az ObjectManager az ellen\u0151rz\u00e9si pontok folyamatos v\u00e9grehajt\u00e1sa n\u00e9lk\u00fcl m\u0171k\u00f6dj\u00f6n.
+LogFileSizeTooSmallException_info.useraction=K\u00e9sz\u00edtsen nagyobb k\u00e9r\u00e9st, vagy cs\u00f6kkentse a napl\u00f3 terhel\u00e9s\u00e9t kevesebb vagy kisebb kezelt objektumok (ManagedObject) \u00edr\u00e1s\u00e1val.
+
+# {0} The non empty collection.
+# {1} The number of items, committed and uncommitted, in the collection.
+# {2} The transaction trying to delete the collection.
+CollectionNotEmptyException_info=CWSOM1033E: A(z) {0} kollekci\u00f3 nem \u00fcres, rendezetlen sors\u00fa m\u00e9ret: {1}, tranzakci\u00f3: {2}. 
+CollectionNotEmptyException_info.explanation=Az ObjectManager egy nem \u00fcres kollekci\u00f3 (Lek\u00e9pez\u00e9s vagy Lista) t\u00f6rl\u00e9s\u00e9re lett megk\u00e9rve. A kollekci\u00f3 n\u00e9h\u00e1ny olyan bejegyz\u00e9st tartalmazott, ami nem lett t\u00f6r\u00f6lve, vagy egy tranzakci\u00f3 t\u00f6r\u00f6lte. vagy az egyik a kollekci\u00f3t pr\u00f3b\u00e1lja t\u00f6r\u00f6lni.
+CollectionNotEmptyException_info.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, \u00e9s der\u00edtse ki, hogy a tranzakci\u00f3 mi\u00e9rt pr\u00f3b\u00e1lt meg t\u00f6r\u00f6lni egy kollekci\u00f3t, amikor bejegyz\u00e9seket tartalmaz.
+
+# {0} The defined maximum number of transactions.
+TooManyTransactionsException_info=CWSOM1034E: Egy alkalmaz\u00e1s megpr\u00f3b\u00e1lt a meghat\u00e1rozott maxim\u00e1lis sz\u00e1m\u00fa ({0}) tranzakci\u00f3n\u00e1l t\u00f6bbet ind\u00edtani. 
+TooManyTransactionsException_info.explanation=Az ObjectManager t\u00f6bb tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra lett megk\u00e9rve, mint amennyire konfigur\u00e1lva van. Az \u00faj tranzakci\u00f3 nem indult el.
+TooManyTransactionsException_info.useraction=Vizsg\u00e1lja meg az alkalmaz\u00e1st, \u00e9s der\u00edtse ki, hogy mi\u00e9rt pr\u00f3b\u00e1lt meg t\u00fal sok tranzakci\u00f3t elind\u00edtani. \
+Lehets\u00e9ges, hogy az alkalmaz\u00e1s elind\u00edtja, de nem hajtja v\u00e9gre vagy nem l\u00e9pteti vissza a tranzakci\u00f3kat.
+
+# {0} The number of active transactions.
+# {1} The number of transactons the ObjectManager can currently run.
+TransactionCapacityExceededException_info=CWSOM1035E: Az akt\u00edv tranzakci\u00f3k maxim\u00e1lis sz\u00e1ma ideiglenesen le lett cs\u00f6kkentve, jelenleg {0}(long) tranzakci\u00f3 akt\u00edv, a jelenlegi kapacit\u00e1s pedig {1}(long).
+TransactionCapacityExceededException_info.explanation=Az ObjectManager t\u00f6bb tranzakci\u00f3 ind\u00edt\u00e1s\u00e1ra lett megk\u00e9rve, mint amennyit t\u00e1mogatni tud a rendelkez\u00e9s\u00e9re \u00e1ll\u00f3 er\u0151forr\u00e1sokkal. \
+Az ObjectManager cs\u00f6kkenti az \u00e1ltala ind\u00edtott tranzakci\u00f3k sz\u00e1m\u00e1t, \u00edgy az ellen\u0151rz\u00e9si pontok azel\u0151tt befejez\u0151dnek, hogy a napl\u00f3f\u00e1jl megtelne. Az \u00faj tranzakci\u00f3 nem indult el.
+TransactionCapacityExceededException_info.useraction=N\u00f6velje a napl\u00f3f\u00e1jl m\u00e9ret\u00e9t, vagy ind\u00edtson kevesebb tranzakci\u00f3t.
+
+# {0} The ObjectStore throwing the exception.
+# {1} the name of the ObjectStore.
+StoreFileInUseExceptionException_info=CWSOM1036E: A(z) {1} nev\u0171 {0} ObjectStore m\u00e1r haszn\u00e1latban van. 
+StoreFileInUseExceptionException_info.explanation=Az ObjectStore \u00fagy tal\u00e1lta, hogy az m\u00e1r z\u00e1rolva volt, amikor egy kiz\u00e1r\u00f3lagos z\u00e1rol\u00e1st pr\u00f3b\u00e1lt meg elv\u00e9gezni a f\u00e1jlj\u00e1n.
+StoreFileInUseExceptionException_info.useraction=\u00c1llap\u00edtsa meg, hogy az ObjectStore f\u00e1jlt nem haszn\u00e1lja-e m\u00e1sik ObjectManager vagy m\u00e1sik program.
+
+# {0} The Name of the log file.
+# {1} The expected size of the log file.
+# {2} Byte found not to exist in the physical file.
+PrematureEndOfLogFileException_info=CWSOM1037E: A(z) {0} nev\u0171 napl\u00f3f\u00e1jl, aminek fizikai m\u00e9rete kisebb, mint a v\u00e1rt m\u00e9ret ({1}), megpr\u00f3b\u00e1l a(z) {2} byte-hoz hozz\u00e1f\u00e9rni.
+PrematureEndOfLogFileException_info.explanation=A napl\u00f3f\u00e1jl nem \u00e9rt v\u00e9get norm\u00e1lisan, a fizikai f\u00e1jl csonk\u00edtott lehet.
+PrematureEndOfLogFileException_info.useraction=Hat\u00e1rozza meg, hogy s\u00e9r\u00fclt-e a napl\u00f3f\u00e1jl, ha igen, akkor \u00e1ll\u00edtsa vissza az eredeti s\u00e9rtetlen f\u00e1jlt.
+
+# {0} The ObjectManager throwing the exception.
+NoRestartableObjectStoresAvailableException_info=CWSOM1038E: A(z) {0} ObejctManager nem tal\u00e1lt el\u00e9rhet\u0151 \u00fajraind\u00edthat\u00f3 objektumt\u00e1rol\u00f3kat (ObejctStores). 
+NoRestartableObjectStoresAvailableException_info.explanation=Az ObjectManager egy a megnevezett kezelt objektumra (ManagedObject) mutat\u00f3 hivatkoz\u00e1s t\u00e1rol\u00e1s\u00e1ra lett megk\u00e9rve. \
+Azonban nincs \u00fajraind\u00edthat\u00f3 ObjectStore, amelyben t\u00e1rolhat\u00f3 lenne.
+NoRestartableObjectStoresAvailableException_info.useraction=\u00c1llap\u00edtsa meg, hogy sz\u00fcks\u00e9g van-e egy megnevezett ManagedObject haszn\u00e1lat\u00e1ra. \
+Ha nincs sz\u00fcks\u00e9ge egy megnevezett ManagedObject haszn\u00e1lat\u00e9ra, akkor hozzon l\u00e9tre egy \u00fajraind\u00edthat\u00f3 ObjectStore t\u00e1rol\u00f3t.
+
+# {0} The key which already exists in the map.
+# {1} The existing entry in the map.
+# {2} The transaction locking the duplicate entry or null.
+DuplicateKeyExceptionException_info=CWSOM1039E: A(z) {1} megl\u00e9v\u0151 bejegyz\u00e9ssel \u00fctk\u00f6z\u0151 {0} kulcs m\u00e1sodp\u00e9ld\u00e1ny\u00e1t z\u00e1rolta a(z) {3} tranzakci\u00f3 (InternalTransaction). 
+DuplicateKeyExceptionException_info.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy egyedi kulcs Map elemhez ad\u00e1s\u00e1ra, amikor m\u00e1r l\u00e9tezik egyedi kulcs az elemben. A megl\u00e9v\u0151 kulcs m\u00e1r r\u00e9sze egy m\u00e1sik tranzakci\u00f3nak, \u00e9s nem cser\u00e9lhet\u0151 le az \u00faj kulcsra.
+DuplicateKeyExceptionException_info.useraction=K\u00e9rje a m\u00e1sodp\u00e9ld\u00e1ny\u00fa kulcs hozz\u00e1ad\u00e1s\u00e1t a putDuplicate met\u00f3dussal, vagy tal\u00e1lja ki, hogy az alkalmaz\u00e1s mi\u00e9rt pr\u00f3b\u00e1l lecser\u00e9lni egy megl\u00e9v\u0151 kulcsot.
+
+# {0} Number of bytes requested in the store file.
+# {1} Existing store file size in bytes.
+# {2} Number of bytes currently used in the store file.
+StoreFileSizeTooSmallException_info=CWSOM1040E: Az ObjectStore f\u00e1jlm\u00e9ret t\u00fal kicsi, a sz\u00fcks\u00e9ges m\u00e9ret: {0}, a jelenlegi m\u00e9ret: {1}, a haszn\u00e1lt m\u00e9ret: {2}. 
+StoreFileSizeTooSmallException_info.explanation=Az ObjectManager a t\u00e1rol\u00f3 f\u00e1jl m\u00e9ret\u00e9nek olyan m\u00e9ret\u0171 cs\u00f6kkent\u00e9s\u00e9re lett megk\u00e9rve, amely nem tudja t\u00e1rolni a megl\u00e9v\u0151 kezelt objektumokat (ManagedObjects) a f\u00e1jlban.
+StoreFileSizeTooSmallException_info.useraction=K\u00e9sz\u00edtsen egy olyan k\u00e9r\u00e9st, amely elegend\u0151 ter\u00fclettel rendelkezik a megl\u00e9v\u0151 ManagedObject objektumok elhelyez\u00e9s\u00e9re. 
+
+# {0} The java.nio.XXXX Exception that was caught by the ObjectManager.
+PermanentNIOException_info=CWSOM1041E: Az objektumkezel\u0151 elfogott egy kiv\u00e9telt: {0} (java.nio.XXX Exception). 
+PermanentNIOException_info.explanation=Az objektumkezel\u0151 elfogott egy nio kiv\u00e9telt, az I/O m\u0171velet nem k\u00eds\u00e9relhet\u0151 meg biztons\u00e1gosan \u00fajra \u00e9s el lett hagyva.
+PermanentNIOException_info.useraction=A nio Kiv\u00e9tel tartalmazza a probl\u00e9ma ok\u00e1t. \
+Vizsg\u00e1lja meg \u00e9s sz\u00fcntesse meg az alapul szolg\u00e1l\u00f3 nio kiv\u00e9tel ok\u00e1t.
+
+# {0} The ObjectStore asked to fulfill the allocation request.
+# {1} The ManagedObject requesting the allocation.
+ObjectStoreFullException_info=CWSOM1042E: A(z) {0} objektumt\u00e1rol\u00f3 (ObjectStore) ter\u00fclet lefoglal\u00e1s\u00e1ra lett megk\u00e9rve a(z) {1} kezelt objektum (ManagedObject) sz\u00e1m\u00e1ra, amikor az tele volt. 
+ObjectStoreFullException_info.explanation=Az objektumt\u00e1rol\u00f3 (ObjectStore) m\u00e1r tele volt, amikor az \u00faj lefoglal\u00e1si k\u00e9r\u00e9s k\u00e9sz\u00fclt. \
+A lefoglal\u00e1si k\u00e9r\u00e9s elutas\u00edtva.
+ObjectStoreFullException_info.useraction=D\u00f6ntse el, hogy az objektumt\u00e1rol\u00f3t kell-e nagyobb\u00e1 tennie, vagy el kell t\u00e1vol\u00edtania n\u00e9h\u00e1ny megl\u00e9v\u0151 objektumot. \
+Tov\u00e1bb\u00e1 lehet, hogy a tervezettn\u00e9l t\u00f6bb vagy nagyobb objektumokat pr\u00f3b\u00e1l t\u00e1rolni.
+
+# {0} The logfiletype that was passed to the ObjectManager constructor.
+InvalidLogFileTypeException_info=CWSOM1043E: Az ObjectManager {0} \u00e9rv\u00e9nytelen t\u00edpus\u00fa napl\u00f3f\u00e1jlt adott \u00e1t. 
+InvalidLogFileTypeException_info.explanation=Az ObjectManager konstruktor olyan t\u00edpus\u00fa napl\u00f3f\u00e1jlt adott \u00e1t, ami nem lett a LOG_FILE_TYPE_XXXX t\u00edpusok egyikek\u00e9nt sem felismerve. \
+Az ObjectManager nem ker\u00fclt p\u00e9ld\u00e1nyos\u00edt\u00e1sra.
+InvalidLogFileTypeException_info.useraction=M\u00f3dos\u00edtsa a konstruktor h\u00edv\u00e1st, hogy felismert napl\u00f3f\u00e1jlt\u00edpust haszn\u00e1ljon.
+
+# {0} The List from which the sublist is to be created.
+# {1} The entry which is not in the list.
+SubListEntryNotInListException_info=CWSOM1044E: A(z) {0} lista egy a(z) {1} listabejegyz\u00e9s (List.Entry) \u00e1ltal hat\u00e1rolt r\u00e9szlista l\u00e9trehoz\u00e1s\u00e1ra lett megk\u00e9rve, de az a bejegyz\u00e9st nem tartalmazza. 
+SubListEntryNotInListException_info.explanation=Egy lista olyan bejegyz\u00e9sek \u00e1ltal hat\u00e1rolt r\u00e9szlista l\u00e9trehoz\u00e1s\u00e1ra lett megk\u00e9rve, amelyeket az nem tartalmaz. \
+A r\u00e9szlista nem j\u00f6tt l\u00e9tre.
+SubListEntryNotInListException_info.useraction=Tekintse \u00e1t az alkalmaz\u00e1sk\u00f3dot annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy a bejegyz\u00e9s mi\u00e9rt nem volt a list\u00e1ban. \
+P\u00e9ld\u00e1ul lehet, hogy a bejegyz\u00e9s m\u00e1r elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a list\u00e1b\u00f3l.
+
+# {0} The List from which the sublist is to be created.
+ObjectSignatureNotFoundException_info=CWSOM1045E: Az ObjectManager megk\u00eds\u00e9relte egy kezelt objektum (ManagedObject) visszaalak\u00edt\u00e1s\u00e1t egy olyan {0}(int) al\u00e1\u00edr\u00e1ssal, amelyet az nem ismert fel.
+ObjectSignatureNotFoundException_info.explanation=Egy fel nem ismert al\u00e1\u00edr\u00e1s ker\u00fclt el\u0151 a kezelt objektumban (ManagedObject). Ez\u00e9rt a p\u00e9ld\u00e1nyos\u00edt\u00e1s megsz\u00fcntet\u00e9se elhagy\u00e1sra ker\u00fclt.
+ObjectSignatureNotFoundException_info.useraction=CMSG0002
+
+# {0} The ObjectStore being constructed.
+# {1} The store strategy value that is not valid.
+InvalidStoreStrategyException_info=CWSOM1046E: A(z) {0} ObjectStore egy {1} \u00e9rv\u00e9nytelen t\u00e1rol\u00e1si strat\u00e9gia haszn\u00e1lat\u00e1val lett \u00f6ssze\u00e1ll\u00edtva. 
+InvalidStoreStrategyException_info.explanation=Az objektumt\u00e1rol\u00f3k (ObjectStores) csak \u00e9rv\u00e9nyes t\u00e1rol\u00e1si strat\u00e9gi\u00e1kkal \u00e1ll\u00edthat\u00f3k \u00f6ssze.
+InvalidStoreStrategyException_info.useraction=\u00c9rv\u00e9nyes t\u00e1rol\u00e1si strat\u00e9gi\u00e1t haszn\u00e1ljon az ObjectStore \u00f6ssze\u00e1ll\u00edt\u00e1s\u00e1hoz. \
+Az \u00e9rv\u00e9nyes strat\u00e9gi\u00e1kat az ObjectManagerjavadoc elemben tal\u00e1lja.
+
+# {0} The Name of the new ObjectStore.
+# {1} The objectStoreIdentifier of the new and existing store.
+# {2} ObjectStore already using the identifier.
+DuplicateObjectStoreIdentifierException_info=CWSOM1047E: K\u00eds\u00e9rlet egy olyan {0} t\u00e1rol\u00f3nev\u0171 ObjectStore \u00e9s {1} azonos\u00edt\u00f3 \u00f6ssze\u00e1ll\u00edt\u00e1s\u00e1ra, amelyet m\u00e1r a(z) {2} ObjectStore haszn\u00e1l.
+DuplicateObjectStoreIdentifierException_info.explanation=Egy objektumkezel\u0151n bel\u00fcli objektumt\u00e1rol\u00f3k azonos\u00edt\u00f3inak egyedieknek kell lenni\u00fck.
+DuplicateObjectStoreIdentifierException_info.useraction=Miel\u0151tt \u00faj objektumt\u00e1rol\u00f3kat (ObjectStores) hozna l\u00e9tre, adjon megl\u00e9v\u0151ket az objektumkezel\u0151h\u00f6z (ObjectManager). \
+Ez az elj\u00e1r\u00e1s lehet\u0151v\u00e9 teszi az objektumkezel\u0151 sz\u00e1m\u00e1ra, hogy elker\u00fclje az azonos\u00edt\u00f3 \u00fajrafelhaszn\u00e1l\u00e1s\u00e1t
+
+# {0} The Object discovering data corruption.
+# {1} The corrupted object.
+GuardBytesException_info=CWSOM1048E: A(z) {0} objektum lehets\u00e9ges s\u00e9r\u00fclt adatokat tal\u00e1lt a(z) {1}(Object) objektumban. 
+GuardBytesException_info.explanation=V\u00e9d\u0151 byte-okkal v\u00e9dett adatokban az ObjectManager elt\u00e9r\u00e9st tal\u00e1lt a V\u00e9d\u0151 byte-ok \u00e9rt\u00e9k\u00e9ben.
+GuardBytesException_info.useraction=CMSG0002
+
+# {0} The name of the ObjectStore discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidStoreSignatureException_info=CWSOM1049E: A(z) {0} nev\u0171 objektumt\u00e1rol\u00f3 s\u00e9r\u00fclt {1}(String) al\u00e1\u00edr\u00e1st tal\u00e1lt a helyes {2}(String) al\u00e1\u00edr\u00e1s helyett. 
+InvalidStoreSignatureException_info.explanation=Az ObjectStore s\u00e9r\u00fclt fejl\u00e9ccel rendelkezik, \u00e9s nem dolgozhat\u00f3 fel.
+InvalidStoreSignatureException_info.useraction=Hat\u00e1rozza meg, hogy a f\u00e1jl hogyan s\u00e9r\u00fclt meg, \u00e9s \u00e1ll\u00edtson vissza egy biztons\u00e1gi ment\u00e9st.
+
+# {0} The LogFileHeader discovering corruption in its file header.
+# {1} The corrupted signature found.
+# {2} The correct signature expected.
+InvalidLogFileSignatureException_info=CWSOM1050E: S\u00e9r\u00fclt {0}(String) al\u00e1\u00edr\u00e1s tal\u00e1lhat\u00f3 a napl\u00f3f\u00e1jlban a helyes {1}(String) al\u00e1\u00edr\u00e1s helyett. 
+InvalidLogFileSignatureException_info.explanation=A napl\u00f3f\u00e1jl s\u00e9r\u00fclt fejl\u00e9ccel rendelkezik, \u00e9s nem dolgozhat\u00f3 fel.
+InvalidLogFileSignatureException_info.useraction=Hat\u00e1rozza meg, hogy a f\u00e1jl hogyan s\u00e9r\u00fclt meg, \u00e9s \u00e1ll\u00edtson vissza egy biztons\u00e1gi ment\u00e9st.
+
+# {0} The name of the thread which is being asked to perform the request.
+# {1} The name of the request the thread is being asked to perform.
+ThreadNotRunningException_info=CWSOM1051E: A(z) {0} sz\u00e1l {1} k\u00e9r\u00e9s v\u00e9grehajt\u00e1s\u00e1ra lett megk\u00e9rve a le\u00e1ll\u00edt\u00e1sa ut\u00e1n. 
+ThreadNotRunningException_info.explanation=A megadott sz\u00e1l meghi\u00fasult vagy a le\u00e1ll\u00edt\u00e1sa lett k\u00e9rve, amikor a k\u00e9r\u00e9s \u00e9rkezett.
+ThreadNotRunningException_info.useraction=CMSG0002
+
+# {0} ObjectStore which is unable to locate the file.
+# {1} The exception caught by the ObjectStore when trying to locate the file, or null.
+# {2} The file name of the file that cannot be found.
+NonExistentObjectStoreFileException_info=CWSOM1052E: A(z) {0} objektumt\u00e1rol\u00f3 elfogott egy {1}(Exception) kiv\u00e9telt, amely megpr\u00f3b\u00e1lta megkeresni vagy l\u00e9trehozni a(z) {2}(String) nev\u0171 f\u00e1jlt. 
+NonExistentObjectStoreFileException_info.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az ObjectStore megpr\u00f3b\u00e1lta megnyitni a megnevezett f\u00e1jlt. Az ObjectManager nem lesz elind\u00edtva.
+NonExistentObjectStoreFileException_info.useraction=Ellen\u0151rizze, hogy a f\u00e1jl neve \u00e9rv\u00e9nyes legyen, a f\u00e1jl l\u00e9tezzen, \u00e9s annak \u00edr\u00e1s\u00e1hoz az ObjectManager megfelel\u0151 enged\u00e9llyel rendelkezzen. \
+Ha sz\u00fcks\u00e9ges, akkor az ObjectManager ind\u00edt\u00e1sakor biztos\u00edtsa a logikai t\u00e1rol\u00f3n\u00e9v lek\u00e9pez\u00e9s\u00e9t a f\u00e1jl fizikai hely\u00e9re.
+
+# ----------------------------------------------------------------------------------------------------
+
+# {0} is the text of the message.
+TEMPORARY_SIOM9999=CWSOM9999E: {0}
+TEMPORARY_SIOM9999.explanation=Ha az \u00fczenet nem ad elegend\u0151 inform\u00e1ci\u00f3t, akkor tekintse meg a kapcsol\u00f3d\u00f3 \u00fczeneteket a tov\u00e1bbi seg\u00edts\u00e9g\u00e9rt.
+TEMPORARY_SIOM9999.useraction=Tekintse meg a kor\u00e1bbi \u00fczeneteket tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt.

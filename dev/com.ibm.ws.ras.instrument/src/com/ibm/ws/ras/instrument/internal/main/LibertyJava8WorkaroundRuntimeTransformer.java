@@ -11,6 +11,9 @@
 
 package com.ibm.ws.ras.instrument.internal.main;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -55,6 +58,20 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      */
     private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
 
+	/**
+	 * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,
+	 * the decision was made to for now only enable diagnostic instrumentation when a bootstrap.properties variable is set
+	 * to signal that they should be transformed up front.
+	*/
+	private static final boolean isJava8TraceEnabled = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        @Override
+        public Boolean run()
+        {
+			Boolean prop = Boolean.getBoolean("com.ibm.ws.ras.instrument.instrumentJava8Trace");
+            return (prop == null ? false : prop.booleanValue());
+        }
+    });
+	
     /** Issue detailed entry/exit trace for class transforms if this is true. */
     private static final boolean detailedTransformTrace = Boolean.getBoolean("com.ibm.ws.logging.instrumentation.detail.enabled");
 
@@ -88,13 +105,8 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
     
     protected static Boolean checkJDK8WithHotReplaceBug() {
     	if (isIBMVirtualMachine) {
-			
-			//It turns out no recent JDK we've tried yet can do reinstrumentation on java8 classes with
-			//INVOKEDYNAMIC features like lambdas. So for now this workaround will be on always.
-			
-			return true;
-			
-            //String runtimeVersion = System.getProperty("java.runtime.version", "unknown-00000000_0000");
+		
+            String runtimeVersion = System.getProperty("java.runtime.version", "unknown-00000000_0000");
 
             
             //This is largely replicated from the JavaInfo class. The problem is this class gets packed into the 
@@ -102,33 +114,49 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
             //Please keep the definitive version of this in JavaInfo.
             
             // Parse MAJOR and MINOR versions
-            //String specVersion = System.getProperty("java.specification.version");
-            //String[] versions = specVersion.split("[^0-9]"); // split on non-numeric chars
+            String specVersion = System.getProperty("java.specification.version");
+            String[] versions = specVersion.split("[^0-9]"); // split on non-numeric chars
             // Offset for 1.MAJOR.MINOR vs. MAJOR.MINOR version syntax
             
-            //int offset = "1".equals(versions[0]) ? 1 : 0;
-            //if (versions.length <= offset)
-            //    return false; //If something goes badly wrong, don't use the workaround. 
-            //
-            //int MAJOR = Integer.parseInt(versions[offset]);
-            //int MINOR = versions.length < (2 + offset) ? 0 : Integer.parseInt(versions[(1 + offset)]);
-            //int SR = 0;
-            //int srloc = runtimeVersion.toLowerCase().indexOf("sr");
-            //if (srloc > (-1)) {
-            //    srloc += 2;
-            //    if (srloc < runtimeVersion.length()) {
-            //        int len = 0;
-            //        while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
-            //            len++;
-            //       }
-            //        SR = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
-            //    }
-            //}
+            int offset = "1".equals(versions[0]) ? 1 : 0;
+            if (versions.length <= offset)
+                return false; //If something goes badly wrong, don't use the workaround. 
             
-            //For JDK 8000->8005 (non-inclusive) we need to use the hot code replace workaround.
-            //if ((MAJOR==8) && (MINOR==0) && (SR<5)) {
-            //	return true;
-            //}
+            int MAJOR = Integer.parseInt(versions[offset]);
+            int MINOR = versions.length < (2 + offset) ? 0 : Integer.parseInt(versions[(1 + offset)]);
+            //SR and FP need to be parsed manually for a string like 2017111111_01(SR5 FP5) 
+			
+			int SR = 0;
+			int FP = 0;
+            int srloc = runtimeVersion.toLowerCase().indexOf("sr");
+            if (srloc > (-1)) {
+                srloc += 2;
+                if (srloc < runtimeVersion.length()) {
+                    int len = 0;
+                    while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
+                        len++;
+                   }
+                    SR = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
+                }
+            }
+            
+			int fploc = runtimeVersion.toLowerCase().indexOf("fp");
+            if (fploc > (-1)) {
+                fploc += 2;
+                if (fploc < runtimeVersion.length()) {
+                    int len = 0;
+                    while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
+                        len++;
+                   }
+                    FP = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
+                }
+            }
+			
+            //For IBM JDK 80 SR5 FP5 and lower, we need to use a workaround and property activated injection mechanism.
+            //Workaround if we're at 8.0 AND we're either SR0,1,2,3,4 OR we're at SR5 FP1,2,3,4. ONLY 8.0 SR5 FP5 or higher FP OR 8.0 SR6 or higher regardless of FP.
+			if ((MAJOR==8) && (MINOR==0) && ((SR<5) || ((SR==5) && (FP<5)) )) {
+            	return true;
+            }
 
         }
         
@@ -149,7 +177,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
         instrumentation = inst;
 
         if (instrumentation == null) {
-        } else {
+        } else if (isJava8TraceEnabled) {
         	setInjectAtTransform(true); //We always inject at transform in this workaround transformer. Either all or nothing here.
         }
 
@@ -204,7 +232,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
         if (bytes.length < 8) {
             return false;
         }
-
+		
         // The transform method will be called for all classes, but ASM is only
         // capable of processing some class file format versions.  That's ok
         // because the transformer only modifies classes that have been
@@ -238,7 +266,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      *             the <code>InputStream</code>
      */
     public static byte[] transform(byte[] bytes, boolean skipIfNotPreprocessed) throws IOException {
-        if (detailedTransformTrace && tc.isEntryEnabled())
+		if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(tc, "transform");
         
         
@@ -278,11 +306,9 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
 
     /**
      * {@inheritDoc} <p>
-     * This method will only execute a transformation if we're configured to class
-     * has been explicitly targeted for injection by {@link #traceStateChanged} or
-     * if we're forced to perform transformation against all classes at class
-     * definition because the host JVM doesn't support class retransformation or
-     * class redefinition.
+     * This method will only executes a transformation always, provided
+	 * the particular conditions we're looking for are true. Namely the JDK level and
+	 * custom property to turn on Java8 instrumentation.
      */
     @Override
     public byte[] transform(ClassLoader loader,
@@ -290,11 +316,14 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
-    	
-    	if (detailedTransformTrace && tc.isEntryEnabled())
+     	if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(this, tc, "transform", loader, className, classBeingRedefined, protectionDomain);
 
-        if (classBeingRedefined != null)
+		    	
+		if (!isJava8TraceEnabled)
+			return null; //Look for special trace instrumentation force until JDK bug fully fixed.
+		
+		if (classBeingRedefined != null)
         	return null;
 
         byte[] newClassBytes = null;

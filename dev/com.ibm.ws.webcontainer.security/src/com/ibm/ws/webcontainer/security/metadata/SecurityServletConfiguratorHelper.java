@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.metadata;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -47,6 +49,8 @@ import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.AnnotationValue;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.InfoStore;
+import com.ibm.wsspi.anno.info.MethodInfo;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
@@ -67,7 +71,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
     public static final String USER_DATA_CONSTRAINT_KEY = "user-data-constraint";
     public static final String DENY_UNCOVERED_HTTP_METHODS_KEY = "deny-uncovered-http-methods";
     protected static final String SYNC_TO_OS_THREAD_ENV_ENTRY_KEY = "com.ibm.websphere.security.SyncToOSThread";
-
+    private static final String ROLES_ALLOWED = "javax.annotation.security.RolesAllowed";
     private static final TraceComponent tc = Tr.register(SecurityServletConfiguratorHelper.class);
 
     private ServletConfigurator configurator;
@@ -127,14 +131,21 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
 
     @Override
     /*
-     * Process only the @DeclareRoles and @LoginConfig annotations
-     * The other security annotations are handled by the
-     * web container
+     * Process only the @DeclareRoles, @RolesAllowed and @LoginConfig annotations
+     * The other security annotations are handled by the web container
      */
     public void configureFromAnnotations(WebFragmentInfo webFragmentItem) throws UnableToAdaptException {
         WebAnnotations webAnnotations = configurator.getWebAnnotations();
         FragmentAnnotations fragmentAnnotations = webAnnotations.getFragmentAnnotations(webFragmentItem);
-        processSecurityRoles(webAnnotations, fragmentAnnotations.selectAnnotatedClasses(DeclareRoles.class));
+        int allRolesSizeBefore = allRoles.size();
+        processSecurityRoles(webAnnotations, fragmentAnnotations.selectAnnotatedClasses(DeclareRoles.class), DeclareRoles.class, true);
+        if (allRolesSizeBefore == allRoles.size()) { // there is no DeclareRoles annotation so process RolesAllowed at a class and method level
+            AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
+            Set<String> annotationClasses = annotationTargets.getAnnotatedClasses(ROLES_ALLOWED);
+            processSecurityRoles(webAnnotations, annotationClasses, RolesAllowed.class, true);
+            annotationClasses = annotationTargets.getClassesWithMethodAnnotation(ROLES_ALLOWED);
+            processSecurityRoles(webAnnotations, annotationClasses, RolesAllowed.class, false);
+        }
         configureMpJwt(true);
     }
 
@@ -152,6 +163,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
      *
      */
     protected void configureMpJwt(boolean doFeatureCheck) {
+
         if (doFeatureCheck && !MpJwtHelper.isMpJwtFeatureActive()) {
             return;
         }
@@ -181,7 +193,16 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
         // we have an annotation and no DD, so check it out
         String className = annotatedClasses.iterator().next();
         ClassInfo ci = annosInfo.getDelayableClassInfo(className);
-        if (!ci.getSuperclassName().equals("javax.ws.rs.core.Application")) {
+        boolean isValid = false;
+        while (ci != null) {
+            if ("javax.ws.rs.core.Application".equals(ci.getSuperclassName())) {
+                isValid = true;
+                break;
+            }
+            ci = ci.getSuperclass();
+        }
+        ci = annosInfo.getDelayableClassInfo(className);
+        if (!isValid) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "loginConfig annotation  found, but on wrong class, " + ci.getSuperclassName() + ", return");
             }
@@ -356,34 +377,51 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
     }
 
     /**
-     * Create a list of roles that represent the @DeclareRoles
+     * Create a list of roles that represent the security annotation
      *
      * @param webAnnotations the main link for web module annotation related services
-     * @param securityRoles a list of classes containing the @DeclareRole annotation
+     * @param securityRoles a list of classes containing the security annotation
+     * @param securityAnnotation the security annotation such as @DeclareRoles or @RolesAllowed
      */
-    private void processSecurityRoles(WebAnnotations webAnnotations, Set<String> classesWithSecurityRoles) throws UnableToAdaptException {
+
+    private void processSecurityRoles(WebAnnotations webAnnotations, Set<String> classesWithSecurityRoles,
+                                      Class<? extends Annotation> securityAnnotation, boolean annotationForClass) throws UnableToAdaptException {
         for (String classWithSecurityRole : classesWithSecurityRoles) {
             ClassInfo classInfo = webAnnotations.getClassInfo(classWithSecurityRole);
             final String fullyQualifiedClassName = classWithSecurityRole;
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "@DeclareRoles found on class ", fullyQualifiedClassName);
+                Tr.debug(tc, "@" + securityAnnotation.getSimpleName() + " found on class ", fullyQualifiedClassName);
             }
-
-            AnnotationInfo declareRolesAnnotation = classInfo.getAnnotation(DeclareRoles.class);
-            if (declareRolesAnnotation != null) {
-                AnnotationValue value = declareRolesAnnotation.getValue("value");
-                final List<? extends AnnotationValue> roleValues = value.getArrayValue();
-                for (AnnotationValue roleValue : roleValues) {
-                    String role = roleValue.getStringValue();
-                    if (!allRoles.contains(role)) {
-                        allRoles.add(role);
-                    }
+            AnnotationInfo rolesAnnotation = null;
+            if (annotationForClass) {
+                rolesAnnotation = classInfo.getAnnotation(securityAnnotation);
+                getRoleValues(rolesAnnotation);
+            } else {
+                for (MethodInfo methodInfo : classInfo.getDeclaredMethods()) {
+                    rolesAnnotation = methodInfo.getAnnotation(securityAnnotation);
+                    getRoleValues(rolesAnnotation);
                 }
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "allRoles: " + allRoles);
+        }
+    }
+
+    /**
+     * @param rolesAnnotation
+     */
+    private void getRoleValues(AnnotationInfo rolesAnnotation) {
+        if (rolesAnnotation != null) {
+            AnnotationValue value = rolesAnnotation.getValue("value");
+            final List<? extends AnnotationValue> roleValues = value.getArrayValue();
+            for (AnnotationValue roleValue : roleValues) {
+                String role = roleValue.getStringValue();
+                if (!allRoles.contains(role)) {
+                    allRoles.add(role);
+                }
+            }
         }
     }
 

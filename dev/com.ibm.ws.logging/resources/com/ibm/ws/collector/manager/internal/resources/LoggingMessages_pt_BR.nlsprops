@@ -1,0 +1,24 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector.manager/resources/com/ibm/ws/collector/manager/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# New messages starting December 1, 2016 should use message block TRAS4001 - TRAS4100.
+
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING=TRAS0120W: O gerenciador do coletor detectou que este manipulador {0} perdeu {1} eventos da origem {2} desde que foi iniciado.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.explanation=O manipulador perde eventos quando n\u00e3o \u00e9 capaz de consumir os eventos na taxa com que est\u00e3o sendo produzidos por uma origem. O gerenciador de coletor tem buffers internos grandes o suficiente para acomodar o consumo lento de eventos por um gerenciador. No entanto, uma origem que produz um grande volume de eventos termina a sobrescri\u00e7\u00e3o desses buffers, o que significa que eventos podem ser perdidos antes que o manipulador consiga consumi-los.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.useraction=Nenhum a\u00e7\u00e3o necess\u00e1ria por parte do usu\u00e1rio.
+
+HANDLER_LOST_EVENTS_WARNING=TRAS0121W: O gerenciador do coletor detectou que este manipulador {0} perdeu {1} eventos da origem {2} nos \u00faltimos {3} minutos, e perdeu um total de {4} eventos da origem desde que foi iniciado.
+HANDLER_LOST_EVENTS_WARNING.explanation= O manipulador perde eventos quando n\u00e3o \u00e9 capaz de consumir os eventos na taxa com que est\u00e3o sendo produzidos por uma origem. O gerenciador de coletor tem buffers internos grandes o suficiente para acomodar o consumo lento de eventos por um gerenciador. No entanto, uma origem que produz um grande volume de eventos termina a sobrescri\u00e7\u00e3o desses buffers, o que significa que eventos podem ser perdidos antes que o manipulador consiga consumi-los.
+HANDLER_LOST_EVENTS_WARNING.useraction=Nenhum a\u00e7\u00e3o necess\u00e1ria por parte do usu\u00e1rio.

@@ -1,0 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+// Define Group:ArtifactId:Version coordinates of each dependency
+dependencies {
+  requiredLibs 'javax:javaee-api:7.0'
+  requiredLibs 'org.hamcrest:hamcrest-all:1.3'
+  requiredLibs 'net.minidev:json-smart:1.3.1'
+  requiredLibs 'com.nimbusds:nimbus-jose-jwt:4.23'
+  requiredLibs 'org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0' 
+  requiredLibs 'org.glassfish.hk2:hk2-api:2.5.0-b42'  
+  requiredLibs 'org.glassfish.hk2:hk2-locator:2.5.0-b42'
+  requiredLibs 'org.glassfish.hk2:hk2-utils:2.5.0-b42'   
+  requiredLibs 'org.glassfish.jersey.core:jersey-client:2.26'
+  requiredLibs 'org.glassfish.jersey.core:jersey-common:2.26'
+  requiredLibs 'org.glassfish.jersey.inject:jersey-hk2:2.26'
+  requiredLibs 'org.glassfish.hk2:osgi-resource-locator:1.0.1' 
+  requiredLibs 'javax.annotation:javax.annotation-api:1.2'
+  requiredLibs 'javax.inject:javax.inject:1'
+  requiredLibs 'org.glassfish:javax.json:1.1'
+  requiredLibs 'javax.ws.rs:javax.ws.rs-api:2.0'
+}

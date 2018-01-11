@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Le format de la valeur de la propri\u00e9t\u00e9 {0} n''est pas valide.  La valeur de la propri\u00e9t\u00e9 doit avoir un type et un format de donn\u00e9es corrects.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=Le format de la valeur de la propri\u00e9t\u00e9 n'est pas valide. Par exemple, le type de la propri\u00e9t\u00e9 correspond \u00e0 un entier, mais la valeur sp\u00e9cifi\u00e9e n'est pas un entier valide.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=V\u00e9rifiez que le format et le type de donn\u00e9es sont corrects pour la valeur de la propri\u00e9t\u00e9.
+
+ENTITY_NOT_FOUND=CWIML4001E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. L''entit\u00e9 {0} n''a pas \u00e9t\u00e9 trouv\u00e9e.  Indiquez l''entit\u00e9 correcte ou cr\u00e9ez l''entit\u00e9 manquante.
+ENTITY_NOT_FOUND.explanation=Le nom d'entit\u00e9 indiqu\u00e9, qui doit \u00eatre un nom unique ou un ID unique, est introuvable dans le r\u00e9f\u00e9rentiel sous-jacent. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans cette entit\u00e9.
+ENTITY_NOT_FOUND.useraction=V\u00e9rifiez que l'entit\u00e9 existe dans le r\u00e9f\u00e9rentiel sous-jacent. Si l'entit\u00e9 existe, v\u00e9rifiez que les droits en lecture sont d\u00e9finis pour l'entit\u00e9 puis faites une nouvelle tentative.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e.  Plusieurs enregistrements existent pour le nom principal {0} dans les registres d''utilisateurs configur\u00e9s. Le nom principal doit \u00eatre unique dans tous les registres d''utilisateurs.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Plusieurs principaux ont \u00e9t\u00e9 trouv\u00e9s pour le nom de principal indiqu\u00e9. Le processus de connexion ne peut pas se poursuivre.
+MULTIPLE_PRINCIPALS_FOUND.useraction=V\u00e9rifiez que le nom de principal appropri\u00e9 est sp\u00e9cifi\u00e9. Par exemple, la sp\u00e9cification du nom de principal en tant que nom unique peut \u00e9viter ce type d'exception.

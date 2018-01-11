@@ -1,0 +1,18 @@
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final
+
+# Something that wildfly uses perhaps?
+Fragment-Host:
+
+Import-Package: \
+  org.apache.el,\
+  *
+
+Export-Package: org.hibernate.validator.cdi.*;version="6.0.4.Final"
+
+Include-Resource: \
+  @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.4.Final}!/META-INF/services/*,\
+  META-INF=resources/META-INF

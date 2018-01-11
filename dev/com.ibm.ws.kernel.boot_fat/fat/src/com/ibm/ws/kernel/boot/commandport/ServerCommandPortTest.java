@@ -16,11 +16,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -42,6 +44,11 @@ public class ServerCommandPortTest {
 
     @Rule
     public TestName testName = new TestName();
+
+    @BeforeClass
+    public static void setupApp() throws Exception {
+        ShrinkHelper.defaultApp(commandPortDisabledServer, "shutdownfat", "com.ibm.ws.kernel.boot.fat");
+    }
 
     @Test
     /**
@@ -91,6 +98,12 @@ public class ServerCommandPortTest {
             output = server.executeServerScript("dump", null).getStdout();
             assertTrue(output.contains("CWWKE0090W"));
             validateDumpFile(output, server, COMMAND_PORT_DISABLED_SERVER_NAME);
+
+            output = server.executeServerScript("pause", null).getStdout();
+            assertTrue(output.contains("CWWKE0944E"));
+
+            output = server.executeServerScript("resume", null).getStdout();
+            assertTrue(output.contains("CWWKE0945E"));
 
             // stopping the server should produce an error
             output = server.executeServerScript("stop", null).getStdout();

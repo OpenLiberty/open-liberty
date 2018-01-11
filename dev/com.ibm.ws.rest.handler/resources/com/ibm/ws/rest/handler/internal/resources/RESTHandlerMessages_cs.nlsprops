@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: Nejsou registrovan\u00e9 \u017e\u00e1dn\u00e9 obslu\u017en\u00e9 rutiny odpov\u00eddaj\u00edc\u00ed po\u017eadovan\u00e9 adrese URL {0}.
+HANDLER_NOT_FOUND_ERROR.explanation=Do\u0161lo k pokusu o p\u0159\u00edstup k adrese URL, kter\u00e1 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 z registrovan\u00fdch obslu\u017en\u00fdch rutin.
+HANDLER_NOT_FOUND_ERROR.useraction=Opravte adresu URL tak, aby odpov\u00eddala registrovan\u00e9 obslu\u017en\u00e9 rutin\u011b.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: Slu\u017eba OSGi {0} nen\u00ed k dispozici.
+OSGI_SERVICE_ERROR.explanation=Tato intern\u00ed chyba serveru je generovan\u00e1 v d\u016fsledku nedostupnosti uveden\u00e9 slu\u017eby.
+OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou clean.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: P\u0159e \u0159e\u0161en\u00ed kontextu SSL kolektivn\u00edho \u010dlena do\u0161lo k v\u00fdjimce: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=Kontext SSL ne\u0161lo vytvo\u0159it s certifik\u00e1tem SSL \u010dlena.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=Zkontrolujte konfiguraci SSL kolektivu, v\u010detn\u011b \u0159adi\u010de a c\u00edlov\u00e9ho \u010dlena.
+
+MISSING_PARAMETER=CWWKO1003E: Povinn\u00fd parametr, {0}, v po\u017eadavku https chyb\u00ed.
+MISSING_PARAMETER.explanation=Ur\u010den\u00fd povinn\u00fd parametr v po\u017eadavku chyb\u00ed. 
+MISSING_PARAMETER.useraction=Zahr\u0148te ur\u010den\u00fd parametr do po\u017eadavku a zopakujte po\u017eadavek.
+
+MISSING_HEADER=CWWKO1004E: Povinn\u00e9 z\u00e1hlav\u00ed, {0}, v po\u017eadavku https chyb\u00ed.
+MISSING_HEADER.explanation=Ur\u010den\u00e9 povinn\u00e9 z\u00e1hlav\u00ed v po\u017eadavku chyb\u00ed. 
+MISSING_HEADER.useraction=Zahr\u0148te ur\u010den\u00e9 z\u00e1hlav\u00ed do po\u017eadavku a zopakujte po\u017eadavek.
+
+INVALID_INPUT_VALUE=CWWKO1005E: Vstupn\u00ed pole s n\u00e1zvem {0} obsahuje chybnou hodnotu.
+INVALID_INPUT_VALUE.explanation=Po\u017eadavek obsahuje vstupn\u00ed pole s chybnou hodnotou. Vstupn\u00ed pole neodpov\u00edd\u00e1 \u017e\u00e1dn\u00fdm z\u00e1znam\u016fm v syst\u00e9mu. 
+INVALID_INPUT_VALUE.useraction=Opravte hodnotu vstupn\u00edho pole a zopakujte po\u017eadavek.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: Typ MIME po\u017eadavku {0} nen\u00ed podporov\u00e1n. 
+UNSUPPORTED_MEDIA_TYPE.explanation=Server nedok\u00e1\u017ee vyu\u017e\u00edt typ MIME po\u017eadavku. Typ MIME neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu z o\u010dek\u00e1van\u00fdch typ\u016f MIME. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Opravte hodnotu typu obsahu a ode\u0161lete po\u017eadavek znovu.
+

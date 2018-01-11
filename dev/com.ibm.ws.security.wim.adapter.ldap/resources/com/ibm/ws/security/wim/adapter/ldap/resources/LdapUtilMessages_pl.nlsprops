@@ -1,0 +1,207 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.adapter.ldap.util/resources/com/ibm/ws/security/wim/adapter/ldap/util/resources/LdapUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: CWWKS3200 - CWWKS3299
+
+ENTITY_NOT_FOUND=CWIML4001E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie znaleziono jednostki {0}. Okre\u015bl poprawn\u0105 jednostk\u0119 lub utw\u00f3rz brakuj\u0105c\u0105 jednostk\u0119.
+ENTITY_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonej nazwy jednostki (uniqueName lub uniqueId) w bazowym repozytorium. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w przed znalezieniem tej jednostki.
+ENTITY_NOT_FOUND.useraction=Sprawd\u017a, czy jednostka istnieje w repozytorium bazowym. Je\u015bli jednostka istnieje, upewnij si\u0119, \u017ce zosta\u0142y dla niej ustawione uprawnienia do odczytu i spr\u00f3buj ponownie.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. W elemencie steruj\u0105cym {1} okre\u015blono niepoprawn\u0105 warto\u015b\u0107 dla poziomu w\u0142a\u015bciwo\u015bci {0}. Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci level (poziom) musi by\u0107 r\u00f3wna 0 lub by\u0107 dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105.
+INVALID_LEVEL_IN_CONTROL.explanation=Warto\u015b\u0107 poziomu w\u0142a\u015bciwo\u015bci zosta\u0142a okre\u015blona jako liczba ujemna.
+INVALID_LEVEL_IN_CONTROL.useraction=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci level (poziom) musi by\u0107 r\u00f3wna 0 lub by\u0107 dodatni\u0105 liczb\u0105 ca\u0142kowit\u0105. Zmie\u0144 warto\u015b\u0107 poziomu w\u0142a\u015bciwo\u015bci i spr\u00f3buj ponownie.
+
+NAMING_EXCEPTION=CWIML4520E: Nie mo\u017cna zako\u0144czy\u0107 operacji LDAP. Podczas przetwarzania wyst\u0105pi\u0142 wyj\u0105tek {0} dotycz\u0105cy nazewnictwa LDAP.
+NAMING_EXCEPTION.explanation=Komunikat wskazuje, \u017ce wyst\u0105pi\u0142 og\u00f3lny wyj\u0105tek dotycz\u0105cy nazewnictwa podczas operacji LDAP. Dodatkowe informacje zawiera wyj\u0105tek. 
+NAMING_EXCEPTION.useraction=Sprawd\u017a, czy pokrewne repozytorium (na przyk\u0142ad baza danych lub serwer LDAP) zosta\u0142o uruchomione i ustawione poprawnie.
+
+SYSTEM_EXCEPTION=CWIML1998E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podczas przetwarzania operacji na rejestrze u\u017cytkownik\u00f3w wyst\u0105pi\u0142 nast\u0119puj\u0105cy wyj\u0105tek systemowy: {0} 
+SYSTEM_EXCEPTION.explanation=Program napotka\u0142 wyj\u0105tek systemowy podczas wykonywania operacji na rejestrze u\u017cytkownik\u00f3w. 
+SYSTEM_EXCEPTION.useraction= Sprawd\u017a w dziennikach przyczyn\u0119 tego b\u0142\u0119du i podejmij odpowiednie dzia\u0142ania naprawcze. 
+
+INVALID_PROPERTY_VALUE=CWIML1013E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Wprowadzona warto\u015b\u0107 w\u0142a\u015bciwo\u015bci {0} jest niepoprawna dla jednostki {1}. Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci musi by\u0107 poprawna i jej typ danych musi by\u0107 poprawny.
+INVALID_PROPERTY_VALUE.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci jest niepoprawna. Na przyk\u0142ad w\u0142a\u015bciwo\u015b\u0107 typu Identyfikator wskazuje niepoprawn\u0105 pozycj\u0119.
+INVALID_PROPERTY_VALUE.useraction=Sprawd\u017a, czy warto\u015b\u0107 w\u0142a\u015bciwo\u015bci jest poprawna i ma poprawny typ danych. Je\u015bli pr\u00f3bujesz pobra\u0107 w\u0142a\u015bciwo\u015b\u0107 typu identyfikatora razem z innymi w\u0142a\u015bciwo\u015bciami, podziel to wywo\u0142anie na dwa wywo\u0142ania. Jedno wywo\u0142anie b\u0119dzie s\u0142u\u017cy\u0142o do pobrania w\u0142a\u015bciwo\u015bci typu identyfikatora, a drugie inn\u0105 w\u0142a\u015bciwo\u015b\u0107.
+
+GENERIC=CWIML1999E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podczas przetwarzania wyst\u0105pi\u0142 b\u0142\u0105d \u015brodowiska wykonawczego: {0}
+GENERIC.explanation=Program napotka\u0142 okre\u015blony b\u0142\u0105d podczas wykonywania operacji.
+GENERIC.useraction= Sprawd\u017a w dziennikach przyczyn\u0119 tego b\u0142\u0119du i podejmij odpowiednie dzia\u0142ania naprawcze.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Brak warto\u015bci obowi\u0105zkowej w\u0142a\u015bciwo\u015bci {0}. Podaj warto\u015b\u0107 tej obowi\u0105zkowej w\u0142a\u015bciwo\u015bci.
+MISSING_MANDATORY_PROPERTY.explanation=Nie mo\u017cna przeprowadzi\u0107 operacji z powodu braku warto\u015bci obowi\u0105zkowej w\u0142a\u015bciwo\u015bci. Na przyk\u0142ad nie okre\u015blono w\u0142a\u015bciwo\u015bci RDN (wzgl\u0119dna nazwa wyr\u00f3\u017cniaj\u0105ca) podczas tworzenia jednostki, brakuje w\u0142a\u015bciwo\u015bci propertyName lub entityTypeName w elemencie PropertyDefinitionControl lub ExtensionPropertyDefinitionControl albo brakuje w\u0142a\u015bciwo\u015bci entityName w elemencie entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Podaj warto\u015b\u0107 tej obowi\u0105zkowej w\u0142a\u015bciwo\u015bci.
+
+ENTITY_IS_NOT_A_GROUP=CWIML4525E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Podany typ jednostki {0} jest inny ni\u017c Group. Ta operacja jest obs\u0142ugiwana tylko przez jednostk\u0119 typu Group.
+ENTITY_IS_NOT_A_GROUP.explanation=Operacje zwi\u0105zane z grupami, takie jak przypisywanie cz\u0142onk\u00f3w do grup lub pobieranie cz\u0142onk\u00f3w grup, dotycz\u0105 tylko jednostki typu Group (grupa). Je\u015bli okre\u015blona jednostka jest typu innego ni\u017c Group (grupa), zg\u0142aszany jest wyj\u0105tek.
+ENTITY_IS_NOT_A_GROUP.useraction=Upewnij si\u0119, \u017ce okre\u015blona jednostka jest typu Group. W przypadku adaptera LDAP upewnij si\u0119, \u017ce klasa obiekt\u00f3w zdefiniowana dla typu jednostek Group jest zgodna z rzeczywist\u0105 klas\u0105 obiekt\u00f3w grupy.
+
+CLEAR_ALL_CLEAR_CACHE_MODE=CWIML4002W:  U\u017cytkownik {2} przekaza\u0142 do komponentu sterowania pami\u0119ci\u0105 podr\u0119czn\u0105 komend\u0119 okre\u015blaj\u0105c\u0105 tryb czyszczenia pami\u0119ci podr\u0119cznej {1} dla repozytorium {0}. Ca\u0142a pami\u0119\u0107 podr\u0119czna repozytorium LDAP zosta\u0142a wyczyszczona.
+CLEAR_ALL_CLEAR_CACHE_MODE.explanation=Okre\u015blony u\u017cytkownik pr\u00f3buje wyczy\u015bci\u0107 ca\u0142\u0105 pami\u0119\u0107 podr\u0119czn\u0105 danego repozytorium, u\u017cywaj\u0105c trybu clearAll.
+CLEAR_ALL_CLEAR_CACHE_MODE.useraction=Ten komunikat zosta\u0142 zarejestrowany na potrzeby kontroli.
+
+UNKNOWN_CLEAR_CACHE_MODE=CWIML4003W:  Tryb czyszczenia pami\u0119ci podr\u0119cznej {1} okre\u015blony dla repozytorium {0} w elemencie steruj\u0105cym pami\u0119ci podr\u0119cznej nie jest obs\u0142ugiwany. Okre\u015bl obs\u0142ugiwany tryb czyszczenia pami\u0119ci podr\u0119cznej.
+UNKNOWN_CLEAR_CACHE_MODE.explanation=Okre\u015blony tryb czyszczenia pami\u0119ci podr\u0119cznej nie jest obs\u0142ugiwany dla tego repozytorium.
+UNKNOWN_CLEAR_CACHE_MODE.useraction=Okre\u015bl tryb czyszczenia pami\u0119ci podr\u0119cznej, kt\u00f3ry jest obs\u0142ugiwany dla okre\u015blonego repozytorium. 
+
+INVALID_PROPERTY_DATA_TYPE=CWIML4522E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Typ danych w\u0142a\u015bciwo\u015bci {0} jest niepoprawny.  Skonfigurowany rejestr u\u017cytkownik\u00f3w i repozytorium zaplecza powinny mie\u0107 ten sam typ danych dla w\u0142a\u015bciwo\u015bci. 
+INVALID_PROPERTY_DATA_TYPE.explanation=Okre\u015blony typ danych jest niezgodny z typem danych zdefiniowanym dla w\u0142a\u015bciwo\u015bci. Na przyk\u0142ad typ danych zdefiniowany w rejestrze u\u017cytkownik\u00f3w to typ binarny, a typ danych zdefiniowany w repozytorium zaplecza to typ \u0142a\u0144cuchowy.
+INVALID_PROPERTY_DATA_TYPE.useraction=Sprawd\u017a, czy typ danych w\u0142a\u015bciwo\u015bci jest taki sam w skonfigurowanym rejestrze u\u017cytkownik\u00f3w i repozytorium zaplecza. 
+
+LDAP_ENTRY_NOT_FOUND=CWIML4527E: Nie mo\u017cna zako\u0144czy\u0107 operacji LDAP. Nie znaleziono pozycji LDAP {0}: {1} Podaj poprawn\u0105 nazw\u0119 unikaln\u0105 jednostki i zdefiniuj poprawne odwzorowanie w\u0119z\u0142a dla repozytorium LDAP.
+LDAP_ENTRY_NOT_FOUND.explanation=Na serwerze LDAP nie znaleziono pozycji LDAP dla podanej jednostki.
+LDAP_ENTRY_NOT_FOUND.useraction=Sprawd\u017a, czy nazwa unikalna jednostki jest poprawnie okre\u015blona. Sprawd\u017a, czy odwzorowanie w\u0119z\u0142\u00f3w repozytorium LDAP jest poprawnie zdefiniowane.
+
+PROPERTY_NOT_DEFINED=CWIML0514W: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie zdefiniowano w\u0142a\u015bciwo\u015bci {0}. Zdefiniuj j\u0105 lub u\u017cyj poprawnej nazwy w\u0142a\u015bciwo\u015bci.
+PROPERTY_NOT_DEFINED.explanation=Okre\u015blona w\u0142a\u015bciwo\u015b\u0107 nie jest zdefiniowana.
+PROPERTY_NOT_DEFINED.useraction=Upewnij si\u0119, \u017ce w\u0142a\u015bciwo\u015b\u0107 jest zdefiniowana, lub u\u017cyj poprawnej nazwy w\u0142a\u015bciwo\u015bci.
+
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS=CWIML1021E: Nie mo\u017cna zako\u0144czy\u0107 operacji wyszukiwania w rejestrze u\u017cytkownik\u00f3w. W operacjach wyszukiwania nie mo\u017cna u\u017cy\u0107 w\u0142a\u015bciwo\u015bci principalName razem z innymi w\u0142a\u015bciwo\u015bciami.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.explanation=Wyszukiwanie nazwy u\u017cytkownika z innymi w\u0142a\u015bciwo\u015bciami w wyra\u017ceniu wyszukiwania nie jest obs\u0142ugiwane.
+CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS.useraction=W operacjach wyszukiwania nie u\u017cywaj w\u0142a\u015bciwo\u015bci principalName razem z innymi w\u0142a\u015bciwo\u015bciami.
+
+NULL_CHECKPOINT_VALUE=CWIML4550E: Nie mo\u017cna zako\u0144czy\u0107 operacji LDAP. Do adaptera obs\u0142uguj\u0105cego \u015bledzenie zmian przes\u0142ano pust\u0105 warto\u015b\u0107 punktu kontrolnego. Okre\u015bl poprawny punkt kontrolny lub wy\u0142\u0105cz opcj\u0119 supportChangeLog dla repozytorium w pliku server.xml.
+NULL_CHECKPOINT_VALUE.explanation=Je\u015bli repozytorium obs\u0142uguje \u015bledzenie zmian zgodnie z opcj\u0105 supportChangeLog ustawion\u0105 w pliku server.xml, punkt kontrolny przekazany dla niego w parametrze ChangeControl nie mo\u017ce by\u0107 pusty ani mie\u0107 warto\u015bci null.
+NULL_CHECKPOINT_VALUE.useraction=Wykonaj wyszukiwanie ponownie przy u\u017cyciu poprawnego punktu kontrolnego lub wy\u0142\u0105cz opcj\u0119 supportChangeLog dla tego repozytorium, je\u015bli adapter rejestru u\u017cytkownik\u00f3w nie obs\u0142uguje \u015bledzenia zmian.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Brak has\u0142a lub jest ono puste.
+MISSING_OR_EMPTY_PASSWORD.explanation=Je\u015bli podczas logowania okre\u015blono nazw\u0119 u\u017cytkownika, has\u0142o nie mo\u017ce by\u0107 puste ani mie\u0107 warto\u015bci null.
+MISSING_OR_EMPTY_PASSWORD.useraction=Podaj has\u0142o.
+
+PASSWORD_CHECKED_FAILED=CWIML4529E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Sprawdzenie poprawno\u015bci has\u0142a dla nazwy u\u017cytkownika {0} nie powiod\u0142o si\u0119. Podstawowa przyczyna: {1}. Podaj poprawn\u0105 nazw\u0119 i has\u0142o u\u017cytkownika i sprawd\u017a, czy konto jest w\u0142\u0105czone i nie jest zablokowane.
+PASSWORD_CHECKED_FAILED.explanation=Nie mo\u017cna uwierzytelni\u0107 podanej nazwy u\u017cytkownika, poniewa\u017c sprawdzenie poprawno\u015bci has\u0142a nie powiod\u0142o si\u0119.
+PASSWORD_CHECKED_FAILED.useraction=Upewnij si\u0119, \u017ce zar\u00f3wno nazwa u\u017cytkownika, jak i has\u0142o zosta\u0142y okre\u015blone poprawnie. Sprawd\u017a, czy konto nie zosta\u0142o zablokowane, oraz czy jest aktywne.
+
+UNSUPPORTED_CLEAR_CACHE_MODE=CWIML4004W: Nie mo\u017cna zako\u0144czy\u0107 operacji czyszczenia pami\u0119ci podr\u0119cznej dla repozytorium LDAP. Tryb czyszczenia pami\u0119ci podr\u0119cznej {1} przekazany do komponentu sterowania pami\u0119ci\u0105 podr\u0119czn\u0105 nie jest obs\u0142ugiwany dla tej operacji przez okre\u015blone repozytorium {0}. Okre\u015bl obs\u0142ugiwany tryb czyszczenia pami\u0119ci podr\u0119cznej.
+UNSUPPORTED_CLEAR_CACHE_MODE.explanation=Okre\u015blony tryb czyszczenia pami\u0119ci podr\u0119cznej jest niepoprawny dla tego repozytorium.
+UNSUPPORTED_CLEAR_CACHE_MODE.useraction=Okre\u015bl poprawny tryb czyszczenia pami\u0119ci podr\u0119cznej. Pami\u0119\u0107 podr\u0119czna dla okre\u015blonego repozytorium zostanie wyczyszczona dopiero po okre\u015bleniu poprawnego trybu.
+
+CURRENT_LDAP_SERVER=CWIML4564I: Rejestr u\u017cytkownik\u00f3w jest obecnie po\u0142\u0105czony z serwerem LDAP {0}.
+CURRENT_LDAP_SERVER.explanation=Rejestr u\u017cytkownik\u00f3w jest obecnie po\u0142\u0105czony z podanym serwerem LDAP.
+CURRENT_LDAP_SERVER.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+CANNOT_CONNECT_TO_LDAP_SERVER=CWIML4563I: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia ze skonfigurowanym podstawowym serwerem LDAP {0}. Nast\u0105pi nawi\u0105zanie po\u0142\u0105czenia z serwerem prze\u0142\u0105czania awaryjnego, je\u015bli jest skonfigurowany w pliku server.xml.
+CANNOT_CONNECT_TO_LDAP_SERVER.explanation=Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z podstawowym serwerem LDAP. Nast\u0105pi nawi\u0105zanie po\u0142\u0105czenia z serwerem prze\u0142\u0105czania awaryjnego, je\u015bli jest skonfigurowany w pliku server.xml. Wi\u0119cej informacji na ten temat zawiera dokumentacja prze\u0142\u0105czania awaryjnego.
+CANNOT_CONNECT_TO_LDAP_SERVER.useraction=Upewnij si\u0119, \u017ce podany serwer LDAP jest uruchomiony.
+
+INVALID_CERTIFICATE_FILTER=CWIML0002E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Sk\u0142adnia filtru certyfikatu {0} jest niepoprawna. Poprawna sk\u0142adnia: LDAP attribute=$[Atrybut certyfikatu klienta] (na przyk\u0142ad uid=$[SubjectCN]).
+INVALID_CERTIFICATE_FILTER.explanation=Sk\u0142adnia lub struktura tego filtru to: atrybut LDAP=$[Atrybut certyfikatu klienta] (na przyk\u0142ad uid=$[SubjectCN]). Lewa strona specyfikacji filtru to atrybut LDAP, kt\u00f3ry zale\u017cy od schematu, z kt\u00f3rego korzysta serwer LDAP.  Prawa strona specyfikacji filtru to jeden z atrybut\u00f3w publicznych w certyfikacie klienta. Prawa strona musi zaczyna\u0107 si\u0119 od znaku $ i otwieraj\u0105cego nawiasu klamrowego ({ lub [), a ko\u0144czy\u0107 zamykaj\u0105cym nawiasem klamrowym (} lub ]). Po prawej stronie specyfikacji filtru mo\u017cna u\u017cy\u0107 nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w certyfikatu. W przypadku nast\u0119puj\u0105cych \u0142a\u0144cuch\u00f3w rozr\u00f3\u017cniana jest wielko\u015b\u0107 liter: $[UniqueKey], $[PublicKey], $[Issuer], $[NotAfter], $[NotBefore], $[SerialNumber], $[SigAlgName], $[SigAlgOID], $[SigAlgParams], $[SubjectCN], $[Version]. 
+INVALID_CERTIFICATE_FILTER.useraction=Upewnij si\u0119, \u017ce sk\u0142adnia filtru certyfikatu jest zgodna z dokumentacj\u0105.
+
+TBS_CERTIFICATE_UNSUPPORTED=CWIML0008E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Operacja getTBSCertificate() nie jest obs\u0142ugiwana w wyra\u017ceniu filtru. Okre\u015bl poprawne wyra\u017cenie filtru.
+TBS_CERTIFICATE_UNSUPPORTED.explanation=Nie mo\u017cna u\u017cy\u0107 atrybutu certyfikatu TBSCertificate w specyfikacji filtru. Po prawej stronie specyfikacji filtru mo\u017cna u\u017cy\u0107 nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w certyfikatu. W \u0142a\u0144cuchach jest rozr\u00f3\u017cniana wielko\u015b\u0107 liter: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}.
+TBS_CERTIFICATE_UNSUPPORTED.useraction=Sprawd\u017a, czy filtr certyfikatu jest poprawny.
+
+UNKNOWN_CERTIFICATE_ATTRIBUTE=CWIML0009E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. W specyfikacji filtru u\u017cyto nieznanego atrybutu certyfikatu {0}. Okre\u015bl obs\u0142ugiwany filtr certyfikatu.
+UNKNOWN_CERTIFICATE_ATTRIBUTE.explanation=Po prawej stronie specyfikacji filtru mo\u017cna u\u017cywa\u0107 tylko nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w certyfikatu. W \u0142a\u0144cuchach jest rozr\u00f3\u017cniana wielko\u015b\u0107 liter: ${UniqueKey}, ${PublicKey}, ${Issuer}, ${NotAfter}, ${NotBefore}, ${SerialNumber}, ${SigAlgName}, ${SigAlgOID}, ${SigAlgParams}, ${SubjectCN}, ${Version}. 
+UNKNOWN_CERTIFICATE_ATTRIBUTE.useraction=Sprawd\u017a, czy filtr certyfikatu jest poprawny.
+
+UNKNOWN_DN_FIELD=CWIML0003E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Skonfigurowana nazwa wyr\u00f3\u017cniaj\u0105ca pola {0} nie jest poprawna. Okre\u015bl poprawne pole nazwy wyr\u00f3\u017cniaj\u0105cej.
+UNKNOWN_DN_FIELD.explanation=Pole nazwy wyr\u00f3\u017cniaj\u0105cej (Distinguished Name - DN) okre\u015blone w filtrze certyfikatu jest nieznane.
+UNKNOWN_DN_FIELD.useraction=Sprawd\u017a, czy filtr certyfikatu jest poprawny. Wi\u0119cej informacji na ten temat zawiera dokumentacja konfiguracji certyfikacji.
+
+EXT_ID_VALUE_IS_NULL=CWIML4548E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Okre\u015blony atrybut LDAP u\u017cyty jako identyfikator zewn\u0119trzny {0} ma warto\u015b\u0107 null dla jednostki {1}.
+EXT_ID_VALUE_IS_NULL.explanation=Atrybut LDAP u\u017cywany jako identyfikator zewn\u0119trzny musi zawiera\u0107 warto\u015b\u0107 dla ka\u017cdej jednostki.
+EXT_ID_VALUE_IS_NULL.useraction=Sprawd\u017a, czy dla identyfikatora zewn\u0119trznego zosta\u0142 wybrany poprawny atrybut. Je\u015bli odpowiedni atrybut nie istnieje, jako identyfikatora zewn\u0119trznego mo\u017cna u\u017cy\u0107 nazwy wyr\u00f3\u017cniaj\u0105cej.
+
+EXT_ID_HAS_MULTIPLE_VALUES=CWIML4528E: Nie mo\u017cna zako\u0144czy\u0107 operacji wyszukiwania. Atrybut LDAP u\u017cyty jako identyfikator zewn\u0119trzny zawiera wiele warto\u015bci: {0}. Wybierz poprawny atrybut LDAP jako identyfikator zewn\u0119trzny.
+EXT_ID_HAS_MULTIPLE_VALUES.explanation=Atrybut LDAP u\u017cywany jako identyfikator zewn\u0119trzny musi by\u0107 unikalny i nie mo\u017ce zawiera\u0107 wielu warto\u015bci.
+EXT_ID_HAS_MULTIPLE_VALUES.useraction=Sprawd\u017a, czy dla identyfikatora zewn\u0119trznego zosta\u0142 wybrany poprawny atrybut. Je\u015bli odpowiedni atrybut nie istnieje, jako identyfikatora zewn\u0119trznego mo\u017cna u\u017cy\u0107 nazwy wyr\u00f3\u017cniaj\u0105cej.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Skonfigurowana definicja wpisu podstawowego jest niepoprawna: {0}. Skonfiguruj poprawn\u0105 definicj\u0119 wpisu podstawowego w pliku server.xml. Na przyk\u0142ad: <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation=Sk\u0142adnia definiowania wpisu podstawowego to <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction=Popraw definicj\u0119 wpisu podstawowego w pliku server.xml.
+
+INVALID_DN_SYNTAX=CWIML4517E: Nie mo\u017cna zako\u0144czy\u0107 operacji logowania. Nazwa wyr\u00f3\u017cniaj\u0105ca (DN) {0} jest niepoprawna. Okre\u015bl poprawn\u0105 sk\u0142adni\u0119 nazwy wyr\u00f3\u017cniaj\u0105cej.
+INVALID_DN_SYNTAX.explanation=Podana nazwa wyr\u00f3\u017cniaj\u0105ca (DN) jest niepoprawna. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w bez poprawnej nazwy wyr\u00f3\u017cniaj\u0105cej.
+INVALID_DN_SYNTAX.useraction=Upewnij si\u0119, \u017ce sk\u0142adnia nazwy wyr\u00f3\u017cniaj\u0105cej jest poprawna. Na przyk\u0142ad przejrzyj j\u0105 pod k\u0105tem znak\u00f3w ESC.
+
+INIT_POOL_SIZE_TOO_BIG=CWIML4532E: Pocz\u0105tkowa wielko\u015b\u0107 puli kontekst\u00f3w {0} jest wi\u0119ksza ni\u017c maksymalna wielko\u015b\u0107 puli kontekst\u00f3w {1}. Z tego powodu pula kontekst\u00f3w zosta\u0142a wy\u0142\u0105czona.
+INIT_POOL_SIZE_TOO_BIG.explanation=Pocz\u0105tkowa wielko\u015b\u0107 puli kontekst\u00f3w powinna by\u0107 mniejsza ni\u017c maksymalna wielko\u015b\u0107 puli kontekst\u00f3w.
+INIT_POOL_SIZE_TOO_BIG.useraction=Upewnij si\u0119, \u017ce pocz\u0105tkowa wielko\u015b\u0107 puli kontekst\u00f3w jest mniejsza ni\u017c maksymalna wielko\u015b\u0107 puli kontekst\u00f3w lub ustaw maksymaln\u0105 wielko\u015b\u0107 puli kontekst\u00f3w na 0.
+
+PREF_POOL_SIZE_TOO_BIG=CWIML4533E: Preferowana wielko\u015b\u0107 puli kontekst\u00f3w {0} musi by\u0107 mniejsza ni\u017c maksymalna wielko\u015b\u0107 puli kontekst\u00f3w {1}. Z tego powodu pula kontekst\u00f3w zosta\u0142a wy\u0142\u0105czona.
+PREF_POOL_SIZE_TOO_BIG.explanation=Preferowana wielko\u015b\u0107 puli kontekst\u00f3w powinna by\u0107 mniejsza ni\u017c maksymalna wielko\u015b\u0107 puli kontekst\u00f3w.
+PREF_POOL_SIZE_TOO_BIG.useraction=Upewnij si\u0119, \u017ce preferowana wielko\u015b\u0107 puli kontekst\u00f3w jest mniejsza ni\u017c maksymalna wielko\u015b\u0107 puli kontekst\u00f3w lub ustaw maksymaln\u0105 wielko\u015b\u0107 puli kontekst\u00f3w na 0.
+
+MISSING_INI_PROPERTY=CWIML0004E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania rejestru u\u017cytkownik\u00f3w. W\u0142a\u015bciwo\u015bci inicjacji {0} brakuje w pliku server.xml. Okre\u015bl w\u0142a\u015bciwo\u015b\u0107 inicjacji w pliku server.xml.
+MISSING_INI_PROPERTY.explanation=Podana w\u0142a\u015bciwo\u015b\u0107 inicjowania jest obowi\u0105zkowa. Nie mo\u017cna uruchomi\u0107 bez niej operacji na rejestrze u\u017cytkownik\u00f3w.
+MISSING_INI_PROPERTY.useraction=Sprawd\u017a, czy w\u0142a\u015bciwo\u015b\u0107 zosta\u0142a okre\u015blona w pliku server.xml. Sprawd\u017a, czy ta w\u0142a\u015bciwo\u015b\u0107 nie jest pusta lub nie ma warto\u015bci NULL.
+
+DUPLICATE_ENTITY_TYPE=CWIML4531E: W pliku server.xml zdefiniowano zduplikowany typ jednostki {0}.
+DUPLICATE_ENTITY_TYPE.explanation=Typ jednostki zdefiniowany w pliku server.xml musi by\u0107 unikalny.
+DUPLICATE_ENTITY_TYPE.useraction=Zmodyfikuj plik server.xml, usuwaj\u0105c zduplikowany typ jednostki.
+
+LDAP_CONFIG_INCOMPLETE=CWWKS3200E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Nale\u017cy zdefiniowa\u0107 atrybut {0}.
+LDAP_CONFIG_INCOMPLETE.explanation=Podany atrybut musi zosta\u0107 zdefiniowany.
+LDAP_CONFIG_INCOMPLETE.useraction=Podaj warto\u015b\u0107 brakuj\u0105cego atrybutu.
+
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR=CWWKS3201E: Wyst\u0105pi\u0142 wyj\u0105tek podczas w\u0142\u0105czania fabryki gniazd SSL LDAP: {0}.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.explanation=Host, port lub alias konfiguracji SSL podany w konfiguracji SSL-LDAP jest niepoprawny.
+LDAP_SSL_SOCKET_FACTORY_INIT_ERROR.useraction=Podaj poprawne informacje o konfiguracji SSL potrzebne do nawi\u0105zania po\u0142\u0105czenia z serwerem LDAP z w\u0142\u0105czonym protoko\u0142em SSL.
+
+LDAP_UNSUPPORTED_TYPE=CWWKS3202E: Podano nieobs\u0142ugiwany typ serwera LDAP: {0}.
+LDAP_UNSUPPORTED_TYPE.explanation=Obs\u0142ugiwane s\u0105 nast\u0119puj\u0105ce typy serwer\u00f3w LDAP: Netscape Directory Server, IBM Lotus Domino, IBM SecureWay Directory Server, Microsoft Active Directory, Sun Java System Directory Server, IBM Tivoli Directory Server, Novell eDirectory, Niestandardowy.
+LDAP_UNSUPPORTED_TYPE.useraction=Podaj obs\u0142ugiwany typ serwera LDAP.
+
+LDAP_SSL_ENABLED_WITHOUT_SSL=CWWKS3203E: Ustawiono warto\u015b\u0107 true atrybutu sslEnabled, ale opcja SSL nie jest w\u0142\u0105czona.
+LDAP_SSL_ENABLED_WITHOUT_SSL.explanation=Je\u015bli warto\u015b\u0107 atrybutu sslEnabled ustawiono na true, nale\u017cy w\u0142\u0105czy\u0107 r\u00f3wnie\u017c opcj\u0119 SSL.
+LDAP_SSL_ENABLED_WITHOUT_SSL.useraction=Ustaw warto\u015b\u0107 false atrybutu sslEnabled lub w\u0142\u0105cz opcj\u0119 SSL.
+
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION=CWWKS3204E: Definicja serwer\u00f3w prze\u0142\u0105czania awaryjnego jest niepoprawna: {0}
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.explanation=Sk\u0142adnia definiowania serwera prze\u0142\u0105czania awaryjnego to <server host="..." port="..." />.
+LDAP_REGISTRY_INVALID_FAILOVER_SERVERS_DEFINITION.useraction=Popraw definicj\u0119 serwera prze\u0142\u0105czania awaryjnego w konfiguracji.
+
+SERVER_MUST_DEFINE_HOST=Element server musi definiowa\u0107 host.
+SERVER_MUST_DEFINE_PORT=Element server musi definiowa\u0107 port.
+
+LDAP_REGISTRY_UNREACHABLE_SERVER=CWWKS3205A: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z serwerem {0}.
+LDAP_REGISTRY_UNREACHABLE_SERVER.explanation=Serwer mo\u017ce by\u0107 wy\u0142\u0105czony lub podano niepoprawny port.
+LDAP_REGISTRY_UNREACHABLE_SERVER.useraction=Sprawd\u017a, czy serwer jest w\u0142\u0105czony oraz czy podano poprawny numeru portu.
+
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE=CWWKS3206A: Nie mo\u017cna uwierzytelni\u0107 w rejestrze {0} przy skonfigurowanej nazwie wyr\u00f3\u017cniaj\u0105cej powi\u0105zania {1}.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.explanation=W\u0142a\u015bciwo\u015bci bindDN i bindPassword s\u0105 niepoprawne lub podano niepoprawny port.
+LDAP_REGISTRY_UNABLE_TO_AUTHENTICATE.useraction=Sprawd\u017a poprawno\u015b\u0107 w\u0142a\u015bciwo\u015bci bindDN i bindPassword dla skonfigurowanego serwera LDAP.
+
+ENTITY_HAS_DESCENDENTS=CWIML4519E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Obiekt {0} ma potomk\u00f3w. Nie mo\u017cna usun\u0105\u0107 tego obiektu ani zmieni\u0107 jego nazwy. Przed pr\u00f3b\u0105 usuni\u0119cia lub zmiany nazwy obiektu usu\u0144 wszystkich potomk\u00f3w tego obiektu.
+ENTITY_HAS_DESCENDENTS.explanation=Funkcj\u0119 usuni\u0119cia lub zmiany nazwy mo\u017cna przeprowadzi\u0107 tylko na obiekcie li\u015bcia, to znaczy obiekcie, kt\u00f3ry nie ma potomk\u00f3w. Okre\u015blony obiekt ma potomk\u00f3w.
+ENTITY_HAS_DESCENDENTS.useraction=Usu\u0144 wszystkich potomk\u00f3w obiektu, a nast\u0119pnie usu\u0144 obiekt lub zmie\u0144 jego nazw\u0119.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Typ jednostki {0} nie jest poprawny. Wywo\u0142aj operacj\u0119, podaj\u0105c poprawny typ jednostki.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=Za\u017c\u0105dano operacji na jednostce, lecz ta operacja nie obs\u0142uguje podanego typu jednostki. Je\u015bli na przyk\u0142ad dla jednostki Konto jest wywo\u0142ywana operacja GET repozytorium, operacja nie powiedzie si\u0119.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Upewnij si\u0119, \u017ce operacje s\u0105 wywo\u0142ywane dla obs\u0142ugiwanych typ\u00f3w jednostek. Usu\u0144 nieobs\u0142ugiwane typy jednostek z danych wej\u015bciowych.
+
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY=CWIML4543E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie mo\u017cna utworzy\u0107 ani zaktualizowa\u0107 w\u0142a\u015bciwo\u015bci {0} w repozytorium {1}.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.explanation=W operacji tworzenia lub aktualizacji podano warto\u015b\u0107 w\u0142a\u015bciwo\u015bci, kt\u00f3ra nie mo\u017ce zosta\u0107 zapisana w repozytorium. Na przyk\u0142ad w operacji CREATE nie mo\u017cna poda\u0107 warto\u015bci principalName.
+CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY.useraction=Usu\u0144 b\u0142\u0119dn\u0105 w\u0142a\u015bciwo\u015b\u0107 z danych wej\u015bciowych i pon\u00f3w operacj\u0119, podaj\u0105c poprawne w\u0142a\u015bciwo\u015bci i warto\u015bci.
+
+PARENT_NOT_FOUND=CWIML4526E: Nie mo\u017cna zako\u0144czy\u0107 operacji tworzenia (CREATE) na rejestrze u\u017cytkownik\u00f3w. Nie utworzono jednostki, poniewa\u017c nie znaleziono elementu nadrz\u0119dnego jednostki.	Bazowy wyj\u0105tek JDNI: {0}
+PARENT_NOT_FOUND.explanation=Podczas tworzenia jest zg\u0142aszany wyj\u0105tek, je\u015bli element nadrz\u0119dny tworzonej jednostki nie zostanie znaleziony.
+PARENT_NOT_FOUND.useraction=Sprawd\u017a, czy istnieje domy\u015blny element nadrz\u0119dny zdefiniowany dla jednostki.  Je\u015bli nie istnieje, nale\u017cy go utworzy\u0107 i ponowi\u0107 operacj\u0119.
+
+ENTITY_ALREADY_EXIST=CWIML4501E: Nie mo\u017cna zako\u0144czy\u0107 operacji tworzenia (CREATE) na rejestrze u\u017cytkownik\u00f3w. Jednostka o tej samej nazwie unikalnej ({0}) lub tej samej warto\u015bci RDN ju\u017c istnieje.
+ENTITY_ALREADY_EXIST.explanation=Podana nazwa unikalna lub jednostka o takiej samej warto\u015bci RDN ju\u017c istnieje w repozytorium. Nie mo\u017cna doda\u0107 do repozytorium zduplikowanej jednostki o tej samej nazwie unikalnej ani wzgl\u0119dnej nazwie wyr\u00f3\u017cniaj\u0105cej (RDN).
+ENTITY_ALREADY_EXIST.useraction=Pon\u00f3w operacj\u0119 i podaj inn\u0105 nazw\u0119 jednostki, aby by\u0142a unikalna.
+
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Operacje zapisu s\u0105 niedozwolone na dodatkowym serwerze LDAP {0}.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Wszystkie operacje zapisu (tworzenia, aktualizacji i usuwania) s\u0105 dozwolone tylko na podstawowym serwerze LDAP.
+WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Upewnij si\u0119, \u017ce serwer podstawowy zosta\u0142 uruchomiony i pon\u00f3w operacj\u0119.

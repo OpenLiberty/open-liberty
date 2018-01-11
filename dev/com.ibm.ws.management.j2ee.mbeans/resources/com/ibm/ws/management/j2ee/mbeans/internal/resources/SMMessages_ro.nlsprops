@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX J2EE SM related MBeans
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mbeans/resources/com/ibm/ws/management/j2ee/mbeans/internal/resources/SMMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKX7500 - CWWKX7524
+
+#-----  JVMMBeanImpl
+
+DETERMINE_HOST_ERROR=CWWKX7500E: Produsul nu poate determina numele de domeniu complet calificat al gazdei. Numele gazdei va avea ca valoare implicit\u0103 {0}. Eroarea a fost: {1}
+DETERMINE_HOST_ERROR.explanation=Adresa IP sau numele de gazd\u0103 al serverului nu poate fi determinat.
+DETERMINE_HOST_ERROR.useraction=Verifica\u0163i configura\u0163ia de re\u0163ea a serverului \u015fi reporni\u0163i serverul cu op\u0163iunea --clean.
+
+#-----  SMActivator
+
+OSGI_SERVICE_ERROR=CWWKX7501E: Serviciul OSGi {0} nu este disponibil.  \u00cencerca\u0163i s\u0103 reporni\u0163i serverul cu op\u0163iunea --clean.
+OSGI_SERVICE_ERROR.explanation=Serviciul specificat nu este disponibil, ceea ce determin\u0103 aceast\u0103 eroare de server intern\u0103.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea --clean.

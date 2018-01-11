@@ -12,11 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
-	com.ibm.websphere.appserver.injection-1.0;version=latest, \
-	com.ibm.websphere.appserver.iioptransport-1.0;version=latest, \
-	com.ibm.websphere.appserver.clientContainerRemoteSupportCommon-1.0;version=latest, \
 	com.ibm.ws.clientcontainer.remote.server;version=latest

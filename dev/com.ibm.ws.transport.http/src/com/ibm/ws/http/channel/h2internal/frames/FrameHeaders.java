@@ -152,13 +152,13 @@ public class FrameHeaders extends Frame {
         // +---------------------------------------------------------------+
 
         setFlags();
-        int payloadIndex = 0;
+        int payloadIndex = 0; // iterator to keep track of current position
 
         if (PADDED_FLAG) {
-            // The padded field is present; set the paddedLength to represent the actual size of the data we want
+            // The padded field is present; set the paddingLength to represent the actual size of the data we want
             paddingLength = frp.grabNextByte();
             payloadLength -= paddingLength;
-            payloadIndex += 1;
+            payloadIndex += 1; // Pad Length is one byte
         }
 
         if (PRIORITY_FLAG) {
@@ -170,20 +170,20 @@ public class FrameHeaders extends Frame {
             firstPayloadByte = (byte) (firstPayloadByte & Constants.MASK_7F);
             this.streamDependency = frp.grabNext24BitInt(firstPayloadByte);
             this.weight = frp.grabNextByte();
-            payloadIndex += 4;
+            payloadIndex += 5; // stream dependency + weight = 5 bytes
         }
 
         // subtract the current position from the total payload length
-        payloadLength -= payloadIndex;
+        int headerBlockLength = payloadLength - payloadIndex;
 
-        this.headerBlockFragment = new byte[payloadLength];
+        this.headerBlockFragment = new byte[headerBlockLength];
 
-        // copy over the payload data
-        for (int i = payloadIndex; i < payloadIndex + payloadLength; i++)
-            headerBlockFragment[i] = frp.grabNextByte();
+        // reset the payloadIndex and copy over the header data
+        for (payloadIndex = 0; payloadIndex < headerBlockLength; payloadIndex++)
+            headerBlockFragment[payloadIndex] = frp.grabNextByte();
 
         // read any padding data (and ignore it)
-        for (int i = payloadIndex; i < payloadIndex + paddingLength; i++)
+        for (; payloadIndex < headerBlockLength + paddingLength; payloadIndex++)
             frp.grabNextByte();
 
         setInitialized();
@@ -245,6 +245,12 @@ public class FrameHeaders extends Frame {
         }
         if (this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("HEADERS padding length must be less than the length of the payload");
+        }
+        if (this.streamId == this.streamDependency) {
+            throw new ProtocolException("HEADERS frame stream cannot depend on itself");
+        }
+        if (this.paddingLength < 0) {
+            throw new ProtocolException("HEADERS padding length is invalid");
         }
     }
 

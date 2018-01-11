@@ -17,6 +17,7 @@ Subsystem-Name: Java EE Full Platform 7.0
  com.ibm.websphere.appserver.wasJmsSecurity-1.0, \
  com.ibm.websphere.appserver.jaxws-2.2, \
  com.ibm.websphere.appserver.jca-1.7, \
+ com.ibm.websphere.appserver.jms-2.0, \
  com.ibm.websphere.appserver.webProfile-7.0, \
  com.ibm.websphere.appserver.javaMail-1.5, \
  com.ibm.websphere.appserver.wasJmsServer-1.0, \
@@ -26,5 +27,3 @@ Subsystem-Name: Java EE Full Platform 7.0
  com.ibm.websphere.appserver.appClientSupport-1.0
 kind=ga
 edition=base
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
-

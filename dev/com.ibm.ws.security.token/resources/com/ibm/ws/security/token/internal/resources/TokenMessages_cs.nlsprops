@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token/resources/com/ibm/ws/security/token/internal/resources/TokenMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4000 - CWWKS4099
+
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE=CWWKS4000E: Do\u0161lo k v\u00fdjimce konfigurace. Nelze naj\u00edt po\u017eadovanou instanci slu\u017eby tokenu typu {0}.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.explanation=Ka\u017ed\u00fd bal\u00edk implementace slu\u017eby tokenu ur\u010duje sv\u016fj poskytnut\u00fd typ.
+TOKEN_SERVICE_CONFIG_ERROR_NO_SUCH_SERVICE_TYPE.useraction=Zadejte podporovan\u00fd typ nebo nainstalujte bal\u00edk, kter\u00fd poskytuje instanci slu\u017eby tokenu po\u017eadovan\u00e9ho typu.
+
+TOKEN_SERVICE_INVALID_TOKEN=CWWKS4001E: Token zabezpe\u010den\u00ed nelze ov\u011b\u0159it. P\u0159\u00ed\u010diny mohou b\u00fdt n\u00e1sleduj\u00edc\u00ed:\n\
+1. Token zabezpe\u010den\u00ed byl vygenerov\u00e1n na jin\u00e9m serveru s pou\u017eit\u00edm jin\u00fdch kl\u00ed\u010d\u016f.\n\
+2. Zm\u011bnila se konfigurace tokenu nebo kl\u00ed\u010de zabezpe\u010den\u00ed slu\u017eby token\u016f, kter\u00e1 token vytvo\u0159ila.\n\
+3. Slu\u017eba token\u016f, kter\u00e1 token vytvo\u0159ila, ji\u017e nen\u00ed dostupn\u00e1.
+TOKEN_SERVICE_INVALID_TOKEN.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e9 slu\u017eby token\u016f nemohou token znovu vytvo\u0159it.
+TOKEN_SERVICE_INVALID_TOKEN.useraction=Zkontrolujte, zda alespo\u0148 jedna funkce obsahuje slu\u017ebu tokenu, kter\u00e1 je spr\u00e1vn\u011b nakonfigurov\u00e1na pro op\u011btovn\u00e9 vytvo\u0159en\u00ed tokenu.
+
+TOKEN_SERVICE_INVALID_TOKEN_INFO=CWWKS4001I: Token zabezpe\u010den\u00ed nelze ov\u011b\u0159it. P\u0159\u00ed\u010diny mohou b\u00fdt n\u00e1sleduj\u00edc\u00ed:\n\
+1. Token zabezpe\u010den\u00ed byl vygenerov\u00e1n na jin\u00e9m serveru s pou\u017eit\u00edm jin\u00fdch kl\u00ed\u010d\u016f.\n\
+2. Zm\u011bnila se konfigurace tokenu nebo kl\u00ed\u010de zabezpe\u010den\u00ed slu\u017eby token\u016f, kter\u00e1 token vytvo\u0159ila.\n\
+3. Slu\u017eba token\u016f, kter\u00e1 token vytvo\u0159ila, ji\u017e nen\u00ed dostupn\u00e1.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e9 slu\u017eby token\u016f nemohou token znovu vytvo\u0159it.
+TOKEN_SERVICE_INVALID_TOKEN_INFO.useraction=Zkontrolujte, zda alespo\u0148 jedna funkce obsahuje slu\u017ebu tokenu, kter\u00e1 je spr\u00e1vn\u011b nakonfigurov\u00e1na pro op\u011btovn\u00e9 vytvo\u0159en\u00ed tokenu.
+
+KRB_S4U2PROXY_NOT_SUPPORTED=CWWKS4002E: Rozhran\u00ed API (S4U2self a S4U2proxy) omezen\u00e9ho delegov\u00e1n\u00ed vy\u017eaduje minim\u00e1ln\u00ed verzi prost\u0159ed\u00ed JRE produktu JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.explanation=Rozhran\u00ed API (S4U2self a S4U2proxy) omezen\u00e9ho delegov\u00e1n\u00ed vy\u017eaduj\u00ed minim\u00e1ln\u00ed verzi prost\u0159ed\u00ed JRE produktu IBM JavaSE 1.8.
+KRB_S4U2PROXY_NOT_SUPPORTED.useraction=Ujist\u011bte se, \u017ee pou\u017e\u00edv\u00e1te prost\u0159ed\u00ed JRE produktu IBM JavaSE 1.8.
+
+KRB_OSGI_SERVICE_ERROR=CWWKS4003E: Slu\u017eba OSGi omezen\u00e9ho delegov\u00e1n\u00ed {0} nen\u00ed dostupn\u00e1.
+KRB_OSGI_SERVICE_ERROR.explanation=Zadan\u00e1 slu\u017eba OSGi nen\u00ed dostupn\u00e1.
+KRB_OSGI_SERVICE_ERROR.useraction=Ujist\u011bte se, \u017ee funkce omezen\u00e9ho delegov\u00e1n\u00ed je povolena a \u017ee pou\u017e\u00edv\u00e1te prost\u0159ed\u00ed JRE produktu IBM JavaSE 1.8. Vyhledejte dal\u0161\u00ed informace v protokolech serveru.

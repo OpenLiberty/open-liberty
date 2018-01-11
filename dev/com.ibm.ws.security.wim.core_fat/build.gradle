@@ -1,0 +1,44 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies { 
+  requiredLibs project(':fattest.simplicity'),
+    project(':com.ibm.ws.security.registry'),
+    project(':com.ibm.ws.security.registry_test.servlet')
+}
+
+autoFVT.doLast {
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
+  }
+
+  /*
+   * Copy the userRegistry WAR into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.wim.core.fat.invalidBaseEntryInRealm',
+    'com.ibm.ws.security.wim.core.fat.maxSearchResult',
+    'com.ibm.ws.security.wim.core.fat.searchTimeOut',
+    'com.ibm.ws.security.wim.core.fat.dynamic'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      include '*.war'
+    }
+  }
+}

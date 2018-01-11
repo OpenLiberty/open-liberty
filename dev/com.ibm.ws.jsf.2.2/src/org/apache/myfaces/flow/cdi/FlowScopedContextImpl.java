@@ -37,6 +37,7 @@ import org.apache.myfaces.cdi.util.BeanProvider;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.flow.FlowReference;
+import org.apache.myfaces.flow.util.FlowUtils;
 
 /**
  * Minimal implementation of FlowScope.
@@ -110,8 +111,7 @@ public class FlowScopedContextImpl implements Context
         Flow flow = flowHandler.getCurrentFlow(facesContext);
         if (flow != null)
         {
-            flowMapKey = flow.getClientWindowFlowId(
-                facesContext.getExternalContext().getClientWindow());
+            flowMapKey = FlowUtils.getFlowMapKey(facesContext, flow);
         }
         return flowMapKey;
     }
@@ -182,7 +182,7 @@ public class FlowScopedContextImpl implements Context
         FlowReference reference = flowBeanReferences.get(((Bean)bean).getBeanClass());
         if (reference != null)
         {
-            String flowMapKey = getFlowScopeBeanHolder().getFlowMapKey(facesContext, reference);
+            String flowMapKey = FlowUtils.getFlowMapKey(facesContext, reference);
             if (flowMapKey != null)
             {
                 ContextualStorage storage = getContextualStorage(false, flowMapKey);
@@ -243,7 +243,7 @@ public class FlowScopedContextImpl implements Context
         FlowReference reference = flowBeanReferences.get(((Bean)bean).getBeanClass());
         if (reference != null)
         {
-            String flowMapKey = getFlowScopeBeanHolder().getFlowMapKey(facesContext, reference);
+            String flowMapKey = FlowUtils.getFlowMapKey(facesContext, reference);
             if (flowMapKey != null)
             {
                 ContextualStorage storage = getContextualStorage(false, flowMapKey);

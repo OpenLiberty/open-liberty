@@ -86,6 +86,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_FROM = new HttpHeaderKeys("From");
     /** Enumerated object for the HTTP header key HOST */
     public static final HttpHeaderKeys HDR_HOST = new HttpHeaderKeys("Host");
+    /** Enumerated object for the HTTP header key HTTP2-SETTINGS */
+    public static final HttpHeaderKeys HDR_HTTP2_SETTINGS = new HttpHeaderKeys("HTTP2-Settings");
     /** Enumerated object for the HTTP header key IF-MATCH */
     public static final HttpHeaderKeys HDR_IF_MATCH = new HttpHeaderKeys("If-Match");
     /** Enumerated object for the HTTP header key IF-MODIFIED-SINCE */
@@ -220,7 +222,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     /**
      * Constructor to create a new HttpHeaderKey and add it to the
      * enumerated list.
-     * 
+     *
      * @param name
      */
     public HttpHeaderKeys(String name) {
@@ -232,7 +234,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     /**
      * Constructor to create a new HttpHeaderKey and add it to the
      * enumerated list.
-     * 
+     *
      * @param name
      * @param undefined
      */
@@ -246,7 +248,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     /**
      * Constructor for a new HTTP header key that allows overriding the debug
      * logging flag and the add/remove filtering code.
-     * 
+     *
      * @param name
      * @param shouldLog
      * @param shouldFilter
@@ -271,7 +273,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      * Find the enumerated object that matchs the input name using the given
      * offset and length into that name. If none exist, then a null value is
      * returned.
-     * 
+     *
      * @param name
      * @param offset
      *            - starting point in that name
@@ -289,7 +291,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      * Find the enumerated object that matchs the input name using the given
      * offset and length into that name. If none exist, then a null value is
      * returned.
-     * 
+     *
      * @param name
      * @param offset
      *            - starting point in that name
@@ -306,7 +308,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     /**
      * Find the enumerated object matching the input name. If this name has
      * never been seen prior, then a new object is created by this call.
-     * 
+     *
      * @param name
      * @param offset
      *            - starting point in that input name
@@ -343,7 +345,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     /**
      * Find the enumerated object matching the input name. If this name has
      * never been seen prior, then a new object is created by this call.
-     * 
+     *
      * @param name
      * @return HttpHeaderKeys
      * @throws NullPointerException
@@ -376,7 +378,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     /**
      * Find the enumerated object matching the input name. If this name has
      * never been seen prior, then a new object is created by this call.
-     * 
+     *
      * @param name
      * @return HttpHeaderKeys
      * @throws NullPointerException

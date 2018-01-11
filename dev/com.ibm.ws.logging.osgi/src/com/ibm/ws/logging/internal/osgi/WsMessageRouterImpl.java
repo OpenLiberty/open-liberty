@@ -85,7 +85,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
     /**
      * Add the WsLogHandler ref. 1 or more LogHandlers may be set.
      */
-    public void setWsLogHandler(String id, WsLogHandler ref) {
+    public void setWsLogHandler(String id, WsLogHandler ref, boolean isWantEarly) {
         if (id != null && ref != null) {
             //There can be many Reader locks, but only one writer lock.
             //This ReaderWriter lock is needed to avoid duplicate messages when the class is passing on EarlyBuffer messages to the new WsLogHandler.
@@ -100,7 +100,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
                  * these early messages in the "earlierMessages" queue in BaseTraceService, which then
                  * passes them to WsMessageRouterImpl once it's registered.
                  */
-                if (earlierMessages == null) {
+                if (earlierMessages == null || !isWantEarly) {
                     return;
                 }
 
@@ -115,7 +115,8 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 
         }
     }
-
+    
+    
     /**
      * Remove the LogHandler ref.
      */

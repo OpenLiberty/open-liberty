@@ -12,7 +12,6 @@ Export-Package: \
  com.ibm.wsspi.security.wim.exception, \
  com.ibm.wsspi.security.wim.model, \
  com.ibm.websphere.security.wim;provide:=true, \
- com.ibm.websphere.security.wim.copyright;provide:=true, \
  com.ibm.websphere.security.wim.ras;provide:=true, \
  com.ibm.websphere.security.wim.util;provide:=true
 
@@ -24,4 +23,4 @@ instrument.classesExcludes: com/ibm/websphere/security/wim/util/resources/*.clas
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file
+	com.ibm.ws.junit.extensions;version=latest

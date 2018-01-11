@@ -43,15 +43,15 @@ Import-Package: \
 DynamicImport-Package: com.ctc.wstx.*
 
 Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/cxf/**, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/services/**, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/schemas/**, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.handlers, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.schemas, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170216-1739;EXACT}!/org/apache/cxf/**
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/services/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-core;2.6.2.ibm-s20170927-0015;EXACT}!/org/apache/cxf/**
  
  
 # Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory

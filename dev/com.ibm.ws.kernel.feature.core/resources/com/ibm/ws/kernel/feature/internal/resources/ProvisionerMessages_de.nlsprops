@@ -1,0 +1,327 @@
+###############################################################################
+# Copyright (c) 2010, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.feature/resources/com/ibm/ws/kernel/feature/internal/resources/ProvisionerMessages.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Liberty Feature Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+# -------------------------------------------------------------------------------------------------
+
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Es wurde keine Featuredefinition f\u00fcr {0} gefunden.
+UPDATE_MISSING_FEATURE_ERROR.explanation=Der Feature-Manager hat keine Definition f\u00fcr das angegebene Feature gefunden.
+UPDATE_MISSING_FEATURE_ERROR.useraction=Stellen Sie sicher, dass das Feature korrekt angegeben wurde und dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist.
+
+UPDATE_MISSING_BUNDLE_ERROR=CWWKF0002E: Es wurde kein Bundle f\u00fcr {0} gefunden.
+UPDATE_MISSING_BUNDLE_ERROR.explanation=Der Feature-Manager konnte ein Bundle, das f\u00fcr ein aktiviertes Feature erforderlich ist, nicht finden.
+UPDATE_MISSING_BUNDLE_ERROR.useraction=Stellen Sie sicher, dass Bundles im Verzeichnis lib lesbar sind und dass das Installationsimage vollst\u00e4ndig ist.
+
+UPDATE_INSTALL_EXCEPTIONS_ERROR=CWWKF0003E: Beim Installieren bzw. Deinstallieren des Bundles {0} wurde eine Ausnahme generiert. Ausnahme: {1}
+UPDATE_INSTALL_EXCEPTIONS_ERROR.explanation=Der Feature-Manager konnte das angegebene Bundle nicht installieren bzw. deinstallieren.
+UPDATE_INSTALL_EXCEPTIONS_ERROR.useraction=Sehen Sie sich die referenzierte Ausnahme und die generierten FFDC-Nachrichten f\u00fcr jeden Fehler an.
+
+UPDATE_OTHER_EXCEPTION_ERROR=CWWKF0004E: Beim Installieren bzw. Entfernen von Features ist eine unbekannte Ausnahme eingetreten. Ausnahme: {0}
+UPDATE_OTHER_EXCEPTION_ERROR.explanation=Beim Hinzuf\u00fcgen bzw. Entfernen mindestens eines Features in der Laufzeitumgebung ist eine unerwartete Ausnahme eingetreten.
+UPDATE_OTHER_EXCEPTION_ERROR.useraction=Suchen Sie in der referenzierten Ausnahme und in der generierten FFDC-Nachricht nach weiteren Informationen.
+
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR=CWWKF0005E: Beim Starten, Stoppen bzw. Deinstallieren des Bundles {0} wurde eine Ausnahme generiert. Ausnahme: {1}
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.explanation=Beim \u00c4ndern des Status eines vom Feature-Manager verwalteten Bundles ist eine Ausnahme eingetreten.
+UPDATE_LIFECYCLE_EXCEPTIONS_ERROR.useraction=Suchen Sie in der referenzierten Ausnahme und in den zugeh\u00f6rigen FFDC-Datens\u00e4tzen nach Einzelheiten.
+
+UPDATE_BUNDLE_CACHE_WARNING=CWWKF0006W: Das System konnte die Liste der Feature-Bundles, die f\u00fcr diese Serverinstanz geladen wurden, nicht lesen bzw. nicht persistent in {0} speichern. Deshalb wurde der Bundle-Cache f\u00fcr Warmstarts inaktiviert. Ausnahme: {1}
+UPDATE_BUNDLE_CACHE_WARNING.explanation=Die Bundle-Cache-Datei konnte nicht erstellt oder gelesen werden. Suchen Sie in der referenzierten Ausnahme nach weiteren Informationen.
+UPDATE_BUNDLE_CACHE_WARNING.useraction=Stellen Sie sicher, dass das Serververzeichnis und das Arbeitsbereichsunterverzeichnis beschreibbar sind. 
+
+STARTING_AUDIT=CWWKF0007I: Die Featureaktualisierung wurde gestartet.
+STARTING_AUDIT.explanation=Der Feature-Manager hat mit der Verarbeitung aktivierter Features begonnen. Das Intervall (in Sekunden) ist relativ zum Start der Plattform.
+STARTING_AUDIT.useraction=Es ist keine Aktion erforderlich.
+
+COMPLETE_AUDIT=CWWKF0008I: Die Featureaktualisierung wurde in {0} Sekunden durchgef\u00fchrt.
+COMPLETE_AUDIT.explanation=Der Feature-Manager hat die Verarbeitung aktivierter Features abgeschlossen. Das Intervall (in Sekunden) ist relativ zum Start der Plattform.
+COMPLETE_AUDIT.useraction=Es ist keine Aktion erforderlich.
+
+EMPTY_FEATURES_WARNING=CWWKF0009W: Der Server ist nicht f\u00fcr die Installation von Features konfiguriert.
+EMPTY_FEATURES_WARNING.explanation=Es wurden keine zu installierenden Features konfiguriert. 
+EMPTY_FEATURES_WARNING.useraction=Aktualisieren Sie die Konfiguration und f\u00fcgen Sie alle erforderlichen Features hinzu.
+
+BUNDLE_MATCH_WARNING=CWWKF0010W: Es sind mehrere Bundles vorhanden, die dem angegebenen Filter ({0}) entsprechen, {1} wird verwendet. \u00dcbereinstimmungen: {2} 
+BUNDLE_MATCH_WARNING.explanation=Ein Featuredefinitionsobjekt stimmt mit mehreren Bundles \u00fcberein. Dies kann darauf zur\u00fcckzuf\u00fchren sein, dass der Filter zu allgemein ist oder dass alte Bundles im Image enthalten sind, die dem Filter entsprechen.
+BUNDLE_MATCH_WARNING.useraction=Stellen Sie sicher, dass der Filter spezifisch genug ist, und dass ein bereinigtes Installationsimage verwendet wird.
+
+SERVER_STARTED=CWWKF0011I: Der Server {0} ist bereit.
+SERVER_STARTED.explanation=Der Server wurde erfolgreich gestartet.
+SERVER_STARTED.useraction=Es ist keine Aktion erforderlich.
+
+FEATURES_ADDED=CWWKF0012I: Im Server wurden die folgenden Features installiert: {0}.
+FEATURES_ADDED.explanation=Im Server wurde eine Reihe von Features installiert.
+FEATURES_ADDED.useraction=Es ist keine Aktion erforderlich.
+
+FEATURES_REMOVED=CWWKF0013I: Im Server wurden die folgenden Features entfernt: {0}.
+FEATURES_REMOVED.explanation=Im Server wurde eine Reihe von Features entfernt.
+FEATURES_REMOVED.useraction=Es ist keine Aktion erforderlich.
+
+TEST_FIX_DETECTED=CWWKF0014W: Im Server sind die folgenden Testfixes zur Laufzeit aktiv: {0}. F\u00fchren Sie den folgenden Befehl aus, um eine vollst\u00e4ndige Liste aller installierten Fixes zu erhalten: productInfo version --ifixes.
+TEST_FIX_DETECTED.explanation=Die in die Laufzeitumgebung geladenen OSGi-Bundles wurden durch einige der installierten Testfixes ge\u00e4ndert. Mit dem Befehl productInfo version --ifixes k\u00f6nnen Sie eine Liste der installierten Fixes abrufen.
+TEST_FIX_DETECTED.useraction=Auf einem Produktionsserver sollten keine Testfixes installiert werden. Wenn es sich um einen Produktionsserver handelt, entfernen Sie die Testfixes und starten Sie dann den Server erneut.
+
+INTERIM_FIX_DETECTED=CWWKF0015I: Im Server sind die folgenden vorl\u00e4ufigen Fixes zur Laufzeit aktiv: {0}. F\u00fchren Sie den folgenden Befehl aus, um eine vollst\u00e4ndige Liste aller installierten Fixes zu erhalten: productInfo version --ifixes.
+INTERIM_FIX_DETECTED.explanation=Die in die Laufzeitumgebung geladenen OSGi-Bundles wurden durch einige der installierten vorl\u00e4ufigen Fixes ge\u00e4ndert. Mit dem Befehl productInfo version --ifixes k\u00f6nnen Sie eine Liste der installierten Fixes abrufen.
+INTERIM_FIX_DETECTED.useraction=Es ist keine Aktion erforderlich.
+
+# IBM-Provision-Capability is a manifest header name and should not be translated.
+INVALID_PROVISION_CAPABILITY_FILTER=CWWKF0016I: Der Filter {0} im Manifestheader des Features {1} ist falsch: {2}
+INVALID_PROVISION_CAPABILITY_FILTER.explanation=Der Header IBM-Provision-Capability enth\u00e4lt mindestens einen OSGi-Filter, dessen Syntax ung\u00fcltig ist.
+INVALID_PROVISION_CAPABILITY_FILTER.useraction=Korrigieren Sie die Syntax im Header IBM-Provision-Capability.
+
+PRODUCT_FEATURE_INSTALL_PATH_ERROR=CWWKF0017E: Der Produktinstallationspfad {0}, der in der Produkteigenschaftendatei {1} angegeben ist, wurde nicht gefunden.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.explanation=Der Feature-Manager konnte den angegebenen Produktinstallationspfad nicht finden.
+PRODUCT_FEATURE_INSTALL_PATH_ERROR.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Produktpfad f\u00fcr die Eigenschaft com.ibm.websphere.productInstall in der Produkteigenschaftendatei angegeben ist.
+
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR=CWWKF0018E: Die Eigenschaft com.ibm.websphere.productInstall wurde nicht in der Produkteigenschaftendatei {0} gefunden.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.explanation=Der Feature-Manager hat eine Produkteigenschaftendatei gefunden, die die Eigenschaft com.ibm.websphere.productInstall nicht enth\u00e4lt.
+PRODUCT_FEATURE_PROPERTIES_FILE_ERROR.useraction=F\u00fcgen Sie com.ibm.websphere.productInstall der Produkteigenschaftendatei in etc/extensions hinzu.
+
+PRODUCT_FEATURE_LOAD_ERROR=CWWKF0019E: Beim Laden der Produkteigenschaftendatei {0} wurde die Ausnahme {1} generiert.
+PRODUCT_FEATURE_LOAD_ERROR.explanation=Die angegebene Ausnahme ist eingetreten, als der Feature-Manager versucht hat, Eigenschaften aus der Produkteigenschaftendatei zu lesen.
+PRODUCT_FEATURE_LOAD_ERROR.useraction=Suchen Sie in der referenzierten Ausnahme und in den zugeh\u00f6rigen FFDC-Datens\u00e4tzen nach Einzelheiten.
+
+#SUPERCEDED FEATURES
+SUPERSEDED_CONFIGURATION_ERROR=CWWKF0020E: Das Feature von {0} hat ein auf false gesetztes Attribut \u00fcberschrieben, aber das Attribut superseded-by ist {1}. 
+SUPERSEDED_CONFIGURATION_ERROR.explanation=F\u00fcr den Header Symbolic-Name in einem Feature ist das Attribut superseded-by konfiguriert, aber das Attribut superseded ist auf false gesetzt.
+SUPERSEDED_CONFIGURATION_ERROR.useraction=Stellen Sie sicher, dass die Attribute superseded und superseded-by im Header Symbolic-Name ordnungsgem\u00e4\u00df konfiguriert sind.
+
+UPDATE_NOT_PUBLIC_FEATURE_ERROR=CWWKF0021E: Das Feature {0}, das in der Datei server.xml angegeben ist, ist kein \u00f6ffentliches Feature. Deshalb wird es nicht vom Server ausgef\u00fchrt.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.explanation=In der Datei server.xml k\u00f6nnen nur \u00f6ffentliche Features angegeben werden.
+UPDATE_NOT_PUBLIC_FEATURE_ERROR.useraction=\u00c4ndern Sie die Serverkonfiguration und geben Sie ein \u00f6ffentliches Feature an, das die erforderliche Funktion bereitstellt. Wenn Sie ein Feature entwickeln, dass die Benutzer in ihrer Serverkonfiguration angeben sollen, \u00e4ndern Sie das Feature so, dass es \u00f6ffentlich sichtbar ist, indem Sie das Attribut visibility=public der Eigenschaft Subsystem-SymbolicName des Features hinzuf\u00fcgen.
+
+UNSUPPORTED_FEATURE_VERSION=CWWKF0022E: Das Feature {0} wird nicht unterst\u00fctzt. Der Header IBM-Feature-Version ist auf {1} gesetzt.
+UNSUPPORTED_FEATURE_VERSION.explanation=Der Server unterst\u00fctzt nur Features, deren Header IBM-Feature-Version auf 2 gesetzt ist. Eine Zahl, die gr\u00f6\u00dfer als 2 ist, gibt an, dass das Feature f\u00fcr der Verwendung mit einer sp\u00e4teren Produktversionen gedacht ist.
+UNSUPPORTED_FEATURE_VERSION.useraction=Wenden Sie sich an den Autor, um eine Kopie zu erhalten, die f\u00fcr diese Produktversion entwickelt wurde.
+
+#Minify feature query messages
+ERROR_OPENING_JAR_FOR_CLASSPATH=CWWKF0023W: Ein Feature hat ein Archiv {1} referenziert, das w\u00e4hrend der Packabfrage nicht verarbeitet werden konnte. Ausnahme: {2}
+ERROR_OPENING_JAR_FOR_CLASSPATH.explanation=Es ist eine Ausnahme eingetreten, als die JAR-Datei des Features w\u00e4hrend einer Packabfrage gelesen wurde.
+ERROR_OPENING_JAR_FOR_CLASSPATH.useraction=Suchen Sie in der referenzierten Ausnahme und in den zugeh\u00f6rigen FFDC-Datens\u00e4tzen nach Einzelheiten.
+
+ERROR_MISSING_FEATURE_RESOURCE=CWWKF0024W: Das Feature {0} hat eine Ressource {1} referenziert, die w\u00e4hrend der Packabfrage nicht gefunden wurde.
+ERROR_MISSING_FEATURE_RESOURCE.explanation=Der Feature-Manager konnte den angegebenen Featureinhalt nicht finden.
+ERROR_MISSING_FEATURE_RESOURCE.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Sollte der Fehler erneut auftreten, wenden Sie sich an Ihren Kundendienst.
+
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE=CWWKF0025W: Das Feature {0} hat eine Ressource {1} mit dem unbekannten Typ {2} w\u00e4hrend der Packabfrage referenziert.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.explanation=Der Feature-Manager versteht den angegebenen Featureinhalt nicht.
+ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Sollte der Fehler erneut auftreten, wenden Sie sich an Ihren Kundendienst.
+
+SERVER_MINIFY=CWWKF0026I: Der Server {0} ist f\u00fcr die Erstellung eines kleineren Pakets bereit.
+SERVER_MINIFY.explanation=Der Server bereitet Informationen f\u00fcr eine anstehende Serverpaketoperation vor.
+SERVER_MINIFY.useraction=Es ist keine Aktion erforderlich.
+# end Minify feature query messages
+
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR=CWWKF0027E: Die Produkterweiterungsfeatures werden nicht installiert, weil der in der Eigenschaftendatei f\u00fcr Produkterweiterungen, {0}, angegebene Installationspfad f\u00fcr die Produkterweiterungen die symbolische Position {1} enth\u00e4lt.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.explanation=Ein Installationspfad f\u00fcr Produkterweiterungen darf keine symbolischen Positionen enthalten.
+PRODUCT_FEATURE_INSTALL_PATH_SYMBOL_ERROR.useraction=Aktualisieren Sie die Eigenschaft com.ibm.websphere.productInstall in der Eigenschaftendatei f\u00fcr Produkterweiterungen so, dass er keine symbolischen Positionen enth\u00e4lt.
+
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR=CWWKF0028E: Die Produkterweiterungsfeatures werden nicht installiert, weil der in der Eigenschaftendatei f\u00fcr Produkterweiterungen, {0}, angegebene Installationspfad f\u00fcr die Produkterweiterungen dem Wert von wlp.install.dir entspricht.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.explanation=Ein Installationspfad f\u00fcr Produkterweiterungen darf nicht mit dem Wert von wlp.install.dir identisch sein.
+PRODUCT_FEATURE_INSTALL_PATH_WLP_ERROR.useraction=Aktualisieren Sie die Eigenschaft com.ibm.websphere.productInstall in der Eigenschaftendatei f\u00fcr Produkterweiterungen so, dass er nicht mit dem Wert von wlp.install.dir identisch ist.
+
+BUNDLE_EXCEPTION_ERROR=CWWKF0029E: {0}
+BUNDLE_EXCEPTION_ERROR.explanation=Es wurde eine Ausnahme des Typs BundleException vom OSGi-Framework ausgel\u00f6st.
+BUNDLE_EXCEPTION_ERROR.useraction=Suchen Sie in der Ausnahmenachricht nach Informationen.
+
+INVALID_START_PHASE_WARNING=CWWKF0030W: Die Startphase {0}, die f\u00fcr das Bundle {1} im Feature {2} angegeben wurde, ist ung\u00fcltig.
+INVALID_START_PHASE_WARNING.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr die Startphase angegeben.
+INVALID_START_PHASE_WARNING.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr die Startphase an. 
+
+FEATURE_NOT_INSTALLED=CWWKF0031I: Der Server hat das Laden des Features {0} \u00fcbersprungen, weil bereits eine entsprechende Funktion vorhanden ist.
+FEATURE_NOT_INSTALLED.explanation=Wenn zwei Versionen desselben Features explizit in der Datei server.xml angegeben sind oder wenn in der Datei server.xml Features angegeben sind, die untergeordnete Features mit identischer Funktionalit\u00e4t enthalten, \u00fcberspringt der Server das Laden der zweiten Version.
+FEATURE_NOT_INSTALLED.useraction=Wenn zwei Versionen desselben Features explizit in der Datei server.xml angegeben sind, l\u00f6schen Sie die Version, die nicht erforderlich ist.
+
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR=CWWKF0032E: Das Feature {0} setzt die Java Runtime Environment-Mindestversion {1} voraus.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.explanation=Wenn Sie die aufgelisteten Features verwenden m\u00f6chten, muss die angegebene Version oder eine neuere Version der Java Runtime Environment (JRE) in Ihrer Umgebung installiert sein.
+FEATURE_JAVA_LEVEL_NOT_MET_ERROR.useraction=F\u00fchren Sie ein Upgrade Ihrer Java Runtime Environment auf die angegebene Version oder eine neuere Version durch.
+
+UPDATE_CONFLICT_FEATURE_ERROR=CWWKF0033E: Die Singleton-Features {0} und {1} k\u00f6nnen nicht gleichzeitig geladen werden. Die konfigurierten Features {2} und {3} enthalten mindestens ein Feature, das den Konflikt verursacht. Ihre Konfiguration wird nicht unterst\u00fctzt. Aktualisieren Sie die Datei server.xml und entfernen Sie die inkompatiblen Features.
+UPDATE_CONFLICT_FEATURE_ERROR.explanation=Es ist nicht m\u00f6glich, mehrere Versionen eines Singleton-Features zur gleichen Zeit zu laden. Dieser Konflikt kann auftreten, wenn zwei Versionen eines Singleton-Features direkt in der Serverkonfiguration konfiguriert werden oder wenn die konfigurierten Features unterschiedliche Versionen eines Singleton-Features enthalten und keine gemeinsame Version des Singleton-Features tolerieren.
+UPDATE_CONFLICT_FEATURE_ERROR.useraction=Versuchen Sie, eine andere Version der konfigurierten Features anzugeben, die den Konflikt in der Datei server.xml verursachen. Wenn keine anderen Versionen verf\u00fcgbar sind, sind die konfigurierten Features nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig konfiguriert werden.
+
+FEATURES_ADDED_CLIENT=CWWKF0034I: Der Client hat die folgenden Features installiert: {0}.
+FEATURES_ADDED_CLIENT.explanation=Der Client hat eine Gruppe von Features installiert.
+FEATURES_ADDED_CLIENT.useraction=Es ist keine Aktion erforderlich.
+
+CLIENT_STARTED=CWWKF0035I: Der Client {0} ist aktiv.
+CLIENT_STARTED.explanation=Der Client wurde erfolgreich gestartet.
+CLIENT_STARTED.useraction=Es ist keine Aktion erforderlich.
+
+#Required feature gather query messages
+SERVER_GATHER_FEATURES=CWWKF0036I: Der Server {0} hat eine Liste mit den erforderlichen Features zusammengestellt.
+SERVER_GATHER_FEATURES.explanation=Der Server hat eine Liste mit den erforderlichen Features zusammengestellt.
+SERVER_GATHER_FEATURES.useraction=Es ist keine Aktion erforderlich. \
+
+#End required feature gather query messages
+
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR=CWWKF0037E: Das in der Datei client.xml angegebene Feature {0} ist kein \u00f6ffentliches Feature und wird vom Client nicht ausgef\u00fchrt.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.explanation=Sie k\u00f6nnen in der Datei client.xml ausschlie\u00dflich \u00f6ffentliche Features angeben.
+UPDATE_NOT_PUBLIC_FEATURE_CLIENT_ERROR.useraction=\u00c4ndern Sie die Clientkonfiguration und geben Sie ein \u00f6ffentliches Feature an, das die erforderliche Funktion bereitstellt. Wenn Sie ein Feature entwickeln, dass die Benutzer in ihrer Clientkonfiguration angeben sollen, \u00e4ndern Sie das Feature so, dass es \u00f6ffentlich sichtbar ist, indem Sie das Attribut visibility=public der Eigenschaft Subsystem-SymbolicName des Features hinzuf\u00fcgen.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR=CWWKF0038E: Das Feature {0}, das in der Datei {1} angegeben ist, unterst\u00fctzt nur die Clientprozesstypen, was dazu f\u00fchrt, dass dieses Feature vom Serverprozess nicht ausgef\u00fchrt wird.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.explanation=Das konfigurierte Feature unterst\u00fctzt den angegebenen Prozesstyp nicht.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_ERROR.useraction=Entfernen Sie das Feature aus der Konfiguration oder \u00e4ndern Sie die Feature-Manifestdatei so, dass die Unterst\u00fctzung f\u00fcr den gew\u00fcnschten Prozesstyp aktiviert wird.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR=CWWKF0039E: Das Feature {0} unterst\u00fctzt nur Clientprozesstypen, was dazu f\u00fchrt, dass dieses Feature vom Serverprozess nicht ausgef\u00fchrt wird. Das Feature {1}, das in der Datei {2} angegeben ist, funktioniert wegen einer Abh\u00e4ngigkeit vom Feature {0} m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.explanation=Das konfigurierte Feature unterst\u00fctzt den angegebenen Prozesstyp nicht.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_ERROR.useraction=Entfernen Sie das Feature aus der Konfiguration oder \u00e4ndern Sie die Feature-Manifestdatei so, dass die Unterst\u00fctzung f\u00fcr den gew\u00fcnschten Prozesstyp aktiviert wird.
+
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR=CWWKF0040E: Das Feature {0}, das in der Datei {1} angegeben ist, unterst\u00fctzt nur Serverprozesstypen, was dazu f\u00fchrt, dass dieses Feature vom Clientprozess nicht ausgef\u00fchrt wird.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.explanation=Das konfigurierte Feature unterst\u00fctzt den angegebenen Prozesstyp nicht.
+UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR.useraction=Entfernen Sie das Feature aus der Konfiguration oder \u00e4ndern Sie die Feature-Manifestdatei so, dass die Unterst\u00fctzung f\u00fcr den gew\u00fcnschten Prozesstyp aktiviert wird.
+
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR=CWWKF0041E: Das Feature {0} unterst\u00fctzt nur Serverprozesstypen, was dazu f\u00fchrt, dass dieses Feature vom Clientprozess nicht ausgef\u00fchrt wird. Das Feature {1}, das in der Datei {2} angegeben ist, funktioniert wegen einer Abh\u00e4ngigkeit vom Feature {0} m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Das konfigurierte Feature unterst\u00fctzt den angegebenen Prozesstyp nicht.
+UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Entfernen Sie das Feature aus der Konfiguration oder \u00e4ndern Sie die Feature-Manifestdatei so, dass die Unterst\u00fctzung f\u00fcr den gew\u00fcnschten Prozesstyp aktiviert wird.
+
+# CWWK042E  {0} = feature Name: {1} = server name 
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Es wurde keine Featuredefinition f\u00fcr das Feature {0} gefunden. Versuchen Sie, das Feature mit dem Befehl bin/installUtility install {0} zu installieren. Alternativ k\u00f6nnen Sie den Befehl bin/installUtility install {1} ausf\u00fchren, um alle Features zu installieren, die von dieser Konfiguration referenziert werden.
+UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Der Feature-Manager hat keine Definition f\u00fcr das angegebene Feature gefunden.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=\u00dcberpr\u00fcfen Sie, ob der Name des Features richtig angegeben wurde. \
+Stellen Sie au\u00dferdem sicher, dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist. \
+Wenn das Feature nicht vorhanden ist, versuchen Sie, das Feature mit dem Befehl bin/installUtility install Featurename zu installieren bzw. alle von dieser Konfiguration referenzierten Features mit dem Befehl bin/installUtility install Servername zu installieren.
+
+#   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
+
+tool.feature.exists=CWWKF1000I: Das Feature {0} ist bereits vorhanden. Es wird nicht erneut installiert. Um ein bereits vorhandenes Feature zu \u00e4ndern, m\u00fcssen Sie es zuerst manuell deinstallieren.
+tool.feature.exists.explanation=Das Feature, das installiert wird, ist bereits vorhanden.
+tool.feature.exists.useraction=Es ist keine Aktion erforderlich. \
+
+tool.missing.args=CWWKF1001E: {0} erfordert {1} Argumente. Es wurden aber {2} angegeben.
+tool.missing.args.explanation=Beim Aufrufen der Aktion wurde die falsche Anzahl an Argumenten verwendet.
+tool.missing.args.useraction=F\u00fchren Sie den Befehl mit den richtigen Argumenten erneut aus. \
+
+tool.unknown.options=CWWKF1002E: {0} unterst\u00fctzt die folgenden Optionen nicht: {1}
+tool.unknown.options.explanation=Es wurde versucht, einen Befehl mit ung\u00fcltigen Argumenten auszuf\u00fchren.
+tool.unknown.options.useraction=F\u00fchren Sie den Befehl ohne die ung\u00fcltigen Argumente erneut aus.
+
+tool.install.bad.extension=CWWKF1003E: Die Produkterweiterung {0} ist nicht vorhanden.
+tool.install.bad.extension.explanation=Die Produkterweiterung, in der das Feature installiert werden soll, ist nicht registriert.
+tool.install.bad.extension.useraction=Installieren Sie das Feature in einer registrierten Produkterweiterung oder registrieren Sie die fehlende Produkterweiterung. \
+
+tool.install.invalid.extension=CWWKF1004E: Die Produkterweiterung {0} gibt keine Position an.
+tool.install.invalid.extension.explanation=Die Produkterweiterung wurde nicht gefunden, weil die Registrierungsdatei keine Position enth\u00e4lt.
+tool.install.invalid.extension.useraction=Korrigieren Sie die Registrierung der Produkterweiterung und geben Sie die Position der Erweiterung an. \
+
+tool.install.ioexception.extension=CWWKF1005E: Beim Lesen der Produkterweiterung {0} ist ein unerwarteter Fehler aufgetreten. Ausnahme: {1}
+tool.install.ioexception.extension.explanation=Beim Lesen der Eigenschaftendatei f\u00fcr die in der Fehlernachricht angegebene Produkterweiterung ist ein unerwarteter Fehler aufgetreten.
+tool.install.ioexception.extension.useraction=Suchen Sie in der Ausnahmenachricht nach einer Erkl\u00e4rung, warum die Datei nicht gelesen werden konnte, und wiederholen Sie dann die Operation.
+tool.install.no.dir=CWWKF1006E: Das Feature kann nicht installiert werden, weil das Verzeichnis {0} nicht vorhanden ist.
+tool.install.no.dir.explanation=Das Produkterweiterungsverzeichnis ist nicht vorhanden. Deshalb kann das Feature nicht installiert werden.
+tool.install.no.dir.useraction=Stellen Sie sicher, dass das Feature vorhanden ist, und installieren Sie das Feature erneut. \
+
+tool.install.download.esa=CWWKF1007E: Beim Herunterladen des Subsystemarchivs in {0} ist ein Fehler aufgetreten. Ausnahme: {1}
+tool.install.download.esa.explanation=Beim Herunterladen des Subsystemarchivs ist ein Fehler aufgetreten. M\u00f6glicherweise ist die URL nicht g\u00fcltig oder es ist ein tempor\u00e4res Netzproblem aufgetreten. Der zweite Satz der Fehlernachricht enth\u00e4lt ggf. weitere Detailinformationen zur Fehlerursache.
+tool.install.download.esa.useraction=Vergewissern Sie sich, dass die URL zum Subsystemarchiv korrekt ist, und wiederholen Sie dann die Operation. \
+
+tool.install.download.tmpFile=CWWKF1008E: Es konnte keine tempor\u00e4re Datei zum Herunterladen des Subsystemarchivs erstellt werden. Ausnahme: {0}
+tool.install.download.tmpFile.explanation=Die Featureinstallationsoperation l\u00e4dt das Subsystemarchiv in eine tempor\u00e4re Datei herunter, aber es konnte keine tempor\u00e4re Datei erstellt werden. Die Ursache ist wahrscheinlich eine Einschr\u00e4nkung der Maschine. Der zweite Satz der Fehlernachricht enth\u00e4lt m\u00f6glicherweise weitere Detailinformationen zur Fehlerursache.
+tool.install.download.tmpFile.useraction=M\u00f6glicherweise ist das tempor\u00e4re Dateisystem voll. Wenn ja, kann das Problem durch Bereinigung des Speicherplatzes behoben werden.
+tool.install.file.notexist=CWWKF1009E: Die Datei {0} ist nicht vorhanden.
+tool.install.file.notexist.explanation=Die mit der Installationsoperation angegebene Subsystemarchivdatei ist nicht vorhanden.
+tool.install.file.notexist.useraction=Stellen Sie sicher, dass der Name der Subsystemarchivdatei richtig angegeben wurde, und f\u00fchren Sie die Installationsoperation erneut aus.
+tool.install.file.notafile=CWWKF1010E: {0} ist keine Datei.
+tool.install.file.notafile.explanation=Der angegebene Dateiname gibt ein Verzeichnis an und kein Subsystemarchiv.
+tool.install.file.notafile.useraction=Stellen Sie sicher, dass der Name der Subsystemarchivdatei richtig angegeben wurde, und f\u00fchren Sie die Installationsoperation erneut aus.
+tool.install.missing.feature=CWWKF1011E: Das Feature {0} ist von {1} abh\u00e4ngig, aber diese Abh\u00e4ngigkeit ist nicht installiert.
+tool.install.missing.feature.explanation=Das Feature, das installiert wird, setzt andere Features voraus, die noch nicht installiert wurden. Das Feature kann erst installiert werden, wenn das in dieser Fehlernachricht angegebene Feature installiert ist.
+tool.install.missing.feature.useraction=Installieren Sie das fehlende Feature und f\u00fchren Sie die Installation erneut durch.
+tool.install.missing.content=CWWKF1012E: Die Ressource {0} ist nicht an der Position {1} im Subsystemarchiv vorhanden.
+tool.install.missing.content.explanation=Beim Verarbeiten des Subsysteminhalts wurde eine Datei referenziert, die nicht im Archiv gefunden wurde.
+tool.install.missing.content.useraction=Fordern Sie vom Subsystemautor ein aktualisiertes Archiv mit dem erforderlichen Inhalt an.
+tool.install.content.notfound=CWWKF1013E: Der Inhalt {0} im Subsystem wurde nicht im Subsystemarchiv gefunden.
+tool.install.content.notfound.explanation=Bei der Verarbeitung des Subsysteminhalts wurden einige erforderliche Bundles nicht im Subsystemarchiv gefunden.
+tool.install.content.notfound.useraction=Fordern Sie vom Subsystemautor ein aktualisiertes Archiv mit dem erforderlichen Inhalt an.
+tool.install.bad.zip=CWWKF1014E: Beim Lesen der Archivdatei {0} ist ein Fehler aufgetreten. Ausnahme: {1}
+tool.install.bad.zip.explanation=Es ist nicht m\u00f6glich, das Subsystemarchiv zu lesen.
+tool.install.bad.zip.useraction=Vergewissern Sie sich, dass das Subsystemarchiv ein g\u00fcltiges, vollst\u00e4ndiges Archiv ist. Wenn das Archiv nicht g\u00fcltig ist, fordern Sie ein neues Archiv vom Anbieter an.
+tool.install.file.exists=CWWKF1015E: Die Datei {0} ist bereits vorhanden.
+tool.install.file.exists.explanation=Die Installation des Subsystemarchivs ist fehlgeschlagen, weil eine Datei aus dem Archiv bereits in der Installation vorhanden ist.
+tool.install.file.exists.useraction=\u00dcberpr\u00fcfen Sie die Dateien, die bereits vorhanden sind. Wenn die Installationsoperation fortgesetzt werden kann, f\u00fchren Sie die Operation mit der Option --when-file-exists=replace, die die vorhandenen Dateien ersetzt, oder mit der Option --when-file-exists=ignore erneut aus, um die Operation ohne die vorhandenen Dateien fortzuf\u00fchren.
+tool.install.dir.create.fail=CWWKF1016E: Die Verzeichnisstruktur {0} konnte nicht erstellt werden.
+tool.install.dir.create.fail.explanation=Die vom zu installierenden Feature ben\u00f6tigten Verzeichnisse konnten nicht erstellt werden.
+tool.install.dir.create.fail.useraction=Stellen Sie sicher, dass das angegebene Verzeichnis vorhanden ist und dass die erforderlichen Berechtigungen f\u00fcr die Erstellung der Verzeichnisstruktur vorliegen. F\u00fchren Sie die Installationsoperation erneut aus.
+tool.install.feature.ok=CWWKF1017I: Ein oder mehrere Features wurden erfolgreich installiert: {0}.
+tool.install.feature.ok.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
+tool.install.feature.ok.useraction=Es ist keine Aktion erforderlich.
+tool.install.invalid.when.file.exists.value=CWWKF1018E: Der Wert {0} ist keine g\u00fcltige Option f\u00fcr --when-file-exists. Die g\u00fcltigen Optionen sind fail, replace und ignore.
+tool.install.invalid.when.file.exists.value.explanation=Die g\u00fcltigen Optionen f\u00fcr --when-file-exists sind fail, replace und ignore.
+tool.install.invalid.when.file.exists.value.useraction=Geben Sie einen der g\u00fcltigen Werte (fail, replace oder ignore) an.
+tool.product.ext.features.not.found=CWWKF1019E: Die Produkterweiterung {0} enth\u00e4lt keine Features.
+tool.product.ext.features.not.found.explanation=Die Featuremanifestdateien f\u00fcr die angegebene Produkterweiterung wurden nicht gefunden.
+tool.product.ext.features.not.found.useraction=Vergewissern Sie sich, dass das Verzeichnis, in dem sich die Featuremanifeste befinden, g\u00fcltig ist.
+tool.product.ext.not.found=CWWKF1020E: Die Produkterweiterung {0} wurde nicht an der Position {1} gefunden.
+tool.product.ext.not.found.explanation=Die Produkterweiterung wurde nicht an der angegebenen Position gefunden.
+tool.product.ext.not.found.useraction=Vergewissern Sie sich, dass die Produktinstallationsposition in der Eigenschaftendatei f\u00fcr die Produktinstallation ordnungsgem\u00e4\u00df definiert ist.
+tool.product.ext.not.defined=CWWKF1021E: Die Produkterweiterung mit dem Namen {0} ist nicht vorhanden.
+tool.product.ext.not.defined.explanation=Die Produkterweiterung mit dem angegebenen Namen ist nicht vorhanden.
+tool.product.ext.not.defined.useraction=Vergewissern Sie sich, dass der angegebene Produkterweiterungsname g\u00fcltig ist.
+tool.install.content.no.subsystem.manifest=CWWKF1022E: Die Datei OSGI-INF/SUBSYSTEM.MF wurde nicht im Archiv gefunden.
+tool.install.content.no.subsystem.manifest.explanation=Im Subsystemarchiv ist die Datei OSGI-INF/SUBSYSTEM.MF, die Metadaten \u00fcber das Subsystem enth\u00e4lt, nicht vorhanden.
+tool.install.content.no.subsystem.manifest.useraction=F\u00fcgen Sie dem Archiv die Datei OSGI-INF/SUBSYSTEM.MF hinzu.
+# {0} is the path to the file being used
+tool.install.two.subsystem.manifests=CWWKF1023W: Es gibt zwei Dateien mit dem Pfad OSGI-INF/SUBSYSTEM.MF, aber die Gro\u00df-/Kleinschreibung der beiden Dateien ist verschieden. Es wird die Datei {0} verwendet. 
+tool.install.two.subsystem.manifests.explanation=Sie d\u00fcrfen nur eine einzige Datei OSGI-INF/SUBSYSTEM.MF f\u00fcr die Definition eines Features verwenden, aber das Archiv enth\u00e4lt zwei Dateien OSGI-INF/SUBSYSTEM.MF mit unterschiedlicher Gro\u00df-/Kleinschreibung.
+tool.install.two.subsystem.manifests.useraction=L\u00f6schen Sie eine der Dateien mit dem Namen SUBSYSTEM.MF.
+
+# {0} is the path to the (missing) feature directory
+tool.feature.dir.not.found=CWWKF1024E: Der featureManager-Befehl hat das Verzeichnis features nicht gefunden und konnte dieses Verzeichnis auch nicht im Verzeichnispfad {0} erstellen.
+tool.feature.dir.not.found.explanation=Das Verzeichnis features f\u00fcr diesen Server ist nicht vorhanden. Das beabsichtige Verzeichnis mit dem Namen features wurde m\u00f6glicherweise unabsichtlich als Datei erstellt. Der featureManager-Befehl hat versucht, das Verzeichnis features zu erstellen, aber dieser Versuch ist fehlgeschlagen. Wenn das Verzeichnis features nicht erstellt werden kann, ist dies gew\u00f6hnlich darauf zur\u00fcckzuf\u00fchren, dass der Benutzer keine Schreibberechtigungen f\u00fcr den Verzeichnispfad hat. 
+tool.feature.dir.not.found.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: (1) Erstellen Sie das angegebene Verzeichnis manuell und f\u00fchren Sie den featureManager-Befehl erneut aus. (2) F\u00fchren Sie den featureManager-Befehl erneut als Benutzer aus, der Schreibberechtigungen f\u00fcr den angegebenen Verzeichnispfad hat. 
+
+tool.find.view.info.name=\ \ \ \ Name: {0}
+tool.find.view.info.symbolic.name=\ \ \ \ Symbolischer Name: {0}
+tool.find.view.info.description=\ \ \ \ Beschreibung: {0}
+tool.find.view.info.enabled.by=\ \ \ \ Aktiviert von:
+tool.find.no.feature=Es wurde kein Feature gefunden.
+
+tool.missing.option=CWWKF1025E: Die Aktion {0} setzt die Option {1} voraus, aber die erforderliche Option wurde nicht angegeben.
+tool.missing.option.explanation=Es wurde versucht, einen Befehl ohne Angabe einer erforderlichen Version auszuf\u00fchren.
+tool.missing.option.useraction=F\u00fchren Sie den Befehl mit der erforderlichen Option erneut aus.
+
+tool.classpath.feature.not.found=CWWKF1026E: Das Feature {0} ist nicht vorhanden.
+tool.classpath.feature.not.found.explanation=Es wurde ein nicht vorhandenes Feature angegeben.
+tool.classpath.feature.not.found.useraction=F\u00fchren Sie den Befehl ohne Angabe des Features erneut aus. 
+
+tool.classpath.feature.not.public=CWWKF1027E: Das Feature {0} ist nicht \u00f6ffentlich.
+tool.classpath.feature.not.public.explanation=Es wurde ein nicht \u00f6ffentliches Feature angegeben.
+tool.classpath.feature.not.public.useraction=F\u00fchren Sie den Befehl ohne Angabe des Features erneut aus.
+
+tool.classpath.wrong.drive=CWWKF1028E: Die Ausgabedatei {0} muss sich auf demselben Laufwerk wie die Datei {1} befinden.
+tool.classpath.wrong.drive.explanation=Die Ausgabedatei muss sich auf demselben Laufwerk wie alle von den angegebenen Features referenzierten Dateien befinden.
+tool.classpath.wrong.drive.useraction=F\u00fchren Sie den Befehl erneut aus und geben Sie dabei eine Ausgabedatei an, die sich auf demselben Laufwerk wie die angegebene Datei befindet.
+
+tool.classpath.create.fail=CWWKF1029E: Die Ausgabedatei {0} konnte nicht erstellt werden. Der folgende Fehler wurde empfangen: {1}
+tool.classpath.create.fail.explanation=Beim Erstellen der Ausgabedatei ist ein Fehler aufgetreten.
+tool.classpath.create.fail.useraction=Sehen Sie sich die Fehlernachricht an, beheben Sie das Problem und f\u00fchren Sie dann den Befehl erneut aus.
+
+tool.userfeature.install.location.invalid=CWWKF1036E: Das Benutzerfestaure {0} kann nicht in core installiert werden.
+tool.userfeature.install.location.invalid.explanation= Das Benutzerfeature ist kein Basisfeature und kann deshalb nicht in core installiert werden.
+tool.userfeature.install.location.invalid.useraction= Installieren Sie das Benutzerfeature in usr. 
+

@@ -86,6 +86,7 @@ public class AuthenticationResult {
             case REDIRECT:
                 redirectURL = str;
                 break;
+            case RETURN:
             case OAUTH_CHALLENGE:
                 reason = str;
                 break;
@@ -175,6 +176,7 @@ public class AuthenticationResult {
                 str.append(" redirectURL=");
                 str.append(redirectURL);
                 break;
+            case RETURN:
             case OAUTH_CHALLENGE:
                 str.append(" reason=");
                 str.append(reason);
