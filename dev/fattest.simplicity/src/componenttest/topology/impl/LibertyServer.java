@@ -122,7 +122,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final boolean GLOBAL_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = Boolean.getBoolean("global.debug.java2.sec");
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = PrivHelper.getBoolean("global.debug.java2.sec");
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
 
@@ -2078,7 +2078,7 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
-            if (GLOBAL_JAVA2SECURITY)
+            if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY)
                 new ACEScanner(this).run();
             if (postStopServerArchive)
                 postStopServerArchive();
