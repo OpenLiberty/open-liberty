@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -29,6 +30,11 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -53,6 +59,7 @@ public class ProductFeatureTest {
     private static final String PRODUCT_FEATURE_CONTAINS_SYMBOL_PROPERTIES_FILE = "testproductcontainssymbol.properties";
     private static final String PRODUCT_FEATURE_BAD_PATH_PROPERTIES_FILE = "testproductbadpath.properties";
     private static final String PRODUCT_FEATURE_USR_PROPERTIES_FILE = "usr.properties";
+    private static final String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     private static final String ODD_CHARS_IN_PATH = "(test a&)";
 
     private static final String installFeatureMsgPrefix = "CWWKF0012I:";
@@ -74,7 +81,7 @@ public class ProductFeatureTest {
 
     /**
      * Copy the necessary features and bundles to the liberty server directories
-     * 
+     *
      * @throws Exception
      */
     @Before
@@ -91,7 +98,7 @@ public class ProductFeatureTest {
 
     /**
      * This method removes all the testing artifacts from the server directories.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -128,7 +135,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature is installed when added to server.xml.
      * * com.ibm.websphere.productInstall= ends with a /
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -167,7 +174,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test ensures that a product feature cannot include private features from core
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
@@ -212,7 +219,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature is installed when added to server.xml.
      * com.ibm.websphere.productInstall= does not end with a /
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -251,7 +258,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature is installed when added to server.xml.
      * com.ibm.websphere.productInstall= has odd characters in it
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -291,10 +298,10 @@ public class ProductFeatureTest {
      * This test ensures that a product feature located as a peer of wlp/ can have
      * it's features installed and uninstalled.
      * com.ibm.websphere.productInstall= does not end with a /
-     * 
+     *
      * C:\stuff\wlp
      * C:\stuff\productA\lib\features
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -337,10 +344,10 @@ public class ProductFeatureTest {
      * This test ensures that a product feature located as a peer of wlp/ can have
      * it's features installed and uninstalled.
      * com.ibm.websphere.productInstall= has a / on the end
-     * 
+     *
      * C:\stuff\wlp
      * C:\stuff\productA\lib\features
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -381,7 +388,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test ensures that a product feature is installed when in server.xml at server start.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -411,7 +418,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test ensures that a product feature called usr is not installed when added to server.xml.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -448,7 +455,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test issues an error for a product properties file that does not contain com.ibm.websphere.productInstall.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -478,7 +485,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test issues an error for a product properties file that has a product install
      * path that is the same as ${wlp.install.dir}.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -494,7 +501,7 @@ public class ProductFeatureTest {
         server.startServer(METHOD_NAME + ".log");
 
         server.deleteFileFromLibertyInstallRoot(PRODUCT_EXTENSIONS_PATH + PRODUCT_FEATURE_BAD_WLP_PROPERTIES_FILE);
-        // look for the error message 
+        // look for the error message
         String output = server.waitForStringInLog(productInstallPathSameAsWlp);
         assertNotNull("We haven't found the " + productInstallPathSameAsWlp + " in the logs.", output);
 
@@ -508,7 +515,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test issues an error for a product properties file that has a product install
      * path that has a symbol.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -523,7 +530,7 @@ public class ProductFeatureTest {
         server.startServer(METHOD_NAME + ".log");
 
         server.deleteFileFromLibertyInstallRoot(PRODUCT_EXTENSIONS_PATH + PRODUCT_FEATURE_CONTAINS_SYMBOL_PROPERTIES_FILE);
-        // look for the error message 
+        // look for the error message
         String output = server.waitForStringInLog(productInstallPathContainsSymbol);
         assertNotNull("We haven't found the " + productInstallPathContainsSymbol + " in the logs.", output);
 
@@ -536,7 +543,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test issues an error for a product properties file that contains a bad path.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -569,7 +576,7 @@ public class ProductFeatureTest {
     /**
      * TestDescription:
      * This test tests with a product feature that does not have a .mf file.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -607,9 +614,17 @@ public class ProductFeatureTest {
 
         // Now move the server xml with a product feature that will not be found.
         TestUtils.makeConfigUpdateSetMark(server, "server_core_features_not_found.xml");
-        // Get the feature definition could not be found message.
-        String output = server.waitForStringInLogUsingMark(missingFeatureCoreMsgPrefix);
-        assertNotNull("We haven't found the " + missingFeatureCoreMsgPrefix + " in the logs.", output);
+
+        String output = null;
+        if (isOpenLiberty()) {
+            // Get the feature definition could not be found message
+            output = server.waitForStringInLogUsingMark(missingFeatureMsgPrefix);
+            assertNotNull("We haven't found the " + missingFeatureMsgPrefix + " in the logs.", output);
+        } else {
+            // Get the feature definition could not be found message - including the installUtils workaround
+            output = server.waitForStringInLogUsingMark(missingFeatureCoreMsgPrefix);
+            assertNotNull("We haven't found the " + missingFeatureCoreMsgPrefix + " in the logs.", output);
+        }
 
         assertTrue("coretest-1.0 product feature name was not found in the output: " + output, output.contains("coretest-1.0"));
 
@@ -617,15 +632,48 @@ public class ProductFeatureTest {
     }
 
     /**
+     * @return
+     */
+    protected boolean isOpenLiberty() {
+        return !getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY);
+
+    }
+
+    /**
+     * Return a display name for the currently running server.
+     */
+    protected String getProductInfoDisplayName() {
+        String result = null;
+        try {
+            Map<String, ProductInfo> products = ProductInfo.getAllProductInfo();
+            StringBuilder builder = new StringBuilder();
+            for (ProductInfo productInfo : products.values()) {
+                if (builder.length() != 0) {
+                    builder.append(", ");
+                }
+                builder.append(productInfo.getDisplayName());
+            }
+            result = builder.toString();
+        } catch (ProductInfoParseException e) {
+            // ignore exceptions-- best effort to get a pretty string
+        } catch (DuplicateProductInfoException e) {
+            // ignore exceptions-- best effort to get a pretty string
+        } catch (ProductInfoReplaceException e) {
+            // ignore exceptions-- best effort to get a pretty string
+        }
+        return result;
+    }
+
+    /**
      * TestDescription:
      * This test ensures that a .mf file added to producttest/lib/features after the server is
      * up and running will be found and installed when the feature is specified in server.xml.
      * The test ensures that this happens during server update.
-     * 
+     *
      * The feature structure is as follows:
-     * 
+     *
      * pfeatureA is defined in pfeatureA.mf by IBM-ShortName: pfeatureA-1.0
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -676,7 +724,7 @@ public class ProductFeatureTest {
 
     /**
      * This method loads the feature.cache file as properties.
-     * 
+     *
      * @param cacheFile - The cache file to read.
      * @return - A properties object containing the properties from the feature.cache file.
      * @throws Exception
@@ -699,7 +747,7 @@ public class ProductFeatureTest {
      * TestDescription:
      * This test ensures that a product feature can be packaged with minify.
      * Including type=file content.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -721,9 +769,9 @@ public class ProductFeatureTest {
 
         //we want to validate that the content related to our product extension got packaged
         List<String> names = Arrays.asList(new String[] { "wlp/producttest/bin/test.bat",
-                                                         "wlp/producttest/lib/com.ibm.ws.prodtest.internal_1.0.jar",
-                                                         "wlp/producttest/lib/features/prodtest-1.0.mf",
-                                                         "wlp/etc/extensions/testproduct.properties" });
+                                                          "wlp/producttest/lib/com.ibm.ws.prodtest.internal_1.0.jar",
+                                                          "wlp/producttest/lib/features/prodtest-1.0.mf",
+                                                          "wlp/etc/extensions/testproduct.properties" });
         List<String> namesToValidate = new ArrayList<String>(names.size());
         namesToValidate.addAll(names);
 
