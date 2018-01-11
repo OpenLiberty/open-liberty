@@ -15,5 +15,5 @@ Subsystem-Name: MicroProfile Rest Client 1.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-1.0
 -bundles=com.ibm.ws.require.java8, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2; apiJar=false; location:="lib/"
-kind=beta
+kind=noship
 edition=core
