@@ -269,7 +269,7 @@ public class MvnUtils {
     /**
      * Looks for a path in a directory from a sub set of the filename
      *
-     * @param expandedJarNameFragment
+     * @param jarNameFragment
      * @param dir
      * @return
      */
