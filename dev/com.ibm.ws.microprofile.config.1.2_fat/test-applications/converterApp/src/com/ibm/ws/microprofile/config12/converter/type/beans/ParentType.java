@@ -8,15 +8,29 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.test;
+package com.ibm.ws.microprofile.config12.converter.type.beans;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ *
+ */
+public class ParentType implements Converted {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-})
-public class FATSuite {}
+    private final String value;
+    private final String converter;
+
+    public ParentType(String value, String converter) {
+        this.value = value;
+        this.converter = converter;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String getConverter() {
+        return converter;
+    }
+
+}

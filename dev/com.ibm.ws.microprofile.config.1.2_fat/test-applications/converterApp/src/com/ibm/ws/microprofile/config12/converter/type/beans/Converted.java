@@ -8,15 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.test;
+package com.ibm.ws.microprofile.config12.converter.type.beans;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ *
+ */
+public interface Converted {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-})
-public class FATSuite {}
+    public String getValue();
+
+    public String getConverter();
+}

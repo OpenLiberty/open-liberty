@@ -8,15 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.test;
+package com.ibm.ws.microprofile.config12.converter.type.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-})
-public class FATSuite {}
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
+
+@SuppressWarnings("serial")
+@WebServlet("/LambdaConverterServlet")
+public class TypeConverterServlet extends FATServlet {
+
+    @Inject
+    TypeConverterBean bean;
+
+    @Test
+    public void converterPrioritySPITest() throws Exception {
+        bean.lambdaConverterTest();
+    }
+}

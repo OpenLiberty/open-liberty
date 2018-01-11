@@ -8,15 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.test;
+package com.ibm.ws.microprofile.config12.converter.type.beans;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ *
+ */
+public class ChildType extends ParentType {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-})
-public class FATSuite {}
+    public ChildType(String value, String converter) {
+        super(value, converter);
+    }
+
+}

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.converter.priority.beans;
+package com.ibm.ws.microprofile.config12.converter.priority.web;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,6 +20,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
+import com.ibm.ws.microprofile.config12.converter.priority.beans.MyObject;
 import com.ibm.ws.microprofile.config12.converter.priority.converters.Priority50Converter;
 import com.ibm.ws.microprofile.config12.converter.priority.converters.Priority9000Converter;
 
