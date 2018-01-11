@@ -31,17 +31,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.AssertionFailedError;
 
+@RunWith(FATRunner.class)
 public class EmbeddedServerAddProductExtensionMultipleTest {
 
     static final Class<?> c = EmbeddedServerAddProductExtensionMultipleTest.class;
