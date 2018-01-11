@@ -11,6 +11,14 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.SNAPSHOT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.SNAPSHOT}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.SNAPSHOT}!/!META-INF/MANIFEST.MF,\
+  org/apache/cxf=${bin}/org/apache/cxf
 
--buildpath: org.apache.cxf:cxf-rt-rs-mp-client;version=3.2.2.SNAPSHOT
+-buildpath: \
+	org.apache.cxf:cxf-rt-rs-mp-client;version=3.2.2.SNAPSHOT,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+	com.ibm.ws.logging.core;version=latest
