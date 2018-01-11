@@ -73,7 +73,7 @@ public class BasicClientTestServlet extends FATServlet {
         }
     }
 
-    //@Test
+    @Test
     public void testMaps404Exception(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         BasicServiceClient client = builder.build(BasicServiceClient.class);
         try {
@@ -91,7 +91,7 @@ public class BasicClientTestServlet extends FATServlet {
         }
     }
 
-    //@Test
+    @Test
     public void testMaps409Exception(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         BasicServiceClient client = builder.build(BasicServiceClient.class);
 
