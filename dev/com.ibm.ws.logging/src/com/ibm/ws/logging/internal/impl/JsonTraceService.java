@@ -104,7 +104,6 @@ public class JsonTraceService extends BaseTraceService {
          */
         if (messageLogHandler == null) {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
-            messageLogHandler.setSync(sync);
             collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
         }
         if (consoleLogHandler == null) {
@@ -316,13 +315,6 @@ public class JsonTraceService extends BaseTraceService {
             counter.decrementCount();
         }
         return retMe;
-    }
-
-    @Override
-    protected void initializeWriters(LogProviderConfigImpl config) {
-        synchronized (sync) {
-            super.initializeWriters(config);
-        }
     }
 
     @Override
