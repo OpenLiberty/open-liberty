@@ -31,7 +31,10 @@ Export-Package: \
 Private-Package: \
     com.ibm.ws.microprofile.config.resources
 
-Import-Package: org.netflix.archaius.*, *
+Import-Package: \
+        org.eclipse.microprofile.config.*;version="[1.0,2)", \
+        org.netflix.archaius.*, \
+        *
 
 WS-TraceGroup: APPCONFIG
 

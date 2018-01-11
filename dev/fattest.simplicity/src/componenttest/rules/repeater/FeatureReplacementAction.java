@@ -10,11 +10,11 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -57,13 +57,68 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> addFeatures = new HashSet<>();
 
     public FeatureReplacementAction(String removeFeature, String addFeature) {
-        this(Collections.singleton(removeFeature), Collections.singleton(addFeature));
+        this();
+        addFeature(addFeature);
+        removeFeature(removeFeature);
         forceAddFeatures = true;
     }
 
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
-        this.removeFeatures.addAll(removeFeatures);
+        this();
+        addFeatures(addFeatures);
+        removeFeatures(removeFeatures);
+    }
+
+    public FeatureReplacementAction() {
+        //no-op ... must call add/remove methods below before use
+    }
+
+    /**
+     * Add features to the set to be added
+     *
+     * @param addFeatures the features to be added
+     * @return this
+     */
+    public FeatureReplacementAction addFeatures(Set<String> addFeatures) {
         this.addFeatures.addAll(addFeatures);
+        return this;
+    }
+
+    /**
+     * Add features to the set to be removed
+     *
+     * ...to be clear, this is not the opposite of addFeatures()
+     *
+     * @param removeFeatures the features to be removed
+     * @return this
+     */
+    public FeatureReplacementAction removeFeatures(Set<String> removeFeatures) {
+        this.removeFeatures.addAll(removeFeatures);
+        return this;
+    }
+
+    /**
+     * Add a feature to the set to be added
+     *
+     * @param addFeature the feature to be added
+     * @return this
+     */
+    public FeatureReplacementAction addFeature(String addFeature) {
+        this.addFeatures.add(addFeature);
+        return this;
+    }
+
+    /**
+     * Add a feature to the set to be removed
+     *
+     * ...to be clear, this is not the opposite of addFeature()
+     *
+     * @param removeFeature the feature to be removed
+     * @return this
+     */
+    public FeatureReplacementAction removeFeature(String removeFeature) {
+        this.removeFeatures.add(removeFeature);
+        return this;
     }
 
     /**
@@ -114,6 +169,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         final String m = "setup";
         final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
         final String pathToAutoFVTTestServers = "publish/servers/";
+
+        //check that there are actually some features to be added or removed
+        assertFalse("No features were set to be added or removed", addFeatures.size() == 0 && removeFeatures.size() == 0);
 
         // Find all of the server configurations to replace features in
         Set<File> serverConfigs = new HashSet<>();

@@ -26,7 +26,7 @@ Export-Package: \
   org.eclipse.microprofile.config.spi;version=1.1
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.config:microprofile-config-api;1.1.0}
+  @${repo;org.eclipse.microprofile.config:microprofile-config-api;1.1;EXACT}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
