@@ -57,11 +57,6 @@ public class BasicClientTestServlet extends FATServlet {
                         .baseUrl(baseUrl);
     }
 
-//    @Override
-//    public void destroy() {
-//        client.close();
-//    }
-
     @Test
     public void testSimplePostGetDelete(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         BasicServiceClient client = builder.build(BasicServiceClient.class);
@@ -78,7 +73,7 @@ public class BasicClientTestServlet extends FATServlet {
         }
     }
 
-    @Test
+    //@Test
     public void testMaps404Exception(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         BasicServiceClient client = builder.build(BasicServiceClient.class);
         try {
@@ -96,7 +91,7 @@ public class BasicClientTestServlet extends FATServlet {
         }
     }
 
-    @Test
+    //@Test
     public void testMaps409Exception(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         BasicServiceClient client = builder.build(BasicServiceClient.class);
 
