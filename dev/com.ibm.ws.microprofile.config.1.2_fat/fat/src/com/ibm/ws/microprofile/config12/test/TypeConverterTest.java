@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config12.converter.priority.web.ConverterPriorityServlet;
+import com.ibm.ws.microprofile.config12.converter.type.web.TypeConverterServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -37,12 +37,12 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class ConverterPriorityTest extends FATServletClient {
+public class TypeConverterTest extends FATServletClient {
 
     public static final String APP_NAME = "converterApp";
 
     @Server("ConverterServer")
-    @TestServlet(servlet = ConverterPriorityServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = TypeConverterServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass

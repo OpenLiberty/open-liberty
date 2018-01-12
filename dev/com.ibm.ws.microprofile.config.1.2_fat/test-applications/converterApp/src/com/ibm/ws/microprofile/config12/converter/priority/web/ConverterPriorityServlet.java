@@ -15,8 +15,6 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.config12.converter.priority.beans.ConverterPriorityBean;
-
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")

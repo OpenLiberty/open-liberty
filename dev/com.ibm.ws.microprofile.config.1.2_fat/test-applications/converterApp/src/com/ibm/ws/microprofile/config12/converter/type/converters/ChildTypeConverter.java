@@ -8,15 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.test;
+package com.ibm.ws.microprofile.config12.converter.type.converters;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.eclipse.microprofile.config.spi.Converter;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-})
-public class FATSuite {}
+import com.ibm.ws.microprofile.config12.converter.type.beans.ChildType;
+
+/**
+ * Intentionally does not have the generic type set on the Converter interface
+ */
+@SuppressWarnings("rawtypes")
+public class ChildTypeConverter implements Converter {
+
+    /** {@inheritDoc} */
+    @Override
+    public ChildType convert(String value) {
+        return new ChildType(value, "SubTypeConverter");
+    }
+
+}
