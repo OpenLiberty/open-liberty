@@ -96,4 +96,9 @@ public class BlockableIncrementFunction implements Function<Integer, Integer> {
                 executionThread = null;
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ' ' + testIdentifier;
+    }
 }
