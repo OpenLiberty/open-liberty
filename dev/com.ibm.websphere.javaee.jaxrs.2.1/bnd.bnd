@@ -28,7 +28,8 @@ Import-Package: \
 app-resources= \
   META-INF/services/javax.ws.rs.client.ClientBuilder | \
   META-INF/services/javax.ws.rs.sse.SseEventSource\$Builder | \
-  META-INF/services/javax.ws.rs.sse.SseEventSource.Builder
+  META-INF/services/javax.ws.rs.sse.SseEventSource.Builder | \
+  META-INF/services/javax.ws.rs.ext.RuntimeDelegate
 
 Service-Component: \
   com.ibm.ws.jaxrs21.client.ResourceProvider; \
@@ -39,7 +40,9 @@ Service-Component: \
 
 Include-Resource:\
  META-INF/services/javax.ws.rs.client.ClientBuilder=resources/META-INF/services/javax.ws.rs.client.ClientBuilder,\
+ META-INF/services/javax.ws.rs.ext.RuntimeDelegate=resources/META-INF/services/javax.ws.rs.ext.RuntimeDelegate,\
  META-INF/services/javax.ws.rs.sse.SseEventSource$Builder=resources/META-INF/services/javax.ws.rs.sse.SseEventSource$Builder
+ 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
