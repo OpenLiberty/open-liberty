@@ -27,6 +27,10 @@ import com.ibm.ws.microprofile.config12.converter.type.converters.ChildTypeConve
 @RequestScoped
 public class TypeConverterBean {
 
+//    @Inject
+//    @ConfigProperty(name = "list1")
+//    List<ChildType> list1;
+
     /**
      * Tests the SPI that allows a lambda to be added as a converter
      *
@@ -69,5 +73,19 @@ public class TypeConverterBean {
         assertEquals("SubTypeConverter", myObject.getConverter());
         assertTrue("myObject is not a ChildType. It is a " + myObject.getClass(), myObject instanceof ChildType);
     }
+
+//    /**
+//     * Tests that a List can be converted
+//     *
+//     * @throws Exception
+//     */
+//    public void listConverterTest() throws Exception {
+//        assertEquals(5, list1.size());
+//        assertEquals("value1", list1.get(0));
+//        assertEquals("value2", list1.get(1));
+//        assertEquals("value3", list1.get(2));
+//        assertEquals("value4", list1.get(3));
+//        assertEquals("value5", list1.get(4));
+//    }
 
 }

@@ -14,7 +14,7 @@ Subsystem-Name: MicroProfile Config 1.2
  com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3
 -bundles=com.ibm.ws.require.java8, \
- com.ibm.ws.microprofile.config; apiJar=false; location:="lib/", \
+ com.ibm.ws.microprofile.config.1.2; apiJar=false; location:="lib/", \
  com.ibm.ws.com.netflix.archaius.2.1.10; apiJar=false; location:="lib/", \
  com.ibm.ws.org.apache.commons.lang3.3.5; apiJar=false; location:="lib/", \
  com.ibm.ws.org.slf4j.api.1.7.7; apiJar=false; location:="lib/", \

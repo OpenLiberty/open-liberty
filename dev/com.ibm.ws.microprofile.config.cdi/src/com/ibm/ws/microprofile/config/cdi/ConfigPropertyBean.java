@@ -79,15 +79,16 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
             }
         } else if (ipType instanceof Class) {
             Class<T> ipClass = (Class<T>) ipType;
-            instance = ConfigProducer.newValue(config, injectionPoint, ipClass, false);
+            instance = (T) ConfigProducer.newValue(config, injectionPoint, ipClass, false);
         } else {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", ipType));
         }
         return instance;
     }
 
+    @SuppressWarnings("unchecked")
     private <K> Optional<K> getOptional(Config config, InjectionPoint injectionPoint, Class<K> clazz) {
-        Optional<K> opt = ConfigProducer.newOptional(config, injectionPoint, clazz);
+        Optional<K> opt = (Optional<K>) ConfigProducer.newOptional(config, injectionPoint, clazz);
         return opt;
     }
 

@@ -21,10 +21,11 @@ import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.converters.DefaultConverters;
+import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+import com.ibm.ws.microprofile.config.converters.UserConverter;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.DefaultConverters;
 import com.ibm.ws.microprofile.config.interfaces.DefaultSources;
-import com.ibm.ws.microprofile.config.interfaces.PriorityConverterMap;
 
 /**
  *
@@ -125,7 +126,8 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
     public ConfigBuilder withConverters(Converter<?>... converters) {
         synchronized (this) {
             for (Converter<?> con : converters) {
-                userConverters.addConverter(con);
+                UserConverter<?> userConverter = UserConverter.newInstance(con);
+                userConverters.addConverter(userConverter);
             }
         }
         return this;
@@ -133,7 +135,8 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
 
     public <T> ConfigBuilder withConverter(Class<T> type, int priority, Converter<T> converter) {
         synchronized (this) {
-            userConverters.addConverter(type, priority, converter);
+            UserConverter<?> userConverter = UserConverter.newInstance(type, priority, converter);
+            userConverters.addConverter(userConverter);
         }
         return this;
     }
@@ -176,7 +179,7 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
 
         //add the default converters
         if (addDefaultConverters) {
-            allConverters.addAll(DefaultConverters.getDefaultConverters());
+            allConverters.addAll(getDefaultConverters());
         }
         //add the discovered converters
         if (addDiscoveredConverters) {
@@ -188,6 +191,10 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
         allConverters.setUnmodifiable();
 
         return allConverters;
+    }
+
+    protected PriorityConverterMap getDefaultConverters() {
+        return DefaultConverters.getDefaultConverters();
     }
 
     /**

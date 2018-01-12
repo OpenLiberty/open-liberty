@@ -17,6 +17,7 @@
 
 package com.ibm.ws.microprofile.config.archaius.impl;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicStampedReference;
 
@@ -32,7 +33,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
     private static final TraceComponent tc = Tr.register(CachedCompositeProperty.class);
 
     private final AtomicStampedReference<CachedCompositeValue<T>> cache = new AtomicStampedReference<>(null, -1);
-    private final Class<T> type;
+    private final Type type;
     private final CachedCompositePropertyContainer parentContainer;
 
     /**
@@ -42,7 +43,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * @param defaultValue
      * @param parentContainer
      */
-    CachedCompositeProperty(Class<T> type, CachedCompositePropertyContainer parentContainer) {
+    CachedCompositeProperty(Type type, CachedCompositePropertyContainer parentContainer) {
         this.type = type;
         this.parentContainer = parentContainer;
     }
@@ -139,9 +140,9 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             if (compositeValue != null) {
-                Tr.debug(tc, "get", "Key={0}, Value={1}, Source={2}", getKey(), compositeValue.getValue(), compositeValue.getSource());
+                Tr.debug(tc, "get: Key={0}, Value={1}, Source={2}", getKey(), compositeValue.getValue(), compositeValue.getSource());
             } else {
-                Tr.debug(tc, "get", "Key={0} not found", getKey());
+                Tr.debug(tc, "get: Key={0} not found", getKey());
             }
         }
         return actual;
