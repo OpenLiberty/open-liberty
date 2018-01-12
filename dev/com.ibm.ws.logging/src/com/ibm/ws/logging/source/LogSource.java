@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.source;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.LogRecord;
@@ -42,10 +44,17 @@ public class LogSource implements Source, WsLogHandler {
     private BufferManager bufferMgr = null;
     static Pattern messagePattern;
     private final SequenceNumber sequenceNumber = new SequenceNumber();
+    public static final String LINE_SEPARATOR;
 
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
 
+        LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("line.separator");
+            }
+        });
     }
 
     //private final AtomicLong seq = new AtomicLong();
@@ -143,14 +152,12 @@ public class LogSource implements Source, WsLogHandler {
             messageVal = logRecord.getMessage();
         }
 
-        KeyValuePair message = new KeyValuePair("message", messageVal, KeyValuePair.ValueTypes.STRING);
-
         long dateVal = logRecord.getMillis();
         KeyValuePair date = new KeyValuePair("ibm_datetime", Long.toString(dateVal), KeyValuePair.ValueTypes.NUMBER);
 
         String messageIdVal = null;
 
-        if (message != null) {
+        if (messageVal != null) {
             messageIdVal = parseMessageId(messageVal);
         }
 
@@ -179,14 +186,16 @@ public class LogSource implements Source, WsLogHandler {
         //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
 
         Throwable thrown = logRecord.getThrown();
-        String throwableMsg = "";
+        StringBuilder msgBldr = new StringBuilder();
+        msgBldr.append(messageVal);
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
             if (stackTrace != null) {
-                throwableMsg = stackTrace;
+                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
             }
         }
-        KeyValuePair throwable = new KeyValuePair("throwable", throwableMsg, KeyValuePair.ValueTypes.STRING);
+
+        KeyValuePair message = new KeyValuePair("message", msgBldr.toString(), KeyValuePair.ValueTypes.STRING);
 
         GenericData genData = new GenericData();
         ArrayList<Pair> pairs = genData.getPairs();
@@ -202,7 +211,6 @@ public class LogSource implements Source, WsLogHandler {
         pairs.add(className);
         pairs.add(extensions);
         pairs.add(sequence);
-        pairs.add(throwable);
 
         genData.setSourceType(sourceName);
 
