@@ -10,21 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.ArrayList;
+/**
+ * Marker interface created to group KeyValuePair and KeyValuePairs
+ */
 
-public class GenericDataContainer extends ArrayList<LogKeyValuePair> {
+public interface Pair {
 
-    private String objectType;
-
-    public String getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(String objectType) {
-        this.objectType = objectType;
-    }
-
-    public String getBasicFormat() {
-        return null;
-    }
 }

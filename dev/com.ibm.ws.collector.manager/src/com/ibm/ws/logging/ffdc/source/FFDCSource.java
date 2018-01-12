@@ -12,13 +12,16 @@ package com.ibm.ws.logging.ffdc.source;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDC;
-import com.ibm.ws.logging.source.FFDCData;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.Pair;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.Incident;
@@ -106,28 +109,75 @@ public class FFDCSource implements Source {
         private final AtomicLong seq = new AtomicLong();
 
         /** {@inheritDoc} */
+//        @Override
+//        public void process(Incident in, Throwable th) {
+//            long timeStamp = in.getTimeStamp();
+//            long dateOfFirstOccurrence = in.getDateOfFirstOccurrence().getTime();
+//            int count = in.getCount();
+//            //Condition to prevent adding ffdc event for the same failure
+//            //to the bufferMgr multiple times
+//            //TODO: Need to evaluate the need for the timeStamp (timeStamp == dateOfFirstOccurrence) check is required or not
+//            if (count == 1) {
+//                String className = in.getSourceId();
+//                String label = in.getLabel();
+//                String exceptionName = in.getExceptionName();
+//                String probeID = in.getProbeId();
+//                String sourceID = in.getSourceId();
+//                int threadID = (int) in.getThreadId();
+//                String stackTrace = getStackTraceAsString(th);
+//                String callerDetails = getCallerDetails(in);
+//                String message = th.getMessage();
+//                String sequence = timeStamp + "_" + String.format("%013X", seq.incrementAndGet());
+//
+//                FFDCData data = new FFDCData(exceptionName, message, className, timeStamp, dateOfFirstOccurrence, count, label, probeID, sourceID, threadID, stackTrace, callerDetails, sequence);
+//                bufferMgr.add(data);
+//            }
+//        }
+
         @Override
         public void process(Incident in, Throwable th) {
-            long timeStamp = in.getTimeStamp();
-            long dateOfFirstOccurrence = in.getDateOfFirstOccurrence().getTime();
-            int count = in.getCount();
+
+            KeyValuePair timeStamp = new KeyValuePair("ibm_datetime", Long.toString(in.getTimeStamp()), KeyValuePair.ValueTypes.NUMBER);
+            KeyValuePair dateOfFirstOccurrence = new KeyValuePair("dateOfFirstOccurence", Long.toString(in.getDateOfFirstOccurrence().getTime()), KeyValuePair.ValueTypes.NUMBER);
+            int countVal = in.getCount();
+            KeyValuePair count = new KeyValuePair("count", Integer.toString(countVal), KeyValuePair.ValueTypes.NUMBER);
             //Condition to prevent adding ffdc event for the same failure
             //to the bufferMgr multiple times
             //TODO: Need to evaluate the need for the timeStamp (timeStamp == dateOfFirstOccurrence) check is required or not
-            if (count == 1) {
-                String className = in.getSourceId();
-                String label = in.getLabel();
-                String exceptionName = in.getExceptionName();
-                String probeID = in.getProbeId();
-                String sourceID = in.getSourceId();
-                int threadID = (int) in.getThreadId();
-                String stackTrace = getStackTraceAsString(th);
-                String callerDetails = getCallerDetails(in);
-                String message = th.getMessage();
-                String sequence = timeStamp + "_" + String.format("%013X", seq.incrementAndGet());
+            if (countVal == 1) {
+                KeyValuePair className = new KeyValuePair("ibm_className", in.getSourceId(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair label = new KeyValuePair("label", in.getLabel(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair exceptionName = new KeyValuePair("ibm_exceptionName", in.getExceptionName(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair probeID = new KeyValuePair("ibm_probeID", in.getProbeId(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair sourceID = new KeyValuePair("sourceID", in.getSourceId(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair threadID = new KeyValuePair("ibm_threadId", Integer.toString((int) in.getThreadId()), KeyValuePair.ValueTypes.NUMBER);
+                KeyValuePair stackTrace = new KeyValuePair("ibm_stackTrace", getStackTraceAsString(th), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair callerDetails = new KeyValuePair("ibm_objectDetails", getCallerDetails(in), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair message = new KeyValuePair("message", th.getMessage(), KeyValuePair.ValueTypes.STRING);
 
-                FFDCData data = new FFDCData(exceptionName, message, className, timeStamp, dateOfFirstOccurrence, count, label, probeID, sourceID, threadID, stackTrace, callerDetails, sequence);
-                bufferMgr.add(data);
+                String sequenceVal = timeStamp + "_" + String.format("%013X", seq.incrementAndGet());
+                KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceVal, KeyValuePair.ValueTypes.STRING);
+
+                GenericData genData = new GenericData();
+                ArrayList<Pair> pairs = genData.getPairs();
+
+                pairs.add(timeStamp);
+                pairs.add(dateOfFirstOccurrence);
+                pairs.add(count);
+                pairs.add(className);
+                pairs.add(label);
+                pairs.add(exceptionName);
+                pairs.add(probeID);
+                pairs.add(sourceID);
+                pairs.add(threadID);
+                pairs.add(stackTrace);
+                pairs.add(callerDetails);
+                pairs.add(message);
+                pairs.add(sequence);
+
+                genData.setSourceType(sourceName);
+
+                bufferMgr.add(genData);
             }
         }
 
