@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -275,32 +277,39 @@ public class MvnUtils {
         String result = null;
         File dirFileObj = new File(dir);
         String[] files = dirFileObj.list();
-        log("looking for jar " + jarNameFragment + " in dir " + dir);
+
+        //Allow for some users using ".jar" at the end and some not
+        if (jarNameFragment.endsWith(".jar")) {
+            jarNameFragment = jarNameFragment.substring(0, jarNameFragment.length() - ".jar".length());
+        }
+
+        //In pom.xml <systemPath>${wildcard}</systemPath>
+        // "."-> matches literal "." which is "\\." in a regex and "\\\\\\." in a string
+        // "DOT" is a regex "." which matches a single char
+        // "STAR (or DOTSTAR) is ".*" which matches any sequence of chars.
+        // "_" can be used and will match "_"
+        // Other char sequences will be passed into the regex pattern but ONLY valid environment variable chars can
+        // be passed to the mvn command line so chars like ^[]- are off limits
+        //
+        String expandedJarNameFragment = jarNameFragment.replaceAll("\\.", "\\\\\\.").replaceAll("DOTSTAR", ".*").replaceAll("DOT", "\\.").replaceAll("STAR", ".*");
+        String stringPattern = ".*" + expandedJarNameFragment + ".*" + "\\.jar";
+        log("looking for jar " + jarNameFragment + " using " + stringPattern + " in dir " + dir);
 
         // Looking for (for example):
         //              <systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
         //              <systemPath>${lib}com.ibm.ws.microprofile.config_${liberty.version}.jar</systemPath>
         //              <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
 
+        Pattern p = Pattern.compile(stringPattern);
         for (int i = 0; i < files.length; i++) {
-            if (files[i].contains(jarNameFragment)) {
+            Matcher m = p.matcher(files[i]);
+            if (m.matches()) {
                 result = files[i];
-                log("dir " + dir + " contains " + jarNameFragment + " as " + result);
-                // Do we have a match ignoring version numbers
-                String r = result.replaceAll(".jar", "");
-                r = r.replaceAll("[0-9]", "");
-                r = r.replaceAll("\\.", "");
-                r = r.replaceAll("\\_", "");
-                log("r testing " + r);
-                if (r.equals(jarNameFragment.replaceAll("\\.", ""))) {
-                    log(jarNameFragment + " jar found in dir " + dir + result);
-                    return result;
-                } else {
-                    log("close match failed for " + jarNameFragment + " in " + dir + result);
-                }
+                log("dir " + dir + " matches " + stringPattern + " for " + jarNameFragment + " as " + result);
+                return result;
             }
         }
-        log("returning NOT FOUND for " + jarNameFragment);
+        log("returning NOT FOUND for " + jarNameFragment + " " + expandedJarNameFragment + " " + stringPattern);
         return null;
     }
 
