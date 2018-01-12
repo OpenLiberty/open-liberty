@@ -71,13 +71,13 @@ public class CollectorJsonUtils {
         if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
             return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, isHigherVer, tags);
         } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-            return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength);
+            return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength, CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
         } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
-            return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength);
+            return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength, CollectorConstants.TRACE_LOG_EVENT_TYPE);
         } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
-            return jsonifyFFDCEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength);
+            return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength, CollectorConstants.FFDC_EVENT_TYPE);
         } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
-            return jsonifyAccessLogEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags);
+            return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, 0, CollectorConstants.ACCESS_LOG_EVENT_TYPE);
         }
         return "";
     }
@@ -128,18 +128,6 @@ public class CollectorJsonUtils {
         return sb.toString();
     }
 
-    public static String getKVPValue(ArrayList<Pair> pairs, String key) {
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                KeyValuePair kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals(key)) {
-                    return kvp.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
     private static void jsonify(GenericData genData, boolean isFirstField, StringBuilder sb, int maxFieldLength, String wlpUserDir,
                                 String serverName, String hostName, String eventType) {
 
@@ -158,12 +146,8 @@ public class CollectorJsonUtils {
 
                     if (kvp.getKey().equals("message") || kvp.getKey().equals("ibm_stackTrace")) {
 
-                        if (!genData.getSourceType().equals("com.ibm.ws.logging.source.message")) {
-
-                            String formattedValue = formatMessage(kvp.getValue(), maxFieldLength);
-                            isFirstField = isFirstField & !addToJSON(sb, kvp.getKey(), formattedValue, false, true, false, isFirstField);
-
-                        }
+                        String formattedValue = formatMessage(kvp.getValue(), maxFieldLength);
+                        isFirstField = isFirstField & !addToJSON(sb, kvp.getKey(), formattedValue, false, true, false, isFirstField);
 
                     } else if (kvp.getKey().equals("ibm_threadId")) {
 
@@ -203,7 +187,26 @@ public class CollectorJsonUtils {
                 }
             }
         }
+    }
 
+    public static String jsonifyEvent(String hostName, String wlpUserDir, String serverName, Object event, boolean isHigherVer, String[] tags,
+                                      int maxFieldLength, String eventType) {
+
+        GenericData genData = (GenericData) event;
+        StringBuilder sb = new StringBuilder();
+        boolean isFirstField = true;
+
+        sb.append("{");
+
+        jsonify(genData, isFirstField, sb, maxFieldLength, wlpUserDir, serverName, hostName, eventType);//CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
+
+        if (tags != null) {
+            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
+        }
+
+        sb.append("}");
+
+        return sb.toString();
     }
 
     static boolean addCommonFields2(StringBuilder sb, String hostName, String wlpUserDir,
@@ -263,52 +266,6 @@ public class CollectorJsonUtils {
 //
 //        return sb.toString();
 //    }
-
-    public static String jsonifyMessageLogEvent(String hostName, String wlpUserDir, String serverName, Object event, boolean isHigherVer, String[] tags,
-                                                int maxFieldLength) {
-
-        GenericData genData = (GenericData) event;
-        ArrayList<Pair> pairs = genData.getPairs();
-        StringBuilder sb = new StringBuilder();
-        boolean isFirstField = true;
-
-        StringBuilder msgBldr = new StringBuilder();
-        String msg = getKVPValue(pairs, "message");
-        String thrown = getKVPValue(pairs, "throwable");
-        msgBldr.append(msg);
-        String message = formatMessage(msgBldr.toString(), maxFieldLength);
-
-        sb.append("{");
-
-        jsonify(genData, isFirstField, sb, maxFieldLength, wlpUserDir, serverName, hostName, CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
-        isFirstField = isFirstField & !addToJSON(sb, "message", message, false, true, false, isFirstField);
-
-        if (tags != null) {
-            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
-        }
-        sb.append("}");
-
-        return sb.toString();
-    }
-
-    public static String jsonifyTraceLogEvent(String hostName, String wlpUserDir, String serverName, Object event, boolean isHigherVer, String[] tags,
-                                              int maxFieldLength) {
-
-        GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
-        boolean isFirstField = true;
-
-        sb.append("{");
-        jsonify(genData, isFirstField, sb, maxFieldLength, wlpUserDir, serverName, hostName, CollectorConstants.TRACE_LOG_EVENT_TYPE);
-
-        if (tags != null) {
-            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
-        }
-
-        sb.append("}");
-
-        return sb.toString();
-    }
 
 //    public static String jsonifyTraceLogEvent(String hostName, String wlpUserDir, String serverName, TraceLogData traceLogData, boolean isHigherVer, String[] tags,
 //                                              int maxFieldLength) {
@@ -375,24 +332,6 @@ public class CollectorJsonUtils {
 //        return sb.toString();
 //    }
 
-    public static String jsonifyFFDCEvent(String hostName, String wlpUserDir, String serverName, Object event, boolean isHigherVer, String[] tags, int maxFieldLength) {
-
-        GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
-        boolean isFirstField = true;
-
-        sb.append("{");
-        jsonify(genData, isFirstField, sb, maxFieldLength, wlpUserDir, serverName, hostName, CollectorConstants.FFDC_EVENT_TYPE);
-
-        if (tags != null) {
-            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
-        }
-
-        sb.append("}");
-
-        return sb.toString();
-    }
-
 //    public static String jsonifyAccessLogEvent(String hostName, String wlpUserDir, String serverName, AccessLogData accessLogData, boolean isHigherVer, String[] tags) {
 //        //Date date = new Date(accessLogData.getRequestStartTime());
 //        String sequenceNum = accessLogData.getSequence();
@@ -450,24 +389,6 @@ public class CollectorJsonUtils {
 //
 //        return sb.toString();
 //    }
-
-    public static String jsonifyAccessLogEvent(String hostName, String wlpUserDir, String serverName, Object event, boolean isHigherVer, String[] tags) {
-
-        StringBuilder sb = new StringBuilder();
-        GenericData genData = (GenericData) event;
-        boolean isFirstField = true;
-
-        sb.append("{");
-        jsonify(genData, isFirstField, sb, 0, wlpUserDir, serverName, hostName, CollectorConstants.ACCESS_LOG_EVENT_TYPE);
-
-        if (tags != null) {
-            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
-        }
-
-        sb.append("}");
-
-        return sb.toString();
-    }
 
     /**
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
