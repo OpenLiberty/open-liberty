@@ -28,6 +28,14 @@ public class BasicTest extends FATServletClient {
 
     private static final String appName = "basicClientApp";
 
+    /*
+     * We need two servers to clearly distiguish that the "client" server
+     * only has the client features enabled - it includes mpRestClient-1.0
+     * which includes the jaxrsClient-2.0 feature, but not the jaxrs-2.0
+     * feature that contains server code. The client should be able to
+     * work on its own - by splitting out the "server" server into it's
+     * own server, we can verify this.
+     */
     @Server("mpRestClient10.basic")
     @TestServlet(servlet = BasicClientTestServlet.class, contextRoot = appName)
     public static LibertyServer server;

@@ -23,6 +23,3 @@ javac.target: 1.8
   com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
   com.ibm.ws.logging.core;version=latest
-# com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
-# com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-# com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
