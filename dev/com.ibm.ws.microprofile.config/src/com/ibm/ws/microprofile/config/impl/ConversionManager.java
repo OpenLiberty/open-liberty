@@ -21,28 +21,27 @@ import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
+import com.ibm.ws.microprofile.config.interfaces.PriorityConverter;
+import com.ibm.ws.microprofile.config.interfaces.PriorityConverterMap;
 
 public class ConversionManager {
 
     private static final TraceComponent tc = Tr.register(ConversionManager.class);
 
-    private final Map<Type, Converter<?>> converters = new HashMap<>();
+    private final PriorityConverterMap converters;
 
     /**
      * @param converters all these are stored in the instance
      */
-    public ConversionManager(Map<Type, Converter<?>> converters) {
-        this.converters.putAll(converters);
+    public ConversionManager(PriorityConverterMap converters) {
+        this.converters = converters;
+        this.converters.setUnmodifiable(); //probably already done but make sure
     }
 
     /**
@@ -56,8 +55,8 @@ public class ConversionManager {
         Object converted = null;
 
         boolean converterFound = false;
-        if (converters.containsKey(type)) {
-            Converter<?> converter = converters.get(type);
+        if (converters.hasType(type)) {
+            PriorityConverter<?> converter = converters.getPriorityConverter(type);
             if (converter != null) {
                 converterFound = true;
                 try {
@@ -65,9 +64,9 @@ public class ConversionManager {
                 } catch (ConversionException e) {
                     throw e;
                 } catch (IllegalArgumentException e) {
-                    throw new ConversionException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter.getClass().getName(), rawString, e));
+                    throw new ConversionException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
                 } catch (Throwable e) {
-                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter.getClass().getName(), rawString, e));
+                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
                 }
 
                 if (converted == null) {
@@ -121,8 +120,8 @@ public class ConversionManager {
         T converted = null;
         ConversionStatus<T> cs = null;
         boolean converterFound = false;
-        for (Map.Entry<Type, Converter<?>> con : converters.entrySet()) {
-            Type key = con.getKey();
+        for (PriorityConverter<?> con : converters.getAll()) {
+            Type key = con.getType();
             if (key instanceof Class) {
                 Class<?> clazz = (Class<?>) key;
                 if (type.isAssignableFrom(clazz)) {
