@@ -45,16 +45,6 @@ public class ConverterPriorityBean {
     }
 
     /**
-     * Test that the @Priority annotation on the discovered converters works
-     *
-     * @throws Exception
-     */
-    public void converterPriorityTest() throws Exception {
-        assertEquals("value1", myObject.getValue());
-        assertEquals("Priority3000Converter", myObject.getConverter());
-    }
-
-    /**
      * Tests the SPI that allows the priority to be set
      *
      * @throws Exception

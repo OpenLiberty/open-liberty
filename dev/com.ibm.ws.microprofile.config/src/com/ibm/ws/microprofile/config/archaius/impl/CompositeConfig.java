@@ -179,16 +179,35 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
 
     Set<String> getKeySet() {
         HashSet<String> result = new HashSet<>();
+        StringBuilder debug = null; //debug only
+        boolean first = true; //debug only
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            debug = new StringBuilder("[");
+        }
+
         for (PollingDynamicConfig config : children) {
             Iterator<String> iter = config.getKeys();
             while (iter.hasNext()) {
                 String key = iter.next();
                 boolean added = result.add(key);
                 if (added && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "getKeySet", "Key={0}, Source={1}", key, config.getSourceID());
+                    if (!first) {
+                        debug.append(";\n");
+                    } else {
+                        first = false;
+                    }
+                    debug.append("Key=");
+                    debug.append(key);
+                    debug.append(", Source=");
+                    debug.append(config.getSourceID());
                 }
             }
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            debug.append("]");
+            Tr.debug(tc, "getKeySet", debug.toString());
+        }
+
         return result;
     }
 

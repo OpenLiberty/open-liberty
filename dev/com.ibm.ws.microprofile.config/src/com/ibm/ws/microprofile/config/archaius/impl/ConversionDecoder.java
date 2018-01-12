@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.archaius.impl;
 
+import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
-import com.ibm.ws.microprofile.config.interfaces.PriorityConverterMap;
 import com.netflix.archaius.api.Decoder;
 
 /**

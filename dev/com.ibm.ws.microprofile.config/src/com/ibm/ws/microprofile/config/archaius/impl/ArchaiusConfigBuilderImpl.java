@@ -16,9 +16,9 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 
+import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConfigBuilderImpl;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
-import com.ibm.ws.microprofile.config.interfaces.PriorityConverterMap;
 
 public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements ConfigBuilder {
 
@@ -59,9 +59,13 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
         ArchaiusConfigImpl config = AccessController.doPrivileged(new PrivilegedAction<ArchaiusConfigImpl>() {
             @Override
             public ArchaiusConfigImpl run() {
-                return new ArchaiusConfigImpl(sources, new ConversionDecoder(converters), executor, refreshInterval);
+                return new ArchaiusConfigImpl(sources, getConversionDecoder(converters), executor, refreshInterval);
             }
         });
         return config;
+    }
+
+    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters) {
+        return new ConversionDecoder(converters);
     }
 }

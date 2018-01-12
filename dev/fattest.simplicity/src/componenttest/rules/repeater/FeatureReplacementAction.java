@@ -60,21 +60,59 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
 
+    /**
+     * Remove one feature and add one feature.
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param removeFeature the feature to be removed
+     * @param addFeature the feature to add
+     */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
-        this();
-        addFeature(addFeature);
+        this(addFeature);
         removeFeature(removeFeature);
-        forceAddFeatures = true;
     }
 
+    /**
+     * Remove a set of features and add a set of features
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param removeFeatures the features to remove
+     * @param addFeatures the features to add
+     */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
-        this();
-        addFeatures(addFeatures);
+        this(addFeatures);
         removeFeatures(removeFeatures);
     }
 
-    public FeatureReplacementAction() {
-        //no-op ... must call add/remove methods below before use
+    /**
+     * Add a set of features.
+     *
+     * Currently there is no constructor which allows you to just remove features. If you need to do that then
+     * pass an empty set to {@link #FeatureReplacementAction(Set, Set)}
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param removeFeatures the features to remove
+     * @param addFeatures the features to add
+     */
+    public FeatureReplacementAction(Set<String> addFeatures) {
+        addFeatures(addFeatures);
+    }
+
+    /**
+     * Add a single feature
+     *
+     * Currently there is no constructor which allows you to just remove a single feature. If you need to do that then
+     * pass an empty set to {@link #FeatureReplacementAction(Set, Set)}
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param addFeature the feature to add.
+     */
+    public FeatureReplacementAction(String addFeature) {
+        addFeature(addFeature);
     }
 
     /**
