@@ -10,23 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-public class LogKeyValuePair {
+public class KeyValuePair implements Pair {
 
-    public enum DataValueTypes {
+    public enum ValueTypes {
         STRING, NUMBER
     }
 
     private final String key;
     private final String value;
-    private final DataValueTypes valueType;
+    private final ValueTypes valueType;
 
-    public LogKeyValuePair(String key, String value, DataValueTypes valueType) {
+    public KeyValuePair(String key, String value, ValueTypes valueType) {
         this.key = key;
         this.value = value;
         this.valueType = valueType;
     }
 
-    public DataValueTypes getValueType() {
+    public ValueTypes getType() {
         return valueType;
     }
 
@@ -34,7 +34,8 @@ public class LogKeyValuePair {
         return key;
     }
 
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
+
 }
