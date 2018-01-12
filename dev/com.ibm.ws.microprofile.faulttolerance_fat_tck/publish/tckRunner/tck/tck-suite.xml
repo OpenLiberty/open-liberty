@@ -17,7 +17,8 @@
                     <script language="beanshell">
                          <![CDATA[
                         !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchRetryTest")
+                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchRetryTest") &&
+                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadSynchRetryTest")
                     ]]>
                     </script>
                 </method-selector>
