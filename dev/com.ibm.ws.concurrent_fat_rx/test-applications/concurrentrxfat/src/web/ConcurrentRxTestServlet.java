@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,6 +71,14 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
     @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor")
     private ManagedScheduledExecutorService noContextExecutor;
+
+    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
+    private ManagedExecutorService oneContextExecutor;
+
+    // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.
+    private Executor sameThreadExecutor = runnable -> {
+        runnable.run();
+    };
 
     // Executor that can be used when tests don't want to tie up threads from the Liberty global thread pool to perform concurrent test logic
     private ExecutorService testThreads;
@@ -349,6 +359,81 @@ public class ConcurrentRxTestServlet extends FATServlet {
             blocker2.countDown();
             blocker1.countDown();
         }
+    }
+
+    /**
+     * Test the constructor for managed completable future that has no underlying action, backed by the DefaultManagedExecutorService
+     * as its default asynchronous execution facility. Use the complete method to manually supply a value, and verify that dependent
+     * stage(s) execute on the managed executor.
+     */
+    @Test
+    public void testActionlessFutureWithDefaultManagedExecutor() throws Exception {
+        BlockableIncrementFunction increment = new BlockableIncrementFunction("testActionlessFutureWithDefaultManagedExecutor", null, null, false);
+        CompletableFuture<Integer> cf1 = new ManagedCompletableFuture<Integer>();
+        CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
+
+        assertEquals(Integer.valueOf(177), cf1.getNow(177));
+        assertEquals(Integer.valueOf(178), cf2.getNow(178));
+
+        assertFalse(cf1.isDone());
+        assertFalse(cf2.isDone());
+
+        assertTrue(cf1.complete(171));
+        assertEquals(Integer.valueOf(172), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCompletedExceptionally());
+
+        // Async action runs on a managed thread, but not on the servlet thread
+        String executorThreadName = increment.executionThread.getName();
+        assertTrue(executorThreadName, executorThreadName.startsWith("Default Executor-thread-"));
+        assertNotSame(Thread.currentThread(), increment.executionThread);
+    }
+
+    /**
+     * Test the constructor for managed completable future that has no underlying action, backed by the specified executor
+     * as its default asynchronous execution facility. This test specifies an unmanaged executor to validate that
+     * managed completable future can tolerate other executors.
+     */
+    @Test
+    public void testActionlessFutureWithSpecifiedExecutor() throws Exception {
+        BlockableIncrementFunction increment1 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor1", null, null, false);
+        BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor2", null, null, false);
+        BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
+        BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
+        CompletableFuture<Integer> cf0 = new ManagedCompletableFuture<Integer>(sameThreadExecutor);
+        CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(increment1);
+        CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment2);
+        CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment3, noContextExecutor);
+        CompletableFuture<Integer> cf4 = cf3.thenApplyAsync(increment4);
+
+        assertFalse(cf0.isDone());
+        assertFalse(cf1.isDone());
+        assertFalse(cf2.isDone());
+        assertFalse(cf3.isDone());
+        assertFalse(cf4.isDone());
+
+        assertTrue(cf0.complete(180));
+        assertEquals(Integer.valueOf(181), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(182), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(183), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(184), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        Thread servletThread = Thread.currentThread();
+
+        // Async actions 1 and 2 aren't actually async, due to sameThreadExecutor
+        assertEquals(servletThread, increment1.executionThread);
+        assertEquals(servletThread, increment2.executionThread);
+
+        // Async action 3 is async because we specified a different executor
+        String executorThreadName = increment3.executionThread.getName();
+        assertTrue(executorThreadName, executorThreadName.startsWith("Default Executor-thread-"));
+        assertNotSame(servletThread, increment3.executionThread);
+
+        // Async action 4 isn't actually async either. It runs from the thread that executed the previous stage, which tries to submit it
+        assertEquals(increment3.executionThread, increment4.executionThread);
     }
 
     /**
@@ -1160,6 +1245,306 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Test a managed completable future using a managed executor with maximum concurrency of 2 and maximum policy of loose.
+     * This should limit concurrent async actions to 2, while not limiting synchronous actions.
+     */
+    @Test
+    public void testMaxPolicyLoose() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(2);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        CompletableFuture<Integer> cf0 = ManagedCompletableFuture.supplyAsync(() -> 133, noContextExecutor); // max concurrency: 2, policy: loose
+        CompletableFuture<Integer> cf1, cf2, cf3, cf4, cf5, cf6;
+        try {
+            // Create 2 async stages that will block both max concurrency permits, and wait for both to start running
+            cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose1", beginLatch, continueLatch));
+            cf2 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose2", beginLatch, continueLatch));
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Another async stage should not be allowed to start,
+            cf3 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose3", null, null));
+
+            // However, additional synchronous stages should complete successfully
+            cf4 = cf0.thenApply(new BlockableIncrementFunction("testMaxPolicyLoose4", null, null));
+            cf5 = cf4.thenApply(new BlockableIncrementFunction("testMaxPolicyLoose5", null, null));
+
+            // Again, async stages will not be able to start
+            cf6 = cf5.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyLoose6", null, null));
+
+            // Confirm that synchronous stages complete:
+            assertEquals(Integer.valueOf(134), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(135), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertTrue(cf4.isDone());
+            assertTrue(cf5.isDone());
+
+            // Confirm that asynchronous stages are not complete:
+            try {
+                cf3.get(100, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException x) {
+            }
+
+            try {
+                cf6.get(100, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException x) {
+            }
+
+            assertEquals(Integer.valueOf(-3), cf3.getNow(-3));
+            assertEquals(Integer.valueOf(-6), cf6.getNow(-6));
+        } finally {
+            // Allow the async stages to complete
+            continueLatch.countDown();
+        }
+
+        // Confirm that all asynchronous stages complete, once unblocked:
+        assertEquals(Integer.valueOf(134), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(134), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(134), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(136), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertTrue(cf3.isDone());
+        assertTrue(cf6.isDone());
+    }
+
+    /**
+     * When runIfQueueFull is false, verify that additional async stages are rejected when all max concurrency permits are
+     * taken and the queue is at capacity.
+     */
+    @Test
+    public void testMaxQueueSizeExceededAndReject() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(2);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        // max concurrency: 2, max queue size: 2, runIfQueueFull: false
+        CompletableFuture<Integer> cf0 = ManagedCompletableFuture.supplyAsync(() -> 144, noContextExecutor);
+        CompletableFuture<Integer> cf1, cf2, cf3, cf4, cf5, cf6;
+        try {
+            // Create 2 async stages that will block both max concurrency permits, and wait for both to start running
+            cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject1", beginLatch, continueLatch));
+            cf2 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject2", beginLatch, continueLatch));
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Create 2 async stages to fill the queue
+            cf3 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject3", null, null));
+            cf4 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject4", null, null));
+
+            // Attempt to create async stage which it will not be possible to submit due exceeding queue capacity
+            cf5 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject5", null, null));
+            try {
+                Integer i = cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Should not be able to submit task for cf5. Instead result is: " + i);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof RejectedExecutionException) {
+                    String message = x.getCause().getMessage();
+                    if (message == null
+                        || !message.contains("CWWKE1201E")
+                        || !message.contains("managedScheduledExecutorService[noContextExecutor]/concurrencyPolicy[default-0]")
+                        || !message.contains("maxQueueSize")
+                        || !message.contains(" 2")) // the maximum queue size
+                        throw x;
+                } else
+                    throw x;
+            }
+
+            // Create an async stage that will be a delayed submit (after cf3 runs)
+            cf6 = cf3.thenApplyAsync(new BlockableIncrementFunction("testMaxQueueSizeExceededAndReject6", null, null));
+
+            // Confirm that asynchronous stages are not complete:
+            try {
+                cf3.get(100, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException x) {
+            }
+
+            assertFalse(cf1.isDone());
+            assertFalse(cf2.isDone());
+            assertFalse(cf3.isDone());
+            assertFalse(cf4.isDone());
+            assertTrue(cf5.isDone());
+            assertTrue(cf5.isCompletedExceptionally());
+            assertFalse(cf5.isCancelled());
+            assertFalse(cf6.isDone());
+        } finally {
+            // Allow the async stages to complete
+            continueLatch.countDown();
+        }
+
+        // Confirm that all asynchronous stages complete, once unblocked:
+        assertEquals(Integer.valueOf(145), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(145), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(145), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(145), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(146), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertTrue(cf3.isDone());
+        assertTrue(cf4.isDone());
+        assertTrue(cf6.isDone());
+
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertFalse(cf4.isCompletedExceptionally());
+        assertFalse(cf6.isCompletedExceptionally());
+    }
+
+    /**
+     * When runIfQueueFull is true, verify that additional async stages run on the invoking thread
+     * when all max concurrency permits are taken and the queue is at capacity.
+     */
+    @Test
+    public void testMaxQueueSizeRunIfQueueFull() throws Exception {
+        CountDownLatch beginLatch1 = new CountDownLatch(1);
+        CountDownLatch beginLatch2 = new CountDownLatch(1);
+        CountDownLatch continueLatch1 = new CountDownLatch(1);
+        CountDownLatch continueLatch2 = new CountDownLatch(1);
+
+        // max concurrency: 1, max queue size: 1, runIfQueueFull: true
+        CompletableFuture<Integer> cf0 = ManagedCompletableFuture.supplyAsync(() -> 155, oneContextExecutor);
+        CompletableFuture<Integer> cf1, cf2, cf3, cf4, cf5, cf6;
+        try {
+            // Create an async stage to use up the max concurrency permit, and wait for it to start running
+            BlockableIncrementFunction increment1 = new BlockableIncrementFunction("testMaxQueueSizeRunIfQueueFull1", beginLatch1, continueLatch1, false);
+            cf1 = cf0.thenApplyAsync(increment1);
+            assertTrue(beginLatch1.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Create an async stage to fill the queue
+            BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testMaxQueueSizeRunIfQueueFull2", beginLatch2, continueLatch2, false);
+            cf2 = cf0.thenApplyAsync(increment2);
+
+            // Create an async stage that will not be possible to submit due exceeding queue capacity, so it will run on the invoker thread
+            BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testMaxQueueSizeRunIfQueueFull3", null, null, false);
+            cf3 = cf0.thenApplyAsync(increment3);
+
+            assertEquals(Integer.valueOf(156), cf3.getNow(150));
+            assertTrue(cf3.isDone());
+            assertFalse(cf3.isCompletedExceptionally());
+
+            assertEquals(Thread.currentThread(), increment3.executionThread);
+
+            assertFalse(cf2.isDone());
+            assertFalse(cf1.isDone());
+
+            // Create async stages that will be submitted once cf1 completes.
+            BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testMaxQueueSizeRunIfQueueFull4", null, null, false);
+            cf4 = cf1.thenApplyAsync(increment4);
+
+            BlockableIncrementFunction increment5 = new BlockableIncrementFunction("testMaxQueueSizeRunIfQueueFull5", null, null, false);
+            cf5 = cf1.thenApplyAsync(increment5);
+
+            // allow cf1 to complete
+            continueLatch1.countDown();
+
+            // cf2 should start running and block
+            // cf4 and cf5 will be submitted, but only one will be queued. The other will run on the cf1 thread.
+            // wait for one of them to complete
+            BlockableIncrementFunction increment6 = new BlockableIncrementFunction("testMaxQueueSizeRunIfQueueFull6", null, null, false);
+            cf6 = cf4.applyToEither(cf5, increment6);
+
+            assertEquals(Integer.valueOf(158), cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            BlockableIncrementFunction completed;
+            if (cf4.isDone()) {
+                completed = increment4;
+            } else if (cf5.isDone()) {
+                completed = increment5;
+            } else {
+                fail("Neither cf4 nor cf5 completed " + cf4 + ", " + cf5);
+                return; // unreachable, but needed for compilation
+            }
+
+            assertEquals(increment1.executionThread, completed.executionThread);
+        } finally {
+            // Allow the async stages to complete
+            continueLatch1.countDown();
+            continueLatch2.countDown();
+        }
+
+        // Confirm that all asynchronous stages complete, once unblocked:
+        assertEquals(Integer.valueOf(156), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(156), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(156), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(157), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(157), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(158), cf6.getNow(151)); // we waited for it to complete earlier
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertTrue(cf3.isDone());
+        assertTrue(cf4.isDone());
+        assertTrue(cf5.isDone());
+        assertTrue(cf6.isDone());
+
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertFalse(cf4.isCompletedExceptionally());
+        assertFalse(cf5.isCompletedExceptionally());
+        assertFalse(cf6.isCompletedExceptionally());
+    }
+
+    /**
+     * General test of obtruding values and exceptions.
+     */
+    @Test
+    public void testMultipleObtrude() throws Exception {
+        BlockableIncrementFunction increment = new BlockableIncrementFunction("testMultipleObtrude", null, null);
+
+        CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(() -> 80);
+
+        cf1.obtrudeValue(90);
+        CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
+        assertEquals(Integer.valueOf(91), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf2.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf2.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
+        assertFalse(cf2.isCancelled());
+
+        cf1.obtrudeValue(100);
+        CompletableFuture<Integer> cf3 = cf1.thenApplyAsync(increment);
+        assertEquals(Integer.valueOf(101), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf3.isDone());
+        assertFalse(cf1.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
+        assertFalse(cf3.isCancelled());
+
+        cf1.obtrudeException(new IllegalAccessException("Intentionally raising exception for test."));
+        CompletableFuture<Integer> cf4 = cf1.thenApplyAsync(increment);
+        try {
+            Integer i = cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            throw new Exception("Should fail after result obtruded with an exception. Instead: " + i);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof IllegalAccessException) ||
+                !"Intentionally raising exception for test.".equals(x.getCause().getMessage()))
+                throw x;
+        }
+
+        assertTrue(cf1.isDone());
+        assertTrue(cf4.isDone());
+        assertTrue(cf1.isCompletedExceptionally());
+        assertFalse(cf3.isCompletedExceptionally());
+        assertTrue(cf4.isCompletedExceptionally());
+        assertFalse(cf1.isCancelled());
+        assertFalse(cf4.isCancelled());
+
+        cf3.obtrudeValue(110);
+        CompletableFuture<Integer> cf5 = cf3.thenApplyAsync(increment);
+        assertEquals(Integer.valueOf(111), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        cf4.obtrudeException(new CancellationException());
+        assertTrue(cf4.isCancelled());
+
+        cf4.obtrudeValue(120);
+        assertEquals(Integer.valueOf(120), cf4.getNow(121));
+    }
+
+    /**
      * Proxying an implementation class rather than an interface is a bit dangerous because when new methods are added to
      * the class, our proxy implementation won't be aware that it needs to be updated accordingly. This test exists to detect
      * any methods that are added so that we have the opportunity to properly implement.
@@ -1169,6 +1554,88 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertEquals("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture",
                      104, // WARNING: do not update this value unless you have properly implemented the new methods on ManagedCompletableFuture!
                      CompletableFuture.class.getMethods().length);
+    }
+
+    /**
+     * Obtrude the value of a future with an exception while the operation is still running.
+     * Verify that the value specified to the obtrude method is used, not the result of the operation.
+     */
+    @Test
+    public void testObtrudeExceptionWhileRunning() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(60, beginLatch, continueLatch);
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(new BlockableIncrementFunction("testObtrudeExceptionWhileRunning", null, null));
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            cf1.obtrudeException(new FileNotFoundException("Intentionally raising this exception to obtrude the result of the future."));
+
+            assertTrue(cf1.isDone());
+            assertFalse(cf1.isCancelled());
+            assertTrue(cf1.isCompletedExceptionally());
+
+            try {
+                Integer i = cf2.getNow(68);
+                fail("Value should have been obtruded: " + i);
+            } catch (CompletionException x) {
+                if (!(x.getCause() instanceof FileNotFoundException) ||
+                    !"Intentionally raising this exception to obtrude the result of the future.".equals(x.getCause().getMessage()))
+                    throw x;
+            }
+
+            try {
+                Integer i = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Value should have been obtruded with exception and caused the dependent future to raise exception. Instead: " + i);
+            } catch (ExecutionException x) {
+                if (!(x.getCause() instanceof FileNotFoundException) ||
+                    !"Intentionally raising this exception to obtrude the result of the future.".equals(x.getCause().getMessage()))
+                    throw x;
+            }
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Obtrude the result of a future with a value while the operation is still running.
+     * Verify that the value specified to the obtrude method is used, not the result of the operation.
+     */
+    @Test
+    public void testObtrudeValueWhileRunning() throws Exception {
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(70, beginLatch, continueLatch);
+            CompletableFuture<Integer> cf1 = ManagedCompletableFuture.supplyAsync(supplier);
+            CompletableFuture<Integer> cf2 = cf1.thenApply(new BlockableIncrementFunction("testObtrudeValueWhileRunning", null, null));
+
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            cf1.obtrudeValue(77);
+
+            assertTrue(cf1.isDone());
+            assertFalse(cf1.isCancelled());
+            assertFalse(cf1.isCompletedExceptionally());
+
+            assertEquals(Integer.valueOf(77), cf1.getNow(79));
+
+            assertEquals(Integer.valueOf(78), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            // in case the test fails, unblock the thread that is running the supplier
+            continueLatch.countDown();
+        }
     }
 
     /**

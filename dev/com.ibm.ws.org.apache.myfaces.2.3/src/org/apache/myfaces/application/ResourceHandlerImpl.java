@@ -69,9 +69,9 @@ import org.apache.myfaces.util.SkipMatchIterator;
 /**
  * DOCUMENT ME!
  *
- * @author Simon Lessard (latest modification by $Author$)
+ * @author Simon Lessard (latest modification by $Author: paulnicolucci $)
  * 
- * @version $Revision$ $Date$
+ * @version $Revision: 1820174 $ $Date: 2018-01-04 18:24:55 +0000 (Thu, 04 Jan 2018) $
  */
 public class ResourceHandlerImpl extends ResourceHandler
 {
@@ -138,10 +138,16 @@ public class ResourceHandlerImpl extends ResourceHandler
     {
         Resource resource = null;
         
-        if (resourceName == null || resourceName.length() == 0) 
+        if (resourceName == null) 
+        {
+            throw new NullPointerException();
+        }
+
+        if (resourceName.length() == 0)
         {
             return null;
         }
+
         if (resourceName.charAt(0) == '/')
         {
             // If resourceName starts with '/', remove that character because it

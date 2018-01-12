@@ -33,14 +33,19 @@ public class BlockableIncrementFunction implements Function<Integer, Integer> {
     private final CountDownLatch continueLatch;
 
     /**
-     * String that helps track which test case or part of a test case created this instance.
-     */
-    private final String testIdentifier;
-
-    /**
      * Thread upon which the function is running.
      */
     volatile Thread executionThread;
+
+    /**
+     * Indicates whether or not the executionThread field is nulled out once the function completes.
+     */
+    private final boolean executionThreadClearedOnCompletion;
+
+    /**
+     * String that helps track which test case or part of a test case created this instance.
+     */
+    private final String testIdentifier;
 
     /**
      * Constructor for BlockableIncrementFunction
@@ -52,6 +57,22 @@ public class BlockableIncrementFunction implements Function<Integer, Integer> {
     public BlockableIncrementFunction(String testIdentifier, CountDownLatch beginLatch, CountDownLatch continueLatch) {
         this.beginLatch = beginLatch;
         this.continueLatch = continueLatch;
+        this.executionThreadClearedOnCompletion = true;
+        this.testIdentifier = testIdentifier;
+    }
+
+    /**
+     * Constructor for BlockableIncrementFunction
+     *
+     * @param testIdentifier string that helps track which test case or part of a test case created this instance.
+     * @param beginLatch if not null, this latch is counted down when the function begins.
+     * @param continueLatch if not null, this latch is awaited before the function returns a value.
+     * @param executionThreadClearedOnCompletion indicates whether or not to null out the executionThread field upon completion of the function.
+     */
+    public BlockableIncrementFunction(String testIdentifier, CountDownLatch beginLatch, CountDownLatch continueLatch, boolean executionThreadClearedOnCompletion) {
+        this.beginLatch = beginLatch;
+        this.continueLatch = continueLatch;
+        this.executionThreadClearedOnCompletion = executionThreadClearedOnCompletion;
         this.testIdentifier = testIdentifier;
     }
 
@@ -71,7 +92,8 @@ public class BlockableIncrementFunction implements Function<Integer, Integer> {
             System.out.println("BlockableIncrementFunction < apply: " + x);
             throw new CompletionException(x);
         } finally {
-            executionThread = null;
+            if (executionThreadClearedOnCompletion)
+                executionThread = null;
         }
     }
 }
