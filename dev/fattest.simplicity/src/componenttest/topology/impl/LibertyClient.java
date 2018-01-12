@@ -3171,15 +3171,16 @@ public class LibertyClient {
                         if (!waitForFeatureUpdateCompleted) {
                             watchFor.add("CWWKF0008I:"); // Feature update completed in X seconds.
                         }
-                    } else
+                    } else {
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
-                        }
+                    }
                 }
             }
             updateLogOffset(logFile.getAbsolutePath(), offset);

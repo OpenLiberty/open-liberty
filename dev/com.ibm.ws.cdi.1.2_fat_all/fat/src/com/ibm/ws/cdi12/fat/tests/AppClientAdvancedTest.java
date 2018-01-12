@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class AppClientAdvancedTest {
 
         String featuresMessage = client.waitForStringInCopiedLog("CWWKF0034I", 0);
         assertNotNull("Did not receive features loaded message", featuresMessage);
-        assertTrue("cdi-1.2 was not among the loaded features", featuresMessage.contains("cdi-1.2"));
+        assertTrue("CDI was not among the loaded features", featuresMessage.contains("cdi-"));
 
         assertNotNull("Did not receive hello from decorated english beans. Decorator or bean qualifiers may have failed",
                       client.waitForStringInCopiedLog("Hello, I mean... Ahoy", 0));

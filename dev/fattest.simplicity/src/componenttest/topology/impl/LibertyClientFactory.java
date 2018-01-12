@@ -10,8 +10,6 @@
  *******************************************************************************/
 package componenttest.topology.impl;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +25,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.exception.TopologyException;
+import componenttest.topology.utils.PrivHelper;
 
 public class LibertyClientFactory {
     //track the known Liberty clients by test class name, so that suites don't clean up clients from other test classes in the suite
@@ -34,15 +33,7 @@ public class LibertyClientFactory {
     private static Class<?> c = LibertyClientFactory.class;
     private static final Boolean BACKUP_REQUIRED = shouldBackup();
 
-    private static final boolean DELETE_RUN_FATS = Boolean.parseBoolean(AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            // Default is false if not set
-            //nb the default passed in is ${delete.run.fats} but
-            //parseBoolean does default that to false.
-            return System.getProperty("delete.run.fats", "false");
-        }
-    }));
+    private static final boolean DELETE_RUN_FATS = Boolean.parseBoolean(PrivHelper.getProperty("delete.run.fats", "false"));
 
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
