@@ -131,8 +131,6 @@ public class TraceSource implements Source, WsTraceHandler {
             message = new KeyValuePair("message", routedMessage.getFormattedVerboseMsg(), KeyValuePair.ValueTypes.STRING);
         }
 
-        System.out.println("HELLO WORLD");
-
         KeyValuePair datetime = new KeyValuePair("ibm_datetime", Long.toString(logRecord.getMillis()), KeyValuePair.ValueTypes.NUMBER);
         KeyValuePair threadId = new KeyValuePair("ibm_threadId", Integer.toString(logRecord.getThreadID()), KeyValuePair.ValueTypes.NUMBER);
         KeyValuePair loggerName = new KeyValuePair("module", logRecord.getLoggerName(), KeyValuePair.ValueTypes.STRING);
@@ -158,6 +156,7 @@ public class TraceSource implements Source, WsTraceHandler {
         GenericData genData = new GenericData();
         ArrayList<Pair> pairs = genData.getPairs();
 
+        pairs.add(message);
         pairs.add(datetime);
         pairs.add(threadId);
         pairs.add(loggerName);
