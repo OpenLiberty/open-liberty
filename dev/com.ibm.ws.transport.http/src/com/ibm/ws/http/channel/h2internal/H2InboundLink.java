@@ -151,6 +151,7 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPWriteContext = tcc.getWriteInterface();
         connectionSettings = new H2ConnectionSettings();
         config = channel.getHttpConfig();
+        h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
         // set up the initial connection read window size
         maxReadWindowSize = config.getH2ConnReadWindowSize();
@@ -246,7 +247,7 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
         streamTable.put(streamID, streamProcessor);
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
-
+        this.setDeviceLink((ConnectionLink) myTSC);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleHTTP2AlpnConnect, exit");
         }
