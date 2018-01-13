@@ -22,6 +22,11 @@
     
     <application location="concurrentrxfat.war" />
 
+    <!-- Do not change the concurrency policies associated with the following executors. Tests make assumptions based on this configuration -->
+
+    <managedScheduledExecutorService id="DefaultManagedScheduledExecutorService" concurrencyPolicyRef="strict1"/>
+    <concurrencyPolicy id="strict1" max="1" maxPolicy="strict" maxQueueSize="1" runIfQueueFull="true"/>
+
     <managedScheduledExecutorService id="noContextExecutor" jndiName="concurrent/noContextExecutor">
         <concurrencyPolicy max="2" maxQueueSize="2" runIfQueueFull="false"/>
         <contextService/>
