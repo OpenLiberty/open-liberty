@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 package componenttest.topology.impl;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,8 +22,10 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.exception.TopologyException;
+import componenttest.topology.utils.PrivHelper;
 
 public class LibertyClientFactory {
     //track the known Liberty clients by test class name, so that suites don't clean up clients from other test classes in the suite
@@ -33,30 +33,21 @@ public class LibertyClientFactory {
     private static Class<?> c = LibertyClientFactory.class;
     private static final Boolean BACKUP_REQUIRED = shouldBackup();
 
-    private static final boolean DELETE_RUN_FATS =
-                    Boolean.parseBoolean(AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            // Default is false if not set
-                            //nb the default passed in is ${delete.run.fats} but
-                            //parseBoolean does default that to false.
-                            return System.getProperty("delete.run.fats", "false");
-                        }
-                    }));
+    private static final boolean DELETE_RUN_FATS = Boolean.parseBoolean(PrivHelper.getProperty("delete.run.fats", "false"));
 
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
-     * 
+     *
      * @return A stopped Liberty Client instance
      * @throws Exception
      */
     public static LibertyClient getLibertyClient(String clientName) {
-        return getLibertyClient(clientName, null, false);
+        return getLibertyClient(clientName, null, true);
     }
 
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
-     * 
+     *
      * @return A stopped Liberty Client instance
      * @throws Exception
      */
@@ -147,7 +138,7 @@ public class LibertyClientFactory {
 
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
-     * 
+     *
      * @return A started Liberty Client instance
      * @throws Exception
      */
@@ -165,13 +156,13 @@ public class LibertyClientFactory {
      * This method will install a sample client and download any external dependencies defined in it. Once the client is installed the client.xml will be exchanged with a default
      * client XML, that includes fatTestPorts.xml and the sample client.xml. The bootstrap.properties will be exchanged with a default properties file that includes the
      * "../testports.properties" file and the sample properties file. The client will then be added to the list of known clients and returned.
-     * 
+     *
      * @param clientName The name of the client to install, must be matched by a local file named clientName.jar in the lib/LibertyFATTestFiles folder (populated from publish/files
      *            in a FAT test project)
      * @param bootstrap The bootstrap to use on the client
      * @param ignoreCache <code>false</code> if we should load a cached client if available
      * @return The client
-     * 
+     *
      */
     public static LibertyClient installSampleClient(String clientName, Bootstrap bootstrap, boolean ignoreCache) {
         return getLibertyClient(clientName, bootstrap, ignoreCache, true);
@@ -184,7 +175,7 @@ public class LibertyClientFactory {
     /**
      * This method should not be ran by the user, it is ran by the JUnit runner at the end of each test
      * to recover the clients.
-     * 
+     *
      * @param testClassName the name of the FAT test class to recover known clients for
      * @throws Exception
      */
@@ -428,7 +419,7 @@ public class LibertyClientFactory {
             if (knownClients != null)
                 clients.addAll(knownClients);
             //could be that the client is known to a super type of this test
-            //any clients defined (via getLibertyClient or getStartedLibertyClient) on a 
+            //any clients defined (via getLibertyClient or getStartedLibertyClient) on a
             //super could be used by a test, so they qualify as known to the test
             try {
                 Class<?> c = Class.forName(testClassName);
@@ -456,7 +447,7 @@ public class LibertyClientFactory {
 
     /**
      * Hack to get the calling test class name from the stack.
-     * 
+     *
      * @param methodName the name of the method that is being called
      */
     private static String getCallerClassNameFromStack() {

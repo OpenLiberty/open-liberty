@@ -1637,7 +1637,6 @@ public class LibertyClient {
      */
     protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
         String method = "recursivelyCopyDirectory";
-        Log.entering(c, method);
         destination.mkdirs();
 
         ArrayList<String> logs = new ArrayList<String>();
@@ -1646,19 +1645,15 @@ public class LibertyClient {
             if (remoteDirectory.getName().equals("workarea")) {
                 if (l.equals("org.eclipse.osgi") || l.startsWith(".s")) {
                     // skip the osgi framework cache, and runtime artifacts: too big / too racy
-                    Log.info(c, "recursivelyCopyDirectory", "Skipping workarea element " + l);
                     continue;
                 }
             }
-
             if (remoteDirectory.getName().equals("messaging")) {
-                Log.info(c, "recursivelyCopyDirectory", "Skipping message store element " + l);
                 continue;
             }
 
             RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
-            Log.info(c, "recursivelyCopyDirectory", "Getting: " + toCopy.getAbsolutePath());
 
             if (toCopy.isDirectory()) {
                 // Recurse
@@ -1672,7 +1667,6 @@ public class LibertyClient {
                             || toCopy.getAbsolutePath().endsWith(".rar")
                             //If we're only getting logs, skip jars, wars, ears, zips, unless they are client dump zips
                             || (toCopy.getAbsolutePath().endsWith(".zip") && !toCopy.getName().contains(clientToUse + ".dump")))) {
-                        Log.info(c, "recursivelyCopyDirectory", "Skipping: " + toCopy.getAbsolutePath());
                         continue;
                     }
 
@@ -1690,20 +1684,16 @@ public class LibertyClient {
                         // If we're local, try to rename the file instead..
                         if (machine.isLocal() && toCopy.rename(toReceive)) {
                             copied = true; // well, we moved it, but it counts.
-                            Log.info(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
                         }
 
                         if (!copied && toReceive.copyFromSource(toCopy)) {
                             // copy was successful, clean up the source log
                             toCopy.delete();
-                            Log.info(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
                         }
                     } else {
                         toReceive.copyFromSource(toCopy);
-                        Log.info(c, "recursivelyCopyDirectory", "COPY: " + l + " to " + toReceive.getAbsolutePath());
                     }
                 } catch (Exception e) {
-                    Log.info(c, "recursivelyCopyDirectory", "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
                     // Ignore on request and carry on copying the rest of the files
                     if (!ignoreFailures) {
                         throw e;
@@ -1712,7 +1702,6 @@ public class LibertyClient {
             }
 
         }
-        Log.exiting(c, method);
     }
 
     /**
@@ -3182,7 +3171,7 @@ public class LibertyClient {
                         if (!waitForFeatureUpdateCompleted) {
                             watchFor.add("CWWKF0008I:"); // Feature update completed in X seconds.
                         }
-                    } else
+                    } else {
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
                             String regexp = it.next();
@@ -3191,6 +3180,7 @@ public class LibertyClient {
                                 break;
                             }
                         }
+                    }
                 }
             }
             updateLogOffset(logFile.getAbsolutePath(), offset);
