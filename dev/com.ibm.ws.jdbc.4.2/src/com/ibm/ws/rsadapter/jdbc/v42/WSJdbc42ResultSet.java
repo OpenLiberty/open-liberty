@@ -19,7 +19,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcObject;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41ResultSet;
 
-public class WSJdbc42ResultSet extends WSJdbc41ResultSet {
+public class WSJdbc42ResultSet extends WSJdbc41ResultSet implements ResultSet {
 
     public WSJdbc42ResultSet(ResultSet rsImpl, WSJdbcObject parent) {
         super(rsImpl, parent);
