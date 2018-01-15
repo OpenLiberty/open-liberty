@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import componenttest.rules.FeatureReplacementAction;
-import componenttest.rules.RepeatTests;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -45,7 +45,7 @@ public class FATSuite {
     
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES);
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
      */
