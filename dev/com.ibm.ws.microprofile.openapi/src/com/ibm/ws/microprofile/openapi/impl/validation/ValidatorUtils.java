@@ -75,8 +75,6 @@ public class ValidatorUtils {
             OAuthFlow password = flows.getPassword();
             if (implicit != null) {
                 if (StringUtils.isNotBlank(implicit.getAuthorizationUrl()) ||
-                    StringUtils.isNotBlank(implicit.getTokenUrl()) ||
-                    StringUtils.isNotBlank(implicit.getRefreshUrl()) ||
                     implicit.getScopes() != null ||
                     implicit.getExtensions() != null) {
                     return true;
@@ -84,7 +82,6 @@ public class ValidatorUtils {
             }
             if (authCode != null) {
                 if (StringUtils.isNotBlank(authCode.getTokenUrl()) ||
-                    StringUtils.isNotBlank(authCode.getRefreshUrl()) ||
                     StringUtils.isNotBlank(authCode.getAuthorizationUrl()) ||
                     authCode.getScopes() != null ||
                     authCode.getExtensions() != null) {
@@ -93,8 +90,6 @@ public class ValidatorUtils {
             }
             if (clientCred != null) {
                 if (StringUtils.isNotBlank(clientCred.getTokenUrl()) ||
-                    StringUtils.isNotBlank(clientCred.getRefreshUrl()) ||
-                    StringUtils.isNotBlank(clientCred.getAuthorizationUrl()) ||
                     clientCred.getScopes() != null ||
                     clientCred.getExtensions() != null) {
                     return true;
@@ -102,8 +97,6 @@ public class ValidatorUtils {
             }
             if (password != null) {
                 if (StringUtils.isNotBlank(password.getTokenUrl()) ||
-                    StringUtils.isNotBlank(password.getRefreshUrl()) ||
-                    StringUtils.isNotBlank(password.getAuthorizationUrl()) ||
                     password.getScopes() != null ||
                     password.getExtensions() != null) {
                     return true;

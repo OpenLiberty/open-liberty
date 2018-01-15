@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.models.media.XML;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -34,6 +36,15 @@ public class XMLValidator extends TypeValidator<XML> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, XML t) {
-        // TODO Auto-generated method stub
+        if (t != null) {
+            if (StringUtils.isNotBlank(t.getNamespace())) {
+                String namespace = t.getNamespace();
+                String object = "XML";
+                if (!ValidatorUtils.isValidURL(namespace)) {
+                    final String message = Tr.formatMessage(tc, "invalidURL", object, namespace);
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                }
+            }
+        }
     }
 }

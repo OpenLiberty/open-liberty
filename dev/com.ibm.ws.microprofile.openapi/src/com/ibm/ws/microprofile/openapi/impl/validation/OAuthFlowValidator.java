@@ -54,5 +54,9 @@ public class OAuthFlowValidator extends TypeValidator<OAuthFlow> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
             }
         }
+        if (t.getScopes().isEmpty()) {
+            final String message = Tr.formatMessage(tc, "oAuthFlowScopesNull", t.getScopes());
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+        }
     }
 }
