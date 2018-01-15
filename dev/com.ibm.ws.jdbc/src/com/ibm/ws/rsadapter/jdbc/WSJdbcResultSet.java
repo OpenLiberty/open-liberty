@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2014 IBM Corporation and others.
+ * Copyright (c) 2001, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,14 +37,12 @@ import java.util.Map;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.jdbc.timedoperations.WSJdbcObjectHelper;
 import com.ibm.ws.rsadapter.AdapterUtil;
-import com.ibm.ws.rsadapter.DSConfig;
 
 /**
  * This class wraps a JDBC ResultSet.
  */
-public class WSJdbcResultSet extends WSJdbcObject implements ResultSet, WSJdbcObjectHelper {
+public class WSJdbcResultSet extends WSJdbcObject implements ResultSet {
     private static final TraceComponent tc = Tr.register(WSJdbcResultSet.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
     /** The underlying ResultSet object. */
@@ -1104,22 +1102,6 @@ public class WSJdbcResultSet extends WSJdbcObject implements ResultSet, WSJdbcOb
     final protected Wrapper getJDBCImplObject() 
     {
         return rsetImpl;
-    }
-
-    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
-    /**
-     * @see com.ibm.ws.jdbc.timedoperations.WSJdbcObjectHelper#getUniqueIdentifier()
-     * 
-     * @return jndiName if available, otherwise the xpath style unique identifier
-     */
-    public String getUniqueIdentifier(){
-        DSConfig config = dsConfig.get();
-        return config.jndiName == null ? config.id : config.jndiName;
-    }
-    
-    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
-    public String getSql(){
-        return sql;  
     }
 
     /**

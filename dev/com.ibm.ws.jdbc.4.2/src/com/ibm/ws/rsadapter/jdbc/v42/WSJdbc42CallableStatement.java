@@ -26,7 +26,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41CallableStatement;
 
-public class WSJdbc42CallableStatement extends WSJdbc41CallableStatement {
+public class WSJdbc42CallableStatement extends WSJdbc41CallableStatement implements CallableStatement {
 
     private static final TraceComponent tc = Tr.register(WSJdbc42CallableStatement.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
