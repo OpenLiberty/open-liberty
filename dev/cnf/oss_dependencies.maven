@@ -248,4 +248,5 @@ org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.0
 org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0
 org.apache.deltaspike.modules:deltaspike-scheduler-module-api:1.5.0
 org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0
-
+org.quartz-scheduler:quartz:2.2.1
+com.sebastian-daschner:jaxrs-analyzer:0.9 

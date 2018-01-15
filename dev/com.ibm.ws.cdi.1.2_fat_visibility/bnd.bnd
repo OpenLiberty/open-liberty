@@ -1,0 +1,99 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# Define the bundle for this FAT
+
+src: \
+	fat/src,\
+	test-applications/jarInRar.jar/src,\
+	test-applications/jarInRar.rar/src,\
+	test-applications/jarInRarEjb.jar/src,\
+	test-applications/maskedClass.ear/src,\
+	test-applications/maskedClassEjb.jar/src,\
+	test-applications/maskedClassLib.jar/src,\
+	test-applications/maskedClassWeb.war/src,\
+	test-applications/maskedClassZAppClient.jar/src,\
+	test-applications/multiModuleAppLib1.jar/src,\
+	test-applications/multiModuleAppLib2.jar/src,\
+	test-applications/multiModuleAppLib3.jar/src,\
+	test-applications/multiModuleAppWeb1.war/src,\
+	test-applications/multiModuleAppWeb2.war/src,\
+	test-applications/packagePrivateAccessApp.war/src,\
+	test-applications/rootClassLoaderApp.war/src,\
+	test-applications/rootClassLoaderExtension.jar/src,\
+	test-applications/sharedLibrary.jar/src,\
+	test-applications/sharedLibraryAppWeb1.war/src,\
+	test-applications/sharedLibraryNoInjectionApp.war/src,\
+	test-applications/TestValidatorInJar.ear/src,\
+	test-applications/TestValidatorInJar.jar/src,\
+	test-applications/TestValidatorInJar.war/src,\
+	test-applications/warLibAccessBeansInWar.ear/src,\
+	test-applications/warLibAccessBeansInWar.war/src,\
+	test-applications/warLibAccessBeansInWar2.jar/src,\
+	test-applications/warLibAccessBeansInWarJar.jar/src,\
+	test-applications/visTestAppClient.jar/src,\
+	test-applications/visTestAppClientAsAppClientLib.jar/src,\
+	test-applications/visTestAppClientAsEjbLib.jar/src,\
+	test-applications/visTestAppClientAsWarLib.jar/src,\
+	test-applications/visTestAppClientLib.jar/src,\
+	test-applications/visTestEarLib.jar/src,\
+	test-applications/visTestEjb.jar/src,\
+	test-applications/visTestEjbAppClientLib.jar/src,\
+	test-applications/visTestEjbAsAppClientLib.jar/src,\
+	test-applications/visTestEjbAsEjbLib.jar/src,\
+	test-applications/visTestEjbAsWarLib.jar/src,\
+	test-applications/visTestEjbLib.jar/src,\
+	test-applications/visTestEjbWarLib.jar/src,\
+	test-applications/visTestFramework.jar/src,\
+	test-applications/visTestNonLib.jar/src,\
+	test-applications/visTestWar.war/src,\
+	test-applications/visTestWar2.war/src,\
+	test-applications/visTestWarAppClientLib.jar/src,\
+	test-applications/visTestWarLib.jar/src,\
+	test-applications/visTestWarWebinfLib.jar/src
+	
+javac.source: 1.7
+javac.target: 1.7
+	
+test.project: true
+
+tested.features:\
+	cdi-2.0,\
+        servlet-4.0,\
+        jdbc-4.2,\
+        jpa-2.2,\
+        beanValidation-2.0,\
+        jaxrs-2.1,\
+        jsf-2.3
+
+-buildpath: \
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest

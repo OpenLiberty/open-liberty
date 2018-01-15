@@ -1,0 +1,8 @@
+<server description="cdi12JNDIServer">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager> <feature>webProfile-7.0</feature></featureManager>
+    <jndiEntry jndiName="myApp/test1" value="Value from Config"/>
+
+</server>
