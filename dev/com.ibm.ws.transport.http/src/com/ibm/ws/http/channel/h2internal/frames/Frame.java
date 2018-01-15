@@ -96,8 +96,10 @@ public abstract class Frame {
             frame[utils.FRAME_FLAGS_INDEX] = (byte) (frame[utils.FRAME_FLAGS_INDEX] | 0x20);
         }
         if (this.reservedBit) {
-            streamId = streamId ^ (1 << 31);
-            utils.Move32BitstoByteArray(streamId, frame, utils.FRAME_STREAM_START_INDEX_INT);
+            // we don't actually want to write out a reserved bit; write the unadulterated streamId bits instead
+            //int streamIdWithReservedBit = streamId | (1 << 31);
+            //utils.Move32BitstoByteArray(streamIdWithReservedBit, frame, utils.FRAME_STREAM_START_INDEX_INT);
+            utils.Move31BitstoByteArray(streamId, frame, utils.FRAME_STREAM_START_INDEX_INT);
         } else {
             utils.Move31BitstoByteArray(streamId, frame, utils.FRAME_STREAM_START_INDEX_INT);
         }

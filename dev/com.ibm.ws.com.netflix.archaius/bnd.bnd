@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;com.netflix.archaius:archaius2-api;2.1.10}}!/META-INF/MANIFEST.MF,jar:${fileuri;${repo;com.netflix.archaius:archaius2-core;2.1.10}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+javac.source: 1.8
+javac.target: 1.8
+
 -buildpath: \
 	com.netflix.archaius:archaius2-api;version=2.1.10, \
         com.netflix.archaius:archaius2-core;version=2.1.10, \

@@ -10,17 +10,19 @@
  *******************************************************************************/
 // To update the EclipseLink binaries:
 // 1. Navigate into this project in Git Bash.
-// 2. Invoke the following command to update the oss_ibm.maven with the new version for the EclipseLink binaries:
+// 2. Invoke the clean command:
+//        .././gradlew clean
+// 3. Invoke the following command to update the oss_ibm.maven with the new version for the EclipseLink binaries:
 //        .././gradlew -b updatebinaries.gradle updateMavenFile -Pnewversion={NewEclipseLinkBinariesVersion} -Pnewhash={NewEclipseLinkBinariesHash}
-//        Example of {NewEclipseLinkBinariesVersion} -> 2.6.4
-//        Example of {NewEclipseLinkBinariesHash} -> 8e605f1
-// 2. Invoke the following command which compares existing nlsprop messages to the new messages, updates the bnd.bnd file, and generates an ossc.xml file in the build directory (you have to manually move it to it's appropriate location):
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.6.5
+//        Example of {NewEclipseLinkBinariesHash} -> 90e991c
+// 4. Invoke the following command which compares existing nlsprop messages to the new messages, updates the bnd.bnd file, and generates an ossc.xml file in the build directory (you have to manually move it to it's appropriate location):
 //        .././gradlew -b updatebinaries.gradle updateELProject -Pnewversion={NewEclipseLinkBinariesVersion} -Pnewhash={NewEclipseLinkBinariesHash}
-//        Example of {NewEclipseLinkBinariesVersion} -> 2.6.4
-//        Example of {NewEclipseLinkBinariesHash} -> 8e605f1
-// 3. Invoke the releaseNeeded command to make sure everything worked properly:
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.6.5
+//        Example of {NewEclipseLinkBinariesHash} -> 90e991c
+// 5. Invoke the releaseNeeded command to make sure everything worked properly:
 //        .././gradlew releaseNeeded
-
+apply from: '../cnf/gradle/scripts/repos.gradle'
 apply plugin: 'java'
 
 // Replaces the EclipseLink binaries coordinates in ossc_ibm.maven with the new coordinates passed in
@@ -47,10 +49,6 @@ task updateMavenFile {
   }
 }
 
-repositories {
-  mavenLocal()
-}
-  
 configurations {
   binaries 
 }
@@ -67,9 +65,7 @@ dependencies {
 def newResourcesDir = "${projectDir}/resources.new"
 def existingResourceDir = "${projectDir}/resources.existing"
 
-sourceSets { 
-  nlspropsTool.java.srcDir 'src/com/ibm/ws/i18n/conversion/tools'
-}
+sourceSets.main.java.srcDirs = ['src/com/ibm/ws/i18n/conversion/tools']
 
 // Check incoming resource bundles in new binaries for changes. Compare the checksum of existing nlsprop files to the binaries resource bundles
 task comparenlsprops(dependsOn:'classes') {
@@ -105,7 +101,7 @@ task comparenlsprops(dependsOn:'classes') {
 
       // Run the ConvertRBtoNLSProps class which converts the translation class files to nlsprops files
       main = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
-      classpath += sourceSets.nlspropsTool.runtimeClasspath
+      classpath += sourceSets.main.runtimeClasspath
       args = [coreJar, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
     }
     
@@ -133,7 +129,8 @@ task comparenlsprops(dependsOn:'classes') {
       
       // The script will fail if the new EclipseLink binaries include changes to the translation files. If that is the case, you must manually 
       // change the tranlation files in the resources directory so it can be translated by the translation team. 
-      throw new GradleException("The NLS files have changed since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/resources.new to ${projectDir}/resources.existing.")
+	  // Note: if you're running into issues where the tool is showing changes in the translation files when there aren't, try running .././gradlew clean or deleting the build directory
+	  throw new GradleException("The NLS files have changed since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/resources.new to ${projectDir}/resources.existing.")
     }
     delete existingResourceDir, newResourcesDir
   }

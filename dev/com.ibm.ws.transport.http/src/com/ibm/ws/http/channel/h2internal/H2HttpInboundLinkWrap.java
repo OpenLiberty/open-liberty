@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
@@ -350,16 +349,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processRead an error occurred processing a frame: " + e.getErrorString());
                 }
-                try {
-
-                    muxLink.getStreamProcessor(0).sendGOAWAYFrame(e);
-
-                } catch (ProtocolException x) {
-                    // nothing to do here, since we can't even send the GOAWAY frame.
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "writeFramesSync, ProtocolException occurred while sending a goaway frame: " + x);
-                    }
-                }
+                muxLink.close(vc, e);
 
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

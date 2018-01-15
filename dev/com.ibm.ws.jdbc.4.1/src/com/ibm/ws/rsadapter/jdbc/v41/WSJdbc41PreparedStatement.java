@@ -17,7 +17,7 @@ import com.ibm.ws.rsadapter.impl.StatementCacheKey;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement;
 
-public class WSJdbc41PreparedStatement extends WSJdbcPreparedStatement {
+public class WSJdbc41PreparedStatement extends WSJdbcPreparedStatement implements PreparedStatement {
 
     /**
      * Do not use. Constructor exists only for CallableStatement wrapper.

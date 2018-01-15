@@ -46,7 +46,7 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(ConfigCDIExtension.class);
 
-    Set<Type> validInjectionTypes = new HashSet<Type>(DefaultConverters.getDefaultConverters().keySet());
+    Set<Type> validInjectionTypes = new HashSet<Type>(DefaultConverters.getDefaultConverters().getTypes());
     Set<Type> badInjectionTypes = new HashSet<Type>();
 
     Map<ClassLoader, Config> configs = new HashMap<>();

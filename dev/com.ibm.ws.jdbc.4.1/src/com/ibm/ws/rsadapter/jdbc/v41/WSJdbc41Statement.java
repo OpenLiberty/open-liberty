@@ -15,7 +15,7 @@ import java.sql.Statement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 
-public class WSJdbc41Statement extends WSJdbcStatement {
+public class WSJdbc41Statement extends WSJdbcStatement implements Statement {
 
     /**
      * Do not use. Constructor exists only for PreparedStatement wrapper.

@@ -1,0 +1,13 @@
+<server description="openTracingServer">
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jaxrs-2.0</feature>
+    <feature>opentracing-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="jaxrsHelloWorld.war" />
+
+</server>

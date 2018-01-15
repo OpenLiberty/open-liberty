@@ -248,6 +248,23 @@ public class LoggingConfigUtils {
         return defaultValue;
     }
 
+    /**
+     * Convert a collection of String values back into a comma separated list
+     *
+     * @param values The collection of strings
+     */
+    public static String getStringFromCollection(Collection<String> values) {
+        StringBuilder builder = new StringBuilder();
+        if (values != null) {
+            for (String value : values) {
+                builder.append(value).append(',');
+            }
+            if (builder.charAt(builder.length() - 1) == ',')
+                builder.deleteCharAt(builder.length() - 1);
+        }
+        return builder.toString();
+    }
+
     public static String getEnvValue(final String envName) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
 

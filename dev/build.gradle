@@ -14,20 +14,18 @@
  * Depends on bnd_* values from gradle.properties.
  */
 
-/* Initialize rootProject properties */
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
 }
 
-/* Configure the subprojects */
 subprojects {
   def bndProject = bndWorkspace.getProject(name)
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
   }
+
   /* For Java 9 builds, set the --release compiler flag to keep bootclasspath in sync */
-  //compileJava {
   tasks.withType(JavaCompile) {
     doFirst {
       if(JavaVersion.current().isJava9Compatible()) {
@@ -39,10 +37,34 @@ subprojects {
       }
     }
   }
+
+  apply from: cnf.file('gradle/scripts/repos.gradle')
+  apply from: cnf.file('gradle/scripts/publish.gradle')
+  apply from: cnf.file('gradle/scripts/tasks.gradle')
+
+  if (bndis('fat.project')) {
+    apply from: cnf.file('gradle/scripts/fat.gradle')
+  }
+
+  // Make the release task depend on assemble so that invoking 'release' or 'releaseNeeded'
+  // will publish jar updates to the local build.image/wlp image
+  release.dependsOn assemble
+  release.dependsOn publish
+}
+
+task testResults {
+  dependsOn subprojects.test
+
+  doLast {
+    generatedProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
+    generatedProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
+
+    File propsFile = new File('generated.properties')
+    generatedProps.store(propsFile.newWriter(), null)
+  }
 }
 
 task wrapper(type: Wrapper) {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
 }
 
-apply from: 'cnf/gradle/scripts/tasks.gradle'

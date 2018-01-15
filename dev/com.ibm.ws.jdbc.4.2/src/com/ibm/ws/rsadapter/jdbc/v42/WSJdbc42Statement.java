@@ -22,7 +22,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41Statement;
 
-public class WSJdbc42Statement extends WSJdbc41Statement {
+public class WSJdbc42Statement extends WSJdbc41Statement implements Statement {
 
     private static final TraceComponent tc = Tr.register(WSJdbc42Statement.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 

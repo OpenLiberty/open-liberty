@@ -42,10 +42,10 @@ task copyMavenLibs(type: Copy) {
 void deleteRecursive(File file) {
     if (file.isDirectory()) {
         for (File entry : file.listFiles()) {
-            deleteRecursive(entry);
+            deleteRecursive(entry)
         }
     }
-    file.delete();
+    file.delete()
 }
 
 task cleanRepos(type: Delete) {
@@ -72,6 +72,7 @@ task initialize {
 
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.apache.tools.ant.DirectoryScanner
+import groovy.util.XmlSlurper
 
 DirectoryScanner.removeDefaultExclude("**/.gitignore")
 DirectoryScanner.removeDefaultExclude("**/.gitattributes")
@@ -97,7 +98,6 @@ task everythingElseHasBeenReleased {
 task createGradleBootstrap {
     dependsOn everythingElseHasBeenReleased
     doLast {
-
         println 'Generating gradle bootstrap'
 
         String depsList = ""

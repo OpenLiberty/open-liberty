@@ -20,8 +20,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -38,8 +41,8 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
-import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -65,10 +68,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * this implementation attempts to work around these limitations by using two instances of CompletableFuture:
  * one for the subclass itself, which includes the override logic, which delegates to another CompletableFuture
  * instance that does the actual work.
- *
- * TODO At this point, this class is just a skeleton and remains to be implemented. Methods are either rejected,
- * or provide no value above delegation back to the CompletableFuture. At first, we are just trying out
- * whether the approach is even a valid way of integrating with CompletableFuture.
  *
  * @param <T>
  */
@@ -104,30 +103,105 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
 
     /**
      * The default asynchronous execution facility for this completable future.
+     * Typically, this is a managed executor, but it is possible to use any executor.
+     * (For example, the Liberty global thread pool)
      */
-    private final WSManagedExecutorService defaultExecutor;
+    private final Executor defaultExecutor;
+
+    /**
+     * Reference to the policy executor Future (if any) upon which the action runs.
+     * Reference is null when the action cannot be async.
+     * Value is null when an async action has not yet been submitted.
+     */
+    private final AtomicReference<Future<?>> futureRef;
+
+    /**
+     * Redirects the CompletableFuture implementation to use ExecutorService.submit rather than Executor.execute,
+     * such that we can track the underlying Future that is used for the CompletableFuture, so that we can monitor
+     * and cancel it.
+     * Instances of this class are intended for one-time use, as each instance tracks a single Future.
+     */
+    @Trivial
+    private static class FutureRefExecutor extends AtomicReference<Future<?>> implements Executor {
+        private static final long serialVersionUID = 1L;
+
+        private final ExecutorService executor;
+
+        /**
+         * Constructor when executor is not a managed executor service.
+         *
+         * @param executorService
+         */
+        private FutureRefExecutor(ExecutorService executorService) {
+            executor = executorService;
+        }
+
+        /**
+         * Constructor when executor is a managed executor service.
+         *
+         * @param managedExecutor
+         */
+        private FutureRefExecutor(WSManagedExecutorService managedExecutor) {
+            executor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
+        }
+
+        @Override
+        public void execute(Runnable command) {
+            set(executor.submit(command));
+        }
+
+        @Override
+        public String toString() {
+            return executor.toString() + ": " + get();
+        }
+    }
+
+    // Constructor equivalents for CompletableFuture
+
+    /**
+     * Construct a new incomplete ManagedCompletableFuture where the default managed executor (java:comp/DefaultManagedExecutorService)
+     * is the default asynchronous execution facility.
+     */
+    @Trivial
+    public ManagedCompletableFuture() {
+        this(AccessController.doPrivileged(getDefaultManagedExecutorAction));
+    }
+
+    /**
+     * Construct a new incomplete ManagedCompletableFuture where the specified executor (typically a managed executor)
+     * is the default asynchronous execution facility.
+     *
+     * @param executor executor to become the default asynchronous execution facility.
+     */
+    @Trivial
+    public ManagedCompletableFuture(Executor executor) {
+        // The approach of creating a new CompletableFuture to fit the code works, but it ought to be possible to optimize to avoid this.
+        this(new CompletableFuture<T>(), executor, null);
+    }
 
     /**
      * Construct a completable future with a managed executor as its default asynchronous execution facility.
      *
-     * @param executor managed executor service
-     * @param parent
+     * @param completableFuture underlying completable future upon which this instance is backed.
+     * @param managedExecutor managed executor service
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
-    private ManagedCompletableFuture(CompletableFuture<T> completableFuture, WSManagedExecutorService managedExecutor) {
+    private ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
         super();
+
+        this.completableFuture = completableFuture;
+        this.defaultExecutor = managedExecutor;
+        this.futureRef = futureRef;
 
         // For the sake of operations that rely upon CompletableFuture internals, update the state of the super class upon completion:
         completableFuture.whenComplete((result, failure) -> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "whenComplete", result, failure);
+                Tr.debug(ManagedCompletableFuture.this, tc, "whenComplete", result, failure);
             if (failure == null)
                 super.complete(result);
             else
                 super.completeExceptionally(failure);
         });
-
-        this.completableFuture = completableFuture;
-        this.defaultExecutor = managedExecutor;
     }
 
     // static method equivalents for CompletableFuture
@@ -142,7 +216,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     public static <U> ManagedCompletableFuture<U> completedFuture(U value) {
         return new ManagedCompletableFuture<U>( //
                         CompletableFuture.completedFuture(value), //
-                        (WSManagedExecutorService) AccessController.doPrivileged(getDefaultManagedExecutorAction));
+                        AccessController.doPrivileged(getDefaultManagedExecutorAction), //
+                        null);
     }
 
     /**
@@ -161,23 +236,31 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * default asynchronous execution facility to be the specified managed executor.
      *
      * @param action the action to run asynchronously.
+     * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
     public static ManagedCompletableFuture<Void> runAsync(Runnable action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-        PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = managedExecutor.getContextService();
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
 
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
-        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(action, policyExecutor);
-        return new ManagedCompletableFuture<Void>(completableFuture, managedExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+        } else {
+            futureExecutor = null;
+        }
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(action, futureExecutor);
+        return new ManagedCompletableFuture<Void>(completableFuture, executor, futureExecutor);
     }
 
     /**
@@ -196,23 +279,31 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * default asynchronous execution facility to be the specified managed executor.
      *
      * @param action the supplier to invoke asynchronously.
+     * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
     public static <U> ManagedCompletableFuture<U> supplyAsync(Supplier<U> action, Executor executor) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-        PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = managedExecutor.getContextService();
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
 
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = new ContextualSupplier<U>(contextDescriptor, action);
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualSupplier<U>(contextDescriptor, action);
 
-        CompletableFuture<U> completableFuture = CompletableFuture.supplyAsync(action, policyExecutor);
-        return new ManagedCompletableFuture<U>(completableFuture, managedExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+        } else {
+            futureExecutor = null;
+        }
+        CompletableFuture<U> completableFuture = CompletableFuture.supplyAsync(action, futureExecutor);
+        return new ManagedCompletableFuture<U>(completableFuture, executor, futureExecutor);
     }
 
     // Overrides of CompletableFuture methods
@@ -222,15 +313,30 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<Void> acceptEither(CompletionStage<? extends T> other, Consumer<? super T> action) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualConsumer<>(contextDescriptor, action);
+
+        CompletableFuture<Void> dependentStage = completableFuture.acceptEither(other, action);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#acceptEitherAsync(java.util.concurrent.CompletionStage, java.util.function.Consumer)
      */
     @Override
+    @Trivial
     public ManagedCompletableFuture<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action) {
-        throw new UnsupportedOperationException();
+        return acceptEitherAsync(other, action, defaultExecutor);
     }
 
     /**
@@ -238,31 +344,98 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public ManagedCompletableFuture<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action, Executor executor) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
+
+        CompletableFuture<Void> dependentStage;
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualConsumer<>(contextDescriptor, action);
+
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.acceptEitherAsync(other, action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.acceptEitherAsync(other, action, futureExecutor);
+        } else {
+            futureExecutor = null;
+            dependentStage = completableFuture.acceptEitherAsync(other, action, executor);
+        }
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#applyToEither(java.util.concurrent.CompletionStage, java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> applyToEither(CompletionStage<? extends T> other, Function<? super T, U> fn) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> applyToEither(CompletionStage<? extends T> other, Function<? super T, U> action) {
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualFunction<>(contextDescriptor, action);
+
+        CompletableFuture<U> dependentStage = completableFuture.applyToEither(other, action);
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#applyToEitherAsync(java.util.concurrent.CompletionStage, java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> fn) {
-        throw new UnsupportedOperationException();
+    @Trivial
+    public <U> ManagedCompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> action) {
+        return applyToEitherAsync(other, action, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#applyToEitherAsync(java.util.concurrent.CompletionStage, java.util.function.Function, java.util.concurrent.Executor)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> fn, Executor executor) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> action, Executor executor) {
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends T>) other).completableFuture;
+
+        CompletableFuture<U> dependentStage;
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualFunction<>(contextDescriptor, action);
+
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.applyToEitherAsync(other, action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.applyToEitherAsync(other, action, futureExecutor);
+        } else {
+            futureExecutor = null;
+            dependentStage = completableFuture.applyToEitherAsync(other, action, executor);
+        }
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -270,8 +443,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
-        // TODO also cancel from managed executor
-        return completableFuture.cancel(mayInterruptIfRunning);
+        boolean canceled = completableFuture.cancel(mayInterruptIfRunning);
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (canceled && futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(mayInterruptIfRunning);
+        }
+
+        return canceled;
     }
 
     /**
@@ -279,7 +460,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean complete(T value) {
-        return completableFuture.complete(value);
+        boolean completedByThisMethod = completableFuture.complete(value);
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (completedByThisMethod && futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
+
+        return completedByThisMethod;
     }
 
     /**
@@ -287,8 +477,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public boolean completeExceptionally(Throwable x) {
-        // TODO also cancel from managed executor if completed with a CancellationException
-        return completableFuture.completeExceptionally(x);
+        boolean completedByThisMethod = completableFuture.completeExceptionally(x);
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (completedByThisMethod && futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
+
+        return completedByThisMethod;
     }
 
     /**
@@ -300,14 +498,14 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = new ContextualFunction<>(contextDescriptor, action);
 
         CompletableFuture<T> dependentStage = completableFuture.exceptionally(action);
-        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor, null);
     }
 
     /**
@@ -348,29 +546,59 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletionStage#handle(java.util.function.BiFunction)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> handle(BiFunction<? super T, Throwable, ? extends U> fn) {
-        // TODO contextualize fn and other steps
-        return new ManagedCompletableFuture<U>(completableFuture.handle(fn), defaultExecutor);
+    public <R> ManagedCompletableFuture<R> handle(BiFunction<? super T, Throwable, ? extends R> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiFunction<>(contextDescriptor, action);
+
+        CompletableFuture<R> dependentStage = completableFuture.handle(action);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#handleAsync(java.util.function.BiFunction)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn) {
-        // TODO contextualize fn and other steps
-        Executor policyExecutor = (Executor) defaultExecutor; // TODO get policy executor from default executor
-        return new ManagedCompletableFuture<U>(completableFuture.handleAsync(fn, policyExecutor), defaultExecutor);
+    @Trivial
+    public <R> ManagedCompletableFuture<R> handleAsync(BiFunction<? super T, Throwable, ? extends R> action) {
+        return handleAsync(action, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#handleAsync(java.util.function.BiFunction, java.util.concurrent.Executor)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn, Executor executor) {
-        // TODO contextualize fn and other steps
-        Executor policyExecutor = executor; // TODO get policy executor from the supplied executor, if a managed executor
-        return new ManagedCompletableFuture<U>(completableFuture.handleAsync(fn, policyExecutor), defaultExecutor);
+    public <R> ManagedCompletableFuture<R> handleAsync(BiFunction<? super T, Throwable, ? extends R> action, Executor executor) {
+        CompletableFuture<R> dependentStage;
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualBiFunction<>(contextDescriptor, action);
+
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.handleAsync(action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.handleAsync(action, futureExecutor);
+        } else {
+            futureExecutor = null;
+            dependentStage = completableFuture.handleAsync(action, executor);
+        }
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -406,19 +634,41 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * @see java.util.concurrent.CompletableFuture#obtrudeValue(java.lang.Object)
-     */
-    @Override
-    public void obtrudeValue(T value) {
-        completableFuture.obtrudeValue(value);
-    }
-
-    /**
      * @see java.util.concurrent.CompletableFuture#obtrudeException(java.lang.Throwable)
      */
     @Override
     public void obtrudeException(Throwable x) {
-        completableFuture.obtrudeException(x);
+        // disallow the possibility of concurrent obtrudes so as to keep the values consistent
+        synchronized (completableFuture) {
+            super.obtrudeException(x);
+            completableFuture.obtrudeException(x);
+        }
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#obtrudeValue(java.lang.Object)
+     */
+    @Override
+    public void obtrudeValue(T value) {
+        // disallow the possibility of concurrent obtrudes so as to keep the values consistent
+        synchronized (completableFuture) {
+            super.obtrudeValue(value);
+            completableFuture.obtrudeValue(value);
+        }
+
+        // If corresponding task has been submitted to an executor, attempt to cancel it
+        if (futureRef != null) {
+            Future<?> future = futureRef.get();
+            if (future != null)
+                future.cancel(true);
+        }
     }
 
     /**
@@ -433,37 +683,23 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
         CompletableFuture<Void> dependentStage = completableFuture.runAfterBoth(other, action);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#runAfterBothAsync(java.util.concurrent.CompletionStage, java.lang.Runnable)
      */
     @Override
+    @Trivial
     public ManagedCompletableFuture<Void> runAfterBothAsync(CompletionStage<?> other, Runnable action) {
-        if (other instanceof ManagedCompletableFuture)
-            other = ((ManagedCompletableFuture<?>) other).completableFuture;
-
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
-
-        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = defaultExecutor.getContextService();
-
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
-
-        CompletableFuture<Void> dependentStage = completableFuture.runAfterBothAsync(other, action, policyExecutor);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return runAfterBothAsync(other, action, defaultExecutor);
     }
 
     /**
@@ -475,24 +711,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             other = ((ManagedCompletableFuture<?>) other).completableFuture;
 
         CompletableFuture<Void> dependentStage;
+        FutureRefExecutor futureExecutor;
         if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
             // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
             WSContextService contextSvc = managedExecutor.getContextService();
 
             @SuppressWarnings("unchecked")
             ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
             action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
-            dependentStage = completableFuture.runAfterBothAsync(other, action, policyExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.runAfterBothAsync(other, action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.runAfterBothAsync(other, action, futureExecutor);
         } else {
+            futureExecutor = null;
             dependentStage = completableFuture.runAfterBothAsync(other, action, executor);
         }
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -507,37 +748,23 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
         CompletableFuture<Void> dependentStage = completableFuture.runAfterEither(other, action);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#runAfterEitherAsync(java.util.concurrent.CompletionStage, java.lang.Runnable)
      */
     @Override
+    @Trivial
     public ManagedCompletableFuture<Void> runAfterEitherAsync(CompletionStage<?> other, Runnable action) {
-        if (other instanceof ManagedCompletableFuture)
-            other = ((ManagedCompletableFuture<?>) other).completableFuture;
-
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
-
-        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = defaultExecutor.getContextService();
-
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
-
-        CompletableFuture<Void> dependentStage = completableFuture.runAfterEitherAsync(other, action, policyExecutor);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return runAfterEitherAsync(other, action, defaultExecutor);
     }
 
     /**
@@ -549,24 +776,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             other = ((ManagedCompletableFuture<?>) other).completableFuture;
 
         CompletableFuture<Void> dependentStage;
+        FutureRefExecutor futureExecutor;
         if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
             // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
             WSContextService contextSvc = managedExecutor.getContextService();
 
             @SuppressWarnings("unchecked")
             ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
             action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
-            dependentStage = completableFuture.runAfterEitherAsync(other, action, policyExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.runAfterEitherAsync(other, action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.runAfterEitherAsync(other, action, futureExecutor);
         } else {
+            futureExecutor = null;
             dependentStage = completableFuture.runAfterEitherAsync(other, action, executor);
         }
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -578,34 +810,23 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = new ContextualConsumer<>(contextDescriptor, action);
 
         CompletableFuture<Void> dependentStage = completableFuture.thenAccept(action);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenAcceptAsync(java.util.function.Consumer)
      */
     @Override
+    @Trivial
     public ManagedCompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
-
-        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = defaultExecutor.getContextService();
-
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = new ContextualConsumer<>(contextDescriptor, action);
-
-        CompletableFuture<Void> dependentStage = completableFuture.thenAcceptAsync(action, policyExecutor);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return thenAcceptAsync(action, defaultExecutor);
     }
 
     /**
@@ -614,24 +835,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Override
     public ManagedCompletableFuture<Void> thenAcceptAsync(Consumer<? super T> action, Executor executor) {
         CompletableFuture<Void> dependentStage;
+        FutureRefExecutor futureExecutor;
         if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
             // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
             WSContextService contextSvc = managedExecutor.getContextService();
 
             @SuppressWarnings("unchecked")
             ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
             action = new ContextualConsumer<>(contextDescriptor, action);
 
-            dependentStage = completableFuture.thenAcceptAsync(action, policyExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.thenAcceptAsync(action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.thenAcceptAsync(action, futureExecutor);
         } else {
+            futureExecutor = null;
             dependentStage = completableFuture.thenAcceptAsync(action, executor);
         }
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -639,15 +865,30 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> ManagedCompletableFuture<Void> thenAcceptBoth(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiConsumer<>(contextDescriptor, action);
+
+        CompletableFuture<Void> dependentStage = completableFuture.thenAcceptBoth(other, action);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenAcceptBothAsync(java.util.concurrent.CompletionStage, java.util.function.BiConsumer)
      */
     @Override
+    @Trivial
     public <U> ManagedCompletableFuture<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action) {
-        throw new UnsupportedOperationException();
+        return thenAcceptBothAsync(other, action, defaultExecutor);
     }
 
     /**
@@ -655,7 +896,33 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public <U> ManagedCompletableFuture<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action, Executor executor) {
-        throw new UnsupportedOperationException();
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
+
+        CompletableFuture<Void> dependentStage;
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualBiConsumer<>(contextDescriptor, action);
+
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.thenAcceptBothAsync(other, action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.thenAcceptBothAsync(other, action, futureExecutor);
+        } else {
+            futureExecutor = null;
+            dependentStage = completableFuture.thenAcceptBothAsync(other, action, executor);
+        }
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -667,34 +934,23 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = new ContextualFunction<>(contextDescriptor, action);
 
         CompletableFuture<R> dependentStage = completableFuture.thenApply(action);
-        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenApplyAsync(java.util.function.Function)
      */
     @Override
+    @Trivial
     public <R> ManagedCompletableFuture<R> thenApplyAsync(Function<? super T, ? extends R> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
-
-        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = defaultExecutor.getContextService();
-
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = new ContextualFunction<>(contextDescriptor, action);
-
-        CompletableFuture<R> dependentStage = completableFuture.thenApplyAsync(action, policyExecutor);
-        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
+        return thenApplyAsync(action, defaultExecutor);
     }
 
     /**
@@ -703,72 +959,153 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Override
     public <R> ManagedCompletableFuture<R> thenApplyAsync(Function<? super T, ? extends R> action, Executor executor) {
         CompletableFuture<R> dependentStage;
+        FutureRefExecutor futureExecutor;
         if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
             // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
             WSContextService contextSvc = managedExecutor.getContextService();
 
             @SuppressWarnings("unchecked")
             ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
             action = new ContextualFunction<>(contextDescriptor, action);
 
-            dependentStage = completableFuture.thenApplyAsync(action, policyExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.thenApplyAsync(action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.thenApplyAsync(action, futureExecutor);
         } else {
+            futureExecutor = null;
             dependentStage = completableFuture.thenApplyAsync(action, executor);
         }
-        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenCombine(java.util.concurrent.CompletionStage, java.util.function.BiFunction)
      */
     @Override
-    public <U, V> ManagedCompletableFuture<V> thenCombine(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends V> fn) {
-        throw new UnsupportedOperationException();
+    public <U, R> ManagedCompletableFuture<R> thenCombine(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends R> action) {
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
+
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualBiFunction<>(contextDescriptor, action);
+
+        CompletableFuture<R> dependentStage = completableFuture.thenCombine(other, action);
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenCombineAsync(java.util.concurrent.CompletionStage, java.util.function.BiFunction)
      */
     @Override
-    public <U, V> ManagedCompletableFuture<V> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends V> fn) {
-        throw new UnsupportedOperationException();
+    @Trivial
+    public <U, R> ManagedCompletableFuture<R> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends R> action) {
+        return thenCombineAsync(other, action, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenCombineAsync(java.util.concurrent.CompletionStage, java.util.function.BiFunction, java.util.concurrent.Executor)
      */
     @Override
-    public <U, V> ManagedCompletableFuture<V> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends V> fn, Executor executor) {
-        throw new UnsupportedOperationException();
+    public <U, R> ManagedCompletableFuture<R> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends R> action, Executor executor) {
+        if (other instanceof ManagedCompletableFuture)
+            other = ((ManagedCompletableFuture<? extends U>) other).completableFuture;
+
+        CompletableFuture<R> dependentStage;
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualBiFunction<>(contextDescriptor, action);
+
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.thenCombineAsync(other, action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.thenCombineAsync(other, action, futureExecutor);
+        } else {
+            futureExecutor = null;
+            dependentStage = completableFuture.thenCombineAsync(other, action, executor);
+        }
+        return new ManagedCompletableFuture<R>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenCompose(java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenCompose(Function<? super T, ? extends CompletionStage<U>> fn) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> thenCompose(Function<? super T, ? extends CompletionStage<U>> action) {
+        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
+
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+        action = new ContextualFunction<>(contextDescriptor, action);
+
+        CompletableFuture<U> dependentStage = completableFuture.thenCompose(action);
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenComposeAsync(java.util.function.Function)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> fn) {
-        throw new UnsupportedOperationException();
+    @Trivial
+    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> action) {
+        return thenComposeAsync(action, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenComposeAsync(java.util.function.Function, java.util.concurrent.Executor)
      */
     @Override
-    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> fn, Executor executor) {
-        throw new UnsupportedOperationException();
+    public <U> ManagedCompletableFuture<U> thenComposeAsync(Function<? super T, ? extends CompletionStage<U>> action, Executor executor) {
+        CompletableFuture<U> dependentStage;
+        FutureRefExecutor futureExecutor;
+        if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+            // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+            if (action instanceof ManagedTask)
+                throw new IllegalArgumentException(ManagedTask.class.getName());
+
+            WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+            WSContextService contextSvc = managedExecutor.getContextService();
+
+            @SuppressWarnings("unchecked")
+            ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
+            action = new ContextualFunction<>(contextDescriptor, action);
+
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.thenComposeAsync(action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.thenComposeAsync(action, futureExecutor);
+        } else {
+            futureExecutor = null;
+            dependentStage = completableFuture.thenComposeAsync(action, executor);
+        }
+        return new ManagedCompletableFuture<U>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -780,34 +1117,23 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
         CompletableFuture<Void> dependentStage = completableFuture.thenRun(action);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#thenRunAsync(java.lang.Runnable)
      */
     @Override
+    @Trivial
     public ManagedCompletableFuture<Void> thenRunAsync(Runnable action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
-
-        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = defaultExecutor.getContextService();
-
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
-
-        CompletableFuture<Void> dependentStage = completableFuture.thenRunAsync(action, policyExecutor);
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return thenRunAsync(action, defaultExecutor);
     }
 
     /**
@@ -816,24 +1142,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Override
     public ManagedCompletableFuture<Void> thenRunAsync(Runnable action, Executor executor) {
         CompletableFuture<Void> dependentStage;
+        FutureRefExecutor futureExecutor;
         if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
             // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
             WSContextService contextSvc = managedExecutor.getContextService();
 
             @SuppressWarnings("unchecked")
             ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
             action = contextSvc.createContextualProxy(contextDescriptor, action, Runnable.class);
 
-            dependentStage = completableFuture.thenRunAsync(action, policyExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.thenRunAsync(action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.thenRunAsync(action, futureExecutor);
         } else {
+            futureExecutor = null;
             dependentStage = completableFuture.thenRunAsync(action, executor);
         }
-        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<Void>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     /**
@@ -844,7 +1175,36 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         return this;
     }
 
-    // TODO override toString to include proper status (and maybe correlate to the underlying CompletableFuture)
+    /**
+     * Example output:
+     * ManagedCompletableFuture@11111111[22222222 Not completed] via PolicyTaskFuture@33333333 for
+     * java.util.concurrent.CompletableFuture$AsyncRun@44444444 RUNNING on concurrencyPolicy[defaultConcurrencyPolicy]
+     *
+     * @see java.util.concurrent.CompletableFuture#toString()
+     */
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder s = new StringBuilder(250).append("ManagedCompletableFuture@").append(Integer.toHexString(System.identityHashCode(this))) //
+                        .append('[').append(Integer.toHexString(completableFuture.hashCode()));
+        if (completableFuture.isDone())
+            if (completableFuture.isCompletedExceptionally())
+                s.append(" Completed exceptionally]");
+            else
+                s.append(" Completed normally]");
+        else {
+            s.append(" Not completed");
+            // Subtract out the extra dependent stage that we use internally to be notified of completion.
+            int d = completableFuture.getNumberOfDependents();
+            if (d > 1)
+                s.append(", ").append(d - 1).append(" dependents]");
+            else
+                s.append(']');
+        }
+        if (futureRef != null)
+            s.append(" via ").append(futureRef.get());
+        return s.toString();
+    }
 
     /**
      * @see java.util.concurrent.CompletionStage#whenComplete(java.util.function.BiConsumer)
@@ -855,34 +1215,23 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         if (action instanceof ManagedTask)
             throw new IllegalArgumentException(ManagedTask.class.getName());
 
-        WSContextService contextSvc = defaultExecutor.getContextService();
+        WSContextService contextSvc = ((WSManagedExecutorService) defaultExecutor).getContextService();
 
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
         action = new ContextualBiConsumer<>(contextDescriptor, action);
 
         CompletableFuture<T> dependentStage = completableFuture.whenComplete(action);
-        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor, null);
     }
 
     /**
      * @see java.util.concurrent.CompletionStage#whenCompleteAsync(java.util.function.BiConsumer)
      */
     @Override
+    @Trivial
     public ManagedCompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action) {
-        // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
-        if (action instanceof ManagedTask)
-            throw new IllegalArgumentException(ManagedTask.class.getName());
-
-        PolicyExecutor policyExecutor = defaultExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
-        WSContextService contextSvc = defaultExecutor.getContextService();
-
-        @SuppressWarnings("unchecked")
-        ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
-        action = new ContextualBiConsumer<>(contextDescriptor, action);
-
-        CompletableFuture<T> dependentStage = completableFuture.whenCompleteAsync(action, policyExecutor);
-        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
+        return whenCompleteAsync(action, defaultExecutor);
     }
 
     /**
@@ -891,24 +1240,29 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Override
     public ManagedCompletableFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor) {
         CompletableFuture<T> dependentStage;
+        FutureRefExecutor futureExecutor;
         if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
             // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
             if (action instanceof ManagedTask)
                 throw new IllegalArgumentException(ManagedTask.class.getName());
 
             WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
-            PolicyExecutor policyExecutor = managedExecutor.getNormalPolicyExecutor(); // TODO choose based on LONGRUNNING_HINT execution property
             WSContextService contextSvc = managedExecutor.getContextService();
 
             @SuppressWarnings("unchecked")
             ThreadContextDescriptor contextDescriptor = contextSvc.captureThreadContext(XPROPS_SUSPEND_TRAN);
             action = new ContextualBiConsumer<>(contextDescriptor, action);
 
-            dependentStage = completableFuture.whenCompleteAsync(action, policyExecutor);
+            futureExecutor = new FutureRefExecutor(managedExecutor);
+            dependentStage = completableFuture.whenCompleteAsync(action, futureExecutor);
+        } else if (executor instanceof ExecutorService) {
+            futureExecutor = new FutureRefExecutor((ExecutorService) executor);
+            dependentStage = completableFuture.whenCompleteAsync(action, futureExecutor);
         } else {
+            futureExecutor = null;
             dependentStage = completableFuture.whenCompleteAsync(action, executor);
         }
-        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor);
+        return new ManagedCompletableFuture<T>(dependentStage, defaultExecutor, futureExecutor);
     }
 
     // TODO move the following classes to the general context service in com.ibm.ws.context project once Java 8 can be used there
@@ -958,6 +1312,33 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
             try {
                 action.accept(t);
+            } finally {
+                threadContextDescriptor.taskStopping(contextApplied);
+            }
+        }
+    }
+
+    /**
+     * Proxy for BiFunction that applies thread context before running and removes it afterward
+     *
+     * @param <T> type of the function's first parameter
+     * @param <U> type of the function's second parameter
+     * @param <R> type of the function's result
+     */
+    private static class ContextualBiFunction<T, U, R> implements BiFunction<T, U, R> {
+        private final BiFunction<T, U, R> action;
+        private final ThreadContextDescriptor threadContextDescriptor;
+
+        private ContextualBiFunction(ThreadContextDescriptor threadContextDescriptor, BiFunction<T, U, R> action) {
+            this.action = action;
+            this.threadContextDescriptor = threadContextDescriptor;
+        }
+
+        @Override
+        public R apply(T t, U u) {
+            ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
+            try {
+                return action.apply(t, u);
             } finally {
                 threadContextDescriptor.taskStopping(contextApplied);
             }

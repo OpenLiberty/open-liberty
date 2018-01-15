@@ -16,9 +16,11 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipa
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,6 +37,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.FATHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
@@ -90,7 +93,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS1916W");
+        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918W");
     }
 
     @Before
@@ -181,10 +184,14 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("callerQuery", "select password from badtable where name = ?");
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "select password from badtable where name = ?");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        String msg = "CWWKS1918W";
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -206,7 +213,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("callerQuery", "NULL");
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "NULL");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         FATHelper.resetMarksInLogs(server);
@@ -233,7 +240,32 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("dataSourceLookup", "java:comp/InvalidDataSource");
+        overrides.put(JavaEESecConstants.DS_LOOKUP, "java:comp/InvalidDataSource");
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a datasource that points to an unreachable database is handled.
+     *
+     * <ul>
+     * <li>DB_USER1 - unauthorized (can't find to datasource)</li>
+     * <li>DB_USER2 - unauthorized (can't find to datasource)</li>
+     * <li>DB_USER3 - unauthorized (never authorized)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException" })
+    public void dataSourceLookup_NoDB() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put(JavaEESecConstants.DS_LOOKUP, "jdbc/NoDatabase");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
@@ -258,11 +290,39 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("dataSourceLookup", "NULL");
+        overrides.put(JavaEESecConstants.DS_LOOKUP, "NULL");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
+        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that a dataSourceLookup EL expression that resolves to "" (empty string) is handled.
+     * The dataSourceLookup will be defaulted to "java:comp/DefaultDataSource".
+     *
+     * <ul>
+     * <li>DB_USER1 - authorized via user</li>
+     * <li>DB_USER2 - authorized via group</li>
+     * <li>DB_USER3 - unauthorized (never authorized)</li>
+     * </ul>
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    public void dataSourceLookup_Empty() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put(JavaEESecConstants.DS_LOOKUP, "");
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -286,7 +346,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         String parameters = "Pbkdf2PasswordHash.Algorithm=PBKDF2WithHmacSHA512, Pbkdf2PasswordHash.Iterations=4096, Pbkdf2PasswordHash.SaltSizeBytes=64, Pbkdf2PasswordHash.KeySizeBytes=64";
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("hashAlgorithmParameters", "[" + parameters + "]");
+        overrides.put(JavaEESecConstants.PWD_HASH_PARAMETERS, "[" + parameters + "]");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         // Reload the application to re-init the identity store so hash parameters are re-read.
@@ -315,7 +375,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         String parameters = "Pbkdf2PasswordHash.Algorithm=PBKDF2WithHmacSHA512, Pbkdf2PasswordHash.Iterations=4096, Pbkdf2PasswordHash.SaltSizeBytes=64, Pbkdf2PasswordHash.KeySizeBytes=128";
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("hashAlgorithmParameters", "{" + parameters + "}");
+        overrides.put(JavaEESecConstants.PWD_HASH_PARAMETERS, "{" + parameters + "}");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         // Reload the application to re-init the identity store so hash parameters are re-read.
@@ -344,7 +404,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         String parameters = "Pbkdf2PasswordHash.Iterations=4096";
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("hashAlgorithmParameters", parameters);
+        overrides.put(JavaEESecConstants.PWD_HASH_PARAMETERS, parameters);
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         // Reload the application to re-init the identity store so hash parameters are re-read.
@@ -373,7 +433,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("hashAlgorithmParameters", "NULL");
+        overrides.put(JavaEESecConstants.PWD_HASH_PARAMETERS, "NULL");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         // Reload the application to re-init the identity store so hash parameters are re-read.
@@ -401,10 +461,14 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("groupsQuery", "select group_name from badtable where caller_name = ?");
+        overrides.put(JavaEESecConstants.GROUPS_QUERY, "select group_name from badtable where caller_name = ?");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        String msg = "CWWKS1919W";
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -426,7 +490,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("priority", "100");
+        overrides.put(JavaEESecConstants.PRIORITY, "100");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         /*
@@ -458,7 +522,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("priority", "NULL");
+        overrides.put(JavaEESecConstants.PRIORITY, "NULL");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         /*
@@ -488,7 +552,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("useFor", "VALIDATE");
+        overrides.put(JavaEESecConstants.USE_FOR, "VALIDATE");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_FORBIDDEN);
@@ -512,7 +576,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("useFor", "");
+        overrides.put(JavaEESecConstants.USE_FOR, "");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         FATHelper.resetMarksInLogs(server);
@@ -539,7 +603,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put("useFor", "NULL");
+        overrides.put(JavaEESecConstants.USE_FOR, "NULL");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         FATHelper.resetMarksInLogs(server);

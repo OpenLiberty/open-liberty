@@ -22,9 +22,9 @@
 # NLS_MESSAGEFORMAT_ALL
 #
 #   Strings in this file which contain replacement variables are processed by the MessageFormat
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
-#   (single quote must be coded as one single quote ').
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
 45000=Could not find ID element of type ID on type with uri [{0}] and name [{1}] .
@@ -51,7 +51,7 @@
 
 45011=Could not create a DataObject for type with uri [{0}] and name [{1}] because type.isAbstract() returns true.
 
-45012=Could not create a DataObject for interface [{0}], trying to create a DataObject for type with uri [{1}] and name [{2}]
+45012=Could not create a DataObject for interface [{0}], trying to create a DataObject for type with uri [{1}] and name [{2}] 
 
 45013=Cannot look up app info for null argument.
 
@@ -141,7 +141,7 @@
 
 45210=The DataObject being marshalled is not from the same HelperContext as the XMLHelper.
 
-45211=Could not define type with name [{0}]. The name is not a valid XML name.
+45211=The type could not be defined with the [{0}] name. The name is not a valid XML name.
 
-45212=Could not define property with [{0}]. The name is not a valid XML name.
+45212=The property could not be defined with the [{0}] name. The name is not a valid XML name.
 

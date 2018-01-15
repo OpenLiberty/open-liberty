@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.openapi.impl.parser.util;
 
 import java.io.IOException;
 
+import org.yaml.snakeyaml.constructor.SafeConstructor;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Json;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Yaml;
@@ -68,12 +70,12 @@ public class DeserializationUtils {
     }
 
     public static JsonNode readYamlTree(String contents) {
-        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
+        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor());
         return Json.mapper().convertValue(yaml.load(contents), JsonNode.class);
     }
 
     public static <T> T readYamlValue(String contents, Class<T> expectedType) {
-        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
+        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor());
         return Json.mapper().convertValue(yaml.load(contents), expectedType);
     }
 }

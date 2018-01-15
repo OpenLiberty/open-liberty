@@ -11,7 +11,9 @@
 package com.ibm.ws.security.jwt.utils;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.jose4j.jwt.JwtClaims;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,44 +26,66 @@ import test.common.SharedOutputManager;
 
 public class JwtDataTest {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.jwt.*=all");
+	private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
+			.trace("com.ibm.ws.security.jwt.*=all");
 
-    @Rule
-    public final TestName testName = new TestName();
+	@Rule
+	public final TestName testName = new TestName();
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr.captureStreams();
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		outputMgr.captureStreams();
+	}
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        outputMgr.dumpStreams();
-        outputMgr.resetStreams();
-        outputMgr.restoreStreams();
-    }
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		outputMgr.dumpStreams();
+		outputMgr.resetStreams();
+		outputMgr.restoreStreams();
+	}
 
-    @Before
-    public void beforeTest() {
-        System.out.println("Entering test: " + testName.getMethodName());
-    }
+	@Before
+	public void beforeTest() {
+		System.out.println("Entering test: " + testName.getMethodName());
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        System.out.println("Exiting test: " + testName.getMethodName());
-    }
+	@After
+	public void tearDown() throws Exception {
+		System.out.println("Exiting test: " + testName.getMethodName());
+	}
 
-    /**
-     * Test configuration values.
-     */
-    @Test
-    public void testConstructor() {
-        try {
-            JwtData data = new JwtData(null, null);
-            assertNotNull("JwtData was null when it should not have been.", data);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
+	/**
+	 * Test configuration values.
+	 */
+	@Test
+	public void testConstructor() {
+		try {
+			JwtData data = new JwtData(null, null);
+			assertNotNull("JwtData was null when it should not have been.", data);
+		} catch (Throwable t) {
+			outputMgr.failWithThrowable(testName.getMethodName(), t);
+		}
+	}
+
+	/**
+	 * check when creating a jwt token, it includes typ JWT in the header.
+	 */
+	@Test
+	public void testSignerIncludesCorrectKeyTypeForJWT() {
+		try {
+
+			JwtData data = new JwtData(null, null);
+			data.bJwtToken = true;
+			data.signatureAlgorithm = "none";
+			JwtClaims claims = new JwtClaims();
+			String result = JwsSigner.getSignedJwt(claims, data);
+			String header = JwtUtils.splitTokenString(result)[0];
+			String decodedHeader = JwtUtils.decodeFromBase64String(header);
+			System.out.println("decoded header: " + decodedHeader);
+			assertTrue(decodedHeader.contains("\"typ\":\"JWT\""));
+		} catch (Throwable t) {
+			outputMgr.failWithThrowable(testName.getMethodName(), t);
+		}
+	}
 
 }

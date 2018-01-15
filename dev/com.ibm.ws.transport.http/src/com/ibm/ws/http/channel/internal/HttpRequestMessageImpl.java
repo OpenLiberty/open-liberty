@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
@@ -30,6 +31,7 @@ import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
+import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
@@ -306,6 +308,13 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         //Possible request pseudo-headers are: ':authority', ':method'
         //':path', and ':scheme'. Validity of pseudoHeader is verified
         //by caller of this method.
+
+        for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
+            H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
+            if (!isValidPseudoHeader(header)) {
+                throw new CompressionException("Invalid pseudo-header for decompression context: " + header.toString());
+            }
+        }
 
         //Authority is not required to be present, check if it is.
         if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {

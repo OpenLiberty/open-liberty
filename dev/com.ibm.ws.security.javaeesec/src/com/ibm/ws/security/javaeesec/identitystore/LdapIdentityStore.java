@@ -185,6 +185,7 @@ public class LdapIdentityStore implements IdentityStore {
          * Only support UserPasswordCredential.
          */
         if (!(credential instanceof UsernamePasswordCredential)) {
+            Tr.error(tc, "JAVAEESEC_WARNING_WRONG_CRED");
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
         }
 

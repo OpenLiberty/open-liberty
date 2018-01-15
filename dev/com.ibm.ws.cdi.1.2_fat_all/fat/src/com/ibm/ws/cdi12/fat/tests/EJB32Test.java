@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
+
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * This test requires the ejb-3.2 feature. I started with it merged into EjbTimerTest, but
  * that test depends on ejbLite-3.2, and/or there's something funny about the way it uses
  * SHARED_SERVER... either way, EjbTimerTest hard to add new tests to.
  */
+@RunWith(FATRunner.class)
+@SkipForRepeat(EE8_FEATURES)
 public class EJB32Test extends LoggingTest {
 
     @ClassRule

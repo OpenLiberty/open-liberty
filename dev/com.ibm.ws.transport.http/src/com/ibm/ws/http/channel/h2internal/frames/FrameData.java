@@ -57,6 +57,8 @@ public class FrameData extends Frame {
         this.PADDED_FLAG = padded;
         this.END_STREAM_FLAG = endStream;
         if (padded) {
+            // padding length must be contained in one byte, so don't accept values greater than 2^8 - 1
+            paddingLength = (paddingLength > 255) ? 255 : paddingLength;
             payloadLength += paddingLength + 1; // padding length + padding field length
         }
         frameType = FrameTypes.DATA;
@@ -85,28 +87,29 @@ public class FrameData extends Frame {
         // |                           Padding (*)                       ...
         // +---------------------------------------------------------------+
 
-        int paddedLength = payloadLength;
-
         setFlags();
 
         int payloadIndex = 0;
         try {
             if (PADDED_FLAG) {
                 // The padded field is present; set the paddedLength to represent the actual size of the data we want
-                paddedLength -= frp.grabNextByte();
+                paddingLength = frp.grabNextByte() & 0xFF; // grab byte and convert to int
                 payloadIndex++;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "PADDED_FLAG on. paddedLength = " + paddedLength);
+                    Tr.debug(tc, "PADDED_FLAG on. paddedLength = " + (payloadLength - paddingLength));
                 }
             }
 
             // grab all the buffered data
-            data = new byte[paddedLength];
-
-            for (int i = 0; payloadIndex++ < paddedLength; i++) {
+            data = new byte[payloadLength - paddingLength];
+            for (int i = 0; payloadIndex++ < payloadLength - paddingLength; i++) {
                 data[i] = (frp.grabNextByte());
             }
 
+            // read the padding bytes; don't do anything with them
+            for (int i = 0; i < paddingLength; i++) {
+                frp.grabNextByte();
+            }
             setInitialized();
         } catch (FrameSizeException e) {
             e.setConnectionError(false);
@@ -166,8 +169,11 @@ public class FrameData extends Frame {
         if (this.getPayloadLength() > settings.maxFrameSize) {
             throw new FrameSizeException("DATA payload greater than allowed by the max frame size");
         }
-        if (this.paddingLength > this.payloadLength) {
+        if (this.payloadLength > 0 && this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("DATA padding length must be less than the length of the payload");
+        }
+        if (this.paddingLength < 0) {
+            throw new ProtocolException("DATA padding length is invalid");
         }
     }
 

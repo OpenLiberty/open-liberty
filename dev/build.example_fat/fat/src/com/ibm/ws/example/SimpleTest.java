@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.example;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import app1.web.TestServletA;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -66,5 +73,31 @@ public class SimpleTest extends FATServletClient {
     public void verifyArtifactoryDependency() throws Exception {
         // Confirm that the example Artifactory dependency was download and is available on the classpath
         org.apache.commons.logging.Log.class.getName();
+    }
+
+    @Test
+    @SkipForRepeat(EE8_FEATURES)
+    public void testEE7Only() throws Exception {
+        // This test will skip for the EE8 feature iteration
+
+        // Verify only EE7 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected the Java EE 7 feature 'servlet-3.1' to be enabled but was not: " + features,
+                   features.contains("servlet-3.1"));
+        assertTrue("No EE8 features should be enabled when this test runs: " + features,
+                   !features.contains("servlet-4.0"));
+    }
+
+    @Test
+    @SkipForRepeat(NO_MODIFICATION)
+    public void testEE8Only() throws Exception {
+        // This test will skip for the EE7 feature (i.e. NO_MODIFICATION) iteration
+
+        // Verify only EE8 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected the Java EE 8 feature 'servlet-4.0' to be enabled but was not: " + features,
+                   features.contains("servlet-4.0"));
+        assertTrue("No EE7 features should be enabled when this test runs: " + features,
+                   !features.contains("servlet-3.1"));
     }
 }

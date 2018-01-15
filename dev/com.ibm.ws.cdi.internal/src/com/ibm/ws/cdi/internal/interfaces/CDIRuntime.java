@@ -171,13 +171,6 @@ public interface CDIRuntime extends CDIService {
     public boolean isApplicationCDIEnabled(ApplicationMetaData applicationMetaData);
 
     /**
-     * Returns whether CDI is enabled for the current module.
-     *
-     * @return true if the current module, or any module or libraries it can access, has any CDI Beans
-     */
-    public boolean isCurrentModuleCDIEnabled();
-
-    /**
      * Returns whether CDI is enabled for the given module.
      *
      * @param moduleMetaData the ModuleMetaData for the module

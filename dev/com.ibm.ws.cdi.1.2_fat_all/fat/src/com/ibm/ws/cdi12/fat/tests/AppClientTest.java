@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,11 @@ import java.io.FileWriter;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.custom.junit.runner.ClientOnly;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServer;
-
-import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 
 @ClientOnly
 public class AppClientTest {
@@ -43,7 +42,7 @@ public class AppClientTest {
 
         String featuresMessage = client.waitForStringInCopiedLog("CWWKF0034I", 0);
         assertNotNull("Did not receive features loaded message", featuresMessage);
-        assertTrue("cdi-1.2 was not among the loaded features", featuresMessage.contains("cdi-1.2"));
+        assertTrue("CDI was not among the loaded features", featuresMessage.contains("cdi-"));
 
         assertNotNull("Did not recieve app started message",
                       client.waitForStringInCopiedLog("Client App Start", 0));

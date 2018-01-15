@@ -99,6 +99,12 @@ public class ServerCommandPortTest {
             assertTrue(output.contains("CWWKE0090W"));
             validateDumpFile(output, server, COMMAND_PORT_DISABLED_SERVER_NAME);
 
+            output = server.executeServerScript("pause", null).getStdout();
+            assertTrue(output.contains("CWWKE0944E"));
+
+            output = server.executeServerScript("resume", null).getStdout();
+            assertTrue(output.contains("CWWKE0945E"));
+
             // stopping the server should produce an error
             output = server.executeServerScript("stop", null).getStdout();
             assertTrue(output.contains("CWWKE0089E"));

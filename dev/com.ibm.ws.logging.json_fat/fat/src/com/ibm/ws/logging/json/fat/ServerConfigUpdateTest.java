@@ -58,13 +58,11 @@ public class ServerConfigUpdateTest {
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertTrue("Log is in unexpected basic format.  line=" + line, line.startsWith("{"));
 
-/*
- * Temporary disabled due to JSON format cannot be switched back to basic (Issue #1381)
- * // Switch back to basic format
- * line = setConfig(SERVER_XML_BASIC);
- * Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
- * Assert.assertFalse("Log is in unexpected JSON format.  line=" + line, line.startsWith("{"));
- */
+        // Switch back to basic format
+        line = setConfig(SERVER_XML_BASIC);
+        Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
+        Assert.assertFalse("Log is in unexpected JSON format.  line=" + line, line.startsWith("{"));
+
     }
 
     @Test
@@ -80,13 +78,11 @@ public class ServerConfigUpdateTest {
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertTrue("Log is in unexpected basic format.  line=" + line, line.startsWith("{"));
 
-/*
- * Temporary disabled due to JSON format cannot be switched back to basic (Issue #1381)
- * // Switch back to basic format
- * line = setConfig(SERVER_XML_BASIC);
- * Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
- * Assert.assertFalse("Log is in unexpected JSON format.  line=" + line, line.startsWith("{"));
- */
+        // Switch back to basic format
+        line = setConfig(SERVER_XML_BASIC);
+        Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
+        Assert.assertFalse("Log is in unexpected JSON format.  line=" + line, line.startsWith("{"));
+
     }
 
     private static String setConfig(String fileName, RemoteFile remoteFile) throws Exception {

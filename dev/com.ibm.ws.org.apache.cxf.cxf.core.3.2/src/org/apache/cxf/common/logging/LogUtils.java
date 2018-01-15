@@ -163,7 +163,7 @@ public final class LogUtils {
      */
     public static Logger getLogger(Class<?> cls) {
         //Liberty Change for CXF Begain
-        return createLogger(cls, null, cls.getName() + cls.getClassLoader());
+        return createLogger(cls, null, cls.getName() + getClassLoader(cls));
         //Liberty Change for CXF End
     }
 
@@ -176,7 +176,7 @@ public final class LogUtils {
      */
     public static Logger getLogger(Class<?> cls, String resourcename) {
         //Liberty Change for CXF Begain
-        return createLogger(cls, resourcename, cls.getName() + cls.getClassLoader());
+        return createLogger(cls, resourcename, cls.getName() + getClassLoader(cls));
         //Liberty Change for CXF End
     }
 
@@ -201,8 +201,8 @@ public final class LogUtils {
      * @return an appropriate Logger
      */
     public static Logger getL7dLogger(Class<?> cls) {
-        //Liberty Change for CXF Begain
-        return createLogger(cls, null, cls.getName() + cls.getClassLoader());
+        //Liberty Change for CXF Begin
+        return createLogger(cls, null, cls.getName() + getClassLoader(cls));
         //Liberty Change for CXF End
     }
 
@@ -215,7 +215,7 @@ public final class LogUtils {
      */
     public static Logger getL7dLogger(Class<?> cls, String resourcename) {
         //Liberty Change for CXF Begain
-        return createLogger(cls, resourcename, cls.getName() + cls.getClassLoader());
+        return createLogger(cls, resourcename, cls.getName() + getClassLoader(cls));
         //Liberty Change for CXF End
     }
 

@@ -152,9 +152,10 @@ public abstract class InjectionRuntimeContextHelper {
             //boolean isReplaced = false;
             Object newProviderInstance = null;
             for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
-                if (beanCustomizer.isCustomizableBean(clz, beanCustomizerContexts.get(createCustomizerKey(beanCustomizer)))) {
+                Object context = beanCustomizerContexts.get(createCustomizerKey(beanCustomizer));
+                if (beanCustomizer.isCustomizableBean(clz, context)) {
 
-                    newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())), message);
+                    newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), context, message);
 
                     /**
                      * if newProviderInstance!= the original object, which means it is replaced to EJB or CDI, so just return

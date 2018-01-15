@@ -10,17 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.archaius.impl;
 
-import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
-import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.ws.microprofile.config.impl.ConfigBuilderImpl;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.config.interfaces.PriorityConverterMap;
 
 public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements ConfigBuilder {
 
@@ -40,7 +38,7 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
         ArchaiusConfigImpl config = null;
         synchronized (this) {
             SortedSources sources = getSources();
-            Map<Type, Converter<?>> converters = getConverters();
+            PriorityConverterMap converters = getConverters();
             ScheduledExecutorService executor = getScheduledExecutorService();
             long refreshInterval = getRefreshInterval();
 
@@ -57,7 +55,7 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
     //   java.lang.SecurityException: Exception creating permissions: class com.ibm.oti.shared.SharedClassPermission: Access denied ("java.lang.RuntimePermission" "accessClassInPackage.com.ibm.oti.shared")
     //
     //https://www.ibm.com/support/knowledgecenter/SSYKE2_6.0.0/com.ibm.java.api.60.doc/com.ibm.oti.shared/com/ibm/oti/shared/SharedClassPermission.html
-    private ArchaiusConfigImpl build(SortedSources sources, Map<Type, Converter<?>> converters, ScheduledExecutorService executor, long refreshInterval) {
+    private ArchaiusConfigImpl build(SortedSources sources, PriorityConverterMap converters, ScheduledExecutorService executor, long refreshInterval) {
         ArchaiusConfigImpl config = AccessController.doPrivileged(new PrivilegedAction<ArchaiusConfigImpl>() {
             @Override
             public ArchaiusConfigImpl run() {
@@ -66,5 +64,4 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
         });
         return config;
     }
-
 }

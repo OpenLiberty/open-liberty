@@ -11,15 +11,13 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -106,8 +104,8 @@ public class URAPIs_PropertiesNotSupportedTest {
         String user = "testuser";
         String password = "testuserpwd";
         Log.info(c, "checkPassword", "Checking good credentials");
-        equalDNs("Authentication should succeed.",
-                 "cn=testuser,o=ibm,c=us", servlet.checkPassword(user, password));
+        assertDNsEqual("Authentication should succeed.",
+                       "cn=testuser,o=ibm,c=us", servlet.checkPassword(user, password));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -170,7 +168,7 @@ public class URAPIs_PropertiesNotSupportedTest {
         String user = "testuser";
         String uniqueUserId = "cn=testuser,o=ibm,c=us";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
-        equalDNs("Unique names should be equal ", uniqueUserId, servlet.getUniqueUserId(user));
+        assertDNsEqual("Unique names should be equal ", uniqueUserId, servlet.getUniqueUserId(user));
     }
 
     /**
@@ -182,7 +180,7 @@ public class URAPIs_PropertiesNotSupportedTest {
         String user = "testuser";
         String uniqueUserId = "cn=testuser,o=ibm,c=us";
         Log.info(c, "getUserSecurityName", "Checking with a valid user.");
-        equalDNs("", uniqueUserId, servlet.getUserSecurityName(user));
+        assertDNsEqual("UniqueUserId is incorrect", uniqueUserId, servlet.getUserSecurityName(user));
     }
 
     /**
@@ -243,7 +241,7 @@ public class URAPIs_PropertiesNotSupportedTest {
         String group = "grp1";
         String uniqueGroupId = "cn=grp1,o=ibm,c=us";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -284,9 +282,4 @@ public class URAPIs_PropertiesNotSupportedTest {
         assertEquals("There should only be one entry", 1, list.size());
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

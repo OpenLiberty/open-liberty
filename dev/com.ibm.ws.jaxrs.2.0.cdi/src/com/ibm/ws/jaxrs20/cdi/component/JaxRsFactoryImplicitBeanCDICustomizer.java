@@ -361,7 +361,12 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         EndpointInfo endpointInfo = context.getEndpointInfo();
         Set<ProviderResourceInfo> perRequestProviderAndPathInfos = endpointInfo.getPerRequestProviderAndPathInfos();
         Set<ProviderResourceInfo> singletonProviderAndPathInfos = endpointInfo.getSingletonProviderAndPathInfos();
-        Map<Class<?>, ManagedObject<?>> resourcesManagedbyCDI = new ThreadBasedHashMap();//HashMap<Class<?>, ManagedObject<?>>();
+
+        //The resources map may already exist on the context.  If it does we will want to add to it.
+        Map<Class<?>, ManagedObject<?>> resourcesManagedbyCDI = (Map<Class<?>, ManagedObject<?>>)context.getContextObject();
+        if (resourcesManagedbyCDI == null || !(resourcesManagedbyCDI instanceof ThreadBasedHashMap)) {
+            resourcesManagedbyCDI = new ThreadBasedHashMap();//HashMap<Class<?>, ManagedObject<?>>();
+        }
 
         CXFJaxRsProviderResourceHolder cxfPRHolder = context.getCxfRPHolder();
         for (ProviderResourceInfo p : perRequestProviderAndPathInfos) {
