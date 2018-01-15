@@ -12,7 +12,7 @@ package com.ibm.ws.logging.data;
 
 public class KeyValuePair implements Pair {
 
-    public enum ValueTypes {
+    public static enum ValueTypes {
         STRING, NUMBER
     }
 
