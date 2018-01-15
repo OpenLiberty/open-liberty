@@ -17,7 +17,7 @@
 	com.ibm.ws.managedobject;version=latest, \
 	com.ibm.ws.org.apache.commons.io.1.4;version=latest, \
 	com.ibm.websphere.security;version=latest, \
-	com.ibm.ws.org.apache.commons.fileupload;version=latest, \
+	com.ibm.ws.org.apache.commons.fileupload.1.3.3;version=latest, \
 	com.ibm.ws.webcontainer.servlet.4.0;version=latest, \
 	com.ibm.ws.webcontainer.servlet.3.1;version=latest, \
 	com.ibm.ws.session;version=latest, \
