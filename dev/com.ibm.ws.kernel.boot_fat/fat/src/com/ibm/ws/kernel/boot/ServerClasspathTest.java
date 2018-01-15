@@ -41,7 +41,9 @@ public class ServerClasspathTest {
                                                         "com.ibm.misc", "com.ibm.xml", "com.ibm.nio", "com.ibm.jvm",
                                                         "org.apache.xerces", "com.ibm.Compiler", "com.ibm.oti",
                                                         "org.omg.CORBA", "com.sun", "org.xml.sax", "com.ibm.jit",
-                                                        "com.ibm.jsse2", "com.ibm.lang.management", "com.ibm.tools.attach",
+                                                        "com.ibm.jsse2", "com.ibm.lang.management",
+                                                        "com.ibm.java.lang.management.internal", // openj9
+                                                        "com.ibm.tools.attach",
                                                         "com.ibm.virtualization.management", "com.ibm.wsspi.kernel",
                                                         "com.ibm.ws.staticvalue",
                                                         "jdk." // Java 9
