@@ -4,10 +4,8 @@
   version="2.2">
   <persistence-unit name="JPAPU">
    	<properties>
-		<!-- EclipseLink should create the database schema automatically -->
-		<property name="eclipselink.ddl-generation" value="create-tables" />
-		<property name="eclipselink.ddl-generation.output-mode" value="both" />
-		<property name="eclipselink.cache.shared.default" value="false"/>
+		<!-- We can get away with only 'create' instead of 'drop-and-create' because we're using an in-mem DB -->
+		<property name="javax.persistence.schema-generation.database.action" value="create" />
 	</properties>
   </persistence-unit>
 </persistence>
