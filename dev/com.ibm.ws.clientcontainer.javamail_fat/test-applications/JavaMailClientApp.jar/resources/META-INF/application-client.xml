@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-client version="7" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application-client_7.xsd">
+ <display-name>JavaMailClientApp</display-name>
+ 
+ <!-- Mail Session -->
+ <mail-session>
+    <description>Sample Mail Session definition</description>
+    <name>java:comp/mail/MySession</name>
+    <store-protocol>imap</store-protocol>
+    <transport-protocol>smtp</transport-protocol>
+    <host>localhost</host>
+    <user>user</user>
+    <!-- commented out because of known Liberty defect handling password
+    <password>secret</password>
+    -->
+    <from>fat@testserver.com</from>
+    <property>
+        <name>mail.smtp.starttls.enable</name>
+        <value>true</value>
+     </property>
+     <property>
+        <name>mail.imap.connectiontimeout</name>
+        <value>500</value>
+     </property>
+</mail-session>
+
+</application-client>
