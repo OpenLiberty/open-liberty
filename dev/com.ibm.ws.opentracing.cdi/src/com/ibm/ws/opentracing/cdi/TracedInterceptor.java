@@ -54,8 +54,8 @@ public class TracedInterceptor {
      * @throws Exception Thrown by wrapped method.
      */
     @AroundInvoke
-    public Object executeFT(InvocationContext context) throws Exception {
-        String methodName = "executeFT";
+    public Object execute(InvocationContext context) throws Exception {
+        String methodName = "execute";
 
         String classOperationName = OpentracingService.getClassOperationName(context.getMethod());
         String methodOperationName = OpentracingService.getMethodOperationName(context.getMethod());
