@@ -24,11 +24,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -68,10 +66,13 @@ import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
+import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
+import componenttest.topology.utils.PrivHelper;
 
 public class LibertyClient {
     protected static final Class<?> c = LibertyClient.class;
@@ -80,121 +81,35 @@ public class LibertyClient {
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300;
 
-    protected static final String DEBUGGING_PORT = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("debugging.port");
-        }
-    });
-
+    protected static final String DEBUGGING_PORT = PrivHelper.getProperty("debugging.port");
     protected static final boolean DEFAULT_PRE_CLEAN = true;
-
-    protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            // Default is true if not set.
-            return System.getProperty("default.clean.start", "true");
-        }
-    }));
-
+    protected static final boolean DEFAULT_CLEANSTART = Boolean.parseBoolean(PrivHelper.getProperty("default.clean.start", "true"));
     protected static final boolean DEFAULT_VALIDATE_APPS = true;
     public static boolean VALIDATE_APPS = DEFAULT_VALIDATE_APPS;
 
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
-
-    protected static final String JAVA_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
-
+    protected static final String JAVA_VERSION = PrivHelper.getProperty("java.version");
     protected static final boolean JAVA_VERSION_6 = javaInfo.majorVersion() == 6;
-
     protected static final boolean J9_JVM_RUN = javaInfo.vendor() == Vendor.IBM;
-
     protected static final boolean HOTSPOT_JVM_RUN = javaInfo.vendor() == Vendor.SUN_ORACLE;
 
-    protected static final String MAC_RUN = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("fat.on.mac");
-        }
-    });
-    protected static final String GLOBAL_TRACE = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String prop = System.getProperty("global.trace.spec");
-            return prop == null ? "" : prop.trim();
-        }
-    });
+    protected static final String MAC_RUN = PrivHelper.getProperty("fat.on.mac");
+    protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
+    protected static final boolean GLOBAL_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
+                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
+                    : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
+    protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
+    protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
+    protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
+    protected static final String JAVA_AGENT_FOR_JACOCO = PrivHelper.getProperty("javaagent.for.jacoco");
+    protected static final String RELEASE_MICRO_VERSION = PrivHelper.getProperty("micro.version");
 
-    protected static final boolean GLOBAL_JAVA2SECURITY = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String prop = System.getProperty("global.java2.sec");
-            boolean java2security = false;
-            if (prop != null) {
-                Log.info(c, "<clinit>", "global.java2.sec=" + prop);
-                java2security = Boolean.parseBoolean(prop);
-            }
-            Log.info(c, "<clinit>", "GLOBAL_JAVA2SECURITY=" + java2security);
-            return java2security;
-        }
-    });
-
-    protected static final String GLOBAL_JVM_ARGS = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String prop = System.getProperty("global.jvm.args");
-            return prop == null ? "" : prop.trim();
-        }
-    });
-    protected static final String TMP_DIR = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.io.tmpdir");
-        }
-    });
-
-    protected static final boolean DO_COVERAGE = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-        @Override
-        public Boolean run() {
-            String fatCoverageString = System.getProperty("test.coverage");
-            boolean fatcoverage = false;
-            if (fatCoverageString != null) {
-                Log.info(c, "<clinit>", "test.coverage=" + fatCoverageString);
-                fatcoverage = Boolean.parseBoolean(fatCoverageString);
-            }
-            Log.info(c, "<clinit>", "DO_COVERAGE=" + fatcoverage);
-            return fatcoverage;
-        }
-    });
-
-    protected static final String JAVA_AGENT_FOR_JACOCO = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String agent = System.getProperty("javaagent.for.jacoco");
-            Log.info(c, "<clinit>", "JAVA_AGENT_FOR_JACOCO=" + agent);
-            return agent;
-        }
-    });
-
-    protected static final String RELEASE_MICRO_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String micro = System.getProperty("micro.version");
-            Log.info(c, "<clinit>", "RELEASE_MICRO_VERSION=" + micro);
-            return micro;
-        }
-    });
-
-    protected static final int CLIENT_START_TIMEOUT = 30 * 1000;
-    protected static final int CLIENT_STOP_TIMEOUT = 30 * 1000;
+    protected static final int CLIENT_START_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 15 * 1000 : 30 * 1000;
+    protected static final int CLIENT_STOP_TIMEOUT = CLIENT_START_TIMEOUT;
 
     // Increasing this from 50 seconds to 120 seconds to account for poorly performing code;
     // this timeout should only pop in the event of an unexpected failure of apps to start.
-    protected static final int LOG_SEARCH_TIMEOUT = 120 * 1000;
+    protected static final int LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     protected ApplicationManager appmgr;
 
@@ -328,17 +243,12 @@ public class LibertyClient {
     protected String logStamp;
 
     //List of patterns to ignore when checking logs
-    protected List<Pattern> ignorePatterns;
+    protected final List<Pattern> ignorePatterns = new ArrayList<Pattern>();
 
     //Default list of patterns to ignore when checking logs
     protected List<String> fixedIgnoreErrorsList;
 
     protected boolean checkingDisabled;
-
-    //list of servers exempt from log error and failure checking
-    protected HashMap<String, String> clientsExemptFromChecking = null;
-
-    protected Set<String> clientsExemptFromJava2SecurityTesting = null;
 
     /**
      * @param clientCleanupProblem the clientCleanupProblem to set
@@ -721,12 +631,11 @@ public class LibertyClient {
 
             if (clientNeedsToRunWithJava2Security()) {
                 addJava2SecurityPropertiesToBootstrapFile(f);
+                Log.info(c, "startClientWithArgs", "Java 2 Security enabled for client " + getClientName() + " because GLOBAL_JAVA2SECURITY=true");
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT client " + getClientName() +
                             " is exempt from Java 2 Security regression testing.");
             }
-
-            Log.info(c, "<clinit>", "JVM_ARGS = " + JVM_ARGS);
         }
 
         // Look for forced client trace..
@@ -844,51 +753,6 @@ public class LibertyClient {
         postStopClientArchive();
         Log.exiting(c, method);
         return output;
-    }
-
-    private boolean clientNeedsToRunWithJava2Security() {
-        String method = "clientNeedsToRunWithJava2Security";
-        Log.info(c, method, "Entering clientNeedsToRunWithJava2Security");
-        boolean result = true;
-        String clientName = getClientName();
-
-        try {
-            if (clientsExemptFromJava2SecurityTesting == null) {
-                loadJava2SecurityExemptClients();
-            }
-            Log.info(c, method, "Checking Client Name " + clientName);
-            return !clientsExemptFromJava2SecurityTesting.contains(clientName);
-        } catch (Exception e) {
-            Log.info(c, method, "Error determining Exempt Clients " + e.toString());
-            Log.info(c, method, "Skipping modification of the bootstrap.properties file to enable Java 2 Security on client " + clientName);
-            result = false;
-        }
-        return result;
-    }
-
-    private void loadJava2SecurityExemptClients() throws Exception {
-        String method = "loadJava2SecurityExemptClients";
-        BufferedReader br = null;
-        Log.info(c, method, "loading exempt clients list");
-        RemoteFile exempt = new RemoteFile(machine, clientRoot + "/java2SecurityExemptClientsList.txt");
-        try {
-            br = new BufferedReader(new InputStreamReader(exempt.openForReading()));
-            String line = br.readLine();
-            clientsExemptFromJava2SecurityTesting = new HashSet<String>();
-            while (line != null) {
-                if (line.startsWith("#") == false) {
-                    clientsExemptFromJava2SecurityTesting.add(line.trim());
-                }
-                line = br.readLine();
-            }
-        } catch (Exception e) {
-            Log.info(c, method, "Error loading Java 2 Security exempt clients list " + e.toString());
-            throw e;
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
     }
 
     private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f) throws Exception {
@@ -1493,7 +1357,7 @@ public class LibertyClient {
     protected void checkLogsForErrorsAndWarnings() throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
-        if (!isClientExemptFromChecking()) {
+        if (!checkingDisabled) {
             // Get all warnings and errors in logs
             List<String> errorsInLogs = null;
             try {
@@ -1503,24 +1367,21 @@ public class LibertyClient {
             }
             //Add default Errors to the list of errors to ignore
             if (fixedIgnoreErrorsList != null && fixedIgnoreErrorsList.size() != 0) {
-                if (ignorePatterns == null)
-                    ignorePatterns = new ArrayList<Pattern>();
                 for (String ignoreRegEx : fixedIgnoreErrorsList) {
                     ignorePatterns.add(Pattern.compile(ignoreRegEx));
                 }
             }
 
             // Remove any ignored warnings or patterns
-            if (ignorePatterns != null)
-                for (Pattern ignorePattern : ignorePatterns) {
-                    Iterator<String> iter = errorsInLogs.iterator();
-                    while (iter.hasNext()) {
-                        if (ignorePattern.matcher(iter.next()).find()) {
-                            // this is an ignored warning/error, remove it from list
-                            iter.remove();
-                        }
+            for (Pattern ignorePattern : ignorePatterns) {
+                Iterator<String> iter = errorsInLogs.iterator();
+                while (iter.hasNext()) {
+                    if (ignorePattern.matcher(iter.next()).find()) {
+                        // this is an ignored warning/error, remove it from list
+                        iter.remove();
                     }
                 }
+            }
 
             Exception ex = null;
             if (errorsInLogs != null && !errorsInLogs.isEmpty()) {
@@ -1636,7 +1497,6 @@ public class LibertyClient {
      * @throws Exception
      */
     protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
-        String method = "recursivelyCopyDirectory";
         destination.mkdirs();
 
         ArrayList<String> logs = new ArrayList<String>();
@@ -2988,16 +2848,9 @@ public class LibertyClient {
      * Get the mark offset for the specified log file.
      */
     protected Long getMarkOffset(String logFile) {
-
-        String method = "getMarkOffset";
-        Log.finer(c, method, logFile);
-
         if (!logMarks.containsKey(logFile)) {
-            Log.finer(c, method, "file does not exist in logMarks, set initial offset");
             logMarks.put(logFile, 0L);
         }
-
-        Log.info(LibertyClient.class, "getMarkOffset", "mark offset=" + logMarks.get(logFile));
         return logMarks.get(logFile);
     }
 
@@ -3011,16 +2864,9 @@ public class LibertyClient {
      * @return Long containing the offset into the file of the last message inspected
      */
     protected Long getLogOffset(String logFile) {
-
-        String method = "getLogOffset";
-        Log.finer(c, "getLogOffset", logFile);
-
         if (!logOffsets.containsKey(logFile)) {
-            Log.finer(c, method, "file does not exist in logOffsets, set initial offset");
             logOffsets.put(logFile, 0L);
         }
-
-        Log.info(LibertyClient.class, "getLogOffset", "log offset=" + logOffsets.get(logFile));
         return logOffsets.get(logFile);
     }
 
@@ -3028,8 +2874,7 @@ public class LibertyClient {
      * Update the log offset for the specified log file to the offset provided.
      */
     public void updateLogOffset(String logFile, Long newLogOffset) {
-        Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
-        Log.info(LibertyClient.class, "updateLogOffset", "old log offset=" + oldLogOffset + ", new log offset=" + newLogOffset);
+        logOffsets.put(logFile, newLogOffset);
     }
 
     /**
@@ -3972,7 +3817,6 @@ public class LibertyClient {
             }
 
             // Compile set of regex's
-            ignorePatterns = new ArrayList<Pattern>(regex.length);
             if (expectedErrors != null && expectedErrors.size() != 0)
                 for (String ignoreRegEx : expectedErrors) {
                     ignorePatterns.add(Pattern.compile(ignoreRegEx));
@@ -3980,75 +3824,27 @@ public class LibertyClient {
                         checkingDisabled = true;
                 }
         } else {
-            if (ignorePatterns != null) {
-                ignorePatterns.clear();
-                ignorePatterns = null;
-            }
+            ignorePatterns.clear();
         }
     }
 
-    /**
-     * Checks the current client to see if it is eligible
-     * for log checking.
-     *
-     * @param none
-     *
-     * @return boolean true - no need to check, false - check for errors
-     */
-    protected boolean isClientExemptFromChecking() {
-
-        String method = "isClientExemptFromChecking";
-        Log.info(c, method, "Entering isClientExemptFromChecking");
-        boolean result = true;
-        if (!checkingDisabled) {
-            try {
-                if (clientsExemptFromChecking == null) {
-                    loadExemptClients();
-                }
-                Log.info(c, method, "Checking Client Name " + getClientName());
-                String foundClient = clientsExemptFromChecking.get(getClientName());
-                if (foundClient == null)
-                    result = false;
-
-            } catch (Exception e) {
-                Log.info(c, "isClientExemptFromChecking", "Error determing Exempt Clients " + e.toString());
-            }
-        }
-
-        return result;
-
-    }
-
-    /**
-     * Reads a list of exempt servers into a HashMap for later searching.
-     *
-     * @param none
-     *
-     * @return none
-     */
-
-    protected void loadExemptClients() throws Exception {
-        String method = "loadExemptClients";
-        BufferedReader br = null;
-        clientsExemptFromChecking = new HashMap<String, String>(1000);
-        Log.info(c, method, "loading exempt client list");
-        RemoteFile exempt = new RemoteFile(machine, clientRoot + "/exemptClientsList.txt");
+    protected Properties getBootstrapProperties() {
+        Properties props = new Properties();
         try {
-            br = new BufferedReader(new InputStreamReader(exempt.openForReading()));
-            for (String line; (line = br.readLine()) != null;) {
-                if (line.indexOf("#") < 0) {
-                    clientsExemptFromChecking.put(line.trim(), line.trim());
-                }
-            }
-        } catch (Exception e) {
-            Log.info(c, method, "Error loading Exempt Client list " + e.toString());
-            clientsExemptFromChecking = null;
-            throw e;
-        } finally {
-            if (br != null)
-                br.close();
+            String serverEnv = FileUtils.readFile(getClientRoot() + "/bootstrap.properties");
+            props.load(new StringReader(serverEnv.replace("\\", "\\\\")));
+        } catch (IOException ignore) {
         }
+        return props;
+    }
 
+    private boolean clientNeedsToRunWithJava2Security() {
+        // Allow clients to opt-out of j2sec by setting
+        // websphere.java.security.exempt=true
+        // in their ${client.config.dir}/bootstrap.properties
+        boolean j2secEnabled = !("true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt")));
+        Log.info(c, "clientNeedsToRunWithJava2Security", "Will client " + getClientName() + " run with Java 2 Security enabled?  " + j2secEnabled);
+        return j2secEnabled;
     }
 
     /*
