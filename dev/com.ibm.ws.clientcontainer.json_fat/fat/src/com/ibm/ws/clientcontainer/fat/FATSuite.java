@@ -14,24 +14,26 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.custom.junit.runner.AlwaysPassesTest;
-
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    AlwaysPassesTest.class,
 	JsonpAppClientTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() // run once with pre-configured feature set
+                                             .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     public static EnterpriseArchive jsonpAppClientApp;
     
