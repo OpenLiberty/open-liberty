@@ -8,17 +8,17 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.SNAPSHOT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.20180115}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 javac.source: 1.8
 javac.target: 1.8
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.SNAPSHOT}!/!META-INF/MANIFEST.MF,\
+  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.2.2.20180115}!/!META-INF/MANIFEST.MF,\
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-rs-mp-client;version=3.2.2.SNAPSHOT,\
+  org.apache.cxf:cxf-rt-rs-mp-client;version=3.2.2.20180115,\
   com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
