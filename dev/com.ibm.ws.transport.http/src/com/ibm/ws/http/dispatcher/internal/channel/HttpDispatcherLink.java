@@ -285,6 +285,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.sslinfo = null;
     }
 
+    /**
+     * Handle a new HTTP/2 link initialized via SSL
+     */
+    public void alpnHttp2Ready() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "handleHttp2 entry: " + this);
+        }
+        H2InboundLink h2link = new H2InboundLink(getHttpInboundLink2().getChannel(), vc, getTCPConnectionContext());
+        h2link.reinit(this.getTCPConnectionContext(), vc, h2link);
+        h2link.handleHTTP2AlpnConnect(h2link);
+        this.setDeviceLink(h2link);
+        h2link.processRead(vc, this.getTCPConnectionContext().getReadInterface());
+    }
+
     /*
      * @see com.ibm.wsspi.channelfw.ConnectionReadyCallback#ready(com.ibm.wsspi.channelfw.VirtualConnection)
      */
@@ -298,6 +312,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.myChannel.incrementActiveConns();
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
+
+        // if this is an http/2 link, process via that ready
+        if (this.getHttpInboundLink2().isAlpnHttp2Link(inVC)) {
+            alpnHttp2Ready();
+            return;
+        }
 
         // Make sure to initialize the response in case of an early-return-error message
         this.response.init(this.isc);

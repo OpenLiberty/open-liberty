@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -83,8 +82,6 @@ public class H2StreamProcessor {
     // keep track of the state of this stream's headers
     private boolean headersCompleted = false;
     private boolean continuationExpected = false;
-    private boolean trailerExpected = false;
-    private List<String> trailerHeaderNames;
 
     // the anticipated content length, as passed in from a content-length header
     private int expectedContentLength = -1;
@@ -881,7 +878,6 @@ public class H2StreamProcessor {
                 if (currentFrame.flagEndHeadersSet()) {
                     processCompleteHeaders();
                     setHeadersComplete();
-                    setReadyForRead();
                 } else {
                     setContinuationFrameExpected(true);
                 }
@@ -889,6 +885,9 @@ public class H2StreamProcessor {
                 if (currentFrame.flagEndStreamSet()) {
                     endStream = true;
                     updateStreamState(StreamState.HALF_CLOSED_REMOTE);
+                    if (currentFrame.flagEndHeadersSet()) {
+                        setReadyForRead();
+                    }
                 } else {
                     updateStreamState(StreamState.OPEN);
                 }
@@ -919,11 +918,11 @@ public class H2StreamProcessor {
                 }
             } else if (frameType == FrameTypes.CONTINUATION ||
                        (frameType == FrameTypes.HEADERS)) {
+                // if this is a header frame, it must be trailer data
                 getHeadersFromFrame();
                 if (currentFrame.flagEndHeadersSet()) {
                     processCompleteHeaders();
                     setHeadersComplete();
-                    setReadyForRead();
                     if (currentFrame.flagEndStreamSet()) {
                         setReadyForRead();
                     }
@@ -1139,6 +1138,8 @@ public class H2StreamProcessor {
                 // stream was in open state, meaning that trailer headers were sent
                 if (state != StreamState.IDLE && state != StreamState.OPEN) {
                     throw new ProtocolException("HEADERS Frame Received in the wrong state of: " + state);
+                } else if (state == StreamState.OPEN && !currentFrame.flagEndStreamSet()) {
+                    throw new ProtocolException("second HEADERS frame received with no EOS set");
                 }
                 break;
 
@@ -1268,13 +1269,11 @@ public class H2StreamProcessor {
      * Call when all header block fragments for a header block have been received
      */
     private void setHeadersComplete() {
-        if (!trailerExpected) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "completed headers have been received stream " + myID);
-            }
-            headersCompleted = true;
-            setContinuationFrameExpected(false);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "completed headers have been received stream " + myID);
         }
+        headersCompleted = true;
+        setContinuationFrameExpected(false);
     }
 
     public boolean isContinuationFrameExpected() {
@@ -1349,7 +1348,7 @@ public class H2StreamProcessor {
             H2HeaderField current = null;
             boolean isFirstHeaderBlock;
             boolean isFirstHeader = true;
-            boolean processTrailerHeaders = trailerExpected;
+            boolean processTrailerHeaders = headersCompleted;
 
             //Decode headers until we reach the end of the buffer
             while (buf.hasRemaining()) {
@@ -1395,31 +1394,12 @@ public class H2StreamProcessor {
                     }
                     headers.add(current);
                 }
-                // check to see if the header name is "trailers"; if so, parse the value for later use
-                if ("trailer".equalsIgnoreCase(current.getName()) && trailerHeaderNames == null) {
-                    this.trailerExpected = true;
-                    headersCompleted = false;
-                    String[] trailerHeaders = current.getValue().split(",");
-                    for (String header : trailerHeaders) {
-                        header.trim();
-                    }
-                    trailerHeaderNames = java.util.Arrays.asList(trailerHeaders);
-                }
             }
             // only set headers on the link once
             if (!processTrailerHeaders && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
                 //Add all decoded pseudo-headers / headers to the H2 inbound link wrap
                 this.h2HttpInboundLinkWrap.setReadHeaders(headers);
                 this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);
-                // add any trailer headers to the link header list
-            } else if (processTrailerHeaders) {
-                trailerExpected = false;
-                ArrayList<H2HeaderField> readHeaders = h2HttpInboundLinkWrap.getReadHeaders();
-                for (H2HeaderField header : headers) {
-                    if (trailerHeaderNames.contains(header.getName())) {
-                        readHeaders.add(header);
-                    }
-                }
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
