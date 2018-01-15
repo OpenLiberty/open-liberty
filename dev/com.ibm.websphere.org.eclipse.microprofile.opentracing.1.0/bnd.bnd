@@ -30,7 +30,8 @@ WS-TraceGroup: OPENTRACING
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	org.eclipse.microprofile.opentracing:microprofile-opentracing-api;version=1.0
 
 #instrument.disabled: true
 
