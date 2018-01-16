@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.collector.manager;
+package com.ibm.ws.collector.manager.buffer;
 
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Array;

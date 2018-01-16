@@ -28,6 +28,7 @@ public class BufferManagerImpl extends BufferManager {
     private Buffer<Object> ringBuffer;
 	private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
 	private Set<SynchronousHandler> synchronizedHandlerSet = new HashSet<SynchronousHandler>();
+	private int capacity;
 
 	private final String sourceId;
 	/* Map to keep track of the next event for a handler */
@@ -37,6 +38,7 @@ public class BufferManagerImpl extends BufferManager {
 		super();
 		ringBuffer=null;
 		this.sourceId = sourceId;
+		this.capacity = capacity;
 	}
 	
 	@Override
@@ -44,41 +46,50 @@ public class BufferManagerImpl extends BufferManager {
 		if (event == null)
 			throw new NullPointerException();
 
-		/*
-		 * Check if we have any synchronized handlers, and write directly to
-		 * them
-		 */
-		if (!synchronizedHandlerSet.isEmpty()) {
+		RERWLOCK.readLock().lock();
+		try {
+			
 			/*
-			 * There can be many Reader locks, but only one writer lock. This
-			 * ReaderWriter lock is needed to avoid CMException when the add()
-			 * method is forwarding log events to synchronized handlers and an
-			 * addSyncHandler or removeSyncHandler is called
+			 * Check if we have any synchronized handlers, and write directly to
+			 * them
 			 */
-			RERWLOCK.readLock().lock();
-			try {
+			if (!synchronizedHandlerSet.isEmpty()) {
+				/*
+				 * There can be many Reader locks, but only one writer lock. This
+				 * ReaderWriter lock is needed to avoid CMException when the add()
+				 * method is forwarding log events to synchronized handlers and an
+				 * addSyncHandler or removeSyncHandler is called
+				 */
 				for (SynchronousHandler synchronizedHandler : synchronizedHandlerSet) {
 					synchronizedHandler.synchronousWrite(event);
 				}
-			} finally {
-				RERWLOCK.readLock().unlock();
+				
 			}
-		}
-		
-		//If we have an async handler, then write to ringbuffer
-		if(handlerEventMap.size() > 0){
-			ringBuffer.add(event);
+			try {
+				if(ringBuffer !=  null){
+					ringBuffer.add(event);
+				}
+				
+				if(earlyMessageQueue!=null) {
+					earlyMessageQueue.add(event);
+				}
+			}catch(Exception e){
+				Tr.debug(tc, "Missed Early Message Queue event or failed to add event to RingBuffer: " + event);
+			}
+		} finally {
+				RERWLOCK.readLock().unlock();
 		}
 		
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "Adding event to buffer " + event);
 		}
 		
-		/**
-		 * TODO
-		 * Get rid of early message queue after some specified time
-		 */
-		earlyMessageQueue.add(event);
+	}
+	
+	@Override
+	public void removeEMQ() {
+		System.out.println("Removing EMQ: " + this.sourceId);
+		earlyMessageQueue=null;
 	}
 
 	@Override
@@ -128,13 +139,19 @@ public class BufferManagerImpl extends BufferManager {
 		try {
 			//If it is first async handler subscribed, then create the main buffer
 			if(ringBuffer == null) {
-				ringBuffer = new Buffer<Object>(RING_BUFFER_SIZE);
+				ringBuffer = new Buffer<Object>(capacity);
 			}
-			//Every new Asynchronous handler starts off with all events from EMQ
-			Object holder[] = new Object[EARLY_MESSAGE_QUEUE_SIZE];
-			Object[] messagesList = earlyMessageQueue.toArray(holder);
-			for(Object message: messagesList) {
-				ringBuffer.add(message);
+			/*
+			 * Every new Asynchronous handler starts off with all events from EMQ.
+			 * So we create a copy of current EMQ and sends those messages to RingBuffer
+			 */
+			if(earlyMessageQueue != null && !earlyMessageQueue.isEmpty()) {
+				System.out.println("Sending Early Messages to New Asynchronous Handler: " + handlerId);
+				Object holder[] = new Object[EARLY_MESSAGE_QUEUE_SIZE];
+				Object[] messagesList = earlyMessageQueue.toArray(holder);
+				for(Object message: messagesList) {
+					ringBuffer.add(message);
+				}
 			}
 			handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
 		}finally {
@@ -152,7 +169,7 @@ public class BufferManagerImpl extends BufferManager {
 		RERWLOCK.writeLock().lock();
 		try {
 			//Send messages from EMQ to synchronous handler when it subscribes to receive messages
-			if(!earlyMessageQueue.isEmpty() && !synchronizedHandlerSet.contains(syncHandler)) {
+			if(earlyMessageQueue != null && !earlyMessageQueue.isEmpty() && !synchronizedHandlerSet.contains(syncHandler)) {
 				System.out.println("Sending Early Messages to New Synchronized Handler: " + syncHandler.getHandlerName());
 				Object holder[] = new Object[EARLY_MESSAGE_QUEUE_SIZE];
 				Object[] messagesList = earlyMessageQueue.toArray(holder);
@@ -182,7 +199,15 @@ public class BufferManagerImpl extends BufferManager {
 	}
 
 	public void removeHandler(String handlerId) {
-		handlerEventMap.remove(handlerId);
+		RERWLOCK.writeLock().lock();
+		try {
+			handlerEventMap.remove(handlerId);
+			if(handlerEventMap.isEmpty()) {
+				ringBuffer=null;
+			}
+		} finally {
+			RERWLOCK.writeLock().unlock();
+		}
 	}
 
 	public static class HandlerStats {

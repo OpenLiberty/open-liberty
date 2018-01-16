@@ -10,7 +10,13 @@
  *******************************************************************************/
 package com.ibm.wsspi.collector.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
+
+import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
+
 
 /**
  * Buffer manager is a wrapper around the actual buffer, it controls access to the buffer.
@@ -19,14 +25,35 @@ import java.util.Queue;
  */
 public abstract class BufferManager {
 
-	protected static final int EARLY_MESSAGE_QUEUE_SIZE=1000;
-	protected static final int RING_BUFFER_SIZE=10000;
+	protected static final int EARLY_MESSAGE_QUEUE_SIZE=400;
+	public static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
+	
+	protected volatile static List<BufferManager> bufferManagerList= Collections.synchronizedList(new ArrayList<BufferManager>());
+	public volatile static boolean EMQRemovedFlag = false;
 
-    protected final Queue<Object> earlyMessageQueue;
+	protected Queue<Object> earlyMessageQueue;
     
     protected BufferManager() {
-        earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+    		synchronized(bufferManagerList) {
+    			bufferManagerList.add(this);
+	    		if(!EMQRemovedFlag)
+	    			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+    		}
     }
+    
+	public void removeEMQ() {
+		earlyMessageQueue=null;
+	}
+	
+	public static void removeEMQTrigger(){
+		synchronized(bufferManagerList) {
+			EMQRemovedFlag=true;
+			for(BufferManager i: bufferManagerList) {
+				i.removeEMQ();
+	    			System.out.println("EMQ has been successfully removed: "+i);
+			}
+		}
+	}
 
     /**
      * Method for adding an event to the buffer

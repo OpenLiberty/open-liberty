@@ -54,5 +54,5 @@ test.project: true
 	org.eclipse.osgi;version=latest, \
         com.ibm.ws.logging;version=latest
 
--nojunit: true
+-nojunit: false
 
