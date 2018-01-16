@@ -965,8 +965,13 @@ public class H2InboundLink extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "H2ConnectionTimeout-run: sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
                 }
-
-                streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
+                if (e == null) {
+                    streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
+                } else if (e instanceof Http2Exception){
+                    streamTable.get(0).sendGOAWAYFrame((Http2Exception) e);
+                } else {
+                    streamTable.get(0).sendGOAWAYFrame(new Http2Exception(e.getMessage()));
+                }
 
             } catch (Exception x) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

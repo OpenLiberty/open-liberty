@@ -92,6 +92,9 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     private SSLContext sslContext = null;
     /** Target address for outbound connects. */
     private TCPConnectRequestContext targetAddress = null;
+    /** ALPN protocol negotiated for this link */
+    private String alpnProtocol;
+
 
     private final Lock cleanupLock = new ReentrantLock();
 
@@ -1219,5 +1222,21 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     protected int getVCHash() {
         return this.vcHashCode;
     }
-
+    
+    /**
+     * Set the ALPN protocol negotiated for this link
+     * @param String protocol
+     */
+    public void setAlpnProtocol(String protocol) {
+        this.alpnProtocol = protocol;
+        this.sslConnectionContext.setAlpnProtocol(protocol);
+    }
+    
+    /**
+     * The ALPN protocol negotiated for this link
+     * @return the protocol String, or null if ALPN was not used
+     */
+    public String getAlpnProtocol() {
+        return this.alpnProtocol;
+    }
 }
