@@ -8,15 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.rest.client.fat;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                BasicTest.class,
-                BasicCdiTest.class
-})
-public class FATSuite {}
+@org.osgi.annotation.versioning.Version("1.0.0")
+package org.apache.cxf.microprofile.client.cdi;

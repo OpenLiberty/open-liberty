@@ -19,7 +19,11 @@ javac.target: 1.8
 
 -buildpath: \
   org.apache.cxf:cxf-rt-rs-mp-client;version=3.2.2.20180115,\
+  com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
   com.ibm.ws.logging.core;version=latest
