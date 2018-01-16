@@ -13,7 +13,6 @@ package com.ibm.ws.logging.internal.osgi;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -22,8 +21,6 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
-import com.ibm.ws.logging.WsLogHandler;
-import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
@@ -118,9 +115,9 @@ public class CollectorManagerPipelineConfigurator {
     	bundleContext.registerService(BufferManager.class.getName(), logConduit, returnConduitServiceProps(logSource.getSourceName()));
     	bundleContext.registerService(BufferManager.class.getName(), traceConduit, returnConduitServiceProps(traceSource.getSourceName()));
     	
-        //Register the LogSource and TraceSource as Source and WsLogHandler or WsTracehandler respectively.
-    	bundleContext.registerService(new String[] {Source.class.getName(), WsLogHandler.class.getName()}, logSource, returnSourceServiceProps());
-    	bundleContext.registerService(new String[] {Source.class.getName(), WsTraceHandler.class.getName()}, traceSource, returnSourceServiceProps());
+        //Register the LogSource and TraceSource as Source
+    	bundleContext.registerService(new String[] {Source.class.getName()}, logSource, returnSourceServiceProps());
+    	bundleContext.registerService(new String[] {Source.class.getName()}, traceSource, returnSourceServiceProps());
     	
     	
     	/* Retrieve and register the Handler, if it exists. JsonTraceService creates it and sets it
