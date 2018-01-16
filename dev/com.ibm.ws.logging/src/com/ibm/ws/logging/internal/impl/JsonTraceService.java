@@ -249,19 +249,6 @@ public class JsonTraceService extends BaseTraceService {
             retMe &= internalMsgRouter.route(routedMessage);
         } else {
             earlierMessages.add(routedMessage);
-            /*
-             * If no Routers are set, then there is no way for a message event to go through to LogSource
-             * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
-             * the router.
-             *
-             * When the Router is fully initialized then it will go through to the Router and then LogSource as appropriate.
-             *
-             * logSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
-             * appropriately call setupCollectorManagerPipeline()
-             */
-            if (logSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
-                logSource.publish(routedMessage);
-            }
         }
         return retMe;
     }
@@ -281,7 +268,7 @@ public class JsonTraceService extends BaseTraceService {
          * to trace emitted. We do not want any more pass-throughs.
          */
         try {
-            if (!(counter.incrementCount() > 2)) {
+            if (!(counterForTraceRouter.incrementCount() > 2)) {
                 if (logRecord != null) {
                     Level level = logRecord.getLevel();
                     int levelValue = level.intValue();
@@ -293,26 +280,13 @@ public class JsonTraceService extends BaseTraceService {
                                 retMe &= internalTrRouter.route(routedTrace);
                             } else {
                                 earlierTraces.add(routedTrace);
-                                /*
-                                 * If no Routers are set, then there is no way for a trace event to go through to TraceSource
-                                 * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
-                                 * the router.
-                                 *
-                                 * When the Router is fully initialized then it will go through to the Router and then TraceSource as appropriate.
-                                 *
-                                 * traceSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
-                                 * appropriately call setupCollectorManagerPipeline()
-                                 */
-                                if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
-                                    traceSource.publish(routedTrace);
-                                }
                             }
                         }
                     }
                 }
             }
         } finally {
-            counter.decrementCount();
+            counterForTraceRouter.decrementCount();
         }
         return retMe;
     }
@@ -332,11 +306,13 @@ public class JsonTraceService extends BaseTraceService {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
             String messageLogFormat = formatter.messageLogFormat(logRecord, formattedVerboseMsg);
 
+            RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, messageLogFormat, logRecord);
+
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
             // This has to be checked in this method: direct invocation of system.out
             // and system.err are not subject to message routing.
-            boolean logNormally = invokeMessageRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, messageLogFormat, logRecord));
+            boolean logNormally = invokeMessageRouters(routedMessage);
             if (!logNormally)
                 return;
 
@@ -350,6 +326,11 @@ public class JsonTraceService extends BaseTraceService {
                 //messageLogHandler.writeToLogNormal(messageLogFormat);
                 //keep old behaviour.. otherwise we're just sending it to handler to write to the same log anyways
                 messagesLog.writeRecord(messageLogFormat);
+            } else {
+                // logSource only receives "normal" messages and messages that are not hidden
+                if (logSource != null) {
+                    logSource.publish(routedMessage);
+                }
             }
 
             // console.log
@@ -399,7 +380,35 @@ public class JsonTraceService extends BaseTraceService {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
         String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
-        invokeTraceRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, traceDetail, logRecord));
+
+        RoutedMessage routedTrace = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, traceDetail, logRecord);
+
+        invokeTraceRouters(routedTrace);
+
+        /*
+         * Avoid any feedback traces that are emitted after this point.
+         * The first time the counter increments is the first pass-through.
+         * The second time the counter increments is the second pass-through due
+         * to trace emitted. We do not want any more pass-throughs.
+         */
+        try {
+            if (!(counterForTraceSource.incrementCount() > 2)) {
+                if (logRecord != null) {
+                    Level level = logRecord.getLevel();
+                    int levelValue = level.intValue();
+                    if (levelValue < Level.INFO.intValue()) {
+                        String levelName = level.getName();
+                        if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                            if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
+                                traceSource.publish(routedTrace);
+                            }
+                        }
+                    }
+                }
+            }
+        } finally {
+            counterForTraceSource.decrementCount();
+        }
 
         if (detailLog == systemOut || detailLog == systemErr) {
             //If console json configured, we do not want to write 'normally' to the console.log/stdout/stder
@@ -408,6 +417,7 @@ public class JsonTraceService extends BaseTraceService {
                 writeStreamOutput((SystemLogHolder) detailLog, traceDetail, false);
             }
         } else {
+            // write to trace.log
             detailLog.writeRecord(traceDetail);
         }
     }

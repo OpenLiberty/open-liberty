@@ -112,7 +112,8 @@ public class BaseTraceService implements TrService {
     public static final Logger NULL_LOGGER = null;
     public static final String NULL_FORMATTED_MSG = null;
 
-    protected static RecursionCounter counter = new RecursionCounter();
+    protected static RecursionCounter counterForTraceRouter = new RecursionCounter();
+    protected static RecursionCounter counterForTraceSource = new RecursionCounter();
 
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
@@ -533,7 +534,7 @@ public class BaseTraceService implements TrService {
          * to trace emitted. We do not want any more pass-throughs.
          */
         try {
-            if (!(counter.incrementCount() > 2)) {
+            if (!(counterForTraceRouter.incrementCount() > 2)) {
                 if (logRecord != null) {
                     Level level = logRecord.getLevel();
                     int levelValue = level.intValue();
@@ -551,7 +552,7 @@ public class BaseTraceService implements TrService {
                 }
             }
         } finally {
-            counter.decrementCount();
+            counterForTraceRouter.decrementCount();
         }
 
         return retMe;
