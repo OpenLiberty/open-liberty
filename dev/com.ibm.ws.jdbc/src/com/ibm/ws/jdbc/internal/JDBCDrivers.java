@@ -76,8 +76,8 @@ public class JDBCDrivers {
                                 "com.microsoft.sqlserver.jdbc.SQLServerXADataSource"
         };
         classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.microsoft.sqlserver", classes);
-        classNamesByKey.put("SQLJDBC4.JAR", classes);
-        classNamesByKey.put("SQLJDBC.JAR", classes);
+        classNamesByKey.put("MSSQL-JDBC", classes);
+        classNamesByKey.put("SQLJDBC", classes);
 
         // Informix JDBC driver
         classes = new String[] {
