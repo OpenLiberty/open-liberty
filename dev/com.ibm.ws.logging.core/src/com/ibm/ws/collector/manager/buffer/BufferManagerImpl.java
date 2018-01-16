@@ -19,6 +19,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -42,6 +43,7 @@ public class BufferManagerImpl extends BufferManager {
 	}
 	
 	@Override
+	@FFDCIgnore({ NullPointerException.class })
 	public void add(Object event) {
 		if (event == null)
 			throw new NullPointerException();
@@ -69,13 +71,16 @@ public class BufferManagerImpl extends BufferManager {
 				if(ringBuffer !=  null){
 					ringBuffer.add(event);
 				}
-				
+			}catch(NullPointerException e){
+			}
+			
+			try {
 				if(earlyMessageQueue!=null) {
 					earlyMessageQueue.add(event);
 				}
-			}catch(Exception e){
-				Tr.debug(tc, "Missed Early Message Queue event or failed to add event to RingBuffer: " + event);
+			}catch(NullPointerException e){
 			}
+			
 		} finally {
 				RERWLOCK.readLock().unlock();
 		}
