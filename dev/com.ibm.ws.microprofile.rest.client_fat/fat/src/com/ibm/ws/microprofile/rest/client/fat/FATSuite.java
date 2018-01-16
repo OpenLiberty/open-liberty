@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.extended;
+package com.ibm.ws.microprofile.rest.client.fat;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
