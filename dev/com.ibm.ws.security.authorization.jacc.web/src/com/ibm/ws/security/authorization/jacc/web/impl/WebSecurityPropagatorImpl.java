@@ -69,13 +69,7 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
                 Tr.debug(tc, "Nothing to propagate due to null webAppConfig object.");
             return;
         }
-        SecurityConstraintCollection scc = getSecurityMetadata(webAppConfig).getSecurityConstraintCollection();
-        if (scc == null) {
-            // if null, do nothing since there is no security constraints.
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Nothing to propagate due to no security constraints.");
-            return;
-        }
+
         // if there is the same contextId in the map, delete it. This is for preventing to link PolicyConfiguration incorrectly.
         String appName = webAppConfig.getApplicationName();
         PolicyConfigurationManager.removeModule(appName, contextId);
@@ -89,12 +83,17 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
             Tr.error(tc, "JACC_WEB_GET_POLICYCONFIGURATION_FAILURE", new Object[] { contextId, pce });
             return;
         }
-
+        SecurityConstraintCollection scc = getSecurityMetadata(webAppConfig).getSecurityConstraintCollection();
         try {
             processRole(webPC, webAppConfig);
-            List<SecurityConstraint> scList = scc.getSecurityConstraints();
-            Map<String, URLMap> allURLMap = convertURLMap(scList);
-            processUrlMap(webPC, allURLMap, isDenyUncoveredHttpMethods(scList));
+            if (scc != null) {
+                List<SecurityConstraint> scList = scc.getSecurityConstraints();
+                Map<String, URLMap> allURLMap = convertURLMap(scList);
+                processUrlMap(webPC, allURLMap, isDenyUncoveredHttpMethods(scList));
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "ContextId: " + contextId + " has no security constraints.");
+            }
             PolicyConfigurationManager.linkConfiguration(appName, webPC);
             PolicyConfigurationManager.addModule(appName, contextId);
             // commit will be invoked in PolicyCOnfigurationManager class.
@@ -103,13 +102,12 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
         }
 
         return;
-
     }
 
     private void processRole(PolicyConfiguration webPC, WebAppConfig webAppConfig) throws PolicyContextException {
         SecurityMetadata smd = getSecurityMetadata(webAppConfig);
         List<String> roles = smd.getRoles();
-        // loop all servlets 
+        // loop all servlets
         Iterator<?> servletNames = webAppConfig.getServletNames();
         while (servletNames.hasNext()) {
             String servletName = (String) servletNames.next();
@@ -300,8 +298,7 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
             URLMap newMap = e.getValue();
 
             String urlPatternName = newMap.getURLPattern();
-            if (isUnqualified(url, urlPatternName))
-            {
+            if (isUnqualified(url, urlPatternName)) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "url: " + url + " is unqualified");
                 continue;
@@ -378,8 +375,7 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
                         userDataRest = ALLMETHOD; // all methods
                     } else {
                         userDataRest = newMap.getUserDataString("REST");
-                        if (userDataRest == null && userDataConfidential == null)
-                        {
+                        if (userDataRest == null && userDataConfidential == null) {
                             // no output, either all methods or none. if there is confidential, then it would be none.
                             userDataRest = ALLMETHOD; // all methods
                         }
@@ -430,9 +426,7 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
                                 Tr.debug(tc, "addToRole(specific methods) role : " + role + " permission : " + wrp);
                         }
                     }
-                }
-                else
-                {
+                } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "No role map. URL: " + urlPatternName);
                 }
@@ -474,16 +468,12 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
         return unqualified;
     }
 
-    private void addUserData(Permissions permissions, String url, String userdata)
-    {
-        if (userdata != null && userdata.startsWith(":"))
-        {
+    private void addUserData(Permissions permissions, String url, String userdata) {
+        if (userdata != null && userdata.startsWith(":")) {
             String transport = userdata.substring(1);
             // all methods
             permissions.add(new WebUserDataPermission(url, null, transport));
-        }
-        else
-        {
+        } else {
             permissions.add(new WebUserDataPermission(url, userdata));
         }
     }
@@ -553,7 +543,7 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
 
     /**
      * Gets the security metadata from the web app config
-     * 
+     *
      * @param webAppConfig the webAppConfig representing the deployed module
      * @return the security metadata
      */
@@ -566,7 +556,7 @@ public class WebSecurityPropagatorImpl implements WebSecurityPropagator {
      * Returns whether deny-uncovered-http-methods attribute is set.
      * In order to check this value, entire WebResourceCollection objects need to be examined,
      * since it only set properly when web.xml is processed.
-     * 
+     *
      * @param scList the List of SecurityConstraint objects.
      * @return true if deny-uncovered-http-methods attribute is set, false otherwise.
      */
