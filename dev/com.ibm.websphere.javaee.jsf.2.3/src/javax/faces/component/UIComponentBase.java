@@ -1985,7 +1985,8 @@ public abstract class UIComponentBase extends UIComponent
             }
             
             Object transientState = null;
-            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 transientState = saveTransientState(context);
             }
@@ -2036,7 +2037,8 @@ public abstract class UIComponentBase extends UIComponent
             values[6] = _markCreated;
             values[7] = _rendererType;
             values[8] = _capabilities;
-            if (!context.getCurrentPhaseId().equals(PhaseId.RENDER_RESPONSE))
+            if (context.getCurrentPhaseId() != null && 
+                !PhaseId.RENDER_RESPONSE.equals(context.getCurrentPhaseId()))
             {
                 values[9] = saveTransientState(context);
             }
