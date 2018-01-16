@@ -17,7 +17,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonParser;
 
-
 public class ReadJSONP extends AbstractJSONP {
 
     public void testJsonRead() {
