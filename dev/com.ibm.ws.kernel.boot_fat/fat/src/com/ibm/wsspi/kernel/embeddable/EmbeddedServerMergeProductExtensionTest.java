@@ -101,7 +101,11 @@ public class EmbeddedServerMergeProductExtensionTest {
         server.deleteDirectoryFromLibertyInstallRoot("../wlp_ext_products");
 
         // Restore the previous bootstrap.properties (if applicable)
-        server.renameLibertyServerRootFile("bootstrap.properties.restore", "bootstrap.properties");
+        if (server.fileExistsInLibertyServerRoot("bootstrap.properties.restore")) {
+            Log.info(c, "testCleanup", "Restoring old bootstrap.properties");
+            server.renameLibertyServerRootFile("bootstrap.properties", "bootstrap.properties.old");
+            server.renameLibertyServerRootFile("bootstrap.properties.restore", "bootstrap.properties");
+        }
     }
 
     @Test
