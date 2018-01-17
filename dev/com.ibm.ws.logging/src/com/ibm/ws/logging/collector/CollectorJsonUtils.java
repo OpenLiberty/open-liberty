@@ -64,7 +64,6 @@ public class CollectorJsonUtils {
             return "";
     }
 
-    //public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion) {
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
         boolean isHigherVer = collectorVersion.startsWith("1.1");
@@ -73,7 +72,7 @@ public class CollectorJsonUtils {
         } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
             return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, (MessageLogData) event, isHigherVer, tags, maxFieldLength);
         } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
-            return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, (TraceLogData) event, isHigherVer, tags, maxFieldLength);
+            return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, (TraceLogData)event, isHigherVer, tags, maxFieldLength);
         } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
             return jsonifyFFDCEvent(serverHostName, wlpUserDir, serverName, (FFDCData) event, isHigherVer, tags, maxFieldLength);
         } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
@@ -106,6 +105,7 @@ public class CollectorJsonUtils {
         if (tags != null) {
             addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
         }
+
         sb.append("}");
 
         return sb.toString();
@@ -132,7 +132,7 @@ public class CollectorJsonUtils {
         boolean isFirstField = true;
 
         sb.append("{");
-//      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
+        //name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
         isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, messageLogData.getDatetime(), sequenceNum, isHigherVer, isFirstField,
                                        CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
@@ -413,6 +413,13 @@ public class CollectorJsonUtils {
         }
         return sb;
     }
+
+//    private static StringBuilder addTagNameForVersion2(StringBuilder sb) {
+//
+//        sb.append(",\"ibm_tags\":");
+//
+//        return sb;
+//    }
 //
 //  *** Commented-out the UnUsed method ***
 //

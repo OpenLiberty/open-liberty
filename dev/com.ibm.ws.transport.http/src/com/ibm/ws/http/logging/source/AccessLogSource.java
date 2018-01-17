@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.http.logging.source;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.Pair;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -98,6 +101,44 @@ public class AccessLogSource implements Source {
         accessLogHandler = null;
     }
 
+//    private class AccessLogHandler implements AccessLogForwarder {
+//
+//        private final AtomicLong seq = new AtomicLong();
+//
+//        /** {@inheritDoc} */
+//        @Override
+//        public void process(AccessLogRecordData recordData) {
+//            HttpRequestMessage request = recordData.getRequest();
+//            HttpResponseMessage response = recordData.getResponse();
+//
+//            if (request != null) {
+//                long requestStartTime = recordData.getStartTime();
+//                String uriPath = request.getRequestURI();
+//                String requestMethod = request.getMethod();
+//                String queryString = request.getQueryString();
+//                String localIP = recordData.getLocalIP();
+//                String localPort = recordData.getLocalPort();
+//                String remoteHost = recordData.getRemoteAddress();
+//                String userAgent = request.getHeader("User-Agent").asString();
+//                String requestProtocol = request.getVersion();
+//                long responseSize = recordData.getBytesWritten();
+//                int responseCode = response.getStatusCodeAsInt();
+//                long elapsedTime = recordData.getElapsedTime();
+//                long timestamp = recordData.getTimestamp();
+//
+//                String sequence = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
+//
+//                AccessLogData data = new AccessLogData(uriPath, requestMethod, queryString, localIP, localPort, requestStartTime, remoteHost, userAgent, requestProtocol, responseSize, responseCode, elapsedTime, timestamp, sequence);
+//                bufferMgr.add(data);
+//
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "Added a event to buffer " + data);
+//                }
+//            }
+//        }
+//
+//    }
+
     private class AccessLogHandler implements AccessLogForwarder {
 
         private final AtomicLong seq = new AtomicLong();
@@ -109,31 +150,49 @@ public class AccessLogSource implements Source {
             HttpResponseMessage response = recordData.getResponse();
 
             if (request != null) {
-                long requestStartTime = recordData.getStartTime();
-                String uriPath = request.getRequestURI();
-                String requestMethod = request.getMethod();
-                String queryString = request.getQueryString();
-                String localIP = recordData.getLocalIP();
-                String localPort = recordData.getLocalPort();
-                String remoteHost = recordData.getRemoteAddress();
-                String userAgent = request.getHeader("User-Agent").asString();
-                String requestProtocol = request.getVersion();
-                long responseSize = recordData.getBytesWritten();
-                int responseCode = response.getStatusCodeAsInt();
-                long elapsedTime = recordData.getElapsedTime();
-                long timestamp = recordData.getTimestamp();
+                KeyValuePair requestStartTime = new KeyValuePair("ibm_requestStartTime", Long.toString(recordData.getStartTime()), KeyValuePair.ValueTypes.NUMBER);
+                KeyValuePair uriPath = new KeyValuePair("ibm_uriPath", request.getRequestURI(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair requestMethod = new KeyValuePair("ibm_requestMethod", request.getMethod(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair queryString = new KeyValuePair("ibm_queryString", request.getQueryString(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair localIP = new KeyValuePair("ibm_requestHost", recordData.getLocalIP(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair localPort = new KeyValuePair("ibm_requestPort", recordData.getLocalPort(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair remoteHost = new KeyValuePair("ibm_remoteHost", recordData.getRemoteAddress(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair userAgent = new KeyValuePair("ibm_userAgent", request.getHeader("User-Agent").asString(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair requestProtocol = new KeyValuePair("ibm_requestProtocol", request.getVersion(), KeyValuePair.ValueTypes.STRING);
+                KeyValuePair responseSize = new KeyValuePair("ibm_bytesReceived", Long.toString(recordData.getBytesWritten()), KeyValuePair.ValueTypes.NUMBER);
+                KeyValuePair responseCode = new KeyValuePair("ibm_responseCode", Integer.toString(response.getStatusCodeAsInt()), KeyValuePair.ValueTypes.NUMBER);
+                KeyValuePair elapsedTime = new KeyValuePair("ibm_elapsedTime", Long.toString(recordData.getElapsedTime()), KeyValuePair.ValueTypes.NUMBER);
+                KeyValuePair timestamp = new KeyValuePair("ibm_datetime", Long.toString(recordData.getTimestamp()), KeyValuePair.ValueTypes.NUMBER);
 
-                String sequence = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
+                String sequenceVal = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
+                KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceVal, KeyValuePair.ValueTypes.STRING);
 
-                AccessLogData data = new AccessLogData(uriPath, requestMethod, queryString, localIP, localPort, requestStartTime, remoteHost, userAgent, requestProtocol, responseSize, responseCode, elapsedTime, timestamp, sequence);
-                bufferMgr.add(data);
+                GenericData genData = new GenericData();
+                ArrayList<Pair> pairs = genData.getPairs();
+
+                pairs.add(requestStartTime);
+                pairs.add(uriPath);
+                pairs.add(requestMethod);
+                pairs.add(queryString);
+                pairs.add(localIP);
+                pairs.add(localPort);
+                pairs.add(remoteHost);
+                pairs.add(userAgent);
+                pairs.add(requestProtocol);
+                pairs.add(responseSize);
+                pairs.add(responseCode);
+                pairs.add(elapsedTime);
+                pairs.add(timestamp);
+                pairs.add(sequence);
+
+                genData.setSourceType(sourceName);
+
+                bufferMgr.add(genData);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Added a event to buffer " + data);
+                    Tr.debug(tc, "Added a event to buffer " + genData);
                 }
             }
         }
-
     }
-
 }
