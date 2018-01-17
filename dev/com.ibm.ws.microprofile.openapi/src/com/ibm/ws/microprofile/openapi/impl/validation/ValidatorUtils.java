@@ -88,6 +88,7 @@ public class ValidatorUtils {
             if (implicit != null) {
                 if (StringUtils.isNotBlank(implicit.getAuthorizationUrl()) ||
                     StringUtils.isNotBlank(implicit.getRefreshUrl()) ||
+                    StringUtils.isNotBlank(implicit.getTokenUrl()) ||
                     implicit.getScopes() != null ||
                     implicit.getExtensions() != null) {
                     return true;
@@ -96,7 +97,7 @@ public class ValidatorUtils {
             if (authCode != null) {
                 if (StringUtils.isNotBlank(authCode.getTokenUrl()) ||
                     StringUtils.isNotBlank(authCode.getAuthorizationUrl()) ||
-                    StringUtils.isNotBlank(implicit.getRefreshUrl()) ||
+                    StringUtils.isNotBlank(authCode.getRefreshUrl()) ||
                     authCode.getScopes() != null ||
                     authCode.getExtensions() != null) {
                     return true;
@@ -113,8 +114,8 @@ public class ValidatorUtils {
             }
             if (password != null) {
                 if (StringUtils.isNotBlank(password.getTokenUrl()) ||
-                    StringUtils.isNotBlank(clientCred.getRefreshUrl()) ||
-                    StringUtils.isNotBlank(clientCred.getAuthorizationUrl()) ||
+                    StringUtils.isNotBlank(password.getRefreshUrl()) ||
+                    StringUtils.isNotBlank(password.getAuthorizationUrl()) ||
                     password.getScopes() != null ||
                     password.getExtensions() != null) {
                     return true;
