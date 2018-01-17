@@ -119,7 +119,7 @@ instrument.disabled: true
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.session;version=latest,\
-	com.ibm.ws.org.apache.commons.fileupload.1.3.3;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
 	com.ibm.ws.anno;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
