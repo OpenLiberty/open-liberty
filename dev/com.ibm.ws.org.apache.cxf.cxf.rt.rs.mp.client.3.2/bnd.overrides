@@ -6,7 +6,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
 Export-Package: \
   org.apache.cxf.microprofile.client.cdi,\
   org.apache.cxf.microprofile.client;version="3.2.2",\
-  org.apache.cxf.microprofile.client.cdi;thread-context=true;version="3.2.2",\
+  org.apache.cxf.microprofile.client.cdi;version="3.2.2",\
   org.apache.cxf.microprofile.client.config;version="3.2.2",\
   org.apache.cxf.microprofile.client.proxy;version="3.2.2",\
   org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.2"
@@ -46,11 +46,9 @@ Import-Package: \
  com.ibm.ws.cdi.extension;resolution:=optional
 # org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
 
--dsannotations: org.apache.cxf.microprofile.client.cdi.*
 
 app-resources= \
-  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver | \
-  META-INF/services/javax.enterprise.inject.spi.Extension
+  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver
 
 Service-Component: \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.ResourceProvider; \

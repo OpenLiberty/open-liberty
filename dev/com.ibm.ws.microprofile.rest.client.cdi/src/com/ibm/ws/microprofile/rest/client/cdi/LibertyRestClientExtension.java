@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.apache.cxf.microprofile.client.cdi;
+package com.ibm.ws.microprofile.rest.client.cdi;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -50,7 +50,7 @@ public class LibertyRestClientExtension implements WebSphereCDIExtension, Extens
     }
 
     public void registerClientBeans(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        restClientClasses.stream().map(c -> new RestClientBean(c, beanManager)).forEach(afterBeanDiscovery::addBean);
+        restClientClasses.stream().map(c -> new LibertyRestClientBean(c, beanManager)).forEach(afterBeanDiscovery::addBean);
     }
 
     public void registerErrors(@Observes AfterDeploymentValidation afterDeploymentValidation) {
