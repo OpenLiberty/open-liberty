@@ -94,6 +94,9 @@
 
         <AD id="loginFormURL" name="%loginFormURL" description="%loginFormURL.desc"
             required="false" type="String"/>
+
+        <AD id="loginErrorURL" name="%loginErrorURL" description="%loginErrorURL.desc"
+            required="false" type="String"/>
         
         <AD id="allowAuthenticationFailOverToAuthMethod" name="%allowAuthenticationFailOverToAuthMethod" description="%allowAuthenticationFailOverToAuthMethod.desc"
             required="false" type="String" > 

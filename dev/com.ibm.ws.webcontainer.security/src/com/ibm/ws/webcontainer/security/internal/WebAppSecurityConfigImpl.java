@@ -56,6 +56,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_SSO_USE_DOMAIN_FROM_URL = "ssoUseDomainFromURL";
     public static final String CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED = "useAuthenticationDataForUnprotectedResource";
     static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
+    static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
     public static final String CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD = "allowAuthenticationFailOverToAuthMethod";
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
@@ -80,6 +81,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean ssoUseDomainFromURL;
     private final Boolean useAuthenticationDataForUnprotectedResource;
     private final String loginFormURL;
+    private final String loginErrorURL;
     private final String allowFailOverToAuthMethod;
     private final Boolean includePathInWASReqURL;
     private final Boolean trackLoggedOutSSOCookies;
@@ -112,6 +114,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         ssoUseDomainFromURL = (Boolean) newProperties.get(CFG_KEY_SSO_USE_DOMAIN_FROM_URL);
         useAuthenticationDataForUnprotectedResource = (Boolean) newProperties.get(CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED);
         loginFormURL = (String) newProperties.get(CFG_KEY_LOGIN_FORM_URL);
+        loginErrorURL = (String) newProperties.get(CFG_KEY_LOGIN_ERROR_URL);
         allowFailOverToAuthMethod = (String) newProperties.get(CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD);
         includePathInWASReqURL = (Boolean) newProperties.get(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL);
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
@@ -301,6 +304,12 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return loginFormURL;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getLoginErrorURL() {
+        return loginErrorURL;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -394,6 +403,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.webAlwaysLogin, orig.webAlwaysLogin);
         appendToBufferIfDifferent(buf, "loginFormURL",
                                   this.loginFormURL, orig.loginFormURL);
+        appendToBufferIfDifferent(buf, "loginErrorURL",
+                                  this.loginErrorURL, orig.loginErrorURL);
         appendToBufferIfDifferent(buf, "allowFailOverToAuthMethod",
                                   this.allowFailOverToAuthMethod, orig.allowFailOverToAuthMethod);
         appendToBufferIfDifferent(buf, "includePathInWASReqURL",

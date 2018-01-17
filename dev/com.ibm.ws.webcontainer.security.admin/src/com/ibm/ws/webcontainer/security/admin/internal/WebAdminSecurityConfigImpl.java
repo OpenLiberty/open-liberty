@@ -194,6 +194,16 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
         return null;
     }
 
+    /**
+     * {@inheritDoc} Admin Applications do not have a default Form Error URL.
+     *
+     * @return {@code null}
+     */
+    @Override
+    public String getLoginErrorURL() {
+        return null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean getAllowFailOverToFormLogin() {

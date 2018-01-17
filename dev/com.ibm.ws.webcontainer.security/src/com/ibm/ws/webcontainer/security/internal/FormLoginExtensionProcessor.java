@@ -299,6 +299,11 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
             // still nothing?
             loginErrorPage = getErrorPageFromWebXml();
         }
+        // look for global error page.
+        if (loginErrorPage == null || loginErrorPage.length() == 0) {
+            bCtx = false;
+            loginErrorPage = webAppSecConfig.getLoginErrorURL();
+        }
         if (loginErrorPage != null) {
 
             return setUpAFullUrl(req, loginErrorPage, bCtx);

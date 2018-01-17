@@ -79,6 +79,13 @@ public interface WebAppSecurityConfig {
     String getLoginFormURL();
 
     /**
+     * Returns loginErrorURL metadata in webAppSecurity.
+     *
+     * @return String the URL of the global login error page.
+     */
+    String getLoginErrorURL();
+
+    /**
      * Is failover to FORM from CLIENT_CERT allowed?
      *
      * @return {@code true} if FORM failover is allowed
