@@ -237,14 +237,15 @@ public class Reader {
         // OpenApiDefinition
         OpenAPIDefinition openAPIDefinition = ReflectionUtils.getAnnotation(cls, OpenAPIDefinition.class);
 
+        // If there are more than one openAPIDefinition annotation is present across the app, there is no
+        // guarantee which one is picked.
         if (openAPIDefinition != null) {
-
             // info
             AnnotationsUtils.getInfo(openAPIDefinition.info()).ifPresent(info -> openAPI.setInfo(info));
 
             // OpenApiDefinition security requirements
             SecurityParser.getSecurityRequirements(openAPIDefinition.security()).ifPresent(s -> openAPI.setSecurity(s));
-            //
+
             // OpenApiDefinition external docs
             AnnotationsUtils.getExternalDocumentation(openAPIDefinition.externalDocs()).ifPresent(docs -> openAPI.setExternalDocs(docs));
 
@@ -253,7 +254,6 @@ public class Reader {
 
             // OpenApiDefinition servers
             AnnotationsUtils.getServers(openAPIDefinition.servers()).ifPresent(servers -> openAPI.setServers(servers));
-
         }
 
         // class security schemes

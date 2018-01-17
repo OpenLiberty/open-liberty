@@ -371,6 +371,7 @@ public abstract class AnnotationsUtils {
         if (info == null) {
             return Optional.empty();
         }
+
         boolean isEmpty = true;
         Info infoObject = new InfoImpl();
         if (StringUtils.isNotBlank(info.description())) {
@@ -389,11 +390,16 @@ public abstract class AnnotationsUtils {
             infoObject.setVersion(info.version());
             isEmpty = false;
         }
+
+        getContact(info.contact()).ifPresent(infoObject::setContact);
+        isEmpty &= infoObject.getContact() == null;
+
+        getLicense(info.license()).ifPresent(infoObject::setLicense);
+        isEmpty &= infoObject.getLicense() == null;
+
         if (isEmpty) {
             return Optional.empty();
         }
-        getContact(info.contact()).ifPresent(infoObject::setContact);
-        getLicense(info.license()).ifPresent(infoObject::setLicense);
 
         return Optional.of(infoObject);
     }

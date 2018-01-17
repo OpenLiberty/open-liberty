@@ -24,9 +24,15 @@ public class ConfigProcessor {
 
     private static final TraceComponent tc = Tr.register(ConfigProcessor.class);
 
+    /**
+     * Configuration property to enable/disable validation of the OpenAPI model.
+     */
+    private static final String VALIDATION = "mp.openapi.extensions.validation";
+
     private String modelReaderClassName = null;
     private String openAPIFilterClassName = null;
     private boolean scanDisabled = false;
+    private boolean validation = true;
     private final Set<String> classesToScan = null;
     private final Set<String> packagesToScan = null;
 
@@ -36,6 +42,7 @@ public class ConfigProcessor {
             modelReaderClassName = config.getOptionalValue(OASConfig.MODEL_READER, String.class).orElse(null);
             scanDisabled = config.getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class).orElse(false);
             openAPIFilterClassName = config.getOptionalValue(OASConfig.FILTER, String.class).orElse(null);
+            validation = config.getOptionalValue(VALIDATION, Boolean.class).orElse(true);
 
         } catch (IllegalArgumentException e) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
@@ -56,6 +63,7 @@ public class ConfigProcessor {
         builder.append(OASConfig.MODEL_READER + "=" + modelReaderClassName + "\n");
         builder.append(OASConfig.FILTER + "=" + openAPIFilterClassName + "\n");
         builder.append(OASConfig.SCAN_DISABLE + "=" + scanDisabled + "\n");
+        builder.append(VALIDATION + "=" + validation + "\n");
         builder.append("}\n");
         return builder.toString();
     }
@@ -69,5 +77,9 @@ public class ConfigProcessor {
 
     public String getOpenAPIFilterClassName() {
         return openAPIFilterClassName;
+    }
+
+    public boolean isValidating() {
+        return validation;
     }
 }
