@@ -20,7 +20,7 @@ import java.util.List;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
-import com.ibm.ws.logging.collector.CollectorJsonUtils;
+import com.ibm.ws.logging.collector.CollectorJsonUtils11;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.wsspi.collector.manager.BufferManager;
@@ -157,9 +157,14 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
-        String eventType = CollectorJsonUtils.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
-                                                         MAXFIELDLENGTH);
+
+//        String eventType = CollectorJsonUtils.getEventType(source, location);
+//        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
+//                                                         MAXFIELDLENGTH);
+
+        String eventType = CollectorJsonUtils11.getEventType(source, location);
+        String jsonStr = CollectorJsonUtils11.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags,
+                                                           MAXFIELDLENGTH);
         return jsonStr;
     }
 
