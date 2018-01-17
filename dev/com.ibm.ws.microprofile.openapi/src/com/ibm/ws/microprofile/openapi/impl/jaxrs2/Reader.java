@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
@@ -234,6 +234,8 @@ public class Reader {
         ExternalDocumentation apiExternalDocs = ReflectionUtils.getAnnotation(cls, ExternalDocumentation.class);
         org.eclipse.microprofile.openapi.annotations.tags.Tag[] apiTags = ReflectionUtils.getRepeatableAnnotationsArray(cls,
                                                                                                                         org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
+        org.eclipse.microprofile.openapi.annotations.tags.Tags tagsAnnotation = ReflectionUtils.getAnnotation(cls,
+                                                                                                              org.eclipse.microprofile.openapi.annotations.tags.Tags.class);
 
         javax.ws.rs.Consumes classConsumes = ReflectionUtils.getAnnotation(cls, javax.ws.rs.Consumes.class);
         javax.ws.rs.Produces classProduces = ReflectionUtils.getAnnotation(cls, javax.ws.rs.Produces.class);
@@ -279,6 +281,9 @@ public class Reader {
         final Set<String> classTags = new LinkedHashSet<>();
         if (apiTags != null) {
             AnnotationsUtils.getTags(apiTags, false).ifPresent(tags -> tags.stream().map(t -> t.getName()).forEach(t -> classTags.add(t)));
+        }
+        if (tagsAnnotation != null && tagsAnnotation.refs() != null) {
+            classTags.addAll(Arrays.asList(tagsAnnotation.refs()));
         }
 
         // class external docs
@@ -733,6 +738,8 @@ public class Reader {
         List<Server> apiServers = ReflectionUtils.getRepeatableAnnotations(method, Server.class);
         List<org.eclipse.microprofile.openapi.annotations.tags.Tag> apiTags = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                        org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
+        org.eclipse.microprofile.openapi.annotations.tags.Tags tagsAnnotation = ReflectionUtils.getAnnotation(method,
+                                                                                                              org.eclipse.microprofile.openapi.annotations.tags.Tags.class);
         List<org.eclipse.microprofile.openapi.annotations.parameters.Parameter> apiParameters = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                                          org.eclipse.microprofile.openapi.annotations.parameters.Parameter.class);
         List<org.eclipse.microprofile.openapi.annotations.responses.APIResponse> apiResponses = ReflectionUtils.getRepeatableAnnotations(method,
@@ -775,23 +782,28 @@ public class Reader {
         AnnotationsUtils.getExternalDocumentation(apiExternalDocumentation).ifPresent(operation::setExternalDocs);
 
         // method tags
-        if (apiTags != null && apiTags.size() > 0) {
-
-            Predicate<org.eclipse.microprofile.openapi.annotations.tags.Tag> tagPredicate = (t) -> operation.getTags() == null
-                                                                                                   || (operation.getTags() != null && (!operation.getTags().contains(t.name())
-                                                                                                                                       || !operation.getTags().contains(t.ref())));
-            apiTags.stream().filter(tagPredicate).filter(t -> StringUtils.isNotBlank(t.name()) || StringUtils.isNotBlank(t.ref())).map(t -> {
-                if (StringUtils.isNotBlank(t.ref())) {
-                    return t.ref();
-                } else {
-                    return t.name();
-                }
-            }).forEach(operation::addTag);
-            AnnotationsUtils.getTags(apiTags.toArray(new org.eclipse.microprofile.openapi.annotations.tags.Tag[apiTags.size()]), true).ifPresent(tags -> openApiTags.addAll(tags));
+        if (apiTags != null || tagsAnnotation != null) {
+            Stream<String> operationTags = Stream.empty();
+            if (apiTags != null) {
+                operationTags = apiTags.stream().filter(t -> StringUtils.isNotBlank(t.name()) || StringUtils.isNotBlank(t.ref())).map(t -> {
+                    if (StringUtils.isNotBlank(t.ref())) {
+                        return t.ref();
+                    } else {
+                        return t.name();
+                    }
+                });
+                AnnotationsUtils.getTags(apiTags.toArray(new org.eclipse.microprofile.openapi.annotations.tags.Tag[apiTags.size()]),
+                                         true).ifPresent(tags -> openApiTags.addAll(tags));
+            }
+            if (tagsAnnotation != null && tagsAnnotation.refs() != null) {
+                operationTags = Stream.concat(operationTags, Stream.of(tagsAnnotation.refs()));
+            }
+            operationTags.distinct().forEach(operation::addTag);
         }
+
         // class tags after tags defined as field of @Operation
         else if (classTags != null) {
-            classTags.stream().filter(t -> operation.getTags() == null || (operation.getTags() != null && !operation.getTags().contains(t))).forEach(operation::addTag);
+            operation.setTags(new ArrayList<>(classTags));
         }
 
         // parameters
