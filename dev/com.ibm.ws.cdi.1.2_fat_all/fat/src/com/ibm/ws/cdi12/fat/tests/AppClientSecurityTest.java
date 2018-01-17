@@ -23,13 +23,13 @@ import componenttest.topology.impl.LibertyClientFactory;
 /**
  * Test that our integration with security works in the client container.
  */
-
 public class AppClientSecurityTest {
     private final String testClientName = "cdiClientSecurity";
     private final LibertyClient client = LibertyClientFactory.getLibertyClient(testClientName);
 
     @Test
     public void testCallbackHandlerInjection() throws Exception {
+        client.addIgnoreErrors("CWWKS9702W"); // can ignore this warning because we are using hard-coded creds
         client.startClient();
 
         List<String> featuresMessages = client.findStringsInCopiedLogs("CWWKF0034I");
