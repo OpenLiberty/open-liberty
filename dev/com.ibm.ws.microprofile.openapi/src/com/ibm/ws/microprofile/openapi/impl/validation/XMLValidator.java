@@ -40,8 +40,8 @@ public class XMLValidator extends TypeValidator<XML> {
             if (StringUtils.isNotBlank(t.getNamespace())) {
                 String namespace = t.getNamespace();
                 String object = "XML";
-                if (!ValidatorUtils.isValidURL(namespace)) {
-                    final String message = Tr.formatMessage(tc, "invalidURL", object, namespace);
+                if (!ValidatorUtils.isValidURI(namespace)) {
+                    final String message = Tr.formatMessage(tc, "invalidUri", object, namespace);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
                 }
             }

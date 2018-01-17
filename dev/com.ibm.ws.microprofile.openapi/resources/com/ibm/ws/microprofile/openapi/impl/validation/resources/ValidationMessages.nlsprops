@@ -30,6 +30,7 @@ externalDocumentationInvalidURL=The ExternalDocumentation object must contain a 
 
 infoTermsOfServiceInvalidURL=The Info object must contain a valid URL. The \"{0}\" value specified for \"termsOfService\" is not a valid URL.
 invalidUrl=The \"{0}\" object must contain a valid URL. The \"{1}\" value specified for the URL is not valid.
+invalidUri=The \"{0}\" object must contain a valid URI. The \"{1}\" value specified for the URI is not valid.
 
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 
@@ -37,9 +38,8 @@ mediaTypeExampleOrExamples=The MediaType object cannot have both \"examples\" an
 mediaTypeEncodingProperty=The \"{0}\" encoding property specified in the MediaType object does not exist in the schema as a property.
 mediaTypeEmptySchema=The encoding property specified cannot be validated because the corresponding schema property is null.
 
-oAuthFlowInvalidURL=The OAuthFlow object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
-oAuthFlowScopesNull=The OAuthFlow object is missing a REQUIRED scopes field.
-oAuthFlowNonAplicableField="\{0}\" is not an applicable field for \"{1}\" type.
+oAuthFlowInvalidURL=The OAuthFlow Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
+nonApplicableField=The "\{0}\" field with value \"{1}\" is not applicable for \"{2}\".
 
 openAPIVersionInvalid=The OpenAPI object must contain a valid OpenAPI specification version. The \"{0}\" value specified for the OpenAPI specification version is not valid.
 openAPITagIsNotUnique=The OpenAPI object must contain unique tag names. The \"{0}\" tag name is not unique.

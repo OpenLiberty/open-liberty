@@ -41,44 +41,39 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
             OAuthFlow implicit = t.getImplicit();
             String type = "implicit OAuthFlow";
             if (StringUtils.isNotBlank(implicit.getTokenUrl())) {
-                final String message = Tr.formatMessage(tc, "oAuthFlowNonAplicableField", implicit.getTokenUrl(), type);
+                final String message = Tr.formatMessage(tc, "nonApplicableField", "tokenUrl", implicit.getTokenUrl(), type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-            } else if (StringUtils.isBlank(implicit.getAuthorizationUrl())) {
-                final String message = Tr.formatMessage(tc, "requiredFieldMissing", type, implicit.getAuthorizationUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            } else {
+                ValidatorUtils.validateRequiredField(implicit.getAuthorizationUrl(), type, "authorizationUrl").ifPresent(helper::addValidationEvent);
             }
         }
         if (t.getPassword() != null) {
             OAuthFlow password = t.getPassword();
             String type = "password OAuthFlow";
             if (StringUtils.isNotBlank(password.getAuthorizationUrl())) {
-                final String message = Tr.formatMessage(tc, "oAuthFlowNonAplicableField", password.getAuthorizationUrl(), type);
+                final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", password.getAuthorizationUrl(), type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-            } else if (StringUtils.isBlank(password.getTokenUrl())) {
-                final String message = Tr.formatMessage(tc, "requiredFieldMissing", type, password.getTokenUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            } else {
+                ValidatorUtils.validateRequiredField(password.getTokenUrl(), type, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
         }
         if (t.getClientCredentials() != null) {
             OAuthFlow clientCred = t.getClientCredentials();
             String type = "clientCredentials OAuthFlow";
             if (StringUtils.isNotBlank(clientCred.getAuthorizationUrl())) {
-                final String message = Tr.formatMessage(tc, "oAuthFlowNonAplicableField", clientCred.getAuthorizationUrl(), type);
+                final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", clientCred.getAuthorizationUrl(), type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-            } else if (StringUtils.isBlank(clientCred.getTokenUrl())) {
-                final String message = Tr.formatMessage(tc, "requiredFieldMissing", type, clientCred.getTokenUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            } else {
+                ValidatorUtils.validateRequiredField(clientCred.getTokenUrl(), type, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
         }
         if (t.getAuthorizationCode() != null) {
             OAuthFlow authCode = t.getAuthorizationCode();
             String type = "authorizationCode OAuthFlow";
             if (StringUtils.isBlank(authCode.getTokenUrl())) {
-                final String message = Tr.formatMessage(tc, "requiredFieldMissing", type, authCode.getTokenUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
-            } else if (StringUtils.isBlank(authCode.getAuthorizationUrl())) {
-                final String message = Tr.formatMessage(tc, "requiredFieldMissing", type, authCode.getAuthorizationUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                ValidatorUtils.validateRequiredField(authCode.getTokenUrl(), type, "tokenUrl").ifPresent(helper::addValidationEvent);
+            } else {
+                ValidatorUtils.validateRequiredField(authCode.getAuthorizationUrl(), type, "authorizationUrl").ifPresent(helper::addValidationEvent);
             }
         }
 

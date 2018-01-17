@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
@@ -66,6 +68,16 @@ public class ValidatorUtils {
         }
     }
 
+    public static boolean isValidURI(String uriStr) {
+        try {
+            @SuppressWarnings("unused")
+            URI url = new URI(uriStr);
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
+        }
+    }
+
     public static boolean flowsIsSet(OAuthFlows flows) {
 
         if (flows != null) {
@@ -75,6 +87,7 @@ public class ValidatorUtils {
             OAuthFlow password = flows.getPassword();
             if (implicit != null) {
                 if (StringUtils.isNotBlank(implicit.getAuthorizationUrl()) ||
+                    StringUtils.isNotBlank(implicit.getRefreshUrl()) ||
                     implicit.getScopes() != null ||
                     implicit.getExtensions() != null) {
                     return true;
@@ -83,6 +96,7 @@ public class ValidatorUtils {
             if (authCode != null) {
                 if (StringUtils.isNotBlank(authCode.getTokenUrl()) ||
                     StringUtils.isNotBlank(authCode.getAuthorizationUrl()) ||
+                    StringUtils.isNotBlank(implicit.getRefreshUrl()) ||
                     authCode.getScopes() != null ||
                     authCode.getExtensions() != null) {
                     return true;
@@ -90,6 +104,8 @@ public class ValidatorUtils {
             }
             if (clientCred != null) {
                 if (StringUtils.isNotBlank(clientCred.getTokenUrl()) ||
+                    StringUtils.isNotBlank(clientCred.getRefreshUrl()) ||
+                    StringUtils.isNotBlank(clientCred.getAuthorizationUrl()) ||
                     clientCred.getScopes() != null ||
                     clientCred.getExtensions() != null) {
                     return true;
@@ -97,6 +113,8 @@ public class ValidatorUtils {
             }
             if (password != null) {
                 if (StringUtils.isNotBlank(password.getTokenUrl()) ||
+                    StringUtils.isNotBlank(clientCred.getRefreshUrl()) ||
+                    StringUtils.isNotBlank(clientCred.getAuthorizationUrl()) ||
                     password.getScopes() != null ||
                     password.getExtensions() != null) {
                     return true;
