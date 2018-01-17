@@ -246,7 +246,7 @@ public class LibertyClient {
     protected final List<Pattern> ignorePatterns = new ArrayList<Pattern>();
 
     //Default list of patterns to ignore when checking logs
-    protected List<String> fixedIgnoreErrorsList;
+    protected final List<String> fixedIgnoreErrorsList = new ArrayList<String>();
 
     protected boolean checkingDisabled;
 
@@ -278,7 +278,6 @@ public class LibertyClient {
         machineJava = b.getValue(hostName + ".JavaHome");
         String keystore = b.getValue("keystore");
         checkingDisabled = false;
-        fixedIgnoreErrorsList = new ArrayList<String>();
 
         if (clientName != null) {
             clientToUse = clientName;
@@ -548,7 +547,6 @@ public class LibertyClient {
                                              String clientCmd, List<String> args,
                                              boolean validateTimedExit) throws Exception {
         final String method = "startClientWithArgs";
-        Log.entering(c, method, "clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure + ", cmd=" + clientCmd + ", args=" + args);
 
         if (clientCleanupProblem) {
             throw new Exception("The client was not cleaned up on the previous test.");
@@ -751,7 +749,6 @@ public class LibertyClient {
             validateClientStopped(output, expectStartFailure);
         }
         postStopClientArchive();
-        Log.exiting(c, method);
         return output;
     }
 
@@ -784,7 +781,6 @@ public class LibertyClient {
 
         String path = pathToAutoFVTOutputFolder + getClientName() + ".mrk";
         LocalFile clientRunningFile = new LocalFile(path);
-        Log.info(c, "createClientMarkerFile", "Client marker file: " + clientRunningFile.getAbsolutePath());
         File createFile = new File(clientRunningFile.getAbsolutePath());
         createFile.createNewFile();
         OutputStream os = clientRunningFile.openForWriting(true);
@@ -1366,10 +1362,8 @@ public class LibertyClient {
 
             }
             //Add default Errors to the list of errors to ignore
-            if (fixedIgnoreErrorsList != null && fixedIgnoreErrorsList.size() != 0) {
-                for (String ignoreRegEx : fixedIgnoreErrorsList) {
-                    ignorePatterns.add(Pattern.compile(ignoreRegEx));
-                }
+            for (String ignoreRegEx : fixedIgnoreErrorsList) {
+                ignorePatterns.add(Pattern.compile(ignoreRegEx));
             }
 
             // Remove any ignored warnings or patterns
@@ -1438,6 +1432,8 @@ public class LibertyClient {
         try {
             checkLogsForErrorsAndWarnings();
         } finally {
+            ignorePatterns.clear();
+
             Log.info(c, method, "Moving logs to the output folder");
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
             Date d = new Date(System.currentTimeMillis());
