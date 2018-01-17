@@ -15,15 +15,10 @@ import java.net.URLDecoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.http.logging.data.AccessLogData;
-import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.LogFieldConstants;
-import com.ibm.ws.logging.data.Pair;
 import com.ibm.ws.logging.source.FFDCData;
 import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;
@@ -69,56 +64,22 @@ public class CollectorJsonUtils {
             return "";
     }
 
-    //public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion) {
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
         boolean isHigherVer = collectorVersion.startsWith("1.1");
-
-        if (isHigherVer) {
-            if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
-                return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, isHigherVer, tags);
-            } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-                return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, tags, maxFieldLength, CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
-            } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
-                return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, tags, maxFieldLength, CollectorConstants.TRACE_LOG_EVENT_TYPE);
-            } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
-                return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, tags, maxFieldLength, CollectorConstants.FFDC_EVENT_TYPE);
-            } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
-                return jsonifyEvent(serverHostName, wlpUserDir, serverName, event, tags, -1, CollectorConstants.ACCESS_LOG_EVENT_TYPE);
-            }
-        } else {
-            if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
-                return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, isHigherVer, tags);
-            } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-                return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, (MessageLogData) event, isHigherVer, tags, maxFieldLength);
-            } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
-                return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, (TraceLogData) event, isHigherVer, tags, maxFieldLength);
-            } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
-                return jsonifyFFDCEvent(serverHostName, wlpUserDir, serverName, (FFDCData) event, isHigherVer, tags, maxFieldLength);
-            } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
-                return jsonifyAccessLogEvent(serverHostName, wlpUserDir, serverName, (AccessLogData) event, isHigherVer, tags);
-            }
-            return "";
+        if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
+            return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, isHigherVer, tags);
+        } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
+            return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, (MessageLogData) event, isHigherVer, tags, maxFieldLength);
+        } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+            return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, (TraceLogData)event, isHigherVer, tags, maxFieldLength);
+        } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
+            return jsonifyFFDCEvent(serverHostName, wlpUserDir, serverName, (FFDCData) event, isHigherVer, tags, maxFieldLength);
+        } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
+            return jsonifyAccessLogEvent(serverHostName, wlpUserDir, serverName, (AccessLogData) event, isHigherVer, tags);
         }
         return "";
     }
-
-//    public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
-//                                      int maxFieldLength) {
-//        boolean isHigherVer = collectorVersion.startsWith("1.1");
-//        if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
-//            return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, isHigherVer, tags);
-//        } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
-//            return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, (MessageLogData) event, isHigherVer, tags, maxFieldLength);
-//        } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
-//            return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, event, isHigherVer, tags, maxFieldLength);
-//        } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
-//            return jsonifyFFDCEvent(serverHostName, wlpUserDir, serverName, (FFDCData) event, isHigherVer, tags, maxFieldLength);
-//        } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
-//            return jsonifyAccessLogEvent(serverHostName, wlpUserDir, serverName, (AccessLogData) event, isHigherVer, tags);
-//        }
-//        return "";
-//    }
 
     //Date date = new Date(HCGCData.getTime());
 
@@ -144,200 +105,10 @@ public class CollectorJsonUtils {
         if (tags != null) {
             addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
         }
-        sb.append("}");
-
-        return sb.toString();
-    }
-
-    private static void ffdcJsonify(GenericData genData, boolean isFirstField, StringBuilder sb, int maxFieldLength, String wlpUserDir,
-                                    String serverName, String hostName, String eventType) {
-
-        ArrayList<Pair> pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
-        String value = null;
-        isFirstField = addCommonFields2(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
-
-        for (Pair p : pairs) {
-
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-                value = kvp.getValue();
-
-                if (key.equals(LogFieldConstants.IBM_STACKTRACE)) {
-
-                    String formattedValue = formatMessage(value, maxFieldLength);
-                    isFirstField = isFirstField & !addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp);
-
-                } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-
-                    isFirstField = isFirstField
-                                   & !addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField, kvp);
-
-                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-
-                    String datetime = dateFormatTL.get().format(Long.parseLong(value));
-                    isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
-
-                } else {
-
-                    String formattedValue = value;
-                    if (kvp.getType() == KeyValuePair.ValueTypes.STRING) {
-                        if (formattedValue != null && !formattedValue.isEmpty()) {
-                            formattedValue = formatMessage(value, maxFieldLength);
-                        }
-                    }
-
-                    isFirstField = isFirstField & !addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp);
-
-                }
-            }
-
-        }
-    }
-
-    private static void traceAndLogJsonify(GenericData genData, boolean isFirstField, StringBuilder sb, int maxFieldLength, String wlpUserDir,
-                                           String serverName, String hostName, String eventType) {
-
-        ArrayList<Pair> pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
-        String value = null;
-        isFirstField = addCommonFields2(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
-
-        for (Pair p : pairs) {
-
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-                value = kvp.getValue();
-
-                if (!(key.equals(LogFieldConstants.SEVERITY))) {
-
-                    if (key.equals(LogFieldConstants.MESSAGE)) {
-
-                        String formattedValue = formatMessage(value, maxFieldLength);
-                        isFirstField = isFirstField & !addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp);
-
-                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-
-                        isFirstField = isFirstField
-                                       & !addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField, kvp);
-
-                    } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-
-                        String datetime = dateFormatTL.get().format(Long.parseLong(value));
-                        isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
-
-                    } else {
-
-                        String formattedValue = value;
-                        if (kvp.getType() == KeyValuePair.ValueTypes.STRING) {
-                            if (formattedValue != null && !formattedValue.isEmpty()) {
-                                formattedValue = formatMessage(value, maxFieldLength);
-                            }
-                        }
-
-                        isFirstField = isFirstField & !addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp);
-
-                    }
-                }
-            }
-        }
-    }
-
-    public static void accessJsonify(GenericData genData, boolean isFirstField, StringBuilder sb, String wlpUserDir,
-                                     String serverName, String hostName, String eventType) {
-
-        ArrayList<Pair> pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
-        String value = null;
-        isFirstField = addCommonFields2(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
-
-        for (Pair p : pairs) {
-
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-                value = kvp.getValue();
-
-                if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
-
-                    String jsonQueryString = value;
-                    if (jsonQueryString != null) {
-                        try {
-                            jsonQueryString = URLDecoder.decode(jsonQueryString, "UTF-8");
-                        } catch (UnsupportedEncodingException e) {
-                            // ignore, use the original value;
-                        }
-                    }
-                    isFirstField = isFirstField & !addToJSON(sb, key, jsonQueryString, false, true, false, isFirstField, kvp);
-
-                } else if (key.equals(LogFieldConstants.IBM_USERAGENT)) {
-
-                    String userAgent = value;
-
-                    if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
-                        userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
-                    }
-
-                    isFirstField = isFirstField & !addToJSON(sb, key, userAgent, false, false, false, isFirstField, kvp);
-
-                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-
-                    String datetime = dateFormatTL.get().format(Long.parseLong(value));
-                    isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
-
-                } else {
-
-                    isFirstField = isFirstField & !addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
-
-                }
-            }
-        }
-    }
-
-    public static String jsonifyEvent(String hostName, String wlpUserDir, String serverName, Object event, String[] tags,
-                                      int maxFieldLength, String eventType) {
-
-        GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
-        boolean isFirstField = true;
-
-        sb.append("{");
-
-        if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
-            //accessJsonify(genData, isFirstField, sb, wlpUserDir, serverName, hostName, eventType);
-        } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
-            ffdcJsonify(genData, isFirstField, sb, maxFieldLength, wlpUserDir, serverName, hostName, eventType);
-        } else {
-            traceAndLogJsonify(genData, isFirstField, sb, maxFieldLength, wlpUserDir, serverName, hostName, eventType);
-        }
-
-        if (tags != null) {
-            addTagNameForVersion2(sb).append(jsonifyTags(tags));
-        }
 
         sb.append("}");
 
         return sb.toString();
-    }
-
-    static boolean addCommonFields2(StringBuilder sb, String hostName, String wlpUserDir,
-                                    String serverName, boolean isFirstField, String eventType) {
-
-        /* Common fields for all event types */
-
-        isFirstField = isFirstField & !addToJSON(sb, LogFieldConstants.TYPE, eventType, false, false, false, isFirstField);
-        isFirstField = isFirstField & !addToJSON(sb, LogFieldConstants.HOST, hostName, false, false, false, isFirstField);
-        isFirstField = isFirstField & !addToJSON(sb, LogFieldConstants.IBM_USERDIR, wlpUserDir, false, true, false, isFirstField);
-        isFirstField = isFirstField & !addToJSON(sb, LogFieldConstants.IBM_SERVERNAME, serverName, false, false, false, isFirstField);
-        return isFirstField;
     }
 
     public static String jsonifyMessageLogEvent(String hostName, String wlpUserDir, String serverName, MessageLogData messageLogData, boolean isHigherVer, String[] tags,
@@ -551,49 +322,7 @@ public class CollectorJsonUtils {
     /*
      * returns true if name value pair was added to the string buffer
      */
-//    static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName, boolean jsonEscapeValue, boolean trim, boolean isFirstField) {
-//
-//        // if name or value is null just return
-//        if (name == null || value == null)
-//            return false;
-//
-//        // add comma if isFirstField == false
-//        if (!isFirstField)
-//            sb.append(",");
-//
-//        // trim value if requested
-//        if (trim)
-//            value = value.trim();
-//
-//        sb.append("\"");
-//        // escape name if requested
-//
-//        if (jsonEscapeName)
-//            jsonEscape3(sb, name);
-//        else
-//            sb.append(name);
-//
-//        sb.append("\":\"");
-//
-//        // escape value if requested
-//        if (jsonEscapeValue)
-//            jsonEscape3(sb, value);
-//        else
-//            sb.append(value);
-//
-//        sb.append("\"");
-//        return true;
-//    }
-
-    static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
-                             boolean jsonEscapeValue, boolean trim, boolean isFirstField) {
-
-        boolean b = addToJSON(sb, name, value, jsonEscapeName, jsonEscapeValue, trim, isFirstField, null);
-        return b;
-    }
-
-    static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
-                             boolean jsonEscapeValue, boolean trim, boolean isFirstField, KeyValuePair kvp) {
+    static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName, boolean jsonEscapeValue, boolean trim, boolean isFirstField) {
 
         // if name or value is null just return
         if (name == null || value == null)
@@ -615,28 +344,15 @@ public class CollectorJsonUtils {
         else
             sb.append(name);
 
-        if (kvp != null && !kvp.getKey().equals("ibm_datetime") && kvp.getType() == KeyValuePair.ValueTypes.NUMBER) {
+        sb.append("\":\"");
 
-            sb.append("\":");
+        // escape value if requested
+        if (jsonEscapeValue)
+            jsonEscape3(sb, value);
+        else
+            sb.append(value);
 
-            if (jsonEscapeValue)
-                jsonEscape3(sb, value);
-            else
-                sb.append(value);
-
-        } else {
-
-            sb.append("\":\"");
-
-            // escape value if requested
-            if (jsonEscapeValue)
-                jsonEscape3(sb, value);
-            else
-                sb.append(value);
-
-            sb.append("\"");
-
-        }
+        sb.append("\"");
         return true;
     }
 
@@ -698,12 +414,12 @@ public class CollectorJsonUtils {
         return sb;
     }
 
-    private static StringBuilder addTagNameForVersion2(StringBuilder sb) {
-
-        sb.append(",\"ibm_tags\":");
-
-        return sb;
-    }
+//    private static StringBuilder addTagNameForVersion2(StringBuilder sb) {
+//
+//        sb.append(",\"ibm_tags\":");
+//
+//        return sb;
+//    }
 //
 //  *** Commented-out the UnUsed method ***
 //
