@@ -865,6 +865,7 @@ public class SSLUtils {
                                 String s = "IOException receiving data during SSL Handshake. One possible cause is that authentication may not be configured correctly";
                                 Exception nx = new Exception(s, x);
                                 FFDCFilter.processException(nx, CLASS_NAME, "882");
+                                grizzlyAlpnNegotiator.removeSSLLink(engine);
                                 throw x;
                             }
                         }
@@ -924,6 +925,7 @@ public class SSLUtils {
                 if (bTrace && tc.isDebugEnabled()) {
                     Tr.debug(tc, "BUFFER_OVERFLOW occured during handshake: " + hsstatus);
                 }
+                grizzlyAlpnNegotiator.removeSSLLink(engine);
                 throw new SSLException("BUFFER_OVERFLOW occured during handshake: " + hsstatus);
             }
 
@@ -932,6 +934,7 @@ public class SSLUtils {
                 if (bTrace && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Handshake terminated SSL engine: " + hsstatus);
                 }
+                grizzlyAlpnNegotiator.removeSSLLink(engine);
                 throw new SSLException("Handshake terminated SSL engine: " + hsstatus);
             }
 
@@ -946,6 +949,7 @@ public class SSLUtils {
                          + "\r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
                          + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer));
         }
+        grizzlyAlpnNegotiator.removeSSLLink(engine);
 
         if (fromCallback && null != result && null != handshakeCallback) {
             // This method was called from the write or read callback.

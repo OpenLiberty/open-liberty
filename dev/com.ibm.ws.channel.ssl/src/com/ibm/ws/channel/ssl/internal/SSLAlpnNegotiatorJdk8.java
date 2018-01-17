@@ -206,12 +206,15 @@ public class SSLAlpnNegotiatorJdk8 implements java.lang.reflect.InvocationHandle
      * @param SSLConnectionLink
      */
     protected void setSSLLink(SSLEngine engine, SSLConnectionLink link) {
-        if (!h2.equals(link.getAlpnProtocol())) {
+        if (link.getAlpnProtocol() == null) {
             linkMap.put(engine, link);
         }
     }
 
-    private SSLConnectionLink removeSSLLink(SSLEngine engine) {
-        return linkMap.remove(engine);
+    protected SSLConnectionLink removeSSLLink(SSLEngine engine) {
+        if (isGrizzlyAlpnActive()) {
+            return linkMap.remove(engine);
+        }
+        return null;
     }
 }
