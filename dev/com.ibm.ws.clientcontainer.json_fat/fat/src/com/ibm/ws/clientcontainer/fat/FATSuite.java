@@ -14,38 +14,37 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+    JsonbAppClientTest.class,
 	JsonpAppClientTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() // run once with pre-configured feature set
-                                             .andWith(FeatureReplacementAction.EE8_FEATURES());
-
+    public static EnterpriseArchive jsonbAppClientApp;
     public static EnterpriseArchive jsonpAppClientApp;
     
     @BeforeClass
     public static void setupApps() throws Exception {
-        
-        // ApacheBvalConfig app
+        // JsonbAppClient app
+        JavaArchive jsonbAppClientJar = ShrinkHelper.buildJavaArchive("JsonbAppClient.jar", "com.ibm.ws.clientcontainer.jsonb.fat.*");
+        jsonbAppClientApp = ShrinkWrap.create(EnterpriseArchive.class, "JsonbAppClient.ear");
+        jsonbAppClientApp.addAsModule(jsonbAppClientJar);
+        ShrinkHelper.addDirectory(jsonbAppClientApp, "test-applications/JsonbAppClient.ear/resources");
+
+        // JsonpAppClient app
         JavaArchive jsonpAppClientJar = ShrinkHelper.buildJavaArchive("JsonpAppClient.jar", "com.ibm.ws.clientcontainer.jsonp.fat.*");
         jsonpAppClientApp = ShrinkWrap.create(EnterpriseArchive.class, "JsonpAppClient.ear");
         jsonpAppClientApp.addAsModule(jsonpAppClientJar);
         ShrinkHelper.addDirectory(jsonpAppClientApp, "test-applications/JsonpAppClient.ear/resources");
-    
     }
 }
 
