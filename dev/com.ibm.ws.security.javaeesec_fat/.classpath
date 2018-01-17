@@ -16,28 +16,5 @@
 	<classpathentry kind="src" path="test-applications/securityContextHamApp.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/IBM_ADMIN/.m2/repository/javax/security/enterprise/javax.security.enterprise-api/1.0/javax.security.enterprise-api-1.0.jar">
-		<attributes>
-			<attribute name="bsn" value="javax.security.enterprise:javax.security.enterprise-api"/>
-			<attribute name="type" value="REPO"/>
-			<attribute name="project" value="com.ibm.websphere.javaee.security.1.0"/>
-			<attribute name="version" value="latest"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="javax/security/enterprise/*"/>
-			<accessrule kind="accessible" pattern="javax/security/enterprise/authentication/mechanism/http/*"/>
-			<accessrule kind="accessible" pattern="javax/security/enterprise/credential/*"/>
-			<accessrule kind="accessible" pattern="javax/security/enterprise/identitystore/*"/>
-			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
-		</accessrules>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/IBM_ADMIN/.m2/repository/javax/javaee-api/7.0/javaee-api-7.0.jar">
-		<attributes>
-			<attribute name="bsn" value="javax:javaee-api"/>
-			<attribute name="type" value="REPO"/>
-			<attribute name="project" value="com.ibm.ws.ejbcontainer_test"/>
-			<attribute name="version" value="7.0"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
