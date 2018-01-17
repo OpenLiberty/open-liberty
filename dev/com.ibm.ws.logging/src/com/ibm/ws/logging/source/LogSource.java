@@ -170,6 +170,7 @@ public class LogSource implements Source, WsLogHandler {
         KeyValuePair logLevelRaw = new KeyValuePair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord), KeyValuePair.ValueTypes.STRING);
         KeyValuePair methodName = new KeyValuePair("ibm_methodName", logRecord.getSourceMethodName(), KeyValuePair.ValueTypes.STRING);
         KeyValuePair className = new KeyValuePair("ibm_className", logRecord.getSourceClassName(), KeyValuePair.ValueTypes.STRING);
+        KeyValuePair levelValue = new KeyValuePair("levelValue", Integer.toString(logRecord.getLevel().intValue()), KeyValuePair.ValueTypes.NUMBER);
 
         KeyValuePairs extensions = new KeyValuePairs();
         Map<String, String> extMap = null;
@@ -211,6 +212,7 @@ public class LogSource implements Source, WsLogHandler {
         pairs.add(className);
         pairs.add(extensions);
         pairs.add(sequence);
+        pairs.add(levelValue);
 
         genData.setSourceType(sourceName);
 

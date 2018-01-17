@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
+import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -23,8 +24,14 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class MessageLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     private TraceWriter traceWriter;
-
+    /*
+     * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
+     */
+    private volatile Object sync;
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
+
+    private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
+    private BaseTraceFormatter formatter = null;
 
     public MessageLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -33,6 +40,10 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public String getHandlerName() {
         return COMPONENT_NAME;
+    }
+
+    public void setSync(Object sync) {
+        this.sync = sync;
     }
 
     public void setFileLogHolder(TraceWriter trw) {
@@ -47,12 +58,54 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public void synchronousWrite(Object event) {
         /*
+         * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
+         */
+
+        /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
-        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        traceWriter.writeRecord(messageOutput);
+        String messageOutput = "";
+        if (format.equals(LoggingConstants.JSON_FORMAT)) {
+            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
+            messageOutput = formatter.messageLogFormatter((GenericData) event);
+
+        }
+        synchronized (sync)
+
+        {
+            traceWriter.writeRecord(messageOutput);
+        }
+    }
+
+    /**
+     * @return the json
+     */
+    public BaseTraceFormatter getFormatter() {
+        return formatter;
+    }
+
+    /**
+     * @param json the json to set
+     */
+    public void setFormatter(BaseTraceFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    /**
+     * @return the format
+     */
+    public String getFormat() {
+        return format;
+    }
+
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(String format) {
+        this.format = format;
     }
 
 }

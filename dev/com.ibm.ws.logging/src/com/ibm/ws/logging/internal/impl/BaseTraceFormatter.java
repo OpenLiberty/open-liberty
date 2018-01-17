@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -25,6 +26,9 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.collector.DateFormatHelper;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.Pair;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 
@@ -122,6 +126,27 @@ public class BaseTraceFormatter extends Formatter {
                 return N_INFO;
 
             if (level == WsLevel.EVENT)
+                return N_EVENT;
+        }
+        return "";
+    }
+
+    public static final String levelValToString(Integer level) {
+        if (level != null) {
+            int l = level.intValue();
+
+            if (l == WsLevel.FATAL.intValue())
+                return N_FATAL;
+            if (l == WsLevel.ERROR.intValue())
+                return N_ERROR;
+            if (l == Level.WARNING.intValue())
+                return N_WARN;
+            if (l == WsLevel.AUDIT.intValue())
+                return N_AUDIT;
+            if (l == Level.INFO.intValue())
+                return N_INFO;
+
+            if (level == WsLevel.EVENT.intValue())
                 return N_EVENT;
         }
         return "";
@@ -378,6 +403,58 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
+     * The console log is not structured, and relies on already formatted/translated
+     * messages
+     *
+     * @param logRecord
+     * @param txt the result of {@link #formatMessage}
+     * @return Formatted string for the console
+     */
+    public String consoleLogFormatter(GenericData genData, Integer consoleLogLevel) {
+        StringBuilder sb = new StringBuilder(256);
+//        String name = genData.getSourceType();
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String message = null;
+//        Long datetime = null;
+//        String levelString = "";
+        String throwable = null;
+        Integer levelValue = null;
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals("message")) {
+                    message = kvp.getValue();
+                } else if (kvp.getKey().equals("throwable")) {
+                    throwable = kvp.getValue();
+                } else if (kvp.getKey().equals("levelValue")) {
+                    levelValue = Integer.parseInt(kvp.getValue());
+                }
+
+            }
+        }
+        if (levelValue >= consoleLogLevel) {
+            sb.append(BaseTraceFormatter.levelValToString(levelValue));
+//            sb.append(levelString);
+            sb.append(message);
+            if (throwable != null) {
+                sb.append(LoggingConstants.nl).append(throwable);
+            }
+//            if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
+//
+//                return sb.toString();
+//            } else {
+//                return sb.toString();
+//            }
+            return sb.toString();
+
+        }
+        return null;
+    }
+
+    /**
      * The messages log always uses the same/enhanced format, and relies on already formatted
      * messages. This does the formatting needed to take a message suitable for console.log
      * and wrap it to fit into messages.log.
@@ -402,6 +479,59 @@ public class BaseTraceFormatter extends Formatter {
             String stackTrace = getStackTrace(logRecord);
             if (stackTrace != null)
                 sb.append(LoggingConstants.nl).append(stackTrace);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * The messages log always uses the same/enhanced format, and relies on already formatted
+     * messages. This does the formatting needed to take a message suitable for console.log
+     * and wrap it to fit into messages.log.
+     *
+     * @param logRecord
+     * @param formattedVerboseMsg the result of {@link #formatVerboseMessage}
+     * @return Formatted string for messages.log
+     */
+    public String messageLogFormatter(GenericData genData) {
+        // This is a very light trace format, based on enhanced:
+        StringBuilder sb = new StringBuilder(256);
+//        String sym = getMarker(logRecord);
+//        String name = nonNullString(logRecord.getLoggerName(), logRecord.getSourceClassName());
+        String name = genData.getSourceType();
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String message = "";
+        Long datetime = null;
+        String level = "";
+        String throwable = "";
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals("message")) {
+                    message = kvp.getValue();
+                } else if (kvp.getKey().equals("ibm_datetime")) {
+
+                    datetime = Long.parseLong(kvp.getValue());
+
+                } else if (kvp.getKey().equals("severity")) {
+                    level = kvp.getValue();
+                } else if (kvp.getKey().equals("throwable")) {
+                    throwable = kvp.getValue();
+                }
+
+            }
+        }
+        sb.append('[').append(DateFormatHelper.formatTime(datetime, useIsoDateFormat)).append("] ");
+        sb.append(DataFormatHelper.getThreadId()).append(' ');
+        formatFixedString(sb, name, enhancedNameLength);
+        sb.append(" " + level + " "); // sym has built-in padding
+        sb.append(message);
+
+        if (throwable != null) {
+            sb.append(LoggingConstants.nl).append(throwable);
         }
 
         return sb.toString();
