@@ -126,8 +126,8 @@ public class WsTraceRouterImpl implements WsTraceRouter {
     /**
      * Route the trace to all LogHandlers in the set.
      *
-     * @return true, which means the msg should be logged
-     *         normally as well
+     * @return true if the set contained DEFAULT, which means the msg should be logged
+     *         normally as well. false otherwise.
      */
     protected boolean routeToAll(RoutedMessage routedTrace, Set<String> logHandlerIds) {
 
