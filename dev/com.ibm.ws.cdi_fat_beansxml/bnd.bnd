@@ -53,6 +53,7 @@ src: \
         test-applications/postConstructErrorMessageApp.war/src,\
         test-applications/TestVetoedAlternative.war/src,\
         test-applications/TestVetoedAlternative.jar/src,\
+        test-applications/userSAXParserFactory.war/src,\
         test-applications/webBeansBeansXmlInterceptors.war/src,\
         test-applications/webBeansBeansXmlDecorators.war/src,\
         test-applications/utilLib.jar

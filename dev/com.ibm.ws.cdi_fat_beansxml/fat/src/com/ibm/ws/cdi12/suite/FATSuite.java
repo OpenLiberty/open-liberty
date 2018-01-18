@@ -46,6 +46,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.cdi12.fat.tests.AfterTypeDiscoveryTest;
 import com.ibm.ws.cdi12.fat.tests.BeanDiscoveryModeNoneTest;
 import com.ibm.ws.cdi12.fat.tests.ClassExclusionTest;
+import com.ibm.ws.cdi12.fat.tests.CustomerProvidedXMLParserFactoryTest;
 import com.ibm.ws.cdi12.fat.tests.DisablingBeansXmlValidationTest;
 import com.ibm.ws.cdi12.fat.tests.EmptyCDITest;
 import com.ibm.ws.cdi12.fat.tests.EnablingBeansXmlValidationTest;
@@ -67,6 +68,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 AfterTypeDiscoveryTest.class,
                 BeanDiscoveryModeNoneTest.class, 
                 ClassExclusionTest.class,
+                CustomerProvidedXMLParserFactoryTest.class,
                 DisablingBeansXmlValidationTest.class,
                 EmptyCDITest.class,
                 EnablingBeansXmlValidationTest.class,
