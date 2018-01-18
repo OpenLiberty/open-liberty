@@ -109,31 +109,6 @@ public class FFDCSource implements Source {
         private final AtomicLong seq = new AtomicLong();
 
         /** {@inheritDoc} */
-//        @Override
-//        public void process(Incident in, Throwable th) {
-//            long timeStamp = in.getTimeStamp();
-//            long dateOfFirstOccurrence = in.getDateOfFirstOccurrence().getTime();
-//            int count = in.getCount();
-//            //Condition to prevent adding ffdc event for the same failure
-//            //to the bufferMgr multiple times
-//            //TODO: Need to evaluate the need for the timeStamp (timeStamp == dateOfFirstOccurrence) check is required or not
-//            if (count == 1) {
-//                String className = in.getSourceId();
-//                String label = in.getLabel();
-//                String exceptionName = in.getExceptionName();
-//                String probeID = in.getProbeId();
-//                String sourceID = in.getSourceId();
-//                int threadID = (int) in.getThreadId();
-//                String stackTrace = getStackTraceAsString(th);
-//                String callerDetails = getCallerDetails(in);
-//                String message = th.getMessage();
-//                String sequence = timeStamp + "_" + String.format("%013X", seq.incrementAndGet());
-//
-//                FFDCData data = new FFDCData(exceptionName, message, className, timeStamp, dateOfFirstOccurrence, count, label, probeID, sourceID, threadID, stackTrace, callerDetails, sequence);
-//                bufferMgr.add(data);
-//            }
-//        }
-
         @Override
         public void process(Incident in, Throwable th) {
 
