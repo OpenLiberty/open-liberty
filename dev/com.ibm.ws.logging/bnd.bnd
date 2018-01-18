@@ -45,6 +45,7 @@ Export-Package: \
 	com.ibm.ws.health.center.data,\
 	com.ibm.ws.http.logging.data,\
 	com.ibm.ws.logging.collector,\
+	com.ibm.ws.logging.data,\
 	com.ibm.wsspi.logging;provide:=true
 
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
