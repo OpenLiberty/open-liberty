@@ -69,6 +69,18 @@ public class ShrinkHelper {
     }
 
     /**
+     * Writes an application to a a file in the 'publish/clients/<client_name>/apps/' directory
+     * with the file name returned by a.getName(), which should include the
+     * file type extension (.ear, .war, .jar, .rar, etc)
+     *
+     * @param client The client to publish the application to
+     * @param a The archive to export as a file
+     */
+    public static void exportAppToClient(LibertyClient client, Archive<?> a) throws Exception {
+        exportToClient(client, "apps", a);
+    }
+
+    /**
      * Writes an Archive to a a file in the 'publish/servers/<server_name>' directory
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc)
