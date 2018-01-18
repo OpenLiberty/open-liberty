@@ -124,31 +124,6 @@ public class LogSource implements Source, WsLogHandler {
         }
     }
 
-//    public MessageLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-//        String message = routedMessage.getFormattedVerboseMsg();
-//        if (message == null)
-//            message = logRecord.getMessage();
-//        long date = logRecord.getMillis();
-//        String messageId = null;
-//        if (message != null)
-//            messageId = parseMessageId(message);
-//        int threadId = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-//        String loggerName = logRecord.getLoggerName();
-//        String logLevel = LogFormatUtils.mapLevelToType(logRecord);
-//        String logLevelRaw = LogFormatUtils.mapLevelToRawType(logRecord);
-//        String methodName = logRecord.getSourceMethodName();
-//        String className = logRecord.getSourceClassName();
-//        Map<String, String> extensions = null;
-//        if (logRecord instanceof WsLogRecord)
-//            extensions = ((WsLogRecord) logRecord).getExtensions();
-//        String sequence = sequenceNumber.next(date);
-//        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
-//        Throwable throwable = logRecord.getThrown();
-//
-//        return new MessageLogData(date, threadId, loggerName, logLevel, logLevelRaw, messageId, message, methodName, className, extensions, sequence, throwable);
-//
-//    }
-
     public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
 
         String messageVal = routedMessage.getFormattedVerboseMsg();

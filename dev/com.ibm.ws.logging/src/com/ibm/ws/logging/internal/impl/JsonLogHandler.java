@@ -159,7 +159,7 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
 
         String eventType = CollectorJsonUtils.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.0", tags,
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
                                                          MAXFIELDLENGTH);
         return jsonStr;
     }
@@ -219,4 +219,5 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
             return "";
         }
     }
+
 }
