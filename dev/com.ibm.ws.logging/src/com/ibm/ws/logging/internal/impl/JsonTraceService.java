@@ -45,7 +45,7 @@ public class JsonTraceService extends BaseTraceService {
 
     private static volatile boolean isMessageJsonConfigured = false;
     private static volatile boolean isConsoleJsonConfigured = false;
-    private static volatile Object sync = new Object();
+//    private static volatile Object sync = new Object();
 
     private volatile String serverName = null;
     private volatile String wlpUserDir = null;
@@ -104,13 +104,24 @@ public class JsonTraceService extends BaseTraceService {
          */
         if (messageLogHandler == null) {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
-            messageLogHandler.setSync(sync);
+//            messageLogHandler.setSync(sync);
             collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
+
+            messageLogHandler.modified(filterdMessageSourceList);
+            //for any 'updates' to the FileLogHolder
+            messageLogHandler.setWriter(messagesLog);
+            //Connect the conduits to the handler as necessary
+            updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
+
         }
         if (consoleLogHandler == null) {
             consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
             collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
             consoleLogHandler.setWriter(systemOut);
+
+            consoleLogHandler.modified(filterdConsoleSourceList);
+            //Connect the conduits to the handler as necessary
+            updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
         }
 
         /*
@@ -122,12 +133,12 @@ public class JsonTraceService extends BaseTraceService {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
 //                updateConduitSyncHandlerConnection(new ArrayList<String>(), messageLogHandler);
-                messageLogHandler.modified(filterdMessageSourceList);
-                //for any 'updates' to the FileLogHolder
-                messageLogHandler.setWriter(messagesLog);
-
-                //Connect the conduits to the handler as necessary
-                updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
+//                messageLogHandler.modified(filterdMessageSourceList);
+//                //for any 'updates' to the FileLogHolder
+//                messageLogHandler.setWriter(messagesLog);
+//
+//                //Connect the conduits to the handler as necessary
+//                updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
             }
         }
 
@@ -140,9 +151,9 @@ public class JsonTraceService extends BaseTraceService {
             if (consoleLogHandler != null) {
                 consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
 //                updateConduitSyncHandlerConnection(new ArrayList<String>(), consoleLogHandler);
-                consoleLogHandler.modified(filterdConsoleSourceList);
-                //Connect the conduits to the handler as necessary
-                updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+//                consoleLogHandler.modified(filterdConsoleSourceList);
+//                //Connect the conduits to the handler as necessary
+//                updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
         }
 
@@ -155,13 +166,13 @@ public class JsonTraceService extends BaseTraceService {
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
             setJsonConfigured();
-            messageLogHandler.modified(filterdMessageSourceList);
-            //for any 'updates' to the FileLogHolder
-            messageLogHandler.setWriter(messagesLog);
-            isMessageJsonConfigured = true;
-
-            //Connect the conduits to the handler as necessary
-            updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
+//            messageLogHandler.modified(filterdMessageSourceList);
+//            //for any 'updates' to the FileLogHolder
+//            messageLogHandler.setWriter(messagesLog);
+//            isMessageJsonConfigured = true;
+//
+//            //Connect the conduits to the handler as necessary
+//            updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
         }
 
         /*
@@ -173,11 +184,11 @@ public class JsonTraceService extends BaseTraceService {
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
             setJsonConfigured();
-            consoleLogHandler.modified(filterdConsoleSourceList);
-            //Connect the conduits to the handler as necessary
-            updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
-
-            isConsoleJsonConfigured = true;
+//            consoleLogHandler.modified(filterdConsoleSourceList);
+//            //Connect the conduits to the handler as necessary
+//            updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+//
+//            isConsoleJsonConfigured = true;
         }
     }
 
@@ -226,11 +237,11 @@ public class JsonTraceService extends BaseTraceService {
         TraceWriter detailLog = traceLog;
 
 //         Tee to messages.log (always)
-        String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+//        String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
 
-        if (!isMessageJsonConfigured) {
-            messagesLog.writeRecord(message);
-        }
+//        if (!isMessageJsonConfigured) {
+//            messagesLog.writeRecord(message);
+//        }
 
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord));
 

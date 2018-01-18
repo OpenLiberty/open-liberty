@@ -58,7 +58,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         }
         synchronized (this) {
             if (messageOutput != null) {
-                sysLogHolder.getOriginalStream().println(messageOutput + sysLogHolder.getName());
+                sysLogHolder.getOriginalStream().println(messageOutput);
             }
         }
     }

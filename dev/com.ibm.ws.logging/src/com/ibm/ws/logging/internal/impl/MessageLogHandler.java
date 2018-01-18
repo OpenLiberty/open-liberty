@@ -27,7 +27,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     /*
      * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
      */
-    private volatile Object sync;
+//    private volatile Object sync;
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
@@ -40,10 +40,6 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public String getHandlerName() {
         return COMPONENT_NAME;
-    }
-
-    public void setSync(Object sync) {
-        this.sync = sync;
     }
 
     public void setFileLogHolder(TraceWriter trw) {
@@ -73,11 +69,8 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
             messageOutput = formatter.messageLogFormatter((GenericData) event);
 
         }
-        synchronized (sync)
+        traceWriter.writeRecord(messageOutput);
 
-        {
-            traceWriter.writeRecord(messageOutput);
-        }
     }
 
     /**
