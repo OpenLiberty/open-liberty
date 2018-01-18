@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +80,10 @@ public final class OpenAPIModelWalker {
         public OpenAPI getModel();
 
         public Object getParent();
+
+        public String getLocation();
+
+        public String getLocation(String suffix);
     }
 
     static final class Walker implements Context {
@@ -86,6 +91,7 @@ public final class OpenAPIModelWalker {
         private final OpenAPI openAPI;
         private final OpenAPIModelVisitor visitor;
         private final Deque<Object> ancestors = new ArrayDeque<>();
+        private final Deque<String> pathSegments = new ArrayDeque<>();
         private final IdentityHashMap<Object, Object> traversedObjects = new IdentityHashMap<>();
 
         public Walker(OpenAPI openAPI, OpenAPIModelVisitor visitor) {
@@ -103,6 +109,30 @@ public final class OpenAPIModelWalker {
             return ancestors.peek();
         }
 
+        @Override
+        public String getLocation() {
+            return getLocation(null);
+        }
+
+        @Override
+        public String getLocation(String suffix) {
+            final Iterator<String> i = pathSegments.descendingIterator();
+            final StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            while (i.hasNext()) {
+                if (!first) {
+                    sb.append('/');
+                }
+                sb.append(i.next());
+                first = false;
+            }
+            if (suffix != null && !suffix.isEmpty()) {
+                sb.append('/');
+                sb.append(suffix);
+            }
+            return sb.toString();
+        }
+
         // Traversal methods call this method to check whether
         // they have already traversed this object before.
         public boolean isTraversed(Object o) {
@@ -115,61 +145,82 @@ public final class OpenAPIModelWalker {
         public void traverseOpenAPI() {
             visitor.visitOpenAPI(this);
             ancestors.push(openAPI);
+            pathSegments.push("#");
 
             final Components components = openAPI.getComponents();
             if (components != null) {
+                pathSegments.push("components");
                 traverseComponents(components);
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = openAPI.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
                     if (k != null && v != null) {
+                        pathSegments.push(k);
                         traverseExtension(k, v);
+                        pathSegments.pop();
                     }
                 });
+                pathSegments.pop();
             }
 
             final ExternalDocumentation extDocs = openAPI.getExternalDocs();
             if (extDocs != null) {
+                pathSegments.push("externalDocs");
                 traverseExternalDocs(extDocs);
+                pathSegments.pop();
             }
 
             final Info info = openAPI.getInfo();
             if (info != null) {
+                pathSegments.push("info");
                 traverseInfo(info);
+                pathSegments.pop();
             }
 
             final Paths paths = openAPI.getPaths();
             if (paths != null) {
+                pathSegments.push("paths");
                 traversePaths(paths);
+                pathSegments.pop();
             }
 
             final List<SecurityRequirement> security = openAPI.getSecurity();
             if (security != null) {
+                pathSegments.push("security");
                 security.stream().forEach((v) -> {
                     traverseSecurityRequirement(v);
                 });
+                pathSegments.pop();
             }
 
             final List<Server> servers = openAPI.getServers();
             if (servers != null) {
+                pathSegments.push("servers");
                 servers.stream().forEach((v) -> {
                     traverseServer(v);
                 });
+                pathSegments.pop();
             }
 
             final List<Tag> tags = openAPI.getTags();
             if (tags != null) {
+                pathSegments.push("tags");
                 tags.stream().forEach((v) -> {
                     traverseTag(v);
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
+            pathSegments.pop();
 
             // Clean up
             ancestors.clear();
+            pathSegments.clear();
             traversedObjects.clear();
         }
 
@@ -182,73 +233,112 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Callback> callbacks = components.getCallbacks();
             if (callbacks != null) {
+                pathSegments.push("callbacks");
                 callbacks.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseCallback(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Example> examples = components.getExamples();
             if (examples != null) {
+                pathSegments.push("examples");
                 examples.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExample(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = components.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Header> headers = components.getHeaders();
             if (headers != null) {
+                pathSegments.push("headers");
                 headers.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseHeader(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Link> links = components.getLinks();
             if (links != null) {
+                pathSegments.push("links");
                 links.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseLink(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Parameter> parameters = components.getParameters();
             if (parameters != null) {
+                pathSegments.push("parameters");
                 parameters.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseParameter(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, RequestBody> requestBodies = components.getRequestBodies();
             if (requestBodies != null) {
+                pathSegments.push("requestBodies");
                 requestBodies.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseRequestBody(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, APIResponse> responses = components.getResponses();
             if (responses != null) {
+                pathSegments.push("responses");
                 responses.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseResponse(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
-            @SuppressWarnings("rawtypes")
             final Map<String, Schema> schemas = components.getSchemas();
             if (schemas != null) {
+                pathSegments.push("schemas");
                 schemas.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseSchema(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, SecurityScheme> schemes = components.getSecuritySchemes();
             if (schemes != null) {
+                pathSegments.push("securitySchemes");
                 schemes.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseSecurityScheme(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -263,13 +353,19 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = callback.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             callback.forEach((k, v) -> {
+                pathSegments.push(k);
                 traversePathItem(k, v);
+                pathSegments.pop();
             });
 
             ancestors.pop();
@@ -284,31 +380,54 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = item.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
-            final Operation[] operations = { item.getDELETE(), item.getGET(),
-                                             item.getHEAD(), item.getOPTIONS(),
-                                             item.getPATCH(), item.getPOST(),
-                                             item.getPUT(), item.getTRACE() };
+            final class OperationProperty {
+                final Operation o;
+                final String name;
+
+                OperationProperty(Operation o, String name) {
+                    this.o = o;
+                    this.name = name;
+                }
+            }
+            final OperationProperty[] operations = { new OperationProperty(item.getDELETE(), "DELETE"),
+                                                     new OperationProperty(item.getGET(), "GET"),
+                                                     new OperationProperty(item.getHEAD(), "HEAD"),
+                                                     new OperationProperty(item.getOPTIONS(), "OPTIONS"),
+                                                     new OperationProperty(item.getPATCH(), "PATCH"),
+                                                     new OperationProperty(item.getPOST(), "POST"),
+                                                     new OperationProperty(item.getPUT(), "PUT"),
+                                                     new OperationProperty(item.getTRACE(), "TRACE") };
             Arrays.stream(operations).forEach((v) -> {
-                traverseOperation(v);
+                pathSegments.push(v.name);
+                traverseOperation(v.o);
+                pathSegments.pop();
             });
 
             final List<Parameter> parameters = item.getParameters();
             if (parameters != null) {
+                pathSegments.push("parameters");
                 parameters.stream().forEach((v) -> {
                     traverseParameter(null, v);
                 });
+                pathSegments.pop();
             }
 
             final List<Server> servers = item.getServers();
             if (servers != null) {
+                pathSegments.push("servers");
                 servers.stream().forEach((v) -> {
                     traverseServer(v);
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -323,52 +442,72 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Callback> callbacks = operation.getCallbacks();
             if (callbacks != null) {
+                pathSegments.push("callbacks");
                 callbacks.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseCallback(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = operation.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final ExternalDocumentation extDocs = operation.getExternalDocs();
             if (extDocs != null) {
+                pathSegments.push("externalDocs");
                 traverseExternalDocs(extDocs);
+                pathSegments.pop();
             }
 
             final List<Parameter> parameters = operation.getParameters();
             if (parameters != null) {
+                pathSegments.push("parameters");
                 parameters.stream().forEach((v) -> {
                     traverseParameter(null, v);
                 });
+                pathSegments.pop();
             }
 
             final RequestBody rb = operation.getRequestBody();
             if (rb != null) {
+                pathSegments.push("requestBody");
                 traverseRequestBody(null, rb);
+                pathSegments.pop();
             }
 
             final APIResponses responses = operation.getResponses();
             if (responses != null) {
+                pathSegments.push("responses");
                 traverseResponses(responses);
+                pathSegments.pop();
             }
 
             final List<SecurityRequirement> security = operation.getSecurity();
             if (security != null) {
+                pathSegments.push("security");
                 security.stream().forEach((v) -> {
                     traverseSecurityRequirement(v);
                 });
+                pathSegments.pop();
             }
 
             final List<Server> servers = operation.getServers();
             if (servers != null) {
+                pathSegments.push("servers");
                 servers.stream().forEach((v) -> {
                     traverseServer(v);
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -387,9 +526,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = example.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -404,28 +547,42 @@ public final class OpenAPIModelWalker {
 
             final Content content = header.getContent();
             if (content != null) {
+                pathSegments.push("content");
                 content.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseMediaType(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Example> examples = header.getExamples();
             if (examples != null) {
+                pathSegments.push("examples");
                 examples.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExample(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = header.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Schema schema = header.getSchema();
             if (schema != null) {
+                pathSegments.push("schema");
                 traverseSchema(null, schema);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -440,28 +597,42 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Encoding> encoding = mediaType.getEncoding();
             if (encoding != null) {
+                pathSegments.push("encoding");
                 encoding.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseEncoding(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Example> examples = mediaType.getExamples();
             if (examples != null) {
+                pathSegments.push("examples");
                 examples.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExample(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = mediaType.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Schema schema = mediaType.getSchema();
             if (schema != null) {
+                pathSegments.push("schema");
                 traverseSchema(null, schema);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -476,16 +647,24 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = encoding.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Header> headers = encoding.getHeaders();
             if (headers != null) {
+                pathSegments.push("headers");
                 headers.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseHeader(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -500,14 +679,20 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = link.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Server server = link.getServer();
             if (server != null) {
+                pathSegments.push("server");
                 link.setServer(server);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -526,28 +711,42 @@ public final class OpenAPIModelWalker {
 
             final Content content = p.getContent();
             if (content != null) {
+                pathSegments.push("content");
                 content.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseMediaType(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Example> examples = p.getExamples();
             if (examples != null) {
+                pathSegments.push("examples");
                 examples.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExample(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = p.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Schema schema = p.getSchema();
             if (schema != null) {
+                pathSegments.push("schema");
                 traverseSchema(null, schema);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -566,16 +765,24 @@ public final class OpenAPIModelWalker {
 
             final Content content = rb.getContent();
             if (content != null) {
+                pathSegments.push("content");
                 content.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseMediaType(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = rb.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -589,12 +796,16 @@ public final class OpenAPIModelWalker {
             ancestors.push(responses);
 
             responses.forEach((k, v) -> {
+                pathSegments.push(k);
                 traverseResponse(k, v);
+                pathSegments.pop();
             });
 
             final APIResponse defaultResponse = responses.getDefault();
             if (defaultResponse != null) {
+                pathSegments.push("default");
                 traverseResponse("default", defaultResponse);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -609,30 +820,46 @@ public final class OpenAPIModelWalker {
 
             final Content content = response.getContent();
             if (content != null) {
+                pathSegments.push("content");
                 content.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseMediaType(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = response.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Header> headers = response.getHeaders();
             if (headers != null) {
+                pathSegments.push("headers");
                 headers.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseHeader(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Map<String, Link> links = response.getLinks();
             if (links != null) {
+                pathSegments.push("links");
                 links.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseLink(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -651,73 +878,99 @@ public final class OpenAPIModelWalker {
 
             final Object addProps = schema.getAdditionalProperties();
             if (addProps != null && addProps instanceof Schema) {
-                traverseSchema(key, (Schema) addProps);
+                pathSegments.push("additionalProperties");
+                traverseSchema(null, (Schema) addProps);
+                pathSegments.pop();
             }
 
             final Discriminator d = schema.getDiscriminator();
             if (d != null) {
+                pathSegments.push("discriminator");
                 traverseDiscriminator(d);
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = schema.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final ExternalDocumentation extDocs = schema.getExternalDocs();
             if (extDocs != null) {
+                pathSegments.push("externalDocs");
                 traverseExternalDocs(extDocs);
+                pathSegments.pop();
             }
 
             final Schema notSchema = schema.getNot();
             if (notSchema != null) {
-                traverseSchema(key, notSchema);
+                pathSegments.push("not");
+                traverseSchema(null, notSchema);
+                pathSegments.pop();
             }
 
-            @SuppressWarnings("rawtypes")
             final Map<String, Schema> schemas = schema.getProperties();
             if (schemas != null) {
+                pathSegments.push("properties");
                 schemas.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseSchema(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final XML xml = schema.getXml();
             if (xml != null) {
+                pathSegments.push("xml");
                 traverseXML(xml);
+                pathSegments.pop();
             }
 
-            @SuppressWarnings("rawtypes")
-            final List<Schema> nestedSchemas;
+            final class SchemaProperty {
+                final Schema s;
+                final String name;
+
+                SchemaProperty(Schema s, String name) {
+                    this.s = s;
+                    this.name = name;
+                }
+            }
+            final List<SchemaProperty> nestedSchemas;
             if (schema.getType() == SchemaType.ARRAY) {
                 final Schema arraySchema = schema;
-                @SuppressWarnings("rawtypes")
                 final Schema items = arraySchema.getItems();
-                nestedSchemas = (items != null) ? Collections.singletonList(items) : null;
+                nestedSchemas = (items != null) ? Collections.singletonList(new SchemaProperty(items, "items")) : null;
             } else if (SchemaProcessor.isComposedSchema(schema)) {
                 // 'allOf', 'anyOf' and 'oneOf' really should be mutually exclusive but it's
                 // possible the user populated more than one of the fields. The walker's job
                 // is to traverse the entire data structure, so we just pass everything it
                 // finds to the visitor.
                 final Schema composedSchema = schema;
-                @SuppressWarnings("rawtypes")
-                List<Schema> _nestedSchemas = new ArrayList<>();
-                @SuppressWarnings("rawtypes")
+                List<SchemaProperty> _nestedSchemas = new ArrayList<>();
                 List<Schema> allOf = composedSchema.getAllOf();
                 if (allOf != null) {
-                    _nestedSchemas.addAll(allOf);
+                    allOf.forEach((v) -> {
+                        _nestedSchemas.add(new SchemaProperty(v, "allOf"));
+                    });
                 }
-                @SuppressWarnings("rawtypes")
                 List<Schema> anyOf = composedSchema.getAnyOf();
                 if (anyOf != null) {
-                    _nestedSchemas.addAll(anyOf);
+                    anyOf.forEach((v) -> {
+                        _nestedSchemas.add(new SchemaProperty(v, "anyOf"));
+                    });
                 }
-                @SuppressWarnings("rawtypes")
                 List<Schema> oneOf = composedSchema.getOneOf();
                 if (oneOf != null) {
-                    _nestedSchemas.addAll(oneOf);
+                    oneOf.forEach((v) -> {
+                        _nestedSchemas.add(new SchemaProperty(v, "oneOf"));
+                    });
                 }
                 nestedSchemas = (!_nestedSchemas.isEmpty()) ? _nestedSchemas : null;
             } else {
@@ -725,7 +978,9 @@ public final class OpenAPIModelWalker {
             }
             if (nestedSchemas != null) {
                 nestedSchemas.stream().forEach((v) -> {
-                    traverseSchema(null, v);
+                    pathSegments.push(v.name);
+                    traverseSchema(null, v.s);
+                    pathSegments.pop();
                 });
             }
 
@@ -748,9 +1003,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = xml.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -765,14 +1024,20 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = scheme.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final OAuthFlows authFlows = scheme.getFlows();
             if (authFlows != null) {
+                pathSegments.push("flows");
                 traverseOAuthFlows(authFlows);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -787,15 +1052,33 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = authFlows.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
-            final OAuthFlow[] _authFlows = { authFlows.getAuthorizationCode(), authFlows.getClientCredentials(),
-                                             authFlows.getImplicit(), authFlows.getPassword() };
+            final class OAuthFlowProperty {
+
+                final OAuthFlow o;
+                final String name;
+
+                OAuthFlowProperty(OAuthFlow o, String name) {
+                    this.o = o;
+                    this.name = name;
+                }
+            }
+            final OAuthFlowProperty[] _authFlows = { new OAuthFlowProperty(authFlows.getAuthorizationCode(), "authorizationCode"),
+                                                     new OAuthFlowProperty(authFlows.getClientCredentials(), "clientCredentials"),
+                                                     new OAuthFlowProperty(authFlows.getImplicit(), "implicit"),
+                                                     new OAuthFlowProperty(authFlows.getPassword(), "password") };
             Arrays.stream(_authFlows).forEach((v) -> {
-                traverseOAuthFlow(v);
+                pathSegments.push(v.name);
+                traverseOAuthFlow(v.o);
+                pathSegments.pop();
             });
 
             ancestors.pop();
@@ -810,14 +1093,20 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = authFlow.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final Scopes scopes = authFlow.getScopes();
             if (scopes != null) {
+                pathSegments.push("scopes");
                 traverseScopes(scopes);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -832,9 +1121,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = scopes.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -853,9 +1146,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = extDocs.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -875,14 +1172,20 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = info.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final License license = info.getLicense();
             if (license != null) {
+                pathSegments.push("license");
                 traverseLicense(license);
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -897,9 +1200,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = contact.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -914,9 +1221,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = license.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -930,14 +1241,20 @@ public final class OpenAPIModelWalker {
             ancestors.push(paths);
 
             paths.forEach((k, v) -> {
+                pathSegments.push(k);
                 traversePathItem(k, v);
+                pathSegments.pop();
             });
 
             final Map<String, Object> extensions = paths.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -959,14 +1276,20 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = server.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final ServerVariables svs = server.getVariables();
             if (svs != null) {
+                pathSegments.push("variables");
                 traverseServerVariables(svs);
+                pathSegments.pop();
             }
             ancestors.pop();
         }
@@ -979,14 +1302,20 @@ public final class OpenAPIModelWalker {
             ancestors.push(svs);
 
             svs.forEach((k, v) -> {
+                pathSegments.push(k);
                 traverseServerVariable(k, v);
+                pathSegments.pop();
             });
 
             final Map<String, Object> extensions = svs.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -1001,9 +1330,13 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = sv.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             ancestors.pop();
@@ -1018,14 +1351,20 @@ public final class OpenAPIModelWalker {
 
             final Map<String, Object> extensions = tag.getExtensions();
             if (extensions != null) {
+                pathSegments.push("extensions");
                 extensions.forEach((k, v) -> {
+                    pathSegments.push(k);
                     traverseExtension(k, v);
+                    pathSegments.pop();
                 });
+                pathSegments.pop();
             }
 
             final ExternalDocumentation extDocs = tag.getExternalDocs();
             if (extDocs != null) {
+                pathSegments.push("externalDocs");
                 traverseExternalDocs(extDocs);
+                pathSegments.pop();
             }
 
             ancestors.pop();
