@@ -48,9 +48,14 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class WithAnnotationsTest extends LoggingTest {
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12WithAnnotationsServer");
+    private static boolean hasSetUp = false;
 
     @BeforeClass
     public static void setUp() throws Exception {
+ 
+        if (hasSetUp) {
+            return;
+        }
 
         JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class,"utilLib.jar")
                         .addClass("com.ibm.ws.cdi12.test.utils.ChainableListImpl")
@@ -72,6 +77,7 @@ public class WithAnnotationsTest extends LoggingTest {
                         .addAsLibrary(utilLib);
 
         ShrinkHelper.exportDropinAppToServer(server, withAnnotationsApp);
+        hasSetUp = true;
         server.waitForStringInLogUsingMark("CWWKZ0001I");
 
     }
