@@ -217,7 +217,7 @@ public class JsonTraceService extends BaseTraceService {
         if (!isMessageJsonConfigured) {
             messagesLog.writeRecord(message);
         } else {
-            if (logSource != null) {
+            if (logSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
                 String formattedMsg = formatter.formatMessage(logRecord);
                 String formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
                 RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, message, logRecord);
@@ -333,6 +333,16 @@ public class JsonTraceService extends BaseTraceService {
                 //messageLogHandler.writeToLogNormal(messageLogFormat);
                 //keep old behaviour.. otherwise we're just sending it to handler to write to the same log anyways
                 messagesLog.writeRecord(messageLogFormat);
+
+                /*
+                 * if messageLogFormat is BASIC, but consoleLogFormat is JSON, we need to currently write directly to messages.log,
+                 * and send to console.log through LogSource. However, once we merge BTS with JTS, we can send everything through LogSource.
+                 */
+                if (logSource != null && isConsoleJsonConfigured) {
+                    // logSource only receives "normal" messages and messages that are not hidden
+                    logSource.publish(routedMessage);
+                }
+
             } else {
                 // logSource only receives "normal" messages and messages that are not hidden
                 if (logSource != null) {
@@ -376,7 +386,9 @@ public class JsonTraceService extends BaseTraceService {
         // unnecessary.
 
         // Proceed to trace processing for all other log records
-        if (TraceComponent.isAnyTracingEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled())
+
+        {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
         }
     }
