@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.internal.impl;
+package com.ibm.ws.collector.manager.buffer;
 
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Array;

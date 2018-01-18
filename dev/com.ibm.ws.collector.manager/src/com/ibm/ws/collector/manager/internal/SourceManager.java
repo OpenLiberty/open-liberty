@@ -33,7 +33,7 @@ public class SourceManager {
     /* List of subscribed handlers */
     private final Set<String> subscribers;
 
-    private final int BUFFER_SIZE = 10000;
+    private final int BUFFER_SIZE = 0;
 
     public SourceManager(Source source) {
         setSource(source);
