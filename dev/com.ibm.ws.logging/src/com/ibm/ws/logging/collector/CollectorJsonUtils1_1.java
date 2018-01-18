@@ -32,6 +32,18 @@ public class CollectorJsonUtils1_1 {
         return CollectorJsonHelpers.getEventType(source, location);
     }
 
+    /**
+     * Method to return log event data in json format. This method is for collector version greater than 1.0
+     *
+     * @param event The object originating from logging source which contains necessary fields
+     * @param eventType The type of event
+     * @param servername The name of the server
+     * @param wlpUserDir The name of wlp user directory
+     * @param serverHostName The name of server host
+     * @param collectorVersion The version number
+     * @param tags An array of tags
+     * @param maxFieldLength The max character length of strings
+     */
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String[] tags,
                                       int maxFieldLength) {
 

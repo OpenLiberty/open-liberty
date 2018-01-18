@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,19 @@ public class CollectorJsonUtils {
         return CollectorJsonHelpers.getEventType(source, location);
     }
 
+    /**
+     * Method to return log event data in json format. If the collector version passed is greater than 1.0
+     * then the jsonifyEvent call is passed to another version of CollectorJsonUtils.
+     *
+     * @param event The object originating from logging source which contains necessary fields
+     * @param eventType The type of event
+     * @param servername The name of the server
+     * @param wlpUserDir The name of wlp user directory
+     * @param serverHostName The name of server host
+     * @param collectorVersion The version number
+     * @param tags An array of tags
+     * @param maxFieldLength The max character length of strings
+     */
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
 
