@@ -54,6 +54,9 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
     private long asyncBytesToWrite = 0L;
     private int asyncTimeout = 0;
 
+    private final Object closeSync = new Object();
+    private boolean closeCalled = false;
+
     /**
      * Constructor.
      *
@@ -134,42 +137,58 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
         final int packetSize = getConnLink().getPacketBufferSize();
         if (numBytesLeft > packetSize) {
             // need >1 packet, do blocks of up to 2 at a time
-            getEncryptedAppBuffer(packetSize * 2);
+            if (!getEncryptedAppBuffer(packetSize * 2)) {
+                return 0;
+            }
         } else {
             // one packet is fine
-            getEncryptedAppBuffer(1);
+            if (!getEncryptedAppBuffer(1)) {
+                return 0;
+            }
         }
-        final int cap = this.encryptedAppBuffer.capacity();
-        int produced;
 
-        do {
-            // write distinct blocks of data to reduce excess overhead (for example, the
-            // encrypted buffer must be continually expanded to fit the output data since
-            // we can only hand 1 buffer to JSSE, which is expensive expanding and copying data)
-            this.encryptedAppBuffer.clear();
+        try {
+            final int cap = this.encryptedAppBuffer.capacity();
+            int produced;
 
-            result = encryptMessage();
-            numBytesLeft -= result.bytesConsumed();
-            produced = result.bytesProduced();
-            if (0 < produced) {
-                while (0 < numBytesLeft && (cap - produced) >= packetSize) {
-                    // space in the current output buffer to encrypt a little more
-                    // Note: JSSE requires a full packet size of open space regardless of the input
-                    // amount, so even 100 bytes to encrypt requires 16K of output space
-                    result = encryptMessage();
-                    numBytesLeft -= result.bytesConsumed();
-                    produced += result.bytesProduced();
+            do {
+                // write distinct blocks of data to reduce excess overhead (for example, the
+                // encrypted buffer must be continually expanded to fit the output data since
+                // we can only hand 1 buffer to JSSE, which is expensive expanding and copying data)
+                this.encryptedAppBuffer.clear();
+
+                result = encryptMessage();
+                numBytesLeft -= result.bytesConsumed();
+                produced = result.bytesProduced();
+                if (0 < produced) {
+                    while (0 < numBytesLeft && (cap - produced) >= packetSize) {
+                        // space in the current output buffer to encrypt a little more
+                        // Note: JSSE requires a full packet size of open space regardless of the input
+                        // amount, so even 100 bytes to encrypt requires 16K of output space
+                        result = encryptMessage();
+                        numBytesLeft -= result.bytesConsumed();
+                        produced += result.bytesProduced();
+                    }
+
+                    this.encryptedAppBuffer.flip();
+                    tcp.setBuffer(this.encryptedAppBuffer);
+                    final long wrote = tcp.write(TCPWriteRequestContext.WRITE_ALL_DATA, timeout);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(tc, "wrote " + wrote);
+                    }
                 }
 
-                this.encryptedAppBuffer.flip();
-                tcp.setBuffer(this.encryptedAppBuffer);
-                final long wrote = tcp.write(TCPWriteRequestContext.WRITE_ALL_DATA, timeout);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "wrote " + wrote);
+            } while (0 < numBytesLeft && 0 < produced);
+        } catch (Exception up) {
+            synchronized (closeSync) {
+                // if close has been called then assume this exception was due to a race condition
+                // with the close logic and consume the exception without FFDC. Otherwise rethrow
+                // as the logic did before this change.
+                if (!closeCalled) {
+                    throw up;
                 }
             }
-
-        } while (0 < numBytesLeft && 0 < produced);
+        }
 
         final long rc = (maxBytes - numBytesLeft);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -400,9 +419,13 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
             // make sure we have an output buffer of the target size ready
             final int packetSize = getConnLink().getPacketBufferSize();
             if (numBytesLeft > packetSize) {
-                getEncryptedAppBuffer(packetSize * 2);
+                if (!getEncryptedAppBuffer(packetSize * 2)) {
+                    return null;
+                }
             } else {
-                getEncryptedAppBuffer(1);
+                if (!getEncryptedAppBuffer(1)) {
+                    return null;
+                }
             }
             final int cap = this.encryptedAppBuffer.capacity();
             final TCPWriteRequestContext tcp = getConnLink().getDeviceWriteInterface();
@@ -439,6 +462,15 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                 Tr.debug(tc, "Caught exception during encryption, " + exception);
             }
             this.callback.error(getConnLink().getVirtualConnection(), this, exception);
+        } catch (Throwable t) {
+            synchronized (closeSync) {
+                // if close has been called then assume this exception was due to a race condition
+                // with the close logic and consume the exception without FFDC. Otherwise rethrow
+                // as the logic did before this change.
+                if (!closeCalled) {
+                    throw t;
+                }
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -722,26 +754,35 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
      *
      * @param requested_size
      */
-    private void getEncryptedAppBuffer(int requested_size) {
+    private boolean getEncryptedAppBuffer(int requested_size) {
 
         final int size = Math.max(getConnLink().getPacketBufferSize(), requested_size);
 
-        if (null != this.encryptedAppBuffer) {
-            if (size <= this.encryptedAppBuffer.capacity()) {
-                // current buffer exists and is big enough
-                this.encryptedAppBuffer.clear();
-                return;
+        synchronized (closeSync) {
+            if (closeCalled) {
+                return false;
             }
-            // exists but is too small
-            this.encryptedAppBuffer.release();
-            this.encryptedAppBuffer = null;
+
+            if (null != this.encryptedAppBuffer) {
+                if (size <= this.encryptedAppBuffer.capacity()) {
+                    // current buffer exists and is big enough
+                    this.encryptedAppBuffer.clear();
+                    return true;
+                }
+                // exists but is too small
+                this.encryptedAppBuffer.release();
+                this.encryptedAppBuffer = null;
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Allocating encryptedAppBuffer, size=" + size);
+            }
+            // Allocate the encrypted data buffer
+            this.encryptedAppBuffer = SSLUtils.allocateByteBuffer(
+                                                                  size, getConfig().getEncryptBuffersDirect());
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Allocating encryptedAppBuffer, size=" + size);
-        }
-        // Allocate the encrypted data buffer
-        this.encryptedAppBuffer = SSLUtils.allocateByteBuffer(
-                                                              size, getConfig().getEncryptBuffersDirect());
+
+        return true;
+
     }
 
     /**
@@ -751,16 +792,26 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "close");
         }
-        // Release the buffer used to store results of encryption, and given to
-        // device channel for writing.
-        if (null != this.encryptedAppBuffer) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Releasing ssl output buffer during close. "
-                             + SSLUtils.getBufferTraceInfo(this.encryptedAppBuffer));
+
+        synchronized (closeSync) {
+            if (closeCalled) {
+                return;
             }
-            this.encryptedAppBuffer.release();
-            this.encryptedAppBuffer = null;
+
+            closeCalled = true;
+
+            // Release the buffer used to store results of encryption, and given to
+            // device channel for writing.
+            if (null != this.encryptedAppBuffer) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Releasing ssl output buffer during close. "
+                                 + SSLUtils.getBufferTraceInfo(this.encryptedAppBuffer));
+                }
+                this.encryptedAppBuffer.release();
+                this.encryptedAppBuffer = null;
+            }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "close");
         }
@@ -774,11 +825,22 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "complete, vc=" + getVCHash());
         }
+
+        synchronized (closeSync) {
+            if (closeCalled) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "complete");
+                }
+                return;
+            }
+        }
+
         VirtualConnection rc = vc;
         if (0 < this.asyncBytesToWrite) {
             // previously went async partly through the app data, continue now
             rc = encryptAndWriteAsync(this.asyncBytesToWrite, false, this.asyncTimeout);
         }
+
         if (null != rc) {
             // Nothing else needs to be done here. Report success up the chain.
             this.callback.complete(rc, this);
