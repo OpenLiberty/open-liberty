@@ -41,7 +41,7 @@ public class RequestBodyValidator extends TypeValidator<RequestBody> {
             ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
             return;
         }
-        ValidatorUtils.validateRequiredField(t.getContent(), key, "content").ifPresent(helper::addValidationEvent);
+        ValidatorUtils.validateRequiredField(t.getContent(), context, "content").ifPresent(helper::addValidationEvent);
 
     }
 }

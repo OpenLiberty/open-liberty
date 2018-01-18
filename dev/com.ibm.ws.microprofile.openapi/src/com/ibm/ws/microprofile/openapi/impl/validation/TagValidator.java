@@ -34,6 +34,6 @@ public class TagValidator extends TypeValidator<Tag> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Tag t) {
-        ValidatorUtils.validateRequiredField(t.getName(), null, "name").ifPresent(helper::addValidationEvent);
+        ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
     }
 }

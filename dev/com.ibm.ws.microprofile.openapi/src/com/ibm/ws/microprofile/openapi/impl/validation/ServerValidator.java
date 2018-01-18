@@ -42,11 +42,11 @@ public class ServerValidator extends TypeValidator<Server> {
         String url = t.getUrl();
 
         if (url != null) {
-            Set<String> variables = validateURL(helper, url);
+            Set<String> variables = validateURL(helper, context, url);
             //url can be relative - so shouldn't check for URL format here
-            validateServerVariables(helper, variables, t);
+            validateServerVariables(helper, context, variables, t);
         } else {
-            ValidatorUtils.validateRequiredField(url, key, "url").ifPresent(helper::addValidationEvent);
+            ValidatorUtils.validateRequiredField(url, context, "url").ifPresent(helper::addValidationEvent);
 
         }
 
@@ -58,13 +58,13 @@ public class ServerValidator extends TypeValidator<Server> {
      * @param helper the helper to send valitation messages
      * @param variables the set of variables to validate
      */
-    private void validateServerVariables(ValidationHelper helper, Set<String> variables, Server t) {
+    private void validateServerVariables(ValidationHelper helper, Context context, Set<String> variables, Server t) {
         ServerVariables serverVariables = t.getVariables();
 
         for (String variable : variables) {
             if (serverVariables == null || !serverVariables.containsKey(variable)) {
                 final String message = Tr.formatMessage(tc, "serverVariableNotDefined", variable);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("variables"), message));
             }
         }
     }
@@ -72,14 +72,14 @@ public class ServerValidator extends TypeValidator<Server> {
     /**
      * Validate the url and extract server variables parameters
      */
-    private Set<String> validateURL(ValidationHelper helper, String url) {
+    private Set<String> validateURL(ValidationHelper helper, Context context, String url) {
         String pathToCheck = url;
         Set<String> serverVariables = new HashSet<String>();
 
         while (pathToCheck.contains("{")) {
             if (!pathToCheck.contains("}")) {
                 final String message = Tr.formatMessage(tc, "serverInvalidURL", pathToCheck);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
                 return serverVariables;
             }
             int firstIndex = pathToCheck.indexOf("{");
@@ -87,7 +87,7 @@ public class ServerValidator extends TypeValidator<Server> {
 
             if (firstIndex > lastIndex) {
                 final String message = Tr.formatMessage(tc, "serverInvalidURL", pathToCheck);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
                 return serverVariables;
             }
 
@@ -95,7 +95,7 @@ public class ServerValidator extends TypeValidator<Server> {
 
             if (variable.isEmpty() || variable.contains("{") || variable.contains("/")) {
                 final String message = Tr.formatMessage(tc, "serverInvalidURL", pathToCheck);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
                 return serverVariables;
             }
 
@@ -105,7 +105,7 @@ public class ServerValidator extends TypeValidator<Server> {
 
         if (pathToCheck.contains("}")) {
             final String message = Tr.formatMessage(tc, "serverInvalidURL", pathToCheck);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
             return serverVariables;
         }
 

@@ -87,7 +87,7 @@ public class ReferenceValidator {
                                     return schemas.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -99,7 +99,7 @@ public class ReferenceValidator {
                                     return responses.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -111,7 +111,7 @@ public class ReferenceValidator {
                                     return parameters.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -123,7 +123,7 @@ public class ReferenceValidator {
                                     return examples.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -135,7 +135,7 @@ public class ReferenceValidator {
                                     return requestBodies.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -147,7 +147,7 @@ public class ReferenceValidator {
                                     return headers.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -159,7 +159,7 @@ public class ReferenceValidator {
                                     return securitySchemes.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
@@ -171,25 +171,25 @@ public class ReferenceValidator {
                                     return links.get(name);
                                 } else {
                                     final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
-                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                     break;
                                 }
 
                             default:
                                 final String message = Tr.formatMessage(tc, "referenceNotValid", $ref);
-                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                                 break;
                         }
                     }
                 } else {
                     final String message = Tr.formatMessage(tc, "referenceNotValidFormat", $ref);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
 
         } else {
             final String message = Tr.formatMessage(tc, "referenceNull", context.getModel().getComponents(), $ref);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
         }
 
         return null;

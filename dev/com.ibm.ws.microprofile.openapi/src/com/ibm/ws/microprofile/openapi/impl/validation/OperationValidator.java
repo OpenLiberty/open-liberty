@@ -40,9 +40,9 @@ public class OperationValidator extends TypeValidator<Operation> {
         final String id = t.getOperationId();
         if (id != null && helper.addOperationId(id)) {
             final String message = Tr.formatMessage(tc, "operationIdsMustBeUnique", id);
-            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, null, message));
+            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation("operationId"), message));
         }
         final APIResponses responses = t.getResponses();
-        ValidatorUtils.validateRequiredField(responses, "Operation", "responses").ifPresent(helper::addValidationEvent);
+        ValidatorUtils.validateRequiredField(responses, context, "responses").ifPresent(helper::addValidationEvent);
     }
 }

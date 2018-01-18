@@ -50,7 +50,7 @@ public class SecurityRequirementValidator extends TypeValidator<SecurityRequirem
             for (String name : h) {
                 if (schemes == null || !schemes.containsKey(name) || schemes.get(name) == null) {
                     final String message = Tr.formatMessage(tc, "securityRequirementNotDeclared", name);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, "SecurityRequirement", message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 } else {
                     String type = schemes.get(name).getType() != null ? schemes.get(name).getType().toString() : null;
                     List<String> value = t.get(name);
@@ -58,13 +58,13 @@ public class SecurityRequirementValidator extends TypeValidator<SecurityRequirem
                         if (value == null || value.isEmpty()) {
                             final String message = Tr.formatMessage(tc, "securityRequirementScopeNamesRequired", name, value);
                             helper.addValidationEvent(
-                                                      new ValidationEvent(ValidationEvent.Severity.ERROR, "SecurityRequirement", message));
+                                                      new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
                     } else if ("apiKey".equals(type) || "http".equals(type)) {
                         if (value != null && !value.isEmpty()) {
                             final String message = Tr.formatMessage(tc, "securityRequirementFieldNotEmpty", name, value);
                             helper.addValidationEvent(
-                                                      new ValidationEvent(ValidationEvent.Severity.ERROR, "SecurityRequirement", message));
+                                                      new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
                     }
                 }
@@ -73,7 +73,7 @@ public class SecurityRequirementValidator extends TypeValidator<SecurityRequirem
 
         } else {
             final String message = Tr.formatMessage(tc, "securityRequirementIsEmpty");
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, "SecurityRequirement", message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
         }
     }
 

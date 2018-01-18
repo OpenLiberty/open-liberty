@@ -47,7 +47,7 @@ public class MediaTypeValidator extends TypeValidator<MediaType> {
         Map<String, Example> examples = t.getExamples();
         if ((example != null) && (examples != null && !examples.isEmpty())) {
             final String message = Tr.formatMessage(tc, "mediaTypeExampleOrExamples");
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
         }
 
         //encoding - A map between a property name and its encoding information. The key, being the property name, MUST exist in the schema as a property.
@@ -65,7 +65,7 @@ public class MediaTypeValidator extends TypeValidator<MediaType> {
                     Object component = referenceValidator.validate(helper, context, key, ref);
                     if (!schema.getClass().isInstance(component)) {
                         final String message = Tr.formatMessage(tc, "referenceToObjectInvalid", ref, schema.getClass().getName());
-                        helper.addValidationEvent(new ValidationEvent(Severity.ERROR, null, message));
+                        helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
                     } else {
                         Schema componentSchema = (Schema) component;
                         Map<String, Schema> schemaProperties = componentSchema != null ? componentSchema.getProperties() : null;
@@ -73,7 +73,7 @@ public class MediaTypeValidator extends TypeValidator<MediaType> {
                         for (String encodingProperty : encodingProperties) {
                             if (schemaProperties == null || !schemaProperties.containsKey(encodingProperty)) {
                                 final String message = Tr.formatMessage(tc, "mediaTypeEncodingProperty", encodingProperty);
-                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                             }
                         }
                     }
@@ -82,17 +82,17 @@ public class MediaTypeValidator extends TypeValidator<MediaType> {
                     for (String encodingProperty : encodingProperties) {
                         if (!schema.getProperties().containsKey(encodingProperty)) {
                             final String message = Tr.formatMessage(tc, "mediaTypeEncodingProperty", encodingProperty);
-                            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
                     }
                 } else { //if neither $ref nor properties are set, then throw a validation error
                     final String message = Tr.formatMessage(tc, "mediaTypeEmptySchema");
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             } else { //if there is encoding specified in the mediaType model, but no schema, throw a validation error
 
                 final String message = Tr.formatMessage(tc, "mediaTypeEmptySchema");
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
     }

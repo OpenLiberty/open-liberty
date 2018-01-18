@@ -39,7 +39,7 @@ public class PathsValidator extends TypeValidator<Paths> {
             for (String path : t.keySet()) {
                 if (!path.startsWith("/")) {
                     final String message = Tr.formatMessage(tc, "pathsRequiresSlash", path);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
         }

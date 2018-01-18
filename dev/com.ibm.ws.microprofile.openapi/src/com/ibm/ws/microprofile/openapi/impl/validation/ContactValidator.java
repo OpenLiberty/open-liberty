@@ -38,14 +38,14 @@ public class ContactValidator extends TypeValidator<Contact> {
         if (t.getUrl() != null) {
             if (!ValidatorUtils.isValidURL(t.getUrl())) {
                 final String message = Tr.formatMessage(tc, "contactInvalidURL", t.getUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
             }
         }
 
         if (t.getEmail() != null) {
             if (!ValidatorUtils.isValidEmailAddress(t.getEmail())) {
                 final String message = Tr.formatMessage(tc, "contactInvalidEmail", t.getEmail());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("email"), message));
             }
         }
     }
