@@ -16,7 +16,7 @@ import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.LogFieldConstants;
 
 /**
- *
+ * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
  */
 public class CollectorJsonHelpers {
 
@@ -71,6 +71,8 @@ public class CollectorJsonHelpers {
             jsonEscape3(sb, name);
         else
             sb.append(name);
+
+        //If the type of the field is NUMBER, then do not add quotations around the value
 
         if (kvp != null && !kvp.getKey().equals("ibm_datetime") && kvp.getType() == KeyValuePair.ValueTypes.NUMBER) {
 
