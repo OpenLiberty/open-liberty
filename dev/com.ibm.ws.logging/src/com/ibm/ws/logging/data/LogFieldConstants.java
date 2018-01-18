@@ -14,12 +14,23 @@ public class LogFieldConstants {
     public static final String SEVERITY = "severity";
     public static final String MESSAGE = "message";
     public static final String IBM_STACKTRACE = "ibm_stackTrace";
+    public static final String STACKTRACE = "stackTrace";
     public static final String IBM_THREADID = "ibm_threadId";
+    public static final String THREADID = "threadId";
     public static final String IBM_QUERYSTRING = "ibm_queryString";
+    public static final String QUERYSTRING = "queryString";
     public static final String IBM_USERAGENT = "ibm_userAgent";
+    public static final String USERAGENT = "userAgent";
     public static final String IBM_DATETIME = "ibm_datetime";
+    public static final String DATETIME = "datetime";
     public static final String TYPE = "type";
     public static final String HOST = "host";
     public static final String IBM_USERDIR = "ibm_userDir";
     public static final String IBM_SERVERNAME = "ibm_serverName";
+    public static final String IBM_TAG = "ibm_";
+    public static final String MODULE = "module";
+    public static final String LOGGERNAME = "loggerName";
+    public static final String LOGLEVEL = "loglevel";
+    public static final String LABEL = "label";
+    public static final String SOURCEID = "sourceID";
 }
