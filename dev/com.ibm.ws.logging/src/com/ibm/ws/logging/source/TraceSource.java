@@ -100,27 +100,6 @@ public class TraceSource implements Source, WsTraceHandler {
         }
     }
 
-//    public TraceLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-//        String message = routedMessage.getFormattedVerboseMsg();
-//        if (message == null)
-//            message = logRecord.getMessage();
-//        long timestamp = logRecord.getMillis();
-//        int threadId = logRecord.getThreadID();
-//        String loggerName = logRecord.getLoggerName();
-//        String logLevel = LogFormatUtils.mapLevelToType(logRecord);
-//        String logLevelRaw = LogFormatUtils.mapLevelToRawType(logRecord);
-//        String methodName = logRecord.getSourceMethodName();
-//        String className = logRecord.getSourceClassName();
-//        Map<String, String> extensions = null;
-//        if (logRecord instanceof WsLogRecord)
-//            extensions = ((WsLogRecord) logRecord).getExtensions();
-//        String sequence = sequenceNumber.next(timestamp);
-//        //String sequence = timestamp + "_" + String.format("%013X", seq.incrementAndGet());
-//
-//        return new TraceLogData(timestamp, threadId, loggerName, logLevel, logLevelRaw, message, methodName, className, extensions, sequence);
-//
-//    }
-
     public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
 
         KeyValuePair message = null;

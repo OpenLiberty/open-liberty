@@ -101,44 +101,6 @@ public class AccessLogSource implements Source {
         accessLogHandler = null;
     }
 
-//    private class AccessLogHandler implements AccessLogForwarder {
-//
-//        private final AtomicLong seq = new AtomicLong();
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public void process(AccessLogRecordData recordData) {
-//            HttpRequestMessage request = recordData.getRequest();
-//            HttpResponseMessage response = recordData.getResponse();
-//
-//            if (request != null) {
-//                long requestStartTime = recordData.getStartTime();
-//                String uriPath = request.getRequestURI();
-//                String requestMethod = request.getMethod();
-//                String queryString = request.getQueryString();
-//                String localIP = recordData.getLocalIP();
-//                String localPort = recordData.getLocalPort();
-//                String remoteHost = recordData.getRemoteAddress();
-//                String userAgent = request.getHeader("User-Agent").asString();
-//                String requestProtocol = request.getVersion();
-//                long responseSize = recordData.getBytesWritten();
-//                int responseCode = response.getStatusCodeAsInt();
-//                long elapsedTime = recordData.getElapsedTime();
-//                long timestamp = recordData.getTimestamp();
-//
-//                String sequence = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
-//
-//                AccessLogData data = new AccessLogData(uriPath, requestMethod, queryString, localIP, localPort, requestStartTime, remoteHost, userAgent, requestProtocol, responseSize, responseCode, elapsedTime, timestamp, sequence);
-//                bufferMgr.add(data);
-//
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "Added a event to buffer " + data);
-//                }
-//            }
-//        }
-//
-//    }
-
     private class AccessLogHandler implements AccessLogForwarder {
 
         private final AtomicLong seq = new AtomicLong();
