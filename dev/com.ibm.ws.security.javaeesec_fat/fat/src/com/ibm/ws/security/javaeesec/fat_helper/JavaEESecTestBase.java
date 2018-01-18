@@ -418,7 +418,7 @@ public class JavaEESecTestBase {
         Log.info(logClass, methodName, "postMethod.getStatusCode():  " + response.getStatusLine().getStatusCode());
         String content = EntityUtils.toString(response.getEntity());
         EntityUtils.consume(response.getEntity());
-        System.out.println("Toshi : content : " + content);
+        Log.info(logClass, methodName, "contents : " + content);
 
         // Verify redirect to servlet
         int status = response.getStatusLine().getStatusCode();
