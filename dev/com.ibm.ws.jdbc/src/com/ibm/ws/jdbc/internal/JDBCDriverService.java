@@ -235,7 +235,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     ClassLoader loader, origTCCL = Thread.currentThread().getContextClassLoader();
                     try {
                         if (classloader == null)
-                            loader = origTCCL; // Use thread context class loader of appliaction in absence of server configured library
+                            loader = origTCCL; // Use thread context class loader of application in absence of server configured library
                         else
                             Thread.currentThread().setContextClassLoader(loader = classloader);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
@@ -192,24 +193,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
      * Service properties
      */
     private Map<String, Object> properties;
-
-    /**
-     * Indicates whether or not this is an RRS enabled data source. Only rely on this value when initialized.
-     */
-    private boolean rrsTransactional;
-
-    /**
-     * Thread Identity Support: Either "ALLOWED", "REQUIRED", or "NOTALLOWED". Only rely on this value when initialized.
-     */
-    private String threadIdentitySupport;
-
-    /**
-     * Flag indicating whether or not we should "synch to thread" for the
-     * allocateConnection, i.e., push an ACEE corresponding to the current java
-     * Subject on the native OS thread.
-     * Only rely on this value when initialized.
-     */
-    private boolean threadSecurity;
 
     /**
      * Declarative Services method to activate this component.
@@ -412,19 +395,28 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         return false;
     }
 
+    /**
+     * Indicates whether or not thread identity, sync-to-thread, and RRS transactions are supported.
+     * The result is a 3 element array, of which,
+     * <ul>
+     * <li>The first element indicates support for thread identity. 2=REQUIRED, 1=ALLOWED, 0=NOT ALLOWED.</li>
+     * <li>The second element indicates support for "synch to thread" for the
+     * allocateConnection, i.e., push an ACEE corresponding to the current java
+     * Subject on the native OS thread. 1=supported, 0=not supported.</li>
+     * <li>The third element indicates support for RRS transactions. 1=supported, 0=not supported.</li>
+     * </ul>
+     *
+     * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
+     *
+     * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
+     */
     @Override
-    public boolean getRRSTransactional() {
-        return rrsTransactional;
-    }
+    public int[] getThreadIdentitySecurityAndRRSSupport() {
+        // TODO use cached MCF value (for server configured library) or find/create MCF in the mapping from class loader identifier to MCF (library from application)
+        WSManagedConnectionFactoryImpl mcf = dsConfigRef.get().getManagedConnectionFactory();
 
-    @Override
-    public String getThreadIdentitySupport() {
-        return threadIdentitySupport;
-    }
-
-    @Override
-    public boolean getThreadSecurity() {
-        return threadSecurity;
+        DatabaseHelper dbHelper = mcf.getHelper();
+        return new int[] { dbHelper.getThreadIdentitySupport(), dbHelper.getThreadSecurity() ? 1 : 0, dbHelper.getRRSTransactional() ? 1 : 0 };
     }
 
     /** {@inheritDoc} */
@@ -529,11 +521,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             WSManagedConnectionFactoryImpl mcf = new WSManagedConnectionFactoryImpl(
                 dsConfigRef, id, jndiName, ifc, wProps, vProps, ds, connectorSvc, jdbcRuntime);
-
-            DatabaseHelper helper = mcf.getHelper();
-            rrsTransactional = helper.getRRSTransactional();
-            threadIdentitySupport = helper.getThreadIdentitySupport();
-            threadSecurity = helper.getThreadSecurity();
 
             isInitialized.set(true);
         } catch (Exception x) {
