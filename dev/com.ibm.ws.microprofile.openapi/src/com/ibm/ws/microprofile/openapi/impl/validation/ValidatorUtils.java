@@ -33,7 +33,7 @@ public class ValidatorUtils {
 
     private static final TraceComponent tc = Tr.register(ValidatorUtils.class);
 
-    public static <T> Optional<ValidationEvent> validateRequiredField(T value, String location, String fieldName) {
+    public static <T> Optional<ValidationEvent> validateRequiredField(T value, Context context, String fieldName) {
         boolean isValid = true;
 
         if (value == null) {
@@ -48,6 +48,7 @@ public class ValidatorUtils {
         }
 
         if (!isValid) {
+            final String location = context.getLocation();
             final String message = Tr.formatMessage(tc, "requiredFieldMissing", location, fieldName);
             ValidationEvent event = new ValidationEvent(Severity.ERROR, location, message);
             return Optional.of(event);
@@ -126,7 +127,7 @@ public class ValidatorUtils {
         Object component = referenceValidator.validate(helper, context, key, reference);
         if (!t.getClass().isInstance(component)) {
             final String message = Tr.formatMessage(tc, "referenceToObjectInvalid", reference, t.getClass().getName());
-            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, null, message));
+            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
         }
     }
 

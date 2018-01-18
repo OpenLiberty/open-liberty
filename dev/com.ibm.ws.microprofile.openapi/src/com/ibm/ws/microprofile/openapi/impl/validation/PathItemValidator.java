@@ -47,13 +47,13 @@ public class PathItemValidator extends TypeValidator<PathItem> {
         String ref = t.getRef();
         if (ref != null && ref.startsWith("#")) {
             final String message = Tr.formatMessage(tc, "pathItemInvalidRef", ref, key);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
         }
 
-        validateParameters(helper, key, t);
+        validateParameters(helper, context, key, t);
     }
 
-    private void validateParameters(ValidationHelper helper, String pathStr, PathItem path) {
+    private void validateParameters(ValidationHelper helper, Context context, String pathStr, PathItem path) {
         Set<String> definedSharedPathParameters = new HashSet<String>(), definedSharedQueryParameters = new HashSet<String>(),
                         definedSharedHeaderParameters = new HashSet<String>(),
                         definedSharedCookieParameters = new HashSet<String>();
@@ -63,7 +63,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                 if (isPathParameter(parameter)) {
                     if (!parameter.getRequired()) { //Path parameters must have the 'required' property set to true
                         final String message = Tr.formatMessage(tc, "pathItemRequiredField", parameter.getName(), pathStr);
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
                 }
 
@@ -72,12 +72,12 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                     || (isHeaderParameter(parameter) && !definedSharedHeaderParameters.add(parameter.getName()))
                     || (isCookieParameter(parameter) && !definedSharedCookieParameters.add(parameter.getName()))) {
                     final String message = Tr.formatMessage(tc, "pathItemDuplicate", pathStr, parameter.getIn(), parameter.getName());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
         }
 
-        Set<String> declaredPathParameters = validatePathAndRetrievePathParams(helper, pathStr);
+        Set<String> declaredPathParameters = validatePathAndRetrievePathParams(helper, context, pathStr);
 
         if (!declaredPathParameters.containsAll(definedSharedPathParameters)) {
             Set<String> undeclaredParameters = new HashSet<String>(definedSharedPathParameters);
@@ -89,7 +89,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
             } else {
                 message = Tr.formatMessage(tc, "pathItemParameterNotDeclaredSingle", path, undeclaredParameters);
             }
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
         }
 
         final Map<PathItem.HttpMethod, Operation> operationMap = path.readOperationsMap();
@@ -97,13 +97,13 @@ public class PathItemValidator extends TypeValidator<PathItem> {
         if (operationMap != null) {
             for (PathItem.HttpMethod httpMethod : operationMap.keySet()) {
                 Operation operation = operationMap.get(httpMethod);
-                validateOperationParameters(helper, operation, declaredPathParameters, definedSharedPathParameters, pathStr, httpMethod.toString());
+                validateOperationParameters(helper, context, operation, declaredPathParameters, definedSharedPathParameters, pathStr, httpMethod.toString());
             }
         }
     }
 
-    private void validateOperationParameters(ValidationHelper helper, Operation operation, Set<String> declaredPathParameters, Set<String> definedSharedPathParams, String path,
-                                             String operationType) {
+    private void validateOperationParameters(ValidationHelper helper, Context context, Operation operation, Set<String> declaredPathParameters,
+                                             Set<String> definedSharedPathParams, String path, String operationType) {
         Set<String> definedPathParameters = new HashSet<String>(), definedQueryParameters = new HashSet<String>(),
                         definedHeaderParameters = new HashSet<String>(), definedCookieParameters = new HashSet<String>();
 
@@ -114,7 +114,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                     if (isPathParameter(parameter)) {
                         if (!parameter.getRequired()) {//Path parameters must have the 'required' property set to true
                             final String message = Tr.formatMessage(tc, "pathItemOperationRequiredField", parameter.getName(), operationType, path);
-                            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
                     }
 
@@ -123,11 +123,11 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                         || (isHeaderParameter(parameter) && !definedHeaderParameters.add(parameter.getName()))
                         || (isCookieParameter(parameter) && !definedCookieParameters.add(parameter.getName()))) {
                         final String message = Tr.formatMessage(tc, "pathItemOperationDuplicate", operationType, path, parameter.getIn(), parameter.getName());
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
                 } else {
                     final String message = Tr.formatMessage(tc, "pathItemOperationNullParameter", operationType, path);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
         }
@@ -142,13 +142,13 @@ public class PathItemValidator extends TypeValidator<PathItem> {
             } else {
                 message = Tr.formatMessage(tc, "pathItemOperationParameterNotDeclaredSingle", operationType, path, undeclaredParameters);
             }
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
         }
 
         for (String declaredParam : declaredPathParameters) {
             if (!definedSharedPathParams.contains(declaredParam) && !definedPathParameters.contains(declaredParam)) {
                 final String message = Tr.formatMessage(tc, "pathItemOperationNoPathParameterDeclared", operationType, path, declaredParam);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
     }
@@ -188,14 +188,14 @@ public class PathItemValidator extends TypeValidator<PathItem> {
     /**
      * Validate the path and extract path parameters
      */
-    private Set<String> validatePathAndRetrievePathParams(ValidationHelper helper, String pathStr) {
+    private Set<String> validatePathAndRetrievePathParams(ValidationHelper helper, Context context, String pathStr) {
         String pathToCheck = pathStr;
         Set<String> pathParameters = new HashSet<String>();
 
         while (pathToCheck.contains("{")) {
             if (!pathToCheck.contains("}")) {
                 final String message = Tr.formatMessage(tc, "pathItemInvalidFormat", pathStr);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 return pathParameters;
             }
             int firstIndex = pathToCheck.indexOf("{");
@@ -203,7 +203,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
             if (firstIndex > lastIndex) {
                 final String message = Tr.formatMessage(tc, "pathItemInvalidFormat", pathStr);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 return pathParameters;
             }
 
@@ -211,7 +211,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
             if (parameter.isEmpty() || parameter.contains("{") || parameter.contains("/")) {
                 final String message = Tr.formatMessage(tc, "pathItemInvalidFormat", pathStr);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 return pathParameters;
             }
 
@@ -221,7 +221,7 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
         if (pathToCheck.contains("}")) {
             final String message = Tr.formatMessage(tc, "pathItemInvalidFormat", pathStr);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             return pathParameters;
         }
 

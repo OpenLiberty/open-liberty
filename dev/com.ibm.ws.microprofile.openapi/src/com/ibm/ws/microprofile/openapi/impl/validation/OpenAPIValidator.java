@@ -42,9 +42,9 @@ public class OpenAPIValidator extends TypeValidator<OpenAPI> {
     public void validate(ValidationHelper helper, Context context, String key, OpenAPI t) {
         if (t != null) {
             String openapiVersion = t.getOpenapi();
-            ValidatorUtils.validateRequiredField(openapiVersion, "#/", "openapi").ifPresent(helper::addValidationEvent);
-            ValidatorUtils.validateRequiredField(t.getInfo(), "#/", "info").ifPresent(helper::addValidationEvent);
-            ValidatorUtils.validateRequiredField(t.getPaths(), "#/", "paths").ifPresent(helper::addValidationEvent);
+            ValidatorUtils.validateRequiredField(openapiVersion, context, "openapi").ifPresent(helper::addValidationEvent);
+            ValidatorUtils.validateRequiredField(t.getInfo(), context, "info").ifPresent(helper::addValidationEvent);
+            ValidatorUtils.validateRequiredField(t.getPaths(), context, "paths").ifPresent(helper::addValidationEvent);
 
             if (openapiVersion != null && !openapiVersion.startsWith("3.")) {
                 final String message = Tr.formatMessage(tc, "openAPIVersionInvalid", openapiVersion);

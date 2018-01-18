@@ -44,7 +44,7 @@ public class ResponseValidator extends TypeValidator<APIResponse> {
         }
 
         final String description = t.getDescription();
-        ValidatorUtils.validateRequiredField(description, null, "description").ifPresent(helper::addValidationEvent);
+        ValidatorUtils.validateRequiredField(description, context, "description").ifPresent(helper::addValidationEvent);
 
     }
 }

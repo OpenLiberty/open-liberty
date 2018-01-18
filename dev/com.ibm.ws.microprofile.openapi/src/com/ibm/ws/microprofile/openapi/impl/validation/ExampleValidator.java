@@ -46,7 +46,7 @@ public class ExampleValidator extends TypeValidator<Example> {
         // The value field and externalValue fields are mutually exclusive.
         if (t.getValue() != null && (t.getExternalValue() != null && !t.getExternalValue().isEmpty())) {
             final String message = Tr.formatMessage(tc, "exampleOnlyValueOrExternalValue", key);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
         }
 
     }
