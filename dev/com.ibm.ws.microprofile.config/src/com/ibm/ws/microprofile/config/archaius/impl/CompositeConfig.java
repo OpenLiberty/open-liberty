@@ -18,6 +18,7 @@
 package com.ibm.ws.microprofile.config.archaius.impl;
 
 import java.io.Closeable;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
@@ -113,7 +115,7 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
     /** {@inheritDoc} */
     @Override
     public Object getRawProperty(String key) {
-        CachedCompositeValue<String> rawValue = getRawCompositeValue(key);
+        CachedCompositeValue rawValue = getRawCompositeValue(key);
         Object raw = rawValue == null ? null : rawValue.getValue();
         return raw;
     }
@@ -245,7 +247,7 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
             String key = keyItr.next();
             sb.append(key);
             sb.append("=");
-            CachedCompositeValue<String> rawCompositeValue = getRawCompositeValue(key);
+            CachedCompositeValue rawCompositeValue = getRawCompositeValue(key);
             if (rawCompositeValue == null) {
                 sb.append("null");
             } else {
@@ -277,21 +279,22 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      * @param propertyType
      * @return the value as an object of the passed in Type (or a ConversionException)
      */
-    protected <T> T getTypedValue(String propertyName, Class<T> propertyType) {
+    protected Object getTypedValue(String propertyName, Type propertyType) {
         CachedCompositePropertyContainer container = this.factory.getProperty(propertyName);
-        CachedCompositeProperty<T> property = container.asType(propertyType);
-        T value = property.get();
+        CachedCompositeProperty property = container.asType(propertyType);
+        Object value = property.get();
         return value;
     }
 
-    public <T> CachedCompositeValue<T> getCompositeValue(Class<T> type, String key) {
-        CachedCompositeValue<String> rawProp = getRawCompositeValue(key);
+    public CachedCompositeValue getCompositeValue(Type type, String key) {
+        CachedCompositeValue rawProp = getRawCompositeValue(key);
         if (rawProp == null) {
             return null;
         } else {
             try {
-                T value = getDecoder().decode(type, rawProp.getValue());
-                CachedCompositeValue<T> composite = new CachedCompositeValue<T>(value, rawProp.getSource());
+                //TODO don't bother going through getDecoder()
+                Object value = ((ConversionManager) getDecoder()).convert((String) rawProp.getValue(), type);
+                CachedCompositeValue composite = new CachedCompositeValue(value, rawProp.getSource());
                 return composite;
             } catch (NumberFormatException nfe) {
                 throw new ParseException("Error parsing value \'" + rawProp.getValue() + "\' for property \'" + key + "\'", nfe);
@@ -303,12 +306,12 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      * @param key
      * @return
      */
-    private CachedCompositeValue<String> getRawCompositeValue(String key) {
+    private CachedCompositeValue getRawCompositeValue(String key) {
         for (PollingDynamicConfig child : children) {
             if (child.containsKey(key)) {
                 String value = (String) child.getRawProperty(key);
                 String source = child.getSourceID();
-                CachedCompositeValue<String> raw = new CachedCompositeValue<String>(value, source);
+                CachedCompositeValue raw = new CachedCompositeValue(value, source);
                 return raw;
             }
         }
@@ -320,10 +323,10 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      * @param propertyType
      * @return
      */
-    public <T> SourcedValue<T> getSourcedValue(String propertyName, Class<T> propertyType) {
+    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
         CachedCompositePropertyContainer container = this.factory.getProperty(propertyName);
-        CachedCompositeProperty<T> property = container.asType(propertyType);
-        SourcedValue<T> value = property.getSourced();
+        CachedCompositeProperty property = container.asType(propertyType);
+        SourcedValue value = property.getSourced();
         return value;
     }
 }

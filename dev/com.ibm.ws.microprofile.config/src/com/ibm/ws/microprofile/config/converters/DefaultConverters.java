@@ -50,26 +50,15 @@ public class DefaultConverters {
     static {
         defaultConverters.addConverter(new IdentityConverter()); // v -> v
 
+        defaultConverters.addConverter(new OptionalConverter());
+
         defaultConverters.addConverter(new BooleanConverter());
-        defaultConverters.addConverter(new PrimitiveBooleanConverter());
-
         defaultConverters.addConverter(new AutomaticConverter(Integer.class));
-        defaultConverters.addConverter(new AutomaticConverter(int.class, Integer.class));
-
         defaultConverters.addConverter(new AutomaticConverter(Long.class));
-        defaultConverters.addConverter(new AutomaticConverter(long.class, Long.class));
-
         defaultConverters.addConverter(new AutomaticConverter(Short.class));
-        defaultConverters.addConverter(new AutomaticConverter(short.class, Short.class));
-
         defaultConverters.addConverter(new AutomaticConverter(Byte.class));
-        defaultConverters.addConverter(new AutomaticConverter(byte.class, Byte.class));
-
         defaultConverters.addConverter(new AutomaticConverter(Double.class));
-        defaultConverters.addConverter(new AutomaticConverter(double.class, Double.class));
-
         defaultConverters.addConverter(new AutomaticConverter(Float.class));
-        defaultConverters.addConverter(new AutomaticConverter(float.class, Float.class));
 
         defaultConverters.addConverter(new AutomaticConverter(BigInteger.class));
         defaultConverters.addConverter(new AutomaticConverter(BigDecimal.class));
@@ -77,10 +66,8 @@ public class DefaultConverters {
         defaultConverters.addConverter(new AtomicIntegerConverter());
         defaultConverters.addConverter(new AtomicLongConverter());
 
-        defaultConverters.addConverter(new AutomaticConverter(Duration.class));
-        defaultConverters.addConverter(new AutomaticConverter(Period.class));
-
-        defaultConverters.addConverter(new AutomaticConverter(Period.class));
+        defaultConverters.addConverter(new DateTimeConverter(Duration.class));
+        defaultConverters.addConverter(new DateTimeConverter(Period.class));
 
         defaultConverters.addConverter(new DateTimeConverter(LocalDateTime.class));
         defaultConverters.addConverter(new DateTimeConverter(LocalDate.class));

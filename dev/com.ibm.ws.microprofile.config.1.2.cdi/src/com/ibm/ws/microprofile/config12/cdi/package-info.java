@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.interfaces;
 
 /**
- *
+ * @version 1.0
  */
-public interface SourcedValue {
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config.cdi.resources.ConfigCDI")
+package com.ibm.ws.microprofile.config12.cdi;
 
-    /**
-     * Get the actual value
-     *
-     * @return the value
-     */
-    public Object getValue();
-
-    /**
-     * Get the ID of the source that provided the value
-     *
-     * @return the originating source ID
-     */
-    public String getSource();
-
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

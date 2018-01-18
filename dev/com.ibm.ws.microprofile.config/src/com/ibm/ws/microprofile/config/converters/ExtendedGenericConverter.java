@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.interfaces;
+package com.ibm.ws.microprofile.config.converters;
+
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 
 /**
- *
+ * A converter with an explicit Type and priority
  */
-public interface SourcedValue {
+public interface ExtendedGenericConverter {
 
     /**
-     * Get the actual value
-     *
-     * @return the value
+     * @param rawString
+     * @return
      */
-    public Object getValue();
-
-    /**
-     * Get the ID of the source that provided the value
-     *
-     * @return the originating source ID
-     */
-    public String getSource();
-
+    public abstract <T> Object convert(String rawString, Class<T> genericType, ConversionManager conversionManager);
 }

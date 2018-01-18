@@ -28,11 +28,11 @@ import com.netflix.archaius.api.Property;
 import com.netflix.archaius.api.PropertyListener;
 import com.netflix.archaius.property.ListenerManager.ListenerUpdater;
 
-public abstract class CachedCompositeProperty<T> implements Property<T> {
+public abstract class CachedCompositeProperty implements Property<Object> {
 
     private static final TraceComponent tc = Tr.register(CachedCompositeProperty.class);
 
-    private final AtomicStampedReference<CachedCompositeValue<T>> cache = new AtomicStampedReference<>(null, -1);
+    private final AtomicStampedReference<CachedCompositeValue> cache = new AtomicStampedReference<>(null, -1);
     private final Type type;
     private final CachedCompositePropertyContainer parentContainer;
 
@@ -50,14 +50,14 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
 
     /** {@inheritDoc} */
     @Override
-    public void addListener(final PropertyListener<T> listener) {
+    public void addListener(final PropertyListener<Object> listener) {
         parentContainer.addListener(listener, new ListenerUpdater() {
-            private final AtomicReference<T> last = new AtomicReference<T>(null);
+            private final AtomicReference<Object> last = new AtomicReference<Object>(null);
 
             @Override
             public void update() {
-                final T prev = last.get();
-                final T value;
+                final Object prev = last.get();
+                final Object value;
 
                 try {
                     value = get();
@@ -77,7 +77,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
 
     /** {@inheritDoc} */
     @Override
-    public void removeListener(PropertyListener<T> listener) {
+    public void removeListener(PropertyListener<Object> listener) {
         parentContainer.removeListener(listener);
     }
 
@@ -93,14 +93,14 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      *
      * @return the latest version of the value, either from the cache or the underlying source
      */
-    public CachedCompositeValue<T> getSourced() {
+    public CachedCompositeValue getSourced() {
         boolean fromCache = true;
         int cacheVersion = cache.getStamp();
         int latestVersion = parentContainer.getMasterVersion();
-        CachedCompositeValue<T> compositeValue = null;
+        CachedCompositeValue compositeValue = null;
         if (cacheVersion != latestVersion) {
-            CachedCompositeValue<T> currentValue = cache.getReference();
-            CachedCompositeValue<T> newValue = null;
+            CachedCompositeValue currentValue = cache.getReference();
+            CachedCompositeValue newValue = null;
             try {
                 newValue = resolveCurrent();
             } catch (ConfigException e) {
@@ -131,10 +131,10 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * @return the latest version of the value, either from the cache or the underlying source
      */
     @Override
-    public T get() {
-        CachedCompositeValue<T> compositeValue = getSourced();
+    public Object get() {
+        CachedCompositeValue compositeValue = getSourced();
 
-        T actual = null;
+        Object actual = null;
         if (compositeValue != null) {
             actual = compositeValue.getValue();
         }
@@ -154,7 +154,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * @return
      * @throws Exception
      */
-    protected abstract CachedCompositeValue<T> resolveCurrent() throws Exception;
+    protected abstract CachedCompositeValue resolveCurrent() throws Exception;
 
     /**
      * CachedCompositeProperty is used by CachedCompositePropertyContainer as a tuple of type and value.
@@ -183,7 +183,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CachedCompositeProperty<?> other = (CachedCompositeProperty<?>) obj;
+        CachedCompositeProperty other = (CachedCompositeProperty) obj;
         if (type != other.type)
             return false;
         return true;

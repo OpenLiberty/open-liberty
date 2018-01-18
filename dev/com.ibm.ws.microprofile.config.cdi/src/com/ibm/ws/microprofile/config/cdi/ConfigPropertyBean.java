@@ -66,30 +66,14 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
         T instance = null;
 
         Type ipType = injectionPoint.getType();
+        boolean optional = false;
         if (ipType instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) ipType;
             Type rType = pType.getRawType();
-            if (rType == Optional.class) {
-                Type[] tArgs = pType.getActualTypeArguments();
-                Type aType = tArgs[0];
-                Class<?> aClass = (Class<?>) aType;
-                instance = (T) getOptional(config, injectionPoint, aClass);
-            } else {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", ipType));
-            }
-        } else if (ipType instanceof Class) {
-            Class<T> ipClass = (Class<T>) ipType;
-            instance = (T) ConfigProducer.newValue(config, injectionPoint, ipClass, false);
-        } else {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", ipType));
+            optional = (rType == Optional.class);
         }
+        instance = (T) ConfigProducer.newValue(config, injectionPoint, ipType, optional);
         return instance;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <K> Optional<K> getOptional(Config config, InjectionPoint injectionPoint, Class<K> clazz) {
-        Optional<K> opt = (Optional<K>) ConfigProducer.newOptional(config, injectionPoint, clazz);
-        return opt;
     }
 
     private InjectionPoint getInjectionPoint(final BeanManager beanManager, final CreationalContext<?> creationalContext) {

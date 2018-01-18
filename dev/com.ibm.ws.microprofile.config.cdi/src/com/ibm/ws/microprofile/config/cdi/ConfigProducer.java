@@ -11,8 +11,7 @@
 package com.ibm.ws.microprofile.config.cdi;
 
 import java.lang.annotation.Annotation;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -25,7 +24,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 /**
@@ -35,40 +33,19 @@ public class ConfigProducer {
 
     private static final TraceComponent tc = Tr.register(ConfigProducer.class);
 
-    @FFDCIgnore(NoSuchElementException.class)
-    static Object newValue(Config config, InjectionPoint injectionPoint, Class<?> type, boolean optional) {
+    public static Object newValue(Config config, InjectionPoint injectionPoint, Type type, boolean optional) {
         WebSphereConfig wConfig = (WebSphereConfig) config;
         ConfigProperty qualifier = getConfigPropertyAnnotation(injectionPoint);
+        String defaultValue = qualifier.defaultValue();
         String propertyName = getPropertyName(injectionPoint, qualifier);
         Object value = null;
-        try {
-            value = wConfig.getValue(propertyName, type);
-        } catch (NoSuchElementException e) {
-            //property not found, check for a default value on the annotation
-            String defaultValue = qualifier.defaultValue();
 
-            //if the defaultValue was not configured on the annotaion
-            if (ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
-                //if the property is optional just return null
-                if (optional) {
-                    value = null;
-                } else {
-                    //otherwise rethrow the exception
-                    throw e;
-                }
-            } else if (defaultValue != null) {
-                //if the default was not null, convert it
-                value = wConfig.convertValue(defaultValue, type);
-            }
-
+        if (ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
+            value = wConfig.getValue(propertyName, type, optional);
+        } else {
+            value = wConfig.getValue(propertyName, type, defaultValue);
         }
         return value;
-    }
-
-    static Optional<?> newOptional(Config config, InjectionPoint injectionPoint, Class<?> type) {
-        Object value = newValue(config, injectionPoint, type, true);
-        Optional<?> optional = Optional.ofNullable(value);
-        return optional;
     }
 
     static ConfigProperty getConfigPropertyAnnotation(InjectionPoint injectionPoint) {

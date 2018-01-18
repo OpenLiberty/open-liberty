@@ -19,12 +19,15 @@ package com.ibm.ws.microprofile.config.impl;
 
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.config.converters.ExtendedGenericConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
@@ -45,13 +48,19 @@ public class ConversionManager {
         this.converters.setUnmodifiable(); //probably already done but make sure
     }
 
-    protected <T extends Type> ConversionStatus simpleConversion(String rawString, T type) {
+    protected ConversionStatus simpleConversion(String rawString, Type type, Class<?> genericSubType) {
         ConversionStatus status = new ConversionStatus();
+
         if (converters.hasType(type)) {
             PriorityConverter converter = converters.getConverter(type);
             if (converter != null) {
                 try {
-                    Object converted = converter.convert(rawString);
+                    Object converted = null;
+                    if (converter instanceof ExtendedGenericConverter) {
+                        converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this);
+                    } else {
+                        converted = converter.convert(rawString);
+                    }
                     status.setConverted(converted);
                 } catch (ConversionException e) {
                     throw e;
@@ -69,6 +78,7 @@ public class ConversionManager {
 
             }
         }
+
         return status;
     }
 
@@ -81,9 +91,44 @@ public class ConversionManager {
      * @param type
      * @return
      */
-    public <T extends Type> Object convert(String rawString, T type) {
+    public Object convert(String rawString, Type type) {
+        Object value = null;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Type[] aTypes = pType.getActualTypeArguments();
+            Type genericTypeArg = aTypes.length == 1 ? aTypes[0] : null; //initially only support one type arg
+            if (genericTypeArg instanceof Class) { //for the moment we only support a class ... so no type variables; e.g. List<String> is ok but List<T> is not
+                Class<?> genericClassArg = (Class<?>) genericTypeArg;
+                value = convert(rawString, pType.getRawType(), genericClassArg);
+            } else {
+                throw new IllegalArgumentException("Generic Type Variables are not supported: " + genericTypeArg);
+            }
+        } else {
+            value = convert(rawString, type, null);
+        }
+        return value;
+    }
+
+    /**
+     * Convert a String to a Type using registered converters for the Type
+     *
+     * @param <T>
+     *
+     * @param rawString
+     * @param type
+     * @return
+     */
+    public Object convert(String rawString, Type type, Class<?> genericSubType) {
+        //first box any primitives
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            if (clazz.isPrimitive()) {
+                type = ClassUtils.primitiveToWrapper(clazz);
+            }
+        }
+
         //do a simple lookup in the map of converters
-        ConversionStatus status = simpleConversion(rawString, type);
+        ConversionStatus status = simpleConversion(rawString, type, genericSubType);
 
         if (!status.isConverterFound() && type instanceof Class) {
             Class<?> requestedClazz = (Class<?>) type;
@@ -91,7 +136,26 @@ public class ConversionManager {
             //try array conversion
             if (requestedClazz.isArray()) {
                 Class<?> arrayType = requestedClazz.getComponentType();
-                status = convertArray(rawString, arrayType);// convertArray will throw ConverterNotFoundException if it can't find a converter
+                Class<?> conversionType = arrayType;
+                //first convert primitives to wrapper types
+                if (arrayType.isPrimitive()) {
+                    conversionType = ClassUtils.primitiveToWrapper(arrayType);
+                }
+                //convert to an array of the wrapper type
+                Object[] wrappedArray = convertArray(rawString, conversionType);// convertArray will throw ConverterNotFoundException if it can't find a converter
+
+                //switch back to the primitive type if required
+                Object value = wrappedArray;
+                if (arrayType.isPrimitive()) {
+                    value = toPrimitiveArray(wrappedArray, arrayType);
+                }
+
+                status.setConverted(value);
+            }
+
+            //try implicit converters (e.g. String Constructors)
+            if (!status.isConverterFound()) {
+                status = implicitConverters(rawString, requestedClazz);
             }
 
             //try to find any compatible converters
@@ -108,6 +172,25 @@ public class ConversionManager {
         Object converted = status.getConverted();
         return converted;
 
+    }
+
+    protected static <T> Object toPrimitiveArray(Object[] array, Class<T> primitiveType) {
+        Object primArray = Array.newInstance(primitiveType, array.length);
+        for (int i = 0; i < array.length; i++) {
+            Array.set(primArray, i, array[i]);
+        }
+        return primArray;
+    }
+
+    /**
+     * @param <T>
+     * @param rawString
+     * @param requestedClazz
+     * @return
+     */
+    protected <T> ConversionStatus implicitConverters(String rawString, Class<T> requestedClazz) {
+        // no-op in this version
+        return new ConversionStatus();
     }
 
     /**
@@ -174,23 +257,36 @@ public class ConversionManager {
      * @param arrayType
      * @return an array of converted T objects.
      */
-    @SuppressWarnings("unchecked")
-    @FFDCIgnore(ConverterNotFoundException.class)
-    protected <T> ConversionStatus convertArray(String rawString, Class<T> arrayType) {
-        ConversionStatus status = new ConversionStatus();
+    public <T> T[] convertArray(String rawString, Class<T> arrayType) {
+        String[] elements = split(rawString);
+        T[] array = convertArray(elements, arrayType);
 
-        String[] elements = rawString.split(",");
+        return array;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T[] convertArray(String[] elements, Class<T> arrayType) {
         T[] array = (T[]) Array.newInstance(arrayType, elements.length);
-        try {
-            for (int i = 0; i < elements.length; i++) {
-                array[i] = (T) convert(elements[i], arrayType); // will throw ConverterNotFoundException if it can't find a converter
-            }
-            status.setConverted(array);
-        } catch (ConverterNotFoundException e) {
-            //No FFDC
+        for (int i = 0; i < elements.length; i++) {
+            array[i] = (T) convert(elements[i], arrayType); // will throw ConverterNotFoundException if it can't find a converter
         }
 
-        return status;
+        return array;
+    }
+
+    public static String[] split(String rawString) {
+        String[] elements = null;
+        if (rawString != null) {
+            //split on comma "," unless preceeded by the escape char "\"
+            elements = rawString.split("(?<!\\\\),");
+            //remove any escape chars
+            for (int i = 0; i < elements.length; i++) {
+                elements[i] = elements[i].replaceAll("\\\\,", ",");
+            }
+        } else {
+            elements = new String[0];
+        }
+        return elements;
     }
 
 }

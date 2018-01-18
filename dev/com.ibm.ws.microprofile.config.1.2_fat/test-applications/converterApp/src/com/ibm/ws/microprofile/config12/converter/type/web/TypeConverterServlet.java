@@ -34,8 +34,23 @@ public class TypeConverterServlet extends FATServlet {
         bean.forcedTypeConverterTest();
     }
 
-//    @Test
-//    public void listConverterTest() throws Exception {
-//        bean.listConverterTest();
-//    }
+    @Test
+    public void listConverterTest() throws Exception {
+        bean.listConverterTest();
+    }
+
+    @Test
+    public void setConverterTest() throws Exception {
+        bean.setConverterTest();
+    }
+
+    @Test
+    public void optionalConverterTest() throws Exception {
+        bean.optionalConverterTest();
+    }
+
+    @Test
+    public void defaultOptionalConverterTest() throws Exception {
+        bean.defaultOptionalConverterTest();
+    }
 }

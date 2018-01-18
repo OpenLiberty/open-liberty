@@ -44,29 +44,15 @@ public class ArchaiusConfigImpl extends AbstractConfig implements WebSphereConfi
 
     /** {@inheritDoc} */
     @Override
-    protected <T> T getTypedValue(String propertyName, Class<T> propertyType) {
+    protected Object getTypedValue(String propertyName, Type propertyType) {
         return composite.getTypedValue(propertyName, propertyType);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected Object getTypedValue(String propertyName, Type propertyType) {
-        //TODO fix this
-        throw new UnsupportedOperationException();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public <T> SourcedValue<T> getSourcedValue(String propertyName, Class<T> propertyType) {
+    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
         return composite.getSourcedValue(propertyName, propertyType);
     }
-
-//    /** {@inheritDoc} */
-//    @Override
-//    public SourcedValue<?> getSourcedValue(String propertyName, Type propertyType) {
-//        //TODO fix this
-//        throw new UnsupportedOperationException();
-//    }
 
     /** {@inheritDoc} */
     @Override

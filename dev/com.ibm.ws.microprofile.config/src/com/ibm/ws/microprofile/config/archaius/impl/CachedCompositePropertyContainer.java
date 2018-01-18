@@ -17,6 +17,7 @@
 
 package com.ibm.ws.microprofile.config.archaius.impl;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,7 +53,7 @@ public class CachedCompositePropertyContainer {
     /**
      * Cache for each type attached to this property.
      */
-    private final CopyOnWriteArrayList<CachedCompositeProperty<?>> cache = new CopyOnWriteArrayList<CachedCompositeProperty<?>>();
+    private final CopyOnWriteArrayList<CachedCompositeProperty> cache = new CopyOnWriteArrayList<CachedCompositeProperty>();
 
     /**
      * Listeners are tracked globally as an optimization so it is not necessary to iterate through all
@@ -81,14 +82,14 @@ public class CachedCompositePropertyContainer {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private <T> CachedCompositeProperty<T> add(final CachedCompositeProperty<T> newProperty) {
+    private CachedCompositeProperty add(final CachedCompositeProperty newProperty) {
         //this method was all wrong, it never really checked the cache for an existing value
         //so I rewrote it ;-)
-        CachedCompositeProperty<T> cachedProperty = null;
+        CachedCompositeProperty cachedProperty = null;
 
-        for (CachedCompositeProperty<?> property : cache) {
+        for (CachedCompositeProperty property : cache) {
             if (property.equals(newProperty)) {
-                cachedProperty = (CachedCompositeProperty<T>) property;
+                cachedProperty = property;
                 break;
             }
         }
@@ -100,10 +101,10 @@ public class CachedCompositePropertyContainer {
         return cachedProperty;
     }
 
-    public <T> CachedCompositeProperty<T> asType(final Class<T> type) {
-        CachedCompositeProperty<T> prop = add(new CachedCompositeProperty<T>(type, this) {
+    public CachedCompositeProperty asType(final Type type) {
+        CachedCompositeProperty prop = add(new CachedCompositeProperty(type, this) {
             @Override
-            protected CachedCompositeValue<T> resolveCurrent() throws Exception {
+            protected CachedCompositeValue resolveCurrent() throws Exception {
                 return config.getCompositeValue(type, key);
             }
         });

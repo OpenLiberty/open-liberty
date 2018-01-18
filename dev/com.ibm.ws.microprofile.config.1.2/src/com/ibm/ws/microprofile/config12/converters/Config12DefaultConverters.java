@@ -21,20 +21,23 @@ import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 public class Config12DefaultConverters {
 
     //start off with the same default converters as for 1.1
-    private final static PriorityConverterMap default12Converters = new PriorityConverterMap(DefaultConverters.getDefaultConverters());
+    private final static PriorityConverterMap defaultConverters = new PriorityConverterMap(DefaultConverters.getDefaultConverters());
 
     static {
         //add the class converter
-        default12Converters.addConverter(new ClassConverter());
+        defaultConverters.addConverter(new ClassConverter());
+        //add the list and set converters
+        defaultConverters.addConverter(new ListConverter());
+        defaultConverters.addConverter(new SetConverter());
 
         //set the map as unmodifiable
-        default12Converters.setUnmodifiable();
+        defaultConverters.setUnmodifiable();
     }
 
     /**
      * @return defaultConverters
      */
     public static PriorityConverterMap getDefaultConverters() {
-        return default12Converters;
+        return defaultConverters;
     }
 }

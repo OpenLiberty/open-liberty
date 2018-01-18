@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.interfaces;
+package com.ibm.ws.microprofile.config12.converter.type.beans;
 
 /**
  *
  */
-public interface SourcedValue {
+public class MyStringObject {
 
-    /**
-     * Get the actual value
-     *
-     * @return the value
-     */
-    public Object getValue();
+    private String value;
 
-    /**
-     * Get the ID of the source that provided the value
-     *
-     * @return the originating source ID
-     */
-    public String getSource();
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
 
 }

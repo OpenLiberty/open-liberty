@@ -48,6 +48,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
 	com.ibm.ws.com.netflix.archaius.2.1.10;version=latest, \
+	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	org.eclipse.osgi;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
