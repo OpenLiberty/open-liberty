@@ -106,15 +106,18 @@ Include-Resource: \
   @${repo;org.eclipse.persistence.core;2.7.1.v20171221-bd47e8f;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.7.1.v20171221-bd47e8f;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.modelgen;2.7.1.v20171221-bd47e8f;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;2.7.1.v20171221-bd47e8f;EXACT}!/!META-INF/maven/*
+  @${repo;org.eclipse.persistence.jpa;2.7.1.v20171221-bd47e8f;EXACT}!/!META-INF/maven/*,\
+  org/eclipse/persistence/internal/jpa=${bin}/org/eclipse/persistence/internal/jpa
 
 publish.wlp.jar.suffix: dev/api/third-party
 
 instrument.classesExcludes: \
   org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class
+  org/eclipse/persistence/internal/localization/i18n/*.class, \
+  org/eclipse/persistence/internal/jpa/*.class
 
 -buildpath: \
+	org.eclipse.persistence.core;version=2.7.1.v20171221-bd47e8f;strategy=exact,\
 	org.eclipse.persistence.jpa;version=2.7.1.v20171221-bd47e8f;strategy=exact,\
 	javax.persistence:javax.persistence-api;version=2.2, \
 	com.ibm.websphere.org.osgi.core,\
