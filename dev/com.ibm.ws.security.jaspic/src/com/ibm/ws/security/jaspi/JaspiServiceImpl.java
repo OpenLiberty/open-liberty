@@ -340,7 +340,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Internal error during JASPI authentication", e);
                 if (result == null)
-                    result = new AuthenticationResult(AuthResult.FAILURE, new Subject());
+                    result = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
             }
         } else {
             result = new AuthenticationResult(AuthResult.CONTINUE, "No JASPIC provider found for request: " + webRequest.getHttpServletRequest().getRequestURI());
@@ -458,17 +458,14 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                 authResult = mapToAuthenticationResult(status, jaspiRequest, null);
             }
         } catch (AuthException e) {
-            AuthenticationException ex = new AuthenticationException("JASPI authentication failure: " + e);
+            AuthenticationException ex = new AuthenticationException("JASPIC Authenticated with status: SEND_FAILURE, exception: " + e);
             ex.initCause(e);
             if (webSecurityContext != null) {
                 setRunSecureResponse(false, (JaspiAuthContext) webSecurityContext.getJaspiAuthContext());
             }
-//            if (jac != null) {
-//                setRunSecureResponse(false, jac);
-//            }
             throw ex;
         } catch (WSLoginFailedException e) {
-            AuthenticationException ex = new AuthenticationException("Custom login failure after JASPI authentication completed successfully, exception: " + e);
+            AuthenticationException ex = new AuthenticationException("JASPIC Custom login failure after JASPI authentication completed successfully, exception: " + e);
             ex.initCause(e);
             throw ex;
         }
@@ -665,12 +662,13 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             }
 
         } else if (AuthStatus.SEND_FAILURE == status) {
-            String detail = "Authentication failed, JASPI AuthStatus: " + status + ", AuthResult.FAILURE";
+            pretty = "SEND_FAILURE";
+            String detail = "JASPIC Authenticated with status: " + pretty + ", AuthResult.FAILURE";
             authResult = new AuthenticationResult(AuthResult.FAILURE, detail);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, detail);
         } else {
-            authResult = new AuthenticationResult(AuthResult.FAILURE, "Authentication failed, unexpected JASPI AuthStatus: " + status);
+            authResult = new AuthenticationResult(AuthResult.FAILURE, "JASPIC Authentication failed, unexpected JASPI AuthStatus: " + status);
         }
         if (authResult.getStatus().equals(AuthResult.FAILURE)) {
             Tr.info(tc, "JASPI_PROVIDER_FAILED_AUTHENTICATE", new Object[] { status, jaspiRequest.getHttpServletRequest().getRequestURI(),
