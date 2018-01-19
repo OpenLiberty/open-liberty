@@ -15,9 +15,12 @@ import org.eclipse.microprofile.openapi.models.media.Encoding.Style;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.EncodingImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.EncodingValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
  *
@@ -36,6 +39,8 @@ public class EncodingValidatorTest {
      */
 
     String key;
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     @Test
     public void testEncodingIsNull() {
@@ -44,7 +49,7 @@ public class EncodingValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
-        validator.validate(vh, null, key, encodingNull);
+        validator.validate(vh, context, key, encodingNull);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -60,7 +65,7 @@ public class EncodingValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
-        validator.validate(vh, null, key, contentTypeIsInvalid);
+        validator.validate(vh, context, key, contentTypeIsInvalid);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -74,7 +79,7 @@ public class EncodingValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
-        validator.validate(vh, null, key, styleIsFormExplodeFalse);
+        validator.validate(vh, context, key, styleIsFormExplodeFalse);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -89,7 +94,7 @@ public class EncodingValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
-        validator.validate(vh, null, key, styleOtherExplodeTrue);
+        validator.validate(vh, context, key, styleOtherExplodeTrue);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -103,7 +108,7 @@ public class EncodingValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
-        validator.validate(vh, null, key, styleNullExplodeTrue);
+        validator.validate(vh, context, key, styleNullExplodeTrue);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -118,7 +123,7 @@ public class EncodingValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
-        validator.validate(vh, null, key, encodingCorrect);
+        validator.validate(vh, context, key, encodingCorrect);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(0, vh.getEventsSize());

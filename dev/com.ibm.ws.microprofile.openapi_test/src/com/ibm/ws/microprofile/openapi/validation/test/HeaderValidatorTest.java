@@ -18,13 +18,16 @@ import org.eclipse.microprofile.openapi.models.headers.Header.Style;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.examples.ExampleImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.headers.HeaderImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.HeaderValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
  *
@@ -43,6 +46,8 @@ public class HeaderValidatorTest {
      */
 
     String key;
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     @Test
     public void testHeaderIsNull() {
@@ -51,7 +56,7 @@ public class HeaderValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
-        validator.validate(vh, null, key, headerIsNull);
+        validator.validate(vh, context, key, headerIsNull);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -73,7 +78,7 @@ public class HeaderValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
-        validator.validate(vh, null, key, exampleAndExamplesNotNull);
+        validator.validate(vh, context, key, exampleAndExamplesNotNull);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -87,7 +92,7 @@ public class HeaderValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
-        validator.validate(vh, null, key, schemaAndContentNull);
+        validator.validate(vh, context, key, schemaAndContentNull);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -110,7 +115,7 @@ public class HeaderValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
-        validator.validate(vh, null, key, schemaAndContentNotNull);
+        validator.validate(vh, context, key, schemaAndContentNotNull);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -130,7 +135,7 @@ public class HeaderValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
-        validator.validate(vh, null, key, contentMapWithTwoEntries);
+        validator.validate(vh, context, key, contentMapWithTwoEntries);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -152,7 +157,7 @@ public class HeaderValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
-        validator.validate(vh, null, key, correctHeader);
+        validator.validate(vh, context, key, correctHeader);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(0, vh.getEventsSize());
