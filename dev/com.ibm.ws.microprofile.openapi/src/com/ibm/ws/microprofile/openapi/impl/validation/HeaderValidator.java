@@ -11,9 +11,12 @@
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
 import org.eclipse.microprofile.openapi.models.headers.Header;
+import org.eclipse.microprofile.openapi.models.media.Content;
+import org.eclipse.microprofile.openapi.models.media.Schema;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -35,13 +38,46 @@ public class HeaderValidator extends TypeValidator<Header> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Header t) {
 
-        String reference = t.getRef();
+        if (t != null) {
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
+            String reference = t.getRef();
+
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
+            }
+
+            // The examples object is mutually exclusive of the example object.
+            if ((t.getExample() != null) && (t.getExamples() != null && !t.getExamples().isEmpty())) {
+                final String message = Tr.formatMessage(tc, "headerExampleOrExamples", t);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+            }
+
+            Schema schema = t.getSchema();
+            Content content = t.getContent();
+            // A parameter MUST contain either a schema property, or a content property, but not both.
+            if (schema == null && content == null) {
+                final String message = Tr.formatMessage(tc, "headerSchemaOrContent", t);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+            }
+
+            if (schema != null && content != null) {
+                final String message = Tr.formatMessage(tc, "headerSchemaAndContent", t);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+
+            }
+
+            //The 'content' map MUST only contain one entry.
+            if (content != null && content.size() > 1) {
+                final String message = Tr.formatMessage(tc, "headerContent", t);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+
+            }
+
+        } else {
+
+            final String message = Tr.formatMessage(tc, "headerIsNull", t);
+            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
         }
-
-        // validate
     }
 }
