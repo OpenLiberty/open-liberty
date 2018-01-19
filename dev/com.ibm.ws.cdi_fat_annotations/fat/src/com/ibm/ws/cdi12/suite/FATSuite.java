@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.cdi12.fat.tests.DecoratorOnBuiltInBeansTest;
 import com.ibm.ws.cdi12.fat.tests.GloballyEnableUsingPriorityTest;
 import com.ibm.ws.cdi12.fat.tests.WithAnnotationsTest;
 import com.ibm.ws.fat.util.FatLogHandler;
@@ -38,6 +39,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+             DecoratorOnBuiltInBeansTest.class,
              GloballyEnableUsingPriorityTest.class,
              WithAnnotationsTest.class
 })

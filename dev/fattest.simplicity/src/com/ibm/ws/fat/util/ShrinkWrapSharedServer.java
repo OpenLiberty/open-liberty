@@ -62,7 +62,9 @@ public class ShrinkWrapSharedServer extends SharedServer {
             if (method.isAnnotationPresent(BuildShrinkWrap.class)){
                 try { 
                     Object archive = method.invoke(null);
-                    if (archive instanceof Archive){
+                    if (archive == null) {
+                        //do nothing
+                    } else if (archive instanceof Archive){
                         archivesAndPaths.put((Archive) archive, Arrays.asList(dropinsPath));
                     } else if (archive instanceof Archive[]){
                         Archive[] archives = (Archive[]) archive;

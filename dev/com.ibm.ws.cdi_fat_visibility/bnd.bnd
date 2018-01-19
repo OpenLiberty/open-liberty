@@ -34,6 +34,7 @@ src: \
 	test-applications/sharedLibrary.jar/src,\
 	test-applications/sharedLibraryAppWeb1.war/src,\
 	test-applications/sharedLibraryNoInjectionApp.war/src,\
+        test-applications/TestClassLoadPrereqLogger.war/src,\
 	test-applications/TestValidatorInJar.ear/src,\
 	test-applications/TestValidatorInJar.jar/src,\
 	test-applications/TestValidatorInJar.war/src,\

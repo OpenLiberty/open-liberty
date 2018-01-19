@@ -33,6 +33,7 @@ import com.ibm.ws.cdi12.fat.tests.BeanLifecycleTest;
 import com.ibm.ws.cdi12.fat.tests.EventMetaDataTest;
 import com.ibm.ws.cdi12.fat.tests.ObservesInitializedTest;
 import com.ibm.ws.cdi12.fat.tests.PassivationBeanTests;
+import com.ibm.ws.cdi12.fat.tests.SessionDestroyTests;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -43,7 +44,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 BeanLifecycleTest.class, 
                 EventMetaDataTest.class,
                 ObservesInitializedTest.class,
-                PassivationBeanTests.class
+                PassivationBeanTests.class,
+                SessionDestroyTests.class
 })
 public class FATSuite {
     

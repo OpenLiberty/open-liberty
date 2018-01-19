@@ -31,6 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.AlterableContextTest;
 import com.ibm.ws.cdi12.fat.tests.CDICurrentTest;
+import com.ibm.ws.cdi12.fat.tests.ConversationFilterTest;
+import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -40,6 +42,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @SuiteClasses({
              AlterableContextTest.class,
              CDICurrentTest.class,
+             ConversationFilterTest.class,
+             InjectInjectionPointTest.class,
 })
 public class FATSuite {
     

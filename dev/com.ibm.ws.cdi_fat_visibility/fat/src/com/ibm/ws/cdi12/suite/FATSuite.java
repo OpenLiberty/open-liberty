@@ -29,8 +29,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.cdi12.fat.tests.ClassLoadPrereqLogger;
 import com.ibm.ws.cdi12.fat.tests.ClassMaskingTest;
 import com.ibm.ws.cdi12.fat.tests.JarInRarTest;
+import com.ibm.ws.cdi12.fat.tests.MultiModuleAppTest;
 import com.ibm.ws.cdi12.fat.tests.PackagePrivateAccessTest;
 import com.ibm.ws.cdi12.fat.tests.RootClassLoaderTest;
 import com.ibm.ws.cdi12.fat.tests.SharedLibraryTest;
@@ -44,8 +46,10 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                ClassLoadPrereqLogger.class,
                 ClassMaskingTest.class, 
                 JarInRarTest.class,
+                MultiModuleAppTest.class,
                 PackagePrivateAccessTest.class,
                 RootClassLoaderTest.class,
                 SharedLibraryTest.class,

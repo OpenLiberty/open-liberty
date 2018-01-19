@@ -37,6 +37,7 @@ import com.ibm.ws.cdi12.fat.tests.EjbConstructorInjectionTest;
 import com.ibm.ws.cdi12.fat.tests.EjbDiscoveryTest;
 import com.ibm.ws.cdi12.fat.tests.EjbMiscTest;
 import com.ibm.ws.cdi12.fat.tests.EjbTimerTest;
+import com.ibm.ws.cdi12.fat.tests.InjectParameterTest;
 import com.ibm.ws.cdi12.fat.tests.MultipleNamedEJBTest;
 import com.ibm.ws.cdi12.fat.tests.StatefulSessionBeanInjectionTest;
 import com.ibm.ws.fat.util.FatLogHandler;
@@ -54,6 +55,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 EjbDiscoveryTest.class,
                 EjbMiscTest.class,
                 EjbTimerTest.class,
+                InjectParameterTest.class,
                 MultipleNamedEJBTest.class,
                 StatefulSessionBeanInjectionTest.class
 })

@@ -17,10 +17,12 @@ src: \
 	fat/src,\
         test-applications/alterableContextExtension.jar/src,\
 	test-applications/alterableContextApp.war/src,\
+	test-applications/appConversationFilter.war/src,\
 	test-applications/applicationExtension.jar/src,\
 	test-applications/applicationExtension.war/src,\
 	test-applications/cdiCurrentTest.jar/src,\
 	test-applications/cdiCurrentTest.war/src,\
+        test-applications/injectInjectionPoint.war/src,\
 	
 tested.features:\
 	cdi-2.0,\

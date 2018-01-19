@@ -25,7 +25,8 @@ src: \
 	test-applications/scopeActivationDestructionSecondApp.war/src,\
 	test-applications/scopeActivationDestructionTests.ear/src,\
 	test-applications/scopeActivationDestructionTests.war/src,\
-        test-applications/transientReferenceInSessionPersist.war/src
+        test-applications/transientReferenceInSessionPersist.war/src,\
+        test-applications/WebListener.war/src
 	
 	
 javac.source: 1.7
