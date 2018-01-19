@@ -275,6 +275,8 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
     /**
      * Returns the managed connection factory.
      *
+     * Prerequisite: the invoker must hold a read or write lock on this connection factory service instance.
+     *
      * @return the managed connection factory.
      */
     public abstract ManagedConnectionFactory getManagedConnectionFactory();
@@ -355,7 +357,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      * <li>The third element indicates support for RRS transactions. 1=supported, 0=not supported.</li>
      * </ul>
      *
-     * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
+     * Prerequisite: the invoker must hold a read or write lock on this connection factory service instance.
      *
      * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
      */
