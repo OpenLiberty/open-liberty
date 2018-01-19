@@ -183,7 +183,8 @@ public class FacesServletMappingUtils
                                 }
                             }                            
                         }
-                        else {
+                        else
+                        {
                             //This is not a FacesServlet mapping.  It could be a non-faces request
                             //Need to look for exact mapping to servletPath
                             String servletPrefixMapping = null;
@@ -193,19 +194,19 @@ public class FacesServletMappingUtils
                                 {
                                     mapping = mapping.substring(0, mapping.length()-2);
                                 }                                
-                            
-                                if (mapping.equals(servletPath)) {
+                                if (mapping.equals(servletPath))
+                                {
                                     return FacesServletMapping.createPrefixMapping(mapping);
                                 }
                             }
-                       }                        
+                       }
                     }
                     catch (Exception ex)
                     {
                         //No op
                     }
                 }
-             
+
                 // Choose exact mapping if preferred.
                 if (allowExactMatch && facesExactMapping != null)
                 {
@@ -219,7 +220,8 @@ public class FacesServletMappingUtils
                 {
                     return facesExtensionMapping;
                 }
-                else {
+                else
+                {
                     return FacesServletMapping.createPrefixMapping(servletPath);
                 }
             }
