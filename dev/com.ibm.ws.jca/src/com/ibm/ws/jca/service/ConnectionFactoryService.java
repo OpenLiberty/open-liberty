@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -287,17 +287,34 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         return Boolean.TRUE.equals(bootstrapContextRef.getReference().getProperty(REAUTHENTICATION_SUPPORT));
     }
 
+    /**
+     * Indicates whether or not thread identity, sync-to-thread, and RRS transactions are supported.
+     * The result is a 3 element array, of which,
+     * <ul>
+     * <li>The first element indicates support for thread identity. 2=REQUIRED, 1=ALLOWED, 0=NOT ALLOWED.</li>
+     * <li>The second element indicates support for "synch to thread" for the
+     * allocateConnection, i.e., push an ACEE corresponding to the current java
+     * Subject on the native OS thread. 1=supported, 0=not supported.</li>
+     * <li>The third element indicates support for RRS transactions. 1=supported, 0=not supported.</li>
+     * </ul>
+     *
+     * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
+     *
+     * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
+     */
     @Override
     @FFDCIgnore(NoSuchMethodException.class)
-    public boolean getRRSTransactional() {
+    public int[] getThreadIdentitySecurityAndRRSSupport() {
+        int rrsTransactional = 0;
         try {
-            return (Boolean) mcf.getClass().getMethod("getRRSTransactional").invoke(mcf);
+            if (Boolean.TRUE.equals(mcf.getClass().getMethod("getRRSTransactional").invoke(mcf)))
+                rrsTransactional = 1;
         } catch (NoSuchMethodException x) {
-            return false;
         } catch (Exception x) {
-            FFDCFilter.processException(x, getClass().getName(), "296", new Object[] { mcf.getClass() });
-            return false;
+            FFDCFilter.processException(x, getClass().getName(), "327", new Object[] { mcf.getClass() });
         }
+
+        return new int[] { 0, 0, rrsTransactional };
     }
 
     /**

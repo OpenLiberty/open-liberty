@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,13 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
 
     private static final Pattern DEFAULT_NESTED_PATTERN = Pattern.compile(".*(\\[default-\\d*\\])$");
     private static final Pattern DEFAULT_PATTERN = Pattern.compile("(default-\\d*)$");
+
+    /**
+     * Thread identity support constants.
+     */
+    public static final int THREAD_IDENTITY_NOT_ALLOWED = 0,
+                    THREAD_IDENTITY_ALLOWED = 1,
+                    THREAD_IDENTITY_REQUIRED = 2;
 
     /**
      * Set of names of applications that have accessed this connection factory
@@ -338,34 +345,21 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
     }
 
     /**
-     * Indicates whether or not this managed connection factory is RRS-enabled.
-     * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
-     *
-     * @return true if RRS-enabled, otherwise false.
-     */
-    public abstract boolean getRRSTransactional();
-
-    /**
-     * Indicates whether or not this managed connection factory supports thread identity.
-     * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
-     *
-     * @return Thread Identity Support: Either "ALLOWED", "REQUIRED", or "NOTALLOWED"
-     */
-    public String getThreadIdentitySupport() {
-        return "NOTALLOWED";
-    }
-
-    /**
-     * Indicates whether or not we should "synch to thread" for the
+     * Indicates whether or not thread identity, sync-to-thread, and RRS transactions are supported.
+     * The result is a 3 element array, of which,
+     * <ul>
+     * <li>The first element indicates support for thread identity. 2=REQUIRED, 1=ALLOWED, 0=NOT ALLOWED.</li>
+     * <li>The second element indicates support for "synch to thread" for the
      * allocateConnection, i.e., push an ACEE corresponding to the current java
-     * Subject on the native OS thread.
+     * Subject on the native OS thread. 1=supported, 0=not supported.</li>
+     * <li>The third element indicates support for RRS transactions. 1=supported, 0=not supported.</li>
+     * </ul>
+     *
      * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
      *
-     * @return true if we should "synch to thread", otherwise false.
+     * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
      */
-    public boolean getThreadSecurity() {
-        return false;
-    }
+    public abstract int[] getThreadIdentitySecurityAndRRSSupport();
 
     /**
      * Indicates the level of transaction support.
