@@ -34,6 +34,7 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
     public void complete(VirtualConnection vc, TCPReadRequestContext rrc) {
 
         if (connLink != null) {
+            connLink.setReadLinkStatusToNotReadingAndNotify();
             connLink.processRead(vc, rrc);
         }
     }
@@ -46,6 +47,7 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
         }
 
         if (connLink != null) {
+            connLink.setReadLinkStatusToNotReadingAndNotify();
             connLink.closeConnectionLink(exception);
         }
     }
