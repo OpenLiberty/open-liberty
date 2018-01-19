@@ -48,16 +48,16 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
             return;
         }
 
-        Optional<ValidationEvent> op_type = ValidatorUtils.validateRequiredField(t.getType(), "#/components/securitySchemes/" + key, "type");
+        Optional<ValidationEvent> op_type = ValidatorUtils.validateRequiredField(t.getType(), context, "type");
 
         if (op_type.isPresent()) {
             op_type.ifPresent(helper::addValidationEvent);
 
         } else {
             if ("apiKey".equals(t.getType().toString())) {
-                ValidatorUtils.validateRequiredField(t.getName(), "#/components/securitySchemes/" + key, "name").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
 
-                Optional<ValidationEvent> op_in = ValidatorUtils.validateRequiredField(t.getIn(), "#/components/securitySchemes/" + key, "in");
+                Optional<ValidationEvent> op_in = ValidatorUtils.validateRequiredField(t.getIn(), context, "in");
 
                 if (op_in.isPresent()) {
                     op_in.ifPresent(helper::addValidationEvent);
@@ -65,7 +65,7 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                     Set<String> inValues = new HashSet<String>(Arrays.asList("query", "header", "cookie"));
                     if (!(inValues.contains(t.getIn().toString()))) {
                         final String message = Tr.formatMessage(tc, "securitySchemeInFieldInvalid", key, t.getIn().toString());
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
 
                 }
@@ -74,21 +74,21 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                     t.getOpenIdConnectUrl() != null ||
                     t.getScheme() != null) {
                     final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
             } else if ("http".equals(t.getType().toString())) {
-                ValidatorUtils.validateRequiredField(t.getScheme(), "#/components/securitySchemes/" + key, "scheme").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(t.getScheme(), context, "scheme").ifPresent(helper::addValidationEvent);
 
                 if (t.getOpenIdConnectUrl() != null ||
                     ValidatorUtils.flowsIsSet(t.getFlows()) ||
                     t.getName() != null ||
                     t.getIn() != null) {
                     final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
 
             } else if ("oauth2".equals(t.getType().toString())) {
-                ValidatorUtils.validateRequiredField(t.getFlows(), "#/components/securitySchemes/" + key, "flows").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(t.getFlows(), context, "flows").ifPresent(helper::addValidationEvent);
 
                 if (t.getOpenIdConnectUrl() != null ||
                     t.getName() != null ||
@@ -96,11 +96,11 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                     t.getIn() != null ||
                     t.getScheme() != null) {
                     final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
 
             } else if ("openIdConnect".equals(t.getType().toString())) {
-                Optional<ValidationEvent> op_url = ValidatorUtils.validateRequiredField(t.getOpenIdConnectUrl(), "#/components/securitySchemes/" + key, "openIdConnectUrl");
+                Optional<ValidationEvent> op_url = ValidatorUtils.validateRequiredField(t.getOpenIdConnectUrl(), context, "openIdConnectUrl");
 
                 if (op_url.isPresent()) {
                     op_url.ifPresent(helper::addValidationEvent);
@@ -108,7 +108,7 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                 } else {
                     if (!(ValidatorUtils.isValidURL(t.getOpenIdConnectUrl()))) {
                         final String message = Tr.formatMessage(tc, "securitySchemeInvalidURL", t.getOpenIdConnectUrl());
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
                 }
                 if (t.getBearerFormat() != null ||
@@ -117,7 +117,7 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                     t.getIn() != null ||
                     t.getScheme() != null) {
                     final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
             }
         }

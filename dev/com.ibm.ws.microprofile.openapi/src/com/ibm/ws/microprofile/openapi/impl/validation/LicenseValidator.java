@@ -35,7 +35,7 @@ public class LicenseValidator extends TypeValidator<License> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, License t) {
-        ValidatorUtils.validateRequiredField(t.getName(), "/info/license", "name").ifPresent(helper::addValidationEvent);
+        ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
 
         if (t.getUrl() != null) {
             if (!ValidatorUtils.isValidURL(t.getUrl())) {

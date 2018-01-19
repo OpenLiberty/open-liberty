@@ -34,6 +34,6 @@ public class ServerVariableValidator extends TypeValidator<ServerVariable> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, ServerVariable t) {
-        ValidatorUtils.validateRequiredField(t.getDefaultValue(), key, "default").ifPresent(helper::addValidationEvent);
+        ValidatorUtils.validateRequiredField(t.getDefaultValue(), context, "default").ifPresent(helper::addValidationEvent);
     }
 }

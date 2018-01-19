@@ -43,19 +43,19 @@ public class CallbackValidator extends TypeValidator<Callback> {
             // validate urlTemplate is valid
             if (urlTemplate.isEmpty()) {
                 message = Tr.formatMessage(tc, "callbackURLTemplateEmpty");
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 continue;
             }
             List<String> vars = RuntimeExpressionUtils.extractURLVars(urlTemplate);
             if (vars == null) {
                 message = Tr.formatMessage(tc, "callbackInvalidSubstitutionVariables", urlTemplate);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             } else {
                 // validate replacement items
                 for (String v : vars) {
                     if (!RuntimeExpressionUtils.isRuntimeExpression(v)) {
                         message = Tr.formatMessage(tc, "callbackMustBeRuntimeExpression", v);
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
                 }
                 // replace template fields with sample data
@@ -67,14 +67,14 @@ public class CallbackValidator extends TypeValidator<Callback> {
                 // validate remaining url
                 if (!ValidatorUtils.isValidURL(buildURL)) {
                     message = Tr.formatMessage(tc, "callbackInvalidURL", urlTemplate);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
             // validate Path item
             Object pathItem = t.get(urlTemplate);
             if (!(pathItem instanceof PathItem)) {
                 message = Tr.formatMessage(tc, "callbackInvalidPathItem", urlTemplate);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
     }
