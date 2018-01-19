@@ -17,11 +17,6 @@ import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
@@ -34,9 +29,6 @@ public class JvmMonitorHelper {
     private final GarbageCollectorMXBean firstGCMBean;
     private final RuntimeMXBean rmx;
 
-    MBeanServer mBeanServer;
-    ObjectName operatingSystemMbean;
-
     /**
      *
      */
@@ -45,13 +37,6 @@ public class JvmMonitorHelper {
         gmx = ManagementFactory.getGarbageCollectorMXBeans();
         firstGCMBean = gmx.get(0);
         rmx = ManagementFactory.getRuntimeMXBean();
-
-        mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        try {
-            operatingSystemMbean = new ObjectName("java.lang", "type", "OperatingSystem");
-        } catch (MalformedObjectNameException e) {
-            FFDCFilter.processException(e, getClass().getName(), "JvmMonitorHelper<init>");
-        }
     }
 
     /**
