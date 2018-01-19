@@ -14,16 +14,22 @@ package com.ibm.ws.microprofile.openapi.validation.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.RequestBodyValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
  *
  */
 public class RequestBodyValidatorTest {
+
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     @Test
     public void testRequestBodyValidator() {
@@ -32,14 +38,14 @@ public class RequestBodyValidatorTest {
 
         RequestBodyImpl requestBody = new RequestBodyImpl();
 
-        validator.validate(validationHelper, null, requestBody);
+        validator.validate(validationHelper, context, requestBody);
         Assert.assertEquals(1, validationHelper.getEventsSize());
 
         validationHelper.resetResults();
 
         requestBody.setContent(new ContentImpl());
 
-        validator.validate(validationHelper, null, requestBody);
+        validator.validate(validationHelper, context, requestBody);
         Assert.assertEquals(1, validationHelper.getEventsSize());
 
         validationHelper.resetResults();
@@ -47,7 +53,7 @@ public class RequestBodyValidatorTest {
         ContentImpl content = new ContentImpl();
         content.addMediaType("test", new MediaTypeImpl());
         requestBody.setContent(content);
-        validator.validate(validationHelper, null, requestBody);
+        validator.validate(validationHelper, context, requestBody);
         Assert.assertEquals(0, validationHelper.getEventsSize());
     }
 }

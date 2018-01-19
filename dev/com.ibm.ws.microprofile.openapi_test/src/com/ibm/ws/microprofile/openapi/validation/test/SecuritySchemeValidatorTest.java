@@ -3,7 +3,7 @@
 *
 * OCO Source Materials
 *
-* WLP Copyright IBM Corp. 2017
+* WLP Copyright IBM Corp. 2018
 *
 * The source code for this program is not published or otherwise divested
 * of its trade secrets, irrespective of what has been deposited with the
@@ -16,11 +16,14 @@ import org.eclipse.microprofile.openapi.models.security.SecurityScheme.Type;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.OAuthFlowImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.OAuthFlowsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.SecuritySchemeImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.SecuritySchemeValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 public class SecuritySchemeValidatorTest {
 
@@ -52,6 +55,9 @@ public class SecuritySchemeValidatorTest {
 
     String key;
 
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
+
     @Test
     public void testNoType() {
 
@@ -59,7 +65,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, noType);
+        validator.validate(vh, context, key, noType);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -77,7 +83,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, noName);
+        validator.validate(vh, context, key, noName);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -95,7 +101,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, noIn);
+        validator.validate(vh, context, key, noIn);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -116,7 +122,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, apiKeyWithScheme);
+        validator.validate(vh, context, key, apiKeyWithScheme);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -139,7 +145,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, noScheme);
+        validator.validate(vh, context, key, noScheme);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -158,7 +164,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, httpWithOpenIdConnectUrl);
+        validator.validate(vh, context, key, httpWithOpenIdConnectUrl);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -182,7 +188,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, httpWithFlows);
+        validator.validate(vh, context, key, httpWithFlows);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -199,7 +205,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, noFlows);
+        validator.validate(vh, context, key, noFlows);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -219,7 +225,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, oauthWithName);
+        validator.validate(vh, context, key, oauthWithName);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -235,7 +241,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, noOpenIdConnectUrl);
+        validator.validate(vh, context, key, noOpenIdConnectUrl);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -255,7 +261,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, openIdConnectWithScheme);
+        validator.validate(vh, context, key, openIdConnectWithScheme);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -273,7 +279,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, invalidUrl);
+        validator.validate(vh, context, key, invalidUrl);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(1, vh.getEventsSize());
@@ -293,7 +299,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, positiveApiKey);
+        validator.validate(vh, context, key, positiveApiKey);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(0, vh.getEventsSize());
@@ -310,7 +316,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, positiveHttp);
+        validator.validate(vh, context, key, positiveHttp);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(0, vh.getEventsSize());
@@ -328,7 +334,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, positiveOauth);
+        validator.validate(vh, context, key, positiveOauth);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(0, vh.getEventsSize());
@@ -346,7 +352,7 @@ public class SecuritySchemeValidatorTest {
 
         TestValidationHelper vh = new TestValidationHelper();
         SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
-        validator.validate(vh, null, key, positiveOpenIdConnect);
+        validator.validate(vh, context, key, positiveOpenIdConnect);
 
         //Check for number of events only to keep assert statement independent of error message
         Assert.assertEquals(0, vh.getEventsSize());

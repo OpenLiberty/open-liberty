@@ -15,16 +15,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerVariableImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerVariablesImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.ServerValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
  *
  */
 public class ServerValidatorTest {
+
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     private ServerValidator validator;
     private TestValidationHelper validationHelper;
@@ -41,7 +47,7 @@ public class ServerValidatorTest {
     public void testValidSimpleServerValidator() {
         server.setUrl("https://development.gigantic-server.com/v1");
 
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(0, validationHelper.getEventsSize());
     }
 
@@ -64,7 +70,7 @@ public class ServerValidatorTest {
 
         server.setVariables(variables);
 
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(0, validationHelper.getEventsSize());
 
     }
@@ -84,7 +90,7 @@ public class ServerValidatorTest {
 
         server.setVariables(variables);
 
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
 
     }
@@ -108,7 +114,7 @@ public class ServerValidatorTest {
 
         server.setVariables(variables);
 
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(0, validationHelper.getEventsSize());
 
     }
@@ -116,41 +122,41 @@ public class ServerValidatorTest {
     @Test
     public void testInvalidURLNoCloseBracket() {
         server.setUrl("https://{development.gigantic-server.com/v1");
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
     @Test
     public void testInvalidURLUnorderedBrackets() {
         server.setUrl("https://}development{.gigantic-server.com/v1");
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
     @Test
     public void testInvalidURLEmptyVariableName() {
         server.setUrl("https://{}.gigantic-server.com/v1");
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
     @Test
     public void testURLInvalidVariableName() {
         server.setUrl("https://{user{name}.gigantic-server.com/v1");
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
 
         validationHelper.resetResults();
 
         server.setUrl("https://{user/name}.gigantic-server.com/v1");
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
     @Test
     public void testInvalidURLExtraCloseBracket() {
         server.setUrl("https://test.gi}gantic-server.com/v1");
-        validator.validate(validationHelper, null, server);
+        validator.validate(validationHelper, context, server);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 

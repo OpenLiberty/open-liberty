@@ -35,13 +35,15 @@ public class HeaderValidator extends TypeValidator<Header> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Header t) {
 
-        String reference = t.getRef();
+        if (t != null) {
+            String reference = t.getRef();
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
+            }
+
+            // validate
         }
-
-        // validate
     }
 }

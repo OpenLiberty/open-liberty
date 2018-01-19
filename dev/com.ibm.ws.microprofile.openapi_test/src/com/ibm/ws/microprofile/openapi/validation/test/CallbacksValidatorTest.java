@@ -14,15 +14,21 @@ package com.ibm.ws.microprofile.openapi.validation.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathItemImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.callbacks.CallbackImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.CallbackValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
  * Unit test for CaklbacksValidator class
  */
 public class CallbacksValidatorTest {
+
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     private final PathItemImpl pathItem = new PathItemImpl();
     private final CallbackValidator validator = CallbackValidator.getInstance();
@@ -33,7 +39,7 @@ public class CallbacksValidatorTest {
         CallbackImpl c = new CallbackImpl();
         c.addPathItem("http://abc.com/path", pathItem);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         if (vh.hasEvents())
             Assert.fail("Simple Callback generated invalid error(s):" + vh);
     }
@@ -45,7 +51,7 @@ public class CallbacksValidatorTest {
         c.addPathItem("http://abc.com/path/{$request.header.token}/version/{$request.query.name}/root", pathItem);
         c.addPathItem("http://abc.com/path/{$response.path.name}/version/{$response.body#/root/end}/root", pathItem);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         if (vh.hasEvents())
             Assert.fail("Complex Callback generated invalid error:" + vh);
     }
@@ -55,7 +61,7 @@ public class CallbacksValidatorTest {
         CallbackImpl c = new CallbackImpl();
         c.addPathItem("", pathItem);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         Assert.assertEquals("Callback with blank entry must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
         if (!message.contains("URL template is empty and is not a valid URL"))
@@ -67,7 +73,7 @@ public class CallbacksValidatorTest {
         CallbackImpl c = new CallbackImpl();
         c.addPathItem("http://abc.com/path", null);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         Assert.assertEquals("Callback missing a path must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
         if (!message.contains("The path item value associated with key"))
@@ -79,7 +85,7 @@ public class CallbacksValidatorTest {
         CallbackImpl c = new CallbackImpl();
         c.addPathItem("h://abc.com/path", pathItem);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid url must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
         if (!message.contains("must contain a valid URL"))
@@ -92,7 +98,7 @@ public class CallbacksValidatorTest {
         c.addPathItem("http://abc.com/path", pathItem);
         c.addPathItem("http://abc.com/path/{$url}/version/{$method}/root/{$statusCodeXXX}/path", pathItem);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid runtime expression must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
         if (!message.contains("statusCodeXXX"))
@@ -105,7 +111,7 @@ public class CallbacksValidatorTest {
         c.addPathItem("http://abc.com/path", pathItem);
         c.addPathItem("http://abc.com/path/{$u{rl}/version", pathItem);
         vh.resetResults();
-        validator.validate(vh, null, c);
+        validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid url template must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
         if (!message.contains("{$u{rl}"))

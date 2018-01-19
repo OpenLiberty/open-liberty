@@ -20,12 +20,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.examples.ExampleImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.EncodingImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.MediaTypeValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
  *
@@ -35,6 +38,9 @@ public class MediaTypeValidatorTest {
     private MediaTypeValidator validator;
     private TestValidationHelper validationHelper;
     private MediaTypeImpl mediaType;
+
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     /**
      * Setup a basic MediaType object for the tests.
@@ -68,7 +74,7 @@ public class MediaTypeValidatorTest {
 
         mediaType.setEncoding(encodingMap);
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(0, validationHelper.getEventsSize());
 
     }
@@ -82,14 +88,14 @@ public class MediaTypeValidatorTest {
 
         mediaType.setEncoding(encodingMap);
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
     @Test
     public void testEmptySchemaMediaTypeValidator() {
         mediaType.setSchema(null);
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(0, validationHelper.getEventsSize());
     }
 
@@ -104,7 +110,7 @@ public class MediaTypeValidatorTest {
 
         mediaType.setEncoding(encodingMap);
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
@@ -119,7 +125,7 @@ public class MediaTypeValidatorTest {
 
         mediaType.setEncoding(encodingMap);
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(1, validationHelper.getEventsSize());
     }
 
@@ -136,7 +142,7 @@ public class MediaTypeValidatorTest {
         examples.put("example", new ExampleImpl());
         mediaType.setExample(examples);
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(1, validationHelper.getEventsSize());
 
     }
@@ -145,7 +151,7 @@ public class MediaTypeValidatorTest {
     public void testValidExampleMediaTypeValidator() {
         mediaType.setExample("example");
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(0, validationHelper.getEventsSize());
     }
 
@@ -156,7 +162,7 @@ public class MediaTypeValidatorTest {
 
         mediaType.setExample(examples);
 
-        validator.validate(validationHelper, null, mediaType);
+        validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(0, validationHelper.getEventsSize());
     }
 }

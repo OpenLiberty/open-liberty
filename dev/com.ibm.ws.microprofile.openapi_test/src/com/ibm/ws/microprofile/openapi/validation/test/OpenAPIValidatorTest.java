@@ -18,10 +18,15 @@ import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathItemImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
-import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.impl.validation.OpenAPIValidator;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
+import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 public class OpenAPIValidatorTest {
+
+    OpenAPIImpl model = new OpenAPIImpl();
+    Context context = new TestValidationContextHelper(model);
 
     @Test
     public void testOpenAPIValidator() {
@@ -31,20 +36,20 @@ public class OpenAPIValidatorTest {
 
         OpenAPIImpl openapi = new OpenAPIImpl();
         openapi.setOpenapi(null); //overwrite the default value of "3.0.0"
-        validator.validate(vh, null, openapi);
+        validator.validate(vh, context, openapi);
         Assert.assertEquals(3, vh.getEventsSize());
         //TODO - test the actual events
 
         vh.resetResults();
         openapi.setOpenapi("4.0"); //invalid version
-        validator.validate(vh, null, openapi);
+        validator.validate(vh, context, openapi);
         Assert.assertEquals(3, vh.getEventsSize());
 
         vh.resetResults();
         openapi.setOpenapi("3.0");
         openapi.setInfo(new InfoImpl());
         openapi.setPaths(new PathsImpl().addPathItem("/", new PathItemImpl()));
-        validator.validate(vh, null, openapi);
+        validator.validate(vh, context, openapi);
         Assert.assertFalse(vh.hasEvents());
     }
 }
