@@ -137,14 +137,10 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
         final int packetSize = getConnLink().getPacketBufferSize();
         if (numBytesLeft > packetSize) {
             // need >1 packet, do blocks of up to 2 at a time
-            if (!getEncryptedAppBuffer(packetSize * 2)) {
-                return 0;
-            }
+            getEncryptedAppBuffer(packetSize * 2);
         } else {
             // one packet is fine
-            if (!getEncryptedAppBuffer(1)) {
-                return 0;
-            }
+            getEncryptedAppBuffer(1);
         }
 
         try {
@@ -179,13 +175,16 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                 }
 
             } while (0 < numBytesLeft && 0 < produced);
-        } catch (Exception up) {
+        } catch (Exception original) {
             synchronized (closeSync) {
                 // if close has been called then assume this exception was due to a race condition
                 // with the close logic and consume the exception without FFDC. Otherwise rethrow
                 // as the logic did before this change.
-                if (!closeCalled) {
+                if (closeCalled) {
+                    IOException up = new IOException("Exception occurred while close detected" + original);
                     throw up;
+                } else {
+                    throw original;
                 }
             }
         }
@@ -419,13 +418,9 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
             // make sure we have an output buffer of the target size ready
             final int packetSize = getConnLink().getPacketBufferSize();
             if (numBytesLeft > packetSize) {
-                if (!getEncryptedAppBuffer(packetSize * 2)) {
-                    return null;
-                }
+                getEncryptedAppBuffer(packetSize * 2);
             } else {
-                if (!getEncryptedAppBuffer(1)) {
-                    return null;
-                }
+                getEncryptedAppBuffer(1);
             }
             final int cap = this.encryptedAppBuffer.capacity();
             final TCPWriteRequestContext tcp = getConnLink().getDeviceWriteInterface();
@@ -462,13 +457,14 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                 Tr.debug(tc, "Caught exception during encryption, " + exception);
             }
             this.callback.error(getConnLink().getVirtualConnection(), this, exception);
-        } catch (Throwable t) {
+        } catch (Exception original) {
             synchronized (closeSync) {
                 // if close has been called then assume this exception was due to a race condition
-                // with the close logic and consume the exception without FFDC. Otherwise rethrow
-                // as the logic did before this change.
-                if (!closeCalled) {
-                    throw t;
+                // with the close logic. so no FFDC here.
+                if (closeCalled) {
+                    return null;
+                } else {
+                    throw original;
                 }
             }
         }
@@ -598,7 +594,15 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                                                              sslEngine.getSession().getPacketBufferSize(), true);
         WsByteBuffer decryptedNetBuffer = SSLUtils.allocateByteBuffer(
                                                                       sslEngine.getSession().getApplicationBufferSize(), false);
-        getEncryptedAppBuffer(1);
+        try {
+            getEncryptedAppBuffer(1);
+        } catch (IOException up) {
+            // Release buffers used in the handshake.
+            netBuffer.release();
+            decryptedNetBuffer.release();
+            throw up;
+        }
+
         if (hsCallback != null) {
             // If the callback is non null, update the callback with the buffers it
             // will have to release.
@@ -754,20 +758,21 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
      *
      * @param requested_size
      */
-    private boolean getEncryptedAppBuffer(int requested_size) {
+    private void getEncryptedAppBuffer(int requested_size) throws IOException {
 
         final int size = Math.max(getConnLink().getPacketBufferSize(), requested_size);
 
         synchronized (closeSync) {
             if (closeCalled) {
-                return false;
+                IOException up = new IOException("Operation failed due to connection close detected");
+                throw up;
             }
 
             if (null != this.encryptedAppBuffer) {
                 if (size <= this.encryptedAppBuffer.capacity()) {
                     // current buffer exists and is big enough
                     this.encryptedAppBuffer.clear();
-                    return true;
+                    return;
                 }
                 // exists but is too small
                 this.encryptedAppBuffer.release();
@@ -780,9 +785,6 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
             this.encryptedAppBuffer = SSLUtils.allocateByteBuffer(
                                                                   size, getConfig().getEncryptBuffersDirect());
         }
-
-        return true;
-
     }
 
     /**
