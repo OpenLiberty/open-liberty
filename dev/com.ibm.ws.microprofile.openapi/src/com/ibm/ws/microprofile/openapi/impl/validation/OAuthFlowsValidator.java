@@ -44,7 +44,7 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
                 final String message = Tr.formatMessage(tc, "nonApplicableField", "tokenUrl", implicit.getTokenUrl(), type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
             } else {
-                ValidatorUtils.validateRequiredField(implicit.getAuthorizationUrl(), type, "authorizationUrl").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(implicit.getAuthorizationUrl(), context, "authorizationUrl").ifPresent(helper::addValidationEvent);
             }
         }
         if (t.getPassword() != null) {
@@ -54,7 +54,7 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
                 final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", password.getAuthorizationUrl(), type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
             } else {
-                ValidatorUtils.validateRequiredField(password.getTokenUrl(), type, "tokenUrl").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(password.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
         }
         if (t.getClientCredentials() != null) {
@@ -64,16 +64,16 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
                 final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", clientCred.getAuthorizationUrl(), type);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
             } else {
-                ValidatorUtils.validateRequiredField(clientCred.getTokenUrl(), type, "tokenUrl").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(clientCred.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
         }
         if (t.getAuthorizationCode() != null) {
             OAuthFlow authCode = t.getAuthorizationCode();
             String type = "authorizationCode OAuthFlow";
             if (StringUtils.isBlank(authCode.getTokenUrl())) {
-                ValidatorUtils.validateRequiredField(authCode.getTokenUrl(), type, "tokenUrl").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(authCode.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             } else {
-                ValidatorUtils.validateRequiredField(authCode.getAuthorizationUrl(), type, "authorizationUrl").ifPresent(helper::addValidationEvent);
+                ValidatorUtils.validateRequiredField(authCode.getAuthorizationUrl(), context, "authorizationUrl").ifPresent(helper::addValidationEvent);
             }
         }
 
