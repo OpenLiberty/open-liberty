@@ -28,12 +28,9 @@ src: \
 	test-applications/IdentityStores.jar/src,\
 	test-applications/AuthMechs.jar/src,\
 	test-applications/DatabaseIdstoreDeferred.war/src,\
-<<<<<<< HEAD
-	test-applications/securityContextHamApp.war/src
-=======
+	test-applications/securityContextHamApp.war/src,\
 	test-applications/SecurityEjbinWAR.jar/src,\
 	test-applications/ejbinwarservlet.war/src
->>>>>>> Add EJB to javaeesec project
 
 javac.source: 1.8
 javac.target: 1.8
