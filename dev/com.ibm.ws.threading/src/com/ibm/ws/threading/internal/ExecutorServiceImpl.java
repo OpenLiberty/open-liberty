@@ -39,6 +39,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.threading.WSExecutorService;
 
@@ -185,7 +186,7 @@ public final class ExecutorServiceImpl implements WSExecutorService {
         }
 
         if (coreThreads < 0) {
-            coreThreads = 2 * Runtime.getRuntime().availableProcessors();
+            coreThreads = 2 * CpuInfo.getAvailableProcessors();
         }
 
         // If coreThreads is greater than maxThreads, automatically lower it and proceed
