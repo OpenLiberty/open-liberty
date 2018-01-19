@@ -33,7 +33,8 @@ public class ACEScanner {
 
     // Other variables
     public static final Pattern JAVA_2_SEC_NORETHROW = Pattern.compile("^\\[WARNING \\] CWWKE09(21W|12W|13E|14W|15W|16W):.*");
-    public static final Pattern JAVA_2_SEC_RETHROW = Pattern.compile("^ERROR: java\\.security\\.AccessControlException:.*");
+    public static final String JAVA_2_SEC_RETHROW = "ERROR: java.security.AccessControlException:";
+    public static final String JAVA_2_SEC_SYSERR = "[err] java.security.AccessControlException:";
     private static final Pattern IBM_STACK = Pattern.compile("^(\\s*at )?com\\.ibm\\.ws.*");
     private static final Class<?> c = ACEScanner.class;
     private static final boolean DEBUG = false;
@@ -62,22 +63,33 @@ public class ACEScanner {
 
     public void run() {
         try {
-            Log.info(c, "run", "Processing server log: " + INPUT_FILE);
-
+            Log.info(c, "run", "Processing log file: " + INPUT_FILE);
+            
             // Find all the unique ACEs and store them in a map
             BufferedReader infile = new BufferedReader(new FileReader(INPUT_FILE));
             String curLine;
-            while ((curLine = infile.readLine()) != null)
-                if (JAVA_2_SEC_RETHROW.matcher(curLine).matches() || JAVA_2_SEC_NORETHROW.matcher(curLine).matches()) {
+            while ((curLine = infile.readLine()) != null) {
+                // short-cut check for possible line beginnings for ACE's
+                if (!curLine.startsWith("[WARNING") &&
+                    !curLine.startsWith("ERROR") &&
+                    !curLine.startsWith("[err]"))
+                    continue;
+
+                if (curLine.startsWith(JAVA_2_SEC_RETHROW) ||
+                    curLine.startsWith(JAVA_2_SEC_SYSERR) ||
+                    JAVA_2_SEC_NORETHROW.matcher(curLine).matches()) {
                     if (DEBUG)
                         Log.info(c, "run", "starting to process: " + curLine);
                     processACEStack(infile);
                 }
+            }
             infile.close();
 
             if (exceptionMap.size() == 0) {
                 Log.info(c, "run", "No AccessControlExceptions found in logs, so no report will be generated.");
                 return;
+            } else {
+                Log.info(c, "run", "Found " + exceptionMap.size() + " unique AccessControlExceptions in logs");
             }
 
             // Write the ACE report
