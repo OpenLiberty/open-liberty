@@ -36,8 +36,14 @@ public class PassivationBeanTests extends LoggingTest {
     @ClassRule
     public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12PassivationServer");
 
+    private static boolean hasSetup = false;
+
     @BuildShrinkWrap
     public static Archive[] buildShrinkWrap() {
+
+        if (hasSetup) {
+          return null;
+        }
 
         Archive[] archives = new Archive[2];
 
@@ -51,6 +57,7 @@ public class PassivationBeanTests extends LoggingTest {
                         .addClass("cdi12.transientpassivationtest.BeanHolder")
                         .addClass("cdi12.transientpassivationtest.FieldInjectionPointBean")
                         .addClass("cdi12.transientpassivationtest.PassivationBean")
+                        .add(new FileAsset(new File("test-applications/transientReferenceInSessionPersist.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/transientReferenceInSessionPersist.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
                         .add(new FileAsset(new File("test-applications/transientReferenceInSessionPersist.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
                         .add(new FileAsset(new File("test-applications/transientReferenceInSessionPersist.war/resources/PassivationCapability.jsp")), "/PassivationCapability.jsp");
@@ -65,11 +72,13 @@ public class PassivationBeanTests extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/passivationBean.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
         EnterpriseArchive passivationBean = ShrinkWrap.create(EnterpriseArchive.class,"passivationBean.ear")
+                        .add(new FileAsset(new File("test-applications/passivationBean.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/passivationBean.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(passivationBeanWar);
 
         archives[0] = transientReferenceInSessionPersist;
         archives[1] = passivationBean;
+        hasSetup = true;
         return archives;
     }
 

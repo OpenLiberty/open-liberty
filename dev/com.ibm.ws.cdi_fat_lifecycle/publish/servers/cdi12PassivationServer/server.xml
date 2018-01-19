@@ -24,5 +24,7 @@
     <httpSessionDatabase dataSourceRef="jdbc/TestDataSource"/>
     <httpSession cloneid="s1" delayInvalidationAlarmDuringServerStartup="30"/>
     
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
     
 </server>

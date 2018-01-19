@@ -7,8 +7,10 @@
         <feature>cdi-1.2</feature>
         <feature>servlet-3.1</feature>
         <feature>componentTest-1.0</feature>
-		<feature>localConnector-1.0</feature>
+	<feature>localConnector-1.0</feature>
         <feature>jsf-2.2</feature>
-	</featureManager>
+     </featureManager>
+
+     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 
 </server>

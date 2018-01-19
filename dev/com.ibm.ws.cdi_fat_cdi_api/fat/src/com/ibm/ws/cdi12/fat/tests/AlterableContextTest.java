@@ -61,6 +61,7 @@ public class AlterableContextTest extends LoggingTest {
                         .addAsLibrary(alterableContextExtension);
 
           return ShrinkWrap.create(EnterpriseArchive.class,"alterableContextsApp.ear")
+                        .add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(alterableContextApp);
     }

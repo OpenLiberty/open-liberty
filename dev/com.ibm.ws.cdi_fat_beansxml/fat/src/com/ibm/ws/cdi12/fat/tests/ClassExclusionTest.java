@@ -79,6 +79,7 @@ public class ClassExclusionTest extends LoggingTest {
 
        EnterpriseArchive classExclusionEar = ShrinkWrap.create(EnterpriseArchive.class,"classExclusion.ear")
                         .add(new FileAsset(new File("test-applications/classExclusion.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
+                        .add(new FileAsset(new File("test-applications/classExclusion.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .addAsModule(classExclusion);
 
        JavaArchive TestVetoedAlternativeJar = ShrinkWrap.create(JavaArchive.class,"TestVetoedAlternative.jar")

@@ -46,7 +46,7 @@ import componenttest.topology.impl.LibertyServer;
 public class SessionDestroyTests extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12BasicServer");
+    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12SessionInvalidationServer");
 
     private static LibertyServer server;
     {
@@ -69,6 +69,7 @@ public class SessionDestroyTests extends LoggingTest {
     public static Archive buildShrinkWrap() {
          return ShrinkWrap.create(WebArchive.class, "WebListener.war")
                         .addPackage("com.ibm.ws.cdi.test.session.destroy")
+                        .add(new FileAsset(new File("test-applications/WebListener.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/WebListener.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
     }
 

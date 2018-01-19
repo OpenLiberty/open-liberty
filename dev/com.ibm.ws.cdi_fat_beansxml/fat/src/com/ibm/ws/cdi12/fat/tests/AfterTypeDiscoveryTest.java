@@ -58,6 +58,7 @@ public class AfterTypeDiscoveryTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeInterceptorImpl")
                         .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeOne")
                         .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeInterface")
+                        .add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
                         .add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension");
       archives.put(afterTypeDiscoveryApp, "publish/servers/cdi12AfterTypeDiscoveryServer/apps");

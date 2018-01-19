@@ -55,6 +55,7 @@ public class EjbTimerTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi12.test.ejb.timer.RequestScopedBean")
                         .addClass("com.ibm.ws.cdi12.test.ejb.timer.TestEjbTimerServlet")
                         .addClass("com.ibm.ws.cdi12.test.ejb.timer.EjbSessionBean")
+                        .add(new FileAsset(new File("test-applications/ejbTimer.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/ejbTimer.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
     }
 

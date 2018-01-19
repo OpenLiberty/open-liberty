@@ -50,6 +50,7 @@ public class EjbConstructorInjectionTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi.ejb.constructor.test.BeanOne")
                         .addClass("com.ibm.ws.cdi.ejb.constructor.test.BeanEJB")
                         .addClass("com.ibm.ws.cdi.ejb.constructor.test.StaticState")
+                        .add(new FileAsset(new File("test-applications/ejbConstructorInjection.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/ejbConstructorInjection.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
     }
 

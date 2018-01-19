@@ -64,6 +64,7 @@ public class DeltaSpikeSchedulerTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/slf4j-api-1.7.7.jar")), "/WEB-INF/lib/slf4j-api-1.7.7.jar")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-cdictrl-api-1.5.0.jar")), "/WEB-INF/lib/deltaspike-cdictrl-api-1.5.0.jar")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-core-api-1.5.0.jar")), "/WEB-INF/lib/deltaspike-core-api-1.5.0.jar")
+                        .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
         server = LibertyServerFactory.getLibertyServer("cdi12DeltaSpikeServer");

@@ -72,6 +72,7 @@ public class ClassMaskingTest extends LoggingTest {
                         .addClass("appclient.Main");
 
         return ShrinkWrap.create(EnterpriseArchive.class,"maskedClass.ear")
+                        .add(new FileAsset(new File("test-applications/maskedClass.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .addAsModule(maskedClassEjb)
                         .addAsModule(maskedClassWeb)
                         .addAsModule(maskedClassZAppClient)

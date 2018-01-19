@@ -68,6 +68,7 @@ public class EventMetaDataTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/eventMetaData.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
         return ShrinkWrap.create(EnterpriseArchive.class,"eventMetaData.ear")
+                        .add(new FileAsset(new File("test-applications/eventMetaData.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/eventMetaData.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(eventMetaData);
     }

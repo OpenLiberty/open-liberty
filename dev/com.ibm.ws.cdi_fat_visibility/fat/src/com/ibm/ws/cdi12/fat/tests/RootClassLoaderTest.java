@@ -57,6 +57,7 @@ public class RootClassLoaderTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/rootClassLoaderExtension.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension");
 
        return ShrinkWrap.create(WebArchive.class, "rootClassLoaderApp.war")
+                        .add(new FileAsset(new File("test-applications/rootClassLoaderApp.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .addClass("com.ibm.ws.cdi12.test.rootClassLoader.web.RootClassLoaderServlet")
                         .addAsLibrary(rootClassLoaderExtension);
     }

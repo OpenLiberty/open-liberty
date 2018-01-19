@@ -81,9 +81,11 @@ public class BeanLifecycleTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
         EnterpriseArchive scopeActivationDestructionSecondAppEar = ShrinkWrap.create(EnterpriseArchive.class,"scopeActivationDestructionSecondApp.ear")
+                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(scopeActivationDestructionSecondApp);
         EnterpriseArchive scopeActivationDestructionTestsEar = ShrinkWrap.create(EnterpriseArchive.class,"scopeActivationDestructionTests.ear")
+                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(scopeActivationDestructionTests);
 

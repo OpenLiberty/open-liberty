@@ -38,6 +38,7 @@ public class JNDILookupTest extends LoggingTest {
     @BuildShrinkWrap
     public static Archive buildShrinkWrap() {
         return ShrinkWrap.create(WebArchive.class, "jndiLookup.war")
+                        .add(new FileAsset(new File("test-applications/jndiLookup.war/resources/META-INF/tmp/permissions.xml")), "/WEB-INF/permissions.xml")
                         .addClass("com.ibm.ws.cdi12.test.jndi.LookupServlet")
                         .addClass("com.ibm.ws.cdi12.test.jndi.JNDIStrings");
     }

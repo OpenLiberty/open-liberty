@@ -67,6 +67,7 @@ public class ObservesInitializedTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/ObservesInitializedInJarsSecondWar.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension");
 
        return ShrinkWrap.create(EnterpriseArchive.class,"ObservesInitializedInJars.ear")
+                        .add(new FileAsset(new File("test-applications/ObservesInitializedInJars.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/ObservesInitializedInJars.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(ObservesInitializedInJars)
                         .addAsModule(ObservesInitializedInJarsSecondWar)
