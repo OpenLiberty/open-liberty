@@ -69,6 +69,7 @@ public class ValidatorUtils {
         }
     }
 
+    @FFDCIgnore({ URISyntaxException.class })
     public static boolean isValidURI(String uriStr) {
         try {
             @SuppressWarnings("unused")
