@@ -37,7 +37,6 @@ import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
-import org.eclipse.microprofile.openapi.models.security.Scopes;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.models.servers.Server;
@@ -266,12 +265,6 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
     public void visitXML(Context context, XML xml) {
         final XMLValidator v = XMLValidator.getInstance();
         v.validate(this, context, xml);
-    }
-
-    @Override
-    public void visitScopes(Context context, Scopes scopes) {
-        final ScopesValidator v = ScopesValidator.getInstance();
-        v.validate(this, context, scopes);
     }
 
     @Override

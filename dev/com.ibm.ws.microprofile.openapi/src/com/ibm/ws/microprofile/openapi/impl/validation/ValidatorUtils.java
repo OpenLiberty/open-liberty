@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
@@ -67,6 +69,17 @@ public class ValidatorUtils {
         }
     }
 
+    @FFDCIgnore({ URISyntaxException.class })
+    public static boolean isValidURI(String uriStr) {
+        try {
+            @SuppressWarnings("unused")
+            URI url = new URI(uriStr);
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
+        }
+    }
+
     public static boolean flowsIsSet(OAuthFlows flows) {
 
         if (flows != null) {
@@ -76,8 +89,8 @@ public class ValidatorUtils {
             OAuthFlow password = flows.getPassword();
             if (implicit != null) {
                 if (StringUtils.isNotBlank(implicit.getAuthorizationUrl()) ||
-                    StringUtils.isNotBlank(implicit.getTokenUrl()) ||
                     StringUtils.isNotBlank(implicit.getRefreshUrl()) ||
+                    StringUtils.isNotBlank(implicit.getTokenUrl()) ||
                     implicit.getScopes() != null ||
                     implicit.getExtensions() != null) {
                     return true;
@@ -85,8 +98,8 @@ public class ValidatorUtils {
             }
             if (authCode != null) {
                 if (StringUtils.isNotBlank(authCode.getTokenUrl()) ||
-                    StringUtils.isNotBlank(authCode.getRefreshUrl()) ||
                     StringUtils.isNotBlank(authCode.getAuthorizationUrl()) ||
+                    StringUtils.isNotBlank(authCode.getRefreshUrl()) ||
                     authCode.getScopes() != null ||
                     authCode.getExtensions() != null) {
                     return true;
