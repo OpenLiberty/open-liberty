@@ -135,8 +135,8 @@ public abstract class AnnotationsUtils {
         }
         if (StringUtils.isNotBlank(example.name())) {
             Example exampleObject = new ExampleImpl();
-            if (StringUtils.isNotBlank(example.name())) {
-                exampleObject.setDescription(example.name());
+            if (StringUtils.isNotBlank(example.description())) {
+                exampleObject.setDescription(example.description());
             }
             if (StringUtils.isNotBlank(example.summary())) {
                 exampleObject.setSummary(example.summary());
