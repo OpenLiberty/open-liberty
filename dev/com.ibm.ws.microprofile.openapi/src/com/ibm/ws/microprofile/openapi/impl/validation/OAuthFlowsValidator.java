@@ -66,9 +66,7 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
         }
         if (t.getAuthorizationCode() != null) {
             OAuthFlow authCode = t.getAuthorizationCode();
-            if (StringUtils.isBlank(authCode.getTokenUrl())) {
-                ValidatorUtils.validateRequiredField(authCode.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
-            }
+            ValidatorUtils.validateRequiredField(authCode.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             ValidatorUtils.validateRequiredField(authCode.getAuthorizationUrl(), context, "authorizationUrl").ifPresent(helper::addValidationEvent);
         }
 
