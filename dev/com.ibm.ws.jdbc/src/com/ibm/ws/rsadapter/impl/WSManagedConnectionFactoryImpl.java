@@ -282,24 +282,21 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * Constructs a managed connection factory based on configuration.
      * 
      * @param dsConfigRef reference to update to point at the new data source configuration.
-     * @param id the id of the data source.
-     * @param jndi the JNDI name of the data source.
      * @param ifc the type of data source.
-     * @param wProps WebSphere data source properties
-     * @param vProps JDBC driver vendor data source properties
      * @param ds the data source.
-     * @param connectorSvc connector service instance
      * @param jdbcRuntime version of the Liberty jdbc feature
      * @throws Exception if an error occurs.
      */
-    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, String id, String jndi, Class<? extends CommonDataSource> ifc,
-                                          NavigableMap<String, Object> wProps, Properties vProps, CommonDataSource ds,
-                                          ConnectorService connectorSvc, JDBCRuntimeVersion jdbcRuntime) throws Exception {
+    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<? extends CommonDataSource> ifc,
+                                          CommonDataSource ds, JDBCRuntimeVersion jdbcRuntime) throws Exception {
+        dsConfig = dsConfigRef;
+        DSConfig config = dsConfig.get();
+
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "<init>", ifc, wProps, vProps, jdbcRuntime);
+            Tr.entry(this, tc, "<init>", dsConfigRef, ifc, jdbcRuntime);
 
-        this.connectorSvc = connectorSvc;
+        this.connectorSvc = config.connectorSvc;
         this.jdbcRuntime = jdbcRuntime;
         instanceID = NUM_INITIALIZED.incrementAndGet();
         dataSourceImplClass = ds.getClass();
@@ -308,14 +305,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String dataSourceImplClassName = dataSourceImplClass.getName();
-        isUCP = dataSourceImplClassName.charAt(0) == 'o' && dataSourceImplClassName.startsWith("oracle.ucp.jdbc.");
-        if (isUCP)
-            Tr.info(tc, "WAS_CONNECTION_POOLING_DISABLED_INFO");
+        isUCP = dataSourceImplClassName.charAt(2) == 'a' && dataSourceImplClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
-        DSConfig config = new DSConfig(id, jndi, wProps, vProps, ds.getClass(), connectorSvc, this);
-        (dsConfig = dsConfigRef).set(config);
-
-        createDatabaseHelper(vProps instanceof PropertyService ? ((PropertyService) vProps).getFactoryPID() : PropertyService.FACTORY_PID);
+        createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();

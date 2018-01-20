@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: Database metadata access caused a non-stale conne
 META_DATA_EXCEPTION.explanation=An exception occurred when the Application Server was trying to get or access the metadata object for the database.
 META_DATA_EXCEPTION.useraction=Verify that the metadata is enabled on the backend database.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: The application server has disabled internal connection pooling.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=The application server has detected the enablement of connection caching through the database. Connection pooling in the application server will be disabled.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=If you do not want to disable connection pooling in the application server, disable connection pooling for the database server.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

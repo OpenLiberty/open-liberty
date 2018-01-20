@@ -190,6 +190,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     private JDBCRuntimeVersion jdbcRuntime;
 
     /**
+     * Managed connection factory for data sources where the jdbcDriver service has a configured library.
+     * Null if the application's thread context class loader is used to load the JDBC driver classes instead.
+     * Only access the value of this field when holding the lock for this instance that is defined in AbstractConnectionFactoryService.
+     */
+    private WSManagedConnectionFactoryImpl mcf;
+
+    /**
      * Service properties
      */
     private Map<String, Object> properties;
@@ -373,12 +380,14 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
     /**
      * Returns the managed connection factory.
+     * 
+     * Prerequisite: the invoker must hold a read or write lock on this instance.
      *
      * @return the managed connection factory.
      */
     @Override
     public final ManagedConnectionFactory getManagedConnectionFactory() {
-        return dsConfigRef.get().getManagedConnectionFactory(); // TODO cache mcf on DataSourceService if JDBC driver loaded from libraryRef. Otherwise, get instance based on classloader identifier.
+        return mcf; // TODO cache mcf on DataSourceService if JDBC driver loaded from libraryRef. Otherwise, get instance based on classloader identifier.
     }
 
     /**
@@ -406,15 +415,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
      * <li>The third element indicates support for RRS transactions. 1=supported, 0=not supported.</li>
      * </ul>
      *
-     * Prerequisite: invoker must ensure this instance has been initialized when this method is invoked.
+     * Prerequisite: the invoker must hold a read or write lock on this instance.
      *
      * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
      */
     @Override
     public int[] getThreadIdentitySecurityAndRRSSupport() {
         // TODO use cached MCF value (for server configured library) or find/create MCF in the mapping from class loader identifier to MCF (library from application)
-        WSManagedConnectionFactoryImpl mcf = dsConfigRef.get().getManagedConnectionFactory();
-
         DatabaseHelper dbHelper = mcf.getHelper();
         return new int[] { dbHelper.getThreadIdentitySupport(), dbHelper.getThreadSecurity() ? 1 : 0, dbHelper.getRRSTransactional() ? 1 : 0 };
     }
@@ -519,8 +526,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 }
             }
 
-            WSManagedConnectionFactoryImpl mcf = new WSManagedConnectionFactoryImpl(
-                dsConfigRef, id, jndiName, ifc, wProps, vProps, ds, connectorSvc, jdbcRuntime);
+            dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
+            mcf = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, ds, jdbcRuntime); // TODO only assign MCF when jdbcDriver has a server-configured library
 
             isInitialized.set(true);
         } catch (Exception x) {
