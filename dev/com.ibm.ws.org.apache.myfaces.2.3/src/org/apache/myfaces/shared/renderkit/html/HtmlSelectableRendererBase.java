@@ -94,7 +94,9 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
                         commonPropertiesMarked, uiComponent);
                 CommonPropertyUtils.renderEventProperties(writer, 
                         commonPropertiesMarked, uiComponent);
-                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchange(writer, 
+                // Note that on JSF 2.3, selectable components don't need onselect attribute
+                // Please see https://issues.apache.org/jira/browse/MYFACES-4190
+                CommonPropertyUtils.renderFieldEventPropertiesWithoutOnchangeAndOnselect(writer, 
                         commonPropertiesMarked, uiComponent);
             }
             else
@@ -106,14 +108,14 @@ public class HtmlSelectableRendererBase extends HtmlRenderer
                     Long commonEventsMarked = CommonEventUtils.getCommonEventsMarked(uiComponent);
                     CommonEventUtils.renderBehaviorizedEventHandlers(facesContext, writer, 
                             commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
-                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(
+                    CommonEventUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(
                         facesContext, writer, commonPropertiesMarked, commonEventsMarked, uiComponent, behaviors);
                 }
                 else
                 {
                     HtmlRendererUtils.renderBehaviorizedEventHandlers(facesContext, writer, uiComponent,
                             behaviors);
-                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchange(facesContext,
+                    HtmlRendererUtils.renderBehaviorizedFieldEventHandlersWithoutOnchangeAndOnselect(facesContext,
                             writer, uiComponent, behaviors);
                 }
             }
