@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -36,7 +37,7 @@ public abstract class ConnectorService {
 
     /**
      * Deserialize from an array of bytes.
-     * 
+     *
      * @param bytes serialized bytes.
      * @return deserialized object.
      */
@@ -64,8 +65,13 @@ public abstract class ConnectorService {
     }
 
     /**
+     * @return the class loader identifier service.
+     */
+    public abstract ClassLoaderIdentifierService getClassLoaderIdentifierService();
+
+    /**
      * Get a translated message from J2CAMessages file.
-     * 
+     *
      * @param key message key.
      * @param args message parameters
      * @return a translated message.
@@ -93,7 +99,7 @@ public abstract class ConnectorService {
      * Ignore, warn, or fail when a configuration error occurs.
      * This is copied from Tim's code in tWAS and updated slightly to
      * override with the Liberty ignore/warn/fail setting.
-     * 
+     *
      * @param tc the TraceComponent from where the message originates
      * @param throwable an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
@@ -105,7 +111,7 @@ public abstract class ConnectorService {
 
     /**
      * Logs a message from the J2CAMessages file.
-     * 
+     *
      * @param key message key.
      * @param args message parameters
      */
@@ -124,7 +130,7 @@ public abstract class ConnectorService {
 
     /**
      * Format bytes as hexadecimal text. For example, 49 42 4D
-     * 
+     *
      * @param bytes array of bytes.
      * @return hexadecimal text.
      */
@@ -135,9 +141,7 @@ public abstract class ConnectorService {
         StringBuilder sb = new StringBuilder(bytes.length * 3);
         for (int i = 0; i < bytes.length; i++) {
             int b = bytes[i] < 0 ? 0x100 + bytes[i] : bytes[i];
-            sb.append(Integer.toHexString(b / 0x10))
-                            .append(Integer.toHexString(b % 0x10))
-                            .append(' ');
+            sb.append(Integer.toHexString(b / 0x10)).append(Integer.toHexString(b % 0x10)).append(' ');
         }
 
         return new String(sb);

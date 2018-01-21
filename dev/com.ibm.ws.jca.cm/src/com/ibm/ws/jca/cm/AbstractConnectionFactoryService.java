@@ -155,7 +155,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
                     return conMgrSvc.getConnectionManager(resInfo, AbstractConnectionFactoryService.this);
                 }
             });
-            connectionFactory = getManagedConnectionFactory().createConnectionFactory(conMgr);
+            connectionFactory = getManagedConnectionFactory(null).createConnectionFactory(conMgr);
         } catch (Exception x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "createResource", x);
@@ -277,9 +277,11 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      *
      * Prerequisite: the invoker must hold a read or write lock on this connection factory service instance.
      *
+     * @param identifier identifier for the class loader from which to load vendor classes (for XA recovery path). Otherwise, null.
      * @return the managed connection factory.
+     * @throws Exception if an error occurs obtaining the managed connection factory.
      */
-    public abstract ManagedConnectionFactory getManagedConnectionFactory();
+    public abstract ManagedConnectionFactory getManagedConnectionFactory(String identifier) throws Exception;
 
     /**
      * Indicates whether or not reauthentication of connections is enabled.
@@ -359,9 +361,10 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      *
      * Prerequisite: the invoker must hold a read or write lock on this connection factory service instance.
      *
+     * @param identifier identifier for the class loader from which to load vendor classes (for XA recovery path). Otherwise, null.
      * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
      */
-    public abstract int[] getThreadIdentitySecurityAndRRSSupport();
+    public abstract int[] getThreadIdentitySecurityAndRRSSupport(String identifier);
 
     /**
      * Indicates the level of transaction support.
@@ -413,7 +416,8 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
                     lock.writeLock().unlock();
                 }
 
-            ManagedConnectionFactory mcf = getManagedConnectionFactory();
+            // TODO supply class loader identifier if resource was loaded from application
+            ManagedConnectionFactory mcf = getManagedConnectionFactory(null);
             Subject subject = getSubjectForRecovery(mcf, xaresinfo);
             mc = mcf.createManagedConnection(subject, null);
             xa = mc.getXAResource();
