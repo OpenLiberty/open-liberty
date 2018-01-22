@@ -16,12 +16,26 @@ public class GenericData {
 
     //Marker class, genericdatamemeber interface
 
-    ArrayList<Pair> pairs;
+    private final ArrayList<Pair> pairs;
 
     private String sourceType;
 
     public GenericData() {
         pairs = new ArrayList<Pair>();
+    }
+
+    public void addPair(String key, String value) {
+        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        pairs.add(kvp);
+    }
+
+    public void addPair(String key, Number value) {
+        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+        pairs.add(kvp);
+    }
+
+    public void addPairs(KeyValuePairList kvps) {
+        pairs.add(kvps);
     }
 
     public ArrayList<Pair> getPairs() {

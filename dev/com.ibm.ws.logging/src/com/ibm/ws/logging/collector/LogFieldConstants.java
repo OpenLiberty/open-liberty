@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.data;
+package com.ibm.ws.logging.collector;
 
 public class LogFieldConstants {
     public static final String SEVERITY = "severity";
@@ -33,4 +33,6 @@ public class LogFieldConstants {
     public static final String LOGLEVEL = "loglevel";
     public static final String LABEL = "label";
     public static final String SOURCEID = "sourceID";
+    public static final String IBM_DURATION = "ibm_duration";
+    public static final String DURATION = "duration";
 }
