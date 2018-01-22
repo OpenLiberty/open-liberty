@@ -39,57 +39,24 @@ public class EncodingValidator extends TypeValidator<Encoding> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Encoding t) {
         if (t != null) {
-            if (t.getContentType() != null) {
-
-                String type = t.getContentType();
-                String[] typeValues = { "application/octet-stream", "text/plain", "application/json", "image/*", "*, *", "" };
-
-                if (!Arrays.asList(typeValues).contains(type)) {
-                    final String message = Tr.formatMessage(tc, "encodingInvalidContentType");
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-                }
-            }
 
             if (t.getStyle() != null) {
 
                 Style style = t.getStyle();
                 Boolean explode = t.getExplode();
-                String[] styleEnums = { "form", "spaceDelimited", "pipeDelimited", "deepObject", "" };
                 String[] styleExplode = { "spaceDelimited", "pipeDelimited", "deepObject" };
 
-                if (!Arrays.asList(styleEnums).contains(style)) {
+                if (style.equals("form") && !explode) {
 
-                    final String message = Tr.formatMessage(tc, "encodingInvalidStyle");
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    final String message = Tr.formatMessage(tc, "encodingExplodeForForm");
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
 
-                } else {
+                } else if (Arrays.asList(styleExplode).contains(style) && explode) {
 
-                    if (style.equals("form") && !explode) {
-
-                        final String message = Tr.formatMessage(tc, "encodingExplodeForForm");
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-
-                    } else if (Arrays.asList(styleExplode).contains(style) && explode) {
-
-                        final String message = Tr.formatMessage(tc, "encodingExplodeForOtherStyles");
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-
-                    }
+                    final String message = Tr.formatMessage(tc, "encodingExplodeForOtherStyles");
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
                 }
             }
-
-            else if (t.getStyle() == null && t.getExplode()) {
-
-                final String message = Tr.formatMessage(tc, "encodingExplodeForNullStyle");
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
-
-            }
-
-        } else {
-
-            final String message = Tr.formatMessage(tc, "encodingObjectNull");
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
-
         }
     }
 }

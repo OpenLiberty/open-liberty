@@ -50,7 +50,7 @@ public class HeaderValidator extends TypeValidator<Header> {
             // The examples object is mutually exclusive of the example object.
             if ((t.getExample() != null) && (t.getExamples() != null && !t.getExamples().isEmpty())) {
                 final String message = Tr.formatMessage(tc, "headerExampleOrExamples", t);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
             }
 
             Schema schema = t.getSchema();
@@ -69,15 +69,10 @@ public class HeaderValidator extends TypeValidator<Header> {
 
             //The 'content' map MUST only contain one entry.
             if (content != null && content.size() > 1) {
-                final String message = Tr.formatMessage(tc, "headerContent", t);
+                final String message = Tr.formatMessage(tc, "headerContentMap", t);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
 
             }
-
-        } else {
-
-            final String message = Tr.formatMessage(tc, "headerIsNull", t);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
         }
     }
 }

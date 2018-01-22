@@ -32,6 +32,14 @@ infoTermsOfServiceInvalidURL=The Info object must contain a valid URL. The \"{0}
 invalidUrl=The \"{0}\" object must contain a valid URL. The \"{1}\" value specified for the URL is not valid.
 invalidUri=The \"{0}\" object must contain a valid URI. The \"{1}\" value specified for the URI is not valid.
 
+headerExampleOrExamples="example" and "examples" specified in header parameter \"{0}\" are mutually exclusive."
+headerSchemaAndContent=Header parameter \"{0}\" MUST contain either a schema property, or a content property, but not both.
+headerSchemaOrContent=Header parameter \"{0}\" MUST contain either a schema property or a content property.
+headerContentMap=The 'content' map within header parameter \"{0}\" must only contain one entry.
+
+encodingExplodeForForm=If style property is set to 'form', explode property should be set to true.
+encodingExplodeForOtherStyles=If style property is set to one of: 'spaceDelimited', 'pipeDelimited', 'deepObject', explode property should be set to false.
+
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 
 mediaTypeExampleOrExamples=The MediaType object cannot have both \"examples\" and \"example\".
