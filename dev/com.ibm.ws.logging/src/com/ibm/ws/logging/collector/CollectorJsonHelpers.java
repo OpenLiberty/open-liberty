@@ -12,9 +12,6 @@ package com.ibm.ws.logging.collector;
 
 import java.text.SimpleDateFormat;
 
-import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.LogFieldConstants;
-
 /**
  * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
  */
@@ -45,12 +42,12 @@ public class CollectorJsonHelpers {
     protected static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
                                        boolean jsonEscapeValue, boolean trim, boolean isFirstField) {
 
-        boolean b = addToJSON(sb, name, value, jsonEscapeName, jsonEscapeValue, trim, isFirstField, null);
+        boolean b = addToJSON(sb, name, value, jsonEscapeName, jsonEscapeValue, trim, isFirstField, false);
         return b;
     }
 
     protected static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
-                                       boolean jsonEscapeValue, boolean trim, boolean isFirstField, KeyValuePair kvp) {
+                                       boolean jsonEscapeValue, boolean trim, boolean isFirstField, boolean isNumber) {
 
         // if name or value is null just return
         if (name == null || value == null)
@@ -73,8 +70,7 @@ public class CollectorJsonHelpers {
             sb.append(name);
 
         //If the type of the field is NUMBER, then do not add quotations around the value
-
-        if (kvp != null && !kvp.getKey().equals("ibm_datetime") && kvp.getType() == KeyValuePair.ValueTypes.NUMBER) {
+        if (isNumber) {
 
             sb.append("\":");
 
