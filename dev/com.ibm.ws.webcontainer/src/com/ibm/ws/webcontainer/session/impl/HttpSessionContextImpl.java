@@ -76,13 +76,19 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
               if (sess != null) {
                   Object lock = new Object(); //create a new lock object for this request; 
                   LinkedList ll = ((SessionData)sess).getLockList(); //gets the linked lists of lock objects for this session;
+                  int llsize;
                   
                   // PK09786 BEGIN -- Always synchronize on linklist before lock to avoid deadlock 
                   synchronized (ll) {
                      ((SessionData)sess).setSessionLock(Thread.currentThread(), lock); //adds thread to WsSession locks hashtable so we know who to notify in PostInvoke
-                     ll.addLast(lock); 
+                     ll.addLast(lock);
+                     llsize = ll.size();
                   }       //PK19389 when another thread is in sessionPostInvoke, trying to lock linkedlist in order to notify the thread in lock.wait()
-                  if (ll.size() > 1) {
+                  if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                      LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[LOCK_SESSION], 
+                      "size = " + llsize + " thread = " + Thread.currentThread().getId() + " lock = " + lock.hashCode());
+                  }                  
+                  if (llsize > 1) {
                       long before = System.nanoTime();
                       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                           LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[LOCK_SESSION], "waiting...");
