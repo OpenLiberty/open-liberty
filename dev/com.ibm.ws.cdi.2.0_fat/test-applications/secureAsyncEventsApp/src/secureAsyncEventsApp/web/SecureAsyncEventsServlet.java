@@ -42,7 +42,16 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/secureasyncevents")
+// @RunAs("student")
 public class SecureAsyncEventsServlet extends FATServlet {
+    @Inject
+    private MultiThreadCDIBean multiThreadCDIBean;
+
+    @Inject
+    private SecureApprenticeChef secureApprentice;
+
+    @Inject
+    private SecureApprenticeChef secureChef;
 
     @Inject
     Event<CakeArrival> cakeEvent;
@@ -53,8 +62,18 @@ public class SecureAsyncEventsServlet extends FATServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Login as Faulty");
-        request.login("Faulty", "faultypwd");
+
+        String queryString = request.getQueryString();
+        if (queryString.contains("testSecureAsyncObserverUsingRunAsWithAuthority")) {
+            System.out.println("Login as Basil");
+            request.login("Basil", "Basilpwd");
+        } else if (queryString.contains("testSecureAsyncObserverUsingRunAsWithNOAuthority")) {
+            System.out.println("Login as Sybil");
+            request.login("Sybil", "Sybilpwd");
+        } else {
+            System.out.println("Login as Faulty");
+            request.login("Faulty", "faultypwd");
+        }
         super.doGet(request, response);
     }
 
@@ -180,6 +199,60 @@ public class SecureAsyncEventsServlet extends FATServlet {
 
         String firstName = getNameFromSubject(cakeReport.getCakeSubject());
         assertTrue("Unexpected observer principal - " + firstName, firstName.equals("Faulty"));
+    }
+
+    /**
+     * Test that security context is conveyed to spawned threads. The MultiThreadCDIBean invokes a
+     * ManagedScheduledExecutorService from which a runAs Subject is retrieved.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultiThreadSecurityContext() throws Exception {
+        String mtBeanName = multiThreadCDIBean.getName();
+        assertTrue("Unexpected multi thread bean name - " + mtBeanName, mtBeanName.equals("Faulty"));
+    }
+
+    /**
+     * This test is analogous to the Weld TCK. We want to work with @runAs to ensure that our implementation
+     * works with "typical" user applications.
+     *
+     * Note the code in the doGet() method above that logs in as a particular user who has appropriate
+     * authority. Specifically, we login as "Basil" who is in the "apprentice" role under which the
+     * SecureApprenticeChef is able to produce a recipe. The RecipeObserver allows an "apprentice" to
+     * observe the event.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSecureAsyncObserverUsingRunAsWithAuthority() throws Exception {
+        RecipeArrival recipeArrival = secureApprentice.produceARecipe();
+
+        String recipeDetails = recipeArrival.getDetails();
+        assertTrue("Unexpected recipe details - " + recipeDetails, recipeDetails.equals("SecretRecipeDetail"));
+    }
+
+    /**
+     * This test is analogous to the Weld TCK. We want to work with @runAs to ensure that our implementation
+     * works with "typical" user applications.
+     *
+     * Note the code in the doGet() method above that logs in as a particular user who does not have appropriate
+     * authority. Specifically, we login as "Sybil" who is in the "chef" role under which the
+     * SecureApprenticeChef is able to produce a recipe. But The RecipeObserver only allows an "apprentice", not
+     * a chef, to observe the event.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSecureAsyncObserverUsingRunAsWithNOAuthority() throws Exception {
+        try {
+            RecipeArrival recipeArrival = secureChef.produceARecipe();
+
+            fail("Should have thrown access exception");
+        } catch (Exception e) {
+            // Expect to catch an access exception
+            assertTrue("Unexpected exception - " + e, e.toString().contains("EJBAccessException"));
+        }
     }
 
     /**
