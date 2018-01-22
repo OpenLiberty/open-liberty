@@ -32,7 +32,7 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 
 /**
- * {@code #executeFT(InvocationContext)} is called for every method with the {@code Traced} annotation
+ * {@code #execute(InvocationContext)} is called for every method with the {@code Traced} annotation
  * or every method of a class with the {@code Traced} annotation. This interceptor is run after platform
  * interceptors but before application interceptors using {@code Interceptor.Priority.LIBRARY_BEFORE}.
  * If we figure out that the method in question is a JAXRS method, then we skip it because we know
