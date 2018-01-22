@@ -33,7 +33,6 @@ Private-Package: \
 
 Import-Package: \
         org.eclipse.microprofile.config.*;version="[1.0,2)", \
-        org.netflix.archaius.*, \
         *
 
 WS-TraceGroup: APPCONFIG

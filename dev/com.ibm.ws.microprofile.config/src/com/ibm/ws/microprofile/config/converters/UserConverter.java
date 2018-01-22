@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.interfaces;
+package com.ibm.ws.microprofile.config.converters;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -19,16 +19,16 @@ import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 /**
  * A triple of a MP Converter, with an explicit Type and priority
  */
-public class PriorityConverter<T> implements Converter<T>, Comparable<PriorityConverter<T>> {
+public class UserConverter<T> extends PriorityConverter {
 
-    private static final TraceComponent tc = Tr.register(PriorityConverter.class);
+    private static final TraceComponent tc = Tr.register(UserConverter.class);
 
-    private final Type type;
-    private final int priority;
     private final Converter<T> converter;
 
     /**
@@ -36,8 +36,8 @@ public class PriorityConverter<T> implements Converter<T>, Comparable<PriorityCo
      *
      * @param converter
      */
-    public PriorityConverter(Converter<T> converter) {
-        this(getType(converter), converter);
+    public static <K> UserConverter<K> newInstance(Converter<K> converter) {
+        return newInstance(getType(converter), converter);
     }
 
     /**
@@ -45,8 +45,12 @@ public class PriorityConverter<T> implements Converter<T>, Comparable<PriorityCo
      *
      * @param converter
      */
-    public PriorityConverter(Type type, Converter<T> converter) {
-        this(type, getPriority(converter), converter);
+    public static <K> UserConverter<K> newInstance(Type type, Converter<K> converter) {
+        return newInstance(type, getPriority(converter), converter);
+    }
+
+    public static <K> UserConverter<K> newInstance(Type type, int priority, Converter<K> converter) {
+        return new UserConverter<K>(type, priority, converter);
     }
 
     /**
@@ -56,58 +60,21 @@ public class PriorityConverter<T> implements Converter<T>, Comparable<PriorityCo
      * @param priority The priority of the converter
      * @param converter The actual converter
      */
-    public PriorityConverter(Type type, int priority, Converter<T> converter) {
-        this.type = type;
-        this.priority = priority;
+    protected UserConverter(Type type, int priority, Converter<T> converter) {
+        super(type, priority);
         this.converter = converter;
     }
 
     /** {@inheritDoc} */
     @Override
     public T convert(String value) {
-        //just pass-through to inner converter
+        //just pass-through to user converter
         return this.converter.convert(value);
     }
 
     /**
-     * @return the priority of this converter
-     */
-    public int getPriority() {
-        return priority;
-    }
-
-    /**
-     * @return the type of this converter
-     */
-    public Type getType() {
-        return this.type;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int compareTo(PriorityConverter<T> other) {
-        if (this == other) {
-            return 0;
-        }
-        if (other == null) {
-            return 1;
-        }
-
-        //we want highest priority first in the list
-        int otherPriority = other.getPriority();
-
-        if (this.priority > otherPriority) {
-            return 1;
-        }
-        if (this.priority < otherPriority) {
-            return -1;
-        }
-        //if the priorities are equal, fallback to an arbitrary but repeatable order based on hashCode ...
-        //TODO there is a really small possibility that this could still result in 0
-        return (this.hashCode() - other.hashCode());
-    }
-
-    /**
+     * Reflectively get the priority from the @Priority annotation
+     *
      * @param converter
      * @return
      */
@@ -123,7 +90,7 @@ public class PriorityConverter<T> implements Converter<T>, Comparable<PriorityCo
     }
 
     /**
-     * Get the Type of a Converter object
+     * Reflectively work out the Type of a Converter
      *
      * @param converter
      * @return
@@ -156,4 +123,5 @@ public class PriorityConverter<T> implements Converter<T>, Comparable<PriorityCo
         //TODO this satisfies the current FAT tests that expect the converter class name in the message ... but we can do better, adding actual type and priority etc
         return this.converter.getClass().getName();
     }
+
 }

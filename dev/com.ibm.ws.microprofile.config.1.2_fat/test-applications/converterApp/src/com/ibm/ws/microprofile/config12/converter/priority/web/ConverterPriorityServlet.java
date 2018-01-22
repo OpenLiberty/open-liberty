@@ -30,11 +30,6 @@ public class ConverterPriorityServlet extends FATServlet {
     }
 
     @Test
-    public void converterPriorityTest() throws Exception {
-        bean.converterPriorityTest();
-    }
-
-    @Test
     public void converterPrioritySPITest() throws Exception {
         bean.converterPrioritySPITest();
     }

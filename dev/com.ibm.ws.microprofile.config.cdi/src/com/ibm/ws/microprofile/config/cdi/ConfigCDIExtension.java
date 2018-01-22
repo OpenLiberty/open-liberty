@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-import com.ibm.ws.microprofile.config.interfaces.DefaultConverters;
+import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 
 /**
  * The ConfigCDIExtension observes all the @ConfigProperty qualified InjectionPoints and ensures that a ConfigPropertyBean is created for each type.

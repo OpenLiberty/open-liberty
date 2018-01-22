@@ -19,10 +19,16 @@ import org.eclipse.microprofile.config.Config;
  */
 public interface WebSphereConfig extends Config, Closeable {
 
+    //public Object getValue(String rawValue, Type type);
+
     public <T> T convertValue(String rawValue, Class<T> type);
+
+    //public Object convertValue(String rawValue, Type type);
 
     public String dump();
 
     public <T> SourcedValue<T> getSourcedValue(String key, Class<T> type);
+
+    //public SourcedValue<?> getSourcedValue(String key, Type type);
 
 }

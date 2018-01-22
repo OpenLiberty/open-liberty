@@ -36,12 +36,13 @@ public class ConfigProducer {
     private static final TraceComponent tc = Tr.register(ConfigProducer.class);
 
     @FFDCIgnore(NoSuchElementException.class)
-    static <T> T newValue(Config config, InjectionPoint injectionPoint, Class<T> type, boolean optional) {
+    static Object newValue(Config config, InjectionPoint injectionPoint, Class<?> type, boolean optional) {
+        WebSphereConfig wConfig = (WebSphereConfig) config;
         ConfigProperty qualifier = getConfigPropertyAnnotation(injectionPoint);
         String propertyName = getPropertyName(injectionPoint, qualifier);
-        T value = null;
+        Object value = null;
         try {
-            value = config.getValue(propertyName, type);
+            value = wConfig.getValue(propertyName, type);
         } catch (NoSuchElementException e) {
             //property not found, check for a default value on the annotation
             String defaultValue = qualifier.defaultValue();
@@ -57,7 +58,6 @@ public class ConfigProducer {
                 }
             } else if (defaultValue != null) {
                 //if the default was not null, convert it
-                WebSphereConfig wConfig = (WebSphereConfig) config;
                 value = wConfig.convertValue(defaultValue, type);
             }
 
@@ -65,9 +65,9 @@ public class ConfigProducer {
         return value;
     }
 
-    static <T> Optional<T> newOptional(Config config, InjectionPoint injectionPoint, Class<T> type) {
-        T value = newValue(config, injectionPoint, type, true);
-        Optional<T> optional = Optional.ofNullable(value);
+    static Optional<?> newOptional(Config config, InjectionPoint injectionPoint, Class<?> type) {
+        Object value = newValue(config, injectionPoint, type, true);
+        Optional<?> optional = Optional.ofNullable(value);
         return optional;
     }
 
@@ -118,10 +118,10 @@ public class ConfigProducer {
         return propertyName;
     }
 
-    static <T> T getDefaultValue(Config config, ConfigProperty qualifier, Class<T> type) {
+    static Object getDefaultValue(Config config, ConfigProperty qualifier, Class<?> type) {
         String defaultValue = qualifier.defaultValue();
 
-        T value = null;
+        Object value = null;
         if (!ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
             WebSphereConfig wConfig = (WebSphereConfig) config;
             value = wConfig.convertValue(defaultValue, type);

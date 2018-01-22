@@ -43,9 +43,9 @@ import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.dynamic.test.TestDynamicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.DefaultConverters;
 
 public class ConversionTest {
 
@@ -53,7 +53,7 @@ public class ConversionTest {
     public void testString() {
         String value = "TEST";
         System.out.println("String :" + value);
-        String converted = DefaultConverters.STRING_CONVERTER.convert(value);
+        String converted = (String) DefaultConverters.getDefaultConverters().getConverter(String.class).convert(value);
         assertEquals(value, converted);
     }
 

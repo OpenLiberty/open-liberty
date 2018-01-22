@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -50,6 +51,14 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * @return
      */
     protected abstract <T> T getTypedValue(String propertyName, Class<T> propertyType);
+
+    /**
+     * @param <T>
+     * @param propertyName
+     * @param propertyType
+     * @return
+     */
+    protected abstract Object getTypedValue(String propertyName, Type propertyType);
 
     /**
      * @return
@@ -135,11 +144,24 @@ public abstract class AbstractConfig implements WebSphereConfig {
         return value;
     }
 
+//    /** {@inheritDoc} */
+//    @Override
+//    public Object getValue(String propertyName, Type propertyType) {
+//        //TODO fix this
+//        throw new UnsupportedOperationException();
+//    }
+
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T convertValue(String rawValue, Class<T> type) {
         assertNotClosed();
         return (T) conversionManager.convert(rawValue, type);
     }
+
+//    /** {@inheritDoc} */
+//    @Override
+//    public Object convertValue(String rawValue, Type type) {
+//        assertNotClosed();
+//        return conversionManager.convert(rawValue, type);
+//    }
 }

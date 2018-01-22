@@ -2,3 +2,5 @@ com.ibm.ws.microprofile.appConfig.cdi.test.TConverter
 com.ibm.ws.microprofile.appConfig.cdi.test.DogConverter
 com.ibm.ws.microprofile.appConfig.cdi.test.MyObjectConverter
 com.ibm.ws.microprofile.appConfig.cdi.test.PizzaConverter
+com.ibm.ws.microprofile.appConfig.cdi.test.RedCarConverter
+com.ibm.ws.microprofile.appConfig.cdi.test.BlueCarConverter

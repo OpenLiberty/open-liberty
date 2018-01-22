@@ -10,14 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
-import org.junit.BeforeClass;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import org.jboss.shrinkwrap.api.Archive;
-
-import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
@@ -133,6 +131,17 @@ public class CDIFieldInjectionTest extends LoggingTest {
     public void testGoodPizza() throws Exception {
         test("PIZZA_GOOD_KEY", "9 inch ham pizza");
     }
+
+    //TODO fix these
+//    @Test
+//    public void testRedCar() throws Exception {
+//        test("RED_CAR_KEY", "Car: Ford, Colour: RED");
+//    }
+//
+//    @Test
+//    public void testBlueCar() throws Exception {
+//        test("BLUE_CAR_KEY", "Car: VW, Colour: BLUE");
+//    }
 
     private void test(String key, String expected) throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
