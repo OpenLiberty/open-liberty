@@ -27,7 +27,7 @@ http://www.eclipse.org/legal/epl-v10.html.
 
 # Default bFullVersion is major.minor.release-micro, but this can be overridden
 # in specific bnd files if required
-bFullVersion=${version;==;${bVersion}}.${liberty.bundle.micro.version}
+bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
 
 # This sets the version to the major.minor.micro of the provided bundle version,
 # and uses the RTC buildLabel for the qualifier. The "generated.build.id" file

@@ -133,7 +133,8 @@ def loadBuildProps() {
   }
 
   // Must be run after isRelease is set
-  def (qualifier, timestamp) = getVersionQualifier(isRelease)
+  def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+  def qualifier = timestamp
   
   //For release builds we can use a consistent qualifier of the build label.
   //This comes from the RTC build engines
@@ -185,20 +186,6 @@ def loadBuildProps() {
     rootProject.ext.failedTestCountTotal = 0
     rootProject.ext.skippedTestCountTotal = 0
   }
-}
-
-def getVersionQualifier(boolean isRelease) {
-  //ex: 201708101600
-  def timestamp = new SimpleDateFormat("yyyyMMdd-HHmm").format(new java.util.Date())
-  if (isRelease) {
-    return [timestamp, timestamp]
-  }
-  def branchName = System.env.BRANCH_NAME ?: gitBranch()
-  if (branchName == '' || branchName == 'HEAD') {
-    // Default to master if something went wrong
-    branchName = 'master'
-  }
-  return [branchName, timestamp]
 }
 
 def gitBranch() {
