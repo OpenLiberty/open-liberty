@@ -12,11 +12,11 @@ package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
 
-public class KeyValuePairs implements Pair {
+public class KeyValuePairList implements Pair {
 
     ArrayList<KeyValuePair> keyValuePairs;
 
-    public KeyValuePairs() {
+    public KeyValuePairList() {
         keyValuePairs = new ArrayList<KeyValuePair>();
     }
 
@@ -24,4 +24,13 @@ public class KeyValuePairs implements Pair {
         return keyValuePairs;
     }
 
+    public void addPair(String key, String value) {
+        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        keyValuePairs.add(kvp);
+    }
+
+    public void addPair(String key, Number value) {
+        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+        keyValuePairs.add(kvp);
+    }
 }

@@ -11,7 +11,7 @@
 package com.ibm.ws.logging.data;
 
 /**
- * Marker interface created to group KeyValuePair and KeyValuePairs
+ * Marker interface created to group KeyValuePair and KeyValuePairList
  */
 
 public interface Pair {
