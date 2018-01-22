@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.logging.source;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
@@ -19,9 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.KeyValuePairs;
-import com.ibm.ws.logging.data.Pair;
+import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -91,61 +88,46 @@ public class TraceSource implements Source, WsTraceHandler {
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
-            LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null) {
-                if (bufferMgr != null) {
-                    bufferMgr.add(parse(routedMessage, logRecord));
-                }
+            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+                bufferMgr.add(parse(routedMessage));
             }
         }
     }
 
-    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+    public GenericData parse(RoutedMessage routedMessage) {
 
-        KeyValuePair message = null;
+        GenericData genData = new GenericData();
+        LogRecord logRecord = routedMessage.getLogRecord();
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
         if (verboseMessage == null) {
-            message = new KeyValuePair("message", logRecord.getMessage(), KeyValuePair.ValueTypes.STRING);
+            genData.addPair("message", logRecord.getMessage());
         } else {
-            message = new KeyValuePair("message", routedMessage.getFormattedVerboseMsg(), KeyValuePair.ValueTypes.STRING);
+            genData.addPair("message", verboseMessage);
         }
 
-        KeyValuePair datetime = new KeyValuePair("ibm_datetime", Long.toString(logRecord.getMillis()), KeyValuePair.ValueTypes.NUMBER);
-        KeyValuePair threadId = new KeyValuePair("ibm_threadId", Integer.toString(logRecord.getThreadID()), KeyValuePair.ValueTypes.NUMBER);
-        KeyValuePair loggerName = new KeyValuePair("module", logRecord.getLoggerName(), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair logLevel = new KeyValuePair("severity", LogFormatUtils.mapLevelToType(logRecord), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair logLevelRaw = new KeyValuePair("logLevel", LogFormatUtils.mapLevelToRawType(logRecord), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair methodName = new KeyValuePair("ibm_methodName", logRecord.getSourceMethodName(), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair className = new KeyValuePair("ibm_className", logRecord.getSourceClassName(), KeyValuePair.ValueTypes.STRING);
-        String sequenceNum = sequenceNumber.next(Long.parseLong(datetime.getValue()));
-        KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceNum, KeyValuePair.ValueTypes.STRING);
+        long datetimeValue = logRecord.getMillis();
+        // Must pass datetime as string, as its value type must be set as string in its kvp
+        genData.addPair("ibm_datetime", Long.toString(datetimeValue));
+        genData.addPair("ibm_threadId", logRecord.getThreadID());
+        genData.addPair("module", logRecord.getLoggerName());
+        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair("logLevel", LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
+        genData.addPair("ibm_className", logRecord.getSourceClassName());
+        String sequenceNum = sequenceNumber.next(datetimeValue);
+        genData.addPair("ibm_sequence", sequenceNum);
 
-        KeyValuePairs extensions = new KeyValuePairs();
-        ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
+        KeyValuePairList extensions = new KeyValuePairList();
+        //ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
         Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             extMap = ((WsLogRecord) logRecord).getExtensions();
         }
 
         for (Map.Entry<String, String> entry : extMap.entrySet()) {
-            KeyValuePair extEntry = new KeyValuePair(entry.getKey(), entry.getValue(), KeyValuePair.ValueTypes.STRING);
-            extList.add(extEntry);
+            extensions.addPair(entry.getKey(), entry.getValue());
         }
-
-        GenericData genData = new GenericData();
-        ArrayList<Pair> pairs = genData.getPairs();
-
-        pairs.add(message);
-        pairs.add(datetime);
-        pairs.add(threadId);
-        pairs.add(loggerName);
-        pairs.add(logLevel);
-        pairs.add(logLevelRaw);
-        pairs.add(methodName);
-        pairs.add(className);
-        pairs.add(sequence);
-        pairs.add(extensions);
-
+        genData.addPairs(extensions);
         genData.setSourceType(sourceName);
         return genData;
 
