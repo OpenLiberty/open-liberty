@@ -161,7 +161,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
         isJDBC = cfSvc.getClass().getName().startsWith("com.ibm.ws.jdbc.");
 
-        int[] zosInfo = cfSvc.getThreadIdentitySecurityAndRRSSupport();
+        int[] zosInfo = cfSvc.getThreadIdentitySecurityAndRRSSupport(null); // TODO supply identifier on XA recovery path?
         rrsTransactional = zosInfo[2] > 0;
 
         // Indicates if the configured MCF requires an z/OS ACEE to be placed

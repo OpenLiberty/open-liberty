@@ -270,11 +270,12 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      *
      * Prerequisite: the invoker must hold a read or write lock on this connection factory service instance.
      *
+     * @param identifier identifier for the class loader from which to load vendor classes (for XA recovery path). Otherwise, null.
      * @return the managed connection factory.
      */
     @Override
     @Trivial
-    public ManagedConnectionFactory getManagedConnectionFactory() {
+    public ManagedConnectionFactory getManagedConnectionFactory(String identifier) {
         return mcf;
     }
 
@@ -302,11 +303,12 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      *
      * Prerequisite: the invoker must hold a read or write lock on this connection factory service instance.
      *
+     * @param identifier identifier for the class loader from which to load vendor classes (for XA recovery path). Otherwise, null.
      * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
      */
     @Override
     @FFDCIgnore(NoSuchMethodException.class)
-    public int[] getThreadIdentitySecurityAndRRSSupport() {
+    public int[] getThreadIdentitySecurityAndRRSSupport(String identifier) {
         int rrsTransactional = 0;
         try {
             if (Boolean.TRUE.equals(mcf.getClass().getMethod("getRRSTransactional").invoke(mcf)))
