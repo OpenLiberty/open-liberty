@@ -18,7 +18,6 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.LogFieldConstants;
 import com.ibm.ws.logging.data.Pair;
 
 /**
@@ -50,6 +49,7 @@ public class CollectorJsonUtils1_1 {
         if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
 
             return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, tags);
+            //return jsonifyGCEvent(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.GC_EVENT_TYPE, event, tags);
 
         } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
 
@@ -101,6 +101,45 @@ public class CollectorJsonUtils1_1 {
         return sb.toString();
     }
 
+    private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
+                                         String serverName, String hostName, String eventType, Object event, String[] tags) {
+        GenericData genData = (GenericData) event;
+        StringBuilder sb = new StringBuilder();
+        boolean isFirstField = true;
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String key = null;
+        String value = null;
+
+        sb.append("{");
+
+        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                key = kvp.getKey();
+                value = kvp.getValue();
+
+                if (key.equals(LogFieldConstants.IBM_DURATION)) {
+                    long duration = Long.parseLong(value) * 1000;
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, Long.toString(duration), false, true, false, isFirstField, kvp.isNumber());
+                } else {
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
+                }
+            }
+
+            if (tags != null) {
+                addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+            }
+        }
+        sb.append("}");
+
+        return sb.toString();
+    }
+
     private static String jsonifyFFDC(int maxFieldLength, String wlpUserDir,
                                       String serverName, String hostName, String eventType, Object event, String[] tags) {
 
@@ -129,21 +168,22 @@ public class CollectorJsonUtils1_1 {
                     if (key.equals(LogFieldConstants.IBM_STACKTRACE)) {
 
                         String formattedValue = CollectorJsonHelpers.formatMessage(value, maxFieldLength);
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp);
+                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp.isNumber());
 
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
 
                         isFirstField = isFirstField
-                                       & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField, kvp);
+                                       & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField,
+                                                                         kvp.isNumber());
 
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
+                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp.isNumber());
 
                     } else {
 
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
+                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
 
                     }
                 }
@@ -192,7 +232,7 @@ public class CollectorJsonUtils1_1 {
                             // ignore, use the original value;
                         }
                     }
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, jsonQueryString, false, true, false, isFirstField, kvp);
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, jsonQueryString, false, true, false, isFirstField, kvp.isNumber());
 
                 } else if (key.equals(LogFieldConstants.IBM_USERAGENT)) {
 
@@ -202,16 +242,16 @@ public class CollectorJsonUtils1_1 {
                         userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
                     }
 
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, userAgent, false, false, false, isFirstField, kvp);
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, userAgent, false, false, false, isFirstField, kvp.isNumber());
 
                 } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
                     String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp.isNumber());
 
                 } else {
 
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
 
                 }
             }
@@ -249,28 +289,29 @@ public class CollectorJsonUtils1_1 {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (!(key.equals(LogFieldConstants.SEVERITY))) {
+                if (key.equals(LogFieldConstants.SEVERITY)) {
+                }
 
-                    if (key.equals(LogFieldConstants.MESSAGE)) {
+                if (key.equals(LogFieldConstants.MESSAGE)) {
 
-                        String formattedValue = CollectorJsonHelpers.formatMessage(value, maxFieldLength);
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp);
+                    String formattedValue = CollectorJsonHelpers.formatMessage(value, maxFieldLength);
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp.isNumber());
 
-                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
+                } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
 
-                        isFirstField = isFirstField
-                                       & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField, kvp);
+                    isFirstField = isFirstField
+                                   & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField,
+                                                                     kvp.isNumber());
 
-                    } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
+                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
-                        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
+                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp.isNumber());
 
-                    } else {
+                } else {
 
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
 
-                    }
                 }
             }
         }
