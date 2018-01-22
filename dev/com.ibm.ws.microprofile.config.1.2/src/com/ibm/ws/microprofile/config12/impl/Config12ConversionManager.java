@@ -23,8 +23,8 @@ public class Config12ConversionManager extends ConversionDecoder {
     /**
      * @param converters all the converters to use
      */
-    public Config12ConversionManager(PriorityConverterMap converters) {
-        super(converters);
+    public Config12ConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
+        super(converters, classLoader);
     }
 
     /**

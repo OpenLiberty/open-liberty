@@ -8,18 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.converters;
+package com.ibm.ws.microprofile.config12.tck;
 
-import com.ibm.ws.microprofile.config.impl.ConversionManager;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * A converter with an explicit Type and priority
- */
-public interface ExtendedGenericConverter {
+@RunWith(Suite.class)
+@SuiteClasses({
+                Config12TCKLauncher.class
+})
 
-    /**
-     * @param rawString
-     * @return
-     */
-    public abstract <T> Object convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader);
-}
+public class FATSuite {}

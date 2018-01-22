@@ -40,12 +40,15 @@ public class ConversionManager {
 
     private final PriorityConverterMap converters;
 
+    private final ClassLoader classLoader;
+
     /**
      * @param converters all these are stored in the instance
      */
-    public ConversionManager(PriorityConverterMap converters) {
+    public ConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
         this.converters = converters;
         this.converters.setUnmodifiable(); //probably already done but make sure
+        this.classLoader = classLoader;
     }
 
     protected ConversionStatus simpleConversion(String rawString, Type type, Class<?> genericSubType) {
@@ -57,7 +60,7 @@ public class ConversionManager {
                 try {
                     Object converted = null;
                     if (converter instanceof ExtendedGenericConverter) {
-                        converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this);
+                        converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this, this.classLoader);
                     } else {
                         converted = converter.convert(rawString);
                     }

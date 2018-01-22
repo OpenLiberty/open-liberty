@@ -15,6 +15,5 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FaultToleranceTckPackageTest.class })
-public class FATSuite {
-}
+@SuiteClasses({ FaultToleranceTckLauncher.class })
+public class FATSuite {}

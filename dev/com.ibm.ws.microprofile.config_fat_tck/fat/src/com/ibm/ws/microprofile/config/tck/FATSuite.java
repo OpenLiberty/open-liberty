@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.microprofile.config.tck;
+package com.ibm.ws.microprofile.config.tck;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -16,7 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ConfigTckPackageTest.class
+                ConfigTCKLauncher.class
 })
 
 public class FATSuite {}

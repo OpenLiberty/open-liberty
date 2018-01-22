@@ -24,8 +24,8 @@ public class ConversionDecoder extends ConversionManager implements Decoder {
      *
      * @param converters
      */
-    public ConversionDecoder(PriorityConverterMap converters) {
-        super(converters);
+    public ConversionDecoder(PriorityConverterMap converters, ClassLoader classLoader) {
+        super(converters, classLoader);
     }
 
     /** {@inheritDoc} */

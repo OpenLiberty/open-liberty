@@ -59,13 +59,13 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
         ArchaiusConfigImpl config = AccessController.doPrivileged(new PrivilegedAction<ArchaiusConfigImpl>() {
             @Override
             public ArchaiusConfigImpl run() {
-                return new ArchaiusConfigImpl(sources, getConversionDecoder(converters), executor, refreshInterval);
+                return new ArchaiusConfigImpl(sources, getConversionDecoder(converters, getClassLoader()), executor, refreshInterval);
             }
         });
         return config;
     }
 
-    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters) {
-        return new ConversionDecoder(converters);
+    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters, ClassLoader classLoader) {
+        return new ConversionDecoder(converters, classLoader);
     }
 }

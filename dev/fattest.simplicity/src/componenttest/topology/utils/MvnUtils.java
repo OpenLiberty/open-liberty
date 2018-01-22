@@ -28,9 +28,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -38,10 +35,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import com.ibm.websphere.simplicity.PortType;
+import com.ibm.ws.fat.util.Props;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -52,7 +51,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class MvnUtils {
 
-    public static File home;
+    public static File resultsDir;
     public static String wlp;
     public static File tckRunnerDir;
     public static File pomXml;
@@ -60,7 +59,9 @@ public class MvnUtils {
     public static String[] mvnCliRaw;
     public static String[] mvnCliRoot;
     public static String[] mvnCliTckRoot;
+    public static String mvnOutputFilename = "mvnOutput_TCK";
     static List<String> jarsFromWlp = new ArrayList<String>(3);
+    private static File mvnOutput;
 
     /**
      * Initialise shared values for a particular server.
@@ -86,15 +87,20 @@ public class MvnUtils {
      */
     public static void init(LibertyServer server, String pomRelativePath) throws Exception {
         wlp = server.getInstallRoot();
-        home = new File(System.getProperty("user.dir"));
+        resultsDir = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
+
         tckRunnerDir = new File("publish/tckRunner");
 
         pomXml = new File(tckRunnerDir, pomRelativePath);
 
         populateJarsFromWlp(pomXml);
 
-        mvnCliRaw = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
-                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + home.getAbsolutePath() + "/results/tck" };
+        String mvn = "mvn";
+        if (System.getProperty("os.name").contains("Windows")) {
+            mvn = mvn + ".cmd";
+        }
+        mvnCliRaw = new String[] { mvn, "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
+                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/tck" };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
 
@@ -103,6 +109,8 @@ public class MvnUtils {
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
         mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
+
+        mvnOutput = new File(resultsDir, mvnOutputFilename);
 
         init = true;
     }
@@ -184,6 +192,36 @@ public class MvnUtils {
             System.arraycopy(b, 0, result, a.length, b.length);
             return result;
         }
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     */
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
+        if (!init) {
+            init(server);
+        }
+        // Everything under autoFVT/results is collected from the child build machine
+
+        int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
+        Assert.assertEquals("mvn returned non-zero: " + rc, 0, rc);
+        File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
+        File tgt = new File(MvnUtils.resultsDir, "junit");
+        try {
+            Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
+        } catch (java.nio.file.NoSuchFileException nsfe) {
+            Assert.assertNull(
+                              "The TCK tests' results directory does not exist which suggests the TCK tests did not run - check build logs."
+                              + src.getAbsolutePath(), nsfe);
+        }
+
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals(bucketName + ":" + testName + ":TCK has returned non-zero return code of: " + rc +
+                            " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
+
+        return rc;
     }
 
     /**

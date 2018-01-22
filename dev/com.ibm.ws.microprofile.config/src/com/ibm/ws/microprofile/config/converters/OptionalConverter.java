@@ -35,7 +35,7 @@ public class OptionalConverter extends BuiltInConverter implements ExtendedGener
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Optional<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager) {
+    public <T> Optional<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader) {
         T value = null;
         if (!ConfigProperty.UNCONFIGURED_VALUE.equals(rawString)) {
             value = (T) conversionManager.convert(rawString, genericType);
