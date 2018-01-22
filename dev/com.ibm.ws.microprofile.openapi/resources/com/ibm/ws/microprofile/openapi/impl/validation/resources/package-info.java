@@ -12,7 +12,8 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "MPOPENAPI", messageBundle = "com.ibm.ws.microprofile.openapi.impl.validation.resources")
+@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.TRACE_VALIDATION)
 package com.ibm.ws.microprofile.openapi.impl.validation.resources;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.microprofile.openapi.impl.validation.TraceConstants;

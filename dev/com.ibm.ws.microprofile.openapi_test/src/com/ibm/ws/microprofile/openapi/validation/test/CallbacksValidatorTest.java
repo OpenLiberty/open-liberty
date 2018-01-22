@@ -89,8 +89,8 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid url must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("callbackInvalidURL"))
-            Assert.fail("Callback with invalid url reported an incorrect error:" + message);
+        if (!message.contains("The Callback object must contain a valid URL."))
+            Assert.fail("Callback with invalid url reported an incorrect error:" + vh);
     }
 
     @Test

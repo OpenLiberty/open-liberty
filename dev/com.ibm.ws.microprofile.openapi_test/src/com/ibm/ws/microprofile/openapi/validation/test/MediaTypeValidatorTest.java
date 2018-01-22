@@ -14,6 +14,7 @@ package com.ibm.ws.microprofile.openapi.validation.test;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.junit.Assert;
@@ -138,9 +139,9 @@ public class MediaTypeValidatorTest {
 
         mediaType.setEncoding(encodingMap);
         mediaType.setExample("example");
-        Map<String, ExampleImpl> examples = new HashMap<String, ExampleImpl>();
+        Map<String, Example> examples = new HashMap<String, Example>();
         examples.put("example", new ExampleImpl());
-        mediaType.setExample(examples);
+        mediaType.setExamples(examples);
 
         validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(1, validationHelper.getEventsSize());
