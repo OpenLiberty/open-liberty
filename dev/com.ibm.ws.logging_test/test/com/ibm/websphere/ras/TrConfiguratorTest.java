@@ -22,19 +22,21 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import test.LoggingTestUtils;
-import test.TestConstants;
-import test.common.SharedOutputManager;
 
 import com.ibm.websphere.ras.dummyinternal.DummyInternalClass;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.TraceSpecification.TraceElement;
 
+import test.LoggingTestUtils;
+import test.TestConstants;
+import test.common.SharedOutputManager;
+
 /**
  *
  */
+@Ignore
 public class TrConfiguratorTest {
     static {
         LoggingTestUtils.ensureLogManager();
@@ -63,6 +65,7 @@ public class TrConfiguratorTest {
         Tr.activeTraceSpec = new TraceSpecification("", null, false);
         Tr.allTraceComponents.clear();
     }
+
     @Test
     public void testBadTraceSpecification() {
         final String m = "testStaticTraceMethods";
@@ -86,7 +89,7 @@ public class TrConfiguratorTest {
             // still get the console message
             TrConfigurator.setTraceSpec("com.*=all=fried");
 
-            // We should skip the bad trace spec entirely.            
+            // We should skip the bad trace spec entirely.
             assertEquals(m + ": spec list length should be 1 - the default setting", 1, Tr.activeTraceSpec.getSpecs().size());
             assertTrue("Console output should contain TRAS0034W message", outputMgr.checkForStandardOut("TRAS0035W"));
             assertTrue("Message output should contain TRAS0034W message", outputMgr.checkForMessages("TRAS0035W"));
@@ -123,13 +126,13 @@ public class TrConfiguratorTest {
             assertFalse("The suppressSensitiveTrace flag must be false in the trace spec.",
                         Tr.activeTraceSpec.isSensitiveTraceSuppressed());
             assertNull("The package index must not be set in the trace spec.",
-                        Tr.activeTraceSpec.getSafeLevelsIndex());
+                       Tr.activeTraceSpec.getSafeLevelsIndex());
 
             assertSensitiveFlagAndIndexAreSet(newConfig);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         } finally {
-        	Tr.activeTraceSpec.getSafeLevelsIndex();
+            Tr.activeTraceSpec.getSafeLevelsIndex();
         }
     }
 
@@ -147,7 +150,7 @@ public class TrConfiguratorTest {
             assertFalse("The suppressSensitiveTrace flag must be false in the trace spec.",
                         Tr.activeTraceSpec.isSensitiveTraceSuppressed());
             assertNull("The package index must not be set in the trace spec.",
-                        Tr.activeTraceSpec.getSafeLevelsIndex());
+                       Tr.activeTraceSpec.getSafeLevelsIndex());
 
             assertSensitiveFlagAndIndexAreSet(newConfig);
         } catch (Throwable t) {
