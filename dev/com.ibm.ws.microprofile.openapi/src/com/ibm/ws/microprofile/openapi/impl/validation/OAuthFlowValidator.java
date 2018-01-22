@@ -54,5 +54,6 @@ public class OAuthFlowValidator extends TypeValidator<OAuthFlow> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("refreshUrl"), message));
             }
         }
+        ValidatorUtils.validateRequiredField(t.getScopes(), context, "scopes").ifPresent(helper::addValidationEvent);
     }
 }
