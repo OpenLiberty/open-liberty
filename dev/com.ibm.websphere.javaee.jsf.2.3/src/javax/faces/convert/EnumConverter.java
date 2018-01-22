@@ -81,7 +81,7 @@ public class EnumConverter implements Converter, PartialStateHolder
 
         if (value == null)
         {
-            return null;
+            return "";
         }
         
         if (value instanceof String
