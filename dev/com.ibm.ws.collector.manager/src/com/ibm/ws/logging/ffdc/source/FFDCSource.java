@@ -12,7 +12,6 @@ package com.ibm.ws.logging.ffdc.source;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -20,8 +19,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDC;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.Pair;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.Incident;
@@ -112,46 +109,31 @@ public class FFDCSource implements Source {
         @Override
         public void process(Incident in, Throwable th) {
 
-            KeyValuePair timeStamp = new KeyValuePair("ibm_datetime", Long.toString(in.getTimeStamp()), KeyValuePair.ValueTypes.NUMBER);
-            KeyValuePair dateOfFirstOccurrence = new KeyValuePair("dateOfFirstOccurence", Long.toString(in.getDateOfFirstOccurrence().getTime()), KeyValuePair.ValueTypes.NUMBER);
+            GenericData genData = new GenericData();
+
+            long timeStampVal = in.getTimeStamp();
+            // Must pass datetime as string, as its value type must be set as string in its kvp
+            genData.addPair("ibm_datetime", Long.toString(timeStampVal));
+            genData.addPair("dateOfFirstOccurence", in.getDateOfFirstOccurrence().getTime());
             int countVal = in.getCount();
-            KeyValuePair count = new KeyValuePair("count", Integer.toString(countVal), KeyValuePair.ValueTypes.NUMBER);
+            genData.addPair("count", countVal);
             //Condition to prevent adding ffdc event for the same failure
             //to the bufferMgr multiple times
             //TODO: Need to evaluate the need for the timeStamp (timeStamp == dateOfFirstOccurrence) check is required or not
             if (countVal == 1) {
-                KeyValuePair className = new KeyValuePair("ibm_className", in.getSourceId(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair label = new KeyValuePair("label", in.getLabel(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair exceptionName = new KeyValuePair("ibm_exceptionName", in.getExceptionName(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair probeID = new KeyValuePair("ibm_probeID", in.getProbeId(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair sourceID = new KeyValuePair("sourceID", in.getSourceId(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair threadID = new KeyValuePair("ibm_threadId", Integer.toString((int) in.getThreadId()), KeyValuePair.ValueTypes.NUMBER);
-                KeyValuePair stackTrace = new KeyValuePair("ibm_stackTrace", getStackTraceAsString(th), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair callerDetails = new KeyValuePair("ibm_objectDetails", getCallerDetails(in), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair message = new KeyValuePair("message", th.getMessage(), KeyValuePair.ValueTypes.STRING);
+                genData.addPair("ibm_className", in.getSourceId());
+                genData.addPair("label", in.getLabel());
+                genData.addPair("ibm_exceptionName", in.getExceptionName());
+                genData.addPair("ibm_probeID", in.getProbeId());
+                genData.addPair("sourceID", in.getSourceId());
+                genData.addPair("ibm_threadId", in.getThreadId());
+                genData.addPair("ibm_stackTrace", getStackTraceAsString(th));
+                genData.addPair("ibm_objectDetails", getCallerDetails(in));
+                genData.addPair("message", th.getMessage());
 
-                String sequenceVal = timeStamp + "_" + String.format("%013X", seq.incrementAndGet());
-                KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceVal, KeyValuePair.ValueTypes.STRING);
-
-                GenericData genData = new GenericData();
-                ArrayList<Pair> pairs = genData.getPairs();
-
-                pairs.add(timeStamp);
-                pairs.add(dateOfFirstOccurrence);
-                pairs.add(count);
-                pairs.add(className);
-                pairs.add(label);
-                pairs.add(exceptionName);
-                pairs.add(probeID);
-                pairs.add(sourceID);
-                pairs.add(threadID);
-                pairs.add(stackTrace);
-                pairs.add(callerDetails);
-                pairs.add(message);
-                pairs.add(sequence);
-
+                String sequenceVal = timeStampVal + "_" + String.format("%013X", seq.incrementAndGet());
+                genData.addPair("ibm_sequence", sequenceVal);
                 genData.setSourceType(sourceName);
-
                 bufferMgr.add(genData);
             }
         }
