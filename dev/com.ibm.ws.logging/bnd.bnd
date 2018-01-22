@@ -43,7 +43,6 @@ Export-Package: \
 	com.ibm.ws.logging.utils,\
 	com.ibm.ws.logging.source,\
 	com.ibm.ws.health.center.data,\
-	com.ibm.ws.http.logging.data,\
 	com.ibm.ws.logging.collector,\
 	com.ibm.ws.logging.data,\
 	com.ibm.wsspi.logging;provide:=true

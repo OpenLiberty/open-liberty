@@ -23,7 +23,6 @@ Import-Package: com.ibm.ejs.ras, \
                 javax.management, \
                 com.ibm.ws.logging, \
                 com.ibm.ws.logging.source, \
-                com.ibm.ws.http.logging.data, \
                 com.ibm.ws.health.center.data, \
                 com.ibm.ws.logging.internal, \
                 com.ibm.wsspi.collector.manager, \
