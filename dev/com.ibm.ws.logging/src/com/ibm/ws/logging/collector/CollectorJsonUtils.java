@@ -174,7 +174,7 @@ public class CollectorJsonUtils {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (!(key.equals(LogFieldConstants.LOGLEVEL))) {
+                if (key.equals(LogFieldConstants.LOGLEVEL)) {
                 }
 
                 else if (key.equals(LogFieldConstants.MESSAGE)) {
