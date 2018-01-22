@@ -18,9 +18,6 @@ Bundle-Description: Project for resolving resources from the Liberty repository
 
 WS-TraceGroup: repo.repository.resolver
 
-javac.source: 1.6
-javac.target: 1.6
-
 Export-Package: com.ibm.ws.repository.resolver
 
 Private-Package: com.ibm.ws.repository.resolver.internal*
