@@ -3,7 +3,10 @@ bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 Export-Package: \
+  org.apache.cxf.microprofile.client.cdi,\
   org.apache.cxf.microprofile.client;version="3.2.2",\
   org.apache.cxf.microprofile.client.cdi;version="3.2.2",\
   org.apache.cxf.microprofile.client.config;version="3.2.2",\
@@ -41,12 +44,13 @@ Import-Package: \
  org.eclipse.microprofile.rest.client.inject;version="[1.0,2)",\
  org.eclipse.microprofile.rest.client.spi;version="[1.0,2)",\
  com.ibm.websphere.ras,\
- com.ibm.wsspi.classloading
+ com.ibm.wsspi.classloading,\
+ com.ibm.ws.cdi.extension;resolution:=optional
 # org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
 
+
 app-resources= \
-  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver | \
-  META-INF/services/javax.enterprise.inject.spi.Extension
+  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver
 
 Service-Component: \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.ResourceProvider; \

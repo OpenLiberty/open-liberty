@@ -12,6 +12,7 @@ package com.ibm.ws.ejbcontainer.mdb.internal;
 
 import java.rmi.RemoteException;
 import java.security.AccessController;
+import java.util.HashMap;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.UnavailableException;
@@ -31,13 +32,15 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.jca.service.WSMessageEndpointFactory;
+import com.ibm.ws.kernel.launch.service.PauseableComponent;
+import com.ibm.ws.kernel.launch.service.PauseableComponentException;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
  * This class implements the MDB MessageEndpointFactory interface and is used
  * by JCA component/resource adapter to create/release a MessageEndpoint proxy
  * object for JCA MessageEndpoint Inflows. <p>
- * 
+ *
  * Internally, this object is also a home object for a MessageDrivenBean. In
  * the EJB specification, a MDB does not have a home object. However, it is
  * convenient for current ejb container implementation to make this object a
@@ -53,7 +56,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
  * met and that the J2EEName for the home is a unique key for each MessageEndpointFactory
  * instance.
  */
-public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory implements WSMessageEndpointFactory, MDBMessageEndpointFactory {
+public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory implements WSMessageEndpointFactory, MDBMessageEndpointFactory, PauseableComponent {
 
     private static final long serialVersionUID = 5888307461965940506L;
     private static final TraceComponent tc = Tr.register(MessageEndpointFactoryImpl.class);
@@ -65,6 +68,8 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      * service when this endpoint is deactivated.
      */
     private Object activationSpec;
+
+    private volatile String name = null; //messageEndpoint-
 
     private final MDBRuntimeImpl mdbRuntime;
     private String activationSvcId;
@@ -96,15 +101,14 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     @Override
     public void initialize(EJSContainer ejsContainer,
                            BeanId id,
-                           BeanMetaData bmd)
-                    throws RemoteException
-    {
+                           BeanMetaData bmd) throws RemoteException {
         super.initialize(ejsContainer, id, bmd);
 
         // Get the activation spec name. This will have been obtained from the
         // binding file, or defaulted to "[app/]module/bean" conforming to the
         // java:global rules for binding an EJB.
         activationSvcId = bmd.ivActivationSpecJndiName;
+        name = "messageEndpoint-" + activationSvcId;
     }
 
     @Override
@@ -133,16 +137,16 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     /**
      * Perform the actual endpoint activation for the MDB using the provided endpoint
      * activation service. <p>
-     * 
+     *
      * The method is provided for use by the MDBRuntime, to be called after the
      * server has reached the 'started' state and the activation specification
      * is available. <p>
-     * 
+     *
      * This method relies on the caller for proper synchronization. This method
      * should not be called concurrently or concurrently with deactivateEndpoint.
      * Nor should this method be called while the provided endpoint activation
      * service is being removed. <p>
-     * 
+     *
      * @param eas endpoint activation service configured for the message endpoint
      * @param maxEndpoints maximum number of concurrently active endpoints
      * @param adminObjSvc admin object service located by the mdb runtime
@@ -254,15 +258,15 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     /**
      * Perform the actual endpoint deactivation for the MDB using the provided endpoint
      * activation service. <p>
-     * 
+     *
      * The method is provided for use by the MDBRuntime, to be called whenever
      * the endpoint needs to be deactivated. <p>
-     * 
+     *
      * This method relies on the caller for proper synchronization. This method
      * should not be called concurrently or concurrently with activateEndpoint.
      * Nor should this method be called while the provided endpoint activation
      * service is being removed. <p>
-     * 
+     *
      * @param eas endpoint activation service configured for the message endpoint
      * @throws ResourceException if a failure occurs deactivating the endpoint
      */
@@ -362,7 +366,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     /**
      * Indicates what version of JCA specification the RA using
      * this MessageEndpointFactory requires compliance with.
-     * 
+     *
      * @see com.ibm.ws.jca.service.WSMessageEndpointFactory#setJCAVersion(int, int)
      */
     @Override
@@ -415,4 +419,71 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     public String getDestinationId() {
         return beanMetaData.ivMessageDestinationJndiName;
     }
+
+    //PausableComponent Methods
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#getExtendedInfo()
+     */
+    @Override
+    public HashMap<String, String> getExtendedInfo() {
+        throw new UnsupportedOperationException();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#getName()
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#isPaused()
+     */
+    @Override
+    public boolean isPaused() {
+        return !isEndpointActive();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#pause()
+     */
+    @Override
+    public void pause() throws PauseableComponentException {
+        try {
+            deactivateEndpoint();
+        } catch (ResourceException re) {
+            throw new PauseableComponentException(re);
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#resume()
+     */
+    @Override
+    public void resume() throws PauseableComponentException {
+        try {
+            activateEndpoint();
+        } catch (ResourceException re) {
+            throw new PauseableComponentException(re);
+        }
+
+    }
+
+    public String getMessageEndpointTarget() {
+        return getName();
+    }
+
 }

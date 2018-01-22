@@ -15,5 +15,10 @@
         <feature>cdi-1.2</feature>
         <feature>mpConfig-1.1</feature>
     </featureManager>
+
     <include location="../fatTestPorts.xml" />
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
 </server>

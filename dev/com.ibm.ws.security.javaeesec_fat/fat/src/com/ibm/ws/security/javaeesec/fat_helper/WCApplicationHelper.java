@@ -95,7 +95,7 @@ public class WCApplicationHelper {
             if (addJarResources)
                 ShrinkHelper.addDirectory(jar, "test-applications/" + jarName + "/resources");
         }
-        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir);
+        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
     }
 
     /*
@@ -105,28 +105,29 @@ public class WCApplicationHelper {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
         if (addEarResources) {
-            ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+            ShrinkHelper.addDirectory(ear, "test-applications/" + earName + "/resources");
+
         }
         for (String warFile : warFiles) {
             WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir +  warFile));
             ear.addAsModule(war);
         }
-        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
     }
 
 
-    public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) {
+    public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) throws Exception {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
         LOG.info("createEar: dir : " + dir + ", earName : " + earName + ", includes resources : " + addEarResources);
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
         if (addEarResources) {
-            ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+            ShrinkHelper.addDirectory(ear, "test-applications/" + earName + "/resources");
         }
         return ear;
     }
 
     public static void exportEar(LibertyServer server, String dir, EnterpriseArchive ear) throws Exception {
-        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
     }
 
     /*
@@ -222,20 +223,32 @@ public class WCApplicationHelper {
             LOG.info("addEarToServer : crteate ear " + earName + ", ear include application/.xml : " + addEarResources);
             EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
             ear.addAsModule(war);
-            if (addEarResources)
-                ear.addAsManifestResource(new File("test-applications/" + earName + "/resources/META-INF/application.xml"));
+            if (addEarResources) {
+                ShrinkHelper.addDirectory(ear, "test-applications/" + earName + "/resources");
+            }
             if (deploy) {
+                // delete
+                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" +  ear.getName());
                 ShrinkHelper.exportToServer(server, dir, ear);
             } else {
-                ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir);
+                ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
             }
         } else {
             if (deploy) {
+                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" +  war.getName());
                 ShrinkHelper.exportToServer(server, dir, war);
             } else {
-                ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir);
+                ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
             }
         }
-
     }
+
+    private static void deleteFileIfExist(String filename) {
+        File file = new File(filename);
+        if (file.exists()) {
+            LOG.info("deleteFileIfExist: " + filename + " already exists. It's deleted before re-creating it.");
+            file.delete();
+        }
+    }
+
 }

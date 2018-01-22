@@ -77,7 +77,7 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.5.WAS-90e991
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.5.WAS-90e991c
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.5.WAS-90e991c
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.5.WAS-90e991c
-org.apache.cxf:cxf-rt-rs-mp-client:3.2.2.SNAPSHOT
+org.apache.cxf:cxf-rt-rs-mp-client:3.2.2.20180115
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.1-bd47e8f
 org.eclipse.persistence:org.eclipse.persistence.asm:2.7.1-bd47e8f
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.1-bd47e8f

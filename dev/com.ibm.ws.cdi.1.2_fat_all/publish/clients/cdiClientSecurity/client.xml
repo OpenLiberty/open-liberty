@@ -1,5 +1,4 @@
 <client>
-	<include location="../fatTestPorts.xml"/>
     <featureManager>
         <feature>javaeeClient-7.0</feature>
         <feature>appSecurityClient-1.0</feature>
@@ -11,4 +10,6 @@
    
    <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:com.ibm.ws.weld*=all:org.jboss.*=all:Injection=all:org.apache.felix*=all:logservice=all=enabled"/>
 
+	<javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.ClientContainer"/>
+	<javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
 </client>

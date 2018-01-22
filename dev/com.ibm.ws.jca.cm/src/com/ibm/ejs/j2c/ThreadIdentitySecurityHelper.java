@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.j2c.SecurityHelper;
+import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
@@ -157,7 +158,7 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
  */
 public class ThreadIdentitySecurityHelper implements SecurityHelper {
     private final boolean m_ThreadSecurity;
-    private String m_ThreadIdentitySupport = null;
+    private final int m_ThreadIdentitySupport;
 
     private static TraceComponent tc = Tr.register(ThreadIdentitySecurityHelper.class,
                                                    J2CConstants.traceSpec,
@@ -165,10 +166,8 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
 
     /**
      * Constructor for ThreadIdentitySecurityHelper
-     *
-     * @param WSManagedConnectionFactory
      */
-    public ThreadIdentitySecurityHelper(String threadIdentitySupport, boolean threadSecurity) throws ResourceException {
+    public ThreadIdentitySecurityHelper(int threadIdentitySupport, boolean threadSecurity) {
 
         if (tc.isEntryEnabled())
             Tr.entry(this, tc, "<init>", threadIdentitySupport, threadSecurity);
@@ -307,8 +306,7 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
             // supports using ThreadIdentity. If so, continue processing.
             // Otherwise get out.
 
-            if ((m_ThreadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_ALLOWED)) ||
-                (m_ThreadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_REQUIRED))) {
+            if ((m_ThreadIdentitySupport != AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED)) {
 
                 if (subj != null) {
                     // resauth = CONTAINER
@@ -519,7 +517,7 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
         if (cmConfigData.getAuth() == J2CConstants.AUTHENTICATION_CONTAINER) {
             // resauth=Container, so continue.
 
-            if (m_ThreadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_ALLOWED)) {
+            if (m_ThreadIdentitySupport == AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED) {
 
                 // The current resource adapter MCF Configuration supports
                 // using ThreadIdentity.
@@ -550,7 +548,7 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
                     }
                 }
 
-            } else if (m_ThreadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_REQUIRED)) {
+            } else if (m_ThreadIdentitySupport == AbstractConnectionFactoryService.THREAD_IDENTITY_REQUIRED) {
 
                 // The connector this helper is associated with
                 // always requires that the user associated with
@@ -869,7 +867,7 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
 
         // Check if ThreadIdentitySupport is "REQUIRED"
 
-        if (m_ThreadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_REQUIRED)) {
+        if (m_ThreadIdentitySupport == AbstractConnectionFactoryService.THREAD_IDENTITY_REQUIRED) {
 
             // ThreadIdentitySupport indicates that the use of thread
             // identity is "REQUIRED" by the connector, but the
