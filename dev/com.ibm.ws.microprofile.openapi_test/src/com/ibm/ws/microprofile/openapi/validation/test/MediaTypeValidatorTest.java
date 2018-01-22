@@ -144,7 +144,6 @@ public class MediaTypeValidatorTest {
 
         validator.validate(validationHelper, context, mediaType);
         Assert.assertEquals(1, validationHelper.getEventsSize());
-
     }
 
     @Test
