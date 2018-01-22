@@ -17,9 +17,6 @@ Bundle-Description: Project for storing repository client library
 
 WS-TraceGroup: repo.resource
 
-javac.source: 1.6
-javac.target: 1.6
-
 Export-Package: com.ibm.ws.repository.common.enums;version=1.0, \
  com.ibm.ws.repository.connections;version=1.0, \
  com.ibm.ws.repository.exceptions;version=1.0, \
