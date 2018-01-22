@@ -1,4 +1,4 @@
-#*******************************************************************************
+
 # Copyright (c) 2017 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -139,7 +139,7 @@ Import-Package: \
     com.ibm.websphere.security, \
     com.ibm.ws.container.service.app.deploy, \
     com.ibm.ws.genericbnf, \
-    org.apache.commons.fileupload*;version=1.2.1;packageType="was_internal", \
+    org.apache.commons.fileupload*, \
     org.apache.commons.io*;version=1.4;packageType="was_internal", \
      !com.ibm.wsspi.buffermgmt, \
      !com.ibm.ejs.sm.client.ui, \

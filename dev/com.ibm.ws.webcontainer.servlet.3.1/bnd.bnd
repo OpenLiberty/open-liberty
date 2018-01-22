@@ -87,7 +87,7 @@ Import-Package: \
     com.ibm.ws.webcontainer.srt.http, \
     com.ibm.ws.container.service.app.deploy, \
     com.ibm.ws.genericbnf, \
-    org.apache.commons.fileupload*;version=1.2.1;packageType="was_internal", \
+    org.apache.commons.fileupload*, \
     org.apache.commons.io*;version=1.4;packageType="was_internal", \
      !com.ibm.wsspi.buffermgmt, \
      !com.ibm.ejs.sm.client.ui, \
