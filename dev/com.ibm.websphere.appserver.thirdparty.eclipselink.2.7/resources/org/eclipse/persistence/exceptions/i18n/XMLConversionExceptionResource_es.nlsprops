@@ -1,0 +1,41 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25501=No se puede crear el URL para el archivo [{0}].
+
+25502=Formato de gDay incorrecto: [{0}] (se esperaba [----DD])
+
+25503=Formato de gMonth incorrecto: [{0}] (se esperaba [--MM--])
+
+25504=Formato de gMonthDay incorrecto: [{0}] (se esperaba [--MM-DD])
+
+25505=Formato de gYear incorrecto: [{0}] (se esperaba [YYYY])
+
+25506=Formato de gYearMonth incorrecto: [{0}] (se esperaba [YYYY-MM])
+
+25507=Formato de dateTime de indicaci\u00f3n de fecha y hora incorrecto: [{0}] (se esperaba [YYYY-MM-DD''T''HH:MM:SS.NNNNNNNNN])
+
+25508=Formato de time de indicaci\u00f3n de fecha y hora incorrecto: [{0}] (se esperaba [HH:MM:SS.NNNNNNNNN])
+
