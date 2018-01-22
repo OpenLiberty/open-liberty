@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.commons.fileupload;1.2.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;com.ibm.ws.commons-fileupload:commons-fileupload;1.2.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.disabled: true
 
@@ -18,3 +18,5 @@ instrument.disabled: true
 -buildpath: \
 	commons-fileupload:commons-fileupload;version=1.2.1,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest
+
+	

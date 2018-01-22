@@ -5,6 +5,5 @@ bVersion=1.0
 Bundle-Name: Apache commons fileupload
 Bundle-SymbolicName: com.ibm.ws.org.apache.commons.fileupload.1.2.1; singleton:=true
 
-Export-Package: org.apache.commons.fileupload.*;version="1.2.1"
 
 Private-Package: org.apache.commons.fileupload.portlet
