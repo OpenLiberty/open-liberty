@@ -1,13 +1,13 @@
- /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+/*******************************************************************************
+* Copyright (c) 2016 IBM Corporation and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     IBM Corporation - initial API and implementation
+*******************************************************************************/
 
 package com.ibm.ws.microprofile.config.fat.tests;
 
@@ -18,7 +18,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,10 +26,10 @@ import org.junit.rules.TestName;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  *
@@ -38,6 +37,10 @@ import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 public class DefaultSourcesTest extends AbstractConfigApiTest {
 
     private final static String testClassName = "DefaultSourcesTest";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0"));
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("SimpleConfigSourcesServer");

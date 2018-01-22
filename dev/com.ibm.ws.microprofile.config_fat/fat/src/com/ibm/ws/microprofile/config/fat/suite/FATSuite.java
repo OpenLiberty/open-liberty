@@ -70,8 +70,6 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new Config12FeatureReplacementAction())
-                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0"))
                     .andWith(new FeatureReplacementAction("mpConfig-1.1", "mpConfig-1.2"));
 
     /**
