@@ -66,8 +66,10 @@ import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
 import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
@@ -87,7 +89,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
     private boolean identityStoreHandlerRegistered = false;
     private boolean identityStoreRegistered = false;
-    private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
     private final Map<String, ModuleProperties> moduleMap = new HashMap<String, ModuleProperties>(); // map of module name and list of authmechs.
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
 
@@ -108,14 +109,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Tr.debug(tc, "processAnnotatedType : annotation : " + annotatedType);
 
         Class<?> javaClass = annotatedType.getJavaClass();
+        boolean useGlobalLogin = isGlobalLoginEnabled();
         if (isApplicationAuthMech(javaClass)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
             }
-            authMechRegistered.add(javaClass);
-            Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
-            createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, javaClass);
-            // need to create a HAMProperties
+            if (useGlobalLogin) {
+                createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
+            } else {
+                Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
+                createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, javaClass);
+            }
         }
         //look at the class level annotations
         Set<Annotation> annotations = annotatedType.getAnnotations();
@@ -128,11 +132,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             // TODO: If I see my annotations, create beans by type. Add more bean types.
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotation, annotationType, javaClass);
-                authMechRegistered.add(annotationType);
+                if (useGlobalLogin) {
+                    createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
+                } else {
+                    createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotation, annotationType, javaClass);
+                }
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                createModulePropertiesProviderBeanForFormToAdd(beanManager, annotation, annotationType, javaClass);
-                authMechRegistered.add(annotationType);
+                if (useGlobalLogin) {
+                    createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
+                } else {
+                    createModulePropertiesProviderBeanForFormToAdd(beanManager, annotation, annotationType, javaClass);
+                }
             } else if (LdapIdentityStoreDefinition.class.equals(annotationType)) {
                 createLdapIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
                 identityStoreRegistered = true;
@@ -264,6 +274,30 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         addAuthMech(implClass, implClass, props);
     }
 
+    /**
+     * @param beanManager
+     */
+    private void createModulePropertiesProviderBeanForGlobalLogin(BeanManager beanManager, Class annotatedClass) {
+        try {
+            Properties props;
+            Class implClass;
+
+            if (isGlobalLoginFormEnabled()) {
+                props = getGlobalLoginFormProps();
+                implClass = FormAuthenticationMechanism.class;
+            } else {
+                // basic
+                props = getGlobalLoginBasicProps();
+                implClass = BasicHttpAuthenticationMechanism.class;
+            }
+            addAuthMech(annotatedClass, implClass, props);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
+        }
+    }
+
     private void addAuthMech(Class<?> annotatedClass, Class<?> implClass, Properties props) {
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
@@ -290,9 +324,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     /**
-     * @param beanManager
-     * @param annotation
-     * @param annotationType
+     * @param ltcAnnotation
      */
     private Properties parseLoginToContinue(Annotation ltcAnnotation) throws Exception {
         Properties props = new Properties();
@@ -847,6 +879,63 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
         }
         return moduleName;
+    }
+
+    /**
+     * Returns BasicAuth realm name for container override basic login
+     */
+    private Properties getGlobalLoginBasicProps() throws Exception {
+        String realm = getWebAppSecurityConfig().getBasicAuthRealmName();
+        if (realm == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "basicAuthRealmName is not set. the default value " + JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM + " is used.");
+            }
+            realm = JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM;
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "The container provided BasicAuthenticationMechanism will be used with the realm name  : " + realm);
+        }
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.REALM_NAME, realm);
+        return props;
+    }
+
+    /**
+     * Returns LoginToContinue properties for container override form login
+     */
+    private Properties getGlobalLoginFormProps() throws Exception {
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        String loginURL = webAppSecConfig.getLoginFormURL();
+        String errorURL = webAppSecConfig.getLoginErrorURL();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "The container provided FormAuthenticationMechanism will be used with the login page  : " + loginURL + ", and the error page : " + errorURL);
+        }
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, loginURL);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, errorURL);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, false);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN, true);
+        return props;
+    }
+
+    private boolean isGlobalLoginEnabled() {
+        String value = getWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
+        if (value != null && (value.equals("FORM") || value.equals("BASIC"))) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isGlobalLoginFormEnabled() {
+        String value = getWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
+        if (value != null && value.equals("FORM")) {
+            return true;
+        }
+        return false;
+    }
+
+    protected WebAppSecurityConfig getWebAppSecurityConfig() {
+        return WebConfigUtils.getWebAppSecurityConfig();
     }
 
 }

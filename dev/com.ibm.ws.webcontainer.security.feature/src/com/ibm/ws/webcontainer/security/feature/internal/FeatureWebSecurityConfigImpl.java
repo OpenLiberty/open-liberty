@@ -332,4 +332,24 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     public WebAuthenticatorProxy createWebAuthenticatorProxy() {
         return null;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getOverrideHttpAuthenticationMechanism() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
+        else
+            return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getBasicAuthRealmName() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getBasicAuthRealmName();
+        else
+            return null;
+    }
 }

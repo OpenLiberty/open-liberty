@@ -72,7 +72,7 @@ public class LoginToContinueInterceptor {
     private String _errorPage = null;
     private String _loginPage = null;
     private Boolean _isForward = null;
-    private boolean _useGlobalLogin = false;
+    private Boolean _useGlobalLogin = false;
 
     @SuppressWarnings("rawtypes")
     @PostConstruct
@@ -86,21 +86,9 @@ public class LoginToContinueInterceptor {
                                         (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true, isCustomHAM);
             _loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), "/login", true, isCustomHAM);
             _errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), "/login-error", true, isCustomHAM);
-            if (_loginPage.isEmpty()) {
-                // if loginPage is empty, check whether global login is set, and if that's the case, use global one.
-                WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
-                String loginURL = webAppSecConfig.getLoginFormURL();
-                if (loginURL != null) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "loginPage is overwritten by the global form login page : " + loginURL);
-                    }
-                    _loginPage = loginURL;
-                    _useGlobalLogin = true;
-                    _errorPage = webAppSecConfig.getLoginErrorURL();
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "errorPage is overwritten by the global form error page : " + _errorPage);
-                    }
-                }
+            _useGlobalLogin = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN);
+            if (_useGlobalLogin == null) {
+                _useGlobalLogin = Boolean.FALSE;
             }
         } else {
             Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
@@ -293,9 +281,6 @@ public class LoginToContinueInterceptor {
 
     protected void rediectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
         String errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), _errorPage);
-// TODO: for the beta, use sendRedirect in order to avoid the status is overwritten by WebCollaborator.
-//        res.setHeader("Location", res.encodeURL(errorUrl));
-//        res.setStatus(HttpServletResponse.SC_FOUND);
         res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
     }
 
@@ -452,4 +437,7 @@ public class LoginToContinueInterceptor {
         return _isForward;
     }
 
+    protected Boolean getUseGlobalLogin() {
+        return _useGlobalLogin;
+    }
 }

@@ -114,4 +114,14 @@ public interface WebAppSecurityConfig {
     ReferrerURLCookieHandler createReferrerURLCookieHandler();
 
     WebAuthenticatorProxy createWebAuthenticatorProxy();
+
+    /**
+     * Returns the value of overrideHttpAuthenticationMechanism
+     */
+    String getOverrideHttpAuthenticationMechanism();
+
+    /**
+     * Returns the value of basicAuthRealmName
+     */
+    String getBasicAuthRealmName();
 }

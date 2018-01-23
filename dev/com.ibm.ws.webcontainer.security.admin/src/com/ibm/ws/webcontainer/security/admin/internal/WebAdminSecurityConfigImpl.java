@@ -246,4 +246,16 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
         return null;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getOverrideHttpAuthenticationMechanism() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getBasicAuthRealmName() {
+        return null;
+    }
+
 }

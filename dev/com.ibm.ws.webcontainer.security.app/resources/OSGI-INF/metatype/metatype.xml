@@ -109,7 +109,16 @@
         <AD id="trackLoggedOutSSOCookies" name="%trackLoggedOutSSOCookies" description="%trackLoggedOutSSOCookies.desc"
             required="false" type="Boolean"
             default="false" />
-             
+
+        <AD id="overrideHttpAuthenticationMechanism" name="%overrideHttpAuthenticationMechanism" description="%overrideHttpAuthenticationMechanism.desc"
+            required="false" type="String">
+                <Option label="BASIC" value="BASIC" />
+                <Option label="FORM" value="FORM" />
+        </AD> 
+
+        <AD id="basicAuthRealmName" name="%basicAuthRealmName" description="%basicAuthRealmName.desc"
+            required="false" type="String" default="defaultRealm" />
+
 
     </OCD>
 

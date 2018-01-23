@@ -61,6 +61,9 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
+    static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
+    static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthRealmName";
+    
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
     private final Boolean singleSignonEnabled;
@@ -86,6 +89,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL;
     private final Boolean trackLoggedOutSSOCookies;
     private final Boolean useOnlyCustomCookieName;
+    private final String overrideHttpAuthenticationMechanism;
+    private final String basicAuthRealmName;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -119,6 +124,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         includePathInWASReqURL = (Boolean) newProperties.get(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL);
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
         useOnlyCustomCookieName = (Boolean) newProperties.get(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME);
+        overrideHttpAuthenticationMechanism = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
+        basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -325,6 +332,16 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return useOnlyCustomCookieName;
     }
 
+    @Override
+    public String getOverrideHttpAuthenticationMechanism() {
+        return overrideHttpAuthenticationMechanism;
+    }
+
+    @Override
+    public String getBasicAuthRealmName() {
+        return basicAuthRealmName;
+    }
+
     /**
      * @return
      */
@@ -415,7 +432,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.useOnlyCustomCookieName, orig.useOnlyCustomCookieName);
         appendToBufferIfDifferent(buf, "wasReqURLRedirectDomainNames",
                                   this.wasReqURLRedirectDomainNames, orig.wasReqURLRedirectDomainNames);
-
+        appendToBufferIfDifferent(buf, "overrideHttpAuthenticationMechanism",
+                                  this.overrideHttpAuthenticationMechanism, orig.overrideHttpAuthenticationMechanism);
+        appendToBufferIfDifferent(buf, "basicAuthRealmName",
+                                  this.basicAuthRealmName, orig.basicAuthRealmName);
         return buf.toString();
     }
 
