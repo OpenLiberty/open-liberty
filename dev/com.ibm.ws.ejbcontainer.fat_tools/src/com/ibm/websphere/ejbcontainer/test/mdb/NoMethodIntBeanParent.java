@@ -8,11 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package mdb.interceptors;
+package com.ibm.websphere.ejbcontainer.test.mdb;
 
-/**
- * Empty interface for no-method interface MDB testing.
- */
-public interface InterceptorNoMethodInterface {
+import java.util.logging.Logger;
 
+import javax.resource.ResourceException;
+import javax.resource.cci.Record;
+
+public class NoMethodIntBeanParent {
+
+    private final static Logger svLogger = Logger.getLogger("NoMethodIntBeanParent");
+
+    public Record REMOVE(Record record) throws ResourceException {
+        svLogger.info("NoMethodIntBean.REMOVE record = " + record);
+        return record;
+    }
 }

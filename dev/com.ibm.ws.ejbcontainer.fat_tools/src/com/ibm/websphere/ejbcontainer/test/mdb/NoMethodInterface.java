@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package mdb;
+package com.ibm.websphere.ejbcontainer.test.mdb;
 
 /**
  * Empty inteface for no-method interface MDB testing.

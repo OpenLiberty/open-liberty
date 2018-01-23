@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package mdb.interceptors;
+package com.ibm.websphere.ejbcontainer.test.mdb.interceptors;
 
 import java.io.Serializable;
 import java.util.logging.Logger;

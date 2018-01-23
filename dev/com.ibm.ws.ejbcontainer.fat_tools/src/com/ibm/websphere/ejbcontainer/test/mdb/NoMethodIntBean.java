@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package mdb;
+package com.ibm.websphere.ejbcontainer.test.mdb;
 
 import java.util.logging.Logger;
 
@@ -16,7 +16,7 @@ import javax.ejb.MessageDriven;
 import javax.resource.ResourceException;
 import javax.resource.cci.Record;
 
-import mdb.interceptors.CheckInvocation;
+import com.ibm.websphere.ejbcontainer.test.mdb.interceptors.CheckInvocation;
 
 @MessageDriven
 public class NoMethodIntBean extends NoMethodIntBeanParent implements NoMethodInterface {
