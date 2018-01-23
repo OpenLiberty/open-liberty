@@ -36,6 +36,7 @@ import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
 import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -69,7 +70,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new Config12FeatureReplacementAction());
+                    .andWith(new FeatureReplacementAction("mpConfig-1.1", "mpConfig-1.2"));
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
