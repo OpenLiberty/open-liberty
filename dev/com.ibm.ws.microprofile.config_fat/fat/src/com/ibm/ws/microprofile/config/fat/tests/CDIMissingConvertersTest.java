@@ -25,17 +25,10 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 /**
  *
  */
 public class CDIMissingConvertersTest extends LoggingTest {
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("brokenCDIConfigServer");
