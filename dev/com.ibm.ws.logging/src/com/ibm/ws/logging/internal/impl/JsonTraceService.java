@@ -418,7 +418,7 @@ public class JsonTraceService extends BaseTraceService {
                     if (levelValue < Level.INFO.intValue()) {
                         String levelName = level.getName();
                         if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
-                            if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
+                            if (traceSource != null) {
                                 traceSource.publish(routedTrace);
                             }
                         }
