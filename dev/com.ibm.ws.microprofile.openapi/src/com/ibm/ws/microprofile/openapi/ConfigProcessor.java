@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
@@ -33,16 +34,25 @@ public class ConfigProcessor {
     private String openAPIFilterClassName = null;
     private boolean scanDisabled = false;
     private boolean validation = true;
-    private final Set<String> classesToScan = null;
-    private final Set<String> packagesToScan = null;
+    private Set<String> classesToScan = null;
+    private Set<String> classesToExclude = null;
+    private Set<String> packagesToScan = null;
+    private Set<String> packagesToExclude = null;
+
+    private final Config config;
 
     public ConfigProcessor(ClassLoader appClassloader) {
-        Config config = ConfigProvider.getConfig(appClassloader);
+        config = ConfigProvider.getConfig(appClassloader);
         try {
             modelReaderClassName = config.getOptionalValue(OASConfig.MODEL_READER, String.class).orElse(null);
             scanDisabled = config.getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class).orElse(false);
             openAPIFilterClassName = config.getOptionalValue(OASConfig.FILTER, String.class).orElse(null);
             validation = config.getOptionalValue(VALIDATION, Boolean.class).orElse(true);
+
+            classesToScan = getConfigPropAsSet(OASConfig.SCAN_CLASSES);
+            packagesToScan = getConfigPropAsSet(OASConfig.SCAN_PACKAGES);
+            classesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_CLASSES);
+            packagesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_PACKAGES);
 
         } catch (IllegalArgumentException e) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
@@ -81,5 +91,47 @@ public class ConfigProcessor {
 
     public boolean isValidating() {
         return validation;
+    }
+
+    private Set<String> getConfigPropAsSet(String configProperty) {
+        String[] configValues = config.getOptionalValue(configProperty, String[].class).orElse(null);
+        if (configValues == null || configValues.length == 0) {
+            return null;
+        } else {
+            Set<String> configPropSet = new HashSet<>();
+            for (String s : configValues) {
+                configPropSet.add(s);
+            }
+            return configPropSet;
+        }
+
+    }
+
+    /**
+     * @return the classesToScan
+     */
+    public Set<String> getClassesToScan() {
+        return classesToScan;
+    }
+
+    /**
+     * @return the classesToExclude
+     */
+    public Set<String> getClassesToExclude() {
+        return classesToExclude;
+    }
+
+    /**
+     * @return the packagesToScan
+     */
+    public Set<String> getPackagesToScan() {
+        return packagesToScan;
+    }
+
+    /**
+     * @return the packagesToExclude
+     */
+    public Set<String> getPackagesToExclude() {
+        return packagesToExclude;
     }
 }

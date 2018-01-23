@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.openapi;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -122,10 +124,54 @@ public class ApplicationProcessor {
 
             //Scan for annotated classes
             AnnotationScanner scanner = OpenAPIUtils.creatAnnotationScanner(appClassloader, appContainer);
-            if (!configProcessor.isScanDisabled() && scanner.anyAnnotatedClasses()) {
-                isOASApp = true;
-                Set<Class<?>> classes = scanner.getAnnotatedClasses();
-                newDocument = new Reader(newDocument).read(classes);
+            if (!configProcessor.isScanDisabled()) {
+
+                Set<String> classNamesToScan = new HashSet<>();
+                if (configProcessor.getClassesToScan() != null) {
+                    classNamesToScan.addAll(configProcessor.getClassesToScan());
+                }
+
+                if (configProcessor.getPackagesToScan() != null) {
+                    Set<String> foundClasses = scanner.getAnnotatedClassesNames();
+                    for (String packageName : configProcessor.getPackagesToScan()) {
+                        for (String className : foundClasses) {
+                            if (className.startsWith(packageName)) {
+                                classNamesToScan.add(className);
+                            }
+                        }
+                    }
+                }
+
+                if (classNamesToScan.size() == 0 && scanner.anyAnnotatedClasses()) {
+                    classNamesToScan.addAll(scanner.getAnnotatedClassesNames());
+                }
+                if (configProcessor.getClassesToExclude() != null) {
+                    classNamesToScan.removeAll(configProcessor.getClassesToExclude());
+                }
+                if (configProcessor.getPackagesToExclude() != null) {
+                    for (String packageToExclude : configProcessor.getPackagesToExclude()) {
+                        Iterator<String> iterator = classNamesToScan.iterator();
+                        while (iterator.hasNext()) {
+                            if (iterator.next().startsWith(packageToExclude)) {
+                                iterator.remove();
+                            }
+                        }
+                    }
+                }
+
+                if (classNamesToScan.size() > 0) {
+                    isOASApp = true;
+                    Set<Class<?>> classes = new HashSet<>();
+                    for (String clazz : classNamesToScan) {
+                        try {
+                            classes.add(appClassloader.loadClass(clazz));
+                        } catch (ClassNotFoundException e) {
+                            if (OpenAPIUtils.isEventEnabled(tc))
+                                Tr.event(tc, "Failed to load class: " + e.getMessage());
+                        }
+                    }
+                    newDocument = new Reader(newDocument).read(classes);
+                }
             }
 
             OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());

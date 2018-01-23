@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
@@ -61,7 +62,7 @@ public class AnnotationScanner {
     }
 
     public boolean anyAnnotatedClasses() {
-        return !getAnnotatedClasses().isEmpty();
+        return !getAnnotatedClassesNames().isEmpty();
     }
 
     private String getUrlMappingFromServlet(IServletConfig sconfig) {
@@ -166,19 +167,31 @@ public class AnnotationScanner {
         return getUrlMappingFromApp(appClassName);
     }
 
+    @FFDCIgnore(UnableToAdaptException.class)
+    public synchronized Set<String> getAnnotatedClassesNames() {
+        AnnotationTargets_Targets annotationTargets;
+        Set<String> restAPIClasses = null;
+
+        try {
+            annotationTargets = webAnnotations.getAnnotationTargets();
+            restAPIClasses = ANNOTATION_CLASS_NAMES.stream().flatMap(anno -> annotationTargets.getAnnotatedClasses(anno,
+                                                                                                                   AnnotationTargets_Targets.POLICY_SEED).stream()).collect(Collectors.toSet());
+            Tr.event(tc, "Found annotated classes: ", restAPIClasses);
+
+        } catch (UnableToAdaptException e) {
+            e.printStackTrace();
+        }
+        return Collections.unmodifiableSet(restAPIClasses);
+    }
+
     /**
      * Returns the set of classes in the web module that are annotated with
      * Open API annotations that can be added to a class or <code>javax.ws.rs.Path</code>.
      */
-    private synchronized Set<Class<?>> getAllAnnotatedClasses() throws UnableToAdaptException {
+    private synchronized Set<Class<?>> getAllAnnotatedClasses() {
         if (this.annotatedClasses == null) {
-            AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
             Set<String> restAPIClasses = new HashSet<String>();
-
-            restAPIClasses = ANNOTATION_CLASS_NAMES.stream().flatMap(anno -> annotationTargets.getAnnotatedClasses(anno,
-                                                                                                                   AnnotationTargets_Targets.POLICY_SEED).stream()).collect(Collectors.toSet());
-
-            Tr.event(tc, "Found annotated classes: ", restAPIClasses);
+            restAPIClasses = getAnnotatedClassesNames();
             Set<Class<?>> classes = new HashSet<Class<?>>();
             for (String className : restAPIClasses) {
                 try {
