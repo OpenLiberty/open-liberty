@@ -177,9 +177,8 @@ public class AnnotationScanner {
             restAPIClasses = ANNOTATION_CLASS_NAMES.stream().flatMap(anno -> annotationTargets.getAnnotatedClasses(anno,
                                                                                                                    AnnotationTargets_Targets.POLICY_SEED).stream()).collect(Collectors.toSet());
             Tr.event(tc, "Found annotated classes: ", restAPIClasses);
-
         } catch (UnableToAdaptException e) {
-            e.printStackTrace();
+            Tr.event(tc, "Unable to get annotated class names");
         }
         return Collections.unmodifiableSet(restAPIClasses);
     }
