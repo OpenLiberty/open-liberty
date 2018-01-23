@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Applies-To: com.ibm.websphere.appserver
+Archive-Content-Type: sample
+Archive-Root: wlp/usr/
+Bnd-LastModified: 1422274068264
+Bundle-Vendor: IBM
+Created-By: 1.7.0 (IBM Corporation)
+Main-Class: wlp.lib.extract.SelfExtract
+Map-Based-Self-Extractor: wlp.lib.extract.MapBasedSelfExtractor
+Require-Feature: com.ibm.genericCoreFeatureDependancyOnEsaPass
+Sample-Type: product
+Tool: Bnd-2.1.0.20120920-170235
