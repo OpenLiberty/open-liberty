@@ -36,23 +36,14 @@ dependencies {
 
 task copyMavenLibs(type: Copy) {
     from configurations.binaries
-    into cnf.file('mavenlibs')
-}
-
-void deleteRecursive(File file) {
-    if (file.isDirectory()) {
-        for (File entry : file.listFiles()) {
-            deleteRecursive(entry)
-        }
-    }
-    file.delete()
+    into project.file('mavenlibs')
 }
 
 task cleanRepos(type: Delete) {
     doLast {
-        deleteRecursive(file('release'))
+        project.delete('release')
         delete 'release.mvn'
-        deleteRecursive(file('local'))
+        project.delete('local')
         delete 'local.mvn'
         delete fileTree('mavenlibs')
     }
@@ -79,14 +70,14 @@ DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
-    cnf.project.fileTree(dir: 'release/' + org + '/' + name, include: '**/*.pom').visit { entry ->
+    project.fileTree(dir: 'release/' + org + '/' + name, include: '**/*.pom', exclude: '**/.bnd/**').visit { entry ->
         if (entry.isDirectory()) {
             String relPath = "$entry.relativePath"
             versions.add(relPath)
         }
     }
     if (versions.size() != 1) {
-        throw new GradleException('Unable to locate a distinct version for the artifact ' + org + ':' + name)
+        throw new GradleException('Unable to locate a distinct version for the artifact ' + org + ':' + name + ' versions=' + versions)
     }
     return versions[0]
 }
@@ -127,26 +118,17 @@ task createGradleBootstrap {
         }
 
         String org = 'dev'
-        rootProject.fileTree(dir: '.', include: '**/*.feature').visit { feature ->
-            if (feature.isDirectory()) return
-
-            String text = feature.getFile().getText()
-            if (text.contains("kind=ga") || text.contains("kind=beta")) {
-                String name = null
-                int index = text.indexOf("symbolicName=")
-                if (index != -1) {
-                    int endIndex = text.indexOf("\n", index)
-                    if (endIndex == -1) {
-                        endIndex = text.length()
-                    }
-                    // symbolicName= is length 13
-                    name = text.substring(index + 13, endIndex)
+        rootProject.fileTree(dir: '.', include: '**/*.feature').each { featureFile ->
+            def featureProps = new Properties()
+            featureFile.withInputStream { featureProps.load(it) }
+            String featureName = featureFile.name.substring(0, featureFile.name.size() - 8)
+            if ('ga'.equals(featureProps.get('kind')) || 'beta'.equals(featureProps.get('kind'))) {
+                String name = featureProps.get('symbolicName')
+                if (name != null) {
                     name = name.replaceAll("\\s+", "")
                 } else {
-                    name = feature.name.substring(0, feature.name.size() - 8)
+                    name = featureName
                 }
-
-                String featureName = feature.name.substring(0, feature.name.size() - 8)
                 String rev = projectPathToVersion.get(featureName)
                 if (rev != null) {
                     depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa\'\n'
@@ -270,8 +252,8 @@ task ('createIndex') {
         /* indexer */
         def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
 
-        def tmpreleaserepo = cnf.file('tmpreleaserepo')
-        deleteRecursive(tmpreleaserepo)
+        def tmpreleaserepo = project.file('tmpreleaserepo')
+        project.delete('tmpreleaserepo')
 
         try {
             copy {
@@ -308,7 +290,7 @@ task ('createIndex') {
             }.assertNormalExitValue()
             logger.info 'Generated index {}.', index_compressed
         } finally {
-            deleteRecursive(tmpreleaserepo)
+            project.delete('tmpreleaserepo')
         }
     }
 }
