@@ -8,10 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.fat.servlet;
+package com.ibm.ws.logging.fat.broken.servlet;
 
 import java.io.IOException;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,16 +21,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet which throws an exception. The getStackTrace() method on the exception returns null.
+ * Servlet which prints an exception.
  */
-@WebServlet("/BrokenWithABadlyWrittenThrowableServlet")
-public class BrokenWithABadlyWrittenThrowableServlet extends HttpServlet {
+@WebServlet("/IBMCodeAtTopExceptionPrintingServlet")
+public class IBMCodeAtTopExceptionPrintingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BrokenWithABadlyWrittenThrowableServlet() {
+    public IBMCodeAtTopExceptionPrintingServlet() {
         super();
     }
 
@@ -40,21 +42,18 @@ public class BrokenWithABadlyWrittenThrowableServlet extends HttpServlet {
                          HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
 
-        // Whoops, we seem to have a problem! Oh dear, how unexpected!
-        throw new BadlyWrittenException();
+        response.getWriter().println("Howdy! This servlet is working just fine, except for all the bits that are deliberately broken.");
 
-    }
-
-    static class BadlyWrittenException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public StackTraceElement[] getStackTrace() {
-            // Can our logging code handle this?
-            return null;
+        // In the absence of the jndi feature, this lookup shouldn't go well
+        try {
+            InitialContext ctx = new InitialContext();
+            ctx.lookup("something/That/Does/Not/Exist");
+        } catch (NamingException e) {
+            // Print the stack trace, and see what happens
+            e.printStackTrace();
         }
 
-    }
+        response.getWriter().println("There should be an exception in your logs.");
 
+    }
 }

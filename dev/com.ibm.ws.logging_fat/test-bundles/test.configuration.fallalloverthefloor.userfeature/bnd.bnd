@@ -10,7 +10,6 @@
 #*******************************************************************************
 # Don't include the IBM properties, this is intended to be a user feature
 bVersion=1.0.0
-Bundle-Version: 1.0.0
 Bundle-Name: Exception throwing feature
 Bundle-Description: This feature throws an exception
 Bundle-SymbolicName: test.configuration.fallalloverthefloor.userfeature; singleton:=true

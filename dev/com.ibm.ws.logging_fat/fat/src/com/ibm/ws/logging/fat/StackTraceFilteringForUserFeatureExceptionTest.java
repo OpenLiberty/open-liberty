@@ -22,7 +22,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class StackTraceFilteringForUserFeatureExceptionTest extends AbstractStackTraceFilteringTest {
 
     private static final String MAIN_EXCEPTION = "ConfigurationReceivedException";
-    private static final String BUNDLE_NAME = "test.configuration.fallalloverthefloor.userfeature_1.0.0";
+    private static final String BUNDLE_NAME = "test.configuration.fallalloverthefloor.userfeature";
     private static final String FEATURE_NAME = "unconfigurableUserFeature-1.0";
 
     @BeforeClass
@@ -45,7 +45,7 @@ public class StackTraceFilteringForUserFeatureExceptionTest extends AbstractStac
         server.stopServer();
 
         server.uninstallUserBundle(BUNDLE_NAME);
-        server.uninstallFeature(FEATURE_NAME);
+        server.uninstallUserFeature(FEATURE_NAME);
     }
 
     @Test

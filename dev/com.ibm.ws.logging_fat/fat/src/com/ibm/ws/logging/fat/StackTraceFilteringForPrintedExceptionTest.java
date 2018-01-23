@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.logging.fat;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -23,15 +26,19 @@ public class StackTraceFilteringForPrintedExceptionTest extends AbstractStackTra
     @BeforeClass
     public static void setUp() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver");
-
         server.startServer();
-
-        //Make sure the application has come up before proceeding
-        server.addInstalledAppForValidation("broken-servlet");
+        ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
 
         // Hit the servlet, to drive the error
         hitWebPage("broken-servlet", "ExceptionPrintingServlet", false);
 
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     @Test
@@ -42,7 +49,7 @@ public class StackTraceFilteringForPrintedExceptionTest extends AbstractStackTra
                                  INTERNAL_CLASSES_REGEXP);
         // We better have a line for the class that threw the exception
         assertConsoleLogContains("The console stack didn't show the originating class.",
-                                 "at com.ibm.ws.logging.fat.servlet.ExceptionPrintingServlet.doGet");
+                                 "at com.ibm.ws.logging.fat.broken.servlet.ExceptionPrintingServlet.doGet");
         assertConsoleLogContains("The console stack didn't show the inner originating class.",
                                  "ExceptionGeneratingObject.hashCode");
         // We also want at least one line about javax.servlet

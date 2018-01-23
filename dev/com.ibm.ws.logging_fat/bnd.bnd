@@ -16,16 +16,24 @@ bVersion=1.0
 	test-bundles/sample.source.handler/bnd.bnd, \
 	test-bundles/ffdc.source.handler/bnd.bnd, \
 	test-bundles/accesslog.source.handler/bnd.bnd, \
-	test-bundles/trace.source.handler/bnd.bnd
+	test-bundles/trace.source.handler/bnd.bnd, \
+	test-bundles/test.configuration.fallalloverthefloor.ibmfeature/bnd.bnd, \
+	test-bundles/test.configuration.fallalloverthefloor.userfeature/bnd.bnd
 
 src: \
 	fat/src,\
 	test-applications/TestApp/src, \
+	test-applications/broken-servlet/src, \
+	test-applications/ffdc-servlet/src, \
+	test-applications/logger-servlet/src, \
+	test-applications/missing-feature-servlet/src, \
 	test-bundles/sample.source.handler/src, \
 	test-bundles/message.source.handler/src, \
 	test-bundles/ffdc.source.handler/src, \
 	test-bundles/accesslog.source.handler/src, \
-	test-bundles/trace.source.handler/src
+	test-bundles/trace.source.handler/src, \
+	test-bundles/test.configuration.fallalloverthefloor.ibmfeature/src, \
+	test-bundles/test.configuration.fallalloverthefloor.userfeature/src
 
 fat.project: true
 
@@ -35,7 +43,6 @@ fat.project: true
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
-	fattest.simplicity;version=latest, \
 	com.ibm.ws.componenttest:public.api;version=1.0.0, \
 	org.apache.commons:commons-compress;version=1.10, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
@@ -54,4 +61,5 @@ fat.project: true
 	com.ibm.ws.kernel.feature;version=latest, \
 	com.ibm.ws.common.encoder;version=latest, \
 	com.ibm.websphere.rest.handler;version=latest, \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.websphere.javaee.persistence.2.1;version=latest

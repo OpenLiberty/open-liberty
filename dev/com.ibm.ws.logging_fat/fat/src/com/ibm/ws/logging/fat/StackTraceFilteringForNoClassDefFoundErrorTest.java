@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.logging.fat;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -23,15 +26,18 @@ public class StackTraceFilteringForNoClassDefFoundErrorTest extends AbstractStac
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory
-                        .getLibertyServer("com.ibm.ws.logging.missingfeatureserver");
-
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.missingfeatureserver");
         server.startServer();
-
-        //Make sure the application has come up before proceeding
-        server.addInstalledAppForValidation("missing-feature-servlet");
+        ShrinkHelper.defaultDropinApp(server, "missing-feature-servlet", "com.ibm.ws.logging.fat.missing.feature.servlet");
 
         hitWebPage("missing-feature-servlet", "MissingEntityManagerServlet", true);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer(MAIN_EXCEPTION, "com.ibm.ws.logging.fat.missing.feature.servlet.MissingEntityManagerServlet.doGet");
+        }
     }
 
     @Test
@@ -45,7 +51,7 @@ public class StackTraceFilteringForNoClassDefFoundErrorTest extends AbstractStac
                                  "at com.ibm.ws.logging");
         // We only want one line of WAS context
         assertConsoleLogCountEquals("The console stack was apparently trimmed, but internal WAS classes got left in it",
-                                       "at com.ibm.ws.webcontainer", 1);
+                                    "at com.ibm.ws.webcontainer", 1);
 
     }
 

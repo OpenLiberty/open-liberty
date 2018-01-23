@@ -8,12 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.fat.servlet;
+package com.ibm.ws.logging.fat.broken.servlet;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,14 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet which prints an exception.
  */
-@WebServlet("/IBMCodeAtTopExceptionPrintingServlet")
-public class IBMCodeAtTopExceptionPrintingServlet extends HttpServlet {
+@WebServlet("/ExceptionPrintingServlet")
+public class ExceptionPrintingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IBMCodeAtTopExceptionPrintingServlet() {
+    public ExceptionPrintingServlet() {
         super();
     }
 
@@ -42,18 +42,39 @@ public class IBMCodeAtTopExceptionPrintingServlet extends HttpServlet {
                          HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
 
-        response.getWriter().println("Howdy! This servlet is working just fine, except for all the bits that are deliberately broken.");
+        response.getWriter().println("Well, hello there. This servlet is working.");
 
-        // In the absence of the jndi feature, this lookup shouldn't go well
-        try {
-            InitialContext ctx = new InitialContext();
-            ctx.lookup("something/That/Does/Not/Exist");
-        } catch (NamingException e) {
-            // Print the stack trace, and see what happens
-            e.printStackTrace();
-        }
+        // Generate a few lines of java stack trace
+        Set<ExceptionGeneratingObject> set = new HashSet<ExceptionGeneratingObject>();
+        set.add(new ExceptionGeneratingObject(true));
+        set.add(new ExceptionGeneratingObject(false));
 
         response.getWriter().println("There should be an exception in your logs.");
 
     }
+
+    static class SpecialPrintingException extends Exception {
+
+        private static final long serialVersionUID = 1L;
+
+    }
+
+    static class ExceptionGeneratingObject {
+        private final boolean shouldPrintException;
+
+        public ExceptionGeneratingObject(boolean b) {
+            shouldPrintException = b;
+        }
+
+        @Override
+        public int hashCode() {
+            if (shouldPrintException) {
+                new SpecialPrintingException().printStackTrace();
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
+
 }

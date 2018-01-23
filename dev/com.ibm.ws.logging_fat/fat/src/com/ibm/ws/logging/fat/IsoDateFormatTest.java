@@ -33,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Logging;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -57,6 +58,8 @@ public class IsoDateFormatTest {
     @BeforeClass
     public static void initialSetup() throws Exception {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        ShrinkHelper.defaultDropinApp(server, "ffdc-servlet", "com.ibm.ws.logging.fat.ffdc.servlet");
+
         System.out.println("Starting server...");
         server.startServer();
         System.out.println("Started server.");
@@ -77,7 +80,8 @@ public class IsoDateFormatTest {
     @After
     public void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException", // testIsoDateFormatInFFDC
+                              "CWWKG0081E", "CWWKG0083W"); // testInvalidIsoDateFormatAttributeValue
         }
     }
 

@@ -21,17 +21,16 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class StackTraceFilteringForIBMFeatureExceptionTest extends AbstractStackTraceFilteringTest {
 
     private static final String MAIN_EXCEPTION = "ConfigurationReceivedException";
-    private static final String BUNDLE_NAME = "test.configuration.fallalloverthefloor.ibmfeature_1.0.0";
+    private static final String BUNDLE_NAME = "test.configuration.fallalloverthefloor.ibmfeature";
     private static final String FEATURE_NAME = "unconfigurableIbmFeature-1.0";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory
-                        .getLibertyServer("com.ibm.ws.logging.badconfig.ibm");
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.badconfig.ibm");
 
-        // install our user feature 
-        server.installUserBundle(BUNDLE_NAME); // NO HYPHENS! NO ".jar" SUFFIX! 
-        server.installUserFeature(FEATURE_NAME); // NO UNDERSCORES! NO ".mf" SUFFIX! 
+        // install our user feature
+        server.installUserBundle(BUNDLE_NAME); // NO HYPHENS! NO ".jar" SUFFIX!
+        server.installUserFeature(FEATURE_NAME); // NO UNDERSCORES! NO ".mf" SUFFIX!
 
         // Just starting the server should be enough to get exceptions
         server.startServer();
@@ -42,10 +41,9 @@ public class StackTraceFilteringForIBMFeatureExceptionTest extends AbstractStack
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
-
+        server.stopServer(MAIN_EXCEPTION);
         server.uninstallUserBundle(BUNDLE_NAME);
-        server.uninstallFeature(FEATURE_NAME);
+        server.uninstallUserFeature(FEATURE_NAME);
     }
 
     @Test
@@ -60,7 +58,7 @@ public class StackTraceFilteringForIBMFeatureExceptionTest extends AbstractStack
         // We should have no SCR stuff, since SCR is calling a 'Liberty' feature
         assertConsoleLogDoesNotContain("The SCR classes should not be in the console log",
                                        "at org.apache.felix.scr.impl");
-        // Similarly, the Java frames are just calls to Liberty code from SCR code so should be stripped 
+        // Similarly, the Java frames are just calls to Liberty code from SCR code so should be stripped
         assertConsoleLogDoesNotContain("The console stack should not have any JVM frames in it.",
                                        "at java.");
 

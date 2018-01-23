@@ -8,14 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.fat.servlet;
+package com.ibm.ws.logging.fat.broken.servlet;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,14 +22,14 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet which prints an exception.
  */
-@WebServlet("/ExceptionPrintingServlet")
-public class ExceptionPrintingServlet extends HttpServlet {
+@WebServlet("/SpecUsingServlet")
+public class SpecUsingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ExceptionPrintingServlet() {
+    public SpecUsingServlet() {
         super();
     }
 
@@ -42,14 +41,10 @@ public class ExceptionPrintingServlet extends HttpServlet {
                          HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
 
-        response.getWriter().println("Well, hello there. This servlet is working.");
-
-        // Generate a few lines of java stack trace
-        Set<ExceptionGeneratingObject> set = new HashSet<ExceptionGeneratingObject>();
-        set.add(new ExceptionGeneratingObject(true));
-        set.add(new ExceptionGeneratingObject(false));
-
-        response.getWriter().println("There should be an exception in your logs.");
+        response.getWriter().println("This servlet uses specification classes, but you shouldn't see this message.");
+        // Generate an exception which has a few lines of javax.servlet.* content in it
+        Cookie cookie = new Cookie(null, null);
+        response.addCookie(cookie);
 
     }
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.fat.servlet;
+package com.ibm.ws.logging.fat.ffdc.servlet;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -19,16 +19,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/*")
-@SuppressWarnings("serial")
-public class LoggerServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(LoggerServlet.class.getName());
+@WebServlet("/FFDCServlet")
+public class FFDCServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println("Hello world!");
-        // Use severe, which is higher than AUDIT, to ensure this message would
-        // normally show up in console.log if output wasn't disabled.
-        logger.severe("Hello world!");
+        response.getWriter().println("Test Servlet to generate FFDC");
+        
+        String generateFFDC = request.getParameter("generateFFDC");
+
+        if ((generateFFDC != null) && (generateFFDC.equalsIgnoreCase("true"))) {
+            // Divide by zero, to get an ArithmeticException, which will generate an FFDC
+            int i = 10 / 0;
+        }
     }
 }
