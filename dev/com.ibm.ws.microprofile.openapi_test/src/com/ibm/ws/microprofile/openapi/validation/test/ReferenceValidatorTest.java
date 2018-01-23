@@ -3,7 +3,7 @@
 *
 * OCO Source Materials
 *
-* WLP Copyright IBM Corp. 2017
+* WLP Copyright IBM Corp. 2018
 *
 * The source code for this program is not published or otherwise divested
 * of its trade secrets, irrespective of what has been deposited with the
@@ -38,9 +38,9 @@ import com.ibm.ws.microprofile.openapi.impl.model.parameters.ParameterImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.SecuritySchemeImpl;
+import com.ibm.ws.microprofile.openapi.impl.validation.ReferenceValidator;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
-import com.ibm.ws.microprofile.openapi.impl.validation.ReferenceValidator;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**

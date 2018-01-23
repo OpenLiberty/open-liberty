@@ -1,3 +1,14 @@
+/*
+* IBM Confidential
+*
+* OCO Source Materials
+*
+* WLP Copyright IBM Corp. 2018
+*
+* The source code for this program is not published or otherwise divested
+* of its trade secrets, irrespective of what has been deposited with the
+* U.S. Copyright Office.
+*/
 package com.ibm.ws.microprofile.openapi.validation.test;
 
 import java.util.Arrays;
@@ -16,9 +27,9 @@ import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.OAuthFlowsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.SecurityRequirementImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.security.SecuritySchemeImpl;
+import com.ibm.ws.microprofile.openapi.impl.validation.SecurityRequirementValidator;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
-import com.ibm.ws.microprofile.openapi.impl.validation.SecurityRequirementValidator;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
