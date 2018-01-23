@@ -40,12 +40,11 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.dynamic.test.TestDynamicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.DefaultConverters;
 
 public class ConversionTest {
 
@@ -53,7 +52,7 @@ public class ConversionTest {
     public void testString() {
         String value = "TEST";
         System.out.println("String :" + value);
-        String converted = DefaultConverters.STRING_CONVERTER.convert(value);
+        String converted = (String) DefaultConverters.getDefaultConverters().getConverter(String.class).convert(value);
         assertEquals(value, converted);
     }
 
@@ -321,21 +320,20 @@ public class ConversionTest {
     }
 
     @Test
-    @Ignore
     public void testCustomArray() {
         ConverterA<ClassB> converter = new ConverterA<>();
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         builder.withConverters(converter);
         System.setProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
         TestDynamicConfigSource source = new TestDynamicConfigSource();
-        source.put("key1", "value1,value2,value3,value4");
+        source.put("key1", "value1,value2,value3,value4\\,partb");
         builder.withSources(source);
         Config config = builder.build();
         ClassB[] classB = config.getValue("key1", ClassB[].class);
         assertEquals("value1", classB[0].getValue());
         assertEquals("value2", classB[1].getValue());
         assertEquals("value3", classB[2].getValue());
-        assertEquals("value4", classB[3].getValue());
+        assertEquals("value4,partb", classB[3].getValue());
     }
 
     @Test
@@ -351,7 +349,6 @@ public class ConversionTest {
     }
 
     @Test
-    @Ignore //creating a primitive array doesn't work at the moment
     public void testIntArray() {
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         System.setProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
@@ -364,11 +361,21 @@ public class ConversionTest {
         assertEquals(2, key1[1]);
         assertEquals(3, key1[2]);
         assertEquals(4, key1[3]);
-
     }
 
     @Test
-    @Ignore
+    public void testEmptyIntArray() {
+        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
+        System.setProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
+        NullableConfigSource source = new NullableConfigSource();
+        source.put("key1", null);
+        builder.withSources(source);
+        Config config = builder.build();
+        int[] key1 = config.getValue("key1", int[].class);
+        assertEquals(0, key1.length);
+    }
+
+    @Test
     public void testIntegerArray() {
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         System.setProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);

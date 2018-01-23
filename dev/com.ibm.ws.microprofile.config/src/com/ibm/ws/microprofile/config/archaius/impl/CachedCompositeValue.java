@@ -15,23 +15,24 @@ import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 /**
  * A value and the id of its source
  */
-public class CachedCompositeValue<T> implements SourcedValue<T> {
+public class CachedCompositeValue implements SourcedValue {
 
-    private final T value;
+    private final Object value;
     private final String source;
     private final String tostring;
 
-    public CachedCompositeValue(T value, String source) {
+    public CachedCompositeValue(Object value, String source) {
         this.value = value;
         this.source = source;
         this.tostring = value + "(" + source + ")";
     }
 
     @Override
-    public T getValue() {
+    public Object getValue() {
         return value;
     }
 
+    @Override
     public String getSource() {
         return source;
     }

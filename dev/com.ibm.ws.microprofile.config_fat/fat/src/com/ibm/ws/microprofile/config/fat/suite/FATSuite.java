@@ -27,6 +27,7 @@ import com.ibm.ws.microprofile.config.fat.tests.CDIMissingConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIScopeTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIXtorInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
+import com.ibm.ws.microprofile.config.fat.tests.ConverterPriorityTest;
 import com.ibm.ws.microprofile.config.fat.tests.ConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CustomSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
@@ -54,6 +55,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CDIScopeTest.class,
                 CDIXtorInjectionTest.class,
                 ClassLoadersTest.class,
+                ConverterPriorityTest.class,
                 ConvertersTest.class,
                 CustomSourcesTest.class,
                 DefaultSourcesTest.class,

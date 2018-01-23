@@ -10,19 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.archaius.impl;
 
+import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class ArchaiusConfigImpl extends AbstractConfig implements WebSphereConfig {
-
-    private static final TraceComponent tc = Tr.register(ArchaiusConfigImpl.class);
 
     private final CompositeConfig composite;
 
@@ -47,13 +44,13 @@ public class ArchaiusConfigImpl extends AbstractConfig implements WebSphereConfi
 
     /** {@inheritDoc} */
     @Override
-    protected <T> T getTypedValue(String propertyName, Class<T> propertyType) {
+    protected Object getTypedValue(String propertyName, Type propertyType) {
         return composite.getTypedValue(propertyName, propertyType);
     }
 
     /** {@inheritDoc} */
     @Override
-    public <T> SourcedValue<T> getSourcedValue(String propertyName, Class<T> propertyType) {
+    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
         return composite.getSourcedValue(propertyName, propertyType);
     }
 

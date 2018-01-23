@@ -11,21 +11,46 @@
 package com.ibm.ws.microprofile.config12.converter.type.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.ws.microprofile.config12.converter.type.beans.ChildType;
+import com.ibm.ws.microprofile.config12.converter.type.beans.MyStringObject;
 import com.ibm.ws.microprofile.config12.converter.type.beans.ParentType;
 import com.ibm.ws.microprofile.config12.converter.type.converters.ChildTypeConverter;
 
 @RequestScoped
 public class TypeConverterBean {
+
+    @Inject
+    @ConfigProperty(name = "list1")
+    List<MyStringObject> list1;
+
+    @Inject
+    @ConfigProperty(name = "list1")
+    Set<MyStringObject> set1;
+
+    @Inject
+    @ConfigProperty(name = "unknown")
+    Optional<MyStringObject> unknownOptional;
+
+    @Inject
+    @ConfigProperty(name = "unknown", defaultValue = "defaultValue")
+    Optional<MyStringObject> defaultOptional;
 
     /**
      * Tests the SPI that allows a lambda to be added as a converter
@@ -68,6 +93,53 @@ public class TypeConverterBean {
         assertEquals("value1", myObject.getValue());
         assertEquals("SubTypeConverter", myObject.getConverter());
         assertTrue("myObject is not a ChildType. It is a " + myObject.getClass(), myObject instanceof ChildType);
+    }
+
+    /**
+     * Tests that a List can be converted
+     *
+     * @throws Exception
+     */
+    public void listConverterTest() throws Exception {
+        assertEquals(5, list1.size());
+        assertEquals("value1", list1.get(0).getValue());
+        assertEquals("value2", list1.get(1).getValue());
+        assertEquals("value3", list1.get(2).getValue());
+        assertEquals("value4", list1.get(3).getValue());
+        assertEquals("value5", list1.get(4).getValue());
+    }
+
+    /**
+     * Tests that a Set can be converted
+     *
+     * @throws Exception
+     */
+    public void setConverterTest() throws Exception {
+        assertEquals(5, set1.size());
+        for (MyStringObject obj : set1) {
+            assertTrue("value1,value2,value3,value4,value5".contains(obj.getValue()));
+        }
+    }
+
+    /**
+     * Tests that a Optional can be converted
+     *
+     * @throws Exception
+     */
+    public void optionalConverterTest() throws Exception {
+        assertNotNull(unknownOptional);
+        assertFalse(unknownOptional.isPresent());
+    }
+
+    /**
+     * Tests that a Optional can be converted
+     *
+     * @throws Exception
+     */
+    public void defaultOptionalConverterTest() throws Exception {
+        assertNotNull(defaultOptional);
+        assertTrue(defaultOptional.isPresent());
+        assertEquals("defaultValue", defaultOptional.get().getValue());
     }
 
 }

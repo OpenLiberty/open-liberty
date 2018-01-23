@@ -13,14 +13,14 @@ package com.ibm.ws.microprofile.config.interfaces;
 /**
  *
  */
-public interface SourcedValue<T> {
+public interface SourcedValue {
 
     /**
      * Get the actual value
      *
      * @return the value
      */
-    public T getValue();
+    public Object getValue();
 
     /**
      * Get the ID of the source that provided the value

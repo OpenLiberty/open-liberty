@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config.interfaces;
 
 import java.io.Closeable;
+import java.lang.reflect.Type;
 
 import org.eclipse.microprofile.config.Config;
 
@@ -19,10 +20,33 @@ import org.eclipse.microprofile.config.Config;
  */
 public interface WebSphereConfig extends Config, Closeable {
 
-    public <T> T convertValue(String rawValue, Class<T> type);
+    public Object getValue(String propertyName, Type type);
+
+    /**
+     * Get a converted value
+     *
+     * @param propertyName The propertyName
+     * @param type The type to convert to
+     * @param optional if false then throw NoSuchElementException if the property does not exist
+     *            if true and the property does not exist, use a null property value
+     * @return
+     */
+    public Object getValue(String propertyName, Type type, boolean optional);
+
+    /**
+     * Get a converted value, using the defaultString if the property does not exist
+     *
+     * @param propertyName The propertyName
+     * @param type The type to convert to
+     * @param defaultString the string value to convert if the property does not exist
+     * @return
+     */
+    public Object getValue(String propertyName, Type type, String defaultString);
+
+    public Object convertValue(String rawValue, Type type);
 
     public String dump();
 
-    public <T> SourcedValue<T> getSourcedValue(String key, Class<T> type);
+    public SourcedValue getSourcedValue(String propertyName, Type type);
 
 }
