@@ -109,6 +109,7 @@ public class LogSource implements Source, WsLogHandler {
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
+
             LogRecord logRecord = routedMessage.getLogRecord();
             if (logRecord != null && bufferMgr != null) {
                 GenericData parsedMessage = parse(routedMessage);
