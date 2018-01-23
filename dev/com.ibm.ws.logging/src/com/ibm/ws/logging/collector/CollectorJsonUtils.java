@@ -50,13 +50,22 @@ public class CollectorJsonUtils {
                                       int maxFieldLength) {
 
         if (!collectorVersion.equals("1.0")) {
+
             return CollectorJsonUtils1_1.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags, maxFieldLength);
 
         } else {
 
             if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
 
-                return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, tags);
+                if (event instanceof GenericData) {
+
+                    return jsonifyGCEvent(-1, wlpUserDir, serverName, serverHostName, CollectorConstants.GC_EVENT_TYPE, event, tags);
+
+                } else {
+
+                    return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, tags);
+
+                }
 
             } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
 
