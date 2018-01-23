@@ -33,7 +33,7 @@ public class CDIBuiltInConverterTest extends LoggingTest {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0"));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
