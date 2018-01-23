@@ -93,7 +93,7 @@ public class JAXRSClientImpl extends ClientImpl {
         }
 
         try {
-            BundleContext bc = AccessController.doPrivileged(new PrivilegedExceptionAction<BundleContext>() {
+            final BundleContext bc = AccessController.doPrivileged(new PrivilegedExceptionAction<BundleContext>() {
 
                 @Override
                 public BundleContext run() throws Exception {
@@ -107,21 +107,29 @@ public class JAXRSClientImpl extends ClientImpl {
                 // we don't send feature list for client APIs
                 final Set<String> features = Collections.emptySet();
 
-                Collection<ServiceReference<JaxRsProviderRegister>> refs = bc.getServiceReferences(JaxRsProviderRegister.class, null);
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
 
-                for (ServiceReference<JaxRsProviderRegister> ref : refs) {
-                    JaxRsProviderRegister providerRegister = bc.getService(ref);
-                    try {
-                        providerRegister.installProvider(true, providers, features);
-                    } catch (Throwable t) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            String providerRegisterBundleLoc = ref.getBundle() == null ? "unknown" : ref.getBundle().getSymbolicName() + " " + ref.getBundle().getVersion();
-                            Tr.debug(tc, "<init> failed to install providers from " + providerRegister.getClass().getName() +
-                                         " loaded from " + providerRegisterBundleLoc,
-                                     t);
+                    @Override
+                    public Void run() throws Exception {
+                        Collection<ServiceReference<JaxRsProviderRegister>> refs = bc.getServiceReferences(JaxRsProviderRegister.class, null);
+
+                        for (ServiceReference<JaxRsProviderRegister> ref : refs) {
+                            JaxRsProviderRegister providerRegister = bc.getService(ref);
+                            try {
+                                providerRegister.installProvider(true, providers, features);
+                            } catch (Throwable t) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    String providerRegisterBundleLoc = ref.getBundle() == null ? "unknown" : ref.getBundle().getSymbolicName() + " " + ref.getBundle().getVersion();
+                                    Tr.debug(tc, "<init> failed to install providers from " + providerRegister.getClass().getName() +
+                                                 " loaded from " + providerRegisterBundleLoc,
+                                             t);
+                                }
+                            }
                         }
+                        return null;
                     }
-                }
+                });
+
                 // now that we have a list of providers, register them
                 for (Object provider : providers) {
                     if (provider != null) {
