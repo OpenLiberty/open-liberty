@@ -1153,9 +1153,10 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 DiscriminatorMapping mappings[] = directSchemaAnnotation.discriminatorMapping();
                 if (mappings != null && mappings.length > 0) {
                     for (DiscriminatorMapping mapping : mappings) {
-                        if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
-                            discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
-                        }
+                        //@DiscriminatorMapping is not specified as default value anywhere - so it must be user-specified, hence the following if-check is not needed.
+                        //if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
+                        discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
+                        //}
                     }
                 }
             }
