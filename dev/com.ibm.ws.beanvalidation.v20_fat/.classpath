@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="test-applications/bvalApp/src"/>
 	<classpathentry kind="src" path="test-applications/bvalCDIApp/src"/>
 	<classpathentry kind="src" path="test-applications/bvalValueExtractorApp/src"/>
+	<classpathentry kind="src" path="test-applications/customBvalProviderApp/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleValidationXmlEjb1.jar/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleValidationXmlEjb2.jar/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleValidationXmlWeb.war/src"/>
