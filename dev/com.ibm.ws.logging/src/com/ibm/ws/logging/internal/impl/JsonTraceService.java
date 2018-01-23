@@ -214,18 +214,22 @@ public class JsonTraceService extends BaseTraceService {
         // Tee to messages.log (always)
         String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
 
-        if (!isMessageJsonConfigured) {
-            messagesLog.writeRecord(message);
-        } else {
-            if (logSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
-                String formattedMsg = formatter.formatMessage(logRecord);
-                String formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
-                RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, message, logRecord);
-                logSource.publish(routedMessage);
-            }
+        RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord);
+
+        /*
+         * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+         * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+         * However, LogstashCollector and BluemixLogCollector will receive all messages
+         */
+        if (logSource != null) {
+            logSource.publish(routedMessage);
         }
 
-        invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
+        if (!isMessageJsonConfigured) {
+            messagesLog.writeRecord(message);
+        }
+
+        invokeMessageRouters(routedMessage);
 
         if (detailLog == systemOut) {
             // preserve System.out vs. System.err
@@ -329,25 +333,21 @@ public class JsonTraceService extends BaseTraceService {
                 return;
             }
 
+            /*
+             * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+             * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+             * However, LogstashCollector and BluemixLogCollector will receive all messages
+             */
+
+            // logSource only receives "normal" messages and messages that are not hidden.
+            if (logSource != null) {
+                logSource.publish(routedMessage);
+            }
+
             if (!isMessageJsonConfigured) {
                 //messageLogHandler.writeToLogNormal(messageLogFormat);
                 //keep old behaviour.. otherwise we're just sending it to handler to write to the same log anyways
                 messagesLog.writeRecord(messageLogFormat);
-
-                /*
-                 * if messageLogFormat is BASIC, but consoleLogFormat is JSON, we need to currently write directly to messages.log,
-                 * and send to console.log through LogSource. However, once we merge BTS with JTS, we can send everything through LogSource.
-                 */
-                if (logSource != null && isConsoleJsonConfigured) {
-                    // logSource only receives "normal" messages and messages that are not hidden
-                    logSource.publish(routedMessage);
-                }
-
-            } else {
-                // logSource only receives "normal" messages and messages that are not hidden
-                if (logSource != null) {
-                    logSource.publish(routedMessage);
-                }
             }
 
             // console.log
