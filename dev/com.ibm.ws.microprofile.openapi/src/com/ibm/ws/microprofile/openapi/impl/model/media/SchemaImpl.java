@@ -54,10 +54,10 @@ public class SchemaImpl implements Schema {
     private Map<String, Schema> properties = null;
     private String description = null;
     private String format = null;
-    private String $ref = null;
-    private Boolean nullable = null;
-    private Boolean readOnly = null;
-    private Boolean writeOnly = null;
+    private String ref = null;
+    private Boolean nullable = false;
+    private Boolean readOnly = false;
+    private Boolean writeOnly = false;
     protected Object example = null;
     private ExternalDocumentation externalDocs = null;
     private Boolean deprecated = null;
@@ -491,15 +491,15 @@ public class SchemaImpl implements Schema {
 
     @Override
     public String getRef() {
-        return $ref;
+        return ref;
     }
 
     @Override
-    public void setRef(String $ref) {
-        if ($ref != null && ($ref.indexOf(".") == -1 && $ref.indexOf("/") == -1)) {
-            $ref = "#/components/schemas/" + $ref;
+    public void setRef(String ref) {
+        if (ref != null && (ref.indexOf(".") == -1 && ref.indexOf("/") == -1)) {
+            ref = "#/components/schemas/" + ref;
         }
-        this.$ref = $ref;
+        this.ref = ref;
     }
 
     @Override
@@ -652,7 +652,7 @@ public class SchemaImpl implements Schema {
                Objects.equals(this.additionalProperties, schema.additionalProperties) &&
                Objects.equals(this.description, schema.description) &&
                Objects.equals(this.format, schema.format) &&
-               Objects.equals(this.$ref, schema.$ref) &&
+               Objects.equals(this.ref, schema.ref) &&
                Objects.equals(this.nullable, schema.nullable) &&
                Objects.equals(this.readOnly, schema.readOnly) &&
                Objects.equals(this.writeOnly, schema.writeOnly) &&
@@ -669,7 +669,7 @@ public class SchemaImpl implements Schema {
     @Override
     public int hashCode() {
         return Objects.hash(name, title, multipleOf, maximum, exclusiveMaximum, minimum, exclusiveMinimum, maxLength, minLength, pattern, maxItems,
-                            minItems, uniqueItems, maxProperties, minProperties, required, type, not, properties, additionalProperties, description, format, $ref,
+                            minItems, uniqueItems, maxProperties, minProperties, required, type, not, properties, additionalProperties, description, format, ref,
                             nullable, readOnly, writeOnly, example, externalDocs, deprecated, xml, extensions, _enum, discriminator, _default);
     }
 
@@ -817,7 +817,7 @@ public class SchemaImpl implements Schema {
         sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
         sb.append("    description: ").append(toIndentedString(description)).append("\n");
         sb.append("    format: ").append(toIndentedString(format)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
+        sb.append("    $ref: ").append(toIndentedString(ref)).append("\n");
         sb.append("    nullable: ").append(toIndentedString(nullable)).append("\n");
         sb.append("    readOnly: ").append(toIndentedString(readOnly)).append("\n");
         sb.append("    writeOnly: ").append(toIndentedString(writeOnly)).append("\n");

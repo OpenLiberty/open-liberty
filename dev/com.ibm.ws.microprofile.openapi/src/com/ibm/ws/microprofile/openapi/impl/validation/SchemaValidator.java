@@ -14,6 +14,7 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -35,14 +36,23 @@ public class SchemaValidator extends TypeValidator<Schema> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Schema t) {
 
-        String reference = t.getRef();
+        if (t != null) {
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
+            String reference = t.getRef();
+
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+            }
+
+            if (t.getType().toString().equals("array") && t.getItems() == null) {
+                final String message = Tr.formatMessage(tc, "schemaTypeArrayNullItems", t.getTitle());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+
+            if (t.getReadOnly() && t.getWriteOnly()) {
+                final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly", t.getTitle());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
         }
-
-        // TODO Auto-generated method stub
-
     }
 }

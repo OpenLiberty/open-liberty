@@ -39,7 +39,9 @@ public class ComponentsValidator extends TypeValidator<Components> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Components t) {
+
         if (t != null) {
+
             List<Map<String, ?>> components = new ArrayList<Map<String, ?>>();
 
             if (t.getCallbacks() != null && !t.getCallbacks().isEmpty()) {
