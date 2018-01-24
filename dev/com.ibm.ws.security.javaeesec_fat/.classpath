@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src"/>
 	<classpathentry kind="src" path="test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src"/>
 	<classpathentry kind="src" path="test-applications/dbfat.war/src"/>
+    <classpathentry kind="src" path="test-applications/dbfatCustomHash.war/src"/>
 	<classpathentry kind="src" path="test-applications/dbfatAuthAlias.war/src"/>
 	<classpathentry kind="src" path="test-applications/DatabaseAuthAliasBasicAuthServlet.war/src"/>
 	<classpathentry kind="src" path="test-applications/DatabaseAnnotatedBasicAuthServlet.war/src"/>
@@ -19,6 +20,10 @@
 	<classpathentry kind="src" path="test-applications/AuthMechs.jar/src"/>
 	<classpathentry kind="src" path="test-applications/IdentityStores.jar/src"/>
 	<classpathentry kind="src" path="test-applications/securityContextEJBInWar.war/src"/>
+    <classpathentry kind="src" path="test-applications/DatabaseAnnotatedCustomHash.war/src"/>
+    <classpathentry kind="src" path="test-applications/DatabaseAnnotatedCustomHashBean.war/src"/>
+    <classpathentry kind="src" path="test-applications/CustomPasswordHash.jar/src"/>
+    <classpathentry kind="src" path="test-applications/CustomPasswordHashBean.jar/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
