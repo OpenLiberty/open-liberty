@@ -66,8 +66,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
@@ -102,8 +100,6 @@ public class JavaEESecCDIExtensionTest {
     private final J2EEName j2en1 = context.mock(J2EEName.class, "j2en1");
     private final J2EEName j2en2 = context.mock(J2EEName.class, "j2en2");
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.cdi.*=all");
-
     private final static String MODULE_NAME1 = "module1.war";
     private final static String MODULE_NAME2 = "module2.war";
     private final static String MODULE_PATH_NAME1 = "/wlp/usr/servers/apps/" + MODULE_NAME1;
@@ -137,24 +133,6 @@ public class JavaEESecCDIExtensionTest {
 
     @Rule
     public final TestName testName = new TestName();
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr.captureStreams();
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        outputMgr.dumpStreams();
-        outputMgr.resetStreams();
-        outputMgr.restoreStreams();
-    }
 
     @Before
     public void setUp() {
