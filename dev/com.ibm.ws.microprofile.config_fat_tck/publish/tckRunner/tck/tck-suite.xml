@@ -16,8 +16,7 @@
                 <method-selector>
                     <script language="beanshell">
                     <![CDATA[
-                        !method.getDeclaringClass().getSimpleName().startsWith("CDIPlainInjectionTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("ConfigProviderTest")
+                        !method.getName().contains("testEnvironmentConfigSource")
                     ]]>
                     </script>
                 </method-selector>
