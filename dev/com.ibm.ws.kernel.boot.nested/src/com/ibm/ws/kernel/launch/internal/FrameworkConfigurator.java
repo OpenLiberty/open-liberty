@@ -174,9 +174,9 @@ public class FrameworkConfigurator {
         // adding org.apache.xml for defect 53421; hope to remove when strategic fix is available
         // adding org.apache.xerces for defect 94476
         final String defaultDelegation = "com.ibm.ws.kernel.boot.jmx.internal," +
-                                         "sun.*,com.sun.*,com.ibm.ws.boot.delegated.*,org.apache.xml.*,org.apache.xerces.*," +
+                                         "jdk.*,sun.*,com.sun.*,com.ibm.ws.boot.delegated.*,org.apache.xml.*,org.apache.xerces.*," +
                                          "com.ibm.xylem.*,com.ibm.xml.*,com.ibm.xtq.*,com.ibm.net.ssl.*," +
-                                         "com.ibm.crypto.*,com.ibm.security.*,jdk.*";
+                                         "com.ibm.crypto.*,com.ibm.security.*,javafx.*";
 
         String osgiDelegationPackages = config.get(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION);
         if (osgiDelegationPackages == null)
