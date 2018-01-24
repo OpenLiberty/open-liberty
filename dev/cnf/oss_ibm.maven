@@ -1,6 +1,6 @@
 com.ibm.ws.org.apache.bval:org.apache.bval.bundle:1.1.2
 net.sf.jtidy:jtidy:9.3.8
-com.ibm.ws.org.apache.cxf:cxf-api:2.6.2.ibm-s20180118-1918
+com.ibm.ws.org.apache.cxf:cxf-api:2.6.2.ibm-s20180124-1753
 com.ibm.ws.org.apache.cxf:cxf-rt-bindings-soap:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-bindings-xml:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-core:2.6.2.ibm-s20170927-0015

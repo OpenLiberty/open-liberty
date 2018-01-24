@@ -111,7 +111,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	${javac.bootclasspath.${javac.source}}
 
 -buildpath: \
-	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180118-1918, \
+	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180124-1753, \
 	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170927-0015, \
 	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
 	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
