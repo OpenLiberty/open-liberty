@@ -27,19 +27,12 @@ public class KeyValuePair implements Pair {
     }
 
     public boolean isNumber() {
-        if (valueType == ValueTypes.NUMBER) {
-            return true;
-        } else {
-            return false;
-        }
+        return (valueType == ValueTypes.NUMBER);
+
     }
 
     public boolean isString() {
-        if (valueType == ValueTypes.STRING) {
-            return true;
-        } else {
-            return false;
-        }
+        return (valueType == ValueTypes.STRING);
     }
 
     public ValueTypes getType() {

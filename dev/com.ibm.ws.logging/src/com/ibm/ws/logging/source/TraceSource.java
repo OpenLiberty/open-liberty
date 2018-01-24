@@ -106,8 +106,7 @@ public class TraceSource implements Source, WsTraceHandler {
         }
 
         long datetimeValue = logRecord.getMillis();
-        // Must pass datetime as string, as its value type must be set as string in its kvp
-        genData.addPair("ibm_datetime", Long.toString(datetimeValue));
+        genData.addPair("ibm_datetime", datetimeValue);
         genData.addPair("ibm_threadId", logRecord.getThreadID());
         genData.addPair("module", logRecord.getLoggerName());
         genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
