@@ -14,7 +14,6 @@
 	
     <featureManager>
         <feature>localConnector-1.0</feature>
-        <feature>endpointControl-1.0</feature>
         <feature>servlet-3.1</feature>
     </featureManager>
 </server>
