@@ -44,14 +44,14 @@ public class HeaderValidatorTest {
     @Test
     public void testHeaderIsNull() {
 
-        Header headerIsNull = null;
+        HeaderImpl headerIsNull = null;
 
         TestValidationHelper vh = new TestValidationHelper();
         HeaderValidator validator = HeaderValidator.getInstance();
         validator.validate(vh, context, key, headerIsNull);
 
         //Check for number of events only to keep assert statement independent of error message
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(0, vh.getEventsSize());
     }
 
     @Test

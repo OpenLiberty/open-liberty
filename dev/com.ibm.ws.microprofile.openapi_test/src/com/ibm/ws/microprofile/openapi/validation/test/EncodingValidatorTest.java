@@ -35,14 +35,14 @@ public class EncodingValidatorTest {
     @Test
     public void testEncodingIsNull() {
 
-        Encoding encodingNull = null;
+        EncodingImpl encodingNull = null;
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
         validator.validate(vh, context, key, encodingNull);
 
         //Check for number of events only to keep assert statement independent of error message
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(0, vh.getEventsSize());
 
     }
 
@@ -51,6 +51,7 @@ public class EncodingValidatorTest {
 
         EncodingImpl styleIsFormExplodeFalse = new EncodingImpl();
         styleIsFormExplodeFalse.setStyle(Encoding.Style.FORM);
+        styleIsFormExplodeFalse.setExplode(false);
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
