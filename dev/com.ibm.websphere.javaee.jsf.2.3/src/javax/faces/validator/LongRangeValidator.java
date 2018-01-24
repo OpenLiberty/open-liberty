@@ -193,6 +193,11 @@ public class LongRangeValidator
     // RESTORE & SAVE STATE
     public Object saveState(FacesContext context)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         if (!initialStateMarked())
         {
             Object values[] = new Object[2];
@@ -206,6 +211,11 @@ public class LongRangeValidator
     public void restoreState(FacesContext context,
                              Object state)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         if (state != null)
         {
             Object values[] = (Object[])state;
