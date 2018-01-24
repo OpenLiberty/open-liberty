@@ -186,8 +186,9 @@ public class H2InboundLink extends HttpInboundLink {
         }
         if ((streamID % 2 == 0) && (streamID != 0)) {
             synchronized (pushSync) {
+                int maxPushStreams = getConnectionSettings().getMaxConcurrentStreams();
                 // if there are too many locally-open active streams, don't open a new one
-                if (openPushStreams > this.getConnectionSettings().getMaxConcurrentStreams()) {
+                if (maxPushStreams >= 0 && openPushStreams > maxPushStreams) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "createNewInboundLink cannot open a new push stream; maximum number of open push streams reached" + openPushStreams);
                     }
