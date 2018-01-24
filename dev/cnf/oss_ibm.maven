@@ -46,6 +46,7 @@ com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.0e7ebf85d3
 com.ibm.ws.org.apache.yoko:yoko-rmi-impl:1.5.0.0e7ebf85d3
 com.ibm.ws.org.apache.yoko:yoko-core:1.5.0.0e7ebf85d3
 com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.12.50.v20170928-1321
+com.ibm.ws.commons-fileupload:commons-fileupload:1.2.1
 com.ibm.ws.org.apache:xalan:2.7.0
 com.ibm.ws.javax.j2ee:standardtld:1.2
 com.ibm.ws.org.eclipse.equinox:console:1.1.200.v20150929-1405
@@ -66,7 +67,6 @@ com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.9.13
 com.ibm.ws.org.codehaus.jackson:jackson-xc:1.9.13
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws.commons-collections:commons-collections:3.2.1
-com.ibm.ws.commons-fileupload:commons-fileupload:1.2.1
 com.ibm.ws.commons-io:commons-io:1.4
 org.apache.geronimo.specs:geronimo-ejb_3.1_spec-alt:1.0.0
 org.eclipse:yasson:1.0.0
