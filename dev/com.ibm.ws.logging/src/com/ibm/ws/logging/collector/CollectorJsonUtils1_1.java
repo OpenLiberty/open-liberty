@@ -94,8 +94,7 @@ public class CollectorJsonUtils1_1 {
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_maxHeap", String.valueOf(hcGCData.getMaxHeap()), false, false, false, isFirstField);
-        isFirstField = isFirstField
-                       & !CollectorJsonHelpers.addToJSON(sb, "ibm_duration", String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, isFirstField);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_duration", String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_gcType", hcGCData.getType(), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_reason", hcGCData.getReason(), false, false, false, isFirstField);
 
@@ -130,7 +129,8 @@ public class CollectorJsonUtils1_1 {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (key.equals(LogFieldConstants.IBM_DURATION)) {
+                if (key.equals(LogFieldConstants.IBM_SEQUENCE)) {
+                } else if (key.equals(LogFieldConstants.IBM_DURATION)) {
                     long duration = Long.parseLong(value) * 1000;
                     isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, Long.toString(duration), false, true, false, isFirstField, kvp.isNumber());
                 } else {
@@ -186,7 +186,7 @@ public class CollectorJsonUtils1_1 {
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp.isNumber());
+                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, false);
 
                     } else {
 
@@ -254,7 +254,7 @@ public class CollectorJsonUtils1_1 {
                 } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
                     String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp.isNumber());
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, false);
 
                 } else {
 
@@ -299,7 +299,7 @@ public class CollectorJsonUtils1_1 {
                 if (key.equals(LogFieldConstants.SEVERITY)) {
                 }
 
-                if (key.equals(LogFieldConstants.MESSAGE)) {
+                else if (key.equals(LogFieldConstants.MESSAGE)) {
 
                     String formattedValue = CollectorJsonHelpers.formatMessage(value, maxFieldLength);
                     isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp.isNumber());
@@ -313,7 +313,7 @@ public class CollectorJsonUtils1_1 {
                 } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
                     String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp.isNumber());
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, false);
 
                 } else {
 
