@@ -24,7 +24,7 @@ public class H2ConnectionSettings {
     // set spec default connection settings
     public int headerTableSize = 4096;
     public int enablePush = 1;
-    public int maxConcurrentStreams = 100;
+    public int maxConcurrentStreams = 1000;
     public int initialWindowSize = 65535;
     public int maxFrameSize = 16384;
     public int maxHeaderListSize = -1;
@@ -74,5 +74,9 @@ public class H2ConnectionSettings {
      */
     public int getEnablePush() {
         return this.enablePush;
+    }
+
+    public int getMaxConcurrentStreams() {
+        return this.maxConcurrentStreams;
     }
 }

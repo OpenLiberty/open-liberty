@@ -77,6 +77,8 @@ public class H2InboundLink extends HttpInboundLink {
     // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
     private int highestLocalStreamId = -1; // this moves to 0 when the connection stream is established
+    private int openPushStreams = 0;
+    private final Object pushSync = new Object() {};
 
     boolean connection_preface_sent = false; // empty SETTINGS frame has been sent
     boolean connection_preface_string_rcvd = false; // MAGIC string has been received
@@ -171,7 +173,30 @@ public class H2InboundLink extends HttpInboundLink {
         return initialWindowSize;
     }
 
+    /**
+     * Create a new stream and add it to this link. If the stream ID is even, check to make sure this link has not exceeded
+     * the maximum number of concurrent streams (as set by the client); if too many streams are open, don't open a new one.
+     *
+     * @param streamID
+     * @return null if creating this stream would exceed the maximum number locally-opened streams
+     */
     public H2StreamProcessor createNewInboundLink(Integer streamID) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "createNewInboundLink entry: stream-id: " + streamID);
+        }
+        if ((streamID % 2 == 0) && (streamID != 0)) {
+            synchronized (pushSync) {
+                // if there are too many locally-open active streams, don't open a new one
+                if (openPushStreams > this.getConnectionSettings().getMaxConcurrentStreams()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "createNewInboundLink cannot open a new push stream; maximum number of open push streams reached" + openPushStreams);
+                    }
+                    return null;
+                }
+                openPushStreams++;
+
+            }
+        }
         H2VirtualConnectionImpl h2VC = new H2VirtualConnectionImpl(initialVC);
         // remove the HttpDispatcherLink from the map, so a new one will be created and used by this new H2 stream
         h2VC.getStateMap().remove(HttpDispatcherLink.LINK_ID);
@@ -179,11 +204,11 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor stream = new H2StreamProcessor(streamID, link, this);
 
         // for now, assume parent stream ID is root, need to change soon
-
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
-
         streamTable.put(streamID, stream);
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "createNewInboundLink exit: returning stream: " + streamID + " " + stream);
+        }
         return stream;
     }
 
@@ -1019,7 +1044,7 @@ public class H2InboundLink extends HttpInboundLink {
                 }
                 if (e == null) {
                     streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
-                } else if (e instanceof Http2Exception){
+                } else if (e instanceof Http2Exception) {
                     streamTable.get(0).sendGOAWAYFrame((Http2Exception) e);
                 } else {
                     streamTable.get(0).sendGOAWAYFrame(new Http2Exception(e.getMessage()));
@@ -1036,6 +1061,12 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
+    /**
+     * Set a stream as closed on this link: remove it from the open streams table and move it to the closed streams table
+     * If the stream is even (locally opened), decrement the number of open push streams
+     *
+     * @param streamProcessor
+     */
     public void triggerStreamClose(H2StreamProcessor streamProcessor) {
 
         if (closeTable.size() >= 512) {
@@ -1052,6 +1083,11 @@ public class H2InboundLink extends HttpInboundLink {
 
         closeTable.put(streamProcessor.getId(), streamProcessor);
         streamTable.remove(streamProcessor.getId());
+        if (streamProcessor.getId() % 2 == 0) {
+            synchronized (pushSync) {
+                this.openPushStreams--;
+            }
+        }
     }
 
     /**
