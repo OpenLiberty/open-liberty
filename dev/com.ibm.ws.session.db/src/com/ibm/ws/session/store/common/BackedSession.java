@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,16 +46,14 @@ public abstract class BackedSession extends MemorySession {
 
     static protected final int initialCacheId = 1;
 
-    // The swappable data
-    protected Hashtable mSwappableData = null;
     // The non-swappable data
-    protected Hashtable mNonswappableData = null;
+    private Hashtable mNonswappableData = null;
     //For logging.
     private static final String methodClassName = "BackedSession";
     //For logging the CMVC file version once.
     private static boolean _loggedVersion = false;
 
-    protected BackedHashMap _sessions;
+    BackedHashMap _sessions;
 
     public boolean needToInsert = false;
     // booleans to keep track of writes to the session
@@ -74,8 +72,6 @@ public abstract class BackedSession extends MemorySession {
     public short listenerFlag;
 
     public boolean cacheLastAccessedTime;
-
-    public boolean nukedByInvalidator;
 
     private long mLastWriteTime;
 
@@ -149,7 +145,6 @@ public abstract class BackedSession extends MemorySession {
      */
     private void commonInit() {
         listenerFlag = HTTP_SESSION_NO_LISTENER;
-        nukedByInvalidator = false;
         deferWriteUntilNextTick = 0;
         mLastWriteTime = -1;
         removingSessionFromCache = false;
@@ -414,9 +409,7 @@ public abstract class BackedSession extends MemorySession {
     /*
      * setSwappableData
      */
-    public void setSwappableData(Hashtable ht) {
-        mSwappableData = ht;
-    }
+    public abstract void setSwappableData(Hashtable ht);
 
     protected abstract SerializationService getSerializationService();
 
@@ -873,7 +866,7 @@ public abstract class BackedSession extends MemorySession {
         this.userWriteHit = false;
         this.maxInactWriteHit = false;
         this.listenCntHit = false;
-        this.mSwappableData = null;
+        setSwappableData(null);
         this.mNonswappableData = null;
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[INVALIDATE]);

@@ -21,7 +21,6 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.ws.session.store.common.BackedStore;
-import com.ibm.ws.session.store.common.LoggingUtil;
 
 public class DatabaseStore extends BackedStore {
 
@@ -43,7 +42,7 @@ public class DatabaseStore extends BackedStore {
     //----------------------------------------
 
     public DatabaseStore(SessionManagerConfig smc, String storeId, ServletContext sc, MemoryStoreHelper storeHelper, DatabaseStoreService databaseStoreService) {
-        super(smc, storeId, sc, storeHelper);
+        super(smc, storeId, sc, storeHelper, databaseStoreService);
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             if (!_loggedVersion) {
                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "", "CMVC Version 1.5 3/12/08 09:22:18");
@@ -74,7 +73,8 @@ public class DatabaseStore extends BackedStore {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[REMOTE_INVALIDATE], "for app " + getId() + " id " + sessionId + " backendUpdate " + backendUpdate);
         }
 
-        remoteInvalReceived = true;
+        super.remoteInvalidate(sessionId, backendUpdate);
+
         if (backendUpdate) {
             ((DatabaseHashMap) _sessions).setMaxInactToZero(sessionId, getId());
         }

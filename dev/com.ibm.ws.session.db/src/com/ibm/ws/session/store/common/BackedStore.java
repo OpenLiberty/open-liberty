@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
 
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
-import com.ibm.ws.session.store.db.DatabaseStoreService;
+import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.store.memory.MemoryStore;
 import com.ibm.wsspi.session.ILoader;
 import com.ibm.wsspi.session.ISession;
@@ -36,11 +36,17 @@ public abstract class BackedStore extends MemoryStore {
 
     private static final String methodNames[] = { "getSession", "stop", "createSession", "removeFromMemory" };
 
+    /**
+     * Session store service that created this backed store.
+     */
+    private final SessionStoreService sessionStoreService;
+
     /*
      * constructor
      */
-    public BackedStore(SessionManagerConfig smc, String storeId, ServletContext sc, MemoryStoreHelper storeHelper) {
+    public BackedStore(SessionManagerConfig smc, String storeId, ServletContext sc, MemoryStoreHelper storeHelper, SessionStoreService sessionStoreService) {
         super(smc, storeId, sc, storeHelper);
+        this.sessionStoreService = sessionStoreService;
     }
 
     /*
@@ -170,7 +176,7 @@ public abstract class BackedStore extends MemoryStore {
         }
         inProcessOfStopping = true;
 
-        DatabaseStoreService.setCompletedPassivation(false); // 128284
+        sessionStoreService.setCompletedPassivation(false); // 128284
         //This is only executed for Time-based writes ... not for manual or End-Of-Service writes
         if (_smc.getEnableTimeBasedWrite()) {
             ((BackedHashMap) _sessions).doTimeBasedWrites(true);
@@ -200,7 +206,7 @@ public abstract class BackedStore extends MemoryStore {
             }
         }
 
-        DatabaseStoreService.setCompletedPassivation(true); // 128284
+        sessionStoreService.setCompletedPassivation(true); // 128284
 
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[STOP]);
@@ -278,10 +284,12 @@ public abstract class BackedStore extends MemoryStore {
             LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[REMOVE_FROM_MEMORY]);
     } // end "removeFromMemory"
 
-    /*
-     * abstract methods
+    /**
+     * Override this with implementation that invokes super.remoteInvalidate
      */
-    public abstract void remoteInvalidate(String sessionId, boolean backendUpdate);
+    public void remoteInvalidate(String sessionId, boolean backendUpdate) {
+        remoteInvalReceived = true;
+    }
 
     public abstract BackedSession createSessionObject(String sessionId);
 
