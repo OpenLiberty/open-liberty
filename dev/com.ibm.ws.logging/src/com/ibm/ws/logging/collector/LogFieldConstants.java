@@ -35,4 +35,5 @@ public class LogFieldConstants {
     public static final String SOURCEID = "sourceID";
     public static final String IBM_DURATION = "ibm_duration";
     public static final String DURATION = "duration";
+    public static final String IBM_SEQUENCE = "ibm_sequence";
 }

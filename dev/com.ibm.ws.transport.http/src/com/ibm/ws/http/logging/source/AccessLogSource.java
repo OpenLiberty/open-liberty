@@ -125,8 +125,7 @@ public class AccessLogSource implements Source {
                 genData.addPair("ibm_bytesReceived", recordData.getBytesWritten());
                 genData.addPair("ibm_responseCode", response.getStatusCodeAsInt());
                 genData.addPair("ibm_elapsedTime", recordData.getElapsedTime());
-                // Must pass datetime as string, as its value type must be set as string in its kvp
-                genData.addPair("ibm_datetime", Long.toString(recordData.getTimestamp()));
+                genData.addPair("ibm_datetime", recordData.getTimestamp());
 
                 String sequenceVal = requestStartTimeVal + "_" + String.format("%013X", seq.incrementAndGet());
                 genData.addPair("ibm_sequence", sequenceVal);
