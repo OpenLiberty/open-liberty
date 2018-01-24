@@ -425,6 +425,11 @@ public class BeanValidator implements Validator, PartialStateHolder
     @Override
     public Object saveState(final FacesContext context)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         if (!initialStateMarked())
         {
            //Full state saving.
@@ -448,6 +453,11 @@ public class BeanValidator implements Validator, PartialStateHolder
     @Override
     public void restoreState(final FacesContext context, final Object state)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         if (state != null)
         {
             this.validationGroups = (String) state;
