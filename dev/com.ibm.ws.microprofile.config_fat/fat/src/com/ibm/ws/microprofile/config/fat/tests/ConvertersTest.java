@@ -15,20 +15,19 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import componenttest.annotation.ExpectedFFDC;
-
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  *
@@ -36,6 +35,10 @@ import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 public class ConvertersTest extends AbstractConfigApiTest {
 
     private final static String testClassName = "ConvertersTest";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("ConvertersServer");
