@@ -301,6 +301,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private void addAuthMech(Class<?> annotatedClass, Class<?> implClass, Properties props) {
         Map<String, ModuleProperties> moduleMap = getModuleMap();
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "moduleName: " + moduleName);
         if (moduleMap.containsKey(moduleName)) {
             moduleMap.get(moduleName).putToAuthMechMap(implClass, props);
         } else {
@@ -673,6 +675,38 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return false;
     }
 
+    protected Map<String, ModuleProperties> getModuleMap() {
+        if (moduleMap.isEmpty()) {
+            initModuleMap();
+        }
+        return moduleMap;
+    }
+
+    protected void initModuleMap() {
+        Map<String, URL> wml = getWebModuleMap();
+        if (wml != null) {
+            for (Map.Entry<String, URL> entry : wml.entrySet()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "moduleName : " + entry.getKey() + ", location : " + entry.getValue());
+                }
+                moduleMap.put(entry.getKey(), new ModuleProperties(entry.getValue()));
+            }
+        }
+    }
+
+    protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+        return ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().getModuleMetaDataMap();
+    }
+
+    protected WebAppSecurityConfig getWebAppSecurityConfig() {
+        return WebConfigUtils.getWebAppSecurityConfig();
+    }
+
+    protected String getClassFileLocation(Class klass) {
+        return klass.getProtectionDomain().getCodeSource().getLocation().getFile();
+    }
+
+
     private DatabaseIdentityStoreDefinition getInstanceOfDBAnnotation(final Map<String, Object> overrides) {
         DatabaseIdentityStoreDefinition annotation = new DatabaseIdentityStoreDefinition() {
 
@@ -732,25 +766,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
         };
         return annotation;
-    }
-
-    private Map<String, ModuleProperties> getModuleMap() {
-        if (moduleMap.isEmpty()) {
-            initModuleMap();
-        }
-        return moduleMap;
-    }
-
-    protected void initModuleMap() {
-        Map<String, URL> wml = getWebModuleMap();
-        if (wml != null) {
-            for (Map.Entry<String, URL> entry : wml.entrySet()) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "moduleName : " + entry.getKey() + ", location : " + entry.getValue());
-                }
-                moduleMap.put(entry.getKey(), new ModuleProperties(entry.getValue()));
-            }
-        }
     }
 
     private boolean isEmptyModuleMap() {
@@ -848,23 +863,24 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return result;
     }
 
-    protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
-        return ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().getModuleMetaDataMap();
-    }
-
     /**
      * Identify the module name from the class. If the class exists in the jar file, return war file name
      * if it is located under the war file, otherwise returning jar file name.
      **/
     private String getModuleFromClass(Class<?> klass, Map<String, ModuleProperties> moduleMap) {
-        String file = klass.getProtectionDomain().getCodeSource().getLocation().getFile();
+        String file = getClassFileLocation(klass);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "File name : " + file);
         }
         String moduleName = null;
         for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
             URL location = entry.getValue().getLocation();
-            if (location.getProtocol().equals("file") && file.startsWith(location.getFile())) {
+            String filePath = location.getFile();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "location : " + filePath);
+            }
+
+            if (location.getProtocol().equals("file") && file.startsWith(filePath)) {
                 moduleName = entry.getKey();
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "module name from the list  : " + moduleName);
@@ -933,9 +949,4 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
         return false;
     }
-
-    protected WebAppSecurityConfig getWebAppSecurityConfig() {
-        return WebConfigUtils.getWebAppSecurityConfig();
-    }
-
 }

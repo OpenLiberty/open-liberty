@@ -162,7 +162,7 @@ public class LoginToContinueInterceptorTest {
             }
 
             @Override
-            protected WebAppSecurityConfig getWebAppSeurityConfig() {
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
                 return wasc;
             }
 

@@ -263,7 +263,7 @@ public class LoginToContinueInterceptor {
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
         String storedReq = null;
-        WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
         storedReq = getStoredReq(req, referrerURLHandler);
         // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
@@ -306,14 +306,14 @@ public class LoginToContinueInterceptor {
     }
 
     private void setCookies(HttpServletRequest req, HttpServletResponse res) {
-        WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         if (allowToAddCookieToResponse(webAppSecConfig, req)) {
             AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
             if ("POST".equalsIgnoreCase(req.getMethod())) {
                 PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
                 postParameterHelper.save(req, res, authResult, true);
             }
-            ReferrerURLCookieHandler referrerURLHandler = getWebAppSeurityConfig().createReferrerURLCookieHandler();
+            ReferrerURLCookieHandler referrerURLHandler = getWebAppSecurityConfig().createReferrerURLCookieHandler();
             String query = req.getQueryString();
             String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
             referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
@@ -419,7 +419,7 @@ public class LoginToContinueInterceptor {
         this.mpp = mpp;
     }
 
-    protected WebAppSecurityConfig getWebAppSeurityConfig() {
+    protected WebAppSecurityConfig getWebAppSecurityConfig() {
         return WebConfigUtils.getWebAppSecurityConfig();
     }
 
