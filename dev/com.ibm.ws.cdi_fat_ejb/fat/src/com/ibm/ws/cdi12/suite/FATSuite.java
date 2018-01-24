@@ -35,6 +35,7 @@ import com.ibm.ws.cdi12.fat.tests.CDIManagedBeanInterceptorTest;
 import com.ibm.ws.cdi12.fat.tests.EJB32Test;
 import com.ibm.ws.cdi12.fat.tests.EjbConstructorInjectionTest;
 import com.ibm.ws.cdi12.fat.tests.EjbDiscoveryTest;
+import com.ibm.ws.cdi12.fat.tests.EjbInLibExtTest;
 import com.ibm.ws.cdi12.fat.tests.EjbMiscTest;
 import com.ibm.ws.cdi12.fat.tests.EjbTimerTest;
 import com.ibm.ws.cdi12.fat.tests.InjectParameterTest;
@@ -47,17 +48,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                AroundConstructBeanTest.class, 
-                AroundConstructEjbTest.class,
-                CDIManagedBeanInterceptorTest.class,
-                EJB32Test.class,
-                EjbConstructorInjectionTest.class,
-                EjbDiscoveryTest.class,
-                EjbMiscTest.class,
-                EjbTimerTest.class,
-                InjectParameterTest.class,
-                MultipleNamedEJBTest.class,
-                StatefulSessionBeanInjectionTest.class
+
+                EjbInLibExtTest.class,
 })
 public class FATSuite {
     

@@ -21,6 +21,9 @@ src: \
 	test-applications/ejbMisc.war/src,\
 	test-applications/ejbScope.war/src,\
 	test-applications/ejbTimer.war/src,\
+	test-applications/ejbInLibExtEJBModule.jar,\
+	test-applications/ejbInLibExtJAR.jar,\
+	test-applications/ejbInLibExtWARModule.war,\
 	test-applications/injectParameters.war/src,\
 	test-applications/managedBeanApp.war/src,\
 	test-applications/multipleEJBsSingleClass.war/src,\
