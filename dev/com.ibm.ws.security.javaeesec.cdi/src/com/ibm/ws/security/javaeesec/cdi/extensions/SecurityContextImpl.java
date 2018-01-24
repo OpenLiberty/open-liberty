@@ -186,9 +186,7 @@ public class SecurityContextImpl implements SecurityContext {
         if (subjectManagerService != null) {
             Subject callerSubject = null;
 
-            callerSubject = subjectManagerService.getInvocationSubject();
-            if (callerSubject == null)
-                callerSubject = subjectManagerService.getCallerSubject();
+            callerSubject = subjectManagerService.getCallerSubject();
             return callerSubject;
         }
         return null;
