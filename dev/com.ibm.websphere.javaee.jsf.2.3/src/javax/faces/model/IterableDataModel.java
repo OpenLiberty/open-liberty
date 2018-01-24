@@ -106,11 +106,11 @@ public class IterableDataModel<E> extends DataModel<E>
                 {
                     _list = new ArrayList<E>();
                 }
-                if (_iterator == null)
+                if (_iterator == null && _iterable != null)
                 {
                     _iterator = _iterable.iterator();
                 }
-                if (_iterator.hasNext())
+                if (_iterator != null && _iterator.hasNext())
                 {
                     _list.add(_iterator.next());
                 }
