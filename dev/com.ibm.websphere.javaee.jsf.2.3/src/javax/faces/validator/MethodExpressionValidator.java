@@ -100,11 +100,21 @@ public class MethodExpressionValidator implements Validator, StateHolder
 
     public void restoreState(FacesContext context, Object state)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         methodExpression = (MethodExpression)state;
     }
 
     public Object saveState(FacesContext context)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         return methodExpression;
     }
 
