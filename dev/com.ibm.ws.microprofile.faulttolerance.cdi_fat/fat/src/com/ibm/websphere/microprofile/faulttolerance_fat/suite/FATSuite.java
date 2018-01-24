@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -34,6 +35,9 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTe
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 CDIAsyncTest.class,
@@ -47,9 +51,13 @@ import com.ibm.ws.fat.util.SharedServer;
                 TestMultiModuleClassLoading.class,
                 ValidationTest.class,
 })
+
 public class FATSuite {
 
     public static SharedServer MULTI_MODULE_SERVER = new SharedServer("FaultToleranceMultiModule");
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES());
 
     @BeforeClass
     public static void setUp() throws Exception {
