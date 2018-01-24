@@ -109,19 +109,19 @@ public class FFDCSource implements Source {
         @Override
         public void process(Incident in, Throwable th) {
 
+            int countVal = in.getCount();
+
             //Condition to prevent adding ffdc event for the same failure
             //to the bufferMgr multiple times
             //TODO: Need to evaluate the need for the timeStamp (timeStamp == dateOfFirstOccurrence) check is required or not
-            if (in.getCount() == 1) {
+            if (countVal == 1) {
 
                 GenericData genData = new GenericData();
 
                 long timeStampVal = in.getTimeStamp();
                 genData.addPair("ibm_datetime", timeStampVal);
                 genData.addPair("dateOfFirstOccurence", in.getDateOfFirstOccurrence().getTime());
-                int countVal = in.getCount();
                 genData.addPair("count", countVal);
-
                 genData.addPair("ibm_className", in.getSourceId());
                 genData.addPair("label", in.getLabel());
                 genData.addPair("ibm_exceptionName", in.getExceptionName());
