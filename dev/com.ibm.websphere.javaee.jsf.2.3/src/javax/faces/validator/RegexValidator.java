@@ -164,6 +164,11 @@ public class RegexValidator implements Validator, PartialStateHolder
     /** {@inheritDoc} */
     public Object saveState(FacesContext context)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         if (!initialStateMarked())
         {
             return pattern;
@@ -174,6 +179,11 @@ public class RegexValidator implements Validator, PartialStateHolder
     /** {@inheritDoc} */
     public void restoreState(FacesContext context, Object state)
     {
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
         if (state != null)
         {
             //Since pattern is required, if state is null
