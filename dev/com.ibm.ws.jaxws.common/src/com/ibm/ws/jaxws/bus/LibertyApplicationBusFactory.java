@@ -40,8 +40,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
     private static final TraceComponent tc = Tr.register(LibertyApplicationBusFactory.class);
 
-    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR =
-                    AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
+    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
 
     private static final LibertyApplicationBusFactory INSTANCE = new LibertyApplicationBusFactory();
 
@@ -82,9 +81,13 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         extensions.put(JaxWsModuleMetaData.class, moduleMetaData);
         extensions.put(LibertyApplicationBus.Type.class, LibertyApplicationBus.Type.CLIENT);
 
-        LibertyApplicationBus bus = createBus(extensions, properties, moduleInfo.getClassLoader());
-
-        return bus;
+        final ClassLoader moduleClassLoader = moduleInfo.getClassLoader();
+        Object origTccl = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(moduleClassLoader);
+        try {
+            return createBus(extensions, properties, moduleClassLoader);
+        } finally {
+            THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
+        }
     }
 
     @Override
@@ -156,7 +159,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
 
     /**
      * register LibertyApplicationBusListener to bus factory, those methods will be invoked with the bus lifecycle
-     * 
+     *
      * @param initializer
      */
     public void registerApplicationBusListener(LibertyApplicationBusListener listener) {
@@ -187,7 +190,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
      * The static method from parent class BusFactory also tries to change the thread bus, which is not required.
      * Use BusFactory.class as the synchronized lock due to the signature of the BusFactory.setDefaultBus is
      * public static void synchronized setDefaultBus(Bus bus)
-     * 
+     *
      * @param bus
      */
     public static void setDefaultBus(Bus bus) {
