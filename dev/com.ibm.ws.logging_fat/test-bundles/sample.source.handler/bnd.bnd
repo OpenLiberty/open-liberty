@@ -1,0 +1,41 @@
+-include= ~../../../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Sample Source Handler
+Bundle-SymbolicName: sample.source.handler
+Bundle-Description: Sample SourceHandler: Sample source and handler for collector manager framework; version=${bVersion}
+  
+WS-TraceGroup: sampleSourceHandler
+
+Import-Package: com.ibm.ejs.ras, \
+                com.ibm.websphere.ras, \
+                com.ibm.websphere.ras.annotation, \
+                com.ibm.ws.ffdc, \
+                com.ibm.ws.ras.instrument.annotation, \
+                com.ibm.wsspi.kernel.service.location, \
+                com.ibm.wsspi.kernel.service.utils, \
+                org.osgi.framework, \
+                com.ibm.wsspi.collector.manager, \
+
+Private-Package: sample.source.handler
+
+Include-Resource: \
+        OSGI-INF=resources/OSGI-INF
+        
+Service-Component: \
+   CollectorSource;\
+    implementation:=sample.source.handler.SampleSourceImpl;\
+    provide:=com.ibm.wsspi.collector.manager.Source; \
+    executor=java.util.concurrent.ExecutorService; \
+    bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.collector.manager.sample.source)'; \
+    properties:="service.vendor=IBM", \
+  CollectorHandler;\
+    implementation:=sample.source.handler.SampleHandlerImpl;\
+    provide:=com.ibm.wsspi.collector.manager.Handler; \
+    executor=java.util.concurrent.ExecutorService; \
+    modified:='modified'; \
+    immediate:='true'; \
+    properties:="service.vendor=IBM", \
+  

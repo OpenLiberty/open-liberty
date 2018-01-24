@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,13 @@ package com.ibm.ws.logging.fat;
 
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
@@ -28,12 +31,20 @@ public class HealthCenterTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.healthcenter");
+        ShrinkHelper.defaultDropinApp(server, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
 
         Assume.assumeTrue(JavaInfo.forServer(server).vendor().equals(JavaInfo.Vendor.IBM));
 
         if (!server.isStarted())
             server.startServer();
 
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     @Test
