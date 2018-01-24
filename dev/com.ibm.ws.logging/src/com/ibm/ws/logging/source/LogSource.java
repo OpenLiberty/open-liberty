@@ -136,8 +136,7 @@ public class LogSource implements Source, WsLogHandler {
         String messageVal = extractMessage(routedMessage, logRecord);
 
         long dateVal = logRecord.getMillis();
-        // Must pass datetime as string, as its value type must be set as string in its kvp
-        genData.addPair("ibm_datetime", Long.toString(dateVal));
+        genData.addPair("ibm_datetime", dateVal);
 
         String messageIdVal = null;
 
