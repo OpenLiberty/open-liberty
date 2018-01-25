@@ -30,17 +30,16 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.ws.jaxrs20.providers.json4j.utils.ProviderUtils;
 import com.ibm.ws.jaxrs20.utils.ReflectUtil;
-
-//import com.ibm.json.java.JSONObject;
 
 @SuppressWarnings("rawtypes")
 @Provider
 @Consumes({ "application/json", "application/javascript" })
 @Produces({ "application/json", "application/javascript" })
-public class JSON4JObjectProvider implements MessageBodyWriter,
-                MessageBodyReader {
+public class JSON4JObjectProvider implements MessageBodyWriter<JSONObject>,
+                MessageBodyReader<JSONObject> {
     @Override
     public boolean isReadable(Class clazz, Type type,
                               Annotation[] annotations, MediaType mediaType) {
@@ -48,7 +47,7 @@ public class JSON4JObjectProvider implements MessageBodyWriter,
     }
 
     @Override
-    public Object readFrom(Class clazz, Type type,
+    public JSONObject readFrom(Class clazz, Type type,
                            Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap headers, InputStream is)
                     throws IOException, WebApplicationException {
@@ -57,7 +56,7 @@ public class JSON4JObjectProvider implements MessageBodyWriter,
 
             Method m = ProviderUtils.getMethod("com.ibm.json.java.JSONObject", "parse", new Class<?>[] { Reader.class });
 
-            return ReflectUtil.invoke(m, null, new Object[] { new InputStreamReader(is, ProviderUtils
+            return (JSONObject) ReflectUtil.invoke(m, null, new Object[] { new InputStreamReader(is, ProviderUtils
                             .getCharset(mediaType)) });
         } catch (Throwable e) {
 
@@ -67,7 +66,7 @@ public class JSON4JObjectProvider implements MessageBodyWriter,
     }
 
     @Override
-    public long getSize(Object obj, Class clazz, Type type,
+    public long getSize(JSONObject obj, Class clazz, Type type,
                         Annotation[] annotations, MediaType mediaType) {
         return -1L;
     }
@@ -79,7 +78,7 @@ public class JSON4JObjectProvider implements MessageBodyWriter,
     }
 
     @Override
-    public void writeTo(Object obj, Class clazz, Type type,
+    public void writeTo(JSONObject obj, Class clazz, Type type,
                         Annotation[] annotations, MediaType mediaType,
                         MultivaluedMap headers, OutputStream os)
                     throws IOException, WebApplicationException {

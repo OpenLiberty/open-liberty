@@ -30,17 +30,15 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.ibm.json.java.JSONArray;
 import com.ibm.ws.jaxrs20.providers.json4j.utils.ProviderUtils;
 import com.ibm.ws.jaxrs20.utils.ReflectUtil;
-
-//import com.ibm.json.java.JSONArray;
 
 @SuppressWarnings("rawtypes")
 @Provider
 @Consumes({ "application/json", "application/javascript" })
 @Produces({ "application/json", "application/javascript" })
-public class JSON4JArrayProvider implements MessageBodyWriter,
-                MessageBodyReader {
+public class JSON4JArrayProvider implements MessageBodyWriter<JSONArray>, MessageBodyReader<JSONArray> {
     @Override
     public boolean isReadable(Class clazz, Type type,
                               Annotation[] annotations, MediaType mediaType) {
@@ -48,13 +46,13 @@ public class JSON4JArrayProvider implements MessageBodyWriter,
     }
 
     @Override
-    public Object readFrom(Class clazz, Type type,
+    public JSONArray readFrom(Class clazz, Type type,
                            Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap headers, InputStream is)
                     throws IOException, WebApplicationException {
         try {
             Method m = ProviderUtils.getMethod("com.ibm.json.java.JSONArray", "parse", new Class<?>[] { Reader.class });
-            return ReflectUtil.invoke(m, null, new Object[] { new InputStreamReader(is, ProviderUtils
+            return (JSONArray) ReflectUtil.invoke(m, null, new Object[] { new InputStreamReader(is, ProviderUtils
                             .getCharset(mediaType)) });
         } catch (Throwable e) {
 
@@ -65,7 +63,7 @@ public class JSON4JArrayProvider implements MessageBodyWriter,
     }
 
     @Override
-    public long getSize(Object obj, Class clazz, Type type,
+    public long getSize(JSONArray obj, Class clazz, Type type,
                         Annotation[] annotations, MediaType mediaType) {
         return -1L;
     }
@@ -77,7 +75,7 @@ public class JSON4JArrayProvider implements MessageBodyWriter,
     }
 
     @Override
-    public void writeTo(Object arr, Class clazz, Type type,
+    public void writeTo(JSONArray arr, Class clazz, Type type,
                         Annotation[] annotations, MediaType mediaType,
                         MultivaluedMap headers, OutputStream os)
                     throws IOException, WebApplicationException {

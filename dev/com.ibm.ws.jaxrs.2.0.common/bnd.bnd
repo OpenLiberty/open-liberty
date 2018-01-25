@@ -183,6 +183,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.json4j,\
 	com.ibm.websphere.javaee.mail.1.5;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.0,\
 	com.ibm.websphere.appserver.spi.logging,\
