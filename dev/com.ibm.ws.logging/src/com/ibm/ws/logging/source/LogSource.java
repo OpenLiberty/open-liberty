@@ -214,6 +214,21 @@ public class LogSource implements Source, WsLogHandler {
         pairs.add(sequence);
         pairs.add(levelValue);
 
+        //get format for trace
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        if (wsLogRecord != null) {
+            KeyValuePair corrId = new KeyValuePair("correlationId", wsLogRecord.getCorrelationId(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair org = new KeyValuePair("org", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair prod = new KeyValuePair("product", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair component = new KeyValuePair("component", wsLogRecord.getComponent(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair wsSourceThreadName = new KeyValuePair("wsSourceThreadName", wsLogRecord.getReporterOrSourceThreadName(), KeyValuePair.ValueTypes.STRING);
+            pairs.add(corrId);
+            pairs.add(org);
+            pairs.add(prod);
+            pairs.add(component);
+            pairs.add(wsSourceThreadName);
+        }
+
         genData.setSourceType(sourceName);
 
         return genData;
@@ -229,5 +244,16 @@ public class LogSource implements Source, WsLogHandler {
         if (matcher.find())
             messageId = msg.substring(matcher.start(), matcher.end() - 1);
         return messageId;
+    }
+
+    /**
+     * @return
+     */
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 }

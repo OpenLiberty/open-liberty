@@ -122,7 +122,7 @@ public class TraceSource implements Source, WsTraceHandler {
 //    }
 
     public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-
+//        Object id
         KeyValuePair message = null;
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
         if (verboseMessage == null) {
@@ -140,6 +140,8 @@ public class TraceSource implements Source, WsTraceHandler {
         KeyValuePair className = new KeyValuePair("ibm_className", logRecord.getSourceClassName(), KeyValuePair.ValueTypes.STRING);
         String sequenceNum = sequenceNumber.next(Long.parseLong(datetime.getValue()));
         KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceNum, KeyValuePair.ValueTypes.STRING);
+
+//        KeyValuePair objectId = new KeyValuePair("objectId", (String) id, KeyValuePair.ValueTypes.STRING);
 
         KeyValuePairs extensions = new KeyValuePairs();
         ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
@@ -167,6 +169,7 @@ public class TraceSource implements Source, WsTraceHandler {
         pairs.add(sequence);
         pairs.add(extensions);
 
+//        pairs.add(objectId);
         genData.setSourceType(sourceName);
         return genData;
 

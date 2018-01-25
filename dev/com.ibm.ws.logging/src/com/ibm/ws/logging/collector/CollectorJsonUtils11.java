@@ -155,6 +155,9 @@ public class CollectorJsonUtils11 {
                     String datetime = dateFormatTL.get().format(Long.parseLong(value));
                     isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
+                } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
+                           || key.equals("levelValue")) {
+                    //don't include it
                 } else {
 
                     isFirstField = isFirstField & !addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
@@ -223,6 +226,9 @@ public class CollectorJsonUtils11 {
                     String datetime = dateFormatTL.get().format(Long.parseLong(value));
                     isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
+                } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
+                           || key.equals("levelValue")) {
+                    //don't include it
                 } else {
 
                     isFirstField = isFirstField & !addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
@@ -280,6 +286,9 @@ public class CollectorJsonUtils11 {
                         String datetime = dateFormatTL.get().format(Long.parseLong(value));
                         isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
+                    } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
+                               || key.equals("levelValue")) {
+                        //don't include it
                     } else {
 
                         isFirstField = isFirstField & !addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
@@ -299,7 +308,7 @@ public class CollectorJsonUtils11 {
     }
 
     static boolean addCommonFields(StringBuilder sb, String hostName, String wlpUserDir,
-                                    String serverName, boolean isFirstField, String eventType) {
+                                   String serverName, boolean isFirstField, String eventType) {
 
         /* Common fields for all event types */
 
@@ -409,7 +418,7 @@ public class CollectorJsonUtils11 {
      * Returns true if the added filed is the first one on JSON.
      */
     static boolean addCommonFieldsGC(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
-                                   boolean isFirstField, String eventType) {
+                                     boolean isFirstField, String eventType) {
         String datetime = dateFormatTL.get().format(timestamp);
 
         /* Common fields for all event types */

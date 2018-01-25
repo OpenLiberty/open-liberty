@@ -29,6 +29,7 @@ import com.ibm.ws.logging.collector.DateFormatHelper;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.Pair;
+import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 
@@ -152,6 +153,21 @@ public class BaseTraceFormatter extends Formatter {
         return "";
     }
 
+    //copied from BTS
+    /** Flags for suppressing traceback output to the console */
+    private static class StackTraceFlags {
+        boolean needsToOutputInternalPackageMarker = false;
+        boolean isSuppressingTraces = false;
+    }
+
+    /** Track the stack trace printing activity of the current thread */
+    private static ThreadLocal<StackTraceFlags> traceFlags = new ThreadLocal<StackTraceFlags>() {
+        @Override
+        protected StackTraceFlags initialValue() {
+            return new StackTraceFlags();
+        }
+    };
+
     final TraceFormat traceFormat;
 
     static boolean useIsoDateFormat = false;
@@ -210,6 +226,48 @@ public class BaseTraceFormatter extends Formatter {
 
         return createFormattedString(logRecord, id, txt);
     }
+
+//    /**
+//     * Format a detailed record for trace.log. Previously formatted messages may
+//     * be provided and may be reused if possible.
+//     *
+//     * @param logRecord
+//     * @param id
+//     * @param formattedMsg the result of {@link #formatMessage}, or null if that
+//     *            method was not previously called
+//     * @param formattedVerboseMsg the result of {@link #formatVerboseMessage},
+//     *            or null if that method was not previously called
+//     * @return
+//     */
+//    public String traceLogFormatter(GenericData object) {
+//        ArrayList<Pair> pairs = object.getPairs();
+//        KeyValuePair kvp = null;
+//        String txt;
+//        for (Pair p : pairs) {
+//
+//            if (p instanceof KeyValuePair) {
+//
+//                kvp = (KeyValuePair) p;
+//                if (kvp.getKey().equals("message")) {
+//                    txt = kvp.getValue();
+//                } else if (kvp.getKey().equals("throwable")) {
+//                    throwable = kvp.getValue();
+//                } else if (kvp.getKey().equals("levelValue")) {
+//                    levelValue = Integer.parseInt(kvp.getValue());
+//                }
+//
+//            }
+//        }
+////        if (formattedVerboseMsg == null) {
+////            // If we don't already have a formatted message... (for Audit or Info or Warning.. )
+////            // we have to build something instead (while avoiding a useless resource bundle lookup)
+////            txt = formatVerboseMessage(logRecord, formattedMsg, false);
+////        } else {
+////            txt = formattedVerboseMsg;
+////        }
+//
+//        return createFormattedString(logRecord, id, txt);
+//    }
 
     /**
      * {@inheritDoc} <br />
@@ -435,6 +493,21 @@ public class BaseTraceFormatter extends Formatter {
 
             }
         }
+        if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
+            sb.append(BaseTraceFormatter.levelValToString(levelValue));
+//          sb.append(levelString);
+            sb.append(message);
+            if (throwable != null) {
+                sb.append(LoggingConstants.nl).append(throwable);
+            }
+//          if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
+//
+//              return sb.toString();
+//          } else {
+//              return sb.toString();
+//          }
+            return sb.toString();
+        }
         if (levelValue >= consoleLogLevel) {
             sb.append(BaseTraceFormatter.levelValToString(levelValue));
 //            sb.append(levelString);
@@ -504,7 +577,7 @@ public class BaseTraceFormatter extends Formatter {
         String message = "";
         Long datetime = null;
         String level = "";
-        String throwable = "";
+        String throwable = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -527,7 +600,7 @@ public class BaseTraceFormatter extends Formatter {
         sb.append('[').append(DateFormatHelper.formatTime(datetime, useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');
         formatFixedString(sb, name, enhancedNameLength);
-        sb.append(" " + level + " "); // sym has built-in padding
+        sb.append(level + " "); // sym has built-in padding
         sb.append(message);
 
         if (throwable != null) {
@@ -642,6 +715,182 @@ public class BaseTraceFormatter extends Formatter {
 
                     //get thread name
                     x = wsLogRecord.getReporterOrSourceThreadName();
+                } else {
+                    x = Thread.currentThread().getName();
+                }
+                if (x != null) {
+                    sb.append(" thread=[").append(x).append("]");
+                }
+
+                // append formatted message -- txt includes formatted args
+                sb.append(nlAdvancedPadding).append(txt);
+                if (stackTrace != null)
+                    sb.append(nlAdvancedPadding).append(stackTrace);
+                break;
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Format the given record into the desired trace format
+     *
+     * @param name
+     * @param sym
+     * @param method
+     * @param id
+     * @param level
+     * @param txt
+     * @return String
+     */
+    public String traceFormatGenData(GenericData gen) {
+
+        ArrayList<Pair> pairs = gen.getPairs();
+        KeyValuePair kvp = null;
+        String txt = null;
+        String stackTrace = null;
+        String id = null;
+        String objId;
+
+        String sym = null;
+//      WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+
+        String name;
+//        String method = logRecord.getSourceMethodName();
+//        String className = logRecord.getSourceClassName();
+        String className = null;
+        String method = null;
+        String loggerName = null;
+        Long ibm_datetime = null;
+
+        String corrId = null;
+        String org = null;
+        String prod = null;
+        String component = null;
+        String wsSourceThreadName = null;
+//      String stackTrace = getStackTrace(logRecord);
+//        String sym = getMarker(logRecord);
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals("message")) {
+                    txt = kvp.getValue();
+                } else if (kvp.getKey().equals("throwable")) {
+                    stackTrace = kvp.getValue();
+                } else if (kvp.getKey().equals("ibm_datetime")) {
+                    ibm_datetime = Long.parseLong(kvp.getValue());
+                } else if (kvp.getKey().equals("severity")) {
+                    sym = " " + kvp.getValue() + " ";
+                } else if (kvp.getKey().equals("ibm_className")) {
+                    className = kvp.getValue();
+                } else if (kvp.getKey().equals("ibm_methodName")) {
+                    method = kvp.getValue();
+                } else if (kvp.getKey().equals("module")) {
+                    loggerName = kvp.getValue();
+                } else if (kvp.getKey().equals("objectId")) {
+                    id = kvp.getValue();
+                } else if (kvp.getKey().equals("correlationId")) {
+                    corrId = kvp.getValue();
+                } else if (kvp.getKey().equals("org")) {
+                    org = kvp.getValue();
+                } else if (kvp.getKey().equals("product")) {
+                    prod = kvp.getValue();
+                } else if (kvp.getKey().equals("component")) {
+                    component = kvp.getValue();
+                } else if (kvp.getKey().equals("wsSourceThreadName")) {
+                    wsSourceThreadName = kvp.getValue();
+                }
+
+            }
+        }
+
+        StringBuilder sb = new StringBuilder(256);
+
+        // Common header
+        sb.append('[').append(DateFormatHelper.formatTime(ibm_datetime, useIsoDateFormat)).append("] ");
+        sb.append(DataFormatHelper.getThreadId());
+
+        switch (traceFormat) {
+            default:
+            case ENHANCED:
+                objId = generateObjectId(id, true);
+                name = nonNullString(className, loggerName);
+
+                sb.append(" id=").append(objId).append(' ');
+                formatFixedString(sb, name, enhancedNameLength);
+                sb.append(sym); // sym has built-in padding
+                if (method != null) {
+                    sb.append(method).append(' ');
+                }
+
+                // append formatted message -- txt includes formatted args
+                sb.append(txt);
+                if (stackTrace != null)
+                    sb.append(LoggingConstants.nl).append(stackTrace);
+                break;
+            case BASIC:
+                name = nonNullString(loggerName, className);
+
+                sb.append(' '); // pad after thread id
+                fixedClassString(sb, name, basicNameLength);
+                sb.append(sym);
+
+                if (className != null)
+                    sb.append(className);
+                sb.append(' '); // yes, this space is always there.
+
+                if (method != null)
+                    sb.append(method);
+                sb.append(' '); // yes, this space is always there.
+
+                // append formatted message -- includes formatted args
+                sb.append(txt);
+                if (stackTrace != null)
+                    sb.append(nlBasicPadding).append(stackTrace);
+                break;
+            case ADVANCED:
+                objId = generateObjectId(id, false);
+                name = nonNullString(loggerName, null);
+
+                sb.append(' '); // pad after thread id
+                sb.append(sym);
+
+                // next append the correlation id.
+                sb.append("UOW=");
+                if (corrId != null)
+                    sb.append(corrId);
+
+                // next enter the logger name.
+                sb.append(" source=").append(name);
+
+                // append className if non-null
+                if (className != null)
+                    sb.append(" class=").append(className);
+
+                // append methodName if non-null
+                if (method != null)
+                    sb.append(" method=").append(method);
+
+                if (id != null)
+                    sb.append(" id=").append(objId);
+
+                String x = null;
+                if (org != null && org != "") {
+                    // next append org, prod, component, if set. Reference equality check is ok here.
+                    sb.append(" org=");
+                    sb.append(org);
+                    sb.append(" prod=");
+                    sb.append(prod);
+                    sb.append(" component=");
+                    sb.append(component);
+
+                    //get thread name
+//                    x = wsLogRecord.getReporterOrSourceThreadName();
+                    if (wsSourceThreadName != null) {
+                        x = wsSourceThreadName;
+                    }
                 } else {
                     x = Thread.currentThread().getName();
                 }
@@ -874,5 +1123,87 @@ public class BaseTraceFormatter extends Formatter {
         } catch (ClassCastException ex) {
             return null;
         }
+    }
+
+    protected String filteredStreamOutput(GenericData genData) {
+        String txt = null;
+//        String stackTrace = null;
+        String loglevel = null;
+        KeyValuePair kvp = null;
+
+        ArrayList<Pair> pairs = genData.getPairs();
+//      String stackTrace = getStackTrace(logRecord);
+//        String sym = getMarker(logRecord);
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals("message")) {
+                    txt = kvp.getValue();
+                } else if (kvp.getKey().equals("loglevel")) {
+                    loglevel = kvp.getValue();
+                }
+            }
+        }
+        if (!(loglevel.equals("SystemErr") || loglevel.equals("SystemOut"))) {
+            return null;
+        }
+        String message = filterStackTraces(txt);
+        if (txt != null) {
+            if (loglevel.equals("SystemErr")) {
+                message = "[err] " + message;
+            }
+            return message;
+        }
+        return txt;
+    }
+
+    private String filterStackTraces(String txt) {
+        // Check for stack traces, which we may want to trim
+        StackTraceFlags stackTraceFlags = traceFlags.get();
+        // We have a little thread-local state machine here with four states controlled by two
+        // booleans. Our triggers are { "unknown/user code", "just seen IBM code", "second line of IBM code", ">second line of IBM code"}
+        // "unknown/user code" -> stackTraceFlags.isSuppressingTraces -> false, stackTraceFlags.needsToOutputInternalPackageMarker -> false
+        // "just seen IBM code" -> stackTraceFlags.needsToOutputInternalPackageMarker->true
+        // "second line of IBM code" -> stackTraceFlags.needsToOutputInternalPackageMarker->true
+        // ">second line of IBM code" -> stackTraceFlags.isSuppressingTraces->true
+        // The final two states are optional
+
+        if (txt.startsWith("\tat ")) {
+            // This is a stack trace, do a more detailed analysis
+            PackageProcessor packageProcessor = PackageProcessor.getPackageProcessor();
+            String packageName = PackageProcessor.extractPackageFromStackTraceLine(txt);
+            // If we don't have a package processor, don't suppress anything
+            if (packageProcessor != null && packageProcessor.isIBMPackage(packageName)) {
+                // First internal package, we let through
+                // Second one, we suppress but say we did
+                // If we're still suppressing, and this is a stack trace, this is easy - we suppress
+                if (stackTraceFlags.isSuppressingTraces) {
+                    txt = null;
+                } else if (stackTraceFlags.needsToOutputInternalPackageMarker) {
+                    // Replace the stack trace with something saying we got rid of it
+                    txt = "\tat " + TruncatableThrowable.INTERNAL_CLASSES_STRING;
+                    // No need to output another marker, we've just output it
+                    stackTraceFlags.needsToOutputInternalPackageMarker = false;
+                    // Suppress any subsequent IBM frames
+                    stackTraceFlags.isSuppressingTraces = true;
+                } else {
+                    // Let the text through, but make a note not to let anything but an [internal classes] through
+                    stackTraceFlags.needsToOutputInternalPackageMarker = true;
+                }
+            } else {
+                // This is user code, third party API, or Java API, so let it through
+                // Reset the flags to ensure it gets let through
+                stackTraceFlags.isSuppressingTraces = false;
+                stackTraceFlags.needsToOutputInternalPackageMarker = false;
+            }
+
+        } else {
+            // We're no longer processing a stack, so reset all our state
+            stackTraceFlags.isSuppressingTraces = false;
+            stackTraceFlags.needsToOutputInternalPackageMarker = false;
+        }
+        return txt;
     }
 }

@@ -62,14 +62,16 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
-        String messageOutput = "";
+        String messageOutput = null;
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
             messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             messageOutput = formatter.messageLogFormatter((GenericData) event);
 
         }
-        traceWriter.writeRecord(messageOutput);
+        if (messageOutput != null) {
+            traceWriter.writeRecord(messageOutput);
+        }
 
     }
 

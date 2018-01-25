@@ -26,10 +26,12 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
     private SystemLogHolder sysLogHolder;
     private SystemLogHolder sysErrHolder;
+    private boolean consoleStream = false;
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
     private BaseTraceFormatter formatter = null;
     private Integer consoleLogLevel = null;
+    private boolean copySystemStreams = false;
 
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -53,14 +55,26 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         }
         //add in formatter here for basic
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
-            messageOutput = formatter.consoleLogFormatter((GenericData) event, consoleLogLevel);
+            //if detailLog == systemOut or systemError write to console.log in trace format
+            if (consoleStream) {
+                messageOutput = formatter.traceFormatGenData((GenericData) event);
+            } else if (copySystemStreams) {
+                //write
+                messageOutput = formatter.filteredStreamOutput((GenericData) event);
+
+            }
+            if (messageOutput == null) {//not system.out/system.err
+                messageOutput = formatter.consoleLogFormatter((GenericData) event, consoleLogLevel);
+            }
 
         }
+
         synchronized (this) {
             if (messageOutput != null) {
                 sysLogHolder.getOriginalStream().println(messageOutput);
             }
         }
+
     }
 
     @Override
@@ -122,5 +136,32 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    /**
+     * @return the copySystemStreams
+     */
+    public boolean isCopySystemStreams() {
+        return copySystemStreams;
+    }
+
+    /**
+     * @param copySystemStreams the copySystemStreams to set
+     */
+    public void setCopySystemStreams(boolean copySystemStreams) {
+        this.copySystemStreams = copySystemStreams;
+    }
+
+    /**
+     */
+    public void setConsoleStream(boolean consoleStream) {
+        this.consoleStream = consoleStream;
+    }
+
+    /**
+     * @return the consoleStream
+     */
+    public boolean isConsoleStream() {
+        return consoleStream;
     }
 }
