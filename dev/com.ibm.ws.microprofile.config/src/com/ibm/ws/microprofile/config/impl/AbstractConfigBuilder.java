@@ -30,9 +30,9 @@ import com.ibm.ws.microprofile.config.interfaces.DefaultSources;
 /**
  *
  */
-public abstract class ConfigBuilderImpl implements ConfigBuilder {
+public abstract class AbstractConfigBuilder implements ConfigBuilder {
 
-    private static final TraceComponent tc = Tr.register(ConfigBuilderImpl.class);
+    private static final TraceComponent tc = Tr.register(AbstractConfigBuilder.class);
 
     private final PriorityConverterMap userConverters = new PriorityConverterMap();
     private final TreeSet<ConfigSource> userSources = new TreeSet<>(ConfigSourceComparator.INSTANCE);
@@ -52,7 +52,7 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
      * @param classLoader
      * @param executor
      */
-    public ConfigBuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor) {
+    public AbstractConfigBuilder(ClassLoader classLoader, ScheduledExecutorService executor) {
         this.classloader = classLoader;
         this.executor = executor;
     }

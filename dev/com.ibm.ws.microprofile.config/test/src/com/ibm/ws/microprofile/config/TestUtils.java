@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.microprofile.config.Config;
 
-import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class TestUtils {
@@ -86,7 +86,7 @@ public class TestUtils {
      * @param string3
      */
     public static void assertSource(WebSphereConfig config, String key, String value, String source) {
-        SourcedValue sourcedValue = config.getSourcedValue(key, String.class);
+        SourcedPropertyValue sourcedValue = config.getSourcedValue(key, String.class);
         String actual = (String) sourcedValue.getValue();
         assertEquals(value, actual);
         String actualSource = sourcedValue.getSource();

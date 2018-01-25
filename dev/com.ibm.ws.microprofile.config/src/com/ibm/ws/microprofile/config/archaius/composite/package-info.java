@@ -10,10 +10,10 @@
  *******************************************************************************/
 
 /**
- * @version 1.0
+ * @version 2.0
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("2.0")
 @TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config.resources.Config")
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius.composite;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//Based on com.netflix.archaius.config.DefaultCompositeConfig
+//Based on com.netflix.archaius.config.DefaultCompositeConfig and com.netflix.archaius.config.AbstractConfig
 
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius.composite;
 
 import java.io.Closeable;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,18 +32,14 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
-import com.netflix.archaius.api.Config;
-import com.netflix.archaius.api.ConfigListener;
-import com.netflix.archaius.api.Decoder;
-import com.netflix.archaius.config.AbstractConfig;
-import com.netflix.archaius.exceptions.ParseException;
+import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 
-public class CompositeConfig extends AbstractConfig implements Closeable, ConfigListener {
+public class CompositeConfig implements Closeable, ConfigListener {
 
     private static final TraceComponent tc = Tr.register(CompositeConfig.class);
     private final CopyOnWriteArrayList<PollingDynamicConfig> children = new CopyOnWriteArrayList<PollingDynamicConfig>();
-    private final CachedCompositePropertyFactory factory;
+    private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<ConfigListener>();
+    private final ConversionManager conversionManager;
 
     /**
      * Constructor
@@ -53,11 +48,8 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      * @param decoder
      * @param executor
      */
-    public CompositeConfig(SortedSources sources, Decoder decoder, ScheduledExecutorService executor, long refreshInterval) {
-        setDecoder(decoder);
-
-        //a default property factory does the job of applying the type conversions and then caching those converted values
-        this.factory = new CachedCompositePropertyFactory(this);
+    public CompositeConfig(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
+        this.conversionManager = conversionManager;
 
         for (ConfigSource source : sources) {
             //add each archaius config to the composite config
@@ -67,26 +59,20 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
 
     /** {@inheritDoc} */
     @Override
-    public void onConfigAdded(Config config) {
-        notifyConfigAdded(CompositeConfig.this);
+    public void onConfigAdded() {
+        //pass the notification on to our listeners
+        for (ConfigListener listener : listeners) {
+            listener.onConfigAdded();
+        }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onConfigRemoved(Config config) {
-        notifyConfigRemoved(CompositeConfig.this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onConfigUpdated(Config config) {
-        notifyConfigUpdated(CompositeConfig.this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onError(Throwable error, Config config) {
-        notifyError(error, CompositeConfig.this);
+    public void onConfigUpdated() {
+        //pass the notification on to our listeners
+        for (ConfigListener listener : listeners) {
+            listener.onConfigUpdated();
+        }
     }
 
     /**
@@ -104,66 +90,21 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
         //add each archaius config to the composite config
         children.add(archaiusConfig);
 
-        archaiusConfig.setStrInterpolator(getStrInterpolator());
-        archaiusConfig.setDecoder(getDecoder());
-        notifyConfigAdded(archaiusConfig);
+        onConfigAdded();
         archaiusConfig.addListener(this);
 
         return archaiusConfig;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Object getRawProperty(String key) {
-        CachedCompositeValue rawValue = getRawCompositeValue(key);
-        Object raw = rawValue == null ? null : rawValue.getValue();
-        return raw;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public <T> List<T> getList(String key, Class<T> type) {
-        for (Config child : children) {
-            if (child.containsKey(key)) {
-                return child.getList(key, type);
-            }
-        }
-        return notFound(key);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<?> getList(String key) {
-        for (Config child : children) {
-            if (child.containsKey(key)) {
-                return child.getList(key);
-            }
-        }
-        return notFound(key);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean containsKey(String key) {
-        for (Config child : children) {
-            if (child.containsKey(key)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isEmpty() {
-        for (Config child : children) {
-            if (!child.isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
+    /**
+     * Register a listener that will receive a call for each property that is added, removed
+     * or updated. It is recommended that the callbacks be invoked only after a full refresh
+     * of the properties to ensure they are in a consistent state.
+     *
+     * @param listener
+     */
+    public void addListener(ConfigListener listener) {
+        listeners.add(listener);
     }
 
     /**
@@ -173,13 +114,7 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      *
      * TODO: Cache keys
      */
-    @Override
-    public Iterator<String> getKeys() {
-        Set<String> result = getKeySet();
-        return result.iterator();
-    }
-
-    Set<String> getKeySet() {
+    public Set<String> getKeySet() {
         HashSet<String> result = new HashSet<>();
         StringBuilder debug = null; //debug only
         boolean first = true; //debug only
@@ -215,18 +150,6 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
 
     /** {@inheritDoc} */
     @Override
-    public synchronized <T> T accept(Visitor<T> visitor) {
-        T result = null;
-
-        for (Config child : children) {
-            result = child.accept(visitor);
-        }
-
-        return result;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
@@ -242,12 +165,13 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
-        Iterator<String> keyItr = getKeys();
+        Set<String> keys = getKeySet();
+        Iterator<String> keyItr = keys.iterator();
         while (keyItr.hasNext()) {
             String key = keyItr.next();
             sb.append(key);
             sb.append("=");
-            CachedCompositeValue rawCompositeValue = getRawCompositeValue(key);
+            SourcedPropertyValue rawCompositeValue = getRawCompositeValue(key);
             if (rawCompositeValue == null) {
                 sb.append("null");
             } else {
@@ -271,33 +195,17 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
         }
     }
 
-    /**
-     * Get a value as a particular type
-     *
-     * @param <T>
-     * @param propertyName
-     * @param propertyType
-     * @return the value as an object of the passed in Type (or a ConversionException)
-     */
-    protected Object getTypedValue(String propertyName, Type propertyType) {
-        CachedCompositePropertyContainer container = this.factory.getProperty(propertyName);
-        CachedCompositeProperty property = container.asType(propertyType);
-        Object value = property.get();
-        return value;
-    }
-
-    public CachedCompositeValue getCompositeValue(Type type, String key) {
-        CachedCompositeValue rawProp = getRawCompositeValue(key);
+    public SourcedPropertyValue getSourcedValue(Type type, String key) {
+        SourcedPropertyValue rawProp = getRawCompositeValue(key);
         if (rawProp == null) {
             return null;
         } else {
             try {
-                //TODO don't bother going through getDecoder()
-                Object value = ((ConversionManager) getDecoder()).convert((String) rawProp.getValue(), type);
-                CachedCompositeValue composite = new CachedCompositeValue(value, rawProp.getSource());
+                Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
+                SourcedPropertyValue composite = new SourcedPropertyValue(value, type, rawProp.getSource());
                 return composite;
             } catch (NumberFormatException nfe) {
-                throw new ParseException("Error parsing value \'" + rawProp.getValue() + "\' for property \'" + key + "\'", nfe);
+                throw new ConfigException("Error parsing value \'" + rawProp.getValue() + "\' for property \'" + key + "\'", nfe);
             }
         }
     }
@@ -306,27 +214,16 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      * @param key
      * @return
      */
-    private CachedCompositeValue getRawCompositeValue(String key) {
+    private SourcedPropertyValue getRawCompositeValue(String key) {
         for (PollingDynamicConfig child : children) {
             if (child.containsKey(key)) {
-                String value = (String) child.getRawProperty(key);
+                String value = child.getRawProperty(key);
                 String source = child.getSourceID();
-                CachedCompositeValue raw = new CachedCompositeValue(value, source);
+                SourcedPropertyValue raw = new SourcedPropertyValue(value, String.class, source);
                 return raw;
             }
         }
         return null;
     }
 
-    /**
-     * @param propertyName
-     * @param propertyType
-     * @return
-     */
-    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
-        CachedCompositePropertyContainer container = this.factory.getProperty(propertyName);
-        CachedCompositeProperty property = container.asType(propertyType);
-        SourcedValue value = property.getSourced();
-        return value;
-    }
 }

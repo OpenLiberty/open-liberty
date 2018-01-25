@@ -31,9 +31,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-public abstract class ConfigProviderResolverImpl extends ConfigProviderResolver {
+public abstract class AbstractProviderResolver extends ConfigProviderResolver {
 
-    private static final TraceComponent tc = Tr.register(ConfigProviderResolverImpl.class);
+    private static final TraceComponent tc = Tr.register(AbstractProviderResolver.class);
 
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
 
@@ -137,7 +137,7 @@ public abstract class ConfigProviderResolverImpl extends ConfigProviderResolver 
             WeakReference<Config> ref = configCache.get(loader);
             config = ref == null ? null : ref.get();
             if (config == null) {
-                ConfigBuilderImpl builder = newBuilder(loader);
+                AbstractConfigBuilder builder = newBuilder(loader);
                 //add all default and discovered sources and converters
                 builder.addDefaultSources();
                 builder.addDiscoveredSources();
@@ -202,13 +202,13 @@ public abstract class ConfigProviderResolverImpl extends ConfigProviderResolver 
     @Override
     public ConfigBuilder getBuilder() {
         ClassLoader classLoader = getThreadContextClassLoader();
-        ConfigBuilderImpl builder = newBuilder(classLoader);
+        AbstractConfigBuilder builder = newBuilder(classLoader);
         //do not add default sources, discovered sources or discovered converters
         //always add default converters
         builder.addDefaultConverters();
         return builder;
     }
 
-    protected abstract ConfigBuilderImpl newBuilder(ClassLoader classLoader);
+    protected abstract AbstractConfigBuilder newBuilder(ClassLoader classLoader);
 
 }

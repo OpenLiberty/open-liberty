@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//Based on com.netflix.archaius.config.PollingDynamicConfig
+//Based on com.netflix.archaius.config.PollingDynamicConfig and com.netflix.archaius.config.AbstractConfig
 
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius.composite;
 
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,15 +33,13 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.netflix.archaius.config.AbstractConfig;
-import com.netflix.archaius.config.polling.PollingResponse;
-import com.netflix.archaius.util.Futures;
 
-public class PollingDynamicConfig extends AbstractConfig implements Closeable {
+public class PollingDynamicConfig implements Closeable {
 
     /**  */
     private static final TraceComponent tc = Tr.register(PollingDynamicConfig.class);
+
+    private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<ConfigListener>();
 
     private volatile Map<String, String> current = new HashMap<String, String>();
     private final AtomicBoolean busy = new AtomicBoolean();
@@ -53,9 +52,9 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
     private final TimeUnit units;
     private boolean localExecutor = false;
 
-    private final ConfigSourceCallable callable;
-
     private final String id;
+
+    private final ConfigSource source;
 
     /**
      * Constructor
@@ -66,7 +65,7 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
      * @param executor
      */
     public PollingDynamicConfig(ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
-        this.callable = new ConfigSourceCallable(source);
+        this.source = source;
         this.id = source.getName();
 
         this.interval = refreshInterval;
@@ -80,6 +79,23 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
         }
 
         this.future = start();
+    }
+
+    /**
+     * Register a listener that will receive a call for each property that is added, removed
+     * or updated. It is recommended that the callbacks be invoked only after a full refresh
+     * of the properties to ensure they are in a consistent state.
+     *
+     * @param listener
+     */
+    public void addListener(ConfigListener listener) {
+        listeners.add(listener);
+    }
+
+    protected void notifyConfigUpdated() {
+        for (ConfigListener listener : listeners) {
+            listener.onConfigUpdated();
+        }
     }
 
     /**
@@ -123,6 +139,15 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
         return future;
     }
 
+    private Map<String, String> getToAdd() {
+        Map<String, String> toAdd = new HashMap<>();
+        Map<String, String> props = source.getProperties();
+        if (props != null) {
+            toAdd.putAll(props);
+        }
+        return toAdd;
+    }
+
     /**
      * Go out and poll for updated values via callable.call()
      *
@@ -133,24 +158,15 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
         if (busy.compareAndSet(false, true)) {
             updateCounter.incrementAndGet();
             try {
-                PollingResponse response = callable.call();
-                if (response.hasData()) {
-                    current = response.getToAdd();
-                    notifyConfigUpdated(this);
-                }
+                current = getToAdd();
+                notifyConfigUpdated();
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "update", "Exception updating dynamic source: " + e);
                 }
 
                 errorCounter.incrementAndGet();
-                try {
-                    notifyError(e, this);
-                } catch (Exception e2) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "update", "Exception notifying listener: " + e2);
-                    }
-                }
+
                 throw e;
             } finally {
                 busy.set(false);
@@ -164,8 +180,8 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
         try {
             if (future != null) {
                 boolean cancelled = future.cancel(true);
-                if (!cancelled) {
-                    throw new ConfigException(Tr.formatMessage(tc, "future.update.not.cancelled.CWMCG0013E"));
+                if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "future.update.not.cancelled.CWMCG0013E");
                 }
                 future = null;
             }
@@ -177,40 +193,26 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
     }
 
     /**
-     * @return updateCounter.value
+     * @param key
+     * @return True if the key is contained within this or any of it's child configurations
      */
-    public long getUpdateCounter() {
-        return updateCounter.get();
-    }
-
-    /**
-     * @return errorCounter.value
-     */
-    public long getErrorCounter() {
-        return errorCounter.get();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean containsKey(String key) {
+    protected boolean containsKey(String key) {
         return current.containsKey(key);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean isEmpty() {
-        return current.isEmpty();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object getRawProperty(String key) {
+    /**
+     * Return the raw, unconverted, String associated with a key.
+     *
+     * @param key
+     */
+    protected String getRawProperty(String key) {
         return current.get(key);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Iterator<String> getKeys() {
+    /**
+     * @return Return an iterator to all property names owned by this config
+     */
+    protected Iterator<String> getKeys() {
         return current.keySet().iterator();
     }
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -17,10 +17,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
-import com.ibm.ws.microprofile.config.impl.ConfigBuilderImpl;
+import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 
-public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements ConfigBuilder {
+public class ConfigBuilderImpl extends AbstractConfigBuilder implements ConfigBuilder {
 
     /**
      * Constructor
@@ -28,14 +29,14 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
      * @param classLoader
      * @param executor
      */
-    public ArchaiusConfigBuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor) {
+    public ConfigBuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor) {
         super(classLoader, executor);
     }
 
     /** {@inheritDoc} */
     @Override
-    public ArchaiusConfigImpl build() {
-        ArchaiusConfigImpl config = null;
+    public ConfigImpl build() {
+        ConfigImpl config = null;
         synchronized (this) {
             SortedSources sources = getSources();
             PriorityConverterMap converters = getConverters();
@@ -55,17 +56,17 @@ public class ArchaiusConfigBuilderImpl extends ConfigBuilderImpl implements Conf
     //   java.lang.SecurityException: Exception creating permissions: class com.ibm.oti.shared.SharedClassPermission: Access denied ("java.lang.RuntimePermission" "accessClassInPackage.com.ibm.oti.shared")
     //
     //https://www.ibm.com/support/knowledgecenter/SSYKE2_6.0.0/com.ibm.java.api.60.doc/com.ibm.oti.shared/com/ibm/oti/shared/SharedClassPermission.html
-    private ArchaiusConfigImpl build(SortedSources sources, PriorityConverterMap converters, ScheduledExecutorService executor, long refreshInterval) {
-        ArchaiusConfigImpl config = AccessController.doPrivileged(new PrivilegedAction<ArchaiusConfigImpl>() {
+    private ConfigImpl build(SortedSources sources, PriorityConverterMap converters, ScheduledExecutorService executor, long refreshInterval) {
+        ConfigImpl config = AccessController.doPrivileged(new PrivilegedAction<ConfigImpl>() {
             @Override
-            public ArchaiusConfigImpl run() {
-                return new ArchaiusConfigImpl(sources, getConversionDecoder(converters, getClassLoader()), executor, refreshInterval);
+            public ConfigImpl run() {
+                return new ConfigImpl(getConversionManager(converters, getClassLoader()), sources, executor, refreshInterval);
             }
         });
         return config;
     }
 
-    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters, ClassLoader classLoader) {
-        return new ConversionDecoder(converters, classLoader);
+    protected ConversionManager getConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
+        return new ConversionManager(converters, classLoader);
     }
 }

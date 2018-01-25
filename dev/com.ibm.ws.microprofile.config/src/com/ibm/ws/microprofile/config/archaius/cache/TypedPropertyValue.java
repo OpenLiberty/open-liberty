@@ -15,26 +15,26 @@
  */
 //Based on com.netflix.archaius.property.DefaultPropertyContainer#CachedProperty
 
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius.cache;
 
 import java.lang.reflect.Type;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicStampedReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.netflix.archaius.api.Property;
-import com.netflix.archaius.api.PropertyListener;
-import com.netflix.archaius.property.ListenerManager.ListenerUpdater;
+import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 
-public abstract class CachedCompositeProperty implements Property<Object> {
+public class TypedPropertyValue {
 
-    private static final TraceComponent tc = Tr.register(CachedCompositeProperty.class);
+    private static final TraceComponent tc = Tr.register(TypedPropertyValue.class);
 
-    private final AtomicStampedReference<CachedCompositeValue> cache = new AtomicStampedReference<>(null, -1);
+    private final AtomicStampedReference<SourcedPropertyValue> stampedValue = new AtomicStampedReference<>(null, -1);
     private final Type type;
-    private final CachedCompositePropertyContainer parentContainer;
+    private final TypedProperty parentContainer;
+
+    private final CompositeConfig config;
 
     /**
      * Constructor
@@ -42,47 +42,19 @@ public abstract class CachedCompositeProperty implements Property<Object> {
      * @param type
      * @param defaultValue
      * @param parentContainer
+     * @param
+     * @param config
      */
-    CachedCompositeProperty(Type type, CachedCompositePropertyContainer parentContainer) {
+    TypedPropertyValue(Type type, TypedProperty parentContainer, CompositeConfig config) {
         this.type = type;
         this.parentContainer = parentContainer;
+        this.config = config;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void addListener(final PropertyListener<Object> listener) {
-        parentContainer.addListener(listener, new ListenerUpdater() {
-            private final AtomicReference<Object> last = new AtomicReference<Object>(null);
-
-            @Override
-            public void update() {
-                final Object prev = last.get();
-                final Object value;
-
-                try {
-                    value = get();
-                } catch (Exception e) {
-                    listener.onParseError(e);
-                    return;
-                }
-
-                if (prev != value) {
-                    if (last.compareAndSet(prev, value)) {
-                        listener.onChange(value);
-                    }
-                }
-            }
-        });
+    protected SourcedPropertyValue resolveCurrent() throws Exception {
+        return config.getSourcedValue(type, getKey());
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void removeListener(PropertyListener<Object> listener) {
-        parentContainer.removeListener(listener);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public String getKey() {
         return parentContainer.getKey();
     }
@@ -93,14 +65,14 @@ public abstract class CachedCompositeProperty implements Property<Object> {
      *
      * @return the latest version of the value, either from the cache or the underlying source
      */
-    public CachedCompositeValue getSourced() {
+    public SourcedPropertyValue getSourced() {
         boolean fromCache = true;
-        int cacheVersion = cache.getStamp();
+        int cacheVersion = stampedValue.getStamp();
         int latestVersion = parentContainer.getMasterVersion();
-        CachedCompositeValue compositeValue = null;
+        SourcedPropertyValue compositeValue = null;
         if (cacheVersion != latestVersion) {
-            CachedCompositeValue currentValue = cache.getReference();
-            CachedCompositeValue newValue = null;
+            SourcedPropertyValue currentValue = stampedValue.getReference();
+            SourcedPropertyValue newValue = null;
             try {
                 newValue = resolveCurrent();
             } catch (ConfigException e) {
@@ -112,32 +84,15 @@ public abstract class CachedCompositeProperty implements Property<Object> {
                 throw new ConfigException(e);
             }
 
-            if (cache.compareAndSet(currentValue, newValue, cacheVersion, latestVersion)) {
+            if (stampedValue.compareAndSet(currentValue, newValue, cacheVersion, latestVersion)) {
                 compositeValue = newValue;
                 fromCache = false;
             }
         }
         if (fromCache) {
-            compositeValue = cache.getReference();
+            compositeValue = stampedValue.getReference();
         }
 
-        return compositeValue;
-    }
-
-    /**
-     * Fetch the latest version of the property. If not up to date then resolve to the latest
-     * value, inline.
-     *
-     * @return the latest version of the value, either from the cache or the underlying source
-     */
-    @Override
-    public Object get() {
-        CachedCompositeValue compositeValue = getSourced();
-
-        Object actual = null;
-        if (compositeValue != null) {
-            actual = compositeValue.getValue();
-        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             if (compositeValue != null) {
                 Tr.debug(tc, "get: Key={0}, Value={1}, Source={2}", getKey(), compositeValue.getValue(), compositeValue.getSource());
@@ -145,16 +100,9 @@ public abstract class CachedCompositeProperty implements Property<Object> {
                 Tr.debug(tc, "get: Key={0} not found", getKey());
             }
         }
-        return actual;
-    }
 
-    /**
-     * Resolve to the most recent value
-     *
-     * @return
-     * @throws Exception
-     */
-    protected abstract CachedCompositeValue resolveCurrent() throws Exception;
+        return compositeValue;
+    }
 
     /**
      * CachedCompositeProperty is used by CachedCompositePropertyContainer as a tuple of type and value.
@@ -183,7 +131,7 @@ public abstract class CachedCompositeProperty implements Property<Object> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CachedCompositeProperty other = (CachedCompositeProperty) obj;
+        TypedPropertyValue other = (TypedPropertyValue) obj;
         if (type != other.type)
             return false;
         return true;
