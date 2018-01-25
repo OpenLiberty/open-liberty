@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.faulttolerance.cdi.config;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -63,17 +65,23 @@ public class AbstractAnnotationConfig<T extends Annotation> {
         }
 
         private void init(T annotation) {
-            try {
-                S configValue = getConfigValue();
-                if (configValue != null) {
-                    parameterValue = configValue;
-                } else {
-                    Method m = annotationType.getDeclaredMethod(parameterName);
-                    parameterValue = parameterType.cast(m.invoke(annotation));
-                }
 
-            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT5997E", e), e);
+            S configValue = getConfigValue();
+            if (configValue != null) {
+                parameterValue = configValue;
+            } else {
+                AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                    @Override
+                    public Void run() {
+                        try {
+                            Method m = annotationType.getDeclaredMethod(parameterName);
+                            parameterValue = parameterType.cast(m.invoke(annotation));
+                            return null;
+                        } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                            throw new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT5997E", e), e);
+                        }
+                    }
+                });
             }
         }
 
@@ -86,7 +94,8 @@ public class AbstractAnnotationConfig<T extends Annotation> {
         }
 
         protected <P> P readConfigValue(Class<P> type) {
-            Config mpConfig = ConfigProvider.getConfig(annotatedClass.getClassLoader());
+
+            Config mpConfig = ConfigProvider.getConfig(getClassLoader(annotatedClass));
 
             String key = getPropertyKey(keyPrefix, parameterName);
             P configValue = mpConfig.getOptionalValue(key, type).orElse(null);
@@ -132,7 +141,9 @@ public class AbstractAnnotationConfig<T extends Annotation> {
             Class<?> result = null;
             if (configValue != null) {
                 try {
-                    result = annotatedClass.getClassLoader().loadClass(configValue);
+
+                    getClassLoader(annotatedClass).loadClass(configValue);
+
                 } catch (ClassNotFoundException ex) {
                     throw new FaultToleranceException(Tr.formatMessage(tc, "Cannot load class {0} specified in config for {1}",
                                                                        configValue, getPropertyKey(keyPrefix, parameterName)));
@@ -175,7 +186,7 @@ public class AbstractAnnotationConfig<T extends Annotation> {
                 result = new Class<?>[configValue.length];
                 for (int i = 0; i < configValue.length; i++) {
                     try {
-                        result[i] = annotatedClass.getClassLoader().loadClass(configValue[i]);
+                        result[i] = getClassLoader(annotatedClass).loadClass(configValue[i]);
                     } catch (ClassNotFoundException ex) {
                         throw new FaultToleranceException(Tr.formatMessage(tc, "Cannot load class {0} specified in config for {1}", configValue[i],
                                                                            getPropertyKey(keyPrefix, parameterName)));
@@ -256,5 +267,24 @@ public class AbstractAnnotationConfig<T extends Annotation> {
 
     public void validate() {
         //no-op by default
+    }
+
+    /**
+     * Get hold of classloader
+     *
+     * @param clazz the class
+     * @return the classloader that loads the clazz
+     */
+    private ClassLoader getClassLoader(Class<?> clazz) {
+        ClassLoader classloader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+
+                return annotatedClass.getClassLoader();
+
+            }
+        });
+        return classloader;
+
     }
 }
