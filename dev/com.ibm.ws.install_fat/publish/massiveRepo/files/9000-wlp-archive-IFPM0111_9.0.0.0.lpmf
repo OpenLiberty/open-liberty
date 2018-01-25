@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<libertyFixMetadata>
+    <bundles>
+        <bundle isBaseBundle="false" version="1.0.2.cl50020130816-1140" symbolicName="com.ibm.ws.product.utility" date="2013-08-16 11:40" hash="6a597cc4b876c9a1b101298b17ea0040" size="152135" id="lib/com.ibm.ws.product.utility_1.0.2.cl50020130816-1140.jar"/>
+    </bundles>
+</libertyFixMetadata>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.install_fat" default="buildandrun" basedir=".">
+	<!-- buildandrun -->
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+	<property name="java9.args" value="--add-modules java.activation,java.xml.bind,java.xml.ws,java.xml.ws.annotation,java.corba"/>
+
+	<!-- Add jar files not built by this project that are needed by the client code -->
+	<target name="addRequiredLibraries">
+		<copy todir="${required.lib.dir}">
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.install_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.repository_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.repository.liberty_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.repository.resolver_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.kernel.feature_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.logging_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.kernel.boot_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.kernel.service_1.3.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.product.utility_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.crypto.passwordutil_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="org.eclipse.osgi_*.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/lib/" includes="com.ibm.ws.org.glassfish.json.1.0_1.0.${micro.version}.jar"/>
+			<fileset dir="${basedir}/../build.image/wlp/dev/api/spec/" includes="com.ibm.websphere.javaee.jsonp.1.0_1.0.${micro.version}.jar"/>
+		</copy>
+	</target>
+
+	<!-- Add files which are not part of your project's publish/files directory.
+	     Note any files under publish/files are already published and do not need
+	     to be added here. -->
+	<target name="addRequiredFiles">
+		<property name="wlp.dirs" value="${build.dir}/../publish/wlpDirs"/>
+		<echo message="wlp.dirs=${wlp.dirs}"/>
+		<delete dir="${wlp.dirs}"/>
+		<mkdir dir="${wlp.dirs}/wlp/etc/extensions"/>
+		<mkdir dir="${wlp.dirs}/wlp/usr/temp"/>
+		<available file="${basedir}/../build.image/output/upload/externals/installables/wlp-kernel-${liberty.service.version}.zip" property="kernelExists"/>
+		<if if="kernelExists">
+        	<unzip dest="${wlp.dirs}" src="${basedir}/../build.image/output/upload/externals/installables/wlp-kernel-${liberty.service.version}.zip"/>
+			<mkdir dir="${wlp.dirs}/wlp/lib/features"/>
+			<copy todir="${wlp.dirs}/wlp/lib/features">
+				<fileset dir="${basedir}/../build.image/wlp/lib/features" includes="*.mf"/>
+			</copy>
+			<else>
+				<copy todir="${wlp.dirs}/wlp">
+					<fileset dir="${basedir}/../build.image/wlp">
+						<exclude name="lib/fixes/**/*"/>
+						<exclude name="lib/features/testesa1*"/>
+						<exclude name="lib/testesa1_*"/>
+						<exclude name="usr/extension/**/*"/>
+						<exclude name="usr/lib/fixes/**/*"/>
+						<exclude name="usr/servers/**/*"/>
+					</fileset>
+				</copy>
+				<copy todir="${wlp.dirs}">
+					<zipfileset src="../build.image/wlp/lib/com.ibm.ws.kernel.feature_1.0.${micro.version}.jar" includes="wlp/**/*.class"/>
+				</copy>
+			</else>
+		</if>
+	    <copy todir="${wlp.dirs}/wlp/bin/tools" overwrite="true">
+	      <fileset dir="${build.dir}/../../com.ibm.ws.install.ws-cikLauncher/build/cik.launcher">
+	        <include name="ws-cikLauncher.jar"/>
+	      </fileset>
+	    </copy>
+	    <copy todir="${wlp.dirs}/wlp/lib" overwrite="true">
+	      <fileset dir="${build.dir}/../../com.ibm.ws.cik.launcher/build/cik.launcher">
+	        <include name="com.ibm.ws.cik.launcher_1.0.${micro.version}.jar"/>
+	      </fileset>
+	    </copy>
+		<copy todir="${wlp.dirs}/wlp/usr/temp" overwrite="true">
+			<fileset dir="${build.dir}/../../com.ibm.ws.install_offline_fat/publish/massiveRepo/features">
+				<include name="com.ibm.genericCoreFeatureA.esa"/>
+				<include name="com.ibm.genericCoreFeatureH.esa"/>
+				<include name="com.ibm.genericCoreFeature.esa"/>
+				<include name="com.ibm.genericCoreFeatureDependancyOnEsaPass.esa"/>
+			</fileset>
+		</copy>
+		<propertyfile
+		    file="${wlp.dirs}/wlp/lib/versions/WebSphereApplicationServer.properties">
+		  <entry key="com.ibm.websphere.productVersion" operation="=" value="${liberty.service.version}"/>
+		</propertyfile>
+		<propertyfile
+		    file="${wlp.dirs}/wlp/lib/versions/WebSphereApplicationServer.properties">
+		  <entry key="com.ibm.websphere.productEdition" operation="=" value="DEVELOPERS"/>
+		</propertyfile>
+		<propertyfile
+		    file="${wlp.dirs}/wlp/etc/extensions/cik.ext.product1.properties">
+		  <entry  key="com.ibm.websphere.productId" value="cik.ext.product1"/>
+		  <entry  key="com.ibm.websphere.productInstall" value="cik/ext.product1"/>
+		</propertyfile>
+		<propertyfile
+		    file="${wlp.dirs}/wlp/etc/extensions/cik.ext.product2.properties">
+		  <entry  key="com.ibm.websphere.productId" value="cik.ext.product2"/>
+		  <entry  key="com.ibm.websphere.productInstall" value="cik/ext.product2"/>
+		</propertyfile>
+		<propertyfile
+		    file="${wlp.dirs}/wlp/etc/extensions/cik.ext.missing.path.product.properties">
+		  <entry  key="com.ibm.websphere.productId" value="cik.ext.missing.path.product"/>
+		</propertyfile>
+	</target>
+
+	<target name="addAutoInstallApplications" description="Automatically Install applications on LibertyServer instance creation">
+		<!--
+		<mkdir dir="${basedir}/publish/servers/exampleTestServer/dropins"/>
+		<move file="${basedir}/publish/files/auto.zip" tofile="${basedir}/publish/servers/exampleTestServer/dropins/auto.war"/>
+		-->
+	</target>
+
+</project>

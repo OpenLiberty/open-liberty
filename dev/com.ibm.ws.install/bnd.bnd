@@ -1,0 +1,31 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Liberty Install Kernel
+Bundle-SymbolicName: com.ibm.ws.install
+Bundle-Description: WebSphere Liberty Install Kernel, version ${bVersion}
+
+Export-Package: \
+	com.ibm.ws.install;provide:=true
+
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Private-Package: \
+	com.ibm.ws.install.*
+
+instrument.disabled: true
+
+-buildpath: \
+	${javac.bootclasspath.java6}, \
+	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.product.utility;version=latest,\
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.liberty;version=latest,\
+	com.ibm.ws.repository.resolver;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.org.apache.aries.util;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

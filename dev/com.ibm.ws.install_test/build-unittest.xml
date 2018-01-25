@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.install_test" default="unittest">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  <import file="../ant_build/public_imports/unittest_imports.xml"/>
+
+  <target name="unittestPackage" description="create test data" >
+
+  	<property name="unittest.build.dir" value="${build.dir}/unittest" />
+  	<property name="massive.repo.dir" value="${build.dir}"/>
+  	
+    <copy todir="${massive.repo.dir}" overwrite="true" includeemptydirs="true" >
+      <fileset dir="publish">
+        <include name="massiveRepo/features/usertest.with.ibm.license.esa"/>
+        <include name="massiveRepo/fixes/8550-wlp-archive-ifpm89011.jar"/>
+        <include name="massiveRepo/samples/SampleX.jar"/>
+      </fileset>
+    </copy>
+  	
+    <copy todir="${unittest.build.dir}/zips" overwrite="true" includeemptydirs="true" >
+    	<fileset dir="publish/zips" includes="com.ibm.websphere.liberty.repo.core.manifest_8.5.5005.zip"/>
+    	<fileset dir="publish/zips" includes="invalid.zip"/>
+    </copy>
+ 
+	<mkdir dir="${unittest.build.dir}/tmp" />
+	<unzip src="publish/zips/wlpDirs.zip" dest="${unittest.build.dir}/wlpDirs" />
+	<unzip src="publish/zips/wlpDirs.zip" dest="${unittest.build.dir}/wlpDirs/testUninstallProduct" />
+	<unzip src="publish/zips/wlpDirs.zip" dest="${unittest.build.dir}/wlpDirs/testUninstallProductFeatures" />
+
+  </target>
+</project>

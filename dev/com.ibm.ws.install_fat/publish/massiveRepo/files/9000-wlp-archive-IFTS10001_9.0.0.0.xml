@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fix id="9000-wlp-archive-IFTS99999" version="9.0.0.0">
+    <applicability>
+        <offering id="com.ibm.websphere.liberty.BASE" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.BASETRIAL.v90" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.EXPRESS.v90" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.WEBENAB.v90" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.ND" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.NDTRIAL.v90" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.zOS" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.DEVELOPERS.v90" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.DEVELOPERSILAN.v90" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.ILAN" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.TRIAL.v90" tolerance="[9.0.0,9.0.1)"/>
+    </applicability>
+    <categories/>
+    <information name="9000-wlp-archive-IFTS99999" version="9.0.0.01">CIK ifix 99999</information>
+    <property name="recommended" value="true"/>
+    <resolves problemCount="1" description="This fix resolves APARS:" showList="true">
+        <problem id="com.ibm.ws.apar.IFTS99999" displayId="IFTS99999" description="IFTS99999"/>
+    </resolves>
+    <updates>
+        <file date="0205-02-16 02:01" hash="c6492c14271787f628f2698acbf612fe" size="11686" id="README.TXT"/>
+    </updates>
+</fix>

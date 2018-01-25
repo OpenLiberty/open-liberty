@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fix id="9000-wlp-archive-IFPM0111" version="9.0.0.0">
+    <applicability>
+        <offering id="com.ibm.websphere.liberty.BASE.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.BASETRIAL.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.EXPRESS.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.WEBENAB.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.ND.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.NDTRIAL.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.zOS.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.DEVELOPERS.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.DEVELOPERSILAN.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.v85" tolerance="[9.0.0,9.0.1)"/>
+        <offering id="com.ibm.websphere.liberty.TRIAL.v85" tolerance="[9.0.0,9.0.1)"/>
+    </applicability>
+    <categories/>
+    <information name="9000-wlp-archive-IFPM0111" version="9.0.0.0">RUNNING &quot;PRODUCTINFO VALIDATE&quot; AFTER INSTALLING FIXES RESULTS IN ERRORS</information>
+    <property name="com.ibm.ws.superseded.apars" value=""/>
+    <property name="recommended" value="false"/>
+    <resolves problemCount="1" description="This fix resolves APARS:" showList="true">
+        <problem id="com.ibm.ws.apar.PM0111" displayId="PM0111" description="PM0111"/>
+    </resolves>
+    <updates>
+        <file date="2013-08-16 11:40" hash="6a597cc4b876c9a1b101298b17ea0040" size="152135" id="lib/com.ibm.ws.product.utility_1.0.2.cl50020130816-1140.jar"/>
+    </updates>
+</fix>

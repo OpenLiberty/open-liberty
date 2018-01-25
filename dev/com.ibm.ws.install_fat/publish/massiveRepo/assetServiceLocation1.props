@@ -1,0 +1,27 @@
+# Old test details for external server
+
+#repository.url=https://www.projectmp.com/ma/v1
+#apiKey=23677409254
+#softlayerUserId=liberty
+#softlayerPassword=W3bSp#3reD!
+#userId=wasngi@ca.ibm.com
+#password=test4cik
+
+# Test details for hursley server - user credentials are not needed
+# for test but included in case someone needs to upload more assets
+# into the repo
+
+#repository.url=http://ltestl94.hursley.ibm.com:9002/ma/v1
+#apiKey=96113196644
+#userId=install@ibm.com
+#password=install
+
+#repository.url=http://ltestl94.hursley.ibm.com:9002/ma/v1
+#apiKey=25113788922
+#userId=wasngi@ca.ibm.com
+#password=store4test
+
+repository.url=http://ltestl94.hursley.ibm.com:9002/ma/v1
+apiKey=56017744191
+#userId=installfat1@ca.ibm.com
+#password=repo4test
