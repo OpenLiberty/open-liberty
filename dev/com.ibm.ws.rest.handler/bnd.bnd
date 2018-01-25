@@ -21,7 +21,7 @@ IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Import-Package: \
-    org.apache.commons.fileupload*;version=1.2.1;packageType="was_internal", \
+    org.apache.commons.fileupload*, \
     *
   
 Private-Package: \
@@ -47,7 +47,7 @@ instrument.classesExcludes: com/ibm/ws/rest/handler/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.org.apache.commons.fileupload.1.2.1;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\

@@ -35,6 +35,6 @@ fat.project: true
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.org.apache.commons.io.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.componenttest:provider.api;version=1.0.0,\
 	org.apache.derby:derby;version=10.11.1.1

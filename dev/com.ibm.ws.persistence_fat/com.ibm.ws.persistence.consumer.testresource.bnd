@@ -21,7 +21,7 @@ Export-Package: \
 
 Import-Package: \
   javax.persistence;consumer="persistenceService",\
-  org.apache.commons.io*;version=1.4;packageType="was_internal",\
+  org.apache.commons.io*,\
   *
   
 Include-Resource: \
