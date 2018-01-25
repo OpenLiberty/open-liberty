@@ -16,6 +16,7 @@ import java.util.logging.LogRecord;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
+import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -23,7 +24,7 @@ import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
-public class TraceSource implements Source {
+public class TraceSource implements Source, WsTraceHandler {
 
     private static final TraceComponent tc = Tr.register(TraceSource.class);
 
@@ -80,6 +81,8 @@ public class TraceSource implements Source {
         return location;
     }
 
+    /** {@inheritDoc} */
+    @Override
     /**
      * Log the given log record.
      *
