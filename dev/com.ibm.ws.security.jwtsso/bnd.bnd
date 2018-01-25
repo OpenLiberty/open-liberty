@@ -45,8 +45,7 @@ Private-Package: \
 
 Include-Resource: \
     OSGI-INF/metatype=resources/OSGI-INF/metatype, \
-    OSGI-INF=resources/OSGI-INF, \
-    WEB-INF=resources/WEB-INF
+    OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
     com.ibm.ws.security.jwtsso.internal.JwtSsoComponent
