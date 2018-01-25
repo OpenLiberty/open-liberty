@@ -1,0 +1,29 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>sessionDatabase-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <httpSession storageRef="SessionDB" maxInMemorySessionCount="1" allowOverflow="false"/>
+    
+    <!-- TODO: eventually all of this database configuration will be replaced with JCache configuration -->
+    <httpSessionDatabase id="SessionDB" dataSourceRef="SessionDS"/>
+
+	<authData id="SessionAuth" user="userName" password="userPassword"/>    
+    <dataSource id="SessionDS" jndiName="jdbc/SessionDS" type="javax.sql.ConnectionPoolDataSource" transactional="false" containerAuthDataRef="SessionAuth">
+	    <jdbcDriver libraryRef="DerbyLib"/>
+	    <properties.derby.embedded createDatabase="create" databaseName="memory:sessionCacheServer"/>
+	</dataSource>
+	
+	<library id="DerbyLib">
+	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+	</library>
+	
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -158,6 +158,18 @@ public class HttpUtils {
         Log.finer(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
         con.connect();
         return con;
+    }
+
+    /**
+     * This method creates an UNOPENED HTTP connection. Note that the caller must call HttpUrlConnection.connect()
+     * if they wish to use the connection. The unopened connection may be further customized before calling connect()
+     *
+     * @param server The liberty server that is hosting the URL
+     * @param path The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"
+     * @return An unopened connection to the http address
+     */
+    public static HttpURLConnection getHttpConnection(LibertyServer server, String path) throws IOException {
+        return getHttpConnection(createURL(server, path), DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
     }
 
     /**
@@ -465,6 +477,8 @@ public class HttpUtils {
     }
 
     private static URL createURL(LibertyServer server, String path) throws MalformedURLException {
+        if (!path.startsWith("/"))
+            path = "/" + path;
         return new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + path);
     }
 
@@ -609,6 +623,15 @@ public class HttpUtils {
                 return new PasswordAuthentication(user, password.toCharArray());
             }
         });
+    }
+
+    public static String readConnection(HttpURLConnection con) throws IOException {
+        InputStream is = con.getInputStream();
+        try {
+            return read(is);
+        } finally {
+            is.close();
+        }
     }
 
     public static String getHttpResponseAsString(String urlStr) throws IOException {
