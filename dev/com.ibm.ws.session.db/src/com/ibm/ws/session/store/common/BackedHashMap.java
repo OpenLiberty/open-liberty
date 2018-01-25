@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,14 +31,11 @@ import com.ibm.wsspi.session.IStore;
 
 public abstract class BackedHashMap extends LRUHashMap {
 
-    protected IStore _iStore;
+    private final IStore _iStore;
     //Hashtable to handle lastAccess time for manual & time-based writes
     public Hashtable cachedLastAccessedTimes = null;
 
-    protected SessionManagerConfig _smc = null;
-
-    // this is set to true for multirow in DatabaseHashMapMR if additional conditions are satisfied
-    protected boolean appDataTablesPerThread = false;
+    final SessionManagerConfig _smc;
 
     private static final long serialVersionUID = -4653089886686024589L;
     private static final String methodClassName = "BackedHashMap";
@@ -78,11 +75,18 @@ public abstract class BackedHashMap extends LRUHashMap {
         _iStore = store;
         setStoreCallback(_iStore.getStoreCallback());
         if (!_smc.getEnableEOSWrite()) {
-            cachedLastAccessedTimes = new Hashtable(smc.getInMemorySize());
+            cachedLastAccessedTimes = new Hashtable<String, Long>(smc.getInMemorySize());
         }
         if (_smc.getCheckRecentlyInvalidList()) {
             setRecentInvalTable();
         }
+    }
+
+    public Hashtable<String, Long> copyAndClearCachedLastAccessedTimes() {
+        @SuppressWarnings("unchecked")
+        Hashtable<String, Long> copy = (Hashtable<String, Long>) cachedLastAccessedTimes.clone();
+        cachedLastAccessedTimes.clear();
+        return copy;
     }
 
     public BackedSession getSessionRetrievalTrue(String id, int versionId, boolean isSessionAccess) {
@@ -849,9 +853,7 @@ public abstract class BackedHashMap extends LRUHashMap {
      * getAppDataTablesPerThread - returns the boolean
      * only true for mulitrow db if other conditions are met - see constructor for DatabaseHashMapMR
      */
-    public boolean getAppDataTablesPerThread() {
-        return appDataTablesPerThread;
-    }
+    public abstract boolean getAppDataTablesPerThread();
 
     /*
      * getIStore - this is set in the constructor

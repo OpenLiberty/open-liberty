@@ -27,7 +27,6 @@ import java.util.logging.Level;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
 import com.ibm.ws.session.store.common.BackedSession;
-import com.ibm.ws.session.store.common.LoggingUtil;
 import com.ibm.wsspi.session.IStore;
 
 /*

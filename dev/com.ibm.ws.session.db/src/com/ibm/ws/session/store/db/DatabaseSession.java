@@ -18,7 +18,6 @@ import javax.transaction.UserTransaction;
 
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.store.common.BackedSession;
-import com.ibm.ws.session.store.common.LoggingUtil;
 import com.ibm.wsspi.session.IStoreCallback;
 
 public class DatabaseSession extends BackedSession {
@@ -27,6 +26,9 @@ public class DatabaseSession extends BackedSession {
     private static final String methodClassName = "DatabaseSession";
     private boolean populatedAppData = false;
     protected boolean usingMultirow = false;
+
+    // The swappable data
+    Hashtable mSwappableData;
 
     private static final int GET_SWAPPABLE_DATA = 0;
     private static final int GET_SWAPPABLE_LISTENERS = 1;
@@ -54,7 +56,7 @@ public class DatabaseSession extends BackedSession {
     }
 
     protected DatabaseStoreService getDatabaseStoreService() {
-        return ((DatabaseHashMap)this._sessions).getDatabaseStoreService();
+        return ((DatabaseHashMap) getSessions()).getDatabaseStoreService();
     }
 
     protected SerializationService getSerializationService() {
@@ -115,7 +117,7 @@ public class DatabaseSession extends BackedSession {
             if (!populatedAppData) {
                 // PM00465: Set thread context class loader to CompoundClassLoader
                 try {
-                    _sessions.getIStore().setThreadContext();
+                    getSessions().getIStore().setThreadContext();
                     if (usingMultirow) {
                         getMultiRowAppData();
                     } else {
@@ -123,7 +125,7 @@ public class DatabaseSession extends BackedSession {
                     }
                 } finally {
                     // PM00465: Unset thread context class loader to prior classloader
-                    _sessions.getIStore().unsetThreadContext();
+                    getSessions().getIStore().unsetThreadContext();
                 }
             }
         }
@@ -162,7 +164,7 @@ public class DatabaseSession extends BackedSession {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[GET_SINGLE_ROW_APP_DATA]);
         }
         populatedAppData = true;
-        Hashtable swappable = (Hashtable) ((DatabaseHashMap) _sessions).getValue(getId(), this);
+        Hashtable swappable = (Hashtable) ((DatabaseHashMap) getSessions()).getValue(getId(), this);
         setSwappableData(swappable);
         synchronized (_attributeNames) {
             refillAttrNames(swappable);
@@ -184,7 +186,7 @@ public class DatabaseSession extends BackedSession {
         }
         populatedAppData = true;
         Hashtable swappable = getSwappableData();
-        Hashtable props = (Hashtable) ((DatabaseHashMap) _sessions).getAllValues(this);
+        Hashtable props = (Hashtable) ((DatabaseHashMap) getSessions()).getAllValues(this);
         if (props != null) {
             Enumeration kys = props.keys();
             while (kys.hasMoreElements()) {
@@ -211,4 +213,11 @@ public class DatabaseSession extends BackedSession {
         return populatedAppData;
     }
 
+    /*
+     * setSwappableData
+     */
+    @Override
+    public void setSwappableData(Hashtable ht) {
+        mSwappableData = ht;
+    }
 }
