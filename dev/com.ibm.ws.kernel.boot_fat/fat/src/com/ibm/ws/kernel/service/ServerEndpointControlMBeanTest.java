@@ -276,7 +276,7 @@ public class ServerEndpointControlMBeanTest {
 
         // remove the servlet feature so that all endpoints are deactivated including the default instance of httpEndpoint
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("localConnector-1.0", "endpointControl-1.0"));
+        server.changeFeatures(Arrays.asList("localConnector-1.0"));
         assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
         try {
             server.setMarkToEndOfLog();
@@ -328,7 +328,7 @@ public class ServerEndpointControlMBeanTest {
 
         // remove the servlet feature so that all endpoints are deactivated including the default instance of httpEndpoint
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("localConnector-1.0", "endpointControl-1.0"));
+        server.changeFeatures(Arrays.asList("localConnector-1.0"));
         assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
         try {
             server.setMarkToEndOfLog();
