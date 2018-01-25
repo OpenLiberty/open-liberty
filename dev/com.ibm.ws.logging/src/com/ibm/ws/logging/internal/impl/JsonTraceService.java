@@ -42,8 +42,6 @@ public class JsonTraceService extends BaseTraceService {
     private volatile BufferManagerImpl traceConduit;
     private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
-    private static volatile boolean isMessageJsonConfigured = false;
-    private static volatile boolean isConsoleJsonConfigured = false;
 //    private static volatile Object sync = new Object();
 
     private volatile String serverName = null;
@@ -106,34 +104,18 @@ public class JsonTraceService extends BaseTraceService {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
             collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
             messageLogHandler.setWriter(messagesLog);
-//            messageLogHandler.modified(filterdMessageSourceList);
-//            //for any 'updates' to the FileLogHolder
-//            //Connect the conduits to the handler as necessary
-//            logConduit.addSyncHandler(messageLogHandler);
-//            traceConduit.addSyncHandler(messageLogHandler);
 
         }
         if (consoleLogHandler == null) {
             consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
             collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
             consoleLogHandler.setWriter(systemOut);
-//            consoleLogHandler.modified(filterdConsoleSourceList);
-//            //Connect the conduits to the handler as necessary
-//            //if json && messages, trace sourcelist
-//            logConduit.addSyncHandler(consoleLogHandler);
-//            traceConduit.addSyncHandler(consoleLogHandler);
-            //if copy system
-//            System.out.println("hi out");
-//            System.err.println("hii err");
         }
-//        messageLogHandler.modified(filterdMessageSourceList);
-//        consoleLogHandler.modified(filterdConsoleSourceList);
         /*
          * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
-            isMessageJsonConfigured = false;
             messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
             if (messageLogHandler != null) {
                 messageLogHandler.setWriter(messagesLog);
@@ -149,7 +131,6 @@ public class JsonTraceService extends BaseTraceService {
          */
         if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
             if (consoleLogHandler != null) {
-                isConsoleJsonConfigured = false;
                 consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
                 ArrayList<String> filteredList = new ArrayList<String>();
                 filteredList.add("message");
@@ -169,7 +150,6 @@ public class JsonTraceService extends BaseTraceService {
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             if (messageLogHandler != null) {
-                isMessageJsonConfigured = true;
                 messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
                 messageLogHandler.setWriter(messagesLog);
                 //for any 'updates' to the FileLogHolder
@@ -188,7 +168,6 @@ public class JsonTraceService extends BaseTraceService {
          */
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             if (consoleLogHandler != null) {
-                isConsoleJsonConfigured = true;
                 consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
                 //Connect the conduits to the handler as necessary
                 //if json && messages, trace sourcelist
@@ -244,49 +223,19 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
+        //check if tracefilename is stdout
         if (detailLog == systemOut) {
             consoleLogHandler.setConsoleStream(true);
         } else {
             consoleLogHandler.setConsoleStream(false);
         }
+        //check if copysystemstream is true
         consoleLogHandler.setCopySystemStreams(copySystemStreams);
-
-//         Tee to messages.log (always)
-//        String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
-
-//        if (!isMessageJsonConfigured) {
-//            messagesLog.writeRecord(message);
-//        }
-//        if (isConsoleJsonConfigured) {
+        //send events to handlers
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord));
-//        }
 
-        if (detailLog == systemOut) {
-            // preserve System.out vs. System.err
-            //if systemout and basic, connect to messagelogsource as in logconduit to consoleloghandler
-            //if json only listen to what the sourcelist says
-            //logsource.publish traceformat
-//            publishTraceLogRecord(holder, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
-//            consoleLogHandler.setCopySystemStreams(false); //doesn't go to the else case
-//            if (logSource != null) {
-//                logSource.publish(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord));
-//            }
-        } else {
-            //check in consoleloghandler
-            if (copySystemStreams) {
-//                // Tee to console.log if we are copying System.out and System.err to system streams.
-                //logsource.publish filtered
-//                String txt = filteredStreamOutput(holder, logRecord);
-//                if (logSource != null) {
-//                    logSource.publish(new RoutedMessageImpl(txt, txt, null, logRecord));
-//                }
-//                consoleLogHandler.setCopySystemStreams(false);
-//                writeFilteredStreamOutput(holder, logRecord);
-
-            }
-            if (TraceComponent.isAnyTracingEnabled()) {
-                publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
-            }
+        if (TraceComponent.isAnyTracingEnabled()) {
+            publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         }
 
     }
@@ -381,7 +330,7 @@ public class JsonTraceService extends BaseTraceService {
         Level level = logRecord.getLevel();
         int levelValue = level.intValue();
         TraceWriter detailLog = traceLog;
-
+        //check if tracefilename is stdout
         if (detailLog == systemOut) {
             consoleLogHandler.setConsoleStream(true);
         } else {
@@ -408,51 +357,6 @@ public class JsonTraceService extends BaseTraceService {
                 publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
                 return;
             }
-
-//            if (!isMessageJsonConfigured) {
-//                //messageLogHandler.writeToLogNormal(messageLogFormat);
-//                //keep old behaviour.. otherwise we're just sending it to handler to write to the same log anyways
-//                messagesLog.writeRecord(messageLogFormat);
-//            }
-
-            // console.log
-            if (detailLog == systemOut) {
-                // Send all messages directly to the correct system streams, and then be DONE
-//                if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-//                    // WsLevel.ERROR and Level.SEVERE have the same int value, and are routed to System.err
-//                    //logsource.publish
-////                    logSource.publish(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord));
-////                    publishTraceLogRecord(systemErr, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
-//                    if (logSource != null) {
-//                        logSource.publish(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord));
-//                    }
-//                } else {
-//                    //logsource.publish
-//                    // messages othwerwise above the filter are routed to System.out
-//                    if (logSource != null) {
-//                        logSource.publish(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord));
-//                    }
-////                    publishTraceLogRecord(systemOut, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
-//                }
-                return; // DONE!!
-            } else if (levelValue >= consoleLogLevel.intValue()) {
-                //only for console!
-                /*
-                 * If console json configured, we do not want to write 'normally' to the console.log/stdout/stder
-                 * We will rely on invokeTraceRouters to pass it on to the appropriate consoleLogHandler
-                 */
-//                if (!isConsoleJsonConfigured) {
-//                    // Only route messages permitted by consoleLogLevel
-//                    String consoleMsg = formatter.consoleLogFormat(logRecord, formattedMsg);
-//                    if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-//                        // WsLevel.ERROR and Level.SEVERE have the same int value, and are routed to System.err
-//                        writeStreamOutput(systemErr, consoleMsg, false);
-//                    } else {
-//                        // messages othwerwise above the filter are routed to system out
-//                        writeStreamOutput(systemOut, consoleMsg, false);
-//                    }
-//                }
-            }
         }
 
         // ODD: note that formattedMsg and formattedVerboseMsg will both be NULL if
@@ -468,6 +372,7 @@ public class JsonTraceService extends BaseTraceService {
 
     @Override
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
+        //check if tracefilename is stdout
         if (detailLog == systemOut) {
             consoleLogHandler.setConsoleStream(true);
         } else {
@@ -476,24 +381,13 @@ public class JsonTraceService extends BaseTraceService {
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
-        //if json ignore console formats
+        //go down to trace handlers
         invokeTraceRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord));
-        //if basic and detailLog == systemOut || systemErr
-        //invokeTraceRouters down the pipeline
-        //else
-        //write to systemout
-//        if (detailLog != systemOut && detailLog != systemErr) {
+        //write to trace.log
         if (detailLog != systemOut) {
             String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
             detailLog.writeRecord(traceDetail);
         }
-//        }
-//        if (detailLog == systemOut || detailLog == systemErr) {
-//            //If console json configured, we do not want to write 'normally' to the console.log/stdout/stder
-//            //We will rely on invokeTraceRouters to pass it on to the appropriate Handler
-////            if (!isConsoleJsonConfigured) {
-////            writeStreamOutput((SystemLogHolder) detailLog, traceDetail, false);
-////            }
-//        }
+
     }
 }

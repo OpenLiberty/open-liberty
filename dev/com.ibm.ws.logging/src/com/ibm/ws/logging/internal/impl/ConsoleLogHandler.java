@@ -55,7 +55,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         }
         //add in formatter here for basic
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
-            //if detailLog == systemOut or systemError write to console.log in trace format
+            //if detailLog == systemOut write to console.log in trace format
             if (consoleStream) {
                 messageOutput = formatter.traceFormatGenData((GenericData) event);
             } else if (copySystemStreams) {

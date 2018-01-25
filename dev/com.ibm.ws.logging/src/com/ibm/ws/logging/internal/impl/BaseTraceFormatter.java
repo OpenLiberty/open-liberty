@@ -1112,9 +1112,8 @@ public class BaseTraceFormatter extends Formatter {
             if (loglevel.equals("SystemErr")) {
                 message = "[err] " + message;
             }
-            return message;
         }
-        return txt;
+        return message;
     }
 
     private String filterStackTraces(String txt) {
