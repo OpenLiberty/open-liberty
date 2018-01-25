@@ -22,12 +22,12 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 public class H2ConnectionSettings {
 
     // set spec default connection settings
-    public int headerTableSize = 4096;
-    public int enablePush = 1;
-    public int maxConcurrentStreams = 100;
-    public int initialWindowSize = 65535;
-    public int maxFrameSize = 16384;
-    public int maxHeaderListSize = -1;
+    public int headerTableSize = 4096; // SETTINGS_HEADER_TABLE_SIZE
+    public int enablePush = 1; // SETTINGS_ENABLE_PUSH; true (1) by default
+    public int maxConcurrentStreams = -1; // SETTINGS_MAX_CONCURRENT_STREAMS: max open push streams, unlimited (-1) by default
+    public int initialWindowSize = 65535; // SETTINGS_INITIAL_WINDOW_SIZE
+    public int maxFrameSize = 16384; // SETTINGS_MAX_FRAME_SIZE
+    public int maxHeaderListSize = -1; // SETTINGS_MAX_HEADER_LIST_SIZE : unlimited (-1) by default
 
     /**
      * A settings frame can be encoded as a base-64 string and passed as a header on the initial upgrade request.
@@ -74,5 +74,9 @@ public class H2ConnectionSettings {
      */
     public int getEnablePush() {
         return this.enablePush;
+    }
+
+    public int getMaxConcurrentStreams() {
+        return this.maxConcurrentStreams;
     }
 }

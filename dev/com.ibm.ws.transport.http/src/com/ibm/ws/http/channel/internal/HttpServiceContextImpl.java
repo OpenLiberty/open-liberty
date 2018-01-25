@@ -5114,14 +5114,23 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         try {
             // Add the four required pseudo headers to the push_promise frame header block fragment
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, "GET", LiteralIndexType.NOINDEXING));
-            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, getLocalAddr().getHostName(), LiteralIndexType.NOINDEXING));
-            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
-            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, uri, LiteralIndexType.NOINDEXING));
+            String authority = getLocalAddr().getHostName() + ":" + getLocalPort();
+            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, authority, LiteralIndexType.NOINDEXING));
+            if (this.isSecure()) {
+                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
+            } else {
+                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
+            }
 
+            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, uri, LiteralIndexType.NOINDEXING));
             // Add the four required pseudo headers to the headers frame header block fragment
             hdrsHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, "GET", LiteralIndexType.NOINDEXING));
             hdrsHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, getLocalAddr().getHostName(), LiteralIndexType.NOINDEXING));
-            hdrsHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
+            if (this.isSecure()) {
+                hdrsHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
+            } else {
+                hdrsHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
+            }
             hdrsHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, uri, LiteralIndexType.NOINDEXING));
 
         } catch (Exception e) {
@@ -5145,6 +5154,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         // - H2StreamProcessor in Idle state
         // It puts the new SP into the SPTable
         H2StreamProcessor promisedSP = ((H2HttpInboundLinkWrap) link).muxLink.createNewInboundLink(promisedStreamId);
+        if (promisedSP == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleH2LinkPreload exit; cannot create new push stream - "
+                             + "the max number of concurrent streams has already been reached on link: " + link);
+            }
+            return;
+        }
         ((H2HttpInboundLinkWrap) link).setPushPromise(true);
         // Update the promised stream state to Localreserved
         promisedSP.initializePromisedStream();
