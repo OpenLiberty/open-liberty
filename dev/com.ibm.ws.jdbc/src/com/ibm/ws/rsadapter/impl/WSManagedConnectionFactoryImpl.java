@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
+import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
@@ -281,24 +282,21 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * Constructs a managed connection factory based on configuration.
      * 
      * @param dsConfigRef reference to update to point at the new data source configuration.
-     * @param id the id of the data source.
-     * @param jndi the JNDI name of the data source.
      * @param ifc the type of data source.
-     * @param wProps WebSphere data source properties
-     * @param vProps JDBC driver vendor data source properties
      * @param ds the data source.
-     * @param connectorSvc connector service instance
      * @param jdbcRuntime version of the Liberty jdbc feature
      * @throws Exception if an error occurs.
      */
-    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, String id, String jndi, Class<? extends CommonDataSource> ifc,
-                                          NavigableMap<String, Object> wProps, Properties vProps, CommonDataSource ds,
-                                          ConnectorService connectorSvc, JDBCRuntimeVersion jdbcRuntime) throws Exception {
+    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<? extends CommonDataSource> ifc,
+                                          CommonDataSource ds, JDBCRuntimeVersion jdbcRuntime) throws Exception {
+        dsConfig = dsConfigRef;
+        DSConfig config = dsConfig.get();
+
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "<init>", ifc, wProps, vProps, jdbcRuntime);
+            Tr.entry(this, tc, "<init>", dsConfigRef, ifc, jdbcRuntime);
 
-        this.connectorSvc = connectorSvc;
+        this.connectorSvc = config.connectorSvc;
         this.jdbcRuntime = jdbcRuntime;
         instanceID = NUM_INITIALIZED.incrementAndGet();
         dataSourceImplClass = ds.getClass();
@@ -307,14 +305,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String dataSourceImplClassName = dataSourceImplClass.getName();
-        isUCP = dataSourceImplClassName.charAt(0) == 'o' && dataSourceImplClassName.startsWith("oracle.ucp.jdbc.");
-        if (isUCP)
-            Tr.info(tc, "WAS_CONNECTION_POOLING_DISABLED_INFO");
+        isUCP = dataSourceImplClassName.charAt(2) == 'a' && dataSourceImplClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
-        DSConfig config = new DSConfig(id, jndi, wProps, vProps, ds.getClass(), connectorSvc, this);
-        (dsConfig = dsConfigRef).set(config);
-
-        createDatabaseHelper(vProps instanceof PropertyService ? ((PropertyService) vProps).getFactoryPID() : PropertyService.FACTORY_PID);
+        createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
@@ -514,11 +507,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             // checks for Basic Password Credential and for Kerberos  
             // will be skipped.                                       
 
-            String threadIdentitySupport = helper.getThreadIdentitySupport();
+            int threadIdentitySupport = helper.getThreadIdentitySupport();
             boolean subjectHasUtokenCred = false; 
 
-            if ((threadIdentitySupport.equals("ALLOWED")) || 
-                (threadIdentitySupport.equals("REQUIRED"))) 
+            if (threadIdentitySupport != AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED) 
             {
                 if (isAnyTraceOn && tc.isDebugEnabled())
                     Tr.debug(this, tc, "The JDBC Provider supports the use of Thread Identity for authentication."); 
@@ -575,9 +567,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         break;
                     }
                 }
-                if ((!subjectHasUtokenCred) && 
-                    (threadIdentitySupport.equals("REQUIRED"))) 
-                {
+                if (!subjectHasUtokenCred && threadIdentitySupport == AbstractConnectionFactoryService.THREAD_IDENTITY_REQUIRED) {
                     String message = "createManagedConnection() error: Jdbc Provider requires ThreadIdentitySupport, but no UTOKEN generic credential was found."; 
 
                     ResourceException resX = new DataStoreAdapterException("WS_INTERNAL_ERROR", null, getClass(), message);

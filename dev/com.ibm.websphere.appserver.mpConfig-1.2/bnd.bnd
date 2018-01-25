@@ -14,7 +14,7 @@
 
 -dependson: \
 	com.ibm.ws.require.java8;version=latest, \
-	com.ibm.ws.microprofile.config;version=latest, \
+	com.ibm.ws.microprofile.config.1.2;version=latest, \
 	com.ibm.ws.com.netflix.archaius;version=latest, \
 	com.ibm.ws.org.apache.commons.lang3;version=latest, \
 	com.ibm.ws.org.slf4j.api;version=latest, \

@@ -9,11 +9,12 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
+    <include location="../fatTestPorts.xml"/>
+
     <featureManager>
         <feature>jsp-2.2</feature>
     </featureManager>
 
-    <include location="../fatTestPorts.xml"/>
     <logging hideMessage="CWWKZ0058I" />
     
 </server>

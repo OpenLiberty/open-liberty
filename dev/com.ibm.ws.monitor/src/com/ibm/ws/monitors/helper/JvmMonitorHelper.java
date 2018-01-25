@@ -14,15 +14,10 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-
-import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  *
@@ -33,18 +28,6 @@ public class JvmMonitorHelper {
     private final List<GarbageCollectorMXBean> gmx;
     private final GarbageCollectorMXBean firstGCMBean;
     private final RuntimeMXBean rmx;
-    private final OperatingSystemMXBean osmx;
-
-    MBeanServer mBeanServer;
-    ObjectName operatingSystemMbean;
-    String OS_ATTRIBUTE_PROCESS_CPU_TIME = "ProcessCpuTime";
-
-    //For CPU
-    private long currElapsedCPUTime = 0;
-    private long currElapsedRealTime = 0;
-    private long lastElapsedRealTime = 0;
-    private long lastElapsedCPUTime = 0;
-    private int cpuNSFactor = 1;
 
     /**
      *
@@ -54,19 +37,6 @@ public class JvmMonitorHelper {
         gmx = ManagementFactory.getGarbageCollectorMXBeans();
         firstGCMBean = gmx.get(0);
         rmx = ManagementFactory.getRuntimeMXBean();
-
-        if (rmx.getVmVendor().equalsIgnoreCase("IBM Corporation")) {
-            //IBM Implementation of getProcessCpuTime calculates CPU time per 100 nano-seconds.
-            cpuNSFactor = 100;
-        }
-
-        osmx = ManagementFactory.getOperatingSystemMXBean();
-        mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        try {
-            operatingSystemMbean = new ObjectName("java.lang", "type", "OperatingSystem");
-        } catch (MalformedObjectNameException e) {
-            FFDCFilter.processException(e, getClass().getName(), "JvmMonitorHelper<init>");
-        }
     }
 
     /**
@@ -145,37 +115,6 @@ public class JvmMonitorHelper {
      * @return Percentage CPU usage for JVM Process
      */
     public double getCPU() {
-        double cpuUsage = -1;
-        long processCpuTime = -1;
-
-        // Get the CPU time.
-        try {
-            // There should already be an FFDC logged if there was an issue getting a reference to the operatingSystemMbean.
-            if (operatingSystemMbean != null) {
-                processCpuTime = (Long) mBeanServer.getAttribute(operatingSystemMbean, OS_ATTRIBUTE_PROCESS_CPU_TIME);
-            }
-        } catch (Exception e) {
-            FFDCFilter.processException(e, getClass().getName(), "getCPU");
-        }
-
-        if (processCpuTime != -1) {
-            try {
-                currElapsedCPUTime = processCpuTime;
-                currElapsedRealTime = System.nanoTime();
-
-                long d1 = currElapsedRealTime - lastElapsedRealTime;
-                long d2 = currElapsedCPUTime - lastElapsedCPUTime;
-                cpuUsage = (double) d2 / d1;
-                int processors = osmx.getAvailableProcessors();
-                cpuUsage = (cpuUsage / processors) * cpuNSFactor * 100;
-            } catch (IllegalArgumentException e) {
-                FFDCFilter.processException(e, getClass().getName(), "getCPU");
-            }
-
-            lastElapsedRealTime = currElapsedRealTime;
-            lastElapsedCPUTime = currElapsedCPUTime;
-        }
-
-        return cpuUsage;
+        return CpuInfo.getJavaCpuUsage();
     }
 }

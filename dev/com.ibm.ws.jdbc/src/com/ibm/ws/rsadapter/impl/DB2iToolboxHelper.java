@@ -20,6 +20,7 @@ import java.sql.SQLWarning;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 import java.util.Collections;
@@ -61,7 +62,7 @@ public class DB2iToolboxHelper extends DB2Helper {
 
         localZOS = false;
         isRRSTransaction = false;
-        threadIdentitySupport = THREAD_IDENTITY_SUPPORT_NOTALLOWED;
+        threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
         threadSecurity = false;
 
         Properties props = mcf.dsConfig.get().vendorProps;

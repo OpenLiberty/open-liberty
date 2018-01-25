@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2017 IBM Corporation and others.
+ * Copyright (c) 2003, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -51,7 +52,7 @@ public class DB2Helper extends DatabaseHelper {
     private String currentSQLid = null;
     String osType;
     boolean isRRSTransaction = false;
-    String threadIdentitySupport = THREAD_IDENTITY_SUPPORT_NOTALLOWED;
+    int threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
     boolean threadSecurity = false;
     boolean localZOS = false;
     String productName = null;
@@ -82,7 +83,7 @@ public class DB2Helper extends DatabaseHelper {
         // flag. therefore, it is saved to use this flag to indicate that this is a zOS database.
         if (localZOS) {
             isRRSTransaction = true;
-            threadIdentitySupport = THREAD_IDENTITY_SUPPORT_ALLOWED;
+            threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED;
             threadSecurity = true;
         }
 
@@ -203,13 +204,10 @@ public class DB2Helper extends DatabaseHelper {
     }
 
     /**
-     * Feature WS14621 
-     * 
      * @return string to indicate whether the DataSource allows Thread Identity Support.
      */
     @Override
-    public String getThreadIdentitySupport() {
-        //return THREAD_IDENTITY_SUPPORT_ALLOWED;
+    public int getThreadIdentitySupport() {
         return threadIdentitySupport; 
     }
 

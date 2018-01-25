@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.logging.fat;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -23,7 +26,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * java.lang.NullPointerException
  * at javax.servlet.http.Cookie.isToken(Cookie.java:384)
  * at javax.servlet.http.Cookie.<init>(Cookie.java:124)
- * at com.ibm.ws.logging.fat.servlet.SpecUsingServlet.doGet(SpecUsingServlet.java:40)
+ * at com.ibm.ws.logging.fat.broken.servlet.SpecUsingServlet.doGet(SpecUsingServlet.java:40)
  * at javax.servlet.http.HttpServlet.service(HttpServlet.java:575)
  * at javax.servlet.http.HttpServlet.service(HttpServlet.java:668)
  * at com.ibm.ws.webcontainer.servlet.ServletWrapper.service(ServletWrapper.java:1240)
@@ -36,10 +39,17 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
     @BeforeClass
     public static void setUp() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver");
-
         server.startServer();
-        server.addInstalledAppForValidation("broken-servlet");
+        ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
+
         hitWebPage("broken-servlet", "SpecUsingServlet", true);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer(MAIN_EXCEPTION);
+        }
     }
 
     @Test

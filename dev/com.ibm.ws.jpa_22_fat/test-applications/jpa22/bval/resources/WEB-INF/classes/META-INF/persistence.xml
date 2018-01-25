@@ -7,7 +7,7 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     	<properties>
 			<!-- EclipseLink should create the database schema automatically -->
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.ddl-generation" value="create-tables" />
 			<property name="eclipselink.cache.shared.default" value="false"/>
 		</properties>
     </persistence-unit>

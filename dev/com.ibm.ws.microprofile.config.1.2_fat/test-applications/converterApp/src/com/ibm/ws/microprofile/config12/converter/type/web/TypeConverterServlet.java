@@ -18,7 +18,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/LambdaConverterServlet")
+@WebServlet("/TypeConverterServlet")
 public class TypeConverterServlet extends FATServlet {
 
     @Inject
@@ -27,5 +27,30 @@ public class TypeConverterServlet extends FATServlet {
     @Test
     public void converterPrioritySPITest() throws Exception {
         bean.lambdaConverterTest();
+    }
+
+    @Test
+    public void forcedTypeConverterTest() throws Exception {
+        bean.forcedTypeConverterTest();
+    }
+
+    @Test
+    public void listConverterTest() throws Exception {
+        bean.listConverterTest();
+    }
+
+    @Test
+    public void setConverterTest() throws Exception {
+        bean.setConverterTest();
+    }
+
+    @Test
+    public void optionalConverterTest() throws Exception {
+        bean.optionalConverterTest();
+    }
+
+    @Test
+    public void defaultOptionalConverterTest() throws Exception {
+        bean.defaultOptionalConverterTest();
     }
 }

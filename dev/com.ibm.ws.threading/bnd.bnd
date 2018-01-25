@@ -58,7 +58,8 @@ instrument.classesExcludes: com/ibm/ws/threading/internal/resources/*.class
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.service;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -69,3 +70,4 @@ instrument.classesExcludes: com/ibm/ws/threading/internal/resources/*.class
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest
+	

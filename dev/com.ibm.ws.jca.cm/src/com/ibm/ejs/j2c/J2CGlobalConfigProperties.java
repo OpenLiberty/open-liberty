@@ -62,39 +62,6 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     protected final String cfName; // The jndi name if there is one, if not the base of the xpath id.
                                    // Used for jca.cm messages, not passed out externally.
 
-    /*
-     * Indicates if the configured MCF is RRSTransactional. If so,
-     * transactions will be processed using z/OS Resource Recovery
-     * Services (RRS) instead of the transaction support indicated
-     * by the connector's Deployment descriptor.
-     *
-     * This property is applicable to WAS z/OS only.
-     */
-    protected final boolean rrsTransactional;
-
-    /*
-     * Indicates if the configured MCF requires an z/OS ACEE to be placed
-     * on the thread (TCB) when "current thread identity" is used for
-     * getConnection() processing.
-     *
-     * This property is applicable to WAS z/OS only.
-     */
-    protected final boolean threadSecurity;
-
-    /*
-     * Indicates if the configured MCF allows "current thread identity"
-     * to be used for getConnection() processing.
-     *
-     * This property may be set to "NOTALLOWED", "REQUIRED", or
-     * "ALLOWED".
-     *
-     * This property is applicable to WAS z/OS only.
-     */
-    static final String THREADIDENTITY_NOTALLOWED = "NOTALLOWED";
-    static final String THREADIDENTITY_REQUIRED = "REQUIRED";
-    static final String THREADIDENTITY_ALLOWED = "ALLOWED";
-
-    protected final String threadIdentitySupport;
     protected final boolean logMissingTranContext;
 
     protected final boolean validatingMCFSupported;
@@ -425,9 +392,6 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         }
 
         dynamicEnlistmentSupported = false; // Will become true later if managed connection implements LazyEnlistableManagedConnection
-        this.rrsTransactional = cfSvc.getRRSTransactional();
-        this.threadSecurity = cfSvc.getThreadSecurity();
-        this.threadIdentitySupport = cfSvc.getThreadIdentitySupport();
         this.logMissingTranContext = _logMissingTranContext;
         this.transactionSupport = cfSvc.getTransactionSupport();
         this.smartHandleSupport = false; // Will become true later if managed connection implements DissociatableManagedConnection
@@ -884,9 +848,6 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         buf.append(nl + "  <-- Read Only -->" + nl);
         buf.append("  jndiName                        : " + jndiName + nl);
         buf.append("  transactionResourceRegistration : " + transactionResourceRegistration + nl);
-        buf.append("  rrsTransactional                : " + rrsTransactional + nl);
-        buf.append("  threadSecurity                  : " + threadSecurity + nl);
-        buf.append("  threadIdentitySupport           : " + threadIdentitySupport + nl);
         buf.append("  cciLocalTranSupported           : " + cciLocalTranSupported + nl);
         buf.append("  logMissingTranContext           : " + logMissingTranContext + nl);
         buf.append("  embeddedRa                      : " + embeddedRa + nl);

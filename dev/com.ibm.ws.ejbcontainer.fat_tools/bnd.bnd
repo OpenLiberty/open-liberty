@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: EJB Container Test Tools
-Bundle-SymbolicName: com.ibm.ws.ejbcontainer.test
+Bundle-SymbolicName: com.ibm.ws.ejbcontainer.fat_tools
 Bundle-Description: EJB Container Test Tools; version=${bVersion}
 
 WS-TraceGroup: EJBContainer
@@ -28,7 +28,9 @@ DynamicImport-Package: \
 
 Export-Package: \
   com.ibm.websphere.ejbcontainer.test.tools; version="1.0", \
-  com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0"
+  com.ibm.websphere.ejbcontainer.test.osgi.pmi; version="1.0" \
+  com.ibm.websphere.ejbcontainer.test.mdb; version="1.0" \
+  com.ibm.websphere.ejbcontainer.test.mdb.interceptors; version="1.0"
 
 Private-Package: \
   com.ibm.websphere.ejbcontainer.test.*
@@ -40,7 +42,7 @@ instrument.classesIncludes: com/ibm/ws/ejbcontainer/osgi/**/*.class
   com.ibm.websphere.ejbcontainer.test.osgi.pmi.internal.TestEJBPMICollaboratorFactory
   
 test.project: true
-#generate.replacement: true
+generate.replacement: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\

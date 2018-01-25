@@ -38,6 +38,12 @@ public class CommonTestClass {
         assertTrue("Input did not match expected expression. Expected: [" + regex + "]. Value was: [" + input + "]", m.find());
     }
 
+    protected void verifyPattern(String input, String regex, String failureMsg) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher m = pattern.matcher(input);
+        assertTrue(failureMsg + " Input did not match expected expression. Expected: [" + regex + "]. Value was: [" + input + "]", m.find());
+    }
+
     protected void verifyNoLogMessage(SharedOutputManager outputMgr, String messageRegex) {
         assertFalse("Found message [" + messageRegex + "] in log but should not have.", outputMgr.checkForMessages(messageRegex));
     }

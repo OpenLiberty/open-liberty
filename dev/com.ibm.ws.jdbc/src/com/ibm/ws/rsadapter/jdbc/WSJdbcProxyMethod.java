@@ -78,7 +78,7 @@ public abstract class WSJdbcProxyMethod
         // It is ok to add JDBC API methods to this list to block the vendor 
         //   versions of the method.  The API versions will not be blocked.
 
-        unsafeMethods = new HashSet<String>(37); 
+        unsafeMethods = new HashSet<String>(47);
 
         unsafeMethods.add("_getPC");
         // oracle.jdbc.OracleConnection._getPC()
@@ -90,6 +90,12 @@ public abstract class WSJdbcProxyMethod
         unsafeMethods.add("applyConnectionAttributes");
         //  oracle.jdbc.OracleConnection.applyConnectionAttributes(Properties)
         //  oracle.jdbc.internal.OracleConnection.applyConnectionAttributes(Properties)
+        unsafeMethods.add("attachServerConnection");
+        //  oracle.jdbc.OracleConnection.attachServerConnection
+        //  oracle.jdbc.internal.OracleConnection.attachServerConnection
+        unsafeMethods.add("beginRequest");
+        // oracle.jdbc.OracleConnection.beginRequest()
+        // oracle.jdbc.internal.OracleConnection.beginRequest()
         unsafeMethods.add("cancel");
         // oracle.jdbc.OracleConnection.cancel()
         // oracle.jdbc.internal.OracleConnection.cancel()
@@ -102,6 +108,8 @@ public abstract class WSJdbcProxyMethod
         //  oracle.jdbc.internal.OracleConnection.close(int)
         unsafeMethods.add("closeInternal");
         // oracle.jdbc.internal.OracleConnection.closeInternal(boolean)
+        unsafeMethods.add("closeLogicalConnection");
+        // oracle.jdbc.internal.OracleConnection.closeLogicalConnection()
         unsafeMethods.add("closeWithKey");
         //  oracle.jdbc.OracleStatement.closeWithKey(String)
         //  oracle.jdbc.internal.OracleStatement.closeWithKey(String)
@@ -112,7 +120,25 @@ public abstract class WSJdbcProxyMethod
         unsafeMethods.add("commit");
         //  oracle.jdbc.OracleConnection.commit(EnumSet)
         //  oracle.jdbc.internal.OracleConnection.commit(EnumSet)
+        unsafeMethods.add("createConnectionBuilder");
+        // oracle.jdbc.pool.OracleConnectionPoolDataSource.createConnectionBuilder
+        // oracle.jdbc.pool.OracleDataSource.createConnectionBuilder
+        // oracle.jdbc.xa.client.OracleXADataSource.createConnectionBuilder
+        // oracle.jdbc.xa.OracleXADataSource.createConnectionBuilder
+        unsafeMethods.add("createPooledConnectionBuilder");
+        // oracle.jdbc.pool.OracleConnectionPoolDataSource.createPooledConnectionBuilder
+        // oracle.jdbc.xa.client.OracleXADataSource.createPooledConnectionBuilder
+        // oracle.jdbc.xa.OracleXADataSource.createPooledConnectionBuilder
+        unsafeMethods.add("createXAConnectionBuilder");
+        // oracle.jdbc.xa.client.OracleXADataSource.createXAConnectionBuilder
+        // oracle.jdbc.xa.OracleXADataSource.createXAConnectionBuilder
+        unsafeMethods.add("detachServerConnection");
+        // oracle.jdbc.OracleConnection.detachServerConnection(String)
+        // oracle.jdbc.internal.OracleConnection.detachServerConnection(String)
         unsafeMethods.add("doClose");
+        unsafeMethods.add("endRequest");
+        //  oracle.jdbc.OracleConnection.endRequest()
+        //  oracle.jdbc.internal.OracleConnection.endRequest()
         //these methods are already covered because they return JDBC APIs:
         //   getConnection, getPooledConnection, getXAConnection, getXAResource
         unsafeMethods.add("getDB2Object");
@@ -155,6 +181,12 @@ public abstract class WSJdbcProxyMethod
         // oracle.jdbc.OracleConnection.setAutoClose(boolean)
         // oracle.jdbc.internal.OracleConnection.setAutoClose(boolean)
         unsafeMethods.add("setCurrentUser"); 
+        unsafeMethods.add("setShardingKeyIfValid");
+        //  oracle.jdbc.OracleConnection.setShardingKeyIfValid
+        //  oracle.jdbc.internal.OracleConnection.setShardingKeyIfValid
+        unsafeMethods.add("setShardingKey");
+        //  oracle.jdbc.OracleConnection.setShardingKey
+        //  oracle.jdbc.internal.OracleConnection.setShardingKey
         unsafeMethods.add("setUsingXAFlag");
         //  oracle.jdbc.OracleConnection.setUsingXAFlag(boolean)
         //  oracle.jdbc.internal.OracleConnection.setUsingXAFlag(boolean)

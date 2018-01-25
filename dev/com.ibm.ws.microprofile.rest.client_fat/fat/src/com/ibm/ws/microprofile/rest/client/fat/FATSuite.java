@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                BasicTest.class
+                BasicTest.class,
+                BasicCdiTest.class
 })
 public class FATSuite {}
