@@ -58,6 +58,7 @@ public final class CMConfigDataImpl implements CMConfigData {
     private String loginConfigPropsKeyString = null; 
     private int _commitPriority = 0; 
     private int _branchCoupling = 999; //  Loose|Tight
+    private String qmid = "undefined";
 
     /*
      * Transient fields are not saved when the object is serialized, and do not need to be accounted for
@@ -98,7 +99,8 @@ public final class CMConfigDataImpl implements CMConfigData {
                     new ObjectStreamField("loginConfigProperties", HashMap.class),
                     new ObjectStreamField("loginConfigPropsKeyString", String.class),
                     new ObjectStreamField("_commitPriority", Integer.TYPE), 
-                    new ObjectStreamField("_branchCoupling", Integer.TYPE) 
+                    new ObjectStreamField("_branchCoupling", Integer.TYPE),
+                    new ObjectStreamField("qmid", String.class)
 
     };
 
@@ -433,6 +435,11 @@ public final class CMConfigDataImpl implements CMConfigData {
         buf.append(resRefNameString);
         buf.append(nl);
 
+        String qmidString = ((qmid == null) ? "not set" : qmid);
+        buf.append("\tQueue manager id:        ");
+        buf.append(qmidString);
+        buf.append(nl);
+
         return buf.toString();
 
     }
@@ -553,6 +560,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         loginConfigPropsKeyString = (String) getField.get("loginConfigPropsKeyString", null); 
         _commitPriority = getField.get("_commitPriority", 0); 
         _branchCoupling = getField.get("_branchCoupling", 999); 
+        qmid = (String) getField.get("qmid", null);
 
         if (TC.isEntryEnabled())
             Tr.exit(this, TC, "readObject", new Object[] {
@@ -605,6 +613,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         putField.put("loginConfigPropsKeyString", loginConfigPropsKeyString); 
         putField.put("_commitPriority", _commitPriority); 
         putField.put("_branchCoupling", _branchCoupling); 
+        putField.put("qmid", qmid);
 
         stream.writeFields();
 
@@ -725,5 +734,18 @@ public final class CMConfigDataImpl implements CMConfigData {
         public String getValue() {
             return value;
         }
+    }
+    /**
+     * @return the qmid
+     */
+    public String getQmid() {
+        return qmid;
+    }
+
+    /**
+     * @param qmid the qmid to set
+     */
+    public void setQmid(String qmid) {
+        this.qmid = qmid;
     }
 }
