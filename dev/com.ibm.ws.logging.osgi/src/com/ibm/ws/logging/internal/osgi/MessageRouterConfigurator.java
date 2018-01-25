@@ -179,15 +179,7 @@ public class MessageRouterConfigurator implements BundleListener {
      * This method is called from the ServiceListener.
      */
     protected void setWsLogHandler(ServiceReference<WsLogHandler> ref) {
-    	
-    	//If it is a jsonTrService, then we don't want early messages, and the opposite is true if it is not a jsonTrService
-    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
-    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
-    	}
-    	else {
-    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);   		
-    	}
-
+    	getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref));   		
     }
 
     /**

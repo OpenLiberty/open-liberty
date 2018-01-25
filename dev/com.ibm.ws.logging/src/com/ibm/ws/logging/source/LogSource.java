@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.RoutedMessage;
-import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairs;
@@ -35,7 +34,7 @@ import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
-public class LogSource implements Source, WsLogHandler {
+public class LogSource implements Source {
 
     private static final TraceComponent tc = Tr.register(LogSource.class);
 
@@ -106,21 +105,18 @@ public class LogSource implements Source, WsLogHandler {
         return location;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Log the given log record.
+     *
+     * @param routedMessage The LogRecord along with various message formats.
+     */
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
             LogRecord logRecord = routedMessage.getLogRecord();
             if (logRecord != null && bufferMgr != null) {
-//                MessageLogData parsedMessage = parse(routedMessage, logRecord);
-//                if (!BufferManager.EMQRemovedFlag && parsedMessage.getMessage().startsWith("CWWKF0011I")) {
-//                    BufferManager.removeEMQTrigger();
-//                    BufferManager.EMQRemovedFlag = true;
-//                }
                 bufferMgr.add(parse(routedMessage, logRecord));
-//                bufferMgr.add(parsedMessage);
             }
         }
     }

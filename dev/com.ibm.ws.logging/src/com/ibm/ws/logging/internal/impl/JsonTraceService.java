@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -223,7 +223,20 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
-        //check if tracefilename is stdout
+        // Tee to messages.log (always)
+
+        RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
+
+        /*
+         * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+         * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+         * However, LogstashCollector and BluemixLogCollector will receive all messages
+         */
+        if (logSource != null) {
+            logSource.publish(routedMessage);
+        }
+        invokeMessageRouters(routedMessage);
+
         if (detailLog == systemOut) {
             consoleLogHandler.setConsoleStream(true);
         } else {
@@ -254,19 +267,6 @@ public class JsonTraceService extends BaseTraceService {
             retMe &= internalMsgRouter.route(routedMessage);
         } else {
             earlierMessages.add(routedMessage);
-            /*
-             * If no Routers are set, then there is no way for a message event to go through to LogSource
-             * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
-             * the router.
-             *
-             * When the Router is fully initialized then it will go through to the Router and then LogSource as appropriate.
-             *
-             * logSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
-             * appropriately call setupCollectorManagerPipeline()
-             */
-            if (logSource != null) {
-                logSource.publish(routedMessage);
-            }
         }
         return retMe;
     }
@@ -286,7 +286,7 @@ public class JsonTraceService extends BaseTraceService {
          * to trace emitted. We do not want any more pass-throughs.
          */
         try {
-            if (!(counter.incrementCount() > 2)) {
+            if (!(counterForTraceRouter.incrementCount() > 2)) {
                 if (logRecord != null) {
                     Level level = logRecord.getLevel();
                     int levelValue = level.intValue();
@@ -298,26 +298,13 @@ public class JsonTraceService extends BaseTraceService {
                                 retMe &= internalTrRouter.route(routedTrace);
                             } else {
                                 earlierTraces.add(routedTrace);
-                                /*
-                                 * If no Routers are set, then there is no way for a trace event to go through to TraceSource
-                                 * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
-                                 * the router.
-                                 *
-                                 * When the Router is fully initialized then it will go through to the Router and then TraceSource as appropriate.
-                                 *
-                                 * traceSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
-                                 * appropriately call setupCollectorManagerPipeline()
-                                 */
-                                if (traceSource != null) {
-                                    traceSource.publish(routedTrace);
-                                }
                             }
                         }
                     }
                 }
             }
         } finally {
-            counter.decrementCount();
+            counterForTraceRouter.decrementCount();
         }
         return retMe;
     }
@@ -344,11 +331,13 @@ public class JsonTraceService extends BaseTraceService {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
 //            String messageLogFormat = formatter.messageLogFormat(logRecord, formattedVerboseMsg);
 
+            RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
+
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
             // This has to be checked in this method: direct invocation of system.out
             // and system.err are not subject to message routing.
-            boolean logNormally = invokeMessageRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord));
+            boolean logNormally = invokeMessageRouters(routedMessage);
             if (!logNormally)
                 return;
 
@@ -356,6 +345,17 @@ public class JsonTraceService extends BaseTraceService {
             if (isMessageHidden(formattedMsg)) {
                 publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
                 return;
+            }
+
+            /*
+             * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+             * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+             * However, LogstashCollector and BluemixLogCollector will receive all messages
+             */
+
+            // logSource only receives "normal" messages and messages that are not hidden.
+            if (logSource != null) {
+                logSource.publish(routedMessage);
             }
         }
 
@@ -381,13 +381,41 @@ public class JsonTraceService extends BaseTraceService {
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
-        //go down to trace handlers
-        invokeTraceRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord));
-        //write to trace.log
-        if (detailLog != systemOut) {
-            String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
-            detailLog.writeRecord(traceDetail);
+
+        String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
+
+        RoutedMessage routedTrace = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, traceDetail, logRecord);
+
+        invokeTraceRouters(routedTrace);
+
+        /*
+         * Avoid any feedback traces that are emitted after this point.
+         * The first time the counter increments is the first pass-through.
+         * The second time the counter increments is the second pass-through due
+         * to trace emitted. We do not want any more pass-throughs.
+         */
+        try {
+            if (!(counterForTraceSource.incrementCount() > 2)) {
+                if (logRecord != null) {
+                    Level level = logRecord.getLevel();
+                    int levelValue = level.intValue();
+                    if (levelValue < Level.INFO.intValue()) {
+                        String levelName = level.getName();
+                        if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                            if (traceSource != null) {
+                                traceSource.publish(routedTrace);
+                            }
+                        }
+                    }
+                }
+            }
+        } finally {
+            counterForTraceSource.decrementCount();
         }
+
+        // write to trace.log
+        if (detailLog != systemOut)
+            detailLog.writeRecord(traceDetail);
 
     }
 }
