@@ -92,12 +92,7 @@ public class TraceRouterConfigurator {
      * This method is called from the ServiceListener.
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
-    	//If it is a jsonTrService, then we don't want early trace messages, and the opposite is true if it is not a jsonTrService
-    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
-            getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);   		
-    	} else {
-    		 getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);  
-    	}
+    	getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref));  
     }
 
     /**
