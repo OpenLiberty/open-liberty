@@ -227,48 +227,6 @@ public class BaseTraceFormatter extends Formatter {
         return createFormattedString(logRecord, id, txt);
     }
 
-//    /**
-//     * Format a detailed record for trace.log. Previously formatted messages may
-//     * be provided and may be reused if possible.
-//     *
-//     * @param logRecord
-//     * @param id
-//     * @param formattedMsg the result of {@link #formatMessage}, or null if that
-//     *            method was not previously called
-//     * @param formattedVerboseMsg the result of {@link #formatVerboseMessage},
-//     *            or null if that method was not previously called
-//     * @return
-//     */
-//    public String traceLogFormatter(GenericData object) {
-//        ArrayList<Pair> pairs = object.getPairs();
-//        KeyValuePair kvp = null;
-//        String txt;
-//        for (Pair p : pairs) {
-//
-//            if (p instanceof KeyValuePair) {
-//
-//                kvp = (KeyValuePair) p;
-//                if (kvp.getKey().equals("message")) {
-//                    txt = kvp.getValue();
-//                } else if (kvp.getKey().equals("throwable")) {
-//                    throwable = kvp.getValue();
-//                } else if (kvp.getKey().equals("levelValue")) {
-//                    levelValue = Integer.parseInt(kvp.getValue());
-//                }
-//
-//            }
-//        }
-////        if (formattedVerboseMsg == null) {
-////            // If we don't already have a formatted message... (for Audit or Info or Warning.. )
-////            // we have to build something instead (while avoiding a useless resource bundle lookup)
-////            txt = formatVerboseMessage(logRecord, formattedMsg, false);
-////        } else {
-////            txt = formattedVerboseMsg;
-////        }
-//
-//        return createFormattedString(logRecord, id, txt);
-//    }
-
     /**
      * {@inheritDoc} <br />
      * We override this method because in some JVMs, it is synchronized (why on earth?!?!).
