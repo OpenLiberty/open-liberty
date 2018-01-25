@@ -1,0 +1,19 @@
+-include= \
+  ~../cnf/resources/bnd/bundle.props
+  
+bVersion=1.0
+
+Bundle-Name: TrWriter Servlet
+Bundle-SymbolicName: com.ibm.ws.logging.json_fat.TrWriterBundle
+Bundle-Description: Tr writer servlet for logging test
+
+Web-ContextPath: /trwriter
+
+Include-Resource: \
+    WEB-INF=test-bundles/TrWriterBundle/resources/WEB-INF, \
+    com/ibm/ws/logging/fat/bundle/resources/Messages.properties=test-bundles/TrWriterBundle/resources/com/ibm/ws/logging/fat/bundle/resources/Messages.properties
+
+Private-Package: \
+  com.ibm.ws.logging.fat.bundle
+  
+Export-Package: com.ibm.ws.logging.fat.bundle;version=1.0.0
