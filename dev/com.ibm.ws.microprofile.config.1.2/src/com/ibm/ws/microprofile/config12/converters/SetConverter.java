@@ -39,7 +39,7 @@ public class SetConverter extends BuiltInConverter implements ExtendedGenericCon
 
     /** {@inheritDoc} */
     @Override
-    public <T> Set<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager) {
+    public <T> Set<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader) {
         T[] array = conversionManager.convertArray(rawString, genericType);
         Set<T> set = new HashSet<T>(Arrays.asList(array));
         return set;

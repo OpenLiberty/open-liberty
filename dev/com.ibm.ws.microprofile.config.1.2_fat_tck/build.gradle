@@ -8,18 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.converters;
-
-import com.ibm.ws.microprofile.config.impl.ConversionManager;
-
-/**
- * A converter with an explicit Type and priority
- */
-public interface ExtendedGenericConverter {
-
-    /**
-     * @param rawString
-     * @return
-     */
-    public abstract <T> Object convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader);
+	
+dependencies {
+  requiredLibs 'org.hamcrest:hamcrest-all:1.3'
 }
+

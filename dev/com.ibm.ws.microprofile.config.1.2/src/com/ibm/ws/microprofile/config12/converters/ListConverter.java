@@ -36,7 +36,7 @@ public class ListConverter extends BuiltInConverter implements ExtendedGenericCo
 
     /** {@inheritDoc} */
     @Override
-    public <T> List<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager) {
+    public <T> List<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader) {
         T[] array = conversionManager.convertArray(rawString, genericType);
         List<T> list = Arrays.asList(array);
         return list;
