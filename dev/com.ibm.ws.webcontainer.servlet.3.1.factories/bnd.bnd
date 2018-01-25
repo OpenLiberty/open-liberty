@@ -30,7 +30,7 @@ Service-Component: \
   com.ibm.ws.webcontainer.v31.dd; \
     implementation:=com.ibm.ws.javaee.version.ServletVersion; \
     provide:=com.ibm.ws.javaee.version.ServletVersion; \
-    properties:="version:Integer=31", \
+    properties:="version:Integer=31"
  
 Private-Package: \
  com.ibm.ws.webcontainer31.async.factory, \
