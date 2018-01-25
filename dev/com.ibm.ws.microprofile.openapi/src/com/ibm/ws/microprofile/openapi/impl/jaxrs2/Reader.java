@@ -230,6 +230,8 @@ public class Reader {
                                                                                                                                                            org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement.class);
         List<org.eclipse.microprofile.openapi.annotations.servers.Server> apiServers = ReflectionUtils.getRepeatableAnnotations(cls,
                                                                                                                                 org.eclipse.microprofile.openapi.annotations.servers.Server.class);
+        List<org.eclipse.microprofile.openapi.annotations.callbacks.Callback> apiCallbacks = ReflectionUtils.getRepeatableAnnotations(cls,
+                                                                                                                                      org.eclipse.microprofile.openapi.annotations.callbacks.Callback.class);
 
         ExternalDocumentation apiExternalDocs = ReflectionUtils.getAnnotation(cls, ExternalDocumentation.class);
         org.eclipse.microprofile.openapi.annotations.tags.Tag[] apiTags = ReflectionUtils.getRepeatableAnnotationsArray(cls,
@@ -274,6 +276,18 @@ public class Reader {
                                                                                                                                apiServers.toArray(new org.eclipse.microprofile.openapi.annotations.servers.Server[apiServers.size()]));
             if (serversObject.isPresent()) {
                 classServers = serversObject.get();
+            }
+        }
+
+        Map<String, Callback> classCallbacks = null;
+        if (apiCallbacks != null) {
+            Map<String, Callback> callbacks = new LinkedHashMap<>();
+            for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback classCallback : apiCallbacks) {
+                Map<String, Callback> currentCallbacks = getCallbacks(classCallback, null, classProduces, null, classConsumes);
+                callbacks.putAll(currentCallbacks);
+            }
+            if (callbacks.size() > 0) {
+                classCallbacks = callbacks;
             }
         }
 
@@ -339,7 +353,9 @@ public class Reader {
                                                   classConsumes,
                                                   classSecurityRequirements,
                                                   classExternalDocumentation,
-                                                  classTags, classServers);
+                                                  classTags,
+                                                  classServers,
+                                                  classCallbacks);
                 if (operation != null) {
                     PathItem pathItemObject;
                     if (openAPI.getPaths() != null && openAPI.getPaths().get(operationPath) != null) {
@@ -689,7 +705,9 @@ public class Reader {
                            null,
                            new ArrayList<>(),
                            Optional.empty(),
-                           new HashSet<>(), null);
+                           new HashSet<>(),
+                           null,
+                           null);
     }
 
     public Operation parseMethod(
@@ -701,7 +719,9 @@ public class Reader {
                                  Consumes classConsumes,
                                  List<SecurityRequirement> classSecurityRequirements,
                                  Optional<org.eclipse.microprofile.openapi.models.ExternalDocumentation> classExternalDocs,
-                                 Set<String> classTags, List<org.eclipse.microprofile.openapi.models.servers.Server> classServers) {
+                                 Set<String> classTags,
+                                 List<org.eclipse.microprofile.openapi.models.servers.Server> classServers,
+                                 Map<String, Callback> classCallbacks) {
         JavaType classType = TypeFactory.defaultInstance().constructType(method.getDeclaringClass());
         return parseMethod(
                            classType.getClass(),
@@ -713,7 +733,9 @@ public class Reader {
                            classConsumes,
                            classSecurityRequirements,
                            classExternalDocs,
-                           classTags, classServers);
+                           classTags,
+                           classServers,
+                           classCallbacks);
     }
 
     private Operation parseMethod(
@@ -726,7 +748,9 @@ public class Reader {
                                   Consumes classConsumes,
                                   List<SecurityRequirement> classSecurityRequirements,
                                   Optional<org.eclipse.microprofile.openapi.models.ExternalDocumentation> classExternalDocs,
-                                  Set<String> classTags, List<org.eclipse.microprofile.openapi.models.servers.Server> classServers) {
+                                  Set<String> classTags,
+                                  List<org.eclipse.microprofile.openapi.models.servers.Server> classServers,
+                                  Map<String, Callback> classCallbacks) {
         Operation operation = new OperationImpl();
 
         org.eclipse.microprofile.openapi.annotations.Operation apiOperation = ReflectionUtils.getAnnotation(method, org.eclipse.microprofile.openapi.annotations.Operation.class);
@@ -750,15 +774,16 @@ public class Reader {
 
         // callbacks
         Map<String, Callback> callbacks = new LinkedHashMap<>();
-
         if (apiCallbacks != null) {
             for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback methodCallback : apiCallbacks) {
                 Map<String, Callback> currentCallbacks = getCallbacks(methodCallback, methodProduces, classProduces, methodConsumes, classConsumes);
                 callbacks.putAll(currentCallbacks);
             }
         }
-        if (callbacks.size() > 0) {
+        if (!callbacks.isEmpty()) {
             operation.setCallbacks(callbacks);
+        } else {
+            operation.setCallbacks(classCallbacks);
         }
 
         // security
@@ -908,13 +933,7 @@ public class Reader {
         PathItem pathItemObject = new PathItemImpl();
         for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
             Operation callbackNewOperation = new OperationImpl();
-            setOperationObjectFromApiOperationAnnotation(
-                                                         callbackNewOperation,
-                                                         callbackOperation,
-                                                         methodProduces,
-                                                         classProduces,
-                                                         methodConsumes,
-                                                         classConsumes);
+            setOperationObjectFromApiOperationAnnotation(callbackNewOperation, callbackOperation);
             setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
         }
 
@@ -977,19 +996,19 @@ public class Reader {
         }
     }
 
-    private void setOperationObjectFromApiOperationAnnotation(
-                                                              Operation operation,
-                                                              org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOp,
-                                                              Produces methodProduces,
-                                                              Produces classProduces,
-                                                              Consumes methodConsumes,
-                                                              Consumes classConsumes) {
+    private void setOperationObjectFromApiOperationAnnotation(Operation operation, org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOp) {
         if (StringUtils.isNotBlank(callbackOp.summary())) {
             operation.setSummary(callbackOp.summary());
         }
         if (StringUtils.isNotBlank(callbackOp.description())) {
             operation.setDescription(callbackOp.description());
         }
+        AnnotationsUtils.getExternalDocumentation(callbackOp.externalDocs()).ifPresent(operation::setExternalDocs);
+        operation.addParameter(null);
+        getParametersListFromAnnotation(callbackOp.parameters(), null, null, operation).ifPresent(p -> p.forEach(operation::addParameter));
+        SecurityParser.getSecurityRequirements(callbackOp.security()).ifPresent(operation::setSecurity);
+        OperationParser.getApiResponses(callbackOp.responses(), null, null, components).ifPresent(operation::setResponses);
+        // TODO: request body and parameter has to be processed
     }
 
     protected String getOperationId(String operationId) {
