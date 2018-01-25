@@ -139,12 +139,18 @@ public class CollectorJsonUtils {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (key.equals(LogFieldConstants.IBM_SEQUENCE)) {
+                if (key.equals(LogFieldConstants.IBM_DURATION)) {
 
-                } else if (key.equals(LogFieldConstants.IBM_DURATION)) {
                     key = LogFieldConstants.DURATION;
                     long duration = Long.parseLong(value) * 1000;
                     isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, Long.toString(duration), false, true, false, isFirstField, kvp.isNumber());
+
+                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
+
+                    key = LogFieldConstants.DATETIME;
+                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, false);
+
                 } else {
                     if (key.contains(LogFieldConstants.IBM_TAG)) {
                         key = CollectorJsonHelpers.removeIBMTag(key);
