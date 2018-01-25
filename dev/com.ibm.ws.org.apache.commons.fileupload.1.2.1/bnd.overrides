@@ -2,6 +2,6 @@
 bVersion=1.0
 -nouses=true
 
-Bundle-SymbolicName: com.ibm.ws.org.apache.commons.fileupload; singleton:=true
+Bundle-SymbolicName: com.ibm.ws.org.apache.commons.fileupload.1.2.1; singleton:=true
 
 Private-Package: org.apache.commons.fileupload.portlet
