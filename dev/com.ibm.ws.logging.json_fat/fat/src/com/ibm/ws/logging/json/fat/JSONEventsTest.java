@@ -23,6 +23,7 @@ import javax.json.JsonReader;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ejs.ras.TrLevelConstants;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -72,7 +73,7 @@ public abstract class JSONEventsTest {
                                                                                            "ibm_requestMethod", "ibm_uriPath", "ibm_requestProtocol", "ibm_elapsedTime",
                                                                                            "ibm_responseCode", "ibm_bytesReceived", "ibm_userAgent"));
 
-        ArrayList<String> accessLogKeysOptionalList = new ArrayList<String>();
+        ArrayList<String> accessLogKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_queryString"));
 
         getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "access");
@@ -144,6 +145,220 @@ public abstract class JSONEventsTest {
             Assert.fail("Test failed with one or more errors");
         }
 
+    }
+
+    @Test
+    public void checkTrInfo() throws Exception {
+        final String method = "checkTrInfo";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "ibm_messageId", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.info
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_INFO, "trwriter.info", "Welcome to Analytics team");
+        String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"JSONL0010I\".*\\}", getLogFile());
+        assertNotNull("Cannot find \"ibm_messageId\":\"JSONL0010I\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+
+    }
+
+    @Test
+    public void checkTrError() throws Exception {
+        final String method = "checkTrError";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "ibm_messageId", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.error
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_ERROR, "trwriter.error", "Oh no, build break errors");
+        String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"JSONL0008I\".*\\}", getLogFile());
+        assertNotNull("Cannot find \"ibm_messageId\":\"JSONL0008I\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrWarning() throws Exception {
+        final String method = "checkTr";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "ibm_messageId", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.warning
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_WARNING, "trwriter.warning", "Final warning");
+        String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"JSONL0007I\".*\\}", getLogFile());
+        assertNotNull("Cannot find \"ibm_messageId\":\"JSONL0007I\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail("Tr.warning failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrFatal() throws Exception {
+        final String method = "checkTrFatal";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "ibm_messageId", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.fatal
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_FATAL, "trwriter.fatal", "FATAL");
+        String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"JSONL0009I\".*\\}", getLogFile());
+        assertNotNull("Cannot find \"ibm_messageId\":\"JSONL0009I\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrDump() throws Exception {
+        final String method = "checkTrDump";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.error
+        long ts = System.nanoTime();
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_DUMP, "trwriter.dump", Long.toString(ts));
+        String line = getServer().waitForStringInLog("\\{.*\"message\":\"Dump: trwriter.dump.*\\}", getLogFile());
+        assertNotNull("Cannot find \"message\":\"Dump: trwriter.dump...\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrDebug() throws Exception {
+        final String method = "checkTrDebug";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.error
+        long ts = System.nanoTime();
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_DEBUG, "trwriter.debug", Long.toString(ts));
+        String line = getServer().waitForStringInLog("\\{.*\"message\":\"trwriter.debug.*\\}", getLogFile());
+        assertNotNull("Cannot find \"message\":\"trwriter.debug...\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrEntryExit() throws Exception {
+        final String method = "checkTrEntryExit";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.entry/exit
+        long ts = System.nanoTime();
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_ENTRY_EXIT, "trwriter.entryexit", Long.toString(ts));
+        String line = getServer().waitForStringInLog("\\{.*\"message\":\"Entry.*\\}", getLogFile());
+        assertNotNull("Cannot find \"message\":\"Entry...\" from messages.log", line);
+        line = getServer().waitForStringInLog("\\{.*\"message\":\"Exit.*\\}", getLogFile());
+        assertNotNull("Cannot find \"message\":\"Exit...\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrEvent() throws Exception {
+        final String method = "checkTrEvent";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.event
+        long ts = System.nanoTime();
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_EVENT, "trwriter.event", Long.toString(ts));
+        String line = getServer().waitForStringInLog("\\{.*\"message\":\"trwriter.event.*\\}", getLogFile());
+        assertNotNull("Cannot find \"message\":\"trwriter.event...\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
+    }
+
+    @Test
+    public void checkTrConfig() throws Exception {
+        final String method = "checkTrConfig";
+        ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
+                                                                                         "ibm_sequence", "loglevel", "ibm_messageId", "module",
+                                                                                         "ibm_threadId", "message"));
+
+        ArrayList<String> messageKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_className", "ibm_methodName"));
+
+        // Tr.error
+        TestUtils.runTrWriter(getServer(), TrLevelConstants.TRACE_LEVEL_CONFIG, "trwriter.config", "Config");
+        String line = getServer().waitForStringInLog("\\{.*\"ibm_messageId\":\"JSONL0005I\".*\\}", getLogFile());
+        assertNotNull("Cannot find \"ibm_messageId\":\"JSONL0005I\" from messages.log", line);
+        // Read JSON message
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+        if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail(method + " failed with one or more errors");
+        }
     }
 
     private boolean checkJsonMessage(JsonObject jsonObj, ArrayList<String> mandatoryKeyList, ArrayList<String> optionalKeyList) {

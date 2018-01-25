@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -42,6 +43,12 @@ public class ServerConfigUpdateTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.logs");
+        try {
+            server.installSystemBundle("com.ibm.ws.logging.json_fat.TrWriterBundle");
+            server.installSystemFeature("TrWriter-1.0");
+        } catch (Exception e) {
+            Log.error(c, "setUpClass", e);
+        }
         server.startServer();
         Assert.assertNotNull("Test app LogstashApp does not appear to have started.", server.waitForStringInLog("CWWKT0016I:.*LogstashApp"));
     }

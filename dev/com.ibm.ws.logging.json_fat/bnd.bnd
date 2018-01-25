@@ -12,12 +12,16 @@
 bVersion=1.0
 
 src: \
-    fat/src, \
-    test-applications/LogstashApp/src
+    fat/src,\
+    test-applications/LogstashApp/src,\
+    test-bundles/TrWriterBundle/src
 
-test.project: true
+-sub: *.bnd
+
+fat.project: true
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-    com.ibm.websphere.javaee.jsonp.1.0;version=latest
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.ws.logging.core;version=latest
 	
