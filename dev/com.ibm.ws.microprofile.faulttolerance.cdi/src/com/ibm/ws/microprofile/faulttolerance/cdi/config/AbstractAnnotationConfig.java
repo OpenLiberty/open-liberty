@@ -142,7 +142,7 @@ public class AbstractAnnotationConfig<T extends Annotation> {
             if (configValue != null) {
                 try {
 
-                    getClassLoader(annotatedClass).loadClass(configValue);
+                    result = getClassLoader(annotatedClass).loadClass(configValue);
 
                 } catch (ClassNotFoundException ex) {
                     throw new FaultToleranceException(Tr.formatMessage(tc, "Cannot load class {0} specified in config for {1}",
