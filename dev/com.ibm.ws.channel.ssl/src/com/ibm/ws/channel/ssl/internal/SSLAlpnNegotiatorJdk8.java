@@ -69,16 +69,16 @@ public class SSLAlpnNegotiatorJdk8 {
 
     /** grizzly-npn classes to find via reflection */
     private static Class<?> grizzlyNegotiationSupport;
-    private static Class<?> GrizzlyAlpnClientNegotiator;
-    private static Class<?> GrizzlyAlpnServerNegotiator;
+    private static Class<?> grizzlyAlpnClientNegotiator;
+    private static Class<?> grizzlyAlpnServerNegotiator;
     private static Object grizzlyNegotiationSupportObject;
 
     static {
         try {
             if (!jettyAlpnPresent) {
                 grizzlyNegotiationSupport = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.NegotiationSupport");
-                GrizzlyAlpnServerNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnServerNegotiator");
-                GrizzlyAlpnClientNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnClientNegotiator");
+                grizzlyAlpnServerNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnServerNegotiator");
+                grizzlyAlpnClientNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnClientNegotiator");
                 grizzlyNegotiationSupportObject = grizzlyNegotiationSupport.newInstance();
                 grizzlyAlpnPresent = true;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -134,7 +134,7 @@ public class SSLAlpnNegotiatorJdk8 {
             Tr.debug(tc, "registerGrizzlyAlpn entry " + engine);
         }
 
-        if (grizzlyNegotiationSupport != null && GrizzlyAlpnClientNegotiator != null && GrizzlyAlpnServerNegotiator != null && grizzlyNegotiationSupportObject != null) {
+        if (grizzlyNegotiationSupport != null && grizzlyAlpnClientNegotiator != null && grizzlyAlpnServerNegotiator != null && grizzlyNegotiationSupportObject != null) {
             try {
                 GrizzlyAlpnNegotiator negotiator = new GrizzlyAlpnNegotiator(engine, link);
 
@@ -143,20 +143,20 @@ public class SSLAlpnNegotiatorJdk8 {
                         Tr.debug(tc, "initializeAlpn invoke AlpnServerNegotiator " + engine);
                     }
                     // client mode is disabled; call NegotiationSuppoer.addNegotiator(SSLEngine, (AlpnServerNegotiator) this)
-                    Method m = grizzlyNegotiationSupport.getMethod("addNegotiator", SSLEngine.class, GrizzlyAlpnServerNegotiator);
+                    Method m = grizzlyNegotiationSupport.getMethod("addNegotiator", SSLEngine.class, grizzlyAlpnServerNegotiator);
                     m.invoke(grizzlyNegotiationSupportObject, new Object[] { engine, java.lang.reflect.Proxy.newProxyInstance(
-                                                                                                                              GrizzlyAlpnServerNegotiator.getClassLoader(),
-                                                                                                                              new java.lang.Class[] { GrizzlyAlpnServerNegotiator },
+                                                                                                                              grizzlyAlpnServerNegotiator.getClassLoader(),
+                                                                                                                              new java.lang.Class[] { grizzlyAlpnServerNegotiator },
                                                                                                                               negotiator) });
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "initializeAlpn invoke AlpnClientNegotiator " + engine);
                     }
                     // client mode is enabled; call NegotiationSuppoer.addNegotiator(SSLEngine, (AlpnClientNegotiator) this)
-                    Method m = grizzlyNegotiationSupport.getMethod("addNegotiator", SSLEngine.class, GrizzlyAlpnClientNegotiator);
+                    Method m = grizzlyNegotiationSupport.getMethod("addNegotiator", SSLEngine.class, grizzlyAlpnClientNegotiator);
                     m.invoke(grizzlyNegotiationSupportObject, new Object[] { engine, java.lang.reflect.Proxy.newProxyInstance(
-                                                                                                                              GrizzlyAlpnClientNegotiator.getClassLoader(),
-                                                                                                                              new java.lang.Class[] { GrizzlyAlpnClientNegotiator },
+                                                                                                                              grizzlyAlpnClientNegotiator.getClassLoader(),
+                                                                                                                              new java.lang.Class[] { grizzlyAlpnClientNegotiator },
                                                                                                                               negotiator) });
                 }
             } catch (Exception e) {
