@@ -44,7 +44,6 @@ public class HeaderValidator extends TypeValidator<Header> {
 
             if (reference != null && !reference.isEmpty()) {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-                return;
             }
 
             // The examples object is mutually exclusive of the example object.

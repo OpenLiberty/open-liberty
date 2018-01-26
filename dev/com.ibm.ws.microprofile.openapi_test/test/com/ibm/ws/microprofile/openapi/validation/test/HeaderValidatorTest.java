@@ -41,18 +41,18 @@ public class HeaderValidatorTest {
     OpenAPIImpl model = new OpenAPIImpl();
     Context context = new TestValidationContextHelper(model);
 
-//    @Test
-//    public void testHeaderIsNull() {
-//
-//        HeaderImpl headerIsNull = null;
-//
-//        TestValidationHelper vh = new TestValidationHelper();
-//        HeaderValidator validator = HeaderValidator.getInstance();
-//        validator.validate(vh, context, key, headerIsNull);
-//
-//        //Check for number of events only to keep assert statement independent of error message
-//        Assert.assertEquals(0, vh.getEventsSize());
-//    }
+    @Test
+    public void testHeaderIsNull() {
+
+        HeaderImpl headerIsNull = null;
+
+        TestValidationHelper vh = new TestValidationHelper();
+        HeaderValidator validator = HeaderValidator.getInstance();
+        validator.validate(vh, context, key, headerIsNull);
+
+        //Check for number of events only to keep assert statement independent of error message
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
 
     @Test
     public void testExampleAndExamplesNotNull() {

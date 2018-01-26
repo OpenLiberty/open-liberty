@@ -38,6 +38,7 @@ public class EncodingValidator extends TypeValidator<Encoding> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Encoding t) {
+
         if (t != null) {
 
             if (t.getStyle() != null) {
