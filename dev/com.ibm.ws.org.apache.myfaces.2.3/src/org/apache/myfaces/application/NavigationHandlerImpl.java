@@ -177,6 +177,62 @@ public class NavigationHandlerImpl
                 //removal of portlet code in myfaces core 2.0, this condition
                 //no longer applies
                 
+                // Need to add the FlowHandler parameters here.
+                FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
+                List<Flow> activeFlows = FlowHandlerImpl.getActiveFlows(facesContext, flowHandler);
+                Flow currentFlow = flowHandler.getCurrentFlow(facesContext);
+                Flow targetFlow = calculateTargetFlow(facesContext, outcome, flowHandler, 
+                                                      activeFlows, toFlowDocumentId);
+                
+                Map<String,List<String>> navigationCaseParameters = navigationCase.getParameters();
+                
+                // Spec: If this navigation is a flow transition (where current flow is not the same as the new flow)
+                // sourceFlow and targetFlow could both be null so need to have multiple checks here
+                if (currentFlow != targetFlow)
+                { 
+                    if (currentFlow != null || targetFlow != null) // ensure that at least one has a value
+                    {
+                        if (!currentFlow.equals(targetFlow)) // Now check for equality if we've made it this far 
+                        {
+                            if (navigationCaseParameters == null)
+                            {
+                                navigationCaseParameters = new HashMap<>();
+                            }
+                            // If current flow (sourceFlow) is not null and new flow (targetFlow) is null,
+                            // include the following entries:
+                            if (currentFlow != null && targetFlow == null)
+                            {
+                                // Set the TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME parameter
+                                List<String> list = new ArrayList<String>(1);
+                                list.add(FlowHandler.NULL_FLOW);
+                                navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
+                    
+                                // Set the FLOW_ID_REQUEST_PARAM_NAME
+                                List<String> list2 = new ArrayList<String>(1);
+                                list2.add("");
+                                navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
+                            }
+                            else
+                            {
+                                // If current flow (sourceFlow) is null and new flow (targetFlow) is not null,
+                                // include the following entries:
+                                // If we make it this far we know the above statement is true due to the other
+                                // logical checks we have hit to this point.
+                                // Set the TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME parameter
+                                List<String> list = new ArrayList<String>(1);
+                                list.add((toFlowDocumentId == null ? "" : toFlowDocumentId));
+                                navigationCaseParameters.put(FlowHandler.TO_FLOW_DOCUMENT_ID_REQUEST_PARAM_NAME, list);
+                    
+                                // Set the FLOW_ID_REQUEST_PARAM_NAME
+                                List<String> list2 = new ArrayList<String>(1);
+                                list2.add(targetFlow.getId());
+                                navigationCaseParameters.put(FlowHandler.FLOW_ID_REQUEST_PARAM_NAME, list2);
+                            }
+                        }
+                    }
+                }
+
+
                 ExternalContext externalContext = facesContext.getExternalContext();
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
                 String toViewId = navigationCase.getToViewId(facesContext);
@@ -184,7 +240,7 @@ public class NavigationHandlerImpl
                 String redirectPath = viewHandler.getRedirectURL(
                         facesContext, toViewId, 
                         NavigationUtils.getEvaluatedNavigationParameters(facesContext,
-                        navigationCase.getParameters()) ,
+                        navigationCaseParameters) ,
                         navigationCase.isIncludeViewParams());
                 
                 // The spec doesn't say anything about how to handle redirect but it is
