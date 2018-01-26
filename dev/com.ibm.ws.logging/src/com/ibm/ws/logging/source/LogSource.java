@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.RoutedMessage;
+import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairs;
@@ -34,7 +35,7 @@ import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
-public class LogSource implements Source {
+public class LogSource implements Source, WsLogHandler {
 
     private static final TraceComponent tc = Tr.register(LogSource.class);
 
@@ -233,14 +234,4 @@ public class LogSource implements Source {
         return messageId;
     }
 
-    /**
-     * @return
-     */
-    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
-        try {
-            return (WsLogRecord) logRecord;
-        } catch (ClassCastException ex) {
-            return null;
-        }
-    }
 }

@@ -99,7 +99,6 @@ public class JsonTraceService extends BaseTraceService {
          * if the user wishes to switch to 'json' messages or console at a later time (other than
          * startup) they will not be able to subscribe to accessLog and ffdc sources.
          */
-        setJsonConfigured();
         if (messageLogHandler == null) {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
             collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
@@ -180,15 +179,15 @@ public class JsonTraceService extends BaseTraceService {
         //check if json source list has sourcelist
     }
 
-    /*
-     * Need to tell collectormgrPiplineUtils that a JsonTrService is active and is configured to emit JSON.
-     * So that when the eventual registration of LogSource and TraceSource as WsLogHandler
-     * and WsTraceHandler (which kicks of the MessageRouterConfigurator and TraceRouterConfigurator)
-     * will not flush early messages and trace back through the LogSource and TraceSource.
-     */
-    private void setJsonConfigured() {
-        collectorMgrPipelineUtils.setJsonTrService(isJSON);
-    }
+//    /*
+//     * Need to tell collectormgrPiplineUtils that a JsonTrService is active and is configured to emit JSON.
+//     * So that when the eventual registration of LogSource and TraceSource as WsLogHandler
+//     * and WsTraceHandler (which kicks of the MessageRouterConfigurator and TraceRouterConfigurator)
+//     * will not flush early messages and trace back through the LogSource and TraceSource.
+//     */
+//    private void setJsonConfigured() {
+//        collectorMgrPipelineUtils.setJsonTrService(isJSON);
+//    }
 
     /*
      * Helper method to clean up the original source list by removing messages and
@@ -244,8 +243,6 @@ public class JsonTraceService extends BaseTraceService {
             logSource.publish(routedMessage);
         }
         //send events to handlers
-//        invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord));
-
         if (TraceComponent.isAnyTracingEnabled()) {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         }

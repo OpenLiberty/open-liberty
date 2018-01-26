@@ -17,7 +17,7 @@ import java.util.logging.LogRecord;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
-//import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairs;
@@ -29,7 +29,7 @@ import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
-public class TraceSource implements Source {
+public class TraceSource implements Source, WsTraceHandler {
 
     private static final TraceComponent tc = Tr.register(TraceSource.class);
 
@@ -218,6 +218,17 @@ public class TraceSource implements Source {
         } catch (ClassCastException ex) {
             return null;
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.logging.WsTraceHandler#publish(com.ibm.ws.logging.RoutedMessage)
+     */
+    @Override
+    public void publish(RoutedMessage routedMessage) {
+        // TODO Auto-generated method stub
+
     }
 
 }

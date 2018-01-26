@@ -546,7 +546,7 @@ public class BaseTraceFormatter extends Formatter {
         sb.append('[').append(DateFormatHelper.formatTime(datetime, useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');
         formatFixedString(sb, name, enhancedNameLength);
-        sb.append(level + " "); // sym has built-in padding
+        sb.append(" " + level + " "); // sym has built-in padding
         sb.append(message);
 
         if (throwable != null) {
@@ -748,7 +748,6 @@ public class BaseTraceFormatter extends Formatter {
                     wsSourceThreadName = kvp.getValue();
                 } else if (kvp.getKey().equals("levelValue")) {
                     levelVal = Integer.parseInt(kvp.getValue());
-//                    sym = "levelValue=" + kvp.getValue();
                 } else if (kvp.getKey().equals("logLevel")) {
                     logLevel = kvp.getValue();
                 }
@@ -853,7 +852,6 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(component);
 
                     //get thread name
-//                    x = wsLogRecord.getReporterOrSourceThreadName();
                     if (wsSourceThreadName != null) {
                         x = wsSourceThreadName;
                     }

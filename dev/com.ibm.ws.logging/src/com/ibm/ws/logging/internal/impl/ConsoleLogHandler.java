@@ -25,7 +25,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
     private SystemLogHolder sysLogHolder;
-    private SystemLogHolder sysErrHolder;
     private boolean consoleStream = false;
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
@@ -111,20 +110,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
-     * @return the sysErrHolder
-     */
-    public SystemLogHolder getSysErrHolder() {
-        return sysErrHolder;
-    }
-
-    /**
-     * @param sysErrHolder the sysErrHolder to set
-     */
-    public void setSysErrHolder(SystemLogHolder sysErrHolder) {
-        this.sysErrHolder = sysErrHolder;
-    }
-
-    /**
      * @return the format
      */
     public String getFormat() {
@@ -136,13 +121,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
      */
     public void setFormat(String format) {
         this.format = format;
-    }
-
-    /**
-     * @return the copySystemStreams
-     */
-    public boolean isCopySystemStreams() {
-        return copySystemStreams;
     }
 
     /**
@@ -158,10 +136,4 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         this.consoleStream = consoleStream;
     }
 
-    /**
-     * @return the consoleStream
-     */
-    public boolean isConsoleStream() {
-        return consoleStream;
-    }
 }
