@@ -12,12 +12,12 @@ IBM-API-Package: \
   org.eclipse.microprofile.rest.client.spi; type="stable"
 IBM-ShortName: mpRestClient-1.0
 Subsystem-Name: MicroProfile Rest Client 1.0
--features=com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0, \
+-features=com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-1.0, \
+ com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3, \
- com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1, \
+ com.ibm.websphere.appserver.jaxrsClient-2.0; ibm.tolerates:=2.1, \
  com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:=1.1
 -bundles=com.ibm.ws.require.java8, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2; apiJar=false; location:="lib/", \
-  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0; location:="dev/api/stable/,lib/"
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2; apiJar=false; location:="lib/"
 kind=noship
 edition=core
