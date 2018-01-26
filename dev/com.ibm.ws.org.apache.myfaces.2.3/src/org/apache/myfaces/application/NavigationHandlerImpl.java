@@ -191,7 +191,8 @@ public class NavigationHandlerImpl
                 if (currentFlow != targetFlow)
                 { 
                     // Ensure that at least one has a value and check for equality
-                    if ((currentFlow != null && !currentFlow.equals(targetFlow)) || (targetFlow != null && !targetFlow.equals(currentFlow)))
+                    if ((currentFlow != null && !currentFlow.equals(targetFlow)) ||
+                                    (targetFlow != null && !targetFlow.equals(currentFlow)))
                     {
                         if (navigationCaseParameters == null)
                         {
