@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -128,7 +128,7 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 || hasInjectionPoints(bean.getValue()))
                 continue;
             Metadata metadata = name.metadataOf(bean.getValue());
-            registry.register(metadata.getName(), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), metadata);
+            registry.register(metadata, (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
             addMetricName(metadata.getName());
         }
 

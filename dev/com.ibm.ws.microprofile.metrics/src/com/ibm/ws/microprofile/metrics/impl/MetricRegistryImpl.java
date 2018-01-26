@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corporation and others.
+* Copyright (c) 2017, 2018 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -150,19 +150,25 @@ public class MetricRegistryImpl extends MetricRegistry {
     @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
         // For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
-        return register(name, metric, new Metadata(name, from(metric)));
+        return register(new Metadata(name, from(metric)), metric);
     }
 
     @Override
+    @Deprecated
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
+        return register(metadata, metric);
+    }
 
-        final Metric existing = metrics.putIfAbsent(name, metric);
-        this.metadata.putIfAbsent(name, metadata);
+    @Override
+    public <T extends Metric> T register(Metadata metadata, T metric) throws IllegalArgumentException {
+
+        final Metric existing = metrics.putIfAbsent(metadata.getName(), metric);
+        this.metadata.putIfAbsent(metadata.getName(), metadata);
         if (existing == null) {
         } else {
-            throw new IllegalArgumentException("A metric named " + name + " already exists");
+            throw new IllegalArgumentException("A metric named " + metadata.getName() + " already exists");
         }
-        addNameToApplicationMap(name);
+        addNameToApplicationMap(metadata.getName());
         return metric;
     }
 
@@ -431,7 +437,7 @@ public class MetricRegistryImpl extends MetricRegistry {
             return (T) metric;
         } else if (metric == null) {
             try {
-                return register(metadata.getName(), builder.newMetric(), metadata);
+                return register(metadata, builder.newMetric());
             } catch (IllegalArgumentException e) {
                 final Metric added = metrics.get(metadata.getName());
                 if (builder.isInstance(added)) {

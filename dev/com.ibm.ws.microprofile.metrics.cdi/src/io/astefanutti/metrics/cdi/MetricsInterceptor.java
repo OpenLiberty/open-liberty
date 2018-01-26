@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -95,7 +95,7 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
             for (Method method : type.getDeclaredMethods()) {
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
-                    registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), gauge.metadata());
+                    registry.register(gauge.metadata(), new ForwardingGauge(method, context.getTarget()));
                     extension.addMetricName(gauge.metricName());
                 }
             }
