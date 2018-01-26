@@ -11,13 +11,21 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+-sub: *.bnd
+
 # Define the bundle for this FAT
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+	test-applications/applicationExtension.jar/src,\
+	test-applications/applicationExtension.war/src,\
+	test-applications/dynamicallyAddedBeans.jar/src,\
+	test-applications/dynamicallyAddedBeans.war/src,\
+	test-applications/helloWorldExtensionTest.war/src,\
+	test-applications/multipleWar1.war/src,\
+	test-applications/multipleWarEmbeddedJar.jar/src,\
+	test-applications/multipleWarNoBeans.war/src,\
+	test-bundles/cdi.helloworld.extension/src
 	
 tested.features:\
 	cdi-2.0,\

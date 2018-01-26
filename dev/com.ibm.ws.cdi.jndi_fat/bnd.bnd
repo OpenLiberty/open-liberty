@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 201* IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,9 +15,12 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+	test-applications/appClientAdvanced.jar,\
+	test-applications/appClientSecurity.jar,\
+	test-applications/beanManagerLookupApp.war,\
+	test-applications/cdi12helloworldtest.war,\
+	test-applications/HelloAppClient.jar,\
+	test-applications/jndiLookup.war
 	
 tested.features:\
 	cdi-2.0,\

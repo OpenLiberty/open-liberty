@@ -15,9 +15,11 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+	test-applications/defaultDecoratorApp.war,\
+	test-applications/globalPriorityLib.jar/src,\
+	test-applications/globalPriorityWebApp.war/src,\
+	test-applications/utilLib.jar/src,\
+	test-applications/withAnnotationsApp.war/src
 	
 tested.features:\
 	cdi-2.0,\

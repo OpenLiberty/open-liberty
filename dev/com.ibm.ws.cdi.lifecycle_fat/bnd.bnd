@@ -15,18 +15,19 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+        test-applications/eventMetaData.war/src,\
+	test-applications/eventMetaData.war/src,\
+	test-applications/ObservesInitializedInJars.war/src,\
+	test-applications/ObservesInitializedInJarsManifestJar.jar/src,\
+	test-applications/ObservesInitializedInJarsSecondWar.war/src,\
+	test-applications/ObservesInitializedInJarsWebInfJar.jar/src,\
+	test-applications/passivationBean.war/src,\
+	test-applications/scopeActivationDestructionSecondApp.war/src,\
+	test-applications/scopeActivationDestructionTests.ear/src,\
+	test-applications/scopeActivationDestructionTests.war/src,\
+        test-applications/transientReferenceInSessionPersist.war/src,\
+        test-applications/WebListener.war/src
 	
-tested.features:\
-	cdi-2.0,\
-        servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3
 	
 javac.source: 1.7
 javac.target: 1.7

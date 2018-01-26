@@ -15,9 +15,15 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+	test-applications/jeeInjectionTargetTest.war/src,\
+	test-applications/jeeInjectionTargetTestEJB.jar/src,\
+	test-applications/jeeInjectionTargetTestJSP2.3.war/src,\
+	test-applications/sharedLibrary.jar/src,\
+	test-applications/simpleJSFApp.war/src,\
+	test-applications/simpleJSFWithSharedLib.war/src,\
+	test-applications/simpleJSPApp.war/src,\
+	test-applications/resourceWebServicesClient.war/src,\
+	test-applications/resourceWebServicesProvider.war/src
 	
 tested.features:\
 	cdi-2.0,\

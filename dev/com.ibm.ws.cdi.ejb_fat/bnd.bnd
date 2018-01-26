@@ -15,10 +15,27 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+        test-applications/aroundConstructApp.war/src,\
+	test-applications/ejbConstructorInjection.war/src,\
+	test-applications/ejbDiscovery.war/src,\
+	test-applications/ejbMisc.war/src,\
+	test-applications/ejbScope.war/src,\
+	test-applications/ejbTimer.war/src,\
+	test-applications/injectParameters.war/src,\
+	test-applications/managedBeanApp.war/src,\
+	test-applications/multipleEJBsSingleClass.war/src,\
+	test-applications/multipleWar1.war/src,\
+	test-applications/multipleWar2.war/src,\
+        test-applications/utilLib.jar/src,\
+        test-applications/statefulSessionBeanInjection.jar/src,\
+        test-applications/statefulSessionBeanInjection.war/src,\
+	test-applications/postConstructErrorMessageApp.war/src,\
+        test-applications/multipleWarEmbeddedJar.jar/src
 	
+	
+javac.source: 1.7
+javac.target: 1.7
+
 tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
@@ -27,9 +44,6 @@ tested.features:\
         beanValidation-2.0,\
         jaxrs-2.1,\
         jsf-2.3
-	
-javac.source: 1.7
-javac.target: 1.7
 	
 test.project: true
 

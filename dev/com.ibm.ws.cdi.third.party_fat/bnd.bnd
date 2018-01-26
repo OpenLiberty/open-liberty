@@ -15,9 +15,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/appClientAdvanced.jar/src,\
-        test-applications/appClientSecurity.jar,\
-	test-applications/HelloAppClient.jar/src
+	test-applications/deltaspikeTest.war/src
 	
 tested.features:\
 	cdi-2.0,\
@@ -53,4 +51,11 @@ test.project: true
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	org.quartz-scheduler:quartz;version=2.2.1,\
+	org.apache.deltaspike.core:deltaspike-core-api;version=1.5.0,\
+	org.apache.deltaspike.core:deltaspike-core-impl;version=1.5.0,\
+	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api;version=1.5.0,\
+	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld;version=1.5.0,\
+	org.apache.deltaspike.modules:deltaspike-scheduler-module-api;version=1.5.0,\
+	org.apache.deltaspike.modules:deltaspike-scheduler-module-impl;version=1.5.0
