@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,8 +123,11 @@ public class JavaEESecCDIExtensionTest {
     
     private final static String GLOBAL_FORM = "FORM";
     private final static String GLOBAL_BASIC = "BASIC";
-    private final static String GLOBAL_FORM_LOGIN_PAGE = "/global/FormLogin.jsp";
-    private final static String GLOBAL_FORM_ERROR_PAGE = "/global/FormError.jsp";
+    private final static String GLOBAL_FORM_CONTEXT_ROOT = "/global";
+    private final static String GLOBAL_FORM_LOGIN_PAGE = "/GlobalFormLogin.jsp";
+    private final static String GLOBAL_FORM_ERROR_PAGE = "/GlobalFormError.jsp";
+    private final static String GLOBAL_FORM_LOGIN_URL = GLOBAL_FORM_CONTEXT_ROOT + GLOBAL_FORM_LOGIN_PAGE;
+    private final static String GLOBAL_FORM_ERROR_URL = GLOBAL_FORM_CONTEXT_ROOT + GLOBAL_FORM_ERROR_PAGE;
     private final static String GLOBAL_BASIC_REALM_NAME = "globalRealm";
     
 
@@ -509,9 +512,11 @@ public class JavaEESecCDIExtensionTest {
                 allowing(wasc).getOverrideHttpAuthenticationMechanism();
                 will(returnValue(GLOBAL_FORM));
                 exactly(2).of(wasc).getLoginFormURL();
-                will(returnValue(GLOBAL_FORM_LOGIN_PAGE));
+                will(returnValue(GLOBAL_FORM_LOGIN_URL));
                 exactly(2).of(wasc).getLoginErrorURL();
-                will(returnValue(GLOBAL_FORM_ERROR_PAGE));
+                will(returnValue(GLOBAL_FORM_ERROR_URL));
+                exactly(2).of(wasc).getLoginFormContextRoot();
+                will(returnValue(GLOBAL_FORM_CONTEXT_ROOT));
             }
         });
 
@@ -550,8 +555,9 @@ public class JavaEESecCDIExtensionTest {
         assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , GLOBAL_FORM_LOGIN_PAGE);
         assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), GLOBAL_FORM_ERROR_PAGE);
         assertNull("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION));
-        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), false);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true);
         assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN), true);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT), GLOBAL_FORM_CONTEXT_ROOT);
 
         // check ModuleProperties object for Custom Form.
         moduleProps = moduleMap.get(MODULE_NAME2);
@@ -563,7 +569,7 @@ public class JavaEESecCDIExtensionTest {
         assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , GLOBAL_FORM_LOGIN_PAGE);
         assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), GLOBAL_FORM_ERROR_PAGE);
         assertNull("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION));
-        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), false);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true);
         assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN), true);
     }
 
