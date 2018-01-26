@@ -179,7 +179,7 @@ public class SSLAlpnNegotiatorJdk8 {
             Tr.debug(tc, "registerJettyAlpn entry " + engine);
         }
         try {
-            JettyServerNotiator negotiator = new JettyServerNotiator(engine, link);
+            JettyServerNegotiator negotiator = new JettyServerNegotiator(engine, link);
             // invoke ALPN.put(engine, provider(this))
             Method m = jettyAlpn.getMethod("put", SSLEngine.class, jettyProviderInterface);
             m.invoke(null, new Object[] { engine, java.lang.reflect.Proxy.newProxyInstance(
@@ -197,12 +197,12 @@ public class SSLAlpnNegotiatorJdk8 {
     /**
      * Proxy class for jetty-alpn to implement org.eclipse.jetty.alpn.ALPN$ServerProvider
      */
-    public class JettyServerNotiator implements java.lang.reflect.InvocationHandler {
+    public class JettyServerNegotiator implements java.lang.reflect.InvocationHandler {
 
         private final SSLEngine engine;
         private final SSLConnectionLink link;
 
-        public JettyServerNotiator(SSLEngine e, SSLConnectionLink l) {
+        public JettyServerNegotiator(SSLEngine e, SSLConnectionLink l) {
             this.engine = e;
             this.link = l;
         }
