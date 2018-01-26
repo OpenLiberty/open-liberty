@@ -91,13 +91,13 @@ public class TraceSource implements Source {
      *
      * @param routedMessage The LogRecord along with various message formats.
      */
-    public void publish(RoutedMessage routedMessage) {
+    public void publish(RoutedMessage routedMessage, Object id) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
             LogRecord logRecord = routedMessage.getLogRecord();
             if (logRecord != null) {
                 if (bufferMgr != null) {
-                    bufferMgr.add(parse(routedMessage, logRecord));
+                    bufferMgr.add(parse(routedMessage, logRecord, id));
                 }
             }
         }
@@ -124,7 +124,7 @@ public class TraceSource implements Source {
 //
 //    }
 
-    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord, Object id) {
 //        Object id
         KeyValuePair message = null;
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
@@ -143,8 +143,6 @@ public class TraceSource implements Source {
         KeyValuePair className = new KeyValuePair("ibm_className", logRecord.getSourceClassName(), KeyValuePair.ValueTypes.STRING);
         String sequenceNum = sequenceNumber.next(Long.parseLong(datetime.getValue()));
         KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceNum, KeyValuePair.ValueTypes.STRING);
-
-//        KeyValuePair objectId = new KeyValuePair("objectId", (String) id, KeyValuePair.ValueTypes.STRING);
 
         KeyValuePairs extensions = new KeyValuePairs();
         ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
@@ -172,9 +170,52 @@ public class TraceSource implements Source {
         pairs.add(sequence);
         pairs.add(extensions);
 
-//        pairs.add(objectId);
+        if (id != null) {
+            String objId = generateObjectId(id);
+            KeyValuePair objectId = new KeyValuePair("objectId", objId, KeyValuePair.ValueTypes.STRING);
+            pairs.add(objectId);
+        }
+        //get format for trace
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        if (wsLogRecord != null) {
+            KeyValuePair corrId = new KeyValuePair("correlationId", wsLogRecord.getCorrelationId(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair org = new KeyValuePair("org", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair prod = new KeyValuePair("product", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair component = new KeyValuePair("component", wsLogRecord.getComponent(), KeyValuePair.ValueTypes.STRING);
+            KeyValuePair wsSourceThreadName = new KeyValuePair("wsSourceThreadName", wsLogRecord.getReporterOrSourceThreadName(), KeyValuePair.ValueTypes.STRING);
+            pairs.add(corrId);
+            pairs.add(org);
+            pairs.add(prod);
+            pairs.add(component);
+            pairs.add(wsSourceThreadName);
+        }
         genData.setSourceType(sourceName);
         return genData;
 
     }
+
+    private String generateObjectId(Object id) {
+        String objId;
+
+        objId = Integer.toHexString(System.identityHashCode(id));
+        if (objId.length() < 8) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("00000000");
+            builder.append(objId);
+            objId = builder.substring(builder.length() - 8);
+        }
+        return objId;
+    }
+
+    /**
+     * @return
+     */
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
+    }
+
 }

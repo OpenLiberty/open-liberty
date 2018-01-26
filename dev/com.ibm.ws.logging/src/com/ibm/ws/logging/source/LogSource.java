@@ -216,20 +216,7 @@ public class LogSource implements Source {
         pairs.add(sequence);
         pairs.add(levelValue);
 
-        //get format for trace
-        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
-        if (wsLogRecord != null) {
-            KeyValuePair corrId = new KeyValuePair("correlationId", wsLogRecord.getCorrelationId(), KeyValuePair.ValueTypes.STRING);
-            KeyValuePair org = new KeyValuePair("org", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
-            KeyValuePair prod = new KeyValuePair("product", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
-            KeyValuePair component = new KeyValuePair("component", wsLogRecord.getComponent(), KeyValuePair.ValueTypes.STRING);
-            KeyValuePair wsSourceThreadName = new KeyValuePair("wsSourceThreadName", wsLogRecord.getReporterOrSourceThreadName(), KeyValuePair.ValueTypes.STRING);
-            pairs.add(corrId);
-            pairs.add(org);
-            pairs.add(prod);
-            pairs.add(component);
-            pairs.add(wsSourceThreadName);
-        }
+//        //get format for trace
 
         genData.setSourceType(sourceName);
 

@@ -223,6 +223,13 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
+        if (detailLog == systemOut) {
+            consoleLogHandler.setConsoleStream(true);
+        } else {
+            consoleLogHandler.setConsoleStream(false);
+        }
+        //check if copysystemstream is true
+        consoleLogHandler.setCopySystemStreams(copySystemStreams);
         // Tee to messages.log (always)
 
         RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
@@ -232,20 +239,12 @@ public class JsonTraceService extends BaseTraceService {
          * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
          * However, LogstashCollector and BluemixLogCollector will receive all messages
          */
+        invokeMessageRouters(routedMessage);
         if (logSource != null) {
             logSource.publish(routedMessage);
         }
-        invokeMessageRouters(routedMessage);
-
-        if (detailLog == systemOut) {
-            consoleLogHandler.setConsoleStream(true);
-        } else {
-            consoleLogHandler.setConsoleStream(false);
-        }
-        //check if copysystemstream is true
-        consoleLogHandler.setCopySystemStreams(copySystemStreams);
         //send events to handlers
-        invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord));
+//        invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord));
 
         if (TraceComponent.isAnyTracingEnabled()) {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
@@ -381,10 +380,10 @@ public class JsonTraceService extends BaseTraceService {
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
-
-        String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
-
-        RoutedMessage routedTrace = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, traceDetail, logRecord);
+//        if (id != null) {
+//            System.out.println("HELLO ID=" + id.toString());
+//        }
+        RoutedMessage routedTrace = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
 
         invokeTraceRouters(routedTrace);
 
@@ -403,7 +402,7 @@ public class JsonTraceService extends BaseTraceService {
                         String levelName = level.getName();
                         if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
                             if (traceSource != null) {
-                                traceSource.publish(routedTrace);
+                                traceSource.publish(routedTrace, id);
                             }
                         }
                     }
@@ -414,8 +413,10 @@ public class JsonTraceService extends BaseTraceService {
         }
 
         // write to trace.log
-        if (detailLog != systemOut)
+        if (detailLog != systemOut) {
+            String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
             detailLog.writeRecord(traceDetail);
+        }
 
     }
 }

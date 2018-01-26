@@ -156,7 +156,7 @@ public class CollectorJsonUtils11 {
                     isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
                 } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
-                           || key.equals("levelValue")) {
+                           || key.equals("levelValue") || key.equals("objectId")) {
                     //don't include it
                 } else {
 
@@ -227,7 +227,7 @@ public class CollectorJsonUtils11 {
                     isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
                 } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
-                           || key.equals("levelValue")) {
+                           || key.equals("levelValue") || key.equals("objectId")) {
                     //don't include it
                 } else {
 
@@ -287,7 +287,7 @@ public class CollectorJsonUtils11 {
                         isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
                     } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
-                               || key.equals("levelValue")) {
+                               || key.equals("levelValue") || key.equals("objectId")) {
                         //don't include it
                     } else {
 

@@ -773,7 +773,12 @@ public class BaseTraceFormatter extends Formatter {
         switch (traceFormat) {
             default:
             case ENHANCED:
-                objId = generateObjectId(id, true);
+//                objId = generateObjectId(id, true);
+                if (id != null) {
+                    objId = id;
+                } else {
+                    objId = pad8;
+                }
                 name = nonNullString(className, loggerName);
 
                 sb.append(" id=").append(objId).append(' ');
@@ -809,7 +814,12 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(nlBasicPadding).append(stackTrace);
                 break;
             case ADVANCED:
-                objId = generateObjectId(id, false);
+//                objId = generateObjectId(id, false);
+                if (id != null) {
+                    objId = id;
+                } else {
+                    objId = "";
+                }
                 name = nonNullString(loggerName, null);
 
                 sb.append(' '); // pad after thread id
@@ -835,7 +845,7 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(" id=").append(objId);
 
                 String x = null;
-                if (org != null && org != "") {
+                if (org != null) {
                     // next append org, prod, component, if set. Reference equality check is ok here.
                     sb.append(" org=");
                     sb.append(org);
