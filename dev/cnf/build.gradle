@@ -325,6 +325,13 @@ task zipGradleBootstrap(type: Zip) {
     from new File(project.buildDir, 'replacements')
 }
 
+task copyEsas(type: Copy){
+	from fileTree(".").include("/release/dev/*/*/*.esa").files
+	into '../ant_generateSingleJSON/build/esas'
+}
+
+build.dependsOn 'copyEsas'
+
 publishing {
   publications {
     gradle(MavenPublication) {
@@ -334,3 +341,5 @@ publishing {
     }
   }
 }
+
+

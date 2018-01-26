@@ -36,7 +36,6 @@ public class SingleJsonRepositoryGenerator extends Task {
         String metadataFileAbsPath = (getMetadataFile() == null) ? "null" : getMetadataFile().getAbsolutePath();
         System.out.println("- MetadataFile   = " + metadataFileAbsPath);
         System.out.println("- AssetType      = " + getAssetType());
-        System.out.println("- OutputLocation = " + getOutputLocation());
         try {
             assetTypeEnumValue = ResourceType.valueOf(assetType);
         } catch (IllegalArgumentException iae) {
@@ -131,6 +130,7 @@ public class SingleJsonRepositoryGenerator extends Task {
         return f.getName().toLowerCase().endsWith(".zip");
     }
 
+    /*
     private OutputStream getOutputStreamFromPath(String path, File ipFile) {
 
         path = path + "/" + ipFile.getName() + ".json";
@@ -149,23 +149,9 @@ public class SingleJsonRepositoryGenerator extends Task {
         }
         return os;
     }
-
+*/
+    
     // ---------------------------- SETTERS AND GETTERS BELOW
-
-    /**
-     * @return the outputLocation
-     */
-    public String getOutputLocation() {
-        return outputLocation;
-    }
-
-    /**
-     * @param outputLocation
-     *            the outputLocation to set
-     */
-    public void setOutputLocation(String outputLocation) {
-        this.outputLocation = outputLocation;
-    }
 
     /**
      * @return the assetFile
