@@ -8,14 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.example;
+@org.osgi.annotation.versioning.Version("1.1.0")
+package com.ibm.ws.session.store.cache;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                SessionCacheTest.class
-})
-public class FATSuite {}

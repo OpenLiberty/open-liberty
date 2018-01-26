@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.example;
+package com.ibm.ws.session.cache.fat;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
