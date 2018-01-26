@@ -14,6 +14,52 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-   
+ <OCD id="com.ibm.ws.security.jwtsso" ibm:alias="jwtSso"
+         name="%jwtSso" description="%jwtSso.desc">
+         
+         <AD id="cookieName" name="%cookieName" description="%cookieName.desc" 
+             required="false" type="String" default="jwtToken" />
+             
+         <!--  These next 4 will be read in from the AppSecurity 3.0 metadata and used intact 
+         
+         <AD id="httpOnlyCookies" name="%httpOnlyCookies" description="%httpOnlyCookies.desc" 
+             required="false" type="Boolean" default="true" />
+             
+         <AD id ="ssoUseDomainFromURL" name="%ssoUseDomainFromURL" description="%ssoUseDomainFromURL.desc"
+             required="false" type="Boolean" default="false" />
+             
+         <AD id="ssoRequiresSSL" name="%ssoRequiresSSL" description="%ssoRequiresSSL.desc"
+             required="false" type="Boolean"  default="true" />
+            
+         <AD id="ssoDomainNames" name="%ssoDomainNames" description="%ssoDomainNames.desc"
+             required="false" type="String" />
+          -->                           
+                
+         <AD id="setCookiePathToWebAppContextPath"   name="%setCookiePathToWebAppContextPath"  description="%setCookiePathToWebAppContextPath.desc"
+             required="false" type="Boolean" default="false" /> 
+            
+         <AD id="includeLtpaCookie"  name="%includeLtpaCookie" description="%includeLtpaCookie.desc"
+             required="false"  type="Boolean" default="false" />
+            
+         <AD id="fallbackToLtpa"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
+             required="false"  type="Boolean" default="true" />
+            
+         <AD id="groupBaseDnOmitted" name="%groupBaseDnOmitted" description="%groupBaseDnOmitted"
+             required="false"  type="String"  />
+            
+         <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc"
+             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />
+             
+         <AD id="jwtConsumerRef" name="%jwtConsumerRef" description="%jwtConsumerRef.desc"
+             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.consumer.metatype" />  
+             
+          <!--  future encryption attributes go here someday  -->
+         
+    </OCD>
 
+    <Designate factoryPid="com.ibm.ws.security.jwtsso"> 
+         <Object ocdref="com.ibm.ws.security.jwtsso" />
+    </Designate>
+
+   
 </metatype:MetaData>
