@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.impl.core.util;
 
-import java.awt.PageAttributes.MediaType;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -23,10 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.text.AbstractDocument.Content;
-import javax.swing.text.html.HTML.Tag;
 import javax.ws.rs.Produces;
-import javax.xml.validation.Schema;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -36,15 +32,21 @@ import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.headers.Header;
+import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
+import org.eclipse.microprofile.openapi.models.media.Content;
+import org.eclipse.microprofile.openapi.models.media.Encoding;
+import org.eclipse.microprofile.openapi.models.media.MediaType;
+import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
+import org.eclipse.microprofile.openapi.models.tags.Tag;
 
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -525,7 +527,8 @@ public abstract class AnnotationsUtils {
         }
         return linkMap;
     }
-
+    
+    @FFDCIgnore(IOException.class)    
     public static Optional<Link> getLink(org.eclipse.microprofile.openapi.annotations.links.Link link) {
         if (link == null) {
             return Optional.empty();
@@ -558,6 +561,12 @@ public abstract class AnnotationsUtils {
             isEmpty = false;
         }
 
+        Optional<Server> server = getServer(link.server());
+        if (server.isPresent()) {
+            linkObject.setServer(server.get());
+            isEmpty = false;
+        }
+        
         if (isEmpty) {
             return Optional.empty();
         }
