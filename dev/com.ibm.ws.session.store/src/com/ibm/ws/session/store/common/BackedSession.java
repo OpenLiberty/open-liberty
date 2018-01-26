@@ -27,6 +27,8 @@ import javax.transaction.UserTransaction;
 //import com.ibm.ejs.oa.EJSORB; //reg LIDB3294-10
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.SessionManagerConfig;
+import com.ibm.ws.session.store.common.internal.J2EEObjectWrapper;
+import com.ibm.ws.session.store.common.internal.LoggingUtil;
 import com.ibm.ws.session.store.memory.MemorySession;
 import com.ibm.ws.session.store.memory.MemoryStore;
 //import com.ibm.ws.tx.UtxFactory;

@@ -18,6 +18,7 @@ import javax.servlet.ServletContext;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
+import com.ibm.ws.session.store.common.internal.LoggingUtil;
 import com.ibm.ws.session.store.memory.MemoryStore;
 import com.ibm.wsspi.session.ILoader;
 import com.ibm.wsspi.session.ISession;
