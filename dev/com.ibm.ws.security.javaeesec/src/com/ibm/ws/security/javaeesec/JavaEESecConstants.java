@@ -19,6 +19,7 @@ public class JavaEESecConstants {
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN = "useForwardToLogin";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION = "useForwardToLoginExpression";
     public static final String LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN = "useGlobalLogin";
+    public static final String LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT = "formLoginContextRoot";
 
     public static final String BASIC_AUTH_DEFAULT_REALM = "defaultRealm";
 

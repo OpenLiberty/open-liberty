@@ -254,6 +254,12 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public String getLoginFormContextRoot() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public String getBasicAuthRealmName() {
         return null;
     }

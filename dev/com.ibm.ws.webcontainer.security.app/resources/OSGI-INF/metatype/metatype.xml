@@ -116,9 +116,11 @@
                 <Option label="FORM" value="FORM" />
         </AD> 
 
+        <AD id="loginFormContextRoot" name="%loginFormContextRoot" description="%loginFormContextRoot.desc"
+            required="false" type="String"/>
+
         <AD id="basicAuthRealmName" name="%basicAuthRealmName" description="%basicAuthRealmName.desc"
             required="false" type="String" default="defaultRealm" />
-
 
     </OCD>
 

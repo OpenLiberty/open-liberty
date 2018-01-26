@@ -923,14 +923,26 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         String loginURL = webAppSecConfig.getLoginFormURL();
         String errorURL = webAppSecConfig.getLoginErrorURL();
+        String contextRoot = webAppSecConfig.getLoginFormContextRoot();
+        if (contextRoot == null) {
+            // if a context root is not set, use the first path element of the login page.
+            contextRoot = getFirstPathElement(loginURL);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "loginFormContextRoot is not set, use the first element of loginURL  : " + contextRoot);
+            }
+        }
+        // adjust the login and error url which need to be relative path from the context root.
+        loginURL = FixUpUrl(loginURL, contextRoot);
+        errorURL = FixUpUrl(errorURL, contextRoot);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "The container provided FormAuthenticationMechanism will be used with the login page  : " + loginURL + ", and the error page : " + errorURL);
+            Tr.debug(tc, "The container provided FormAuthenticationMechanism will be used with the following attributes. login page  : " + loginURL + ", error page : " + errorURL + ", context root : " + contextRoot);
         }
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, loginURL);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, errorURL);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, false);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, true);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN, true);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT, contextRoot);
         return props;
     }
 
@@ -949,4 +961,27 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
         return false;
     }
+
+    private String getFirstPathElement(String input) {
+        // the input may or may not start with "/".
+        String[] output = input.split("/");
+        if (output[0].isEmpty()) {
+            return "/" + output[1];
+        } else {
+            return "/" + output[0];
+        }
+    }
+
+    private String FixUpUrl(String input, String contextRoot) {
+        // returns relative path from the contextRoot. if it does not find a match, return as it is.
+        String output = input;
+        if (!input.startsWith("/")) {
+            input = "/" + input;
+        }
+        if (input.startsWith(contextRoot) && input.charAt(contextRoot.length()) == '/') {
+            output = input.substring(contextRoot.length());
+        }
+        return output;
+    }
+
 }

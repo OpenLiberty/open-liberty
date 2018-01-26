@@ -27,6 +27,7 @@ import javax.security.enterprise.authentication.mechanism.http.AuthenticationPar
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.ras.Tr;
@@ -73,6 +74,7 @@ public class LoginToContinueInterceptor {
     private String _loginPage = null;
     private Boolean _isForward = null;
     private Boolean _useGlobalLogin = false;
+    private String _formLoginContextRoot = null;
 
     @SuppressWarnings("rawtypes")
     @PostConstruct
@@ -87,6 +89,7 @@ public class LoginToContinueInterceptor {
             _loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), "/login", true, isCustomHAM);
             _errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), "/login-error", true, isCustomHAM);
             _useGlobalLogin = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN);
+            _formLoginContextRoot = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT);
             if (_useGlobalLogin == null) {
                 _useGlobalLogin = Boolean.FALSE;
             }
@@ -147,18 +150,24 @@ public class LoginToContinueInterceptor {
         if (!_useGlobalLogin) {
             updateFormLoginConfiguration(loginPage, errorPage);
         } else {
-            String contextPath = req.getContextPath();
-            updateFormLoginConfiguration(fixUpContextPath(loginPage, contextPath), fixUpContextPath(errorPage, contextPath));
+            // when using global login, clear login setting in the application.
+            updateFormLoginConfiguration("", "");
         }
 
         // set wasrequrl cookie and postparam cookie.
         setCookies(req, res);
 
-        if (!_useGlobalLogin && useForwardToLogin) {
+        if (_useGlobalLogin || useForwardToLogin) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "The request will be forwarded to the login page.");
             }
-            RequestDispatcher rd = req.getRequestDispatcher(loginPage);
+            RequestDispatcher rd;
+            if (_useGlobalLogin) {
+                ServletContext ctx = req.getServletContext().getContext(_formLoginContextRoot);
+                rd = ctx.getRequestDispatcher(loginPage);
+            } else {
+                rd = req.getRequestDispatcher(loginPage);
+            }
             try {
                 if (req.getMethod().equalsIgnoreCase("POST") && (req instanceof IExtendedRequest)) {
                     if (tc.isDebugEnabled()) {
@@ -341,17 +350,6 @@ public class LoginToContinueInterceptor {
         if (!url.startsWith("/"))
             url = "/" + url;
         return contextPath + url;
-    }
-
-    private String fixUpContextPath(String uri, String contextPath) {
-        if (!uri.startsWith("/")) {
-            uri = "/" + uri;
-        }
-        if (uri.startsWith(contextPath + "/")) {
-            // same contextPath, remove it since it exists in the same context.
-            uri = uri.substring(contextPath.length());
-        }
-        return uri;
     }
 
     /**

@@ -121,6 +121,11 @@ public interface WebAppSecurityConfig {
     String getOverrideHttpAuthenticationMechanism();
 
     /**
+     * Returns the value of loginFormContextRoot
+     */
+    String getLoginFormContextRoot();
+
+    /**
      * Returns the value of basicAuthRealmName
      */
     String getBasicAuthRealmName();

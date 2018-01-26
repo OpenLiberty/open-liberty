@@ -62,6 +62,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
     static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
+    static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "loginFormContextRoot";
     static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthRealmName";
     
     // New attributes must update getChangedProperties method
@@ -90,6 +91,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies;
     private final Boolean useOnlyCustomCookieName;
     private final String overrideHttpAuthenticationMechanism;
+    private final String loginFormContextRoot;
     private final String basicAuthRealmName;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
@@ -125,6 +127,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
         useOnlyCustomCookieName = (Boolean) newProperties.get(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME);
         overrideHttpAuthenticationMechanism = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
+        loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
@@ -338,6 +341,11 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     }
 
     @Override
+    public String getLoginFormContextRoot() {
+        return loginFormContextRoot;
+    }
+
+    @Override
     public String getBasicAuthRealmName() {
         return basicAuthRealmName;
     }
@@ -434,6 +442,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.wasReqURLRedirectDomainNames, orig.wasReqURLRedirectDomainNames);
         appendToBufferIfDifferent(buf, "overrideHttpAuthenticationMechanism",
                                   this.overrideHttpAuthenticationMechanism, orig.overrideHttpAuthenticationMechanism);
+        appendToBufferIfDifferent(buf, "loginFormContextRoot",
+                                  this.loginFormContextRoot, orig.loginFormContextRoot);
         appendToBufferIfDifferent(buf, "basicAuthRealmName",
                                   this.basicAuthRealmName, orig.basicAuthRealmName);
         return buf.toString();

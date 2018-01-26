@@ -345,6 +345,17 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public String getLoginFormContextRoot() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getLoginFormContextRoot();
+        else
+            return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getBasicAuthRealmName() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
