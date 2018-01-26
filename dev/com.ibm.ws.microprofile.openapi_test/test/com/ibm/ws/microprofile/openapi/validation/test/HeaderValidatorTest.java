@@ -37,7 +37,7 @@ import junit.framework.Assert;
  */
 public class HeaderValidatorTest {
 
-    String key;
+    String key = null;
     OpenAPIImpl model = new OpenAPIImpl();
     Context context = new TestValidationContextHelper(model);
 
@@ -51,7 +51,7 @@ public class HeaderValidatorTest {
         validator.validate(vh, context, key, headerIsNull);
 
         //Check for number of events only to keep assert statement independent of error message
-        Assert.assertEquals(0, vh.getEventsSize());
+        Assert.assertFalse(vh.hasEvents());
     }
 
     @Test

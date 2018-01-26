@@ -47,7 +47,7 @@ public class EncodingValidator extends TypeValidator<Encoding> {
                 Boolean explode = t.getExplode();
                 String[] styleExplode = { "spaceDelimited", "pipeDelimited", "deepObject" };
 
-                if (style == Encoding.Style.FORM && !explode) {
+                if (style.toString().equals("form") && !explode) {
 
                     final String message = Tr.formatMessage(tc, "encodingExplodeForForm");
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
