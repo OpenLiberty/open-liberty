@@ -82,7 +82,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * There are two provisioners in the runtime: one is used by the code that
  * creates and launches the framework: it installs the base set of bundles
  * required to start/bootstrap the server.
- * 
+ *
  * This provisioner is used to install and start additional/optional feature
  * bundles.
  */
@@ -105,52 +105,50 @@ public class Provisioner {
      * and bundle lifecycle events.
      * All other namespaces are let through
      */
-    private static final String COMMON_ALL_NAMESPACE_FILTER =
-                    "(!(|" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + PackageNamespace.PACKAGE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + BundleNamespace.BUNDLE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + HostNamespace.HOST_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_LIFECYCLE_NAMESPACE + ")))";
+    private static final String COMMON_ALL_NAMESPACE_FILTER = "(!(|" +
+                                                              "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + PackageNamespace.PACKAGE_NAMESPACE + ")" +
+                                                              "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + BundleNamespace.BUNDLE_NAMESPACE + ")" +
+                                                              "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + HostNamespace.HOST_NAMESPACE + ")" +
+                                                              "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")" +
+                                                              "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_LIFECYCLE_NAMESPACE + ")))";
 
     /**
      * Same rule as COMMON_ALL_NAMESPACE_FILTER except for OSGi apps we also want to prevent osgi.service and
      * region specific org.eclipse.equinox.allow.service namespaces so they can be controlled by the
      * IBM-API-Service header.
      */
-    private static final String COMMON_OSGI_APPS_ALL_NAMESPACE_FILTER =
-                    "(!(|" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + PackageNamespace.PACKAGE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + BundleNamespace.BUNDLE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + HostNamespace.HOST_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_LIFECYCLE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_SERVICE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + ServiceNamespace.SERVICE_NAMESPACE + ")))";
+    private static final String COMMON_OSGI_APPS_ALL_NAMESPACE_FILTER = "(!(|" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + PackageNamespace.PACKAGE_NAMESPACE + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + BundleNamespace.BUNDLE_NAMESPACE + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + HostNamespace.HOST_NAMESPACE + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_LIFECYCLE_NAMESPACE
+                                                                        + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_SERVICE_NAMESPACE + ")" +
+                                                                        "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + ServiceNamespace.SERVICE_NAMESPACE + ")))";
 
     /**
      * OSGi Apps appear to have these services available to them no matter what
      */
-    private static final String[] COMMON_OSGI_APPS_SERVICE_REQUIREMENTS =
-                    new String[] {
-                                  "(objectClass=javax.transaction.TransactionSynchronizationRegistry)",
-                                  "(objectClass=javax.transaction.UserTransaction)",
-                                  "(osgi.jndi.url.scheme=*)",
-                                  "(osgi.jndi.service.name=*)"
-                    };
+    private static final String[] COMMON_OSGI_APPS_SERVICE_REQUIREMENTS = new String[] {
+                                                                                         "(objectClass=javax.transaction.TransactionSynchronizationRegistry)",
+                                                                                         "(objectClass=javax.transaction.UserTransaction)",
+                                                                                         "(osgi.jndi.url.scheme=*)",
+                                                                                         "(osgi.jndi.service.name=*)"
+    };
 
     /** Allows bundles to require the system bundle */
-    private static final String COMMON_BUNDLE_NAMESPACE_FILTER =
-                    "(|" +
-                                    "(" + BundleNamespace.BUNDLE_NAMESPACE + "=" + Constants.SYSTEM_BUNDLE_SYMBOLICNAME + ")" +
-                                    "(" + BundleNamespace.BUNDLE_NAMESPACE + "=org.eclipse.osgi))";
+    private static final String COMMON_BUNDLE_NAMESPACE_FILTER = "(|" +
+                                                                 "(" + BundleNamespace.BUNDLE_NAMESPACE + "=" + Constants.SYSTEM_BUNDLE_SYMBOLICNAME + ")" +
+                                                                 "(" + BundleNamespace.BUNDLE_NAMESPACE + "=org.eclipse.osgi))";
 
-    private static final String PACKAGE_AND_BUNDLE_FILTER =
-                    "(!(|" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + PackageNamespace.PACKAGE_NAMESPACE + ")" +
-                                    "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")))";
+    private static final String PACKAGE_AND_BUNDLE_FILTER = "(!(|" +
+                                                            "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + PackageNamespace.PACKAGE_NAMESPACE + ")" +
+                                                            "(" + RegionFilter.VISIBLE_ALL_NAMESPACE_ATTRIBUTE + "=" + RegionFilter.VISIBLE_BUNDLE_NAMESPACE + ")))";
 
     private static final String THREAD_CONTEXT_FILTER = "(thread-context=true)";
+
+    private static final String REGION_KERNEL = "org.eclipse.equinox.region.kernel";
 
     /** Owning/Associated feature manager */
     private final FeatureManager featureManager;
@@ -167,9 +165,43 @@ public class Provisioner {
 
     private final boolean libertyBoot;
 
-    public Provisioner(FeatureManager mgr, Set<String> apiPackagesToIgnore) {
+    public Provisioner(FeatureManager mgr, Set<String> apiPackagesToIgnore) throws IllegalStateException {
         featureManager = mgr;
-        kernelRegion = mgr.getDigraph().getRegion(mgr.bundleContext.getBundle());
+        final RegionDigraph original = mgr.getDigraph();
+        Region systemRegion = original.getRegion(mgr.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION));
+        if (Constants.SYSTEM_BUNDLE_SYMBOLICNAME.equals(systemRegion.getName()) && systemRegion.getBundleIds().size() > 1) {
+            //Moving all the other bundles except the system bundle from system bundle region to kernel region.
+            //This can happen when the kernel bundle is discarded because of a timestamp change on disk to the kernel bundle jar which causes it to move to system.bundle region.
+            //We want only system bundle to be present inside the system.bundle region
+            try {
+				ApiRegion.update(featureManager.getDigraph(), new Callable<RegionDigraph>() {
+				    @Override
+				    public RegionDigraph call() throws Exception {
+				        RegionDigraph copy;
+				        try {
+				            copy = original.copy();
+				        } catch (BundleException e) {
+				            // have to throw this here
+				            throw e;
+				        }
+				        Region fromSystemRegion = copy.getRegion(Constants.SYSTEM_BUNDLE_SYMBOLICNAME);
+				        Region toKernelRegion = copy.getRegion(REGION_KERNEL);
+
+				        for (long bundleId : fromSystemRegion.getBundleIds()) {
+				            if (bundleId > 0) {
+				                fromSystemRegion.removeBundle(bundleId);
+				                toKernelRegion.addBundle(bundleId);
+				            }
+				        }
+				        return copy;
+				    }
+				});
+			} catch (BundleException e) {
+				throw new IllegalStateException(e);
+			}
+        }
+        kernelRegion = original.getRegion(mgr.bundleContext.getBundle());
+
         if (apiPackagesToIgnore == null) {
             apiPackagesToIgnore = Collections.emptySet();
         }
@@ -183,13 +215,13 @@ public class Provisioner {
             throw new RuntimeException(e);
         }
         this.dynamicMissRefField = tmpField;
-        
+
         libertyBoot = Boolean.parseBoolean(mgr.bundleContext.getProperty(BootstrapConstants.LIBERTY_BOOT_PROPERTY));
     }
 
     /**
      * Install framework bundles.
-     * 
+     *
      * @param bundleList
      *            Properties describing the bundles to install
      * @param minStartLevel
@@ -316,8 +348,8 @@ public class Provisioner {
                     throw new IllegalStateException("No LibertBootRuntime service available!");
                 }
 
-                Bundle bundle = libertyBoot.installBootBundle(fr.getSymbolicName(), fr.getVersionRange(), BUNDLE_LOC_FEATURE_TAG); 
-                if(bundle == null){
+                Bundle bundle = libertyBoot.installBootBundle(fr.getSymbolicName(), fr.getVersionRange(), BUNDLE_LOC_FEATURE_TAG);
+                if (bundle == null) {
                     installStatus.addMissingBundle(fr);
                     return null;
                 }
@@ -331,7 +363,8 @@ public class Provisioner {
                 return bundle;
             }
 
-            private Bundle installFeatureBundle(String urlString, String productName, BundleRepositoryHolder bundleRepositoryHolder, FeatureResource fr) throws BundleException, IOException {
+            private Bundle installFeatureBundle(String urlString, String productName, BundleRepositoryHolder bundleRepositoryHolder,
+                                                FeatureResource fr) throws BundleException, IOException {
                 Bundle bundle = fetchInstalledBundle(urlString, productName);
                 if (bundle == null) {
                     ContentBasedLocalBundleRepository lbr = bundleRepositoryHolder.getBundleRepository();
@@ -354,7 +387,7 @@ public class Provisioner {
                     urlString = PathUtils.normalize(urlString);
 
                     // Install this bundle as a "reference"-- this means that the
-                    // framework will not copy this bundle into it's private cache, 
+                    // framework will not copy this bundle into it's private cache,
                     // it will run from the actual jar (wherever it is).
                     urlString = BUNDLE_LOC_REFERENCE_TAG + urlString;
 
@@ -452,11 +485,11 @@ public class Provisioner {
      * Start all previously installed bundles, but defer (or not)
      * the ACTIVATION of those bundles based on the Bundle-ActivationPolicy
      * value set in MANIFEST.MF.
-     * 
+     *
      * Perform the resolve operation before starting bundles
      * to avoid intermittent issues with BundleException.STATECHANGED
      * during Bundle start as other bundles resolve asynchronously
-     * 
+     *
      * @return BundleStartStatus object containing exceptions encountered while
      *         starting bundles
      * @see BundleLifecycleStatus
@@ -492,7 +525,7 @@ public class Provisioner {
 
     /**
      * Utility for resolving bundles
-     * 
+     *
      * @param bundlesToResolve
      */
     public void resolveBundles(BundleContext bContext, List<Bundle> bundlesToResolve) {
@@ -509,7 +542,7 @@ public class Provisioner {
      * Remove any element in this cache that is not also in the bundle list
      * passed in as a parameter: Uninstall the corresponding bundle
      * for every removed element.
-     * 
+     *
      * @param bundleCache
      * @param newBundleList
      * @param bundleContext
@@ -550,7 +583,7 @@ public class Provisioner {
             } catch (IllegalStateException e) {
                 // ok: bundle already uninstalled or the framework is stopping,
                 // determine if we should continue on to the next:
-                // (if the bundle was uninstalled, but the framework is in perfect health), 
+                // (if the bundle was uninstalled, but the framework is in perfect health),
                 // or not (if the framework is stopping and we should just get done early).
                 if (!!!FrameworkState.isValid()) {
                     break;
@@ -575,7 +608,7 @@ public class Provisioner {
     /**
      * Gets the bundle location.
      * The location format is consistent with what SchemaBundle and BundleList.
-     * 
+     *
      * @return The bundle location.
      */
     public static String getBundleLocation(String urlString, String productName) {
@@ -585,7 +618,7 @@ public class Provisioner {
 
     /**
      * Gets the region name according to the product name.
-     * 
+     *
      * @param productName the product name. Empty string or <code>null</code> indicates
      *            the liberty profile itself.
      * @return the region name
@@ -693,7 +726,7 @@ public class Provisioner {
             productHub = digraph.createRegion(REGION_PRODUCT_HUB);
         }
         RegionFilterBuilder builder = digraph.createRegionFilterBuilder();
-        // allow all services into the product hub so that all services registered by 
+        // allow all services into the product hub so that all services registered by
         //  gateway bundles are visible for all to use (JNDI needs this).
         builder.allowAll(RegionFilter.VISIBLE_SERVICE_NAMESPACE);
         RegionFilter filter = builder.build();
@@ -736,7 +769,8 @@ public class Provisioner {
      * @throws BundleException
      * @throws InvalidSyntaxException
      */
-    private void connectToGatewayHubs(String productName, Region productRegion, Set<String> productApiServices, RegionDigraph digraph) throws BundleException, InvalidSyntaxException {
+    private void connectToGatewayHubs(String productName, Region productRegion, Set<String> productApiServices,
+                                      RegionDigraph digraph) throws BundleException, InvalidSyntaxException {
         List<String> ibmApiFilters = new ArrayList<String>();
         List<String> strictSpecApiFilters = new ArrayList<String>();
         List<String> thirdPartyApiFilters = new ArrayList<String>();
@@ -775,7 +809,7 @@ public class Provisioner {
                     thirdPartyApiFilters.add(clause);
                 }
                 if (type.isStableApi()) {
-                	stableApiFilters.add(clause);
+                    stableApiFilters.add(clause);
                 }
                 if (type.isUserDefinedApi()) {
                     userDefinedApiFilters.add(clause);
@@ -802,7 +836,8 @@ public class Provisioner {
      * @throws InvalidSyntaxException
      * @throws BundleException
      */
-    private void connectGatewayRegion(ApiRegion apiRegion, List<String> packageFilters, Region productRegion, Set<String> productApiServices, RegionDigraph digraph) throws InvalidSyntaxException, BundleException {
+    private void connectGatewayRegion(ApiRegion apiRegion, List<String> packageFilters, Region productRegion, Set<String> productApiServices,
+                                      RegionDigraph digraph) throws InvalidSyntaxException, BundleException {
         RegionFilterBuilder toProductBuilder = digraph.createRegionFilterBuilder();
 
         if (productApiServices != null) {
@@ -813,7 +848,7 @@ public class Provisioner {
         }
         toProductBuilder.allow(BundleNamespace.BUNDLE_NAMESPACE, COMMON_BUNDLE_NAMESPACE_FILTER);
 
-        // This creates a sharing rule for importing all capabilities in the osgi.wiring.package namespace 
+        // This creates a sharing rule for importing all capabilities in the osgi.wiring.package namespace
         // which are API packages.
         for (String packageFilter : packageFilters) {
             toProductBuilder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, packageFilter);
@@ -883,7 +918,7 @@ public class Provisioner {
         // for products we want to share all lifecycle operations across products
         toProductBuilder.allowAll(RegionFilter.VISIBLE_BUNDLE_LIFECYCLE_NAMESPACE);
 
-        // This creates a sharing rule for importing all capabilities in the osgi.wiring.package namespace 
+        // This creates a sharing rule for importing all capabilities in the osgi.wiring.package namespace
         // which are API packages.
         for (Iterator<String> productPackages = featureManager.packageInspector.getExtensionPackages(productName); productPackages.hasNext();) {
             toProductBuilder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, "(" + PackageNamespace.PACKAGE_NAMESPACE + "=" + productPackages.next() + ")");
@@ -896,7 +931,7 @@ public class Provisioner {
             toProductBuilder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, "(" + PackageNamespace.CAPABILITY_BUNDLE_SYMBOLICNAME_ATTRIBUTE + "="
                                                                            + Constants.SYSTEM_BUNDLE_SYMBOLICNAME + ")");
 
-            // Allow all from the System Bundle Region to the Kernel Region 
+            // Allow all from the System Bundle Region to the Kernel Region
             Region systemBundleRegion = digraph.getRegion(Constants.SYSTEM_BUNDLE_SYMBOLICNAME);
             RegionFilterBuilder toKernelfromSystemBuilder = digraph.createRegionFilterBuilder();
             toKernelfromSystemBuilder.allowAll(RegionFilter.VISIBLE_ALL_NAMESPACE);
@@ -905,7 +940,7 @@ public class Provisioner {
             RegionFilterBuilder toSystemFromKernelBuilder = digraph.createRegionFilterBuilder();
 
             if (featureManager.packageInspector.listKernelBlackListApiPackages().hasNext()) {
-                // Allow everything except the blacklist packages 
+                // Allow everything except the blacklist packages
                 StringBuffer buf = new StringBuffer();
                 for (Iterator<String> kernelBlackListExport = featureManager.packageInspector.listKernelBlackListApiPackages(); kernelBlackListExport.hasNext();) {
                     String pack = kernelBlackListExport.next();
@@ -933,7 +968,7 @@ public class Provisioner {
      * Adapt the system bundle to the specified class. Try w/in a catch block
      * for IllegalStateException, which will be thrown if the bundle context
      * has become invalid (because, for example, the bundle is stopping).
-     * 
+     *
      * @param bundleContext
      * @param target
      * @return
@@ -988,7 +1023,7 @@ public class Provisioner {
                     throw e;
                 }
                 // Remove each region and collection orphan bundle IDs.
-                // Need to collect orphans here also incase some other thread installed 
+                // Need to collect orphans here also incase some other thread installed
                 // more bundles since the first time we checked.
                 for (String regionName : regionsToRemove) {
                     Region toRemove = copy.getRegion(regionName);
@@ -1066,7 +1101,7 @@ public class Provisioner {
                     // if we got to the region that contains the capability stop searching
                     return false;
                 }
-                // otherwise continue on searching to the connects from this region 
+                // otherwise continue on searching to the connects from this region
                 return true;
             }
 
