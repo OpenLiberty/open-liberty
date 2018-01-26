@@ -1,0 +1,51 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=Nu s-a putut localiza fi\u015fierul [{0}]
+
+47001=Nu s-a putut localiza descriptorul [{0}] pentru opera\u0163ia [{1}] \u00een proiectul O-R
+
+47002=Nu s-a putut localiza interogarea [{0}] pentru descriptorul [{1}]
+
+47003=Nu s-a putut localiza interogarea [{0}] pentru sesiunea [{1}]
+
+47004=Tip de parametru [{0}] pentru opera\u0163ia [{1}] nu exist\u0103 \u00een schem\u0103
+
+47005=Tip de parametru [{0}] pentru opera\u0163ia [{1}] nu are mapare O-X
+
+47006=Tipul de rezultat [{0}] pentru opera\u0163ia [{1}] nu exist\u0103 \u00een schem\u0103
+
+47007=Tipul de rezultat [{0}] pentru opera\u0163ia [{1}] nu are mapare O-X
+
+47008=Numai interog\u0103rile de Format XML simplu suport\u0103 mai multe argumente de ie\u015fire
+
+47009=Parametrii de cursor INOUT nu sunt suporta\u0163i
+
+47010=Nu s-a putut localiza sesiunea O-R pentru serviciul [{0}]
+
+47011=Nu s-a putut localiza sesiunea O-X pentru servicul [{0}]
+
+47012=Nu s-a putut parsa fi\u015fierul DBWS
+
