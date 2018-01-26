@@ -20,6 +20,7 @@ import java.util.Properties;
 import com.ibm.ejs.j2c.J2CConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Objects of this class are serialized and used to store the information required to recreate an activation
  * spec during recovery
@@ -33,13 +34,13 @@ public class ActivationConfig implements Serializable {
                                                          J2CConstants.messageFile);
     private Properties activationConfigProps = null;
 
-    private final String destinationRef;
+    private String destinationRef = null;
 
     private String authenticationAlias = null;
 
-    private final String applicationName;
+    private String applicationName = null;
 
-    private String qmid = "undefined";
+    private String qmid = null;
 
     /**
      * List of fields that will be serialized when the writeObject method
@@ -48,9 +49,11 @@ public class ActivationConfig implements Serializable {
      */
 
     static private final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] {
-                             new ObjectStreamField("activationConfigProps", Properties.class),
-                             new ObjectStreamField("authenticationAlias", String.class),
-                             new ObjectStreamField("qmid", String.class)
+                                                                                                new ObjectStreamField("activationConfigProps", Properties.class),
+                                                                                                new ObjectStreamField("destinationRef", String.class),
+                                                                                                new ObjectStreamField("authenticationAlias", String.class),
+                                                                                                new ObjectStreamField("applicationName", String.class),
+                                                                                                new ObjectStreamField("qmid", String.class)
     };
 
     /**
@@ -92,14 +95,17 @@ public class ActivationConfig implements Serializable {
                 String fieldName = serialPersistentFields[i].getName();
 
                 if (getField.defaulted(fieldName))
-                    Tr.debug(this, tc, "DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278", fieldName, getClass().getName());
+                    Tr.debug(this, tc, "Could not de-serialize field " + fieldName + " in class " +
+                                       getClass().getName() + "; default value will be used");
 
             }
 
         }
 
         activationConfigProps = (Properties) getField.get("activationConfigProps", null);
+        destinationRef = (String) getField.get("destinationRef", null);
         authenticationAlias = (String) getField.get("authenticationAlias", null);
+        applicationName = (String) getField.get("applicationName", null);
         qmid = (String) getField.get("qmid", null);
 
         if (tc.isEntryEnabled())
@@ -125,7 +131,9 @@ public class ActivationConfig implements Serializable {
         ObjectOutputStream.PutField putField = stream.putFields();
 
         putField.put("activationConfigProps", activationConfigProps);
+        putField.put("destinationRef", destinationRef);
         putField.put("authenticationAlias", authenticationAlias);
+        putField.put("applicationName", applicationName);
         putField.put("qmid", qmid);
 
         stream.writeFields();
@@ -143,7 +151,7 @@ public class ActivationConfig implements Serializable {
      */
     @Override
     public String toString() {
-        return "ActivationConfig [activationConfigProps=" + activationConfigProps + ", destinationRef=" + destinationRef + ", authenticationAlias=" + authenticationAlias
+        return "ActivationConfig [destinationRef=" + destinationRef + ", authenticationAlias=" + authenticationAlias
                + ", applicationName=" + applicationName + ", qmid=" + qmid + "]";
     }
 

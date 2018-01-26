@@ -34,14 +34,14 @@ import com.ibm.ws.javaee.dd.common.ResourceRef;
 
 /*
  * Class name : CMConfigDataImpl
- * 
+ *
  * Scope : Name server and EJB server and WEB server
- * 
+ *
  * Object model : 1 per ConnectionManager instance
  */
-public final class CMConfigDataImpl implements CMConfigData { 
+public final class CMConfigDataImpl implements CMConfigData {
 
-    private static final long serialVersionUID = 2034951388889375702L; 
+    private static final long serialVersionUID = 2034951388889375702L;
 
     private boolean res_sharing_scope = false; // true means SHAREABLE; false means UNSHAREABLE.
     private int res_isolation_level = 999; // TRANSACTION_xxx
@@ -49,16 +49,16 @@ public final class CMConfigDataImpl implements CMConfigData {
     //   otherwise, it is no longer referenced.
     private int res_resolution_control = 999; // Application | ContainerAtBoundary
     private int res_auth = 999; // Application | Container
-    private String cf_name = "undefined"; 
+    private String cf_name = "undefined";
     private String jndiName;
-    private String cfDetailsKey = "undefined"; 
+    private String cfDetailsKey = "undefined";
     private String _CfKey;
-    private String loginConfigurationName = null; 
-    private HashMap<String, String> loginConfigProperties = null; 
-    private String loginConfigPropsKeyString = null; 
-    private int _commitPriority = 0; 
+    private String loginConfigurationName = null;
+    private HashMap<String, String> loginConfigProperties = null;
+    private String loginConfigPropsKeyString = null;
+    private int _commitPriority = 0;
     private int _branchCoupling = 999; //  Loose|Tight
-    private String qmid = "undefined";
+    private String qmid = null;
 
     /*
      * Transient fields are not saved when the object is serialized, and do not need to be accounted for
@@ -69,15 +69,14 @@ public final class CMConfigDataImpl implements CMConfigData {
      * _ConfigDumpId is only used when displaying config dump data - it does not enter in to
      * the equals method and does not impact and runtime code outside of the configDump.
      */
-    private transient String _ConfigDumpId = ""; 
+    private transient String _ConfigDumpId = "";
 
     private transient String _resRefName = null;
-    private transient String _containerAlias = null; 
+    private transient String _containerAlias = null;
 
-    private static final TraceComponent TC =
-                    Tr.register(CMConfigDataImpl.class,
-                                J2CConstants.traceSpec,
-                                J2CConstants.messageFile); 
+    private static final TraceComponent TC = Tr.register(CMConfigDataImpl.class,
+                                                         J2CConstants.traceSpec,
+                                                         J2CConstants.messageFile);
 
     /**
      * List of fields that will be serialized when the writeObject method
@@ -85,40 +84,38 @@ public final class CMConfigDataImpl implements CMConfigData {
      * change without breaking the serialization process.
      */
 
-    static private final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] { 
+    static private final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] {
 
-    new ObjectStreamField("cf_name", String.class),
-                    new ObjectStreamField("cfDetailsKey", String.class),
-                    new ObjectStreamField("_CfKey", String.class),
-                    new ObjectStreamField("_PmiName", String.class),
-                    new ObjectStreamField("res_auth", Integer.TYPE),
-                    new ObjectStreamField("res_isolation_level", Integer.TYPE),
-                    new ObjectStreamField("res_resolution_control", Integer.TYPE),
-                    new ObjectStreamField("res_sharing_scope", Boolean.TYPE),
-                    new ObjectStreamField("loginConfigurationName", String.class),
-                    new ObjectStreamField("loginConfigProperties", HashMap.class),
-                    new ObjectStreamField("loginConfigPropsKeyString", String.class),
-                    new ObjectStreamField("_commitPriority", Integer.TYPE), 
-                    new ObjectStreamField("_branchCoupling", Integer.TYPE),
-                    new ObjectStreamField("qmid", String.class)
+                                                                                                new ObjectStreamField("cf_name", String.class),
+                                                                                                new ObjectStreamField("cfDetailsKey", String.class),
+                                                                                                new ObjectStreamField("_CfKey", String.class),
+                                                                                                new ObjectStreamField("_PmiName", String.class),
+                                                                                                new ObjectStreamField("res_auth", Integer.TYPE),
+                                                                                                new ObjectStreamField("res_isolation_level", Integer.TYPE),
+                                                                                                new ObjectStreamField("res_resolution_control", Integer.TYPE),
+                                                                                                new ObjectStreamField("res_sharing_scope", Boolean.TYPE),
+                                                                                                new ObjectStreamField("loginConfigurationName", String.class),
+                                                                                                new ObjectStreamField("loginConfigProperties", HashMap.class),
+                                                                                                new ObjectStreamField("loginConfigPropsKeyString", String.class),
+                                                                                                new ObjectStreamField("_commitPriority", Integer.TYPE),
+                                                                                                new ObjectStreamField("_branchCoupling", Integer.TYPE),
+                                                                                                new ObjectStreamField("qmid", String.class)
 
     };
 
-
-    protected CMConfigDataImpl(String jndiName, 
+    protected CMConfigDataImpl(String jndiName,
                                int sharingScope,
                                int isolationLevel,
                                int auth,
                                String cfKey,
-                               String loginConfigurationName, 
-                               HashMap<String, String> loginConfigProperties, 
-                               String resRefName, 
-                               int commitPriority, 
-                               int branchCoupling, 
-                               Properties mmProps 
-   ) {
+                               String loginConfigurationName,
+                               HashMap<String, String> loginConfigProperties,
+                               String resRefName,
+                               int commitPriority,
+                               int branchCoupling,
+                               Properties mmProps) {
 
-        this.jndiName = jndiName; 
+        this.jndiName = jndiName;
 
         /*
          * ConfidDumpId need only contain the pmiName (which should be the jndiName).
@@ -126,15 +123,15 @@ public final class CMConfigDataImpl implements CMConfigData {
          * In order to differentiate between the different CMs the cfDetailsKey (which may be
          * displayed in the configDump) should be used.
          */
-        _ConfigDumpId = jndiName; 
+        _ConfigDumpId = jndiName;
 
-        if (cfKey != null) { 
-            _CfKey = cfKey; 
+        if (cfKey != null) {
+            _CfKey = cfKey;
         } else {
-            _CfKey = jndiName; 
-        } 
+            _CfKey = jndiName;
+        }
 
-        this._resRefName = resRefName; 
+        this._resRefName = resRefName;
 
         setSharingScope(sharingScope);
         res_isolation_level = isolationLevel;
@@ -146,20 +143,20 @@ public final class CMConfigDataImpl implements CMConfigData {
             loginConfigPropsKeyString = loginConfigProperties.toString();
         }
 
-        if (mmProps != null) { 
-            this._containerAlias = mmProps.getProperty(J2CConstants.MAPPING_MODULE_authDataAlias); 
-        } 
-        this._commitPriority = commitPriority; 
-        setBranchCoupling(branchCoupling); 
+        if (mmProps != null) {
+            this._containerAlias = mmProps.getProperty(J2CConstants.MAPPING_MODULE_authDataAlias);
+        }
+        this._commitPriority = commitPriority;
+        setBranchCoupling(branchCoupling);
 
         // 128 is a compiler help.  Not a critical value.
-        StringBuffer sb = new StringBuffer(128); 
+        StringBuffer sb = new StringBuffer(128);
         sb.append(Integer.toString(sharingScope));
         sb.append(Integer.toString(res_isolation_level));
         sb.append(Integer.toString(res_auth));
         sb.append(Integer.toString(0)); // CMP
-        sb.append(Integer.toString(commitPriority)); 
-        sb.append(Integer.toString(branchCoupling)); 
+        sb.append(Integer.toString(commitPriority));
+        sb.append(Integer.toString(branchCoupling));
 
         if (loginConfigurationName != null) {
             sb.append(loginConfigurationName);
@@ -170,10 +167,10 @@ public final class CMConfigDataImpl implements CMConfigData {
 
         // (resRefName may be null, as determined in CFBI.getCMConfigData)
         if (resRefName != null) {
-            sb.append(resRefName); 
+            sb.append(resRefName);
         }
 
-        cfDetailsKey = _CfKey + sb.toString(); 
+        cfDetailsKey = _CfKey + sb.toString();
 
         if (TC.isDebugEnabled()) {
             Tr.debug(this, TC, "cfDetailsKey = " + cfDetailsKey + " for " + jndiName);
@@ -181,11 +178,10 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     }
 
-
     /**
      * The <b>res-sharing-scope</b> resource-ref element specifies whether the component is to use shared
      * connections.
-     * 
+     *
      * @return sharing scope constant
      */
     @Override
@@ -196,7 +192,7 @@ public final class CMConfigDataImpl implements CMConfigData {
     /**
      * The <b>res-isolation-level</b> resource-ref element specifies for relational resource adapters the
      * isolation level to be used by the backend database.
-     * 
+     *
      * @return One of the constants defined in <code>com.ibm.websphere.csi.ResRef</code>.<br>
      *         <table border=1>
      *         <TR><TD>TRANSACTION_NONE
@@ -218,7 +214,7 @@ public final class CMConfigDataImpl implements CMConfigData {
      * The <b>res-auth</b> resource-ref element specifies whether the component code signs on
      * programmatically to the resource manager (<code>APPLICATION</code>), or the container
      * handles sign-on (<code>CONTAINER</code>).
-     * 
+     *
      * @return Either <code>APPLICATION</code> or <code>CONTAINER</code>, as defined
      *         by the constants in <code>com.ibm.websphere.csi.ResRef</code>.
      */
@@ -231,7 +227,7 @@ public final class CMConfigDataImpl implements CMConfigData {
      * The CF details key is used to access a particular ConnectionFactoryDetails object. The key
      * is made up of the xmi:id found in resources.xml, concatenated with the pmiName and concatenated with the res-xxx settings
      * and other flags.
-     * 
+     *
      * @return Connection factory details key. For example, a Connection Factory with name:
      *         "cells/myhost/nodes/myhost/resources.xml#MyDataSource02100" indicates <br><br>
      *         <table border=1>
@@ -256,21 +252,21 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Login Configuration name
-     * 
+     *
      * @return String
      */
     @Override
-    public String getLoginConfigurationName() { 
+    public String getLoginConfigurationName() {
         return loginConfigurationName;
     }
 
     /**
      * Properties associated with the login configuration.
-     * 
+     *
      * @return HashMap
      */
     @Override
-    public HashMap<String, String> getLoginConfigProperties() { 
+    public HashMap<String, String> getLoginConfigProperties() {
         return loginConfigProperties;
     }
 
@@ -278,12 +274,9 @@ public final class CMConfigDataImpl implements CMConfigData {
     @Override
     public List<? extends Property> getLoginPropertyList() {
         List<Property> props = new LinkedList<Property>();
-        if (loginConfigProperties == null)
-        {
+        if (loginConfigProperties == null) {
             return props;
-        }
-        else
-        {
+        } else {
             for (Map.Entry<String, String> entry : loginConfigProperties.entrySet())
                 props.add(new PropertyImpl(entry.getKey(), entry.getValue()));
             return props;
@@ -297,7 +290,7 @@ public final class CMConfigDataImpl implements CMConfigData {
      * Used only by the SIB RA
      */
     @Override
-    public String getContainerAlias() { 
+    public String getContainerAlias() {
         return _containerAlias;
     }
 
@@ -307,17 +300,17 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Sets the sharing scope.
-     * 
+     *
      * @param i Expected to be one of <code>SHAREABLE</code> or <code>UNSHAREABLE</code>
      *            as defined by the constants in <code>com.ibm.websphere.csi.ResRef</code>
      */
-    protected void setSharingScope(int i) { 
+    protected void setSharingScope(int i) {
 
-        if (i == J2CConstants.CONNECTION_SHAREABLE) { 
+        if (i == J2CConstants.CONNECTION_SHAREABLE) {
             res_sharing_scope = true;
         } else {
 
-            if (i == J2CConstants.CONNECTION_UNSHAREABLE) { 
+            if (i == J2CConstants.CONNECTION_UNSHAREABLE) {
                 res_sharing_scope = false;
             } else {
                 Tr.warning(TC, "INVALID_OR_UNEXPECTED_SETTING_J2CA0067", "sharing scope", i, false);
@@ -330,7 +323,7 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Returns a readable view of the ConnectionManager res-xxx config data
-     * 
+     *
      * @return String representation of this CMConfigDataImpl instance
      */
 
@@ -338,11 +331,11 @@ public final class CMConfigDataImpl implements CMConfigData {
     public String toString() {
 
         StringBuffer buf = new StringBuffer(256);
-        final String nl = CommonFunction.nl; 
+        final String nl = CommonFunction.nl;
 
         String res_sharing_scopeString = "UNSHAREABLE";
-        String res_isolation_levelString = "undefined"; 
-        String res_authString = "undefined"; 
+        String res_isolation_levelString = "undefined";
+        String res_authString = "undefined";
 
         if (res_sharing_scope == true) {
             res_sharing_scopeString = "SHAREABLE";
@@ -373,10 +366,10 @@ public final class CMConfigDataImpl implements CMConfigData {
                 break;
         }
 
-        if (res_auth == J2CConstants.AUTHENTICATION_CONTAINER) { 
+        if (res_auth == J2CConstants.AUTHENTICATION_CONTAINER) {
             res_authString = "CONTAINER";
         } else {
-            if (res_auth == J2CConstants.AUTHENTICATION_APPLICATION) { 
+            if (res_auth == J2CConstants.AUTHENTICATION_APPLICATION) {
                 res_authString = "APPLICATION";
             }
         }
@@ -384,7 +377,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         // key items
 
         buf.append(nl);
-        buf.append("[Resource-ref CMConfigData key items]" + nl); 
+        buf.append("[Resource-ref CMConfigData key items]" + nl);
 
         buf.append(nl);
 
@@ -392,8 +385,8 @@ public final class CMConfigDataImpl implements CMConfigData {
 
         buf.append("\tres-sharing-scope:        ");
 
-        int ss = (res_sharing_scope ? J2CConstants.CONNECTION_SHAREABLE : J2CConstants.CONNECTION_UNSHAREABLE); 
-        buf.append(ss); 
+        int ss = (res_sharing_scope ? J2CConstants.CONNECTION_SHAREABLE : J2CConstants.CONNECTION_UNSHAREABLE);
+        buf.append(ss);
 
         buf.append(" (");
         buf.append(res_sharing_scopeString);
@@ -414,13 +407,13 @@ public final class CMConfigDataImpl implements CMConfigData {
         buf.append(")");
         buf.append(nl);
 
-        buf.append("\tcommitPriority            "); 
-        buf.append(_commitPriority); 
-        buf.append(nl); 
+        buf.append("\tcommitPriority            ");
+        buf.append(_commitPriority);
+        buf.append(nl);
 
-        buf.append("\tbranchCoupling            "); 
-        buf.append(_branchCoupling); 
-        buf.append(nl); 
+        buf.append("\tbranchCoupling            ");
+        buf.append(_branchCoupling);
+        buf.append(nl);
 
         buf.append("\tloginConfigurationName:   ");
         buf.append(loginConfigurationName);
@@ -448,14 +441,13 @@ public final class CMConfigDataImpl implements CMConfigData {
      * @return _CfKey
      */
     @Override
-    public String getCfKey() { 
-        return _CfKey; 
+    public String getCfKey() {
+        return _CfKey;
     }
-
 
     /**
      * @param o A CMConfigDataImpl Object that will be compared.
-     * 
+     *
      * @return true if object o is equal to this CMConfigDataImpl.
      */
     @Override
@@ -496,7 +488,7 @@ public final class CMConfigDataImpl implements CMConfigData {
     /**
      * Generates a hashcode for the CMConfigData object. The hashcode is based on each member's
      * hashcode (or value, for int members).
-     * 
+     *
      * @return the hashcode for this object.
      */
     /* */
@@ -508,7 +500,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         // collapsed hashCode into just that of cfDetailsKey, since it already included the other constituents
         tempHC += cfDetailsKey.hashCode();
 
-        rVal = (Long.valueOf(tempHC / 10)).intValue(); 
+        rVal = (Long.valueOf(tempHC / 10)).intValue();
 
         return rVal;
     }
@@ -523,7 +515,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         /*
          * Since this is a simple class all we have to do is read each member from the stream.
          * the order has to remain identical to writeObject, so I've just gone alphabetically.
-         * 
+         *
          * If we change the serialversionUID, we may need to modify this method as well.
          */
 
@@ -540,12 +532,13 @@ public final class CMConfigDataImpl implements CMConfigData {
                 String fieldName = serialPersistentFields[i].getName();
 
                 if (getField.defaulted(fieldName))
-                    Tr.debug(this, TC, "DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278", fieldName, getClass().getName());
+                    Tr.debug(this, TC, "Could not de-serialize field " + fieldName + " in class " +
+                                       getClass().getName() + "; default value will be used");
 
-            } 
+            }
 
         }
-        
+
         cf_name = (String) getField.get("cf_name", null);
         cfDetailsKey = (String) getField.get("cfDetailsKey", null);
         _CfKey = (String) getField.get("_CfKey", null);
@@ -555,29 +548,29 @@ public final class CMConfigDataImpl implements CMConfigData {
         res_isolation_level = getField.get("res_isolation_level", 999);
         res_resolution_control = getField.get("res_resolution_control", 999);
         res_sharing_scope = getField.get("res_sharing_scope", false);
-        loginConfigurationName = (String) getField.get("loginConfigurationName", null); 
-        loginConfigProperties = (HashMap<String, String>) getField.get("loginConfigProperties", null); 
-        loginConfigPropsKeyString = (String) getField.get("loginConfigPropsKeyString", null); 
-        _commitPriority = getField.get("_commitPriority", 0); 
-        _branchCoupling = getField.get("_branchCoupling", 999); 
+        loginConfigurationName = (String) getField.get("loginConfigurationName", null);
+        loginConfigProperties = (HashMap<String, String>) getField.get("loginConfigProperties", null);
+        loginConfigPropsKeyString = (String) getField.get("loginConfigPropsKeyString", null);
+        _commitPriority = getField.get("_commitPriority", 0);
+        _branchCoupling = getField.get("_branchCoupling", 999);
         qmid = (String) getField.get("qmid", null);
 
         if (TC.isEntryEnabled())
             Tr.exit(this, TC, "readObject", new Object[] {
-                                                          cf_name,
-                                                          cfDetailsKey,
-                                                          _CfKey,
-                                                          jndiName,
-                                                          res_auth,
-                                                          res_isolation_level,
-                                                          res_resolution_control,
-                                                          res_sharing_scope,
-                                                          loginConfigurationName,
-                                                          loginConfigProperties,
-                                                          loginConfigPropsKeyString,
-                                                          _containerAlias,
-                                                          _commitPriority,
-                                                          _branchCoupling
+                                                           cf_name,
+                                                           cfDetailsKey,
+                                                           _CfKey,
+                                                           jndiName,
+                                                           res_auth,
+                                                           res_isolation_level,
+                                                           res_resolution_control,
+                                                           res_sharing_scope,
+                                                           loginConfigurationName,
+                                                           loginConfigProperties,
+                                                           loginConfigPropsKeyString,
+                                                           _containerAlias,
+                                                           _commitPriority,
+                                                           _branchCoupling
             });
     }
 
@@ -589,7 +582,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         /*
          * Since this is a simple class all we have to do is write each member to the stream.
          * the order has to remain identical to readObject, so I've just gone alphabetically.
-         * 
+         *
          * If we change the serialversionUID, we may need to modify this method as well.
          */
 
@@ -608,11 +601,11 @@ public final class CMConfigDataImpl implements CMConfigData {
         putField.put("res_isolation_level", res_isolation_level);
         putField.put("res_resolution_control", res_resolution_control);
         putField.put("res_sharing_scope", res_sharing_scope);
-        putField.put("loginConfigurationName", loginConfigurationName); 
-        putField.put("loginConfigProperties", loginConfigProperties); 
-        putField.put("loginConfigPropsKeyString", loginConfigPropsKeyString); 
-        putField.put("_commitPriority", _commitPriority); 
-        putField.put("_branchCoupling", _branchCoupling); 
+        putField.put("loginConfigurationName", loginConfigurationName);
+        putField.put("loginConfigProperties", loginConfigProperties);
+        putField.put("loginConfigPropsKeyString", loginConfigPropsKeyString);
+        putField.put("_commitPriority", _commitPriority);
+        putField.put("_branchCoupling", _branchCoupling);
         putField.put("qmid", qmid);
 
         stream.writeFields();
@@ -625,7 +618,7 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Generate a config dump containing all the attributes which match the regular expression.
-     * 
+     *
      * @param aLocalId The regular expression which will be used to determine which attributes to display. Ie, .* will enable everything,
      *            current-resourceAdapterDD-transactionSupport enables just the transactionSupport level.
      * @param aRegisteredOnly If true only registered attributes will be displayed.
@@ -646,20 +639,19 @@ public final class CMConfigDataImpl implements CMConfigData {
         return cp;
     };
 
-
     @Override
-    public String getConfigDumpId() { 
+    public String getConfigDumpId() {
         return _ConfigDumpId;
     }
 
-    public void setConfigDumpId(String configDumpId) { 
+    public void setConfigDumpId(String configDumpId) {
         _ConfigDumpId = configDumpId;
     }
 
     /**
      * Returns the res-ref name obtained during lookup.
      * For use by the adapter for heterogeneous pooling.
-     * 
+     *
      * @return String
      */
     @Override
@@ -669,7 +661,7 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Returns the transaction commit priority.
-     * 
+     *
      * @return int
      */
     @Override
@@ -679,7 +671,7 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Returns the transaction branch coupling value.
-     * 
+     *
      * @return int
      */
     @Override
@@ -689,7 +681,7 @@ public final class CMConfigDataImpl implements CMConfigData {
 
     /**
      * Set the transaction branch coupling value.
-     * 
+     *
      * @return void
      */
     public void setBranchCoupling(int coupling) {
@@ -735,6 +727,7 @@ public final class CMConfigDataImpl implements CMConfigData {
             return value;
         }
     }
+
     /**
      * @return the qmid
      */
