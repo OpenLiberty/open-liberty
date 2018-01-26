@@ -13,14 +13,21 @@ package com.ibm.ws.session.store.cache;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.transaction.UserTransaction;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
+import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.session.IStore;
 
 /**
@@ -31,6 +38,12 @@ public class CacheStoreService implements SessionStoreService {
     private Map<String, Object> configurationProperties;
 
     private volatile boolean completedPassivation = true;
+
+    @Reference
+    protected SerializationService serializationService;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile UserTransaction userTransaction;
 
     /**
      * Declarative Services method to activate this component.
@@ -45,7 +58,10 @@ public class CacheStoreService implements SessionStoreService {
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
-        throw new UnsupportedOperationException();
+        IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
+        store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
+        setCompletedPassivation(false);
+        return store;
     }
 
     /**

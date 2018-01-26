@@ -29,10 +29,12 @@ Include-Resource: \
 	com.ibm.websphere.appserver.spi.logging,\
     com.ibm.websphere.javaee.jcache.1.1;version=latest,\
     com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.session;version=latest,\
 	com.ibm.ws.session.store;version=latest
