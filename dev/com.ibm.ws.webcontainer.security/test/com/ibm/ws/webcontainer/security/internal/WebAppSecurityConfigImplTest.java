@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.security.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -322,6 +323,54 @@ public class WebAppSecurityConfigImplTest {
         cfg.put("ssoCookieName", "myCookieName");
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
         assertEquals("Did not get expected ssoCookieName myCookieName", "myCookieName", webCfg.getSSOCookieName());
+    }
+
+    @Test
+    public void testGetLoginErrorURL_NotSet() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertNull("Null should be get since the value is not set.", webCfg.getLoginErrorURL());
+    }
+
+    @Test
+    public void testGetLoginErrorURL_Valid() {
+        final String ERROR_URL = "/globalLogin/errorPage.html";
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("loginErrorURL", ERROR_URL);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertEquals("Vallid value should be returned.", ERROR_URL, webCfg.getLoginErrorURL());
+    }
+
+    @Test
+    public void testGetLoginFormContextRoot_NotSet() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertNull("Null should be get since the value is not set.", webCfg.getLoginFormContextRoot());
+    }
+
+    @Test
+    public void testGetLoginFormContextRoot_Valid() {
+        final String CONTEXT_ROOT = "/globalLogin";
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("loginFormContextRoot", CONTEXT_ROOT);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertEquals("Vallid value should be returned.", CONTEXT_ROOT, webCfg.getLoginFormContextRoot());
+    }
+
+    @Test
+    public void testGetBasicAuthRealmName_NotSet() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertNull("Null should be get since the value is not set.", webCfg.getBasicAuthRealmName());
+    }
+
+    @Test
+    public void testGetBasicAuthRealmName_Valid() {
+        final String REALM_NAME = "realmName";
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("basicAuthRealmName", REALM_NAME);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertEquals("Vallid value should be returned.", REALM_NAME, webCfg.getBasicAuthRealmName());
     }
 
     /**
