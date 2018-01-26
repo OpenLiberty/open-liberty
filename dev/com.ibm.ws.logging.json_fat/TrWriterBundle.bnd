@@ -23,6 +23,8 @@ Include-Resource: \
     WEB-INF=test-bundles/TrWriterBundle/resources/WEB-INF, \
     com/ibm/ws/logging/fat/bundle/resources/Messages.properties=test-bundles/TrWriterBundle/resources/com/ibm/ws/logging/fat/bundle/resources/Messages.properties
 
+Import-Package: *
+    
 Private-Package: \
   com.ibm.ws.logging.fat.bundle
   
