@@ -28,7 +28,7 @@ import junit.framework.Assert;
  */
 public class EncodingValidatorTest {
 
-    String key;
+    String key = null;
     OpenAPIImpl model = new OpenAPIImpl();
     Context context = new TestValidationContextHelper(model);
 
