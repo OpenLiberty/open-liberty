@@ -83,11 +83,6 @@ public class TraceSource implements Source, WsTraceHandler {
 
     /** {@inheritDoc} */
     @Override
-    /**
-     * Log the given log record.
-     *
-     * @param routedMessage The LogRecord along with various message formats.
-     */
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {

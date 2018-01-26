@@ -386,9 +386,7 @@ public class JsonTraceService extends BaseTraceService {
         // unnecessary.
 
         // Proceed to trace processing for all other log records
-        if (TraceComponent.isAnyTracingEnabled())
-
-        {
+        if (TraceComponent.isAnyTracingEnabled()) {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
         }
     }

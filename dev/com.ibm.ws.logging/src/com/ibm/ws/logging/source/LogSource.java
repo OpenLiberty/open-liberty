@@ -93,11 +93,6 @@ public class LogSource implements Source, WsLogHandler {
 
     /** {@inheritDoc} */
     @Override
-    /**
-     * Log the given log record.
-     *
-     * @param routedMessage The LogRecord along with various message formats.
-     */
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
