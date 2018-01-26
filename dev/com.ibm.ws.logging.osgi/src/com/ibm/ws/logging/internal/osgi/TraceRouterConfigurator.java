@@ -19,6 +19,8 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.source.LogSource;
+import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 
 /**
@@ -92,7 +94,11 @@ public class TraceRouterConfigurator {
      * This method is called from the ServiceListener.
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
-    	getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref));  
+    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService() && (bundleContext.getService(ref) instanceof TraceSource)) {
+    		return;
+    	} else {
+    		getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
+    	}
     }
 
     /**
