@@ -458,12 +458,6 @@ public class BaseTraceFormatter extends Formatter {
             if (throwable != null) {
                 sb.append(LoggingConstants.nl).append(throwable);
             }
-//          if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-//
-//              return sb.toString();
-//          } else {
-//              return sb.toString();
-//          }
             return sb.toString();
         }
         if (levelValue >= consoleLogLevel) {
@@ -473,12 +467,6 @@ public class BaseTraceFormatter extends Formatter {
             if (throwable != null) {
                 sb.append(LoggingConstants.nl).append(throwable);
             }
-//            if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-//
-//                return sb.toString();
-//            } else {
-//                return sb.toString();
-//            }
             return sb.toString();
 
         }
@@ -710,12 +698,10 @@ public class BaseTraceFormatter extends Formatter {
         String id = null;
         String objId;
 
-        String sym = null;
-//      WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        Integer levelVal = null;
 
         String name;
-//        String method = logRecord.getSourceMethodName();
-//        String className = logRecord.getSourceClassName();
+
         String className = null;
         String method = null;
         String loggerName = null;
@@ -726,8 +712,9 @@ public class BaseTraceFormatter extends Formatter {
         String prod = null;
         String component = null;
         String wsSourceThreadName = null;
-//      String stackTrace = getStackTrace(logRecord);
-//        String sym = getMarker(logRecord);
+
+        String sym = null;
+        String logLevel = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -759,11 +746,22 @@ public class BaseTraceFormatter extends Formatter {
                     component = kvp.getValue();
                 } else if (kvp.getKey().equals("wsSourceThreadName")) {
                     wsSourceThreadName = kvp.getValue();
+                } else if (kvp.getKey().equals("levelValue")) {
+                    levelVal = Integer.parseInt(kvp.getValue());
+//                    sym = "levelValue=" + kvp.getValue();
+                } else if (kvp.getKey().equals("logLevel")) {
+                    logLevel = kvp.getValue();
                 }
 
             }
         }
-
+        if (levelVal == Level.FINER.intValue()) {
+            if (logLevel.equals("ENTRY")) {
+                sym = " > ";
+            } else if (logLevel.equals("EXIT")) {
+                sym = " < ";
+            }
+        }
         StringBuilder sb = new StringBuilder(256);
 
         // Common header
@@ -1095,13 +1093,10 @@ public class BaseTraceFormatter extends Formatter {
 
     protected String filteredStreamOutput(GenericData genData) {
         String txt = null;
-//        String stackTrace = null;
         String loglevel = null;
         KeyValuePair kvp = null;
 
         ArrayList<Pair> pairs = genData.getPairs();
-//      String stackTrace = getStackTrace(logRecord);
-//        String sym = getMarker(logRecord);
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {

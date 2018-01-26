@@ -143,6 +143,7 @@ public class TraceSource implements Source {
         KeyValuePair className = new KeyValuePair("ibm_className", logRecord.getSourceClassName(), KeyValuePair.ValueTypes.STRING);
         String sequenceNum = sequenceNumber.next(Long.parseLong(datetime.getValue()));
         KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceNum, KeyValuePair.ValueTypes.STRING);
+        KeyValuePair levelValue = new KeyValuePair("levelValue", Integer.toString(logRecord.getLevel().intValue()), KeyValuePair.ValueTypes.NUMBER);
 
         KeyValuePairs extensions = new KeyValuePairs();
         ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
@@ -169,6 +170,7 @@ public class TraceSource implements Source {
         pairs.add(className);
         pairs.add(sequence);
         pairs.add(extensions);
+        pairs.add(levelValue);
 
         if (id != null) {
             String objId = generateObjectId(id);

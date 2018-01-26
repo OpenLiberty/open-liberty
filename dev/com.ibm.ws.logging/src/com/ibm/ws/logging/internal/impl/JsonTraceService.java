@@ -380,9 +380,6 @@ public class JsonTraceService extends BaseTraceService {
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
-//        if (id != null) {
-//            System.out.println("HELLO ID=" + id.toString());
-//        }
         RoutedMessage routedTrace = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
 
         invokeTraceRouters(routedTrace);

@@ -216,8 +216,6 @@ public class LogSource implements Source {
         pairs.add(sequence);
         pairs.add(levelValue);
 
-//        //get format for trace
-
         genData.setSourceType(sourceName);
 
         return genData;
