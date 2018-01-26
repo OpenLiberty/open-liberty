@@ -50,8 +50,11 @@ public class EncodingValidatorTest {
     public void testStyleIsFormExplodeFalse() {
 
         EncodingImpl styleIsFormExplodeFalse = new EncodingImpl();
+
         styleIsFormExplodeFalse.setStyle(Encoding.Style.FORM);
         styleIsFormExplodeFalse.setExplode(false);
+
+        System.out.println(styleIsFormExplodeFalse == null);
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
