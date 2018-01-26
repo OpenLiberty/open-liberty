@@ -37,6 +37,7 @@ public class ExternalDocumentationValidatorTest {
 
         ExternalDocumentationImpl externalDocs = new ExternalDocumentationImpl();
 
+        vh.resetResults();
         externalDocs.setUrl(null);
         validator.validate(vh, context, externalDocs);
         Assert.assertEquals(1, vh.getEventsSize());
