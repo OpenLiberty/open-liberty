@@ -29,29 +29,49 @@ public abstract class BufferManager {
 	public static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
 	
 	protected volatile static List<BufferManager> bufferManagerList= Collections.synchronizedList(new ArrayList<BufferManager>());
-	public volatile static boolean EMQRemovedFlag = false;
-
+	private volatile static boolean EMQRemovedFlag = false;
+	
 	protected Queue<Object> earlyMessageQueue;
     
     protected BufferManager() {
     		synchronized(bufferManagerList) {
     			bufferManagerList.add(this);
-	    		if(!EMQRemovedFlag)
+	    		if(!getEMQRemovedFlag())
 	    			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
     		}
     }
     
-	public void removeEMQ() {
+	public static boolean getEMQRemovedFlag() {
+		return EMQRemovedFlag;
+	}
+
+	public static void setEMQRemovedFlag(boolean eMQRemovedFlag) {
+		EMQRemovedFlag = eMQRemovedFlag;
+	}
+    
+	private void removeEMQ() {
 		earlyMessageQueue=null;
 	}
 	
+	
 	public static void removeEMQTrigger(){
 		synchronized(bufferManagerList) {
-			EMQRemovedFlag=true;
+			setEMQRemovedFlag(true);
 			for(BufferManager i: bufferManagerList) {
 				i.removeEMQ();
 			}
 		}
+	}
+	
+	public static void removeEMQByTimer(){
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        BufferManager.removeEMQTrigger();
+                    }
+                },
+                BufferManager.EMQ_TIMER);
 	}
 
     /**
@@ -84,4 +104,5 @@ public abstract class BufferManager {
      * @throws InterruptedException
      */
     public abstract Object[] getEvents(String handlerId, int noOfEvents) throws InterruptedException;
+
 }

@@ -214,14 +214,8 @@ public class BaseTraceService implements TrService {
         // Capture System.out/.err after registerLoggerHandler has initialized
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
-        new java.util.Timer().schedule(
-                                       new java.util.TimerTask() {
-                                           @Override
-                                           public void run() {
-                                               BufferManager.removeEMQTrigger();
-                                           }
-                                       },
-                                       BufferManager.EMQ_TIMER);
+        //Remove EMQ from BufferManager after a certain amount of time has passed
+        BufferManager.removeEMQByTimer();
     }
 
     protected void registerLoggerHandlerSingleton() {

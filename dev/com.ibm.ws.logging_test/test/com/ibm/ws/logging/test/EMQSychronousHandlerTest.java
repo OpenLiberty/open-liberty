@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.wsspi.collector.manager.BufferManager;
-import com.ibm.wsspi.collector.manager.DummyHandler;
 
 import test.common.SharedOutputManager;
 
@@ -95,17 +94,36 @@ public class EMQSychronousHandlerTest {
 
     @Test
     public void FullEMQSentToSyncHandler() {
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 401; i++) {
             testBufferManager.add("Message" + i);
         }
         testBufferManager.addSyncHandler(syncHandler);
+
+        //Make sure the messages that the sync handler received were the newest 400
+        for (int i = 1; i < 401; i++) {
+            assertEquals("Message" + i, syncHandler.messageHolder.get(i - 1));
+        }
         assertEquals(400, syncHandler.getNumOfMessages());
+    }
+
+    @Test
+    public void RemoveEMQThenAddSyncHandler() {
+        for (int i = 0; i < 200; i++) {
+            testBufferManager.add("Message" + i);
+        }
+        testBufferManager.addSyncHandler(syncHandler);
+        assertEquals(200, syncHandler.getNumOfMessages());
+        BufferManager.removeEMQTrigger();
+
+        DummyHandler syncHandler2 = new DummyHandler();
+        testBufferManager.add(syncHandler2);
+        assertEquals(0, syncHandler2.getNumOfMessages());
     }
 
     @Test
     public void RemoveEMQ() {
         BufferManager.removeEMQTrigger();
-        assertTrue(BufferManager.EMQRemovedFlag);
+        assertTrue(BufferManager.getEMQRemovedFlag());
     }
 
 }
