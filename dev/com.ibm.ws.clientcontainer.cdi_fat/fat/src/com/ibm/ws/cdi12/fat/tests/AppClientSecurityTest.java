@@ -47,6 +47,8 @@ public class AppClientSecurityTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        client.addIgnoreErrors("CWWKS9702W");
+
         JavaArchive appClientSecurity = ShrinkWrap.create(JavaArchive.class,"appClientSecurity.jar")
                         .addClass("com.ibm.ws.cdi.client.security.fat.AppCallbackHandler")
                         .addClass("com.ibm.ws.cdi.client.security.fat.AppMainClass")
