@@ -155,9 +155,6 @@ public class CollectorJsonUtils11 {
                     String datetime = dateFormatTL.get().format(Long.parseLong(value));
                     isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
-                } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
-                           || key.equals("levelValue") || key.equals("objectId")) {
-                    //don't include it
                 } else {
 
                     isFirstField = isFirstField & !addToJSON(sb, key, value, false, true, false, isFirstField, kvp);
@@ -226,9 +223,6 @@ public class CollectorJsonUtils11 {
                     String datetime = dateFormatTL.get().format(Long.parseLong(value));
                     isFirstField = isFirstField & !addToJSON(sb, key, datetime, false, true, false, isFirstField, kvp);
 
-                } else if (key.equals("correlationId") || key.equals("org") || key.equals("product") || key.equals("component") || key.equals("wsSourceThreadName")
-                           || key.equals("levelValue") || key.equals("objectId")) {
-                    //don't include it
                 } else {
 
                     isFirstField = isFirstField & !addToJSON(sb, key, value, false, true, false, isFirstField, kvp);

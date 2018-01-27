@@ -66,7 +66,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
             messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
-            messageOutput = formatter.messageLogFormatter((GenericData) event);
+            messageOutput = formatter.messageLogFormat((GenericData) event);
 
         }
         if (messageOutput != null) {

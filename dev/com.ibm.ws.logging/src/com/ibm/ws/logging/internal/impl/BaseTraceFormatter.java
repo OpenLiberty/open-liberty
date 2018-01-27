@@ -426,7 +426,7 @@ public class BaseTraceFormatter extends Formatter {
      * @param txt the result of {@link #formatMessage}
      * @return Formatted string for the console
      */
-    public String consoleLogFormatter(GenericData genData, Integer consoleLogLevel) {
+    public String consoleLogFormat(GenericData genData, Integer consoleLogLevel) {
         StringBuilder sb = new StringBuilder(256);
 //        String name = genData.getSourceType();
         ArrayList<Pair> pairs = genData.getPairs();
@@ -460,6 +460,7 @@ public class BaseTraceFormatter extends Formatter {
             }
             return sb.toString();
         }
+
         if (levelValue >= consoleLogLevel) {
             sb.append(BaseTraceFormatter.levelValToString(levelValue));
 //            sb.append(levelString);
@@ -512,7 +513,7 @@ public class BaseTraceFormatter extends Formatter {
      * @param formattedVerboseMsg the result of {@link #formatVerboseMessage}
      * @return Formatted string for messages.log
      */
-    public String messageLogFormatter(GenericData genData) {
+    public String messageLogFormat(GenericData genData) {
         // This is a very light trace format, based on enhanced:
         StringBuilder sb = new StringBuilder(256);
 //        String sym = getMarker(logRecord);
@@ -842,6 +843,7 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(" id=").append(objId);
 
                 String x = null;
+                //check the comparison to WsLogRecord
                 if (org != null) {
                     // next append org, prod, component, if set. Reference equality check is ok here.
                     sb.append(" org=");
@@ -856,6 +858,7 @@ public class BaseTraceFormatter extends Formatter {
                         x = wsSourceThreadName;
                     }
                 } else {
+                    //ibm_threadId replace check if you can use this as the thread
                     x = Thread.currentThread().getName();
                 }
                 if (x != null) {

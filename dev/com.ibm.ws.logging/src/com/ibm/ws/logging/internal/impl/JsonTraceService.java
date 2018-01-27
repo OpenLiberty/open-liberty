@@ -33,7 +33,6 @@ import com.ibm.wsspi.logprovider.LogProviderConfig;
  */
 public class JsonTraceService extends BaseTraceService {
 
-    private final boolean isJSON = true;
     private volatile LogSource logSource = null;
     private volatile TraceSource traceSource = null;
     private volatile MessageLogHandler messageLogHandler = null;
@@ -222,12 +221,14 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
+        //move up to configurations
         if (detailLog == systemOut) {
             consoleLogHandler.setConsoleStream(true);
         } else {
             consoleLogHandler.setConsoleStream(false);
         }
         //check if copysystemstream is true
+        //change to enableCSS
         consoleLogHandler.setCopySystemStreams(copySystemStreams);
         // Tee to messages.log (always)
 
@@ -321,6 +322,7 @@ public class JsonTraceService extends BaseTraceService {
         }
 
         if (levelValue >= Level.INFO.intValue()) {
+            //configuration
             consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
 
             formattedMsg = formatter.formatMessage(logRecord);

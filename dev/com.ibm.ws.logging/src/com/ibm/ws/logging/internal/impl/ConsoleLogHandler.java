@@ -24,6 +24,7 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
+    //have two writers systemout and systemerr
     private SystemLogHolder sysLogHolder;
     private boolean consoleStream = false;
 
@@ -55,6 +56,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         //add in formatter here for basic
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if detailLog == systemOut write to console.log in trace format
+            //isTraceStdout
             if (consoleStream) {
                 messageOutput = formatter.traceFormatGenData((GenericData) event);
             } else if (copySystemStreams) {
@@ -62,8 +64,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 messageOutput = formatter.filteredStreamOutput((GenericData) event);
 
             }
-            if (messageOutput == null) {//not system.out/system.err
-                messageOutput = formatter.consoleLogFormatter((GenericData) event, consoleLogLevel);
+            //determin if it is system.out/err and !copysystemstream then throw it out
+            if (messageOutput == null) {//not system.out/system.err && tracefilename != stdout
+                messageOutput = formatter.consoleLogFormat((GenericData) event, consoleLogLevel);
             }
 
         }

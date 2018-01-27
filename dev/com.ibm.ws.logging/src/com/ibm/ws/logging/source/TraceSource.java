@@ -196,6 +196,7 @@ public class TraceSource implements Source, WsTraceHandler {
 
     }
 
+    //move the formatting at the handler
     private String generateObjectId(Object id) {
         String objId;
 
