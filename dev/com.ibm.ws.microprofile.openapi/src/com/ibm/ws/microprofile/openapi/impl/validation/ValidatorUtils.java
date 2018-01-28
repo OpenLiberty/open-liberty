@@ -41,7 +41,7 @@ public class ValidatorUtils {
         if (value == null) {
             isValid = false;
         } else {
-            if (value instanceof String && StringUtils.isBlank(String.valueOf(value))) {
+            if (value instanceof String && StringUtils.isBlank((String) value)) {
                 isValid = false;
             }
             if (value instanceof Map && ((Map<?, ?>) value).isEmpty()) {
