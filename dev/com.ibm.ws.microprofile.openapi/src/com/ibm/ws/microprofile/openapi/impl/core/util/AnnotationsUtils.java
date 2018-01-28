@@ -133,27 +133,36 @@ public abstract class AnnotationsUtils {
         if (example == null) {
             return Optional.empty();
         }
-        if (StringUtils.isNotBlank(example.name())) {
-            Example exampleObject = new ExampleImpl();
-            if (StringUtils.isNotBlank(example.description())) {
-                exampleObject.setDescription(example.description());
-            }
-            if (StringUtils.isNotBlank(example.summary())) {
-                exampleObject.setSummary(example.summary());
-            }
-            if (StringUtils.isNotBlank(example.externalValue())) {
-                exampleObject.setExternalValue(example.externalValue());
-            }
-            if (StringUtils.isNotBlank(example.value())) {
-                try {
-                    exampleObject.setValue(Json.mapper().readTree(example.value()));
-                } catch (IOException e) {
-                    exampleObject.setValue(example.value());
-                }
-            }
-            return Optional.of(exampleObject);
+
+        Example exampleObject = new ExampleImpl();
+        boolean isEmpty = true;
+
+        if (StringUtils.isNotBlank(example.description())) {
+            exampleObject.setDescription(example.description());
+            isEmpty = false;
         }
-        return Optional.empty();
+        if (StringUtils.isNotBlank(example.summary())) {
+            exampleObject.setSummary(example.summary());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(example.externalValue())) {
+            exampleObject.setExternalValue(example.externalValue());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(example.value())) {
+            try {
+                exampleObject.setValue(Json.mapper().readTree(example.value()));
+            } catch (IOException e) {
+                exampleObject.setValue(example.value());
+            }
+            isEmpty = false;
+        }
+
+        if (isEmpty) {
+            return Optional.empty();
+        }
+
+        return Optional.of(exampleObject);
     }
 
     public static Optional<Schema> getArraySchema(org.eclipse.microprofile.openapi.annotations.media.ArraySchema arraySchema) {
@@ -185,6 +194,7 @@ public abstract class AnnotationsUtils {
         return Optional.of(arraySchemaObject);
     }
 
+    @FFDCIgnore(IOException.class)
     public static Optional<Schema> getSchemaFromAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema schema) {
         if (schema == null || !hasSchemaAnnotation(schema)) {
             return Optional.empty();
@@ -639,30 +649,39 @@ public abstract class AnnotationsUtils {
         if (encoding == null) {
             return;
         }
-        if (StringUtils.isNotBlank(encoding.name())) {
 
-            Encoding encodingObject = new EncodingImpl();
+        Encoding encodingObject = new EncodingImpl();
+        boolean isEmpty = true;
 
-            if (StringUtils.isNotBlank(encoding.contentType())) {
-                encodingObject.setContentType(encoding.contentType());
-            }
-            if (StringUtils.isNotBlank(encoding.style())) {
-                encodingObject.setStyle(Encoding.Style.valueOf(encoding.style().toUpperCase()));
-            }
-            if (encoding.explode()) {
-                encodingObject.setExplode(encoding.explode());
-            }
-            if (encoding.allowReserved()) {
-                encodingObject.setAllowReserved(encoding.allowReserved());
-            }
-
-            if (encoding.headers() != null) {
-                getHeaders(encoding.headers()).ifPresent(encodingObject::headers);
-            }
-
-            mediaType.addEncoding(encoding.name(), encodingObject);
+        if (StringUtils.isNotBlank(encoding.contentType())) {
+            encodingObject.setContentType(encoding.contentType());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(encoding.style())) {
+            //TODO handle exception due to incorrect enum value
+            encodingObject.setStyle(Encoding.Style.valueOf(encoding.style().toUpperCase()));
+            isEmpty = false;
+        }
+        if (encoding.explode()) {
+            encodingObject.setExplode(encoding.explode());
+            isEmpty = false;
+        }
+        if (encoding.allowReserved()) {
+            encodingObject.setAllowReserved(encoding.allowReserved());
+            isEmpty = false;
         }
 
+        if (encoding.headers() != null) {
+            Optional<Map<String, Header>> optHeaders = getHeaders(encoding.headers());
+            if (optHeaders.isPresent()) {
+                encodingObject.headers(optHeaders.get());
+                isEmpty = false;
+            }
+        }
+
+        if (!isEmpty) {
+            mediaType.addEncoding(encoding.name(), encodingObject);
+        }
     }
 
     public static Type getSchemaType(org.eclipse.microprofile.openapi.annotations.media.Schema schema) {
