@@ -20,6 +20,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import com.ibm.ws.session.SessionManagerConfig;
+import com.ibm.ws.session.store.common.internal.LoggingUtil;
 import com.ibm.ws.session.utils.LRUHashMap;
 import com.ibm.wsspi.session.IStore;
 
@@ -80,13 +81,6 @@ public abstract class BackedHashMap extends LRUHashMap {
         if (_smc.getCheckRecentlyInvalidList()) {
             setRecentInvalTable();
         }
-    }
-
-    public Hashtable<String, Long> copyAndClearCachedLastAccessedTimes() {
-        @SuppressWarnings("unchecked")
-        Hashtable<String, Long> copy = (Hashtable<String, Long>) cachedLastAccessedTimes.clone();
-        cachedLastAccessedTimes.clear();
-        return copy;
     }
 
     public BackedSession getSessionRetrievalTrue(String id, int versionId, boolean isSessionAccess) {

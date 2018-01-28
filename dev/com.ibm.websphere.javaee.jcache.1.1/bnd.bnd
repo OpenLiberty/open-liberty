@@ -29,6 +29,9 @@ Export-Package: \
    javax.cache.processor;version="1.1", \
    javax.cache.spi;version="1.1"
 
+Import-Package: \
+   javax.enterprise.util;resolution:=optional
+
 Include-Resource: \
   @${repo; javax.cache:cache-api;1.1.0}
 

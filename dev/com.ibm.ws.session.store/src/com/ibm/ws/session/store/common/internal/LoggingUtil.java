@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.session.store.common;
+package com.ibm.ws.session.store.common.internal;
 
 import java.util.logging.Logger;
 
