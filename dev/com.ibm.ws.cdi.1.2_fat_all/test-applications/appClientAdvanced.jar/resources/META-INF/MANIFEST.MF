@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.8.4
-Created-By: pxa6480sr1-20150417_01 (SR1) (IBM Corporation)
-Main-Class: com.ibm.ws.cdi.client.fat.AdvancedAppClass
-Class-Path: 
-
