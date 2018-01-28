@@ -100,6 +100,12 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     boolean runtimeActivated;
 
+    /**
+     * Indicates whether the message endpoint should be activated. 
+     * False if autoStart is set to false until a resume command is issued
+     */
+    boolean shouldActivate;
+
     public MessageEndpointFactoryImpl() throws RemoteException {
         super();
         mdbRuntime = MDBRuntimeImpl.instance();
@@ -511,6 +517,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     @Override
     public void resume() throws PauseableComponentException {
         try {
+            shouldActivate = true;
             if (ivState == INACTIVE_STATE) {
                 activateEndpoint();
             } else if (ivState == ACTIVE_STATE) {
