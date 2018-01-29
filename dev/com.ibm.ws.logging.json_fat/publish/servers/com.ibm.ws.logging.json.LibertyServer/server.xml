@@ -15,7 +15,7 @@
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
-	   <feature>servlet-3.1</feature>
+	   <feature>jsp-2.2</feature>
     </featureManager>
     
     <httpEndpoint id="defaultHttpEndpoint" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
