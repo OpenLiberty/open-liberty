@@ -10,5 +10,5 @@ Subsystem-Name: JwtSso
   com.ibm.websphere.appserver.servlet-4.0
 -bundles= com.ibm.ws.security.jwtsso, \  
   com.ibm.ws.security.common
-kind=ga
-edition=core
+kind=noship
+edition=full
