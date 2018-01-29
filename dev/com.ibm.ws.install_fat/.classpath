@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
-	<classpathentry kind="lib" path="/ant_build/lib/junit.jar"/>
+        <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+        <classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.feature"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.install"/>
