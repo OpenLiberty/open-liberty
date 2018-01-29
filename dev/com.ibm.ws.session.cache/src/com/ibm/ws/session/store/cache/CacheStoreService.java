@@ -12,6 +12,8 @@ package com.ibm.ws.session.store.cache;
 
 import java.util.Map;
 
+import javax.cache.Caching;
+import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
 
@@ -28,6 +30,7 @@ import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.utils.SessionLoader;
+import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.session.IStore;
 
 /**
@@ -38,6 +41,9 @@ public class CacheStoreService implements SessionStoreService {
     private Map<String, Object> configurationProperties;
 
     private volatile boolean completedPassivation = true;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
+    protected Library library;
 
     @Reference
     protected SerializationService serializationService;
@@ -54,6 +60,14 @@ public class CacheStoreService implements SessionStoreService {
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = props;
+
+        // TODO temporary code validates that the provider can be obtained but does nothing else with it
+
+        CachingProvider provider;
+        if (library == null)
+            ; // use default JCache provider specified via bell
+        else
+            provider = Caching.getCachingProvider(library.getClassLoader()); // load JCache provider from configured library
     }
 
     @Override

@@ -11,6 +11,8 @@
     <include location="../fatTestPorts.xml"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
+
+    <httpSessionCache libraryRef="HazelcastLib"/>
     
     <!-- TODO: eventually all of this database configuration will be replaced with JCache configuration -->
     <httpSessionDatabase dataSourceRef="SessionDS"/>
@@ -22,8 +24,12 @@
 	</dataSource>
 	
 	<library id="DerbyLib">
-	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
 	</library>
+
+    <library id="HazelcastLib">
+        <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
+    </library>
 	
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
