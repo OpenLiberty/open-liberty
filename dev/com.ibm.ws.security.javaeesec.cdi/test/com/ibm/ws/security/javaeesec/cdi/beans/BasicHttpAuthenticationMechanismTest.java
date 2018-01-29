@@ -250,71 +250,8 @@ public class BasicHttpAuthenticationMechanismTest {
         assertMechanismChallenges();
     }
 
-    @Test
-    public void testValidateRequestFallbackToRegistry() throws Exception {
-        preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true);
-        setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS();
-    }
-
-    @Test
-    public void testValidateRequestFallbackToRegistryInvalidUser() throws Exception {
-        preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false);
-        setModulePropertiesProvider(realmName);
-        assertValidateRequestFAILURE();
-    }
-
-    @Test
     public void testValidateRequestAndUnprotectedResourceFallbackToRegistry() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true);
-        setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS();
-    }
-
-    @Test
-    public void testValidateRequestAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
-        preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false);
-        setModulePropertiesProvider(realmName);
-        assertValidateRequestFAILURE();
-    }
-
-    @Test
-    public void testValidateRequestAuthenticatePathFallbackToRegistry() throws Exception {
-        authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true);
-        setModulePropertiesProvider(realmName);
-
-        assertValidateRequestSUCCESS();
-    }
-
-    @Test
-    public void testValidateRequestAuthenticatePathFallbackToRegistryInvalidUser() throws Exception {
-        authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false);
-        setModulePropertiesProvider(realmName);
-
-        assertValidateRequestFAILURE();
-    }
-
-    @Test
-    public void testValidateRequestAuthenticatePathAndUnprotectedResourceFallbackToRegistry() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true);
-        setModulePropertiesProvider(realmName);
-
-        assertValidateRequestSUCCESS();
-    }
-
-    @Test
-    public void testValidateRequestAuthenticatePathAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false);
-        setModulePropertiesProvider(realmName);
-
         assertValidateRequestFAILURE();
     }
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,32 +19,25 @@
 # Message prefix block: CWWKS1900 - CWWKS1924
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: IdentityStore object was not found. Make sure that at least one IdentityStore is defined by annotation in the application.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=IdentityStore object was not found. It is required for the authentication and authorization.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Make sure that the application is properly annotated in order to enable at least one IdentityStore.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: The IdentityStore configured was not found. Make sure that the IdentityStore configured by the application is available.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=The IdentityStore required for authentication was not found.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Investigate any error messages from the IdentityStore.
 
-JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore object supports the user validation. Make sure that at least one IdentityStore supports the user validation.
-JAVAEESEC_ERROR_NO_VALIDATION.explanation=None of the IdentityStore object supports the user validation, therefore the security code does not authenticate the user.
-JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentityStore supports the user validation.
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore supports validating the user. Make sure that at least one IdentityStore supports user validation.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=There was no IdentityStore found to validate the user, therefore the user cannot be authenticated.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentityStore supports validating the user.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism object for the {0} module in the {1} application was not found. Make sure that the module contains a HttpAuthenticationMechanism object.
-JAVAEESEC_ERROR_NO_HAM.explanation=HttpAuthenticationMechanism object cannot be identified for authentication. It could be there is no object, or multiple objects which corresponds the specified condition. Make sure that there is one HttpAuthenticationMechanism in the application.
-JAVAEESEC_ERROR_NO_HAM.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism for the {0} module in the {1} application could not be created.
+JAVAEESEC_ERROR_NO_HAM.explanation=The HttpAuthenticationMechanism cannot be created.
+JAVAEESEC_ERROR_NO_HAM.useraction=Investigate any error messages from the HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: The ModuleProperties object for authenticating the {0} application cannot be found, likely because the application does not contain a HttpAuthenticationMechanism object. Make sure that one HttpAuthenticationMechanism object is defined for each module.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=The ModuleProperties object, which is required to authenticate the application, cannot be identified. This error typically results from a HttpAuthenticationMechanism object not being defined in the application.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Make sure that each module in the application contains a HttpAuthenticationMechanism object.
+JAVAEESEC_ERROR_NO_HAM_CONFIGURED=CWWKS1913W: The HttpAuthenticationMechanism object for the {0} module in the {1} application was not found. Make sure that the module contains a HttpAuthenticationMechanism object.
+JAVAEESEC_ERROR_NO_HAM_CONFIGURED.explanation=HttpAuthenticationMechanism object cannot be identified for authentication. It could be there is no object, or multiple objects which corresponds the specified condition. Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_HAM_CONFIGURED.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
 
-JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
-JAVAEESEC_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
-JAVAEESEC_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, please set it by using BasicAuthenticationMechanismDefinition annotation in the application.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: The deployment for the {0} module in the {1} application failed because multiple HttpAuthenticationMechanism implementation are found. The list of classes is {2}. Most likely, this is an application packaging issue. Make sure that there is only one HttpAuthenticationMechanism implementation in each module.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=The application deployment failed because more than one HttpAuthenticationMechanism implementation are found. This condition is not allowed.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation for each module in the application.
-
-JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: An error occurs when the program resolves the ''{0}'' configuration for the identity store. Ensure that the EL expression and the result are valid and ensure any referenced beans that are used in the expression are resolvable. The value defaults to ''{1}''.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The identity store configuration cannot be resolved to a valid value.
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: There was an error evaluating the Expression Language (EL) expression for the ''{0}'' attribute of the identity store annotation. Ensure that the EL expression and the result are valid and ensure any referenced beans that are used in the expression are resolvable. The default attribute value ''{1}'' will be used.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The identity store attribute Expression Language expression cannot be resolved to a valid value.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. If you use EL expressions, ensure that they are valid and that any referenced beans that are used in the expression are resolvable.
 
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm parameter provided for the hashAlgorithm, {0}, is in the incorrect format. The parameter received is {1}. The required format is name=value.
@@ -78,5 +71,3 @@ JAVAEESEC_WARNING_NO_PWD.useraction=If a password was expected, review the calle
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: The ''{1}'' query returned multiple results for the {0} caller on the DatabaseIdentityStore.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=Multiple results were returned for the requested caller. The caller query should only return a single result.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=Review the caller query and database contents. Change the caller query to return one result.
-
->>>>>>> Add messages for IdentityStore
