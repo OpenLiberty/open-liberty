@@ -17,10 +17,10 @@ src: \
 	fat/src,\
 	test-applications/appClientAdvanced.jar,\
 	test-applications/appClientSecurity.jar,\
-	test-applications/beanManagerLookupApp.war,\
-	test-applications/cdi12helloworldtest.war,\
-	test-applications/HelloAppClient.jar,\
-	test-applications/jndiLookup.war
+	test-applications/beanManagerLookupApp.war/src,\
+	test-applications/cdi12helloworldtest.war/src,\
+	test-applications/HelloAppClient.jar/src,\
+	test-applications/jndiLookup.war/src
 	
 tested.features:\
 	cdi-2.0,\

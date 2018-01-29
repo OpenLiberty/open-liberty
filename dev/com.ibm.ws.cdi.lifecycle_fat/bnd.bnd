@@ -15,7 +15,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/eventMetaData.war/src,\
 	test-applications/eventMetaData.war/src,\
 	test-applications/ObservesInitializedInJars.war/src,\
 	test-applications/ObservesInitializedInJarsManifestJar.jar/src,\
@@ -23,10 +22,9 @@ src: \
 	test-applications/ObservesInitializedInJarsWebInfJar.jar/src,\
 	test-applications/passivationBean.war/src,\
 	test-applications/scopeActivationDestructionSecondApp.war/src,\
-	test-applications/scopeActivationDestructionTests.ear/src,\
 	test-applications/scopeActivationDestructionTests.war/src,\
-        test-applications/transientReferenceInSessionPersist.war/src,\
-        test-applications/WebListener.war/src
+    test-applications/transientReferenceInSessionPersist.war/src,\
+    test-applications/WebListener.war/src
 	
 	
 javac.source: 1.7
