@@ -1,9 +1,0 @@
-<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" version="3.0" metadata-complete="false">
-  <enterprise-beans>
-    <session>
-      <ejb-name>EjbInWar2</ejb-name>
-      <ejb-class>com.ibm.ws.cdi.lib.MyEjb</ejb-class>	 
-      <session-type>Stateless</session-type>	
-  </session>
-  </enterprise-beans>
-</ejb-jar>

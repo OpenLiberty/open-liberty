@@ -1,9 +1,0 @@
-<taglib>
-  <tlib-version>1.0</tlib-version>
-  <jsp-version>2.0</jsp-version>
-  <short-name>tag2</short-name>
-  <tag>
-    <name>hitMe</name>
-    <tag-class>tagHandler.MethodInjectionTag</tag-class>
-  </tag>
-</taglib>
