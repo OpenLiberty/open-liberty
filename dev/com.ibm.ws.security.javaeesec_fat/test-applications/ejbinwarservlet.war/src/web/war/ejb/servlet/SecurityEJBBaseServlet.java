@@ -8,19 +8,34 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import web.ejb.jar.bean.SecurityEJBInterface;
 import web.ejb.jar.bean.SecurityEJBStatefulInterface;
+import web.jar.base.FlexibleBaseServlet;
 
 /**
  * Base security EJB servlet which the other EJB test servlets extend.
  */
 
 @SuppressWarnings("serial")
-public abstract class SecurityEJBBaseServlet extends HttpServlet {
+public abstract class SecurityEJBBaseServlet extends FlexibleBaseServlet {
+
+    public SecurityEJBBaseServlet() {
+        super("SecurityEJBBaseServlet.SimpleServlet");
+
+        mySteps.add(new WriteRequestBasicsStep());
+        mySteps.add(new WritePrincipalStep());
+        mySteps.add(new WriteRolesStepManagerEmployee());
+        mySteps.add(new WriteSecurityContextStepDeclare01Role());
+        mySteps.add(new WriteSubjectStep());
+        mySteps.add(new WritePublicCredentialsStep());
+        mySteps.add(new WriteRunAsSubjectStep());
+        mySteps.add(new WriteCookiesStep());
+        mySteps.add(new WriteJSR375Step());
+    }
+
 //Extend this to use the flexibleServlet.
     /**
      * Invoke EJB method
@@ -31,18 +46,6 @@ public abstract class SecurityEJBBaseServlet extends HttpServlet {
 
     protected interface Invoke {
         String go(SecurityEJBInterface securityEJBInterface);
-    }
-
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        if ("CUSTOM".equalsIgnoreCase(req.getMethod()))
-            doCustom(req, res);
-        else
-            super.service(req, res);
-    }
-
-    void doCustom(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        handleRequest(req, resp);
     }
 
     /**
@@ -107,18 +110,9 @@ public abstract class SecurityEJBBaseServlet extends HttpServlet {
      * @param sb Running StringBuffer
      * @param msg Message to write
      */
+    @Override
     protected void writeLine(StringBuffer sb, String msg) {
         sb.append(msg + "\n");
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        handleRequest(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        handleRequest(req, resp);
     }
 
 // New interfaces for refactoring to handle stateful beans - below

@@ -4,12 +4,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
+import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 import web.ejb.jar.bean.SecurityEJBInterface;
 
 /**
  * Security EJB servlet used for Pure Annotation tests - PureAnnA0xTest.
  */
+@BasicAuthenticationMechanismDefinition(realmName = "ejbRealm")
+@LdapIdentityStoreDefinition(
+                             url = "ldap://127.0.0.1:10389/",
+                             callerBaseDn = "",
+                             callerSearchBase = "ou=users,o=ibm,c=us",
+                             callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
+                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
+                             callerNameAttribute = "uid",
+                             groupNameAttribute = "cn",
+                             groupSearchBase = "ou=groups,o=ibm,c=us",
+                             groupSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
+                             groupSearchFilter = "(objectclass=groupofnames)",
+                             groupMemberAttribute = "member",
+                             bindDn = "uid=admin,ou=users,o=ibm,c=us",
+                             bindDnPassword = "s3cur1ty",
+                             priority = 100)
 @SuppressWarnings("serial")
 public class SecurityEJBServlet extends SecurityEJBBaseServlet {
 

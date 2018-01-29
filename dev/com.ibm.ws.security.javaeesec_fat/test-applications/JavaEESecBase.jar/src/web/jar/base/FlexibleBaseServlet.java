@@ -308,6 +308,23 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
 
     }
 
+    public class WriteRolesStepManagerEmployee implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+
+            writeLine(p.getBuffer(), "isUserInRole(Manager): "
+                                     + p.getRequest().isUserInRole("Manager"));
+            writeLine(p.getBuffer(), "isUserInRole(Manager): " + p.getRequest().isUserInRole("Manager"));
+            String role = p.getRequest().getParameter("role");
+            if (role == null) {
+                writeLine(p.getBuffer(), "You can customize the isUserInRole call with the follow paramter: ?role=name");
+            }
+            writeLine(p.getBuffer(), "isUserInRole(" + role + "): " + p.getRequest().isUserInRole(role));
+        }
+
+    }
+
     public class WriteSecurityContextStep implements BaseServletStep {
 
         @Override
@@ -316,6 +333,54 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
             writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_basic): "
                                      + securityContext.isCallerInRole("javaeesec_basic"));
             writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_form): " + securityContext.isCallerInRole("javaeesec_form"));
+            String role = p.getRequest().getParameter("role");
+            if (role != null) {
+                writeLine(p.getBuffer(), "securityContext.isCallerInRole(" + role + "): " + securityContext.isCallerInRole(role));
+            }
+
+            // look for principals by type if type passed in
+            String type = p.getRequest().getParameter("type");
+            if (type != null) {
+                if (type.equals("Principal")) {
+                    Set<Principal> principals = securityContext.getPrincipalsByType(Principal.class);
+                    writeLine(p.getBuffer(), "securityContext.GetPrincipalsByType number of principals: " + principals.size());
+                }
+            }
+
+            // check to see if user has access to a resource
+            String resource = p.getRequest().getParameter("resource");
+            String methods = p.getRequest().getParameter("methods");
+            if (resource != null && methods != null) {
+                String[] servletMethods = methods.split(",");
+                if (servletMethods.length == 1) {
+                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "): "
+                                             + securityContext.hasAccessToWebResource(resource, servletMethods[0]));
+                }
+                if (servletMethods.length == 2) {
+                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "," + servletMethods[1] + "): "
+                                             + securityContext.hasAccessToWebResource(resource, servletMethods[0], servletMethods[1]));
+                }
+            }
+
+            writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): " + securityContext.getCallerPrincipal());
+
+            if (securityContext.getCallerPrincipal() != null) {
+                writeLine(p.getBuffer(), "securityContext.getCallerPrincipal().getName(): "
+                                         + securityContext.getCallerPrincipal().getName());
+            }
+
+        }
+
+    }
+
+    public class WriteSecurityContextStepDeclare01Role implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+            writeLine(p.getBuffer(), "**************WriteSecurityContextStep****************");
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(DeclaredRole01): "
+                                     + securityContext.isCallerInRole("DeclaredRole01"));
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(DeclaredRole01): " + securityContext.isCallerInRole("DeclaredRole01"));
             String role = p.getRequest().getParameter("role");
             if (role != null) {
                 writeLine(p.getBuffer(), "securityContext.isCallerInRole(" + role + "): " + securityContext.isCallerInRole(role));
@@ -842,7 +907,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
      * @param sb Running StringBuffer
      * @param msg Message to write
      */
-    void writeLine(StringBuffer sb, String msg) {
+    protected void writeLine(StringBuffer sb, String msg) {
         sb.append(msg + "\n");
         log.info(msg);
     }

@@ -8,6 +8,8 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.security.enterprise.SecurityContext;
 
 /**
  * Bean implementation class for Enterprise Bean
@@ -16,6 +18,10 @@ import javax.ejb.Stateless;
 @Stateless
 @RolesAllowed({ "Manager", "Employee" })
 public class SecurityEJBA03Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
+
+    // get the Security Context
+    @Inject
+    private SecurityContext securityContext;
 
     private static final Class<?> c = SecurityEJBA03Bean.class;
     protected Logger logger = Logger.getLogger(c.getCanonicalName());
@@ -118,8 +124,10 @@ public class SecurityEJBA03Bean extends SecurityEJBBeanBase implements SecurityE
 
     @Override
     public String declareRoles01() {
+
         String result1 = authenticate("declareRoles01");
-        boolean isDeclaredMgr = context.isCallerInRole("DeclaredRole01");
+        //TODO only when using JSR 375 Change to use securityContext
+        boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);
         result2.append(result1);

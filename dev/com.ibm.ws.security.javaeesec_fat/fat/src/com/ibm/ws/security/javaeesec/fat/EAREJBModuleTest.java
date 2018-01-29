@@ -14,11 +14,12 @@ package com.ibm.ws.security.javaeesec.fat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,7 +50,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 public class EAREJBModuleTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
-    protected static Class<?> logClass = MultipleModuleTest.class;
+    protected static Class<?> logClass = EAREJBModuleTest.class;
     protected static String urlBase;
     protected static String TEMP_DIR = "test_temp";
     protected static String EJB_BEAN_JAR_NAME = "SecurityEJBinWAR.jar";
@@ -58,27 +59,6 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
     protected static String EJB_EAR_NAME = "securityejbinwar.ear";
     protected static String EJB_APP_NAME = "securityejbinwar.ear";
     protected static String XML_NAME = "ejbserver.xml";
-
-    protected static String REALM1_USER = "realm1user";
-    protected static String REALM1_PASSWORD = "s3cur1ty";
-    protected static String REALM2_USER = "realm2user";
-    protected static String REALM2_PASSWORD = "s3cur1ty";
-    protected static String COMMON_USER1 = "commonuser1";
-    protected static String COMMON_USER2 = "commonuser2";
-    protected static String IS1_REALM_NAME = "127.0.0.1:10389";
-    protected static String IS2_REALM_NAME = "localhost:10389";
-    protected static String REALM1_REALM_NAME = "Realm1";
-    protected static String REALM2_REALM_NAME = "Realm2";
-    protected static String COMMON_REALM_NAME = "CommonIdentityStore";
-
-    protected static String IS1_GROUP_REALM_NAME = "group:127.0.0.1:10389/";
-    protected static String IS2_GROUP_REALM_NAME = "group:localhost:10389/";
-
-    protected static String IS1_GROUPS = "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/grantedgroup, group:127.0.0.1:10389/group1";
-    protected static String IS2_GROUPS = "group:localhost:10389/grantedgroup2, group:localhost:10389/anothergroup1, group:localhost:10389/grantedgroup";
-    protected static String REALM1_GROUPS = "group:Realm1/grantedgroup2, group:Realm1/grantedgroup, group:Realm1/realm1group1, group:Realm1/realm1group2";
-    protected static String REALM2_GROUPS = "group:Realm2/grantedgroup2, group:Realm2/realm2group2, group:Realm2/realm2group1, group:Realm2/grantedgroup";
-    protected static String COMMONUSER_GROUPS = "group:CommonIdentityStore/grantedgroup2, group:CommonIdentityStore/commonGroup2, group:CommonIdentityStore/commonGroup1, group:CommonIdentityStore/grantedgroup";
 
     protected DefaultHttpClient httpclient;
 
@@ -93,9 +73,23 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
+        Log.info(logClass, "setUp()", "-----setting up test");
         ldapServer = new LocalLdapServer();
         ldapServer.start();
+
+        Log.info(logClass, "setUp()", "-----Creating EAR app.");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.servlet");
+
+        // add the servlet war inside the ear
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME);
+
+        //add ear to the server
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
+        Log.info(logClass, "setUp()", "-----EAR app created");
+
+        startServer(XML_NAME, EJB_APP_NAME);
     }
 
     @AfterClass
@@ -117,53 +111,75 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
         httpclient = new DefaultHttpClient(httpParams);
     }
 
-    @After
-    public void cleanupConnection() throws Exception {
-        httpclient.getConnectionManager().shutdown();
-        myServer.stopServer();
-    }
-
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
     }
 
-    protected void startServer(String config, String appName) throws Exception {
+    protected static void startServer(String config, String appName) throws Exception {
         myServer.setServerConfigurationFile(config);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(appName);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
+    String getServletURL() {
+        return "SimpleServlet";
+    }
+
     /**
      * Verify the following:
      * <OL>
-     * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
-     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * <LI> An ear file which contains one war and one jar file. It uses EJB with the purpose of testing Basic Authentication with LDAP
+     * Identity Store.
      * </OL>
-     * <P> Expected Results:
+     * <P> Expected Results: 200 OK user is in role for manager.
      * <OL>
-     * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
-     * the one which are bundled with each module is only visible within the module.
+     * <LI>
      * </OL>
      */
     @Mode(TestMode.LITE)
     @Test
-    public void testMultipleModuleWars() throws Exception {
+    public void testisUserInRole() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
-        // create ejbinwarservlet.war,
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.ejb.jar.bean", "web.war.ejb.servlet");
+        String queryString = "/securityejbinwar/" + getServletURL() + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
+                                                          LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, "isUserInRole(Manager): true");
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
 
-        // add the servlet war inside the ear
-        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME);
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains one war and one jar file. It uses EJB with the purpose of testing Basic Authentication with LDAP
+     * Identity Store.
+     * </OL>
+     * <P> Expected Results: 200 OK caller is in role for manager.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testisCallerInRole() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
-        //add ear to the server
-        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
-
-        startServer(XML_NAME, EJB_APP_NAME);
-//
-        //myServer.removeInstalledAppForValidation(EJB_APP_NAME);
+        String queryString = "/securityejbinwar/" + getServletURL() + "?testInstance=ejb03&testMethod=declareRoles01";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER2,
+                                                          LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER2, "securityContext.isCallerInRole(DeclaredRole01): true");
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
