@@ -395,15 +395,12 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "Querying security service for alias=[" + aliasFinal + "]");
                 }
                 props = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
-
                     @Override
                     public Properties run() throws Exception {
                         return jsseHelper.getProperties(aliasFinal, connectionInfo, null);
                     }
                 });
-            } catch (
-
-            Exception e) {
+            } catch (Exception e) {
                 // no FFDC required
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception getting SSL properties from alias: " + this.alias);
@@ -582,7 +579,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
             return;
         }
 
-        String configuredHttpVersionSetting = CHFWBundle.servletConfiguredHttpVersionSetting();
+        String configuredHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Configured Http Version Setting, " +
@@ -636,7 +633,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                 String alpnProtocols = channelProps.getProperty(SSLChannelConstants.PROPNAME_ALPN_PROTOCOLS);
                 if (alpnProtocols != null && SSLChannelConstants.OPTIONAL_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
 
-                    if ("h2".equalsIgnoreCase(alpnProtocols)) {
+                    if (SSLChannelConstants.H2_ALPN_PROTOCOL.equalsIgnoreCase(alpnProtocols)) {
                         this.useH2Protocol = true;
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

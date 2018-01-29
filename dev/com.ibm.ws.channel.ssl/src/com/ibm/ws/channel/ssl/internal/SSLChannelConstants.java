@@ -33,8 +33,18 @@ public interface SSLChannelConstants {
     long DEFAULT_HANDSHAKE_FAILURE_STOP_LOGGING = 100;
     /** PI52696 */
     public static final String TIMEOUT_VALUE_IN_SSL_CLOSING_HANDSHAKE = "timeoutValueInSSLClosingHandshake";
-    public static final String PROPNAME_ALPN_PROTOCOLS = "alpnProtocols";
-    public static final String OPTIONAL_20 = "2.0_Optional";
-    public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
+
+    /** This setting is configured by enabling the Servlet 3.0 feature. The channel will never be enabled for HTTP/2.0. */
     public static final String NEVER_20 = "2.0_Never";
+    /**
+     * This setting is configured by enabling the Servlet 3.1 feature. Looks for the 'insecureUpgradeProtocol'
+     * httpOptions to determine if the channel will enable HTTP/2.0
+     */
+    public static final String OPTIONAL_20 = "2.0_Optional";
+    /** This setting is configured by enabling the Servlet 4.0 feature. The channel will always be enabled for HTTP/2.0". */
+    public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
+
+    /** If value is set to 'h2' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2.0 */
+    public static final String PROPNAME_ALPN_PROTOCOLS = "alpnProtocols";
+    public static final String H2_ALPN_PROTOCOL = "h2";
 }

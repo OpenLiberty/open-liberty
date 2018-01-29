@@ -101,6 +101,9 @@ public class CHFWBundle implements ServerQuiesceListener {
     private static boolean serverCompletelyStarted = false;
     private static Object syncStarted = new Object() {}; // use brackets/inner class to make lock appear in dumps using class name
 
+    private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
+    private static volatile String httpVersionSetting = null;
+
     /**
      * Constructor.
      */
@@ -475,10 +478,8 @@ public class CHFWBundle implements ServerQuiesceListener {
         // do nothing: need the ref for activation of service
     }
 
-    private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
-    private static volatile String httpVersionSetting = null;
-
-    @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.MANDATORY,
+               policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected synchronized void setBehavior(ServiceReference<HttpProtocolBehavior> reference) {
 
         protocolBehaviorRef = reference;
@@ -492,7 +493,7 @@ public class CHFWBundle implements ServerQuiesceListener {
         }
     }
 
-    public static String servletConfiguredHttpVersionSetting() {
+    public static String getServletConfiguredHttpVersionSetting() {
         return httpVersionSetting;
     }
 

@@ -392,8 +392,7 @@ public class HttpConfigConstants {
     /** This setting is configured by enabling the Servlet 4.0 feature. The channel will always be enabled for HTTP/2.0". */
     public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
 
-    public static final String HTTP2_UPGRADE_TOKEN = "h2c";
-
+    /** If value is set to 'h2c' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2.0 */
     public static final String PROPNAME_INSECURE_UPGRADE_PROTOCOL = "insecureUpgradeProtocol";
-
+    public static final String HTTP2_UPGRADE_TOKEN = "h2c";
 }

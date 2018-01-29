@@ -168,7 +168,7 @@ public class HttpChannelConfig {
 
         // Look at the CHFWBundle to see if the enabled servlet feature enabled
         // Http 2.0
-        String configuredHttpVersionSetting = CHFWBundle.servletConfiguredHttpVersionSetting();
+        String configuredHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.debug(tc, "Configured Http Version Setting, " + ((configuredHttpVersionSetting == null) ? HttpConfigConstants.NEVER_20 : configuredHttpVersionSetting));
         }
@@ -1259,7 +1259,7 @@ public class HttpChannelConfig {
 
     private void parseInsecureUpgradeProtocol(Map<?, ?> props) {
         String insecureUpgradeProtocolProperty = (String) props.get(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL);
-        String servletHttpVersionSetting = CHFWBundle.servletConfiguredHttpVersionSetting();
+        String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
 
         //Use this property only when the CHFWBundle has been notified of a servlet feature
         //configuring "2.0_Optional" on the HttpProtocolBehavior
