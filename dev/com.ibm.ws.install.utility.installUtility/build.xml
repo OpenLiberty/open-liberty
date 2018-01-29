@@ -1,0 +1,18 @@
+<project name="com.ibm.ws.install.utility.installUtility" default="build">
+	<import file="../ant_build/public_imports/standard_imports.xml"/>
+	<!-- Disable trace/ffdc injection as this code is used outside of Liberty -->
+	<property name="no.trace.instrumentation" value="true"/>
+	<property name="publish.tools" value="installUtility=ws-installUtility.jar"/>
+
+    <target name="package" unless="manifest.exists" depends="compile, createCopyright, generateProperties, packageWithManifest, processQualifier">
+        <mkdir dir="${lib.dir}" />
+
+        <echo message="ws-installUtility.jar"/>
+	    <bnd eclipse="false"
+	     failok="false"
+	     exceptions="true"
+	     classpath="${classes.dir}"
+	     output="${lib.dir}/ws-installUtility.jar"
+	     files="bnd.bnd.gradle" />
+    </target>
+</project>
