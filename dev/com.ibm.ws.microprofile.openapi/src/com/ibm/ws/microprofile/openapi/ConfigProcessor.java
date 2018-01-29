@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -117,10 +117,10 @@ public class ConfigProcessor {
 
     private void retrieveServers() {
 
-        //Global servers
+        // Global servers
         servers = getConfigPropAsSet(OASConfig.SERVERS);
 
-        //Path and operation servers
+        // Servers at path and operation level
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith(OASConfig.SERVERS_PATH_PREFIX)) {
                 Set<String> servers = getConfigPropAsSet(propertyName);

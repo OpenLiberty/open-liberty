@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -216,7 +216,7 @@ public class ApplicationProcessor {
         if (servers != null && servers.size() > 0) {
             List<Server> configServers = new ArrayList<Server>();
             for (String server : servers) {
-                configServers.add(new ServerImpl().url(server));
+                configServers.add(new ServerImpl().url(server.trim()));
             }
 
             if (configServers.size() > 0) {
@@ -231,30 +231,37 @@ public class ApplicationProcessor {
         Map<String, Set<String>> pathServers = configProcessor.getPathsServers();
         Map<String, Set<String>> operationServers = configProcessor.getOperationsServers();
 
-        // if no server for path/operation was specified then quickly exit
+        // if no servers for paths/operations were specified then quickly exit
         if ((pathServers == null || pathServers.isEmpty()) && (operationServers == null || operationServers.isEmpty())) {
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.debug(tc, "Servers for paths/operations were not specified, so return");
+            }
             return;
         }
 
         Paths paths = openapi.getPaths();
         if (paths != null && !paths.isEmpty()) {
             for (String path : paths.keySet()) {
+
+                // Set the alternative servers (if any) on path
                 if (pathServers != null && pathServers.containsKey(path)) {
                     List<Server> configPathServers = new ArrayList<Server>();
                     for (String server : pathServers.get(path)) {
-                        configPathServers.add(new ServerImpl().url(server));
+                        configPathServers.add(new ServerImpl().url(server.trim()));
                     }
                     if (!configPathServers.isEmpty()) {
                         paths.get(path).setServers(configPathServers);
                     }
                 }
+
+                // Set the alternative servers (if any) on operation
                 if (operationServers != null) {
                     for (Operation operation : paths.get(path).readOperations()) {
                         String operationId = operation.getOperationId();
                         if (operationId != null && operationServers.containsKey(operationId)) {
                             List<Server> configOperationServers = new ArrayList<Server>();
                             for (String server : operationServers.get(operationId)) {
-                                configOperationServers.add(new ServerImpl().url(server));
+                                configOperationServers.add(new ServerImpl().url(server.trim()));
                             }
                             if (!configOperationServers.isEmpty()) {
                                 operation.setServers(configOperationServers);
