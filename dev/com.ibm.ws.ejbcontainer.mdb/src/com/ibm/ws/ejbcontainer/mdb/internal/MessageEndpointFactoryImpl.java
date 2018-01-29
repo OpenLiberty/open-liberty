@@ -21,7 +21,6 @@ import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.transaction.xa.XAResource;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 
@@ -75,8 +74,6 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     private Object activationSpec;
 
-    private volatile String name = null;
-
     private final MDBRuntimeImpl mdbRuntime;
     private String activationSvcId;
 
@@ -124,13 +121,8 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         activationSvcId = bmd.ivActivationSpecJndiName;
 
         //Register this instance as a PauseableComponent
-
-        name = bmd.getJavaEELogicalName();
-
         BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
         registration = bundleContext.registerService(PauseableComponent.class, this, null);
-        if (name == null)
-            name = "messageEndpoint-" + registration.getReference().getProperty(Constants.SERVICE_ID);
 
     }
 
@@ -472,7 +464,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     @Override
     public String getName() {
-        return name;
+        return getActivationName();
     }
 
     /*
@@ -533,9 +525,4 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         }
 
     }
-
-    public String getMessageEndpointTarget() {
-        return getName();
-    }
-
 }
