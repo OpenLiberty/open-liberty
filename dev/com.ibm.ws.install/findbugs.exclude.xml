@@ -1,0 +1,144 @@
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+   <!-- match generated nls classes: return mutable type -->
+   <Match> 
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+   </Match>
+    
+   <!--  All classes in com.ibm.ws.install.kernel can be assumed to have privilege (at least for now....) -->
+   <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED"/>
+   </Match>
+   <!-- Follow com.kernel.feature -->
+   <Match>
+     <Bug pattern="DM_DEFAULT_ENCODING"/>
+   </Match> 
+   
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Local name="e"/>
+   </Match>
+   
+   <!-- 
+   Command line tools, System.out/System.err are OK: FFDC not always present (no logs dir!) 
+   Please be diligent about checking what is sent to system.out and system.err!
+   -->
+   <Match>
+  	 <Bug pattern="SYSTEM_OUT_USED, SYSTEM_ERR_USED, THROWABLE_PRINT_STACK_TRACE_CALLED, NP_ALWAYS_NULL, NP_ALWAYS_NULL_EXCEPTION, NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS"/>
+  	 <Or>
+       <Class name="com.ibm.ws.cik.launcher.CIKLauncher"/>
+   	   <Class name="com.ibm.ws.cik.launcher.CIKLauncher$1"/>
+   	   <Class name="com.ibm.ws.cik.launcher.CIKLauncher$2"/>
+   	   <Class name="com.ibm.ws.cik.launcher.CIKLauncher$3"/>
+   	   <Class name="com.ibm.ws.cik.launcher.CIKLauncher$4"/>
+   	   <Class name="com.ibm.ws.install.internal.cmdline.ExeAction"/>
+   	   <Class name="com.ibm.ws.install.internal.cmdline.InstallExecutor"/>
+	   <Class name="com.ibm.ws.install.internal.InstallLogUtils$InstallKernelConsoleHandler"/>
+   	   <Class name="com.ibm.ws.install.internal.InstallLogUtils$InstallKernelErrorConsoleHandler"/>
+  	 </Or>
+   </Match>   
+   
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.install.internal.cmdline.InstallExecutor"/>
+     <Local name="iae"/>
+   </Match>
+      
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.install.internal.cmdline.ExeHelpAction"/>
+     <Local name="iae"/>
+   </Match>
+   
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.install.internal.InstallUtils"/>
+     <Local name="fileMD5"/>
+   </Match>
+   
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.install.internal.Director"/>
+     <Local name="pI"/>
+   </Match>
+   
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.install.internal.ESAAdaptor"/>
+     <Local name="attr"/>
+   </Match>
+
+   <Match>
+     <Class name="com.ibm.ws.install.internal.cmdline.ExeHelpAction"/>
+     <Method name="getHelpPart"/>
+     <Bug pattern="MESSAGE_FORMAT_CALLED_WITH_NO_INSERTS"/>
+   </Match>
+   
+   	<Match>
+   	  <Bug pattern="THREAD_START_CALLED"/>
+   	  <Or>
+      	<Class name="com.ibm.ws.install.internal.cmdline.ExeInstallAction"/>
+      	<Class name="com.ibm.ws.install.internal.adaptor.FixAdaptor"/>
+      	<Class name="com.ibm.ws.install.internal.adaptor.ServerPackageJarAdaptor"/>
+      	<Class name="com.ibm.ws.install.internal.platform.PlatformUtils"/>
+      </Or>
+    </Match>
+    
+    <Match>
+   	  <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ, ES_COMPARING_PARAMETER_STRING_WITH_EQ"/>
+   	  <Or>
+      	<Class name="com.ibm.ws.install.internal.platform.PPPlatformUtils$PPLinux"/>
+      	<Class name="com.ibm.ws.install.internal.platform.PPPlatformUtils$PPZOS"/>
+      	<Class name="com.ibm.ws.install.internal.platform.PlatformUtils"/>
+      </Or>
+    </Match>
+
+    <Match>
+   	  <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME"/>
+   	  <Or>
+      	<Class name="com.ibm.ws.install.internal.platform.PPPlatformUtils$PPLinux"/>
+      	<Class name="com.ibm.ws.install.internal.platform.PPPlatformUtils$PPZOS"/>
+      </Or>
+    </Match>
+    
+    <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+      <Class name="com.ibm.ws.install.internal.ESAAsset"/>
+      <Local name="entry"/>
+    </Match>
+    
+    <Match>
+      <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+      	<Class name="com.ibm.ws.install.repository.download.RepositoryDownloadUtil"/>
+    </Match>
+    
+    <!-- Already check if file exists so return code is not relevant -->
+  	<Match>
+  	  <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  	  <Class name="com.ibm.ws.install.internal.InstallUtils"/>
+  	  <Or>
+      	<Method name="copyFile"/>
+      	<Method name="deleteDirectory"/>
+      </Or>
+   </Match>
+   
+   <Match>
+     <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+     <Class name="com.ibm.ws.install.internal.InstallUtils"/>
+     <Method name="download"/>
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.ws.install.internal.Director"/>
+     <Method name="downloadAssets"/>
+     <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+   </Match>
+</FindBugsFilter>
