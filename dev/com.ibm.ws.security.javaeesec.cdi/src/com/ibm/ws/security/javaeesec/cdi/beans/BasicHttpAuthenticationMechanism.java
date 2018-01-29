@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
+import java.util.Map;
 import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,8 +32,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
@@ -59,6 +61,11 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                                                 HttpServletResponse response,
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+
+        if (isJaspicSessionForMechanismsEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
+            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
+            return AuthenticationStatus.SUCCESS;
+        }
 
         setRealmName();
         Subject clientSubject = httpMessageContext.getClientSubject();
@@ -93,7 +100,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         if (mpp != null) {
             Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
             if (props != null) {
-                realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+                realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
             }
         }
         if (realmName == null || realmName.trim().isEmpty()) {
@@ -125,7 +132,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return AuthenticationStatus.SEND_CONTINUE;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authorizationHeader, Subject clientSubject,
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
@@ -138,7 +145,11 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 BasicAuthenticationCredential basicAuthCredential = new BasicAuthenticationCredential(encodedHeader);
                 status = utils.validateUserAndPassword(getCDI(), realmName, clientSubject, basicAuthCredential, httpMessageContext);
                 if (status == AuthenticationStatus.SUCCESS) {
-                    httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
+                    Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
+                    messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+                    if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
+                        messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+                    }
                     rspStatus = HttpServletResponse.SC_OK;
                 } else if (status == AuthenticationStatus.NOT_DONE) {
                     // set SC_OK, since if the target is not protected, it'll be processed.
@@ -149,6 +160,11 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         }
         httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
+    }
+
+    private boolean isJaspicSessionForMechanismsEnabled(HttpMessageContext httpMessageContext) {
+        WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
+        return webAppSecurityConfig.isJaspicSessionForMechanismsEnabled();
     }
 
     @Sensitive

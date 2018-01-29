@@ -38,6 +38,7 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     private static final TraceComponent tc = Tr.register(WebProviderAuthenticatorProxy.class);
+    private static final String WEB_APP_SECURITY_CONFIG = "com.ibm.ws.webcontainer.security.WebAppSecurityConfig";
 
     AuthenticationResult JASPI_CONT = new AuthenticationResult(AuthResult.CONTINUE, "JASPI said continue...");
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -87,8 +88,11 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         if (webAuthenticatorRef != null) {
             WebAuthenticator jaspiAuthenticator = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
             if (jaspiAuthenticator != null) {
+                HttpServletRequest request = webRequest.getHttpServletRequest();
+                request.setAttribute(WEB_APP_SECURITY_CONFIG, webAppSecurityConfig);
+
                 if (props == null) { // Not processing form login creds
-                    boolean isNewAuth = ((JaspiService)jaspiAuthenticator).isProcessingNewAuthentication(webRequest.getHttpServletRequest());
+                    boolean isNewAuth = ((JaspiService) jaspiAuthenticator).isProcessingNewAuthentication(webRequest.getHttpServletRequest());
                     // first see if we have an ltpa token (from form login)
                     if (!isNewAuth) {
                         authResult = handleSSO(webRequest, null);
@@ -96,7 +100,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     if (isNewAuth || authResult.getStatus() == AuthResult.CONTINUE) { // no ltpatoken
                         // JASPI session requires the subject from the previous invocation
                         // to be passed in to the JASPI provider on subsequent calls
-                        authResult = handleSSO(webRequest, "jaspicSession");
+                        authResult = handleSSO(webRequest, webAppSecurityConfig.getJaspicSessionCookieName());
                         if (!isNewAuth && authResult.getStatus() == AuthResult.SUCCESS) {
                             Map<String, Object> requestProps = new HashMap<String, Object>();
                             requestProps.put("javax.servlet.http.registerSession.subject", authResult.getSubject());
@@ -140,6 +144,9 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                         authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
                     }
                 }
+
+                request.removeAttribute(WEB_APP_SECURITY_CONFIG);
+
                 //
                 // After a successful JASPI login set or clear the ltpa token cookie
                 // and the JASPI session cookie.
@@ -151,7 +158,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                         registerSession = Boolean.valueOf((String) reqProps.get("javax.servlet.http.registerSession")).booleanValue();
                     }
                     if (registerSession) {
-                        SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, "jaspicSession");
+                        SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, webAppSecurityConfig.getJaspicSessionCookieName());
                         ssoCh.addSSOCookiesToResponse(authResult.getSubject(),
                                                       webRequest.getHttpServletRequest(),
                                                       webRequest.getHttpServletResponse());

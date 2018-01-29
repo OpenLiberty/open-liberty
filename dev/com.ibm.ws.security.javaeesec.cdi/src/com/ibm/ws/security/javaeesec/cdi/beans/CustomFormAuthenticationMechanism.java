@@ -10,9 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationException;
@@ -29,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
 @Default
 @ApplicationScoped
@@ -36,6 +38,7 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 public class CustomFormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(CustomFormAuthenticationMechanism.class);
+
     private final Utils utils;
 
     public CustomFormAuthenticationMechanism() {
@@ -53,8 +56,12 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
+        if (isJaspicSessionForMechanismsEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
+            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
+            return AuthenticationStatus.SUCCESS;
+        }
+
         Subject clientSubject = httpMessageContext.getClientSubject();
-        @SuppressWarnings("unchecked")
         AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "AuthenticationParameters : " + authParams);
@@ -86,6 +93,11 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
+    private boolean isJaspicSessionForMechanismsEnabled(HttpMessageContext httpMessageContext) {
+        WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
+        return webAppSecurityConfig.isJaspicSessionForMechanismsEnabled();
+    }
+
     @Override
     public AuthenticationStatus secureResponse(HttpServletRequest request,
                                                HttpServletResponse response,
@@ -100,11 +112,17 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
 
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private AuthenticationStatus handleFormLogin(@Sensitive Credential credential, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = utils.handleAuthenticate(getCDI(), JavaEESecConstants.DEFAULT_REALM, credential, clientSubject, httpMessageContext);
         int rspStatus;
         if (status == AuthenticationStatus.SUCCESS) {
+            Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
+            messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+            if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
+                messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+            }
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.

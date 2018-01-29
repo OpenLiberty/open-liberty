@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
 @Default
 @ApplicationScoped
@@ -38,11 +39,13 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
+
     private final Utils utils;
 
     public FormAuthenticationMechanism() {
         utils = new Utils();
     }
+
     // this is for unit test.
     protected FormAuthenticationMechanism(Utils utils) {
         this.utils = utils;
@@ -54,8 +57,12 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
+        if (isJaspicSessionForMechanismsEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
+            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
+            return AuthenticationStatus.SUCCESS;
+        }
+
         Subject clientSubject = httpMessageContext.getClientSubject();
-        @SuppressWarnings("unchecked")
         AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
         Credential cred = null;
         if (tc.isDebugEnabled()) {
@@ -76,7 +83,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
             String password = null;
             // in order to preserve the post parameter, unless the target url is j_security_check, do not read
             // j_username and j_password.
-            String uri = uri = req.getRequestURI();
+            String uri = req.getRequestURI();
             if (uri.contains("/j_security_check")) {
                 username = req.getParameter("j_username");
                 password = req.getParameter("j_password");
@@ -110,6 +117,11 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         return status;
     }
 
+    private boolean isJaspicSessionForMechanismsEnabled(HttpMessageContext httpMessageContext) {
+        WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
+        return webAppSecurityConfig.isJaspicSessionForMechanismsEnabled();
+    }
+
     @Override
     public AuthenticationStatus secureResponse(HttpServletRequest request,
                                                HttpServletResponse response,
@@ -128,6 +140,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
      * note that both username and password should not be null.
      */
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private AuthenticationStatus handleFormLogin(String username, @Sensitive String password, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
@@ -135,7 +148,11 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
         status = utils.validateUserAndPassword(getCDI(), JavaEESecConstants.DEFAULT_REALM, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
-            httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
+            Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
+            messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+            if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
+                messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+            }
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
