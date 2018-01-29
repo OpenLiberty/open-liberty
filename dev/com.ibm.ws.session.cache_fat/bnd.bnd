@@ -17,6 +17,8 @@ src: \
 
 fat.project: true
 
+fat.minimum.java.level: 1.8
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	commons-logging:commons-logging;version=1.1.3
