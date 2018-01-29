@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.ws.rs.ApplicationPath;
@@ -35,6 +36,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
@@ -297,7 +299,7 @@ public class Reader {
             AnnotationsUtils.getTags(apiTags, false).ifPresent(tags -> tags.stream().map(t -> t.getName()).forEach(t -> classTags.add(t)));
         }
         if (tagsAnnotation != null && tagsAnnotation.refs() != null) {
-            classTags.addAll(Arrays.asList(tagsAnnotation.refs()));
+            classTags.addAll(Stream.of(tagsAnnotation.refs()).filter(StringUtils::isNotBlank).collect(Collectors.toList()));
         }
 
         // class external docs
@@ -807,7 +809,7 @@ public class Reader {
         AnnotationsUtils.getExternalDocumentation(apiExternalDocumentation).ifPresent(operation::setExternalDocs);
 
         // method tags
-        if (apiTags != null || tagsAnnotation != null) {
+        if ((apiTags != null && !apiTags.isEmpty()) || (tagsAnnotation != null && ArrayUtils.isNotEmpty(tagsAnnotation.refs()))) {
             Stream<String> operationTags = Stream.empty();
             if (apiTags != null) {
                 operationTags = apiTags.stream().filter(t -> StringUtils.isNotBlank(t.name()) || StringUtils.isNotBlank(t.ref())).map(t -> {
@@ -820,8 +822,8 @@ public class Reader {
                 AnnotationsUtils.getTags(apiTags.toArray(new org.eclipse.microprofile.openapi.annotations.tags.Tag[apiTags.size()]),
                                          true).ifPresent(tags -> openApiTags.addAll(tags));
             }
-            if (tagsAnnotation != null && tagsAnnotation.refs() != null) {
-                operationTags = Stream.concat(operationTags, Stream.of(tagsAnnotation.refs()));
+            if (tagsAnnotation != null && ArrayUtils.isNotEmpty(tagsAnnotation.refs())) {
+                operationTags = Stream.concat(operationTags, Stream.of(tagsAnnotation.refs()).filter(StringUtils::isNotBlank));
             }
             operationTags.distinct().forEach(operation::addTag);
         }
