@@ -1,0 +1,31 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/resources/MapBasedInstallKernelMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1650 to 1699 are reserved for the asset manager.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: Directorul de instalare profil Liberty nu a fost setat.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=Sistemul nu poate g\u0103si directorul de instalare profil Liberty deoarece directorul nu a fost specificat.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: Urm\u0103torul director de instalare profil Liberty nu exist\u0103: {0}
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=Directorul de instalare profil Liberty specificat nu exist\u0103.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: {0} nu este un director valid.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=Directorul de instalare profil Liberty specificat este un fi\u015fier.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: Programul de instalare nu a fost ini\u0163ializat.
+MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=Programul de instalare nu a fost ini\u0163ializat din cauza unei erori interne.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: Programul de instalare nu a fost ini\u0163ializat deoarece a ap\u0103rut urm\u0103toarea eroare: {0}
+MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=Programul de instalare nu a fost ini\u0163ializat din cauza unei erori interne.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
