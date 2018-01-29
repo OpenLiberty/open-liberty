@@ -4,15 +4,16 @@
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jdbc-4.1</feature>
-        <feature>sessionDatabase-1.0</feature>
+        <feature>sessionCache-1.0</feature>
+        <feature>sessionDatabase-1.0</feature> <!-- TODO remove sessionDatabase-1.0 and httpSessionDatabase once sessionCache-1.0 is working -->
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
-    <httpSession storageRef="SessionDB" maxInMemorySessionCount="1" allowOverflow="false"/>
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
     
     <!-- TODO: eventually all of this database configuration will be replaced with JCache configuration -->
-    <httpSessionDatabase id="SessionDB" dataSourceRef="SessionDS"/>
+    <httpSessionDatabase dataSourceRef="SessionDS"/>
 
 	<authData id="SessionAuth" user="userName" password="userPassword"/>    
     <dataSource id="SessionDS" jndiName="jdbc/SessionDS" type="javax.sql.ConnectionPoolDataSource" transactional="false" containerAuthDataRef="SessionAuth">

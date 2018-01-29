@@ -56,8 +56,8 @@ public class SSLUtils {
         emptyBuffer.limit(0);
     }
 
-    /** Inteface for Grizzly's ALPN bootclasspath hack. We should get rid of this when JDK9 is in use. */
-    private static SSLAlpnNegotiatorJdk8 grizzlyAlpnNegotiator = new SSLAlpnNegotiatorJdk8();
+    /** Inteface for grizzly-npn and jetty-alpn to support ALPN on JDK8. We should get rid of this when JDK9 is in use. */
+    private static SSLAlpnNegotiatorJdk8 JDK8AlpnNegotiator = new SSLAlpnNegotiatorJdk8();
 
     /**
      * Shut down the engine for the given SSL connection link.
@@ -650,9 +650,9 @@ public class SSLUtils {
         TCPReadRequestContext deviceReadContext = connLink.getDeviceReadInterface();
         TCPWriteRequestContext deviceWriteContext = connLink.getDeviceWriteInterface();
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
-        if (grizzlyAlpnNegotiator.isGrizzlyAlpnActive()) {
-            grizzlyAlpnNegotiator.setSSLLink(engine, connLink);
-        }
+
+        // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
+        JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
 
         int amountToWrite = 0;
         boolean firstPass = true;
@@ -865,7 +865,6 @@ public class SSLUtils {
                                 String s = "IOException receiving data during SSL Handshake. One possible cause is that authentication may not be configured correctly";
                                 Exception nx = new Exception(s, x);
                                 FFDCFilter.processException(nx, CLASS_NAME, "882");
-                                grizzlyAlpnNegotiator.removeSSLLink(engine);
                                 throw x;
                             }
                         }
@@ -925,7 +924,6 @@ public class SSLUtils {
                 if (bTrace && tc.isDebugEnabled()) {
                     Tr.debug(tc, "BUFFER_OVERFLOW occured during handshake: " + hsstatus);
                 }
-                grizzlyAlpnNegotiator.removeSSLLink(engine);
                 throw new SSLException("BUFFER_OVERFLOW occured during handshake: " + hsstatus);
             }
 
@@ -934,7 +932,6 @@ public class SSLUtils {
                 if (bTrace && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Handshake terminated SSL engine: " + hsstatus);
                 }
-                grizzlyAlpnNegotiator.removeSSLLink(engine);
                 throw new SSLException("Handshake terminated SSL engine: " + hsstatus);
             }
 
@@ -949,7 +946,6 @@ public class SSLUtils {
                          + "\r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
                          + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer));
         }
-        grizzlyAlpnNegotiator.removeSSLLink(engine);
 
         if (fromCallback && null != result && null != handshakeCallback) {
             // This method was called from the write or read callback.
@@ -1143,8 +1139,6 @@ public class SSLUtils {
             Tr.entry(tc, "getOutboundSSLEngine, host=" + host + ", port=" + port);
         }
         SSLEngine engine = context.createSSLEngine(host, port);
-        
-        grizzlyAlpnNegotiator.tryToUseGrizzlyJdk8Alpn(engine);
 
         configureEngine(engine, FlowType.OUTBOUND, config);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1167,8 +1161,6 @@ public class SSLUtils {
         }
         // Create a new SSL engine for this connection.
         SSLEngine engine = context.createSSLEngine();
-        
-        grizzlyAlpnNegotiator.tryToUseGrizzlyJdk8Alpn(engine);
 
         configureEngine(engine, type, config);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

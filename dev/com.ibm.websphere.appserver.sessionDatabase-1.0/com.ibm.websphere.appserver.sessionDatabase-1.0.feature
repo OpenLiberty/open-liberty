@@ -9,6 +9,7 @@ Subsystem-Name: Database Session Persistence
  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:=1.2, \
  com.ibm.websphere.appserver.jdbc-4.0; ibm.tolerates:="4.1, 4.2"
 -bundles=com.ibm.websphere.security, \
+ com.ibm.ws.session.store, \
  com.ibm.ws.session.db, \
  com.ibm.ws.serialization, \
  com.ibm.ws.session
