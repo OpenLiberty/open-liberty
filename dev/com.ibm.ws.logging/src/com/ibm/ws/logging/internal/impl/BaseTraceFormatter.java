@@ -451,15 +451,6 @@ public class BaseTraceFormatter extends Formatter {
 
             }
         }
-        if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-            sb.append(BaseTraceFormatter.levelValToString(levelValue));
-//          sb.append(levelString);
-            sb.append(message);
-            if (throwable != null) {
-                sb.append(LoggingConstants.nl).append(throwable);
-            }
-            return sb.toString();
-        }
 
         if (levelValue >= consoleLogLevel) {
             sb.append(BaseTraceFormatter.levelValToString(levelValue));
@@ -690,13 +681,13 @@ public class BaseTraceFormatter extends Formatter {
      * @param txt
      * @return String
      */
-    public String traceFormatGenData(GenericData gen) {
+    public String traceFormatGenData(GenericData gen, boolean isStderr) {
 
         ArrayList<Pair> pairs = gen.getPairs();
         KeyValuePair kvp = null;
         String txt = null;
         String stackTrace = null;
-        String id = null;
+        Integer id = null;
         String objId;
 
         Integer levelVal = null;
@@ -716,6 +707,8 @@ public class BaseTraceFormatter extends Formatter {
 
         String sym = null;
         String logLevel = null;
+
+        String threadId = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -736,7 +729,7 @@ public class BaseTraceFormatter extends Formatter {
                 } else if (kvp.getKey().equals("module")) {
                     loggerName = kvp.getValue();
                 } else if (kvp.getKey().equals("objectId")) {
-                    id = kvp.getValue();
+                    id = Integer.parseInt(kvp.getValue());
                 } else if (kvp.getKey().equals("correlationId")) {
                     corrId = kvp.getValue();
                 } else if (kvp.getKey().equals("org")) {
@@ -751,6 +744,8 @@ public class BaseTraceFormatter extends Formatter {
                     levelVal = Integer.parseInt(kvp.getValue());
                 } else if (kvp.getKey().equals("logLevel")) {
                     logLevel = kvp.getValue();
+                } else if (kvp.getKey().equals("ibm_threadId")) {
+                    threadId = kvp.getValue();
                 }
 
             }
@@ -771,12 +766,7 @@ public class BaseTraceFormatter extends Formatter {
         switch (traceFormat) {
             default:
             case ENHANCED:
-//                objId = generateObjectId(id, true);
-                if (id != null) {
-                    objId = id;
-                } else {
-                    objId = pad8;
-                }
+                objId = generateObjectId(id, true);
                 name = nonNullString(className, loggerName);
 
                 sb.append(" id=").append(objId).append(' ');
@@ -812,12 +802,7 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(nlBasicPadding).append(stackTrace);
                 break;
             case ADVANCED:
-//                objId = generateObjectId(id, false);
-                if (id != null) {
-                    objId = id;
-                } else {
-                    objId = "";
-                }
+                objId = generateObjectId(id, false);
                 name = nonNullString(loggerName, null);
 
                 sb.append(' '); // pad after thread id
@@ -842,7 +827,7 @@ public class BaseTraceFormatter extends Formatter {
                 if (id != null)
                     sb.append(" id=").append(objId);
 
-                String x = null;
+//                String x = null;
                 //check the comparison to WsLogRecord
                 if (org != null) {
                     // next append org, prod, component, if set. Reference equality check is ok here.
@@ -854,15 +839,15 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(component);
 
                     //get thread name
-                    if (wsSourceThreadName != null) {
-                        x = wsSourceThreadName;
-                    }
+//                    if (wsSourceThreadName != null) {
+//                        x = wsSourceThreadName;
+//                    }
                 } else {
                     //ibm_threadId replace check if you can use this as the thread
-                    x = Thread.currentThread().getName();
+//                    x = Thread.currentThread().getName();
                 }
-                if (x != null) {
-                    sb.append(" thread=[").append(x).append("]");
+                if (org == null) {
+                    sb.append(" thread=[").append(threadId).append("]");
                 }
 
                 // append formatted message -- txt includes formatted args
@@ -871,7 +856,9 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(nlAdvancedPadding).append(stackTrace);
                 break;
         }
-
+        if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
+            isStderr = true;
+        }
         return sb.toString();
     }
 
@@ -892,6 +879,25 @@ public class BaseTraceFormatter extends Formatter {
 
         if (id != null) {
             objId = Integer.toHexString(System.identityHashCode(id));
+            if (objId.length() < 8) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("00000000");
+                builder.append(objId);
+                objId = builder.substring(builder.length() - 8);
+            }
+        } else if (fixedWidth) {
+            objId = pad8;
+        } else {
+            objId = emptyString;
+        }
+        return objId;
+    }
+
+    private final String generateObjectId(Integer id, boolean fixedWidth) {
+        String objId;
+
+        if (id != null) {
+            objId = Integer.toHexString(id);
             if (objId.length() < 8) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("00000000");

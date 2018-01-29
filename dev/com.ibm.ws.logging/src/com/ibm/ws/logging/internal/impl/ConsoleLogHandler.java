@@ -25,13 +25,15 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
     //have two writers systemout and systemerr
+    private SystemLogHolder sysErrHolder;
     private SystemLogHolder sysLogHolder;
-    private boolean consoleStream = false;
+    private boolean isTraceStdout = false;
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
     private BaseTraceFormatter formatter = null;
     private Integer consoleLogLevel = null;
     private boolean copySystemStreams = false;
+    private boolean isStderr = false;
 
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -50,6 +52,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
         String messageOutput = null;
+        isStderr = false;
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
             messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         }
@@ -57,8 +60,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if detailLog == systemOut write to console.log in trace format
             //isTraceStdout
-            if (consoleStream) {
-                messageOutput = formatter.traceFormatGenData((GenericData) event);
+            if (isTraceStdout) {
+                messageOutput = formatter.traceFormatGenData((GenericData) event, isStderr);
             } else if (copySystemStreams) {
                 //write
                 messageOutput = formatter.filteredStreamOutput((GenericData) event);
@@ -72,7 +75,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         }
 
         synchronized (this) {
-            if (messageOutput != null) {
+            if (isStderr) {
+                sysErrHolder.getOriginalStream().println(messageOutput);
+            } else if (messageOutput != null) {
                 sysLogHolder.getOriginalStream().println(messageOutput);
             }
         }
@@ -134,9 +139,21 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
+     * @return the sysErrHolder
      */
-    public void setConsoleStream(boolean consoleStream) {
-        this.consoleStream = consoleStream;
+    public SystemLogHolder getSysErrHolder() {
+        return sysErrHolder;
+    }
+
+    /**
+     * @param sysErrHolder the sysErrHolder to set
+     */
+    public void setSysErrHolder(SystemLogHolder sysErrHolder) {
+        this.sysErrHolder = sysErrHolder;
+    }
+
+    public void setIsTraceStdout(boolean isTraceStdout) {
+        this.isTraceStdout = isTraceStdout;
     }
 
 }

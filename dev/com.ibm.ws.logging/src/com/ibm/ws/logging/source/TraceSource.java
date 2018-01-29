@@ -173,8 +173,8 @@ public class TraceSource implements Source, WsTraceHandler {
         pairs.add(levelValue);
 
         if (id != null) {
-            String objId = generateObjectId(id);
-            KeyValuePair objectId = new KeyValuePair("objectId", objId, KeyValuePair.ValueTypes.STRING);
+            Integer objid = System.identityHashCode(id);
+            KeyValuePair objectId = new KeyValuePair("objectId", objid.toString(), KeyValuePair.ValueTypes.STRING);
             pairs.add(objectId);
         }
         //get format for trace
@@ -194,20 +194,6 @@ public class TraceSource implements Source, WsTraceHandler {
         genData.setSourceType(sourceName);
         return genData;
 
-    }
-
-    //move the formatting at the handler
-    private String generateObjectId(Object id) {
-        String objId;
-
-        objId = Integer.toHexString(System.identityHashCode(id));
-        if (objId.length() < 8) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("00000000");
-            builder.append(objId);
-            objId = builder.substring(builder.length() - 8);
-        }
-        return objId;
     }
 
     /**
