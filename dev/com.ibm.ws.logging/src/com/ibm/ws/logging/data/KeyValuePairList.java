@@ -12,42 +12,25 @@ package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
 
-public class GenericData {
+public class KeyValuePairList implements Pair {
 
-    //Marker class, genericdatamemeber interface
+    ArrayList<KeyValuePair> keyValuePairs;
 
-    private final ArrayList<Pair> pairs;
+    public KeyValuePairList() {
+        keyValuePairs = new ArrayList<KeyValuePair>();
+    }
 
-    private String sourceType;
-
-    public GenericData() {
-        pairs = new ArrayList<Pair>();
+    public ArrayList<KeyValuePair> getKeyValuePairs() {
+        return keyValuePairs;
     }
 
     public void addPair(String key, String value) {
         KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
-        pairs.add(kvp);
+        keyValuePairs.add(kvp);
     }
 
     public void addPair(String key, Number value) {
         KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
-        pairs.add(kvp);
+        keyValuePairs.add(kvp);
     }
-
-    public void addPairs(KeyValuePairList kvps) {
-        pairs.add(kvps);
-    }
-
-    public ArrayList<Pair> getPairs() {
-        return pairs;
-    }
-
-    public String getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
-    }
-
 }

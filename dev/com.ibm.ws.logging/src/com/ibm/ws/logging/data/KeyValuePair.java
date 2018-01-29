@@ -26,6 +26,15 @@ public class KeyValuePair implements Pair {
         this.valueType = valueType;
     }
 
+    public boolean isNumber() {
+        return (valueType == ValueTypes.NUMBER);
+
+    }
+
+    public boolean isString() {
+        return (valueType == ValueTypes.STRING);
+    }
+
     public ValueTypes getType() {
         return valueType;
     }

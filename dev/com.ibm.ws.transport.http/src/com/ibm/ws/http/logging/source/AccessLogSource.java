@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.http.logging.source;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.Pair;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -150,40 +147,26 @@ public class AccessLogSource implements Source {
             HttpResponseMessage response = recordData.getResponse();
 
             if (request != null) {
-                KeyValuePair requestStartTime = new KeyValuePair("ibm_requestStartTime", Long.toString(recordData.getStartTime()), KeyValuePair.ValueTypes.NUMBER);
-                KeyValuePair uriPath = new KeyValuePair("ibm_uriPath", request.getRequestURI(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair requestMethod = new KeyValuePair("ibm_requestMethod", request.getMethod(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair queryString = new KeyValuePair("ibm_queryString", request.getQueryString(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair localIP = new KeyValuePair("ibm_requestHost", recordData.getLocalIP(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair localPort = new KeyValuePair("ibm_requestPort", recordData.getLocalPort(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair remoteHost = new KeyValuePair("ibm_remoteHost", recordData.getRemoteAddress(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair userAgent = new KeyValuePair("ibm_userAgent", request.getHeader("User-Agent").asString(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair requestProtocol = new KeyValuePair("ibm_requestProtocol", request.getVersion(), KeyValuePair.ValueTypes.STRING);
-                KeyValuePair responseSize = new KeyValuePair("ibm_bytesReceived", Long.toString(recordData.getBytesWritten()), KeyValuePair.ValueTypes.NUMBER);
-                KeyValuePair responseCode = new KeyValuePair("ibm_responseCode", Integer.toString(response.getStatusCodeAsInt()), KeyValuePair.ValueTypes.NUMBER);
-                KeyValuePair elapsedTime = new KeyValuePair("ibm_elapsedTime", Long.toString(recordData.getElapsedTime()), KeyValuePair.ValueTypes.NUMBER);
-                KeyValuePair timestamp = new KeyValuePair("ibm_datetime", Long.toString(recordData.getTimestamp()), KeyValuePair.ValueTypes.NUMBER);
-
-                String sequenceVal = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
-                KeyValuePair sequence = new KeyValuePair("ibm_sequence", sequenceVal, KeyValuePair.ValueTypes.STRING);
 
                 GenericData genData = new GenericData();
-                ArrayList<Pair> pairs = genData.getPairs();
 
-                pairs.add(requestStartTime);
-                pairs.add(uriPath);
-                pairs.add(requestMethod);
-                pairs.add(queryString);
-                pairs.add(localIP);
-                pairs.add(localPort);
-                pairs.add(remoteHost);
-                pairs.add(userAgent);
-                pairs.add(requestProtocol);
-                pairs.add(responseSize);
-                pairs.add(responseCode);
-                pairs.add(elapsedTime);
-                pairs.add(timestamp);
-                pairs.add(sequence);
+                long requestStartTimeVal = recordData.getStartTime();
+                genData.addPair("ibm_requestStartTime", requestStartTimeVal);
+                genData.addPair("ibm_uriPath", request.getRequestURI());
+                genData.addPair("ibm_requestMethod", request.getMethod());
+                genData.addPair("ibm_queryString", request.getQueryString());
+                genData.addPair("ibm_requestHost", recordData.getLocalIP());
+                genData.addPair("ibm_requestPort", recordData.getLocalPort());
+                genData.addPair("ibm_remoteHost", recordData.getRemoteAddress());
+                genData.addPair("ibm_userAgent", request.getHeader("User-Agent").asString());
+                genData.addPair("ibm_requestProtocol", request.getVersion());
+                genData.addPair("ibm_bytesReceived", recordData.getBytesWritten());
+                genData.addPair("ibm_responseCode", response.getStatusCodeAsInt());
+                genData.addPair("ibm_elapsedTime", recordData.getElapsedTime());
+                genData.addPair("ibm_datetime", recordData.getTimestamp());
+
+                String sequenceVal = requestStartTimeVal + "_" + String.format("%013X", seq.incrementAndGet());
+                genData.addPair("ibm_sequence", sequenceVal);
 
                 genData.setSourceType(sourceName);
 

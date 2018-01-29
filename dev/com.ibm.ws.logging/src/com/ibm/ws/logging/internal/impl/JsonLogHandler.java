@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import java.util.List;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
-import com.ibm.ws.logging.collector.CollectorJsonUtils11;
+import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.wsspi.collector.manager.BufferManager;
@@ -158,13 +158,9 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
 
-//        String eventType = CollectorJsonUtils.getEventType(source, location);
-//        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
-//                                                         MAXFIELDLENGTH);
-
-        String eventType = CollectorJsonUtils11.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils11.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags,
-                                                           MAXFIELDLENGTH);
+        String eventType = CollectorJsonUtils.getEventType(source, location);
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
+                                                         MAXFIELDLENGTH);
         return jsonStr;
     }
 
@@ -206,24 +202,6 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         return "";
     }
 
-    /*
-     * Get the type of source based on the object given by comparing it to the *Data classess
-     */
-//    protected String getSourceTypeFromDataObject(Object event) {
-//        if (event instanceof MessageLogData) {
-//            return CollectorConstants.MESSAGES_SOURCE;
-//        } else if (event instanceof TraceLogData) {
-//            return CollectorConstants.TRACE_SOURCE;
-//        } else if (event instanceof AccessLogData) {
-//            return CollectorConstants.ACCESS_LOG_SOURCE;
-//        } else if (event instanceof FFDCData) {
-//            return CollectorConstants.FFDC_SOURCE;
-//        } else {
-//            return "";
-//        }
-//
-//    }
-
     protected String getSourceTypeFromDataObject(Object event) {
 
         GenericData genData = (GenericData) event;
@@ -241,4 +219,5 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
             return "";
         }
     }
+
 }

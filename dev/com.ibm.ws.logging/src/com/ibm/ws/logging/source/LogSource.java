@@ -12,7 +12,6 @@ package com.ibm.ws.logging.source;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.regex.Matcher;
@@ -25,9 +24,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.KeyValuePairs;
-import com.ibm.ws.logging.data.Pair;
+import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -111,52 +108,80 @@ public class LogSource implements Source, WsLogHandler {
      *
      * @param routedMessage The LogRecord along with various message formats.
      */
+    @Override
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
+
             LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage, logRecord));
+//            if (logRecord != null && bufferMgr != null) {
+//<<<<<<< HEAD
+//                bufferMgr.add(parse(routedMessage, logRecord));
+//=======
+            GenericData parsedMessage = parse(routedMessage);
+            if (!BufferManager.EMQRemovedFlag && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
+                BufferManager.removeEMQTrigger();
+                BufferManager.EMQRemovedFlag = true;
             }
+            bufferMgr.add(parsedMessage);
         }
     }
 
-//    public MessageLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-//        String message = routedMessage.getFormattedVerboseMsg();
-//        if (message == null)
-//            message = logRecord.getMessage();
-//        long date = logRecord.getMillis();
-//        String messageId = null;
-//        if (message != null)
-//            messageId = parseMessageId(message);
-//        int threadId = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-//        String loggerName = logRecord.getLoggerName();
-//        String logLevel = LogFormatUtils.mapLevelToType(logRecord);
-//        String logLevelRaw = LogFormatUtils.mapLevelToRawType(logRecord);
-//        String methodName = logRecord.getSourceMethodName();
-//        String className = logRecord.getSourceClassName();
-//        Map<String, String> extensions = null;
-//        if (logRecord instanceof WsLogRecord)
-//            extensions = ((WsLogRecord) logRecord).getExtensions();
-//        String sequence = sequenceNumber.next(date);
-//        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
-//        Throwable throwable = logRecord.getThrown();
+//    <<<<<<<HEAD
+////    public MessageLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+////        String message = routedMessage.getFormattedVerboseMsg();
+////        if (message == null)
+////            message = logRecord.getMessage();
+////        long date = logRecord.getMillis();
+////        String messageId = null;
+////        if (message != null)
+////            messageId = parseMessageId(message);
+////        int threadId = (int) Thread.currentThread().getId();//logRecord.getThreadID();
+////        String loggerName = logRecord.getLoggerName();
+////        String logLevel = LogFormatUtils.mapLevelToType(logRecord);
+////        String logLevelRaw = LogFormatUtils.mapLevelToRawType(logRecord);
+////        String methodName = logRecord.getSourceMethodName();
+////        String className = logRecord.getSourceClassName();
+////        Map<String, String> extensions = null;
+////        if (logRecord instanceof WsLogRecord)
+////            extensions = ((WsLogRecord) logRecord).getExtensions();
+////        String sequence = sequenceNumber.next(date);
+////        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+////        Throwable throwable = logRecord.getThrown();
+////
+////        return new MessageLogData(date, threadId, loggerName, logLevel, logLevelRaw, messageId, message, methodName, className, extensions, sequence, throwable);
+////
+////    }
 //
-//        return new MessageLogData(date, threadId, loggerName, logLevel, logLevelRaw, messageId, message, methodName, className, extensions, sequence, throwable);
+//    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
 //
-//    }
+//        String messageVal = routedMessage.getFormattedVerboseMsg();
+//
+//        if (messageVal == null) {
+//            messageVal = logRecord.getMessage();
+//        }
+//
+//        long dateVal = logRecord.getMillis();
+//        KeyValuePair date = new KeyValuePair("ibm_datetime", Long.toString(dateVal), KeyValuePair.ValueTypes.NUMBER);
+//=======
 
-    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-
+    private String extractMessage(RoutedMessage routedMessage, LogRecord logRecord) {
         String messageVal = routedMessage.getFormattedVerboseMsg();
-
         if (messageVal == null) {
             messageVal = logRecord.getMessage();
         }
+        return messageVal;
+    }
+
+    public GenericData parse(RoutedMessage routedMessage) {
+
+        GenericData genData = new GenericData();
+        LogRecord logRecord = routedMessage.getLogRecord();
+        String messageVal = extractMessage(routedMessage, logRecord);
 
         long dateVal = logRecord.getMillis();
-        KeyValuePair date = new KeyValuePair("ibm_datetime", Long.toString(dateVal), KeyValuePair.ValueTypes.NUMBER);
+        genData.addPair("ibm_datetime", dateVal);
 
         String messageIdVal = null;
 
@@ -164,29 +189,28 @@ public class LogSource implements Source, WsLogHandler {
             messageIdVal = parseMessageId(messageVal);
         }
 
-        KeyValuePair messageId = new KeyValuePair("ibm_messageId", messageIdVal, KeyValuePair.ValueTypes.STRING);
+        genData.addPair("ibm_messageId", messageIdVal);
 
         int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        KeyValuePair threadId = new KeyValuePair("ibm_threadId", Integer.toString(threadIdVal), KeyValuePair.ValueTypes.NUMBER);
-        KeyValuePair loggerName = new KeyValuePair("module", logRecord.getLoggerName(), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair logLevel = new KeyValuePair("severity", LogFormatUtils.mapLevelToType(logRecord), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair logLevelRaw = new KeyValuePair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair methodName = new KeyValuePair("ibm_methodName", logRecord.getSourceMethodName(), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair className = new KeyValuePair("ibm_className", logRecord.getSourceClassName(), KeyValuePair.ValueTypes.STRING);
-        KeyValuePair levelValue = new KeyValuePair("levelValue", Integer.toString(logRecord.getLevel().intValue()), KeyValuePair.ValueTypes.NUMBER);
+        genData.addPair("ibm_threadId", threadIdVal);
+        genData.addPair("module", logRecord.getLoggerName());
+        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
+        genData.addPair("ibm_className", logRecord.getSourceClassName());
+        genData.addPair("levelValue", logRecord.getLevel().intValue());
 
-        KeyValuePairs extensions = new KeyValuePairs();
+        KeyValuePairList extensions = new KeyValuePairList();
         Map<String, String> extMap = null;
-        ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
         if (logRecord instanceof WsLogRecord) {
             extMap = ((WsLogRecord) logRecord).getExtensions();
             for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                KeyValuePair extEntry = new KeyValuePair(entry.getKey(), entry.getValue(), KeyValuePair.ValueTypes.STRING);
-                extList.add(extEntry);
+                extensions.addPair(entry.getKey(), entry.getValue());
             }
         }
 
-        KeyValuePair sequence = new KeyValuePair("sequence", sequenceNumber.next(dateVal), KeyValuePair.ValueTypes.STRING);
+        genData.addPairs(extensions);
+        genData.addPair("sequence", sequenceNumber.next(dateVal));
         //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
 
         Throwable thrown = logRecord.getThrown();
@@ -198,25 +222,7 @@ public class LogSource implements Source, WsLogHandler {
                 msgBldr.append(LINE_SEPARATOR).append(stackTrace);
             }
         }
-
-        KeyValuePair message = new KeyValuePair("message", msgBldr.toString(), KeyValuePair.ValueTypes.STRING);
-
-        GenericData genData = new GenericData();
-        ArrayList<Pair> pairs = genData.getPairs();
-
-        pairs.add(message);
-        pairs.add(date);
-        pairs.add(messageId);
-        pairs.add(threadId);
-        pairs.add(loggerName);
-        pairs.add(logLevel);
-        pairs.add(logLevelRaw);
-        pairs.add(methodName);
-        pairs.add(className);
-        pairs.add(extensions);
-        pairs.add(sequence);
-        pairs.add(levelValue);
-
+        genData.addPair("message", msgBldr.toString());
         genData.setSourceType(sourceName);
 
         return genData;
