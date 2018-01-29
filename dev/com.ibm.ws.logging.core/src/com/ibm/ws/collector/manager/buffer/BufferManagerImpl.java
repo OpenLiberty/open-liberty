@@ -12,6 +12,7 @@ package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -35,11 +36,17 @@ public class BufferManagerImpl extends BufferManager {
     /* Map to keep track of the next event for a handler */
     private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
 
+    private volatile static boolean EMQRemovedFlag = false;
+    protected static final int EARLY_MESSAGE_QUEUE_SIZE=400;
+    public static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
+
     public BufferManagerImpl(int capacity, String sourceId) {
         super();
         ringBuffer=null;
         this.sourceId = sourceId;
         this.capacity = capacity;
+        if(!getEMQRemovedFlag())
+            earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
     }
 
     @Override
@@ -208,6 +215,35 @@ public class BufferManagerImpl extends BufferManager {
         } finally {
             RERWLOCK.writeLock().unlock();
         }
+    }
+
+    public static boolean getEMQRemovedFlag() {
+        return EMQRemovedFlag;
+    }
+
+    public static void setEMQRemovedFlag(boolean eMQRemovedFlag) {
+        EMQRemovedFlag = eMQRemovedFlag;
+    }
+
+
+    public static void removeEMQTrigger(){
+        synchronized(bufferManagerList) {
+            setEMQRemovedFlag(true);
+            for(BufferManager i: bufferManagerList) {
+                ((BufferManagerImpl) i).removeEMQ();
+            }
+        }
+    }
+
+    public static void removeEMQByTimer(){
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        BufferManagerImpl.removeEMQTrigger();
+                    }
+                },
+                BufferManagerImpl.EMQ_TIMER);
     }
 
     public static class HandlerStats {

@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
-import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
-
 
 /**
  * Buffer manager is a wrapper around the actual buffer, it controls access to the buffer.
@@ -25,54 +23,15 @@ import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
  */
 public abstract class BufferManager {
 
-	protected static final int EARLY_MESSAGE_QUEUE_SIZE=400;
-	public static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
-	
-	protected volatile static List<BufferManager> bufferManagerList= Collections.synchronizedList(new ArrayList<BufferManager>());
-	private volatile static boolean EMQRemovedFlag = false;
-	
-	protected Queue<Object> earlyMessageQueue;
-    
-    protected BufferManager() {
-    		synchronized(bufferManagerList) {
-    			bufferManagerList.add(this);
-	    		if(!getEMQRemovedFlag())
-	    			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
-    		}
-    }
-    
-	public static boolean getEMQRemovedFlag() {
-		return EMQRemovedFlag;
-	}
+    protected volatile static List<BufferManager> bufferManagerList= Collections.synchronizedList(new ArrayList<BufferManager>());
+    protected Queue<Object> earlyMessageQueue;
 
-	public static void setEMQRemovedFlag(boolean eMQRemovedFlag) {
-		EMQRemovedFlag = eMQRemovedFlag;
-	}
-    
-	private void removeEMQ() {
-		earlyMessageQueue=null;
-	}
-	
-	
-	public static void removeEMQTrigger(){
-		synchronized(bufferManagerList) {
-			setEMQRemovedFlag(true);
-			for(BufferManager i: bufferManagerList) {
-				i.removeEMQ();
-			}
-		}
-	}
-	
-	public static void removeEMQByTimer(){
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        BufferManager.removeEMQTrigger();
-                    }
-                },
-                BufferManager.EMQ_TIMER);
-	}
+    protected BufferManager() {
+        synchronized(bufferManagerList) {
+            bufferManagerList.add(this);
+        }
+    }
+
 
     /**
      * Method for adding an event to the buffer
