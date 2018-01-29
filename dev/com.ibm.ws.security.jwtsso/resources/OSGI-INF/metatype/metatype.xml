@@ -51,13 +51,13 @@
              required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />
              
          <AD id="jwtConsumerRef" name="%jwtConsumerRef" description="%jwtConsumerRef.desc"
-             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.consumer.metatype" />  
+             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.consumer" />  
              
           <!--  future encryption attributes go here someday  -->
          
     </OCD>
 
-    <Designate factoryPid="com.ibm.ws.security.jwtsso"> 
+    <Designate pid="com.ibm.ws.security.jwtsso"> 
          <Object ocdref="com.ibm.ws.security.jwtsso" />
     </Designate>
 
