@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.OASConfig;
@@ -28,7 +31,7 @@ public class ConfigProcessor {
     /**
      * Configuration property to enable/disable validation of the OpenAPI model.
      */
-    private static final String VALIDATION = "mp.openapi.extensions.validation";
+    private static final String VALIDATION = OASConfig.EXTENSIONS_PREFIX + "validation";
 
     private String modelReaderClassName = null;
     private String openAPIFilterClassName = null;
@@ -38,6 +41,10 @@ public class ConfigProcessor {
     private Set<String> classesToExclude = null;
     private Set<String> packagesToScan = null;
     private Set<String> packagesToExclude = null;
+
+    private Set<String> servers = null;
+    private Map<String, Set<String>> pathsServers = null;
+    private Map<String, Set<String>> operationsServers = null;
 
     private final Config config;
 
@@ -54,6 +61,7 @@ public class ConfigProcessor {
             classesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_CLASSES);
             packagesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_PACKAGES);
 
+            retrieveServers();
         } catch (IllegalArgumentException e) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed to read config: " + e.getMessage());
@@ -107,6 +115,39 @@ public class ConfigProcessor {
 
     }
 
+    private void retrieveServers() {
+
+        //Global servers
+        servers = getConfigPropAsSet(OASConfig.SERVERS);
+
+        //Path and operation servers
+        for (String propertyName : config.getPropertyNames()) {
+            if (propertyName.startsWith(OASConfig.SERVERS_PATH_PREFIX)) {
+                Set<String> servers = getConfigPropAsSet(propertyName);
+                if (servers != null) {
+                    String path = propertyName.substring(OASConfig.SERVERS_PATH_PREFIX.length());
+                    if (StringUtils.isNotBlank(path)) {
+                        if (pathsServers == null) {
+                            pathsServers = new HashMap<>();
+                        }
+                        pathsServers.put(path, servers);
+                    }
+                }
+            } else if (propertyName.startsWith(OASConfig.SERVERS_OPERATION_PREFIX)) {
+                Set<String> servers = getConfigPropAsSet(propertyName);
+                if (servers != null) {
+                    String path = propertyName.substring(OASConfig.SERVERS_OPERATION_PREFIX.length());
+                    if (StringUtils.isNotBlank(path)) {
+                        if (operationsServers == null) {
+                            operationsServers = new HashMap<>();
+                        }
+                        operationsServers.put(path, servers);
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * @return the classesToScan
      */
@@ -133,5 +174,26 @@ public class ConfigProcessor {
      */
     public Set<String> getPackagesToExclude() {
         return packagesToExclude;
+    }
+
+    /**
+     * @return the servers
+     */
+    public Set<String> getServers() {
+        return servers;
+    }
+
+    /**
+     * @return the pathsServers
+     */
+    public Map<String, Set<String>> getPathsServers() {
+        return pathsServers;
+    }
+
+    /**
+     * @return the operationsServers
+     */
+    public Map<String, Set<String>> getOperationsServers() {
+        return operationsServers;
     }
 }
