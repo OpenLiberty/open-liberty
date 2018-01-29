@@ -25,16 +25,17 @@ import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSessionContext;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.Channel;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -93,6 +94,8 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
      * write before giving up.
      */
     private int timeoutValueInSSLClosingHandshake = 30;
+
+    private static boolean useH2Protocol = false;
 
     /** Flag on whether stop with no quiese has been called after the last start call */
     volatile private boolean stop0Called = false;
@@ -392,12 +395,15 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "Querying security service for alias=[" + aliasFinal + "]");
                 }
                 props = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+
                     @Override
                     public Properties run() throws Exception {
                         return jsseHelper.getProperties(aliasFinal, connectionInfo, null);
                     }
                 });
-            } catch (Exception e) {
+            } catch (
+
+            Exception e) {
                 // no FFDC required
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception getting SSL properties from alias: " + this.alias);
@@ -518,6 +524,10 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "inboundHost = " + this.inboundHost
                                  + " inboundPort = " + this.inboundPort
                                  + " endPointName = " + this.endPointName);
+                    if (this.useH2Protocol) {
+                        Tr.debug(tc, "HTTP/2.0 is enabled for port " + this.inboundPort);
+                    }
+
                 }
             }
         } catch (Exception e) {
@@ -572,6 +582,14 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
             return;
         }
 
+        String configuredHttpVersionSetting = CHFWBundle.servletConfiguredHttpVersionSetting();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Configured Http Version Setting, " +
+                         ((configuredHttpVersionSetting == null) ? SSLChannelConstants.NEVER_20 : configuredHttpVersionSetting));
+        }
+        this.useH2Protocol = (SSLChannelConstants.ALWAYS_ON_20.equalsIgnoreCase(configuredHttpVersionSetting));
+
         // Extract the channel properties.
         try {
             Properties channelProps = getConfig().getProperties();
@@ -615,6 +633,17 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     }
                 }
 
+                String alpnProtocols = channelProps.getProperty(SSLChannelConstants.PROPNAME_ALPN_PROTOCOLS);
+                if (alpnProtocols != null && SSLChannelConstants.OPTIONAL_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
+
+                    if ("h2".equalsIgnoreCase(alpnProtocols)) {
+                        this.useH2Protocol = true;
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found alpnProtocols in SSL system properties, " + alpnProtocols);
+                    }
+                }
+
             }
         } catch (Exception e) {
             // no FFDC required
@@ -625,6 +654,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "SSLChannel configured to use H2, " + this.useH2Protocol);
             Tr.debug(tc, "jsseProvider=" + this.jsseProvider);
         }
 

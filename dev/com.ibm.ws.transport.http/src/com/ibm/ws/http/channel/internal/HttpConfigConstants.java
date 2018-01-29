@@ -381,4 +381,19 @@ public class HttpConfigConstants {
 
     /** Equivalent to CookiesConfigureNoCache - required due to 'configure' not being an allowed word for metatype **/
     public static final String PROPNAME_NO_CACHE_COOKIES_CONTROL = "NoCacheCookiesControl"; //PI75280
+
+    /** This setting is configured by enabling the Servlet 3.0 feature. The channel will never be enabled for HTTP/2.0. */
+    public static final String NEVER_20 = "2.0_Never";
+    /**
+     * This setting is configured by enabling the Servlet 3.1 feature. Looks for the 'insecureUpgradeProtocol'
+     * httpOptions to determine if the channel will enable HTTP/2.0
+     */
+    public static final String OPTIONAL_20 = "2.0_Optional";
+    /** This setting is configured by enabling the Servlet 4.0 feature. The channel will always be enabled for HTTP/2.0". */
+    public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
+
+    public static final String HTTP2_UPGRADE_TOKEN = "h2c";
+
+    public static final String PROPNAME_INSECURE_UPGRADE_PROTOCOL = "insecureUpgradeProtocol";
+
 }

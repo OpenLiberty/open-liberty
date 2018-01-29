@@ -33,4 +33,8 @@ public interface SSLChannelConstants {
     long DEFAULT_HANDSHAKE_FAILURE_STOP_LOGGING = 100;
     /** PI52696 */
     public static final String TIMEOUT_VALUE_IN_SSL_CLOSING_HANDSHAKE = "timeoutValueInSSLClosingHandshake";
+    public static final String PROPNAME_ALPN_PROTOCOLS = "alpnProtocols";
+    public static final String OPTIONAL_20 = "2.0_Optional";
+    public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
+    public static final String NEVER_20 = "2.0_Never";
 }

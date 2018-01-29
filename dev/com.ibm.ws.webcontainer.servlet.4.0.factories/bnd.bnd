@@ -28,8 +28,12 @@ Service-Component: \
   com.ibm.ws.webcontainer.v40.httpTransportBehavior; \
     implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
     provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
-    properties:="useEE7Streams:Boolean=true,useIOEBehavior:Boolean=true"
-
+    properties:="useEE7Streams:Boolean=true,useIOEBehavior:Boolean=true", \
+  com.ibm.ws.webcontainer.v40.httpProtocolBehavior; \
+  	implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	properties:="httpVersionSetting:String=2.0_AlwaysOn"
+ 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation

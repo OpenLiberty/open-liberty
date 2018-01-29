@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.channelfw.ChannelData;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -134,6 +135,7 @@ public class HttpChannelConfig {
     private int h2ConnectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the connection read window to the spec max
     /** PI81572 Purge the remaining response body off the wire when clear is called */
     private boolean purgeRemainingResponseBody = true;
+    private boolean useH2Protocol = false;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -163,6 +165,16 @@ public class HttpChannelConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "parseConfig: " + cc.getName());
         }
+
+        // Look at the CHFWBundle to see if the enabled servlet feature enabled
+        // Http 2.0
+        String configuredHttpVersionSetting = CHFWBundle.servletConfiguredHttpVersionSetting();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "Configured Http Version Setting, " + ((configuredHttpVersionSetting == null) ? HttpConfigConstants.NEVER_20 : configuredHttpVersionSetting));
+        }
+
+        this.useH2Protocol = HttpConfigConstants.ALWAYS_ON_20.equalsIgnoreCase(configuredHttpVersionSetting);
+
         Map<Object, Object> propsIn = cc.getPropertyBag();
 
         Map<Object, Object> props = new HashMap<Object, Object>();
@@ -170,7 +182,7 @@ public class HttpChannelConfig {
         String key;
         Object value;
 
-        // match keys independent of csae.
+        // match keys independent of case.
         // So this is a bit ugly, but the parsing code is not state independent, meaning if it parses A then and
         // only then it will parse B, and we can't be certain that only properties that we know about from the HTTP Config
         // are in this Map (so we can't just lower case everything).  So, to be case independent we need to convert
@@ -349,6 +361,9 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE, value);
                 continue;
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL)) {
+                props.put(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL, value);
+            }
 
             props.put(key, value);
         }
@@ -390,6 +405,7 @@ public class HttpChannelConfig {
         parseH2ConnCloseTimeout(props);
         parseH2ConnReadWindowSize(props);
         parsePurgeRemainingResponseBody(props); //PI81572
+        parseInsecureUpgradeProtocol(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1239,6 +1255,24 @@ public class HttpChannelConfig {
                 Tr.event(tc, "Config: PurgeRemainingResponseBody is " + shouldPurgeRemainingResponseBody());
             }
         }
+    }
+
+    private void parseInsecureUpgradeProtocol(Map<?, ?> props) {
+        String insecureUpgradeProtocolProperty = (String) props.get(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL);
+        String servletHttpVersionSetting = CHFWBundle.servletConfiguredHttpVersionSetting();
+
+        //Use this property only when the CHFWBundle has been notified of a servlet feature
+        //configuring "2.0_Optional" on the HttpProtocolBehavior
+        if (null != insecureUpgradeProtocolProperty && HttpConfigConstants.OPTIONAL_20.equalsIgnoreCase(servletHttpVersionSetting)) {
+            this.useH2Protocol = HttpConfigConstants.HTTP2_UPGRADE_TOKEN.equalsIgnoreCase(insecureUpgradeProtocolProperty);
+            if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
+                Tr.event(tc, "Config: insecureUpgradeProtocol is h2c, " + shouldUseH2Protocol());
+            }
+        }
+    }
+
+    public boolean shouldUseH2Protocol() {
+        return this.useH2Protocol;
     }
 
     /**
