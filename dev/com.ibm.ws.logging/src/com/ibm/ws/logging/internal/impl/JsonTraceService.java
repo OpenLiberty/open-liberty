@@ -177,7 +177,6 @@ public class JsonTraceService extends BaseTraceService {
         }
         messageLogHandler.setFormatter(formatter);
         consoleLogHandler.setFormatter(formatter);
-        //check if json source list has sourcelist
     }
 
     /*

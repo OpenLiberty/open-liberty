@@ -15,7 +15,8 @@ import java.util.List;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
-import com.ibm.ws.logging.data.GenericData;import com.ibm.ws.logging.data.LogTraceSourceGenericData;;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.LogTraceSourceGenericData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -58,7 +59,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         }
         //add in formatter here for basic
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
-            //if detailLog == systemOut write to console.log in trace format
+            //if traceFilename == systemOut write to console.log in trace format
             //isTraceStdout
             Integer levelVal = ((LogTraceSourceGenericData) event).getLevelValue();
             if (isTraceStdout) {
