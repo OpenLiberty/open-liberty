@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
+import java.math.BigDecimal;
+
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
 import com.ibm.websphere.ras.Tr;
@@ -53,6 +55,20 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly", t.getTitle());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
+            if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ONE) < 1)) {
+                final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanZero", t.getTitle());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+            if ((t.getMaxLength() != null && (t.getMaxLength().intValue() < 0)) ||
+                (t.getMinLength() != null && (t.getMinLength().intValue() < 0)) ||
+                (t.getMinItems() != null && (t.getMinItems().intValue() < 0)) ||
+                (t.getMaxItems() != null && (t.getMaxItems().intValue() < 0)) ||
+                (t.getMinProperties() != null && (t.getMinProperties().intValue() < 0)) ||
+                (t.getMaxProperties() != null && (t.getMaxProperties().intValue() < 0))) {
+                final String message = Tr.formatMessage(tc, "schemaPropertyLessThanZero", t.getTitle());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+
         }
     }
 }
