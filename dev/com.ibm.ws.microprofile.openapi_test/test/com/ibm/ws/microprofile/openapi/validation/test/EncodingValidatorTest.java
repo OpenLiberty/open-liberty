@@ -11,8 +11,6 @@
 */
 package com.ibm.ws.microprofile.openapi.validation.test;
 
-import java.util.Arrays;
-
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.junit.Test;
 
@@ -52,24 +50,6 @@ public class EncodingValidatorTest {
 
         styleIsFormExplodeFalse.setStyle(Encoding.Style.FORM);
         styleIsFormExplodeFalse.setExplode(false);
-
-        System.out.println(styleIsFormExplodeFalse == null);
-        System.out.println(styleIsFormExplodeFalse.getStyle() != null);
-
-        String[] styleExplode = { "spaceDelimited", "pipeDelimited", "deepObject" };
-
-        System.out.println(styleIsFormExplodeFalse.getStyle().toString());
-        System.out.println(styleIsFormExplodeFalse.getExplode().toString());
-
-        if (Arrays.asList(styleExplode).contains(styleIsFormExplodeFalse.getStyle().toString()) && styleIsFormExplodeFalse.getExplode()) {
-
-            System.out.println("Else statement accessed.");
-        }
-
-        if (styleIsFormExplodeFalse.getStyle().toString() == "form" && !styleIsFormExplodeFalse.getExplode()) {
-
-            System.out.println("If statement accessed.");
-        }
 
         TestValidationHelper vh = new TestValidationHelper();
         EncodingValidator validator = EncodingValidator.getInstance();
