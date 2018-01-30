@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.websphere.appserver.jpaContainer2.1-cdi1.2</name>
+	<name>com.ibm.websphere.appserver.jpaContainer-cdi</name>
 	<comment></comment>
 	<projects>
 	</projects>
