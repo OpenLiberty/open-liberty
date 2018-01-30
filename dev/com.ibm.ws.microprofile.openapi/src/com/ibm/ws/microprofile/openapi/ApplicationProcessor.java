@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.Operation;
+import org.eclipse.microprofile.openapi.models.Paths;
+import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -40,6 +45,7 @@ import com.ibm.ws.microprofile.openapi.impl.jaxrs2.Reader;
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker;
@@ -181,7 +187,11 @@ public class ApplicationProcessor {
         if (!isOASApp) {
             return null;
         }
+      
+        // Handle servers specified in configuration (before filtering)
+        handleServers(newDocument, configProcessor);
 
+        // Filter
         OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
 
         if (oasFilter != null) {
@@ -247,6 +257,71 @@ public class ApplicationProcessor {
             if (openAPI != null) {
                 currentApp = appInfo;
                 this.document = openAPI;
+            }
+        }
+    }
+
+    private void handleServers(OpenAPI openapi, ConfigProcessor configProcessor) {
+
+        // Handle global servers
+        Set<String> servers = configProcessor.getServers();
+        if (servers != null && servers.size() > 0) {
+            List<Server> configServers = new ArrayList<Server>();
+            for (String server : servers) {
+                configServers.add(new ServerImpl().url(server.trim()));
+            }
+
+            if (configServers.size() > 0) {
+                openapi.setServers(configServers);
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Set global servers from config: " + configServers);
+                }
+            }
+        }
+
+        // Handle servers for paths and operations
+        Map<String, Set<String>> pathServers = configProcessor.getPathsServers();
+        Map<String, Set<String>> operationServers = configProcessor.getOperationsServers();
+
+        // if no servers for paths/operations were specified then quickly exit
+        if ((pathServers == null || pathServers.isEmpty()) && (operationServers == null || operationServers.isEmpty())) {
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.debug(tc, "Servers for paths/operations were not specified, so return");
+            }
+            return;
+        }
+
+        Paths paths = openapi.getPaths();
+        if (paths != null && !paths.isEmpty()) {
+            for (String path : paths.keySet()) {
+
+                // Set the alternative servers (if any) on path
+                if (pathServers != null && pathServers.containsKey(path)) {
+                    List<Server> configPathServers = new ArrayList<Server>();
+                    for (String server : pathServers.get(path)) {
+                        configPathServers.add(new ServerImpl().url(server.trim()));
+                    }
+                    if (!configPathServers.isEmpty()) {
+                        paths.get(path).setServers(configPathServers);
+                    }
+                }
+
+                // Set the alternative servers (if any) on operation
+                if (operationServers != null) {
+                    for (Operation operation : paths.get(path).readOperations()) {
+                        String operationId = operation.getOperationId();
+                        if (operationId != null && operationServers.containsKey(operationId)) {
+                            List<Server> configOperationServers = new ArrayList<Server>();
+                            for (String server : operationServers.get(operationId)) {
+                                configOperationServers.add(new ServerImpl().url(server.trim()));
+                            }
+                            if (!configOperationServers.isEmpty()) {
+                                operation.setServers(configOperationServers);
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
