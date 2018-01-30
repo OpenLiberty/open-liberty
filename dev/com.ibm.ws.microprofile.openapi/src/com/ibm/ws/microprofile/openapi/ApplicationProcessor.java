@@ -179,15 +179,15 @@ public class ApplicationProcessor {
                             Tr.event(tc, "Failed to load class: " + e.getMessage());
                         }
                     }
-                    newDocument = new Reader(newDocument).read(classes);
                 }
+                newDocument = new Reader(newDocument).read(classes);
             }
         }
 
         if (!isOASApp) {
             return null;
         }
-      
+
         // Handle servers specified in configuration (before filtering)
         handleServers(newDocument, configProcessor);
 
