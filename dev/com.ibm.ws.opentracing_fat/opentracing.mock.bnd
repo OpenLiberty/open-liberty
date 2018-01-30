@@ -22,11 +22,13 @@ Bundle-Description:Opentracing mock Tracer, version ${bVersion}
 
 Import-Package: *
 
-Export-Package: com.ibm.ws.opentracing.mock
+Export-Package: com.ibm.ws.opentracing.mock;uses:="com.ibm.ws.opentracing.tracer,io.opentracing,io.opentracing.propagation"
                 
 Private-Package: com.ibm.ws.opentracing.mock.resources
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Provide-Capability: osgi.service;objectClass:List<String>="com.ibm.ws.opentracing.tracer.OpentracingTracerFactory"
 
 -includeresource: \
    @${repo;io.opentracing:opentracing-mock;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*, \

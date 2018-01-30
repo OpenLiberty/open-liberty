@@ -23,6 +23,14 @@ Export-Package: \
   org.eclipse.microprofile.rest.client.inject;version=1.0,\
   org.eclipse.microprofile.rest.client.spi;version=1.0
 
+Import-Package: \
+  javax.annotation;version="[1.2,2)",\
+  javax.enterprise.util;version="[1.1,2.1)",\
+  javax.inject;version="[1.0,2.1)",\
+  javax.ws.rs.core;version="[2.0,3)",\
+  org.eclipse.microprofile.rest.client;version="[1.0,2)",\
+  org.eclipse.microprofile.rest.client.spi;version="[1.0,2)"
+
 Include-Resource: \
   @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;1.0;EXACT},\
   OSGI-INF=resources/OSGI-INF

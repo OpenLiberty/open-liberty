@@ -30,6 +30,9 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
 /**
  * Test configuration works across multiple modules in an EAR
  * <p>
@@ -43,6 +46,11 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
     // Field is required to declare the shared server as a class rule
     @ClassRule
     public static SharedServer SHARED_SERVER = FATSuite.MULTI_MODULE_SERVER;
+
+    //run against both EE8 and EE7 features
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE7_FEATURES());
 
     @BeforeClass
     public static void appSetup() throws Exception {

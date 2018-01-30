@@ -37,7 +37,7 @@ public class Config12BuilderImpl extends ArchaiusConfigBuilderImpl implements Co
     }
 
     @Override
-    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters) {
-        return new Config12ConversionManager(converters);
+    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters, ClassLoader classLoader) {
+        return new Config12ConversionManager(converters, classLoader);
     }
 }

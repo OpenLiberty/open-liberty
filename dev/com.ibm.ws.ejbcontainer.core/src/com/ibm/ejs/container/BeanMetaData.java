@@ -1962,7 +1962,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
     {
         return this.homeRecord.getHome();
     }
-
+    
     /**
      *
      * @return J2EEName

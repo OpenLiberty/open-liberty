@@ -44,7 +44,6 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
 import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
-import com.ibm.ws.session.store.common.LoggingUtil;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.session.IStore;
@@ -68,6 +67,9 @@ public class DatabaseHashMap extends BackedHashMap {
     String dbpwd;
     private transient DatabaseStoreService databaseStoreService;
 
+    // this is set to true for multirow in DatabaseHashMapMR if additional conditions are satisfied
+    boolean appDataTablesPerThread = false;
+
     //  PK71265
     String delPropall;
 
@@ -76,6 +78,9 @@ public class DatabaseHashMap extends BackedHashMap {
     boolean tryingToInitialize = false;
     //PK55900 : make sure tableName is only constructed once in initDBSettings()
     boolean firstInitialize = true;
+
+    IStore _iStore;
+    SessionManagerConfig _smc;
 
     static final int SOMEBIGSIZE = 2100000; // Used for missing DataSource
     static final int SMALLCOL_SIZE_DB2 = 3122;
@@ -227,12 +232,23 @@ public class DatabaseHashMap extends BackedHashMap {
     public DatabaseHashMap(IStore store, SessionManagerConfig smc, DatabaseStoreService databaseStoreService) {
         super(store, smc);
         this.databaseStoreService = databaseStoreService;
+        _iStore = store;
+        _smc = smc;
         if (smc.getTableNameValue() != null) {
             tableName = smc.getTableNameValue();
         }
         suspendedTransactions = new Hashtable();
         getDataSource();
         initDBSettings();
+    }
+
+    /*
+     * getAppDataTablesPerThread - returns the boolean
+     * only true for mulitrow db if other conditions are met - see constructor for DatabaseHashMapMR
+     */
+    @Override
+    public boolean getAppDataTablesPerThread() {
+        return appDataTablesPerThread;
     }
 
     protected DatabaseStoreService getDatabaseStoreService() {
@@ -2986,12 +3002,6 @@ public class DatabaseHashMap extends BackedHashMap {
                 // only invalidate those which have not been accessed since
                 // check in computeInvalidList
                 if (rc > 0) {
-
-                    // set this flag so that removal from the database is not
-                    // done as part of the sessoin.invalidate call -
-                    // we want to do it here with the nukerCon
-                    s.nukedByInvalidator = true;
-
                     // return of session done as a result of this call
                     s.internalInvalidate(true);
 

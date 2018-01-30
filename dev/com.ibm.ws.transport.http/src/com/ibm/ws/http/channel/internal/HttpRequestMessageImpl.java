@@ -1979,10 +1979,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pushBuilder.getPath(), LiteralIndexType.NOINDEXING));
             }
 
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
-            hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, isc.getLocalAddr().getHostName(), LiteralIndexType.NOINDEXING));
-            hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, isc.getLocalAddr().getHostName(), LiteralIndexType.NOINDEXING));
+            if (isc.isSecure()) {
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
+                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
+            } else {
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
+                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
+            }
+            String authority = isc.getLocalAddr().getHostName() + ":" + isc.getLocalPort();
+            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, authority, LiteralIndexType.NOINDEXING));
+            hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, authority, LiteralIndexType.NOINDEXING));
 
             // Add headers
             Set<HeaderField> headerSet = pushBuilder.getHeaders();
@@ -2021,17 +2027,17 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             }
 
             // Add optional session id
-            if (pushBuilder.getSessionId() != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() " + pushBuilder.getSessionId());
-                }
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", "JSESSIONID=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
-                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", "JSESSIONID=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() got sessionid");
-            }
+//            if (pushBuilder.getSessionId() != null) {
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() " + pushBuilder.getSessionId());
+//                }
+//                ppStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE:", "JSESSIONID=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
+//                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE:", "JSESSIONID=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
+//            }
+//
+//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() got sessionid");
+//            }
         }
         // Either IOException from write, or CompressionException from encodeHeader
         catch (Exception e) {
@@ -2049,6 +2055,13 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // - H2StreamProcessor in Idle state
         // It puts the new SP into the SPTable
         H2StreamProcessor promisedSP = ((H2HttpInboundLinkWrap) link).muxLink.createNewInboundLink(promisedStreamId);
+        if (promisedSP == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "pushNewRequest exit; cannot create new push stream -"
+                             + " the max number of concurrent streams has already been reached on link: " + link);
+            }
+            return;
+        }
         ((H2HttpInboundLinkWrap) link).setPushPromise(true);
         // Update the promised stream state to Localreserved
         promisedSP.initializePromisedStream();

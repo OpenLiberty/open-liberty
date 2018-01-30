@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
-import com.ibm.ws.session.store.common.LoggingUtil;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -70,11 +69,12 @@ public class DatabaseStoreService implements SessionStoreService {
         return this.serializationServiceRef.getService();
     }
 
-    public static synchronized void setCompletedPassivation(boolean isInProcessOfStopping) { // 128284
+    @Override
+    public synchronized void setCompletedPassivation(boolean isInProcessOfStopping) { // 128284
         completedPassivation = isInProcessOfStopping;
     }
 
-    public static synchronized boolean isCompletedPassivation() { // 128284
+    public synchronized boolean isCompletedPassivation() { // 128284
         return completedPassivation;
     }
 

@@ -250,7 +250,7 @@ public abstract class ConfigBuilderImpl implements ConfigBuilder {
      *
      * @return
      */
-    private ClassLoader getClassLoader() {
+    protected ClassLoader getClassLoader() {
         return classloader;
     }
 }

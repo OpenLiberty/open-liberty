@@ -1,6 +1,7 @@
 -include= ~../cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxrsClient-2.0
 visibility=public
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: jaxrsClient-2.0

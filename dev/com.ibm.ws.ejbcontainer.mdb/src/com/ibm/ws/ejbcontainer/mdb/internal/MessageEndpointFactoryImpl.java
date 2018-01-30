@@ -13,11 +13,16 @@ package com.ibm.ws.ejbcontainer.mdb.internal;
 import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.transaction.xa.XAResource;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.ejs.container.BeanId;
 import com.ibm.ejs.container.BeanMetaData;
@@ -69,10 +74,10 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     private Object activationSpec;
 
-    private volatile String name = null; //messageEndpoint-
-
     private final MDBRuntimeImpl mdbRuntime;
     private String activationSvcId;
+
+    ServiceRegistration<PauseableComponent> registration = null;
 
     /**
      * MDB runtime information about the activation service.
@@ -92,6 +97,12 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     boolean runtimeActivated;
 
+    /**
+     * Indicates whether the message endpoint should be activated. 
+     * False if autoStart is set to false until a resume command is issued
+     */
+    boolean shouldActivate;
+
     public MessageEndpointFactoryImpl() throws RemoteException {
         super();
         mdbRuntime = MDBRuntimeImpl.instance();
@@ -108,7 +119,18 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         // binding file, or defaulted to "[app/]module/bean" conforming to the
         // java:global rules for binding an EJB.
         activationSvcId = bmd.ivActivationSpecJndiName;
-        name = "messageEndpoint-" + activationSvcId;
+
+        //Register this instance as a PauseableComponent
+        BundleContext bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
+        registration = bundleContext.registerService(PauseableComponent.class, this, null);
+
+    }
+
+    @Override
+    public void destroy() {
+        if (registration != null)
+            registration.unregister();
+        super.destroy();
     }
 
     @Override
@@ -429,7 +451,10 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     @Override
     public HashMap<String, String> getExtendedInfo() {
-        throw new UnsupportedOperationException();
+        LinkedHashMap<String, String> info = new LinkedHashMap<String, String>();
+        if (activationSvcId != null)
+            info.put("activationSpec", activationSvcId);
+        return info;
     }
 
     /*
@@ -439,7 +464,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     @Override
     public String getName() {
-        return name;
+        return getActivationName();
     }
 
     /*
@@ -460,7 +485,16 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     @Override
     public void pause() throws PauseableComponentException {
         try {
-            deactivateEndpoint();
+            if (ivState == ACTIVE_STATE) {
+                deactivateEndpoint();
+            } else if (ivState == INACTIVE_STATE) {
+                Tr.info(tc, "MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I", beanMetaData.enterpriseBeanName, beanMetaData.getModuleMetaData().getName(),
+                        beanMetaData.getModuleMetaData().getApplicationMetaData().getName());
+            } else {
+                throw new PauseableComponentException(Tr.formatMessage(tc, "MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W", beanMetaData.enterpriseBeanName,
+                                                                       beanMetaData.getModuleMetaData().getName(),
+                                                                       beanMetaData.getModuleMetaData().getApplicationMetaData().getName()));
+            }
         } catch (ResourceException re) {
             throw new PauseableComponentException(re);
         }
@@ -475,15 +509,20 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     @Override
     public void resume() throws PauseableComponentException {
         try {
-            activateEndpoint();
+            shouldActivate = true;
+            if (ivState == INACTIVE_STATE) {
+                activateEndpoint();
+            } else if (ivState == ACTIVE_STATE) {
+                Tr.info(tc, "MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I", beanMetaData.enterpriseBeanName, beanMetaData.getModuleMetaData().getName(),
+                        beanMetaData.getModuleMetaData().getApplicationMetaData().getName());
+            } else {
+                throw new PauseableComponentException(Tr.formatMessage(tc, "MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W", beanMetaData.enterpriseBeanName,
+                                                                       beanMetaData.getModuleMetaData().getName(),
+                                                                       beanMetaData.getModuleMetaData().getApplicationMetaData().getName()));
+            }
         } catch (ResourceException re) {
             throw new PauseableComponentException(re);
         }
 
     }
-
-    public String getMessageEndpointTarget() {
-        return getName();
-    }
-
 }

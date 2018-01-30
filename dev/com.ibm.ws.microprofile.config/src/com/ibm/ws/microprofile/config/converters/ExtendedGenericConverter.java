@@ -21,5 +21,5 @@ public interface ExtendedGenericConverter {
      * @param rawString
      * @return
      */
-    public abstract <T> Object convert(String rawString, Class<T> genericType, ConversionManager conversionManager);
+    public abstract <T> Object convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader);
 }

@@ -319,7 +319,7 @@ public class H2Headers {
                                       LiteralIndexType type, boolean huffman) throws CompressionException, IOException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.entry(tc, "encodeHeader", "Encoding [" + name + ", " + "value");
+            Tr.entry(tc, "encodeHeader", "Encoding [" + name + ", " + value);
         }
 
         if (table == null || !table.isDynamicTableValid()) {

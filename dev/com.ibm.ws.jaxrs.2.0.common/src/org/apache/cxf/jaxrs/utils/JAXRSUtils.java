@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HttpMethod;
@@ -544,6 +545,23 @@ public final class JAXRSUtils {
             createResponse(getRootResources(message), message, errorMsg.toString(), status, methodMatched == 0);
         throw ExceptionUtils.toHttpException(null, response);
 
+    }
+
+    public static Level getExceptionLogLevel(Message message, Class<? extends WebApplicationException> exClass) {
+        Level logLevel = null;
+        Object logLevelProp = message.get(exClass.getName() + ".log.level");
+        if (logLevelProp != null) {
+            if (logLevelProp instanceof Level) {
+                logLevel = (Level) logLevelProp;
+            } else {
+                try {
+                    logLevel = Level.parse(logLevelProp.toString());
+                } catch (Exception ex) {
+                    // ignore
+                }
+            }
+        }
+        return logLevel;
     }
 
     public static List<MediaType> intersectSortMediaTypes(List<MediaType> acceptTypes,

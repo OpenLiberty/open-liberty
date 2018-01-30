@@ -2,6 +2,7 @@
 
   <featureManager>
     <feature>servlet-3.1</feature>
+    <feature>mpOpentracing-1.0</feature>
     <feature>usr:opentracingMock-0.30</feature>
     <feature>componenttest-1.0</feature>
   </featureManager>
@@ -9,7 +10,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <application location="serviceApp.war">
-    <classloader apiTypeVisibility="spec, ibm-api, third-party"/>
+    <classloader apiTypeVisibility="spec, ibm-api, third-party, stable"/>
   </application>
 
   <!-- Turn this on for the FAT: That provides good diagnostics in case -->
@@ -35,5 +36,4 @@
   	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=incomingExcluded" type="INCOMING" />
   	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=incomingIncluded" type="OUTGOING" />
   </opentracing>
-
 </server>

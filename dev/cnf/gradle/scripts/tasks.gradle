@@ -186,7 +186,7 @@ task publishFeatureResources {
                        buildType: buildType,
                        junit: new File(project.buildDir, 'report/featureChecks.xml')) {
           defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                         licensePath: buildImage.file('license'),
+                         licensePath: buildImage.file('lafiles/featureTerms'),
                          version: version,
                          licenseType: "EPL",
                          displayVersion: "OpenLiberty")
@@ -456,11 +456,11 @@ test {
     jvmArgs ant.jvmargPorts.tokenize()
   }
   afterSuite { desc, result ->
-    if (!desc.parent && desc.parent != null) { // will match the outermost suite
-      testCountTotal = testCountTotal + result.testCount
-      successfulTestCountTotal = successfulTestCountTotal + result.successfulTestCount
-      failedTestCountTotal = failedTestCountTotal + result.failedTestCount
-      skippedTestCountTotal = skippedTestCountTotal + result.skippedTestCount
+    if (!desc.parent) { // will match the outermost suite
+      rootProject.ext.testCountTotal = rootProject.ext.testCountTotal + result.testCount
+      rootProject.ext.successfulTestCountTotal = rootProject.ext.successfulTestCountTotal + result.successfulTestCount
+      rootProject.ext.failedTestCountTotal = rootProject.ext.failedTestCountTotal + result.failedTestCount
+      rootProject.ext.skippedTestCountTotal = rootProject.ext.skippedTestCountTotal + result.skippedTestCount
     }
   }
 }

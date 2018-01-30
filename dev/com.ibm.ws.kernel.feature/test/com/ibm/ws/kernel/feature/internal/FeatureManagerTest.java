@@ -155,7 +155,7 @@ public class FeatureManagerTest {
     Provisioner provisioner;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         fm = new FeatureManager();
         fm.featureChanges.clear();
         fm.onError = OnError.WARN;

@@ -876,7 +876,7 @@ public class H2StreamProcessor {
                 getHeadersFromFrame();
 
                 if (currentFrame.flagEndHeadersSet()) {
-                    processCompleteHeaders();
+                    processCompleteHeaders(false);
                     setHeadersComplete();
                 } else {
                     setContinuationFrameExpected(true);
@@ -921,7 +921,7 @@ public class H2StreamProcessor {
                 // if this is a header frame, it must be trailer data
                 getHeadersFromFrame();
                 if (currentFrame.flagEndHeadersSet()) {
-                    processCompleteHeaders();
+                    processCompleteHeaders(false);
                     setHeadersComplete();
                     if (currentFrame.flagEndStreamSet()) {
                         setReadyForRead();
@@ -1019,7 +1019,7 @@ public class H2StreamProcessor {
         } else if (frameType == FrameTypes.CONTINUATION) {
             getHeadersFromFrame();
             if (currentFrame.flagEndHeadersSet()) {
-                processCompleteHeaders();
+                processCompleteHeaders(false);
                 setHeadersComplete();
                 setReadyForRead();
             }
@@ -1093,10 +1093,10 @@ public class H2StreamProcessor {
             this.getHeadersFromFrame();
             setHeadersComplete();
             try {
-                processCompleteHeaders();
+                processCompleteHeaders(true);
             } catch (CompressionException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sendRequestToWc: compression exception when creating the pushed reqeust on stream-id " + myID);
+                    Tr.debug(tc, "sendRequestToWc: compression exception when creating the pushed reqeust on stream-id " + myID + " " + e);
                 }
                 // Free the buffer, set the current frame to null, and remove the SP from the table
                 buf.release();
@@ -1323,7 +1323,7 @@ public class H2StreamProcessor {
      * @throws CompressionException
      * @throws ProtocolException
      */
-    private void processCompleteHeaders() throws CompressionException {
+    private void processCompleteHeaders(boolean isPush) throws CompressionException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processCompleteHeaders entry: stream " + myID);
         }
@@ -1354,7 +1354,7 @@ public class H2StreamProcessor {
             while (buf.hasRemaining()) {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
                 current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
-                                                  processTrailerHeaders, this.muxLink.getConnectionSettings()));
+                                                  processTrailerHeaders && !isPush, this.muxLink.getConnectionSettings()));
                 if (current == null) {
                     // processed a dynamic table size update; go to the next header
                     continue;
@@ -1396,7 +1396,7 @@ public class H2StreamProcessor {
                 }
             }
             // only set headers on the link once
-            if (!processTrailerHeaders && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
+            if ((isPush || !processTrailerHeaders) && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
                 //Add all decoded pseudo-headers / headers to the H2 inbound link wrap
                 this.h2HttpInboundLinkWrap.setReadHeaders(headers);
                 this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);

@@ -35,7 +35,7 @@ public final class ProductMatch {
     private String licenseType;
     private static final Pattern validNumericVersionOrRange = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)\\.(\\d+)\\+?$");
     private static final Pattern validBaseVersion = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)$");
-    static final int MATCHED = 0;
+    public static final int MATCHED = 0;
     public static final int NOT_APPLICABLE = -1;
     public static final int INVALID_VERSION = -2;
     public static final int INVALID_EDITION = -3;
