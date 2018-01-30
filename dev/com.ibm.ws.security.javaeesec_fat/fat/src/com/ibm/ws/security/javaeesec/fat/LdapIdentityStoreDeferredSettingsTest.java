@@ -590,6 +590,9 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * This test will verify that a an callerSearchFilter EL expression that resolves to null is handled.
      * The callerSearchFilter will be defaulted to an empty string which will not match any users.
      *
+     * Having an empty callerSearchFilter won't necessarily work, based on configuration, but it won't
+     * automatically fail. We build the filter based on callerNameAttribute and the callerDn.
+     *
      * <ul>
      * <li>ldapuser1 - unauthorized</li>
      * <li>ldapuser2 - unauthorized</li>
@@ -608,8 +611,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchFilter' configuration for the identity store.");
+        verifyAuthorization(SC_OK, SC_OK, SC_OK, SC_OK);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
