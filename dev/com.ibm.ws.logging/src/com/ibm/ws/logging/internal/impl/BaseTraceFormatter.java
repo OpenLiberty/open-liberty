@@ -728,7 +728,7 @@ public class BaseTraceFormatter extends Formatter {
                     logLevel = kvp.getValue();
                 } else if (kvp.getKey().equals("threadName")) {
                     threadName = kvp.getValue();
-                } else if (kvp.getKey().equals("levelVal")) {
+                } else if (kvp.getKey().equals("levelValue")) {
                     levelVal = Integer.parseInt(kvp.getValue());
                 }
 

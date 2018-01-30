@@ -16,7 +16,6 @@ import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.LogTraceSourceGenericData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -61,7 +60,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if traceFilename == systemOut write to console.log in trace format
             //isTraceStdout
-            Integer levelVal = ((LogTraceSourceGenericData) event).getLevelValue();
+            Integer levelVal = ((GenericData) event).getLevelValue();
             if (isTraceStdout) {
                 //check if message need to be written to stderr
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {

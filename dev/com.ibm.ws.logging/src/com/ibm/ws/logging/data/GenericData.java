@@ -19,6 +19,7 @@ public class GenericData {
     private final ArrayList<Pair> pairs;
 
     private String sourceType;
+    private Integer LevelValue;
 
     public GenericData() {
         pairs = new ArrayList<Pair>();
@@ -48,6 +49,20 @@ public class GenericData {
 
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
+    }
+
+    /**
+     * @return the levelValue
+     */
+    public Integer getLevelValue() {
+        return LevelValue;
+    }
+
+    /**
+     * @param levelValue the levelValue to set
+     */
+    public void setLevelValue(Integer levelValue) {
+        LevelValue = levelValue;
     }
 
 }

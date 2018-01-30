@@ -25,7 +25,6 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
-import com.ibm.ws.logging.data.LogTraceSourceGenericData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -136,7 +135,7 @@ public class LogSource implements Source, WsLogHandler {
 
     public GenericData parse(RoutedMessage routedMessage) {
 
-        LogTraceSourceGenericData genData = new LogTraceSourceGenericData();
+        GenericData genData = new GenericData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
 
