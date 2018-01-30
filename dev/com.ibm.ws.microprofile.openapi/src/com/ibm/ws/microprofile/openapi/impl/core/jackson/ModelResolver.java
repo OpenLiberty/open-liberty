@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1153,9 +1153,11 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 DiscriminatorMapping mappings[] = directSchemaAnnotation.discriminatorMapping();
                 if (mappings != null && mappings.length > 0) {
                     for (DiscriminatorMapping mapping : mappings) {
-                        if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
-                            discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
-                        }
+                        //@DiscriminatorMapping is not specified as default value anywhere - so it must be user-specified, hence the following if-check is not needed.
+                        //if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
+                        //TODO verify that resolving/processing Void.class doesn't result in NullPointerException
+                        discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
+                        //}
                     }
                 }
             }
