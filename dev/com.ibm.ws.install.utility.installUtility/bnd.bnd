@@ -1,9 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
 -include= ~../cnf/resources/bnd/cmdline.props
 bVersion=1.0
 
 Bundle-Name: WebSphere Runtime Install Utility Tool
 Bundle-SymbolicName: com.ibm.ws.install.utility.installUtility
-Require-Bundle: com.ibm.ws.install; version="[1,1.0.100)", \
+Bundle-Description: Project for storing Map based Kernel installation library.
+
+
+Private-Package: \
+  com.ibm.ws.install, \
+  com.ibm.ws.install.internal.*
+  
+IBM-RequiredExtensions: ws-customPasswordEncryption
+
+-outputmask: ws-installUtility.jar
+
+instrument.disabled: true
+
+publish.tool.jar=ws-installUtility.jar
+publish.tool.script=installUtility
+
+-buildpath: \
+  ${javac.bootclasspath.java6},\
+  com.ibm.ws.install; version="[1,1.0.100)", \
   com.ibm.ws.install.utility; version="[1,1.0.100)", \
   com.ibm.ws.crypto.passwordutil; version="[1,1.0.100)", \
   com.ibm.ws.kernel.feature; version="[1,1.0.100)", \
@@ -19,21 +48,6 @@ Require-Bundle: com.ibm.ws.install; version="[1,1.0.100)", \
   com.ibm.ws.repository.liberty; version="[1,1.0.100)", \
   com.ibm.ws.repository.resolver; version="[1,1.0.100)", \
   com.ibm.ws.repository; version="[1,1.0.100)", \
-  com.ibm.websphere.javaee.jaxb.2.2; location="dev/api/spec/"; version="[1, 1.0.100)", \
-  com.ibm.websphere.javaee.jsonp.1.0; location="dev/api/spec/"; version="[1, 1.0.100)", \
+  com.ibm.websphere.javaee.jaxb.2.2; version="[1, 1.0.100)", \
+  com.ibm.websphere.javaee.jsonp.1.0; version="[1, 1.0.100)", \
   com.ibm.ws.org.glassfish.json.1.0; version="[1,1.0.100)"
-Private-Package: \
-  com.ibm.ws.install, \
-  com.ibm.ws.install.internal.*
-IBM-RequiredExtensions: ws-customPasswordEncryption
-
--outputmask: ws-installUtility.jar
-
-instrument.disabled: true
-
-publish.tool.jar=ws-installUtility.jar
-publish.tool.script=installUtility
-
--buildpath: \
-        ${javac.bootclasspath.java6}, \
-        com.ibm.ws.install.utility;version=latest
