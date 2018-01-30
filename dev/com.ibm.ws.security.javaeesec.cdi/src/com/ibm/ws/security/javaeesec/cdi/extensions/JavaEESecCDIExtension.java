@@ -938,11 +938,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Tr.debug(tc, "The container provided FormAuthenticationMechanism will be used with the following attributes. login page  : " + loginURL + ", error page : " + errorURL + ", context root : " + contextRoot);
         }
         Properties props = new Properties();
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, loginURL);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, errorURL);
+        if (loginURL != null) {
+            props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, loginURL);
+        }
+        if (errorURL != null) {
+            props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, errorURL);
+        }
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, true);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN, true);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT, contextRoot);
+        if (contextRoot != null) {
+            props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT, contextRoot);
+        }
         return props;
     }
 
@@ -975,11 +981,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private String FixUpUrl(String input, String contextRoot) {
         // returns relative path from the contextRoot. if it does not find a match, return as it is.
         String output = input;
-        if (!input.startsWith("/")) {
-            input = "/" + input;
-        }
-        if (input.startsWith(contextRoot) && input.charAt(contextRoot.length()) == '/') {
-            output = input.substring(contextRoot.length());
+        if (input != null) {
+            if (!input.startsWith("/")) {
+                input = "/" + input;
+            }
+            if (input.startsWith(contextRoot) && input.charAt(contextRoot.length()) == '/') {
+                output = input.substring(contextRoot.length());
+            }
         }
         return output;
     }
