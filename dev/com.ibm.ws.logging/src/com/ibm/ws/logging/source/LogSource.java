@@ -25,6 +25,7 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceSourceGenericData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -176,7 +177,7 @@ public class LogSource implements Source, WsLogHandler {
 
     public GenericData parse(RoutedMessage routedMessage) {
 
-        GenericData genData = new GenericData();
+        LogTraceSourceGenericData genData = new LogTraceSourceGenericData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
 
@@ -199,6 +200,19 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
         genData.addPair("ibm_className", logRecord.getSourceClassName());
         genData.addPair("levelValue", logRecord.getLevel().intValue());
+
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+
+        if (wsLogRecord != null) {
+            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
+            genData.addPair("org", wsLogRecord.getOrganization());
+            genData.addPair("product", wsLogRecord.getProduct());
+            genData.addPair("component", wsLogRecord.getComponent());
+//            genData.addPair("wsSourceThreadName", wsLogRecord.getReporterOrSourceThreadName());
+        }
+
+        String threadName = Thread.currentThread().getName();
+        genData.addPair("threadName", threadName);
 
         KeyValuePairList extensions = new KeyValuePairList();
         Map<String, String> extMap = null;
@@ -223,10 +237,19 @@ public class LogSource implements Source, WsLogHandler {
             }
         }
         genData.addPair("message", msgBldr.toString());
+        genData.setLevelValue(logRecord.getLevel().intValue());
         genData.setSourceType(sourceName);
 
         return genData;
 
+    }
+
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 
     /**

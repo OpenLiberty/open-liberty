@@ -12,9 +12,10 @@ package com.ibm.ws.logging.internal.impl;
 
 import java.util.List;
 
+import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
-import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.GenericData;import com.ibm.ws.logging.data.LogTraceSourceGenericData;;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -33,7 +34,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private BaseTraceFormatter formatter = null;
     private Integer consoleLogLevel = null;
     private boolean copySystemStreams = false;
-    private boolean isStderr = false;
 
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -52,7 +52,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
         String messageOutput = null;
-        isStderr = false;
+        boolean isStderr = false;
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
             messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         }
@@ -60,20 +60,24 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if detailLog == systemOut write to console.log in trace format
             //isTraceStdout
+            Integer levelVal = ((LogTraceSourceGenericData) event).getLevelValue();
             if (isTraceStdout) {
-                messageOutput = formatter.traceFormatGenData((GenericData) event, isStderr);
-            } else if (copySystemStreams) {
+                //check if message need to be written to stderr
+                if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
+                    isStderr = true;
+                }
+                messageOutput = formatter.traceFormatGenData((GenericData) event);
+            } else if (copySystemStreams && levelVal == 700) {// copySystemStream and stderr/stdout level 700
                 //write
                 messageOutput = formatter.filteredStreamOutput((GenericData) event);
 
             }
             //determin if it is system.out/err and !copysystemstream then throw it out
-            if (messageOutput == null) {//not system.out/system.err && tracefilename != stdout
-                messageOutput = formatter.consoleLogFormat((GenericData) event, consoleLogLevel);
+            //if !isTraceStdout && level >= consoleloglevel
+            else if (levelVal >= consoleLogLevel) {//not system.out/system.err && tracefilename != stdout
+                messageOutput = formatter.consoleLogFormat((GenericData) event);
             }
-
         }
-
         synchronized (this) {
             if (isStderr) {
                 sysErrHolder.getOriginalStream().println(messageOutput);

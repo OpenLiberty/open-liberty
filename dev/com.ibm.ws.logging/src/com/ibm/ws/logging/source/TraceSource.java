@@ -19,6 +19,7 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceSourceGenericData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -102,7 +103,7 @@ public class TraceSource implements Source, WsTraceHandler {
 
     public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord, Object id) {
 
-        GenericData genData = new GenericData();
+        LogTraceSourceGenericData genData = new LogTraceSourceGenericData();
 //        LogRecord logRecord = routedMessage.getLogRecord();
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
         if (verboseMessage == null) {
@@ -121,12 +122,24 @@ public class TraceSource implements Source, WsTraceHandler {
         genData.addPair("ibm_className", logRecord.getSourceClassName());
         String sequenceNum = sequenceNumber.next(datetimeValue);
         genData.addPair("ibm_sequence", sequenceNum);
-        genData.addPair("levelValue", Integer.toString(logRecord.getLevel().intValue()));
+        genData.addPair("levelValue", logRecord.getLevel().intValue());
+
+        String threadName = Thread.currentThread().getName();
+        genData.addPair("threadName", threadName);
 
         if (id != null) {
             Integer objid = System.identityHashCode(id);
             genData.addPair("objectId", objid);
         }
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+
+        if (wsLogRecord != null) {
+            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
+            genData.addPair("org", wsLogRecord.getOrganization());
+            genData.addPair("product", wsLogRecord.getProduct());
+            genData.addPair("component", wsLogRecord.getComponent());
+        }
+
         KeyValuePairList extensions = new KeyValuePairList();
         Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
@@ -134,64 +147,24 @@ public class TraceSource implements Source, WsTraceHandler {
         }
 
         for (Map.Entry<String, String> entry : extMap.entrySet()) {
-            System.out.print("entry Key=" + entry.getKey());
             extensions.addPair(entry.getKey(), entry.getValue());
         }
         genData.addPairs(extensions);
+        genData.setLevelValue(logRecord.getLevel().intValue());
         genData.setSourceType(sourceName);
         return genData;
     }
-//<<<<<<< HEAD
-//            KeyValuePair extEntry = new KeyValuePair(entry.getKey(), entry.getValue(), KeyValuePair.ValueTypes.STRING);
-//            extList.add(extEntry);
-//        }
-//
-//        GenericData genData = new GenericData();
-//        ArrayList<Pair> pairs = genData.getPairs();
-//
-//        pairs.add(message);
-//        pairs.add(datetime);
-//        pairs.add(threadId);
-//        pairs.add(loggerName);
-//        pairs.add(logLevel);
-//        pairs.add(logLevelRaw);
-//        pairs.add(methodName);
-//        pairs.add(className);
-//        pairs.add(sequence);
-//        pairs.add(extensions);
-//        pairs.add(levelValue);
-//
-//        if (id != null) {
-//            Integer objid = System.identityHashCode(id);
-//            KeyValuePair objectId = new KeyValuePair("objectId", objid.toString(), KeyValuePair.ValueTypes.STRING);
-//            pairs.add(objectId);
-//        }
-//        //get format for trace
-//        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
-//        if (wsLogRecord != null) {
-//            KeyValuePair corrId = new KeyValuePair("correlationId", wsLogRecord.getCorrelationId(), KeyValuePair.ValueTypes.STRING);
-//            KeyValuePair org = new KeyValuePair("org", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
-//            KeyValuePair prod = new KeyValuePair("product", wsLogRecord.getOrganization(), KeyValuePair.ValueTypes.STRING);
-//            KeyValuePair component = new KeyValuePair("component", wsLogRecord.getComponent(), KeyValuePair.ValueTypes.STRING);
-//            KeyValuePair wsSourceThreadName = new KeyValuePair("wsSourceThreadName", wsLogRecord.getReporterOrSourceThreadName(), KeyValuePair.ValueTypes.STRING);
-//            pairs.add(corrId);
-//            pairs.add(org);
-//            pairs.add(prod);
-//            pairs.add(component);
-//            pairs.add(wsSourceThreadName);
-//        }
-//    genData.setSourceType(sourceName);return genData;
-//
-//    /**
-//     * @return
-//     */
-//    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
-//        try {
-//            return (WsLogRecord) logRecord;
-//        } catch (ClassCastException ex) {
-//            return null;
-//        }
-//    }
+
+    /**
+     * @return
+     */
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
+    }
 
     /*
      * (non-Javadoc)

@@ -426,7 +426,7 @@ public class BaseTraceFormatter extends Formatter {
      * @param txt the result of {@link #formatMessage}
      * @return Formatted string for the console
      */
-    public String consoleLogFormat(GenericData genData, Integer consoleLogLevel) {
+    public String consoleLogFormat(GenericData genData) {
         StringBuilder sb = new StringBuilder(256);
 //        String name = genData.getSourceType();
         ArrayList<Pair> pairs = genData.getPairs();
@@ -434,7 +434,7 @@ public class BaseTraceFormatter extends Formatter {
         String message = null;
 //        Long datetime = null;
 //        String levelString = "";
-        String throwable = null;
+//        String throwable = null;
         Integer levelValue = null;
         for (Pair p : pairs) {
 
@@ -443,8 +443,6 @@ public class BaseTraceFormatter extends Formatter {
                 kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals("message")) {
                     message = kvp.getValue();
-                } else if (kvp.getKey().equals("throwable")) {
-                    throwable = kvp.getValue();
                 } else if (kvp.getKey().equals("levelValue")) {
                     levelValue = Integer.parseInt(kvp.getValue());
                 }
@@ -452,17 +450,9 @@ public class BaseTraceFormatter extends Formatter {
             }
         }
 
-        if (levelValue >= consoleLogLevel) {
-            sb.append(BaseTraceFormatter.levelValToString(levelValue));
-//            sb.append(levelString);
-            sb.append(message);
-            if (throwable != null) {
-                sb.append(LoggingConstants.nl).append(throwable);
-            }
-            return sb.toString();
-
-        }
-        return null;
+        sb.append(BaseTraceFormatter.levelValToString(levelValue));
+        sb.append(message);
+        return sb.toString();
     }
 
     /**
@@ -509,13 +499,14 @@ public class BaseTraceFormatter extends Formatter {
         StringBuilder sb = new StringBuilder(256);
 //        String sym = getMarker(logRecord);
 //        String name = nonNullString(logRecord.getLoggerName(), logRecord.getSourceClassName());
-        String name = genData.getSourceType();
+        String name = null;
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = "";
         Long datetime = null;
         String level = "";
-        String throwable = null;
+        String loggerName = null;
+        String srcClassName = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -529,21 +520,20 @@ public class BaseTraceFormatter extends Formatter {
 
                 } else if (kvp.getKey().equals("severity")) {
                     level = kvp.getValue();
-                } else if (kvp.getKey().equals("throwable")) {
-                    throwable = kvp.getValue();
+                } else if (kvp.getKey().equals("module")) {
+                    loggerName = kvp.getValue();
+                } else if (kvp.getKey().equals("ibm_className")) {
+                    srcClassName = kvp.getValue();
                 }
 
             }
         }
+        name = nonNullString(srcClassName, loggerName);
         sb.append('[').append(DateFormatHelper.formatTime(datetime, useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');
         formatFixedString(sb, name, enhancedNameLength);
         sb.append(" " + level + " "); // sym has built-in padding
         sb.append(message);
-
-        if (throwable != null) {
-            sb.append(LoggingConstants.nl).append(throwable);
-        }
 
         return sb.toString();
     }
@@ -681,12 +671,11 @@ public class BaseTraceFormatter extends Formatter {
      * @param txt
      * @return String
      */
-    public String traceFormatGenData(GenericData gen, boolean isStderr) {
+    public String traceFormatGenData(GenericData gen) {
 
         ArrayList<Pair> pairs = gen.getPairs();
         KeyValuePair kvp = null;
         String txt = null;
-        String stackTrace = null;
         Integer id = null;
         String objId;
 
@@ -703,12 +692,11 @@ public class BaseTraceFormatter extends Formatter {
         String org = null;
         String prod = null;
         String component = null;
-        String wsSourceThreadName = null;
 
         String sym = null;
         String logLevel = null;
 
-        String threadId = null;
+        String threadName = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -716,8 +704,6 @@ public class BaseTraceFormatter extends Formatter {
                 kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals("message")) {
                     txt = kvp.getValue();
-                } else if (kvp.getKey().equals("throwable")) {
-                    stackTrace = kvp.getValue();
                 } else if (kvp.getKey().equals("ibm_datetime")) {
                     ibm_datetime = Long.parseLong(kvp.getValue());
                 } else if (kvp.getKey().equals("severity")) {
@@ -738,14 +724,10 @@ public class BaseTraceFormatter extends Formatter {
                     prod = kvp.getValue();
                 } else if (kvp.getKey().equals("component")) {
                     component = kvp.getValue();
-                } else if (kvp.getKey().equals("wsSourceThreadName")) {
-                    wsSourceThreadName = kvp.getValue();
-                } else if (kvp.getKey().equals("levelValue")) {
-                    levelVal = Integer.parseInt(kvp.getValue());
                 } else if (kvp.getKey().equals("logLevel")) {
                     logLevel = kvp.getValue();
-                } else if (kvp.getKey().equals("ibm_threadId")) {
-                    threadId = kvp.getValue();
+                } else if (kvp.getKey().equals("threadName")) {
+                    threadName = kvp.getValue();
                 }
 
             }
@@ -778,8 +760,6 @@ public class BaseTraceFormatter extends Formatter {
 
                 // append formatted message -- txt includes formatted args
                 sb.append(txt);
-                if (stackTrace != null)
-                    sb.append(LoggingConstants.nl).append(stackTrace);
                 break;
             case BASIC:
                 name = nonNullString(loggerName, className);
@@ -798,8 +778,6 @@ public class BaseTraceFormatter extends Formatter {
 
                 // append formatted message -- includes formatted args
                 sb.append(txt);
-                if (stackTrace != null)
-                    sb.append(nlBasicPadding).append(stackTrace);
                 break;
             case ADVANCED:
                 objId = generateObjectId(id, false);
@@ -827,9 +805,8 @@ public class BaseTraceFormatter extends Formatter {
                 if (id != null)
                     sb.append(" id=").append(objId);
 
-//                String x = null;
                 //check the comparison to WsLogRecord
-                if (org != null) {
+                if (org != null && prod != null && component != null) {
                     // next append org, prod, component, if set. Reference equality check is ok here.
                     sb.append(" org=");
                     sb.append(org);
@@ -839,25 +816,14 @@ public class BaseTraceFormatter extends Formatter {
                     sb.append(component);
 
                     //get thread name
-//                    if (wsSourceThreadName != null) {
-//                        x = wsSourceThreadName;
-//                    }
                 } else {
                     //ibm_threadId replace check if you can use this as the thread
-//                    x = Thread.currentThread().getName();
-                }
-                if (org == null) {
-                    sb.append(" thread=[").append(threadId).append("]");
+                    sb.append(" thread=[").append(threadName).append("]");
                 }
 
                 // append formatted message -- txt includes formatted args
                 sb.append(nlAdvancedPadding).append(txt);
-                if (stackTrace != null)
-                    sb.append(nlAdvancedPadding).append(stackTrace);
                 break;
-        }
-        if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
-            isStderr = true;
         }
         return sb.toString();
     }
@@ -1090,7 +1056,8 @@ public class BaseTraceFormatter extends Formatter {
     /**
      * @return
      */
-    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+    //change to public
+    public WsLogRecord getWsLogRecord(LogRecord logRecord) {
         try {
             return (WsLogRecord) logRecord;
         } catch (ClassCastException ex) {
@@ -1116,11 +1083,9 @@ public class BaseTraceFormatter extends Formatter {
                 }
             }
         }
-        if (!(loglevel.equals("SystemErr") || loglevel.equals("SystemOut"))) {
-            return null;
-        }
+
         String message = filterStackTraces(txt);
-        if (txt != null) {
+        if (message != null) {
             if (loglevel.equals("SystemErr")) {
                 message = "[err] " + message;
             }

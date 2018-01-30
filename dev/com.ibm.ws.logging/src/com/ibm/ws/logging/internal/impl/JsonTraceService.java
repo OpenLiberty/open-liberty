@@ -41,8 +41,6 @@ public class JsonTraceService extends BaseTraceService {
     private volatile BufferManagerImpl traceConduit;
     private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
-//    private static volatile Object sync = new Object();
-
     private volatile String serverName = null;
     private volatile String wlpUserDir = null;
 
@@ -182,16 +180,6 @@ public class JsonTraceService extends BaseTraceService {
         //check if json source list has sourcelist
     }
 
-//    /*
-//     * Need to tell collectormgrPiplineUtils that a JsonTrService is active and is configured to emit JSON.
-//     * So that when the eventual registration of LogSource and TraceSource as WsLogHandler
-//     * and WsTraceHandler (which kicks of the MessageRouterConfigurator and TraceRouterConfigurator)
-//     * will not flush early messages and trace back through the LogSource and TraceSource.
-//     */
-//    private void setJsonConfigured() {
-//        collectorMgrPipelineUtils.setJsonTrService(isJSON);
-//    }
-
     /*
      * Helper method to clean up the original source list by removing messages and
      * trace from it. Otherwise, our json handlers will subscribe these and cause
@@ -225,15 +213,6 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
-        //move up to configurations
-//        if (detailLog == systemOut) {
-//            consoleLogHandler.setConsoleStream(true);
-//        } else {
-//            consoleLogHandler.setConsoleStream(false);
-//        }
-        //check if copysystemstream is true
-        //change to enableCSS
-//        consoleLogHandler.setCopySystemStreams(copySystemStreams);
         // Tee to messages.log (always)
 
         RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
@@ -319,11 +298,6 @@ public class JsonTraceService extends BaseTraceService {
         int levelValue = level.intValue();
         TraceWriter detailLog = traceLog;
         //check if tracefilename is stdout
-//        if (detailLog == systemOut) {
-//            consoleLogHandler.setConsoleStream(true);
-//        } else {
-//            consoleLogHandler.setConsoleStream(false);
-//        }
 
         if (levelValue >= Level.INFO.intValue()) {
             //configuration
@@ -331,7 +305,6 @@ public class JsonTraceService extends BaseTraceService {
 
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
-//            String messageLogFormat = formatter.messageLogFormat(logRecord, formattedVerboseMsg);
 
             RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
 
@@ -375,11 +348,6 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
         //check if tracefilename is stdout
-//        if (detailLog == systemOut) {
-//            consoleLogHandler.setConsoleStream(true);
-//        } else {
-//            consoleLogHandler.setConsoleStream(false);
-//        }
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
