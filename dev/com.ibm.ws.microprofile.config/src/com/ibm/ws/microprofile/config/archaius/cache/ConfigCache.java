@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 //Based on com.netflix.archaius.DefaultPropertyFactory
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius.cache;
 
+import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.netflix.archaius.api.Config;
-import com.netflix.archaius.api.ConfigListener;
-import com.netflix.archaius.property.ListenerManager;
+import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
+import com.ibm.ws.microprofile.config.archaius.composite.ConfigListener;
+import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 
-public class CachedCompositePropertyFactory implements ConfigListener {
+public class ConfigCache implements ConfigListener {
 
     /**
-     * Config from which properties are retrieved. Config may be a composite.
+     * Config from which properties are retrieved.
      */
     private final CompositeConfig config;
 
     /**
-     * Cache of properties so PropertyContainer may be re-used
+     * Cache of Typed Properties
      */
-    private final ConcurrentMap<String, CachedCompositePropertyContainer> cache = new ConcurrentHashMap<String, CachedCompositePropertyContainer>();
+    private final ConcurrentMap<String, TypedProperty> cache = new ConcurrentHashMap<String, TypedProperty>();
 
     /**
      * Monotonically incrementing version number whenever a change in the Config
@@ -44,17 +45,11 @@ public class CachedCompositePropertyFactory implements ConfigListener {
     private final AtomicInteger version = new AtomicInteger();
 
     /**
-     * Array of all active callbacks. ListenerWrapper#update will be called for any
-     * change in config.
-     */
-    private final ListenerManager listeners = new ListenerManager();
-
-    /**
      * Constructor
      *
      * @param config
      */
-    public CachedCompositePropertyFactory(CompositeConfig config) {
+    public ConfigCache(CompositeConfig config) {
         this.config = config;
         this.config.addListener(this);
     }
@@ -65,11 +60,11 @@ public class CachedCompositePropertyFactory implements ConfigListener {
      * @param propName
      * @return the property's container
      */
-    public CachedCompositePropertyContainer getProperty(String propName) {
-        CachedCompositePropertyContainer container = cache.get(propName);
+    private TypedProperty getProperty(String propName) {
+        TypedProperty container = cache.get(propName);
         if (container == null) {
-            container = new CachedCompositePropertyContainer(propName, config, version, listeners);
-            CachedCompositePropertyContainer existing = cache.putIfAbsent(propName, container);
+            container = new TypedProperty(propName, config, version);
+            TypedProperty existing = cache.putIfAbsent(propName, container);
             if (existing != null) {
                 return existing;
             }
@@ -80,26 +75,14 @@ public class CachedCompositePropertyFactory implements ConfigListener {
 
     /** {@inheritDoc} */
     @Override
-    public void onConfigAdded(Config config) {
+    public void onConfigAdded() {
         invalidate();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onConfigRemoved(Config config) {
+    public void onConfigUpdated() {
         invalidate();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onConfigUpdated(Config config) {
-        invalidate();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onError(Throwable error, Config config) {
-        // TODO
     }
 
     /**
@@ -109,10 +92,18 @@ public class CachedCompositePropertyFactory implements ConfigListener {
         // Incrementing the version will cause all PropertyContainer instances to invalidate their
         // cache on the next call to get
         version.incrementAndGet();
-
-        // We expect a small set of callbacks and invoke all of them whenever there is any change
-        // in the configuration regardless of change. The blanket update is done since we don't track
-        // a dependency graph of replacements.
-        listeners.updateAll();
     }
+
+    /**
+     * @param propertyName
+     * @param propertyType
+     * @return
+     */
+    public SourcedPropertyValue getSourcedValue(String propertyName, Type propertyType) {
+        TypedProperty container = getProperty(propertyName);
+        TypedPropertyValue property = container.asType(propertyType);
+        SourcedPropertyValue value = property.getSourced();
+        return value;
+    }
+
 }

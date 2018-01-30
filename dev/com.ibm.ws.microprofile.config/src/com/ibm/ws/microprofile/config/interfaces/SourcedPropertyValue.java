@@ -8,31 +8,50 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.interfaces;
 
-import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+import java.lang.reflect.Type;
 
 /**
  * A value and the id of its source
  */
-public class CachedCompositeValue implements SourcedValue {
+public class SourcedPropertyValue {
 
     private final Object value;
+    private final Type type;
     private final String source;
     private final String tostring;
 
-    public CachedCompositeValue(Object value, String source) {
+    public SourcedPropertyValue(Object value, Type type, String source) {
         this.value = value;
+        this.type = type;
         this.source = source;
         this.tostring = value + "(" + source + ")";
     }
 
-    @Override
+    /**
+     * Get the actual value
+     *
+     * @return the value
+     */
     public Object getValue() {
         return value;
     }
 
-    @Override
+    /**
+     * Get the type of the value
+     * 
+     * @return
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * Get the ID of the source that provided the value
+     *
+     * @return the originating source ID
+     */
     public String getSource() {
         return source;
     }

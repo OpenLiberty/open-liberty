@@ -12,13 +12,13 @@
 package com.ibm.ws.microprofile.config12.impl;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.archaius.impl.ConversionDecoder;
 import com.ibm.ws.microprofile.config.converters.AutomaticConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.ConversionStatus;
 import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
 
-public class Config12ConversionManager extends ConversionDecoder {
+public class Config12ConversionManager extends ConversionManager {
 
     /**
      * @param converters all the converters to use

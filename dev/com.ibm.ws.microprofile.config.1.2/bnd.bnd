@@ -47,7 +47,6 @@ Include-Resource: \
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
-	com.ibm.ws.com.netflix.archaius.2.1.10;version=latest, \
 	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	org.eclipse.osgi;version=latest, \
@@ -67,8 +66,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
     org.glassfish:javax.json;strategy=exact;version=1.0.4, \
-    org.slf4j:slf4j-api;version=1.7.7, \
-    org.slf4j:slf4j-jdk14;version=1.7.7, \
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.sun.xml.bind:jaxb-core;version=2.2.10,\

@@ -15,15 +15,13 @@
  */
 //Based on com.netflix.archaius.property.DefaultPropertyContainer
 
-package com.ibm.ws.microprofile.config.archaius.impl;
+package com.ibm.ws.microprofile.config.archaius.cache;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.netflix.archaius.api.PropertyListener;
-import com.netflix.archaius.property.ListenerManager;
-import com.netflix.archaius.property.ListenerManager.ListenerUpdater;
+import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 
 /**
  * Implementation of PropertyContainer which reuses the same object for each
@@ -38,7 +36,7 @@ import com.netflix.archaius.property.ListenerManager.ListenerUpdater;
  * @author elandau
  *
  */
-public class CachedCompositePropertyContainer {
+public class TypedProperty {
 
     /**
      * The property name
@@ -53,24 +51,16 @@ public class CachedCompositePropertyContainer {
     /**
      * Cache for each type attached to this property.
      */
-    private final CopyOnWriteArrayList<CachedCompositeProperty> cache = new CopyOnWriteArrayList<CachedCompositeProperty>();
-
-    /**
-     * Listeners are tracked globally as an optimization so it is not necessary to iterate through all
-     * property containers when the listeners need to be invoked since the expectation is to have far
-     * less listeners than property containers.
-     */
-    private final ListenerManager listeners;
+    private final CopyOnWriteArrayList<TypedPropertyValue> typeCache = new CopyOnWriteArrayList<TypedPropertyValue>();
 
     /**
      * Reference to the externally managed master version used as the dirty flag
      */
     private final AtomicInteger masterVersion;
 
-    public CachedCompositePropertyContainer(String key, CompositeConfig config, AtomicInteger version, ListenerManager listeners) {
+    public TypedProperty(String key, CompositeConfig config, AtomicInteger version) {
         this.key = key;
         this.config = config;
-        this.listeners = listeners;
         this.masterVersion = version;
     }
 
@@ -81,44 +71,28 @@ public class CachedCompositePropertyContainer {
      * @param newProperty
      * @return
      */
-    @SuppressWarnings("unchecked")
-    private CachedCompositeProperty add(final CachedCompositeProperty newProperty) {
+    private TypedPropertyValue add(final TypedPropertyValue newProperty) {
         //this method was all wrong, it never really checked the cache for an existing value
         //so I rewrote it ;-)
-        CachedCompositeProperty cachedProperty = null;
+        TypedPropertyValue cachedProperty = null;
 
-        for (CachedCompositeProperty property : cache) {
+        for (TypedPropertyValue property : typeCache) {
             if (property.equals(newProperty)) {
                 cachedProperty = property;
                 break;
             }
         }
         if (cachedProperty == null) {
-            cache.add(newProperty);
+            typeCache.add(newProperty);
             cachedProperty = newProperty;
         }
 
         return cachedProperty;
     }
 
-    public CachedCompositeProperty asType(final Type type) {
-        CachedCompositeProperty prop = add(new CachedCompositeProperty(type, this) {
-            @Override
-            protected CachedCompositeValue resolveCurrent() throws Exception {
-                return config.getCompositeValue(type, key);
-            }
-        });
+    public TypedPropertyValue asType(final Type type) {
+        TypedPropertyValue prop = add(new TypedPropertyValue(type, this, config));
         return prop;
-    }
-
-    /**
-     * Add a listener
-     *
-     * @param listener
-     * @param listenerUpdater
-     */
-    void addListener(PropertyListener<?> listener, ListenerUpdater updater) {
-        listeners.add(listener, updater);
     }
 
     /**
@@ -128,15 +102,6 @@ public class CachedCompositePropertyContainer {
      */
     String getKey() {
         return key;
-    }
-
-    /**
-     * Remove a listener
-     *
-     * @param listener
-     */
-    void removeListener(PropertyListener<?> listener) {
-        listeners.remove(listener);
     }
 
     /**
