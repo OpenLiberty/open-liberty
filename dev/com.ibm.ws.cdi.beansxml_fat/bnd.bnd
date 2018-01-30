@@ -56,7 +56,7 @@ src: \
         test-applications/userSAXParserFactory.war/src,\
         test-applications/webBeansBeansXmlInterceptors.war/src,\
         test-applications/webBeansBeansXmlDecorators.war/src,\
-        test-applications/utilLib.jar
+        test-applications/utilLib.jar/src
         
 	
 	
