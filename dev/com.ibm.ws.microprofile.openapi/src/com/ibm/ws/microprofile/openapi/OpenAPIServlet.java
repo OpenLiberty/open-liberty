@@ -33,23 +33,21 @@ public class OpenAPIServlet extends HttpServlet {
 
     private static final TraceComponent tc = Tr.register(OpenAPIServlet.class);
 
-    private volatile ApplicationProcessor applicationProcessor = null;
-
     /** {@inheritDoc} */
 
     /** {@inheritDoc} */
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        ApplicationProcessor applicationProcessor = ApplicationProcessor.getInstance();
+
         if (request.getMethod().equals(Constants.METHOD_GET)) {
             if (applicationProcessor == null) {
-                applicationProcessor = findApplicationProcessor(request);
-                if (applicationProcessor == null) {
-                    Writer writer = response.getWriter();
-                    writer.write("Failed to find OpenAPI application processor");
-                    response.setStatus(404);
-                }
+                Writer writer = response.getWriter();
+                writer.write("Failed to find OpenAPI application processor");
+                response.setStatus(404);
             }
+
             String acceptHeader = "";
             acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
             String format = "yaml";
