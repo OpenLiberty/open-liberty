@@ -43,6 +43,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleModuleTest.class,
                 SecurityContextTest.class,
                 SecurityContextJaxRSTest.class,
+                EAREJBModuleTest.class,
                 DatabaseIdentityStoreDeferredSettingsTest.class
 })
 

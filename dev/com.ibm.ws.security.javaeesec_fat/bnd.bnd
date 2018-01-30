@@ -28,13 +28,14 @@ src: \
 	test-applications/IdentityStores.jar/src,\
 	test-applications/AuthMechs.jar/src,\
 	test-applications/DatabaseIdstoreDeferred.war/src,\
-	test-applications/securityContextHamApp.war/src
+	test-applications/securityContextHamApp.war/src,\
+	test-applications/SecurityEjbinWAR.jar/src,\
+	test-applications/ejbinwarservlet.war/src
 
 javac.source: 1.8
 javac.target: 1.8
 
 fat.project: true
-
 -buildpath: \
 	org.apache.httpcomponents:httpclient;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;version=4.1.2,\
@@ -55,10 +56,17 @@ fat.project: true
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.security.token,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.ws.ejbcontainer.security;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.org.apache.directory.server;version=latest,\
 	org.apache.directory.server:apacheds-service;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1,\
 	com.ibm.ws.security.javaeesec.cdi;version=latest,\
-	com.ibm.websphere.javaee.jaxrs.2.1;version=latest
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest, \
+	com.ibm.ws.security.javaeesec.cdi;version=latest
+
