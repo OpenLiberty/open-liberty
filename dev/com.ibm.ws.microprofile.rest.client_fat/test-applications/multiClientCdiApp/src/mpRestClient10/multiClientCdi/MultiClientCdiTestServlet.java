@@ -28,7 +28,7 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @ApplicationScoped
-@WebServlet(urlPatterns = "/BasicClientTestServlet")
+@WebServlet(urlPatterns = "/MultiClientCdiTestServlet")
 public class MultiClientCdiTestServlet extends FATServlet {
     Logger LOG = Logger.getLogger(MultiClientCdiTestServlet.class.getName());
 

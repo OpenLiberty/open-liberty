@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.rest.client.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -42,5 +43,16 @@ public class MultiClientCdiTest extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         server.stopServer();
+    }
+
+    // The following tests verify that the second app can do the same as the first app.
+    @Test
+    public void testCanInvokeDifferentClients() throws Exception {
+        runTest(server, appName + "2/MultiClientCdiTestServlet", testName);
+    }
+
+    @Test
+    public void testSameClientsGetSameResults() throws Exception {
+        runTest(server, appName + "2/MultiClientCdiTestServlet", testName);
     }
 }
