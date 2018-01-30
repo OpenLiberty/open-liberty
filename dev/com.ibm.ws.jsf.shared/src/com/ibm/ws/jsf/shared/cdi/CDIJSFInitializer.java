@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,5 +14,7 @@ import javax.faces.application.Application;
 
 public interface CDIJSFInitializer
 {
-    public void initializeJSF(Application application);
+    public void initializeCDIJSFELContextListenerAndELResolver(Application application);
+    
+    public void initializeCDIJSFViewHandler(Application application);
 }
