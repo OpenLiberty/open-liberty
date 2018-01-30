@@ -16,6 +16,7 @@ import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -50,32 +51,34 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
-        String evensourcetType = getSourceTypeFromDataObject(event);
+        GenericData genData = ((LogTraceData) event).getGenData();
+
+        String evensourcetType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
         boolean isStderr = false;
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
-            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
         }
         //add in formatter here for basic
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if traceFilename == systemOut write to console.log in trace format
             //isTraceStdout
-            Integer levelVal = ((GenericData) event).getLevelValue();
+            Integer levelVal = ((LogTraceData) event).getLevelValue();
             if (isTraceStdout) {
                 //check if message need to be written to stderr
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
                     isStderr = true;
                 }
-                messageOutput = formatter.traceFormatGenData((GenericData) event);
+                messageOutput = formatter.traceFormatGenData(genData);
             } else if (copySystemStreams && levelVal == 700) {// copySystemStream and stderr/stdout level 700
                 //write
-                messageOutput = formatter.filteredStreamOutput((GenericData) event);
+                messageOutput = formatter.filteredStreamOutput(genData);
 
             }
             //determin if it is system.out/err and !copysystemstream then throw it out
             //if !isTraceStdout && level >= consoleloglevel
             else if (levelVal >= consoleLogLevel) {//not system.out/system.err && tracefilename != stdout
-                messageOutput = formatter.consoleLogFormat((GenericData) event);
+                messageOutput = formatter.consoleLogFormat(genData);
             }
         }
         synchronized (this) {

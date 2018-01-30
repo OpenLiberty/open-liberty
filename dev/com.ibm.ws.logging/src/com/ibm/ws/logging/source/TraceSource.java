@@ -19,6 +19,7 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -100,7 +101,7 @@ public class TraceSource implements Source, WsTraceHandler {
         }
     }
 
-    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord, Object id) {
+    public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord, Object id) {
 
         GenericData genData = new GenericData();
 //        LogRecord logRecord = routedMessage.getLogRecord();
@@ -149,9 +150,13 @@ public class TraceSource implements Source, WsTraceHandler {
             extensions.addPair(entry.getKey(), entry.getValue());
         }
         genData.addPairs(extensions);
-        genData.setLevelValue(logRecord.getLevel().intValue());
         genData.setSourceType(sourceName);
-        return genData;
+
+        //return tracedata
+        LogTraceData traceData = new LogTraceData(genData);
+        traceData.setLevelValue(logRecord.getLevel().intValue());
+
+        return traceData;
     }
 
     /**
