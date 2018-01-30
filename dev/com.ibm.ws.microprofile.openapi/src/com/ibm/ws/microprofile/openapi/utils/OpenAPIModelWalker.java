@@ -217,29 +217,17 @@ public final class OpenAPIModelWalker {
 
             final List<SecurityRequirement> security = openAPI.getSecurity();
             if (security != null) {
-                pathSegments.push("security");
-                security.stream().forEach((v) -> {
-                    traverseSecurityRequirement(v);
-                });
-                pathSegments.pop();
+                processSecurityRequirements(security);
             }
 
             final List<Server> servers = openAPI.getServers();
             if (servers != null) {
-                pathSegments.push("servers");
-                servers.stream().forEach((v) -> {
-                    traverseServer(v);
-                });
-                pathSegments.pop();
+                processServers(servers);
             }
 
             final List<Tag> tags = openAPI.getTags();
             if (tags != null) {
-                pathSegments.push("tags");
-                tags.stream().forEach((v) -> {
-                    traverseTag(v);
-                });
-                pathSegments.pop();
+                processTags(tags);
             }
 
             ancestors.pop();
@@ -431,20 +419,12 @@ public final class OpenAPIModelWalker {
 
             final List<Parameter> parameters = item.getParameters();
             if (parameters != null) {
-                pathSegments.push("parameters");
-                parameters.stream().forEach((v) -> {
-                    traverseParameter(null, v);
-                });
-                pathSegments.pop();
+                processParameters(parameters);
             }
 
             final List<Server> servers = item.getServers();
             if (servers != null) {
-                pathSegments.push("servers");
-                servers.stream().forEach((v) -> {
-                    traverseServer(v);
-                });
-                pathSegments.pop();
+                processServers(servers);
             }
 
             ancestors.pop();
@@ -488,11 +468,7 @@ public final class OpenAPIModelWalker {
 
             final List<Parameter> parameters = operation.getParameters();
             if (parameters != null) {
-                pathSegments.push("parameters");
-                parameters.stream().forEach((v) -> {
-                    traverseParameter(null, v);
-                });
-                pathSegments.pop();
+                processParameters(parameters);
             }
 
             final RequestBody rb = operation.getRequestBody();
@@ -517,20 +493,12 @@ public final class OpenAPIModelWalker {
 
             final List<SecurityRequirement> security = operation.getSecurity();
             if (security != null) {
-                pathSegments.push("security");
-                security.stream().forEach((v) -> {
-                    traverseSecurityRequirement(v);
-                });
-                pathSegments.pop();
+                processSecurityRequirements(security);
             }
 
             final List<Server> servers = operation.getServers();
             if (servers != null) {
-                pathSegments.push("servers");
-                servers.stream().forEach((v) -> {
-                    traverseServer(v);
-                });
-                pathSegments.pop();
+                processServers(servers);
             }
 
             ancestors.pop();
@@ -1511,6 +1479,54 @@ public final class OpenAPIModelWalker {
             return tag;
         }
 
+        private void processParameters(final List<Parameter> parameters) {
+            pathSegments.push("parameters");
+            for (int i = 0; i < parameters.size(); ++i) {
+                final Parameter v = parameters.get(i);
+                final Parameter p = traverseParameter(null, v);
+                if (p != v) {
+                    i = updateList(parameters, i, p);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processSecurityRequirements(final List<SecurityRequirement> security) {
+            pathSegments.push("security");
+            for (int i = 0; i < security.size(); ++i) {
+                final SecurityRequirement v = security.get(i);
+                final SecurityRequirement s = traverseSecurityRequirement(v);
+                if (s != v) {
+                    i = updateList(security, i, s);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processServers(final List<Server> servers) {
+            pathSegments.push("servers");
+            for (int i = 0; i < servers.size(); ++i) {
+                final Server v = servers.get(i);
+                final Server s = traverseServer(v);
+                if (s != v) {
+                    i = updateList(servers, i, s);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processTags(final List<Tag> tags) {
+            pathSegments.push("tags");
+            for (int i = 0; i < tags.size(); ++i) {
+                final Tag v = tags.get(i);
+                final Tag t = traverseTag(v);
+                if (t != v) {
+                    i = updateList(tags, i, t);
+                }
+            }
+            pathSegments.pop();
+        }
+
         private void processCallbacks(final Map<String, Callback> callbacks) {
             pathSegments.push("callbacks");
             final Map<String, Callback> updates = map();
@@ -1715,6 +1731,16 @@ public final class OpenAPIModelWalker {
                 updateMap(schemes, updates);
             }
             pathSegments.pop();
+        }
+
+        private <V> int updateList(List<V> list, int index, V update) {
+            if (update != null) {
+                list.set(index, update);
+                return index;
+            } else {
+                list.remove(index);
+                return index - 1;
+            }
         }
 
         private <K, V> Map<K, V> map() {
