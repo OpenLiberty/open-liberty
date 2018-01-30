@@ -36,5 +36,5 @@ publish.tool.jar=ws-installUtility.jar
 publish.tool.script=installUtility
 
 -buildpath: \
-	${javac.bootclasspath.java6}, \
-	com.ibm.ws.install.utility;version=latest
+        ${javac.bootclasspath.java6}, \
+        com.ibm.ws.install.utility;version=latest
