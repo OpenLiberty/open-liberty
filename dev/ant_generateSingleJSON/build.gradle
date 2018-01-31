@@ -11,42 +11,54 @@
 apply plugin: 'java'
  
 def names = []
- 
- task fatJar(type: Jar) {
-	manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
-        	'Implementation-Version': version,
-        	'Main-Class': 'com.mkyong.DateUtils'
-    }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
 
 //Get dependencies from Maven central repository
 repositories {
+    mavenLocal()
     mavenCentral()
-}
-
+ 
+} 
+  
 //Project dependencies
 dependencies {
-	compile 'ch.qos.logback:logback-classic:1.1.2'
+	//compile project(':com.ibm.ws.repository')
+	//compile files('lib/comibmwsrepository.jar')
+	
 }
  
- 
- 
+jar {
+ 	destinationDir = file('lib')
+ 	archiveName='SingleJsonRepositoryGenerator.jar'
+	manifest {	
+        attributes ('Manifest-Version': '1.0',
+        			'Main-Class':'SingleJsonRepositoryGenerator',
+        			'Specification-Vendor' : 'IBM Corp.',
+        			'Implementation-Title' : 'Single Json Repository Generator')
+        			//'Class-Path' : '       			
+    }
+      
+}
+
 task createSingleJson {
 
-
 	doLast{
- 
+	
+	/*
+  ant.taskdef(resource: 'default.properties') {
+            classpath {
+                fileset(dir: 'lib', includes: 'SingleJsonRepositoryGenerator.jar')
+            }
+        }
+        
+        */
+        
  	ant.taskdef(name:'singleJsonRepo'
- 				,classname:'generator.SingleJsonRepositoryGenerator') {
+ 				,classname:'SingleJsonRepositoryGenerator') {
     	classpath {
-        fileset(dir: "lib") {
-          	include(name: "SingleJsonRepositoryGenerator.jar")
-        	}
-	 	}
+        	fileset(dir: "lib") {
+         		include(name: "SingleJsonRepositoryGenerator.jar")
+       		}
+ 		}
 	 }	 
    ant.touch(file:"SingleJson.json")
 
@@ -61,6 +73,7 @@ task createSingleJson {
 	
 	}
 	
+createSingleJson.dependsOn 'jar'
 
 
 					   
