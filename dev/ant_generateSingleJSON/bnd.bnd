@@ -20,16 +20,8 @@ WS-TraceGroup: repo.resource
 javac.source: 1.7
 javac.target: 1.7
 
-Export-Package: \
-    com.ibm.ws.generateJSON
-
-
-Private-Package: \
-   
-
 -buildpath: \
     com.ibm.ws.repository;version=latest, \
-     com.ibm.ws.repository.parsers.internal, \
     com.ibm.ws.repository.parsers;version=latest,\
     com.ibm.ws.kernel.feature.core;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest, \

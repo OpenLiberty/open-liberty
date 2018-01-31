@@ -8,25 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply plugin: 'java'
- 
 def names = []
 
 //Get dependencies from Maven central repository
 repositories {
     mavenLocal()
     mavenCentral()
- 
-} 
-  
-//Project dependencies
-dependencies {
-	//compile project(':com.ibm.ws.repository')
-	//compile files('lib/comibmwsrepository.jar')
-	
 }
  
-jar {
+/*jar {
  	destinationDir = file('lib')
  	archiveName='SingleJsonRepositoryGenerator.jar'
 	manifest {	
@@ -37,45 +27,35 @@ jar {
         			//'Class-Path' : '       			
     }
       
-}
+}*/
 
 task createSingleJson {
-
-	doLast{
-	
-	/*
-  ant.taskdef(resource: 'default.properties') {
+    dependsOn jar
+    doLast {
+        ant.taskdef(name:'singleJsonRepo', classname:'generator.SingleJsonRepositoryGenerator') {
             classpath {
-                fileset(dir: 'lib', includes: 'SingleJsonRepositoryGenerator.jar')
+                fileset(dir: 'build/libs') {
+                    include(name: 'com.ibm.ws.generateJSON.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.repository/build/libs") {
+                    include(name: 'com.ibm.ws.repository.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.repository.parsers/build/libs") {
+                    include(name: 'com.ibm.ws.repository.parsers.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
+                    include(name: 'com.ibm.ws.logging.core.jar')
+                }
             }
         }
-        
-        */
-        
- 	ant.taskdef(name:'singleJsonRepo'
- 				,classname:'SingleJsonRepositoryGenerator') {
-    	classpath {
-        	fileset(dir: "lib") {
-         		include(name: "SingleJsonRepositoryGenerator.jar")
-       		}
- 		}
-	 }	 
-   ant.touch(file:"SingleJson.json")
+        ant.touch(file:"SingleJson.json")
 
-	println 'entering'
-	def files =  fileTree("build/esas").filter { it.isFile() }.files.name  
-	files.each{
-	
-	ant.singleJsonRepo(assetFile: file('build/esas/${it}')
-					   ,assetType:'FEATURE'
-					   ,jsonFile:'SingleJson.json')
-	}
-	
-	}
-	
-createSingleJson.dependsOn 'jar'
+        def files = fileTree("build/esas").filter { it.isFile() }.files.name
+        files.each {
+            ant.singleJsonRepo(assetFile: file('build/esas/${it}'),
+                    assetType:'FEATURE',
+                    jsonFile:'SingleJson.json')
+        }
 
-
-					   
-
- }
+    }
+}
