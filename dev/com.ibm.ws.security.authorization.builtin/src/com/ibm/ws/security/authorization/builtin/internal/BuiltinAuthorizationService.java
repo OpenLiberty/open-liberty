@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -242,7 +242,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * @param accessId
      * @return
      */
-    private Collection<String> getRolesForAccessId(String resourceName, String accessId) {
+    private Collection<String> getRolesForAccessId(String resourceName, String accessId, String realmName) {
         int found = 0;
         Collection<String> roles = null;
         FeatureAuthorizationTableService featureAuthzTableSvc = featureAuthzTableServiceRef.getService();
@@ -252,13 +252,13 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         }
         if (featureAuthzRoleHeaderValue != null &&
             !featureAuthzRoleHeaderValue.equals(MGMT_AUTHZ_ROLES)) {
-            roles = featureAuthzTableSvc.getRolesForAccessId(resourceName, accessId);
+            roles = featureAuthzTableSvc.getRolesForAccessId(resourceName, accessId, realmName);
         }
         else {
             Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
             while (itr.hasNext()) {
                 AuthorizationTableService authzTableSvc = itr.next();
-                Collection<String> rolesFound = authzTableSvc.getRolesForAccessId(resourceName, accessId);
+                Collection<String> rolesFound = authzTableSvc.getRolesForAccessId(resourceName, accessId, realmName);
                 if (rolesFound != null) {
                     roles = rolesFound;
                     found++;
@@ -335,7 +335,8 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      */
     private boolean useAppBndForAccessDecision(String resourceName, Collection<String> requiredRoles, Subject subject, AccessDecisionService accessDecisionService,
                                                WSCredential wsCred, String accessId) {
-        Collection<String> userRoles = getRolesForAccessId(resourceName, accessId);
+        String realmName = getRealmName(wsCred);
+        Collection<String> userRoles = getRolesForAccessId(resourceName, accessId, realmName);
 
         // check user access
         boolean isGranted = accessDecisionService.isGranted(resourceName, requiredRoles, userRoles, subject);
@@ -346,7 +347,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
             if (groupIds != null && groupIds.length > 0) {
                 for (int i = 0; i < groupIds.length && !isGranted; i++) {
                     String groupId = groupIds[i];
-                    Collection<String> assignedRoles = getRolesForAccessId(resourceName, groupId);
+                    Collection<String> assignedRoles = getRolesForAccessId(resourceName, groupId, realmName);
                     if (assignedRoles != null) {
                         isGranted = accessDecisionService.isGranted(resourceName, requiredRoles, assignedRoles, subject);
                     }
