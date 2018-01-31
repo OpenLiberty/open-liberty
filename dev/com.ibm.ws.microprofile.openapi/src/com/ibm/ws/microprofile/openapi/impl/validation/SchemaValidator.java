@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
@@ -47,28 +48,105 @@ public class SchemaValidator extends TypeValidator<Schema> {
             }
 
             if (t.getType().toString().equals("array") && t.getItems() == null) {
-                final String message = Tr.formatMessage(tc, "schemaTypeArrayNullItems", t.getTitle());
+                final String message = Tr.formatMessage(tc, "schemaTypeArrayNullItems", t.getTitle(), context.getLocation());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
             if (t.getReadOnly() && t.getWriteOnly()) {
-                final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly", t.getTitle());
+                final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly", t.getTitle(), context.getLocation());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
             if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ONE) < 1)) {
-                final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanZero", t.getTitle());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-            }
-            if ((t.getMaxLength() != null && (t.getMaxLength().intValue() < 0)) ||
-                (t.getMinLength() != null && (t.getMinLength().intValue() < 0)) ||
-                (t.getMinItems() != null && (t.getMinItems().intValue() < 0)) ||
-                (t.getMaxItems() != null && (t.getMaxItems().intValue() < 0)) ||
-                (t.getMinProperties() != null && (t.getMinProperties().intValue() < 0)) ||
-                (t.getMaxProperties() != null && (t.getMaxProperties().intValue() < 0))) {
-                final String message = Tr.formatMessage(tc, "schemaPropertyLessThanZero", t.getTitle());
+                final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanZero", t.getTitle(), context.getLocation());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
+            ArrayList<String> propertiesInvalidValue = new ArrayList<String>();
+            ArrayList<String> propertiesNotForSchemaType = new ArrayList<String>();
+            String type = t.getType().toString();
+            if (t.getMaxLength() != null) {
+                if (t.getMaxLength().intValue() < 0) {
+                    propertiesInvalidValue.add("maxLength");
+                }
+                if (!type.equals("string")) {
+                    propertiesNotForSchemaType.add("maxLength");
+                }
+            }
+
+            if (t.getMinLength() != null) {
+                if (t.getMinLength().intValue() < 0) {
+                    propertiesInvalidValue.add("minLength");
+                }
+                if (!type.equals("string")) {
+                    propertiesNotForSchemaType.add("minLength");
+                }
+            }
+
+            if (t.getMinItems() != null) {
+                if (t.getMinItems().intValue() < 0) {
+                    propertiesInvalidValue.add("minItems");
+                }
+                if (!type.equals("array")) {
+                    propertiesNotForSchemaType.add("minItems");
+                }
+            }
+
+            if (t.getMaxItems() != null) {
+                if (t.getMaxItems().intValue() < 0) {
+                    propertiesInvalidValue.add("maxItems");
+                }
+                if (!type.equals("array")) {
+                    propertiesNotForSchemaType.add("maxItems");
+                }
+            }
+
+            if (t.getUniqueItems() && !type.equals("array")) {
+                propertiesNotForSchemaType.add("uniqueItems");
+            }
+
+            if (t.getMinProperties() != null) {
+                if (t.getMinProperties().intValue() < 0) {
+                    propertiesInvalidValue.add("minProperties");
+                }
+                if (!type.equals("object")) {
+                    propertiesNotForSchemaType.add("minProperties");
+                }
+            }
+
+            if (t.getMaxProperties() != null) {
+                if (t.getMaxProperties().intValue() < 0) {
+                    propertiesInvalidValue.add("maxProperties");
+                }
+                if (!type.equals("object")) {
+                    propertiesNotForSchemaType.add("maxProperties");
+                }
+            }
+            if (!propertiesInvalidValue.isEmpty()) {
+                for (String s : propertiesInvalidValue) {
+                    final String message = Tr.formatMessage(tc, "schemaPropertyLessThanZero", s, t.getTitle(), context.getLocation());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                }
+            }
+
+            if (!propertiesNotForSchemaType.isEmpty()) {
+                for (String s : propertiesNotForSchemaType) {
+                    final String message = Tr.formatMessage(tc, "schemaTypeDoesNotMatchProperty", s, t.getTitle(), type, context.getLocation());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+                }
+            }
+
+            if (t.getAllOf() == null &&
+                t.getAnyOf() == null &&
+                t.getOneOf() == null &&
+                t.getDiscriminator() != null) {
+                final String message = Tr.formatMessage(tc, "schemaDiscriminator", t.getTitle(), context.getLocation());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+
+            if (!ValidatorUtils.regexValidator(t.getPattern())) {
+                final String message = Tr.formatMessage(tc, "schemaPatternNotRegex", t.getPattern(), t.getTitle(), context.getLocation());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
         }
     }
 }

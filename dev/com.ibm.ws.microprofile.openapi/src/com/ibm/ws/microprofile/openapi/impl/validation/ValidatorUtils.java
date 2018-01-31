@@ -16,6 +16,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlow;
@@ -126,6 +128,18 @@ public class ValidatorUtils {
         }
 
         return false;
+    }
+
+    public static boolean regexValidator(String regex) {
+        boolean isValid = true;
+
+        try {
+            Pattern.compile(regex);
+        } catch (PatternSyntaxException exception) {
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     public static boolean isValidEmailAddress(String email) {

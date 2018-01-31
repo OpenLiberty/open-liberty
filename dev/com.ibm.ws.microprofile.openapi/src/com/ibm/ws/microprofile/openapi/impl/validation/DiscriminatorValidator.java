@@ -14,7 +14,6 @@ import org.eclipse.microprofile.openapi.models.media.Discriminator;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -39,8 +38,7 @@ public class DiscriminatorValidator extends TypeValidator<Discriminator> {
         if (t != null) {
 
             if (t.getPropertyName() == null || t.getPropertyName().isEmpty()) {
-                final String message = Tr.formatMessage(tc, "requiredFieldMissing", t, "propertyName");
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                ValidatorUtils.validateRequiredField(t.getPropertyName(), context, "propertyName").ifPresent(helper::addValidationEvent);
             }
         }
     }
