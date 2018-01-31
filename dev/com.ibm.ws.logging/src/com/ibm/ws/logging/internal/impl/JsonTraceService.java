@@ -109,8 +109,7 @@ public class JsonTraceService extends BaseTraceService {
             consoleLogHandler.setSysErrHolder(systemErr);
         }
         /*
-         * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
-         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         * If messageFormat has been configured to 'basic' connect to message handler only
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
             messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
@@ -123,14 +122,14 @@ public class JsonTraceService extends BaseTraceService {
         }
 
         /*
-         * If consoleFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
-         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         * If consoleFormat has been configured to 'basic' always connect to logConduit
          */
         if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
             if (consoleLogHandler != null) {
                 consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
                 ArrayList<String> filteredList = new ArrayList<String>();
                 filteredList.add("message");
+                //check if trace.log is set to stdout
                 if (traceLog == systemOut) {
                     filteredList.add("trace");
                     consoleLogHandler.setIsTraceStdout(true);
@@ -138,9 +137,9 @@ public class JsonTraceService extends BaseTraceService {
                     consoleLogHandler.setIsTraceStdout(false);
                 }
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
+                consoleLogHandler.setCopySystemStreams(copySystemStreams);
+                consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
             }
-            consoleLogHandler.setCopySystemStreams(copySystemStreams);
-            consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
         }
 
         /*
@@ -176,13 +175,14 @@ public class JsonTraceService extends BaseTraceService {
                 updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
         }
+        //set formatters in the handlers
         messageLogHandler.setFormatter(formatter);
         consoleLogHandler.setFormatter(formatter);
     }
 
     /*
      * Helper method to clean up the original source list by removing messages and
-     * trace from it. Otherwise, our json handlers will subscribe these and cause
+     * trace from it. Otherwise, our handlers will subscribe these and cause
      * collectorManager to create 'new' conduits/Buffermanagers.
      */
     private List<String> filterSourcelist(List<String> sourceList) {
@@ -217,11 +217,7 @@ public class JsonTraceService extends BaseTraceService {
 
         RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
 
-        /*
-         * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
-         * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
-         * However, LogstashCollector and BluemixLogCollector will receive all messages
-         */
+        /* Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler */
         invokeMessageRouters(routedMessage);
         if (logSource != null) {
             logSource.publish(routedMessage);
@@ -297,7 +293,6 @@ public class JsonTraceService extends BaseTraceService {
         Level level = logRecord.getLevel();
         int levelValue = level.intValue();
         TraceWriter detailLog = traceLog;
-        //check if tracefilename is stdout
 
         if (levelValue >= Level.INFO.intValue()) {
             //configuration
@@ -320,12 +315,6 @@ public class JsonTraceService extends BaseTraceService {
                 publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
                 return;
             }
-
-            /*
-             * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
-             * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
-             * However, LogstashCollector and BluemixLogCollector will receive all messages
-             */
 
             // logSource only receives "normal" messages and messages that are not hidden.
             if (logSource != null) {

@@ -66,8 +66,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         }
         //add in formatter here for basic
         else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
-            //if traceFilename == systemOut write to console.log in trace format
-            //isTraceStdout
+            //if traceFilename=stdout write everything to console.log in trace format
             Integer levelVal = ((LogTraceData) event).getLevelValue();
             if (isTraceStdout) {
                 //check if message need to be written to stderr
@@ -75,14 +74,13 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                     isStderr = true;
                 }
                 messageOutput = formatter.traceFormatGenData(genData);
-            } else if (copySystemStreams && (levelVal == 700)) {// copySystemStream and stderr/stdout level 700
-                //write
+            } // copySystemStream and stderr/stdout level=700
+            else if (copySystemStreams && (levelVal == 700)) {
                 messageOutput = formatter.filteredStreamOutput(genData);
 
             }
-            //determin if it is system.out/err and !copysystemstream then throw it out
             //if !isTraceStdout && level >= consoleloglevel
-            else if (levelVal >= consoleLogLevel) {//not system.out/system.err && tracefilename != stdout
+            else if (levelVal >= consoleLogLevel) {
                 //need to use formatmessage filter
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
                     isStderr = true;
@@ -91,6 +89,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
             }
         }
         synchronized (this) {
+            //check if message need to be written to stderr or stdout
             if (isStderr) {
                 sysErrHolder.getOriginalStream().println(messageOutput);
             } else if (messageOutput != null) {
@@ -106,13 +105,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
-     * @return the formatter
-     */
-    public BaseTraceFormatter getFormatter() {
-        return formatter;
-    }
-
-    /**
      * @param formatter the formatter to set
      */
     public void setFormatter(BaseTraceFormatter formatter) {
@@ -122,22 +114,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     /**
      * @return the consoleLogLevel
      */
-    public Integer getConsoleLogLevel() {
-        return consoleLogLevel;
-    }
-
-    /**
-     * @return the consoleLogLevel
-     */
     public void setConsoleLogLevel(Integer consoleLogLevel) {
         this.consoleLogLevel = consoleLogLevel;
-    }
-
-    /**
-     * @return the format
-     */
-    public String getFormat() {
-        return format;
     }
 
     /**
@@ -152,13 +130,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
      */
     public void setCopySystemStreams(boolean copySystemStreams) {
         this.copySystemStreams = copySystemStreams;
-    }
-
-    /**
-     * @return the sysErrHolder
-     */
-    public SystemLogHolder getSysErrHolder() {
-        return sysErrHolder;
     }
 
     /**

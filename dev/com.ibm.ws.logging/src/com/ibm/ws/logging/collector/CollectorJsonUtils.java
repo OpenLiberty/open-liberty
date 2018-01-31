@@ -193,8 +193,9 @@ public class CollectorJsonUtils {
 
                 if (key.equals(LogFieldConstants.LOGLEVEL) || key.equals(LogFieldConstants.COMPONENT) || key.equals(LogFieldConstants.CORRELATION_ID)
                     || key.equals(LogFieldConstants.THREADNAME) || key.equals(LogFieldConstants.LEVELVALUE) || key.equals(LogFieldConstants.PRODUCT)
-                    || key.equals(LogFieldConstants.ORG) || key.equals(LogFieldConstants.OBJECT_ID) || key.equals("throwable") || key.equals("throwable_localized")
-                    || key.equals("formattedMsg")) {
+                    || key.equals(LogFieldConstants.ORG) || key.equals(LogFieldConstants.OBJECT_ID) || key.equals(LogFieldConstants.THROWABLE)
+                    || key.equals(LogFieldConstants.THROWABLE_LOCALIZED)
+                    || key.equals(LogFieldConstants.FORMATTEDMSG)) {
 
                 }
 

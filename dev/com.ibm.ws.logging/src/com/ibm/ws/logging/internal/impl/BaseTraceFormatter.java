@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.collector.DateFormatHelper;
+import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.Pair;
@@ -422,19 +423,14 @@ public class BaseTraceFormatter extends Formatter {
      * The console log is not structured, and relies on already formatted/translated
      * messages
      *
-     * @param logRecord
-     * @param txt the result of {@link #formatMessage}
+     * @param genData
      * @return Formatted string for the console
      */
     public String consoleLogFormat(GenericData genData) {
         StringBuilder sb = new StringBuilder(256);
-//        String name = genData.getSourceType();
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = null;
-//        String formattedMsg = null;
-//        Long datetime = null;
-//        String levelString = "";
         String throwable = null;
         Integer levelValue = null;
         for (Pair p : pairs) {
@@ -442,25 +438,21 @@ public class BaseTraceFormatter extends Formatter {
             if (p instanceof KeyValuePair) {
 
                 kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("formattedMsg")) {
+                if (kvp.getKey().equals(LogFieldConstants.FORMATTEDMSG)) {
                     message = kvp.getValue();
-                } else if (kvp.getKey().equals("levelValue")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
                     levelValue = Integer.parseInt(kvp.getValue());
-                } else if (kvp.getKey().equals("throwable_localized")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE_LOCALIZED)) {
                     throwable = kvp.getValue();
                 }
-//                else if (kvp.getKey().equals("formattedMsg")) {
-//                    throwable = kvp.getValue();
-//                }
             }
         }
 
         sb.append(BaseTraceFormatter.levelValToString(levelValue));
         sb.append(message);
 
-//        Throwable t = logRecord.getThrown();
+        //add throwable localized message if exists
         if (throwable != null) {
-//            String s = t.getLocalizedMessage();
             sb.append(LoggingConstants.nl).append(throwable);
         }
 
@@ -502,19 +494,16 @@ public class BaseTraceFormatter extends Formatter {
      * messages. This does the formatting needed to take a message suitable for console.log
      * and wrap it to fit into messages.log.
      *
-     * @param logRecord
-     * @param formattedVerboseMsg the result of {@link #formatVerboseMessage}
+     * @param genData
      * @return Formatted string for messages.log
      */
     public String messageLogFormat(GenericData genData) {
         // This is a very light trace format, based on enhanced:
         StringBuilder sb = new StringBuilder(256);
-//        String sym = getMarker(logRecord);
-//        String name = nonNullString(logRecord.getLoggerName(), logRecord.getSourceClassName());
         String name = null;
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
-        String message = "";
+        String message = null;
         Long datetime = null;
         String level = "";
         String loggerName = null;
@@ -525,19 +514,19 @@ public class BaseTraceFormatter extends Formatter {
             if (p instanceof KeyValuePair) {
 
                 kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("message")) {
+                if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
                     message = kvp.getValue();
-                } else if (kvp.getKey().equals("ibm_datetime")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
 
                     datetime = Long.parseLong(kvp.getValue());
 
-                } else if (kvp.getKey().equals("severity")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
                     level = kvp.getValue();
-                } else if (kvp.getKey().equals("module")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
                     loggerName = kvp.getValue();
-                } else if (kvp.getKey().equals("ibm_className")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
                     srcClassName = kvp.getValue();
-                } else if (kvp.getKey().equals("throwable")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
                     throwable = kvp.getValue();
                 }
 
@@ -551,8 +540,6 @@ public class BaseTraceFormatter extends Formatter {
         sb.append(message);
 
         if (throwable != null) {
-//            String stackTrace = getStackTrace(logRecord);
-//            if (stackTrace != null)
             sb.append(LoggingConstants.nl).append(throwable);
         }
 
@@ -684,24 +671,17 @@ public class BaseTraceFormatter extends Formatter {
     /**
      * Format the given record into the desired trace format
      *
-     * @param name
-     * @param sym
-     * @param method
-     * @param id
-     * @param level
-     * @param txt
+     * @param genData GenericData pass information needed
      * @return String
      */
-    public String traceFormatGenData(GenericData gen) {
+    public String traceFormatGenData(GenericData genData) {
 
-        ArrayList<Pair> pairs = gen.getPairs();
+        ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String txt = null;
         Integer id = null;
         String objId;
-
         Integer levelVal = null;
-
         String name;
 
         String className = null;
@@ -724,35 +704,35 @@ public class BaseTraceFormatter extends Formatter {
             if (p instanceof KeyValuePair) {
 
                 kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("message")) {
+                if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
                     txt = kvp.getValue();
-                } else if (kvp.getKey().equals("ibm_datetime")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
                     ibm_datetime = Long.parseLong(kvp.getValue());
-                } else if (kvp.getKey().equals("severity")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
                     sym = " " + kvp.getValue() + " ";
-                } else if (kvp.getKey().equals("ibm_className")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
                     className = kvp.getValue();
-                } else if (kvp.getKey().equals("ibm_methodName")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_METHODNAME)) {
                     method = kvp.getValue();
-                } else if (kvp.getKey().equals("module")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
                     loggerName = kvp.getValue();
-                } else if (kvp.getKey().equals("objectId")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.OBJECT_ID)) {
                     id = Integer.parseInt(kvp.getValue());
-                } else if (kvp.getKey().equals("correlationId")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.CORRELATION_ID)) {
                     corrId = kvp.getValue();
-                } else if (kvp.getKey().equals("org")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.ORG)) {
                     org = kvp.getValue();
-                } else if (kvp.getKey().equals("product")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.PRODUCT)) {
                     prod = kvp.getValue();
-                } else if (kvp.getKey().equals("component")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.COMPONENT)) {
                     component = kvp.getValue();
-                } else if (kvp.getKey().equals("logLevel")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.LOGLEVEL)) {
                     logLevel = kvp.getValue();
-                } else if (kvp.getKey().equals("threadName")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.THREADNAME)) {
                     threadName = kvp.getValue();
-                } else if (kvp.getKey().equals("levelValue")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
                     levelVal = Integer.parseInt(kvp.getValue());
-                } else if (kvp.getKey().equals("throwable")) {
+                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
                     stackTrace = kvp.getValue();
                 }
 
@@ -891,6 +871,10 @@ public class BaseTraceFormatter extends Formatter {
         return objId;
     }
 
+    /**
+     * @param id ID from tracesource
+     * @return String id converted to hex
+     */
     private final String generateObjectId(Integer id, boolean fixedWidth) {
         String objId;
 
@@ -1086,6 +1070,8 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
+     * check casting to WsLogRecord
+     *
      * @return
      */
     //change to public
@@ -1097,6 +1083,12 @@ public class BaseTraceFormatter extends Formatter {
         }
     }
 
+    /**
+     * Outputs filteredStream of genData
+     *
+     * @param genData object to filter
+     * @return filtered message of the genData
+     */
     protected String filteredStreamOutput(GenericData genData) {
         String txt = null;
         String loglevel = null;

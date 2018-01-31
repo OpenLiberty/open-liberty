@@ -63,6 +63,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
         GenericData genData = null;
+        //check if event is a LogTraceData
         if (event instanceof LogTraceData) {
             genData = ((LogTraceData) event).getGenData();
         } else if (event instanceof GenericData) {
