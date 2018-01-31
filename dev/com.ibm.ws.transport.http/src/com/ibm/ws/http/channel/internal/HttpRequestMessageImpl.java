@@ -2056,7 +2056,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() " + pushBuilder.getSessionId());
                 }
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, COOKIE, JSESSIONID + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, COOKIE, JSESSIONID + "=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
