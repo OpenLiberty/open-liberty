@@ -44,11 +44,11 @@ JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm parameter provided fo
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=A hashAlgorithm parameter list is in the incorrect format and cannot be parsed.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Correct the hashAlgorithmParameters element on the DatabaseIdentityStore annotation.
 
-JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: The ''{1}'' query to get the {0} caller failed on the DatabaseIdentityStore with an error: {2}
-JAVAEESEC_WARNING_GEN_DB.explanation=The search for the provided caller failed with an error.
-JAVAEESEC_WARNING_GEN_DB.useraction=Review the provided error.
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Cannot validate the credentials for caller {0}. The DatabaseIdentityStore failed to execute the query ''{1}'' with an error: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=The search for the caller failed with an error.
+JAVAEESEC_ERROR_GEN_DB.useraction=Review the error message.
 
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: The ''{1}'' query to get the groups for the {0} caller failed on the DatabaseIdentityStore. The partial list of groups is {2}. The error is {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: The DatabaseIdentityStore failed to execute the query ''{1}''  to get the groups for the caller {0}. The partial list of groups is {2}. The error is {3}.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=The search for groups for the caller failed with an error.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Review the provided error. A partial list of groups is returned.
 

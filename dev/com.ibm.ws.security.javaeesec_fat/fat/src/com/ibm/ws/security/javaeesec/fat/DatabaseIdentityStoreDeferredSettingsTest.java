@@ -93,7 +93,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918W");
+        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918E");
     }
 
     @Before
@@ -189,7 +189,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
-        String msg = "CWWKS1918W";
+        String msg = "CWWKS1918E";
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
         assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
 

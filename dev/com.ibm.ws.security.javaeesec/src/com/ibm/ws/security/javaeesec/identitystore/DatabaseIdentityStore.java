@@ -235,7 +235,7 @@ public class DatabaseIdentityStore implements IdentityStore {
                 conn.close();
             }
         } catch (NamingException | SQLException e) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_GEN_DB", new Object[] { caller, idStoreDefinition.getCallerQuery(), e });
+            Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, idStoreDefinition.getCallerQuery(), e });
             return CredentialValidationResult.INVALID_RESULT;
         }
 
