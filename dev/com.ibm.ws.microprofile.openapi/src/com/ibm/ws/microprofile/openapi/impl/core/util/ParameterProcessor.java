@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -167,13 +167,14 @@ public class ParameterProcessor {
     }
 
     public static void setParameterExplode(Parameter parameter, org.eclipse.microprofile.openapi.annotations.parameters.Parameter p) {
-        if (isExplodable(p)) {
-            if (Explode.TRUE.equals(p.explode())) {
-                parameter.setExplode(Boolean.TRUE);
-            } else if (Explode.FALSE.equals(p.explode())) {
-                parameter.setExplode(Boolean.FALSE);
-            }
+        // Value set by user (other than default) should be set on model object regardless of whether it's explodable or not (validator should handle that)
+        //if (isExplodable(p)) {
+        if (Explode.TRUE.equals(p.explode())) {
+            parameter.setExplode(Boolean.TRUE);
+        } else if (Explode.FALSE.equals(p.explode())) {
+            parameter.setExplode(Boolean.FALSE);
         }
+        //}
     }
 
     private static boolean isExplodable(org.eclipse.microprofile.openapi.annotations.parameters.Parameter p) {
