@@ -92,6 +92,49 @@ task publishSchemaResources(type: Copy) {
   into buildImage.file('wlp/dev/api/ibm/schema')
 }
 
+task publishPlatformManifests(type: Copy) {
+  dependsOn jar
+  from project.file('publish/platform')
+  into buildImage.file('wlp/lib/platform')
+  include '*.mf'
+  filter(org.apache.tools.ant.filters.ConcatFilter,
+    append: file(cnf.file('resources/IBM-ProductID.txt')))
+}
+
+task publishPlatformFiles(type: Copy) {
+  dependsOn jar
+  dependsOn publishPlatformManifests
+  from project.file('publish/platform')
+  into buildImage.file('wlp/lib/platform')
+  exclude '*.mf'
+}
+
+task publishTemplates(type: Copy) {
+  dependsOn jar
+  from project.file('publish/templates')
+  into buildImage.file('wlp/templates')
+}
+
+task publishBinScripts(type: Copy) {
+  dependsOn jar
+  from project.file('publish/bin')
+  into buildImage.file('wlp/bin')
+  fileMode 0755
+}
+
+task publishClientScripts(type: Copy) {
+  dependsOn jar
+  enabled parseBoolean(bnd('publish.wlp.clients', 'true'))
+  from project.file('publish/clients')
+  into buildImage.file('wlp/clients')
+}
+
+task publishLibNative(type: Copy) {
+  dependsOn jar
+  from project.file('lib/native')
+  into buildImage.file('wlp/lib/native')
+}
+
 def featureFiles = fileTree(dir: project.projectDir, include: '*.feature')
 def featureToAttributes = [:]
 featureFiles.visit {
@@ -126,9 +169,28 @@ featureFiles.visit {
   featureToAttributes[it] = attributes
 }
 
-task publishFeatureResources {
-  dependsOn jar
+task prereqFeatureResources {
   dependsOn ':cnf:copyMavenLibs'
+  dependsOn publishWLPJars
+  dependsOn publishDevApiIBMJavadoc
+  dependsOn publishDevSpiIBMJavadoc
+  dependsOn publishToolJars
+  dependsOn publishSchemaResources
+  dependsOn publishPlatformFiles
+  dependsOn publishTemplates
+  dependsOn publishBinScripts
+  dependsOn publishClientScripts
+  dependsOn publishLibNative
+}
+
+task publishFeatureResources {
+  // Start building feature resources after all other assemble artifacts are done being published
+  dependsOn {
+    rootProject.subprojects.collect {
+      it.tasks.getByName 'prereqFeatureResources'
+    }
+  }
+
   inputs.files(featureFiles).skipWhenEmpty()
   outputs.dir buildImage.file('wlp/lib/features')
   outputs.dir new File(project.buildDir, 'repo')
@@ -179,17 +241,17 @@ task publishFeatureResources {
         String version = ("beta".equals(attr["kind"]) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
 
         ant.featureBnd(bnd: file.getPath(),
-                       createESA: "true",
-                       dir: buildImage.file('wlp'),
-                       esaDir: new File(project.buildDir, 'repo'),
-                       createFor: createFor,
-                       buildType: buildType,
-                       junit: new File(project.buildDir, 'report/featureChecks.xml')) {
+                createESA: "true",
+                dir: buildImage.file('wlp'),
+                esaDir: new File(project.buildDir, 'repo'),
+                createFor: createFor,
+                buildType: buildType,
+                junit: new File(project.buildDir, 'report/featureChecks.xml')) {
           defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                         licensePath: buildImage.file('lafiles/featureTerms'),
-                         version: version,
-                         licenseType: "EPL",
-                         displayVersion: "OpenLiberty")
+                  licensePath: buildImage.file('lafiles/featureTerms'),
+                  version: version,
+                  licenseType: "EPL",
+                  displayVersion: "OpenLiberty")
           edition(baseEdition: "beta")
           edition(baseEdition: "core",
                   validEditions: "")
@@ -206,12 +268,16 @@ task publishFeatureResources {
         }
 
         delete "${buildDir}/repo/description.html"
+        ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
+          entry(key: "licenseType", value: "UNSPECIFIED")
+        }
         ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
                 descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
                 generateKnowledgeCentreLinks: "true",
                 licenseType: "EPL")
         ant.zip(destfile: "${buildDir}/repo/${attr["name"]}.esa.metadata.zip") {
-          fileset(dir: "${buildDir}/repo", includes: "description.html")
+          fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
+          zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
         }
       }
     }
@@ -224,49 +290,6 @@ task publishFeatureResources {
   }
 }
 
-task publishPlatformManifests(type: Copy) {
-  dependsOn jar
-  from project.file('publish/platform')
-  into buildImage.file('wlp/lib/platform')
-  include '*.mf'
-  filter(org.apache.tools.ant.filters.ConcatFilter,
-    append: file(cnf.file('resources/IBM-ProductID.txt')))
-}
-
-task publishPlatformFiles(type: Copy) {
-  dependsOn jar
-  dependsOn publishPlatformManifests
-  from project.file('publish/platform')
-  into buildImage.file('wlp/lib/platform')
-  exclude '*.mf'
-}
-
-task publishTemplates(type: Copy) {
-  dependsOn jar
-  from project.file('publish/templates')
-  into buildImage.file('wlp/templates')
-}
-
-task publishBinScripts(type: Copy) {
-  dependsOn jar
-  from project.file('publish/bin')
-  into buildImage.file('wlp/bin')
-  fileMode 0755
-}
-
-task publishClientScripts(type: Copy) {
-  dependsOn jar
-  enabled parseBoolean(bnd('publish.wlp.clients', 'true'))
-  from project.file('publish/clients')
-  into buildImage.file('wlp/clients')
-}
-
-task publishLibNative(type: Copy) {
-  dependsOn jar
-  from project.file('lib/native')
-  into buildImage.file('wlp/lib/native')
-}
-
 assemble {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
@@ -274,12 +297,12 @@ assemble {
   dependsOn publishDevSpiIBMJavadoc
   dependsOn publishToolJars
   dependsOn publishSchemaResources
-  dependsOn publishFeatureResources
   dependsOn publishPlatformFiles
   dependsOn publishTemplates
   dependsOn publishBinScripts
   dependsOn publishClientScripts
   dependsOn publishLibNative
+  dependsOn publishFeatureResources
 }
 
 compileJava {
