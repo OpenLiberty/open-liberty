@@ -16,7 +16,10 @@
  */
 package com.ibm.jbatch.container.services.impl;
 
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Set;
 
 import javax.security.auth.Subject;
@@ -60,9 +63,15 @@ public class BatchSecurityHelperImpl implements BatchSecurityHelper {
     @Override
     public Subject getRunAsSubject() {
         try {
-            return WSSubject.getRunAsSubject();
-        } catch (WSSecurityException wse) {
-            throw new BatchContainerRuntimeException(wse);
+            return AccessController.doPrivileged(
+                                                 new PrivilegedExceptionAction<Subject>() {
+                                                     @Override
+                                                     public Subject run() throws WSSecurityException {
+                                                         return WSSubject.getRunAsSubject();
+                                                     }
+                                                 });
+        } catch (PrivilegedActionException e) {
+            throw new BatchContainerRuntimeException(e.getCause());
         }
     }
 
