@@ -208,6 +208,7 @@ public class ApplicationProcessor {
         return newDocument;
     }
 
+    @FFDCIgnore(UnableToAdaptException.class)
     private void processApplication(ApplicationInfo appInfo) {
         synchronized (this.document) {
 
@@ -238,11 +239,9 @@ public class ApplicationProcessor {
                         }
 
                     } catch (UnableToAdaptException e) {
-                        // TODO Auto-generated catch block
-                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                        // https://websphere.pok.ibm.com/~alpine/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
-                        e.printStackTrace();
-
+                        if (OpenAPIUtils.isDebugEnabled(tc)) {
+                            Tr.debug(tc, "Failed to adapt entry: " + e.getMessage());
+                        }
                     }
                 }
             } else {
