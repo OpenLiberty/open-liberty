@@ -1,0 +1,10 @@
+#repository.url=http://vmwtpm0948.hursley.ibm.com:9002/ma/v1
+#apiKey=26608293736
+#userId=wasngi@ca.ibm.com
+#password=store4test
+
+
+repository.url=http://ltestl62.hursley.ibm.com:9002/ma/v1
+apiKey=62452810024
+#userId=installfat1@ca.ibm.com
+#password=repo4test
