@@ -32,8 +32,8 @@ import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.headers.Header;
-import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
+import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Content;
@@ -537,7 +537,8 @@ public abstract class AnnotationsUtils {
         }
         return linkMap;
     }
-
+    
+    @FFDCIgnore(IOException.class)    
     public static Optional<Link> getLink(org.eclipse.microprofile.openapi.annotations.links.Link link) {
         if (link == null) {
             return Optional.empty();
@@ -560,6 +561,22 @@ public abstract class AnnotationsUtils {
                 isEmpty = false;
             }
         }
+
+        if (StringUtils.isNotBlank(link.requestBody())) {
+            try {
+                linkObject.setRequestBody(Json.mapper().readTree(link.requestBody()));
+            } catch (IOException e) {
+                linkObject.setRequestBody(link.requestBody());
+            }
+            isEmpty = false;
+        }
+
+        Optional<Server> server = getServer(link.server());
+        if (server.isPresent()) {
+            linkObject.setServer(server.get());
+            isEmpty = false;
+        }
+        
         if (isEmpty) {
             return Optional.empty();
         }
@@ -576,9 +593,7 @@ public abstract class AnnotationsUtils {
             return linkParametersMap;
         }
         for (LinkParameter parameter : linkParameter) {
-            if (StringUtils.isNotBlank(parameter.name())) {
-                linkParametersMap.put(parameter.name(), parameter.expression());
-            }
+            linkParametersMap.put(parameter.name(), parameter.expression());
         }
 
         return linkParametersMap;
@@ -756,26 +771,24 @@ public abstract class AnnotationsUtils {
             OperationParser.getContent(response.content(), classProduces == null ? new String[0] : classProduces.value(),
                                        methodProduces == null ? new String[0] : methodProduces.value(), components).ifPresent(apiResponseObject::content);
             AnnotationsUtils.getHeaders(response.headers()).ifPresent(apiResponseObject::headers);
-            if (StringUtils.isNotBlank(apiResponseObject.getDescription()) || apiResponseObject.getContent() != null || apiResponseObject.getHeaders() != null) {
 
-                Map<String, Link> links = AnnotationsUtils.getLinks(response.links());
-                if (links.size() > 0) {
-                    apiResponseObject.setLinks(links);
-                }
-
-                if (useResponseCodeAsKey) {
-                    //Add the response object using the response code (for operations)
-                    if (StringUtils.isNotBlank(response.responseCode())) {
-                        apiResponsesObject.addApiResponse(response.responseCode(), apiResponseObject);
-                    } else {
-                        apiResponsesObject.defaultValue(apiResponseObject);
-                    }
-                } else {
-                    // Add the response object using the name of response (for components)
-                    apiResponsesObject.addApiResponse(response.name(), apiResponseObject);
-                }
-
+            Map<String, Link> links = AnnotationsUtils.getLinks(response.links());
+            if (links.size() > 0) {
+                apiResponseObject.setLinks(links);
             }
+
+            if (useResponseCodeAsKey) {
+                //Add the response object using the response code (for operations)
+                if (StringUtils.isNotBlank(response.responseCode())) {
+                    apiResponsesObject.addApiResponse(response.responseCode(), apiResponseObject);
+                } else {
+                    apiResponsesObject.defaultValue(apiResponseObject);
+                }
+            } else {
+                // Add the response object using the name of response (for components)
+                apiResponsesObject.addApiResponse(response.name(), apiResponseObject);
+            }
+
         }
         if (apiResponsesObject.isEmpty()) {
             return Optional.empty();
