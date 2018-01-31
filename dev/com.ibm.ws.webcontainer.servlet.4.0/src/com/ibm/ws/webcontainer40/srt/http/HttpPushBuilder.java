@@ -242,7 +242,9 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         }
 
         IRequest40 request = (IRequest40) _inboundRequest.getIRequest();
+
         request.getHttpRequest().pushNewRequest(this);
+
         reset();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
