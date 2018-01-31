@@ -355,8 +355,6 @@ public class FormAuthenticationMechanismTest {
         
         mockery.checking(new Expectations() {
             {
-                one(req).getMethod();
-                will(returnValue("POST"));
                 one(req).getRequestURI();
                 will(returnValue("/j_security_check"));
                 one(req).getParameter("j_username");
