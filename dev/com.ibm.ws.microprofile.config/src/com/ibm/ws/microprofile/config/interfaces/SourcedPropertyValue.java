@@ -13,20 +13,18 @@ package com.ibm.ws.microprofile.config.interfaces;
 import java.lang.reflect.Type;
 
 /**
- * A value and the id of its source
+ * A value, the type of the value and the id of its source
  */
 public class SourcedPropertyValue {
 
     private final Object value;
     private final Type type;
     private final String source;
-    private final String tostring;
 
     public SourcedPropertyValue(Object value, Type type, String source) {
         this.value = value;
         this.type = type;
         this.source = source;
-        this.tostring = value + "(" + source + ")";
     }
 
     /**
@@ -40,7 +38,7 @@ public class SourcedPropertyValue {
 
     /**
      * Get the type of the value
-     * 
+     *
      * @return
      */
     public Type getType() {
@@ -58,6 +56,6 @@ public class SourcedPropertyValue {
 
     @Override
     public String toString() {
-        return tostring;
+        return value + "(" + source + ")";
     }
 }

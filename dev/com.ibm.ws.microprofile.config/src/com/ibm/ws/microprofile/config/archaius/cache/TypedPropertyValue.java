@@ -51,7 +51,7 @@ public class TypedPropertyValue {
         this.config = config;
     }
 
-    protected SourcedPropertyValue resolveCurrent() throws Exception {
+    protected SourcedPropertyValue resolveCurrent() {
         return config.getSourcedValue(type, getKey());
     }
 
@@ -79,7 +79,7 @@ public class TypedPropertyValue {
                 throw e;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "get", "Unable to get current version of property '" + parentContainer.getKey() + "'", e);
+                    Tr.debug(tc, "get: Unable to get current version of property '{0}'. Exception: {1}", parentContainer.getKey(), e);
                 }
                 throw new ConfigException(e);
             }

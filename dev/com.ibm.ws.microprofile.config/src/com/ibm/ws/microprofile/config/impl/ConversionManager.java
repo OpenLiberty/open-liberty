@@ -65,17 +65,15 @@ public class ConversionManager {
                         converted = converter.convert(rawString);
                     }
                     status.setConverted(converted);
-                } catch (ConversionException e) {
+                } catch (ConversionException | IllegalArgumentException e) {
                     throw e;
-                } catch (IllegalArgumentException e) {
-                    throw new ConversionException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
                 } catch (Throwable e) {
                     throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
                 }
 
                 if (status.isConverterFound() && status.getConverted() == null) {
                     if (TraceComponent.isAnyTracingEnabled()) {
-                        Tr.debug(tc, "The converted value is null. The rawString is " + rawString);
+                        Tr.debug(tc, "simpleConversion: The converted value is null. The rawString is {0}", rawString);
                     }
                 }
 
@@ -104,7 +102,7 @@ public class ConversionManager {
                 Class<?> genericClassArg = (Class<?>) genericTypeArg;
                 value = convert(rawString, pType.getRawType(), genericClassArg);
             } else {
-                throw new IllegalArgumentException("Generic Type Variables are not supported: " + genericTypeArg);
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "generic.type.variables.notsupported.CWMCG0018E", type, genericTypeArg));
             }
         } else {
             value = convert(rawString, type, null);
@@ -121,7 +119,7 @@ public class ConversionManager {
      * @param type
      * @return
      */
-    public Object convert(String rawString, Type type, Class<?> genericSubType) {
+    protected Object convert(String rawString, Type type, Class<?> genericSubType) {
         //first box any primitives
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;

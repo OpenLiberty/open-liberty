@@ -119,7 +119,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
         StringBuilder debug = null; //debug only
         boolean first = true; //debug only
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            debug = new StringBuilder("[");
+            debug = new StringBuilder("getKeySet: [");
         }
 
         for (PollingDynamicConfig config : children) {
@@ -142,7 +142,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             debug.append("]");
-            Tr.debug(tc, "getKeySet", debug.toString());
+            Tr.debug(tc, debug.toString());
         }
 
         return result;
@@ -200,13 +200,9 @@ public class CompositeConfig implements Closeable, ConfigListener {
         if (rawProp == null) {
             return null;
         } else {
-            try {
-                Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
-                SourcedPropertyValue composite = new SourcedPropertyValue(value, type, rawProp.getSource());
-                return composite;
-            } catch (NumberFormatException nfe) {
-                throw new ConfigException("Error parsing value \'" + rawProp.getValue() + "\' for property \'" + key + "\'", nfe);
-            }
+            Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
+            SourcedPropertyValue composite = new SourcedPropertyValue(value, type, rawProp.getSource());
+            return composite;
         }
     }
 

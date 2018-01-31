@@ -58,6 +58,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
         assertNotClosed();
@@ -148,6 +149,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
                 }
             }
         } catch (ConverterNotFoundException | ConversionException e) {
+            //TODO is this the correct exception to throw? ConverterNotFoundException is not the same as IllegalArgumentException
             throw new IllegalArgumentException(e);
         }
         return value;
@@ -166,6 +168,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
                 value = convertValue(defaultString, propertyType);
             }
         } catch (ConverterNotFoundException | ConversionException e) {
+            //TODO is this the correct exception to throw? ConverterNotFoundException is not the same as IllegalArgumentException
             throw new IllegalArgumentException(e);
         }
         return value;
@@ -175,7 +178,8 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public Object convertValue(String rawValue, Type type) {
         assertNotClosed();
-        return conversionManager.convert(rawValue, type);
+        Object value = conversionManager.convert(rawValue, type);
+        return value;
     }
 
 }

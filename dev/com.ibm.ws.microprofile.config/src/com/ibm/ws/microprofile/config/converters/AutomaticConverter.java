@@ -16,6 +16,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
@@ -25,6 +27,7 @@ import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
  */
 public class AutomaticConverter extends BuiltInConverter {
 
+    private static final TraceComponent tc = Tr.register(AutomaticConverter.class);
     private Method valueOfMethod;
     private Constructor<?> ctor;
     private Method parseMethod;
@@ -56,7 +59,7 @@ public class AutomaticConverter extends BuiltInConverter {
             this.parseMethod = getParse(reflectionClass);
         }
         if (this.ctor == null && this.valueOfMethod == null && this.parseMethod == null) {
-            throw new ConverterNotFoundException("No implicit String constructor methods found for type: " + reflectionClass);
+            throw new ConverterNotFoundException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
         }
     }
 

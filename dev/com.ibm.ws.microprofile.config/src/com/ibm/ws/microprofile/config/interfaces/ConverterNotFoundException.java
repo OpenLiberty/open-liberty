@@ -14,18 +14,14 @@
  * limitations under the License.
  *
  *******************************************************************************/
-/**
- * Thrown to indicate that converting to a specified type is unsuccessful.
- * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
- */
 
 package com.ibm.ws.microprofile.config.interfaces;
 
+/**
+ * Thrown when a converter is not found for a specified type
+ */
 public class ConverterNotFoundException extends ConfigException {
 
-    /**
-     * The exception was thrown when unable to process some config.
-     */
     private static final long serialVersionUID = 1L;
 
     /**
