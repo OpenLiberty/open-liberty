@@ -309,3 +309,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Assurez-vous que le r\u00e9seau est correct
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: L''\u00e9metteur [{0}] du jeton JWT (JSON Web Token) fourni n''est pas digne de confiance car la configuration JWT [{1}] ne sp\u00e9cifie aucun \u00e9metteur digne de confiance.
 JWT_TRUSTED_ISSUERS_NULL.explanation=La configuration du serveur sp\u00e9cifie quels \u00e9metteurs sont dignes de confiance pour la validation des jetons JWT. La configuration JWT ne sp\u00e9cifie aucun \u00e9metteur digne de confiance, le jeton ne peut donc pas \u00eatre valid\u00e9.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Assurez-vous que la configuration JWT qui est sp\u00e9cifi\u00e9e dans le message d\u00e9finit au moins un \u00e9metteur digne de confiance. V\u00e9rifiez que l'\u00e9metteur du jeton JWT correspond \u00e0 l'un des \u00e9metteurs dignes de confiance sp\u00e9cifi\u00e9s dans votre configuration JWT.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Un sch\u00e9ma HTTP est utilis\u00e9 au point d''extr\u00e9mit\u00e9 indiqu\u00e9 : {0}, HTTPS est requis.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Le noeud final sp\u00e9cifi\u00e9 requiert le protocole HTTPS, mais le protocole HTTP a \u00e9t\u00e9 utilis\u00e9 dans l'URL de demande.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=V\u00e9rifiez l'URL de demande et assurez-vous qu'elle utilise le protocole HTTPS ou changez la configuration de sorte que le protocole HTTPS ne soit pas requis.

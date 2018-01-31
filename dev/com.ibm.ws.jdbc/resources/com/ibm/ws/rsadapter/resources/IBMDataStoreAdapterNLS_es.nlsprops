@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: El acceso a los metadatos de la base de datos ha 
 META_DATA_EXCEPTION.explanation=Se ha producido una excepci\u00f3n cuando el servidor de aplicaciones intentaba obtener o acceder al objeto de metadatos para la base de datos.
 META_DATA_EXCEPTION.useraction=Compruebe que los metadatos est\u00e1n habilitados en la base de datos de fondo.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: El servidor de aplicaciones ha inhabilitado la agrupaci\u00f3n de conexiones interna.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=El servidor de aplicaciones ha detectado la habilitaci\u00f3n de la memoria cach\u00e9 de conexi\u00f3n a trav\u00e9s de la base de datos. La agrupaci\u00f3n de conexiones en el servidor de aplicaciones se inhabilitar\u00e1.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Si no quiere inhabilitar la agrupaci\u00f3n de conexiones en el servidor de aplicaciones, inhabilite la agrupaci\u00f3n de conexiones para el servidor de bases de datos.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: L''acc\u00e8s aux m\u00e9tadonn\u00e9es de la bas
 META_DATA_EXCEPTION.explanation=Une exception s'est produite alors que le serveur d'applications tentait d'acc\u00e9der \u00e0 l'objet m\u00e9tadonn\u00e9es pour la base de donn\u00e9es.
 META_DATA_EXCEPTION.useraction=V\u00e9rifiez que les m\u00e9tadonn\u00e9es sont activ\u00e9es sur votre base de donn\u00e9es dorsale.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Le serveur d'applications a d\u00e9sactiv\u00e9 le regroupement des connexions en interne.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Le serveur d'applications a d\u00e9tect\u00e9 l'activation de la mise en cache des connexions via la base de donn\u00e9es. Le regroupement des connexions sur le serveur d'applications sera d\u00e9sactiv\u00e9.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Si vous ne souhaitez pas d\u00e9sactiver le regroupement des connexions sur le serveur d'applications, d\u00e9sactivez ce regroupement pour le serveur de la base de donn\u00e9es.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

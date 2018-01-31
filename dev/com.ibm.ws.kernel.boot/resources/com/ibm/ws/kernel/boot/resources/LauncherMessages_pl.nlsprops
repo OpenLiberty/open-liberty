@@ -917,6 +917,14 @@ maksymalnie 8 znak\u00f3w i nie mo\u017ce zawiera\u0107 przecinka.
 error.zosProcStart.jobname.invalid.useraction=Sprawd\u017a, czy nazwa zadania nie \
 jest d\u0142u\u017csza ni\u017c 8 znak\u00f3w i czy nie zawiera przecinka.
 
+error.server.pause.command.port.disabled=CWWKE0944E: Odebrano \u017c\u0105danie wstrzymania dla serwera {0}, ale port komend serwera jest wy\u0142\u0105czony. Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania. W\u0142\u0105cz port komend, a nast\u0119pnie spr\u00f3buj ponownie.
+error.server.pause.command.port.disabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem. Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wstrzymania. Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.server.pause.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wstrzymania mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora. 
+error.server.resume.command.port.disabled=CWWKE0945E: Odebrano \u017c\u0105danie wznowienia dla serwera {0}, ale port komend serwera jest wy\u0142\u0105czony. Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania. W\u0142\u0105cz port komend, a nast\u0119pnie spr\u00f3buj ponownie.
+error.server.resume.command.port.disabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem. Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wznowienia. Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.server.resume.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wznowienia mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora. 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

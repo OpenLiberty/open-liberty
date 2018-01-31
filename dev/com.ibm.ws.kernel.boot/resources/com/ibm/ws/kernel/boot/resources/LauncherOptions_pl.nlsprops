@@ -15,13 +15,19 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Sk\u0142adnia: java [opcje JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar nazwaSerwera [dzia\u0142ania] [opcje]  
-scriptUsage=Sk\u0142adnia: {0} dzia\u0142anie nazwaSerwera \
-[opcje]
+\t-jar bin/tools/ws-server.jar serverName {0} [opcje]  
+scriptUsage=Sk\u0142adnia: {0} {1} serverName [opcje]
 
 use.actions=Dzia\u0142ania:
 use.options=Opcje:
+use.options.gen.desc=\ \ \ \ U\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
 use.jvmarg=Opcje maszyny JVM:
+category-key.lifecycle=Cykl \u017cycia serwera
+category-key.win=Windows
+category-key.service=Okre\u015blanie problemu
+category-key.help=Informacja
+category-key.misc=R\u00f3\u017cne
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -114,23 +120,39 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tUsu\u0144 z pami\u0119ci podr\u0119cznej wszystkie informacje odnosz\u0105ce si\u0119 do tej instancji serwera.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="\u015bcie\u017cka do docelowego pliku archiwum"
-option-desc.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie package\n\
-\tlub dump. Element docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub\n\
+option-desc.dump.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie dump.      \n\
+\tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\
 \twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\
-\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku      \n\
-\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum.       \n\
-\tDomy\u015blnym formatem archiwum dla dzia\u0142ania pakowania jest pax \n\
-\tw systemie z/OS i zip na wszystkich innych platformach. \n\
-\tU\u017cycie formatu jar archiwum spowoduje wygenerowanie samorozpakowuj\u0105cego \n\
-\tpliku jar podobnego do oryginalnego archiwum instalatora. \
-\n\
-\tFormat jar archiwum w po\u0142\u0105czeniu z warto\u015bci\u0105 runnable w opcji \n\
-\t--include generuje mo\u017cliwy do uruchomienia plik jar, kt\u00f3ry mo\u017ce\n\
-\turuchomi\u0107 serwer Liberty z poziomu pliku jar za pomoc\u0105 komendy java -jar.
+\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku\n\
+\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. Domy\u015blnym\n\
+\tformatem archiwum dla dzia\u0142ania pakowania jest pax w systemie z/OS\n\
+\ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\
+\tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\
+\tdo oryginalnego archiwum instalatora.
+
+option-desc.package.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie package.      \n\
+\tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\
+\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\
+\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku\n\
+\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. Domy\u015blnym\n \tformatem archiwum dla dzia\u0142ania pakowania jest pax w systemie z/OS\n\
+\ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\
+\tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\
+\tdo oryginalnego archiwum instalatora. Format jar archiwum \n\
+\tw po\u0142\u0105czeniu z warto\u015bci\u0105 runnable opcji --include generuje plik jar,\n\
+\tkt\u00f3ry mo\u017ce uruchomi\u0107 serwer Liberty z poziomu pliku jar za pomoc\u0105\n\
+\tkomendy java -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=warto\u015b\u0107,warto\u015b\u0107,...
-option-desc.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci zale\u017c\u0105\n\
-\tod wykonywanej akcji.
+option-desc.javadump.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: heap, system \n\
+\tthread.
+option-desc.package.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: all*, usr,   \n\
+\tminify, runnable. Je\u015bli zostanie podana warto\u015b\u0107 runnable, wynikowy\n\
+\tpakiet b\u0119dzie wykonywalnym plikiem JAR, kt\u00f3ry uruchamia serwer. Opcja\n\
+\tminify powoduje utworzenie najmniejszego mo\u017cliwego obrazu dla serwera.\n\
+\tOpcja usr powoduje utworzenie pakietu, kt\u00f3ry zawiera serwer\n\
+\ti aplikacj\u0119, ale nie zawiera \u015brodowiska wykonawczego.\n\
+\tOpcja domy\u015blna all powoduje utworzenie pakietu serwera, kt\u00f3ry zawiera\n\
+\twszystkie elementy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nazwaSzablonu"
 option-desc.template=\tOkre\u015bl nazw\u0119 szablonu do u\u017cycia przy tworzeniu nowego serwera. 

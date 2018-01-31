@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -136,4 +140,8 @@
 45209=\u5617\u8a66\u5728 SDOHelperContext \u4e0a\u91cd\u8a2d ApplicationResolver \u5be6\u4f8b\u3002\u53ea\u5141\u8a31\u8a2d\u5b9a\u4e00\u6b21\u3002
 
 45210=\u6240\u8981\u914d\u7f6e\u7684 DataObject \u4e0d\u662f\u4f86\u81ea\u8207 XMLHelper \u76f8\u540c\u7684 HelperContext\u3002
+
+45211=\u7121\u6cd5\u4f7f\u7528 [{0}] \u540d\u7a31\u4f86\u5b9a\u7fa9\u985e\u578b\u3002\u8a72\u540d\u7a31\u4e0d\u662f\u6709\u6548\u7684 XML \u540d\u7a31\u3002
+
+45212=\u7121\u6cd5\u4f7f\u7528 [{0}] \u540d\u7a31\u4f86\u5b9a\u7fa9\u5167\u5bb9\u3002\u8a72\u540d\u7a31\u4e0d\u662f\u6709\u6548\u7684 XML \u540d\u7a31\u3002
 

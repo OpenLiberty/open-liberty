@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -33,7 +37,7 @@ connected=p\u0159ipojeno
 
 connector=konektor
 
-context=Kontext:	
+context=Kontext:    
 
 database_name=n\u00e1zev datab\u00e1ze
 
@@ -160,6 +164,10 @@ staticweave_commandline_help_message_7of19=           Tato volba se obvykle pou\
 staticweave_commandline_help_message_8of19=    -persistencexml
 
 staticweave_commandline_help_message_9of19=           Identifikujte um\u00edst\u011bn\u00ed specifikace persistence.xml relativn\u011b ke ko\u0159eni jednotky perzistence, pokud se li\u0161\u00ed od META-INF/persistence.xml.
+
+staticweave_processor_dir_not_created=Adres\u00e1\u0159 {0} nelze vytvo\u0159it.
+
+staticweave_processor_file_not_created=Soubor {0} nelze vytvo\u0159it.
 
 staticweave_processor_unknown_outcome=Zakomponov\u00e1n\u00ed t\u0159\u00edd ulo\u017een\u00fdch v adres\u00e1\u0159i a vystupuj\u00edc\u00edch do souboru JAR \u010dasto vede k neo\u010dek\u00e1van\u00fdm v\u00fdsledk\u016fm.
 
