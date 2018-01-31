@@ -1,0 +1,20 @@
+<project name="com.ibm.ws.install.utility" default="build">
+	<import file="../ant_build/public_imports/standard_imports.xml"/>
+	<import file="../ant_build/public_imports/internal_imports/wlpbnd.xml"/>
+	<!-- Disable trace/ffdc injection as this code is used outside of Liberty -->
+	<property name="no.trace.instrumentation" value="true"/>
+
+    <target name="package" unless="manifest.exists" depends="compile, createCopyright, generateProperties, packageWithManifest, processQualifier">
+        <mkdir dir="${lib.dir}" />
+
+        <echo message="${output.jar}"/>
+  	    <!--  <bnd> apparently tolerates absent files on classpath string, but not on classpathref. So: -->
+	    <!-- It also has problems with comma as delimiter, despite claims -->
+        <wlpbnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         classpathref="bnd.classpath" 	
+         output="${lib.dir}/${output.jar}"
+         files="bnd.bnd" />
+    </target>
+</project>

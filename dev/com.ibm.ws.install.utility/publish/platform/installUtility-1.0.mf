@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.installUtility-1.0; visibility:=private
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: com.ibm.ws.install.utility; version="[1,1.0.100)",
+  ws-installUtility.jar; location:="bin/tools/ws-installUtility.jar"; type="file",
+  installUtility; location:="bin/installUtility"; type="file",
+  installUtility.bat; location:="bin/installUtility.bat"; type="file"
+IBM-Feature-Version: 2

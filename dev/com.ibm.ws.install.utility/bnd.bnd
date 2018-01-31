@@ -1,0 +1,25 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Install Utility Project
+Bundle-SymbolicName: com.ibm.ws.install.utility
+Bundle-Description: WebSphere Liberty Install Utility, version ${bVersion}
+
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Private-Package: com.ibm.ws.install.utility.*
+
+instrument.disabled: true
+
+-buildpath: \
+	${javac.bootclasspath.java6}, \
+	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.install;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.product.utility;version=latest,\
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.liberty;version=latest,\
+	wlp.lib.extract;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest

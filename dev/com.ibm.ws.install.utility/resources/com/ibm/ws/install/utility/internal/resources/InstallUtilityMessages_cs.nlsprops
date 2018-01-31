@@ -1,0 +1,230 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+ERROR_DEPENDENCIES_INVALID_OPTION=CWWKF1401E: Hodnota {0} nen\u00ed platn\u00e1 pro --dependencies.
+ERROR_DEPENDENCIES_INVALID_OPTION.explanation=Mus\u00edte pou\u017e\u00edt platn\u00e9 hodnoty pro volbu --dependencies.
+ERROR_DEPENDENCIES_INVALID_OPTION.useraction=Spus\u0165te p\u0159\u00edkaz s hodnotou platnou pro volbu --dependencies, jako nap\u0159. all (v\u0161e).
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1402E: N\u00e1sleduj\u00edc\u00ed funkce nebyly sta\u017eeny, proto\u017ee jsou ji\u017e nainstalovan\u00e9: {0}. Pou\u017eijte jinou hodnotu volby --dependencies, jako nap\u0159. all (v\u0161e) nebo none (\u017e\u00e1dn\u00e1).
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Ur\u010den\u00e9 funkce jsou ji\u017e nainstalov\u00e1ny.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Znovu spus\u0165te p\u0159\u00edkaz s jinou hodnotou volby --dependencies, jako nap\u0159. all (v\u0161e) nebo none (\u017e\u00e1dn\u00e1).
+
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST=CWWKF1404E: Soubor {0} neexistuje.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.explanation=Archivn\u00ed soubor bal\u00edku serveru poskytnut\u00fd akci instalace neexistuje.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.useraction=Zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu archivn\u00edho souboru bal\u00edku serveru a zopakujte akci instalace.
+
+ERROR_ARCHIVE_NOT_SUPPORT=CWWKF1405E: Typ souboru {0} nen\u00ed podporovan\u00fd akc\u00ed instalace.
+ERROR_ARCHIVE_NOT_SUPPORT.explanation=Archivn\u00ed soubor bal\u00edku serveru by m\u011bl b\u00fdt soubor zip.
+ERROR_ARCHIVE_NOT_SUPPORT.useraction=Zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu archivn\u00edho souboru bal\u00edku serveru a zopakujte akci instalace.
+
+ERROR_REPO_INVALID_URL=CWWKF1409E: Adresa URL {0} je neplatn\u00e1. Spus\u0165te p\u0159\u00edkaz znovu s platnou adresou URL.
+ERROR_REPO_INVALID_URL.explanation=Zadan\u00e1 adresa URL nen\u00ed platn\u00e1.
+ERROR_REPO_INVALID_URL.useraction=Spus\u0165te p\u0159\u00edkaz znovu s platnou adresou URL.
+
+ERROR_REPO_UNSUPPORT_PROTOCOL=CWWKF1416E: Protokol adresy URL {0} nen\u00ed podporov\u00e1n. Podporov\u00e1ny jsou pouze http, https a protokoly souboru.
+ERROR_REPO_UNSUPPORT_PROTOCOL.explanation=Pou\u017eit\u00fd nepodporovan\u00fd protokoly adresy URL.
+ERROR_REPO_UNSUPPORT_PROTOCOL.useraction=Spus\u0165te p\u0159\u00edkaz znovu s platnou adresou URL.
+
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION=CWWKF1417E: Ve verzi beta p\u0159\u00edkaz installUtility nepodporuje v\u00edce lok\u00e1ln\u00edch adres\u00e1\u0159\u016f nebo lok\u00e1ln\u00ed adres\u00e1\u0159 sm\u00ed\u0161en\u00fd s lok\u00e1ln\u011b provozovan\u00fdm \u00falo\u017ei\u0161t\u011bm.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.explanation=Nastavovan\u00e1 konfigurace nen\u00ed podporov\u00e1na p\u0159\u00edkazem installUtility.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.useraction=Odeberte \u00falo\u017ei\u0161t\u011b, kter\u00e9 nepot\u0159ebujete, a p\u0159idejte po\u017eadovan\u00e9 \u00falo\u017ei\u0161t\u011b.
+
+ERROR_REPO_NOT_IN_LIST=CWWKF1418E: N\u00e1zev \u00falo\u017ei\u0161t\u011b {0} nen\u00ed nakonfigurov\u00e1n v konfigura\u010dn\u00edm souboru {1}. Zkontrolujte konfigura\u010dn\u00ed soubor nebo pou\u017eijte akci viewSettings k nalezen\u00ed zkonfigurovan\u00fdch n\u00e1zv\u016f \u00falo\u017ei\u0161t\u011b.
+ERROR_REPO_NOT_IN_LIST.explanation=Ur\u010den\u00fd n\u00e1zev \u00falo\u017ei\u0161t\u011b nelze v konfiguraci nal\u00e9zt.
+ERROR_REPO_NOT_IN_LIST.useraction=Pomoc\u00ed akce viewSettings vypi\u0161te v\u0161echna zkonfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b a znovu spus\u0165te p\u0159\u00edkaz pomoc\u00ed platn\u00e9ho n\u00e1zvu \u00falo\u017ei\u0161t\u011b.
+
+ERROR_INVALID_URL=CWWKF1420E: Adresa URL {0} \u00falo\u017ei\u0161t\u011b {1} je neplatn\u00e1. K oprav\u011b \u00falo\u017ei\u0161t\u011b pou\u017eijte akci konfigurace.
+ERROR_INVALID_URL.explanation=Adresa URL ulo\u017een\u00e9ho \u00falo\u017ei\u0161t\u011b v konfiguraci nen\u00ed platn\u00e1.
+ERROR_INVALID_URL.useraction=Opravte konfiguraci a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_REPO_IS_FILE=CWWKF1421E: Adresa URL {0} \u00falo\u017ei\u0161t\u011b {1} je soubor. Je nutn\u00e1 cesta k adres\u00e1\u0159i. K oprav\u011b \u00falo\u017ei\u0161t\u011b pou\u017eijte akci konfigurace.
+ERROR_REPO_IS_FILE.explanation=\u00dalo\u017ei\u0161t\u011b nem\u016f\u017ee b\u00fdt soubor.
+ERROR_REPO_IS_FILE.useraction=Opravte konfiguraci a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_REPO_URL_IS_FILE=CWWKF1422E: {0} je soubor. Je nutn\u00e1 cesta k adres\u00e1\u0159i. 
+ERROR_REPO_URL_IS_FILE.explanation=Ur\u010den\u00e1 adresa URL nen\u00ed adres\u00e1\u0159em.
+ERROR_REPO_URL_IS_FILE.useraction=Spus\u0165te p\u0159\u00edkaz znovu s adres\u00e1\u0159em nebo platnou adresou URL.
+
+ERROR_REPO_NOT_EXISTS=CWWKF1423E: Adresa URL {0} \u00falo\u017ei\u0161t\u011b {1} neexistuje. K oprav\u011b \u00falo\u017ei\u0161t\u011b pou\u017eijte akci konfigurace.
+ERROR_REPO_NOT_EXISTS.explanation=\u00dalo\u017ei\u0161t\u011b neexistuje.
+ERROR_REPO_NOT_EXISTS.useraction=Opravte konfiguraci a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_NO_ARGUMENT=CWWKF1424E: Akce {0} vy\u017eaduje alespo\u0148 jeden n\u00e1zev polo\u017eky.
+ERROR_NO_ARGUMENT.explanation=K vyvol\u00e1n\u00ed akce byl pou\u017eit nespr\u00e1vn\u00fd po\u010det argument\u016f.
+ERROR_NO_ARGUMENT.useraction=Zopakujte spu\u0161t\u011bn\u00ed p\u0159\u00edkazu se spr\u00e1vn\u00fdmi argumenty.
+
+ERROR_TYPE_INVALID_OPTION=CWWKF1427E: Hodnota {0} nen\u00ed platn\u00e1 pro --type. Platn\u00e1 hodnota je addon, feature, opensource, sample nebo all.
+ERROR_TYPE_INVALID_OPTION.explanation=Pou\u017eit\u00e1 neplatn\u00e1 hodnota pro volbu --type.
+ERROR_TYPE_INVALID_OPTION.useraction=Spus\u0165te p\u0159\u00edkaz s hodnotou platnou pro --type, nap\u0159. addon, feature, opensource, sample nebo all.
+
+ERROR_NO_SEARCHSTRING_NAME_OPTION=CWWKF1428E: Hledan\u00fd \u0159et\u011bzec nen\u00ed ur\u010den.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.explanation=Hledan\u00fd \u0159et\u011bzec je nezbytn\u00fd p\u0159i pou\u017eit\u00ed volby --name.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.useraction=Spus\u0165te p\u0159\u00edkaz znovu s hledan\u00fdm \u0159et\u011bzcem.
+
+ERROR_FAILED_TO_CONNECT_REPO=CWWKF1429E: Nelze nav\u00e1zat komunikaci se serverem \u00falo\u017ei\u0161t\u011b. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a ke konfigurovan\u00e9mu \u00falo\u017ei\u0161ti.
+ERROR_FAILED_TO_CONNECT_REPO.explanation=Vyskytla se chyba p\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti.
+ERROR_FAILED_TO_CONNECT_REPO.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a p\u0159\u00edslu\u0161n\u00e9mu \u00falo\u017ei\u0161ti.
+
+ERROR_REPO_REQUIRES_AUTH=CWWKF1430E: Nelze ov\u011b\u0159it pov\u011b\u0159en\u00ed pro nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b. Ujist\u011bte se, \u017ee jsou pro nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b v konfigura\u010dn\u00edm souboru {0} nastavena platn\u00e1 pov\u011b\u0159en\u00ed.
+ERROR_REPO_REQUIRES_AUTH.explanation=Nakonfigurovan\u00fd server \u00falo\u017ei\u0161t\u011b vy\u017eaduje ov\u011b\u0159en\u00ed, ale v konfigura\u010dn\u00edm souboru nebyla zad\u00e1na platn\u00e1 pov\u011b\u0159en\u00ed.
+ERROR_REPO_REQUIRES_AUTH.useraction=Zadejte do konfigura\u010dn\u00edho souboru platn\u00e1 pov\u011b\u0159en\u00ed serveru \u00falo\u017ei\u0161t\u011b a znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_NO_CONNECTION=CWWKF1431E: Nelze nav\u00e1zat spojen\u00ed s konfigurovan\u00fdm serverem \u00falo\u017ei\u0161t\u011b.
+ERROR_NO_CONNECTION.explanation=Nelze nav\u00e1zat p\u0159ipojen\u00ed k serveru \u00falo\u017ei\u0161t\u011b.
+ERROR_NO_CONNECTION.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS=CWWKF1432E: {0} vy\u017eaduje nejv\u00edce 1 argument, ale poskytnuty byly {1}.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.explanation=K vyvol\u00e1n\u00ed akce byl pou\u017eit nespr\u00e1vn\u00fd po\u010det argument\u016f.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.useraction=Zopakujte spu\u0161t\u011bn\u00ed p\u0159\u00edkazu se spr\u00e1vn\u00fdmi argumenty.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWK1433E: Nelze ov\u011b\u0159it pov\u011b\u0159en\u00ed pro nakonfigurovan\u00fd server proxy. Ujist\u011bte se, \u017ee jsou pro server proxy v konfigura\u010dn\u00edm souboru {0} nastavena platn\u00e1 pov\u011b\u0159en\u00ed.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Nakonfigurovan\u00fd server proxy vy\u017eaduje ov\u011b\u0159en\u00ed, ale pov\u011b\u0159en\u00ed nelze ov\u011b\u0159it.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Zadejte do konfigura\u010dn\u00edho souboru platn\u00e1 pov\u011b\u0159en\u00ed serveru proxy a znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWK1434E: Nelze naj\u00edt soubor server.xml v adres\u00e1\u0159i {0}. Ujist\u011bte se, \u017ee soubor existuje a je p\u0159\u00edstupn\u00fd.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Soubor server.xml pro ur\u010den\u00fd n\u00e1zev nelze v adres\u00e1\u0159i serveru naj\u00edt.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Ujist\u011bte se, \u017ee soubor existuje a je p\u0159\u00edstupn\u00fd, potom znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_UNABLE_TO_ACCESS_SERVER_XML=CWWK1435E: Nelze p\u0159istoupit k souboru {0}. Ujist\u011bte se, \u017ee u\u017eivatelsk\u00fd \u00fa\u010det je p\u0159\u00edstupn\u00fd a soubor je \u010diteln\u00fd.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.explanation=U\u017eivatelsk\u00fd \u00fa\u010det nem\u00e1 nezbytn\u00e1 opr\u00e1vn\u011bn\u00ed ke \u010dten\u00ed souboru server.xml.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.useraction=Ujist\u011bte se, \u017ee u\u017eivatelsk\u00fd \u00fa\u010det je p\u0159\u00edstupn\u00fd a soubor je \u010diteln\u00fd, potom znovu spus\u0165te p\u0159\u00edkaz.
+
+MSG_REPO_FILE_NOT_FOUND=Nebyla zji\u0161t\u011bna konfigurace u\u017eivatele. IBM WebSphere Liberty Repository je v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Chcete-li upravit nastaven\u00ed p\u0159\u00edkazu installUtility, vytvo\u0159te soubor repositories.properties v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Pomoc\u00ed n\u00e1sleduj\u00ed uk\u00e1zky jako \u0161ablony vytvo\u0159te vlastn\u00ed soubor repositories.properties. Zru\u0161te koment\u00e1\u0159 u \u0159\u00e1dk\u016f ozna\u010den\u00fdch jedn\u00edm znakem # a hodnoty nahra\u010fte vlastn\u00edmi upraven\u00fdmi hodnotami.
+
+ERROR_UNINSTALL_FEATURES_FAIL=CWWK1436E: Jeden nebo v\u00edce funkce nelze odinstalovat: {0}
+ERROR_UNINSTALL_FEATURES_FAIL.explanation=P\u0159i zpracov\u00e1n\u00ed metadat byla zji\u0161t\u011bna intern\u00ed chyba. 
+ERROR_UNINSTALL_FEATURES_FAIL.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE=CWWK1437E: Hodnota {0} nen\u00ed platn\u00e1 pro --downloadDependencies. Platn\u00e1 hodnota je true nebo false.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.explanation=Pou\u017eita neplatn\u00e1 hodnota pro volbu --downloadDependencies.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.useraction=Spus\u0165te p\u0159\u00edkaz s platnou hodnotou pro --downloadDependencies, nap\u0159. true nebo false.
+
+ERROR_ALL_CONFIG_REPOS_FAIL=CWWKF1440E: Nelze se p\u0159ipojit k \u017e\u00e1dn\u00e9mu z nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165, kter\u00e1 jsou uvedena v n\u00e1sleduj\u00edc\u00edm konfigura\u010dn\u00edm souboru, nebo nelze ov\u011b\u0159it pov\u011b\u0159en\u00ed: {0}. Ujist\u011bte se, \u017ee jsou \u00falo\u017ei\u0161t\u011b v konfigura\u010dn\u00edm souboru spr\u00e1vn\u011b nakonfigurov\u00e1na, a \u017ee k ov\u011b\u0159en\u00ed p\u0159ipojen\u00ed pou\u017e\u00edv\u00e1te akce viewSettings a testConnection.
+ERROR_ALL_CONFIG_REPOS_FAIL.explanation=P\u0159\u00edkaz installUtility nem\u016f\u017ee nav\u00e1zat p\u0159ipojen\u00ed s \u017e\u00e1dn\u00fdm nakonfigurovan\u00fdm \u00falo\u017ei\u0161t\u011bm.
+ERROR_ALL_CONFIG_REPOS_FAIL.useraction=Ov\u011b\u0159te, zda m\u00e1 syst\u00e9m p\u0159\u00edstup k internetu. Ujist\u011bte se, \u017ee jsou \u00falo\u017ei\u0161t\u011b v konfigura\u010dn\u00edm souboru spr\u00e1vn\u011b nakonfigurov\u00e1na. Pou\u017eijte akci viewSettings k ov\u011b\u0159en\u00ed nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 a potom k otestov\u00e1n\u00ed p\u0159ipojen\u00ed zvolte akci testConnection.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1441E: Server \u00falo\u017ei\u0161t\u011b je nedosa\u017eiteln\u00fd, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed Java (JRE) ned\u016fv\u011b\u0159uje certifik\u00e1tu serveru. P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=P\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti do\u0161lo k v\u00fdjimce java.security.cert.CertPathBuilderException, proto\u017ee prost\u0159ed\u00ed JRE neuzn\u00e1v\u00e1 bezpe\u010dnostn\u00ed certifik\u00e1t serveru \u00falo\u017ei\u0161t\u011b jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t. Pro ov\u011b\u0159en\u00ed identity serveru \u00falo\u017ei\u0161t\u011b je nezbytn\u00fd d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+
+ERROR_REPO_IS_INVALID=CWWKF1442E: {0} nen\u00ed platn\u00e9 \u00falo\u017ei\u0161t\u011b s adres\u00e1\u0159ovou strukturou. Znovu spus\u0165te p\u0159\u00edkaz za pou\u017eit\u00ed platn\u00e9ho \u00falo\u017ei\u0161t\u011b s adres\u00e1\u0159ovou strukturou. 
+ERROR_REPO_IS_INVALID.explanation=Ur\u010den\u00e1 cesta k souboru nevede k platn\u00e9mu \u00falo\u017ei\u0161ti s adres\u00e1\u0159ovou strukturou. \u00dalo\u017ei\u0161t\u011b s adres\u00e1\u0159ovou strukturou m\u016f\u017eete vytvo\u0159it pomoc\u00ed p\u0159\u00edkazu ke sta\u017een\u00ed installUtility, p\u0159\u00edpadn\u011b sta\u017een\u00edm souboru wlp-featureRepo-<version>.zip ze serveru IBM Fix Central.
+ERROR_REPO_IS_INVALID.useraction=Ov\u011b\u0159te, \u017ee ur\u010den\u00e1 cesta vede k platn\u00e9mu \u00falo\u017ei\u0161ti s adres\u00e1\u0159ovou strukturou, a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1443E: Volbu odinstalov\u00e1n\u00ed --force je mo\u017en\u00e9 ur\u010dit v\u017edy pouze pro jednu funkci. Spus\u0165te p\u0159\u00edkaz uninstall s volbou --force pro jednu funkci.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Volba --force byla ur\u010dena p\u0159i odinstalov\u00e1n\u00ed v\u00edce funkc\u00ed.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Spus\u0165te p\u0159\u00edkaz uninstall s volbou --force pro jednu funkci.
+
+MSG_DEPLOY_SERVER_OK=Server \u00fasp\u011b\u0161n\u011b implementov\u00e1n.
+MSG_DEPLOY_SERVER_PACKAGE_OK=Bal\u00edk serveru \u00fasp\u011b\u0161n\u011b implementov\u00e1n.
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Server nevy\u017eaduje \u017e\u00e1dn\u00e9 dal\u0161\u00ed funkce. \u017d\u00e1dn\u00e9 funkce nebyly nainstalov\u00e1ny.
+MSG_SERVER_NEW_FEATURES_REQUIRED=Server vy\u017eaduje tyto dal\u0161\u00ed funkce: {0}. Instalace funkce z \u00falo\u017ei\u0161t\u011b...
+MSG_INSTALLED_FEATURES=Minim\u00e1ln\u011b jedna funkce byla nainstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}.
+MSG_INSTALLED_SAMPLES=Minim\u00e1ln\u011b jedna uk\u00e1zka byla nainstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}.
+MSG_INSTALLED_OPENSOURCE=Minim\u00e1ln\u011b jedna integrace typu open source byla nainstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}.
+MSG_INSTALLED_ADDONS=Minim\u00e1ln\u011b jedna dopln\u011bk byl nainstalov\u00e1n \u00fasp\u011b\u0161n\u011b: {0}.
+
+MSG_DOWNLOADED_FEATURES=Byla \u00fasp\u011b\u0161n\u011b sta\u017eena nejm\u00e9n\u011b jedna funkce: {0}.
+MSG_DOWNLOADED_SAMPLES=Byla \u00fasp\u011b\u0161n\u011b sta\u017eena nejm\u00e9n\u011b jedna uk\u00e1zka: {0}.
+MSG_DOWNLOADED_OPENSOURCE=Byla \u00fasp\u011b\u0161n\u011b sta\u017eena nejm\u00e9n\u011b jedna integrace typu open source: {0}.
+MSG_DOWNLOADED_ADDONS=Byl \u00fasp\u011b\u0161n\u011b sta\u017een nejm\u00e9n\u011b jeden p\u0159\u00eddavn\u00fd modul: {0}.
+MSG_UNINSTALL_FEATURES=Minim\u00e1ln\u011b jedna funkce byla odinstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}
+
+MSG_DISABLED_REPO=Zak\u00e1zan\u00e1 \u00falo\u017ei\u0161t\u011b
+MSG_NO_ASSET_FIND=Nebyla nalezena \u017e\u00e1dn\u00e1 aktiva.
+MSG_CONNECT_REPO_SUCCESS=P\u0159ipojen\u00ed ke zkonfigurovan\u00e9mu \u00falo\u017ei\u0161ti bylo \u00fasp\u011b\u0161n\u00e9.
+MSG_CONNECT_ALL_REPO_SUCCESS=\u00dasp\u011b\u0161n\u011b p\u0159ipojeno ke v\u0161em nakonfigurovan\u00fdm \u00falo\u017ei\u0161t\u00edm.\n
+MSG_CONNECT_REPO_FAILED=Nezda\u0159ilo se p\u0159ipojit ke zkonfigurovan\u00e9mu \u00falo\u017ei\u0161ti.
+MSG_CONNECT_NOT_TESTED=P\u0159ipojen\u00ed k \u00falo\u017ei\u0161ti nebylo otestov\u00e1no.
+MSG_DEFAULT_NOT_ENABLED=V n\u00e1sleduj\u00edc\u00edm konfigura\u010dn\u00edm souboru nen\u00ed povoleno V\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv: {0}
+MSG_DEFAULT_REPO_LABEL=IBM WebSphere Liberty Repository (v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv)
+MSG_SAVE_CONFIG_CONFIRMATION=Konfigurace byla upravena. Ulo\u017eit zm\u011bny do {0} (A/N)?
+MSG_UPDATE_CONFIGURATION=Konfigurace byla \u00fasp\u011b\u0161n\u011b aktualizov\u00e1na.
+MSG_VIEW_EXAMPLE=Chcete-li zobrazit p\u0159\u00edklad souboru repositories.props, stiskn\u011bte kl\u00e1vesu Enter. Chcete-li tuto volbu p\u0159esko\u010dit, stiskn\u011bte kl\u00e1vesu 'x'.
+MSG_SEARCHING=Hled\u00e1n\u00ed aktiv. Proveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
+MSG_ASSETMGR_SETTINGS=Nastaven\u00ed p\u0159\u00edkazu installUtility
+MSG_CONFIG_REPO_LABEL=Konfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b
+MSG_NO_CONFIG_REPO=Nebyla nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 \u00falo\u017ei\u0161t\u011b
+MSG_NO_CONFIG_PROXY=Nebyly nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 servery proxy
+MSG_DEFAULT_REPO_NAME=IBM WebSphere Liberty Repository
+MSG_PROXY_LABEL=Nastaven\u00ed serveru proxy
+MSG_TRUE=Ano
+MSG_FALSE=Ne
+MSG_UNSPECIFIED=<Nespecifikov\u00e1no>
+MSG_INAPPLICABLE=<Nelze pou\u017e\u00edt>
+MSG_TESTING=Testov\u00e1n\u00ed p\u0159ipojen\u00ed k \u00falo\u017ei\u0161ti {0}...\nProveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.\n 
+MSG_TESTING_ALL=Testov\u00e1n\u00ed p\u0159ipojen\u00ed ke v\u0161em zkonfigurovan\u00fdm \u00falo\u017ei\u0161t\u00edm...\nProveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.\n
+MSG_REQUIRE_DOWNLOAD_DEPENDENCIES=Minim\u00e1ln\u011b jedna uk\u00e1zka vy\u017eaduje knihovny p\u0159edpoklad\u016f typu open source. 
+MSG_DOWNLOAD_DEPENDENCIES=Argument {0} byl nastaven na {1}. Tento argument ozna\u010duje, \u017ee jste p\u0159ijali licence, kter\u00e9 \u0159\u00edkaj\u00ed, \u017ee instala\u010dn\u00ed program m\u00e1 st\u00e1hnout knihovny p\u0159edpoklad\u016f typu open source.
+MSG_NOT_DOWNLOAD_DEPENDENCIES=Argument {0} byl nastaven na {1}. Tento argument ozna\u010duje, \u017ee nechcete, aby instala\u010dn\u00ed program stahoval knihovny p\u0159edpoklad\u016f typu open source.
+MSG_CONNECTING=Z\u0159izov\u00e1n\u00ed p\u0159ipojen\u00ed k nakonfigurovan\u00fdm \u00falo\u017ei\u0161t\u00edm...\nProveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.\n
+MSG_AUTHENTICATION_PROMPT=Je vy\u017eadov\u00e1no ov\u011b\u0159en\u00ed Zadejte pov\u011b\u0159en\u00ed pro n\u00e1sleduj\u00edc\u00ed server.
+MSG_AUTHENTICATION_RETRY=Ov\u011b\u0159en\u00ed se nezda\u0159ilo, proto\u017ee jsou zadan\u00e1 pov\u011b\u0159en\u00ed nespr\u00e1vn\u00e1. \nOv\u011b\u0159te spr\u00e1vnost pov\u011b\u0159en\u00ed a operaci opakujte. \nPo\u010det zb\u00fdvaj\u00edc\u00edch opakovan\u00fdch pokus\u016f: {0} \nzadejte pov\u011b\u0159en\u00ed pro n\u00e1sleduj\u00edc\u00ed server.
+MSG_AUTHENTICATION_FAIL=Ov\u011b\u0159en\u00ed u n\u00e1sleduj\u00edc\u00edho \u00falo\u017ei\u0161t\u011b se nezda\u0159ilo: {0}
+MSG_PROXY_AUTHENTICATION_FAIL=Ov\u011b\u0159en\u00ed u n\u00e1sleduj\u00edc\u00edho serveru proxy se nezda\u0159ilo: {0}
+MSG_REACHED_MAX_RETRIES=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f. M\u016f\u017eete pokra\u010dovat bez ov\u011b\u0159en\u00ed, ale toto \u00falo\u017ei\u0161t\u011b bude z operace vylou\u010deno. Bude proveden pokus o operaci {0} s pou\u017eit\u00edm jin\u00fdch platn\u00fdch \u00falo\u017ei\u0161\u0165. 
+MSG_REACHED_MAX_PROXY_RETRIES=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f. M\u016f\u017eete pokra\u010dovat bez ov\u011b\u0159en\u00ed, dojde k pokusu o operaci {0} s pou\u017eit\u00edm dal\u0161\u00edch lok\u00e1ln\u00edch \u00falo\u017ei\u0161\u0165, kter\u00e1 jsou definov\u00e1na v konfigura\u010dn\u00edm souboru: {1} 
+MSG_WARNING_SKIPPED_REPOS=Varov\u00e1n\u00ed: N\u00e1sleduj\u00edc\u00ed nakonfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b byla v r\u00e1mci operace p\u0159esko\u010dena, proto\u017ee nelze nav\u00e1zat p\u0159ipojen\u00ed nebo nelze ov\u011b\u0159it pov\u011b\u0159en\u00ed: {0}
+MSG_VERIFY_REPO_CONNECTION=Chcete-li tato \u00falo\u017ei\u0161t\u011b pou\u017e\u00edt, ujist\u011bte se, \u017ee jsou v konfiguraci spr\u00e1vn\u011b nakonfigurov\u00e1na. P\u0159ipojen\u00ed k nakonfigurovan\u00fdm \u00falo\u017ei\u0161t\u00edm ov\u011b\u0159\u00edte pomoc\u00ed akce testConnection. Operace {0} bude pokra\u010dovat s vyu\u017eit\u00edm dal\u0161\u00edch platn\u00fdch \u00falo\u017ei\u0161\u0165 v konfiguraci.
+MSG_PASSWORD_NOT_ENCODED=Heslo pro toto \u00falo\u017ei\u0161t\u011b nen\u00ed zak\u00f3dovan\u00e9. Hesla je mo\u017en\u00e9 k\u00f3dovat pomoc\u00ed p\u0159\u00edkazu securityUtility encode s volbou --encoding nastavenou na podporovan\u00fd typ k\u00f3dov\u00e1n\u00ed, tedy xor (v\u00fdchoz\u00ed), aes nebo hash.
+MSG_PASSWORD_NOT_ENCODED_PROXY=Heslo pro tento server proxy nen\u00ed zak\u00f3dovan\u00e9. Heslo je mo\u017en\u00e9 zak\u00f3dovat pomoc\u00ed p\u0159\u00edkazu securityUtility encode s volbou --encoding nastavenou na podporovan\u00fd typ k\u00f3dov\u00e1n\u00ed, tedy xor (v\u00fdchoz\u00ed), aes nebo hash.
+MSG_DIRECTORY_REPO_CONFIGURED=\nAdres\u00e1\u0159 {0} je ji\u017e nakonfigurovan\u00fd jako pou\u017eiteln\u00e9 \u00falo\u017ei\u0161t\u011b v souboru repositories.properties.
+MSG_DIRECTORY_REPO_NOT_CONFIGURED=\nN\u00e1sleduj\u00edc\u00ed adresu URL m\u016f\u017eete p\u0159idat do souboru repositories.properties, aby se pou\u017eila jako \u00falo\u017ei\u0161t\u011b pro p\u0159\u00edkaz installUtility: {0}
+MSG_ALL_DOWNLOADING_FILES_EXISTS=\nV\u0161echna tato aktiva se ji\u017e nach\u00e1zej\u00ed v tomto \u00falo\u017ei\u0161ti: {0}
+MSG_ADDITIONAL_FEATURES_FOR_SERVER_PACKAGE=Chcete-li nainstalovat tento bal\u00edk serveru, mus\u00ed b\u00fdt rovn\u011b\u017e nainstalov\u00e1ny dal\u0161\u00ed funkce Liberty.
+MSG_ADDITIONAL_FEATURES_FOR_SERVER=Pro tento server mus\u00ed b\u00fdt nainstalov\u00e1ny dal\u0161\u00ed funkce Liberty.
+MSG_INSTALL_ADDITIONAL_FEATURES_FOR_SAMPLES=Dal\u0161\u00ed funkce Liberty mus\u00ed b\u00fdt nainstalov\u00e1ny, chcete-li nainstalovat n\u00e1sleduj\u00edc\u00ed uk\u00e1zky nebo otev\u0159\u00edt zdrojov\u00e9 konfigurace: {0}
+MSG_INSTALL_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Chcete-li nainstalovat dal\u0161\u00ed funkce, zrevidujte a p\u0159ijm\u011bte licen\u010dn\u00ed smlouvu pro funk\u010dn\u00ed modul:
+MSG_DOWNLOAD_ADDITIONAL_FEATURES_FOR_SAMPLES=Dal\u0161\u00ed funkce Liberty mus\u00ed b\u00fdt sta\u017eeny, chcete-li st\u00e1hnout n\u00e1sleduj\u00edc\u00ed uk\u00e1zky nebo otev\u0159\u00edt zdrojov\u00e9 konfigurace: {0}
+MSG_DOWNLOAD_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Chcete-li st\u00e1hnout dal\u0161\u00ed funkce, zrevidujte a p\u0159ijm\u011bte licen\u010dn\u00ed smlouvu pro funk\u010dn\u00ed modul:
+MSG_VALIDATION_SUCCESSFUL=Soubor vlastnost\u00ed \u00fasp\u011b\u0161n\u011b ov\u011b\u0159en.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed se nezda\u0159ilo. Podrobn\u00e9 zpr\u00e1vy ov\u011b\u0159en\u00ed platnosti zobraz\u00edte pomoc\u00ed volby --viewValidationMessages.
+MSG_VALIDATION_NUM_OF_ERRORS=Po\u010det chyb: {0}
+MSG_VALIDATION_MESSAGES=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=N\u00e1zev: {0}
+FIELD_REPO_LOCATION=Um\u00edst\u011bn\u00ed: {0}
+FIELD_REPO_STATUS=Stav: {0}
+FIELD_REPO_REASON=P\u0159\u00ed\u010dina: {0}
+FIELD_REPO_WARNING=Varov\u00e1n\u00ed: {0}
+FIELD_NAME=N\u00e1zev:
+FIELD_PORT=Port:
+FIELD_LOCATION=Um\u00edst\u011bn\u00ed:
+FIELD_PROXY_SERVER=Server proxy:
+FIELD_USER=Jm\u00e9no u\u017eivatele:
+FIELD_PASS=Heslo:
+FIELD_PROPS_FILE=Soubor vlastnost\u00ed: {0}
+FIELD_REPO=Server \u00falo\u017ei\u0161t\u011b: {0} ({1})
+FIELD_PROXY=Server proxy: {0}
+FIELD_VALIDATION_RESULTS=V\u00fdsledky ov\u011b\u0159en\u00ed platnosti: {0}
+FIELD_VALIDATION_LINE=\u0158\u00e1dek: {0}
+MSG_DEFAULT_REPO_USEAGE_LABEL=Pou\u017e\u00edt v\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b:
+MSG_DEFAULT_REPO_NAME_LABEL=V\u00fdchoz\u00ed \u00falo\u017ei\u0161t\u011b aktiv:
+
+
+MSG_NO_NAME=<N\u00e1zev>
+
+TOOL_PROMPT_USERNAME=Zadejte jm\u00e9no u\u017eivatele:
+TOOL_PROMPT_PASSWORD=Zadejte heslo:
+TOOL_PROMPT_CONTINUE_OR_QUIT=Stisknut\u00edm kl\u00e1vesy Enter pokra\u010dujte, nebo stisknut\u00edm tla\u010d\u00edtka "x" ukon\u010dete operaci {0}.
+
+LOG_PROMPT_PROXY_AUTHENTICATION=Ov\u011b\u0159ov\u00e1n\u00ed serveru proxy s uveden\u00fdm pov\u011b\u0159en\u00edm.
+LOG_PROMPT_PROXY_SUCCESS=Server proxy \u00fasp\u011b\u0161n\u011b ov\u011b\u0159en: {0}\n
+LOG_PROMPT_REPO_AUTHENTICATION=Ov\u011b\u0159ov\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b {0} s uveden\u00fdm pov\u011b\u0159en\u00edm.
+LOG_PROMPT_REPO_SUCCESS=\u00dalo\u017ei\u0161t\u011b {0} \u00fasp\u011b\u0161n\u011b ov\u011b\u0159eno.\n
+LOG_REPO_CONNECTION_EXCEPTION=P\u0159ipojen\u00ed k \u00falo\u017ei\u0161ti {0} se nezda\u0159ilo s touto v\u00fdjimkou: {1}
+LOG_HTTP_SERVER_RESPONSE_CODE=Pro adresu URL {1} vr\u00e1til server k\u00f3d odezvy HTTP {0}.
+LOG_PASSWORD_NOT_ENCODED=Hesla pro n\u00e1sleduj\u00edc\u00ed \u00falo\u017ei\u0161t\u011b nejsou zak\u00f3dov\u00e1na: {0}. Hesla je mo\u017en\u00e9 k\u00f3dovat pomoc\u00ed p\u0159\u00edkazu securityUtility encode s volbou --encoding nastavenou na podporovan\u00fd typ k\u00f3dov\u00e1n\u00ed, tedy xor (v\u00fdchoz\u00ed), aes nebo hash. Nap\u0159\u00edklad: securityUtility encode --encoding=aes repoPassword
+LOG_VALIDATION_FAILED=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed se nezda\u0159ilo. Chcete-li zobrazit podrobn\u00e9 zpr\u00e1vy ov\u011b\u0159en\u00ed platnosti, spus\u0165te p\u0159\u00edkaz viewSettings s volbou --viewValidationMessages.

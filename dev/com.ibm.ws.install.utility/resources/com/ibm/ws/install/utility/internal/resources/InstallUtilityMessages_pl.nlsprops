@@ -1,0 +1,230 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+ERROR_DEPENDENCIES_INVALID_OPTION=CWWKF1401E: Warto\u015b\u0107 {0} jest niepoprawna w przypadku opcji --dependencies.
+ERROR_DEPENDENCIES_INVALID_OPTION.explanation=Nale\u017cy u\u017cy\u0107 poprawnych warto\u015bci opcji --dependencies.
+ERROR_DEPENDENCIES_INVALID_OPTION.useraction=Uruchom komend\u0119 z poprawn\u0105 warto\u015bci\u0105 opcji --dependencies, na przyk\u0142ad all.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1402E: Nast\u0119puj\u0105ce sk\u0142adniki nie zosta\u0142y pobrane, poniewa\u017c s\u0105 ju\u017c zainstalowane: {0}. U\u017cyj innej warto\u015bci opcji --dependencies, na przyk\u0142ad all lub none.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Podane sk\u0142adniki zosta\u0142y ju\u017c zainstalowane.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Ponownie uruchom komend\u0119 z inn\u0105 warto\u015bci\u0105 opcji --dependencies, na przyk\u0142ad all lub none.
+
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST=CWWKF1404E: Plik {0} nie istnieje.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.explanation=Nie istnieje plik archiwum pakietu serwera udost\u0119pniany na potrzeby dzia\u0142ania instalowania.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.useraction=Upewnij si\u0119, \u017ce okre\u015blono poprawn\u0105 nazw\u0119 pliku archiwum pakietu serwera, i pon\u00f3w operacj\u0119 instalowania.
+
+ERROR_ARCHIVE_NOT_SUPPORT=CWWKF1405E: Typ pliku {0} nie jest obs\u0142ugiwany przez dzia\u0142anie instalowania.
+ERROR_ARCHIVE_NOT_SUPPORT.explanation=Plik archiwum pakietu serwera powinien by\u0107 plikiem zip.
+ERROR_ARCHIVE_NOT_SUPPORT.useraction=Upewnij si\u0119, \u017ce okre\u015blono poprawn\u0105 nazw\u0119 pliku archiwum pakietu serwera, i pon\u00f3w operacj\u0119 instalowania.
+
+ERROR_REPO_INVALID_URL=CWWKF1409E: Adres URL {0} jest niepoprawny. Uruchom komend\u0119 ponownie z poprawnym adresem URL.
+ERROR_REPO_INVALID_URL.explanation=Podany adres URL jest niepoprawny.
+ERROR_REPO_INVALID_URL.useraction=Uruchom komend\u0119 ponownie z poprawnym adresem URL.
+
+ERROR_REPO_UNSUPPORT_PROTOCOL=CWWKF1416E: Protok\u00f3\u0142 adresu URL {0} jest nieobs\u0142ugiwany. Obs\u0142ugiwane s\u0105 wy\u0142\u0105cznie protoko\u0142y http, https i file.
+ERROR_REPO_UNSUPPORT_PROTOCOL.explanation=U\u017cyto nieobs\u0142ugiwanego protoko\u0142u adresu URL.
+ERROR_REPO_UNSUPPORT_PROTOCOL.useraction=Uruchom komend\u0119 ponownie z poprawnym adresem URL.
+
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION=CWWKF1417E: W wersji beta komenda installUtility nie obs\u0142uguje wielu katalog\u00f3w lokalnych ani katalogu lokalnego po\u0142\u0105czonego z repozytorium lokalnym.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.explanation=Ustawiana konfiguracja nie jest obs\u0142ugiwana przez komend\u0119 installUtility.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.useraction=Usu\u0144 repozytorium, kt\u00f3re nie jest potrzebne, i dodaj repozytorium, kt\u00f3re jest potrzebne.
+
+ERROR_REPO_NOT_IN_LIST=CWWKF1418E: Nazwa repozytorium {0} nie jest skonfigurowana w pliku konfiguracyjnym {1}. Sprawd\u017a plik konfiguracyjny lub u\u017cyj dzia\u0142ania viewSettings, aby znale\u017a\u0107 skonfigurowane nazwy repozytori\u00f3w.
+ERROR_REPO_NOT_IN_LIST.explanation=Nie mo\u017cna znale\u017a\u0107 podanej nazwy repozytorium w konfiguracji.
+ERROR_REPO_NOT_IN_LIST.useraction=U\u017cyj dzia\u0142ania viewSettings, aby wy\u015bwietli\u0107 list\u0119 wszystkich skonfigurowanych repozytori\u00f3w, i uruchom ponownie komend\u0119 z poprawn\u0105 nazw\u0105 repozytorium.
+
+ERROR_INVALID_URL=CWWKF1420E: Adres URL {0} repozytorium {1} jest niepoprawny. U\u017cyj dzia\u0142ania konfigurowania, aby poprawi\u0107 repozytorium.
+ERROR_INVALID_URL.explanation=Adres URL repozytorium zapisany w konfiguracji jest niepoprawny.
+ERROR_INVALID_URL.useraction=Popraw konfiguracj\u0119 i ponownie uruchom komend\u0119.
+
+ERROR_REPO_IS_FILE=CWWKF1421E: Adres URL {0} repozytorium {1} jest plikiem. Wymagana jest \u015bcie\u017cka do katalogu. U\u017cyj dzia\u0142ania konfigurowania, aby poprawi\u0107 repozytorium.
+ERROR_REPO_IS_FILE.explanation=Repozytorium nie mo\u017ce by\u0107 plikiem.
+ERROR_REPO_IS_FILE.useraction=Popraw konfiguracj\u0119 i ponownie uruchom komend\u0119.
+
+ERROR_REPO_URL_IS_FILE=CWWKF1422E: Adres URL {0} jest plikiem. Wymagana jest \u015bcie\u017cka do katalogu. 
+ERROR_REPO_URL_IS_FILE.explanation=Podany adres URL nie jest katalogiem.
+ERROR_REPO_URL_IS_FILE.useraction=Uruchom komend\u0119 ponownie, u\u017cywaj\u0105c katalogu lub poprawnego adresu URL.
+
+ERROR_REPO_NOT_EXISTS=CWWKF1423E: Adres URL {0} repozytorium {1} nie istnieje. U\u017cyj dzia\u0142ania konfigurowania, aby poprawi\u0107 repozytorium.
+ERROR_REPO_NOT_EXISTS.explanation=Repozytorium nie istnieje.
+ERROR_REPO_NOT_EXISTS.useraction=Popraw konfiguracj\u0119 i ponownie uruchom komend\u0119.
+
+ERROR_NO_ARGUMENT=CWWKF1424E: Dzia\u0142anie {0} wymaga co najmniej jednej nazwy elementu.
+ERROR_NO_ARGUMENT.explanation=Do wywo\u0142ania dzia\u0142ania u\u017cyto niepoprawnej liczby argument\u00f3w.
+ERROR_NO_ARGUMENT.useraction=Uruchom komend\u0119 ponownie przy u\u017cyciu poprawnych argument\u00f3w.
+
+ERROR_TYPE_INVALID_OPTION=CWWKF1427E: Warto\u015b\u0107 {0} jest niepoprawna w przypadku opcji --type. Poprawne warto\u015bci to: addon, feature, opensource, sample, all.
+ERROR_TYPE_INVALID_OPTION.explanation=U\u017cyto niepoprawnej warto\u015bci opcji --type.
+ERROR_TYPE_INVALID_OPTION.useraction=Uruchom komend\u0119 z poprawn\u0105 warto\u015bci\u0105 opcji --type, na przyk\u0142ad addon, feature, opensource, sample, all.
+
+ERROR_NO_SEARCHSTRING_NAME_OPTION=CWWKF1428E: Nie okre\u015blono \u0142a\u0144cucha wyszukiwania.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.explanation=Je\u015bli u\u017cywana jest opcja --name, wymagany jest \u0142a\u0144cuch wyszukiwania.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.useraction=Uruchom komend\u0119 ponownie, podaj\u0105c \u0142a\u0144cuch wyszukiwania.
+
+ERROR_FAILED_TO_CONNECT_REPO=CWWKF1429E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do serwera repozytorium. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i do skonfigurowanego repozytorium.
+ERROR_FAILED_TO_CONNECT_REPO.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium.
+ERROR_FAILED_TO_CONNECT_REPO.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i do odpowiedniego repozytorium.
+
+ERROR_REPO_REQUIRES_AUTH=CWWKF1430E: Nie mo\u017cna uwierzytelni\u0107 referencji dla skonfigurowanego repozytorium. Upewnij si\u0119, \u017ce w nast\u0119puj\u0105cym pliku konfiguracyjnym ustawione s\u0105 poprawne referencje dla skonfigurowanego repozytorium: {0}
+ERROR_REPO_REQUIRES_AUTH.explanation=Skonfigurowany serwer repozytorium wymaga uwierzytelnienia, ale w pliku konfiguracyjnym nie okre\u015blono poprawnych referencji.
+ERROR_REPO_REQUIRES_AUTH.useraction=Podaj poprawne referencje serwera repozytorium w pliku konfiguracyjnym i uruchom komend\u0119 ponownie.
+
+ERROR_NO_CONNECTION=CWWKF1431E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia ze skonfigurowanym serwerem repozytorium.
+ERROR_NO_CONNECTION.explanation=Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z serwerem repozytorium.
+ERROR_NO_CONNECTION.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS=CWWKF1432E: Opcja {0} wymaga co najwy\u017cej 1 argumentu, ale podano nast\u0119puj\u0105c\u0105 liczb\u0119 argument\u00f3w: {1}.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.explanation=Do wywo\u0142ania dzia\u0142ania u\u017cyto niepoprawnej liczby argument\u00f3w.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.useraction=Uruchom komend\u0119 ponownie przy u\u017cyciu poprawnych argument\u00f3w.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWK1433E: Nie mo\u017cna uwierzytelni\u0107 referencji dla skonfigurowanego serwera proxy. Upewnij si\u0119, \u017ce w nast\u0119puj\u0105cym pliku konfiguracyjnym ustawione s\u0105 poprawne referencje dla serwera proxy: {0}
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Skonfigurowany serwer proxy wymaga uwierzytelnienia, ale nie mo\u017cna uwierzytelni\u0107 referencji.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Podaj poprawne referencje serwera proxy w pliku konfiguracyjnym i uruchom komend\u0119 ponownie.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWK1434E: Nie mo\u017cna znale\u017a\u0107 pliku server.xml w katalogu {0}. Sprawd\u017a, czy plik istnieje i jest dost\u0119pny.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Pliku server.xml dla okre\u015blonego serwera nie mo\u017cna znale\u017a\u0107 w katalogu serwera.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Upewnij si\u0119, \u017ce plik istnieje i jest dost\u0119pny, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+ERROR_UNABLE_TO_ACCESS_SERVER_XML=CWWK1435E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do pliku {0}. Sprawd\u017a, czy konto u\u017cytkownika ma uprawnienia dost\u0119pu do tego pliku i jego odczytu.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.explanation=Konto u\u017cytkownika nie ma wymaganych uprawnie\u0144 do odczytu pliku server.xml.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.useraction=Sprawd\u017a, czy konto u\u017cytkownika ma uprawnienia dost\u0119pu do tego pliku i jego odczytu, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+MSG_REPO_FILE_NOT_FOUND=Nie wykryto konfiguracji u\u017cytkownika. Repozytorium produktu IBM WebSphere Liberty jest domy\u015blnym repozytorium zasob\u00f3w aplikacyjnych.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Aby dostosowa\u0107 ustawienia komendy installUtility, utw\u00f3rz plik repositories.properties w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}.
+MSG_REPO_FILE_NOT_FOUND_ACTION=Poni\u017cszego przyk\u0142adu mo\u017cna u\u017cy\u0107 jako szablonu w celu utworzenia w\u0142asnego pliku repositories.properties. Usu\u0144 znak komentarza z wierszy rozpoczynaj\u0105cych si\u0119 od pojedynczego znaku # i zast\u0105p warto\u015bci w\u0142asnymi warto\u015bciami niestandardowymi.
+
+ERROR_UNINSTALL_FEATURES_FAIL=CWWK1436E: Nie mo\u017cna zdeinstalowa\u0107 przynajmniej jednego sk\u0142adnika: {0}
+ERROR_UNINSTALL_FEATURES_FAIL.explanation=Wykryto b\u0142\u0105d wewn\u0119trzny podczas przetwarzania metadanych. 
+ERROR_UNINSTALL_FEATURES_FAIL.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE=CWWK1437E: Warto\u015b\u0107 {0} jest niepoprawna w przypadku opcji --downloadDependencies. Poprawn\u0105 warto\u015bci\u0105 jest true lub false.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.explanation=U\u017cyto niepoprawnej warto\u015bci opcji --downloadDependencies.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.useraction=Uruchom komend\u0119 z poprawn\u0105 warto\u015bci\u0105 opcji --downloadDependencies, na przyk\u0142ad true lub false.
+
+ERROR_ALL_CONFIG_REPOS_FAIL=CWWKF1440E: Nie mo\u017cna uzyska\u0107 po\u0142\u0105czenia z \u017cadnym spo\u015br\u00f3d repozytori\u00f3w okre\u015blonych w nast\u0119puj\u0105cym pliku konfiguracyjnym lub nie mo\u017cna sprawdzi\u0107 poprawno\u015bci referencji: {0}. Upewnij si\u0119, \u017ce repozytoria s\u0105 poprawnie skonfigurowane w pliku konfiguracyjnym oraz u\u017cyj dzia\u0142a\u0144 viewSettings i testConnection, aby zweryfikowa\u0107 po\u0142\u0105czenie.
+ERROR_ALL_CONFIG_REPOS_FAIL.explanation=Komenda installUtility nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z \u017cadnym ze skonfigurowanych repozytori\u00f3w.
+ERROR_ALL_CONFIG_REPOS_FAIL.useraction=Sprawd\u017a, czy system ma dost\u0119p do Internetu. Upewnij si\u0119, \u017ce repozytoria s\u0105 poprawnie skonfigurowane w pliku konfiguracyjnym. U\u017cyj dzia\u0142ania viewSettings, aby zweryfikowa\u0107 skonfigurowane repozytoria, a nast\u0119pnie u\u017cyj dzia\u0142a\u0144 testConnection, aby przetestowa\u0107 po\u0142\u0105czenie.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1441E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do serwera repozytorium, poniewa\u017c \u015brodowisko wykonawcze program\u00f3w Java (JRE) nie ufa certyfikatowi serwera. Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=Wyst\u0105pi\u0142 wyj\u0105tek java.security.cert.CertPathBuilderException podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium, poniewa\u017c \u015brodowisko JRE nie rozpoznaje certyfikatu bezpiecze\u0144stwa serwera repozytorium jako zaufanego certyfikatu. W celu zweryfikowania to\u017csamo\u015bci serwera repozytorium wymagany jest zaufany certyfikat.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+
+ERROR_REPO_IS_INVALID=CWWKF1442E: {0} nie jest poprawnym repozytorium opartym na katalogach. Uruchom komend\u0119 ponownie, podaj\u0105c poprawne repozytorium oparte na katalogach.   
+ERROR_REPO_IS_INVALID.explanation=Podana \u015bcie\u017cka do pliku nie jest poprawnym repozytorium opartym na katalogach. Poprawne repozytorium oparte na katalogach mo\u017cna utworzy\u0107 przy u\u017cyciu komendy pobierania installUtility lub pobieraj\u0105c plik wlp-featureRepo-<wersja>.zip z serwisu IBM Fix Central.
+ERROR_REPO_IS_INVALID.useraction=Sprawd\u017a, czy podana \u015bcie\u017cka prowadzi do poprawnego repozytorium opartego na katalogach i uruchom komend\u0119 ponownie.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1443E: Opcj\u0119 deinstalacji --force mo\u017cna poda\u0107 tylko dla jednego sk\u0142adnik\u00f3w naraz. Uruchom komend\u0119 uninstall z opcj\u0105 --force dla jednego sk\u0142adnika.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Opcj\u0119 --force podano podczas deinstalowania wi\u0119cej ni\u017c jednego sk\u0142adnika.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Uruchom komend\u0119 uninstall z opcj\u0105 --force dla jednego sk\u0142adnika.
+
+MSG_DEPLOY_SERVER_OK=Serwer zosta\u0142 poprawnie wdro\u017cony.
+MSG_DEPLOY_SERVER_PACKAGE_OK=Pakiet serwera zosta\u0142 poprawnie wdro\u017cony.
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Serwer nie wymaga \u017cadnych dodatkowych sk\u0142adnik\u00f3w.  Nie zosta\u0142y zainstalowane \u017cadne sk\u0142adniki.
+MSG_SERVER_NEW_FEATURES_REQUIRED=Serwer wymaga nast\u0119puj\u0105cych dodatkowych sk\u0142adnik\u00f3w: {0}.  Trwa instalowanie sk\u0142adnik\u00f3w z repozytorium...
+MSG_INSTALLED_FEATURES=Jeden lub wi\u0119cej sk\u0142adnik\u00f3w zosta\u0142o pomy\u015blnie zainstalowanych: {0}.
+MSG_INSTALLED_SAMPLES=Jeden lub wi\u0119cej przyk\u0142ad\u00f3w zosta\u0142o pomy\u015blnie zainstalowanych: {0}.
+MSG_INSTALLED_OPENSOURCE=Jedna lub wi\u0119cej integracji open source zosta\u0142a pomy\u015blnie zainstalowana: {0}.
+MSG_INSTALLED_ADDONS=Jeden lub wi\u0119cej program\u00f3w dodatkowych zosta\u0142o pomy\u015blnie zainstalowanych: {0}.
+
+MSG_DOWNLOADED_FEATURES=Pomy\u015blnie pobrano co najmniej jeden sk\u0142adnik: {0}.
+MSG_DOWNLOADED_SAMPLES=Pomy\u015blnie pobrano co najmniej jeden przyk\u0142ad: {0}.
+MSG_DOWNLOADED_OPENSOURCE=Pomy\u015blnie pobrano co najmniej jedn\u0105 integracj\u0119 z oprogramowaniem Open Source: {0}.
+MSG_DOWNLOADED_ADDONS=Pomy\u015blnie pobrano co najmniej jeden program dodatkowy: {0}.
+MSG_UNINSTALL_FEATURES=Jeden lub wi\u0119cej sk\u0142adnik\u00f3w zosta\u0142o pomy\u015blnie zdeinstalowanych: {0}.
+
+MSG_DISABLED_REPO=Wy\u0142\u0105czone repozytoria
+MSG_NO_ASSET_FIND=Nie znaleziono \u017cadnego zasobu aplikacyjnego.
+MSG_CONNECT_REPO_SUCCESS=Pomy\u015blnie nawi\u0105zano po\u0142\u0105czenie ze skonfigurowanym repozytorium.
+MSG_CONNECT_ALL_REPO_SUCCESS=Pomy\u015blnie nawi\u0105zano po\u0142\u0105czenie ze wszystkimi skonfigurowanymi repozytoriami.\n
+MSG_CONNECT_REPO_FAILED=Nawi\u0105zywanie po\u0142\u0105czenia ze skonfigurowanym repozytorium nie powiod\u0142o si\u0119.
+MSG_CONNECT_NOT_TESTED=Po\u0142\u0105czenie z repozytorium nie zosta\u0142o przetestowane.
+MSG_DEFAULT_NOT_ENABLED=Domy\u015blne repozytorium zasob\u00f3w aplikacyjnych nie jest w\u0142\u0105czone w nast\u0119puj\u0105cym pliku konfiguracyjnym: {0}
+MSG_DEFAULT_REPO_LABEL=Repozytorium serwera IBM WebSphere Liberty (domy\u015blne repozytorium zasob\u00f3w aplikacyjnych)
+MSG_SAVE_CONFIG_CONFIRMATION=Konfiguracja zosta\u0142a zmodyfikowana. Czy zapisa\u0107 zmiany w {0} (T/N)?
+MSG_UPDATE_CONFIGURATION=Pomy\u015blnie zaktualizowano konfiguracj\u0119.
+MSG_VIEW_EXAMPLE=Aby wy\u015bwietli\u0107 przyk\u0142ad pliku repositories.props, naci\u015bnij klawisz Enter. Aby pomin\u0105\u0107 t\u0119 opcj\u0119, naci\u015bnij klawisz 'x'.
+MSG_SEARCHING=Wyszukiwanie zasob\u00f3w aplikacyjnych. Ten proces mo\u017ce potrwa\u0107 kilka minut.
+MSG_ASSETMGR_SETTINGS=Ustawienia komendy installUtility
+MSG_CONFIG_REPO_LABEL=Skonfigurowane repozytoria
+MSG_NO_CONFIG_REPO=Nie skonfigurowano repozytori\u00f3w
+MSG_NO_CONFIG_PROXY=Nie skonfigurowano serwer\u00f3w proxy
+MSG_DEFAULT_REPO_NAME=Repozytorium serwera IBM WebSphere Liberty
+MSG_PROXY_LABEL=Ustawienia serwera proxy
+MSG_TRUE=Prawda
+MSG_FALSE=Fa\u0142sz
+MSG_UNSPECIFIED=<Nieokre\u015blone>
+MSG_INAPPLICABLE=<Nie dotyczy>
+MSG_TESTING=Testowanie po\u0142\u0105czenia z repozytorium {0}...\nTen proces mo\u017ce potrwa\u0107 kilka minut.\n 
+MSG_TESTING_ALL=Testowanie po\u0142\u0105cze\u0144 z wszystkimi skonfigurowanymi repozytoriami...\nTen proces mo\u017ce potrwa\u0107 kilka minut.\n
+MSG_REQUIRE_DOWNLOAD_DEPENDENCIES=Co najmniej jeden przyk\u0142ad wymaga bibliotek wymaga\u0144 wst\u0119pnych Open Source. 
+MSG_DOWNLOAD_DEPENDENCIES=Argument {0} zosta\u0142 ustawiony na warto\u015b\u0107 {1}. Oznacza to, \u017ce u\u017cytkownik zaakceptowa\u0142 licencje nakazuj\u0105ce instalatorowi pobranie bibliotek wymaga\u0144 wst\u0119pnych Open Source.
+MSG_NOT_DOWNLOAD_DEPENDENCIES=Argument {0} zosta\u0142 ustawiony na warto\u015b\u0107 {1}. Oznacza to, \u017ce u\u017cytkownik nie chce, aby instalator pobra\u0142 biblioteki wymaga\u0144 wst\u0119pnych Open Source.
+MSG_CONNECTING=Nawi\u0105zywanie po\u0142\u0105czenia ze skonfigurowanymi repozytoriami... \nTen proces mo\u017ce potrwa\u0107 kilka minut.\n
+MSG_AUTHENTICATION_PROMPT=Wymagane jest uwierzytelnienie. Wprowad\u017a referencje dla nast\u0119puj\u0105cego serwera.
+MSG_AUTHENTICATION_RETRY=Uwierzytelnianie nie powiod\u0142o si\u0119, poniewa\u017c podane referencje s\u0105 niepoprawne. \nSprawd\u017a, czy referencje s\u0105 poprawne, a nast\u0119pnie pon\u00f3w pr\u00f3b\u0119. \nLiczba pozosta\u0142ych ponownych pr\u00f3b: {0} \nWprowad\u017a referencje dla nast\u0119puj\u0105cego serwera.
+MSG_AUTHENTICATION_FAIL=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia dla nast\u0119puj\u0105cego repozytorium: {0}
+MSG_PROXY_AUTHENTICATION_FAIL=Nie powiod\u0142a si\u0119 pr\u00f3ba uwierzytelnienia dla nast\u0119puj\u0105cego serwera proxy: {0}
+MSG_REACHED_MAX_RETRIES=Przekroczono maksymaln\u0105 liczb\u0119 ponownych pr\u00f3b. Mo\u017cna kontynuowa\u0107 prac\u0119 bez uwierzytelniania, ale to repozytorium b\u0119dzie wykluczone z operacji. Pr\u00f3ba wykonania operacji {0} zostanie podj\u0119ta przy u\u017cyciu innych poprawnych repozytori\u00f3w. 
+MSG_REACHED_MAX_PROXY_RETRIES=Przekroczono maksymaln\u0105 liczb\u0119 ponownych pr\u00f3b. Mo\u017cna kontynuowa\u0107 prac\u0119 bez uwierzytelniania. Pr\u00f3ba wykonania operacji {0} zostanie podj\u0119ta przy u\u017cyciu innych repozytori\u00f3w lokalnych, kt\u00f3re s\u0105 zdefiniowane w pliku konfiguracyjnym: {1} 
+MSG_WARNING_SKIPPED_REPOS=Ostrze\u017cenie: nast\u0119puj\u0105ce skonfigurowane repozytoria zosta\u0142y pomini\u0119te w tej operacji, poniewa\u017c nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia lub nie mo\u017cna sprawdzi\u0107 poprawno\u015bci referencji: {0}
+MSG_VERIFY_REPO_CONNECTION=Aby u\u017cy\u0107 tych repozytori\u00f3w, upewnij si\u0119, \u017ce repozytoria s\u0105 poprawnie skonfigurowane w konfiguracji. Aby sprawdzi\u0107 po\u0142\u0105czenie ze skonfigurowanymi repozytoriami, u\u017cyj dzia\u0142ania testConnection. Operacja {0} b\u0119dzie kontynuowana przy u\u017cyciu innych poprawnych repozytori\u00f3w w konfiguracji.
+MSG_PASSWORD_NOT_ENCODED=Has\u0142o dla tego repozytorium nie jest zakodowane. Mo\u017cna zakodowa\u0107 has\u0142a przez uruchomienie komendy securityUtility encode z opcj\u0105 --encoding ustawion\u0105 na obs\u0142ugiwany typ kodowania, kt\u00f3rymi s\u0105 xor (domy\u015blny), aes i hash.
+MSG_PASSWORD_NOT_ENCODED_PROXY=Has\u0142o dla tego serwera proxy nie jest zakodowane. Mo\u017cna zakodowa\u0107 has\u0142o przez uruchomienie komendy securityUtility encode z opcj\u0105 --encoding ustawion\u0105 na obs\u0142ugiwany typ kodowania, kt\u00f3rymi s\u0105 xor (domy\u015blny), aes i hash.
+MSG_DIRECTORY_REPO_CONFIGURED=\nKatalog {0} jest ju\u017c skonfigurowany jako repozytoriom mo\u017cliwe do u\u017cycia w pliku repositories.properties.
+MSG_DIRECTORY_REPO_NOT_CONFIGURED=\nDo pliku repositories.properties mo\u017cna doda\u0107 nast\u0119puj\u0105cy adres URL, aby plik ten by\u0142y u\u017cywany jako repozytorium dla komendy installUtility: {0}
+MSG_ALL_DOWNLOADING_FILES_EXISTS=\nWszystkie zasoby aplikacyjne ju\u017c istniej\u0105 w nast\u0119puj\u0105cym repozytorium: {0}
+MSG_ADDITIONAL_FEATURES_FOR_SERVER_PACKAGE=Aby zainstalowa\u0107 ten pakiet serwera, wymagane jest zainstalowanie dodatkowych sk\u0142adnik\u00f3w produktu Liberty.
+MSG_ADDITIONAL_FEATURES_FOR_SERVER=Dla tego serwera wymagane jest zainstalowanie dodatkowych sk\u0142adnik\u00f3w produktu Liberty.
+MSG_INSTALL_ADDITIONAL_FEATURES_FOR_SAMPLES=Aby zainstalowa\u0107 nast\u0119puj\u0105ce przyk\u0142ady lub integracje z oprogramowaniem Open Source, wymagane jest zainstalowanie dodatkowych sk\u0142adnik\u00f3w produktu Liberty: {0}
+MSG_INSTALL_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Aby zainstalowa\u0107 dodatkowe sk\u0142adniki, przejrzyj i zaakceptuj umow\u0119 licencyjn\u0105 sk\u0142adnika:
+MSG_DOWNLOAD_ADDITIONAL_FEATURES_FOR_SAMPLES=Aby pobra\u0107 nast\u0119puj\u0105ce przyk\u0142ady lub integracje z oprogramowaniem Open Source, wymagane jest pobranie dodatkowych sk\u0142adnik\u00f3w produktu Liberty: {0}
+MSG_DOWNLOAD_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Aby pobra\u0107 dodatkowe sk\u0142adniki, przejrzyj i zaakceptuj umow\u0119 licencyjn\u0105 sk\u0142adnika:
+MSG_VALIDATION_SUCCESSFUL=W przypadku pliku w\u0142a\u015bciwo\u015bci pomy\u015blnie zako\u0144czono operacj\u0119 sprawdzania poprawno\u015bci.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Sprawdzanie poprawno\u015bci pliku w\u0142a\u015bciwo\u015bci nie powiod\u0142o si\u0119. Aby wy\u015bwietli\u0107 szczeg\u00f3\u0142owe komunikaty sprawdzania poprawno\u015bci, nale\u017cy u\u017cy\u0107 opcji --viewValidationMessages.
+MSG_VALIDATION_NUM_OF_ERRORS=Liczba b\u0142\u0119d\u00f3w: {0}
+MSG_VALIDATION_MESSAGES=Sprawdzanie poprawno\u015bci pliku w\u0142a\u015bciwo\u015bci
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nazwa: {0}
+FIELD_REPO_LOCATION=Po\u0142o\u017cenie: {0}
+FIELD_REPO_STATUS=Status: {0}
+FIELD_REPO_REASON=Przyczyna: {0}
+FIELD_REPO_WARNING=Ostrze\u017cenie: {0}
+FIELD_NAME=Nazwa:
+FIELD_PORT=Port:
+FIELD_LOCATION=Po\u0142o\u017cenie:
+FIELD_PROXY_SERVER=Serwer proxy:
+FIELD_USER=Nazwa u\u017cytkownika:
+FIELD_PASS=Has\u0142o:
+FIELD_PROPS_FILE=Plik w\u0142a\u015bciwo\u015bci: {0}
+FIELD_REPO=Serwer repozytorium: {0} ({1})
+FIELD_PROXY=Serwer proxy: {0}
+FIELD_VALIDATION_RESULTS=Wyniki sprawdzania poprawno\u015bci: {0}
+FIELD_VALIDATION_LINE=Wiersz: {0}
+MSG_DEFAULT_REPO_USEAGE_LABEL=U\u017cyj domy\u015blnego repozytorium:
+MSG_DEFAULT_REPO_NAME_LABEL=Domy\u015blne repozytorium zasob\u00f3w aplikacyjnych:
+
+
+MSG_NO_NAME=<Nazwa>
+
+TOOL_PROMPT_USERNAME=Wprowad\u017a nazw\u0119 u\u017cytkownika:
+TOOL_PROMPT_PASSWORD=Wprowad\u017a has\u0142o:
+TOOL_PROMPT_CONTINUE_OR_QUIT=Naci\u015bnij klawisz Enter, aby kontynuowa\u0107, lub klawisz x, aby zaniecha\u0107 wykonywania operacji {0}.
+
+LOG_PROMPT_PROXY_AUTHENTICATION=Uwierzytelnianie serwera proxy przy u\u017cyciu podanych referencji.
+LOG_PROMPT_PROXY_SUCCESS=Pomy\u015blnie uwierzytelniono serwer proxy: {0}\n
+LOG_PROMPT_REPO_AUTHENTICATION=Uwierzytelnianie repozytorium {0} przy u\u017cyciu podanych referencji.
+LOG_PROMPT_REPO_SUCCESS=Pomy\u015blnie uwierzytelniono repozytorium {0}. \n
+LOG_REPO_CONNECTION_EXCEPTION=Nawi\u0105zywanie po\u0142\u0105czenia z repozytorium {0} nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy wyj\u0105tek: {1}
+LOG_HTTP_SERVER_RESPONSE_CODE=Serwer zwr\u00f3ci\u0142 kod odpowiedzi HTTP {0} dla nast\u0119puj\u0105cego adresu URL: {1}
+LOG_PASSWORD_NOT_ENCODED=Has\u0142a dla nast\u0119puj\u0105cych repozytori\u00f3w nie s\u0105 zakodowane: {0}. Mo\u017cna zakodowa\u0107 has\u0142a przez uruchomienie komendy securityUtility encode z opcj\u0105 --encoding ustawion\u0105 na obs\u0142ugiwany typ kodowania, kt\u00f3rymi s\u0105 xor (domy\u015blny), aes i hash. Na przyk\u0142ad: securityUtility encode --encoding=aes repoPassword
+LOG_VALIDATION_FAILED=Sprawdzanie poprawno\u015bci pliku w\u0142a\u015bciwo\u015bci nie powiod\u0142o si\u0119. Aby wy\u015bwietli\u0107 szczeg\u00f3\u0142owe komunikaty sprawdzania poprawno\u015bci, nale\u017cy uruchomi\u0107 komend\u0119 viewSettings z opcj\u0105 --viewValidationMessages.

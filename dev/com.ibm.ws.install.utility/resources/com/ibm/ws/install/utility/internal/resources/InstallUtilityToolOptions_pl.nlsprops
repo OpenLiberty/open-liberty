@@ -1,0 +1,165 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=U\u017cycie: {0}
+
+global.description=Opis:
+global.actions=Dzia\u0142ania:
+global.options=Opcje:
+global.options.lower=opcje
+global.usage=Sk\u0142adnia:
+global.options.statement=\tU\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
+task.unknown=Nieznane dzia\u0142anie: {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\tPobieranie zasob\u00f3w aplikacyjnych z repozytorium.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ nazwa...
+download.option-desc.name...=\tPodaj jedn\u0105 lub wi\u0119cej nazw zasob\u00f3w aplikacyjnych rozdzielonych\n\
+\tspacjami. Aby znale\u017a\u0107 zasoby aplikacyjne do pobrania, \n\
+\turuchom komend\u0119 installUtility find. W przypadku sk\u0142adnik\u00f3w\n\
+\ti program\u00f3w dodatkowych mo\u017cna poda\u0107 nazw\u0119 skr\u00f3con\u0105 (featureName-1.0)\n\
+\tlub nazw\u0119 symboliczn\u0105 (com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\tU\u017cyj tej opcji, aby zast\u0105pi\u0107 istniej\u0105ce pliki po pobraniu do \n\
+\tkatalogu lokalnego. Je\u015bli ta opcja nie zostanie okre\u015blona, domy\u015blnym \n\
+\tzachowaniem jest ignorowanie wszystkich istniej\u0105cych plik\u00f3w.       
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=\u015bcie\u017cka_do_katalogu
+download.option-desc.--location=\tU\u017cyj tej opcji, aby okre\u015bli\u0107 katalog docelowy dla \n\
+\tpobranych zasob\u00f3w aplikacyjnych.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\tU\u017cyj tej opcji, aby \
+wy\u015bwietli\u0107 wszystkie dost\u0119pne informacje dodatkowe podczas\n \turuchamiania dzia\u0142ania.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tZnajdowanie zasob\u00f3w aplikacyjnych z repozytori\u00f3w.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ wyszukiwany_\u0142a\u0144cuch
+find.option-desc.[searchString]=\tU\u017cyj wyszukiwanego \u0142a\u0144cucha, aby znale\u017a\u0107 zasoby aplikacyjne w repozytoriach.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\tWy\u015bwietl opis dla ka\u017cdego ze sk\u0142adnik\u00f3w znalezionych w wyniku wyszukiwania.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\tWyszukaj okre\u015blony typ zasob\u00f3w aplikacyjnych.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\tOkre\u015bla nazw\u0119 zasobu aplikacyjnego, kt\u00f3ry ma zosta\u0107 wyszukany w \u0142a\u0144cuchu \n\tsearchString.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
+find.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku pojedynczego repozytorium \n\
+\topartego na katalogach jako jedynego \u017ar\u00f3d\u0142a, w kt\u00f3rym komenda installUtility b\u0119dzie wyszukiwa\u0142a zasoby aplikacyjne. Ta \n\
+\t\u015bcie\u017cka do pliku mo\u017ce by\u0107 katalogiem lub plikiem archiwum.              
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tU\u017cyj tej opcji, aby wy\u015bwietli\u0107 wszystkie dost\u0119pne informacje dodatkowe podczas\n\
+\turuchamiania dzia\u0142ania.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\tZainstaluj zasoby aplikacyjne w pliku \
+Enterprise Subsystem Archive (ESA) \n \tw \u015brodowisku wykonawczym lub wdr\u00f3\u017c \
+pakiet serwera i zainstaluj wymagane \n \tsk\u0142adniki pakietu.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ nazwa...
+install.option-desc.name...=\tMo\u017cna poda\u0107 nast\u0119puj\u0105ce nazwy: \n\
+\t \u2013 Jedna lub wi\u0119cej nazw zasob\u00f3w aplikacyjnych rozdzielonych spacjami.\n \
+\t   Aby znale\u017a\u0107 zasoby aplikacyjne, kt\u00f3re mo\u017cna zainstalowa\u0107, uruchom\n\
+\t   komend\u0119 installUtility find. W przypadku sk\u0142adnik\u00f3w i program\u00f3w\n\
+\t   dodatkowych mo\u017cna poda\u0107 nazw\u0119 skr\u00f3con\u0105 (featureName-1.0) lub\n\
+\t   nazw\u0119 symboliczn\u0105 (com.ibm.websphere.featureName-1.0). \n\
+\t \u2013 Nazwa serwera. \n\
+\t \u2013 Lokalny plik server.xml. \n\
+\t \u2013 Lokalny plik ESA. \n\
+\t \u2013 Lokalny plik archiwum pakietu serwera utworzony przez \n\
+\t   dzia\u0142anie pakietu serwera z opcj\u0105 --include=usr.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\tOkre\u015bl po\u0142o\u017cenie dla instalacji sk\u0142adnika. Sk\u0142adnik mo\u017ce zosta\u0107 zainstalowany\n\
+\tw dowolnym skonfigurowanym po\u0142o\u017ceniu rozszerzenia produktu lub jako sk\u0142adnik u\u017cytkownika. Je\u015bli\n\
+\tta opcja nie jest okre\u015blona, sk\u0142adnik zostanie zainstalowany jako sk\u0142adnik\n\
+\tu\u017cytkownika.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\tJe\u015bli plik b\u0119d\u0105cy cz\u0119\u015bci\u0105 ESA istnieje ju\u017c w systemie, nale\u017cy\n\
+\tokre\u015bli\u0107 dzia\u0142ania do podj\u0119cia. Poprawne opcje: fail - przerwij \n\
+\tinstalacj\u0119; ignore - kontynuuj instalacj\u0119 i zignoruj istniej\u0105cy plik; \
+\n \treplace - nadpisz istniej\u0105cy plik. Opcji replace nie nale\u017cy u\u017cywa\u0107 \n\
+\tdo reinstalowania sk\u0142adnik\u00f3w.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\tAby automatycznie \
+pobra\u0107 dowolne zale\u017cno\u015bci zewn\u0119trzne w przypadku przyk\u0142ad\u00f3w lub \n\
+\tintegracji z oprogramowaniem Open Source, ustaw warto\u015b\u0107 true. Je\u015bli nie \
+chcesz pobiera\u0107 zale\u017cno\u015bci\n\
+\tzewn\u0119trznych, ustaw warto\u015b\u0107 false. Je\u015bli zale\u017cno\u015bci zewn\u0119trzne s\u0105 \n\
+\twymagane, a ta opcja nie zostanie podana, zostanie wy\u015bwietlona zach\u0119ta\n\
+\tdo ich pobrania.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
+install.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku pojedynczego repozytorium \n\
+\topartego na katalogach jako jedynego \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda installUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne. \n\
+\tTa \u015bcie\u017cka do pliku mo\u017ce by\u0107 katalogiem lub plikiem archiwum.         
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tU\u017cyj tej opcji, aby wy\u015bwietli\u0107 wszystkie dost\u0119pne informacje dodatkowe podczas\n\
+\turuchamiania dzia\u0142ania.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\tDeinstaluj sk\u0142adnik ze \u015brodowiska wykonawczego.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ nazwa
+uninstall.option-desc.name...=\tPodaj jeden lub wi\u0119cej sk\u0142adnik\u00f3w rozdzielonych spacjami. Mo\u017cna\n\
+\tpoda\u0107 nazw\u0119 skr\u00f3con\u0105 (featureName-1.0) lub nazw\u0119 symboliczn\u0105\n\
+\t(com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tPomi\u0144 potwierdzenia u\u017cytkownika i zdeinstaluj sk\u0142adnik.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tZdeinstaluj sk\u0142adnik bez wzgl\u0119du na to, czy s\u0105 od niego zale\u017cne\n\
+\tinne zainstalowane sk\u0142adniki.  Zdeinstalowanie sk\u0142adnika, kt\u00f3ry jest wymagany przez inne\n\
+\tzainstalowane sk\u0142adniki, mo\u017ce spowodowa\u0107, \u017ce te sk\u0142adniki przestan\u0105 dzia\u0142a\u0107, i mo\u017ce uniemo\u017cliwi\u0107\n\
+\tpoprawne dzia\u0142anie serwer\u00f3w.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tU\u017cyj tej opcji, aby wy\u015bwietli\u0107 wszystkie dost\u0119pne informacje dodatkowe podczas\n\
+\turuchamiania dzia\u0142ania.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tWy\u015bwietlanie ustawie\u0144 repozytori\u00f3w i serwera proxy.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tTa opcja s\u0142u\u017cy do wy\u015bwietlenia szczeg\u00f3\u0142owych komunikat\u00f3w dotycz\u0105cych \n\
+\tsprawdzania poprawno\u015bci skonfigurowanego pliku repositories.properties.           \n\
+\tKa\u017cdy komunikat zawiera kod b\u0142\u0119du, numer wiersza, w kt\u00f3rym znaleziono \n\
+\tb\u0142\u0105d, oraz przyczyn\u0119 b\u0142\u0119du. \n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\tTestowanie po\u0142\u0105czenia z repozytorium.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ nazwa_repozytorium
+testConnection.option-desc.[repoName]=\tOkre\u015bl nazw\u0119 repozytorium, kt\u00f3re ma by\u0107 testowane. Aby przywo\u0142a\u0107 repozytorium produktu IBM \n\
+\tWebSphere Liberty, nale\u017cy u\u017cy\u0107 nazwy default.                  \n\tJe\u015bli nazwa repozytorium nie jest okre\u015blona, zostan\u0105 przetestowane \n\twszystkie skonfigurowane repozytoria.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\tU\u017cyj tej opcji, aby \
+wy\u015bwietli\u0107 wszystkie dost\u0119pne informacje dodatkowe podczas\n \turuchamiania dzia\u0142ania.
+
