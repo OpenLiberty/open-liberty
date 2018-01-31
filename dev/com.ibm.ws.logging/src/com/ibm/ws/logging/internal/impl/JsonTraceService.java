@@ -140,6 +140,7 @@ public class JsonTraceService extends BaseTraceService {
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
             }
             consoleLogHandler.setCopySystemStreams(copySystemStreams);
+            consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
         }
 
         /*
@@ -300,7 +301,6 @@ public class JsonTraceService extends BaseTraceService {
 
         if (levelValue >= Level.INFO.intValue()) {
             //configuration
-            consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
 
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);

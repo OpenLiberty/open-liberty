@@ -62,7 +62,13 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
-        GenericData genData = ((LogTraceData) event).getGenData();
+        GenericData genData = null;
+        if (event instanceof LogTraceData) {
+            genData = ((LogTraceData) event).getGenData();
+        } else if (event instanceof GenericData) {
+            genData = (GenericData) event;
+        }
+
         String evensourcetType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
         if (format.equals(LoggingConstants.JSON_FORMAT)) {

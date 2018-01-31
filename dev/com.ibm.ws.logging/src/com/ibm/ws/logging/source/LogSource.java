@@ -135,7 +135,6 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     public LogTraceData parse(RoutedMessage routedMessage) {
-
         GenericData genData = new GenericData();
 
         LogRecord logRecord = routedMessage.getLogRecord();
@@ -186,15 +185,33 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair("sequence", sequenceNumber.next(dateVal));
 
         Throwable thrown = logRecord.getThrown();
-        StringBuilder msgBldr = new StringBuilder();
-        msgBldr.append(messageVal);
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
             if (stackTrace != null) {
-                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
+                genData.addPair("throwable", stackTrace);
             }
+            String s = thrown.getLocalizedMessage();
+            if (s == null) {
+                s = thrown.toString();
+            }
+            genData.addPair("throwable_localized", s);
         }
-        genData.addPair("message", msgBldr.toString());
+//        StringBuilder msgBldr = new StringBuilder();
+//        msgBldr.append(messageVal);
+//        if (thrown != null) {
+//            String stackTrace = DataFormatHelper.throwableToString(thrown);
+//            if (stackTrace != null) {
+////                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
+//                msgBldr.append(LoggingConstants.nl).append(stackTrace);
+//
+//            }
+//        }
+//        genData.addPair("message", msgBldr.toString());
+        genData.addPair("message", messageVal);
+        if (routedMessage.getFormattedMsg() != null) {
+            genData.addPair("formattedMsg", routedMessage.getFormattedMsg());
+        }
+
         genData.setSourceType(sourceName);
         //return logtracedata
         LogTraceData logData = new LogTraceData(genData);

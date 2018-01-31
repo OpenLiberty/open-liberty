@@ -100,7 +100,8 @@ import com.ibm.wsspi.logprovider.TrService;
  */
 public class BaseTraceService implements TrService {
 
-    static final PrintStream rawSystemOut = System.out;
+//    static final PrintStream rawSystemOut = System.out;
+    public static final PrintStream rawSystemOut = System.out;
     static final PrintStream rawSystemErr = System.err;
 
     /** Special trace component for system streams: this one "remembers" the original system out */

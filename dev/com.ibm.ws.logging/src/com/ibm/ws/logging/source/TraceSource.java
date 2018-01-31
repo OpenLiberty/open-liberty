@@ -106,6 +106,15 @@ public class TraceSource implements Source, WsTraceHandler {
         GenericData genData = new GenericData();
 //        LogRecord logRecord = routedMessage.getLogRecord();
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
+//        Throwable thrown = logRecord.getThrown();
+//        StringBuilder msgBldr = new StringBuilder();
+//        msgBldr.append(t);
+//        if (thrown != null) {
+//            String stackTrace = DataFormatHelper.throwableToString(thrown);
+//            if (stackTrace != null) {
+//                genData.addPair("throwable", stackTrace);
+//            }
+//        }
         if (verboseMessage == null) {
             genData.addPair("message", logRecord.getMessage());
         } else {

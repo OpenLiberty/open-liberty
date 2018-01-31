@@ -432,26 +432,38 @@ public class BaseTraceFormatter extends Formatter {
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = null;
+//        String formattedMsg = null;
 //        Long datetime = null;
 //        String levelString = "";
-//        String throwable = null;
+        String throwable = null;
         Integer levelValue = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
 
                 kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("message")) {
+                if (kvp.getKey().equals("formattedMsg")) {
                     message = kvp.getValue();
                 } else if (kvp.getKey().equals("levelValue")) {
                     levelValue = Integer.parseInt(kvp.getValue());
+                } else if (kvp.getKey().equals("throwable_localized")) {
+                    throwable = kvp.getValue();
                 }
-
+//                else if (kvp.getKey().equals("formattedMsg")) {
+//                    throwable = kvp.getValue();
+//                }
             }
         }
 
         sb.append(BaseTraceFormatter.levelValToString(levelValue));
         sb.append(message);
+
+//        Throwable t = logRecord.getThrown();
+        if (throwable != null) {
+//            String s = t.getLocalizedMessage();
+            sb.append(LoggingConstants.nl).append(throwable);
+        }
+
         return sb.toString();
     }
 
@@ -507,6 +519,7 @@ public class BaseTraceFormatter extends Formatter {
         String level = "";
         String loggerName = null;
         String srcClassName = null;
+        String throwable = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -524,6 +537,8 @@ public class BaseTraceFormatter extends Formatter {
                     loggerName = kvp.getValue();
                 } else if (kvp.getKey().equals("ibm_className")) {
                     srcClassName = kvp.getValue();
+                } else if (kvp.getKey().equals("throwable")) {
+                    throwable = kvp.getValue();
                 }
 
             }
@@ -534,6 +549,12 @@ public class BaseTraceFormatter extends Formatter {
         formatFixedString(sb, name, enhancedNameLength);
         sb.append(" " + level + " "); // sym has built-in padding
         sb.append(message);
+
+        if (throwable != null) {
+//            String stackTrace = getStackTrace(logRecord);
+//            if (stackTrace != null)
+            sb.append(LoggingConstants.nl).append(throwable);
+        }
 
         return sb.toString();
     }
@@ -697,6 +718,7 @@ public class BaseTraceFormatter extends Formatter {
         String logLevel = null;
 
         String threadName = null;
+        String stackTrace = null;
         for (Pair p : pairs) {
 
             if (p instanceof KeyValuePair) {
@@ -730,6 +752,8 @@ public class BaseTraceFormatter extends Formatter {
                     threadName = kvp.getValue();
                 } else if (kvp.getKey().equals("levelValue")) {
                     levelVal = Integer.parseInt(kvp.getValue());
+                } else if (kvp.getKey().equals("throwable")) {
+                    stackTrace = kvp.getValue();
                 }
 
             }
@@ -762,6 +786,8 @@ public class BaseTraceFormatter extends Formatter {
 
                 // append formatted message -- txt includes formatted args
                 sb.append(txt);
+                if (stackTrace != null)
+                    sb.append(LoggingConstants.nl).append(stackTrace);
                 break;
             case BASIC:
                 name = nonNullString(loggerName, className);
@@ -780,6 +806,8 @@ public class BaseTraceFormatter extends Formatter {
 
                 // append formatted message -- includes formatted args
                 sb.append(txt);
+                if (stackTrace != null)
+                    sb.append(nlBasicPadding).append(stackTrace);
                 break;
             case ADVANCED:
                 objId = generateObjectId(id, false);
@@ -825,6 +853,8 @@ public class BaseTraceFormatter extends Formatter {
 
                 // append formatted message -- txt includes formatted args
                 sb.append(nlAdvancedPadding).append(txt);
+                if (stackTrace != null)
+                    sb.append(nlAdvancedPadding).append(stackTrace);
                 break;
         }
         return sb.toString();
@@ -1081,6 +1111,8 @@ public class BaseTraceFormatter extends Formatter {
                 if (kvp.getKey().equals("message")) {
                     txt = kvp.getValue();
                 } else if (kvp.getKey().equals("loglevel")) {
+                    loglevel = kvp.getValue();
+                } else if (kvp.getKey().equals("throwable")) {
                     loglevel = kvp.getValue();
                 }
             }

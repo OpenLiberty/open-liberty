@@ -51,7 +51,12 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
-        GenericData genData = ((LogTraceData) event).getGenData();
+        GenericData genData = null;
+        if (event instanceof LogTraceData) {
+            genData = ((LogTraceData) event).getGenData();
+        } else if (event instanceof GenericData) {
+            genData = (GenericData) event;
+        }
 
         String evensourcetType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
@@ -70,7 +75,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                     isStderr = true;
                 }
                 messageOutput = formatter.traceFormatGenData(genData);
-            } else if (copySystemStreams && levelVal == 700) {// copySystemStream and stderr/stdout level 700
+            } else if (copySystemStreams && (levelVal == 700)) {// copySystemStream and stderr/stdout level 700
                 //write
                 messageOutput = formatter.filteredStreamOutput(genData);
 
@@ -78,6 +83,10 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
             //determin if it is system.out/err and !copysystemstream then throw it out
             //if !isTraceStdout && level >= consoleloglevel
             else if (levelVal >= consoleLogLevel) {//not system.out/system.err && tracefilename != stdout
+                //need to use formatmessage filter
+                if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
+                    isStderr = true;
+                }
                 messageOutput = formatter.consoleLogFormat(genData);
             }
         }

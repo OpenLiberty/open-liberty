@@ -43,5 +43,6 @@ public class LogFieldConstants {
     public static final String COMPONENT = "component";
     public static final String THREADNAME = "threadName";
     public static final String ORG = "org";
+    public static final String OBJECT_ID = "objectId";
 
 }
