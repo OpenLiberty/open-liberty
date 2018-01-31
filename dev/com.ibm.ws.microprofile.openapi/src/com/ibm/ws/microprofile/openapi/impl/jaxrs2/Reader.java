@@ -285,7 +285,7 @@ public class Reader {
         if (apiCallbacks != null) {
             Map<String, Callback> callbacks = new LinkedHashMap<>();
             for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback classCallback : apiCallbacks) {
-                Map<String, Callback> currentCallbacks = getCallbacks(classCallback, null, classProduces, null, classConsumes);
+                Map<String, Callback> currentCallbacks = getCallbacks(classCallback);
                 callbacks.putAll(currentCallbacks);
             }
             if (callbacks.size() > 0) {
@@ -573,7 +573,7 @@ public class Reader {
         // callbacks
         Map<String, Callback> callbackMap = new LinkedHashMap<>();
         for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback callback : annotationComponents.callbacks()) {
-            callbackMap.putAll(getCallbacks(callback, null, null, null, null));
+            callbackMap.putAll(getCallbacks(callback));
         }
         if (callbackMap.size() > 0) {
             if (components.getCallbacks() == null) {
@@ -778,7 +778,7 @@ public class Reader {
         Map<String, Callback> callbacks = new LinkedHashMap<>();
         if (apiCallbacks != null) {
             for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback methodCallback : apiCallbacks) {
-                Map<String, Callback> currentCallbacks = getCallbacks(methodCallback, methodProduces, classProduces, methodConsumes, classConsumes);
+                Map<String, Callback> currentCallbacks = getCallbacks(methodCallback);
                 callbacks.putAll(currentCallbacks);
             }
         }
@@ -921,12 +921,7 @@ public class Reader {
         return ignore;
     }
 
-    private Map<String, Callback> getCallbacks(
-                                               org.eclipse.microprofile.openapi.annotations.callbacks.Callback apiCallback,
-                                               Produces methodProduces,
-                                               Produces classProduces,
-                                               Consumes methodConsumes,
-                                               Consumes classConsumes) {
+    private Map<String, Callback> getCallbacks(org.eclipse.microprofile.openapi.annotations.callbacks.Callback apiCallback) {
         Map<String, Callback> callbackMap = new HashMap<>();
         if (apiCallback == null) {
             return callbackMap;
@@ -1006,11 +1001,10 @@ public class Reader {
             operation.setDescription(callbackOp.description());
         }
         AnnotationsUtils.getExternalDocumentation(callbackOp.externalDocs()).ifPresent(operation::setExternalDocs);
-        operation.addParameter(null);
         getParametersListFromAnnotation(callbackOp.parameters(), null, null, operation).ifPresent(p -> p.forEach(operation::addParameter));
         SecurityParser.getSecurityRequirements(callbackOp.security()).ifPresent(operation::setSecurity);
         OperationParser.getApiResponses(callbackOp.responses(), null, null, components).ifPresent(operation::setResponses);
-        // TODO: request body and parameter has to be processed
+        // TODO: Request body has to be processed.
     }
 
     protected String getOperationId(String operationId) {
