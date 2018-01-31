@@ -1073,15 +1073,15 @@ public class H2StreamProcessor {
      */
     public void sendRequestToWc(FrameHeaders frame) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "sendRequestToWc");
+            Tr.entry(tc, "H2StreamProcessor.sendRequestToWc()");
         }
 
         if (null == frame) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "sendRequestToWc: frame is null");
+                Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): Frame is null");
             }
         } else {
-            // Make the frame look like it just came in
+            // Make the headers frame look like it just came in
             WsByteBufferPoolManager bufManager = HttpDispatcher.getBufferManager();
             WsByteBuffer buf = bufManager.allocate(frame.buildFrameForWrite().length);
             byte[] ba = frame.buildFrameForWrite();
@@ -1090,27 +1090,43 @@ public class H2StreamProcessor {
             TCPReadRequestContext readi = h2HttpInboundLinkWrap.getConnectionContext().getReadInterface();
             readi.setBuffer(buf);
             currentFrame = frame;
-            this.getHeadersFromFrame();
+            getHeadersFromFrame();
             setHeadersComplete();
             try {
                 processCompleteHeaders(true);
-            } catch (CompressionException e) {
+            } catch (CompressionException ce) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sendRequestToWc: compression exception when creating the pushed reqeust on stream-id " + myID + " " + e);
+                    Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProcessCompleteHeaders CompressionException: " + ce);
                 }
-                // Free the buffer, set the current frame to null, and remove the SP from the table
+                // Free the buffer
                 buf.release();
-                this.currentFrame = null;
-                h2HttpInboundLinkWrap.muxLink.streamTable.remove(this);
+
+                // Try to send a reset frame on the promised stream so the client knows the promise is dead
+                currentFrame = new FrameRstStream(myID, Constants.CANCEL, false);
+                try {
+                    processNextFrame(currentFrame, Constants.Direction.WRITING_OUT);
+                } catch (ProtocolException pe) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProtocolException when sending a reset frame: " + pe);
+                    }
+                }
+
+                // Close the stream and clean up
+                currentFrame = null;
+                muxLink.triggerStreamClose(this);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "H2StreamProcessor.sendRequestToWc(): Compression exception from ProcessCompleteheaders() when creating the pushed reqeust on stream-id " + myID);
+                }
                 return;
             }
 
-            // Start a new thread to pass along this frame to wc
+            // If all is well, start a new thread to pass along this frame to wc
             setReadyForRead();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "sendRequestToWc");
+            Tr.exit(tc, "H2StreamProcessor.sendRequestToWc()");
         }
 
     }
