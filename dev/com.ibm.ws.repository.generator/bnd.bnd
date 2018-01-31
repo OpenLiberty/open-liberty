@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: SingleJSONGenerator
-Bundle-SymbolicName: com.ibm.ws.generateJSON
+Bundle-SymbolicName: com.ibm.ws.repository.generator
 Bundle-Description: Tool for creating Single JSON Repository from features.
 
 WS-TraceGroup: repo.resource

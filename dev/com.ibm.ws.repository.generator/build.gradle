@@ -8,34 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-def names = []
 
-//Get dependencies from Maven central repository
-repositories {
-    mavenLocal()
-    mavenCentral()
+task copyEsas(type: Copy) {
+    dependsOn parent.subprojects.assemble
+    from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
+    into 'build/esas'
 }
- 
-/*jar {
- 	destinationDir = file('lib')
- 	archiveName='SingleJsonRepositoryGenerator.jar'
-	manifest {	
-        attributes ('Manifest-Version': '1.0',
-        			'Main-Class':'SingleJsonRepositoryGenerator',
-        			'Specification-Vendor' : 'IBM Corp.',
-        			'Implementation-Title' : 'Single Json Repository Generator')
-        			//'Class-Path' : '       			
-    }
-      
-}*/
 
 task createSingleJson {
-    dependsOn jar
+    // Run after all feature ESAs have been built
+    dependsOn copyEsas
     doLast {
         ant.taskdef(name:'singleJsonRepo', classname:'generator.SingleJsonRepositoryGenerator') {
             classpath {
                 fileset(dir: 'build/libs') {
-                    include(name: 'com.ibm.ws.generateJSON.jar')
+                    include(name: 'com.ibm.ws.repository.generator.jar')
                 }
                 fileset(dir: "${rootDir}/com.ibm.ws.repository/build/libs") {
                     include(name: 'com.ibm.ws.repository.jar')
@@ -56,6 +43,5 @@ task createSingleJson {
                     assetType:'FEATURE',
                     jsonFile:'SingleJson.json')
         }
-
     }
 }
