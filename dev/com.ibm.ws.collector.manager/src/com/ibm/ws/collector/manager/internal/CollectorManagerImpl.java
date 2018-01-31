@@ -296,17 +296,9 @@ public class CollectorManagerImpl implements CollectorManager {
                         Tr.debug(tc, "Subscribing to source " + sourceId, handlerId);
                     }
                     srcMgr.addSubscriber(handler);
-                    /*
-                     * Inform the handler that this source/buffer/conduit is now available:
-                     * Synchronous Handler - Add handler as synchronous handler to the Buffer/Conduit's sync handler set
-                     * Asynchronous Handler - Set the buffer/conduit into the handler for async consumption
-                     *
-                     */
-                    if (handler instanceof SynchronousHandler) {
-                        ((BufferManagerImpl) srcMgr.getBufferManager()).addSyncHandler((SynchronousHandler) handler);
-                    } else {
-                        handler.setBufferManager(sourceId, srcMgr.getBufferManager());
-                    }
+
+                    //This does nothing for a SynchronousHandler
+                    handler.setBufferManager(sourceId, srcMgr.getBufferManager());
 
                     //Add as subscribed source to the handler's Handler Manager
                     hdlrMgr.addSubscribedSource(srcMgr.getSource());
