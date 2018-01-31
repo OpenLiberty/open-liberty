@@ -16,7 +16,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ConcurrentModificationException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
@@ -157,11 +162,35 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * Attempts to update the last access time ensuring the old value matches.
+     * This verifies that the copy we have in cache is still valid.
+     *
      * @see com.ibm.ws.session.store.common.BackedHashMap#overQualLastAccessTimeUpdate(com.ibm.ws.session.store.common.BackedSession, long)
      */
     @Override
     protected int overQualLastAccessTimeUpdate(BackedSession sess, long nowTime) {
-        throw new UnsupportedOperationException();
+        String id = sess.getId();
+        String key = id + '+' + id + '@' + sess.getAppName();
+
+        int updateCount;
+
+        Object[] value = cacheStoreService.cache.get(key);
+        synchronized (sess) {
+            if (value == null || (Long) value[LAST_ACCESS] != sess.getCurrentAccessTime() || (Long) value[LAST_ACCESS] == nowTime) {
+                updateCount = 0;
+            } else {
+                value[LAST_ACCESS] = nowTime;
+                // TODO should be using cache.replace here, but first need to use a value for which .equals is a deep compare
+                cacheStoreService.cache.put(key, value);
+                updateCount = 1;
+            }
+
+            if (updateCount > 0) {
+                sess.updateLastAccessTime(nowTime);
+            }
+        }
+
+        return updateCount;
     }
 
     /**
@@ -294,7 +323,15 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected void removePersistedSession(String id) {
-        throw new UnsupportedOperationException();
+        //If the app calls invalidate, it may not be removed from the local cache yet.
+        superRemove(id);
+
+        // TODO DatabaseHashMap removes based on id and appname, but does not include propid
+        String key = id + '+' + id + '@' + _iStore.getId();
+
+        cacheStoreService.cache.remove(key);
+
+        addToRecentlyInvalidatedList(id);
     }
 
     /**
@@ -339,7 +376,23 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected int updateLastAccessTime(BackedSession sess, long nowTime) {
-        throw new UnsupportedOperationException();
+        String appName = getIStore().getId();
+        String id = sess.getId();
+        String key = id + '+' + id + '@' + appName;
+
+        int updateCount;
+
+        Object[] value = cacheStoreService.cache.get(key);
+        if (value == null || (Long) value[LAST_ACCESS] == nowTime) {
+            updateCount = 0;
+        } else {
+            value[LAST_ACCESS] = nowTime;
+            // TODO consider using cache.replace here and elsewhere for updates that won't revert non-updated values that are updated by another thread
+            cacheStoreService.cache.put(key, value);
+            updateCount = 1;
+        }
+
+        return updateCount;
     }
 
     /**

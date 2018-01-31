@@ -1,11 +1,11 @@
 <server>
 
     <featureManager>
+        <feature>bells-1.0</feature>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jdbc-4.1</feature>
         <feature>sessionCache-1.0</feature>
-        <feature>sessionDatabase-1.0</feature> <!-- TODO remove sessionDatabase-1.0 and httpSessionDatabase once sessionCache-1.0 is working -->
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
@@ -13,24 +13,24 @@
     <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
 
     <httpSessionCache libraryRef="HazelcastLib"/>
-    
-    <!-- TODO: eventually all of this database configuration will be replaced with JCache configuration -->
-    <httpSessionDatabase dataSourceRef="SessionDS"/>
 
-	<authData id="SessionAuth" user="userName" password="userPassword"/>    
-    <dataSource id="SessionDS" jndiName="jdbc/SessionDS" type="javax.sql.ConnectionPoolDataSource" transactional="false" containerAuthDataRef="SessionAuth">
-	    <jdbcDriver libraryRef="DerbyLib"/>
-	    <properties.derby.embedded createDatabase="create" databaseName="memory:sessionCacheServer"/>
-	</dataSource>
-	
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
-	</library>
+    <bell libraryRef="HazelcastLib"/> <!-- TODO Either need httpSessionCache or bell, not both. Split into 2 tests -->
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>
-	
+
+	<library id="DerbyLib">
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	</library>
+
+    <!-- Used for testing that data source can be stored in a session -->
+	<authData id="DerbyAuth" user="userName" password="userPassword"/>    
+    <dataSource jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
+	    <jdbcDriver libraryRef="DerbyLib"/>
+	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+	</dataSource>
+
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
 </server>
