@@ -400,30 +400,54 @@ public abstract class AnnotationsUtils {
             serverObject.setDescription(server.description());
             isEmpty = false;
         }
+
+        Optional<ServerVariables> serverVariablesObject = getServerVariables(server.variables());
+        if (serverVariablesObject.isPresent()) {
+            isEmpty = false;
+            serverObject.setVariables(serverVariablesObject.get());
+        }
+
         if (isEmpty) {
             return Optional.empty();
         }
-        org.eclipse.microprofile.openapi.annotations.servers.ServerVariable[] serverVariables = server.variables();
+
+        return Optional.of(serverObject);
+    }
+
+    public static Optional<ServerVariables> getServerVariables(org.eclipse.microprofile.openapi.annotations.servers.ServerVariable[] serverVariables) {
+        if (serverVariables == null) {
+            return null;
+        }
+
+        boolean isEmpty = true;
         ServerVariables serverVariablesObject = new ServerVariablesImpl();
         for (org.eclipse.microprofile.openapi.annotations.servers.ServerVariable serverVariable : serverVariables) {
+            boolean isVariableEmpty = true;
             ServerVariable serverVariableObject = new ServerVariableImpl();
             if (StringUtils.isNotBlank(serverVariable.description())) {
                 serverVariableObject.setDescription(serverVariable.description());
+                isVariableEmpty = false;
             }
             if (StringUtils.isNotBlank(serverVariable.defaultValue())) {
                 serverVariableObject.setDefaultValue(serverVariable.defaultValue());
+                isVariableEmpty = false;
             }
             if (serverVariable.enumeration() != null && serverVariable.enumeration().length > 0) {
                 serverVariableObject.setEnumeration(Arrays.asList(serverVariable.enumeration()));
+                isVariableEmpty = false;
             }
             // TODO extensions
-            serverVariablesObject.addServerVariable(serverVariable.name(), serverVariableObject);
-        }
-        if (serverVariablesObject.size() > 0) {
-            serverObject.setVariables(serverVariablesObject);
+            if (!isVariableEmpty) {
+                serverVariablesObject.addServerVariable(serverVariable.name(), serverVariableObject);
+                isEmpty = false;
+            }
         }
 
-        return Optional.of(serverObject);
+        if (isEmpty) {
+            return Optional.empty();
+        }
+
+        return Optional.of(serverVariablesObject);
     }
 
     public static Optional<ExternalDocumentation> getExternalDocumentation(org.eclipse.microprofile.openapi.annotations.ExternalDocumentation externalDocumentation) {
