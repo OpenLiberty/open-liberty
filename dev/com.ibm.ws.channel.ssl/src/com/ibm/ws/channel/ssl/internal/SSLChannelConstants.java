@@ -34,17 +34,17 @@ public interface SSLChannelConstants {
     /** PI52696 */
     public static final String TIMEOUT_VALUE_IN_SSL_CLOSING_HANDSHAKE = "timeoutValueInSSLClosingHandshake";
 
-    /** This setting is configured by enabling the Servlet 3.0 feature. The channel will never be enabled for HTTP/2.0. */
+    /** The channel will never be enabled for HTTP/2.0. */
     public static final String NEVER_20 = "2.0_Never";
-    /**
-     * This setting is configured by enabling the Servlet 3.1 feature. Looks for the 'insecureUpgradeProtocol'
-     * httpOptions to determine if the channel will enable HTTP/2.0
-     */
-    public static final String OPTIONAL_20 = "2.0_Optional";
-    /** This setting is configured by enabling the Servlet 4.0 feature. The channel will always be enabled for HTTP/2.0". */
-    public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
+    /** The channel will disable HTTP/2.0 by default. */
+    public static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
+    /** The channel will be enabled for HTTP/2.0 by default". */
+    public static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
 
     /** If value is set to 'h2' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2.0 */
-    public static final String PROPNAME_ALPN_PROTOCOLS = "alpnProtocols";
+    public static final String ALPN_PROTOCOL_SERVLET_31 = "alpnProtocolForServlet3.1";
+    public static final String ALPN_PROTOCOL_SERVLET_40_AND_HIGHER = "alpnProtocolForServlet4.0AndHigher";
+
     public static final String H2_ALPN_PROTOCOL = "h2";
+    public static final String HTTP11_ALPN_PROTOCOL = "http/1.1";
 }

@@ -382,17 +382,19 @@ public class HttpConfigConstants {
     /** Equivalent to CookiesConfigureNoCache - required due to 'configure' not being an allowed word for metatype **/
     public static final String PROPNAME_NO_CACHE_COOKIES_CONTROL = "NoCacheCookiesControl"; //PI75280
 
-    /** This setting is configured by enabling the Servlet 3.0 feature. The channel will never be enabled for HTTP/2.0. */
+    /** The channel will never be enabled for HTTP/2.0. */
     public static final String NEVER_20 = "2.0_Never";
-    /**
-     * This setting is configured by enabling the Servlet 3.1 feature. Looks for the 'insecureUpgradeProtocol'
-     * httpOptions to determine if the channel will enable HTTP/2.0
-     */
-    public static final String OPTIONAL_20 = "2.0_Optional";
-    /** This setting is configured by enabling the Servlet 4.0 feature. The channel will always be enabled for HTTP/2.0". */
-    public static final String ALWAYS_ON_20 = "2.0_AlwaysOn";
 
-    /** If value is set to 'h2c' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2.0 */
-    public static final String PROPNAME_INSECURE_UPGRADE_PROTOCOL = "insecureUpgradeProtocol";
-    public static final String HTTP2_UPGRADE_TOKEN = "h2c";
+    /** The channel will disable HTTP/2.0 by default. */
+    public static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
+    /** The channel will be enabled for HTTP/2.0 by default". */
+    public static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
+
+    /**
+     * If value is set to 'h2c' or 'http/2.0' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2.0.
+     * If value is set to 'http/1.1', this disables the use of HTTP/2.0.
+     */
+    public static final String PROPNAME_NON_SSL_HTTP2_SERVLET_31 = "nonSslHttp2ForServlet3.1";
+    public static final String PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER = "nonSslHttp2ForServlet4.0AndHigher";
+
 }

@@ -585,7 +585,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
             Tr.debug(tc, "Configured Http Version Setting, " +
                          ((configuredHttpVersionSetting == null) ? SSLChannelConstants.NEVER_20 : configuredHttpVersionSetting));
         }
-        this.useH2Protocol = (SSLChannelConstants.ALWAYS_ON_20.equalsIgnoreCase(configuredHttpVersionSetting));
+        this.useH2Protocol = (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting));
 
         // Extract the channel properties.
         try {
@@ -630,15 +630,32 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     }
                 }
 
-                String alpnProtocols = channelProps.getProperty(SSLChannelConstants.PROPNAME_ALPN_PROTOCOLS);
-                if (alpnProtocols != null && SSLChannelConstants.OPTIONAL_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
+                String alpnProtocolForServlet31 = channelProps.getProperty(SSLChannelConstants.ALPN_PROTOCOL_SERVLET_31);
+                if (alpnProtocolForServlet31 != null && SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
 
-                    if (SSLChannelConstants.H2_ALPN_PROTOCOL.equalsIgnoreCase(alpnProtocols)) {
+                    if (SSLChannelConstants.H2_ALPN_PROTOCOL.equalsIgnoreCase(alpnProtocolForServlet31)) {
                         this.useH2Protocol = true;
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found alpnProtocols in SSL system properties, " + alpnProtocols);
+                        Tr.debug(tc, "Found alpnProtocolForServlet31 in SSL system properties, " + alpnProtocolForServlet31);
+                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel is configured to use HTTP/2" : "Config: Channel has disabled use of HTTP/2");
+
                     }
+                }
+
+                String alpnProtocolForServlet40AndHigher = channelProps.getProperty(SSLChannelConstants.ALPN_PROTOCOL_SERVLET_40_AND_HIGHER);
+                if (alpnProtocolForServlet40AndHigher != null && SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
+
+                    if (SSLChannelConstants.HTTP11_ALPN_PROTOCOL.equalsIgnoreCase(alpnProtocolForServlet40AndHigher)) {
+                        this.useH2Protocol = false;
+                    }
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found alpnProtocolForServlet40AndHigher in SSL system properties, " + alpnProtocolForServlet40AndHigher);
+                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel is configured to use HTTP/2" : "Config: SSLChannel has disabled use of HTTP/2");
+
+                    }
+
                 }
 
             }
@@ -651,7 +668,6 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "SSLChannel configured to use H2, " + this.useH2Protocol);
             Tr.debug(tc, "jsseProvider=" + this.jsseProvider);
         }
 

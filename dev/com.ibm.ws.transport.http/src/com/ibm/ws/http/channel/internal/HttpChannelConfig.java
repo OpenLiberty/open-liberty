@@ -173,7 +173,7 @@ public class HttpChannelConfig {
             Tr.debug(tc, "Configured Http Version Setting, " + ((configuredHttpVersionSetting == null) ? HttpConfigConstants.NEVER_20 : configuredHttpVersionSetting));
         }
 
-        this.useH2Protocol = HttpConfigConstants.ALWAYS_ON_20.equalsIgnoreCase(configuredHttpVersionSetting);
+        this.useH2Protocol = HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting);
 
         Map<Object, Object> propsIn = cc.getPropertyBag();
 
@@ -361,8 +361,13 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE, value);
                 continue;
             }
-            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL)) {
-                props.put(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL, value);
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31)) {
+                props.put(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31, value);
+                continue;
+            }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER)) {
+                props.put(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER, value);
+                continue;
             }
 
             props.put(key, value);
@@ -405,7 +410,8 @@ public class HttpChannelConfig {
         parseH2ConnCloseTimeout(props);
         parseH2ConnReadWindowSize(props);
         parsePurgeRemainingResponseBody(props); //PI81572
-        parseInsecureUpgradeProtocol(props);
+        parseNonSslHttp2ForServlet31(props);
+        parseNonSslHttp2ForServlet40AndHigher(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1257,18 +1263,39 @@ public class HttpChannelConfig {
         }
     }
 
-    private void parseInsecureUpgradeProtocol(Map<?, ?> props) {
-        String insecureUpgradeProtocolProperty = (String) props.get(HttpConfigConstants.PROPNAME_INSECURE_UPGRADE_PROTOCOL);
+    private void parseNonSslHttp2ForServlet31(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31);
         String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
 
         //Use this property only when the CHFWBundle has been notified of a servlet feature
-        //configuring "2.0_Optional" on the HttpProtocolBehavior
-        if (null != insecureUpgradeProtocolProperty && HttpConfigConstants.OPTIONAL_20.equalsIgnoreCase(servletHttpVersionSetting)) {
-            this.useH2Protocol = HttpConfigConstants.HTTP2_UPGRADE_TOKEN.equalsIgnoreCase(insecureUpgradeProtocolProperty);
+        //configuring "2.0_Optional_Off" on the HttpProtocolBehavior
+        if (null != value && HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(servletHttpVersionSetting)) {
+
+            this.useH2Protocol = convertBoolean(value);
+
             if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
-                Tr.event(tc, "Config: insecureUpgradeProtocol is h2c, " + shouldUseH2Protocol());
+                Tr.event(tc, "Config: nonSslHttp2ForServlet3.1 is, " + value);
+                Tr.event(tc, this.useH2Protocol ? "Config: Channel is configured to use HTTP/2" : "Config: Channel has disabled use of HTTP/2");
             }
         }
+    }
+
+    private void parseNonSslHttp2ForServlet40AndHigher(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER);
+        String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
+
+        if (null != value && HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(servletHttpVersionSetting)) {
+            this.useH2Protocol = convertBoolean(value);
+
+            if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
+                Tr.event(tc, "Config: nonSslHttp2ForServlet4.0AndHigher is, " + value);
+
+                Tr.event(tc, this.useH2Protocol ? "Config: Channel is configured to use HTTP/2" : "Config: Channel has disabled use of HTTP/2");
+
+            }
+
+        }
+
     }
 
     public boolean shouldUseH2Protocol() {
