@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  * A fixed size FIFO (with expedited) of Objects. Null objects are not allowed in
@@ -112,7 +113,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
 
         //D638088 - modified spinning defaults to adjust to the number
         //of physical processors on host system.
-        SPINS_TAKE_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", Runtime.getRuntime().availableProcessors() - 1).intValue(); // D371967
+        SPINS_TAKE_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", CpuInfo.getAvailableProcessors() - 1).intValue(); // D371967
         SPINS_PUT_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_put", SPINS_TAKE_ / 4).intValue(); // D371967
 
         YIELD_TAKE_ = Boolean.getBoolean("com.ibm.ws.util.BoundedBuffer.yield_take");

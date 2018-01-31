@@ -25,12 +25,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Ignore;
 
+import com.ibm.ws.kernel.service.util.CpuInfo;
+
 @Ignore
 public class ThreadPoolThroughputTest {
 
     private static final int TERMINATION_WAIT_TIME = 30;
 
-    static int poolSize = Runtime.getRuntime().availableProcessors();
+    static int poolSize = CpuInfo.getAvailableProcessors();
 
     Runnable doNothingRunnable = new Runnable() {
         @Override
@@ -92,8 +94,7 @@ public class ThreadPoolThroughputTest {
     }
 
     public long jdkExecutorForeignSourceThroughput(final long iterations) throws Exception {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(poolSize, poolSize, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(/* 500 */),
-                        new ThreadPoolExecutor.AbortPolicy());
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(poolSize, poolSize, 10, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>(/* 500 */), new ThreadPoolExecutor.AbortPolicy());
 
         long startTime = System.nanoTime();
         for (int i = 0; i < iterations; i++) {
@@ -194,7 +195,7 @@ public class ThreadPoolThroughputTest {
     }
 
     public static void main(String[] args) throws Exception {
-        final int availableProcessors = Runtime.getRuntime().availableProcessors();
+        final int availableProcessors = CpuInfo.getAvailableProcessors();
         boolean warmupPhase = true;
         for (poolSize = 5 * availableProcessors; poolSize > 0; poolSize--) {
 

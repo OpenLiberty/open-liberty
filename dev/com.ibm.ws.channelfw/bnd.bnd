@@ -77,7 +77,7 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.kernel.feature,\
-	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.service;;version=latest,\
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
