@@ -1,13 +1,13 @@
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
 
-Bundle-Name: Access Log Source Handler
-Bundle-SymbolicName: accesslog.source.handler
-Bundle-Description: AccessLog SourceHandler: Sample source and handler for collector manager framework; version=${bVersion}
+Bundle-Name: FFDC Source Handler
+Bundle-SymbolicName: ffdc.source.handler
+Bundle-Description: FFDC SourceHandler: Sample source and handler for collector manager framework; version=${bVersion}
   
-WS-TraceGroup: AccessLogHandler
+WS-TraceGroup: FFDCHandler
 
 Import-Package: com.ibm.ejs.ras, \
                 com.ibm.websphere.ras, \
@@ -17,17 +17,16 @@ Import-Package: com.ibm.ejs.ras, \
                 com.ibm.wsspi.kernel.service.location, \
                 com.ibm.wsspi.kernel.service.utils, \
                 org.osgi.framework, \
-                com.ibm.wsspi.collector.manager
-               
+                com.ibm.wsspi.collector.manager               
 
-Private-Package: accesslog.source.handler
+Private-Package: ffdc.source.handler
 
 Include-Resource: \
-        OSGI-INF=resources/OSGI-INF
- 
+        OSGI-INF=test-bundles/ffdc.source.handler/resources/OSGI-INF
+        
 Service-Component: \
-  AccessLogHandler;\
-    implementation:=accesslog.source.handler.AccessLogHandlerImpl;\
+  FFDCHandler;\
+    implementation:=ffdc.source.handler.FFDCHandlerImpl;\
     provide:=com.ibm.wsspi.collector.manager.Handler; \
      executor=java.util.concurrent.ExecutorService; \
     modified:='modified'; \

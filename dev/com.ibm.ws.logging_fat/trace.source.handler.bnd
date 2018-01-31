@@ -1,4 +1,4 @@
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
@@ -34,7 +34,7 @@ Service-Component: \
     properties:="service.vendor=IBM"
 
 Include-Resource: \
-        OSGI-INF=resources/OSGI-INF
+        OSGI-INF=test-bundles/trace.source.handler/resources/OSGI-INF
         
 -dsannotations: \
    collector.manager_fat.RESTHandlerTraceLogger
