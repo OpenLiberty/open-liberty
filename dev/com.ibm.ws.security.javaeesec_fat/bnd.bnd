@@ -29,7 +29,7 @@ src: \
 	test-applications/AuthMechs.jar/src,\
 	test-applications/DatabaseIdstoreDeferred.war/src,\
 	test-applications/securityContextHamApp.war/src,\
-	test-applications/SecurityEjbinWAR.jar/src,\
+	test-applications/SecurityEJBinWAR.jar/src,\
 	test-applications/ejbinwarservlet.war/src
 
 javac.source: 1.8
