@@ -20,8 +20,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.interfaces.ConversionException;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
@@ -62,17 +61,12 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
         assertNotClosed();
-        Optional<T> optional = null;
-        try {
-            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
-            T value = null;
-            if (sourced != null) {
-                value = (T) sourced.getValue();
-            }
-            optional = Optional.ofNullable(value);
-        } catch (ConverterNotFoundException | ConversionException e) {
-            throw new IllegalArgumentException(e);
+        SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+        T value = null;
+        if (sourced != null) {
+            value = (T) sourced.getValue();
         }
+        Optional<T> optional = Optional.ofNullable(value);
         return optional;
     }
 
@@ -103,17 +97,22 @@ public abstract class AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String toString() {
+        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
+
         assertNotClosed();
+
         StringBuilder sb = new StringBuilder();
         sb.append("Config ");
         sb.append(hashCode());
-        sb.append("[");
-        sb.append(getPropertyNames().size());
-        sb.append(" keys from ");
-        sb.append(sources.size());
-        sb.append(" sources] : ");
-        sb.append(sources);
+        if (dumpEnabled) {
+            sb.append(dump());
+        } else {
+            sb.append("(");
+            sb.append(sources.size());
+            sb.append(" sources)");
+        }
         return sb.toString();
     }
 
@@ -137,20 +136,15 @@ public abstract class AbstractConfig implements WebSphereConfig {
     public Object getValue(String propertyName, Type propertyType, boolean optional) {
         Object value = null;
         assertNotClosed();
-        try {
-            if (getKeySet().contains(propertyName)) {
-                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
-                value = sourced.getValue();
+        if (getKeySet().contains(propertyName)) {
+            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            value = sourced.getValue();
+        } else {
+            if (optional) {
+                value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
             } else {
-                if (optional) {
-                    value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
-                } else {
-                    throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
-                }
+                throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
             }
-        } catch (ConverterNotFoundException | ConversionException e) {
-            //TODO is this the correct exception to throw? ConverterNotFoundException is not the same as IllegalArgumentException
-            throw new IllegalArgumentException(e);
         }
         return value;
     }
@@ -160,16 +154,11 @@ public abstract class AbstractConfig implements WebSphereConfig {
     public Object getValue(String propertyName, Type propertyType, String defaultString) {
         Object value = null;
         assertNotClosed();
-        try {
-            if (getKeySet().contains(propertyName)) {
-                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
-                value = sourced.getValue();
-            } else {
-                value = convertValue(defaultString, propertyType);
-            }
-        } catch (ConverterNotFoundException | ConversionException e) {
-            //TODO is this the correct exception to throw? ConverterNotFoundException is not the same as IllegalArgumentException
-            throw new IllegalArgumentException(e);
+        if (getKeySet().contains(propertyName)) {
+            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            value = sourced.getValue();
+        } else {
+            value = convertValue(defaultString, propertyType);
         }
         return value;
     }

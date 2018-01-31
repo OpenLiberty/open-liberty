@@ -31,8 +31,6 @@ import com.ibm.ws.microprofile.config.converters.ExtendedGenericConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.ibm.ws.microprofile.config.interfaces.ConversionException;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
 
 public class ConversionManager {
 
@@ -57,22 +55,30 @@ public class ConversionManager {
         if (converters.hasType(type)) {
             PriorityConverter converter = converters.getConverter(type);
             if (converter != null) {
+                Object converted = null;
                 try {
-                    Object converted = null;
                     if (converter instanceof ExtendedGenericConverter) {
                         converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this, this.classLoader);
                     } else {
                         converted = converter.convert(rawString);
                     }
                     status.setConverted(converted);
-                } catch (ConversionException | IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "simpleConversion: A converter ''{0}'', for type ''{1}'', sub type ''{2}'' and raw String '{3}' threw an exception: {4}.", converter, type,
+                                 genericSubType, rawString, e);
+                    }
                     throw e;
-                } catch (Throwable e) {
-                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
+                } catch (Throwable t) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "simpleConversion: A converter ''{0}'', for type ''{1}'', sub type ''{2}'' and raw String ''{3}'' threw an exception: {4}.", converter, type,
+                                 genericSubType, rawString, t);
+                    }
+                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", type, rawString, t.getMessage()), t);
                 }
 
                 if (status.isConverterFound() && status.getConverted() == null) {
-                    if (TraceComponent.isAnyTracingEnabled()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "simpleConversion: The converted value is null. The rawString is {0}", rawString);
                     }
                 }
@@ -167,7 +173,7 @@ public class ConversionManager {
         }
 
         if (!status.isConverterFound()) {
-            throw new ConverterNotFoundException(Tr.formatMessage(tc, "could.not.find.converter.CWMCG0014E", type.getTypeName()));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "could.not.find.converter.CWMCG0014E", type.getTypeName()));
         }
 
         Object converted = status.getConverted();

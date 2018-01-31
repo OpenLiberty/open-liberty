@@ -33,6 +33,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 public class PollingDynamicConfig implements Closeable {
 
@@ -218,8 +219,9 @@ public class PollingDynamicConfig implements Closeable {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String toString() {
-        return this.id;
+        return getSourceID();
     }
 
     /**

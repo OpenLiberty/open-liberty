@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 
 public class TypedPropertyValue {
@@ -72,17 +72,7 @@ public class TypedPropertyValue {
         SourcedPropertyValue compositeValue = null;
         if (cacheVersion != latestVersion) {
             SourcedPropertyValue currentValue = stampedValue.getReference();
-            SourcedPropertyValue newValue = null;
-            try {
-                newValue = resolveCurrent();
-            } catch (ConfigException e) {
-                throw e;
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "get: Unable to get current version of property '{0}'. Exception: {1}", parentContainer.getKey(), e);
-                }
-                throw new ConfigException(e);
-            }
+            SourcedPropertyValue newValue = resolveCurrent();
 
             if (stampedValue.compareAndSet(currentValue, newValue, cacheVersion, latestVersion)) {
                 compositeValue = newValue;
@@ -135,5 +125,11 @@ public class TypedPropertyValue {
         if (type != other.type)
             return false;
         return true;
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return stampedValue.getReference() + "[version:" + stampedValue.getStamp() + "]";
     }
 }

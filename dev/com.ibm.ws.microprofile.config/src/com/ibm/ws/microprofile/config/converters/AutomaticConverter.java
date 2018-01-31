@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
 
 /**
  *
@@ -59,7 +58,7 @@ public class AutomaticConverter extends BuiltInConverter {
             this.parseMethod = getParse(reflectionClass);
         }
         if (this.ctor == null && this.valueOfMethod == null && this.parseMethod == null) {
-            throw new ConverterNotFoundException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
         }
     }
 
@@ -68,8 +67,6 @@ public class AutomaticConverter extends BuiltInConverter {
         Constructor<M> ctor = null;
         try {
             ctor = reflectionClass.getConstructor(String.class);
-        } catch (SecurityException e) {
-            throw new ConversionException(e);
         } catch (NoSuchMethodException e) {
             //No FFDC
         }
@@ -86,8 +83,6 @@ public class AutomaticConverter extends BuiltInConverter {
             } else if (method.getReturnType() == Void.TYPE) {
                 method = null;
             }
-        } catch (SecurityException e) {
-            throw new ConversionException(e);
         } catch (NoSuchMethodException e) {
             //No FFDC
         }
@@ -105,8 +100,6 @@ public class AutomaticConverter extends BuiltInConverter {
             } else if (method.getReturnType() == Void.TYPE) {
                 method = null;
             }
-        } catch (SecurityException e) {
-            throw new ConversionException(e);
         } catch (NoSuchMethodException e) {
             //No FFDC
         }
@@ -136,7 +129,14 @@ public class AutomaticConverter extends BuiltInConverter {
                         converted = this.parseMethod.invoke(null, value);
                     }
                 }
-            } catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof IllegalArgumentException) {
+                    throw (IllegalArgumentException) cause;
+                } else {
+                    throw new ConversionException(cause);
+                }
+            } catch (IllegalAccessException | InstantiationException e) {
                 throw new ConversionException(e);
             }
         }

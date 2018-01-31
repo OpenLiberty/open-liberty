@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.config.interfaces;
 
 import java.lang.reflect.Type;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * A value, the type of the value and the id of its source
  */
@@ -55,7 +57,8 @@ public class SourcedPropertyValue {
     }
 
     @Override
+    @Trivial
     public String toString() {
-        return value + "(" + source + ")";
+        return value + "[type:" + type + ";source:" + source + "]";
     }
 }
