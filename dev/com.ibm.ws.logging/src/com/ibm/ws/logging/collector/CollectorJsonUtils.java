@@ -203,7 +203,7 @@ public class CollectorJsonUtils {
                     key = LogFieldConstants.THREADID;
                     isFirstField = isFirstField
                                    & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField,
-                                                                     kvp.isNumber());
+                                                                     false);
 
                 } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
                     key = LogFieldConstants.DATETIME;
@@ -266,7 +266,7 @@ public class CollectorJsonUtils {
                         key = LogFieldConstants.THREADID;
                         isFirstField = isFirstField
                                        & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField,
-                                                                         kvp.isNumber());
+                                                                         false);
 
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
                         key = LogFieldConstants.DATETIME;
