@@ -638,7 +638,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Found alpnProtocolForServlet31 in SSL system properties, " + alpnProtocolForServlet31);
-                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel is configured to use HTTP/2" : "Config: Channel has disabled use of HTTP/2");
+                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel has enabled use of HTTP/2" : "Config: Channel has disabled use of HTTP/2");
 
                     }
                 }
@@ -652,7 +652,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Found alpnProtocolForServlet40AndHigher in SSL system properties, " + alpnProtocolForServlet40AndHigher);
-                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel is configured to use HTTP/2" : "Config: SSLChannel has disabled use of HTTP/2");
+                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel has enabled use of HTTP/2" : "Config: SSLChannel has disabled use of HTTP/2");
 
                     }
 

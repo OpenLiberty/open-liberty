@@ -1264,33 +1264,43 @@ public class HttpChannelConfig {
     }
 
     private void parseNonSslHttp2ForServlet31(Map<?, ?> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31);
+        String value = ((String) props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31)).trim();
         String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
 
-        //Use this property only when the CHFWBundle has been notified of a servlet feature
-        //configuring "2.0_Optional_Off" on the HttpProtocolBehavior
         if (null != value && HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(servletHttpVersionSetting)) {
 
-            this.useH2Protocol = convertBoolean(value);
+            if (HttpConfigConstants.PROP_ENABLED.equalsIgnoreCase(value)) {
+                this.useH2Protocol = true;
+            }
+
+            else if (HttpConfigConstants.PROP_DISABLED.equalsIgnoreCase(value)) {
+                this.useH2Protocol = false;
+            }
 
             if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
                 Tr.event(tc, "Config: nonSslHttp2ForServlet3.1 is, " + value);
-                Tr.event(tc, this.useH2Protocol ? "Config: Channel is configured to use HTTP/2" : "Config: Channel has disabled use of HTTP/2");
+                Tr.event(tc, this.useH2Protocol ? "Config: Channel has enabled use of HTTP/2" : "Config: Channel has disabled use of HTTP/2");
             }
         }
     }
 
     private void parseNonSslHttp2ForServlet40AndHigher(Map<?, ?> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER);
+        String value = ((String) props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER)).trim();
         String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
 
         if (null != value && HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(servletHttpVersionSetting)) {
-            this.useH2Protocol = convertBoolean(value);
+
+            if (HttpConfigConstants.PROP_ENABLED.equalsIgnoreCase(value)) {
+                this.useH2Protocol = true;
+            }
+
+            else if (HttpConfigConstants.PROP_DISABLED.equalsIgnoreCase(value)) {
+                this.useH2Protocol = false;
+            }
 
             if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
                 Tr.event(tc, "Config: nonSslHttp2ForServlet4.0AndHigher is, " + value);
-
-                Tr.event(tc, this.useH2Protocol ? "Config: Channel is configured to use HTTP/2" : "Config: Channel has disabled use of HTTP/2");
+                Tr.event(tc, this.useH2Protocol ? "Config: Channel has enabled use of HTTP/2" : "Config: Channel has disabled use of HTTP/2");
 
             }
 

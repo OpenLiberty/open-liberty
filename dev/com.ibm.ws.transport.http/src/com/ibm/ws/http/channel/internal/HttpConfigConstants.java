@@ -390,11 +390,12 @@ public class HttpConfigConstants {
     /** The channel will be enabled for HTTP/2.0 by default". */
     public static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
 
-    /**
-     * If value is set to 'h2c' or 'http/2.0' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2.0.
-     * If value is set to 'http/1.1', this disables the use of HTTP/2.0.
-     */
+    public static final String PROP_ENABLED = "enabled";
+    public static final String PROP_DISABLED = "disabled";
+
+    /** Can be set to enabled|disabled, depicting use of HTTP/2 when using the servlet 3.1 feature */
     public static final String PROPNAME_NON_SSL_HTTP2_SERVLET_31 = "nonSslHttp2ForServlet3.1";
+    /** Can be set to enabled|disabled, depicting use of HTTP/2 when using the servlet 4.0 feature */
     public static final String PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER = "nonSslHttp2ForServlet4.0AndHigher";
 
 }
