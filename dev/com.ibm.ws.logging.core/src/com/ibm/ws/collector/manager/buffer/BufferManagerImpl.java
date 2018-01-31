@@ -11,7 +11,9 @@
 package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,27 +32,34 @@ public class BufferManagerImpl extends BufferManager {
     private Buffer<Object> ringBuffer;
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     private Set<SynchronousHandler> synchronousHandlerSet = new HashSet<SynchronousHandler>();
-    private int capacity;
+    private final int capacity;
 
     private final String sourceId;
     /* Map to keep track of the next event for a handler */
     private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
-
+    private static List<BufferManager> bufferManagerList= new ArrayList<BufferManager>();
+    
+    private Queue<Object> earlyMessageQueue;
     private volatile static boolean EMQRemovedFlag = false;
-    protected static final int EARLY_MESSAGE_QUEUE_SIZE=400;
-    public static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
+    private static final int EARLY_MESSAGE_QUEUE_SIZE=400;
+    private static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
 
     public BufferManagerImpl(int capacity, String sourceId) {
         super();
-        ringBuffer=null;
-        this.sourceId = sourceId;
-        this.capacity = capacity;
-        if(!getEMQRemovedFlag())
-            earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+        RERWLOCK.writeLock().lock();
+        try {
+            bufferManagerList.add(this);
+            ringBuffer=null;
+            this.sourceId = sourceId;
+            this.capacity = capacity;
+            if(!BufferManagerImpl.EMQRemovedFlag)
+                earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+        }finally {
+            RERWLOCK.writeLock().unlock();
+        }
     }
 
     @Override
-    @FFDCIgnore({ NullPointerException.class })
     public void add(Object event) {
         if (event == null)
             throw new NullPointerException();
@@ -74,18 +83,15 @@ public class BufferManagerImpl extends BufferManager {
                 }
 
             }
-            try {
-                if(ringBuffer !=  null){
-                    ringBuffer.add(event);
-                }
-            }catch(NullPointerException e){
+            
+            if(ringBuffer !=  null){
+                ringBuffer.add(event);
             }
-
-            try {
-                if(earlyMessageQueue!=null) {
+            
+            if(earlyMessageQueue!=null) {
+                synchronized(earlyMessageQueue) {
                     earlyMessageQueue.add(event);
                 }
-            }catch(NullPointerException e){
             }
 
         } finally {
@@ -96,10 +102,6 @@ public class BufferManagerImpl extends BufferManager {
             Tr.debug(tc, "Adding event to buffer " + event);
         }
 
-    }
-
-    public void removeEMQ() {
-        earlyMessageQueue=null;
     }
 
     @Override
@@ -153,15 +155,12 @@ public class BufferManagerImpl extends BufferManager {
             }
             /*
              * Every new Asynchronous handler starts off with all events from EMQ.
-             * So we create a copy of current EMQ and sends those messages to RingBuffer
+             * So we write all EMQ messages directly to RingBuffer
              */
-            try {
-                if(earlyMessageQueue != null && !earlyMessageQueue.isEmpty()) {
-                    for(Object message: earlyMessageQueue.toArray()) {
-                        ringBuffer.add(message);
-                    }
+            if(earlyMessageQueue != null && earlyMessageQueue.size() != 0) {
+                for(Object message: earlyMessageQueue.toArray()) {
+                    ringBuffer.add(message);
                 }
-            }catch(NullPointerException e){
             }
             handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
         }finally {
@@ -179,7 +178,7 @@ public class BufferManagerImpl extends BufferManager {
         RERWLOCK.writeLock().lock();
         try {
             //Send messages from EMQ to synchronous handler when it subscribes to receive messages
-            if(earlyMessageQueue != null && !earlyMessageQueue.isEmpty() && !synchronousHandlerSet.contains(syncHandler)) {
+            if(earlyMessageQueue != null && earlyMessageQueue.size() != 0 && !synchronousHandlerSet.contains(syncHandler)) {
                 for(Object message: earlyMessageQueue.toArray()) {
                     syncHandler.synchronousWrite(message);
                 }
@@ -216,22 +215,25 @@ public class BufferManagerImpl extends BufferManager {
             RERWLOCK.writeLock().unlock();
         }
     }
-
-    public static boolean getEMQRemovedFlag() {
-        return EMQRemovedFlag;
+    
+    public void removeEMQ() {
+        RERWLOCK.writeLock().lock();
+        try {
+            earlyMessageQueue=null;
+        }finally {
+            RERWLOCK.writeLock().unlock();
+        }
     }
-
-    public static void setEMQRemovedFlag(boolean eMQRemovedFlag) {
-        EMQRemovedFlag = eMQRemovedFlag;
-    }
-
 
     public static void removeEMQTrigger(){
-        synchronized(bufferManagerList) {
-            setEMQRemovedFlag(true);
+        RERWLOCK.writeLock().lock();
+        try {
+            EMQRemovedFlag=true;
             for(BufferManager i: bufferManagerList) {
                 ((BufferManagerImpl) i).removeEMQ();
             }
+        }finally {
+            RERWLOCK.writeLock().unlock();
         }
     }
 
@@ -244,6 +246,10 @@ public class BufferManagerImpl extends BufferManager {
                     }
                 },
                 BufferManagerImpl.EMQ_TIMER);
+    }
+    
+    public static boolean getEMQRemovedFlag() {
+        return EMQRemovedFlag;
     }
 
     public static class HandlerStats {

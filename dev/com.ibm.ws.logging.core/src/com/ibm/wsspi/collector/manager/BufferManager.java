@@ -10,11 +10,6 @@
  *******************************************************************************/
 package com.ibm.wsspi.collector.manager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
-
 
 /**
  * Buffer manager is a wrapper around the actual buffer, it controls access to the buffer.
@@ -23,13 +18,8 @@ import java.util.Queue;
  */
 public abstract class BufferManager {
 
-    protected volatile static List<BufferManager> bufferManagerList= Collections.synchronizedList(new ArrayList<BufferManager>());
-    protected Queue<Object> earlyMessageQueue;
 
     protected BufferManager() {
-        synchronized(bufferManagerList) {
-            bufferManagerList.add(this);
-        }
     }
 
 

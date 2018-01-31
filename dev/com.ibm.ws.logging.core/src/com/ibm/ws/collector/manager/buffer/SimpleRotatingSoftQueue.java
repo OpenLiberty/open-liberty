@@ -45,7 +45,7 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
      * @return true
      */
     @Override
-    public synchronized boolean add(T element) {
+    public boolean add(T element) {
         SoftReference<T> elementItem = new SoftReference<T>(element);
         elements.set(getAndUpdateTail(), elementItem);
         return true;
@@ -128,6 +128,12 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
     public boolean isEmpty() {
         return false;
     }
+    
+    @Override
+    public T[] toArray() {
+        Object[] messagesList = this.toArray(new Object[elements.size()]);
+        return (T[]) messagesList;
+    }
 
     // NOT IMPLEMENTED
 
@@ -135,36 +141,10 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
     public boolean contains(Object o) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public Iterator<T> iterator() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object arr[] = new Object[QUEUE_SIZE];
-        T[] retMe;
-        int currTailIndex;
-        do {
-            currTailIndex = tailIndex.get(); // start from the tailIndex (technically the first slot *after* the tail)
-
-            ArrayList<T> returnArrayList = new ArrayList<T>();
-            for (int i = 0, index = currTailIndex; i < elements.size(); i++, index++) {
-                index = index % elements.size();
-                T element = (T) elements.get(index).get();
-                if (element != null) {
-                    returnArrayList.add(element);
-                }
-            }
-
-            retMe = (T[]) Array.newInstance(arr.getClass().getComponentType(), returnArrayList.size());
-            returnArrayList.toArray(retMe);
-
-            // Make sure tailIndex wasn't updated by another thread during the copy
-        } while (tailIndex.compareAndSet(currTailIndex, currTailIndex) == false);
-
-        return retMe;
     }
 
     @Override
