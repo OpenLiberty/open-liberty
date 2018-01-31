@@ -72,7 +72,7 @@ public abstract class JSONEventsTest {
                                                                                            "ibm_requestMethod", "ibm_uriPath", "ibm_requestProtocol", "ibm_elapsedTime",
                                                                                            "ibm_responseCode", "ibm_bytesReceived", "ibm_userAgent"));
 
-        ArrayList<String> accessLogKeysOptionalList = new ArrayList<String>();
+        ArrayList<String> accessLogKeysOptionalList = new ArrayList<String>(Arrays.asList("ibm_queryString"));
 
         getServer().addInstalledAppForValidation(APP_NAME);
         TestUtils.runApp(getServer(), "access");
