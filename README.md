@@ -18,14 +18,22 @@ Open Liberty is a highly composable, fast to start, dynamic application server r
 ## Getting Started
 
 ### Downloading
-You can download released versions and nightly build artifacts from: https://www.openliberty.io/downloads/
+You can download released versions and nightly build artifacts from the Open Liberty [downloads page](https://www.openliberty.io/downloads/).
 
 ### Quick start
+
+1. Download and navigate into [sample-mpconf](https://github.com/openliberty/sample-mpconf).
+
+    ```
     git clone https://github.com/OpenLiberty/sample-mpconf.git
     cd sample-mpconf
-    mvn clean package -P start
+    ```
+   
+2. Use the [Maven](https://github.com/wasdev/ci.maven) or [Gradle](https://github.com/wasdev/ci.gradle) plugins to build and start the server with:   
+	`mvn clean package -P start`  or  `gradle clean libertyStart`
 
-Open browser to http://localhost:8080/ and explore the demo application. Afterwards run `mvn liberty:stop-server` to stop the server.
+3. Open browser to <http://localhost:8080/> and explore the demo application.  
+   Afterwards run  a `mvn liberty:stop-server` or `gradle libertyStop` to stop the server.
 
 ### Open Liberty Guides
 Visit the [OpenLiberty website](https://openliberty.io/guides/) for a number of step by step guides.
