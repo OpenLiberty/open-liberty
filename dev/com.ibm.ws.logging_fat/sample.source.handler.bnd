@@ -1,4 +1,4 @@
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
@@ -22,7 +22,7 @@ Import-Package: com.ibm.ejs.ras, \
 Private-Package: sample.source.handler
 
 Include-Resource: \
-        OSGI-INF=resources/OSGI-INF
+        OSGI-INF=test-bundles/sample.source.handler/resources/OSGI-INF
         
 Service-Component: \
    CollectorSource;\

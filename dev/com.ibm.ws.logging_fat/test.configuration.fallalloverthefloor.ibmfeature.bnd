@@ -19,7 +19,7 @@ Private-Package: \
   com.ibm.ws.logging.fat.fallalloverthefloor.ibmfeature
 
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF
+  OSGI-INF=test-bundles/test.configuration.fallalloverthefloor.ibmfeature/resources/OSGI-INF
 
 Service-Component: \
   com.ibm.ws.logging.fat.brokenfeature; \
