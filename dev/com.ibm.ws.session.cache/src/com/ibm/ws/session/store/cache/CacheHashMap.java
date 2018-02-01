@@ -16,12 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ConcurrentModificationException;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +25,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
+import com.ibm.ws.session.store.cache.serializable.SessionData;
+import com.ibm.ws.session.store.cache.serializable.SessionKey;
 import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStore;
@@ -42,12 +39,6 @@ public class CacheHashMap extends BackedHashMap {
     private static final long serialVersionUID = 1L; // not serializable, rejects writeObject
 
     private static final TraceComponent tc = Tr.register(CacheHashMap.class);
-
-    /**
-     * Array indices (and size) for Object array values that are stored in the cache.
-     * TODO this is a temporary approach that will almost certainly be replaced
-     */
-    private static final int LISTENER_COUNT = 0, LAST_ACCESS = 1, CREATION_TIME = 2, MAX_INACTIVE_TIME = 3, USER_NAME = 4, BYTES = 5, SIZE = 6;
 
     CacheStoreService cacheStoreService;
     IStore _iStore;
@@ -77,17 +68,20 @@ public class CacheHashMap extends BackedHashMap {
 
         Object tmp = null;
 
-        String key = s.getId() + '+' + id + '@' + getIStore().getId();
-        Object[] value = (Object[]) cacheStoreService.cache.get(key);
+        if (!s.getId().equals(id))
+            throw new IllegalArgumentException(id + " != " + s.getId()); // internal error
+
+        SessionKey key = new SessionKey(id, getIStore().getId());
+        SessionData sessionData = cacheStoreService.cache.get(key);
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, key, value);
+            Tr.debug(this, tc, key.toString(), sessionData);
 
-        if (value == null)
+        if (sessionData == null)
             return null;
 
         long startTime = System.currentTimeMillis();
-        byte[] bytes = (byte[]) value[BYTES];
+        byte[] bytes = sessionData.getBytes();
 
         if (bytes != null && bytes.length > 0) {
             BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
@@ -117,22 +111,21 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected void insertSession(BackedSession d2) {
         // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
-        String key = d2.getId() + '+' + d2.getId() + '@' + d2.getAppName();
+        SessionKey key = new SessionKey(d2.getId(), d2.getAppName());
 
         listenerFlagUpdate(d2);
 
         long tmpCreationTime = d2.getCreationTime();
         d2.setLastWriteLastAccessTime(tmpCreationTime);
 
-        Object[] value = new Object[SIZE];
-        value[LISTENER_COUNT] = d2.listenerFlag;
-        value[LAST_ACCESS] = tmpCreationTime;
-        value[CREATION_TIME] = tmpCreationTime;
-        value[MAX_INACTIVE_TIME] = d2.getMaxInactiveInterval();
-        value[USER_NAME] = d2.getUserName();
-        //value[BYTES] = null;
+        SessionData sessionData = new SessionData();
+        sessionData.setListenerCount(d2.listenerFlag);
+        sessionData.setLastAccess(tmpCreationTime);
+        sessionData.setCreationTime(tmpCreationTime);
+        sessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
+        sessionData.setUserName(d2.getUserName());
 
-        if (!cacheStoreService.cache.putIfAbsent(key, value))
+        if (!cacheStoreService.cache.putIfAbsent(key, sessionData))
             throw new IllegalStateException("Cache already contains " + key);
 
         d2.needToInsert = false;
@@ -170,23 +163,24 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected int overQualLastAccessTimeUpdate(BackedSession sess, long nowTime) {
         String id = sess.getId();
-        String key = id + '+' + id + '@' + sess.getAppName();
+        SessionKey key = new SessionKey(id, sess.getAppName());
 
         int updateCount;
 
-        Object[] value = cacheStoreService.cache.get(key);
+        SessionData oldSessionData = cacheStoreService.cache.get(key);
         synchronized (sess) {
-            if (value == null || (Long) value[LAST_ACCESS] != sess.getCurrentAccessTime() || (Long) value[LAST_ACCESS] == nowTime) {
+            if (oldSessionData == null || oldSessionData.getLastAccess() != sess.getCurrentAccessTime() || oldSessionData.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                value[LAST_ACCESS] = nowTime;
-                // TODO should be using cache.replace here, but first need to use a value for which .equals is a deep compare
-                cacheStoreService.cache.put(key, value);
-                updateCount = 1;
-            }
+                SessionData newSessionData = oldSessionData.clone();
+                newSessionData.setLastAccess(nowTime);
 
-            if (updateCount > 0) {
-                sess.updateLastAccessTime(nowTime);
+                if (cacheStoreService.cache.replace(key, oldSessionData, newSessionData)) {
+                    sess.updateLastAccessTime(nowTime);
+                    updateCount = 1;
+                } else {
+                    updateCount = 0;
+                }
             }
         }
 
@@ -211,7 +205,7 @@ public class CacheHashMap extends BackedHashMap {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String id = d2.getId();
-        String key = id + '+' + id + '@' + d2.getAppName();
+        SessionKey key = new SessionKey(id, d2.getAppName());
 
         try {
             // if nothing changed, then just return
@@ -230,52 +224,45 @@ public class CacheHashMap extends BackedHashMap {
                 objbuf = serializeAppData(d2);
             }
 
-            Object[] previous = (Object[]) cacheStoreService.cache.get(key);
-            Object[] newValue = new Object[SIZE];
-
             long startTimeNS = System.nanoTime();
 
-            if (d2.userWriteHit) {
-                d2.userWriteHit = false;
-                newValue[USER_NAME] = d2.getUserName();
-            } else {
-                newValue[USER_NAME] = previous[USER_NAME];
+            for (boolean updated = false; !updated;) {
+                SessionData oldSessionData = cacheStoreService.cache.get(key);
+                if (oldSessionData == null)
+                    return false;
+
+                SessionData newSessionData = oldSessionData.clone();
+
+                if (d2.userWriteHit) {
+                    d2.userWriteHit = false;
+                    newSessionData.setUserName(d2.getUserName());
+                }
+
+                if (d2.maxInactWriteHit) {
+                    d2.maxInactWriteHit = false;
+                    newSessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
+                }
+
+                if (d2.listenCntHit) {
+                    d2.listenCntHit = false;
+                    newSessionData.setListenerCount(d2.listenerFlag);
+                }
+
+                long time = d2.getCurrentAccessTime();
+                if (!_smc.getEnableEOSWrite() || _smc.getScheduledInvalidation()) {
+                    d2.setLastWriteLastAccessTime(time);
+                    newSessionData.setLastAccess(time);
+                }
+
+                if (propHit) {
+                    newSessionData.setBytes(objbuf);
+                }
+
+                if (trace & tc.isDebugEnabled())
+                    Tr.debug(this, tc, key.toString(), newSessionData);
+
+                updated = cacheStoreService.cache.replace(key, oldSessionData, newSessionData);
             }
-
-            if (d2.maxInactWriteHit) {
-                d2.maxInactWriteHit = false;
-                newValue[MAX_INACTIVE_TIME] = d2.getMaxInactiveInterval();
-            } else {
-                newValue[MAX_INACTIVE_TIME] = previous[MAX_INACTIVE_TIME];
-            }
-
-            if (d2.listenCntHit) {
-                d2.listenCntHit = false;
-                newValue[LISTENER_COUNT] = d2.listenerFlag;
-            } else {
-                newValue[LISTENER_COUNT] = previous[LISTENER_COUNT];
-            }
-
-            long time = d2.getCurrentAccessTime();
-            if (!_smc.getEnableEOSWrite() || _smc.getScheduledInvalidation()) {
-                d2.setLastWriteLastAccessTime(time);
-                newValue[LAST_ACCESS] = time;
-            } else {
-                newValue[LAST_ACCESS] = previous[LAST_ACCESS];
-            }
-
-            newValue[CREATION_TIME] = previous[CREATION_TIME];
-
-            if (propHit) {
-                newValue[BYTES] = objbuf;
-            } else {
-                newValue[BYTES] = previous[BYTES];
-            }
-
-            if (trace & tc.isDebugEnabled())
-                Tr.debug(this, tc, key, newValue);
-
-            cacheStoreService.cache.put(key, newValue);
 
             if (objbuf != null && propHit) {
                 SessionStatistics pmiStats = _iStore.getSessionStatistics();
@@ -296,24 +283,18 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected BackedSession readFromExternal(String id) {
         String appName = getIStore().getId();
-        String key = id + '+' + id + '@' + appName;
+        SessionKey key = new SessionKey(id, appName);
 
         CacheSession sess = null;
-        Object[] value = (Object[]) cacheStoreService.cache.get(key);
-        if (value != null) {
+        SessionData sessionData = cacheStoreService.cache.get(key);
+        if (sessionData != null) {
             sess = new CacheSession(this, id, getIStore().getStoreCallback());
-            long lastaccess = (Long) value[LAST_ACCESS];
-            long createTime = (Long) value[CREATION_TIME];
-            int maxInact = (Integer) value[MAX_INACTIVE_TIME];
-            String userName = (String) value[USER_NAME];
-            short listenerflag = (Short) value[LISTENER_COUNT];
-
-            sess.updateLastAccessTime(lastaccess);
-            sess.setCreationTime(createTime);
-            sess.internalSetMaxInactive(maxInact);
-            sess.internalSetUser(userName);
+            sess.updateLastAccessTime(sessionData.getLastAccess());
+            sess.setCreationTime(sessionData.getCreationTime());
+            sess.internalSetMaxInactive(sessionData.getMaxInactiveTime());
+            sess.internalSetUser(sessionData.getUserName());
             sess.setIsValid(true);
-            sess.setListenerFlag(listenerflag);
+            sess.setListenerFlag(sessionData.getListenerCount());
         }
         return sess;
     }
@@ -326,8 +307,7 @@ public class CacheHashMap extends BackedHashMap {
         //If the app calls invalidate, it may not be removed from the local cache yet.
         superRemove(id);
 
-        // TODO DatabaseHashMap removes based on id and appname, but does not include propid
-        String key = id + '+' + id + '@' + _iStore.getId();
+        SessionKey key = new SessionKey(id, _iStore.getId());
 
         cacheStoreService.cache.remove(key);
 
@@ -378,18 +358,20 @@ public class CacheHashMap extends BackedHashMap {
     protected int updateLastAccessTime(BackedSession sess, long nowTime) {
         String appName = getIStore().getId();
         String id = sess.getId();
-        String key = id + '+' + id + '@' + appName;
+        SessionKey key = new SessionKey(id, appName);
 
-        int updateCount;
+        int updateCount = -1;
 
-        Object[] value = cacheStoreService.cache.get(key);
-        if (value == null || (Long) value[LAST_ACCESS] == nowTime) {
-            updateCount = 0;
-        } else {
-            value[LAST_ACCESS] = nowTime;
-            // TODO consider using cache.replace here and elsewhere for updates that won't revert non-updated values that are updated by another thread
-            cacheStoreService.cache.put(key, value);
-            updateCount = 1;
+        while (updateCount == -1) {
+            SessionData oldSessionData = cacheStoreService.cache.get(key);
+            if (oldSessionData == null || oldSessionData.getLastAccess() == nowTime) {
+                updateCount = 0;
+            } else {
+                SessionData newSessionData = oldSessionData.clone();
+                newSessionData.setLastAccess(nowTime);
+                if (cacheStoreService.cache.replace(key, oldSessionData, newSessionData))
+                    updateCount = 1;
+            }
         }
 
         return updateCount;
