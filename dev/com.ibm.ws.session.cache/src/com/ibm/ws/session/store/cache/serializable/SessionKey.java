@@ -52,7 +52,7 @@ public class SessionKey implements Serializable {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id.hashCode() + app.hashCode();
     }
 
     @Override
