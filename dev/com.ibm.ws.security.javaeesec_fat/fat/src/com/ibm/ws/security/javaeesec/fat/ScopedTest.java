@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -65,9 +64,9 @@ public class ScopedTest extends JavaEESecTestBase {
                                                "web.war.mechanisms", "web.war.mechanisms.scoped.application",
                                                "web.war.identitystores", "web.war.identitystores.scoped.request");
 
-//        WCApplicationHelper.addWarToServerApps(myServer, "ApplicationScopedMechanismWithSessionScopedStore.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
-//                                               "web.war.mechanisms", "web.war.mechanisms.scoped.application",
-//                                               "web.war.identitystores", "web.war.identitystores.scoped.session");
+        WCApplicationHelper.addWarToServerApps(myServer, "ApplicationScopedMechanismWithSessionScopedStore.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
+                                               "web.war.mechanisms", "web.war.mechanisms.scoped.application",
+                                               "web.war.identitystores", "web.war.identitystores.scoped.session");
 
         WCApplicationHelper.addWarToServerApps(myServer, "RequestScopedMechanismWithApplicationScopedStore.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
                                                "web.war.mechanisms", "web.war.mechanisms.scoped.request",
@@ -76,7 +75,7 @@ public class ScopedTest extends JavaEESecTestBase {
         myServer.setServerConfigurationFile("scoped.xml");
         myServer.startServer(true);
         myServer.addInstalledAppForValidation("ApplicationScopedMechanismWithRequestScopedStore");
-//        myServer.addInstalledAppForValidation("ApplicationScopedMechanismWithSessionScopedStore");
+        myServer.addInstalledAppForValidation("ApplicationScopedMechanismWithSessionScopedStore");
         myServer.addInstalledAppForValidation("RequestScopedMechanismWithApplicationScopedStore");
 
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
@@ -113,7 +112,6 @@ public class ScopedTest extends JavaEESecTestBase {
                            Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser_requestscoped);
     }
 
-    @Ignore("SessionScoped IdentityStore must be passivation capable")
     @Test
     public void testApplicationScopedMechanismWithSessionScopedStore() throws Exception {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + "/ApplicationScopedMechanismWithSessionScopedStore/CommonServlet",

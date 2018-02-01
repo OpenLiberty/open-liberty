@@ -14,7 +14,7 @@
             </security-role>
         </application-bnd>
     </application>
-<!--
+
     <application type="war" id="ApplicationScopedMechanismWithSessionScopedStore" name="ApplicationScopedMechanismWithSessionScopedStore" location="ApplicationScopedMechanismWithSessionScopedStore.war">
         <application-bnd>
             <security-role name="javaeesec_basic">
@@ -23,7 +23,7 @@
             </security-role>
         </application-bnd>
     </application>
---> 
+
     <application type="war" id="RequestScopedMechanismWithApplicationScopedStore" name="RequestScopedMechanismWithApplicationScopedStore" location="RequestScopedMechanismWithApplicationScopedStore.war">
         <application-bnd>
             <security-role name="javaeesec_basic">

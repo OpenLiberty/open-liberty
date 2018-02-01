@@ -11,21 +11,25 @@
 */
 package web.war.identitystores.scoped.session;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.PassivationCapable;
+
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 
 import web.war.identitystores.BaseIdentityStore;
 
 @SessionScoped
-public class SessionScopedIdentityStore extends BaseIdentityStore implements PassivationCapable {
+public class SessionScopedIdentityStore extends BaseIdentityStore implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     {
         sourceClass = SessionScopedIdentityStore.class.getName();
     }
 
-    @Override
-    public String getId() {
-        return String.valueOf(SessionScopedIdentityStore.class.getName() + "#" + this.hashCode() + "#" + System.nanoTime());
+    public SessionScopedIdentityStore() {
+        expectedUser = Constants.javaeesec_basicRoleUser_sessionscoped;
     }
 
 }

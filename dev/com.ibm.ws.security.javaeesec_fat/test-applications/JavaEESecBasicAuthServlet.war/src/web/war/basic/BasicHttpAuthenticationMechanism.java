@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 
 @Default
-@RequestScoped
+@ApplicationScoped
 public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
     private final String realmName = "App BAMech";
     private static Logger log = Logger.getLogger(BasicHttpAuthenticationMechanism.class.getName());

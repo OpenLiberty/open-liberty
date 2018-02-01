@@ -11,21 +11,19 @@
 */
 package web.war.mechanisms.scoped.session;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.PassivationCapable;
 
 import web.war.mechanisms.BaseAuthMech;
 
 @SessionScoped
-public class SessionScopedAuthMech extends BaseAuthMech implements PassivationCapable {
+public class SessionScopedAuthMech extends BaseAuthMech implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public SessionScopedAuthMech() {
         sourceClass = SessionScopedAuthMech.class.getName();
-    }
-
-    @Override
-    public String getId() {
-        return String.valueOf(SessionScopedAuthMech.class.getName() + "#" + this.hashCode() + "#" + System.nanoTime());
     }
 
 }
