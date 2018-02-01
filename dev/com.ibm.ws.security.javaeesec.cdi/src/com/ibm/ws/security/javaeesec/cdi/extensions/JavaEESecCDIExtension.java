@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.WithAnnotations;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
@@ -87,7 +88,15 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Map<String, ModuleProperties> moduleMap = new HashMap<String, ModuleProperties>(); // map of module name and list of authmechs.
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
 
-    public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
+    public void processApplicationHAMClass(@Observes ProcessAnnotatedType<? extends HttpAuthenticationMechanism> processAnnotatedType, BeanManager beanManager) {
+        processAnnotatedType(processAnnotatedType, beanManager);
+    }
+
+    public <T> void processAnnotatedHAMandIS(@Observes @WithAnnotations({BasicAuthenticationMechanismDefinition.class, FormAuthenticationMechanismDefinition.class, CustomFormAuthenticationMechanismDefinition.class, LdapIdentityStoreDefinition.class, DatabaseIdentityStoreDefinition.class}) ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
+        processAnnotatedType(processAnnotatedType, beanManager);
+    }
+
+    public <T> void processAnnotatedType(ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         AnnotatedType<T> annotatedType = processAnnotatedType.getAnnotatedType();
