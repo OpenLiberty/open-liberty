@@ -981,9 +981,38 @@ public final class OpenAPIModelWalker {
                 nestedSchemas = null;
             }
             if (nestedSchemas != null) {
+                final Schema _schema = schema;
                 nestedSchemas.stream().forEach((v) -> {
                     pathSegments.push(v.name);
-                    traverseSchema(null, v.s);
+                    final Schema s = traverseSchema(null, v.s);
+                    if (s != v.s) {
+                        switch (v.name) {
+                            case "items":
+                                _schema.setItems(s);
+                                break;
+                            case "allOf":
+                                final List<Schema> allOf = _schema.getAllOf();
+                                allOf.remove(v.s);
+                                if (s != null) {
+                                    allOf.add(s);
+                                }
+                                break;
+                            case "anyOf":
+                                final List<Schema> anyOf = _schema.getAnyOf();
+                                anyOf.remove(v.s);
+                                if (s != null) {
+                                    anyOf.add(s);
+                                }
+                                break;
+                            case "oneOf":
+                                final List<Schema> oneOf = _schema.getOneOf();
+                                oneOf.remove(v.s);
+                                if (s != null) {
+                                    oneOf.add(s);
+                                }
+                                break;
+                        }
+                    }
                     pathSegments.pop();
                 });
             }
