@@ -123,10 +123,12 @@ public class TraceSource implements Source, WsTraceHandler {
             extMap = ((WsLogRecord) logRecord).getExtensions();
         }
 
-        for (Map.Entry<String, String> entry : extMap.entrySet()) {
-            extensions.addPair(entry.getKey(), entry.getValue());
+        if (extMap != null) {
+            for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                extensions.addPair(entry.getKey(), entry.getValue());
+            }
+            genData.addPairs(extensions);
         }
-        genData.addPairs(extensions);
         genData.setSourceType(sourceName);
         return genData;
 

@@ -145,8 +145,34 @@ public class CollectorJsonHelpers {
         return isFirstField;
     }
 
+    protected static boolean addCommonFields1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
+                                                boolean isFirstField, String eventType) {
+
+        isFirstField = isFirstField & !addToJSON(sb, "type", eventType, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "host", hostName, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "ibm_serverName", serverName, false, false, false, isFirstField);
+
+        return isFirstField;
+    }
+
     protected static boolean addCommonFieldsGC(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
                                                boolean isFirstField, String eventType) {
+        String datetime = dateFormatTL.get().format(timestamp);
+
+        /* Common fields for all event types */
+
+        isFirstField = isFirstField & !addToJSON(sb, "datetime", datetime, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "type", eventType, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "hostName", hostName, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "serverName", serverName, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "sequence", sequenceNum, false, false, false, isFirstField);
+        return isFirstField;
+    }
+
+    protected static boolean addCommonFieldsGC1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
+                                                  boolean isFirstField, String eventType) {
         String datetime = dateFormatTL.get().format(timestamp);
 
         /* Common fields for all event types */

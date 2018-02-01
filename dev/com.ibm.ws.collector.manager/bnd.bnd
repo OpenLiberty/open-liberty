@@ -22,6 +22,7 @@ Import-Package: com.ibm.ejs.ras, \
                 org.osgi.framework, \
                 javax.management, \
                 com.ibm.ws.logging, \
+                com.ibm.ws.logging.data, \
                 com.ibm.ws.logging.source, \
                 com.ibm.ws.health.center.data, \
                 com.ibm.ws.logging.internal, \

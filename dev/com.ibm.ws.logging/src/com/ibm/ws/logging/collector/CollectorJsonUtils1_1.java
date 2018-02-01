@@ -88,8 +88,8 @@ public class CollectorJsonUtils1_1 {
 
         //                                           name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = CollectorJsonHelpers.addCommonFieldsGC(sb, hostName, wlpUserDir, serverName, hcGCData.getTime(), sequenceNum, isFirstField,
-                                                              CollectorConstants.GC_EVENT_TYPE);
+        isFirstField = CollectorJsonHelpers.addCommonFieldsGC1_1(sb, hostName, wlpUserDir, serverName, hcGCData.getTime(), sequenceNum, isFirstField,
+                                                                 CollectorConstants.GC_EVENT_TYPE);
         /* GC specific fields */
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, isFirstField);
@@ -119,7 +119,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
@@ -168,7 +168,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
@@ -227,7 +227,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
@@ -294,7 +294,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
