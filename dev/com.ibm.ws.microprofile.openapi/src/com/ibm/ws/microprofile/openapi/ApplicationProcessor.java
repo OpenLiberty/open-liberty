@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.Operation;
+import org.eclipse.microprofile.openapi.models.Paths;
+import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -30,6 +36,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Json;
@@ -38,12 +45,15 @@ import com.ibm.ws.microprofile.openapi.impl.jaxrs2.Reader;
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.http.VirtualHost;
 
 /**
@@ -59,20 +69,148 @@ public class ApplicationProcessor {
         YAML
     }
 
+    private static ApplicationProcessor instance;
     private OpenAPI document = null;
-    private ApplicationInfo currentApp = null;
+    private static ApplicationInfo currentApp = null;
+    private static Map<String, ApplicationInfo> applications = new HashMap<>();
     private final ServerInfo serverInfo = new ServerInfo();
 
     public void activate(ComponentContext cc) {
-        this.document = createBaseOpenAPIDocument();
+        instance = this;
+        if (currentApp != null) {
+            this.document = createBaseOpenAPIDocument();
+            processApplication(currentApp);
+        } else {
+            this.document = createBaseOpenAPIDocument();
+        }
     }
 
-    public void processApplication(ApplicationInfo appInfo) {
+    public void addApplication(ApplicationInfo appInfo) {
         synchronized (this.document) {
-
-            if (currentApp != null) {
-                return;
+            if (currentApp == null) {
+                processApplication(appInfo);
+            } else {
+                applications.put(appInfo.getName(), appInfo);
             }
+        }
+    }
+
+    private OpenAPI processWebModule(Container appContainer, WebModuleInfo moduleInfo) {
+        ClassLoader appClassloader = moduleInfo.getClassLoader();
+        String contextRoot = moduleInfo.getContextRoot();
+
+        boolean isOASApp = false;
+
+        //read and process the MicroProfile config
+        ConfigProcessor configProcessor = new ConfigProcessor(appClassloader);
+
+        OpenAPI newDocument = null;
+        //Retrieve model from model reader
+        OASModelReader modelReader = OpenAPIUtils.getOASModelReader(appClassloader, configProcessor.getModelReaderClassName());
+        if (modelReader != null) {
+            try {
+                OpenAPI model = modelReader.buildModel();
+                if (model != null) {
+                    isOASApp = true;
+                    newDocument = model;
+                }
+            } catch (Throwable e) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to construct model from the application: " + e.getMessage());
+                }
+            }
+        }
+
+        //Retrieve OpenAPI document as a string
+        String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
+        if (openAPIStaticFile != null) {
+            isOASApp = true;
+            SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
+            if (result.getOpenAPI() != null) {
+                newDocument = result.getOpenAPI();
+            }
+        }
+
+        //Scan for annotated classes
+        AnnotationScanner scanner = OpenAPIUtils.creatAnnotationScanner(appClassloader, appContainer);
+        if (!configProcessor.isScanDisabled()) {
+
+            Set<String> classNamesToScan = new HashSet<>();
+            if (configProcessor.getClassesToScan() != null) {
+                classNamesToScan.addAll(configProcessor.getClassesToScan());
+            }
+
+            if (configProcessor.getPackagesToScan() != null) {
+                Set<String> foundClasses = scanner.getAnnotatedClassesNames();
+                for (String packageName : configProcessor.getPackagesToScan()) {
+                    for (String className : foundClasses) {
+                        if (className.startsWith(packageName)) {
+                            classNamesToScan.add(className);
+                        }
+                    }
+                }
+            }
+
+            if (classNamesToScan.size() == 0 && scanner.anyAnnotatedClasses()) {
+                classNamesToScan.addAll(scanner.getAnnotatedClassesNames());
+            }
+            if (configProcessor.getClassesToExclude() != null) {
+                classNamesToScan.removeAll(configProcessor.getClassesToExclude());
+            }
+            if (configProcessor.getPackagesToExclude() != null) {
+                for (String packageToExclude : configProcessor.getPackagesToExclude()) {
+                    Iterator<String> iterator = classNamesToScan.iterator();
+                    while (iterator.hasNext()) {
+                        if (iterator.next().startsWith(packageToExclude)) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+
+            if (classNamesToScan.size() > 0) {
+                isOASApp = true;
+                Set<Class<?>> classes = new HashSet<>();
+                for (String clazz : classNamesToScan) {
+                    try {
+                        classes.add(appClassloader.loadClass(clazz));
+                    } catch (ClassNotFoundException e) {
+                        if (OpenAPIUtils.isEventEnabled(tc)) {
+                            Tr.event(tc, "Failed to load class: " + e.getMessage());
+                        }
+                    }
+                }
+                newDocument = new Reader(newDocument).read(classes);
+            }
+        }
+
+        if (!isOASApp) {
+            return null;
+        }
+
+        // Handle servers specified in configuration (before filtering)
+        handleServers(newDocument, configProcessor);
+
+        // Filter
+        OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
+
+        if (oasFilter != null) {
+            OpenAPIModelWalker walker = new OpenAPIModelWalker(newDocument);
+            try {
+                walker.accept(new OpenAPIFilter(oasFilter));
+            } catch (Throwable e) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
+                }
+            }
+        }
+
+        return newDocument;
+    }
+
+    @FFDCIgnore(UnableToAdaptException.class)
+    private void processApplication(ApplicationInfo appInfo) {
+        synchronized (this.document) {
 
             if (appInfo == null) {
                 return;
@@ -83,118 +221,106 @@ public class ApplicationProcessor {
                 return;
             }
 
-            WebModuleInfo moduleInfo = OpenAPIUtils.getWebModuleInfo(appContainer);
+            WebModuleInfo moduleInfo = null;
+            if (appInfo instanceof EARApplicationInfo) {
+                for (Entry entry : appContainer) {
+                    try {
+                        Container c = entry.adapt(Container.class);
+                        if (c != null) {
+                            WebModuleInfo wmi = OpenAPIUtils.getWebModuleInfo(c);
+                            if (wmi != null) {
+                                OpenAPI openAPI = processWebModule(c, wmi);
+                                if (openAPI != null) {
+                                    currentApp = appInfo;
+                                    this.document = openAPI;
+                                    break;
+                                }
+                            }
+                        }
+
+                    } catch (UnableToAdaptException e) {
+                        if (OpenAPIUtils.isDebugEnabled(tc)) {
+                            Tr.debug(tc, "Failed to adapt entry: " + e.getMessage());
+                        }
+                    }
+                }
+            } else {
+                moduleInfo = OpenAPIUtils.getWebModuleInfo(appContainer);
+            }
+
             if (moduleInfo == null) {
                 return;
             }
-            ClassLoader appClassloader = moduleInfo.getClassLoader();
-            String contextRoot = moduleInfo.getContextRoot();
 
-            boolean isOASApp = false;
+            OpenAPI openAPI = processWebModule(appContainer, moduleInfo);
+            if (openAPI != null) {
+                currentApp = appInfo;
+                this.document = openAPI;
+            }
+        }
+    }
 
-            //read and process the MicroProfile config
-            ConfigProcessor configProcessor = new ConfigProcessor(appClassloader);
+    private void handleServers(OpenAPI openapi, ConfigProcessor configProcessor) {
 
-            OpenAPI newDocument = null;
-            //Retrieve model from model reader
-            OASModelReader modelReader = OpenAPIUtils.getOASModelReader(appClassloader, configProcessor.getModelReaderClassName());
-            if (modelReader != null) {
-                try {
-                    OpenAPI model = modelReader.buildModel();
-                    if (model != null) {
-                        isOASApp = true;
-                        newDocument = model;
-                    }
-                } catch (Throwable e) {
-                    if (OpenAPIUtils.isEventEnabled(tc)) {
-                        Tr.event(tc, "Failed to construct model from the application: " + e.getMessage());
-                    }
-                }
+        // Handle global servers
+        Set<String> servers = configProcessor.getServers();
+        if (servers != null && servers.size() > 0) {
+            List<Server> configServers = new ArrayList<Server>();
+            for (String server : servers) {
+                configServers.add(new ServerImpl().url(server.trim()));
             }
 
-            //Retrieve OpenAPI document as a string
-            String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
-            if (openAPIStaticFile != null) {
-                isOASApp = true;
-                SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
-                if (result.getOpenAPI() != null) {
-                    newDocument = result.getOpenAPI();
-                }
-            }
-
-            //Scan for annotated classes
-            AnnotationScanner scanner = OpenAPIUtils.creatAnnotationScanner(appClassloader, appContainer);
-            if (!configProcessor.isScanDisabled()) {
-
-                Set<String> classNamesToScan = new HashSet<>();
-                if (configProcessor.getClassesToScan() != null) {
-                    classNamesToScan.addAll(configProcessor.getClassesToScan());
-                }
-
-                if (configProcessor.getPackagesToScan() != null) {
-                    Set<String> foundClasses = scanner.getAnnotatedClassesNames();
-                    for (String packageName : configProcessor.getPackagesToScan()) {
-                        for (String className : foundClasses) {
-                            if (className.startsWith(packageName)) {
-                                classNamesToScan.add(className);
-                            }
-                        }
-                    }
-                }
-
-                if (classNamesToScan.size() == 0 && scanner.anyAnnotatedClasses()) {
-                    classNamesToScan.addAll(scanner.getAnnotatedClassesNames());
-                }
-                if (configProcessor.getClassesToExclude() != null) {
-                    classNamesToScan.removeAll(configProcessor.getClassesToExclude());
-                }
-                if (configProcessor.getPackagesToExclude() != null) {
-                    for (String packageToExclude : configProcessor.getPackagesToExclude()) {
-                        Iterator<String> iterator = classNamesToScan.iterator();
-                        while (iterator.hasNext()) {
-                            if (iterator.next().startsWith(packageToExclude)) {
-                                iterator.remove();
-                            }
-                        }
-                    }
-                }
-
-                if (classNamesToScan.size() > 0) {
-                    isOASApp = true;
-                    Set<Class<?>> classes = new HashSet<>();
-                    for (String clazz : classNamesToScan) {
-                        try {
-                            classes.add(appClassloader.loadClass(clazz));
-                        } catch (ClassNotFoundException e) {
-                            if (OpenAPIUtils.isEventEnabled(tc))
-                                Tr.event(tc, "Failed to load class: " + e.getMessage());
-                        }
-                    }
-                    newDocument = new Reader(newDocument).read(classes);
-                }
-            }
-
-            OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
-
-            if (oasFilter != null) {
-                OpenAPIModelWalker walker = new OpenAPIModelWalker(newDocument);
-                try {
-                    walker.accept(new OpenAPIFilter(oasFilter));
-                } catch (Throwable e) {
-                    if (OpenAPIUtils.isEventEnabled(tc)) {
-                        Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
-                    }
-                }
-            }
-
-            if (isOASApp && currentApp == null) {
-                this.currentApp = appInfo;
-                this.serverInfo.setApplicationPath(contextRoot);
-
+            if (configServers.size() > 0) {
+                openapi.setServers(configServers);
                 if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(this, tc, "Received new document");
+                    Tr.event(tc, "Set global servers from config: " + configServers);
                 }
-                this.document = newDocument;
+            }
+        }
+
+        // Handle servers for paths and operations
+        Map<String, Set<String>> pathServers = configProcessor.getPathsServers();
+        Map<String, Set<String>> operationServers = configProcessor.getOperationsServers();
+
+        // if no servers for paths/operations were specified then quickly exit
+        if ((pathServers == null || pathServers.isEmpty()) && (operationServers == null || operationServers.isEmpty())) {
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.debug(tc, "Servers for paths/operations were not specified, so return");
+            }
+            return;
+        }
+
+        Paths paths = openapi.getPaths();
+        if (paths != null && !paths.isEmpty()) {
+            for (String path : paths.keySet()) {
+
+                // Set the alternative servers (if any) on path
+                if (pathServers != null && pathServers.containsKey(path)) {
+                    List<Server> configPathServers = new ArrayList<Server>();
+                    for (String server : pathServers.get(path)) {
+                        configPathServers.add(new ServerImpl().url(server.trim()));
+                    }
+                    if (!configPathServers.isEmpty()) {
+                        paths.get(path).setServers(configPathServers);
+                    }
+                }
+
+                // Set the alternative servers (if any) on operation
+                if (operationServers != null) {
+                    for (Operation operation : paths.get(path).readOperations()) {
+                        String operationId = operation.getOperationId();
+                        if (operationId != null && operationServers.containsKey(operationId)) {
+                            List<Server> configOperationServers = new ArrayList<Server>();
+                            for (String server : operationServers.get(operationId)) {
+                                configOperationServers.add(new ServerImpl().url(server.trim()));
+                            }
+                            if (!configOperationServers.isEmpty()) {
+                                operation.setServers(configOperationServers);
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -206,6 +332,17 @@ public class ApplicationProcessor {
                 currentApp = null;
                 this.serverInfo.setApplicationPath(null);
                 this.document = createBaseOpenAPIDocument();
+                Iterator<java.util.Map.Entry<String, ApplicationInfo>> iterator = applications.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    java.util.Map.Entry<String, ApplicationInfo> entry = iterator.next();
+                    processApplication(entry.getValue());
+                    iterator.remove();
+                    if (currentApp != null) {
+                        break;
+                    }
+                }
+            } else {
+                applications.remove(appInfo.getName());
             }
         }
     }
@@ -276,4 +413,10 @@ public class ApplicationProcessor {
         }
     }
 
+    /**
+     * @return the instance
+     */
+    public static ApplicationProcessor getInstance() {
+        return instance;
+    }
 }
