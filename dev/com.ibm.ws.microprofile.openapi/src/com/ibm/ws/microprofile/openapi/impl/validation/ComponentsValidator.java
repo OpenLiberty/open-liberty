@@ -75,7 +75,7 @@ public class ComponentsValidator extends TypeValidator<Components> {
                 for (Map<String, ?> component : components) {
                     for (String k : component.keySet()) {
                         if (!k.matches("^[a-zA-Z0-9\\.\\-_]+$")) {
-                            final String message = Tr.formatMessage(tc, "keyNotARegex", k);
+                            final String message = Tr.formatMessage(tc, "keyNotARegex", k, context.getLocation());
                             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
                     }

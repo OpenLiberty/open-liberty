@@ -55,6 +55,6 @@ public class ExtensionValidatorTest {
         String extension = "invalidExtensionForTest";
         validator.validate(vh, context, extension, null);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("extension must start with 'x-'"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must start with \"x-\""));
     }
 }

@@ -33,9 +33,10 @@ public class ExtensionValidator extends TypeValidator<Object> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Object t) {
-        if (!key.isEmpty()) {
+
+        if (key != null) {
             if (!key.startsWith("x-")) {
-                final String message = Tr.formatMessage(tc, "invalidExtensionFieldName", t);
+                final String message = Tr.formatMessage(tc, "invalidExtensionFieldName", t, context.getLocation());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
