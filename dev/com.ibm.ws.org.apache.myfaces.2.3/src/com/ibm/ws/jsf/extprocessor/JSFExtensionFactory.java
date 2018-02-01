@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -400,16 +400,31 @@ public class JSFExtensionFactory implements ExtensionFactory {
         // end 233952: JSP_UPATE_CHECK fails for non-jsp requests.
     }
 
-    public static void initializeCDI(Application application){
+    public static void initializeCDIJSFELContextListenerAndELResolver(Application application){
         JSFExtensionFactory factory = instance.get();
         if(factory != null){
             if(factory.cdiJSFInitializerService != null){
                 CDIJSFInitializer cdiInitializer = factory.cdiJSFInitializerService.getService();
                 if(cdiInitializer != null){
                     if (log.isLoggable(Level.FINE)) {
-                        log.logp(Level.FINE, CLASS_NAME, "initializeCDI", "Initializing app with CDI");
+                        log.logp(Level.FINE, CLASS_NAME, "initializeCDIJSFELContextListenerAndELResolver", "Initializing app ELContextListener and ELResolver");
                     }
-                    cdiInitializer.initializeJSF(application);
+                    cdiInitializer.initializeCDIJSFELContextListenerAndELResolver(application);
+                }
+            }
+        }
+    }
+    
+    public static void initializeCDIJSFViewHandler(Application application){
+        JSFExtensionFactory factory = instance.get();
+        if(factory != null){
+            if(factory.cdiJSFInitializerService != null){
+                CDIJSFInitializer cdiInitializer = factory.cdiJSFInitializerService.getService();
+                if(cdiInitializer != null){
+                    if (log.isLoggable(Level.FINE)) {
+                        log.logp(Level.FINE, CLASS_NAME, "initializeCDIJSFViewHandler", "Initializing app ViewHandler");
+                    }
+                    cdiInitializer.initializeCDIJSFViewHandler(application);
                 }
             }
         }
