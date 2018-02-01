@@ -24,12 +24,12 @@ import com.ibm.tx.util.logging.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 
-public class FailureScopeController
-{
+public class FailureScopeController {
     private static final TraceComponent tc = Tr.register(FailureScopeController.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     protected FailureScope _failureScope;
@@ -55,23 +55,19 @@ public class FailureScopeController
      */
     protected Set<TransactionImpl> _transactions;
 
-    private static final int SMP_THRESH = AccessController.doPrivileged(new PrivilegedAction<Integer>()
-    {
+    private static final int SMP_THRESH = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
         @Override
-        public Integer run()
-        {
+        public Integer run() {
             return Integer.getInteger("com.ibm.tx.jta.FailureScopeController.SMP_THRESH", 4);
         }
     });
 
-    protected static final boolean isConcurrent = Runtime.getRuntime().availableProcessors() > SMP_THRESH;
+    protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors() > SMP_THRESH;
 
-    protected FailureScopeController()
-    {}
+    protected FailureScopeController() {}
 
     @SuppressWarnings("unused")
-    public FailureScopeController(FailureScope fs) throws SystemException
-    {
+    public FailureScopeController(FailureScope fs) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "FailureScopeController", fs);
 
@@ -81,12 +77,9 @@ public class FailureScopeController
 
         // If small SMP system, use synchronized hashset. If a large system,
         // use a concurrent data structure
-        if (isConcurrent)
-        {
+        if (isConcurrent) {
             _transactions = new ConcurrentHashSet<TransactionImpl>();
-        }
-        else
-        {
+        } else {
             _transactions = new java.util.HashSet<TransactionImpl>();
         }
 
@@ -98,22 +91,19 @@ public class FailureScopeController
             Tr.exit(tc, "FailureScopeController", this);
     }
 
-    public RecoveryLog getTransactionLog()
-    {
+    public RecoveryLog getTransactionLog() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getTransactionLog", new Object[] { this, _tranLog });
         return _tranLog;
     }
 
-    public RecoveryLog getPartnerLog()
-    {
+    public RecoveryLog getPartnerLog() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getPartnerLog", new Object[] { this, _xaLog });
         return _xaLog;
     }
 
-    public PartnerLogTable getPartnerLogTable()
-    {
+    public PartnerLogTable getPartnerLogTable() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getPartnerLogTable", new Object[] { this, _partnerLogTable });
         return _partnerLogTable;
@@ -122,11 +112,10 @@ public class FailureScopeController
     /**
      * Returns a boolean flag to indicate if the managed failure scope is the local
      * failure scope (true) or a peer failure scope (false)
-     * 
+     *
      * @return boolean local failure scope indicator flag
      */
-    public boolean localFailureScope()
-    {
+    public boolean localFailureScope() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "localFailureScope", new Object[] { this, _localFailureScope });
         return _localFailureScope;
@@ -134,11 +123,10 @@ public class FailureScopeController
 
     /**
      * Returns the name of the server represented by the managed failure scope.
-     * 
+     *
      * @return String The server name
      */
-    public String serverName()
-    {
+    public String serverName() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "serverName", new Object[] { this, _serverName });
         return _serverName;
@@ -147,7 +135,7 @@ public class FailureScopeController
     /**
      * Creates a RecoveryManager object instance and associates it with this FailureScopeController
      * The recovery manager handles recovery processing on behalf of the managed failure scope.
-     * 
+     *
      * @return String The new RecoveryManager instance.
      */
     public void createRecoveryManager(RecoveryAgent agent, RecoveryLog tranLog, RecoveryLog xaLog, RecoveryLog recoverXaLog, byte[] defaultApplId, int defaultEpoch)/*
@@ -167,15 +155,13 @@ public class FailureScopeController
             Tr.exit(tc, "createRecoveryManager", _recoveryManager);
     }
 
-    public RecoveryManager getRecoveryManager()
-    {
+    public RecoveryManager getRecoveryManager() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryManager", new Object[] { this, _recoveryManager });
         return _recoveryManager;
     }
 
-    public void shutdown(boolean immediate)
-    {
+    public void shutdown(boolean immediate) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutdown", new Object[] { this, Boolean.valueOf(immediate) });
 
@@ -184,8 +170,7 @@ public class FailureScopeController
         // I'll preserve the logic here for 232512 but it might be OK to skip this
         // in the absence of a recovery manager
 
-        if (immediate && (!_localFailureScope))
-        {
+        if (immediate && (!_localFailureScope)) {
             IllegalArgumentException iae = new IllegalArgumentException();
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "shutdown", iae);
@@ -193,23 +178,20 @@ public class FailureScopeController
             throw iae;
         }
 
-        if (!immediate && (_recoveryManager == null || !_recoveryManager.recoveryPrevented()))
-        {
+        if (!immediate && (_recoveryManager == null || !_recoveryManager.recoveryPrevented())) {
             // If there is a recovery manager then direct it to stop recovery processing.
-            if (_recoveryManager != null)
-            {
+            if (_recoveryManager != null) {
                 _recoveryManager.prepareToShutdown();
             }
 
             // The call to removeFromActiveList must be made AFTER prepareToShutdown as this synchronizes with the recovery thread
-            // doing the corresponding addToActiveList  
+            // doing the corresponding addToActiveList
             FailureScopeLifeCycleHelper.removeFromActiveList(_fslc);
 
             // Process local log clean up here - merge the partner log tables, etc
             // and update and close the logs.  For peer recovery, the logs are closed
             // in recoveryManager.resync() once recovery is suspended/complete.
-            if (_localFailureScope)
-            {
+            if (_localFailureScope) {
                 // Tell the partner log data objects within the partner log table that we
                 // are trying to shutdown and it should not attempt to log data.
                 _partnerLogTable.terminate();
@@ -245,32 +227,25 @@ public class FailureScopeController
                     // nothing more required here                                 @PK31789A
                 } /* @PK31789A */
 
-                if (_recoveryManager != null)
-                {
+                if (_recoveryManager != null) {
                     _recoveryManager.postShutdown(partnersLeft);
                 }
 
-                if (!partnersLeft)
-                {
+                if (!partnersLeft) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
-                }
-                else if (tc.isDebugEnabled())
-                {
-                    if (partnersLeft)
-                    {
+                } else if (tc.isDebugEnabled()) {
+                    if (partnersLeft) {
                         Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
                     }
                 }
-            }
-            else
-            {
+            } else {
                 // Cleanup remaining transactions and close the logs
                 if (_recoveryManager != null)
                     _recoveryManager.cleanupRemoteFailureScope();
             }
 
             // Now that recovery processing has stopped, clear out all the fields to guarentee what
-            // we can no longer drive recovery processing for this failure scope.       
+            // we can no longer drive recovery processing for this failure scope.
             _tranLog = null;
             _xaLog = null;
             _recoverXaLog = null;
@@ -285,21 +260,18 @@ public class FailureScopeController
             Tr.exit(tc, "shutdown");
     }
 
-    protected boolean shutdown(TransactionImpl[] runningTransactions, PartnerLogTable plt)
-    {
+    protected boolean shutdown(TransactionImpl[] runningTransactions, PartnerLogTable plt) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutdown", new Object[] { runningTransactions, plt });
 
         // Check for any active transactions referenceing the PLTs
         // Note: we merge after this - old 6.0/6.1 code used to merge before this
         // and we could lookup the wrong entry and delete a good one.
-        if (runningTransactions != null)
-        {
+        if (runningTransactions != null) {
             // Go through list of txns and
             // determine if any could have generated in-doubt resources??
             // and match the ids with our XARecoveryData records and update appropriately.
-            for (TransactionImpl tx : runningTransactions)
-            {
+            for (TransactionImpl tx : runningTransactions) {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Transaction " + tx + " is still active");
 
@@ -323,14 +295,13 @@ public class FailureScopeController
     /**
      * This method is called to register the creation of a new transaction associated
      * with the managed failure scope.
-     * 
+     *
      * @param tran The transaction identity object
      * @param recovered Flag to indicate if the new transaction was created as part
      *            of a recovery process for this failure scope (true) or
      *            normal running (false)
      */
-    public void registerTransaction(TransactionImpl tran, boolean recovered)
-    {
+    public void registerTransaction(TransactionImpl tran, boolean recovered) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "registerTransaction", new Object[] { this, tran, recovered });
 
@@ -340,14 +311,12 @@ public class FailureScopeController
 
         //AJQ - new gate for synchronized block
         if (!isConcurrent || recovered) {
-            synchronized (this)
-            {
+            synchronized (this) {
                 //AJQ - only if using standard hashset
                 if (!isConcurrent)
                     _transactions.add(tran);
 
-                if (recovered)
-                {
+                if (recovered) {
                     _recoveryManager.registerTransaction(tran);
                 }
             }
@@ -360,11 +329,10 @@ public class FailureScopeController
     /**
      * This method is called to register the completion of a transaction associated
      * with the managed failure scope.
-     * 
+     *
      * @param tran The transaction identity object
      */
-    public void deregisterTransaction(TransactionImpl tran, boolean recovered)
-    {
+    public void deregisterTransaction(TransactionImpl tran, boolean recovered) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deregisterTransaction", new Object[] { this, tran, recovered });
 
@@ -374,14 +342,12 @@ public class FailureScopeController
 
         //AJQ - new gate for synchronized block
         if (!isConcurrent || recovered) {
-            synchronized (this)
-            {
+            synchronized (this) {
                 //AJQ - only if using standard hashset
                 if (!isConcurrent)
                     _transactions.remove(tran);
 
-                if (recovered)
-                {
+                if (recovered) {
                     _recoveryManager.deregisterTransaction(tran);
                 }
             }
@@ -391,15 +357,13 @@ public class FailureScopeController
             Tr.exit(tc, "deregisterTransaction");
     }
 
-    public TransactionImpl[] getAllTransactions()
-    {
+    public TransactionImpl[] getAllTransactions() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getAllTransactions", this);
 
         TransactionImpl[] transactionArray = null;
 
-        synchronized (this)
-        {
+        synchronized (this) {
             final int numTransactions = _transactions.size();
 
             if (tc.isDebugEnabled())
@@ -415,15 +379,13 @@ public class FailureScopeController
         return transactionArray;
     }
 
-    public FailureScope failureScope()
-    {
+    public FailureScope failureScope() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "failureScope", _failureScope);
         return _failureScope;
     }
 
-    public void setFailureScopeLifeCycle(FailureScopeLifeCycle fslc)
-    {
+    public void setFailureScopeLifeCycle(FailureScopeLifeCycle fslc) {
         _fslc = fslc;
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setFailureScopeLifeCycle", _fslc);

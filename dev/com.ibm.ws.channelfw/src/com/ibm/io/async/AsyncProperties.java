@@ -13,6 +13,8 @@ package com.ibm.io.async;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.ws.kernel.service.util.CpuInfo;
+
 //import java.util.MissingResourceException;
 //import java.util.ResourceBundle;
 //import java.util.logging.Level;
@@ -122,7 +124,7 @@ class AsyncProperties {
             if (System.getProperty("com.ibm.io.async.AIOMaxThreadsWaitingForEvents") != null) {
                 maxThreadsWaitingForEvents = Integer.parseInt(System.getProperty("com.ibm.io.async.AIOMaxThreadsWaitingForEvents"));
             } else {
-                maxThreadsWaitingForEvents = Runtime.getRuntime().availableProcessors();
+                maxThreadsWaitingForEvents = CpuInfo.getAvailableProcessors();
             }
 
             disableTimeouts = Boolean.parseBoolean(System.getProperty("com.ibm.io.async.AIODisableTimeouts"));
