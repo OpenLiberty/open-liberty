@@ -20,6 +20,7 @@ import com.ibm.ws.security.javaeesec.fat.BasicAuthenticationMechanismTest;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -57,6 +58,7 @@ public class BasicAuthenticationMechanismSingleISTest extends JavaEESecTestBase 
      * <LI> Verify response contains the appropiate required information.
      * </OL>
      */
+    @AllowedFFDC("javax.servlet.ServletException")
     @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_AllowedAccess() throws Exception {
@@ -133,6 +135,7 @@ public class BasicAuthenticationMechanismSingleISTest extends JavaEESecTestBase 
      * <LI> Verify response contains the appropiate required information.
      * </OL>
      */
+    @AllowedFFDC("javax.servlet.ServletException")
     @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_DeniedAccess() throws Exception {
@@ -156,6 +159,7 @@ public class BasicAuthenticationMechanismSingleISTest extends JavaEESecTestBase 
      * <LI> Verify response contains the appropiate required information.
      * </OL>
      */
+    @AllowedFFDC("javax.servlet.ServletException")
     @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_DeniedAccess_WrongPassword() throws Exception {

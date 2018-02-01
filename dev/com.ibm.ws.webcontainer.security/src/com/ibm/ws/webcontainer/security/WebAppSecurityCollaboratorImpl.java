@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -450,8 +450,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      *            exception or if no work was done.
      */
     @Override
-    public void postInvoke(Object secObject) throws ServletException {
-
+    public void postInvokeForSecureResponse(Object secObject) throws ServletException {
         if (jaccServiceRef.getService() != null) {
             jaccServiceRef.getService().resetPolicyContextHandlerInfo();
         }
@@ -469,6 +468,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void postInvoke(Object secObject) throws ServletException {
+        if (secObject != null) {
+            WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
             Subject invokedSubject = webSecurityContext.getInvokedSubject();
             Subject receivedSubject = webSecurityContext.getReceivedSubject();
 
@@ -574,17 +580,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
          */
         if (isJaspiEnabled &&
             ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
-//            FilterThreadContext filterThreadContext = new FilterThreadContext(this, receivedSubject, uriName, webRequest, webSecurityContext);
-//            filterThreadLocal.set(filterThreadContext);
-//            webReply = PERMIT_REPLY; // TODO: Create new FILTER_REPLY type.
-
             webReply = handleJaspi(receivedSubject, uriName, webRequest, webSecurityContext);
-//            performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
-//            webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
-//            if (webReply == null) {
-//                AuthenticationResult authResult = authenticateRequest(webRequest);
-//                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
-//            }
         }
 
         /**

@@ -56,9 +56,12 @@ public class WebAppSecurityCollaborator implements IWebAppSecurityCollaborator {
         return null;
     }
 
+    public void postInvokeForSecureResponse(Object secObject) throws ServletException {
+        // TODO Auto-generated method stub
+    }
+    
     public void postInvoke(Object secObject) throws ServletException {
-    // TODO Auto-generated method stub
-
+        // TODO Auto-generated method stub
     }
 
     public void handleException(HttpServletRequest req,

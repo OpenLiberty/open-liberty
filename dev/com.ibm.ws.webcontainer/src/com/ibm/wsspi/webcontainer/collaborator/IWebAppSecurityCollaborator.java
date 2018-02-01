@@ -42,6 +42,8 @@ public interface IWebAppSecurityCollaborator {
     public Object preInvoke() throws SecurityViolationException;
 
     public void postInvoke(Object secObject) throws ServletException;
+    
+    public void postInvokeForSecureResponse(Object secObject) throws ServletException;
 
     public void handleException(HttpServletRequest req, HttpServletResponse rsp,
                                         Throwable wse) throws ServletException, IOException;
