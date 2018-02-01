@@ -13,12 +13,12 @@ package com.ibm.ws.session.store.cache;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.sql.Blob;
-import java.util.logging.Level;
-
-import javax.cache.CacheException;
+import java.util.ConcurrentModificationException;
+import java.util.Hashtable;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -45,10 +45,14 @@ public class CacheHashMap extends BackedHashMap {
     private static final int LISTENER_COUNT = 0, LAST_ACCESS = 1, CREATION_TIME = 2, MAX_INACTIVE_TIME = 3, USER_NAME = 4, BYTES = 5, SIZE = 6;
 
     CacheStoreService cacheStoreService;
+    IStore _iStore;
+    SessionManagerConfig _smc;
 
     public CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc);
         this.cacheStoreService = cacheStoreService;
+        this._iStore = store;
+        this._smc = smc;
         // TODO implement
     }
 
@@ -169,11 +173,92 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
+     *
      * @see com.ibm.ws.session.store.common.BackedHashMap#persistSession(com.ibm.ws.session.store.common.BackedSession, boolean)
      */
     @Override
     protected boolean persistSession(BackedSession d2, boolean propHit) {
-        throw new UnsupportedOperationException();
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        String id = d2.getId();
+        String key = id + '+' + id + '@' + d2.getAppName();
+
+        try {
+            // if nothing changed, then just return
+            if (!d2.userWriteHit && !d2.maxInactWriteHit && !d2.listenCntHit && _smc.getEnableEOSWrite() && !_smc.getScheduledInvalidation() && !propHit) {
+                d2.update = null;
+                d2.userWriteHit = false;
+                d2.maxInactWriteHit = false;
+                d2.listenCntHit = false;
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "no changes");
+                return true;
+            }
+
+            byte[] objbuf = null;
+            if (propHit) {
+                objbuf = serializeAppData(d2);
+            }
+
+            Object[] previous = (Object[]) cacheStoreService.cache.get(key);
+            Object[] newValue = new Object[SIZE];
+
+            long startTimeNS = System.nanoTime();
+
+            if (d2.userWriteHit) {
+                d2.userWriteHit = false;
+                newValue[USER_NAME] = d2.getUserName();
+            } else {
+                newValue[USER_NAME] = previous[USER_NAME];
+            }
+
+            if (d2.maxInactWriteHit) {
+                d2.maxInactWriteHit = false;
+                newValue[MAX_INACTIVE_TIME] = d2.getMaxInactiveInterval();
+            } else {
+                newValue[MAX_INACTIVE_TIME] = previous[MAX_INACTIVE_TIME];
+            }
+
+            if (d2.listenCntHit) {
+                d2.listenCntHit = false;
+                newValue[LISTENER_COUNT] = d2.listenerFlag;
+            } else {
+                newValue[LISTENER_COUNT] = previous[LISTENER_COUNT];
+            }
+
+            long time = d2.getCurrentAccessTime();
+            if (!_smc.getEnableEOSWrite() || _smc.getScheduledInvalidation()) {
+                d2.setLastWriteLastAccessTime(time);
+                newValue[LAST_ACCESS] = time;
+            } else {
+                newValue[LAST_ACCESS] = previous[LAST_ACCESS];
+            }
+
+            newValue[CREATION_TIME] = previous[CREATION_TIME];
+
+            if (propHit) {
+                newValue[BYTES] = objbuf;
+            } else {
+                newValue[BYTES] = previous[BYTES];
+            }
+
+            if (trace & tc.isDebugEnabled())
+                Tr.debug(this, tc, key, newValue);
+
+            cacheStoreService.cache.put(key, newValue);
+
+            if (objbuf != null && propHit) {
+                SessionStatistics pmiStats = _iStore.getSessionStatistics();
+                if (pmiStats != null) {
+                    pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNS));
+                }
+            }
+        } catch (Exception ee) {
+            FFDCFilter.processException(ee, getClass().getName(), "272", d2);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -181,7 +266,27 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected BackedSession readFromExternal(String id) {
-        throw new UnsupportedOperationException();
+        String appName = getIStore().getId();
+        String key = id + '+' + id + '@' + appName;
+
+        CacheSession sess = null;
+        Object[] value = (Object[]) cacheStoreService.cache.get(key);
+        if (value != null) {
+            sess = new CacheSession(this, id, getIStore().getStoreCallback());
+            long lastaccess = (Long) value[LAST_ACCESS];
+            long createTime = (Long) value[CREATION_TIME];
+            int maxInact = (Integer) value[MAX_INACTIVE_TIME];
+            String userName = (String) value[USER_NAME];
+            short listenerflag = (Short) value[LISTENER_COUNT];
+
+            sess.updateLastAccessTime(lastaccess);
+            sess.setCreationTime(createTime);
+            sess.internalSetMaxInactive(maxInact);
+            sess.internalSetUser(userName);
+            sess.setIsValid(true);
+            sess.setListenerFlag(listenerflag);
+        }
+        return sess;
     }
 
     /**
@@ -190,6 +295,43 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected void removePersistedSession(String id) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * serializeAppData - returns a byte array form of the swappableData
+     */
+    private byte[] serializeAppData(BackedSession d2) throws Exception {
+        // return either the byte array input stream for the app
+        // data or a vector of byte array input streams if their is a
+        // row for each piece of app data
+        ByteArrayOutputStream baos = null;
+        ObjectOutputStream oos = null;
+        byte[] objbuf = null;
+
+        try {
+            @SuppressWarnings("rawtypes")
+            Hashtable ht;
+            synchronized (d2) {
+                ht = d2.getSwappableData();
+            }
+
+            // serialize session (app data only) into byte array buffer
+            baos = new ByteArrayOutputStream();
+            oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+            oos.writeObject(ht);
+            oos.flush();
+            objbuf = baos.toByteArray();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc,  "success - size of byte array is " + objbuf.length);
+            }
+
+            oos.close();
+            baos.close();
+        } catch (ConcurrentModificationException cme) {
+            // TODO copied from DatabaseHashMap, but this seems suspicious. Need to investigate further. 
+            Tr.event(this, tc,  "CacheHashMap.deferWrite", d2.getId());
+        }
+        return objbuf;
     }
 
     /**
