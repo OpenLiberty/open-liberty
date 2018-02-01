@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,7 +116,6 @@ public class WCApplicationHelper {
         ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
     }
 
-
     public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) throws Exception {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
         LOG.info("createEar: dir : " + dir + ", earName : " + earName + ", includes resources : " + addEarResources);
@@ -228,14 +227,14 @@ public class WCApplicationHelper {
             }
             if (deploy) {
                 // delete
-                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" +  ear.getName());
+                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" + ear.getName());
                 ShrinkHelper.exportToServer(server, dir, ear);
             } else {
                 ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
             }
         } else {
             if (deploy) {
-                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" +  war.getName());
+                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" + war.getName());
                 ShrinkHelper.exportToServer(server, dir, war);
             } else {
                 ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
