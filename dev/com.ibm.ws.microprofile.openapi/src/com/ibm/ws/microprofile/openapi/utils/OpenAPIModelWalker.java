@@ -58,9 +58,10 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 import com.ibm.ws.microprofile.openapi.impl.parser.processors.SchemaProcessor;
 
 /**
- * This class does a complete traversal of the OpenAPI model
- * and reports each of the objects to the OpenAPIModelVisitor
- * or OpenAPIModelFilter passed in by the user.
+ * This class implements the visitor design pattern. It does
+ * a complete traversal of the OpenAPI model and reports each
+ * of the objects to the OpenAPIModelVisitor or OpenAPIModelFilter
+ * passed in by the user to the accept() methods.
  */
 public final class OpenAPIModelWalker {
 
@@ -90,24 +91,64 @@ public final class OpenAPIModelWalker {
         }
     }
 
+    /**
+     * Current context of the OpenAPIModelWalker. An instance of Context
+     * is passed to every method of the visitor or filter.
+     */
     public interface Context {
 
+        /**
+         * Returns the OpenAPI model.
+         */
         public OpenAPI getModel();
 
+        /**
+         * Returns the parent of the current object being visited.
+         */
         public Object getParent();
 
+        /**
+         * Returns the location of the current object being visited.
+         * The format of this location is a JSON pointer.
+         */
         public String getLocation();
 
+        /**
+         * Returns the location of the current object being visited
+         * with the suffix parameter appended to the end of the
+         * string. The format of this location is a JSON pointer.
+         */
         public String getLocation(String suffix);
     }
 
+    /**
+     * This class is responsible for traversing the OpenAPI model. Generally each object
+     * in the model has a traverse() method associated with it that visits that object
+     * and recursively traverses through its children. The caller of each traverse()
+     * method checks the return value and is responsible for mutation of the parent
+     * object if the return value is different than the parameter that was passed in.
+     *
+     * Each traverse() method checks the "previsit" flag to determine whether it invokes
+     * the visitor/filter before or after it traverses through all of its children.
+     *
+     * This class contains many lambda expressions that iterate over maps and lists.
+     * The convention for maps is "(k, v) ->", where k is the key and v is the value of an
+     * entry in the map. The convention for lists is "(v) ->", where v is the value of an
+     * entry in the list.
+     */
     static final class Walker implements Context {
 
+        // The OpenAPI model being walked.
         private final OpenAPI openAPI;
+        // The filter or visitor provided by the user of OpenAPIModelWalker.
         private final OpenAPIModelFilter visitor;
+        // Flag indicating whether objects are visited before or after their children.
         private final boolean previsit;
+        // A stack containing the ancestor objects of the object currently being traversed.
         private final Deque<Object> ancestors = new ArrayDeque<>();
+        // A stack containing path segments for the object currently being traversed.
         private final Deque<String> pathSegments = new ArrayDeque<>();
+        // A map containing all objects that have already been traversed.
         private final IdentityHashMap<Object, Object> traversedObjects = new IdentityHashMap<>();
 
         public Walker(OpenAPI openAPI, OpenAPIModelVisitor visitor, boolean previsit) {
@@ -136,7 +177,10 @@ public final class OpenAPIModelWalker {
         }
 
         @Override
+        // Returns the location as a JSON pointer.
+        // See definition for JSON pointer here: https://tools.ietf.org/html/rfc6901
         public String getLocation(String suffix) {
+            // REVISIT: Need to add JSON pointer escaping before we activate the validator.
             final Iterator<String> i = pathSegments.descendingIterator();
             final StringBuilder sb = new StringBuilder();
             boolean first = true;
