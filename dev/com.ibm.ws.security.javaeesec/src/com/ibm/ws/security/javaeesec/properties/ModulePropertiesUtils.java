@@ -99,10 +99,12 @@ public class ModulePropertiesUtils {
                         Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                     }
                 } else if (implClassList.size() == 0) {
-                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM_CONFIGURED", getJ2EEModuleName(), getJ2EEApplicationName());
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "No HAM implementation class. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
+                    }
                 } else {
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Number of HAM implementation class is more than one : " + implClassList.size());
+                        Tr.debug(tc, "Number of HAM implementation class is more than one : " + implClassList.size() + ", Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
                     }
                 }
             } else if (logError) {

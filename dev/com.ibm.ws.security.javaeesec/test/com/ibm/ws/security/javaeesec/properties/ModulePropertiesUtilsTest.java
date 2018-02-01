@@ -242,8 +242,7 @@ public class ModulePropertiesUtilsTest {
         withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1913W message with application and module name, and list of classeswas not logged",
-                   outputMgr.checkForStandardErr("CWWKS1913W:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
+        // since one of multiple modules might not have a HAM configured, there is no error/warning message logged. Only a debug message.
     }
 
     /**
@@ -251,10 +250,12 @@ public class ModulePropertiesUtilsTest {
      */
     @Test
     public void testGetHttpAuthenticationMechanismMultipleAuthMechs() {
+        final String APPLNAME = "ApplicationName";
+        final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
         list.add(String.class);
-        withModulePropertiesProvider(false, false).withAuthMechClassList(list);
+        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         // since CDI code checks this condition and log the error, only debug output is logged for this case.

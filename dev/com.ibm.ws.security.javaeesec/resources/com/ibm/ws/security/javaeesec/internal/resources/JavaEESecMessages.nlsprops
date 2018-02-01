@@ -31,10 +31,6 @@ JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism for the {0} m
 JAVAEESEC_ERROR_NO_HAM.explanation=The HttpAuthenticationMechanism cannot be created.
 JAVAEESEC_ERROR_NO_HAM.useraction=Investigate any error messages from the HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_HAM_CONFIGURED=CWWKS1913W: The HttpAuthenticationMechanism object for the {0} module in the {1} application was not found. Make sure that the module contains a HttpAuthenticationMechanism object.
-JAVAEESEC_ERROR_NO_HAM_CONFIGURED.explanation=HttpAuthenticationMechanism object cannot be identified for authentication. It could be there is no object, or multiple objects which corresponds the specified condition. Make sure that there is one HttpAuthenticationMechanism in the application.
-JAVAEESEC_ERROR_NO_HAM_CONFIGURED.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
-
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: There was an error evaluating the Expression Language (EL) expression for the ''{0}'' attribute of the identity store annotation. Ensure that the EL expression and the result are valid and ensure any referenced beans that are used in the expression are resolvable. The default attribute value ''{1}'' will be used.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The identity store attribute Expression Language expression cannot be resolved to a valid value.
