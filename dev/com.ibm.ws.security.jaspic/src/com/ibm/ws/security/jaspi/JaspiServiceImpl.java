@@ -465,7 +465,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             }
             throw ex;
         } catch (WSLoginFailedException e) {
-            AuthenticationException ex = new AuthenticationException("JASPIC Custom login failure after JASPI authentication completed successfully, exception: " + e);
+            AuthenticationException ex = new AuthenticationException("Custom login failure after JASPIC authentication completed successfully, exception: " + e);
             ex.initCause(e);
             throw ex;
         }
@@ -668,7 +668,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, detail);
         } else {
-            authResult = new AuthenticationResult(AuthResult.FAILURE, "JASPIC Authentication failed, unexpected JASPI AuthStatus: " + status);
+            authResult = new AuthenticationResult(AuthResult.FAILURE, "JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status);
         }
         if (authResult.getStatus().equals(AuthResult.FAILURE)) {
             Tr.info(tc, "JASPI_PROVIDER_FAILED_AUTHENTICATE", new Object[] { status, jaspiRequest.getHttpServletRequest().getRequestURI(),
