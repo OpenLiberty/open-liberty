@@ -14,12 +14,12 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 
-import com.ibm.ws.microprofile.config.archaius.impl.ArchaiusConfigBuilderImpl;
-import com.ibm.ws.microprofile.config.archaius.impl.ConversionDecoder;
+import com.ibm.ws.microprofile.config.archaius.ConfigBuilderImpl;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config12.converters.Config12DefaultConverters;
 
-public class Config12BuilderImpl extends ArchaiusConfigBuilderImpl implements ConfigBuilder {
+public class Config12BuilderImpl extends ConfigBuilderImpl implements ConfigBuilder {
 
     /**
      * Constructor
@@ -37,7 +37,7 @@ public class Config12BuilderImpl extends ArchaiusConfigBuilderImpl implements Co
     }
 
     @Override
-    protected ConversionDecoder getConversionDecoder(PriorityConverterMap converters, ClassLoader classLoader) {
+    protected ConversionManager getConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
         return new Config12ConversionManager(converters, classLoader);
     }
 }

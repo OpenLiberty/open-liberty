@@ -47,6 +47,7 @@ import com.ibm.ws.fat.util.SharedServer;
                 TestMultiModuleClassLoading.class,
                 ValidationTest.class,
 })
+
 public class FATSuite {
 
     public static SharedServer MULTI_MODULE_SERVER = new SharedServer("FaultToleranceMultiModule");

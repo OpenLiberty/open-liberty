@@ -26,10 +26,18 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
 public class TestMultiModuleClassLoading extends LoggingTest {
 
     @ClassRule
     public static SharedServer SHARED_SERVER = FATSuite.MULTI_MODULE_SERVER;
+
+    //run against both EE8 and EE7 features
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE7_FEATURES());
 
     @BeforeClass
     public static void setupApp() throws Exception {

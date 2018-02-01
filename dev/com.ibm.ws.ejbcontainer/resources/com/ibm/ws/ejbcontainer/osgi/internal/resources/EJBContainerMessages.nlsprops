@@ -196,6 +196,9 @@ INVALID_CLASS_CNTR4115E.explanation=Either the ejb-jar.xml file specifies an inv
 INVALID_CLASS_CNTR4115E.useraction=Correct the class name in the ejb-jar.xml file, or package the class file in the application.
 
 # In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
 # MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
 
 # In use in EJBMDBMessages.nlsprops

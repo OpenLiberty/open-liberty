@@ -47,6 +47,6 @@ public interface WebSphereConfig extends Config, Closeable {
 
     public String dump();
 
-    public SourcedValue getSourcedValue(String propertyName, Type type);
+    public SourcedPropertyValue getSourcedValue(String propertyName, Type type);
 
 }

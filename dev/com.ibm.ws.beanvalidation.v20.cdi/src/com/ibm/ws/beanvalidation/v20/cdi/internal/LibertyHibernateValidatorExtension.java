@@ -63,6 +63,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
                         "service.vendor=IBM"
            })
 public class LibertyHibernateValidatorExtension implements Extension, WebSphereCDIExtension {
+
     private static final TraceComponent tc = Tr.register(LibertyHibernateValidatorExtension.class);
 
     @Reference
@@ -72,18 +73,7 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     private ValidatorBean vBean;
     private ValidationExtension extDelegate;
     private String currentClassloaderHint = "";
-
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscoveryEvent, BeanManager beanManager) {
-        if (vfBean == null) {
-            vfBean = new LibertyValidatorFactoryBean();
-            afterBeanDiscoveryEvent.addBean(vfBean);
-        }
-
-        if (vBean == null) {
-            vBean = new LibertyValidatorBean();
-            afterBeanDiscoveryEvent.addBean(vBean);
-        }
-    }
+    private boolean delegateFailed;
 
     private ValidationExtension delegate(String newClassloaderHint) {
         if (extDelegate == null || newClassloaderHint != null && !newClassloaderHint.equals(currentClassloaderHint)) {
@@ -126,12 +116,38 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
         return extDelegate;
     }
 
-    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscoveryEvent,
-                                    final BeanManager beanManager) {
-        delegate(null).beforeBeanDiscovery(beforeBeanDiscoveryEvent, beanManager);
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscoveryEvent, final BeanManager beanManager) {
+        if (!delegateFailed)
+            try {
+                delegate(null).beforeBeanDiscovery(beforeBeanDiscoveryEvent, beanManager);
+            } catch (Exception e) {
+                delegateFailed = true;
+                // TODO: Once https://github.com/OpenLiberty/open-liberty/issues/1746 is implemented, we
+                // can use the proper bean ID in the warning message instead of the BeanManager toString()
+                if (tc.isWarningEnabled())
+                    Tr.warning(tc, "UNABLE_TO_REGISTER_WITH_CDI", beanManager.toString(), e);
+            }
+    }
+
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscoveryEvent, BeanManager beanManager) {
+        if (delegateFailed)
+            return;
+
+        if (vfBean == null) {
+            vfBean = new LibertyValidatorFactoryBean();
+            afterBeanDiscoveryEvent.addBean(vfBean);
+        }
+
+        if (vBean == null) {
+            vBean = new LibertyValidatorBean();
+            afterBeanDiscoveryEvent.addBean(vBean);
+        }
     }
 
     public void processBean(@Observes ProcessBean<?> processBeanEvent) {
+        if (delegateFailed)
+            return;
+
         delegate(null).processBean(processBeanEvent);
     }
 
@@ -140,6 +156,9 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                                                                       Valid.class,
                                                                       ValidateOnExecution.class
     }) ProcessAnnotatedType<T> processAnnotatedTypeEvent) {
+        if (delegateFailed)
+            return;
+
         Class<?> javaClass = processAnnotatedTypeEvent.getAnnotatedType().getJavaClass();
         String moduleName = getModuleName(javaClass);
         delegate(moduleName).processAnnotatedType(processAnnotatedTypeEvent);

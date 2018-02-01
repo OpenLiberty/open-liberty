@@ -12,10 +12,10 @@
 
 -nobundles=true
 
-# TODO remove projects only required for session db once this feature is futher along  
 -dependson: \
     com.ibm.websphere.javaee.jcache.1.1;version=latest, \
 	com.ibm.websphere.security;version=latest, \
-	com.ibm.ws.session.db;version=latest, \
 	com.ibm.ws.serialization;version=latest, \
+	com.ibm.ws.session.cache;version=latest, \
+	com.ibm.ws.session.store;version=latest, \
 	com.ibm.ws.session;version=latest

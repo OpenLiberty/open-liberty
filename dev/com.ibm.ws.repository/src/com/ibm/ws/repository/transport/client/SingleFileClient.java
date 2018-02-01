@@ -229,7 +229,7 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
 
         // Iterate through the assets in id order
         Map<String, JsonObject> assetMap = assets == null ? Collections.<String, JsonObject> emptyMap() : assets;
-        for (int i = 1; i <= idCounter.get(); i++) {
+        for (int i = 1; i < idCounter.get(); i++) {
             JsonObject json = assetMap.get(Integer.toString(i));
             if (json == null) {
                 jsonToStore.addNull();

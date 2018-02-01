@@ -1,0 +1,47 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLPlatformExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+27001=No se ha encontrado la clase de plataforma XML: {0}
+
+27002=No se ha podido crear una instancia de la plataforma XML: {0}
+
+27003=No se ha podido crear un nuevo documento XML.
+
+27004=La XPath no era v\u00e1lida.
+
+27005=Se ha producido un error al validar el documento.
+
+27006=No se ha podido resolver el esquema XML: {0}
+
+27101=Se ha producido un error al analizar el documento.
+
+27102=No se ha encontrado el archivo: [{0}]
+
+27103=** Error de an\u00e1lisis, l\u00ednea [{0}], uri [{1}] [{2}]
+
+27201=Se ha producido un error al transformar el documento.
+
+27202=Se ha encontrado un tipo desconocido: {0}
+

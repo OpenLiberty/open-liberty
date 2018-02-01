@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
+import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public abstract class AbstractConfig implements WebSphereConfig {
@@ -40,18 +41,10 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * @param converters
      * @param executor
      */
-    public AbstractConfig(SortedSources sources, ConversionManager conversionManager) {
+    public AbstractConfig(ConversionManager conversionManager, SortedSources sources) {
         this.sources = sources;
         this.conversionManager = conversionManager;
     }
-
-    /**
-     * @param <T>
-     * @param propertyName
-     * @param propertyType
-     * @return
-     */
-    protected abstract Object getTypedValue(String propertyName, Type propertyType);
 
     /**
      * @return
@@ -70,7 +63,11 @@ public abstract class AbstractConfig implements WebSphereConfig {
         assertNotClosed();
         Optional<T> optional = null;
         try {
-            T value = (T) getTypedValue(propertyName, propertyType);
+            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            T value = null;
+            if (sourced != null) {
+                value = (T) sourced.getValue();
+            }
             optional = Optional.ofNullable(value);
         } catch (ConverterNotFoundException | ConversionException e) {
             throw new IllegalArgumentException(e);
@@ -141,7 +138,8 @@ public abstract class AbstractConfig implements WebSphereConfig {
         assertNotClosed();
         try {
             if (getKeySet().contains(propertyName)) {
-                value = getTypedValue(propertyName, propertyType);
+                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+                value = sourced.getValue();
             } else {
                 if (optional) {
                     value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
@@ -162,7 +160,8 @@ public abstract class AbstractConfig implements WebSphereConfig {
         assertNotClosed();
         try {
             if (getKeySet().contains(propertyName)) {
-                value = getTypedValue(propertyName, propertyType);
+                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+                value = sourced.getValue();
             } else {
                 value = convertValue(defaultString, propertyType);
             }

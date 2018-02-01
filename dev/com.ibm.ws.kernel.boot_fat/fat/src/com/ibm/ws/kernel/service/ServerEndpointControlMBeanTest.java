@@ -127,7 +127,7 @@ public class ServerEndpointControlMBeanTest {
         if (restoreSavedConfig) {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
-            assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
+            assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null));
 
         }
         Log.exiting(c, METHOD_NAME);

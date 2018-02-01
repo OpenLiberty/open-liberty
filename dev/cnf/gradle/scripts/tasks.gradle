@@ -186,7 +186,7 @@ task publishFeatureResources {
                        buildType: buildType,
                        junit: new File(project.buildDir, 'report/featureChecks.xml')) {
           defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                         licensePath: buildImage.file('license'),
+                         licensePath: buildImage.file('lafiles/featureTerms'),
                          version: version,
                          licenseType: "EPL",
                          displayVersion: "OpenLiberty")

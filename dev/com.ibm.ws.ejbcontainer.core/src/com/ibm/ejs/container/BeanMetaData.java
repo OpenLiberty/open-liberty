@@ -1964,45 +1964,6 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
     }
     
     /**
-     * Return the Java EE logical name for the bean. The Java EE name follows
-     * the same convention as is defined in the EJB specification for business
-     * interfaces bound in the java:global name context (excluding the interface name). <p>
-     *
-     * [<app-name>]/<module-name>/<bean-name>
-     *
-     * <app-name> only applies if the bean is packaged within an .ear file.
-     * It defaults to the base name of the .ear file with no filename extension,
-     * unless specified by the application.xml deployment descriptor.
-     *
-     * <module-name> is the name of the module in which the bean is packaged.
-     * In a stand-alone ejb-jar file or .war file, the <module-name> defaults
-     * to the base name of the module with any filename extension removed.
-     * In an ear file, the <module-name> defaults to the pathname of the module
-     * with any filename extension removed, but with any directory names included.
-     * The default <module-name> can be overridden using the module-name element
-     * of ejb-jar.xml (for ejb-jar files) or web.xml (for .war files).
-     *
-     * <bean-name> is the ejb-name of the enterprise bean. For enterprise beans
-     * defined via annotation, it defaults to the unqualified name of the session
-     * bean class, unless specified in the contents of the MessageDriven annotation
-     * name() attribute. For enterprise beans defined via ejb-jar.xml, it's
-     * specified in the <ejb-name> deployment descriptor element.
-     */
-    public String getJavaEELogicalName() {
-
-        String appName = _moduleMetaData.getEJBApplicationMetaData().getLogicalName();
-        StringBuilder sb = new StringBuilder();
-
-        if (appName != null) {
-            sb.append(appName).append('/');
-        }
-        sb.append(_moduleMetaData.ivLogicalName).append('/');
-        sb.append(enterpriseBeanName);
-
-        return sb.toString();
-    }
-
-    /**
      *
      * @return J2EEName
      * @see com.ibm.ws.runtime.metadata.ComponentMetaData

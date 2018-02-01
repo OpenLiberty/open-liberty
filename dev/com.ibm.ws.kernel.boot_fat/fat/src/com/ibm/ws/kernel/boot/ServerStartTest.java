@@ -125,7 +125,9 @@ public class ServerStartTest {
             LibertyServer symlink_server = LibertyServerFactory.getExistingLibertyServer(SYMLINK_NAME);
 
             // Confirm it can start and stop
-            server.stopServer(); // Pause the original
+            if (server.isStarted()) {
+                server.stopServer(); // Pause the original
+            }
             symlink_server.startServer(); // Start the alias (and confirm)
             symlink_server.stopServer(); // stop the alias (and confirm)
             server.startServer(); // Resume original (in case following test needs it).

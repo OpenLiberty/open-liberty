@@ -25,6 +25,12 @@ Import-Package: \
   org.apache.cxf.common.classloader;version="[3.1,4)",\
   org.apache.cxf.microprofile.client;version="[3.1,4)",\
   org.apache.cxf.microprofile.client.config;version="[3.1,4)",\
+  javax.enterprise.context;version="[1.1,2.1)",\
+  javax.enterprise.context.spi;version="[1.1,2.1)",\
+  javax.enterprise.event;version="[1.1,2.1)",\
+  javax.enterprise.inject;version="[1.1,2.1)",\
+  javax.enterprise.inject.spi;version="[1.1,2.1)",\
+  javax.enterprise.util;version="[1.1,2.1)",\
   *
 
 Include-Resource: \
