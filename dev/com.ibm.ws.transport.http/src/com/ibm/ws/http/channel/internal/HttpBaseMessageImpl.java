@@ -2040,10 +2040,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
             }
 
             else if (getVersionValue().equals(VersionValues.V20)) {
-                //If content-length is set, remove content-length header
-                if (getContentLength() != HeaderStorage.NOTSET) {
-                    setContentLength(HeaderStorage.NOTSET);
-                }
                 //If chunked-encoding is set, remove this header
                 if (isChunkedEncodingSet()) {
                     removeTransferEncoding(TransferEncodingValues.CHUNKED);

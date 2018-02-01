@@ -2071,30 +2071,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
                 framesToWrite.addAll(headerFrames);
-
-//                byte[] preparedHeaders = link.prepareHeaders(WsByteBufferUtils.asByteArray(headerBuffers), complete);
-
-//                    try {
-//                        while (!link.muxLink.connection_preface_settings_ack_rcvd) {
-//                            synchronized (link.muxLink.initLock) {
-//                                link.muxLink.initLock.wait();
-//                            }
-//                        }
-//                    } catch (InterruptedException e) {
-//                        // TODO Auto-generated catch block
-//                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-//                        e.printStackTrace();
-//                    }
-
-//                WsByteBuffer buffer = this.allocateBuffer(preparedHeaders.length);
-//                buffer.put(preparedHeaders);
-//
-//                for (int i = 0; i < headerBuffers.length; i++) {
-//                    headerBuffers[i] = null;
-//                }
-//
-//                buffer.flip();
-//                headerBuffers[0] = buffer;
             }
 
         } catch (Throwable t) {
