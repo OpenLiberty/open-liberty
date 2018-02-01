@@ -185,9 +185,12 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         if (path != null && !path.startsWith("/")) {
             String baseUri = _inboundRequest.getContextPath();
             if (baseUri != null) {
-                path = baseUri + "/" + path;
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.entry(tc, "path()", "new context-relative path = " + path);
+                if (!baseUri.endsWith("/")) {
+                    baseUri = baseUri + "/";
+                }
+                path = baseUri + path;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "path()", "new context-relative path = " + path);
                 }
             }
         }
@@ -203,7 +206,7 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "path()", "uri = " + _pathURI + ", queryString = " + _pathQueryString);
+            Tr.exit(tc, "path()", "uri = " + _pathURI + ", queryString = " + _pathQueryString);
         }
         return this;
     }
