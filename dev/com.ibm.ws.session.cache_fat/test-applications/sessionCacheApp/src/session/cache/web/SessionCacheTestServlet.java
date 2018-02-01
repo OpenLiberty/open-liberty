@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import org.junit.Test;
-
 import componenttest.app.FATServlet;
 import junit.framework.Assert;
 
@@ -29,7 +27,7 @@ import junit.framework.Assert;
 @WebServlet("/SessionCacheTestServlet")
 public class SessionCacheTestServlet extends FATServlet {
 
-    @Resource(lookup = "jdbc/SessionDS")
+    @Resource(lookup = "jdbc/derby")
     DataSource dataSource;
 
     /**
