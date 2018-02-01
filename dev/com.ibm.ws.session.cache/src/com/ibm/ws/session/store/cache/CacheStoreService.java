@@ -12,7 +12,13 @@ package com.ibm.ws.session.store.cache;
 
 import java.util.Map;
 
+import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.configuration.CompleteConfiguration;
+import javax.cache.configuration.Configuration;
+import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
@@ -25,6 +31,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
@@ -39,6 +46,9 @@ import com.ibm.wsspi.session.IStore;
 @Component(name = "com.ibm.ws.session.cache", configurationPolicy = ConfigurationPolicy.OPTIONAL, service = { SessionStoreService.class })
 public class CacheStoreService implements SessionStoreService {
     private Map<String, Object> configurationProperties;
+
+    Cache<String, Object[]> cache;
+    CacheManager cacheManager;
 
     private volatile boolean completedPassivation = true;
 
@@ -58,16 +68,29 @@ public class CacheStoreService implements SessionStoreService {
      * @param context for this component instance
      * @param props service properties
      */
+    @FFDCIgnore(CacheException.class)
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = props;
 
         // TODO temporary code validates that the provider can be obtained but does nothing else with it
 
-        CachingProvider provider;
         if (library == null)
             ; // use default JCache provider specified via bell
-        else
-            provider = Caching.getCachingProvider(library.getClassLoader()); // load JCache provider from configured library
+        else {
+            CachingProvider provider = Caching.getCachingProvider(library.getClassLoader()); // load JCache provider from configured library
+            cacheManager = provider.getCacheManager(null, null, null);
+            cache = cacheManager.getCache("com.ibm.ws.session.cache");
+            if (cache == null) {
+                Configuration<String, Object[]> config = new MutableConfiguration<String, Object[]>().setTypes(String.class, Object[].class);
+                try {
+                    cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
+                } catch (CacheException x) {
+                    cache = cacheManager.getCache("com.ibm.ws.session.cache");
+                    if (cache == null)
+                        throw x;
+                }
+            }
+        }
     }
 
     @Override
@@ -85,6 +108,7 @@ public class CacheStoreService implements SessionStoreService {
      * @param context for this component instance
      */
     protected void deactivate(ComponentContext context) {
+        cacheManager.close();
     }
 
     @Override
