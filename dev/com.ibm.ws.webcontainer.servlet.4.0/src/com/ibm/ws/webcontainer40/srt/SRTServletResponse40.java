@@ -129,6 +129,15 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
     }
 
     @Override
+    public Supplier<Map<String, String>> getTrailerFields() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, "getTrailerFields", "trailerFieldSupplier = " + trailerFieldSupplier + " [" + this + "]");
+        }
+
+        return trailerFieldSupplier;
+    }
+
+    @Override
     public void finish() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
             logger.entering(CLASS_NAME, "finish", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");
