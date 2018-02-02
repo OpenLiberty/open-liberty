@@ -88,8 +88,8 @@ public class CollectorJsonUtils1_1 {
 
         //                                           name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = CollectorJsonHelpers.addCommonFieldsGC(sb, hostName, wlpUserDir, serverName, hcGCData.getTime(), sequenceNum, isFirstField,
-                                                              CollectorConstants.GC_EVENT_TYPE);
+        isFirstField = CollectorJsonHelpers.addCommonFieldsGC1_1(sb, hostName, wlpUserDir, serverName, hcGCData.getTime(), sequenceNum, isFirstField,
+                                                                 CollectorConstants.GC_EVENT_TYPE);
         /* GC specific fields */
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "ibm_usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, isFirstField);
@@ -119,7 +119,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
@@ -168,7 +168,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
@@ -178,7 +178,8 @@ public class CollectorJsonUtils1_1 {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (!key.equals(LogFieldConstants.LABEL) && !(key.equals(LogFieldConstants.SOURCEID))) {
+                if (!key.equals(LogFieldConstants.LABEL) && !(key.equals(LogFieldConstants.SOURCEID))
+                    && !(key.equals(LogFieldConstants.DATEOFFIRSTOCCURENCE)) && !(key.equals(LogFieldConstants.COUNT))) {
 
                     if (key.equals(LogFieldConstants.IBM_STACKTRACE)) {
 
@@ -227,7 +228,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
@@ -237,7 +238,9 @@ public class CollectorJsonUtils1_1 {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
+                if (key.equals(LogFieldConstants.IBM_REQUESTSTARTTIME)) {
+
+                } else if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
 
                     String jsonQueryString = value;
                     if (jsonQueryString != null) {
@@ -294,7 +297,7 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.addCommonFields1_1(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
         for (Pair p : pairs) {
 
