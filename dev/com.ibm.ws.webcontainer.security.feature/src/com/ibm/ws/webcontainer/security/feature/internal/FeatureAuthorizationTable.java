@@ -42,8 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class FeatureAuthorizationTable extends AbstractSecurityAuthorizationTable
-                implements AuthorizationTableService, UserRegistryChangeListener, ConfigurationListener {
+public class FeatureAuthorizationTable extends AbstractSecurityAuthorizationTable implements AuthorizationTableService, UserRegistryChangeListener, ConfigurationListener {
     private static final TraceComponent tc = Tr.register(FeatureAuthorizationTable.class);
 
     static final String CFG_KEY_ID = "id";
@@ -101,7 +100,7 @@ public class FeatureAuthorizationTable extends AbstractSecurityAuthorizationTabl
 
     /**
      * Process the sytemRole properties from the server.xml.
-     * 
+     *
      * @param props
      */
     private void processConfigProps(Map<String, Object> props) {
@@ -142,7 +141,7 @@ public class FeatureAuthorizationTable extends AbstractSecurityAuthorizationTabl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ConfigurationListener#configurationEvent(org.osgi.service.cm.ConfigurationEvent)
      */
     @Override
@@ -153,6 +152,12 @@ public class FeatureAuthorizationTable extends AbstractSecurityAuthorizationTabl
         if (event.getType() != ConfigurationEvent.CM_DELETED && pids.contains(event.getPid())) {
             processRolePids();
         }
+    }
+
+    @Override
+    public boolean isAuthzInfoAvailableForApp(String resourceName) {
+        FeatureAuthorizationTableService featureCollabAuthzTable = featureCollabAuthzTableRef.getServiceWithException();
+        return (featureCollabAuthzTable != null && featureCollabAuthzTable.isAuthzInfoAvailableForApp(resourceName) == true ? true : false);
     }
 
 }
