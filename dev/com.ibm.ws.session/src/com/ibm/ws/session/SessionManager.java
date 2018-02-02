@@ -210,6 +210,10 @@ public class SessionManager implements IGenericSessionManager, ISessionManagerCu
         return sessionManagerMap.get(id);
     }
 
+    public static SessionManager removeSessionManager(String id) {
+        return sessionManagerMap.remove(id);
+    }
+
     // ----------------------------------------
     // Public methods
     // ----------------------------------------
