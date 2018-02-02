@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
+import javax.batch.operations.BatchRuntimeException;
 
 import org.eclipse.persistence.descriptors.ClassExtractor;
 import org.eclipse.persistence.sessions.Record;
 import org.eclipse.persistence.sessions.Session;
+
+import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 
 /**
  *
@@ -28,7 +31,21 @@ public class JobExecutionEntityExtractor extends ClassExtractor {
 //        } catch (Exception e) {
 //            return JobExecutionEntity.class;
 //        }
-        return JobExecutionEntityV2.class;
+        //return JobExecutionEntityV2.class;
+
+        Integer tableversion = null;
+
+        try {
+            tableversion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getJobExecutionTableVersion();
+        } catch (Exception ex) {
+            throw new BatchRuntimeException(ex);
+        }
+
+        if (tableversion == 2) {
+            return JobExecutionEntityV2.class;
+        } else {
+            return JobExecutionEntity.class;
+        }
     }
 
 }

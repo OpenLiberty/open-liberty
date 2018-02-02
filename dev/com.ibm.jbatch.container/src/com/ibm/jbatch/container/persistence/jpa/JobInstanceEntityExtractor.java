@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
+import javax.batch.operations.BatchRuntimeException;
+
 import org.eclipse.persistence.descriptors.ClassExtractor;
 import org.eclipse.persistence.sessions.Record;
 import org.eclipse.persistence.sessions.Session;
+
+import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 
 /**
  *
@@ -23,9 +27,20 @@ public class JobInstanceEntityExtractor extends ClassExtractor {
     @SuppressWarnings("rawtypes")
     @Override
     public Class extractClassFromRow(Record record, Session session) {
-        if (record.containsKey("UPDATETIME")) {
-            // if update time is found we can assume v3 (groupnames)
+
+        Integer tableversion = null;
+
+        try {
+            tableversion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getJobInstanceTableVersion();
+        } catch (Exception ex) {
+            throw new BatchRuntimeException(ex);
+        }
+
+        if (tableversion == 3) {
+            //if update time is found we can assume v3 (groupnames)
             return JobInstanceEntityV3.class;
+        } else if (tableversion == 2) {
+            return JobInstanceEntityV2.class;
         } else {
             return JobInstanceEntity.class;
         }

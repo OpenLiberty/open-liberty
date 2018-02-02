@@ -2580,11 +2580,13 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 try {
                     tranMgr.rollback();
                 } catch (Throwable t1) {
+                    logger.fine("Tried to rollback, caught a new exception, throwing new PersistenceException with this new exception chained");
                     throw new PersistenceException("Caught throwable on rollback after previous throwable: " + caughtThrowable, t1);
                 } finally {
                     try {
                         resumeAnyExistingLTC();
                     } catch (Throwable t2) {
+                        logger.fine("Tried to resume LTC, caught a new exception, throwing new PersistenceException with this new exception chained");
                         throw new PersistenceException("Caught throwable on resume of previous LTC.  Original throwable: " + caughtThrowable, t2);
                     }
                 }
@@ -2593,12 +2595,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             }
 
             // If we haven't gotten a new exception to chain, throw back the original one passed in as a parameter
+            logger.fine("No exception encountered, throwing new PersistenceException with original exception chained");
             throw new PersistenceException(caughtThrowable);
         }
 
         protected void resumeAnyExistingLTC() {
+            logger.fine("Will resume any LTC");
             if (suspendedLTC != null) {
                 localTranCurrent.resume(suspendedLTC);
+                logger.fine("LTC resumed");
             }
         }
 
@@ -2631,7 +2636,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         return getJobExecutionTableVersion(getPsu());
     }
 
-    @FFDCIgnore(javax.persistence.PersistenceException.class)
+    @FFDCIgnore(PersistenceException.class)
     private int getJobExecutionTableVersion(PersistenceServiceUnit psu) throws Exception {
         if (executionVersion != null)
             return executionVersion;
@@ -2653,7 +2658,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             }.runInNewOrExistingGlobalTran();
 
             return exec;
-        } catch (javax.persistence.PersistenceException e) {
+        } catch (PersistenceException e) {
             Throwable cause = e.getCause();
             while (cause != null) {
                 if (cause instanceof SQLSyntaxErrorException &&
@@ -2683,27 +2688,58 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         return getJobInstanceTableVersion(getPsu());
     }
 
-    @FFDCIgnore(javax.persistence.PersistenceException.class)
+    @FFDCIgnore(PersistenceException.class)
     private int getJobInstanceTableVersion(PersistenceServiceUnit psu) throws Exception {
         if (instanceVersion != null)
             return instanceVersion;
 
         final EntityManager em = psu.createEntityManager();
 
+        // Check for the presence of v2 table support (presence of UPDATETIME column)
         try {
             Integer exec = new TranRequest<Integer>(em) {
                 @Override
                 public Integer call() throws Exception {
-                    // Verify that UPDATETIME column exists by running a query against it.
                     String queryString = "SELECT COUNT(x.lastUpdatedTime) FROM JobInstanceEntityV2 x";
                     TypedQuery<Long> query = em.createQuery(queryString, Long.class);
                     query.getSingleResult();
                     logger.fine("The UPDATETIME column exists, job instance table version = 2");
                     instanceVersion = 2;
+                    return instanceVersion;
+                }
+            }.runInNewOrExistingGlobalTran();
+        } catch (PersistenceException pe) {
+            logger.fine("Looking for V2 table support, Caught a persistence exception");
+            Throwable cause = pe.getCause();
+            while (cause != null) {
+                logger.fine("Cause of V2 persistence exception: " + cause.toString());
+                logger.fine("Cause message of V2 persistence exception: " + cause.getMessage());
+                if (cause instanceof SQLSyntaxErrorException &&
+                    cause.getMessage() != null &&
+                    cause.getMessage().contains("UPDATETIME")) {
+                    // The UPDATETIME column isn't there.
+                    logger.fine("The UPDATETIME column does not exist, job instance table version = 1");
+                    instanceVersion = 1;
+                    return instanceVersion;
+                }
+                cause = cause.getCause();
+            }
 
+            if (instanceVersion == null) {
+                // We did not determine an instance version
+                logger.fine("Unexpected exception while checking job instance table version, re-throwing");
+                throw pe;
+            }
+        }
+
+        // Now try for V3
+        try {
+            Integer exec = new TranRequest<Integer>(em) {
+                @Override
+                public Integer call() throws Exception {
                     // Verify that groupNames column exists by running a query against it.
-                    queryString = "SELECT COUNT(x.groupNames) FROM JobInstanceEntityV3 x";
-                    query = em.createQuery(queryString, Long.class);
+                    String queryString = "SELECT COUNT(x.groupNames) FROM JobInstanceEntityV3 x";
+                    TypedQuery<Long> query = em.createQuery(queryString, Long.class);
                     query.getSingleResult();
                     logger.fine("The groupNames column exists, job instance table version = 3");
                     instanceVersion = 3;
@@ -2712,21 +2748,17 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             }.runInNewOrExistingGlobalTran();
 
             return exec;
-        } catch (javax.persistence.PersistenceException pe) {
+        } catch (PersistenceException pe) {
+            logger.fine("Looking for V3 table support, Caught a persistence exception");
             Throwable cause = pe.getCause();
             while (cause != null) {
+                logger.fine("Cause of V3 persistence exception: " + cause.toString());
+                logger.fine("Cause message of V3 persistence exception: " + cause.getMessage());
                 if (cause instanceof SQLSyntaxErrorException &&
                     cause.getMessage() != null &&
-                    cause.getMessage().contains("UPDATETIME")) {
-                    // The column isn't there.
-                    logger.fine("The UPDATETIME column does not exist, job instance table version = 1");
-                    instanceVersion = 1;
-                    return instanceVersion;
-                } else if (cause instanceof SQLSyntaxErrorException &&
-                           cause.getMessage() != null &&
-                           cause.getMessage().contains("GROUPNAMES")) {
-                    // The column isn't there.
-                    logger.fine("The UPDATETIME column does not exist, job instance table version = 2");
+                    cause.getMessage().contains("GROUPASSOCIATION")) {
+                    // The GROUPASSOCIATION support isn't there.
+                    logger.fine("The GROUPASSOCIATION column does not exist, job instance table version = 2");
                     instanceVersion = 2;
                     return instanceVersion;
                 }
@@ -2736,6 +2768,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             logger.fine("Unexpected exception while checking job instance table version, re-throwing");
             throw pe;
         } finally {
+            logger.fine("determined the job instance table version: " + instanceVersion);
             em.close();
         }
     }
