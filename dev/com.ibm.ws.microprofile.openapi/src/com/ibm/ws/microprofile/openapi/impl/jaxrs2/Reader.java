@@ -931,15 +931,22 @@ public class Reader {
             return callbackMap;
         }
         Callback callbackObject = new CallbackImpl();
-        PathItem pathItemObject = new PathItemImpl();
-        for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
-            Operation callbackNewOperation = new OperationImpl();
-            setOperationObjectFromApiOperationAnnotation(callbackNewOperation, callbackOperation);
-            setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
+
+        if (StringUtils.isNotBlank(apiCallback.ref())) {
+            callbackObject.setRef(apiCallback.ref());
         }
 
-        callbackObject.addPathItem(apiCallback.callbackUrlExpression(), pathItemObject);
-        callbackMap.put(apiCallback.name(), callbackObject);
+        if (apiCallback.operations().length > 0) {
+            PathItem pathItemObject = new PathItemImpl();
+            for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
+                Operation callbackNewOperation = new OperationImpl();
+                setOperationObjectFromApiOperationAnnotation(callbackNewOperation, callbackOperation);
+                setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
+            }
+            callbackObject.addPathItem(apiCallback.callbackUrlExpression(), pathItemObject);
+        }
+
+        callbackMap.put(AnnotationsUtils.getNameOfReferenceableItem(apiCallback), callbackObject);
 
         return callbackMap;
     }
