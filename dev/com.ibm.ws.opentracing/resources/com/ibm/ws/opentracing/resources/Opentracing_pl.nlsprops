@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Wywo\u0142ana metoda Opentra
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Sk\u0142adnik tworzy implementacje klasy Tracer za pomoc\u0105 fabryki OpentracingTracerFactory podanej przez u\u017cytkownika. Metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Okre\u015bl, dlaczego metoda OpentracingTracerFactory.newInstance podana przez u\u017cytkownika zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: Atrybut wzorca elementu konfiguracyjnego excludeSpans lub includeSpans sk\u0142adniak Opentracing jest pusty.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Nale\u017cy okre\u015bli\u0107 poprawny wzorzec identyfikatora URI. Nie mo\u017ce on by\u0107 pusty.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Sprawd\u017a w dokumentacji poprawne wzorce.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: Atrybut wzorca {0} elementu konfiguracyjnego excludeSpans lub includeSpans sk\u0142adniak Opentracing jest niepoprawnym identyfikatorem URI (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Nale\u017cy okre\u015bli\u0107 poprawny wzorzec identyfikatora URI. Najcz\u0119\u015bciej wyst\u0119puj\u0105cym problemem s\u0105 niew\u0142a\u015bciwie zakodowane niepoprawne znaki adres\u00f3w % URL.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Sprawd\u017a dokument RFC 2396 i upewnij si\u0119, \u017ce pomy\u015blnie zakodowano w adresie % URL niepoprawne znaki.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

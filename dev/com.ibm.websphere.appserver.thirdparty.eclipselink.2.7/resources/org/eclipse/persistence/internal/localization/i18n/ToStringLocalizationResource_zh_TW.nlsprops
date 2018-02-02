@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -160,6 +164,10 @@ staticweave_commandline_help_message_7of19=           \u7576\u7de8\u6392 persist
 staticweave_commandline_help_message_8of19=    -persistencexml
 
 staticweave_commandline_help_message_9of19=           \u8b58\u5225 persistence.xml \u76f8\u5c0d\u65bc\u6301\u7e8c\u6027\u55ae\u5143\u6839\u76ee\u9304\u7684\u4f4d\u7f6e\uff08\u5982\u679c\u4e0d\u662f\u4f4d\u65bc META-INF/persistence.xml \u7684\u8a71\uff09
+
+staticweave_processor_dir_not_created=\u7121\u6cd5\u5efa\u7acb {0} \u76ee\u9304\u3002
+
+staticweave_processor_file_not_created=\u7121\u6cd5\u5efa\u7acb {0} \u6a94\u6848\u3002
 
 staticweave_processor_unknown_outcome=\u7de8\u6392\u5132\u5b58\u5728\u76ee\u9304\u4e2d\u7684\u985e\u5225\uff0c\u4e26\u8f38\u51fa\u81f3 JAR\uff0c\u901a\u5e38\u6703\u5c0e\u81f4\u975e\u9810\u671f\u7684\u7d50\u679c\u3002
 

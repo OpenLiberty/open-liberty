@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Die folgenden Nachrichten werden aus den
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Als auszublendend konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden in die Datei trace.log geschrieben. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Es ist keine Aktion erforderlich.
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt in ''{0}'' aktualisiert.
+MESSAGE_FORMAT_UPDATED.explanation=Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt aktualisiert.
+MESSAGE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in ''{0}'' aktualisiert.
+CONSOLE_FORMAT_UPDATED.explanation=Das Konsolenausgabeformat wurde jetzt aktualisiert.
+CONSOLE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

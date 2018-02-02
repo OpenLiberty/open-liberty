@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -25,119 +29,35 @@
 # -------------------------------------------------------------------------------------------------
 External_transaction_controller_not_defined_by_server_platform=A DatabaseSession possui um controlador de transa\u00e7\u00e3o externo definido por algo diferente do ServerPlatform. O EclipseLink permitir\u00e1 a substitui\u00e7\u00e3o do controlador de transa\u00e7\u00e3o externo, mas recomendamos que voc\u00ea considere a alternativa de definir como subclasse org.eclipse.persistence.platform.server.ServerPlatformBase e substituir getExternalTransactionControllerClass().
 
-External_transaction_controller_not_defined_by_server_platform.MSGID=TOP-50050
-
 JDBC_driver_does_not_support_meta_data=Conectado: desconhecido (Driver JDBC n\u00e3o suporta metadados.)
-
-JDBC_driver_does_not_support_meta_data.MSGID=TOP-50007
 
 all_registered_clones=Todos os Clones Registrados:
 
-all_registered_clones.MSGID=TOP-50022
-
 an_error_executing_ejbSelect=Um erro ocorreu ao executar ejbSelect: {0}
-
-an_error_executing_ejbSelect.MSGID=TOP-50042
 
 an_error_executing_finder=Um erro ocorreu ao executar o localizador: {0}
 
-an_error_executing_finder.MSGID=TOP-50041
-
 an_error_occured_executing_findByPrimaryKey=Um erro ocorreu ao executar findByPrimaryKey: {0}
-
-an_error_occured_executing_findByPrimaryKey.MSGID=TOP-50039
 
 an_error_occured_initializing_dms_listener=Exce\u00e7\u00e3o emitida ao inicializar o listener integrado DMS e o Servlet SPY
 
-an_error_occured_initializing_dms_listener.MSGID=TOP-50072
-
 an_error_occured_preparing_bean=Um erro ocorreu ao preparar o bean para a chamada: {0}
-
-an_error_occured_preparing_bean.MSGID=TOP-50040
 
 an_error_occured_trying_to_undeploy_bean=Um erro ocorreu ao tentar remover a implementa\u00e7\u00e3o do bean (ap\u00f3s falha de implementa\u00e7\u00e3o): {0}
 
-an_error_occured_trying_to_undeploy_bean.MSGID=TOP-50038
-
-annotation_default_alias.MSGID=TOP-50142
-
-annotation_default_association_table_name.MSGID=TOP-50155
-
-annotation_default_column.MSGID=TOP-50145
-
-annotation_default_fk_column.MSGID=TOP-50147
-
-annotation_default_inheritance_fk_column.MSGID=TOP-50154
-
-annotation_default_inheritance_pk_column.MSGID=TOP-50153
-
-annotation_default_many_to_many_reference_class.MSGID=TOP-50161
-
-annotation_default_many_to_one_reference_class.MSGID=TOP-50160
-
-annotation_default_one_to_many_mapping.MSGID=TOP-50144
-
-annotation_default_one_to_many_reference_class.MSGID=TOP-50159
-
-annotation_default_one_to_one_mapping.MSGID=TOP-50143
-
-annotation_default_one_to_one_reference_class.MSGID=TOP-50158
-
-annotation_default_pk_column.MSGID=TOP-50146
-
-annotation_default_secondary_table_fk_column.MSGID=TOP-50157
-
-annotation_default_secondary_table_pk_column.MSGID=TOP-50156
-
-annotation_default_source_fk_column.MSGID=TOP-50150
-
-annotation_default_source_pk_column.MSGID=TOP-50149
-
-annotation_default_table_name.MSGID=TOP-50148
-
-annotation_default_target_fk_column.MSGID=TOP-50152
-
-annotation_default_target_pk_column.MSGID=TOP-50151
-
 annotation_warning_ignore_annotation=Ignorando a anota\u00e7\u00e3o [{0}] no elemento [{1}] devido a uma configura\u00e7\u00e3o completa de metadados XML verdadeiros para essa classe.
 
-annotation_warning_ignore_embedded_id.MSGID=TOP-50164
-
-annotation_warning_ignore_get_method.MSGID=TOP-50170
-
-annotation_warning_ignore_id_class.MSGID=TOP-50165
-
-annotation_warning_ignore_inheritance.MSGID=TOP-50169
-
-annotation_warning_ignore_mapping.MSGID=TOP-50162
-
-annotation_warning_ignore_primary_key.MSGID=TOP-50163
-
 annotation_warning_ignore_private_owned=Ignorando @PrivateOwned em elementos [{1}] na classe de entidade [{0}]. Um @PrivateOwned pode ser usado apenas com um @OneToOne, @OneToMany e @VariableOneToOne. Observe tamb\u00e9m que a propriedade privada \u00e9 impl\u00edcita com @BasicCollection e @BasicMap.
-
-annotation_warning_ignore_query.MSGID=TOP-50171
 
 annotation_warning_ignore_return_insert=Ignorando o @ReturnInsert no elemento [{0}]. Um @ReturnInsert \u00e9 suportado apenas com um mapeamento b\u00e1sico.
 
 annotation_warning_ignore_return_update=Ignorando o @ReturnUpdate no elemento [{0}]. Um @ReturnUpdate \u00e9 suportado apenas com um mapeamento b\u00e1sico.
 
-annotation_warning_ignore_secondary_table.MSGID=TOP-50168
-
-annotation_warning_ignore_table.MSGID=TOP-50167
-
-annotation_warning_ignore_version_locking.MSGID=TOP-50166
-
 application_server_name_and_version=Servidor: {0}
-
-application_server_name_and_version.MSGID=TOP-50002
 
 archive_not_found_in_input=O archive ({0}) n\u00e3o existe sob o diret\u00f3rio de entrada ({1}).
 
-archive_not_found_in_input.MSGID=TOP-50083
-
 associate_using_third_table_not_migrated=Recurso do CMP -DassociateUsingThirdTable=true do Oc4j nativo para mapear 1:m usando uma tabela de rela\u00e7\u00e3o n\u00e3o foi migrado. \u00c9 necess\u00e1rio remover o mapeamento do campo cmr ({1}) da entidade ({0}) como um mapeamento um para muitos por meio do Ambiente de Trabalho de Mapeamento depois do processo de migra\u00e7\u00e3o.
-
-associate_using_third_table_not_migrated.MSGID=TOP-50100
 
 attempted_to_open_entry_in_url_as_jar={2} foi emitida em uma tentativa de abrir {0} como um jar e a acessar a entrada: {1}.
 
@@ -149,49 +69,29 @@ attempted_to_open_url_as_jar={1} foi emitida em uma tentativa de abrir {0} como 
 
 automatic_key_generation_not_supported=Configura\u00e7\u00e3o CMP de WLS nativo \u201cgera\u00e7\u00e3o-autom\u00e1tica-de-chave" na entidade({0}) n\u00e3o \u00e9 suportada diretamente em EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-automatic_key_generation_not_supported.MSGID=TOP-50128
-
 bacth_update_not_supported=A configura\u00e7\u00e3o de Atualiza\u00e7\u00e3o de lote de tamanho de lote com o valor ({0}) definida no bean de entidade ({1}) n\u00e3o \u00e9 suportada diretamente em EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-bacth_update_not_supported.MSGID=TOP-50119
 
 broadcast_connection_already_closed=Aviso: {0}: tentativa de fechar a conex\u00e3o que j\u00e1 foi fechada. Ignorando.
 
-broadcast_connection_already_closed.MSGID=TOP-50185
-
 broadcast_connection_already_closing=Aviso: {0}: tentativa de fechar a conex\u00e3o que est\u00e1 atualmente fechando. Ignorando.
-
-broadcast_connection_already_closing.MSGID=TOP-50186
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Aviso: {0}: tentativa de fechar a conex\u00e3o causou a exce\u00e7\u00e3o{1}
 
-broadcast_exception_thrown_when_attempting_to_close_connection.MSGID=TOP-50184
-
 broadcast_ignored_command_while_closing_connection=Aviso: {0}: ignorando a solicita\u00e7\u00e3o para publicar o comando enquanto a conex\u00e3o est\u00e1 sendo fechada.
-
-broadcast_ignored_command_while_closing_connection.MSGID=TOP-50189
 
 broadcast_listening_sleep_on_error=Aviso: {0}: A exce\u00e7\u00e3o {1} foi emitida. O encadeamento ficar\u00e1 inativo por {2} milissegundos antes de recome\u00e7ar o atendimento.
 
-broadcast_listening_sleep_on_error.MSGID=TOP-50190
-
 broadcast_remote_command_is_null=Aviso: {0}: mensagem recebida {1} contendo nulo em vez de RemoteCommand.
-
-broadcast_remote_command_is_null.MSGID=TOP-50187
 
 broadcast_remote_command_wrong_type=Aviso: {0}:  mensagem recebida {1} contendo um objeto do tipo {2} em vez do tipo esperado RemoteCommando.
 
-broadcast_remote_command_wrong_type.MSGID=TOP-50188
-
 call_timeout_not_migrated=O valor de tempo limite de chamada ={1} est\u00e1 definido na entidade {0} no orion-ejb-jar.xml, mas n\u00e3o h\u00e1 mapeamentos persistentes definido no arquivo descritor, portanto, n\u00e3o ocorrer\u00e1 nenhuma migra\u00e7\u00e3o.  Se voc\u00ea usar o mapeamento padr\u00e3o EclipseLink posterior para gerar o descritor de mapeamento do EclipseLink, esteja ciente de que a configura\u00e7\u00e3o de tempo limite de chamada ser\u00e1 perdida j\u00e1 que o padr\u00e3o de mapeamento do EclipseLink n\u00e3o tem acesso ao arquivo descritor nativo.  \u00c9 necess\u00e1rio, ent\u00e3o, reconfigurar o limite de chamada manualmente ou por meio de Mapeamento do EclipseLink Workbench ap\u00f3s a gera\u00e7\u00e3o de mapeamento padr\u00e3o.
 
-call_timeout_not_migrated.MSGID=TOP-50112
+cannot_get_nested_collection_type=O tipo de cole\u00e7\u00e3o aninhada n\u00e3o pode ser obtido.
 
 cannot_get_server_name_and_version=N\u00e3o \u00e9 poss\u00edvel obter o nome do servidor e vers\u00e3o devido \u00e0 exce\u00e7\u00e3o a seguir.  {0}
 
 cannot_unwrap_connection=N\u00e3o \u00e9 poss\u00edvel desagrupar a conex\u00e3o oracle agrupada pelo servidor de aplicativos devido \u00e0 exce\u00e7\u00e3o a seguir.  {0}
-
-cannot_unwrap_connection.MSGID=TOP-50182
 
 cannot_weave_changetracking=A classe {0} n\u00e3o p\u00f4de ser cativada para rastreio de altera\u00e7\u00f5es j\u00e1 que ela n\u00e3o \u00e9 suportada pelos seus mapeamentos.
 
@@ -199,175 +99,101 @@ cannot_weave_virtual_one_to_one=A classe {0} possui um atributo {1} que usa um m
 
 check_exist_on_method_as_true_not_supported=A configura\u00e7\u00e3o CMP de WLS nativo \u201ccheck-exists-on-method" na entidade({0}) n\u00e3o \u00e9 suportada diretamente em EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-check_exist_on_method_as_true_not_supported.MSGID=TOP-50129
-
 class_list_created_by=Lista de classe criada pelo ({0}).({1})() m\u00e9todo.
-
-class_list_created_by.MSGID=TOP-50181
 
 cmp_and_cmr_field=A entrada ejb-jar.xml para [{0}] cont\u00e9m ambas entradas <cmp-field> e <cmr-field> para o atributo [{1}].  A entrada <cmp-field> ser\u00e1 ignorada.
 
-cmp_and_cmr_field.MSGID=TOP-50054
-
 column_size_not_migrated=Tamanho da coluna do BD ({0}) n\u00e3o \u00e9 migrado. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-column_size_not_migrated.MSGID=TOP-50099
 
 communication_failure_attempting_begintransaction_retry=Uma falha de comunica\u00e7\u00e3o foi detectada ao tentar criar a transa\u00e7\u00e3o no banco de dados.  Tentando novamente iniciar transa\u00e7\u00e3o. O erro foi: {0}.
 
-communication_failure_attempting_begintransaction_retry.MSGID=TOP-50204
-
 communication_failure_attempting_query_retry=Uma falha de comunica\u00e7\u00e3o foi detectada ao tentar executar a consulta de leitura fora de uma transa\u00e7\u00e3o. Tentando novamente iniciar a consulta. O erro foi: {0}.
-
-communication_failure_attempting_query_retry.MSGID=TOP-50203
 
 config_factory=Factory de Configura\u00e7\u00e3o: ({0}) = ({1})
 
-config_factory.MSGID=TOP-50180
-
 connected_sdk=Conectado: SDK
-
-connected_sdk.MSGID=TOP-50011
 
 connected_user_database=Conectado: {3}{4}Usu\u00e1rio: {0}{3}{4}Banco de Dados: {1} Vers\u00e3o: {2}
 
-connected_user_database.MSGID=TOP-50006
-
 connected_user_database_driver=Conectado: {0}{6}Usu\u00e1rio: {1}{6}Banco de Dados: {2} Vers\u00e3o: {3}{6}Driver: {4} Vers\u00e3o: {5}
-
-connected_user_database_driver.MSGID=TOP-50005
 
 connecting=conectando({0})
 
-connecting.MSGID=TOP-50008
-
 corrupted_session_announcement=SessionID: {0} O gerenciador de descoberta recebeu um an\u00fancio de sess\u00e3o corrompida - ignorando.
-
-corrupted_session_announcement.MSGID=TOP-50026
 
 create_default_dbms_tables_not_supported=A configura\u00e7\u00e3o do CMP \u201ccriar-tabelas-dbms-padr\u00e3o\u201d do WLS nativo n\u00e3o \u00e9 suportada diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-create_default_dbms_tables_not_supported.MSGID=TOP-50124
-
 data_sync_on_ejb_create_not_supported=A configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o de dados option="ejbCreate" definida no bean de entidade ({0}) n\u00e3o \u00e9 suportada diretamente em EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-data_sync_on_ejb_create_not_supported.MSGID=TOP-50120
 
 dbPlatformHelper_defaultingPlatform=N\u00e3o \u00e9 poss\u00edvel detectar a plataforma para o nome do fornecedor [{0}]. Padronizando para [{1}]. O dialeto do banco de dados usado pode n\u00e3o corresponder com o banco de dados que voc\u00ea est\u00e1 usando. Forne\u00e7a explicitamente uma plataforma que use a propriedade "eclipselink.target-database".
 
 dbPlatformHelper_noMappingFound=N\u00e3o \u00e9 poss\u00edvel carregar o recurso [{0}] que carrega o mapeamento a partir do nome do fornecedor para a plataforma de banco de dados. A detec\u00e7\u00e3o autom\u00e1tica da plataforma de banco de dados n\u00e3o funcionar\u00e1.
 
+dbws_no_wsdl_inline_schema=O esquema sequencial WSDL [{0}] n\u00e3o p\u00f4de ser lido.
+
+dbws_orm_metadata_read_error=Os metadados do ORM [{0}] n\u00e3o puderam ser lidos.
+
+dbws_oxm_metadata_read_error=Os metadados do OXM [{0}] n\u00e3o puderam ser lidos.
+
+dbws_xml_schema_read_error=O esquema XML [{0}] n\u00e3o p\u00f4de ser lido.
+
 ddl_generation_unknown_property_value=Valor desconhecido {0} fornecido [{1}] para a unidade de persist\u00eancia [{2}]. As op\u00e7\u00f5es v\u00e1lidas s\u00e3o: [{3}]
 
 default_dbms_tables_ddl_not_supported=A configura\u00e7\u00e3o do CMP \u201ctabelas-dbms-dll-padr\u00e3o\u201d do WLS nativo n\u00e3o \u00e9 suportada diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-default_dbms_tables_ddl_not_supported.MSGID=TOP-50125
-
 default_tables_already_existed=A tabela ({0}) j\u00e1 est\u00e1 no banco de dados e n\u00e3o ser\u00e1 criada.
-
-default_tables_already_existed.MSGID=TOP-50179
 
 delay_database_insert_until_ejb_create_not_supported=A configura\u00e7\u00e3o do CMP \u201catrasar-a inser\u00e7\u00e3o-de-banco de dados-at\u00e9-ejbCreate\u201d do WLS nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-delay_database_insert_until_ejb_create_not_supported.MSGID=TOP-50130
-
 delay_database_insert_until_ejb_post_create_not_supported=A configura\u00e7\u00e3o CMP no WLS nativo "delay-database-insert-until-ejbPostCreate" na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-delay_database_insert_until_ejb_post_create_not_supported.MSGID=TOP-50131
 
 delay_updates_until_commit_not_supported=Recurso do CMP \u201catrasar-atualiza\u00e7\u00f5es-at\u00e9-confirma\u00e7\u00e3o\u201d do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-delay_updates_until_commit_not_supported.MSGID=TOP-50101
-
 deleted_objects=Objetos Exclu\u00eddos:
 
-deleted_objects.MSGID=TOP-50019
-
 deleting_object=A opera\u00e7\u00e3o de remo\u00e7\u00e3o foi executada em: {0}
-
-deleting_object.MSGID=TOP-50020
 
 deprecated_property=a propriedade {1} est\u00e1 descontinuada, a propriedade {0} deve ser usada no lugar.
 
 descriptor_named_query_cannot_be_added=N\u00e3o \u00e9 poss\u00edvel incluir um descritor de consulta nomeada cujo conflito de nomes com uma consulta existente. Consulta a Ser Inclu\u00edda: [{0}] \u00e9 denominado: [{1}] com argumentos [{2}].
 
-detect_server_platform=Plataforma do servidor detectada: {0}.
-
 dir_cleaned_for_mw_files=Os arquivos e subdiret\u00f3rios sob o diret\u00f3rio {0} foram exclu\u00eddos a fim de criar um diret\u00f3rio limpo para os novos arquivos de projeto do EclipseLink Mapping Workbench gerados
-
-dir_cleaned_for_mw_files.MSGID=TOP-50136
 
 disconnect=desconectado
 
-disconnect.MSGID=TOP-50009
-
 do_select_before_insert_not_supported=O recurso do CMP \u201cselecione-antes-de-inserir" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-do_select_before_insert_not_supported.MSGID=TOP-50102
 
 drop_connection_on_error=Aviso: Eliminando a conex\u00e3o de comando remoto para {0} com erro {1}
 
-drop_connection_on_error.MSGID=TOP-50056
-
 ejbSelect2=EjbSelect: {0}
-
-ejbSelect2.MSGID=TOP-50043
 
 ejb_jar_xml_not_found_in_input=O ejb-jar.xml n\u00e3o est\u00e1 presente no diret\u00f3rio de entrada ({0}).
 
-ejb_jar_xml_not_found_in_input.MSGID=TOP-50086
-
 elements={0}{1} elementos
-
-elements.MSGID=TOP-50017
 
 enable_batch_operations_as_true_not_supported=A configura\u00e7\u00e3o do CMP \u201cativar-opera\u00e7\u00f5es-de-lote-como-verdadeiras\u201d do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-enable_batch_operations_as_true_not_supported.MSGID=TOP-50126
-
 entity_manager_ignores_jta_data_source=A unidade de persist\u00eancia n\u00e3o usa JTA; portanto, o EntityManager ignora a origem de dados JTA. 
-
-entity_manager_ignores_jta_data_source.MSGID=TOP-50214
 
 entity_manager_ignores_nonjta_data_source=A unidade de persist\u00eancia usa JTA; portanto, o EntityManager ignora a origem de dados n\u00e3o JTA. 
 
-entity_manager_ignores_nonjta_data_source.MSGID=TOP-50213
-
 entity_manager_sets_property_while_context_is_active=A propriedade {0} est\u00e1 configurada no EntityManager quando o contexto de persist\u00eancia ativo j\u00e1 existe, ela ser\u00e1 processada e tem efeito apenas quando um novo contexto de persist\u00eancia ativo \u00e9 criado. Para criar um novo contexto de persist\u00eancia ativo o existente deve ser removido \u2013 isso pode ser feito chamando o m\u00e9todo claro no EntityManager.
-
-entity_manager_sets_property_while_context_is_active.MSGID=TOP-50210
 
 entity_not_available_during_merge=M\u00e1ximo de tentativas excedido.  N\u00e3o \u00e9 poss\u00edvel localizar o valor do cacheKey bloqueado.  Classe [{0}] ID:[{1}] Este Encadeamento: [{2}] Encadeamento Possu\u00eddo:[{3}]
 
-entity_not_available_during_merge.MSGID=TOP-50247
-
 error_during_PersistenceManager_setup_for_bean=Erro durante a configura\u00e7\u00e3o PersistenceManager para o bean: {0}
-
-error_during_PersistenceManager_setup_for_bean.MSGID=TOP-50033
 
 error_executing_ejbHome=Erro ao executar ejbHome: {0}
 
-error_executing_ejbHome.MSGID=TOP-50035
-
 error_executing_remote_command={0} comando falhou devido a: {1}
-
-error_executing_remote_command.MSGID=TOP-50061
 
 error_getting_transaction_status=Erro ao obter status de transa\u00e7\u00e3o.  {0}
 
-error_getting_transaction_status.MSGID=TOP-50044
-
 error_in_codegen=Erro durante a gera\u00e7\u00e3o de classe de bean concreto.
-
-error_in_codegen.MSGID=TOP-50032
 
 error_in_create=Erro ao criar.
 
-error_in_create.MSGID=TOP-50034
-
 error_in_remove=Erro ao remover.
-
-error_in_remove.MSGID=TOP-50036
 
 error_loading_xml_file=Exce\u00e7\u00e3o ao carregar o arquivo xml ORM: {0}: {1}
 
@@ -375,89 +201,47 @@ exception_loading_entity_class=Uma exce\u00e7\u00e3o ocorreu ao tentar inicializ
 
 exception_thrown_when_attempting_to_close_connection=Aviso: exce\u00e7\u00e3o emitida ao tentar fechar a conex\u00e3o
 
-exception_thrown_when_attempting_to_close_connection.MSGID=TOP-50060
-
 exception_thrown_when_attempting_to_close_listening_topic_connection=Exce\u00e7\u00e3o emitida ao tentar fechar a conex\u00e3o de t\u00f3pico de atendimento: {0}
-
-exception_thrown_when_attempting_to_close_listening_topic_connection.MSGID=TOP-50027
 
 exception_thrown_when_attempting_to_shutdown_cache_synch=Exce\u00e7\u00e3o emitida durante a tentativa de encerramento de sincroniza\u00e7\u00e3o de cache: {0}
 
-exception_thrown_when_attempting_to_shutdown_cache_synch.MSGID=TOP-50025
-
-exception_while_weaving=Weaver encontrou uma exce\u00e7\u00e3o ao tentar chegar a classe {0}.  A exce\u00e7\u00e3o foi: {1}
+exception_while_weaving=Weaver encontrou uma exce\u00e7\u00e3o ao tentar chegar a classe {0}. A exce\u00e7\u00e3o foi: {1}
 
 extra_cmp_field=H\u00e1 um m\u00e9todo getter e/ou m\u00e9todo setter abstrato definido no [{0}] classe de bean abstrata, mas o campo cmp correspondente [{1}] n\u00e3o est\u00e1 declarado no ejb-jar.xml.
 
-extra_cmp_field.MSGID=TOP-50051
-
 extra_ejb_select=H\u00e1 um ejbSelect abstrato definido no [{0}] classe de bean abstrata, mas a entrada ejbSelect correspondente [{1}{2}] n\u00e3o \u00e9 declarada no ejb-jar.xml.
-
-extra_ejb_select.MSGID=TOP-50052
 
 extra_finder=Existe um localizador definido no [{0}] interface inicial(s), mas a entrada do localizador correspondente [{1}{2}] n\u00e3o \u00e9 declarado no ejb-jar.xml.
 
-extra_finder.MSGID=TOP-50053
-
 failed_command_propagation=Erro: Falha ao tentar propagar o comando para {0} devido a {1}
-
-failed_command_propagation.MSGID=TOP-50059
 
 failed_to_find_mbean_server=Falha ao localizar Servidor do MBean: {0}
 
-failed_to_find_mbean_server.MSGID=TOP-50047
-
 failed_to_propogate_to=CacheSynchronization: Falha ao propagar para {0}.  {1}
-
-failed_to_propogate_to.MSGID=TOP-50024
 
 field_group_not_supported=A configura\u00e7\u00e3o do CMP \u201ccampo-de-grupo" do WLS nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-field_group_not_supported.MSGID=TOP-50132
-
 field_type_set_to_java_lang_string=O gerador de tabela padr\u00e3o n\u00e3o p\u00f4de localizar ou converter um tipo java ({1}) para um tipo de banco de dados para o campo do banco de dados ({0}). O gerador usa "java.lang.String" como o tipo java padr\u00e3o para o campo.
 
-field_type_set_to_java_lang_string.MSGID=TOP-50177
-
-force_update_not_supported=O recurso do CMP \u201ccarregamento-lento-da-chave-prim\u00e1ria\u201d do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-force_update_not_supported.MSGID=TOP-50106
+force_update_not_supported=O recurso CMP nativo Oc4j "force-update" na entidade ({0}) n\u00e3o \u00e9 suportado diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
 identitymap_for={0}{1} para: {2}
 
-identitymap_for.MSGID=TOP-50013
-
 includes=(inclui: 
-
-includes.MSGID=TOP-50014
 
 input_and_output_dir_be_different=\u00c9 necess\u00e1rio definir um diret\u00f3rio de sa\u00edda diferente do diret\u00f3rio de entrada.
 
-input_and_output_dir_be_different.MSGID=TOP-50081
-
 input_archive_format_not_supported=O utilit\u00e1rio de migra\u00e7\u00e3o suporta .ear e .jar e formato de archive de entrada. O formato de arquivo de entrada como ({0}) n\u00e3o \u00e9 suportado.
-
-input_archive_format_not_supported.MSGID=TOP-50082
 
 input_at_least_either_archive_or_xml=Use -e para especificar o nome de archive migrado, ou -x para indicar que os arquivos xml do descritor sob o diret\u00f3rio de entrada ser\u00e3o migrados; e voc\u00ea deve especificar e somente especificar um deles.
 
-input_at_least_either_archive_or_xml.MSGID=TOP-50085
-
 input_minimum_arguments=Os argumentos de entrada da linha de comandos devme incluir pelo menos -s, -x ou -a, e -o.
-
-input_minimum_arguments.MSGID=TOP-50073
 
 input_not_both_archive_and_xml=Use qualquer -e para especificar o nome do archive, ou -x para indicar que os arquivos do descritor sob o diret\u00f3rio de entrada ser\u00e3o migrados, mas n\u00e3o ambos.
 
-input_not_both_archive_and_xml.MSGID=TOP-50084
-
 input_orione_ejb_jar_augmented=O arquivo orion-ejb-jar.xml de entrada foi aprimorado para especificar o EclipseLink como Gerenciador Persistente OC4J
 
-input_orione_ejb_jar_augmented.MSGID=TOP-50122
-
 invalid_command_line_argument=O argumento da linha de comandos ({0}) \u00e9 inv\u00e1lido
-
-invalid_command_line_argument.MSGID=TOP-50098
 
 invalid_datasource_property_value={1} n\u00e3o \u00e9 um objeto v\u00e1lido para ser transmitido para a propriedade {0}.  Valores v\u00e1lidos s\u00e3o Sequ\u00eancias ou inst\u00e2ncias de javax.sql.DataSource.
 
@@ -465,131 +249,67 @@ invalid_property_value={1} n\u00e3o \u00e9 um objeto v\u00e1lido para ser transm
 
 isolation_level_not_supported=A configura\u00e7\u00e3o CMP no Oc4j nativo "isolation-level" na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-isolation_level_not_supported.MSGID=TOP-50105
-
 jar_entry_has_been_migrated=O arquivo descritor cmp nativo na entrada jar ({0}) do arquivo EAR de entrada ({1}) foi migrado.
 
-jar_entry_has_been_migrated.MSGID=TOP-50096
-
 jar_entry_not_migratable=A entrada jar ({0}) no arquivo EAR de entrada ({1}) n\u00e3o \u00e9 migr\u00e1vel.
-
-jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Exce\u00e7\u00e3o ao analisar persistence.xml.  Local do arquivo jar n\u00e3o p\u00f4de ser localizada: {0}
 
 jaxb_metadata_warning_ignoring_java_attribute=Ignorando atributo [{0}] na classe [{1}] pois nenhuma Propriedade foi gerada para ele.
 
-jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
-
 jaxb_metadata_warning_ignoring_type_on_map=Ignorando o conjunto de atributo de tipo no elemento xml j\u00e1 que o mapa xml \u00e9 especificado na propriedade [{0}].
-
-jaxb_metadata_warning_ignoring_type_on_map.MSGID=TOP-50238
 
 jaxb_metadata_warning_invalid_bound_type=O tipo de limite [{0}] para a classe do adaptador [{1}] \u00e9 inv\u00e1lido e ser\u00e1 ignorado.
 
-jaxb_metadata_warning_invalid_bound_type.MSGID=TOP-50236
-
 jaxb_metadata_warning_invalid_java_attribute=Um JavaAttribute n\u00e3o suportado [{0}] foi encontrada e ser\u00e1 ignorado.
-
-jaxb_metadata_warning_invalid_java_attribute.MSGID=TOP-50239
 
 jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=Um XmlJavaTypeAdapter inv\u00e1lido [{0}] foi especificado para pacote [{1}], e ser\u00e1 ignorado.
 
-jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter.MSGID=TOP-50240
-
 jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=Um XmlJavaTypeAdapter inv\u00e1lido [{0}] foi especificado para o campo/propriedade [{1}] na classe [{2}], e ser\u00e1 ignorado.
-
-jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter.MSGID=TOP-50242
 
 jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=Um XmlJavaTypeAdapter inv\u00e1lido [{0}] foi especificado para a classe [{1}], e ser\u00e1 ignorado.
 
-jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
-
 jaxb_metadata_warning_no_classes_to_process=N\u00e3o h\u00e1 classes a serem processados para o pacote [{0}].
-
-jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
 
 jmx_mbean_runtime_services_failed_toget_initial_context=Falha ao obter InitialContext para o registro do MBean: {0}
 
-jmx_mbean_runtime_services_failed_toget_initial_context.MSGID=TOP-50229
-
-# START NON-TRANSLATABLE
 jmx_mbean_runtime_services_get_executethreadruntime_object_failed=A vers\u00e3o do WebLogic n\u00e3o suporta executeThreadRuntime \u2013 usando ClassLoader: {0}
-# END NON-TRANSLATABLE
-
-jmx_mbean_runtime_services_get_executethreadruntime_object_failed.MSGID=TOP-50232
 
 jmx_mbean_runtime_services_identity_map_class=Mapa de Identidade [{0}] classe = {1}
 
-jmx_mbean_runtime_services_identity_map_class.MSGID=TOP-50221
-
 jmx_mbean_runtime_services_identity_map_empty=Mapa de Identidade [{0}] est\u00e1 vazio.
-
-jmx_mbean_runtime_services_identity_map_empty.MSGID=TOP-50220
 
 jmx_mbean_runtime_services_identity_map_initialized=Mapa de Identidade [{0}] \u00e9 inicializado.
 
-jmx_mbean_runtime_services_identity_map_initialized.MSGID=TOP-50223
-
 jmx_mbean_runtime_services_identity_map_invalidated=Mapa de Identidade [{0}] \u00e9 invalidado.
-
-jmx_mbean_runtime_services_identity_map_invalidated.MSGID=TOP-50224
 
 jmx_mbean_runtime_services_identity_map_non_existent=Mapa de Identidade [{0}] n\u00e3o existe.
 
-jmx_mbean_runtime_services_identity_map_non_existent.MSGID=TOP-50219
-
 jmx_mbean_runtime_services_mbeanserver_lookup_failed=Falha ao obter InitialContext para o registro do MBean: {0}
-
-jmx_mbean_runtime_services_mbeanserver_lookup_failed.MSGID=TOP-50230
 
 jmx_mbean_runtime_services_no_classes_in_session=Nenhuma Classe na sess\u00e3o.
 
-jmx_mbean_runtime_services_no_classes_in_session.MSGID=TOP-50226
-
 jmx_mbean_runtime_services_no_connection_pools_available=Nenhum conjunto de conex\u00f5es dispon\u00edvel.
-
-jmx_mbean_runtime_services_no_connection_pools_available.MSGID=TOP-50228
 
 jmx_mbean_runtime_services_no_identity_maps_in_session=N\u00e3o h\u00e1 Mapas de Identidade nesta sess\u00e3o.
 
-jmx_mbean_runtime_services_no_identity_maps_in_session.MSGID=TOP-50222
-
 jmx_mbean_runtime_services_pool_name=Nome do Conjunto = {0}
-
-jmx_mbean_runtime_services_pool_name.MSGID=TOP-50218
 
 jmx_mbean_runtime_services_print_cache_key_value=Chave [{0}] => Valor [{1}]
 
-jmx_mbean_runtime_services_print_cache_key_value.MSGID=TOP-50225
-
 jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=V\u00e1rias [{0}] inst\u00e2ncias MBeanServer JMX existem, usaremos o servidor no \u00edndice [{1}] : [{2}].
-
-jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances.MSGID=TOP-50242
 
 jmx_mbean_runtime_services_registration_mbeanserver_print=Inst\u00e2ncia do MBeanServer JMX localizada: [{0}], # de beans: [{1}], dom\u00ednio: [{2}] no \u00edndice: [{3}].
 
-jmx_mbean_runtime_services_registration_mbeanserver_print.MSGID=TOP-50243
-
 jmx_mbean_runtime_services_statement_cache_cleared=Cache de instru\u00e7\u00f5es limpo.
-
-jmx_mbean_runtime_services_statement_cache_cleared.MSGID=TOP-50227
 
 jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=MBeanServer JMX em uso: [{0}] do \u00edndice [{1}] 
 
-jmx_mbean_runtime_services_switching_to_alternate_mbeanserver.MSGID=TOP-50244
-
 jmx_mbean_runtime_services_threadpool_initialize_failed=Falha ao inicializar threadPoolRuntime MBean: {0}
-
-jmx_mbean_runtime_services_threadpool_initialize_failed.MSGID=TOP-50231
 
 jmx_unable_to_unregister_mbean=N\u00e3o \u00e9 poss\u00edvel cancelar o registro do MBean [{0}] porque o MBeanServer \u00e9 nulo. Verifique se o seu ServerPlatform \u00e9 JMX ativado.
 
-jmx_unable_to_unregister_mbean.MSGID=TOP-50249
-
 jmx_unregistered_mbean=MBean n\u00e3o registado [{0}] do MBeanServer [{1}].
-
-jmx_unregistered_mbean.MSGID=TOP-50248
 
 jpars_could_bootstrap_persistence_context=Contexto de persist\u00eancia: [{0}] n\u00e3o p\u00f4de ser autoinicializado.
 
@@ -601,53 +321,29 @@ jpars_could_not_find_session_bean=Uma chamada est\u00e1 sendo feita para um bean
 
 jta_cannot_be_disabled_in_cmp=Ao usar o Container Managed Persistence (CMP), o JTA n\u00e3o pode ser desativado. O EclipseLink ir\u00e1 agir como se a JTA estivesse ativado.
 
-jta_cannot_be_disabled_in_cmp.MSGID=TOP-50141
-
 key_identity_hash_code_object={0}Chave: {1}{2} C\u00f3digo Hash de Identidade: {3}{2}Objeto: {4}
-
-key_identity_hash_code_object.MSGID=TOP-50016
 
 key_object_null={0}Chave: {1}{2}Objeto: null
 
-key_object_null.MSGID=TOP-50015
-
 key_version_identity_hash_code_object={0}Chave: {1}{2}Vers\u00e3o: {5}{2} C\u00f3digo Hash de Identidade: {3}{2}Objeto: {4}
 
-# START NON-TRANSLATABLE
 locking_mode_not_valid=Modo de Bloqueio ({1}) na entidade({0} no orion-ejb-jar.xml n\u00e3o est\u00e1 bem definido e, portanto, n\u00e3o migrado.
-# END NON-TRANSLATABLE
-
-locking_mode_not_valid.MSGID=TOP-50115
 
 locking_required_for_database_change_notification=A entidade {0} n\u00e3o est\u00e1 usando a vers\u00e3o de bloqueio, mas possui v\u00e1rias tabelas ou relacionamentos, e est\u00e1 usando a notifica\u00e7\u00e3o de altera\u00e7\u00e3o do banco de dados Oracle, as altera\u00e7\u00f5es nos relacionamentos ou tabelas secund\u00e1rias podem n\u00e3o invalidar o cache.
 
 log_file_under_output_dir=H\u00e1 um arquivo de log denominado ({0}) sob o diret\u00f3rio de sa\u00edda ({1}).
 
-log_file_under_output_dir.MSGID=TOP-50093
-
 login_successful={0} login bem-sucedido
-
-login_successful.MSGID=TOP-50003
 
 logout_successful={0} logout bem-sucedido
 
-logout_successful.MSGID=TOP-50004
-
 mapping_not_supported_by_mw=O mapeamento do EclipseLink {0} n\u00e3o \u00e9 suportado pelo ambiente de trabalho de mapeamento
-
-mapping_not_supported_by_mw.MSGID=TOP-50137
 
 marshal_warning_null_document_root_element={0}: O elemento raiz do documento n\u00e3o definido de um objeto referenciado [{1}] \u00e9 ignorado durante a serializa\u00e7\u00e3o com um mapeamento collection|object qualquer.
 
-marshal_warning_null_document_root_element.MSGID=TOP-50183
-
 max_instance_not_supported=A configura\u00e7\u00e3o do CMP \u201cinst\u00e2ncia-m\u00e1xima\u201d do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-max_instance_not_supported.MSGID=TOP-50107
-
 max_tx_retries_not_supported=A configura\u00e7\u00e3o do CMP \u201cm\u00e1ximas-tentativas-tx\u201d do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-max_tx_retries_not_supported.MSGID=TOP-50108
 
 metadata_access_type=O tipo de acesso para a classe persistente [{1}] est\u00e1 configurado como [{0}].
 
@@ -857,283 +553,147 @@ metadata_warning_reference_column_not_found=O nome da coluna de refer\u00eancia 
 
 metamodel_print_type_header=Lista impressa de Metamodelo [{0}] Tipos a seguir:
 
-metamodel_print_type_header.MSGID=TOP-50245
-
 metamodel_print_type_value=Tipo de Metamodelo: [{0}]}
-
-metamodel_print_type_value.MSGID=TOP-50246
 
 metamodel_type_collection_empty=A cole\u00e7\u00e3o dos tipos de metamodelos est\u00e1 vazia. Classes de modelo podem n\u00e3o ter sido localizadas durante a procura de entidade para Java SE e algumas unidades de persist\u00eancia Java EE gerenciadas por cont\u00eainer.  Verifique se suas classes de entidade s\u00e3o referenciadas no arquivo persistence.xml usando elementos <class> ou um elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
-metamodel_type_collection_empty.MSGID=TOP-50250
-
 metamodel_type_collection_empty_during_lookup=A cole\u00e7\u00e3o de tipos de metamodelo [{1}] est\u00e1 vazia. Classes de modelo podem n\u00e3o ter sido localizadas durante a procura de entidade para Java SE e algumas unidades de persist\u00eancia Java EE gerenciadas por cont\u00eainer.  Verifique se suas classes de entidade s\u00e3o referenciadas em persistence.xml usando elementos <class> ou um elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>.  A consulta em [{0}] retornar\u00e1 nula.
-
-metamodel_type_collection_empty_during_lookup.MSGID=TOP-50251
 
 migration_failed=Falha na Migra\u00e7\u00e3o.
 
-migration_failed.MSGID=TOP-50091
-
 migration_input_dir_not_valid=O diret\u00f3rio de entrada ({0}) que voc\u00ea definiu n\u00e3o \u00e9 v\u00e1lido
-
-migration_input_dir_not_valid.MSGID=TOP-50080
 
 migration_output_dir_not_valid=O diret\u00f3rio de sa\u00edda ({0}) que voc\u00ea definiu n\u00e3o \u00e9 v\u00e1lido
 
-migration_output_dir_not_valid.MSGID=TOP-50079
-
 migration_successful=Migra\u00e7\u00e3o Bem-sucedida!
-
-migration_successful.MSGID=TOP-50090
-
-migration_tool_usage.MSGID=TOP-50139
-
-migration_tool_usage_example.MSGID=TOP-50140
 
 min_instance_not_supported=A configura\u00e7\u00e3o do CMP \u201cinst\u00e2ncia-m\u00ednima\u201d do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-min_instance_not_supported.MSGID=TOP-50109
-
 missing_converter=Aviso: N\u00e3o \u00e9 poss\u00edvel converter o comando {0} devido a um CommandConverter ausente \u2013 ignorando o comando
-
-missing_converter.MSGID=TOP-50058
 
 multiple_ds_not_supported=O EclipseLink CMP n\u00e3o suporta v\u00e1rias origens de dados, e usar\u00e1 apenas um deles denominado ({0}), que \u00e9 especificado na orion-ejb-jar.xml, e sendo associado a um bean de entidade definida no \u00faltimo ejb-jar.xml correspondente.
 
-multiple_ds_not_supported.MSGID=TOP-50046
-
 must_define_migration_output_dir=\u00c9 necess\u00e1rio definir um diret\u00f3rio de sa\u00edda para a ferramenta de migra\u00e7\u00e3o
-
-must_define_migration_output_dir.MSGID=TOP-50078
 
 mw_project_generated_and_under=Os arquivos de projeto do EclipseLink Workbench est\u00e3o sob o projeto migrado, ({0}).
 
-mw_project_generated_and_under.MSGID=TOP-50092
-
 named_argument_not_found_in_query_parameters=Par\u00e2metro de consulta ausente para o argumento nomeado: {0} "null" ser\u00e1 substitu\u00eddo.
-
-named_argument_not_found_in_query_parameters.MSGID=TOP-50247
 
 nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=A classe {0} j\u00e1 est\u00e1 limpando. A consulta ser\u00e1 executada sem altera\u00e7\u00f5es adicionais sendo gravadas no banco de dados.  Se a consulta for condicional em consequ\u00eancia de dados alterados as altera\u00e7\u00f5es podem n\u00e3o ser refletidas nos resultados.  Os usu\u00e1rios devem emitir uma chamada de flush() ap\u00f3s a conclus\u00e3o das altera\u00e7\u00f5es dependentes e antes disso flush() para assegurar resultados corretos.
 
-nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending.MSGID=TOP-50233
-
 new_objects=Novos Objetos:
-
-new_objects.MSGID=TOP-50023
 
 no_exclusive_write_access_not_supported=O recurso do CMP \u201csem-acesso-de-grava\u00e7\u00e3o-exclusivo" do Ox4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-no_exclusive_write_access_not_supported.MSGID=TOP-50103
-
 no_jar_entry_migratable_in_ear=Nenhuma das entradas jar no arquivo EAR de entrada ({0}) \u00e9 migr\u00e1vel.
 
-no_jar_entry_migratable_in_ear.MSGID=TOP-50097
-
 no_session_found=N\u00e3o foi poss\u00edvel localizar a sess\u00e3o com o nome [{0}] no arquivo session.xml [{1}]
-
-no_session_found.MSGID=TOP-50012
 
 non_jpa_allowed_type_used_for_collection_using_lazy_access=O elemento [{1}] dentro da classe de entidade [{0}] usa um tipo de cole\u00e7\u00e3o [{2}] quando a especifica\u00e7\u00e3o JPA suporta apenas java.util.Collection, java.util.Set, java.util.List, ou java.util.Map.  Esse tipo \u00e9 suportado com o carregamento ansioso; usar o carregamento lento com este tipo de cole\u00e7\u00e3o requer configura\u00e7\u00e3o adicional e uma implementa\u00e7\u00e3o do IndirectContainer que estende [{2}] ou configurar o mapeamento para uso indireto b\u00e1sicas e o tipo a ser ValueholderInterface.
 
 objectchangepolicy_turned_off=Altere o rastreamento desativado para: {0}
 
-objectchangepolicy_turned_off.MSGID=TOP-50049
-
 oc4j_native_migration_start=OC4J-Native CMP -> OC4J EclipseLink CMP Migration STARTS......
-
-oc4j_native_migration_start.MSGID=TOP-50075
 
 old_pessimistic_locking_not_supported=A configura\u00e7\u00e3o do CMP \u201cbloqueio-pessimista-antigo" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-old_pessimistic_locking_not_supported.MSGID=TOP-50114
-
 one_to_one_join_outer_migrated=A jun\u00e7\u00e3o externa de um-para-um, definida para o campo cmr ({0}) do bean de entidade ({1}) n\u00e3o \u00e9 suportada diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-one_to_one_join_outer_migrated.MSGID=TOP-50118
 
 optimistic_locking_not_supported=A configura\u00e7\u00e3o do CMP locking-mode="optimistic" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-optimistic_locking_not_supported.MSGID=TOP-50113
-
-oracle.core.ojdl.logging.MessageIdSuffixResourceBundle=oracle.core.ojdl.logging.MessageIdSuffixResourceBundle
-
 orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml n\u00e3o existe sob o diret\u00f3rio de entrada ({0}) que voc\u00ea especificou.
-
-orion_ejb_jar_xml_not_found_in_input.MSGID=TOP-50087
 
 osgi_initializer=O inicializador OSGi: [{0}].
 
-osgi_initializer.MSGID=TOP-50212
-
 osgi_initializer_failed=A constru\u00e7\u00e3o do inicializador OSGi espec\u00edfico do ambiente, [{0}] falhou com a mensagem: [{1}].
-
-osgi_initializer_failed.MSGID=TOP-50211
 
 overriding_cache_isolation=A Entidade-Pai {0} possui um n\u00edvel de isolamento de: {1} que \u00e9 mais protetora do que a subclasse {2} com isolamento: {3} ent\u00e3o a subclasse foi definida para o n\u00edvel de isolamento {1}.
 
 ox_lowering_global_logging_from_default_info_to_warning= {0} Abaixando a cria\u00e7\u00e3o de log global a partir da INFO padr\u00e3o para o n\u00edvel WARNING.
 
-ox_lowering_global_logging_from_default_info_to_warning.MSGID=TOP-50200
-
 ox_lowering_session_logging_from_default_info_to_warning= {0} Abaixando a cria\u00e7\u00e3o de log de sess\u00e3o a partir da INFO padr\u00e3o para o n\u00edvel WARNING.
-
-ox_lowering_session_logging_from_default_info_to_warning.MSGID=TOP-50202
 
 ox_turn_global_logging_off= {0} Desligando a cria\u00e7\u00e3o de log de sess\u00e3o global.
 
-ox_turn_global_logging_off.MSGID=TOP-50199
-
 ox_turn_session_logging_off= {0} Desligando a cria\u00e7\u00e3o de log de sess\u00e3o.
 
-ox_turn_session_logging_off.MSGID=TOP-50201
-
 parse_ejb_jar_with_validation_fails=A an\u00e1lise sint\u00e1tica do ejb-jar.xml com valida\u00e7\u00e3o falha com o erro ({0}). A ferramenta de migra\u00e7\u00e3o analisar\u00e1 o arquivo xml sem valida\u00e7\u00e3o.
-
-parse_ejb_jar_with_validation_fails.MSGID=TOP-50094
 
 persistence_unit_ignores_statments_cache_setting=O cache de instru\u00e7\u00f5es n\u00e3o pode ser ativado porque nenhum conjunto de conex\u00f5es est\u00e1 configurado.
 
 persistence_unit_processor_error_in_class_forname_weaving_disabled=O classLoader [{0}]: falhou ao carregar a classe [{1}]. Weaving foi desativado para esta sess\u00e3o. O EclipseLink pode ser incapaz de obter um carregador de classes mandatado de especifica\u00e7\u00e3o do servidor, voc\u00ea poder\u00e1 ser capaz de usar o weaving est\u00e1tico como uma solu\u00e7\u00e3o alternativa. 
 
-persistence_unit_processor_error_in_class_forname_weaving_disabled.MSGID=TOP-50209
-
 persistence_unit_processor_error_loading_class={0}: {1} foi emitida em tentativa de PersistenceLoadProcessor de carregar a classe {2}. A classe \u00e9 ignorada.
 
 persistence_unit_processor_error_loading_class_weaving_disabled=O classLoader [{0}]: para PersistenceLoadProcessor [{1}] falhou ao carregar a classe [{2}]. Weaving foi desativado para esta sess\u00e3o. O EclipseLink pode ser incapaz de obter um carregador de classes mandatado de especifica\u00e7\u00e3o do servidor, voc\u00ea poder\u00e1 ser capaz de usar o weaving est\u00e1tico como uma solu\u00e7\u00e3o alternativa. 
 
-persistence_unit_processor_error_loading_class_weaving_disabled.MSGID=TOP-50205
-
 persistence_unit_processor_jboss_temp_classloader_bypassed=O classLoader tempor\u00e1rio para PersistenceLoadProcessor [{0}] n\u00e3o est\u00e1 dispon\u00edvel.  Comutando o classLoader para [{1}].  Weaving foi desativado para esta sess\u00e3o. O EclipseLink pode ser incapaz de obter um carregador de classes mandatado de especifica\u00e7\u00e3o do servidor, voc\u00ea poder\u00e1 ser capaz de usar o weaving est\u00e1tico como uma solu\u00e7\u00e3o alternativa. 
-
-persistence_unit_processor_jboss_temp_classloader_bypassed.MSGID=TOP-50208
 
 persistence_unit_processor_npe_temp_classloader=O classLoader [{0}] para PersistenceLoadProcessor [{1}] est\u00e1 provocando uma NPE em loadClass. Comutando o classLoader para [{2}].  Weaving foi desativado para esta sess\u00e3o. O EclipseLink pode ser incapaz de obter um carregador de classes mandatado de especifica\u00e7\u00e3o do servidor, voc\u00ea poder\u00e1 ser capaz de usar o weaving est\u00e1tico como uma solu\u00e7\u00e3o alternativa. 
 
-persistence_unit_processor_npe_temp_classloader.MSGID=TOP-50207
-
 persistence_unit_processor_null_temp_classloader=O classLoader para PersistenceLoadProcessor [{0}] \u00e9 nulo. Weaving foi desativado para esta sess\u00e3o. O EclipseLink pode ser incapaz de obter um carregador de classes mandatado de especifica\u00e7\u00e3o do servidor, voc\u00ea poder\u00e1 ser capaz de usar o weaving est\u00e1tico como uma solu\u00e7\u00e3o alternativa. 
-
-persistence_unit_processor_null_temp_classloader.MSGID=TOP-50206
 
 persistence_unit_processor_sap_temp_classloader_bypassed=O classLoader tempor\u00e1rio para PersistenceLoadProcessor [{0}] n\u00e3o est\u00e1 dispon\u00edvel.  Comutando o classLoader para [{1}].  Weaving foi desativado para esta sess\u00e3o. O EclipseLink pode ser incapaz de obter um carregador de classes mandatado de especifica\u00e7\u00e3o do servidor, voc\u00ea poder\u00e1 ser capaz de usar o weaving est\u00e1tico como uma solu\u00e7\u00e3o alternativa. 
 
 problem_adding_connection=N\u00e3o \u00e9 poss\u00edvel incluir conex\u00e3o remota a partir do {0} devido ao erro: {1}
 
-problem_adding_connection.MSGID=TOP-50062
-
 problem_adding_remote_connection=Problema ao adicionar a conex\u00e3o remota: {0}
-
-problem_adding_remote_connection.MSGID=TOP-50031
 
 problem_reconnect_to_jms=N\u00e3o \u00e9 poss\u00edvel reconectar-se ao nome do T\u00f3pico JMS {0} devido ao erro: {1}
 
-problem_reconnect_to_jms.MSGID=TOP-50063
-
 problem_registering_mbean=Problema ao registrar o MBean: {0}
-
-problem_registering_mbean.MSGID=TOP-50215}
 
 problem_unregistering_mbean=Problema ao cancelar o registro do MBean: {0}
 
-problem_unregistering_mbean.MSGID=TOP-50216
-
 problem_while_registering=Problema ao registrar: {0}
-
-problem_while_registering.MSGID=TOP-50048
 
 query_has_both_join_attributes_and_partial_attributes={0} denominado {1} tem dois atributos de jun\u00e7\u00e3o e atributos parciais. Essas duas tecnologias n\u00e3o foram projetadas para trabalhar em conjunto, o resultado pode ser imprevis\u00edvel.
 
-query_has_both_join_attributes_and_partial_attributes.MSGID=TOP-50196
-
 query_has_joined_attribute_outside_fetch_group={0}: atributo unido [{1}] n\u00e3o est\u00e1 inclu\u00eddo no grupo de buscas. Os dados do atributo unido (apesar de ler a partir do banco de dados) ser\u00e3o ignorados. Um novo sql ser\u00e1 executado para ler novamente o objeto referenciado pelo atributo unido; e ainda outro sql para ler o objeto principal todo (devido \u00e0 configura\u00e7\u00e3o do valor para o atributo fora do grupo de buscas). Inclua o atributo buscado no grupo de busca ou remova-o.
-
-query_has_joined_attribute_outside_fetch_group.MSGID=TOP-50234
 
 received_corrupt_announcement=Aviso: O gerenciador de descoberta n\u00e3o p\u00f4de processar o an\u00fancio de servi\u00e7o devido a {0} \u2013 ignorando o an\u00fancio
 
-received_corrupt_announcement.MSGID=TOP-50057
-
 received_unexpected_message_type=Tipo de mensagem inesperada recebida: {0} do t\u00f3pico: {1}; ignorando
-
-received_unexpected_message_type.MSGID=TOP-50030
 
 reconnecting=reconectando({0})
 
-reconnecting.MSGID=TOP-50010
-
 register_new_for_persist=A opera\u00e7\u00e3o PERSIST chamou em: {0}.
-
-register_new_for_persist.MSGID=TOP-50021
 
 relational_descriptor_support_only=O gerador de tabela padr\u00e3o suporta atualmente apenas a gera\u00e7\u00e3o de esquema de tabela padr\u00e3o a partir de um projeto relacional.
 
-relational_descriptor_support_only.MSGID=TOP-50178
-
 relationship_cacheing_not_supported=A configura\u00e7\u00e3o do CMP \u201carmazenamento em cache-de relacionamento" do WLS nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-relationship_cacheing_not_supported.MSGID=TOP-50133
 
 removeEJB_return=retorno removeEJB: {0}
 
-removeEJB_return.MSGID=TOP-50045
-
 removing_unique_constraint=Removendo a defini\u00e7\u00e3o de restri\u00e7\u00e3o UNIQUE de [{0}] porque ela tamb\u00e9m \u00e9 uma chave prim\u00e1ria.
-
-removing_unique_constraint.MSGID=TOP-50253
 
 resource_local_persistence_init_info_ignores_jta_data_source=PersistenceUnitInfo {0} possui transactionType RESOURCE_LOCAL e, portanto, jtaDataSource ser\u00e1 ignorado
 
 retreived_null_message=Recuperada mensagem nula do t\u00f3pico: {0}; ignorando
 
-retreived_null_message.MSGID=TOP-50029
-
 retreived_unknown_message_type=Tipo de mensagem desconhecida recuperado: {0} do t\u00f3pico: {1}; ignorando
-
-retreived_unknown_message_type.MSGID=TOP-50028
 
 sdo_classgenerator_exception={2} Um [{0}] Exce\u00e7\u00e3o ocorreu \u2013 a mensagem \u00e9 [{1}]
 
-sdo_classgenerator_exception.MSGID=TOP-50195
-
 sdo_error_processing_referenced_schema=Um {0} ocorreu ao processar o esquema referenciado com uri {1} com schemaLocation {2}.
-
-sdo_error_processing_referenced_schema.MSGID=TOP-50198
 
 sdo_invalid_schemaLocation=N\u00e3o foi poss\u00edvel criar o schemaLocation [{0}] para importar com o uri [{1}].
 
 sdo_missing_schemaLocation=Esquema referido com uri {0} n\u00e3o p\u00f4de ser processado porque nenhum atributo schemaLocation foi especificado.
 
-sdo_missing_schemaLocation.MSGID=TOP-50197
-
 sdo_type_generation_modified_class_naming_format_to={0}: Tipo Gerado [{1}] o nome de classe java foi alterado para [{2}] para seguir as conven\u00e7\u00f5es de nomenclatura da classe.
-
-sdo_type_generation_modified_class_naming_format_to.MSGID=TOP-50192
 
 sdo_type_generation_modified_function_naming_format_to={0}: Tipo Gerado [{1}] o nome do m\u00e9todo get/set java foi alterado para [{2}] para seguir as conven\u00e7\u00f5es de nomenclatura da classe.
 
-sdo_type_generation_modified_function_naming_format_to.MSGID=TOP-50191
-
 sdo_type_generation_warning_class_name_violates_java_spec={0}: Tipo Gerado [{1}] conflitos com a especifica\u00e7\u00e3o de regras de nomenclatura do Java para [{2}] e deve ser renomeado.
-
-sdo_type_generation_warning_class_name_violates_java_spec.MSGID=TOP-50193
 
 sdo_type_generation_warning_class_name_violates_sdo_spec={0}: Tipo Gerado [{1}] em conflito com a especifica\u00e7\u00e3o de regras de nomenclatura do SDO para [{2}] e deve ser renomeado.
 
-sdo_type_generation_warning_class_name_violates_sdo_spec.MSGID=TOP-50194
-
 sequence_cachekey_improper_format=A configura\u00e7\u00e3o do CMP \u201ctamanho-da-chave-de-cache" do WLS nativo na entidade ({0}) \u00e9 mal-formada com o valor ({1})
-
-sequence_cachekey_improper_format.MSGID=TOP-50135
 
 session_key_for_mbean_name_is_null=O nome da sess\u00e3o usada para o registro do MBean n\u00e3o pode ser nulo.
 
-session_key_for_mbean_name_is_null.MSGID=TOP-50217
-
 session_manager_no_partition=Nenhuma inst\u00e2ncia da parti\u00e7\u00e3o associada \u00e0 inst\u00e2ncia SessionManager atual.
-
-session_manager_no_partition.MSGID=TOP-50254
 
 sessions_xml_path_where_session_load_from=As informa\u00e7\u00f5es de sess\u00e3o s\u00e3o carregadas a partir de [{0}].
 
@@ -1147,99 +707,49 @@ sop_object_wrong_version=Removendo o sopObject serializado da linha porque ele t
 
 src_pm_name_first_argument=\u00c9 necess\u00e1rio especificar o nome do PM de origem no argumento de entrada primeiro como: -sOc4j-native ou -sWeblogic.
 
-src_pm_name_first_argument.MSGID=TOP-50074
-
 table_existed_during_creation=Falha na cria\u00e7\u00e3o da tabela. Se ela j\u00e1 existe, ela deve ser eliminada primeiro. Isso pode ser feito manualmente ou configurando o atributo db-table-gen em orion-ejb-jar.xml.
-
-table_existed_during_creation.MSGID=TOP-50037
 
 template_orion_ejb_jar_created=Um arquivo orion-ejb-jar.xml modelo foi criado
 
-template_orion_ejb_jar_created.MSGID=TOP-50123
-
 topLink_version=EclipseLink, vers\u00e3o: {0}
-
-topLink_version.MSGID=TOP-50001
 
 toplink=[EL]: 
 
-toplink.MSGID=TOP-50071
-
 toplink_cmp_bean_name_xml_deprecated=O suporte para toplink-cmp-bean_name.xml foi descontinuado. Consulte a documenta\u00e7\u00e3o para o uso do toplink-ejb-jar.xml
-
-toplink_cmp_bean_name_xml_deprecated.MSGID=TOP-50055
 
 toplink_config=[EL Config]: 
 
-toplink_config.MSGID=TOP-50067
-
 toplink_ejb_jar_in_jar=toplink-ejb-jar.xml \u00e9 inclu\u00eddo no arquivo jar({0}), portanto, nenhuma migra\u00e7\u00e3o ser\u00e1 executada para esse jar.
-
-toplink_ejb_jar_in_jar.MSGID=TOP-50138
 
 toplink_ejb_jar_xml_found_in_input=O toplink-ejb-jar.xml est\u00e1 no diret\u00f3rio de entrada ({0}). \u00c9 necess\u00e1rio remover o descritor de toplink a partir do diret\u00f3rio de entrada para processar a migra\u00e7\u00e3o.
 
-toplink_ejb_jar_xml_found_in_input.MSGID=TOP-50089
-
 toplink_fine=[Multa EL]: 
-
-toplink_fine.MSGID=TOP-50068
 
 toplink_finer=[Melhor EL]: 
 
-toplink_finer.MSGID=TOP-50069
-
 toplink_finest=[Excelente EL]: 
-
-toplink_finest.MSGID=TOP-50070
 
 toplink_info=[Informa\u00e7\u00f5es EL]: 
 
-toplink_info.MSGID=TOP-50066
-
 toplink_severe=[Grave EL]: 
-
-toplink_severe.MSGID=TOP-50064
 
 toplink_warning=[Aviso EL]: 
 
-toplink_warning.MSGID=TOP-50065
-
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidade UnitOfWork: {1}
 
-unitofwork_identity_hashcode.MSGID=TOP-50018
-
-unknown_ddl_generation_property.MSGID=TOP-50252
-
 update_all_fields_not_supported=O recurso do CMP \u201catualizar-todos-os-campos" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-update_all_fields_not_supported.MSGID=TOP-50110
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery n\u00e3o pode usar liga\u00e7\u00e3o nessa plataforma de banco de dados. Conjunto da consulta alterado para executar sem liga\u00e7\u00e3o.
 
 validate_db_schema_with_not_supported=A configura\u00e7\u00e3o do CMP \u201cvalidar-esquema-db-com" do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-validate_db_schema_with_not_supported.MSGID=TOP-50127
-
 validate_ejb_jar=Validando ejb-jar.xml \u00e9 iniciado, ele pode levar algum tempo...
-
-validate_ejb_jar.MSGID=TOP-50076
 
 validity_timeout_not_supported=A configura\u00e7\u00e3o do CMP \u201cvalidity-timeout" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-validity_timeout_not_supported.MSGID=TOP-50111
-
 verifiy_columns_read_locking_not_supported=A configura\u00e7\u00e3o otimista "Read" em "verify-columns" na entidade ({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
-verifiy_columns_read_locking_not_supported.MSGID=TOP-50116
-
 verifiy_rows_read_locking_not_supported=A configura\u00e7\u00e3o otimista "Read" em "verify-rows" na entidade ({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-verifiy_rows_read_locking_not_supported.MSGID=TOP-50117
-
-weaver_change_tracking_disabled_missing_field.MSGID=TOP-50175
-
-weaver_change_tracking_disabled_not_supported.MSGID=TOP-50176
 
 weaver_class_not_in_project=O weaver encontrou uma classe que n\u00e3o \u00e9 parte do projeto: {0}.
 
@@ -1247,31 +757,15 @@ weaver_could_not_write=O weaver encontrou uma exce\u00e7\u00e3o ao tentar gravar
 
 weaver_disable_by_system_property=Weaving desativado pela propriedade de sistema {0}
 
-weaver_disable_by_system_property.MSGID=TOP-50173
-
 weaver_not_overwriting=O weaver n\u00e3o est\u00e1 sobrescrevendo classe {0} porque ele n\u00e3o foi configurado para sobrescrever.
 
 weaver_null_project=A sess\u00e3o do projeto do weaver n\u00e3o pode ser nula
 
-weaver_null_project.MSGID=TOP-50172
-
-weaver_processing_class=Classe de processamento weaver: {0}.
-
-weaver_valueholders_disabled_missing_field.MSGID=TOP-50174
-
 weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml n\u00e3o existe no diret\u00f3rio de entrada ({0}) que voc\u00ea especificou.
-
-weblogic_ejb_jar_xml_not_found_in_input.MSGID=TOP-50088
 
 weblogic_native_migration_start=WebLogic-Native CMP -> OC4J EclipseLink CMP Migration STARTS......
 
-weblogic_native_migration_start.MSGID=TOP-50077
-
 weblogic_ql_not_supported=WebLogic-QL({0}) do m\u00e9todo({1} da entidade({2}) n\u00e3o \u00e9 migrado visto que o EclipseLink n\u00e3o suporta idioma WebLogic QL.
 
-weblogic_ql_not_supported.MSGID=TOP-50121
-
 weblogic_query_not_supported=A configura\u00e7\u00e3o do CMP \u201cconsulta-weblogic" do ELS nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
-
-weblogic_query_not_supported.MSGID=TOP-50134
 

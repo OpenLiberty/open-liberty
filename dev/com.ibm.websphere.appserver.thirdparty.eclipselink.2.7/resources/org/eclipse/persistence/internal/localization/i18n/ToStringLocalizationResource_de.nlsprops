@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -33,7 +37,8 @@ connected=verbunden
 
 connector=Connector
 
-context=Kontext:	
+context=Kontext:
+
 
 database_name=Datenbankname
 
@@ -160,6 +165,10 @@ staticweave_commandline_help_message_7of19=           Diese Option wird gew\u00f
 staticweave_commandline_help_message_8of19=    -persistencexml
 
 staticweave_commandline_help_message_9of19=           Gibt die Position der Datei persistence.xml relativ zum Stammverzeichnis der Persistenzeinheit an, wenn sie sich an einer anderen Position als in META-INF/persistence.xml befindet.
+
+staticweave_processor_dir_not_created=Das Verzeichnis {0} kann nicht erstellt werden.
+
+staticweave_processor_file_not_created=Die Datei {0} kann nicht erstellt werden.
 
 staticweave_processor_unknown_outcome=Das Weaving von Klassen, die in einem Verzeichnis gespeichert sind, und die Ausgabe in einer JAR-Datei f\u00fchren h\u00e4ufig zu unerwarteten Ergebnissen.
 

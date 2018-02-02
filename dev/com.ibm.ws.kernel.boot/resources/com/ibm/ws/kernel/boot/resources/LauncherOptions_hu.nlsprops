@@ -15,12 +15,18 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Haszn\u00e1lat: java [JVM param\u00e9terek] -javaagent:bin/tools/ws-javaagent.jar \\\n\
-\t-jar bin/tools/ws-server.jar serverName [m\u0171veletek] [param\u00e9terek]  
-scriptUsage=Haszn\u00e1lat: {0} m\u0171velet serverName [param\u00e9terek]
+\t-jar bin/tools/ws-server.jar serverName {0} [param\u00e9terek]  
+scriptUsage=Haszn\u00e1lat: {0} {1} serverName [param\u00e9terek]
 
 use.actions=M\u0171veletek:
 use.options=Param\u00e9terek:
+use.options.gen.desc=\ \ \ \ Az egyes m\u0171veletek r\u00e9szletes param\u00e9terinform\u00e1ci\u00f3it a help [m\u0171veletn\u00e9v] paranccsal k\u00e9rheti le.
 use.jvmarg=JVM m\u0171veletek:
+category-key.lifecycle=Kiszolg\u00e1l\u00f3i \u00e9letciklus
+category-key.win=Windows
+category-key.service=Hibafelder\u00edt\u00e9s
+category-key.help=Inform\u00e1ci\u00f3k
+category-key.misc=Egyebek
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -114,22 +120,38 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tT\u00f6rli a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny \u00f6sszes gyors\u00edt\u00f3t\u00e1razott inform\u00e1ci\u00f3it.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="a c\u00e9l arch\u00edvumf\u00e1jl \u00fatvonala"
-option-desc.archive=\tAdja meg a csomagol\u00e1s vagy ki\u00edrat\u00e1s m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum\n\
-\tc\u00e9lt. A c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv              \n\
+option-desc.dump.archive=\tAdja meg a ki\u00edrat\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \
+      \n\
+\tA c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv    \n\
 \t\u00fatvonalk\u00e9nt. Ha nem adja meg ezt a param\u00e9tert, akkor az arch\u00edvumf\u00e1jl\n\
 \ta kiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban j\u00f6n l\u00e9tre. A c\u00e9l f\u00e1jln\u00e9v          \n\
-\tkiterjeszt\u00e9s befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t.       \n\
-\tA csomagol\u00e1s m\u0171velet alap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS          \n\
-\trendszeren "pax", egy\u00e9b platformokon "zip".                                    \n\
-\tA "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\
-\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. \
-                                     \n\
-\tA "jar" arch\u00edv form\u00e1tum a "runnable" \u00e9rt\u00e9kkel az --include param\u00e9teren\n\
-\tfuttathat\u00f3 jar f\u00e1jlt hoz l\u00e9tre, amely a jar f\u00e1jlb\u00f3l a java -jar haszn\u00e1lat\u00e1val\n\
-\tfuttathatja a Liberty kiszolg\u00e1l\u00f3t.
+\tkiterjeszt\u00e9se befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t. A csomagol\u00e1s m\u0171velet\n\
+\talap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS rendszeren "pax", egy\u00e9b platformokon\n\
+\t"zip". A "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\
+\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. 
+option-desc.package.archive=\tAdja meg a csomagol\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \
+      \n\
+\tA c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv    \n\
+\t\u00fatvonalk\u00e9nt. Ha nem adja meg ezt a param\u00e9tert, akkor az arch\u00edvumf\u00e1jl\n\
+\ta kiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban j\u00f6n l\u00e9tre. A c\u00e9l f\u00e1jln\u00e9v          \n\
+\tkiterjeszt\u00e9se befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t. A csomagol\u00e1s m\u0171velet\n\
+\talap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS rendszeren "pax", egy\u00e9b platformokon\n\
+\t"zip". A "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\
+\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. A "jar" arch\u00edv form\u00e1tum \n\
+\ta "runnable" \u00e9rt\u00e9kkel az --include param\u00e9teren futtathat\u00f3 jar f\u00e1jlt hoz l\u00e9tre, \n\
+\tamely a jar f\u00e1jlb\u00f3l a java -jar haszn\u00e1lat\u00e1val futtathatja a Liberty \n\
+\tkiszolg\u00e1l\u00f3t.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=\u00e9rt\u00e9k,\u00e9rt\u00e9k,...
-option-desc.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek a\n \tm\u0171velett\u0151l f\u00fcggenek.
+option-desc.javadump.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: heap, system \n\
+\tthread.
+option-desc.package.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: all*, usr,   \n\
+\tminify, runnable. Ha a "runnable" \u00e9rt\u00e9ket adja meg, az eredm\u00e9ny\u00fcl kapott csomag\n\
+\ta kiszolg\u00e1l\u00f3t futtat\u00f3 v\u00e9grehajthat\u00f3 jar lesz. A "minify" param\u00e9ter \n\
+\ta lehet\u0151 legkisebb k\u00e9pf\u00e1jlt \u00e1ll\u00edtja el\u0151 a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. A "usr" param\u00e9ter olyan csomagot\n\
+\thoz l\u00e9tre, amely a kiszolg\u00e1l\u00f3t \u00e9s az alkalmaz\u00e1st tartalmazza, de a fut\u00e1si k\u00f6rnyezetet nem. \n\
+\tAz alap\u00e9rtelmezett "all" param\u00e9ter egy mindent tartalmaz\u00f3\n\
+\tkiszolg\u00e1l\u00f3csomagot hoz l\u00e9tre.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="sablonN\u00e9v"
 option-desc.template=\tAdja meg a sablon nev\u00e9t az \u00faj kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1s\u00e1hoz. 

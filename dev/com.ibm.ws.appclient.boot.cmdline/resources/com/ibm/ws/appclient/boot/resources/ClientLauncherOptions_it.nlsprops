@@ -20,7 +20,11 @@ scriptUsage=Utilizzo: {0} action clientName [opzioni]
 
 use.actions=Azioni:
 use.options=Opzioni:
+use.options.gen.desc=\ \ \ \ Utilizzare il comando help [nomeAzione] per informazioni dettagliate sulle opzioni di ciascuna azione.
 use.jvmarg=Opzioni JVM:
+category-key.lifecycle=Ciclo di vita server
+category-key.help=Informazioni
+category-key.misc=Varie
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -67,17 +71,18 @@ option-desc.clean=\tElimina tutte le informazioni memorizzate nella cache relati
 option-key.archive=\ \ \ \ --archive="percorso del file di archivio di destinazione"
 option-desc.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione \n\
 \tcreazione del package. La destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
-\tun percorso relativo. Se questa opzione viene omessa, il file di archivio verr\u00e0\n\
-\tcreato nella directory di output del client. L'estensione \n\
-\tdel nome file di destinazione pu\u00f2 influire sul formato dell'archivio generato.       \n\
-\tIl formato dell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS   \n\
-\te "zip" su tutte le altre piattaforme.                                    \n\
-\tIl formato "jar" dell'archivio produrr\u00e0 un jar ad estrazione automatica simile \n\
-\tall'archivio del programma di installazione originale
+\tun percorso relativo. Se questa opzione viene omessa, l'archivio viene\n\
+\tcreato nella directory di output del client. L'estensione del nome file \n\
+\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\
+\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\
+\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\
+\tad estrazione automatica simile all'archivio del programma di installazione originale.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tUn elenco di valori delimitati da virgole. I valori validi variano in base\n\
-\tall'azione.
+option-desc.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: all*, usr,   \n\
+\tminify. L'opzione usr crea un package che contiene il server\n\
+\te l'applicazione, ma non il runtime. L'opzione predefinita all produce\n\
+\tun package client che contiene tutto.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica il nome del modello da utilizzare quando si crea un nuovo client. 

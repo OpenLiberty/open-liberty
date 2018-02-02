@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: L'appel de la m\u00e9thode O
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La fonction construit des impl\u00e9mentations Tracer avec une interface OpentracingTracerFactory fournie par l'utilisateur. La m\u00e9thode OpentracingTracerFactory.newInstance a renvoy\u00e9 la valeur null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=D\u00e9terminer pourquoi la m\u00e9thode OpentracingTracerFactory newInstance fournie par l'utilisateur a renvoy\u00e9 la valeur null.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: L'attribut pattern d'un \u00e9l\u00e9ment de configuration opentracing excludeSpans ou includeSpans est vide.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Un masque d'URI valide doit \u00eatre sp\u00e9cifi\u00e9 et ne doit pas \u00eatre vide.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consultez la documentation sur les masques valides.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: L'attribut pattern {0} d'un \u00e9l\u00e9ment de configuration opentracing excludeSpans ou includeSpans d\u00e9signe un URI non valide (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Vous devez sp\u00e9cifier un masque URI valide. Le probl\u00e8me le plus fr\u00e9quent est un codage d'URL % incorrect pour les caract\u00e8res non valides.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consultez la RFC 2396 et v\u00e9rifiez que vous avez sp\u00e9cifi\u00e9 un codage d'URL % pour les caract\u00e8res non valides.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: A felhaszn\u00e1l\u00f3 \u00
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus null\u00e9rt\u00e9ket adott vissza.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza null\u00e9rt\u00e9ket.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: Egy opentracing excludeSpans vagy includeSpans konfigur\u00e1ci\u00f3s elem minta attrib\u00fatuma \u00fcres.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Meg kell adni egy \u00e9rv\u00e9nyes URI mint\u00e1t, \u00e9s nem lehet \u00fcres.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Forduljon a dokument\u00e1ci\u00f3hoz \u00e9rv\u00e9nyes mint\u00e1k\u00e9rt.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: Egy opentracing excludeSpans vagy includeSpans konfigur\u00e1ci\u00f3s elem {0} minta attrib\u00fatuma \u00e9rv\u00e9nytelen URI (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Meg kell adni egy \u00e9rv\u00e9nyes URI mint\u00e1t. A leg\u00e1ltal\u00e1nosabb probl\u00e9ma az \u00e9rv\u00e9nytelen karakterek nem megfelel\u0151 helyettes\u00edt\u00e9se a % karakterrel az URL k\u00f3dol\u00e1s sor\u00e1n.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Forduljon az RFC 2396 szabv\u00e1nyhoz, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151en helyettes\u00edtette az \u00e9rv\u00e9nytelen karaktereket a % karakterekkel az URL k\u00f3dol\u00e1sa sor\u00e1n.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

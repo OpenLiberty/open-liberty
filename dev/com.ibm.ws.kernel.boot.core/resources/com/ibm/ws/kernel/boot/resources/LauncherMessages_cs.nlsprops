@@ -668,6 +668,14 @@ error.zosProcStart.jobname.invalid=CWWKE0943E: Nezda\u0159ilo se spustit procedu
 error.zosProcStart.jobname.invalid.explanation=N\u00e1zev \u00falohy STC ur\u010den\u00fd vlastnost\u00ed WLP_ZOS_JOBNAME v souboru server.env nen\u00ed platn\u00fd. N\u00e1zev \u00falohy nesm\u00ed b\u00fdt del\u0161\u00ed ne\u017e 8 znak\u016f a nesm\u00ed obsahovat \u010d\u00e1rku.
 error.zosProcStart.jobname.invalid.useraction=Ujist\u011bte se, \u017ee n\u00e1zev \u00falohy nen\u00ed del\u0161\u00ed ne\u017e osm znak\u016f a \u017ee neobsahuje \u010d\u00e1rku.
 
+error.server.pause.command.port.disabled=CWWKE0944E: Byl p\u0159ijat po\u017eadavek na pozastaven\u00ed pro server {0}, ale p\u0159\u00edkazov\u00fd port serveru je vypnut\u00fd. Po\u017eadavek nelze zpracovat. Povolte p\u0159\u00edkazov\u00fd port a operaci zopakujte.
+error.server.pause.command.port.disabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port je pro tento server zak\u00e1zan\u00fd, proto po\u017eadavek na pozastaven\u00ed nelze zpracovat. Uv\u011bdomte si, \u017ee p\u0159\u00edkazov\u00fd port se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
+error.server.pause.command.port.disabled.useraction=Povolte p\u0159\u00edkazov\u00fd port pro tento server. Pokud je server spu\u0161t\u011bn jako spu\u0161t\u011bn\u00e1 \u00faloha v syst\u00e9mu z/OS, lze tuto pauzu alternativn\u011b po\u017eadovat z konzoly oper\u00e1tora.
+
+error.server.resume.command.port.disabled=CWWKE0945E: Byl p\u0159ijat po\u017eadavek na obnoven\u00ed pro server {0}, ale p\u0159\u00edkazov\u00fd port serveru je vypnut\u00fd. Po\u017eadavek nelze zpracovat. Povolte p\u0159\u00edkazov\u00fd port a operaci zopakujte.
+error.server.resume.command.port.disabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port je pro tento server zak\u00e1zan\u00fd, proto po\u017eadavek na obnoven\u00ed nelze zpracovat. Uv\u011bdomte si, \u017ee p\u0159\u00edkazov\u00fd port se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
+error.server.resume.command.port.disabled.useraction=Povolte p\u0159\u00edkazov\u00fd port pro tento server. Pokud je server spu\u0161t\u011bn jako spu\u0161t\u011bn\u00e1 \u00faloha v syst\u00e9mu z/OS, lze tuto obnovu alternativn\u011b po\u017eadovat z konzoly oper\u00e1tora.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.
