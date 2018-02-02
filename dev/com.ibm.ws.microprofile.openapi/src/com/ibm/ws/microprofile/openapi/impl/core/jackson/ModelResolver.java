@@ -212,7 +212,7 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 // complex type
                 Schema mi = context.resolve(propType);
                 if (mi != null) {
-                    if ("object".equals(mi.getType())) {
+                    if ("object".equals(mi.getType().toString())) {
                         // create a reference for the property
                         final BeanDescription beanDesc = _mapper.getSerializationConfig().introspect(propType);
                         String name = _typeName(propType, beanDesc);
@@ -288,34 +288,13 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 return primitive;
             }
         }
-        org.eclipse.microprofile.openapi.annotations.media.Schema schemaAnnotationReference = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema directArraySchemaAnnotation = type.getRawClass().getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (directArraySchemaAnnotation != null) {
-            schemaAnnotationReference = directArraySchemaAnnotation.schema();
-        } else {
-            schemaAnnotationReference = directSchemaAnnotation;
-        }
+        org.eclipse.microprofile.openapi.annotations.media.Schema schemaAnnotationReference = directSchemaAnnotation;
 
         if (schemaAnnotationReference != null && !Void.class.equals(schemaAnnotationReference.implementation())) {
             Class<?> cls = schemaAnnotationReference.implementation();
 
             //LOGGER.debug("overriding datatype from {} to {}", type, cls.getName());
-
-            if (directArraySchemaAnnotation != null) {
-                Schema schema = new SchemaImpl().type(SchemaType.ARRAY);
-                Schema innerSchema = null;
-
-                Schema primitive = PrimitiveType.createProperty(cls);
-                if (primitive != null) {
-                    innerSchema = primitive;
-                } else {
-                    innerSchema = context.resolve(cls);
-                }
-                schema.setItems(innerSchema);
-                return schema;
-            } else {
-                return context.resolve(cls);
-            }
+            return context.resolve(cls);
         }
 
         if ("Object".equals(name)) {
@@ -1294,14 +1273,7 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
 
         annotations = annotationList.toArray(new Annotation[annotationList.size()]);
 
-        org.eclipse.microprofile.openapi.annotations.media.Schema mp = null;
-
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema as = member.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (as != null) {
-            mp = as.schema();
-        } else {
-            mp = member.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        }
+        org.eclipse.microprofile.openapi.annotations.media.Schema mp = member.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
 
         // allow override of name from annotation
         if (mp != null && !mp.name().isEmpty()) {
@@ -1367,11 +1339,12 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 //applyBeanValidatorAnnotations(property, annotations, parent);
             }
         }
-        if (AnnotationsUtils.hasArrayAnnotation(as)) {
-            SchemaImpl arraySchema = (SchemaImpl) AnnotationsUtils.getArraySchema(as).get();
-            arraySchema.setName(name);
+
+        if (mp != null && mp.type() == org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY) {
+            SchemaImpl arraySchema = (SchemaImpl) AnnotationsUtils.getSchemaFromAnnotation(mp, null).get();
             arraySchema.setItems(property);
-            return arraySchema;
+            arraySchema.setName(name);
+            property = arraySchema;
         }
 
         return property;

@@ -85,6 +85,7 @@ import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.callbacks.CallbackImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponsesImpl;
@@ -638,6 +639,9 @@ public class Reader {
                                !requestBody.getContent().isEmpty()) {
                         if (requestBodyParameter.getSchema() != null) {
                             for (MediaType mediaType : requestBody.getContent().values()) {
+                                if (mediaType.getSchema() == null) {
+                                    mediaType.setSchema(new SchemaImpl());
+                                }
                                 if (mediaType.getSchema().getType() == null) {
                                     mediaType.getSchema().setType(requestBodyParameter.getSchema().getType());
                                 }

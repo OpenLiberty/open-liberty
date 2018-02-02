@@ -32,8 +32,8 @@ import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.headers.Header;
-import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.Contact;
+import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Content;
@@ -108,21 +108,13 @@ public abstract class AnnotationsUtils {
             && StringUtils.isBlank(schema.example())
             && StringUtils.isBlank(schema.pattern())
             && schema.not().equals(Void.class)
+            && schema.allOf().length == 0
             && schema.oneOf().length == 0
-            && schema.anyOf().length == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean hasArrayAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema array) {
-        if (array == null) {
-            return false;
-        }
-        if (array.uniqueItems() == false
-            && array.maxItems() == Integer.MIN_VALUE
-            && array.minItems() == Integer.MAX_VALUE
-            && !hasSchemaAnnotation(array.schema())) {
+            && schema.anyOf().length == 0
+            && !getExternalDocumentation(schema.externalDocs()).isPresent()
+            && StringUtils.isBlank(schema.discriminatorProperty())
+            && schema.discriminatorMapping().length == 0
+            && !schema.hidden()) {
             return false;
         }
         return true;
@@ -165,37 +157,9 @@ public abstract class AnnotationsUtils {
         return Optional.of(exampleObject);
     }
 
-    public static Optional<Schema> getArraySchema(org.eclipse.microprofile.openapi.annotations.media.ArraySchema arraySchema) {
-        if (arraySchema == null || !hasArrayAnnotation(arraySchema)) {
-            return Optional.empty();
-        }
-        Schema arraySchemaObject = new SchemaImpl().type(SchemaType.ARRAY);
-        if (arraySchema.uniqueItems()) {
-            arraySchemaObject.setUniqueItems(arraySchema.uniqueItems());
-        }
-        if (arraySchema.maxItems() > 0) {
-            arraySchemaObject.setMaxItems(arraySchema.maxItems());
-        }
-
-        if (arraySchema.minItems() < Integer.MAX_VALUE) {
-            arraySchemaObject.setMinItems(arraySchema.minItems());
-        }
-
-        if (arraySchema.schema() != null) {
-            if (arraySchema.schema().implementation().equals(Void.class)) {
-                getSchemaFromAnnotation(arraySchema.schema()).ifPresent(schema -> {
-                    if (schema.getType() != null) {
-                        arraySchemaObject.setItems(schema);
-                    }
-                });
-            } // if present, schema implementation handled upstream
-        }
-
-        return Optional.of(arraySchemaObject);
-    }
-
     @FFDCIgnore(IOException.class)
-    public static Optional<Schema> getSchemaFromAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema schema) {
+    public static Optional<Schema> getSchemaFromAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema schema,
+                                                           Components components) {
         if (schema == null || !hasSchemaAnnotation(schema)) {
             return Optional.empty();
         }
@@ -275,7 +239,32 @@ public abstract class AnnotationsUtils {
         if (schema.enumeration().length > 0) {
             schemaObject.setEnumeration(Arrays.asList(schema.enumeration()));
         }
-
+        if (!schema.not().equals(Void.class)) {
+            Class<?> schemaImplementation = schema.not();
+            Schema notSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+            schemaObject.setNot(notSchemaObject);
+        }
+        if (schema.oneOf().length > 0) {
+            Class<?>[] schemaImplementations = schema.oneOf();
+            for (Class<?> schemaImplementation : schemaImplementations) {
+                Schema oneOfSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+                schemaObject.addOneOf(oneOfSchemaObject);
+            }
+        }
+        if (schema.anyOf().length > 0) {
+            Class<?>[] schemaImplementations = schema.anyOf();
+            for (Class<?> schemaImplementation : schemaImplementations) {
+                Schema anyOfSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+                schemaObject.addAnyOf(anyOfSchemaObject);
+            }
+        }
+        if (schema.allOf().length > 0) {
+            Class<?>[] schemaImplementations = schema.allOf();
+            for (Class<?> schemaImplementation : schemaImplementations) {
+                Schema allOfSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+                schemaObject.addAllOf(allOfSchemaObject);
+            }
+        }
         getExternalDocumentation(schema.externalDocs()).ifPresent(schemaObject::setExternalDocs);
 
         return Optional.of(schemaObject);
@@ -308,15 +297,23 @@ public abstract class AnnotationsUtils {
                 schemaObject.setType(SchemaType.STRING);
             }
             if (isArray) {
-                Schema arraySchema = new SchemaImpl().type(SchemaType.ARRAY);
+                Optional<Schema> schema = getSchemaFromAnnotation(annotationSchema, components);
+                Schema arraySchema;
+                if (schema.isPresent()) {
+                    arraySchema = schema.get();
+                } else {
+                    arraySchema = new SchemaImpl();
+                }
+                arraySchema.type(SchemaType.ARRAY);
                 arraySchema.setItems(schemaObject);
+
                 return Optional.of(arraySchema);
             } else {
                 return Optional.of(schemaObject);
             }
 
         } else {
-            Optional<Schema> schemaFromAnnotation = AnnotationsUtils.getSchemaFromAnnotation(annotationSchema);
+            Optional<Schema> schemaFromAnnotation = AnnotationsUtils.getSchemaFromAnnotation(annotationSchema, components);
             if (schemaFromAnnotation.isPresent()) {
                 if (StringUtils.isBlank(schemaFromAnnotation.get().getRef()) && schemaFromAnnotation.get().getType() == null) {
                     // default to string
@@ -336,6 +333,27 @@ public abstract class AnnotationsUtils {
 //            }
         }
         return Optional.empty();
+    }
+
+    public static Schema resolveSchemaFromType(Class<?> schemaImplementation, Components components) {
+        Schema schemaObject = new SchemaImpl();
+        if (schemaImplementation.getName().startsWith("java.lang")) {
+            // TODO
+            // schemaObject.setType(schemaImplementation.getSimpleName().toLowerCase());
+        } else {
+            ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
+            Map<String, Schema> schemaMap;
+            if (resolvedSchema != null) {
+                schemaMap = resolvedSchema.referencedSchemas;
+                schemaMap.forEach((key, referencedSchema) -> {
+                    if (components != null) {
+                        components.addSchema(key, referencedSchema);
+                    }
+                });
+                schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+            }
+        }
+        return schemaObject;
     }
 
     public static Optional<Set<Tag>> getTags(org.eclipse.microprofile.openapi.annotations.tags.Tag[] tags, boolean skipOnlyName) {
@@ -561,8 +579,8 @@ public abstract class AnnotationsUtils {
         }
         return linkMap;
     }
-    
-    @FFDCIgnore(IOException.class)    
+
+    @FFDCIgnore(IOException.class)
     public static Optional<Link> getLink(org.eclipse.microprofile.openapi.annotations.links.Link link) {
         if (link == null) {
             return Optional.empty();
@@ -600,7 +618,7 @@ public abstract class AnnotationsUtils {
             linkObject.setServer(server.get());
             isEmpty = false;
         }
-        
+
         if (isEmpty) {
             return Optional.empty();
         }
@@ -667,7 +685,7 @@ public abstract class AnnotationsUtils {
 
         if (header.schema() != null) {
             if (header.schema().implementation().equals(Void.class)) {
-                AnnotationsUtils.getSchemaFromAnnotation(header.schema()).ifPresent(schema -> {
+                AnnotationsUtils.getSchemaFromAnnotation(header.schema(), null).ifPresent(schema -> {
                     if (schema.getType() != null) {
                         headerObject.setSchema(schema);
                         //schema inline no need to add to components
@@ -727,6 +745,7 @@ public abstract class AnnotationsUtils {
         if (schema == null) {
             return String.class;
         }
+
         String schemaType = schema.type().toString();
         Class schemaImplementation = schema.implementation();
 
@@ -839,25 +858,13 @@ public abstract class AnnotationsUtils {
         if (a == null) {
             return null;
         }
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema arraySchema = a.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (arraySchema != null) {
-            return arraySchema.schema();
-        } else {
-            return a.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        }
+        return a.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
     }
 
     public static org.eclipse.microprofile.openapi.annotations.media.Schema getSchemaAnnotation(Class<?> cls) {
         if (cls == null) {
             return null;
         }
-        org.eclipse.microprofile.openapi.annotations.media.Schema mp = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema as = cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (as != null) {
-            mp = as.schema();
-        } else {
-            mp = cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        }
-        return mp;
+        return cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
     }
 }
