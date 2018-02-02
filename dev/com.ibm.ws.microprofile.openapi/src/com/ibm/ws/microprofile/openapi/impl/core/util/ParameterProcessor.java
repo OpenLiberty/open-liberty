@@ -70,6 +70,9 @@ public class ParameterProcessor {
                 if (p.hidden()) {
                     return null;
                 }
+                if (StringUtils.isNotBlank(p.ref())) {
+                    parameter.setRef(p.ref());
+                }
                 if (StringUtils.isNotBlank(p.description())) {
                     parameter.setDescription(p.description());
                 }
@@ -101,7 +104,7 @@ public class ParameterProcessor {
 
                 Map<String, Example> exampleMap = new HashMap<>();
                 for (ExampleObject exampleObject : p.examples()) {
-                    AnnotationsUtils.getExample(exampleObject).ifPresent(example -> exampleMap.put(exampleObject.name(), example));
+                    AnnotationsUtils.getExample(exampleObject).ifPresent(example -> exampleMap.put(AnnotationsUtils.getNameOfReferenceableItem(exampleObject), example));
                 }
                 if (exampleMap.size() > 0) {
                     parameter.setExamples(exampleMap);

@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.eclipse.microprofile.openapi.annotations.callbacks.Callback;
 import org.eclipse.microprofile.openapi.annotations.links.LinkParameter;
 import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.models.Components;
@@ -129,6 +130,10 @@ public abstract class AnnotationsUtils {
         Example exampleObject = new ExampleImpl();
         boolean isEmpty = true;
 
+        if (StringUtils.isNotBlank(example.ref())) {
+            exampleObject.setRef(example.ref());
+            isEmpty = false;
+        }
         if (StringUtils.isNotBlank(example.description())) {
             exampleObject.setDescription(example.description());
             isEmpty = false;
@@ -155,6 +160,44 @@ public abstract class AnnotationsUtils {
         }
 
         return Optional.of(exampleObject);
+    }
+
+    /**
+     * Retrieve the name
+     *
+     * If the item is a reference and name attribute is not specified then returns the simple name of the reference.
+     *
+     * @param annotation item
+     * @return name of the item
+     */
+    public static String getNameOfReferenceableItem(Object annotation) {
+        if (annotation == null) {
+            return "";
+        }
+
+        String name = "", ref = "";
+        if (annotation instanceof org.eclipse.microprofile.openapi.annotations.headers.Header) {
+            name = ((org.eclipse.microprofile.openapi.annotations.headers.Header) annotation).name();
+            ref = ((org.eclipse.microprofile.openapi.annotations.headers.Header) annotation).ref();
+        } else if (annotation instanceof ExampleObject) {
+            name = ((ExampleObject) annotation).name();
+            ref = ((ExampleObject) annotation).ref();
+        } else if (annotation instanceof org.eclipse.microprofile.openapi.annotations.links.Link) {
+            name = ((org.eclipse.microprofile.openapi.annotations.links.Link) annotation).name();
+            ref = ((org.eclipse.microprofile.openapi.annotations.links.Link) annotation).ref();
+        } else if (annotation instanceof Callback) {
+            name = ((Callback) annotation).name();
+            ref = ((Callback) annotation).ref();
+        }
+
+        if (StringUtils.isBlank(name)) {
+            if (StringUtils.isNotBlank(ref)) {
+                //If the item is a reference then use the simple name of reference as the name
+                int index = ref.lastIndexOf('/');
+                return index == -1 ? ref : ref.substring(index + 1);
+            }
+        }
+        return name;
     }
 
     @FFDCIgnore(IOException.class)
@@ -575,7 +618,7 @@ public abstract class AnnotationsUtils {
             return linkMap;
         }
         for (org.eclipse.microprofile.openapi.annotations.links.Link link : links) {
-            getLink(link).ifPresent(linkResult -> linkMap.put(link.name(), linkResult));
+            getLink(link).ifPresent(linkResult -> linkMap.put(getNameOfReferenceableItem(link), linkResult));
         }
         return linkMap;
     }
@@ -587,6 +630,10 @@ public abstract class AnnotationsUtils {
         }
         boolean isEmpty = true;
         Link linkObject = new LinkImpl();
+        if (StringUtils.isNotBlank(link.ref())) {
+            linkObject.setRef(link.ref());
+            isEmpty = false;
+        }
         if (StringUtils.isNotBlank(link.description())) {
             linkObject.setDescription(link.description());
             isEmpty = false;
@@ -648,7 +695,7 @@ public abstract class AnnotationsUtils {
 
         Map<String, Header> headers = new HashMap<>();
         for (org.eclipse.microprofile.openapi.annotations.headers.Header header : annotationHeaders) {
-            getHeader(header).ifPresent(headerResult -> headers.put(header.name(), headerResult));
+            getHeader(header).ifPresent(headerResult -> headers.put(getNameOfReferenceableItem(header), headerResult));
         }
 
         if (headers.size() == 0) {
@@ -665,6 +712,15 @@ public abstract class AnnotationsUtils {
 
         Header headerObject = new HeaderImpl();
         boolean isEmpty = true;
+
+        if (StringUtils.isNotBlank(header.ref())) {
+            headerObject.setRef(header.ref());
+            isEmpty = false;
+        } else {
+            //Set style - only when header is not a reference
+            headerObject.setStyle(Header.Style.SIMPLE);
+        }
+
         if (StringUtils.isNotBlank(header.description())) {
             headerObject.setDescription(header.description());
             isEmpty = false;
@@ -680,8 +736,6 @@ public abstract class AnnotationsUtils {
             headerObject.setAllowEmptyValue(header.allowEmptyValue());
             isEmpty = false;
         }
-
-        headerObject.setStyle(Header.Style.SIMPLE);
 
         if (header.schema() != null) {
             if (header.schema().implementation().equals(Void.class)) {
@@ -781,7 +835,7 @@ public abstract class AnnotationsUtils {
 
         ExampleObject[] examples = annotationContent.examples();
         for (ExampleObject example : examples) {
-            getExample(example).ifPresent(exampleObject -> mediaType.addExample(example.name(), exampleObject));
+            getExample(example).ifPresent(exampleObject -> mediaType.addExample(getNameOfReferenceableItem(example), exampleObject));
         }
         org.eclipse.microprofile.openapi.annotations.media.Encoding[] encodings = annotationContent.encoding();
         for (org.eclipse.microprofile.openapi.annotations.media.Encoding encoding : encodings) {
@@ -808,6 +862,9 @@ public abstract class AnnotationsUtils {
         APIResponses apiResponsesObject = new APIResponsesImpl();
         for (org.eclipse.microprofile.openapi.annotations.responses.APIResponse response : responses) {
             APIResponse apiResponseObject = new APIResponseImpl();
+            if (StringUtils.isNotBlank(response.ref())) {
+                apiResponseObject.setRef(response.ref());
+            }
             if (StringUtils.isNotBlank(response.description())) {
                 apiResponseObject.setDescription(response.description());
             }
