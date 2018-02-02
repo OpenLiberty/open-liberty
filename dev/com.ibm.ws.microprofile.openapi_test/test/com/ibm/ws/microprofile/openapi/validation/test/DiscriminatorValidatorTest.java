@@ -44,7 +44,7 @@ public class DiscriminatorValidatorTest {
         DiscriminatorValidator validator = DiscriminatorValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
 
-        DiscriminatorImpl discriminator = new DiscriminatorImpl();
+        DiscriminatorImpl discriminator = null;
         validator.validate(vh, context, null, discriminator);
         Assert.assertEquals(0, vh.getEventsSize());
     }

@@ -108,7 +108,7 @@ public class ComponentsValidatorTest {
         responses.put(".test/I'm.invalid", new APIResponseImpl());
 
         validator.validate(vh, context, null, components);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(2, vh.getEventsSize());
 
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must be a regular expression"));
     }
@@ -138,7 +138,7 @@ public class ComponentsValidatorTest {
         components.setSecuritySchemes(securitySchemes);
 
         validator.validate(vh, context, null, components);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(0, vh.getEventsSize());
     }
 
 }

@@ -47,105 +47,94 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
             }
 
-            if (t.getType().toString().equals("array") && t.getItems() == null) {
-                final String message = Tr.formatMessage(tc, "schemaTypeArrayNullItems", t.getTitle(), context.getLocation());
+            if (t.getType() != null && t.getType().toString().equals("array") && t.getItems() == null) {
+                final String message = Tr.formatMessage(tc, "schemaTypeArrayNullItems", t.getTitle());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
             if (t.getReadOnly() && t.getWriteOnly()) {
-                final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly", t.getTitle(), context.getLocation());
+                final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly", t.getTitle());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
             if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ONE) < 1)) {
-                final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanOne", t.getTitle(), context.getLocation());
+                final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanOne", t.getTitle());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
-            ArrayList<String> propertiesInvalidValue = new ArrayList<String>();
-            ArrayList<String> propertiesNotForSchemaType = new ArrayList<String>();
-            String type = t.getType().toString();
-            if (t.getMaxLength() != null) {
-                if (t.getMaxLength().intValue() < 0) {
-                    propertiesInvalidValue.add("maxLength");
+            if (t.getType() != null) {
+                String type = t.getType().toString();
+                ArrayList<String> propertiesInvalidValue = new ArrayList<String>();
+                ArrayList<String> propertiesNotForSchemaType = new ArrayList<String>();
+                if (t.getMaxLength() != null) {
+                    if (t.getMaxLength().intValue() < 0) {
+                        propertiesInvalidValue.add("maxLength");
+                    }
+                    if (!type.equals("string")) {
+                        propertiesNotForSchemaType.add("maxLength");
+                    }
                 }
-                if (!type.equals("string")) {
-                    propertiesNotForSchemaType.add("maxLength");
-                }
-            }
 
-            if (t.getMinLength() != null) {
-                if (t.getMinLength().intValue() < 0) {
-                    propertiesInvalidValue.add("minLength");
+                if (t.getMinLength() != null) {
+                    if (t.getMinLength().intValue() < 0) {
+                        propertiesInvalidValue.add("minLength");
+                    }
+                    if (!type.equals("string")) {
+                        propertiesNotForSchemaType.add("minLength");
+                    }
                 }
-                if (!type.equals("string")) {
-                    propertiesNotForSchemaType.add("minLength");
-                }
-            }
 
-            if (t.getMinItems() != null) {
-                if (t.getMinItems().intValue() < 0) {
-                    propertiesInvalidValue.add("minItems");
+                if (t.getMinItems() != null) {
+                    if (t.getMinItems().intValue() < 0) {
+                        propertiesInvalidValue.add("minItems");
+                    }
+                    if (!type.equals("array")) {
+                        propertiesNotForSchemaType.add("minItems");
+                    }
                 }
-                if (!type.equals("array")) {
-                    propertiesNotForSchemaType.add("minItems");
-                }
-            }
 
-            if (t.getMaxItems() != null) {
-                if (t.getMaxItems().intValue() < 0) {
-                    propertiesInvalidValue.add("maxItems");
+                if (t.getMaxItems() != null) {
+                    if (t.getMaxItems().intValue() < 0) {
+                        propertiesInvalidValue.add("maxItems");
+                    }
+                    if (!type.equals("array")) {
+                        propertiesNotForSchemaType.add("maxItems");
+                    }
                 }
-                if (!type.equals("array")) {
-                    propertiesNotForSchemaType.add("maxItems");
-                }
-            }
 
-            if (t.getUniqueItems() && !type.equals("array")) {
-                propertiesNotForSchemaType.add("uniqueItems");
-            }
+                if (t.getUniqueItems() != null && !type.equals("array")) {
+                    propertiesNotForSchemaType.add("uniqueItems");
+                }
 
-            if (t.getMinProperties() != null) {
-                if (t.getMinProperties().intValue() < 0) {
-                    propertiesInvalidValue.add("minProperties");
+                if (t.getMinProperties() != null) {
+                    if (t.getMinProperties().intValue() < 0) {
+                        propertiesInvalidValue.add("minProperties");
+                    }
+                    if (!type.equals("object")) {
+                        propertiesNotForSchemaType.add("minProperties");
+                    }
                 }
-                if (!type.equals("object")) {
-                    propertiesNotForSchemaType.add("minProperties");
-                }
-            }
 
-            if (t.getMaxProperties() != null) {
-                if (t.getMaxProperties().intValue() < 0) {
-                    propertiesInvalidValue.add("maxProperties");
+                if (t.getMaxProperties() != null) {
+                    if (t.getMaxProperties().intValue() < 0) {
+                        propertiesInvalidValue.add("maxProperties");
+                    }
+                    if (!type.equals("object")) {
+                        propertiesNotForSchemaType.add("maxProperties");
+                    }
                 }
-                if (!type.equals("object")) {
-                    propertiesNotForSchemaType.add("maxProperties");
+                if (!propertiesInvalidValue.isEmpty()) {
+                    for (String s : propertiesInvalidValue) {
+                        final String message = Tr.formatMessage(tc, "schemaPropertyLessThanZero", s, t.getTitle());
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                    }
                 }
-            }
-            if (!propertiesInvalidValue.isEmpty()) {
-                for (String s : propertiesInvalidValue) {
-                    final String message = Tr.formatMessage(tc, "schemaPropertyLessThanZero", s, t.getTitle(), context.getLocation());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-                }
-            }
 
-            if (!propertiesNotForSchemaType.isEmpty()) {
-                for (String s : propertiesNotForSchemaType) {
-                    final String message = Tr.formatMessage(tc, "schemaTypeDoesNotMatchProperty", s, t.getTitle(), type, context.getLocation());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+                if (!propertiesNotForSchemaType.isEmpty()) {
+                    for (String s : propertiesNotForSchemaType) {
+                        final String message = Tr.formatMessage(tc, "schemaTypeDoesNotMatchProperty", s, t.getTitle(), type);
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+                    }
                 }
-            }
-
-            if (t.getAllOf() == null &&
-                t.getAnyOf() == null &&
-                t.getOneOf() == null &&
-                t.getDiscriminator() != null) {
-                final String message = Tr.formatMessage(tc, "schemaDiscriminator", t.getTitle(), context.getLocation());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-            }
-
-            if (!ValidatorUtils.regexValidator(t.getPattern())) {
-                final String message = Tr.formatMessage(tc, "schemaPatternNotRegex", t.getPattern(), t.getTitle(), context.getLocation());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
         }
     }

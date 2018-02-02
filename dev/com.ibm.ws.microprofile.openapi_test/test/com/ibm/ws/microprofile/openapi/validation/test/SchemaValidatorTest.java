@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.media.DiscriminatorImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
 import com.ibm.ws.microprofile.openapi.impl.validation.SchemaValidator;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
@@ -33,7 +32,7 @@ import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 /**
  *
  */
-public class SchemValidatorTest {
+public class SchemaValidatorTest {
 
     OpenAPIImpl model = new OpenAPIImpl();
     Context context = new TestValidationContextHelper(model);
@@ -74,7 +73,7 @@ public class SchemValidatorTest {
         SchemaValidator validator = SchemaValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
 
-        SchemaImpl schema = new SchemaImpl();
+        SchemaImpl schema = null;
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(0, vh.getEventsSize());
@@ -133,7 +132,7 @@ public class SchemValidatorTest {
         schema.setMaxLength(new Integer(-1));
 
         validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(2, vh.getEventsSize());
     }
 
     @Test
@@ -148,7 +147,7 @@ public class SchemValidatorTest {
         schema.setMaxLength(new Integer(900));
 
         validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(2, vh.getEventsSize());
     }
 
     @Test
@@ -158,7 +157,7 @@ public class SchemValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         SchemaImpl schema = new SchemaImpl();
-        schema.tysetTypepe(SchemaType.STRING);
+        schema.setType(SchemaType.STRING);
         schema.setUniqueItems(true);
 
         validator.validate(vh, context, null, schema);
@@ -173,11 +172,12 @@ public class SchemValidatorTest {
 
         SchemaImpl schema = new SchemaImpl();
         schema.setType(SchemaType.ARRAY);
+        schema.setItems(new SchemaImpl());
         schema.setMinItems(new Integer(-2));
         schema.setMaxItems(new Integer(-1));
 
         validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(2, vh.getEventsSize());
     }
 
     @Test
@@ -192,7 +192,7 @@ public class SchemValidatorTest {
         schema.setMaxProperties(new Integer(-1));
 
         validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(2, vh.getEventsSize());
     }
 
     @Test
@@ -207,94 +207,6 @@ public class SchemValidatorTest {
         schema.setMaxProperties(new Integer(53));
 
         validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertEquals(2, vh.getEventsSize());
     }
-
-    @Test
-    public void testSchemaWithDiscriminatorOnly() {
-
-        SchemaValidator validator = SchemaValidator.getInstance();
-        TestValidationHelper vh = new TestValidationHelper();
-
-        SchemaImpl schema = new SchemaImpl();
-        schema.setType(SchemaType.OBJECT);
-
-        DiscriminatorImpl discriminator = new DiscriminatorImpl();
-        discriminator.setPropertyName("pet_type");
-        Map<String, String> discriminatorMap = new HashMap<String, String>();
-        discriminatorMap.put("dog", "#/components/schemas/Dog");
-        discriminatorMap.put("monster", "https://gigantic-server.com/schemas/Monster/schema.json");
-        discriminator.setMapping(discriminatorMap);
-        schema.setDiscriminator(discriminator);
-
-        validator.validate(vh, context, null, schema);
-        Assert.assertEquals(0, vh.getEventsSize());
-    }
-
-    @Test
-    public void testSchemaWithDiscriminatorAndOneOfProperty() {
-
-        SchemaValidator validator = SchemaValidator.getInstance();
-        TestValidationHelper vh = new TestValidationHelper();
-
-        SchemaImpl schema = new SchemaImpl();
-        schema.setType(SchemaType.OBJECT);
-
-        DiscriminatorImpl discriminator = new DiscriminatorImpl();
-        discriminator.setPropertyName("pet_type");
-        Map<String, String> discriminatorMap = new HashMap<String, String>();
-        discriminatorMap.put("dog", "#/components/schemas/Dog");
-        discriminatorMap.put("monster", "https://gigantic-server.com/schemas/Monster/schema.json");
-        discriminator.setMapping(discriminatorMap);
-        schema.setDiscriminator(discriminator);
-
-        List<Schema> oneOf = new ArrayList<Schema>();
-        SchemaImpl dogSchema = new SchemaImpl();
-        dogSchema.setName("Dog");
-        SchemaImpl monsterSchema = new SchemaImpl();
-        monsterSchema.setName("Monster");
-        oneOf.addAll(Arrays.asList(dogSchema, monsterSchema));
-
-        schema.setOneOf(oneOf);
-
-        validator.validate(vh, context, null, schema);
-        Assert.assertEquals(0, vh.getEventsSize());
-    }
-
-    @Test
-    public void testSchemaWithoutDiscriminatorAndOneOfProperty() {
-
-        SchemaValidator validator = SchemaValidator.getInstance();
-        TestValidationHelper vh = new TestValidationHelper();
-
-        SchemaImpl schema = new SchemaImpl();
-        schema.setType(SchemaType.OBJECT);
-
-        List<Schema> oneOf = new ArrayList<Schema>();
-        SchemaImpl dogSchema = new SchemaImpl();
-        dogSchema.setName("Dog");
-        SchemaImpl monsterSchema = new SchemaImpl();
-        monsterSchema.setName("Monster");
-        oneOf.addAll(Arrays.asList(dogSchema, monsterSchema));
-
-        schema.setOneOf(oneOf);
-
-        validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
-    }
-
-    @Test
-    public void testSchemaWithNonRegexPatternProperty() {
-
-        SchemaValidator validator = SchemaValidator.getInstance();
-        TestValidationHelper vh = new TestValidationHelper();
-
-        SchemaImpl schema = new SchemaImpl();
-        schema.setType(SchemaType.STRING);
-        schema.setPattern("non??regex");
-
-        validator.validate(vh, context, null, schema);
-        Assert.assertEquals(1, vh.getEventsSize());
-    }
-
 }

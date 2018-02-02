@@ -32,7 +32,7 @@ infoTermsOfServiceInvalidURL=The Info object must contain a valid URL. The \"{0}
 invalidUrl=The \"{0}\" object must contain a valid URL. The \"{1}\" value specified for the URL is not valid.
 invalidUri=The \"{0}\" object must contain a valid URI. The \"{1}\" value specified for the URI is not valid.
 
-invalidExtensionFieldName=The field name of \"{0}\" extension at location \"{1}\"  must start with "x-".
+invalidExtensionFieldName=The field name of \"{0}\" extension must start with "x-".
 
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 
@@ -90,17 +90,15 @@ securitySchemeInFieldInvalid=The \"{0}\" SecurityScheme object has an error. The
 securitySchemeInvalidURL=The SecurityScheme object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 securitySchemeNonApplicableField=One or more fields defined are not applicable to a SecurityScheme instance of type \"{0}\".
 
-schemaTypeArrayNullItems=Array schema \"{0}\" located at \"{1}\" must have "items" property defined.
-schemaReadOnlyOrWriteOnly=Schema \"{0}\" located at \"{1}\" must not have both "readOnly" and writeOnly" set to true.
-schemaMultipleOfLessThanOne=Schema \"{0}\" located at \"{1}\" must have property "multipleOf" set to a number strictly greater than zero.
-schemaPropertyLessThanZero=Property \"{0}\" of schema \"{1}\" located at \"{2}\" must be greater or equal to zero.
-schemaDiscriminator=The "discriminator" attribute in schema \"{0}\" located at \"{1}\" is legal only when using one of the properties "allOf", "oneOf", "anyOf".
-schemaPatternNotRegex=Pattern \"{0}\" of schema \"{1}\" located at \"{2}\" should be a valid regular expression.
-schemaTypeDoesNotMatchProperty=Property \"{0}\" is not appropriate for schema \"{1}\" of type \"{2}\" located at \"{3}\".
+schemaTypeArrayNullItems=Array schema \"{0}\" must have "items" property defined.
+schemaReadOnlyOrWriteOnly=Schema \"{0}\" must not have both "readOnly" and writeOnly" set to true.
+schemaMultipleOfLessThanOne=Schema \"{0}\" must have property "multipleOf" set to a number strictly greater than zero.
+schemaPropertyLessThanZero=Property \"{0}\" of schema \"{1}\" must be greater or equal to zero.
+schemaTypeDoesNotMatchProperty=Property \"{0}\" is not appropriate for schema \"{1}\" of type \"{2}\".
 
 serverVariableNotDefined=The \"{0}\" variable in the Server object is not defined.
 serverInvalidURL=The Server object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 
 requiredFieldMissing=Validation error at location: \"{0}\". Required \"{1}\" field is missing or is set to an invalid value.
 
-keyNotARegex=\"{0}\" key of components map at location \"{1}\" must be a regular expression.
+keyNotARegex=\"{0}\" key of components map must be a regular expression.

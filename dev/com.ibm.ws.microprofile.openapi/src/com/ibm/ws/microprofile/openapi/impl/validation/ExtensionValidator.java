@@ -36,7 +36,7 @@ public class ExtensionValidator extends TypeValidator<Object> {
 
         if (key != null) {
             if (!key.startsWith("x-")) {
-                final String message = Tr.formatMessage(tc, "invalidExtensionFieldName", t, context.getLocation());
+                final String message = Tr.formatMessage(tc, "invalidExtensionFieldName", t);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
