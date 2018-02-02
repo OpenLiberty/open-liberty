@@ -18,7 +18,7 @@ Import-Package: com.ibm.ejs.ras, \
                 com.ibm.wsspi.kernel.service.utils, \
                 org.osgi.framework, \
                 com.ibm.wsspi.collector.manager, \
-                com.ibm.ws.logging.data               
+                com.ibm.ws.logging.data
 
 Private-Package: ffdc.source.handler
 
