@@ -1368,18 +1368,6 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
 
     /** {@inheritDoc} */
     @Override
-    public int getJobExecutionTableVersion() {
-        return 2;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getJobInstanceTableVersion() {
-        return 2;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public String getPersistenceType() {
         return "MEM";
     }
@@ -1398,6 +1386,30 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     @Override
     public JobInstanceEntity updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames) {
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getJobExecutionTableVersion() {
+        return getJobExecutionTableVersionField();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getJobInstanceTableVersion() {
+        return getJobInstanceTableVersionField();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Integer getJobExecutionTableVersionField() {
+        return 2;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Integer getJobInstanceTableVersionField() {
+        return 3;
     }
 
 }
