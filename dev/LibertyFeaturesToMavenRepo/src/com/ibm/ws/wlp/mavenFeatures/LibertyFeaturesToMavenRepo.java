@@ -1,4 +1,4 @@
-package com.ibm.ws.wlp.mavenFeatures;
+package src.com.ibm.ws.wlp.mavenFeatures;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

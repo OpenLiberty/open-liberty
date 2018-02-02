@@ -8,6 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+//apply plugin: 'maven'
+dependencies{
+
+  compile 'dev:com.ibm.ws.org.apache.aries.util:1.0.18.285b-fixTest-SNAPSHOT'
+
+
+}
 
 task copyEsas(type: Copy) {
     dependsOn parent.subprojects.assemble
@@ -33,6 +40,12 @@ task createSingleJson {
                 fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
                     include(name: 'com.ibm.ws.logging.core.jar')
                 }
+                fileset(dir: "${rootDir}/com.ibm.ws.kernel.feature.core/build/libs") {
+                    include(name: 'com.ibm.ws.kernel.feature.core.jar')
+                }
+             //   fileset(dir: "${rootDir}/*/build/libs/*") {
+             //       include(name: '*.jar')
+            //    }
             }
         }
         ant.touch(file:"SingleJson.json")

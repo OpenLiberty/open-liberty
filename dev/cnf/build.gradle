@@ -325,6 +325,105 @@ task zipGradleBootstrap(type: Zip) {
     from new File(project.buildDir, 'replacements')
 }
 
+task copyEsas(type: Copy) {
+    dependsOn parent.subprojects.assemble
+    from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
+   // into  "${rootDir}/com.ibm.ws.repository.generator/build/esas"
+   into "."
+}
+
+task createSingleJson {
+    // Run after all feature ESAs have been built
+    dependsOn copyEsas
+    dependsOn copyMavenLibs
+        
+    doLast {
+        ant.taskdef(name:'singleJsonRepo', classname:'generator.SingleJsonRepositoryGenerator') {
+            classpath {
+                fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
+                    include(name: 'com.ibm.ws.repository.generator.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.repository/build/libs") {
+                    include(name: 'com.ibm.ws.repository.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.repository.parsers/build/libs") {
+                    include(name: 'com.ibm.ws.repository.parsers.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
+                    include(name: 'com.ibm.ws.logging.core.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.kernel.feature.core/build/libs") {
+                    include(name: 'com.ibm.ws.kernel.feature.core.jar')
+                }
+               fileset(dir: "${rootDir}/cnf/mavenlibs") {
+                    include(name: '**.jar')
+               }               
+            }
+        }
+        ant.touch(file:"SingleJson.json")
+        //"{basedir}/com.ibm.ws.repository.generator/build/esas"
+  
+        FileTree tree = fileTree(dir: 'cnf')
+        tree = fileTree('.') {
+   				 include '**/*.esa'
+		}
+		
+	//	tree.each {File file ->
+   // println file
+//}
+      //  def files = tree.fileTree(dir:'cnf', inclues:'**/*.esa' ).filter { it.isFile() }.files.name
+      def files = fileTree(dir:'.').matching{
+      	 include '**/*.esa'
+      
+      }.files.name
+     //   println files
+     
+        files.each {esa ->
+        	println "inside"
+        	println esa
+            ant.singleJsonRepo(assetFile:file(esa),
+                   assetType:'FEATURE',
+                  jsonFile:fileset('SingleJson.json'))
+        
+        
+        }
+    }
+}
+
+task generateMavenArtifact {
+dependsOn parent.subprojects.assemble
+everythingElseHasBeenReleased
+doLast {
+        ant.taskdef(name:'featuresToMavenRepo', classname:'mavenFeatures.SingleJsonRepositoryGenerator') {
+            classpath {
+           	//	fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/lib/"){
+           	//		include(name:'LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT-jar-with-dependencies.jar')
+           //		}
+                fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/build/libs") {
+                    include(name: 'LibertyFeaturesToMavenRepo.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
+                    include(name: 'com.ibm.ws.logging.core.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.kernel.feature.core/build/libs") {
+                    include(name: 'com.ibm.ws.kernel.feature.core.jar')
+                }
+               fileset(dir: "${rootDir}/cnf/mavenlibs") {
+                    include(name: '**.jar')
+               }               
+            }
+        }
+        def files = fileTree(dir:'.').matching{ include '**/*.esa'}
+        files.each {esa ->
+        ant.featuresToMavenRepo(inputDirPath:esa,
+                   outputDirPath:'cnf/build/temp',
+                  openLibertyJson:'cnf/build/temp')
+        
+        }
+	}
+}
+
+
 publishing {
   publications {
     gradle(MavenPublication) {

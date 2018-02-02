@@ -1,4 +1,4 @@
-package generator;
+package com.ibm.ws.repository.generator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,6 +23,7 @@ import com.ibm.ws.repository.strategies.writeable.AddThenDeleteStrategy;
 public class SingleJsonRepositoryGenerator extends Task {
 
     private File assetFile;
+    private String assetFilePath;
     private File metadataFile;
     private String assetType;
     private ResourceType assetTypeEnumValue;
@@ -30,6 +31,7 @@ public class SingleJsonRepositoryGenerator extends Task {
 
     @Override
     public void execute() throws BuildException {
+    	
         // trace input then create MassiveResource.Type enum
         System.out.println("CreateJsonRepositoryFiles called with following parameters");
         System.out.println("- AssetFile      = " + getAssetFile().getAbsolutePath());
@@ -42,6 +44,8 @@ public class SingleJsonRepositoryGenerator extends Task {
             iae.printStackTrace();
             throw new BuildException(iae);
         }
+        
+        
         SingleFileRepositoryConnection mySingleFileRepo = new SingleFileRepositoryConnection(jsonFile);
         
         OutputStream os = null;
@@ -106,20 +110,22 @@ public class SingleJsonRepositoryGenerator extends Task {
         } catch (Exception e) {
             e.printStackTrace();
             throw new BuildException(e);
-        } finally {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-                // Tidy up any temporary files.
-                if (parser != null) {
-                    parser.tidyUp();
-                }
-            } catch (IOException e) {
-                // We will not cause the build to fail if this fails.  Just stack trace it and continue.
-                e.printStackTrace();
-            }
         }
+        
+//        finally {
+      //      try {
+            //    if (os != null) {
+             //       os.close();
+            //    }
+                // Tidy up any temporary files.
+          //      if (parser != null) {
+            //        parser.tidyUp();
+            //    }
+        //    } catch (IOException e) {
+                // We will not cause the build to fail if this fails.  Just stack trace it and continue.
+            //    e.printStackTrace();
+        //    }
+      //  }
     }
 
     private boolean isPax(File f) {
@@ -166,6 +172,20 @@ public class SingleJsonRepositoryGenerator extends Task {
      */
     public void setAssetFile(File assetFile) {
         this.assetFile = assetFile;
+    }
+    /**
+     * @return the assetFilePath
+     */
+    public String getAssetFilePath() {
+        return assetFilePath;
+    }
+
+    /**
+     * @param assetFilePath
+     *            the assetFilePath to set
+     */
+    public void setAssetFilePath(String assetFilePath) {
+        this.assetFilePath = assetFilePath;
     }
 
     /**
