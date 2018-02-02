@@ -36,4 +36,7 @@ public class LogFieldConstants {
     public static final String IBM_DURATION = "ibm_duration";
     public static final String DURATION = "duration";
     public static final String IBM_SEQUENCE = "ibm_sequence";
+    public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";
+    public static final String COUNT = "count";
+    public static final String IBM_REQUESTSTARTTIME = "ibm_requestStartTime";
 }
