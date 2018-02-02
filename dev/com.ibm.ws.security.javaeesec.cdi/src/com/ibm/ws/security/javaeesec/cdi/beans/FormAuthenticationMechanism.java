@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
+    private Utils utils = new Utils();
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -106,7 +107,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
-        status = Utils.getInstance().validateUserAndPassword(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
+        status = utils.validateUserAndPassword(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
             httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
             rspStatus = HttpServletResponse.SC_OK;

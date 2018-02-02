@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 public class CustomFormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(CustomFormAuthenticationMechanism.class);
+    private Utils utils = new Utils();
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -94,7 +95,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
-        status = Utils.getInstance().validateCredential(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
+        status = utils.validateCredential(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
             httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
             rspStatus = HttpServletResponse.SC_OK;
