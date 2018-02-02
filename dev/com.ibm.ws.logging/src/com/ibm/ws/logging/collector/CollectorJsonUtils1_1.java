@@ -307,7 +307,12 @@ public class CollectorJsonUtils1_1 {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (key.equals(LogFieldConstants.SEVERITY)) {
+                if (key.equals(LogFieldConstants.SEVERITY) || key.equals(LogFieldConstants.COMPONENT) || key.equals(LogFieldConstants.CORRELATION_ID)
+                    || key.equals(LogFieldConstants.THREADNAME) || key.equals(LogFieldConstants.LEVELVALUE) || key.equals(LogFieldConstants.PRODUCT)
+                    || key.equals(LogFieldConstants.ORG) || key.equals(LogFieldConstants.OBJECT_ID) || key.equals(LogFieldConstants.THROWABLE)
+                    || key.equals(LogFieldConstants.THROWABLE_LOCALIZED)
+                    || key.equals(LogFieldConstants.FORMATTEDMSG)) {
+
                 }
 
                 else if (key.equals(LogFieldConstants.MESSAGE)) {
