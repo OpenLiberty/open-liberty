@@ -51,11 +51,11 @@ public class GenericData {
     }
 
     //Method created to accomodate some tests, must remove down the line
-    public String getMessage() {
+    public String getMessageID() {
         for (Pair p : pairs) {
             if (p instanceof KeyValuePair) {
                 KeyValuePair kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("message")) {
+                if (kvp.getKey().equals("ibm_messageId")) {
                     return kvp.getValue();
                 }
             }
