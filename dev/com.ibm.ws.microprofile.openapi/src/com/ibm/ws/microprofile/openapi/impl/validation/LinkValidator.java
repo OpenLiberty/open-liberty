@@ -14,6 +14,7 @@ import org.eclipse.microprofile.openapi.models.links.Link;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -35,12 +36,22 @@ public class LinkValidator extends TypeValidator<Link> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Link t) {
 
-        String reference = t.getRef();
+        if (t != null) {
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
+            String reference = t.getRef();
+
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
+            }
+
+            if (t.getOperationRef() != null && !t.getOperationRef().isEmpty()) {
+
+                if (t.getOperationId() != null && !t.getOperationId().isEmpty()) {
+                    final String message = Tr.formatMessage(tc, "linkOperationRefOrId", t);
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                }
+            }
         }
-        // validate
     }
 }
