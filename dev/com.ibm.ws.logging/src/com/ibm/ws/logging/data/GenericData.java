@@ -50,6 +50,19 @@ public class GenericData {
         this.sourceType = sourceType;
     }
 
+    //Method created to accomodate some tests, must remove down the line
+    public String getMessage() {
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                KeyValuePair kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals("message")) {
+                    return kvp.getValue();
+                }
+            }
+        }
+        return "";
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {

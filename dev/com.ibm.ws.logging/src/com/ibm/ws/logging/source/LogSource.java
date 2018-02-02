@@ -184,6 +184,60 @@ public class LogSource implements Source, WsLogHandler {
 
     }
 
+    /* Overloaded method for test, should be removed down the line */
+    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+
+        GenericData genData = new GenericData();
+        String messageVal = extractMessage(routedMessage, logRecord);
+
+        long dateVal = logRecord.getMillis();
+        genData.addPair("ibm_datetime", dateVal);
+
+        String messageIdVal = null;
+
+        if (messageVal != null) {
+            messageIdVal = parseMessageId(messageVal);
+        }
+
+        genData.addPair("ibm_messageId", messageIdVal);
+
+        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
+        genData.addPair("ibm_threadId", threadIdVal);
+        genData.addPair("module", logRecord.getLoggerName());
+        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
+        genData.addPair("ibm_className", logRecord.getSourceClassName());
+
+        KeyValuePairList extensions = new KeyValuePairList();
+        Map<String, String> extMap = null;
+        if (logRecord instanceof WsLogRecord) {
+            extMap = ((WsLogRecord) logRecord).getExtensions();
+            for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                extensions.addPair(entry.getKey(), entry.getValue());
+            }
+        }
+
+        genData.addPairs(extensions);
+        genData.addPair("ibm_sequence", sequenceNumber.next(dateVal));
+        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+
+        Throwable thrown = logRecord.getThrown();
+        StringBuilder msgBldr = new StringBuilder();
+        msgBldr.append(messageVal);
+        if (thrown != null) {
+            String stackTrace = DataFormatHelper.throwableToString(thrown);
+            if (stackTrace != null) {
+                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
+            }
+        }
+        genData.addPair("message", msgBldr.toString());
+        genData.setSourceType(sourceName);
+
+        return genData;
+
+    }
+
     /**
      * @return the message ID for the given message.
      */
