@@ -117,18 +117,17 @@ public class TraceSource implements Source, WsTraceHandler {
         genData.addPair("ibm_sequence", sequenceNum);
 
         KeyValuePairList extensions = new KeyValuePairList();
-        //ArrayList<KeyValuePair> extList = extensions.getKeyValuePairs();
         Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
-            extMap = ((WsLogRecord) logRecord).getExtensions();
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                extMap = ((WsLogRecord) logRecord).getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    extensions.addPair(entry.getKey(), entry.getValue());
+                }
+            }
         }
 
-        if (extMap != null) {
-            for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                extensions.addPair(entry.getKey(), entry.getValue());
-            }
-            genData.addPairs(extensions);
-        }
+        genData.addPairs(extensions);
 
         genData.setSourceType(sourceName);
         return genData;

@@ -157,9 +157,11 @@ public class LogSource implements Source, WsLogHandler {
         KeyValuePairList extensions = new KeyValuePairList();
         Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
-            extMap = ((WsLogRecord) logRecord).getExtensions();
-            for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                extensions.addPair(entry.getKey(), entry.getValue());
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                extMap = ((WsLogRecord) logRecord).getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    extensions.addPair(entry.getKey(), entry.getValue());
+                }
             }
         }
 
