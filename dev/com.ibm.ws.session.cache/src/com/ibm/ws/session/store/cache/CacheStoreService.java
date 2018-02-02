@@ -24,8 +24,10 @@ import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
 
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -54,7 +56,7 @@ public class CacheStoreService implements SessionStoreService {
 
     private volatile boolean completedPassivation = true;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
+    @Reference(policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
     protected Library library;
 
     @Reference
@@ -70,27 +72,23 @@ public class CacheStoreService implements SessionStoreService {
      * @param context for this component instance
      * @param props service properties
      */
+    @Activate
     @FFDCIgnore(CacheException.class)
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = props;
 
-        // TODO temporary code validates that the provider can be obtained but does nothing else with it
-
-        if (library == null)
-            ; // use default JCache provider specified via bell
-        else {
-            CachingProvider provider = Caching.getCachingProvider(library.getClassLoader()); // load JCache provider from configured library
-            cacheManager = provider.getCacheManager(null, new CacheClassLoader(), null); // TODO When class loader is specified, it isn't being used for deserialization. Why?
-            cache = cacheManager.getCache("com.ibm.ws.session.cache");
-            if (cache == null) {
-                Configuration<SessionKey, SessionData> config = new MutableConfiguration<SessionKey, SessionData>().setTypes(SessionKey.class, SessionData.class);
-                try {
-                    cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
-                } catch (CacheException x) {
-                    cache = cacheManager.getCache("com.ibm.ws.session.cache");
-                    if (cache == null)
-                        throw x;
-                }
+        // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
+        CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
+        cacheManager = provider.getCacheManager(null, new CacheClassLoader(), null); // TODO When class loader is specified, it isn't being used for deserialization. Why?
+        cache = cacheManager.getCache("com.ibm.ws.session.cache");
+        if (cache == null) {
+            Configuration<SessionKey, SessionData> config = new MutableConfiguration<SessionKey, SessionData>().setTypes(SessionKey.class, SessionData.class);
+            try {
+                cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
+            } catch (CacheException x) {
+                cache = cacheManager.getCache("com.ibm.ws.session.cache");
+                if (cache == null)
+                    throw x;
             }
         }
     }
@@ -109,6 +107,7 @@ public class CacheStoreService implements SessionStoreService {
      *
      * @param context for this component instance
      */
+    @Deactivate
     protected void deactivate(ComponentContext context) {
         cacheManager.close();
     }

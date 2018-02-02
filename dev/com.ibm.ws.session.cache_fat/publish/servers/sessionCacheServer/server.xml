@@ -12,9 +12,7 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
 
-    <httpSessionCache libraryRef="HazelcastLib"/>
-
-    <bell libraryRef="HazelcastLib"/> <!-- TODO Either need httpSessionCache or bell, not both. Split into 2 tests -->
+    <bell libraryRef="HazelcastLib"/>
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
