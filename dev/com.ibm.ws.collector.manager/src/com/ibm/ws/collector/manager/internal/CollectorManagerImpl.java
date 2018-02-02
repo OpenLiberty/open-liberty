@@ -333,16 +333,9 @@ public class CollectorManagerImpl implements CollectorManager {
                 //Check if the source is available
                 if (sourceMgrs.containsKey(sourceId) && sourceMgrs.get(sourceId).getSource() != null) {
                     SourceManager srcMgr = sourceMgrs.get(sourceId);
-                    /*
-                     * Inform the handler that this source/buffer will no longer be available:
-                     * Synchronous Handler: Remove the synchronous handler from the Buffer/Conduit's sync handler set
-                     * Asynchronous Handler: Remove buffer/conduit from the asynchronous handler
-                     */
-                    if (handler instanceof SynchronousHandler) {
-                        ((BufferManagerImpl) srcMgr.getBufferManager()).removeSyncHandler((SynchronousHandler) handler);
-                    } else {
-                        handler.unsetBufferManager(sourceId, srcMgr.getBufferManager());
-                    }
+
+                    //This does nothing for a SynchronousHandler
+                    handler.unsetBufferManager(sourceId, srcMgr.getBufferManager());
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unsubscribing from source " + sourceId, handlerId);
