@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -25,6 +26,11 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.collector.DateFormatHelper;
+import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.Pair;
+import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 
@@ -126,6 +132,42 @@ public class BaseTraceFormatter extends Formatter {
         }
         return "";
     }
+
+    public static final String levelValToString(Integer level) {
+        if (level != null) {
+            int l = level.intValue();
+
+            if (l == WsLevel.FATAL.intValue())
+                return N_FATAL;
+            if (l == WsLevel.ERROR.intValue())
+                return N_ERROR;
+            if (l == Level.WARNING.intValue())
+                return N_WARN;
+            if (l == WsLevel.AUDIT.intValue())
+                return N_AUDIT;
+            if (l == Level.INFO.intValue())
+                return N_INFO;
+
+            if (level == WsLevel.EVENT.intValue())
+                return N_EVENT;
+        }
+        return "";
+    }
+
+    //copied from BTS
+    /** Flags for suppressing traceback output to the console */
+    private static class StackTraceFlags {
+        boolean needsToOutputInternalPackageMarker = false;
+        boolean isSuppressingTraces = false;
+    }
+
+    /** Track the stack trace printing activity of the current thread */
+    private static ThreadLocal<StackTraceFlags> traceFlags = new ThreadLocal<StackTraceFlags>() {
+        @Override
+        protected StackTraceFlags initialValue() {
+            return new StackTraceFlags();
+        }
+    };
 
     final TraceFormat traceFormat;
 
@@ -378,6 +420,46 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
+     * The console log is not structured, and relies on already formatted/translated
+     * messages
+     *
+     * @param genData
+     * @return Formatted string for the console
+     */
+    public String consoleLogFormat(GenericData genData) {
+        StringBuilder sb = new StringBuilder(256);
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String message = null;
+        String throwable = null;
+        Integer levelValue = null;
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(LogFieldConstants.FORMATTEDMSG)) {
+                    message = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
+                    levelValue = Integer.parseInt(kvp.getValue());
+                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE_LOCALIZED)) {
+                    throwable = kvp.getValue();
+                }
+            }
+        }
+
+        sb.append(BaseTraceFormatter.levelValToString(levelValue));
+        sb.append(message);
+
+        //add throwable localized message if exists
+        if (throwable != null) {
+            sb.append(LoggingConstants.nl).append(throwable);
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * The messages log always uses the same/enhanced format, and relies on already formatted
      * messages. This does the formatting needed to take a message suitable for console.log
      * and wrap it to fit into messages.log.
@@ -402,6 +484,63 @@ public class BaseTraceFormatter extends Formatter {
             String stackTrace = getStackTrace(logRecord);
             if (stackTrace != null)
                 sb.append(LoggingConstants.nl).append(stackTrace);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * The messages log always uses the same/enhanced format, and relies on already formatted
+     * messages. This does the formatting needed to take a message suitable for console.log
+     * and wrap it to fit into messages.log.
+     *
+     * @param genData
+     * @return Formatted string for messages.log
+     */
+    public String messageLogFormat(GenericData genData) {
+        // This is a very light trace format, based on enhanced:
+        StringBuilder sb = new StringBuilder(256);
+        String name = null;
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String message = null;
+        Long datetime = null;
+        String level = "";
+        String loggerName = null;
+        String srcClassName = null;
+        String throwable = null;
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
+                    message = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
+
+                    datetime = Long.parseLong(kvp.getValue());
+
+                } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
+                    level = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
+                    loggerName = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
+                    srcClassName = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
+                    throwable = kvp.getValue();
+                }
+
+            }
+        }
+        name = nonNullString(srcClassName, loggerName);
+        sb.append('[').append(DateFormatHelper.formatTime(datetime, useIsoDateFormat)).append("] ");
+        sb.append(DataFormatHelper.getThreadId()).append(' ');
+        formatFixedString(sb, name, enhancedNameLength);
+        sb.append(" " + level + " "); // sym has built-in padding
+        sb.append(message);
+
+        if (throwable != null) {
+            sb.append(LoggingConstants.nl).append(throwable);
         }
 
         return sb.toString();
@@ -530,6 +669,178 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
+     * Format the given record into the desired trace format
+     *
+     * @param genData GenericData pass information needed
+     * @return String
+     */
+    public String traceFormatGenData(GenericData genData) {
+
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String txt = null;
+        Integer id = null;
+        String objId;
+        Integer levelVal = null;
+        String name;
+
+        String className = null;
+        String method = null;
+        String loggerName = null;
+        Long ibm_datetime = null;
+
+        String corrId = null;
+        String org = null;
+        String prod = null;
+        String component = null;
+
+        String sym = null;
+        String logLevel = null;
+
+        String threadName = null;
+        String stackTrace = null;
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
+                    txt = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
+                    ibm_datetime = Long.parseLong(kvp.getValue());
+                } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
+                    sym = " " + kvp.getValue() + " ";
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
+                    className = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.IBM_METHODNAME)) {
+                    method = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
+                    loggerName = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.OBJECT_ID)) {
+                    id = Integer.parseInt(kvp.getValue());
+                } else if (kvp.getKey().equals(LogFieldConstants.CORRELATION_ID)) {
+                    corrId = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.ORG)) {
+                    org = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.PRODUCT)) {
+                    prod = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.COMPONENT)) {
+                    component = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.LOGLEVEL)) {
+                    logLevel = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.THREADNAME)) {
+                    threadName = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
+                    levelVal = Integer.parseInt(kvp.getValue());
+                } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
+                    stackTrace = kvp.getValue();
+                }
+
+            }
+        }
+        if (levelVal == Level.FINER.intValue()) {
+            if (logLevel.equals("ENTRY")) {
+                sym = " > ";
+            } else if (logLevel.equals("EXIT")) {
+                sym = " < ";
+            }
+        }
+        StringBuilder sb = new StringBuilder(256);
+
+        // Common header
+        sb.append('[').append(DateFormatHelper.formatTime(ibm_datetime, useIsoDateFormat)).append("] ");
+        sb.append(DataFormatHelper.getThreadId());
+
+        switch (traceFormat) {
+            default:
+            case ENHANCED:
+                objId = generateObjectId(id, true);
+                name = nonNullString(className, loggerName);
+
+                sb.append(" id=").append(objId).append(' ');
+                formatFixedString(sb, name, enhancedNameLength);
+                sb.append(sym); // sym has built-in padding
+                if (method != null) {
+                    sb.append(method).append(' ');
+                }
+
+                // append formatted message -- txt includes formatted args
+                sb.append(txt);
+                if (stackTrace != null)
+                    sb.append(LoggingConstants.nl).append(stackTrace);
+                break;
+            case BASIC:
+                name = nonNullString(loggerName, className);
+
+                sb.append(' '); // pad after thread id
+                fixedClassString(sb, name, basicNameLength);
+                sb.append(sym);
+
+                if (className != null)
+                    sb.append(className);
+                sb.append(' '); // yes, this space is always there.
+
+                if (method != null)
+                    sb.append(method);
+                sb.append(' '); // yes, this space is always there.
+
+                // append formatted message -- includes formatted args
+                sb.append(txt);
+                if (stackTrace != null)
+                    sb.append(nlBasicPadding).append(stackTrace);
+                break;
+            case ADVANCED:
+                objId = generateObjectId(id, false);
+                name = nonNullString(loggerName, null);
+
+                sb.append(' '); // pad after thread id
+                sb.append(sym);
+
+                // next append the correlation id.
+                sb.append("UOW=");
+                if (corrId != null)
+                    sb.append(corrId);
+
+                // next enter the logger name.
+                sb.append(" source=").append(name);
+
+                // append className if non-null
+                if (className != null)
+                    sb.append(" class=").append(className);
+
+                // append methodName if non-null
+                if (method != null)
+                    sb.append(" method=").append(method);
+
+                if (id != null)
+                    sb.append(" id=").append(objId);
+
+                //check the comparison to WsLogRecord
+                if (org != null && prod != null && component != null) {
+                    // next append org, prod, component, if set. Reference equality check is ok here.
+                    sb.append(" org=");
+                    sb.append(org);
+                    sb.append(" prod=");
+                    sb.append(prod);
+                    sb.append(" component=");
+                    sb.append(component);
+
+                    //get thread name
+                } else {
+                    //ibm_threadId replace check if you can use this as the thread
+                    sb.append(" thread=[").append(threadName).append("]");
+                }
+
+                // append formatted message -- txt includes formatted args
+                sb.append(nlAdvancedPadding).append(txt);
+                if (stackTrace != null)
+                    sb.append(nlAdvancedPadding).append(stackTrace);
+                break;
+        }
+        return sb.toString();
+    }
+
+    /**
      * @param logRecord
      * @return
      */
@@ -546,6 +857,29 @@ public class BaseTraceFormatter extends Formatter {
 
         if (id != null) {
             objId = Integer.toHexString(System.identityHashCode(id));
+            if (objId.length() < 8) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("00000000");
+                builder.append(objId);
+                objId = builder.substring(builder.length() - 8);
+            }
+        } else if (fixedWidth) {
+            objId = pad8;
+        } else {
+            objId = emptyString;
+        }
+        return objId;
+    }
+
+    /**
+     * @param id ID from tracesource
+     * @return String id converted to hex
+     */
+    private final String generateObjectId(Integer id, boolean fixedWidth) {
+        String objId;
+
+        if (id != null) {
+            objId = Integer.toHexString(id);
             if (objId.length() < 8) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("00000000");
@@ -736,13 +1070,100 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
+     * check casting to WsLogRecord
+     *
      * @return
      */
-    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+    //change to public
+    public WsLogRecord getWsLogRecord(LogRecord logRecord) {
         try {
             return (WsLogRecord) logRecord;
         } catch (ClassCastException ex) {
             return null;
         }
+    }
+
+    /**
+     * Outputs filteredStream of genData
+     *
+     * @param genData object to filter
+     * @return filtered message of the genData
+     */
+    protected String filteredStreamOutput(GenericData genData) {
+        String txt = null;
+        String loglevel = null;
+        KeyValuePair kvp = null;
+
+        ArrayList<Pair> pairs = genData.getPairs();
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals("message")) {
+                    txt = kvp.getValue();
+                } else if (kvp.getKey().equals("loglevel")) {
+                    loglevel = kvp.getValue();
+                } else if (kvp.getKey().equals("throwable")) {
+                    loglevel = kvp.getValue();
+                }
+            }
+        }
+
+        String message = filterStackTraces(txt);
+        if (message != null) {
+            if (loglevel.equals("SystemErr")) {
+                message = "[err] " + message;
+            }
+        }
+        return message;
+    }
+
+    private String filterStackTraces(String txt) {
+        // Check for stack traces, which we may want to trim
+        StackTraceFlags stackTraceFlags = traceFlags.get();
+        // We have a little thread-local state machine here with four states controlled by two
+        // booleans. Our triggers are { "unknown/user code", "just seen IBM code", "second line of IBM code", ">second line of IBM code"}
+        // "unknown/user code" -> stackTraceFlags.isSuppressingTraces -> false, stackTraceFlags.needsToOutputInternalPackageMarker -> false
+        // "just seen IBM code" -> stackTraceFlags.needsToOutputInternalPackageMarker->true
+        // "second line of IBM code" -> stackTraceFlags.needsToOutputInternalPackageMarker->true
+        // ">second line of IBM code" -> stackTraceFlags.isSuppressingTraces->true
+        // The final two states are optional
+
+        if (txt.startsWith("\tat ")) {
+            // This is a stack trace, do a more detailed analysis
+            PackageProcessor packageProcessor = PackageProcessor.getPackageProcessor();
+            String packageName = PackageProcessor.extractPackageFromStackTraceLine(txt);
+            // If we don't have a package processor, don't suppress anything
+            if (packageProcessor != null && packageProcessor.isIBMPackage(packageName)) {
+                // First internal package, we let through
+                // Second one, we suppress but say we did
+                // If we're still suppressing, and this is a stack trace, this is easy - we suppress
+                if (stackTraceFlags.isSuppressingTraces) {
+                    txt = null;
+                } else if (stackTraceFlags.needsToOutputInternalPackageMarker) {
+                    // Replace the stack trace with something saying we got rid of it
+                    txt = "\tat " + TruncatableThrowable.INTERNAL_CLASSES_STRING;
+                    // No need to output another marker, we've just output it
+                    stackTraceFlags.needsToOutputInternalPackageMarker = false;
+                    // Suppress any subsequent IBM frames
+                    stackTraceFlags.isSuppressingTraces = true;
+                } else {
+                    // Let the text through, but make a note not to let anything but an [internal classes] through
+                    stackTraceFlags.needsToOutputInternalPackageMarker = true;
+                }
+            } else {
+                // This is user code, third party API, or Java API, so let it through
+                // Reset the flags to ensure it gets let through
+                stackTraceFlags.isSuppressingTraces = false;
+                stackTraceFlags.needsToOutputInternalPackageMarker = false;
+            }
+
+        } else {
+            // We're no longer processing a stack, so reset all our state
+            stackTraceFlags.isSuppressingTraces = false;
+            stackTraceFlags.needsToOutputInternalPackageMarker = false;
+        }
+        return txt;
     }
 }
