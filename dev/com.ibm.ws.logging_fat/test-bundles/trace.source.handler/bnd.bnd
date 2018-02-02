@@ -19,7 +19,8 @@ Import-Package: com.ibm.ejs.ras, \
                 org.osgi.framework, \
                 com.ibm.wsspi.collector.manager, \
                 com.ibm.ws.logging.source, \
-                com.ibm.wsspi.rest.handler
+                com.ibm.wsspi.rest.handler, \
+                com.ibm.ws.logging.data
 
 Private-Package: trace.source.handler, \
                  collector.manager_fat

@@ -50,4 +50,30 @@ public class GenericData {
         this.sourceType = sourceType;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        KeyValuePair kvp;
+        String key;
+        String val;
+        StringBuilder sb = new StringBuilder();
+        String comma = ",";
+        sb.append("GenericData [");
+        sb.append("type=" + sourceType);
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                kvp = (KeyValuePair) p;
+                key = kvp.getKey();
+                val = kvp.getValue();
+                sb.append(comma);
+                if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
+                    key = "threadID";
+                }
+                sb.append(key + "=" + val);
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

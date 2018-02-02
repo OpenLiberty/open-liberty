@@ -187,8 +187,8 @@ public class HandlerTest {
         List<String> json = new ArrayList<String>();
         json.add("datetime");
         json.add("threadId");
-        json.add("loggerName");
-        json.add("logLevel");
+        json.add("module");
+        json.add("loglevel");
         json.add("messageId");
         json.add("message");
 
@@ -212,18 +212,18 @@ public class HandlerTest {
             }
 
             List<String> levels = new ArrayList<String>();
-            levels.add("logLevel=I");
-            levels.add("logLevel=W");
-            levels.add("logLevel=A");
-            levels.add("logLevel=E");
-            levels.add("logLevel=F");
+            levels.add("severity=I");
+            levels.add("severity=W");
+            levels.add("severity=A");
+            levels.add("severity=E");
+            levels.add("severity=F");
 
             List<String> rawLevels = new ArrayList<String>();
-            rawLevels.add("logLevelRaw=INFO");
-            rawLevels.add("logLevelRaw=WARNING");
-            rawLevels.add("logLevelRaw=AUDIT");
-            rawLevels.add("logLevelRaw=ERROR");
-            rawLevels.add("logLevelRaw=FATAL");
+            rawLevels.add("loglevel=INFO");
+            rawLevels.add("loglevel=WARNING");
+            rawLevels.add("loglevel=AUDIT");
+            rawLevels.add("loglevel=ERROR");
+            rawLevels.add("loglevel=FATAL");
 
             boolean info = false;
             boolean audit = false;
@@ -251,35 +251,35 @@ public class HandlerTest {
                     Log.info(c, testName, "----> MessageID null for sys out");
                     sysOut = true;
 
-                    assertTrue("whether logLevelRaw has complete word for SystemOut", rec.contains("logLevelRaw=SystemOut"));
+                    assertTrue("whether logLevelRaw has complete word for SystemOut", rec.contains("loglevel=SystemOut"));
 
                 } else if ((!sysErr) && rec.contains("loggerName=R")) {
 
                     assertTrue("MessageId not null for system err..", rec.contains("messageId=null"));
                     Log.info(c, testName, "----> MessageID null for sys err");
                     sysErr = true;
-                    assertTrue("whether logLevelRaw has complete word for System error", rec.contains("logLevelRaw=SystemErr"));
+                    assertTrue("whether logLevelRaw has complete word for System error", rec.contains("loglevel=SystemErr"));
 
                 } else if (rec.contains("loggerName=ezlogger")) {
                     if (!(utilLogSevere && utilLogWarn && utilLogInfo)) {
-                        if (rec.contains("logLevel=E")) {
+                        if (rec.contains("loglevel=E")) {
 
                             utilLogSevere = true;
                             assertTrue("MessageId not null for util logger - severe level", rec.contains("messageId=null"));
                             Log.info(c, testName, "----> MessageID null for util logger - severe level");
-                            assertTrue("whether logLevelRaw has complete word for Error", rec.contains("logLevelRaw=ERROR") || rec.contains("logLevelRaw=SEVERE"));
-                        } else if (rec.contains("logLevel=W")) {
+                            assertTrue("whether logLevelRaw has complete word for Error", rec.contains("loglevel=ERROR") || rec.contains("logLevelRaw=SEVERE"));
+                        } else if (rec.contains("loglevel=W")) {
 
                             utilLogWarn = true;
                             assertTrue("MessageId not null for util logger - warning level", rec.contains("messageId=null"));
                             Log.info(c, testName, "----> MessageID null for util logger - warning level");
-                            assertTrue("whether logLevelRaw has complete word for WARNING", rec.contains("logLevelRaw=WARNING"));
-                        } else if (rec.contains("logLevel=I")) {
+                            assertTrue("whether logLevelRaw has complete word for WARNING", rec.contains("loglevel=WARNING"));
+                        } else if (rec.contains("loglevel=I")) {
 
                             utilLogInfo = true;
                             assertTrue("MessageId not null for util logger - info level", rec.contains("messageId=null"));
                             Log.info(c, testName, "----> MessageID null for util logger - info level");
-                            assertTrue("whether logLevelRaw has complete word for INFO", rec.contains("logLevelRaw=INFO"));
+                            assertTrue("whether logLevelRaw has complete word for INFO", rec.contains("logevel=INFO"));
                         }
                     }
                 } else {
@@ -289,9 +289,9 @@ public class HandlerTest {
                         if (rec.contains(level)) {
                             Log.info(c, testName, "----> Found level : " + level);
                             lvls.remove();
-                            if (level.contains("logLevel=I")) {
+                            if (level.contains("loglevel=I")) {
                                 info = true;
-                            } else if (level.contains("logLevel=A")) {
+                            } else if (level.contains("loglevel=A")) {
                                 audit = true;
                             }
                         }
@@ -304,9 +304,9 @@ public class HandlerTest {
                         if (rec.contains(level)) {
                             Log.info(c, testName, "----> Found raw loggerlevel : " + level);
                             lvls.remove();
-                            if (level.contains("logLevelRaw=INFO")) {
+                            if (level.contains("loglevel=INFO")) {
                                 raw_info = true;
-                            } else if (level.contains("logLevelRaw=AUDIT")) {
+                            } else if (level.contains("loglevel=AUDIT")) {
                                 raw_audit = true;
                             }
                         }
@@ -427,12 +427,12 @@ public class HandlerTest {
 
         // ***** Look for logs in trace.log
         HandlerTestHelper.assertFoundAllLogs("%s log NOT found in " + TRACE_LOG,
-                                         HandlerTestHelper.findAllLogsFromRESTHandlerTraceLogger(messageKey, traceServer, TRACE_LOG));
+                                             HandlerTestHelper.findAllLogsFromRESTHandlerTraceLogger(messageKey, traceServer, TRACE_LOG));
 
         // ***** Look for logs in tracehandlerimpl.log
         HandlerTestHelper.assertFoundTraceLogsOnly("%s log NOT received in TraceHandler (" + TRACEHANDLERIMPL_LOG + ")",
-                                               "%s log received in TraceHandler (" + TRACEHANDLERIMPL_LOG + ")",
-                                               HandlerTestHelper.findAllLogsFromRESTHandlerTraceLogger(messageKey, traceServer, TRACEHANDLERIMPL_LOG));
+                                                   "%s log received in TraceHandler (" + TRACEHANDLERIMPL_LOG + ")",
+                                                   HandlerTestHelper.findAllLogsFromRESTHandlerTraceLogger(messageKey, traceServer, TRACEHANDLERIMPL_LOG));
 
     }
 
@@ -471,12 +471,12 @@ public class HandlerTest {
 
         // ***** Look for logs in trace.log
         HandlerTestHelper.assertFoundAllLogs("%s log NOT found in " + TRACE_LOG,
-                                         HandlerTestHelper.findAllLogsForTestAppJUL_jsp(traceServer, messageKey, TRACE_LOG));
+                                             HandlerTestHelper.findAllLogsForTestAppJUL_jsp(traceServer, messageKey, TRACE_LOG));
 
         // ***** Look for logs in tracehandlerimpl.log
         HandlerTestHelper.assertFoundTraceLogsOnly("%s log NOT received in TraceHandler (" + TRACEHANDLERIMPL_LOG + ")",
-                                               "%s log received in TraceHandler (" + TRACEHANDLERIMPL_LOG + ")",
-                                               HandlerTestHelper.findAllLogsForTestAppJUL_jsp(traceServer, messageKey, TRACEHANDLERIMPL_LOG));
+                                                   "%s log received in TraceHandler (" + TRACEHANDLERIMPL_LOG + ")",
+                                                   HandlerTestHelper.findAllLogsForTestAppJUL_jsp(traceServer, messageKey, TRACEHANDLERIMPL_LOG));
 
         HandlerTestHelper.verifyLoglevelRawInTraceLogger(messageKey, traceServer, TRACEHANDLERIMPL_LOG);
     }
@@ -580,11 +580,11 @@ public class HandlerTest {
         Map<String, String> expectedFieldAndValues = new HashMap<String, String>() {
             {
                 // check field and value
-                put("uriPath", "/ibm/api/test/tracelogger");
-                put("requestMethod", "GET");
-                put("responseCode", "200");
-                put("queryString", queryString);
-                put("requestPort", String.valueOf(traceServer.getHttpSecondarySecurePort()));
+                put("ibm_uriPath", "/ibm/api/test/tracelogger");
+                put("ibm_requestMethod", "GET");
+                put("ibm_responseCode", "200");
+                put("ibm_queryString", queryString);
+                put("ibm_requestPort", String.valueOf(traceServer.getHttpSecondarySecurePort()));
             }
         };
         assertAccessLogDataIsValid(firstLine, expectedFieldAndValues);
@@ -658,13 +658,12 @@ public class HandlerTest {
      */
     private void assertAccessLogDataIsValid(String line, Map<String, String> expectedFieldsAndValues) {
         // Received AccessLog event: AccessLogData [uriPath=/ibm/api/test/tracelogger, requestMethod=GET, remoteHost=127.0.0.1, userAgent=Java/1.7.0, requestProtocol=HTTP/1.1, responseSize=27, responseCode=200, elapsedTime=148067, queryString=messageKey=testAccessLogSource_1453114767723, requestStartTime=33636731463302, sequence=33636731463302_0000000000002]
-        String[] expectedFieldsWithNonNullValue = new String[] { "uriPath", "requestMethod", "responseCode",
-                                                                 "queryString", "requestHost", "requestPort",
-                                                                 "remoteHost", "userAgent", "requestProtocol",
-                                                                 "responseSize", "responseCode", "elapsedTime",
-                                                                 "requestStartTime" };
-
-        String startTag = "AccessLogData [";
+        String[] expectedFieldsWithNonNullValue = new String[] { "ibm_uriPath", "ibm_requestMethod", "ibm_responseCode",
+                                                                 "ibm_queryString", "ibm_requestHost", "ibm_requestPort",
+                                                                 "ibm_remoteHost", "ibm_userAgent", "ibm_requestProtocol",
+                                                                 "ibm_bytesReceived", "ibm_responseCode", "ibm_elapsedTime",
+                                                                 "ibm_requestStartTime" };
+        String startTag = "GenericData [";
         int start = line.indexOf(startTag);
         assertTrue("AccessLogData not found", start != -1);
         int end = line.indexOf(']', start);
@@ -704,20 +703,20 @@ public class HandlerTest {
             Assert.assertEquals(fieldName + " value does not match.", expectedValue, actualValue);
         }
 
-        assertTrue("Sequence field not found", data.containsKey("sequence"));
-        assertTrue("Seqence does not match the required patteren", data.get("sequence").matches("[0-9]+_[0-9]{13}"));
+        assertTrue("Sequence field not found", data.containsKey("ibm_sequence"));
+        assertTrue("Seqence does not match the required patteren", data.get("ibm_sequence").matches("[0-9]+_[0-9]{13}"));
 
         // check time values are in micro-secs, and should be ideally between few mins range.
         long expectedStartTimeRange = System.currentTimeMillis() - (2 * 60 * 1000); // start less 2mins
         long expectedEndTimeRange = System.currentTimeMillis();
 
-        long timestamp = Long.parseLong(data.get("timestamp"));
+        long timestamp = Long.parseLong(data.get("ibm_datetime"));
         assertTrue("Timestamp is not in vaild time range."
                    + "( timestamp=" + timestamp
                    + ", expectedStartTimeRange=" + expectedStartTimeRange
                    + ", expectedEndTimeRange=" + expectedEndTimeRange + " ) ", (timestamp > expectedStartTimeRange && timestamp < expectedEndTimeRange));
 
-        long requestStartTime = Long.parseLong(data.get("requestStartTime"));
+        long requestStartTime = Long.parseLong(data.get("ibm_requestStartTime"));
         assertTrue("StartTime is not in vaild time range."
                    + "( requestStartTime=" + requestStartTime
                    + ", expectedStartTimeRange=" + expectedStartTimeRange

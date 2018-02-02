@@ -155,11 +155,11 @@ public abstract class JSONEventsTest {
         for (String key : jsonObj.keySet()) {
             if (mandatoryKeyList.contains(key)) {
                 mandatoryKeyList.remove(key);
-                value = jsonObj.getString(key);
+                value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else if (optionalKeyList.contains(key)) {
                 optionalKeyList.remove(key);
-                value = jsonObj.getString(key);
+                value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else {
                 invalidFields.add(key);

@@ -110,7 +110,7 @@ public class TraceSource implements Source, WsTraceHandler {
         genData.addPair("ibm_threadId", logRecord.getThreadID());
         genData.addPair("module", logRecord.getLoggerName());
         genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("logLevel", LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
         genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
         genData.addPair("ibm_className", logRecord.getSourceClassName());
         String sequenceNum = sequenceNumber.next(datetimeValue);
@@ -123,10 +123,13 @@ public class TraceSource implements Source, WsTraceHandler {
             extMap = ((WsLogRecord) logRecord).getExtensions();
         }
 
-        for (Map.Entry<String, String> entry : extMap.entrySet()) {
-            extensions.addPair(entry.getKey(), entry.getValue());
+        if (extMap != null) {
+            for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                extensions.addPair(entry.getKey(), entry.getValue());
+            }
+            genData.addPairs(extensions);
         }
-        genData.addPairs(extensions);
+
         genData.setSourceType(sourceName);
         return genData;
 
