@@ -58,7 +58,7 @@ public class AutomaticConverter extends BuiltInConverter {
             this.parseMethod = getParse(reflectionClass);
         }
         if (this.ctor == null && this.valueOfMethod == null && this.parseMethod == null) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", reflectionClass));
         }
     }
 
