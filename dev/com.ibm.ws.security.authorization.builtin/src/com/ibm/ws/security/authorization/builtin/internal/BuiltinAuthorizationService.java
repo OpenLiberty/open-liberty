@@ -33,6 +33,7 @@ import com.ibm.ws.security.authorization.AuthorizationTableService;
 import com.ibm.ws.security.authorization.FeatureAuthorizationTableService;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
 /**
@@ -49,13 +50,16 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     private final ConcurrentServiceReferenceSet<AuthorizationTableService> authorizationTables = new ConcurrentServiceReferenceSet<AuthorizationTableService>(KEY_AUTHORIZATION_TABLE_SERVICE);
     private final SubjectManager subjManager = new SubjectManager();
     static final String KEY_FEATURE_SECURITY_AUTHZ_SERVICE = "featureAuthzTableService";
-    private final AtomicServiceReference<FeatureAuthorizationTableService> featureAuthzTableServiceRef =
-                    new AtomicServiceReference<FeatureAuthorizationTableService>(KEY_FEATURE_SECURITY_AUTHZ_SERVICE);
+    private final AtomicServiceReference<FeatureAuthorizationTableService> featureAuthzTableServiceRef = new AtomicServiceReference<FeatureAuthorizationTableService>(KEY_FEATURE_SECURITY_AUTHZ_SERVICE);
+    protected ConcurrentServiceReferenceMap<String, AuthorizationTableService> appBndAuthorizations = new ConcurrentServiceReferenceMap<String, AuthorizationTableService>(KEY_AUTHORIZATION_TABLE_SERVICE);
 
     private boolean useRoleAsGroupName = false;
 
     private static final String MGMT_AUTHZ_ROLES = "com.ibm.ws.management";
-//    private static final String ADMIN_RESOURCE_NAME = "com.ibm.ws.management.security.resource";
+
+    static final String KEY_COMPONENT_NAME = "component.name";
+    static final String KEY_APP_BND_AUTHZ_TABLE_SERVICE = "com.ibm.ws.security.appbnd.AppBndAuthorizationTableService";
+    //    private static final String ADMIN_RESOURCE_NAME = "com.ibm.ws.management.security.resource";
     private final List<String> useRoleAsGroupNameForApps = new ArrayList<String>();
 
     protected void setAccessDecisionService(ServiceReference<AccessDecisionService> ref) {
@@ -68,10 +72,21 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     protected void setAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.addReference(ref);
+        String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
+        if (cn != null && cn.equals(KEY_APP_BND_AUTHZ_TABLE_SERVICE)) {
+            appBndAuthorizations.putReference(cn, ref);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.event(tc, "appBndAuthorizationTable service: " + ref);
+            }
+        }
     }
 
     protected void unsetAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.removeReference(ref);
+        String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
+        if (cn != null && cn.equals(KEY_APP_BND_AUTHZ_TABLE_SERVICE)) {
+            appBndAuthorizations.removeReference(cn, ref);
+        }
     }
 
     protected void setFeatureAuthzTableService(ServiceReference<FeatureAuthorizationTableService> ref) {
@@ -196,7 +211,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * If no authorization table can be found for the resourceName, null
      * is returned. If more than one authorization table can be found for
      * the resourceName, null is returned.
-     * 
+     *
      * @param resourceName
      * @param specialSubject
      * @return
@@ -212,8 +227,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         if (featureAuthzRoleHeaderValue != null &&
             !featureAuthzRoleHeaderValue.equals(MGMT_AUTHZ_ROLES)) {
             roles = featureAuthzTableSvc.getRolesForSpecialSubject(resourceName, specialSubject);
-        }
-        else {
+        } else {
             Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
             while (itr.hasNext()) {
                 AuthorizationTableService authzTableSvc = itr.next();
@@ -237,7 +251,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * If no authorization table can be found for the resourceName, null
      * is returned. If more than one authorization table can be found for
      * the resourceName, null is returned.
-     * 
+     *
      * @param resourceName
      * @param accessId
      * @return
@@ -253,8 +267,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         if (featureAuthzRoleHeaderValue != null &&
             !featureAuthzRoleHeaderValue.equals(MGMT_AUTHZ_ROLES)) {
             roles = featureAuthzTableSvc.getRolesForAccessId(resourceName, accessId, realmName);
-        }
-        else {
+        } else {
             Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
             while (itr.hasNext()) {
                 AuthorizationTableService authzTableSvc = itr.next();
@@ -275,17 +288,22 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     private boolean isAuthzInfoAvailableForApp(String resourceName) {
         boolean found = false;
-        FeatureAuthorizationTableService featureAuthzTableSvc = featureAuthzTableServiceRef.getService();
-        if (featureAuthzTableSvc != null) {
-            found = featureAuthzTableSvc.isAuthzInfoAvailableForApp(resourceName);
-        }
-
-        if (!found) {
-            Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
-            while (itr.hasNext() && !found) {
-                AuthorizationTableService authzTableSvc = itr.next();
-                found = authzTableSvc.isAuthzInfoAvailableForApp(resourceName);
-            }
+//        FeatureAuthorizationTableService featureAuthzTableSvc = featureAuthzTableServiceRef.getService();
+//        if (featureAuthzTableSvc != null) {
+//            found = featureAuthzTableSvc.isAuthzInfoAvailableForApp(resourceName);
+//        }
+//
+//        if (!found) {
+//            Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
+//            while (itr.hasNext() && !found) {
+//                AuthorizationTableService authzTableSvc = itr.next()
+//                found = authzTableSvc.isAuthzInfoAvailableForApp(resourceName);
+//            }
+//        }
+        Iterator<AuthorizationTableService> itr = appBndAuthorizations.getServices();
+        while (itr.hasNext() && !found) {
+            AuthorizationTableService authzTableSvc = itr.next();
+            found = authzTableSvc.isAuthzInfoAvailableForApp(resourceName);
         }
         return found;
     }
@@ -294,7 +312,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * Check if the Subject is authorized to the required roles for a given
      * resource. The user is checked first, and if it's not authorized, then
      * each group is checked.
-     * 
+     *
      * @param resourceName
      *            the name of the application, used for looking up the correct
      *            authorization table
@@ -341,7 +359,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         // check user access
         boolean isGranted = accessDecisionService.isGranted(resourceName, requiredRoles, userRoles, subject);
 
-        // check group access 
+        // check group access
         if (!isGranted) {
             String[] groupIds = getGroupIds(wsCred);
             if (groupIds != null && groupIds.length > 0) {
@@ -384,7 +402,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
             }
             isGranted = accessDecisionService.isGranted(resourceName, requiredRoles, assignedRoles, subject);
         }
-        //Keep track the app that use role as group name for authorization decision 
+        //Keep track the app that use role as group name for authorization decision
         if (!useRoleAsGroupNameForApps.contains(resourceName)) {
             Tr.info(tc, "AUTHZ_BASED_ON_ROLE_NAME_SAME_AS_GROUP_NAME", resourceName);
             useRoleAsGroupNameForApps.add(resourceName);
@@ -395,7 +413,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     /**
      * Get the WSCredential from the given Subject
-     * 
+     *
      * @param subject
      *            the subject to parse, must not be null
      * @return the WSCredential, or null if the Subject does not have one
@@ -405,8 +423,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
             java.util.Collection<Object> publicCreds = subject.getPublicCredentials();
 
             if (publicCreds != null && publicCreds.size() > 0) {
-                java.util.Iterator<Object> publicCredIterator = publicCreds
-                                .iterator();
+                java.util.Iterator<Object> publicCredIterator = publicCreds.iterator();
 
                 while (publicCredIterator.hasNext()) {
                     Object cred = publicCredIterator.next();
@@ -422,7 +439,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     /**
      * Get the access ID from the specified credential.
-     * 
+     *
      * @parm cred the WSCredential to search
      * @return the user access id of the credential, or null when the
      *         cred is expired or destroyed
@@ -446,7 +463,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     /**
      * Get the group IDs from the specified credential.
-     * 
+     *
      * @param cred
      *            the WSCredential to search, must not be null
      * @return an array of group access ids of the credential, or null when the
@@ -477,7 +494,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     /**
      * Validate that the input parameters are not null.
-     * 
+     *
      * @param resourceName
      *            the name of the resource
      * @param requiredRoles
@@ -496,7 +513,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     /**
      * Check if the special subject ALL_AUTHENTICATED_USERS is mapped to the
      * requiredRole.
-     * 
+     *
      * @param resourceName
      *            the name of the resource being accessed, used to look up
      *            corresponding the authorization table, must not be null
@@ -505,7 +522,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      *            be null or empty
      * @param subject
      *            the user who is trying to access the resource
-     * 
+     *
      * @throws NullPointerException
      *             when resourceName or requiredRoles is null
      */
@@ -520,7 +537,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     /**
      * Check if the subject has a WScredential, is authenticated, and is not a basic auth credential.
-     * 
+     *
      * @param subject
      *            the subject to check
      * @return true if the subject has a WSCredential that is not marked as
@@ -539,7 +556,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     /**
      * Get the realm name from the specified credential.
-     * 
+     *
      * @param cred
      *            the WSCredential to search, must not be null
      * @return realm name.
