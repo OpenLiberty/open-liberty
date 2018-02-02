@@ -19,6 +19,7 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -84,17 +85,17 @@ public class TraceSource implements Source, WsTraceHandler {
     }
 
     /** {@inheritDoc} */
-    @Override
-    public void publish(RoutedMessage routedMessage) {
+//    @Override
+    public void publish(RoutedMessage routedMessage, Object id) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
             if (routedMessage.getLogRecord() != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage));
+                bufferMgr.add(parse(routedMessage, id));
             }
         }
     }
 
-    public GenericData parse(RoutedMessage routedMessage) {
+    public LogTraceData parse(RoutedMessage routedMessage, Object id) {
 
         GenericData genData = new GenericData();
         LogRecord logRecord = routedMessage.getLogRecord();
@@ -115,6 +116,23 @@ public class TraceSource implements Source, WsTraceHandler {
         genData.addPair("ibm_className", logRecord.getSourceClassName());
         String sequenceNum = sequenceNumber.next(datetimeValue);
         genData.addPair("ibm_sequence", sequenceNum);
+        genData.addPair("levelValue", logRecord.getLevel().intValue());
+
+        String threadName = Thread.currentThread().getName();
+        genData.addPair("threadName", threadName);
+
+        if (id != null) {
+            Integer objid = System.identityHashCode(id);
+            genData.addPair("objectId", objid);
+        }
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+
+        if (wsLogRecord != null) {
+            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
+            genData.addPair("org", wsLogRecord.getOrganization());
+            genData.addPair("product", wsLogRecord.getProduct());
+            genData.addPair("component", wsLogRecord.getComponent());
+        }
 
         KeyValuePairList extensions = new KeyValuePairList();
         Map<String, String> extMap = null;
@@ -130,7 +148,33 @@ public class TraceSource implements Source, WsTraceHandler {
         genData.addPairs(extensions);
 
         genData.setSourceType(sourceName);
-        return genData;
+        //return tracedata
+        LogTraceData traceData = new LogTraceData(genData);
+        traceData.setLevelValue(logRecord.getLevel().intValue());
+
+        return traceData;
+
+    }
+
+    /**
+     * @return
+     */
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.logging.WsTraceHandler#publish(com.ibm.ws.logging.RoutedMessage)
+     */
+    @Override
+    public void publish(RoutedMessage routedMessage) {
+        // TODO Auto-generated method stub
 
     }
 }
