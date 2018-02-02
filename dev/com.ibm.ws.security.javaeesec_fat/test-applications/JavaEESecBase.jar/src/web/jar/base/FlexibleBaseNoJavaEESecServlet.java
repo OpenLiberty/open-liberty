@@ -729,7 +729,7 @@ public abstract class FlexibleBaseNoJavaEESecServlet extends HttpServlet {
      * @param sb Running StringBuffer
      * @param msg Message to write
      */
-    void writeLine(StringBuffer sb, String msg) {
+    protected void writeLine(StringBuffer sb, String msg) {
         sb.append(msg + "\n");
         log.info(msg);
     }
