@@ -165,7 +165,7 @@ public class LogSource implements Source, WsLogHandler {
         }
 
         genData.addPairs(extensions);
-        genData.addPair("sequence", sequenceNumber.next(dateVal));
+        genData.addPair("ibm_sequence", sequenceNumber.next(dateVal));
         //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
 
         Throwable thrown = logRecord.getThrown();

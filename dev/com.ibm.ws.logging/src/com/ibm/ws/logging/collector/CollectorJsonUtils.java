@@ -255,7 +255,8 @@ public class CollectorJsonUtils {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (!key.equals(LogFieldConstants.LABEL) && !(key.equals(LogFieldConstants.SOURCEID))) {
+                if (!key.equals(LogFieldConstants.LABEL) && !(key.equals(LogFieldConstants.SOURCEID))
+                    && !(key.equals(LogFieldConstants.DATEOFFIRSTOCCURENCE)) && !(key.equals(LogFieldConstants.COUNT))) {
 
                     if (key.equals(LogFieldConstants.IBM_STACKTRACE)) {
                         key = LogFieldConstants.STACKTRACE;
@@ -316,7 +317,9 @@ public class CollectorJsonUtils {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
+                if (key.equals(LogFieldConstants.IBM_REQUESTSTARTTIME)) {
+
+                } else if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
 
                     key = LogFieldConstants.QUERYSTRING;
                     String jsonQueryString = value;

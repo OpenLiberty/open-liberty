@@ -122,6 +122,7 @@ public class FFDCSource implements Source {
                 genData.addPair("ibm_datetime", timeStampVal);
                 genData.addPair("dateOfFirstOccurence", in.getDateOfFirstOccurrence().getTime());
                 genData.addPair("count", countVal);
+                genData.addPair("message", th.getMessage());
                 genData.addPair("ibm_className", in.getSourceId());
                 genData.addPair("label", in.getLabel());
                 genData.addPair("ibm_exceptionName", in.getExceptionName());
@@ -130,7 +131,6 @@ public class FFDCSource implements Source {
                 genData.addPair("ibm_threadId", in.getThreadId());
                 genData.addPair("ibm_stackTrace", getStackTraceAsString(th));
                 genData.addPair("ibm_objectDetails", getCallerDetails(in));
-                genData.addPair("message", th.getMessage());
 
                 String sequenceVal = timeStampVal + "_" + String.format("%013X", seq.incrementAndGet());
                 genData.addPair("ibm_sequence", sequenceVal);
