@@ -135,40 +135,6 @@ task publishLibNative(type: Copy) {
   into buildImage.file('wlp/lib/native')
 }
 
-def featureFiles = fileTree(dir: project.projectDir, include: '*.feature')
-def featureToAttributes = [:]
-featureFiles.visit {
-  if (it.isDirectory()) { return }
-
-  def attributes = [:]
-  String text = it.getFile().getText()
-  String kind = null
-  if (text.contains("kind=ga")) {
-    kind = "ga"
-  } else if (text.contains("kind=beta")) {
-    kind = "beta"
-  } else if (text.contains("kind=noship")) {
-    kind = "noship"
-  }
-  String name = null
-  int index = text.indexOf("symbolicName=")
-  if (index != -1) {
-    int endIndex = text.indexOf("\n", index)
-    if (endIndex == -1) {
-      endIndex = text.length()
-    }
-
-    name = text.substring(index + "symbolicName=".length(), endIndex)
-    name = name.replaceAll("\\s+", "")
-  } else {
-    name = it.name.substring(0, it.name.size()-8)
-  }
-
-  attributes["name"] = name
-  attributes["kind"] = kind
-  featureToAttributes[it] = attributes
-}
-
 task prereqFeatureResources {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
@@ -191,6 +157,7 @@ task publishFeatureResources {
     }
   }
 
+  def featureFiles = fileTree(dir: project.projectDir, include: '*.feature')
   inputs.files(featureFiles).skipWhenEmpty()
   outputs.dir buildImage.file('wlp/lib/features')
   outputs.dir new File(project.buildDir, 'repo')
@@ -234,18 +201,19 @@ task publishFeatureResources {
       into project.file('build/l10n')
     }
 
-    featureToAttributes.each { file, attr ->
-      if (attr["kind"] != null) {
-        String createFor = attr["kind"]
-        String buildType = attr["kind"]
-        String version = ("beta".equals(attr["kind"]) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+    featureFiles.each {
+      Properties props = new Properties()
+      props.load(new FileInputStream(it))
 
-        ant.featureBnd(bnd: file.getPath(),
+      if (props['kind'] != null) {
+        String version = ("beta".equals(props['kind']) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+
+        ant.featureBnd(bnd: it.getPath(),
                 createESA: "true",
                 dir: buildImage.file('wlp'),
                 esaDir: new File(project.buildDir, 'repo'),
-                createFor: createFor,
-                buildType: buildType,
+                createFor: props['kind'],
+                buildType: props['kind'],
                 junit: new File(project.buildDir, 'report/featureChecks.xml')) {
           defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
                   licensePath: buildImage.file('lafiles/featureTerms'),
@@ -275,7 +243,7 @@ task publishFeatureResources {
                 descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
                 generateKnowledgeCentreLinks: "true",
                 licenseType: "EPL")
-        ant.zip(destfile: "${buildDir}/repo/${attr["name"]}.esa.metadata.zip") {
+        ant.zip(destfile: "${buildDir}/repo/${props['symbolicName']}.esa.metadata.zip") {
           fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
           zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
         }
@@ -488,17 +456,24 @@ test {
   }
 }
 
+def featuresToPublish() {
+  def features = []
+  fileTree(dir: project.projectDir, include: '*.feature').each {
+    Properties props = new Properties()
+    props.load(new FileInputStream(it))
+    features.add(props['symbolicName'])
+  }
+  return features
+}
+
 publishing {
   publications {
-    // Publish ESA for each feature that contains kind=ga or kind=beta
-    featureToAttributes.each { file, attr ->
-      if ("ga".equals(attr["kind"]) || "beta".equals(attr["kind"])) {
-        maven(MavenPublication) {
-          artifactId attr["name"]
-          version project.version
-          artifact source: new File(project.buildDir, 'repo/' + attr["name"] + ".esa"), extension: 'esa'
-          artifact source: new File(project.buildDir, 'repo/' + attr["name"] + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
-        }
+    featuresToPublish().each { feature ->
+      maven(MavenPublication) {
+        artifactId feature
+        version project.version
+        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa"), extension: 'esa'
+        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
       }
     }
   }
