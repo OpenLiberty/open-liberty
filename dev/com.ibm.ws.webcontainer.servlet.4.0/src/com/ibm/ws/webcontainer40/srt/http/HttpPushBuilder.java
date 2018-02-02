@@ -30,7 +30,6 @@ import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
-import com.ibm.wsspi.http.ee8.Http2PushException;
 
 public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http2PushBuilder {
 
@@ -229,18 +228,7 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         }
 
         IRequest40 request = (IRequest40) _inboundRequest.getIRequest();
-        try {
-            request.getHttpRequest().pushNewRequest(this);
-        } catch (Http2PushException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "push()", "exception from push request : " + e);
-            }
-
-            reset();
-
-            throw new IllegalStateException(e);
-        }
-
+        request.getHttpRequest().pushNewRequest(this);
         reset();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

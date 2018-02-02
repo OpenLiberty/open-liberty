@@ -64,7 +64,6 @@ import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
-import com.ibm.wsspi.http.ee8.Http2PushException;
 
 /**
  * Class representing an HTTP request message. This contains the Request-Line
@@ -1940,16 +1939,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
      * 1. Send an HTTP2 push promise frame to the client
      * 2. Send an HTTP 1.1 request to WebContainer
      *
-     * @return
-     * @throws Http2PushException
-     *
-     *             It's acceptable to not be able to send a push_promise, it's not an error.
-     *             This method will throw Http2PushException when the caller has done something wrong. Otherwise, if there's
-     *             some other reason the push_promise cannot be sent, log it, and just return.
-     *
      */
     @Override
-    public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException, com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException {
+    public void pushNewRequest(Http2PushBuilder pushBuilder) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "HTTPRequestMessageImpl.pushNewRequest(): pushNewRequest() started " + this);
@@ -1961,7 +1953,6 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): Push_promise is not client supported, this is not an HTTP/2 connection, or the connection is closing.");
             }
             return;
-            //throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  Push is not supported.");
         }
 
         // Find the existing H2 connection and stream so we can use them to send the
@@ -1975,26 +1966,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // Create a headers block to be use for the push_promise and headers frames
         ByteArrayOutputStream ppStream = new ByteArrayOutputStream();
 
-        if (pushBuilder.getMethod() == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): Method is null on push request.");
-            }
-            throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The method is null on push request.");
-        } else if (!(pushBuilder.getMethod().equals("GET"))) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The method is not GET on push request.");
-            }
-            throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The method is not GET on push request.");
-        }
-
         // path is equal to uri + queryString
-        if (pushBuilder.getPath() == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): Path is null on push request.");
-            }
-            throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The path is null on push request.");
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "HTTPRequestMessageImpl.pushBuilder.getPath() is " + pushBuilder.getPath());
         }

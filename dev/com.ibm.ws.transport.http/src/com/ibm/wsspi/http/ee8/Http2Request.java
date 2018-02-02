@@ -23,6 +23,7 @@ public interface Http2Request extends HttpRequest {
      *
      * @return
      */
-    void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException;
+    @Override
+    void pushNewRequest(Http2PushBuilder pushBuilder);
 
 }

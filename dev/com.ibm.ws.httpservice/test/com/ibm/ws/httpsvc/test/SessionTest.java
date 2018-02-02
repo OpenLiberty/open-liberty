@@ -53,7 +53,6 @@ import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
-import com.ibm.wsspi.http.ee8.Http2PushException;
 
 /**
  * Test session related apis.
@@ -207,7 +206,7 @@ public class SessionTest {
         }
 
         @Override
-        public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException {
+        public void pushNewRequest(Http2PushBuilder pushBuilder) {
             return;
         }
 
@@ -246,7 +245,7 @@ public class SessionTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.wsspi.http.HttpRequest#isPushSupported()
          */
         @Override
