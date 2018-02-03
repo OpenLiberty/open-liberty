@@ -36,6 +36,8 @@ import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
+import com.ibm.ws.session.store.cache.serializable.SessionData;
+import com.ibm.ws.session.store.cache.serializable.SessionKey;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.session.IStore;
@@ -47,7 +49,7 @@ import com.ibm.wsspi.session.IStore;
 public class CacheStoreService implements SessionStoreService {
     private Map<String, Object> configurationProperties;
 
-    Cache<String, Object[]> cache;
+    Cache<SessionKey, SessionData> cache;
     CacheManager cacheManager;
 
     private volatile boolean completedPassivation = true;
@@ -78,10 +80,10 @@ public class CacheStoreService implements SessionStoreService {
             ; // use default JCache provider specified via bell
         else {
             CachingProvider provider = Caching.getCachingProvider(library.getClassLoader()); // load JCache provider from configured library
-            cacheManager = provider.getCacheManager(null, null, null);
+            cacheManager = provider.getCacheManager(null, new CacheClassLoader(), null); // TODO When class loader is specified, it isn't being used for deserialization. Why?
             cache = cacheManager.getCache("com.ibm.ws.session.cache");
             if (cache == null) {
-                Configuration<String, Object[]> config = new MutableConfiguration<String, Object[]>().setTypes(String.class, Object[].class);
+                Configuration<SessionKey, SessionData> config = new MutableConfiguration<SessionKey, SessionData>().setTypes(SessionKey.class, SessionData.class);
                 try {
                     cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
                 } catch (CacheException x) {

@@ -3,7 +3,10 @@ symbolicName=com.ibm.websphere.appserver.sessionCache-1.0
 visibility=public
 IBM-ShortName: sessionCache-1.0
 #TODO remove jcache API from this feature, this is only temporary
+# type="internal" allows the JCache provider to deserialize classes in the specified package when it uses thread context class loader.
+# This is a workaround for the JCache provider not deserializing classes with the supplied class loader. 
 IBM-API-Package: \
+ com.ibm.ws.session.store.cache.serializable; type="internal", \
  javax.cache; type="spec", \
  javax.cache.annotation; type="spec", \
  javax.cache.configuration; type="spec", \
