@@ -902,17 +902,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      */
     private Properties getGlobalLoginBasicProps() throws Exception {
         String realm = getWebAppSecurityConfig().getBasicAuthRealmName();
+        Properties props = new Properties();
         if (realm == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "basicAuthRealmName is not set. the default value " + JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM + " is used.");
+                Tr.debug(tc, "basicAuthenticationMechanismRealmName is not set. the default value " + JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM + " is used.");
             }
-            realm = JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM;
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The container provided BasicAuthenticationMechanism will be used with the realm name  : " + realm);
+            }
+            props.put(JavaEESecConstants.REALM_NAME, realm);
         }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "The container provided BasicAuthenticationMechanism will be used with the realm name  : " + realm);
-        }
-        Properties props = new Properties();
-        props.put(JavaEESecConstants.REALM_NAME, realm);
         return props;
     }
 
@@ -923,12 +923,25 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         String loginURL = webAppSecConfig.getLoginFormURL();
         String errorURL = webAppSecConfig.getLoginErrorURL();
+        if (loginURL == null || loginURL.isEmpty()) {
+            Tr.error(tc, "JAVAEESEC_CDI_ERROR_NO_URL", "loginFormURL");
+        }
+        if (errorURL == null || errorURL.isEmpty()) {
+            Tr.error(tc, "JAVAEESEC_CDI_ERROR_NO_URL", "loginErrorURL");
+        }
         String contextRoot = webAppSecConfig.getLoginFormContextRoot();
         if (contextRoot == null) {
             // if a context root is not set, use the first path element of the login page.
             contextRoot = getFirstPathElement(loginURL);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "loginFormContextRoot is not set, use the first element of loginURL  : " + contextRoot);
+            }
+        } else {
+            if (!validateContextRoot(contextRoot, loginURL)) {
+                Tr.error(tc, "JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT", contextRoot, loginURL, "loginFormURL");
+            }
+            if (!validateContextRoot(contextRoot, errorURL)) {
+                Tr.error(tc, "JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT", contextRoot, errorURL, "loginErrorURL");
             }
         }
         // adjust the login and error url which need to be relative path from the context root.
@@ -976,6 +989,16 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } else {
             return "/" + output[0];
         }
+    }
+
+    private boolean validateContextRoot(String contextRoot, String url) {
+        if (!contextRoot.startsWith("/")) {
+            contextRoot = "/" + contextRoot;
+        }
+        if (!url.startsWith("/")) {
+            url = "/" + url;
+        }
+        return (url.startsWith(contextRoot) && url.charAt(contextRoot.length()) == '/');
     }
 
     private String FixUpUrl(String input, String contextRoot) {

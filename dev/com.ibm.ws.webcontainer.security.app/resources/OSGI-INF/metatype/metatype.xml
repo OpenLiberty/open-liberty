@@ -116,10 +116,10 @@
                 <Option label="FORM" value="FORM" />
         </AD> 
 
-        <AD id="loginFormContextRoot" name="%loginFormContextRoot" description="%loginFormContextRoot.desc"
+        <AD id="contextRootForFormAuthenticationMechanism" name="%contextRootForFormAuthenticationMechanism" description="%contextRootForFormAuthenticationMechanism.desc"
             required="false" type="String"/>
 
-        <AD id="httpBasicAuthMechanismRealmName" name="%httpBasicAuthMechanismRealmName" description="%httpBasicAuthMechanismRealmName.desc"
+        <AD id="basicAuthenticationMechanismRealmName" name="%basicAuthenticationMechanismRealmName" description="%basicAuthenticationMechanismRealmName.desc"
             required="false" type="String" default="defaultRealm" />
 
     </OCD>

@@ -62,8 +62,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
     static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
-    static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "loginFormContextRoot";
-    static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthRealmName";
+    static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
+    static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;

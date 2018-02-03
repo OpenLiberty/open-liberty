@@ -352,7 +352,7 @@ public class WebAppSecurityConfigImplTest {
     public void testGetLoginFormContextRoot_Valid() {
         final String CONTEXT_ROOT = "/globalLogin";
         Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put("loginFormContextRoot", CONTEXT_ROOT);
+        cfg.put("contextRootForFormAuthenticationMechanism", CONTEXT_ROOT);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
         assertEquals("Vallid value should be returned.", CONTEXT_ROOT, webCfg.getLoginFormContextRoot());
     }
@@ -368,7 +368,7 @@ public class WebAppSecurityConfigImplTest {
     public void testGetBasicAuthRealmName_Valid() {
         final String REALM_NAME = "realmName";
         Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put("basicAuthRealmName", REALM_NAME);
+        cfg.put("basicAuthenticationMechanismRealmName", REALM_NAME);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
         assertEquals("Vallid value should be returned.", REALM_NAME, webCfg.getBasicAuthRealmName());
     }

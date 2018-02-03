@@ -72,7 +72,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             }
         }
         if (realmName == null || realmName.trim().isEmpty()) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
+            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
             realmName = DEFAULT_REALM;
         }
     }
