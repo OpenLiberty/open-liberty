@@ -51,7 +51,7 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 
 /**
  * Represents an independent HTTP/2 stream
- * This class is intentionally not thread safe, it is designed with the idea that per stream only one frame will be processed at one time
+ * Thread safety is guaranteed via processNextFrame(), which handles new read or write frames on this stream
  */
 public class H2StreamProcessor {
 
@@ -193,6 +193,14 @@ public class H2StreamProcessor {
         }
     }
 
+    /**
+     * Update the state of this stream by passing in a given Frame to read or write. This method handles state validation, state transitions,
+     * connection setting updates, frame responses, and error processing. Note this method is synchronized.
+     *
+     * @param Frame
+     * @param Direction.WRITING_OUT or Direction.READING_IN
+     * @throws ProtocolException
+     */
     public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException {
 
         // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all fraame processing
@@ -202,57 +210,38 @@ public class H2StreamProcessor {
                          + " H2InboundLink hc: " + muxLink.hashCode());
         }
         if (isStreamClosed()) {
-            // Handle Read or Write while the stream is closed.
-
+            // stream is already closed
             if (direction.equals(Constants.Direction.WRITING_OUT)) {
-                // writing while closed. check to see if it's past the significant time, and
-                // if it is past time, throw an exception, which should generate a GOAWAY
+                // handle a write requested after stream closure
                 if (muxLink.significantlyPastCloseTime(myID)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processNextFrame: Stream significantly past close time - throwing ProtocolException");
+                        Tr.debug(tc, "processNextFrame: stream significantly past close time - cannot write on stream-id: " + myID);
                     }
-                    throw new ProtocolException("Stream significantly past close time");
+                    // ignore
+                    return;
                 } else {
-                    // closed, but not past time.
-                    // If frame type PRIORITY, WINDOW_UPDATE, or RST_STREAM ignore
-                    // if HEADERS, DATA, PUSH_PROMISE throw error
-                    if (frame.getFrameType() == FrameTypes.PRIORITY || frame.getFrameType() == FrameTypes.WINDOW_UPDATE
-                        || frame.getFrameType() == FrameTypes.RST_STREAM) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "processNextFrame: close, not past time, ignoring frame");
-                        }
-                        return;
-                    } else if (frame.getFrameType() == FrameTypes.HEADERS || frame.getFrameType() == FrameTypes.DATA || frame.getFrameType() == FrameTypes.PUSH_PROMISE) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "processNextFrame: Stream is closed - throwing ProtocolException");
-                        }
-                        throw new ProtocolException("Stream is closed, can't write out HEADER, DATA, or PUSH_PROMISE frames");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "processNextFrame: stream is closed - cannot write out anything else on stream-id: " + myID);
                     }
+                    // ignore
+                    return;
                 }
             } else if (direction.equals(Constants.Direction.READ_IN)) {
-                // reading while closed
-
+                // handle a frame recieved after stream closure
                 if (frame.getFrameType() == FrameTypes.PRIORITY) {
                     // Ignore PRIORITY in all closed situations
                     return;
                 }
 
                 if (muxLink.significantlyPastCloseTime(myID)) {
-                    // too old of stream, so throw a Protocol Exception
+                    // stream is old, client should know stream was closed
                     throw new ProtocolException("Stream is already closed");
                 }
-
-                // RST_STREAM throw PROTOCOL_ERROR
-                // HEADERS or DATA received and in half closed remote throw PROTOCOL_ERROR
-                // process WINDOW_UPDATE as normal
-
-                //if (frame.getFrameType() == FrameTypes.RST_STREAM) {
-                //    throw new ProtocolException("Stream is already closed");
-                //}
 
                 if (frame.getFrameType() == FrameTypes.DATA || frame.getFrameType() == FrameTypes.HEADERS) {
                     throw new ProtocolException("DATA or HEADERS frame received on a closed stream");
                 } else if (frame.getFrameType() == FrameTypes.RST_STREAM) {
+                    // ignore
                     return;
                 }
             }
@@ -517,6 +506,12 @@ public class H2StreamProcessor {
         }
     }
 
+    /**
+     * Transitions the stream state, give the previous state and current frame. Handles writes and error processing as needed.
+     *
+     * @param Direction.WRITING_OUT or Direction.READING_IN
+     * @throws Http2Exception
+     */
     private void readWriteTransitionState(Constants.Direction direction) throws Http2Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -601,7 +596,7 @@ public class H2StreamProcessor {
      */
     private void processSETTINGSFrame() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "processSETTINGSFrame entry");
+            Tr.debug(tc, "processSETTINGSFrame entry:\n" + currentFrame.toString());
         }
         // check if this is the first non-ACK settings frame received; if so, update connection init state
         if (!connection_preface_settings_rcvd && !((FrameSettings) currentFrame).flagAckSet()) {
@@ -1068,7 +1063,7 @@ public class H2StreamProcessor {
         return false;
     }
 
-    /*
+    /**
      * Send an artificially created H2 request from a push_promise up to the WebContainer
      */
     public void sendRequestToWc(FrameHeaders frame) {
