@@ -1,7 +1,6 @@
 package com.ibm.ws.repository.generator;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -45,10 +44,19 @@ public class SingleJsonRepositoryGenerator extends Task {
             throw new BuildException(iae);
         }
         
+        SingleFileRepositoryConnection mySingleFileRepo = null;
+        if (jsonFile.exists()) {
+        	mySingleFileRepo = new SingleFileRepositoryConnection(jsonFile);
+        } else {
+        	try {
+				mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(jsonFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        } 
         
-        SingleFileRepositoryConnection mySingleFileRepo = new SingleFileRepositoryConnection(jsonFile);
-        
-        OutputStream os = null;
+       // OutputStream os = null;
         Parser<? extends RepositoryResourceWritable> parser = null;
 
         try {

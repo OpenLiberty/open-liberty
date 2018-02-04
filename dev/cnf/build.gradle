@@ -251,53 +251,53 @@ task ('createIndex') {
     group 'release'
 
     /* Bundles to index. */
-    def bundles = fileTree(releaserepo) {
+def bundles = fileTree(releaserepo) {
+    include '**/*.jar'
+    exclude '**/*-latest.jar'
+    exclude '**/*-sources.jar'
+    exclude '**/*-javadoc.jar'
+}
+
+inputs.files { bundles.files }
+
+/* Index files */
+def index_uncompressed = new File(releaserepo, 'index.xml')
+def index_compressed = new File(releaserepo, 'index.xml.gz')
+
+outputs.files index_uncompressed, index_compressed
+
+doLast {
+    /* indexer */
+def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
+
+def tmpreleaserepo = cnf.file('tmpreleaserepo')
+deleteRecursive(tmpreleaserepo)
+
+try {
+    copy {
+        from releaserepo
+        into tmpreleaserepo
         include '**/*.jar'
         exclude '**/*-latest.jar'
         exclude '**/*-sources.jar'
         exclude '**/*-javadoc.jar'
     }
 
-    inputs.files { bundles.files }
+    println 'Generating index of release repo'
 
-    /* Index files */
-    def index_uncompressed = new File(releaserepo, 'index.xml')
-    def index_compressed = new File(releaserepo, 'index.xml.gz')
+    /* index uncompressed. */
+javaexec {
+    main = '-jar' // first arg must be the jar
+    args repoindexJar
+    args '--pretty'
+    args '-r', index_uncompressed
+    args '-d', tmpreleaserepo
+    args '-n', 'bnd'
+    args tmpreleaserepo
+}.assertNormalExitValue()
+logger.info 'Generated index {}.', index_uncompressed
 
-    outputs.files index_uncompressed, index_compressed
-
-    doLast {
-        /* indexer */
-        def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
-
-        def tmpreleaserepo = cnf.file('tmpreleaserepo')
-        deleteRecursive(tmpreleaserepo)
-
-        try {
-            copy {
-                from releaserepo
-                into tmpreleaserepo
-                include '**/*.jar'
-                exclude '**/*-latest.jar'
-                exclude '**/*-sources.jar'
-                exclude '**/*-javadoc.jar'
-            }
-
-            println 'Generating index of release repo'
-
-            /* index uncompressed. */
-            javaexec {
-                main = '-jar' // first arg must be the jar
-                args repoindexJar
-                args '--pretty'
-                args '-r', index_uncompressed
-                args '-d', tmpreleaserepo
-                args '-n', 'bnd'
-                args tmpreleaserepo
-            }.assertNormalExitValue()
-            logger.info 'Generated index {}.', index_uncompressed
-
-            /* index compressed. */
+/* index compressed. */
             javaexec {
                 main = '-jar' // first arg must be the jar
                 args repoindexJar
@@ -327,6 +327,8 @@ task zipGradleBootstrap(type: Zip) {
 
 task copyEsas(type: Copy) {
     dependsOn parent.subprojects.assemble
+   // dependsOn rootProject.project("com.ibm.ws.repository.generator").getTasks().getByPath("jar")
+   // dependsOn project(“:com.ibm.ws.repository.generator.jar”)
     from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
    // into  "${rootDir}/com.ibm.ws.repository.generator/build/esas"
    into "."
@@ -334,11 +336,11 @@ task copyEsas(type: Copy) {
 
 task createSingleJson {
     // Run after all feature ESAs have been built
-    dependsOn copyEsas
     dependsOn copyMavenLibs
-        
+	dependsOn copyEsas
+	        
     doLast {
-        ant.taskdef(name:'singleJsonRepo', classname:'generator.SingleJsonRepositoryGenerator') {
+        ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
             classpath {
                 fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
                     include(name: 'com.ibm.ws.repository.generator.jar')
@@ -355,35 +357,35 @@ task createSingleJson {
                 fileset(dir: "${rootDir}/com.ibm.ws.kernel.feature.core/build/libs") {
                     include(name: 'com.ibm.ws.kernel.feature.core.jar')
                 }
-               fileset(dir: "${rootDir}/cnf/mavenlibs") {
+                fileset(dir: "${rootDir}/cnf/mavenlibs") {
                     include(name: '**.jar')
-               }               
+               }
+                fileset(dir: "${rootDir}/com.ibm.ws.kernel.boot.core/build/libs/") {
+                	include(name: 'com.ibm.ws.kernel.boot.core.jar')     	
+                }
+                
+                fileset(Dir:"${rootDir}/com.ibm.ws.logging.core/build/libs"){
+                	include (name:'com.ibm.ws.logging.core.jar')
+                }               
+             
             }
         }
-        ant.touch(file:"SingleJson.json")
+      //  SingleFileRepositoryConnection.createEmptyRepository(
+        //ant.touch(file:"SingleJson.json")
         //"{basedir}/com.ibm.ws.repository.generator/build/esas"
   
-        FileTree tree = fileTree(dir: 'cnf')
-        tree = fileTree('.') {
-   				 include '**/*.esa'
-		}
-		
-	//	tree.each {File file ->
-   // println file
-//}
+      //  FileTree tree = fileTree(dir: 'cnf')
+      //  tree = fileTree('.') {
+      //  	include '**/*.esa'  
+    //   }
       //  def files = tree.fileTree(dir:'cnf', inclues:'**/*.esa' ).filter { it.isFile() }.files.name
-      def files = fileTree(dir:'.').matching{
-      	 include '**/*.esa'
-      
-      }.files.name
-     //   println files
-     
-        files.each {esa ->
+      	def files = fileTree(dir:'.').matching{include '**/*.esa' }.files.name     
+     files.each {esa ->
         	println "inside"
         	println esa
             ant.singleJsonRepo(assetFile:file(esa),
                    assetType:'FEATURE',
-                  jsonFile:fileset('SingleJson.json'))
+                  jsonFile: 'SingleJson.json')
         
         
         }
@@ -392,7 +394,6 @@ task createSingleJson {
 
 task generateMavenArtifact {
 dependsOn parent.subprojects.assemble
-everythingElseHasBeenReleased
 doLast {
         ant.taskdef(name:'featuresToMavenRepo', classname:'mavenFeatures.SingleJsonRepositoryGenerator') {
             classpath {
