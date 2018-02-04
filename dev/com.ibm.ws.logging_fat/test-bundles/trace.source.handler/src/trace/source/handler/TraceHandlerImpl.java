@@ -25,7 +25,6 @@ import java.util.concurrent.Future;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.logging.source.TraceLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
@@ -47,11 +46,7 @@ public class TraceHandlerImpl implements Handler {
 
     private BufferManager bufferMgr = null;
 
-    private final List<String> sourceIds = new ArrayList<String>() {
-        {
-            add("com.ibm.ws.logging.source.trace|memory");
-        }
-    };
+    private final List<String> sourceIds=new ArrayList<String>(){{add("com.ibm.ws.logging.source.trace|memory");}};
 
     protected void activate(Map<String, Object> configuration) {
         try {
@@ -159,31 +154,31 @@ public class TraceHandlerImpl implements Handler {
         @Override
         public void run() {
             int counter = 1;
-            while (counter <= 500) {
-                try {
-                    TraceLogData event = (TraceLogData) bufferMgr.getNextEvent(HANDLER_NAME);
-
-                    // String eventString = event.toString();
-                    // if (eventString.contains("testTraceSourceForLibertyLogging") || eventString.contains("testTraceSourceForJUL")) {
-                    if (event.getLoggerName().contains("collector.manager_fat")) {
-                        customLogger.debug("[" + counter + "]Received Trace event: " + event);
-                    }
-
-//                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                      Tr.debug(tc, "Received Trace event: " + event, this);
-//                  }
-                } catch (InterruptedException exit) {
-                    // System.out.println("@@@@@ bufferMgr.getNextEvent Interrupted : " + exit.getMessage());
-                    customLogger.debug("bufferMgr.getNextEvent Interrupted : " + exit.getMessage());
-                    break; //Break out of the loop; ending thread
-                } catch (Exception e) {
-                    // System.out.println("@@@@@ bufferMgr.getNextEvent Exception : " + e.getMessage());
-                    customLogger.debug("bufferMgr.getNextEvent Exception : " + e.getMessage());
-                    stopHandler();
-                }
-                counter++;
-            }
-            // customLogger.debug("@@@@@ $$$ counter:" + counter);
+//            while (counter <= 500) {
+//                try {
+//                    TraceLogData event = (TraceLogData) bufferMgr.getNextEvent(HANDLER_NAME);
+//
+//                    // String eventString = event.toString();
+//                    // if (eventString.contains("testTraceSourceForLibertyLogging") || eventString.contains("testTraceSourceForJUL")) {
+//                    if (event.getLoggerName().contains("collector.manager_fat")) {
+//                        customLogger.debug("[" + counter + "]Received Trace event: " + event);
+//                    }
+//
+////                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+////                      Tr.debug(tc, "Received Trace event: " + event, this);
+////                  }
+//                } catch (InterruptedException exit) {
+//                    // System.out.println("@@@@@ bufferMgr.getNextEvent Interrupted : " + exit.getMessage());
+//                    customLogger.debug("bufferMgr.getNextEvent Interrupted : " + exit.getMessage());
+//                    break; //Break out of the loop; ending thread
+//                } catch (Exception e) {
+//                    // System.out.println("@@@@@ bufferMgr.getNextEvent Exception : " + e.getMessage());
+//                    customLogger.debug("bufferMgr.getNextEvent Exception : " + e.getMessage());
+//                    stopHandler();
+//                }
+//                counter++;
+//            }
+//            customLogger.debug("@@@@@ $$$ counter:" + counter);
         }
     };
 

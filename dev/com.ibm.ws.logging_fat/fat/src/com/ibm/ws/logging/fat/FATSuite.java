@@ -25,10 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 StackTraceFilteringForNoClassDefFoundErrorTest.class, StackTraceFilteringForBadlyWrittenThrowableTest.class,
                 StackTraceFilteringForIBMFeatureExceptionTest.class,
                 InvalidTraceSpecificationTest.class,
-                HealthCenterTest.class, TestHideMessages.class, TestHideMsgDefinedBootstrap.class, IsoDateFormatTest.class,
-                HandlerTest.class })
-// Fix: StackTraceFilteringForUserFeatureExceptionTest -> console.log does not show full stack traces
-// Fix: StackTraceFilteringForSpecificationClassesExceptionTest -> Exceptions are different
+                HealthCenterTest.class, TestHideMessages.class, TestHideMsgDefinedBootstrap.class, IsoDateFormatTest.class })
+//HandlerTest.class
 public class FATSuite {
 
 }

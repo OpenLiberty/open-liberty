@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.GenericData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -98,6 +98,44 @@ public class AccessLogSource implements Source {
         accessLogHandler = null;
     }
 
+//    private class AccessLogHandler implements AccessLogForwarder {
+//
+//        private final AtomicLong seq = new AtomicLong();
+//
+//        /** {@inheritDoc} */
+//        @Override
+//        public void process(AccessLogRecordData recordData) {
+//            HttpRequestMessage request = recordData.getRequest();
+//            HttpResponseMessage response = recordData.getResponse();
+//
+//            if (request != null) {
+//                long requestStartTime = recordData.getStartTime();
+//                String uriPath = request.getRequestURI();
+//                String requestMethod = request.getMethod();
+//                String queryString = request.getQueryString();
+//                String localIP = recordData.getLocalIP();
+//                String localPort = recordData.getLocalPort();
+//                String remoteHost = recordData.getRemoteAddress();
+//                String userAgent = request.getHeader("User-Agent").asString();
+//                String requestProtocol = request.getVersion();
+//                long responseSize = recordData.getBytesWritten();
+//                int responseCode = response.getStatusCodeAsInt();
+//                long elapsedTime = recordData.getElapsedTime();
+//                long timestamp = recordData.getTimestamp();
+//
+//                String sequence = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
+//
+//                AccessLogData data = new AccessLogData(uriPath, requestMethod, queryString, localIP, localPort, requestStartTime, remoteHost, userAgent, requestProtocol, responseSize, responseCode, elapsedTime, timestamp, sequence);
+//                bufferMgr.add(data);
+//
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "Added a event to buffer " + data);
+//                }
+//            }
+//        }
+//
+//    }
+
     private class AccessLogHandler implements AccessLogForwarder {
 
         private final AtomicLong seq = new AtomicLong();
@@ -109,31 +147,35 @@ public class AccessLogSource implements Source {
             HttpResponseMessage response = recordData.getResponse();
 
             if (request != null) {
-                long requestStartTime = recordData.getStartTime();
-                String uriPath = request.getRequestURI();
-                String requestMethod = request.getMethod();
-                String queryString = request.getQueryString();
-                String localIP = recordData.getLocalIP();
-                String localPort = recordData.getLocalPort();
-                String remoteHost = recordData.getRemoteAddress();
-                String userAgent = request.getHeader("User-Agent").asString();
-                String requestProtocol = request.getVersion();
-                long responseSize = recordData.getBytesWritten();
-                int responseCode = response.getStatusCodeAsInt();
-                long elapsedTime = recordData.getElapsedTime();
-                long timestamp = recordData.getTimestamp();
 
-                String sequence = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
+                GenericData genData = new GenericData();
 
-                AccessLogData data = new AccessLogData(uriPath, requestMethod, queryString, localIP, localPort, requestStartTime, remoteHost, userAgent, requestProtocol, responseSize, responseCode, elapsedTime, timestamp, sequence);
-                bufferMgr.add(data);
+                long requestStartTimeVal = recordData.getStartTime();
+                genData.addPair("ibm_requestStartTime", requestStartTimeVal);
+                genData.addPair("ibm_uriPath", request.getRequestURI());
+                genData.addPair("ibm_requestMethod", request.getMethod());
+                genData.addPair("ibm_queryString", request.getQueryString());
+                genData.addPair("ibm_requestHost", recordData.getLocalIP());
+                genData.addPair("ibm_requestPort", recordData.getLocalPort());
+                genData.addPair("ibm_remoteHost", recordData.getRemoteAddress());
+                genData.addPair("ibm_userAgent", request.getHeader("User-Agent").asString());
+                genData.addPair("ibm_requestProtocol", request.getVersion());
+                genData.addPair("ibm_bytesReceived", recordData.getBytesWritten());
+                genData.addPair("ibm_responseCode", response.getStatusCodeAsInt());
+                genData.addPair("ibm_elapsedTime", recordData.getElapsedTime());
+                genData.addPair("ibm_datetime", recordData.getTimestamp());
+
+                String sequenceVal = requestStartTimeVal + "_" + String.format("%013X", seq.incrementAndGet());
+                genData.addPair("ibm_sequence", sequenceVal);
+
+                genData.setSourceType(sourceName);
+
+                bufferMgr.add(genData);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Added a event to buffer " + data);
+                    Tr.debug(tc, "Added a event to buffer " + genData);
                 }
             }
         }
-
     }
-
 }

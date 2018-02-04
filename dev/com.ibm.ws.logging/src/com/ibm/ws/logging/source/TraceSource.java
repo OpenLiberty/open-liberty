@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -81,38 +84,110 @@ public class TraceSource implements Source, WsTraceHandler {
         return location;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void publish(RoutedMessage routedMessage) {
+    /**
+     * Log the given log record.
+     *
+     * @param routedMessage The LogRecord along with various message formats.
+     */
+    public void publish(RoutedMessage routedMessage, Object id) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
             LogRecord logRecord = routedMessage.getLogRecord();
             if (logRecord != null) {
                 if (bufferMgr != null) {
-                    bufferMgr.add(parse(routedMessage, logRecord));
+                    bufferMgr.add(parse(routedMessage, logRecord, id));
                 }
             }
         }
     }
 
-    public TraceLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-        String message = routedMessage.getFormattedVerboseMsg();
-        if (message == null)
-            message = logRecord.getMessage();
-        long timestamp = logRecord.getMillis();
-        int threadId = logRecord.getThreadID();
-        String loggerName = logRecord.getLoggerName();
-        String logLevel = LogFormatUtils.mapLevelToType(logRecord);
-        String logLevelRaw = LogFormatUtils.mapLevelToRawType(logRecord);
-        String methodName = logRecord.getSourceMethodName();
-        String className = logRecord.getSourceClassName();
-        Map<String, String> extensions = null;
-        if (logRecord instanceof WsLogRecord)
-            extensions = ((WsLogRecord) logRecord).getExtensions();
-        String sequence = sequenceNumber.next(timestamp);
-        //String sequence = timestamp + "_" + String.format("%013X", seq.incrementAndGet());
+    public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord, Object id) {
 
-        return new TraceLogData(timestamp, threadId, loggerName, logLevel, logLevelRaw, message, methodName, className, extensions, sequence);
+        GenericData genData = new GenericData();
+//        LogRecord logRecord = routedMessage.getLogRecord();
+        String verboseMessage = routedMessage.getFormattedVerboseMsg();
+//        Throwable thrown = logRecord.getThrown();
+//        StringBuilder msgBldr = new StringBuilder();
+//        msgBldr.append(t);
+//        if (thrown != null) {
+//            String stackTrace = DataFormatHelper.throwableToString(thrown);
+//            if (stackTrace != null) {
+//                genData.addPair("throwable", stackTrace);
+//            }
+//        }
+        if (verboseMessage == null) {
+            genData.addPair("message", logRecord.getMessage());
+        } else {
+            genData.addPair("message", verboseMessage);
+        }
+
+        long datetimeValue = logRecord.getMillis();
+        genData.addPair("ibm_datetime", datetimeValue);
+        genData.addPair("ibm_threadId", logRecord.getThreadID());
+        genData.addPair("module", logRecord.getLoggerName());
+        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair("logLevel", LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
+        genData.addPair("ibm_className", logRecord.getSourceClassName());
+        String sequenceNum = sequenceNumber.next(datetimeValue);
+        genData.addPair("ibm_sequence", sequenceNum);
+        genData.addPair("levelValue", logRecord.getLevel().intValue());
+
+        String threadName = Thread.currentThread().getName();
+        genData.addPair("threadName", threadName);
+
+        if (id != null) {
+            Integer objid = System.identityHashCode(id);
+            genData.addPair("objectId", objid);
+        }
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+
+        if (wsLogRecord != null) {
+            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
+            genData.addPair("org", wsLogRecord.getOrganization());
+            genData.addPair("product", wsLogRecord.getProduct());
+            genData.addPair("component", wsLogRecord.getComponent());
+        }
+
+        KeyValuePairList extensions = new KeyValuePairList();
+        Map<String, String> extMap = null;
+        if (logRecord instanceof WsLogRecord) {
+            extMap = ((WsLogRecord) logRecord).getExtensions();
+        }
+
+        for (Map.Entry<String, String> entry : extMap.entrySet()) {
+            extensions.addPair(entry.getKey(), entry.getValue());
+        }
+        genData.addPairs(extensions);
+        genData.setSourceType(sourceName);
+
+        //return tracedata
+        LogTraceData traceData = new LogTraceData(genData);
+        traceData.setLevelValue(logRecord.getLevel().intValue());
+
+        return traceData;
+    }
+
+    /**
+     * @return
+     */
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.logging.WsTraceHandler#publish(com.ibm.ws.logging.RoutedMessage)
+     */
+    @Override
+    public void publish(RoutedMessage routedMessage) {
+        // TODO Auto-generated method stub
 
     }
+
 }
