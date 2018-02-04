@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -266,6 +266,17 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public String getLoginErrorURL() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getLoginErrorURL();
+        else
+            return null;
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean getAllowFailOverToFormLogin() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
@@ -320,5 +331,36 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public WebAuthenticatorProxy createWebAuthenticatorProxy() {
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getOverrideHttpAuthenticationMechanism() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
+        else
+            return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getLoginFormContextRoot() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getLoginFormContextRoot();
+        else
+            return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getBasicAuthRealmName() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getBasicAuthRealmName();
+        else
+            return null;
     }
 }
