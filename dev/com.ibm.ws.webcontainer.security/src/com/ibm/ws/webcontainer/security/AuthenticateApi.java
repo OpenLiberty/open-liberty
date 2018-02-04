@@ -521,9 +521,6 @@ public class AuthenticateApi {
         WebReply reply = null;
         switch (authResult.getStatus()) {
             case FAILURE:
-                String reason = authResult.getReason();
-                if (reason != null && reason.contains("JASPIC"))
-                    return new DenyReply(reason);
                 return DENY_AUTHN_FAILED;
 
             case SEND_401:

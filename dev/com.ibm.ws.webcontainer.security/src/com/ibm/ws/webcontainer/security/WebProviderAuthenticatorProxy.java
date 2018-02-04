@@ -130,7 +130,6 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                         if (tc.isDebugEnabled()) {
                             Tr.debug(tc, "Internal error handling JASPI request", e);
                         }
-                        authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
                     }
                 }
                 //
