@@ -51,16 +51,14 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     private final SubjectManager subjManager = new SubjectManager();
     static final String KEY_FEATURE_SECURITY_AUTHZ_SERVICE = "featureAuthzTableService";
     private final AtomicServiceReference<FeatureAuthorizationTableService> featureAuthzTableServiceRef = new AtomicServiceReference<FeatureAuthorizationTableService>(KEY_FEATURE_SECURITY_AUTHZ_SERVICE);
-    protected ConcurrentServiceReferenceMap<String, AuthorizationTableService> appBndAuthorizations = new ConcurrentServiceReferenceMap<String, AuthorizationTableService>(KEY_AUTHORIZATION_TABLE_SERVICE);
+    protected ConcurrentServiceReferenceMap<String, AuthorizationTableService> webAppAuthorizationTables = new ConcurrentServiceReferenceMap<String, AuthorizationTableService>(KEY_AUTHORIZATION_TABLE_SERVICE);
 
     private boolean useRoleAsGroupName = false;
 
     private static final String MGMT_AUTHZ_ROLES = "com.ibm.ws.management";
 
-    static final String KEY_COMPONENT_NAME = "component.name";
-    static final String KEY_FEATURE_AUTHORIZATION_TABLE = "com.ibm.ws.webcontainer.security.feature.internal.FeatureAuthorizationTable";
-    static final String KEY_MANAGMENT_AUTHORIZATION_TABLE = "com.ibm.ws.management.security.authorizationTable";
-    //    private static final String ADMIN_RESOURCE_NAME = "com.ibm.ws.management.security.resource";
+    static final String KEY_AUTHZ_TABLE_NAME = "com.ibm.ws.security.authorization.table.name";
+    static final String KEY_WEB_APP = "WebApp";
     private final List<String> useRoleAsGroupNameForApps = new ArrayList<String>();
 
     protected void setAccessDecisionService(ServiceReference<AccessDecisionService> ref) {
@@ -73,20 +71,20 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     protected void setAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.addReference(ref);
-        String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
-        if (cn != null && !cn.equals(KEY_FEATURE_AUTHORIZATION_TABLE) && !cn.equals(KEY_MANAGMENT_AUTHORIZATION_TABLE)) {
-            appBndAuthorizations.putReference(cn, ref);
+        String atn = (String) ref.getProperty(KEY_AUTHZ_TABLE_NAME);
+        if (atn != null && atn.equals(KEY_WEB_APP)) {
+            webAppAuthorizationTables.putReference(atn, ref);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.event(tc, "appBndAuthorizationTable service: " + ref);
+                Tr.event(tc, "appBndAuthorizationTable for WebApp service: " + ref);
             }
         }
     }
 
     protected void unsetAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.removeReference(ref);
-        String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
-        if (cn != null && !cn.equals(KEY_FEATURE_AUTHORIZATION_TABLE) && !cn.equals(KEY_MANAGMENT_AUTHORIZATION_TABLE)) {
-            appBndAuthorizations.removeReference(cn, ref);
+        String atn = (String) ref.getProperty(KEY_AUTHZ_TABLE_NAME);
+        if (atn != null && atn.equals(KEY_WEB_APP)) {
+            webAppAuthorizationTables.removeReference(atn, ref);
         }
     }
 
@@ -101,6 +99,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         accessDecisionServiceRef.activate(cc);
         authorizationTables.activate(cc);
+        webAppAuthorizationTables.activate(cc);
         featureAuthzTableServiceRef.activate(cc);
         if (properties != null && properties.containsKey(KEY_USE_ROLE_AS_GROUP_NAME))
             useRoleAsGroupName = (Boolean) properties.get(KEY_USE_ROLE_AS_GROUP_NAME);
@@ -109,6 +108,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     protected void deactivate(ComponentContext cc) {
         accessDecisionServiceRef.deactivate(cc);
         authorizationTables.deactivate(cc);
+        webAppAuthorizationTables.deactivate(cc);
         featureAuthzTableServiceRef.deactivate(cc);
         useRoleAsGroupNameForApps.clear();
     }
@@ -289,22 +289,16 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     private boolean isAuthzInfoAvailableForApp(String resourceName) {
         boolean found = false;
-//        FeatureAuthorizationTableService featureAuthzTableSvc = featureAuthzTableServiceRef.getService();
-//        if (featureAuthzTableSvc != null) {
-//            found = featureAuthzTableSvc.isAuthzInfoAvailableForApp(resourceName);
-//        }
-//
-//        if (!found) {
-//            Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
-//            while (itr.hasNext() && !found) {
-//                AuthorizationTableService authzTableSvc = itr.next()
-//                found = authzTableSvc.isAuthzInfoAvailableForApp(resourceName);
-//            }
-//        }
-        Iterator<AuthorizationTableService> itr = appBndAuthorizations.getServices();
-        while (itr.hasNext() && !found) {
-            AuthorizationTableService authzTableSvc = itr.next();
-            found = authzTableSvc.isAuthzInfoAvailableForApp(resourceName);
+        FeatureAuthorizationTableService featureAuthzTableSvc = featureAuthzTableServiceRef.getService();
+        if (featureAuthzTableSvc != null) {
+            found = featureAuthzTableSvc.isAuthzInfoAvailableForApp(resourceName);
+        }
+        if (!found) {
+            Iterator<AuthorizationTableService> itr = webAppAuthorizationTables.getServices();
+            while (itr.hasNext() && !found) {
+                AuthorizationTableService authzTableSvc = itr.next();
+                found = authzTableSvc.isAuthzInfoAvailableForApp(resourceName);
+            }
         }
         return found;
     }

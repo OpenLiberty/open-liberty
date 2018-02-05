@@ -37,8 +37,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
@@ -46,6 +44,8 @@ import com.ibm.ws.security.authorization.AccessDecisionService;
 import com.ibm.ws.security.authorization.AuthorizationTableService;
 import com.ibm.ws.security.authorization.RoleSet;
 import com.ibm.ws.security.context.SubjectManager;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -69,6 +69,8 @@ public class BuiltinAuthorizationServiceTest {
     private final static String realmName1 = "BasicRealm";
     private final static String groupAccessId1 = "group:BasicRealm/group1";
     private final static String roleAllAuthen = "Employee";
+    private final static String authzTableName = "com.ibm.ws.security.authorization.table.name";
+    private final static String authzTable = "WebApp";
 
     private final Mockery context = new JUnit4Mockery();
     private final ComponentContext cc = context.mock(ComponentContext.class);
@@ -101,6 +103,8 @@ public class BuiltinAuthorizationServiceTest {
                 will(returnValue(1L));
                 allowing(authzTableServiceRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
+                allowing(authzTableServiceRef).getProperty(authzTableName);
+                will(returnValue(authzTable));
                 allowing(cc).locateService(BuiltinAuthorizationService.KEY_AUTHORIZATION_TABLE_SERVICE, authzTableServiceRef);
                 will(returnValue(authzTableService));
 
@@ -108,6 +112,8 @@ public class BuiltinAuthorizationServiceTest {
                 will(returnValue(2L));
                 allowing(authzTableService2Ref).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
+                allowing(authzTableService2Ref).getProperty(authzTableName);
+                will(returnValue(authzTable));
                 allowing(cc).locateService(BuiltinAuthorizationService.KEY_AUTHORIZATION_TABLE_SERVICE, authzTableService2Ref);
                 will(returnValue(authzTableService2));
 
@@ -117,9 +123,10 @@ public class BuiltinAuthorizationServiceTest {
                 will(returnValue(0));
                 allowing(cc).locateService(BuiltinAuthorizationService.KEY_AUTHORIZATION_TABLE_SERVICE, authzTableService3Ref);
                 will(returnValue(authzTableService3));
+                allowing(authzTableService3Ref).getProperty(authzTableName);
+                will(returnValue(authzTable));
                 allowing(authzTableService).isAuthzInfoAvailableForApp("myApp");
                 will(returnValue(true));
-
             }
         });
 
@@ -143,7 +150,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -196,7 +203,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -249,7 +256,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -312,7 +319,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -489,7 +496,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -503,8 +510,7 @@ public class BuiltinAuthorizationServiceTest {
         final List<String> groupIds = new ArrayList<String>();
         groupIds.add("group:BasicRealm/group1");
         HashSet<Object> privCredentials = new HashSet<Object>();
-        final Subject subject = new Subject(false, principals, pubCredentials,
-                        privCredentials);
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         requiredRoles.add(role1);
         assignedRoles = new RoleSet(requiredRoles);
@@ -554,7 +560,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -566,8 +572,7 @@ public class BuiltinAuthorizationServiceTest {
         HashSet<Object> pubCredentials = new HashSet<Object>();
         pubCredentials.add(wsCred);
         HashSet<Object> privCredentials = new HashSet<Object>();
-        final Subject subject = new Subject(false, principals, pubCredentials,
-                        privCredentials);
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         requiredRoles.add(role1);
 
@@ -611,7 +616,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -623,8 +628,7 @@ public class BuiltinAuthorizationServiceTest {
         HashSet<Object> pubCredentials = new HashSet<Object>();
         pubCredentials.add(wsCred);
         HashSet<Object> privCredentials = new HashSet<Object>();
-        final Subject subject = new Subject(false, principals, pubCredentials,
-                        privCredentials);
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         requiredRoles.add(role1);
 
@@ -668,7 +672,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -694,7 +698,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -720,7 +724,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      */
     @Test
     public void testIsAuthorized_falseNoWSCred() throws Exception {
@@ -729,8 +733,7 @@ public class BuiltinAuthorizationServiceTest {
         principals.add(princ);
         HashSet<Object> pubCredentials = new HashSet<Object>();
         HashSet<Object> privCredentials = new HashSet<Object>();
-        final Subject subject = new Subject(false, principals, pubCredentials,
-                        privCredentials);
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         requiredRoles.add(role1);
 
@@ -750,7 +753,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -762,8 +765,7 @@ public class BuiltinAuthorizationServiceTest {
         HashSet<Object> pubCredentials = new HashSet<Object>();
         pubCredentials.add(wsCred);
         HashSet<Object> privCredentials = new HashSet<Object>();
-        final Subject subject = new Subject(false, principals, pubCredentials,
-                        privCredentials);
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         requiredRoles.add(role1);
 
@@ -786,7 +788,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -830,8 +832,7 @@ public class BuiltinAuthorizationServiceTest {
             fail("isAuthorized with null resource should throw a NullPointerException");
         } catch (NullPointerException e) {
             // expected if null resource name is specified
-            assertTrue("Exception should contain message stating null: " + e, e
-                            .getMessage().contains("resource"));
+            assertTrue("Exception should contain message stating null: " + e, e.getMessage().contains("resource"));
         }
     }
 
@@ -848,7 +849,7 @@ public class BuiltinAuthorizationServiceTest {
             // expected if null required roles is specified
             assertTrue(
                        "Exception should contain message stating null: "
-                                       + e.getMessage(),
+                       + e.getMessage(),
                        e.getMessage().contains("requiredRoles"));
         }
     }
@@ -953,8 +954,7 @@ public class BuiltinAuthorizationServiceTest {
             fail("isEveryoneGranted with null resource should throw a NullPointerException");
         } catch (NullPointerException e) {
             // expected if null resource name is specified
-            assertTrue("Exception should contain message stating null: " + e, e
-                            .getMessage().contains("resource"));
+            assertTrue("Exception should contain message stating null: " + e, e.getMessage().contains("resource"));
         }
     }
 
@@ -970,7 +970,7 @@ public class BuiltinAuthorizationServiceTest {
             // expected if null required roles is specified
             assertTrue(
                        "Exception should contain message stating null: "
-                                       + e.getMessage(),
+                       + e.getMessage(),
                        e.getMessage().contains("requiredRoles"));
         }
     }
@@ -1011,8 +1011,7 @@ public class BuiltinAuthorizationServiceTest {
         principals.add(princ);
         HashSet<Object> pubCredentials = new HashSet<Object>();
         HashSet<Object> privCredentials = new HashSet<Object>();
-        final Subject subject = new Subject(false, principals, pubCredentials,
-                        privCredentials);
+        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         requiredRoles.add(role1);
 
@@ -1116,7 +1115,7 @@ public class BuiltinAuthorizationServiceTest {
     /**
      * Test method for
      * {@link com.ibm.ws.security.authorization.builtin.internal.BuiltinAuthorizationService#isAuthorized(java.lang.Object, java.util.List, javax.security.auth.Subject)} .
-     * 
+     *
      * @throws CredentialDestroyedException
      * @throws CredentialExpiredException
      */
@@ -1138,6 +1137,8 @@ public class BuiltinAuthorizationServiceTest {
 
         context.checking(new Expectations() {
             {
+                allowing(authzTableService3).isAuthzInfoAvailableForApp("myApp");
+                will(returnValue(true));
                 one(authzTableService).getRolesForSpecialSubject(resourceName, AuthorizationTableService.EVERYONE);
                 will(returnValue(RoleSet.EMPTY_ROLESET));
                 one(authzTableService2).getRolesForSpecialSubject(resourceName, AuthorizationTableService.EVERYONE);
