@@ -131,15 +131,20 @@ public abstract class FlexibleBaseServlet extends FlexibleBaseNoJavaEESecServlet
             // check to see if user has access to a resource
             String resource = p.getRequest().getParameter("resource");
             String methods = p.getRequest().getParameter("methods");
-            if (resource != null && methods != null) {
-                String[] servletMethods = methods.split(",");
-                if (servletMethods.length == 1) {
-                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "): "
-                                             + securityContext.hasAccessToWebResource(resource, servletMethods[0]));
-                }
-                if (servletMethods.length == 2) {
-                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "," + servletMethods[1] + "): "
-                                             + securityContext.hasAccessToWebResource(resource, servletMethods[0], servletMethods[1]));
+            if (resource != null) {
+                if (methods != null) {
+                    String[] servletMethods = methods.split(",");
+                    if (servletMethods.length == 1) {
+                        writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "): "
+                                                 + securityContext.hasAccessToWebResource(resource, servletMethods[0]));
+                    }
+                    if (servletMethods.length == 2) {
+                        writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + "," + servletMethods[0] + "," + servletMethods[1] + "): "
+                                                 + securityContext.hasAccessToWebResource(resource, servletMethods[0], servletMethods[1]));
+                    }
+                } else {
+                    writeLine(p.getBuffer(), "securityContext.hasAccessToWebResource(" + resource + ",): "
+                                             + securityContext.hasAccessToWebResource(resource));
                 }
             }
 

@@ -22,7 +22,7 @@ public interface SecurityConstraintCollection {
 
     /**
      * Gets the match response object for the resource access.
-     * 
+     *
      * @param resourceName The resource name.
      * @param method The HTTP method.
      * @return The MatchResponse object.
@@ -30,15 +30,24 @@ public interface SecurityConstraintCollection {
     public abstract MatchResponse getMatchResponse(String resourceName, String method);
 
     /**
+     * Gets the match response object for the resource access.
+     *
+     * @param resourceName The resource name.
+     * @param method The HTTP method.
+     * @return The MatchResponse object.
+     */
+    public abstract List<MatchResponse> getMatchResponse(String resourceName, String... method);
+
+    /**
      * Gets the list of security constraints in this collection
-     * 
+     *
      * @return a list of SecurityConstraint objects
      */
     public List<SecurityConstraint> getSecurityConstraints();
 
     /**
      * Adds the given security constraints to the collection
-     * 
+     *
      * @param securityConstraints the security constraints to add
      */
     public void addSecurityConstraints(List<SecurityConstraint> securityConstraints);
