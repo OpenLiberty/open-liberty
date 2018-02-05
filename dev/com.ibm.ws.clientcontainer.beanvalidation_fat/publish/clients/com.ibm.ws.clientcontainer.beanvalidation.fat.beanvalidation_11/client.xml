@@ -4,11 +4,6 @@
         <feature>javaeeClient-7.0</feature>
     </featureManager>
     
-    <!-- 
-    NOTE: for this bucket to run cleanly with j2sec enabled, the following permission must be manually
-    granted in the java.policy file at $JAVA_HOME/jre/lib/security/java.policy: 
-    permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
-    -->
     <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
     
    <application id="beanvalidation" name="beanvalidation" type="ear" location="beanvalidation.ear"/>
