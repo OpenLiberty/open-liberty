@@ -1,13 +1,13 @@
 /*
  * Copyright 2012 International Business Machines Corp.
- * 
+ *
  * See the NOTICE file distributed with this work for additional information
- * regarding copyright ownership. Licensed under the Apache License, 
+ * regarding copyright ownership. Licensed under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@ package com.ibm.jbatch.container.services.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,14 +29,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.jbatch.container.RASConstants;
-import com.ibm.jbatch.container.exception.BatchContainerRuntimeException;
 import com.ibm.jbatch.container.exception.BatchContainerServiceException;
 import com.ibm.jbatch.container.services.IJobXMLSource;
 import com.ibm.jbatch.container.ws.BatchSubmitInvalidParametersException;
 import com.ibm.jbatch.spi.services.IBatchConfig;
 import com.ibm.jbatch.spi.services.IJobXMLLoaderService;
 
-@Component(configurationPolicy=ConfigurationPolicy.IGNORE)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class DelegatingJobXMLLoaderServiceImpl implements IJobXMLLoaderService, RASConstants {
 
     private final static String CLASSNAME = DelegatingJobXMLLoaderServiceImpl.class.getName();
@@ -57,24 +58,24 @@ public class DelegatingJobXMLLoaderServiceImpl implements IJobXMLLoaderService, 
         } else {
             if (logger.isLoggable(Level.FINER)) {
                 logger.log(Level.FINER, "No preferred job xml loader is detected in configuration");
-            } 
+            }
         }
 
         if (jobXML != null) {
             if (logger.isLoggable(Level.FINER)) {
-                logger.log(Level.FINER, "Preferred job xml loader loaded job with id " + id +".");
-            } 
+                logger.log(Level.FINER, "Preferred job xml loader loaded job with id " + id + ".");
+            }
             return jobXML;
         }
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "Preferred job xml loader failed to load " + id +". Defaulting to " + PREFIX);
+            logger.log(Level.FINER, "Preferred job xml loader failed to load " + id + ". Defaulting to " + PREFIX);
         }
 
-        jobXML =  loadJobFromMetaInfBatchJobs(id);
+        jobXML = loadJobFromMetaInfBatchJobs(id);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.log(Level.FINER, "Loaded job xml with " + id +" from " + PREFIX);
+            logger.log(Level.FINER, "Loaded job xml with " + id + " from " + PREFIX);
         }
 
         return jobXML;
@@ -82,16 +83,21 @@ public class DelegatingJobXMLLoaderServiceImpl implements IJobXMLLoaderService, 
 
     private IJobXMLSource loadJobFromMetaInfBatchJobs(String id) {
 
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return Thread.currentThread().getContextClassLoader();
+            }
+        });
 
         String relativePath = PREFIX + id + ".xml";
 
         StreamSource strSource = null;
-        
+
         logger.fine("looking up batch job xml at " + relativePath);
 
         URL url = tccl.getResource(relativePath);
-        
+
         // The lookup failed.  Check if id already ends with ".xml"...
         if (url == null && id.endsWith(".xml")) {
             String path = PREFIX + id;
@@ -105,14 +111,14 @@ public class DelegatingJobXMLLoaderServiceImpl implements IJobXMLLoaderService, 
         if (url != null) {
             try {
                 strSource = new StreamSource(url.openStream());
-            } catch (IOException e) { 
+            } catch (IOException e) {
                 String excMessage = "IOException on URL at relativePath: " + relativePath + ",  on openStream(), message: " + e.getMessage();
                 logger.fine(excMessage);
                 throw new BatchSubmitInvalidParametersException(excMessage, e);
             }
         } else {
             String excMessage = "Resource not found at relativePath: " + relativePath;
-            logger.log(Level.SEVERE, "jsl.not.found.batch-jobs", new Object[] {id, relativePath});
+            logger.log(Level.SEVERE, "jsl.not.found.batch-jobs", new Object[] { id, relativePath });
             throw new BatchSubmitInvalidParametersException(excMessage);
         }
         strSource.setSystemId(url.toExternalForm());
@@ -120,17 +126,14 @@ public class DelegatingJobXMLLoaderServiceImpl implements IJobXMLLoaderService, 
         return jslSource;
     }
 
-
     @Override
     public void init(IBatchConfig batchConfig) throws BatchContainerServiceException {
 
     }
 
-
     @Override
     public void shutdown() throws BatchContainerServiceException {
         // TODO Auto-generated method stub
     }
-
 
 }

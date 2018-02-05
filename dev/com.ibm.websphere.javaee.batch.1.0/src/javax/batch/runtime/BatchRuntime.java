@@ -16,6 +16,9 @@
  */
 package javax.batch.runtime;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -43,18 +46,24 @@ public class BatchRuntime {
     static {
         
         try {
-            jobOperatorTracker = new ServiceTracker<JobOperator, JobOperator>(
-                    FrameworkUtil.getBundle(JobOperator.class).getBundleContext(), 
-                    FrameworkUtil.createFilter("(component.name=com.ibm.jbatch.container.api.impl.JobOperatorImplSuspendTran)"),
-                    null);
-            jobOperatorTracker.open();
-        } catch (InvalidSyntaxException ise) {
-            throw new BatchRuntimeException("Failed to load ServiceTracker for JobOperator", ise);
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws InvalidSyntaxException {
+                    jobOperatorTracker = new ServiceTracker<JobOperator, JobOperator>(
+                            FrameworkUtil.getBundle(JobOperator.class).getBundleContext(),
+                            FrameworkUtil.createFilter("(component.name=com.ibm.jbatch.container.api.impl.JobOperatorImplSuspendTran)"),
+                            null);
+                    jobOperatorTracker.open();
+                    return null;
+                }
+            });
+        } catch (Throwable t) {
+            // No real value in unwrapping or otherwise treating the checked exception different from any other Throwable, and it would be 
+            // maybe useful to have an FFDC in the "other Throwable" case.
+            throw new BatchRuntimeException("Failed to load ServiceTracker for JobOperator", t);
         }
       
     }
-    
-
     
     /**
      * The getJobOperator factory method returns
@@ -65,20 +74,24 @@ public class BatchRuntime {
      * @throws BatchRuntimeException if job operator is not available
      */
     public static JobOperator getJobOperator() {
-        
-        jo = jobOperatorTracker.getService();
-        
+
+        jo = AccessController.doPrivileged(new PrivilegedAction<JobOperator>() {
+            @Override
+            public JobOperator run() {
+                return jobOperatorTracker.getService();
+            }
+        });
+
         if (jo == null) {
-            
+
             String msg = getFormattedMessage("batch.container.unavailable",
-                                             new Object[] { "<batchPersistence/>"},
-                                             "CWWKY0350E: The batch container is not activated. Ensure that batch persistence has been configured via configuration element <batchPersistence />");
-            
-        	throw new BatchRuntimeException(msg);
+                    new Object[] { "<batchPersistence/>"},
+                    "CWWKY0350E: The batch container is not activated. Ensure that batch persistence has been configured via configuration element <batchPersistence />");
+
+            throw new BatchRuntimeException(msg);
         }
-        
+
         return jo;
-        
     } 
     
     /**
