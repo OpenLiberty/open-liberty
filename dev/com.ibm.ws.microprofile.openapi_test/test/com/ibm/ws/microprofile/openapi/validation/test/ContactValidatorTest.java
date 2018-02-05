@@ -66,6 +66,7 @@ public class ContactValidatorTest {
 
         validator.validate(vh, context, key, contact);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Contact object must contain a valid email address."));
     }
 
     @Test
@@ -80,6 +81,7 @@ public class ContactValidatorTest {
 
         validator.validate(vh, context, key, contact);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Contact object must contain a valid URL."));
     }
 
     @Test
@@ -104,7 +106,7 @@ public class ContactValidatorTest {
         ContactImpl contact = new ContactImpl();
         contact.setName("test_contact");
         contact.setEmail(null);
-        contact.setUrl("http/test-url.");
+        contact.setUrl("http://test-url.com");
 
         validator.validate(vh, context, key, contact);
         Assert.assertEquals(0, vh.getEventsSize());

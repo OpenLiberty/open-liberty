@@ -68,6 +68,7 @@ public class ExampleValidatorTest {
 
         validator.validate(vh, context, key, example);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("specifies both \"value\" and \"externalValue\" fields."));
     }
 
     @Test
