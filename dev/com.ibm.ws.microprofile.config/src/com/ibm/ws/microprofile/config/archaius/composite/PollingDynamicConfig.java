@@ -33,6 +33,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 public class PollingDynamicConfig implements Closeable {
 
@@ -109,7 +110,7 @@ public class PollingDynamicConfig implements Closeable {
             update();
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "execute", "Initial Update failed: " + this, e);
+                Tr.debug(tc, "start: Initial Update failed: {0}. Exception: {1}", this, e);
             }
             future = Futures.immediateFailure(e);
         }
@@ -119,18 +120,18 @@ public class PollingDynamicConfig implements Closeable {
                 public void run() {
                     try {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "execute", "Scheduled Update starting: " + this);
+                            Tr.debug(tc, "start: Scheduled Update starting: {0}", this);
                         }
 
                         update();
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "execute", "Scheduled Update completed: " + this);
+                            Tr.debug(tc, "start", "Scheduled Update completed: {0}", this);
                         }
                     } catch (Exception e) {
                         //                    LOG.warn("Failed to load properties", e);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "execute", "Scheduled Update failed: " + this, e);
+                            Tr.debug(tc, "start", "Scheduled Update failed: {0}. Exception: {1}", this, e);
                         }
                     }
                 }
@@ -162,7 +163,7 @@ public class PollingDynamicConfig implements Closeable {
                 notifyConfigUpdated();
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "update", "Exception updating dynamic source: " + e);
+                    Tr.debug(tc, "update: Exception updating dynamic source: {0}. Exception: {1}", this, e);
                 }
 
                 errorCounter.incrementAndGet();
@@ -181,7 +182,7 @@ public class PollingDynamicConfig implements Closeable {
             if (future != null) {
                 boolean cancelled = future.cancel(true);
                 if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "future.update.not.cancelled.CWMCG0013E");
+                    Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
                 }
                 future = null;
             }
@@ -218,8 +219,9 @@ public class PollingDynamicConfig implements Closeable {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String toString() {
-        return this.id;
+        return getSourceID();
     }
 
     /**
