@@ -304,6 +304,6 @@ display.unresolved.jsl.explanation=The JSL used for the job is displayed before 
 display.unresolved.jsl.useraction=Ensure that the file name for the JSL is correct and verify that the source of the JSL contains the correct JSL.
 
 #The {0} operationGroup name was not resolved to a valid group name.
-JOB_GROUP_NAME_NOT_VALID=CWWKY044W: The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: The {0} operationGroup name was not resolved to a valid group name.
 JOB_GROUP_NAME_NOT_VALID.explanation=Attempts to access the job using group access might fail, if attempts to use an invalid group name occur.
 JOB_GROUP_NAME_NOT_VALID.useraction=Correct the group name in the server configuration file.
