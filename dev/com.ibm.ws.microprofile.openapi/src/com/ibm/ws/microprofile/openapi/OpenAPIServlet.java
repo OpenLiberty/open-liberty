@@ -13,27 +13,19 @@ package com.ibm.ws.microprofile.openapi;
 import java.io.IOException;
 import java.io.Writer;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.ApplicationProcessor.DocType;
-import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 public class OpenAPIServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final TraceComponent tc = Tr.register(OpenAPIServlet.class);
-
-    private volatile ApplicationProcessor applicationProcessor = null;
 
     /** {@inheritDoc} */
 
@@ -41,15 +33,15 @@ public class OpenAPIServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        ApplicationProcessor applicationProcessor = ApplicationProcessor.getInstance();
+
         if (request.getMethod().equals(Constants.METHOD_GET)) {
             if (applicationProcessor == null) {
-                applicationProcessor = findApplicationProcessor(request);
-                if (applicationProcessor == null) {
-                    Writer writer = response.getWriter();
-                    writer.write("Failed to find OpenAPI application processor");
-                    response.setStatus(404);
-                }
+                Writer writer = response.getWriter();
+                writer.write("Failed to find OpenAPI application processor");
+                response.setStatus(404);
             }
+
             String acceptHeader = "";
             acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
             String format = "yaml";
@@ -74,24 +66,5 @@ public class OpenAPIServlet extends HttpServlet {
             response.setStatus(405);
         }
 
-    }
-
-    /**
-     * @param request
-     */
-    private ApplicationProcessor findApplicationProcessor(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        ServletContext sc = session.getServletContext();
-        BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
-
-        ServiceReference<ApplicationProcessor> ref = ctxt.getServiceReference(ApplicationProcessor.class);
-        if (ref == null) {
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Failed to find OpenAPI Application Processor");
-            }
-            return null;
-        } else {
-            return ctxt.getService(ref);
-        }
     }
 }

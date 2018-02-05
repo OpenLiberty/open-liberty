@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2018 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -94,6 +94,9 @@
 
         <AD id="loginFormURL" name="%loginFormURL" description="%loginFormURL.desc"
             required="false" type="String"/>
+
+        <AD id="loginErrorURL" name="%loginErrorURL" description="%loginErrorURL.desc"
+            required="false" type="String"/>
         
         <AD id="allowAuthenticationFailOverToAuthMethod" name="%allowAuthenticationFailOverToAuthMethod" description="%allowAuthenticationFailOverToAuthMethod.desc"
             required="false" type="String" > 
@@ -106,7 +109,18 @@
         <AD id="trackLoggedOutSSOCookies" name="%trackLoggedOutSSOCookies" description="%trackLoggedOutSSOCookies.desc"
             required="false" type="Boolean"
             default="false" />
-             
+
+        <AD id="overrideHttpAuthenticationMechanism" name="%overrideHttpAuthenticationMechanism" description="%overrideHttpAuthenticationMechanism.desc"
+            required="false" type="String">
+                <Option label="BASIC" value="BASIC" />
+                <Option label="FORM" value="FORM" />
+        </AD> 
+
+        <AD id="contextRootForFormAuthenticationMechanism" name="%contextRootForFormAuthenticationMechanism" description="%contextRootForFormAuthenticationMechanism.desc"
+            required="false" type="String"/>
+
+        <AD id="basicAuthenticationMechanismRealmName" name="%basicAuthenticationMechanismRealmName" description="%basicAuthenticationMechanismRealmName.desc"
+            required="false" type="String" default="defaultRealm" />
 
     </OCD>
 

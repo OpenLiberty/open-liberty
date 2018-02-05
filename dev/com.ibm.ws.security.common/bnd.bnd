@@ -77,5 +77,5 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-    com.ibm.ws.kernel.boot;version=latest
-    
+    com.ibm.ws.kernel.boot;version=latest, \
+    com.ibm.ws.security.test.common;version=latest

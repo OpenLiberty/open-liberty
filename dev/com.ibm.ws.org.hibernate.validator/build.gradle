@@ -1,0 +1,3 @@
+copyPiiFiles {
+  include '**/*.properties'
+}

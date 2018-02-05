@@ -42,3 +42,35 @@ JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Wenn der Realmname definiert werden m
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Die Implementierung des Moduls {0} in der Anwendung {1} ist fehlgeschlagen, weil mehrere HttpAuthenticationMechanism-Implementierungen gefunden wurden. Die Liste der Klassen ist {2}. Wahrscheinlich handelt es sich um ein Problem bei der Anwendungspaketierung. Stellen Sie sicher, dass nur eine einzige HttpAuthenticationMechanism-Implementierung im Modul enthalten ist.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Die Anwendungsimplementierung ist fehlgeschlagen, weil mehrere HttpAuthenticationMechanism-Implementierungen gefunden wurden. Diese Bedingung ist nicht zul\u00e4ssig.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Stellen Sie sicher, dass nur eine einzige HttpAuthenticationMechanism-Implementierung f\u00fcr jedes Modul in der Anwendung enthalten ist.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Es tritt ein Fehler auf, wenn das Programm die Konfiguration ''{0}'' f\u00fcr den Identit\u00e4tsspeicher aufl\u00f6st. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Der Standardwert ist ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Die Konfiguration des Identit\u00e4tsspeichers kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Wenn Sie EL-Ausdr\u00fccke verwenden, stellen Sie sicher, dass sie g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen.
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Ein hashAlgorithm-Parameter, der f\u00fcr den Hashalgorithmus {0} angegeben wurde, hat das falsche Format. Der empfangene Parameter ist {1}. Das erforderliche Format ist Name=Wert.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Eine Liste mit hashAlgorithm-Parametern hat das falsche Format und kann daher nicht syntaktisch analysiert werden.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Korrigieren Sie das hashAlgorithmParameters-Element in der DatabaseIdentityStore-Annotation. 
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: Die Abfrage ''{1}'' zum Abrufen des {0}-Callers f\u00fcr den DatabaseIdentityStore ist mit einem Fehler fehlgeschlagen: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=Die Suche nach dem angegebenen Caller ist mit einem Fehler fehlgeschlagen.
+JAVAEESEC_WARNING_GEN_DB.useraction=\u00dcberpr\u00fcfen Sie den angegebenen Fehler.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Die Abfrage ''{1}'' zum Abrufen der Gruppen f\u00fcr den {0}-Caller ist f\u00fcr den DatabaseIdentityStore fehlgeschlagen. Die Teilliste der Gruppen ist {2}. Der Fehler ist {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Die Suche nach Gruppen f\u00fcr den Caller ist mit einem Fehler fehlgeschlagen.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=\u00dcberpr\u00fcfen Sie den angegebenen Fehler. Es wird eine Teilliste von Gruppen zur\u00fcckgegeben.
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: Der Berechtigungsnachweis, der dem IdentityStore bereitgestellt wird, ist kein UsernamePasswordCredential und kann nicht validiert werden.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=Der Berechtigungsnachweis, der dem IdentityStore bereitgestellt wird, ist kein UsernamePasswordCredential und kann nicht validiert werden.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=\u00dcberpr\u00fcfen Sie den Berechtigungsnachweistyp, der an den IdentityStore \u00fcbergeben wurde. 
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: Es wurde ein Nullkennwort f\u00fcr den DatabaseIdentityStore bereitgestellt. Eine Validierung ist nicht m\u00f6glich.
+JAVAEESEC_WARNING_NULL_PWD.explanation=UsernamePasswordCredential enthielt ein Nullkennwort.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Geben Sie ein g\u00fcltiges Kennwort an.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Die Hashalgorithmusbean wurde f\u00fcr die Klasse {0} nicht gefunden.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Der \u00fcber das hashAlgorithm-Element in der DatabaseIdentityStore-Annotation aufgelistete Hashalgorithmus wurde nicht gefunden.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=F\u00fcgen Sie den angepassten Hashalgorithmus als Bean hinzu, die f\u00fcr die Anwendung verf\u00fcgbar ist.
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Die Abfrage ''{1}'' hat kein Kennwort f\u00fcr den {0}-Caller f\u00fcr den DatabaseIdentityStore zur\u00fcckgegeben.
+JAVAEESEC_WARNING_NO_PWD.explanation=Die Abfrage hat kein Kennwort f\u00fcr die angegebene Caller-Abfrage zur\u00fcckgegeben.
+JAVAEESEC_WARNING_NO_PWD.useraction=Wenn ein Kennwort erwartet wurde, \u00fcberpr\u00fcfen Sie die Caller-Abfrage und die Datenbankinhalte.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Die Abfrage ''{1}'' hat mehrere Ergebnisse f\u00fcr den {0}-Caller f\u00fcr den DatabaseIdentityStore zur\u00fcckgegeben.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=F\u00fcr den angeforderten Caller wurden mehrere Ergebnisse zur\u00fcckgegeben. Die Caller-Abfrage sollte nur ein einziges Ergebnis zur\u00fcckgeben.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=\u00dcberpr\u00fcfen Sie die Caller-Abfrage und die Datenbankinhalte. \u00c4ndern Sie die Caller-Abfrage so, dass ein Ergebnis zur\u00fcckgegeben wird.
+#>>>>>>> Add messages for IdentityStore

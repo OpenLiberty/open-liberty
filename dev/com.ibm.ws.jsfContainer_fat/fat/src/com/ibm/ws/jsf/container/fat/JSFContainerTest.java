@@ -36,12 +36,13 @@ public class JSFContainerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive mojarraApp = ShrinkHelper.buildDefaultApp(MOJARRA_APP, "jsf.container.bean");
+        mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
 
         WebArchive myfacesApp = ShrinkHelper.buildDefaultApp(MYFACES_APP, "jsf.container.bean");
         ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
-        mojarraApp = FATSuite.addMyFaces(myfacesApp);
+        myfacesApp = FATSuite.addMyFaces(myfacesApp);
         ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
 
         server.startServer();

@@ -38,9 +38,6 @@ public class SecurityParser {
         }
         List<SecurityRequirement> securityRequirements = new ArrayList<>();
         for (org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement securityRequirementApi : securityRequirementsApi) {
-            if (StringUtils.isBlank(securityRequirementApi.name())) {
-                continue;
-            }
             SecurityRequirement securityRequirement = new SecurityRequirementImpl();
             if (securityRequirementApi.scopes().length > 0) {
                 securityRequirement.addScheme(securityRequirementApi.name(), Arrays.asList(securityRequirementApi.scopes()));

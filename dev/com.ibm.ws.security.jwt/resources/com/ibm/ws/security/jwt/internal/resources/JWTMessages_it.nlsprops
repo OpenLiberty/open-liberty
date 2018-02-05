@@ -309,3 +309,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Assicurarsi che la rete sia impostata appro
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: L''emittente [{0}] del JWT (JSON Web Token) fornito non \u00e8 considerato affidabile perch\u00e9 la configurazione JWT [{1}] non specifica emittenti affidabili.
 JWT_TRUSTED_ISSUERS_NULL.explanation=La configurazione del server specifica quali emittenti sono affidabili per la convalida dei JWT. La configurazione JWT non specifica emittenti affidabili, pertanto il token non pu\u00f2 essere convalidato.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Verificare che la configurazione JWT specificata nel messaggio definisca almeno un emittente affidabile. Verificare che l'emittente del JWT corrisponda a uno degli emittenti affidabili nella configurazione JWT.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: \u00c8 utilizzato lo schema HTTP nell''endpoint specificato: {0}, \u00e8 richiesto HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=L'endpoint specificato richiede HTTPS, ma nell'URL di richiesta \u00e8 stato utilizzato HTTP.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Controllare l'URL di richiesta e assicurarsi che utilizzi HTTPS o modificare la configurazione in modo che HTTPS non sia richiesto.

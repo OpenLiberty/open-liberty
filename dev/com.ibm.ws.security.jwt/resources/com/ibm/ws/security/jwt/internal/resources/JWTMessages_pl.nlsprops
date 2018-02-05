@@ -309,3 +309,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Upewnij si\u0119, \u017ce sie\u0107 zosta\u
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Wystawca [{0}] podanego znacznika JSON Web Token (JWT) nie jest zaufany, poniewa\u017c w konfiguracji znacznika JWT [{1}] nie podano \u017cadnych zaufanych wystawc\u00f3w.
 JWT_TRUSTED_ISSUERS_NULL.explanation=W konfiguracji serwera wskazano, kt\u00f3rzy wystawcy s\u0105 zaufani w przypadku sprawdzania poprawno\u015bci znacznik\u00f3w JWT. W konfiguracji znacznika JWT nie podano \u017cadnych zaufanych wystawc\u00f3w, wi\u0119c nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika.
 JWT_TRUSTED_ISSUERS_NULL.useraction=W konfiguracji znacznika JWT podanej w komunikacie zdefiniuj co najmniej jednego zaufanego wystawc\u0119. Upewnij si\u0119, \u017ce wystawca JWT jest zgodny z jednym z zaufanych wystawc\u00f3w podanych w konfiguracji znacznika JWT.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: U\u017cyto schematu HTTP w okre\u015blonym punkcie ko\u0144cowym: {0}. Wymagany jest protok\u00f3\u0142 HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Podany punkt ko\u0144cowy wymaga protoko\u0142u HTTPS, ale w adresie URL \u017c\u0105dania u\u017cyto protoko\u0142u HTTP.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Sprawd\u017a adres URL \u017c\u0105dania i upewnij si\u0119, \u017ce u\u017cywany jest w nim protok\u00f3\u0142 HTTPS, lub zmie\u0144 konfiguracj\u0119, tak aby protok\u00f3\u0142 HTTPS nie by\u0142 wymagany. 

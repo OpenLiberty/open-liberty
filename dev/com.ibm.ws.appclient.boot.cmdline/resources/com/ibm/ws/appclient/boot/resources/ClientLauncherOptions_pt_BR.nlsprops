@@ -20,7 +20,11 @@ scriptUsage=Uso: {0} action clientName [op\u00e7\u00f5es]
 
 use.actions=A\u00e7\u00f5es:
 use.options=Op\u00e7\u00f5es:
+use.options.gen.desc=\ \ \ \ Use help [actionName] para obter informa\u00e7\u00f5es de op\u00e7\u00e3o detalhadas de cada a\u00e7\u00e3o.
 use.jvmarg=Op\u00e7\u00f5es da JVM:
+category-key.lifecycle=Ciclo de vida do servidor
+category-key.help=Informa\u00e7\u00f5es
+category-key.misc=Outros Termos
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -67,15 +71,18 @@ option-desc.clean=\tLimpe todas as informa\u00e7\u00f5es em cache relacionadas a
 option-key.archive=\ \ \ \ --archive="caminho para o arquivo de archive de destino"
 option-desc.archive=\tEspecifique o destino do archive a ser gerado pela a\u00e7\u00e3o do                       \n\
 \tpacote. O destino pode ser especificado como um caminho absoluto ou como \n\
-\tum caminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1\n\
-\tcriado no diret\u00f3rio de sa\u00edda do cliente. A extens\u00e3o do nome do arquivo de      \n\
-\tdestino pode influenciar o formato do archive gerado.       \n \tO formato de archive padr\u00e3o da a\u00e7\u00e3o do pacote \u00e9 "pax" no z/OS   \n\
-\te "zip" em todas as outras plataformas.                                    \n\
-\tO formato de archive "jar" produzir\u00e1 um jar autoextrator semelhante ao   \n\
-\tarchive do instalador original
+\tum caminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\
+\tno diret\u00f3rio de sa\u00edda do cliente. A extens\u00e3o do nome do arquivo de destino pode \n\
+\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\
+\t para a a\u00e7\u00e3o do pacote \u00e9 "pax" no z/OS e "zip" em todas as \n\
+\toutras plataformas. O formato de archive "jar" produzir\u00e1 um jar \n\
+\tautoextrator semelhante ao do archive do instalador original.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos variam, dependendo da\n \ta\u00e7\u00e3o.
+option-desc.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: all*, usr, \n\
+\tminify. A op\u00e7\u00e3o usr cria um pacote que cont\u00e9m o servidor \n\
+\te aplicativo, mas n\u00e3o o tempo de execu\u00e7\u00e3o. A op\u00e7\u00e3o all padr\u00e3o produz\n\
+\tum pacote do cliente que cont\u00e9m tudo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nome_do_Modelo"
 option-desc.template=\tEspecifique o nome do modelo a ser usado ao criar um novo cliente. 

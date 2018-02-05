@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
+    private Utils utils = new Utils();
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -71,7 +72,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             }
         }
         if (realmName == null || realmName.trim().isEmpty()) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
+            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
             realmName = DEFAULT_REALM;
         }
     }
@@ -110,7 +111,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
             if (isAuthorizationHeaderValid(basicAuthHeader)) { // BasicAuthenticationCredential.isValid does not work
                 BasicAuthenticationCredential basicAuthCredential = new BasicAuthenticationCredential(encodedHeader);
-                status = Utils.getInstance().validateUserAndPassword(getCDI(), realmName, clientSubject, basicAuthCredential, httpMessageContext);
+                status = utils.validateUserAndPassword(getCDI(), realmName, clientSubject, basicAuthCredential, httpMessageContext);
                 if (status == AuthenticationStatus.SUCCESS) {
                     httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
                     rspStatus = HttpServletResponse.SC_OK;

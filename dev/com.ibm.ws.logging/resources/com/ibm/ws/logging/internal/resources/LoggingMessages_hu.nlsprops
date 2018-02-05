@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: A k\u00f6vetkez\u0151 \u00fczenetek rejt
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Az \u00fczenetek \u00fagy vannak be\u00e1ll\u00edtva, hogy ne legyenek be\u00edrva a console.log \u00e9s messages.log f\u00e1jlokba. Ezek a trace.log f\u00e1jlba ker\u00fclnek. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nem kell semmit tennie
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: A messages.log kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
+MESSAGE_FORMAT_UPDATED.explanation=A messages.log kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
+MESSAGE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: A konzol kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
+CONSOLE_FORMAT_UPDATED.explanation=A konzol kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
+CONSOLE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

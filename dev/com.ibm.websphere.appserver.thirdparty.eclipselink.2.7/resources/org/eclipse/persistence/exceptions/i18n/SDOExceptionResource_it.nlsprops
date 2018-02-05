@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -136,4 +140,8 @@
 45209=\u00c8 stato effettuato un tentativo di reimpostare l''istanza ApplicationResolver su SDOHelperContext.  \u00c8 consentita una sola impostazione.
 
 45210=Il DataObject in fase di marshalling non proviene dallo stesso HelperContext di XMLHelper.
+
+45211=Il tipo potrebbe non essere definito con il nome [{0}]. Il nome non \u00e8 un nome XML valido.
+
+45212=La propriet\u00e0 potrebbe non essere definita con il nome [{0}]. Il nome non \u00e8 un nome XML valido.
 
