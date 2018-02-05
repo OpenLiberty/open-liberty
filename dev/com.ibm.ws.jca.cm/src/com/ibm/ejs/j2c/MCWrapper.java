@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ejs.j2c;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Date;
 import java.util.HashMap;
@@ -391,6 +393,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     protected long totalHoldTime = 0;
     private boolean pretestThisConnection = false;
     private boolean aborted = false;
+    private boolean qmidenabled = true;
 
     /**
      * Constructor is protected and should only be used by
@@ -726,7 +729,38 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             throw e;
         }
 
-        recoveryToken = cm.getRecoveryToken();
+        // TODO - jms20180102 - Using reflection, check for qmid method on mc here and set a boolean to know
+        //                      we need to process qmid's for recovery.
+        //                      This is the best location for checking, since this code only runs
+        //                      one time when the first managed connection is created.
+
+        //                      Note, if we know we will always have a qmid at createManagedConnection and id does not change for the mc,
+        //                            move this code out of the once only code block.
+        //  method to find  getQmid();
+        if (qmidenabled) {
+            Class<? extends Object> mcImplClass = ((Object) mc).getClass();
+            Integer recoveryToken = null;
+            try {
+                Method m = mcImplClass.getMethod("getQmid", (Class<?>[]) null);
+                String qmid = (String) m.invoke((Object) mc, (Object[]) null); // check that we can call it;
+                recoveryToken = cm.getQMIDRecoveryToken(qmid, pm);
+            } catch (NoSuchMethodException nsme) {
+                qmidenabled = false;
+            } catch (InvocationTargetException ite) {
+                qmidenabled = false;
+            } catch (IllegalAccessException e) {
+                qmidenabled = false;
+            } catch (IllegalArgumentException e) {
+                qmidenabled = false;
+            }
+            if (recoveryToken == null) {
+                this.recoveryToken = cm.getRecoveryToken();
+            } else {
+                this.recoveryToken = recoveryToken.intValue();
+            }
+        } else {
+            recoveryToken = cm.getRecoveryToken();
+        }
 
         this.cm = cm;
 

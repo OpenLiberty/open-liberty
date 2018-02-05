@@ -11,6 +11,8 @@
 package com.ibm.ws.jca.cm;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -36,6 +38,7 @@ import javax.transaction.xa.XAResource;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
+import com.ibm.ejs.j2c.CMConfigDataImpl;
 import com.ibm.ejs.j2c.CommonFunction;
 import com.ibm.ejs.j2c.ConnectorServiceImpl;
 import com.ibm.ejs.j2c.J2CConstants;
@@ -117,6 +120,12 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      * Service reference to the auth alias (if any) for XA recovery.
      */
     private ServiceReference<?> recoveryAuthDataRef;
+
+    /**
+     * MQ Queue manager id function is enabled by default. This will automatically be disabled if
+     * this function is not required by the resource adapter.
+     */
+    private boolean qmidenabled = true;
 
     /**
      * Create a connection factory.
@@ -394,6 +403,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
     @Override
     public XAResource getXAResource(Serializable xaresinfo) throws XAResourceNotAvailableException {
 
+        System.out.println("jms20171221 - ********** starting recovery *********  getXAResource for AbstractConnectionfactoryService");
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "getXAResource", getID(), xaresinfo);
@@ -418,6 +428,42 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
 
             // TODO supply class loader identifier if resource was loaded from application
             ManagedConnectionFactory mcf = getManagedConnectionFactory(null);
+
+            if (qmidenabled) {
+                Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();
+                Integer recoveryToken = null;
+                try {
+                    System.out.println("jms201**- have may an method ");
+                    Method m = mcfImplClass.getMethod("setQmid", String.class);
+                    System.out.println("jms201**- have an method " + m);
+
+                    ArrayList<Byte> byteList = (ArrayList<Byte>) xaresinfo;
+                    byte[] bytes = new byte[byteList.size()];
+                    int i = 0;
+                    for (Byte b : byteList)
+                        bytes[i++] = b;
+                    CMConfigDataImpl cmcfd = (CMConfigDataImpl) ConnectorService.deserialize(bytes);
+                    String qmid = cmcfd.getQmid();
+                    System.out.println("jms201**- using qmid during recovery " + qmid);
+                    if (qmid != null) {
+                        m.invoke((Object) mcf, qmid); // check that we can call it;
+                        System.out.println("jms201**- set qmid during recovery on mcf " + qmid);
+                    }
+                } catch (NoSuchMethodException nsme) {
+                    System.out.println("jms20180102c- failed " + nsme);
+                    qmidenabled = false;
+                } catch (InvocationTargetException ite) {
+                    System.out.println("jms20180102c- failed " + ite);
+                    qmidenabled = false;
+                } catch (IllegalAccessException e) {
+                    System.out.println("jms20180102c- failed " + e);
+                    qmidenabled = false;
+                } catch (IllegalArgumentException e) {
+                    System.out.println("jms20180102c- failed " + e);
+                    qmidenabled = false;
+                }
+            }
+
             Subject subject = getSubjectForRecovery(mcf, xaresinfo);
             mc = mcf.createManagedConnection(subject, null);
             xa = mc.getXAResource();
