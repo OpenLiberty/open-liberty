@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,15 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
             }
         }
 
+    }
+
+    @Override
+    public Supplier<Map<String, String>> getTrailerFields() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, "getTrailerFields", "trailerFieldSupplier = " + trailerFieldSupplier + " [" + this + "]");
+        }
+
+        return trailerFieldSupplier;
     }
 
     @Override
