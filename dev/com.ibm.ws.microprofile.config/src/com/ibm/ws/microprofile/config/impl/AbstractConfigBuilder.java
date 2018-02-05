@@ -25,7 +25,7 @@ import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.converters.UserConverter;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.DefaultSources;
+import com.ibm.ws.microprofile.config.sources.DefaultSources;
 
 /**
  *

@@ -77,7 +77,7 @@ public interface WebSphereConfig extends Config, Closeable {
      * @throws NoSuchElementException thrown if the requested property does not exist
      * @throws IllegalArgumentException thrown if the raw String property value was not compatible with the converter for the specified type
      */
-    public SourcedPropertyValue getSourcedValue(String propertyName, Type type);
+    public SourcedValue getSourcedValue(String propertyName, Type type);
 
     /**
      * Generate a human readable String representation of all of the properties in the Config, giving their property names and which source they came from.

@@ -36,7 +36,7 @@ import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
  * @author elandau
  *
  */
-public class TypedProperty {
+public class TypeContainer {
 
     /**
      * The property name
@@ -51,48 +51,45 @@ public class TypedProperty {
     /**
      * Cache for each type attached to this property.
      */
-    private final CopyOnWriteArrayList<TypedPropertyValue> typeCache = new CopyOnWriteArrayList<TypedPropertyValue>();
+    private final CopyOnWriteArrayList<StampedValue> typeCache = new CopyOnWriteArrayList<StampedValue>();
 
     /**
      * Reference to the externally managed master version used as the dirty flag
      */
     private final AtomicInteger masterVersion;
 
-    public TypedProperty(String key, CompositeConfig config, AtomicInteger version) {
+    public TypeContainer(String key, CompositeConfig config, AtomicInteger version) {
         this.key = key;
         this.config = config;
         this.masterVersion = version;
     }
 
     /**
-     * Add a new property to the end of the array list but first check
-     * to see if it already exists.
+     * Check if a StampedValue already exists for the type, if it does, return it,
+     * otherwise create a new one and add it
      *
-     * @param newProperty
+     * @param type
      * @return
      */
-    private TypedPropertyValue add(final TypedPropertyValue newProperty) {
-        //this method was all wrong, it never really checked the cache for an existing value
-        //so I rewrote it ;-)
-        TypedPropertyValue cachedProperty = null;
+    public StampedValue asType(final Type type) {
 
-        for (TypedPropertyValue property : typeCache) {
-            if (property.equals(newProperty)) {
-                cachedProperty = property;
+        StampedValue cachedValue = null;
+
+        //looping around a list is probably quicker than having a map since there are probably only one or two different
+        //types in use at any one time
+        for (StampedValue value : typeCache) {
+            if (value.getType().equals(type)) {
+                cachedValue = value;
                 break;
             }
         }
-        if (cachedProperty == null) {
-            typeCache.add(newProperty);
-            cachedProperty = newProperty;
+        if (cachedValue == null) {
+            StampedValue newValue = new StampedValue(type, this, config);
+            typeCache.add(newValue);
+            cachedValue = newValue;
         }
 
-        return cachedProperty;
-    }
-
-    public TypedPropertyValue asType(final Type type) {
-        TypedPropertyValue prop = add(new TypedPropertyValue(type, this, config));
-        return prop;
+        return cachedValue;
     }
 
     /**

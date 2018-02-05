@@ -24,16 +24,19 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 
-public class TypedPropertyValue {
+public class StampedValue {
 
-    private static final TraceComponent tc = Tr.register(TypedPropertyValue.class);
+    private static final TraceComponent tc = Tr.register(StampedValue.class);
 
-    private final AtomicStampedReference<SourcedPropertyValue> stampedValue = new AtomicStampedReference<>(null, -1);
+    //this is the actual value
+    private final AtomicStampedReference<SourcedValue> stampedValue = new AtomicStampedReference<>(null, -1);
+    //the type of the value
     private final Type type;
-    private final TypedProperty parentContainer;
-
+    //the parent container
+    private final TypeContainer parentContainer;
+    //the backing composite config
     private final CompositeConfig config;
 
     /**
@@ -45,13 +48,13 @@ public class TypedPropertyValue {
      * @param
      * @param config
      */
-    TypedPropertyValue(Type type, TypedProperty parentContainer, CompositeConfig config) {
+    StampedValue(Type type, TypeContainer parentContainer, CompositeConfig config) {
         this.type = type;
         this.parentContainer = parentContainer;
         this.config = config;
     }
 
-    protected SourcedPropertyValue resolveCurrent() {
+    protected SourcedValue resolveCurrent() {
         return config.getSourcedValue(type, getKey());
     }
 
@@ -65,14 +68,14 @@ public class TypedPropertyValue {
      *
      * @return the latest version of the value, either from the cache or the underlying source
      */
-    public SourcedPropertyValue getSourced() {
+    public SourcedValue getSourced() {
         boolean fromCache = true;
         int cacheVersion = stampedValue.getStamp();
         int latestVersion = parentContainer.getMasterVersion();
-        SourcedPropertyValue compositeValue = null;
+        SourcedValue compositeValue = null;
         if (cacheVersion != latestVersion) {
-            SourcedPropertyValue currentValue = stampedValue.getReference();
-            SourcedPropertyValue newValue = resolveCurrent();
+            SourcedValue currentValue = stampedValue.getReference();
+            SourcedValue newValue = resolveCurrent();
 
             if (stampedValue.compareAndSet(currentValue, newValue, cacheVersion, latestVersion)) {
                 compositeValue = newValue;
@@ -92,6 +95,10 @@ public class TypedPropertyValue {
         }
 
         return compositeValue;
+    }
+
+    protected Type getType() {
+        return this.type;
     }
 
     /**
@@ -121,7 +128,7 @@ public class TypedPropertyValue {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        TypedPropertyValue other = (TypedPropertyValue) obj;
+        StampedValue other = (StampedValue) obj;
         if (type != other.type)
             return false;
         return true;

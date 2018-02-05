@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.interfaces;
+package com.ibm.ws.microprofile.config.sources;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,9 +22,8 @@ import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.sources.EnvConfigSource;
-import com.ibm.ws.microprofile.config.sources.PropertiesConfigSource;
-import com.ibm.ws.microprofile.config.sources.SystemConfigSource;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 public class DefaultSources {
 

@@ -21,7 +21,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public abstract class AbstractConfig implements WebSphereConfig {
@@ -61,7 +61,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
         assertNotClosed();
-        SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
         T value = null;
         if (sourced != null) {
             value = (T) sourced.getValue();
@@ -137,7 +137,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
         Object value = null;
         assertNotClosed();
         if (getKeySet().contains(propertyName)) {
-            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
             value = sourced.getValue();
         } else {
             if (optional) {
@@ -155,7 +155,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
         Object value = null;
         assertNotClosed();
         if (getKeySet().contains(propertyName)) {
-            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
             value = sourced.getValue();
         } else {
             value = convertValue(defaultString, propertyType);

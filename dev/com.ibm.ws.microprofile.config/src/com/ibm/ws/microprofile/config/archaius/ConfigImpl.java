@@ -19,7 +19,7 @@ import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
@@ -52,7 +52,7 @@ public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
-    public SourcedPropertyValue getSourcedValue(String propertyName, Type propertyType) {
+    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
         return this.cache.getSourcedValue(propertyName, propertyType);
     }
 

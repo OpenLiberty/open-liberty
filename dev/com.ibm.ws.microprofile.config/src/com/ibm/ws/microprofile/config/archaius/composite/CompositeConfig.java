@@ -32,7 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
@@ -174,7 +174,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
             String key = keyItr.next();
             sb.append(key);
             sb.append("=");
-            SourcedPropertyValue rawCompositeValue = getRawCompositeValue(key);
+            SourcedValue rawCompositeValue = getRawCompositeValue(key);
             if (rawCompositeValue == null) {
                 sb.append("null");
             } else {
@@ -198,13 +198,13 @@ public class CompositeConfig implements Closeable, ConfigListener {
         }
     }
 
-    public SourcedPropertyValue getSourcedValue(Type type, String key) {
-        SourcedPropertyValue rawProp = getRawCompositeValue(key);
+    public SourcedValue getSourcedValue(Type type, String key) {
+        SourcedValue rawProp = getRawCompositeValue(key);
         if (rawProp == null) {
             return null;
         } else {
             Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
-            SourcedPropertyValue composite = new SourcedPropertyValue(value, type, rawProp.getSource());
+            SourcedValue composite = new SourcedValueImpl(value, type, rawProp.getSource());
             return composite;
         }
     }
@@ -213,12 +213,12 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * @param key
      * @return
      */
-    private SourcedPropertyValue getRawCompositeValue(String key) {
+    private SourcedValue getRawCompositeValue(String key) {
         for (PollingDynamicConfig child : children) {
             if (child.containsKey(key)) {
                 String value = child.getRawProperty(key);
                 String source = child.getSourceID();
-                SourcedPropertyValue raw = new SourcedPropertyValue(value, String.class, source);
+                SourcedValue raw = new SourcedValueImpl(value, String.class, source);
                 return raw;
             }
         }
