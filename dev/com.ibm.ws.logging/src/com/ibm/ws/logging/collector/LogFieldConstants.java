@@ -39,4 +39,5 @@ public class LogFieldConstants {
     public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";
     public static final String COUNT = "count";
     public static final String IBM_REQUESTSTARTTIME = "ibm_requestStartTime";
+    public static final String THROWABLE = "throwable";
 }

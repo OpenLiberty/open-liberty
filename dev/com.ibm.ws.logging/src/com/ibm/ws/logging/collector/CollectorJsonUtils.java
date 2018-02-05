@@ -12,6 +12,8 @@ package com.ibm.ws.logging.collector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
@@ -28,6 +30,17 @@ import com.ibm.ws.logging.data.Pair;
 public class CollectorJsonUtils {
 
     public static final int MAX_USER_AGENT_LENGTH = 2048;
+    public static final String LINE_SEPARATOR;
+
+    static {
+
+        LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("line.separator");
+            }
+        });
+    }
 
     public static String getEventType(String source, String location) {
         return CollectorJsonHelpers.getEventType(source, location);
@@ -69,11 +82,11 @@ public class CollectorJsonUtils {
 
             } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
 
-                return jsonifyTraceAndMessage(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, event, tags);
+                return jsonifyMessage(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, event, tags);
 
             } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
 
-                return jsonifyTraceAndMessage(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.TRACE_LOG_EVENT_TYPE, event, tags);
+                return jsonifyTrace(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.TRACE_LOG_EVENT_TYPE, event, tags);
 
             } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
 
@@ -168,8 +181,85 @@ public class CollectorJsonUtils {
         return sb.toString();
     }
 
-    private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
-                                                 String serverName, String hostName, String eventType, Object event, String[] tags) {
+    private static String jsonifyMessage(int maxFieldLength, String wlpUserDir,
+                                         String serverName, String hostName, String eventType, Object event, String[] tags) {
+
+        GenericData genData = (GenericData) event;
+        StringBuilder sb = new StringBuilder();
+        boolean isFirstField = true;
+        ArrayList<Pair> pairs = genData.getPairs();
+        KeyValuePair kvp = null;
+        String key = null;
+        String value = null;
+        String message = null;
+        String throwable = null;
+
+        sb.append("{");
+
+        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+
+        for (Pair p : pairs) {
+
+            if (p instanceof KeyValuePair) {
+
+                kvp = (KeyValuePair) p;
+                key = kvp.getKey();
+                value = kvp.getValue();
+
+                if (key.equals(LogFieldConstants.LOGLEVEL)) {
+
+                } else if (key.equals(LogFieldConstants.MESSAGE)) {
+                    message = value;
+
+                } else if (key.equals(LogFieldConstants.THROWABLE)) {
+                    throwable = value;
+
+                } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
+                    key = LogFieldConstants.THREADID;
+                    isFirstField = isFirstField
+                                   & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField,
+                                                                     false);
+
+                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
+                    key = LogFieldConstants.DATETIME;
+                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, false);
+
+                } else if (key.equals(LogFieldConstants.MODULE)) {
+                    key = LogFieldConstants.LOGGERNAME;
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
+                } else {
+                    if (key.contains(LogFieldConstants.IBM_TAG)) {
+                        key = CollectorJsonHelpers.removeIBMTag(key);
+                    }
+                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
+
+                }
+            }
+        }
+
+        StringBuilder msgBldr = new StringBuilder();
+        if (message != null) {
+            msgBldr.append(message);
+        }
+        if (throwable != null) {
+            msgBldr.append(LINE_SEPARATOR).append(throwable);
+        }
+
+        String formattedValue = CollectorJsonHelpers.formatMessage(msgBldr.toString(), maxFieldLength);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.MESSAGE, formattedValue, false, true, false, isFirstField, kvp.isNumber());
+
+        if (tags != null) {
+            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+        }
+
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    private static String jsonifyTrace(int maxFieldLength, String wlpUserDir,
+                                       String serverName, String hostName, String eventType, Object event, String[] tags) {
 
         GenericData genData = (GenericData) event;
         StringBuilder sb = new StringBuilder();
