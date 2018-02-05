@@ -60,7 +60,7 @@ public class InfoValidatorTest {
         info.setTitle("test");
         validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"title\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value."));
     }
 
     @Test
@@ -71,8 +71,9 @@ public class InfoValidatorTest {
 
         InfoImpl info = new InfoImpl();
         info.setVersion("1.0");
+        System.out.println(info.toString());
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"title\" field is missing or is set to an invalid value."));
     }
 
     @Test
