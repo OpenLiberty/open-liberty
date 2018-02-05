@@ -12,20 +12,20 @@
 
 MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: The Liberty profile installation directory was not set.
 MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=The system cannot find the Liberty profile installation directory because the directory was not specified.
-MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support
 
 MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: The following Liberty profile installation directory does not exist: {0}
 MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=The specified Liberty profile installation directory does not exist.
-MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support
 
-MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: {0} is not a valid directory.
-MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=The specified Liberty profile installation directory is a file.
-MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: The {0} directory is not valid. 
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=The specified Liberty installation directory is a file, not a directory.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support
 
 MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: The installer was not initialized.
 MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=The installer was not initialized because of an internal error.
-MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support
 
 MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: The installer was not initialized because the following error occurred: {0}
 MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=The installer was not initialized because of an internal error.
-MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support

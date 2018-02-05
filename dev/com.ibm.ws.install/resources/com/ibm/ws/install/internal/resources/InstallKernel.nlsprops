@@ -126,7 +126,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=The installer could not get
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Ensure that the directory contains the feature and retry the operation.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Unable to locate the {0} executable after checking the following locations: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=The installer could not locate the executable file
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=The installer did not locate the executable file." or to "The installer cannot locate the executable file.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Ensure that the executable file exists in one of the specified locations.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: There was an error executing the command: {0}  The command returned with exit code {1} and error message: {2}
@@ -250,7 +250,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=The asset cannot be downloaded or inst
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Configure installUtility to connect to the IBM WebSphere Liberty Repository to download or install the asset. Alternatively, download the wlp-featureRepo-<version>.zip from the IBM Fix Central website, and configure the extracted folder as a directory-based repository. If you do not have internet access, contact your administrator to download the missing asset and any dependencies and add them to a configured repository. For more information about installing assets, see the installUtility documentation in IBM Knowledge Center. If the problem persists, see the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Unable to obtain the following assets: {0}. Ensure that the specified assets are valid. To find the IDs of applicable assets, run the installUtility find command.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=The installer could not retrieve the specified assets from the repositories.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=The installer cannot retrieve the specified assets from the repositories.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Ensure that the specified assets are valid, that a valid user id and password are provided, and that the repositories are accessible.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: The asset {0} is not applicable to the product installation {1}.  {2}
