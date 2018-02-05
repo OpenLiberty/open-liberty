@@ -58,7 +58,8 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     private static final String MGMT_AUTHZ_ROLES = "com.ibm.ws.management";
 
     static final String KEY_COMPONENT_NAME = "component.name";
-    static final String KEY_APP_BND_AUTHZ_TABLE_SERVICE = "com.ibm.ws.security.appbnd.AppBndAuthorizationTableService";
+    static final String KEY_FEATURE_AUTHORIZATION_TABLE = "com.ibm.ws.webcontainer.security.feature.internal.FeatureAuthorizationTable";
+    static final String KEY_MANAGMENT_AUTHORIZATION_TABLE = "com.ibm.ws.management.security.authorizationTable";
     //    private static final String ADMIN_RESOURCE_NAME = "com.ibm.ws.management.security.resource";
     private final List<String> useRoleAsGroupNameForApps = new ArrayList<String>();
 
@@ -73,7 +74,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     protected void setAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.addReference(ref);
         String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
-        if (cn != null && cn.equals(KEY_APP_BND_AUTHZ_TABLE_SERVICE)) {
+        if (cn != null && !cn.equals(KEY_FEATURE_AUTHORIZATION_TABLE) && !cn.equals(KEY_MANAGMENT_AUTHORIZATION_TABLE)) {
             appBndAuthorizations.putReference(cn, ref);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.event(tc, "appBndAuthorizationTable service: " + ref);
@@ -84,7 +85,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     protected void unsetAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.removeReference(ref);
         String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
-        if (cn != null && cn.equals(KEY_APP_BND_AUTHZ_TABLE_SERVICE)) {
+        if (cn != null && !cn.equals(KEY_FEATURE_AUTHORIZATION_TABLE) && !cn.equals(KEY_MANAGMENT_AUTHORIZATION_TABLE)) {
             appBndAuthorizations.removeReference(cn, ref);
         }
     }
