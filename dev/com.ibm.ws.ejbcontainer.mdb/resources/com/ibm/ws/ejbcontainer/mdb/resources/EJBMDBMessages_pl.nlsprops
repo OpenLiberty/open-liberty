@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Sprawd\u017a, czy specyfikacj
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Nie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w dla komponentu bean sterowanego komunikatami {0}, poniewa\u017c miejsce docelowe {1} nie jest dost\u0119pne. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w, dop\u00f3ki miejsce docelowe nie stanie si\u0119 dost\u0119pne.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Serwer uruchamia komponent bean sterowany komunikatami, ale nie mo\u017ce aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w, poniewa\u017c nie mo\u017cna znale\u017a\u0107 miejsca docelowego. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w, dop\u00f3ki nie b\u0119dzie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Sprawd\u017a, czy skonfigurowano miejsce docelowe o podanej nazwie. Je\u015bli konfiguracja istnieje, poczekaj, a\u017c miejsce docelowe stanie si\u0119 dost\u0119pne.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: Nie aktywowano punktu ko\u0144cowego komunikatu {0} dla komponentu bean sterowanego komunikatami w module {1} aplikacji {2}, poniewa\u017c specyfikacja aktywowania {3} zosta\u0142a skonfigurowana przy u\u017cyciu warto\u015bci autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Nie aktywowano punktu ko\u0144cowego komunikatu, poniewa\u017c specyfikacja aktywowania zosta\u0142a skonfigurowana przy u\u017cyciu opcji autoStart=false.  Punkt ko\u0144cowy komunikatu b\u0119dzie aktywowany, gdy zostanie do niego wys\u0142ana komenda wznowienia.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: Operacja wstrzymania nie odnios\u0142a skutku, poniewa\u017c punkt ko\u0144cowy komunikatu dla komponentu bean {0} w module {1} aplikacji {2} zosta\u0142 ju\u017c wstrzymany.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=Punkt ko\u0144cowy komunikatu mo\u017cna wstrzyma\u0107 tylko wtedy, gdy znajduje si\u0119 w stanie aktywnym.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: Operacja wznowienia nie odnios\u0142a \u017cadnego skutku, poniewa\u017c punkt ko\u0144cowy komunikatu dla komponentu bean {0} w module {1} aplikacji {2} jest ju\u017c aktywny.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=Punkt ko\u0144cowy komunikatu mo\u017cna wznowi\u0107 tylko wtedy, gdy znajduje si\u0119 w stanie nieaktywnym.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: \u017b\u0105danie wstrzymania punktu ko\u0144cowego komunikatu dla komponentu bean {0} w module {1} aplikacji {2} nie zosta\u0142o pomy\u015blnie zrealizowane, poniewa\u017c punkt ko\u0144cowy nie jest aktywny.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=Punkt ko\u0144cowy komunikatu mo\u017cna wstrzyma\u0107 tylko wtedy, gdy znajduje si\u0119 w stanie aktywnym.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Zaczekaj, a\u017c punkt ko\u0144cowy komunikatu b\u0119dzie aktywny, zanim podejmiesz pr\u00f3b\u0119 jego wstrzymania.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: \u017b\u0105danie wznowienia punktu ko\u0144cowego komunikatu dla komponentu bean {0} w module {1} aplikacji {2} nie zosta\u0142o pomy\u015blnie zrealizowane, poniewa\u017c punkt ko\u0144cowy nie zosta\u0142 wstrzymany.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=Punkt ko\u0144cowy komunikatu mo\u017cna wznowi\u0107 tylko wtedy, gdy znajduje si\u0119 w stanie wstrzymania.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Zaczekaj, a\u017c punkt ko\u0144cowy komunikatu b\u0119dzie wstrzymany, zanim podejmiesz pr\u00f3b\u0119 jego wznowienia.

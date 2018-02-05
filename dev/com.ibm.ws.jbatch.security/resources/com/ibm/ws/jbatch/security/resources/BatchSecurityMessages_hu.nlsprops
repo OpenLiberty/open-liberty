@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Ha a felhaszn\u00e1l\u00f3 nem jogos
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: A(z) {0} felhaszn\u00e1l\u00f3 nem jogosult a k\u00f6tegelt feladatok ind\u00edt\u00e1s\u00e1ra.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik k\u00f6tegelt feladatok ind\u00edt\u00e1s\u00e1ra jogosult k\u00f6tegelt szereppel.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Ha a felhaszn\u00e1l\u00f3 nem jogosult arra, hogy k\u00f6tegelt feladatokat ind\u00edtson, akkor nincs teend\u0151. Amennyiben a felhaszn\u00e1l\u00f3 jogosult a k\u00e9rt k\u00f6tegelt m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra, \u00fagy a k\u00f6tegelt biztons\u00e1gi jogosults\u00e1g konfigur\u00e1l\u00e1s\u00e1val adja hozz\u00e1 a k\u00e9rd\u00e9ses felhaszn\u00e1l\u00f3t a sz\u00fcks\u00e9ges k\u00f6tegelt szerepekhez. 
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: A hozz\u00e1f\u00e9r\u00e9s a(z) {0} feladatp\u00e9ld\u00e1nyhoz meg lett tagadva. A feladathoz meg van hat\u00e1rozva egy m\u0171veletcsoportn\u00e9v, \u00e9s a(z) {1} felhaszn\u00e1l\u00f3nak batchGroupMonitor vagy batchGroupAdmin jogosults\u00e1ga van; azonban a felhaszn\u00e1l\u00f3 nem tagja a k\u00f6vetkez\u0151 konfigur\u00e1lt csoportoknak: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=A batchGroupAdmin vagy batchGroupMonitor felhaszn\u00e1l\u00f3 nem r\u00e9sze egy biztons\u00e1gi csoportnak, amelyhez ez a feladat t\u00e1rs\u00edtva van.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Ha a felhaszn\u00e1l\u00f3nak csoporthozz\u00e1f\u00e9r\u00e9si jogokkal kellene rendelkeznie ehhez a feladathoz, adja hozz\u00e1 a felhaszn\u00e1l\u00f3t a megfelel\u0151 biztons\u00e1gi csoporthoz.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: A hozz\u00e1f\u00e9r\u00e9s a(z) {0} feladathoz meg lett tagadva. A feladathoz a(z) {1} m\u0171veletcsoport van meghat\u00e1rozva, \u00e9s a felhaszn\u00e1l\u0151\u00f3 nem rendelkezik batchGroupMonitor vagy batchGroupAdmin jogosults\u00e1ggal.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik k\u00f6tegelt csoport szerepekkel, \u00edgy nem jogosult a k\u00f6tegelt m\u0171veletek v\u00e9grehajt\u00e1s\u00e1ra.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Ha a felhaszn\u00e1l\u00f3 nem jogosult arra, hogy k\u00f6tegelt csoport felhaszn\u00e1l\u00f3 legyen, akkor nincs teend\u0151. Amennyiben a felhaszn\u00e1l\u00f3 jogosult a k\u00f6tegelt csoport m\u0171veletek v\u00e9grehajt\u00e1s\u00e1ra \u00e9s enged\u00e9lyezett a k\u00f6tegelt biztons\u00e1gi szolg\u00e1ltat\u00e1s, \u00fagy a k\u00f6tegelt biztons\u00e1gi jogosults\u00e1g konfigur\u00e1l\u00e1s\u00e1val adja hozz\u00e1 a k\u00e9rd\u00e9ses felhaszn\u00e1l\u00f3t a sz\u00fcks\u00e9ges k\u00f6tegelt csoport szerepekhez.
