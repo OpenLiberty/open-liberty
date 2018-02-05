@@ -729,20 +729,12 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             throw e;
         }
 
-        // TODO - jms20180102 - Using reflection, check for qmid method on mc here and set a boolean to know
-        //                      we need to process qmid's for recovery.
-        //                      This is the best location for checking, since this code only runs
-        //                      one time when the first managed connection is created.
-
-        //                      Note, if we know we will always have a qmid at createManagedConnection and id does not change for the mc,
-        //                            move this code out of the once only code block.
-        //  method to find  getQmid();
         if (qmidenabled) {
             Class<? extends Object> mcImplClass = ((Object) mc).getClass();
             Integer recoveryToken = null;
             try {
                 Method m = mcImplClass.getMethod("getQmid", (Class<?>[]) null);
-                String qmid = (String) m.invoke((Object) mc, (Object[]) null); // check that we can call it;
+                String qmid = (String) m.invoke((Object) mc, (Object[]) null);
                 recoveryToken = cm.getQMIDRecoveryToken(qmid, pm);
             } catch (NoSuchMethodException nsme) {
                 qmidenabled = false;

@@ -403,7 +403,6 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
     @Override
     public XAResource getXAResource(Serializable xaresinfo) throws XAResourceNotAvailableException {
 
-        System.out.println("jms20171221 - ********** starting recovery *********  getXAResource for AbstractConnectionfactoryService");
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "getXAResource", getID(), xaresinfo);
@@ -433,9 +432,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
                 Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();
                 Integer recoveryToken = null;
                 try {
-                    System.out.println("jms201**- have may an method ");
                     Method m = mcfImplClass.getMethod("setQmid", String.class);
-                    System.out.println("jms201**- have an method " + m);
 
                     ArrayList<Byte> byteList = (ArrayList<Byte>) xaresinfo;
                     byte[] bytes = new byte[byteList.size()];
@@ -444,22 +441,16 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
                         bytes[i++] = b;
                     CMConfigDataImpl cmcfd = (CMConfigDataImpl) ConnectorService.deserialize(bytes);
                     String qmid = cmcfd.getQmid();
-                    System.out.println("jms201**- using qmid during recovery " + qmid);
                     if (qmid != null) {
-                        m.invoke((Object) mcf, qmid); // check that we can call it;
-                        System.out.println("jms201**- set qmid during recovery on mcf " + qmid);
+                        m.invoke((Object) mcf, qmid);
                     }
                 } catch (NoSuchMethodException nsme) {
-                    System.out.println("jms20180102c- failed " + nsme);
                     qmidenabled = false;
                 } catch (InvocationTargetException ite) {
-                    System.out.println("jms20180102c- failed " + ite);
                     qmidenabled = false;
                 } catch (IllegalAccessException e) {
-                    System.out.println("jms20180102c- failed " + e);
                     qmidenabled = false;
                 } catch (IllegalArgumentException e) {
-                    System.out.println("jms20180102c- failed " + e);
                     qmidenabled = false;
                 }
             }

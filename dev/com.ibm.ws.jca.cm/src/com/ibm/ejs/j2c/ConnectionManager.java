@@ -1711,7 +1711,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
         int recoveryToken = tm.registerResourceInfo(filter, resInfo, commitPriority);
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "registerXAResourceInfo");
+            Tr.exit(tc, "registerXAResourceInfo");
 
         return recoveryToken;
     }
