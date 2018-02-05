@@ -124,7 +124,7 @@ public class Constants {
 
     // Values to be verified in servlet response
 
-    public final static String RESPONSE_AUTHENTICATION_FAILED = "JASPIC Authenticated with status: SEND_FAILURE";
+    public final static String RESPONSE_AUTHENTICATION_FAILED = "AuthenticationFailed";
     public final static String RESPONSE_AUTHORIZATION_FAILED = "AuthorizationFailed";
 
     public final static String jaspiValidateRequest = "JASPI validateRequest called with auth provider=";
