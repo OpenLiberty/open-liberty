@@ -180,7 +180,6 @@ public final class OpenAPIModelWalker {
         // Returns the location as a JSON pointer.
         // See definition for JSON pointer here: https://tools.ietf.org/html/rfc6901
         public String getLocation(String suffix) {
-            // REVISIT: Need to add JSON pointer escaping before we activate the validator.
             final Iterator<String> i = pathSegments.descendingIterator();
             final StringBuilder sb = new StringBuilder();
             boolean first = true;
@@ -188,14 +187,21 @@ public final class OpenAPIModelWalker {
                 if (!first) {
                     sb.append('/');
                 }
-                sb.append(i.next());
+                sb.append(escapeJSONPointerPathSegment(i.next()));
                 first = false;
             }
             if (suffix != null && !suffix.isEmpty()) {
                 sb.append('/');
-                sb.append(suffix);
+                sb.append(escapeJSONPointerPathSegment(suffix));
             }
             return sb.toString();
+        }
+
+        // JSON pointer escaping rules:
+        //  * Replace ~ with ~0.
+        //  * Replace / with ~1.
+        private String escapeJSONPointerPathSegment(String pathSegment) {
+            return pathSegment.replace("~", "~0").replace("/", "~1");
         }
 
         // Traversal methods call this method to check whether
