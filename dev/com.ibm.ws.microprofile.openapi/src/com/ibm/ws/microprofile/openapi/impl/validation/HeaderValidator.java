@@ -44,12 +44,13 @@ public class HeaderValidator extends TypeValidator<Header> {
 
             if (reference != null && !reference.isEmpty()) {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
             }
 
             // The examples object is mutually exclusive of the example object.
             if ((t.getExample() != null) && (t.getExamples() != null && !t.getExamples().isEmpty())) {
                 final String message = Tr.formatMessage(tc, "headerExampleOrExamples", t);
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
             Schema schema = t.getSchema();
