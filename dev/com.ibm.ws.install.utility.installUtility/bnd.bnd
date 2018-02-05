@@ -48,6 +48,3 @@ instrument.disabled: true
 publish.tool.jar=ws-installUtility.jar
 publish.tool.script=installUtility
 
--buildpath: \
-  ${javac.bootclasspath.java6}
-  

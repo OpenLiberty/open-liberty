@@ -1,17 +1,26 @@
-<project name="com.ibm.ws.install.utility.installUtility" default="build">
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+	<project name="com.ibm.ws.install.utility.installUtility" default="build">
 	<import file="../ant_build/public_imports/standard_imports.xml"/>
 	<!-- Disable trace/ffdc injection as this code is used outside of Liberty -->
 	<property name="no.trace.instrumentation" value="true"/>
 	<property name="publish.tools" value="installUtility=ws-installUtility.jar"/>
 
-    <target name="package" unless="manifest.exists" depends="compile, createCopyright, generateProperties, packageWithManifest, processQualifier">
+    <target name="package" depends="package.package">
         <mkdir dir="${lib.dir}" />
-
         <echo message="ws-installUtility.jar"/>
 	    <bnd eclipse="false"
 	     failok="false"
 	     exceptions="true"
-	     classpath="${classes.dir}"
 	     output="${lib.dir}/ws-installUtility.jar"
 	     files="bnd.bnd.gradle" />
     </target>
