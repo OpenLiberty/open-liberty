@@ -17,6 +17,7 @@ import com.ibm.ws.session.store.cache.serializable.SessionKey;
  * Allows the JCache provider to deserialize specific classes from the com.ibm.ws.session.cache bundle.
  */
 public class CacheClassLoader extends ClassLoader {
+    
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         Class<?> c;
@@ -29,5 +30,16 @@ public class CacheClassLoader extends ClassLoader {
             c = super.findClass(name);
 
         return c;
+    }
+    
+    @Override
+    public int hashCode() {
+        // a constant number to all instances of this class hash to the same bucket
+        return 362359563;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CacheClassLoader;
     }
 }
