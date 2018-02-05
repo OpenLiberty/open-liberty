@@ -30,14 +30,14 @@ public class OAuthFlowValidatorTest {
     Context context = new TestValidationContextHelper(model);
 
     @Test
-    public void testNewLicenseObject() {
+    public void testNewOAuthFlowObject() {
         OAuthFlowValidator validator = OAuthFlowValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
 
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
 
         validator.validate(vh, context, oauthflow);
-        Assert.assertEquals(3, vh.getEventsSize());
+        Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"scopes\" field is missing or is set to an invalid value."));
     }
 
@@ -60,6 +60,7 @@ public class OAuthFlowValidatorTest {
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
         oauthflow.setAuthorizationUrl("invalidUrl-example");
         ScopesImpl scopes = new ScopesImpl();
+        scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
 
         validator.validate(vh, context, oauthflow);
@@ -75,6 +76,7 @@ public class OAuthFlowValidatorTest {
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
         oauthflow.setTokenUrl("invalidUrl-example");
         ScopesImpl scopes = new ScopesImpl();
+        scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
 
         validator.validate(vh, context, oauthflow);
@@ -90,6 +92,7 @@ public class OAuthFlowValidatorTest {
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
         oauthflow.setRefreshUrl("invalidUrl-example");
         ScopesImpl scopes = new ScopesImpl();
+        scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
 
         validator.validate(vh, context, oauthflow);
@@ -103,7 +106,7 @@ public class OAuthFlowValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
-        oauthflow.setAuthorizationUrl("invalidUrl-example");
+        oauthflow.setAuthorizationUrl("http://valid-url.com");
 
         validator.validate(vh, context, oauthflow);
         Assert.assertEquals(1, vh.getEventsSize());
@@ -118,6 +121,7 @@ public class OAuthFlowValidatorTest {
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
         oauthflow.setRefreshUrl("http://correct-url.com");
         ScopesImpl scopes = new ScopesImpl();
+        scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
 
         validator.validate(vh, context, oauthflow);

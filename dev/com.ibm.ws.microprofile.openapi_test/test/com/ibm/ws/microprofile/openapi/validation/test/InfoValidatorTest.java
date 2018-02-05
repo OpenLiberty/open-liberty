@@ -69,9 +69,9 @@ public class InfoValidatorTest {
         InfoValidator validator = InfoValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
 
-        InfoImpl info = new InfoImpl();
+        InfoImpl info = new InfoImpl();//everything null
         info.setVersion("1.0");
-        System.out.println(info.toString());
+        validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"title\" field is missing or is set to an invalid value."));
     }
