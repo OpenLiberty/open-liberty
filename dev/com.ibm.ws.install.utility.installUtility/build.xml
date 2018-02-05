@@ -14,14 +14,27 @@
 	<!-- Disable trace/ffdc injection as this code is used outside of Liberty -->
 	<property name="no.trace.instrumentation" value="true"/>
 	<property name="publish.tools" value="installUtility=ws-installUtility.jar"/>
-
-    <target name="package" depends="package.package">
-        <mkdir dir="${lib.dir}" />
+	
+	<target name="publishExtra" if="publish.image.dir">
+		<echo message="Copying installUtility jar to the image" />
+		   <copy tofile="${publish.image.dir}/${image.write.bin.tools.dir}/ws-installUtility.jar" overwrite="yes">
+		      <fileset file="${lib.dir}/ws-installUtility.jar" />
+		   </copy>
+	</target>
+		
+	<target name="post-compile">
+		   
+	 	<!-- make sure folder exists or bnd will complain -->
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${lib.dir}" />
         <echo message="ws-installUtility.jar"/>
-	    <bnd eclipse="false"
-	     failok="false"
-	     exceptions="true"
-	     output="${lib.dir}/ws-installUtility.jar"
-	     files="bnd.bnd.gradle" />
-    </target>
+		<bnd eclipse="false"
+		     failok="false"
+		     exceptions="true"
+		     classpath="${classes.dir}"
+		     output="${lib.dir}/ws-installUtility.jar"
+		     files="bnd.bnd.gradle" />
+
+	</target>
+		
 </project>
