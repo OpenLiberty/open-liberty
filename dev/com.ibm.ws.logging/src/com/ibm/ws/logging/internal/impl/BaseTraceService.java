@@ -14,7 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
@@ -33,11 +35,16 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
+import com.ibm.ws.logging.source.LogSource;
+import com.ibm.ws.logging.source.TraceSource;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.logging.utils.FileLogHolder;
 import com.ibm.ws.logging.utils.RecursionCounter;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -100,8 +107,7 @@ import com.ibm.wsspi.logprovider.TrService;
  */
 public class BaseTraceService implements TrService {
 
-//    static final PrintStream rawSystemOut = System.out;
-    public static final PrintStream rawSystemOut = System.out;
+    static final PrintStream rawSystemOut = System.out;
     static final PrintStream rawSystemErr = System.err;
 
     /** Special trace component for system streams: this one "remembers" the original system out */
@@ -175,6 +181,17 @@ public class BaseTraceService implements TrService {
     /** Early msgs issued before MessageRouter is started. */
     protected final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
+
+    private volatile LogSource logSource = null;
+    private volatile TraceSource traceSource = null;
+    private volatile MessageLogHandler messageLogHandler = null;
+    private volatile ConsoleLogHandler consoleLogHandler = null;
+    private volatile BufferManagerImpl logConduit;
+    private volatile BufferManagerImpl traceConduit;
+    private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
+
+    private volatile String serverName = null;
+    private volatile String wlpUserDir = null;
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -277,6 +294,138 @@ public class BaseTraceService implements TrService {
         if (hideMessageids.size() > 0) {
             Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
         }
+
+        //Need a LogProviderConfigImpl to get additional information specifically for JsonTraceService
+        LogProviderConfigImpl jsonTRConfig = (LogProviderConfigImpl) config;
+
+        /*
+         * Need to know the values of wlpServerName and wlpUserDir
+         * They are passed into the handlers for use as part of the jsonified output
+         */
+        serverName = jsonTRConfig.getServerName();
+        wlpUserDir = jsonTRConfig.getWlpUsrDir();
+
+        //Retrieve collectormgrPiplineUtils
+        if (collectorMgrPipelineUtils == null) {
+            collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
+        }
+
+        //Sources
+        logSource = collectorMgrPipelineUtils.getLogSource();
+        traceSource = collectorMgrPipelineUtils.getTraceSource();
+
+        //Conduits
+        logConduit = collectorMgrPipelineUtils.getLogConduit();
+        traceConduit = collectorMgrPipelineUtils.getTraceConduit();
+
+        /*
+         * Retrieve the format setting for message.log and console
+         */
+        String messageFormat = jsonTRConfig.getMessageFormat();
+        String consoleFormat = jsonTRConfig.getConsoleFormat();
+
+        //Retrieve the source lists of both message and console
+        List<String> messageSourceList = new ArrayList<String>(jsonTRConfig.getMessageSource());
+        List<String> consoleSourceList = new ArrayList<String>(jsonTRConfig.getConsoleSource());
+
+        /*
+         * Filter out Message and Trace from messageSourceList
+         * This is so that Handler doesn't 'subscribe' message or trace
+         * and kicks off an undesired BufferManagerImpl instance.
+         */
+        List<String> filterdMessageSourceList = filterSourcelist(messageSourceList);
+        List<String> filterdConsoleSourceList = filterSourcelist(consoleSourceList);
+
+        /*
+         * Create the MessageLogHandler and ConsoleLogHandler if they do not exist yet.
+         * If we do not then they will not be appropriately registered with CollectorManager
+         * when the CollectorManagerConfigurator is registering services. The consequence is that
+         * if the user wishes to switch to 'json' messages or console at a later time (other than
+         * startup) they will not be able to subscribe to accessLog and ffdc sources.
+         */
+        if (messageLogHandler == null) {
+            messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
+            collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
+            messageLogHandler.setWriter(messagesLog);
+
+        }
+        if (consoleLogHandler == null) {
+            consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
+            collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
+            consoleLogHandler.setWriter(systemOut);
+            consoleLogHandler.setSysErrHolder(systemErr);
+        }
+        /*
+         * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
+         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         */
+        if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
+            messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
+            if (messageLogHandler != null) {
+                messageLogHandler.setWriter(messagesLog);
+                ArrayList<String> filteredList = new ArrayList<String>();
+                filteredList.add("message");
+                updateConduitSyncHandlerConnection(filteredList, messageLogHandler);
+            }
+        }
+
+        /*
+         * If consoleFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
+         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         */
+        if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
+            if (consoleLogHandler != null) {
+                consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
+                ArrayList<String> filteredList = new ArrayList<String>();
+                filteredList.add("message");
+                if (traceLog == systemOut) {
+                    filteredList.add("trace");
+                    consoleLogHandler.setIsTraceStdout(true);
+                } else {
+                    consoleLogHandler.setIsTraceStdout(false);
+                }
+                updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
+                consoleLogHandler.setCopySystemStreams(copySystemStreams);
+                consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
+            }
+        }
+
+        /*
+         * If messageFormat has been configured to 'json', create the messageLogHandler as necessary or
+         * call modified as necessary, provide it to the collectorMgrPipleLinUtils as necessary and set the
+         * messageJsonConfigured flag as appropriate and update the connection between the unique message
+         * and trace conduits to the handler.
+         */
+        if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
+            if (messageLogHandler != null) {
+                messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                messageLogHandler.setWriter(messagesLog);
+                //for any 'updates' to the FileLogHolder
+                //Connect the conduits to the handler as necessary
+                messageLogHandler.modified(filterdMessageSourceList);
+                updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
+            }
+
+        }
+
+        /*
+         * If consoleFormat has been configured to 'json', create the consoleLogHandler as necessary or
+         * call modified as necessary, provide it to the collectorMgrPipleLinUtils as necessary and set the
+         * consoleJsonConfigured flag as appropriate and update the connection between the unique message
+         * and trace conduits to the handler.
+         */
+        if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
+            if (consoleLogHandler != null) {
+                consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                //Connect the conduits to the handler as necessary
+                //if json && messages, trace sourcelist
+                consoleLogHandler.modified(filterdConsoleSourceList);
+                updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+            }
+        }
+        messageLogHandler.setFormatter(formatter);
+        consoleLogHandler.setFormatter(formatter);
+        //check if json source list has sourcelist
     }
 
     /**
@@ -441,25 +590,22 @@ public class BaseTraceService implements TrService {
      */
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
-
         // Tee to messages.log (always)
-        String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
-        messagesLog.writeRecord(message);
 
-        invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
+        RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
 
-        if (detailLog == systemOut) {
-            // preserve System.out vs. System.err
-            publishTraceLogRecord(holder, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
-        } else {
-            if (copySystemStreams) {
-                // Tee to console.log if we are copying System.out and System.err to system streams.
-                writeFilteredStreamOutput(holder, logRecord);
-            }
-
-            if (TraceComponent.isAnyTracingEnabled()) {
-                publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
-            }
+        /*
+         * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+         * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+         * However, LogstashCollector and BluemixLogCollector will receive all messages
+         */
+        invokeMessageRouters(routedMessage);
+        if (logSource != null) {
+            logSource.publish(routedMessage);
+        }
+        //send events to handlers
+        if (TraceComponent.isAnyTracingEnabled()) {
+            publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         }
     }
 
@@ -521,7 +667,6 @@ public class BaseTraceService implements TrService {
 
         boolean retMe = true;
         LogRecord logRecord = routedTrace.getLogRecord();
-
         /*
          * Avoid any feedback traces that are emitted after this point.
          * The first time the counter increments is the first pass-through.
@@ -549,7 +694,6 @@ public class BaseTraceService implements TrService {
         } finally {
             counterForTraceRouter.decrementCount();
         }
-
         return retMe;
     }
 
@@ -569,18 +713,20 @@ public class BaseTraceService implements TrService {
         Level level = logRecord.getLevel();
         int levelValue = level.intValue();
         TraceWriter detailLog = traceLog;
+        //check if tracefilename is stdout
 
         if (levelValue >= Level.INFO.intValue()) {
 
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
-            String messageLogFormat = formatter.messageLogFormat(logRecord, formattedVerboseMsg);
+
+            RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
 
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
             // This has to be checked in this method: direct invocation of system.out
             // and system.err are not subject to message routing.
-            boolean logNormally = invokeMessageRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, messageLogFormat, logRecord));
+            boolean logNormally = invokeMessageRouters(routedMessage);
             if (!logNormally)
                 return;
 
@@ -590,30 +736,15 @@ public class BaseTraceService implements TrService {
                 return;
             }
 
-            // messages.log  //send directly.
-            messagesLog.writeRecord(messageLogFormat);
+            /*
+             * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+             * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+             * However, LogstashCollector and BluemixLogCollector will receive all messages
+             */
 
-            // console.log
-            if (detailLog == systemOut) {
-                // Send all messages directly to the correct system streams, and then be DONE
-                if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-                    // WsLevel.ERROR and Level.SEVERE have the same int value, and are routed to System.err
-                    publishTraceLogRecord(systemErr, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
-                } else {
-                    // messages othwerwise above the filter are routed to System.out
-                    publishTraceLogRecord(systemOut, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
-                }
-                return; // DONE!!
-            } else if (levelValue >= consoleLogLevel.intValue()) {
-                // Only route messages permitted by consoleLogLevel
-                String consoleMsg = formatter.consoleLogFormat(logRecord, formattedMsg);
-                if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
-                    // WsLevel.ERROR and Level.SEVERE have the same int value, and are routed to System.err
-                    writeStreamOutput(systemErr, consoleMsg, false);
-                } else {
-                    // messages othwerwise above the filter are routed to system out
-                    writeStreamOutput(systemOut, consoleMsg, false);
-                }
+            // logSource only receives "normal" messages and messages that are not hidden.
+            if (logSource != null) {
+                logSource.publish(routedMessage);
             }
         }
 
@@ -638,15 +769,42 @@ public class BaseTraceService implements TrService {
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
+        //check if tracefilename is stdout
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
         }
-        String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
-        invokeTraceRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, traceDetail, logRecord));
+        RoutedMessage routedTrace = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
 
-        if (detailLog == systemOut || detailLog == systemErr) {
-            writeStreamOutput((SystemLogHolder) detailLog, traceDetail, false);
-        } else {
+        invokeTraceRouters(routedTrace);
+
+        /*
+         * Avoid any feedback traces that are emitted after this point.
+         * The first time the counter increments is the first pass-through.
+         * The second time the counter increments is the second pass-through due
+         * to trace emitted. We do not want any more pass-throughs.
+         */
+        try {
+            if (!(counterForTraceSource.incrementCount() > 2)) {
+                if (logRecord != null) {
+                    Level level = logRecord.getLevel();
+                    int levelValue = level.intValue();
+                    if (levelValue < Level.INFO.intValue()) {
+                        String levelName = level.getName();
+                        if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                            if (traceSource != null) {
+                                traceSource.publish(routedTrace, id);
+                            }
+                        }
+                    }
+                }
+            }
+        } finally {
+            counterForTraceSource.decrementCount();
+        }
+
+        // write to trace.log
+        if (detailLog != systemOut) {
+            String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
             detailLog.writeRecord(traceDetail);
         }
     }
@@ -960,6 +1118,36 @@ public class BaseTraceService implements TrService {
             stackTraceFlags.needsToOutputInternalPackageMarker = false;
         }
         return txt;
+    }
+
+    /*
+     * Helper method to clean up the original source list by removing messages and
+     * trace from it. Otherwise, our json handlers will subscribe these and cause
+     * collectorManager to create 'new' conduits/Buffermanagers.
+     */
+    private List<String> filterSourcelist(List<String> sourceList) {
+        List<String> filteredList = new ArrayList<String>(sourceList);
+        filteredList.remove(CollectorConstants.TRACE_CONFIG_VAL);
+        filteredList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
+        return filteredList;
+    }
+
+    /*
+     * Based on config (sourceList), need to connect the synchronized handler to configured source/conduit..
+     * Or disconnect it.
+     */
+    private void updateConduitSyncHandlerConnection(List<String> sourceList, SynchronousHandler handler) {
+        if (sourceList.contains("message")) {
+            logConduit.addSyncHandler(handler);
+        } else {
+            logConduit.removeSyncHandler(handler);
+        }
+
+        if (sourceList.contains("trace")) {
+            traceConduit.addSyncHandler(handler);
+        } else {
+            traceConduit.removeSyncHandler(handler);
+        }
     }
 
 }
