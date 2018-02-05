@@ -41,9 +41,7 @@ public class ShrinkHelper {
      * autoFVT/publish/... and wlp/usr/...
      */
     public static void exportToServer(LibertyServer server, String path, Archive<?> a) throws Exception {
-        String serverDir = "publish/servers/" + server.getServerName();
-        exportArtifact(a, serverDir + '/' + path);
-        server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
+        exportToServer(server, path, a, false);
     }
 
     /**
@@ -51,9 +49,37 @@ public class ShrinkHelper {
      * autoFVT/publish/... and wlp/usr/...
      */
     public static void exportToClient(LibertyClient client, String path, Archive<?> a) throws Exception {
+        exportToClient(client, path, a, false);
+    }
+
+    /**
+     * Export an artifact to servers/$server.getName()/$path/$a.getName() under two directories:
+     * autoFVT/publish/... and wlp/usr/...
+     */
+    public static void exportToServer(LibertyServer server, String path, Archive<?> a, boolean overWrite) throws Exception {
+        String serverDir = "publish/servers/" + server.getServerName();
+        File outputFile = new File(serverDir + '/' + path, a.getName());
+        if (! outputFile.exists() || overWrite) {
+            exportArtifact(a, serverDir + '/' + path);
+            server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
+        } else {
+            Log.info(ShrinkHelper.class, "exportToServer", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Export an artifact to clients/$client.getName()/$path/$a.getName() under two directories:
+     * autoFVT/publish/... and wlp/usr/...
+     */
+    public static void exportToClient(LibertyClient client, String path, Archive<?> a, boolean overWrite) throws Exception {
         String clientDir = "publish/clients/" + client.getClientName();
-        exportArtifact(a, clientDir + '/' + path);
-        client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
+        File outputFile = new File(clientDir + '/' + path, a.getName());
+        if (! outputFile.exists() || overWrite) {
+            exportArtifact(a, clientDir + '/' + path);
+            client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
+        } else {
+            Log.info(ShrinkHelper.class, "exportToClient", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
+        }
     }
 
     /**
