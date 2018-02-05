@@ -826,6 +826,7 @@ public class SchemaImpl implements Schema {
         sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n");
         sb.append("    xml: ").append(toIndentedString(xml)).append("\n");
         sb.append("    discriminator: ").append(toIndentedString(discriminator)).append("\n");
+        sb.append("    items: ").append(toIndentedString(items)).append("\n");
         sb.append("}");
         return sb.toString();
     }
