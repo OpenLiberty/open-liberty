@@ -45,6 +45,7 @@ public class SchemaValidator extends TypeValidator<Schema> {
 
             if (reference != null && !reference.isEmpty()) {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
             }
 
             if (t.getType() != null && t.getType().toString().equals("array") && t.getItems() == null) {
