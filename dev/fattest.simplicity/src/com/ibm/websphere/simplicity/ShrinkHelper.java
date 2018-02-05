@@ -60,7 +60,7 @@ public class ShrinkHelper {
         String serverDir = "publish/servers/" + server.getServerName();
         File outputFile = new File(serverDir + '/' + path, a.getName());
         if (! outputFile.exists() || overWrite) {
-            exportArtifact(a, serverDir + '/' + path);
+            exportArtifact(a, serverDir + '/' + path, true, overWrite);
             server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
         } else {
             Log.info(ShrinkHelper.class, "exportToServer", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
@@ -75,7 +75,7 @@ public class ShrinkHelper {
         String clientDir = "publish/clients/" + client.getClientName();
         File outputFile = new File(clientDir + '/' + path, a.getName());
         if (! outputFile.exists() || overWrite) {
-            exportArtifact(a, clientDir + '/' + path);
+            exportArtifact(a, clientDir + '/' + path, true, overWrite);
             client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
         } else {
             Log.info(ShrinkHelper.class, "exportToClient", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
