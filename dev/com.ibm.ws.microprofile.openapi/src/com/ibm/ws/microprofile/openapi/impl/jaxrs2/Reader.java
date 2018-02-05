@@ -85,6 +85,7 @@ import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.callbacks.CallbackImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponsesImpl;
@@ -638,6 +639,9 @@ public class Reader {
                                !requestBody.getContent().isEmpty()) {
                         if (requestBodyParameter.getSchema() != null) {
                             for (MediaType mediaType : requestBody.getContent().values()) {
+                                if (mediaType.getSchema() == null) {
+                                    mediaType.setSchema(new SchemaImpl());
+                                }
                                 if (mediaType.getSchema().getType() == null) {
                                     mediaType.getSchema().setType(requestBodyParameter.getSchema().getType());
                                 }
@@ -927,15 +931,22 @@ public class Reader {
             return callbackMap;
         }
         Callback callbackObject = new CallbackImpl();
-        PathItem pathItemObject = new PathItemImpl();
-        for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
-            Operation callbackNewOperation = new OperationImpl();
-            setOperationObjectFromApiOperationAnnotation(callbackNewOperation, callbackOperation);
-            setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
+
+        if (StringUtils.isNotBlank(apiCallback.ref())) {
+            callbackObject.setRef(apiCallback.ref());
         }
 
-        callbackObject.addPathItem(apiCallback.callbackUrlExpression(), pathItemObject);
-        callbackMap.put(apiCallback.name(), callbackObject);
+        if (apiCallback.operations().length > 0) {
+            PathItem pathItemObject = new PathItemImpl();
+            for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
+                Operation callbackNewOperation = new OperationImpl();
+                setOperationObjectFromApiOperationAnnotation(callbackNewOperation, callbackOperation);
+                setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
+            }
+            callbackObject.addPathItem(apiCallback.callbackUrlExpression(), pathItemObject);
+        }
+
+        callbackMap.put(AnnotationsUtils.getNameOfReferenceableItem(apiCallback), callbackObject);
 
         return callbackMap;
     }

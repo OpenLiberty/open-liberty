@@ -40,6 +40,10 @@ public class OperationParser {
         }
         RequestBody requestBodyObject = new RequestBodyImpl();
         boolean isEmpty = true;
+        if (StringUtils.isNotBlank(requestBody.ref())) {
+            requestBodyObject.setRef(requestBody.ref());
+            isEmpty = false;
+        }
         if (StringUtils.isNotBlank(requestBody.description())) {
             requestBodyObject.setDescription(requestBody.description());
             isEmpty = false;
@@ -76,7 +80,7 @@ public class OperationParser {
 
             ExampleObject[] examples = annotationContent.examples();
             for (ExampleObject example : examples) {
-                AnnotationsUtils.getExample(example).ifPresent(exampleObject -> mediaType.addExample(example.name(), exampleObject));
+                AnnotationsUtils.getExample(example).ifPresent(exampleObject -> mediaType.addExample(AnnotationsUtils.getNameOfReferenceableItem(example), exampleObject));
             }
             Encoding[] encodings = annotationContent.encoding();
             for (Encoding encoding : encodings) {
