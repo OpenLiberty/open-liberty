@@ -49,7 +49,7 @@ public class CollectorJsonUtils {
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
 
-        if (!collectorVersion.equals("1.0")) {
+        if (!collectorVersion.startsWith(("1.0"))) {
 
             return CollectorJsonUtils1_1.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags, maxFieldLength);
 
