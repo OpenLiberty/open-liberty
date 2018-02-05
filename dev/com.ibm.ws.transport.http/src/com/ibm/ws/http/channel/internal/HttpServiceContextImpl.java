@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1920,26 +1920,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
                 framesToWrite.addAll(bodyFrames);
-//                WsByteBuffer buffer = this.allocateBuffer(frameToWrite.length);
-//                buffer.put(frameToWrite);
-//                buffer.flip();
-//
-//                for (WsByteBuffer bb : wsbb) {
-//                    if (bb != null) {
-//                        bb.release();
-//                    }
-//                }
-//                for (int i = 0; i < wsbb.length; i++) {
-//                    wsbb[i] = null;
-//                }
-//
-//                wsbb[0] = buffer;
-//
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "formatBody: Adding " + index + " app buffers to write queue");
-//                }
-//                // save their non-null data buffers
-//                addToPendingByteBuffer(wsbb, index);
 
                 // save the amount of data written inside actual body
                 addBytesWritten(length);
@@ -2399,14 +2379,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "sendFullOutgoing : preparing the final write");
                 }
-
-                ArrayList<Frame> frameToWrite = h2Link.prepareBody(null, this.isFinalWrite);
-
+                if (msg.getTrailers() != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "sendFullOutgoing : creating trailers");
+                    }
+                    framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(this.marshallOutgoingH2Trailers(h2Link.getWriteTable())), true));
+                } else {
+                    framesToWrite.addAll(h2Link.prepareBody(null, this.isFinalWrite));
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sendFullOutgoing : final write prepared : " + frameToWrite);
+                    Tr.debug(tc, "sendFullOutgoing : final write prepared : " + framesToWrite);
                 }
 
-                framesToWrite.addAll(frameToWrite);
             } else if (msg.isChunkedEncodingSet()) {
                 createEndOfBodyChunk();
             }
@@ -2447,31 +2431,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (this instanceof HttpInboundServiceContextImpl) {
                 hisc = (HttpInboundServiceContextImpl) this;
             }
-            if (hisc != null && hisc.getLink() instanceof H2HttpInboundLinkWrap) {
-//                if (wsbb == null) {
-//                    H2HttpInboundLinkWrap h2Link = (H2HttpInboundLinkWrap) hisc.getLink();
-//
-//                    byte[] frameToWrite = h2Link.prepareBody(null, this.isFinalWrite);
-//                    WsByteBuffer buffer = this.allocateBuffer(frameToWrite.length);
-//                    buffer.put(frameToWrite);
-//                    buffer.flip();
-//                    wsbb = new WsByteBuffer[1];
-//                    wsbb[0] = buffer;
-//
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "formatBody: Adding " + 1 + " app buffers to write queue");
-//                    }
-//                    addToPendingByteBuffer(wsbb, 1);
-//
-//                    // save the amount of data written inside actual body
-////                    addBytesWritten(length);
-//
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "formatBody: total bytes now : " + getNumBytesWritten());
-//                    }
-//                    System.out.println("XXX sendFullOutgoing : new chunk");
-//                }
-            } else {
+            if (hisc != null && !(hisc.getLink() instanceof H2HttpInboundLinkWrap)) {
                 createEndOfBodyChunk();
             }
         }
@@ -2603,6 +2563,34 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 } else {
                     buffers = trailers.marshallHeaders(null);
                 }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Trailers marshalled into " + buffers.length + " buffers.");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Warning: no actual trailers to marshall.");
+                }
+            }
+        }
+        return buffers;
+    }
+
+    /**
+     * Convert the outgoing trailers, if any exist, to one or more <code>WsByteBuffer</code> objects.
+     *
+     * @return the trailers as an array of <code>WsByteBuffer</code> objects. NULL
+     *         will be returned if no trailers exist and/or
+     *         need to be marshalled.
+     */
+    private WsByteBuffer[] marshallOutgoingH2Trailers(H2HeaderTable table) {
+
+        HttpTrailersImpl trailers = getMessageBeingSent().getTrailersImpl();
+        WsByteBuffer[] buffers = null;
+        if (null != trailers) {
+            trailers.computeRemainingTrailers();
+            if (0 < trailers.getNumberOfHeaders()) {
+                // we do have headers to marshall
+                buffers = trailers.marshallHeaders(null, table);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Trailers marshalled into " + buffers.length + " buffers.");
                 }
