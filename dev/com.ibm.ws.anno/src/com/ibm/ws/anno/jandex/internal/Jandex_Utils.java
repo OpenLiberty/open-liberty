@@ -31,6 +31,7 @@ public class Jandex_Utils {
     //
 
     public static Index readIndex(String jarPath) {
+        // TODO:  should this be a warning/error message?
         try {
             return basicReadIndex(jarPath); // throws Exception
         } catch ( Exception e ) {
@@ -54,6 +55,7 @@ public class Jandex_Utils {
     }
 
     public static void writeIndex(String jarPath, Index index) {
+        // TODO:  should this be a warning/error message?
         try {
             basicWriteIndex(jarPath, index); // throws Exception
         } catch ( Exception e ) {
@@ -82,6 +84,8 @@ public class Jandex_Utils {
     //
 
     public static Index createIndex(String path) {
+     // TODO:  should these warning/error messages?
+        
         File pathFile = new File(path);
         if ( !pathFile.exists() ) {
             throw new IllegalArgumentException("Target [ " + path + " ] does not exist");

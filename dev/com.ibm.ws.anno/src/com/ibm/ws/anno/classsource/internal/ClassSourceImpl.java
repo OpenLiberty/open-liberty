@@ -444,11 +444,14 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         int initialClasses = i_seedClassNames.size();
-        System.out.println(
-            "Processing [ " + getCanonicalName() + " ]" +
-            " Initial classes [ " + Integer.valueOf(initialClasses) + " ]");
+        
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] Initial classes [ {2} ]", 
+                     new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) } ));
+        }
 
         String processCase;
+        
         if ( !processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
             processFromScratch(streamer, i_seedClassNames, scanPolicy);
             processCase = "from scratch";
@@ -457,10 +460,11 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         int finalClasses = i_seedClassNames.size();
-        System.out.println("Processing [ " + getCanonicalName() + " ] " + processCase + ";" +
-                           " Final classes [ " + Integer.valueOf(finalClasses) + " ]");
 
         if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]", 
+                    new Object[] {  getHashText(), getCanonicalName(), processCase, Integer.valueOf(finalClasses) } ));            
+            
             Object[] logParms = new Object[] { getHashText(), null, null };
 
             logParms[1] = Integer.valueOf(finalClasses - initialClasses);
@@ -530,13 +534,29 @@ public abstract class ClassSourceImpl implements ClassSource {
         ClassSource_Streamer streamer,
         Set<String> i_seedClassNames,
         ScanPolicy scanPolicy) {
-
+        
         if ( streamer == null ) {
             return false;
         }
+        
+        boolean useJandex = getUseJandex();
 
         Index jandexIndex = getJandexIndex();
-        if ( jandexIndex == null ) {
+        
+        if ( useJandex ) {
+            if ( jandexIndex == null ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is enabled but no index was found", getHashText()));
+                return false;
+            } else {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is enabled; using index which was found", getHashText()));
+                // Fall into the processing case
+            }
+        } else {
+            if ( jandexIndex == null ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is disabled and no index was found", getHashText()));
+            } else {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is disabled; ignoring index which was found", getHashText()));
+            }
             return false;
         }
 
@@ -549,7 +569,7 @@ public abstract class ClassSourceImpl implements ClassSource {
             markResult(ClassSource_ScanCounts.ResultField.ENTRY);
             markResult(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
             markResult(ClassSource_ScanCounts.ResultField.CLASS);
-
+            
             // Processing notes:
             //
             // Make sure to record the class before attempting processing.
@@ -582,13 +602,9 @@ public abstract class ClassSourceImpl implements ClassSource {
                         didProcess = streamer.process(useClassSourceName, nextJandexClassInfo, scanPolicy);
                     } catch ( ClassSource_Exception e ) {
                         didProcess = false;
-                        // TODO: NEW_MESSAGE: Need a new message here.
-                        // String eMsg = "[ " + getHashText() + " ]" +
-                        //               " Failed to process entry [ " + nextEntryName + " ]" +
-                        //               " under root [ " + getJarPath() + " ]" +
-                        //               " for class [ " + nextClassName + " ]";
-                        // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                        Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+
+                        // CWWKC0065W: An exception occurred while processing class [ {0} ].  The identifier for the class source is [ {1} ]. The exception was {2}.
+                        Tr.warning(tc, "JANDEX_SCAN_EXCEPTION", i_nextClassName, getHashText(), e);
                     }
                 }
 
@@ -600,6 +616,11 @@ public abstract class ClassSourceImpl implements ClassSource {
             }
         }
 
+        return true;
+    }
+
+    private boolean getUseJandex() {
+        // TODO Auto-generated method stub
         return true;
     }
 }
