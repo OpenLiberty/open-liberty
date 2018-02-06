@@ -356,6 +356,7 @@ public class CollectorJsonUtils1_1 {
         if (throwable != null) {
             msgBldr.append(LINE_SEPARATOR).append(throwable);
         }
+
         String formattedValue = CollectorJsonHelpers.formatMessage(msgBldr.toString(), maxFieldLength);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.MESSAGE, formattedValue, false, true, false, isFirstField, kvp.isNumber());
 
