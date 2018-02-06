@@ -128,6 +128,12 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
     public boolean isEmpty() {
         return false;
     }
+    
+    @Override
+    public T[] toArray() {
+        Object[] messagesList = this.toArray(new Object[elements.size()]);
+        return (T[]) messagesList;
+    }
 
     // NOT IMPLEMENTED
 
@@ -135,14 +141,9 @@ public class SimpleRotatingSoftQueue<T> implements Queue<T> {
     public boolean contains(Object o) {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object[] toArray() {
         throw new UnsupportedOperationException();
     }
 
