@@ -10,7 +10,6 @@
  *******************************************************************************/
 defaultTasks 'clean', 'build'
 
-plugins.apply 'java'
 plugins.apply 'jacoco'
 
 /* Project version is the Bundle-Version attribute if a bundle gets released, otherwise
@@ -94,36 +93,26 @@ task publishSchemaResources(type: Copy) {
 
 def featureFiles = fileTree(dir: project.projectDir, include: '*.feature')
 def featureToAttributes = [:]
-featureFiles.visit {
-  if (it.isDirectory()) { return }
-
-  def attributes = [:]
-  String text = it.getFile().getText()
-  String kind = null
-  if (text.contains("kind=ga")) {
-    kind = "ga"
-  } else if (text.contains("kind=beta")) {
-    kind = "beta"
-  } else if (text.contains("kind=noship")) {
-    kind = "noship"
-  }
-  String name = null
-  int index = text.indexOf("symbolicName=")
-  if (index != -1) {
-    int endIndex = text.indexOf("\n", index)
-    if (endIndex == -1) {
-      endIndex = text.length()
-    }
-
-    name = text.substring(index + "symbolicName=".length(), endIndex)
+def featuresToPublish = new HashSet()
+featureFiles.each { featureFile ->
+  def props = new Properties()
+  featureFile.withInputStream { props.load(it) }
+  String name = props.get('symbolicName')
+  if (name != null) {
     name = name.replaceAll("\\s+", "")
   } else {
-    name = it.name.substring(0, it.name.size()-8)
+    name = featureFile.name.substring(0, featureFile.name.size() - 8)
   }
-
+  String kind = props.get('kind')
+  if ('ga'.equals(kind) || 'beta'.equals(kind)) {
+    featuresToPublish.add(name)
+  } else if (!'noship'.equals(kind)) {
+    kind = null
+  }
+  def attributes = [:]
   attributes["name"] = name
   attributes["kind"] = kind
-  featureToAttributes[it] = attributes
+  featureToAttributes[featureFile] = attributes
 }
 
 task publishFeatureResources {
@@ -468,14 +457,12 @@ test {
 publishing {
   publications {
     // Publish ESA for each feature that contains kind=ga or kind=beta
-    featureToAttributes.each { file, attr ->
-      if ("ga".equals(attr["kind"]) || "beta".equals(attr["kind"])) {
-        maven(MavenPublication) {
-          artifactId attr["name"]
-          version project.version
-          artifact source: new File(project.buildDir, 'repo/' + attr["name"] + ".esa"), extension: 'esa'
-          artifact source: new File(project.buildDir, 'repo/' + attr["name"] + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
-        }
+    featuresToPublish.each { feature ->
+      maven(MavenPublication) {
+        artifactId feature
+        version project.version
+        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa"), extension: 'esa'
+        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
       }
     }
   }

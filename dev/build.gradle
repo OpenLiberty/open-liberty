@@ -20,9 +20,14 @@ ext {
 }
 
 subprojects {
+  plugins.apply 'java'
   def bndProject = bndWorkspace.getProject(name)
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
+  } else {
+    task publish { }
+    task release { }
+    task releaseNeeded { dependsOn release }
   }
 
   /* For Java 9 builds, set the --release compiler flag to keep bootclasspath in sync */
@@ -38,12 +43,14 @@ subprojects {
     }
   }
 
-  apply from: cnf.file('gradle/scripts/repos.gradle')
-  apply from: cnf.file('gradle/scripts/publish.gradle')
-  apply from: cnf.file('gradle/scripts/tasks.gradle')
+  if (bndProject != null) {
+    apply from: cnf.file('gradle/scripts/repos.gradle')
+    apply from: cnf.file('gradle/scripts/publish.gradle')
+    apply from: cnf.file('gradle/scripts/tasks.gradle')
 
-  if (bndis('fat.project')) {
-    apply from: cnf.file('gradle/scripts/fat.gradle')
+    if (bndis('fat.project')) {
+      apply from: cnf.file('gradle/scripts/fat.gradle')
+    }
   }
 
   // Make the release task depend on assemble so that invoking 'release' or 'releaseNeeded'

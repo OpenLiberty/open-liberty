@@ -316,3 +316,115 @@ publishing {
     }
   }
 }
+
+task printProjectDependencies() {
+    doLast {
+        def kernelProps = new Properties()
+        def kernelFile = rootProject.file('com.ibm.ws.kernel.boot/publish/platform/kernel-1.0.mf')
+        def kernelText = kernelFile.getText()
+        def startIndex = kernelText.indexOf('Subsystem-Content:')
+        startIndex = kernelText.indexOf(':', startIndex)
+        def endIndex = kernelText.indexOf('\n', ++startIndex)
+        while (endIndex > 0) {
+            if (++endIndex == kernelText.length())
+                break
+            if (kernelText.charAt(endIndex) != ' ')
+                break
+            endIndex = kernelText.indexOf('\n', endIndex)
+        }
+        def content = kernelText.substring(startIndex, endIndex)
+        content.replaceAll('"[^"]*"', '#').split(',').each { elem ->
+            println elem.trim().replaceAll(';.*', '')
+        }
+
+        Map dependencyMap = new LinkedHashMap()
+        rootProject.fileTree(dir: '.', include: '*/bnd.bnd').each { bndFile ->
+            def bndProps = new Properties()
+            bndFile.withInputStream { bndProps.load(it) }
+            boolean isFeature = !fileTree(dir: bndFile.getParentFile(), include: '*.feature').isEmpty()
+            if (!isFeature && 'false'.equals(bndProps.get('test.project', bndProps.get('fat.project', 'false')))) {
+                dependencyMap.put(bndFile.getParentFile().getName(), populateProjectDeps(bndFile, bndProps));
+            }
+        }
+        println 'Size before root project removal: ' + dependencyMap.size()
+
+        List dependencyLevels = new ArrayList()
+        Set seenProjects = new TreeSet()
+        dependencyMap.each { item, list ->
+            boolean isRoot = true
+            list.each { bnd ->
+                if (!bnd.contains(':')) {
+                    isRoot = false
+                }
+            }
+            if (isRoot) {
+                seenProjects.add(item)
+            }
+        }
+        List rootProjects = new ArrayList()
+        println 'Number of root projects found: ' + seenProjects.size()
+        seenProjects.each {
+            println it
+            dependencyMap.remove(it)
+            rootProjects.add(it)
+        }
+        dependencyLevels.add(0, rootProjects)
+        println 'Size after root project removal: ' + dependencyMap.size()
+        rootProjects.each { pivot ->
+            println pivot
+        }
+        int level = 0
+        while (dependencyMap.size() > 0) {
+            level++
+            println 'Buildable projects at level: ' + level
+            dependencyLevels.add(level, nextPivot(dependencyMap, seenProjects))
+            println 'Seen projects size: ' + seenProjects.size()
+            println 'Size after buildable project removal: ' + dependencyMap.size()
+            dependencyLevels.get(level).each { pivot ->
+                println pivot
+            }
+        }
+    }
+}
+
+List nextPivot(Map dependencyMap, Set seenProjects) {
+    List buildableProjects = new ArrayList()
+    dependencyMap.keySet().each { item ->
+        List list = dependencyMap.get(item)
+        boolean isBuildable = true
+        list.each { bnd ->
+            if (!bnd.contains(':') && !seenProjects.contains(bnd) && dependencyMap.containsKey(bnd)) {
+                isBuildable = false
+            }
+        }
+        if (isBuildable) {
+            seenProjects.add(item)
+            buildableProjects.add(item)
+        }
+    }
+    println 'Number of buildable projects found: ' + buildableProjects.size()
+    buildableProjects.each { item ->
+        dependencyMap.remove(item)
+    }
+    return buildableProjects
+}
+
+List populateProjectDeps(File bndFile, Properties bndProps) {
+    List dependents = new LinkedList()
+    String path = bndProps.get('-buildpath')
+    if (path != null)
+        return populateProjectDeps(bndFile, path, dependents)
+    path = bndProps.get('-dependson')
+    if (path != null)
+        return populateProjectDeps(bndFile, path, dependents)
+    return dependents
+}
+
+List populateProjectDeps(File bndFile, String path, List dependents) {
+    path = path.replaceAll('"[^"]*"', '#')
+    path.split(',').each { pathElem ->
+        if (pathElem.indexOf('version=file') == -1)
+            dependents.add(pathElem.replaceAll(';.*', '').trim())
+    }
+    return dependents
+}

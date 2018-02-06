@@ -301,6 +301,8 @@ projectNames.each { projectName ->
     project?.getDependson()*.getName().each {
       include it
     }
+  } else if (new File(rootDir, projectName + '/build.gradle').exists()) {
+    include projectName
   }
 }
 
