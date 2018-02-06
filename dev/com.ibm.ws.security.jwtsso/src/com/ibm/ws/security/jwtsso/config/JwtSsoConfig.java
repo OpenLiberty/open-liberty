@@ -10,14 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.config;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.List;
-
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 
 public interface JwtSsoConfig {
 
-  //todo: implement me
+	boolean isHttpOnlyCookies();
+
+	boolean isSsoUseDomainFromURL();
+
+	boolean isSsoRequiresSSL();
+
+	List<String> getSsoDomainNames();
+
+	boolean isSetCookiePathToWebAppContextPath();
+
+	boolean isIncludeLtpaCookie();
+
+	boolean isFallbackToLtpa();
+
+	String getGroupBaseDnOmitted();
+
+	String getJwtBuilderRef();
+
+	String getJwtConsumerRef();
 
 }
