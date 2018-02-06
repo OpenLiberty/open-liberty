@@ -33,6 +33,12 @@ public class TestValidationHelper implements ValidationHelper {
         return false;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void addLinkOperationId(String operationId, String location) {
+
+    }
+
     public void resetResults() {
         result = new OASValidationResult();
     }

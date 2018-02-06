@@ -28,11 +28,6 @@ public interface ValidationHelper {
     public boolean addOperationId(String operationId);
 
     /**
-     * Check if operationId already exists in a set of IDs. Returns true if the ID is already in the set.
-     */
-    public boolean checkOperationId(String operationId);
-
-    /**
      * Adds an operationId and location of Link object specifying it to the map of IDs and locations.
      */
     public void addLinkOperationId(String operationId, String location);
