@@ -308,12 +308,17 @@ JOB_GROUP_NAME_NOT_VALID=CWWKY044W: The {0} operationGroup name was not resolved
 JOB_GROUP_NAME_NOT_VALID.explanation=Attempts to access the job using group access might fail, if attempts to use an invalid group name occur.
 JOB_GROUP_NAME_NOT_VALID.useraction=Correct the group name in the server configuration file.
 
-#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} is not configured at the latest level. The current table version is {1}.
-BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} is not configured at the latest level. The current table version is {1}.
-BATCH_TABLES_NOT_CURRENT.explanation=The Java batch runtime tables are not configured at the latest level. 
-BATCH_TABLES_NOT_CURRENT.useraction=Check the createTables setting for the datasource. If set to true then determine why the table auto-create failed to occur. If false, then the administrator (or DBA) should create the required tables as noted in the documentation at the following link: [link]
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT.explanation=The specified Java batch runtime table was not detected to have been created at the latest version.
+BATCH_TABLES_NOT_CURRENT.useraction=Check the createTables setting for the database store. If the createTables setting is set to true then determine why the table auto-create failed to occur. If set to false, then the administrator (or DBA) should create the required table.
 
-#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables are at the latest table version level.
-BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables are at the latest table version level.
-BATCH_TABLES_CURRENT.explanation=The Java batch runtime tables are configured at the latest table version level. 
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT.explanation=The configured Java batch tables were detected to have been created at the latest table version, either via auto-create or through an administrator manually creating.
 BATCH_TABLES_CURRENT.useraction=No action required.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security feature is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE.explanation=Security is not enabled for this server, so the batch group security associations will not be persisted for the referenced job instance. This means batchGroupAdmin and batchGroupMonitor roles can not be used to gain authorization to operate on this job, now or at any point in the future. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= If Java batch Group security enforcement is desired, enable Security for this server.
