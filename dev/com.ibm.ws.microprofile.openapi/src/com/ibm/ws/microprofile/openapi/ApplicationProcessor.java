@@ -48,7 +48,6 @@ import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
-import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -97,8 +96,6 @@ public class ApplicationProcessor {
 
     private OpenAPI processWebModule(Container appContainer, WebModuleInfo moduleInfo) {
         ClassLoader appClassloader = moduleInfo.getClassLoader();
-        String contextRoot = moduleInfo.getContextRoot();
-
         boolean isOASApp = false;
 
         //read and process the MicroProfile config
@@ -233,6 +230,7 @@ public class ApplicationProcessor {
                                 if (openAPI != null) {
                                     currentApp = appInfo;
                                     this.document = openAPI;
+                                    serverInfo.setApplicationPath(wmi.getContextRoot());
                                     break;
                                 }
                             }
@@ -255,6 +253,7 @@ public class ApplicationProcessor {
             OpenAPI openAPI = processWebModule(appContainer, moduleInfo);
             if (openAPI != null) {
                 currentApp = appInfo;
+                serverInfo.setApplicationPath(moduleInfo.getContextRoot());
                 this.document = openAPI;
             }
         }
