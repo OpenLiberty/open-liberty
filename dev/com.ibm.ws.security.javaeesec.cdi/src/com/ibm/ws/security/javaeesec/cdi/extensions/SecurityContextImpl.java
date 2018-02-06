@@ -42,7 +42,6 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
  */
 public class SecurityContextImpl implements SecurityContext {
     private static final TraceComponent tc = Tr.register(SecurityContextImpl.class);
-    private static final String[] STANDARD_METHODS = { "GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE" };
 
     private final SubjectManager subjectManager = null;
 
