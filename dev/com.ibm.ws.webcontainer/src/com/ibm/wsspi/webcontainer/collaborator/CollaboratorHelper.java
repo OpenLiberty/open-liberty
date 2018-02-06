@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -445,6 +445,19 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
                 }
             }
 
+            // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available.
+            //HttpServletRequest javadocs describe it as:
+            //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
+            collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
+            
+            if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
+                securityEnforced = dispatchContext.isEnforceSecurity() // PK70824
+                                  || (httpRequest!=null && httpRequest.getDispatcherType().equals(DispatcherType.ERROR));
+                Object securityObject = securityCollaborator.preInvoke(httpRequest, httpResponse, servletName, securityEnforced);
+                collabMetaData.setSecurityObject(securityObject);
+                httpRequest.getSession(false); // Get the session to force the session management to set the correct user. 
+            }
+
             if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.CONNECTION)) {
                 this.connectionCollaborator.preInvoke(_connectionHandleList, isSTM);
                 collabMetaData.setConnectionHandleList(_connectionHandleList);
@@ -460,6 +473,7 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
                 ((IExtendedRequest) wasreq).setRunningCollaborators(false); // PK01801
             }
             // PK01801 END
+            collabMetaData.setPostInvokeNecessary(true);
 
             // If a transaction has been started back in the dispatch chain
             // Save a reference to it for checking when the dispatch is
@@ -469,23 +483,6 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
             if (sessionInvoke) {
                 dispatchContext.sessionPreInvoke();
             }
-            
-            //HttpServletRequest javadocs describe it as:
-            //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
-            collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
-
-            // Invoke security collaborator here because JSR 375 requires that all CDI scopes are available.
-            if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
-                securityEnforced = dispatchContext.isEnforceSecurity() // PK70824
-                                  || (httpRequest!=null && httpRequest.getDispatcherType().equals(DispatcherType.ERROR));
-                Object securityObject = securityCollaborator.preInvoke(httpRequest, httpResponse, servletName, securityEnforced);
-                collabMetaData.setSecurityObject(securityObject);
-                httpRequest.getSession(false); // Get the session to force the session management to set the correct user. 
-            }
-            
-            // Moved here to preserve existing postInvoke behavior for INVOCATION collaborator
-            collabMetaData.setPostInvokeNecessary(true);
-            
         } finally {
             if (sessionSecurityIntegrationEnabled) {
                 ((IExtendedRequest) wasreq).setRunningCollaborators(false); // PK01801

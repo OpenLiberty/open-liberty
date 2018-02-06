@@ -34,18 +34,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- * Test Description:
- */
-@MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 1.8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class ScopedTest extends JavaEESecTestBase {
 
     protected static Class<?> logClass = ScopedTest.class;
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
-    protected String queryString = "/JavaEESec/CommonServlet";
-    protected static String urlBase;
     protected static String urlHttps;
     protected static String JAR_NAME = "JavaEESecBase.jar";
 
@@ -78,7 +73,6 @@ public class ScopedTest extends JavaEESecTestBase {
         myServer.addInstalledAppForValidation("ApplicationScopedMechanismWithSessionScopedStore");
         myServer.addInstalledAppForValidation("RequestScopedMechanismWithApplicationScopedStore");
 
-        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
         urlHttps = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
     }
 
@@ -108,23 +102,29 @@ public class ScopedTest extends JavaEESecTestBase {
     public void testApplicationScopedMechanismWithRequestScopedStore() throws Exception {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + "/ApplicationScopedMechanismWithRequestScopedStore/CommonServlet",
                                                           Constants.javaeesec_basicRoleUser_requestscoped, Constants.javaeesec_basicRolePwd, HttpServletResponse.SC_OK);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser_requestscoped,
-                           Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser_requestscoped);
+        verifyUser(response, Constants.javaeesec_basicRoleUser_requestscoped);
     }
 
     @Test
-    public void testApplicationScopedMechanismWithSessionScopedStore() throws Exception {
+    public void testApplicationScopedMechanismWithSessionScopedStoreMultipleRequests() throws Exception {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + "/ApplicationScopedMechanismWithSessionScopedStore/CommonServlet",
                                                           Constants.javaeesec_basicRoleUser_sessionscoped, Constants.javaeesec_basicRolePwd, HttpServletResponse.SC_OK);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser_sessionscoped,
-                           Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser_sessionscoped);
+        verifyUser(response, Constants.javaeesec_basicRoleUser_sessionscoped);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + "/ApplicationScopedMechanismWithSessionScopedStore/CommonServlet",
+                                                   Constants.javaeesec_basicRoleUser_sessionscoped, Constants.javaeesec_basicRolePwd, HttpServletResponse.SC_OK);
+        verifyUser(response, Constants.javaeesec_basicRoleUser_sessionscoped);
     }
 
     @Test
     public void testRequestScopedMechanismWithApplicationScopedStore() throws Exception {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + "/RequestScopedMechanismWithApplicationScopedStore/CommonServlet",
                                                           Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd, HttpServletResponse.SC_OK);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
+        verifyUser(response, Constants.javaeesec_basicRoleUser);
+    }
+
+    // The principal name and remote user name are the same in these tests.
+    private void verifyUser(String response, String name) {
+        verifyUserResponse(response, Constants.getUserPrincipalFound + name, Constants.getRemoteUserFound + name);
     }
 
 }
