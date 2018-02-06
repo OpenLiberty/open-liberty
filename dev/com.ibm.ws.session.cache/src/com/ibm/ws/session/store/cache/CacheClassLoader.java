@@ -12,6 +12,7 @@ package com.ibm.ws.session.store.cache;
 
 import com.ibm.ws.session.store.cache.serializable.SessionData;
 import com.ibm.ws.session.store.cache.serializable.SessionKey;
+import com.ibm.ws.session.store.cache.serializable.SessionPropertyKey;
 
 /**
  * Allows the JCache provider to deserialize specific classes from the com.ibm.ws.session.cache bundle.
@@ -23,6 +24,8 @@ public class CacheClassLoader extends ClassLoader {
 
         if (name.equals(SessionKey.class.getName()))
             c = SessionKey.class;
+        else if (name.equals(SessionPropertyKey.class.getName()))
+            c = SessionPropertyKey.class;
         else if (name.equals(SessionData.class.getName()))
             c = SessionData.class;
         else

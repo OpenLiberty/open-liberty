@@ -40,6 +40,9 @@ public class CacheHashMap extends BackedHashMap {
 
     private static final TraceComponent tc = Tr.register(CacheHashMap.class);
 
+    // this is set to true for multirow in DatabaseHashMapMR if additional conditions are satisfied
+    boolean appDataTablesPerThread = false;
+
     CacheStoreService cacheStoreService;
     IStore _iStore;
     SessionManagerConfig _smc;
@@ -57,7 +60,7 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     public boolean getAppDataTablesPerThread() {
-        return false; // TODO implement
+        return appDataTablesPerThread;
     }
 
     /**
@@ -103,6 +106,13 @@ public class CacheHashMap extends BackedHashMap {
         }
 
         return tmp;
+    }
+
+    /**
+     * Override in subclass for multi-row.
+     */
+    boolean handlePropertyHits(BackedSession d2) {
+        return true;
     }
 
     /**
@@ -221,7 +231,13 @@ public class CacheHashMap extends BackedHashMap {
 
             byte[] objbuf = null;
             if (propHit) {
-                objbuf = serializeAppData(d2);
+                if (_smc.isUsingMultirow()) {
+                    if (!handlePropertyHits(d2)) {
+                        return false;
+                    }
+                } else {
+                    objbuf = serializeAppData(d2);
+                }
             }
 
             long startTimeNS = System.nanoTime();
@@ -254,7 +270,7 @@ public class CacheHashMap extends BackedHashMap {
                     newSessionData.setLastAccess(time);
                 }
 
-                if (propHit) {
+                if (propHit && !_smc.isUsingMultirow()) {
                     newSessionData.setBytes(objbuf);
                 }
 
@@ -264,7 +280,7 @@ public class CacheHashMap extends BackedHashMap {
                 updated = cacheStoreService.cache.replace(key, oldSessionData, newSessionData);
             }
 
-            if (objbuf != null && propHit) {
+            if (objbuf != null && propHit && !_smc.isUsingMultirow()) {
                 SessionStatistics pmiStats = _iStore.getSessionStatistics();
                 if (pmiStats != null) {
                     pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNS));
