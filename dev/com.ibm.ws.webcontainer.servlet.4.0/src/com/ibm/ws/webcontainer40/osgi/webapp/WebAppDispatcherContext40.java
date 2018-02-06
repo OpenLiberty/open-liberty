@@ -57,7 +57,13 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
     @Override
     public void pushServletReference(IServletWrapper wrapper) {
         super.pushServletReference(wrapper);
-        setServletMapping();
+
+        //Set the mapping to the parent's mapping if this is an include or an async dispatch
+        // or _match == null (when using a named dispatcher)
+        if (this.isInclude() || this.isAsync() || (_mapping == null && _match == null))
+            _mapping = ((WebAppDispatcherContext40) this.getParentContext()).getServletMapping();
+        else
+            setServletMapping();
     }
 
     @Override

@@ -440,7 +440,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
 
 
-    private WebAppDispatcherContext getParentContext() {
+    protected WebAppDispatcherContext getParentContext() {
         return this.parentContext;
     }
     /* (non-Javadoc)
@@ -984,6 +984,11 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     public boolean isInclude()
     {
         return (this.dispatcherType == DispatcherType.INCLUDE);
+    }
+    
+    public boolean isAsync() 
+    {
+        return (this.dispatcherType == DispatcherType.ASYNC);
     }
 
     /* (non-Javadoc)
