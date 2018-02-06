@@ -296,14 +296,13 @@ public class BaseTraceService implements TrService {
         }
 
         //Need a LogProviderConfigImpl to get additional information specifically for JsonTraceService
-        LogProviderConfigImpl jsonTRConfig = (LogProviderConfigImpl) config;
 
         /*
          * Need to know the values of wlpServerName and wlpUserDir
          * They are passed into the handlers for use as part of the jsonified output
          */
-        serverName = jsonTRConfig.getServerName();
-        wlpUserDir = jsonTRConfig.getWlpUsrDir();
+        serverName = trConfig.getServerName();
+        wlpUserDir = trConfig.getWlpUsrDir();
 
         //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
@@ -321,12 +320,12 @@ public class BaseTraceService implements TrService {
         /*
          * Retrieve the format setting for message.log and console
          */
-        String messageFormat = jsonTRConfig.getMessageFormat();
-        String consoleFormat = jsonTRConfig.getConsoleFormat();
+        String messageFormat = trConfig.getMessageFormat();
+        String consoleFormat = trConfig.getConsoleFormat();
 
         //Retrieve the source lists of both message and console
-        List<String> messageSourceList = new ArrayList<String>(jsonTRConfig.getMessageSource());
-        List<String> consoleSourceList = new ArrayList<String>(jsonTRConfig.getConsoleSource());
+        List<String> messageSourceList = new ArrayList<String>(trConfig.getMessageSource());
+        List<String> consoleSourceList = new ArrayList<String>(trConfig.getConsoleSource());
 
         /*
          * Filter out Message and Trace from messageSourceList
@@ -425,6 +424,7 @@ public class BaseTraceService implements TrService {
         }
         messageLogHandler.setFormatter(formatter);
         consoleLogHandler.setFormatter(formatter);
+        consoleLogHandler.setBTS(this);
         //check if json source list has sourcelist
     }
 
@@ -1050,6 +1050,12 @@ public class BaseTraceService implements TrService {
         }
         holder.originalStream.println(txt);
     }
+//    public synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {
+//        if (holder == systemErr && rawStream) {
+//            txt = "[err] " + txt;
+//        }
+//        holder.originalStream.println(txt);
+//    }
 
     /**
      * Trim stack traces. This isn't as sophisticated as what TruncatableThrowable

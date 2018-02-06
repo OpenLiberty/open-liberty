@@ -36,6 +36,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private Integer consoleLogLevel = null;
     private boolean copySystemStreams = false;
 
+    private BaseTraceService BTS = null;
+
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
     }
@@ -91,9 +93,11 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         synchronized (this) {
             //check if message need to be written to stderr or stdout
             if (isStderr) {
-                sysErrHolder.getOriginalStream().println(messageOutput);
+//                sysErrHolder.originalStream.println(messageOutput);
+                BTS.writeStreamOutput(sysErrHolder, messageOutput, false);
             } else if (messageOutput != null) {
-                sysLogHolder.getOriginalStream().println(messageOutput);
+                BTS.writeStreamOutput(sysLogHolder, messageOutput, false);
+//                sysLogHolder.originalStream.println(messageOutput);
             }
         }
 
@@ -143,4 +147,10 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         this.isTraceStdout = isTraceStdout;
     }
 
+    /**
+     * @param trErr the trErr to set
+     */
+    public void setBTS(BaseTraceService BTS) {
+        this.BTS = BTS;
+    }
 }
