@@ -339,6 +339,7 @@ public class ClassSourceImpl_MappedJar
             jandexStream = openResourceStream(null, useJandexIndexPath);
             // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
+            // TODO:
             String errorMessage =
                 "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
                 " as JANDEX index: " + e.getMessage();
@@ -352,11 +353,14 @@ public class ClassSourceImpl_MappedJar
 
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
-            System.out.println(
-                "Read JANDEX index [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]:" +
-                " Classes [ " + Integer.toString(jandexIndex.getKnownClasses().size()) + " ]");
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
+                         new Object[] { getHashText(), useJandexIndexPath, getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+            }
             return jandexIndex;
         } catch ( IOException e ) {
+            // TODO: 
             String eMsg =
                 "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
                 " as JANDEX index: " +
