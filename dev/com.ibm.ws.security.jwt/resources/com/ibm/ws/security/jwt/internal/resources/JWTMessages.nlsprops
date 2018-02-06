@@ -310,6 +310,6 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: The issuer [{0}] of the provided JSON Web T
 JWT_TRUSTED_ISSUERS_NULL.explanation=The server configuration specifies which issuers are trusted for validating JWTs. The JWT configuration does not specify any trusted issuers, so the token cannot be validated.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Ensure that the JWT configuration that is specified in the message defines at least one trusted issuer. Ensure that the issuer of the JWT matches one of the trusted issuers specified in your JWT configuration.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: HTTP scheme is used at the specified endpoint: {0}, HTTPS is required.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: HTTP scheme is used at the specified endpoint: {0}, HTTPS is required.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=The specified endpoint requires HTTPS, but HTTP was used in the request URL.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Check the request URL and make sure it uses HTTPS, or change configuration so HTTPS is not required.
