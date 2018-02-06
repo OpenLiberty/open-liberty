@@ -14,6 +14,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/CDIFaultTolerance.war/src,\
+	test-applications/TxFaultTolerance.war/src,\
 	test-applications/faulttolerance.jar/src
 
 javac.source: 1.8
@@ -41,3 +42,8 @@ fat.project: true
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest
+	
+>>>>>>> Initial commit

@@ -30,12 +30,14 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.SharedServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                TxRetryTest.class,
                 CDIAsyncTest.class,
                 CDIBulkheadTest.class,
                 CDICircuitBreakerTest.class,
@@ -54,18 +56,28 @@ public class FATSuite {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String APP_NAME = "CDIFaultTolerance";
+        String CDI_APP_NAME = "CDIFaultTolerance";
+        String TX_APP_NAME = "TxFaultTolerance";
 
         JavaArchive faulttolerance_jar = ShrinkWrap.create(JavaArchive.class, "faulttolerance.jar")
                         .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.util");
 
-        WebArchive CDIFaultTolerance_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+        WebArchive CDIFaultTolerance_war = ShrinkWrap.create(WebArchive.class, CDI_APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.cdi")
                         .addAsLibraries(faulttolerance_jar)
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "persistence.xml")
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
+                        .addAsManifestResource(new File("test-applications/" + CDI_APP_NAME + ".war/resources/META-INF/permissions.xml"), "persistence.xml")
+                        .addAsManifestResource(new File("test-applications/" + CDI_APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
 
         ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/CDIFaultTolerance/dropins/");
+
+        WebArchive TXFaultTolerance_war = ShrinkWrap.create(WebArchive.class, TX_APP_NAME + ".war")
+
+                        .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.tx")
+                        .addAsLibraries(faulttolerance_jar)
+                        .addAsManifestResource(new File("test-applications/" + TX_APP_NAME + ".war/resources/META-INF/permissions.xml"), "persistence.xml")
+                        .addAsManifestResource(new File("test-applications/" + TX_APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
+
+        ShrinkHelper.exportArtifact(TXFaultTolerance_war, "publish/servers/TxFaultTolerance/dropins/");
     }
 
     @AfterClass
