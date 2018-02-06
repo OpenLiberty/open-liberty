@@ -39,6 +39,10 @@ headerContentMap=The \"content\" map within header object \"{0}\" must only cont
 
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 
+linkOperationRefInvalidOrMissing=The Operation object referenced in \"operationRef\" of Link object \"{0}\" is not valid or is missing from the paths.
+linkOperationRefOrId=Link object \"{0}\" defines \"operationRef\" field and \"operationId\" field, which are mutually exclusive.
+linkOperationIdInvalid=Link \"operationId\" field with value \"{0}\" is not an existing operation.
+
 mediaTypeExampleOrExamples=The MediaType object cannot have both \"examples\" and \"example\".
 mediaTypeEncodingProperty=The \"{0}\" encoding property specified in the MediaType object does not exist in the schema as a property.
 mediaTypeEmptySchema=The encoding property specified cannot be validated because the corresponding schema property is null.
