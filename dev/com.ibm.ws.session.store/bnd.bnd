@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2017,2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Common Backed Store for HTTP Sessions
+Bundle-SymbolicName: com.ibm.ws.session.store
+Bundle-Description: Abstrat common layer for persistence of sessions to a backed store, version ${bVersion}
+
+Export-Package: \
+   	com.ibm.ws.session.store.common
+
+Private-Package: \
+   	com.ibm.ws.session.store.common.internal
+
+Service-Component: \
+  com.ibm.ws.session.db.deserialization; \
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
+    properties:='classes=com.ibm.ws.session.store.common.internal.J2EEObjectWrapper'
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.session;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

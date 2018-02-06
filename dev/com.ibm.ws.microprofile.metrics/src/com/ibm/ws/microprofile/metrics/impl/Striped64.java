@@ -20,7 +20,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-* 
+*
 *******************************************************************************
 *
 * Written by Doug Lea with assistance from members of JCP JSR-166
@@ -35,6 +35,8 @@ package com.ibm.ws.microprofile.metrics.impl;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 // CHECKSTYLE:OFF
 /**
@@ -167,7 +169,7 @@ abstract class Striped64 extends Number {
     /**
      * Number of CPUS, to place bound on table size
      */
-    static final int NCPU = Runtime.getRuntime().availableProcessors();
+    static final int NCPU = CpuInfo.getAvailableProcessors();
 
     /**
      * Table of cells. When non-null, size is a power of 2.

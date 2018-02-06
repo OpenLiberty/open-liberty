@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.security.common.random.RandomUtils;
-import com.ibm.ws.security.common.test.CommonTestClass;
+import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
 

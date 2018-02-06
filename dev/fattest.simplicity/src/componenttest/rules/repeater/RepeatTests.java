@@ -31,8 +31,8 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
  *
  * <pre>
  * <code>@ClassRule
- * public static RepeatTests r = new RepeatTests().withoutModification()
- *                                                .andWith(FeatureReplacementAction.EE8);
+ * public static RepeatTests r = RepeatTests.withoutModification()
+ *                                                .andWith(FeatureReplacementAction.EE8_FEATURES());
  * </code>
  * </pre>
  */

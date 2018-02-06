@@ -28,6 +28,7 @@ import java.util.concurrent.TimeoutException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
  *
@@ -148,7 +149,7 @@ class UpdateQueue<T> {
          * subclass the ThreadPoolExecutor to provide some debug info.
          * Pass in the new RejectedExecutionHandler defined above.
          */
-        int maxSize = Runtime.getRuntime().availableProcessors();
+        int maxSize = CpuInfo.getAvailableProcessors();
         threadPool = new ThreadPoolExecutor(0, maxSize,
                         60L, TimeUnit.SECONDS,
                         new LinkedBlockingQueue<Runnable>(),

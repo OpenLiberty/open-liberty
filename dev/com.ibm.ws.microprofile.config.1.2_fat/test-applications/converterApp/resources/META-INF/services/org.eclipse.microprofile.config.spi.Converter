@@ -1,3 +1,4 @@
 com.ibm.ws.microprofile.config12.converter.priority.converters.Priority3000Converter
 com.ibm.ws.microprofile.config12.converter.priority.converters.Priority50Converter
 com.ibm.ws.microprofile.config12.converter.priority.converters.DefaultPriorityConverter
+com.ibm.ws.microprofile.config12.converter.type.converters.MyStringObjectConverter

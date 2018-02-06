@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import javax.security.enterprise.authentication.mechanism.http.AuthenticationPar
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.ras.Tr;
@@ -72,6 +73,8 @@ public class LoginToContinueInterceptor {
     private String _errorPage = null;
     private String _loginPage = null;
     private Boolean _isForward = null;
+    private Boolean _useGlobalLogin = false;
+    private String _formLoginContextRoot = null;
 
     @SuppressWarnings("rawtypes")
     @PostConstruct
@@ -85,6 +88,11 @@ public class LoginToContinueInterceptor {
                                         (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true, isCustomHAM);
             _loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), "/login", true, isCustomHAM);
             _errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), "/login-error", true, isCustomHAM);
+            _useGlobalLogin = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN);
+            _formLoginContextRoot = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT);
+            if (_useGlobalLogin == null) {
+                _useGlobalLogin = Boolean.FALSE;
+            }
         } else {
             Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
         }
@@ -137,15 +145,29 @@ public class LoginToContinueInterceptor {
         boolean useForwardToLogin = resolveBoolean((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION), _isForward).booleanValue();;
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
 
-        updateFormLoginConfiguration(loginPage, errorPage);
+        //todo: it would be an optional but if context root matches to the global login page, remove context root.
+        // otherwise, webcollaborator won't exempt login and error page from authorization check.
+        if (!_useGlobalLogin) {
+            updateFormLoginConfiguration(loginPage, errorPage);
+        } else {
+            // when using global login, clear login setting in the application.
+            updateFormLoginConfiguration("", "");
+        }
+
         // set wasrequrl cookie and postparam cookie.
         setCookies(req, res);
 
-        if (useForwardToLogin) {
+        if (_useGlobalLogin || useForwardToLogin) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "The request will be forwarded to the login page.");
             }
-            RequestDispatcher rd = req.getRequestDispatcher(loginPage);
+            RequestDispatcher rd;
+            if (_useGlobalLogin) {
+                ServletContext ctx = req.getServletContext().getContext(_formLoginContextRoot);
+                rd = ctx.getRequestDispatcher(loginPage);
+            } else {
+                rd = req.getRequestDispatcher(loginPage);
+            }
             try {
                 if (req.getMethod().equalsIgnoreCase("POST") && (req instanceof IExtendedRequest)) {
                     if (tc.isDebugEnabled()) {
@@ -159,8 +181,7 @@ public class LoginToContinueInterceptor {
             }
         } else {
             res.setStatus(HttpServletResponse.SC_FOUND);
-            String loginUrl = getUrl(req, loginPage);
-            res.sendRedirect(res.encodeURL(loginUrl));
+            res.sendRedirect(res.encodeURL(getUrl(req, loginPage, _useGlobalLogin)));
         }
         return status;
     }
@@ -207,7 +228,7 @@ public class LoginToContinueInterceptor {
                 result = resolveString(expression);
             }
         } else {
-            if (expression != null && !expression.isEmpty()) {
+            if (expression != null) {
                 result = expression;
             } else {
                 result = defaultValue;
@@ -251,7 +272,7 @@ public class LoginToContinueInterceptor {
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
         String storedReq = null;
-        WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
         storedReq = getStoredReq(req, referrerURLHandler);
         // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
@@ -268,12 +289,8 @@ public class LoginToContinueInterceptor {
     }
 
     protected void rediectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String errorPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE);
-        String errorUrl = getUrl(req, errorPage);
-// TODO: for the beta, use sendRedirect in order to avoid the status is overwritten by WebCollaborator.
-//        res.setHeader("Location", res.encodeURL(errorUrl));
-//        res.setStatus(HttpServletResponse.SC_FOUND);
-        res.sendRedirect(res.encodeURL(errorUrl));
+        String errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), _errorPage);
+        res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
     }
 
     /**
@@ -298,14 +315,14 @@ public class LoginToContinueInterceptor {
     }
 
     private void setCookies(HttpServletRequest req, HttpServletResponse res) {
-        WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         if (allowToAddCookieToResponse(webAppSecConfig, req)) {
             AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
             if ("POST".equalsIgnoreCase(req.getMethod())) {
                 PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
                 postParameterHelper.save(req, res, authResult, true);
             }
-            ReferrerURLCookieHandler referrerURLHandler = getWebAppSeurityConfig().createReferrerURLCookieHandler();
+            ReferrerURLCookieHandler referrerURLHandler = getWebAppSecurityConfig().createReferrerURLCookieHandler();
             String query = req.getQueryString();
             String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
             referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
@@ -316,13 +333,14 @@ public class LoginToContinueInterceptor {
         }
     }
 
-    private String getUrl(HttpServletRequest req, String uri) {
+    private String getUrl(HttpServletRequest req, String uri, boolean useGlobalLogin) {
         StringBuilder builder = new StringBuilder(req.getRequestURL());
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getURL : uri : " + uri, ", requestURL : " + builder);
+            Tr.debug(tc, "getURL : uri : " + uri, ", requestURL : " + builder + ", useGlobalLogin : " + useGlobalLogin);
         int hostIndex = builder.indexOf("//");
         int contextIndex = builder.indexOf("/", hostIndex + 2);
-        builder.replace(contextIndex, builder.length(), normalizeURL(uri, req.getContextPath()));
+        String contextPath = (useGlobalLogin == true) ? "" : req.getContextPath();
+        builder.replace(contextIndex, builder.length(), normalizeURL(uri, contextPath));
         return builder.toString();
     }
 
@@ -399,7 +417,7 @@ public class LoginToContinueInterceptor {
         this.mpp = mpp;
     }
 
-    protected WebAppSecurityConfig getWebAppSeurityConfig() {
+    protected WebAppSecurityConfig getWebAppSecurityConfig() {
         return WebConfigUtils.getWebAppSecurityConfig();
     }
 
@@ -417,4 +435,7 @@ public class LoginToContinueInterceptor {
         return _isForward;
     }
 
+    protected Boolean getUseGlobalLogin() {
+        return _useGlobalLogin;
+    }
 }

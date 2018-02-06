@@ -17,22 +17,38 @@
         <feature>servlet-4.0</feature>
         <feature>componentTest-1.0</feature>
 		<feature>localConnector-1.0</feature>
-		<feature>appSecurity-2.0</feature>
+		<feature>appSecurity-3.0</feature>
 		<feature>concurrent-1.0</feature>
+		<feature>ejb-3.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
-    <quickStartSecurity userName="Faulty" userPassword="faultypwd" />
+    <keyStore id="defaultKeyStore" password="CHANGEIT" />    
+
+    <basicRegistry id="basic" realm="WebRealm">
+	  <user name="Faulty" password="faultypwd" />
+	  <user name="Basil" password="Basilpwd" />
+	  <user name="Sybil" password="Sybilpwd" />
+	</basicRegistry>
     
     <application location="secureAsyncEventsApp.war">
         <application-bnd>
          <security-role name="testing">
               <user name="Faulty" />
          </security-role>
+         <security-role name="apprentice">
+              <user name="Basil" />
+         </security-role>
+         <security-role name="chef">
+              <user name="Sybil" />
+         </security-role>
         </application-bnd>
     </application>
-   
+    
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" /> 
+      
     <logging traceSpecification="JCDI=all=enabled:logservice=all=enabled:*=info=enabled"/>
 
 </server>

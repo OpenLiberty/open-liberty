@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
+import com.ibm.websphere.simplicity.config.ClientConfiguration;
+import com.ibm.websphere.simplicity.config.ClientConfigurationFactory;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
@@ -33,6 +35,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private static final Class<?> c = FeatureReplacementAction.class;
 
     static final String ALL_SERVERS = "ALL_SERVERS";
+    static final String ALL_CLIENTS = "ALL_CLIENTS";
 
     /**
      * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
@@ -53,24 +56,63 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private int minJavaLevel = 7;
     protected String currentID = toString();
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
+    private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
 
+    /**
+     * Remove one feature and add one feature.
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param removeFeature the feature to be removed
+     * @param addFeature the feature to add
+     */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
-        this();
-        addFeature(addFeature);
+        this(addFeature);
         removeFeature(removeFeature);
-        forceAddFeatures = true;
     }
 
+    /**
+     * Remove a set of features and add a set of features
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param removeFeatures the features to remove
+     * @param addFeatures the features to add
+     */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
-        this();
-        addFeatures(addFeatures);
+        this(addFeatures);
         removeFeatures(removeFeatures);
     }
 
-    public FeatureReplacementAction() {
-        //no-op ... must call add/remove methods below before use
+    /**
+     * Add a set of features.
+     *
+     * Currently there is no constructor which allows you to just remove features. If you need to do that then
+     * pass an empty set to {@link #FeatureReplacementAction(Set, Set)}
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param removeFeatures the features to remove
+     * @param addFeatures the features to add
+     */
+    public FeatureReplacementAction(Set<String> addFeatures) {
+        addFeatures(addFeatures);
+    }
+
+    /**
+     * Add a single feature
+     *
+     * Currently there is no constructor which allows you to just remove a single feature. If you need to do that then
+     * pass an empty set to {@link #FeatureReplacementAction(Set, Set)}
+     *
+     * By default features are added even if there was not another version already there
+     *
+     * @param addFeature the feature to add.
+     */
+    public FeatureReplacementAction(String addFeature) {
+        addFeature(addFeature);
     }
 
     /**
@@ -141,6 +183,17 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Specify a list of server names to include in the feature replace action and any server configuration
+     * files under "publish/clients/CLIENT_NAME/" will be scanned.
+     * By default, all server config files in publish/clients/ will be scanned for updates.
+     */
+    public FeatureReplacementAction forClients(String... clientNames) {
+        clients.remove(ALL_CLIENTS);
+        clients.addAll(Arrays.asList(clientNames));
+        return this;
+    }
+
+    /**
      * Set to true in order to force the addition of all features in the 'addFeature' list.
      * Set to false to "smart upgrade", where features in the 'addFeatures' list are only added if
      * a different version of the corresponding feature is present in the server configuration and the
@@ -169,6 +222,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         final String m = "setup";
         final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
         final String pathToAutoFVTTestServers = "publish/servers/";
+        final String pathToAutoFVTTestClients = "publish/clients/";
 
         //check that there are actually some features to be added or removed
         assertFalse("No features were set to be added or removed", addFeatures.size() == 0 && removeFeatures.size() == 0);
@@ -185,34 +239,59 @@ public class FeatureReplacementAction implements RepeatTestAction {
             for (String serverName : servers)
                 serverConfigs.add(new File(pathToAutoFVTTestServers + serverName));
         }
+        // Find all of the client configurations to replace features in
+        Set<File> clientConfigs = new HashSet<>();
+        File clientFolder = new File(pathToAutoFVTTestClients);
+        if (clients.contains(ALL_CLIENTS)) {
+            // Find all *.xml in this test project
+            clientConfigs.addAll(findFile(clientFolder, ".xml"));
+        } else {
+            for (String clientName : clients)
+                clientConfigs.add(new File(pathToAutoFVTTestClients + clientName));
+        }
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
-        Log.info(c, m, "Replacing features in files: " + serverConfigs.toString());
+        Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
 
         // change all the server.xml files
-        assertTrue("There were no servers (*.xml) in " + serverFolder.getAbsolutePath() + " and in " + filesFolder.getAbsolutePath()
-                   + ". If you see this failure, what you need to do is add a simple server to publish/servers which includes the feature you're trying to test.",
-                   serverConfigs.size() > 0);
+        assertTrue("There were no servers/clients (*.xml) in " + serverFolder.getAbsolutePath() + " or " + filesFolder.getAbsolutePath() + " or " + clientFolder.getAbsolutePath()
+                   + ". To use a FeatureReplacementAction, there must be 1 or more servers/clients in any of the above locations.",
+                   (serverConfigs.size() > 0 || clientConfigs.size() > 0));
 
-        for (File serverConfig : serverConfigs) {
-            if (!serverConfig.exists() || !serverConfig.canRead() || !serverConfig.canWrite()) {
-                Log.info(c, m, "File did not exist or was not readable: " + serverConfig.getAbsolutePath());
+        Set<File> configurations = new HashSet<>();
+        configurations.addAll(clientConfigs);
+        configurations.addAll(serverConfigs);
+        for (File configFile : configurations) {
+            if (!configFile.exists() || !configFile.canRead() || !configFile.canWrite()) {
+                Log.info(c, m, "File did not exist or was not readable: " + configFile.getAbsolutePath());
                 continue;
             }
 
-            // Before we try to unmarshal the file, be sure it's a valid <server> config file
+            // Before we try to unmarshal the file, be sure it's a valid server/client config file
             boolean isServerConfig = false;
-            try (Scanner s = new Scanner(serverConfig)) {
-                while (!isServerConfig && s.hasNextLine())
-                    isServerConfig = s.nextLine().contains("<server");
+            boolean isClientConfig = false;
+            try (Scanner s = new Scanner(configFile)) {
+                while (!isServerConfig && s.hasNextLine()) {
+                    String line = s.nextLine();
+                    if (line.contains("<server")) {
+                        isServerConfig = true;
+                        break;
+                    } else if (line.contains("<client")) {
+                        isClientConfig = true;
+                        break;
+                    }
+                }
             }
-            if (!isServerConfig) {
-                Log.info(c, m, "File did not contain <server> so assuming it is not a valid server.xml" + serverConfig.getAbsolutePath());
+            if (!isServerConfig && !isClientConfig) {
+                Log.info(c, m, "File did not contain <server> or <client> so assuming it is not a valid server or client config file" + configFile.getAbsolutePath());
                 continue;
             }
 
-            ServerConfiguration config = ServerConfigurationFactory.fromFile(serverConfig);
-            Set<String> features = config.getFeatureManager().getFeatures();
+            ServerConfiguration serverConfig = isServerConfig ? ServerConfigurationFactory.fromFile(configFile) : null;
+            ClientConfiguration clientConfig = isClientConfig ? ClientConfigurationFactory.fromFile(configFile) : null;
+            Set<String> features = isServerConfig ? //
+                            serverConfig.getFeatureManager().getFeatures() : //
+                            clientConfig.getFeatureManager().getFeatures();
 
             Log.info(c, m, "Original features:  " + features);
             if (forceAddFeatures) {
@@ -221,7 +300,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
             } else {
                 for (String removeFeature : removeFeatures)
                     if (features.remove(removeFeature)) {
-                        // If we found a feature to remove that is actually present in server.xml, then
+                        // If we found a feature to remove that is actually present in config file, then
                         // remove it and replace it with the corresponding feature
                         String toAdd = getReplacementFeature(removeFeature, addFeatures);
                         if (toAdd != null)
@@ -230,7 +309,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
             }
             Log.info(c, m, "Resulting features: " + features);
 
-            ServerConfigurationFactory.toFile(serverConfig, config);
+            if (isServerConfig)
+                ServerConfigurationFactory.toFile(configFile, serverConfig);
+            else
+                ClientConfigurationFactory.toFile(configFile, clientConfig);
         }
     }
 

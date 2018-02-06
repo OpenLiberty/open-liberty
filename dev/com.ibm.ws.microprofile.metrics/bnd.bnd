@@ -69,5 +69,6 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest 
+	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
+	com.ibm.ws.kernel.service;version=latest
  

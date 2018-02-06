@@ -10,10 +10,7 @@ Bundle-Description: Collector Manager: Collector Manager; version=${bVersion}
 WS-TraceGroup: collectorManager
 
 Export-Package: \
-	com.ibm.wsspi.collector.manager,\
-	com.ibm.ws.health.center.data,\
-	com.ibm.ws.logging.ffdc.source,\
-	com.ibm.ws.http.logging.source
+	com.ibm.ws.logging.ffdc.source
 
 Import-Package: com.ibm.ejs.ras, \
                 com.ibm.websphere.ras, \
@@ -56,8 +53,7 @@ Service-Component:\
 
 	
 Private-Package: \
-  com.ibm.ws.collector.manager.internal*, \
-  com.ibm.ws.health.center.agent
+  com.ibm.ws.collector.manager.internal*
 
 Include-Resource: \
     META-INF/MessageRouter.properties=resources/MessageRouter.properties

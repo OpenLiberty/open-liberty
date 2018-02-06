@@ -20,7 +20,11 @@ scriptUsage=Sk\u0142adnia: {0} action nazwaKlienta [opcje]
 
 use.actions=Dzia\u0142ania:
 use.options=Opcje:
+use.options.gen.desc=\ \ \ \ U\u017cyj komendy help [nazwa_akcji] w celu uzyskania szczeg\u00f3\u0142owych informacji o opcjach danej akcji.
 use.jvmarg=Opcje maszyny JVM:
+category-key.lifecycle=Cykl \u017cycia serwera
+category-key.help=Informacja
+category-key.misc=R\u00f3\u017cne
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -65,18 +69,20 @@ option-desc.clean=\tUsu\u0144 z pami\u0119ci podr\u0119cznej wszystkie informacj
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="\u015bcie\u017cka do docelowego pliku archiwum"
 option-desc.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie\n\
-\tpackage. Element docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub\n\
-\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\
-\tutworzony w katalogu wyj\u015bciowym klienta. Rozszerzenie nazwy pliku      \n\
-\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum.       \n\
-\tDomy\u015blnym formatem archiwum dla dzia\u0142ania pakowania jest pax \n\
-\tw systemie z/OS i zip na wszystkich innych platformach.                                    \n\
-\tU\u017cycie formatu jar spowoduje wygenerowanie samorozpakowuj\u0105cego \n\
+\tpackage. Element docelowy mo\u017cna poda\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub\n\
+\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, archiwum zostanie \n\
+\tutworzone w katalogu wyj\u015bciowym klienta. Rozszerzenie nazwy pliku\n\
+\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. \n\
+\tDomy\u015blnym formatem archiwum dla dzia\u0142ania pakowania jest pax\n\
+\tw systemie z/OS i zip na wszystkich innych platformach. U\u017cycie\n\
+\tformatu jar archiwum spowoduje wygenerowanie samorozpakowuj\u0105cego\n\
 \tpliku jar podobnego do oryginalnego archiwum instalatora.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=warto\u015b\u0107,warto\u015b\u0107,...
-option-desc.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci zale\u017c\u0105\n\
-\tod wykonywanej akcji.
+option-desc.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: all*, usr,\n\
+\tminify. Opcja usr powoduje utworzenie pakietu, kt\u00f3ry zawiera serwer\n\
+\ti aplikacj\u0119, ale nie zawiera \u015brodowiska wykonawczego. Opcja domy\u015blna\n\
+\tall powoduje utworzenie pakietu klienta, kt\u00f3ry zawiera wszystkie elementy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nazwaSzablonu"
 option-desc.template=\tOkre\u015bl nazw\u0119 szablonu do u\u017cycia przy tworzeniu nowego klienta. 

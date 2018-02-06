@@ -127,6 +127,10 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Adaptoarele multiple de resurs
 J2CA8815.duplicate.resource.adapter.id.explanation=Adaptoarele multiple de resurse sunt configurate cu sau se termin\u0103 implicit cu acela\u015fi identificator unic (id).
 J2CA8815.duplicate.resource.adapter.id.useraction=Asigna\u0163i identificatori unici pentru unul sau mai multe adaptoare de resurse astfel \u00eenc\u00e2t s\u0103 nu mai existe un conflict.
 
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: Atributul ID al elementului resourceAdapter pentru modulul adaptorului de resurse {0} nu poate fi unul dintre identificatorii rezerva\u0163i {1}.
+J2CA8816.reserved.resource.adapter.id.explanation=ID-ul specificat \u00een configura\u0163ie sau derivat din numele modulului este un identificator rezervat. Identificatorii rezerva\u0163i sunt numai pentru uz intern.
+J2CA8816.reserved.resource.adapter.id.useraction=Furniza\u0163i o valoare nerezervat\u0103 pentru atributul id al elementului resourceAdapter sau pentru numele modulului din configura\u0163ia de server.
+
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
 # ---------------------------------

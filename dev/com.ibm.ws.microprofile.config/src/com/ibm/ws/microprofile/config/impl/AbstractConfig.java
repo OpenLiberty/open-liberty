@@ -10,16 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
+import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public abstract class AbstractConfig implements WebSphereConfig {
@@ -38,18 +41,10 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * @param converters
      * @param executor
      */
-    public AbstractConfig(SortedSources sources, ConversionManager conversionManager) {
+    public AbstractConfig(ConversionManager conversionManager, SortedSources sources) {
         this.sources = sources;
         this.conversionManager = conversionManager;
     }
-
-    /**
-     * @param <T>
-     * @param propertyName
-     * @param propertyType
-     * @return
-     */
-    protected abstract <T> T getTypedValue(String propertyName, Class<T> propertyType);
 
     /**
      * @return
@@ -68,7 +63,11 @@ public abstract class AbstractConfig implements WebSphereConfig {
         assertNotClosed();
         Optional<T> optional = null;
         try {
-            T value = getTypedValue(propertyName, propertyType);
+            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            T value = null;
+            if (sourced != null) {
+                value = (T) sourced.getValue();
+            }
             optional = Optional.ofNullable(value);
         } catch (ConverterNotFoundException | ConversionException e) {
             throw new IllegalArgumentException(e);
@@ -118,14 +117,33 @@ public abstract class AbstractConfig implements WebSphereConfig {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getValue(String propertyName, Class<T> propertyType) {
-        T value = null;
+        T value = (T) getValue(propertyName, propertyType, false);
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType) {
+        Object value = getValue(propertyName, propertyType, false);
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType, boolean optional) {
+        Object value = null;
         assertNotClosed();
         try {
-            value = getTypedValue(propertyName, propertyType);
-            if (value == null) {
-                if (!getKeySet().contains(propertyName)) {
+            if (getKeySet().contains(propertyName)) {
+                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+                value = sourced.getValue();
+            } else {
+                if (optional) {
+                    value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
+                } else {
                     throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
                 }
             }
@@ -136,10 +154,28 @@ public abstract class AbstractConfig implements WebSphereConfig {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T convertValue(String rawValue, Class<T> type) {
+    public Object getValue(String propertyName, Type propertyType, String defaultString) {
+        Object value = null;
         assertNotClosed();
-        return (T) conversionManager.convert(rawValue, type);
+        try {
+            if (getKeySet().contains(propertyName)) {
+                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+                value = sourced.getValue();
+            } else {
+                value = convertValue(defaultString, propertyType);
+            }
+        } catch (ConverterNotFoundException | ConversionException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return value;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object convertValue(String rawValue, Type type) {
+        assertNotClosed();
+        return conversionManager.convert(rawValue, type);
+    }
+
 }

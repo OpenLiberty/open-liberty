@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,6 +151,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         consoleFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_FORMAT),
                                                           consoleFormat);
 
+        consoleLogLevel = LoggingConfigUtils.getLogLevel(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_LOGLEVEL),
+                                                         consoleLogLevel);
         doCommonInit(config, true);
 
         // If the trace file name is 'java.util.logging', then Logger won't write output via Tr,
@@ -448,7 +450,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         /**
          * Gets the string value. During initializing, the property value is set
-         * to the default if the config property is not found.
+         * to the default (or server env value if set) if the config property is not found.
+         * Note: During runtime server update if configKey is not set, it'll look up the property
+         * value i.e the ibm:variable (see the metatype.xml)
          *
          * @param config
          * @param defaultValue
@@ -466,7 +470,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         /**
          * Gets a collection from the config. During initializing, the property value is set
-         * to the default if the config property is not found.
+         * to the default (or server env value if set) if the config property is not found.
+         * Note: During runtime server update if configKey is not set, it'll look up the property
+         * value i.e the ibm:variable (see the metatype.xml)
          *
          * @param config
          * @param defaultValue
@@ -482,9 +488,24 @@ public class LogProviderConfigImpl implements LogProviderConfig {
             return collection;
         }
 
+        /**
+         * Gets a Level from the config. During initializing, the property value is set
+         * to the default (or server env value if set) if the config property is not found.
+         * Note: During runtime server update if configKey is not set, it'll look up the property
+         * value i.e the ibm:variable (see the metatype.xml)
+         *
+         * @param config
+         * @param defaultValue
+         * @param isInit
+         * @return
+         */
         Level getLogLevelValue(Map<String, Object> config, Level defaultValue, boolean isInit) {
             Object value = config.get(isInit ? propertyKey : configKey);
-            return LoggingConfigUtils.getLogLevel(value, defaultValue);
+            Level newLevel = LoggingConfigUtils.getLogLevel(value, defaultValue);
+            if (isInit && value == null) {
+                config.put(propertyKey, newLevel.toString());
+            }
+            return newLevel;
         }
 
         File getLogDirectory(Map<String, Object> config, File defaultValue, boolean isInit) {

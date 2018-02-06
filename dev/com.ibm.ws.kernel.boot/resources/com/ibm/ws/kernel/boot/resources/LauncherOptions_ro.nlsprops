@@ -14,13 +14,20 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Utilizare: java [op\u0163iuni JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName [ac\u0163iuni] [op\u0163iuni]  
-scriptUsage=Utilizare: ac\u0163iune serverName {0} [op\u0163iuni]
+briefUsage=Utilizare: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName {0} [o\u0163iuni]  
+scriptUsage=Utilizare: {0} {1} serverName [o\u0163iuni]
 
 use.actions=Ac\u0163iuni:
 use.options=Op\u0163iuni:
+use.options.gen.desc=\ \ \ \ Utiliza\u0163i help [actionName] pentru informa\u0163ii detaliate despre op\u0163iuni pentru fiecare op\u0163iune.
 use.jvmarg=Op\u0163iuni JVM:
+category-key.lifecycle=Ciclu de via\u0163\u0103 server
+category-key.win=Windows
+category-key.service=Determinarea problemei
+category-key.help=Informa\u0163ii
+category-key.misc=Diverse
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -114,22 +121,36 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile din cache legate de aceast\u0103 instan\u0163\u0103 de server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="cale spre fi\u015fierul arhiv\u0103 \u0163int\u0103"
-option-desc.archive=\tSpecifica\u0163i \u0163inta arhiv\u0103 pentru a fi generat\u0103 de un pachet sau o  \n\
-\tac\u0163iune dump. \u0162inta poate fi spcificat\u0103 fie ca o cale absolut\u0103, fie ca o \n\
-\tcale relativ\u0103. Dac\u0103 aceast\u0103 op\u0163iune este omis\u0103, fi\u015fierul arhiv\u0103 va\n\
-\tfi creat \u00een directorul de ie\u015fire al serverului. Extensia de nume de fi\u015fier \u0163int\u0103      \n\
-\tar putea influen\u0163a formatul arhivei generate.       \n\
-\tFormatul implicit de arhiv\u0103 pentru ac\u0163iunea pachet este "pax" pe z/OS   \n\
-\t\u015fi "zip" pe toate celelalte platforme.                                    \n\
-\tFormatul de arhiv\u0103 "jar" va produce un fi\u015fier jar auto-extractiv similar cu   \n\
-\tarhiva original\u0103 de program de instalare.                                      \n\
-\tFormatul de arhiv\u0103 "jar" combinat cu "runnable" pe op\u0163iunea --include\n\
-\tproduce un fi\u015fier jar care poate rula pe serverul Liberty din fi\u015fierul    \n\
-\tjar folosind java -jar.
+option-desc.dump.archive=\tSpecifica\u0163i \u0163inta arhivei de generat de ac\u0163iunea de creare dump.       \n\
+\t\u0162inta poate fi specificat\u0103 fie ca o cale absolut\u0103, fie ca o          \n\
+\tcale relativ\u0103. Dac\u0103 este omis\u0103 aceast\u0103 op\u0163iune, este creat\u0103 arhiva de fi\u015fiere\n\
+\t\u00een directorul de ie\u015fire server. Extensia numelui de fi\u015fier \u0163int\u0103 poate\n\
+\tinfluen\u0163a formatul arhivei generate. Formatul arhivei implicite   \n\
+\tpentru ac\u0163iunea de pachet este "pax" pe z/OS \u015fi "zip" pe toate \n\
+\tcelelalte platforme. Formatul arhivei "jar" produce un jar auto-extractor       \n\
+\tsimilar arhivei programului de instalare original.                                      
+option-desc.package.archive=\tSpecifica\u0163i \u0163inta arhivei de generat de ac\u0163iunea de pachet.    \n\
+\t\u0162inta poate fi specificat\u0103 fie ca o cale absolut\u0103, fie ca o       \n\
+\tcale relativ\u0103. Dac\u0103 este omis\u0103 aceast\u0103 op\u0163iune, este creat\u0103 arhiva de fi\u015fiere\n\
+\t\u00een directorul de ie\u015fire server. Extensia numelui de fi\u015fier \u0163int\u0103 poate\n\
+\tinfluen\u0163a formatul arhivei generate. Formatul arhivei implicit   \n\
+\tpentru ac\u0163iunea de pachet este "pax" pe z/OS \u015fi "zip" pe toate\n\
+\tcelelalte platforme. Formatul arhivei "jar" produce un jar auto-extractor   \n\
+\tsimilar arhivei programului de instalare original. Formatul arhivei "jar"    \n\
+\tcombinat cu "rulabil" pe op\u0163iunea --include produce un fi\u015fier jar rulabil \n\
+\tcare poate rula pe serverul Liberty din fi\u015fierul jar folosind  \n\
+\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=valoare,valoare,...
-option-desc.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide variaz\u0103 func\u0163ie de\n\
-\tac\u0163iune.
+option-desc.javadump.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide sunt: heap, system \n\
+\tthread.
+option-desc.package.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide sunt: all*, usr,   \n\
+\tminify, runnable. Dac\u0103 specifica\u0163i rulabil, pachetul rezultat va fi \n\
+\tun executabil jar care ruleaz\u0103 serverul. Op\u0163iunea minify produce\n\
+\tcea mai mic\u0103 imagine posibil\u0103 pentru server. Op\u0163iunea usr creeaz\u0103 un \n\
+\tpachet care con\u0163ine serverul \u015fi aplica\u0163ia, dar nu \u015fi        \n\
+\truntime-ul. Op\u0163iunea implicit\u0103 all produce un pachet de server care       \n\
+\tcon\u0163ine totul.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica\u0163i numele \u015fablonului de folosit la crearea unui nou server. 

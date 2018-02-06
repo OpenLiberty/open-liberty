@@ -37,4 +37,5 @@ instrument.classesExcludes: com/ibm/ws/jbatch/security/resources/*.class
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.authorization;version=latest, \
+	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

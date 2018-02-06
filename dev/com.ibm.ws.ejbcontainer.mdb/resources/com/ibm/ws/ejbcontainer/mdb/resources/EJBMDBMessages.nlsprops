@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verify that an activation spe
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: The message endpoint for the {0} message-driven bean cannot be activated because the {1} destination is not available. The message endpoint will not receive messages until the destination becomes available.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=The server is starting the message-driven bean but is unable to activate the message endpoint because the destination could not be found. The message endpoint will not receive messages until the endpoint can be activated.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Verify that a destination has been configured with the specified name. If the configuration exists, wait for the destination to become available.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: The message endpoint for the {0} message-driven bean in the {1} module of the {2} application was not activated because the {3} activation specification was configured with autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=The message endpoint has not been activated beause the activation specification was configured with autoStart=false.  The message endpoint will be activated when it is issued a resume command.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=No action is required.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: The pause operation did not have any effect because the message endpoint for the {0} bean in the {1} module of the {2} application is already paused.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=The message endpoint can only be paused when it is in an active state.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=No action is required.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: The resume operation did not have any effect because the message endpoint for the {0} bean in the {1} module of the {2} application is already active.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=The message endpoint can only be resumed when it is in an inactive state.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=No action is required.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: The request to pause the message endpoint for the {0} bean in the {1} module of the {2} application did not complete successfully because the endpoint is not active.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=The message endpoint can only be paused when it is in an active state.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Wait until the message endpoint is in an active state before attempting to pause.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: The request to resume the message endpoint for the {0} bean in the {1} module of the {2} application did not complete successfully because the endpoint is not paused.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=The message endpoint can only be resumed when it is in a paused state.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Wait until the message endpoint is in a paused state before attempting to resume.

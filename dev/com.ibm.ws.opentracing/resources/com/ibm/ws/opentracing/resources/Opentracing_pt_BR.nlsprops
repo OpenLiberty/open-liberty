@@ -86,12 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: A Chamada do m\u00e9todo Ope
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=O recurso constr\u00f3i implementa\u00e7\u00f5es de Rastreador com um OpentracingTracerFactory fornecido pelo usu\u00e1rio. O m\u00e9todo OpentracingTracerFactory.newInstance retornou nulo.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine por que o m\u00e9todo OpentracingTracerFactory newInstance fornecido pelo usu\u00e1rio retornou nulo.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: O atributo de padr\u00e3o de um elemento de configura\u00e7\u00e3o opentracing excludeSpans ou includeSpans est\u00e1 em branco.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Um padr\u00e3o de URI v\u00e1lido deve ser especificado e n\u00e3o pode estar em branco.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consulte a documenta\u00e7\u00e3o sobre padr\u00f5es v\u00e1lidos.
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: O atributo de padr\u00e3o {0} de um elemento de configura\u00e7\u00e3o opentracing excludeSpans ou includeSpans \u00e9 um URI inv\u00e1lido (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Um padr\u00e3o de URI v\u00e1lido deve ser especificado. O problema mais comum \u00e9 de caracteres inv\u00e1lidos com codifica\u00e7\u00e3o de URL % n\u00e3o adequada.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consulte o RFC 2396 e certifique-se de que voc\u00ea tem caracteres inv\u00e1lidos codificados por URL % corretamente.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

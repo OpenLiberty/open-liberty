@@ -1,0 +1,10 @@
+<server description="new server">
+    <include location="../fatTestPorts.xml" />
+
+	<!-- Enable features -->
+	<featureManager>
+		<feature>jsp-2.2</feature>
+		<feature>sampleSourceHandler-1.0</feature>
+	</featureManager>
+	<javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+</server>

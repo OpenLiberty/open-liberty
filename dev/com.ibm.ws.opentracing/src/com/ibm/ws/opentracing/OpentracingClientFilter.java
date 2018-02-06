@@ -108,7 +108,11 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         SpanContext nextContext;
 
         if (process) {
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(outgoingURL);
+            // "The default operation name of the new Span for the outgoing request is
+            // <HTTP method>"
+            // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#client-span-name
+            String operationName = clientRequestContext.getMethod();
+            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
 
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), outgoingURL);

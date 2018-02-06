@@ -12,23 +12,28 @@ package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.util.BitSet;
 
-import org.junit.BeforeClass;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import org.jboss.shrinkwrap.api.Archive;
-
-import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
 /**
  *
  */
 public class CDIBuiltInConverterTest extends LoggingTest {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");

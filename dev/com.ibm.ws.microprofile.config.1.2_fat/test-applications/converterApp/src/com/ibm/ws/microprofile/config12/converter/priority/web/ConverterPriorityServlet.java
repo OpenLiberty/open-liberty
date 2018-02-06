@@ -15,8 +15,6 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.config12.converter.priority.beans.ConverterPriorityBean;
-
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -29,11 +27,6 @@ public class ConverterPriorityServlet extends FATServlet {
     @Test
     public void noConversionTest() throws Exception {
         bean.noConversionTest();
-    }
-
-    @Test
-    public void converterPriorityTest() throws Exception {
-        bean.converterPriorityTest();
     }
 
     @Test

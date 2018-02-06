@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
-
 import org.eclipse.persistence.descriptors.ClassExtractor;
 import org.eclipse.persistence.sessions.Record;
 import org.eclipse.persistence.sessions.Session;
@@ -25,7 +24,8 @@ public class JobInstanceEntityExtractor extends ClassExtractor {
     @Override
     public Class extractClassFromRow(Record record, Session session) {
         if (record.containsKey("UPDATETIME")) {
-            return JobInstanceEntityV2.class;
+            // if update time is found we can assume v3 (groupnames)
+            return JobInstanceEntityV3.class;
         } else {
             return JobInstanceEntity.class;
         }

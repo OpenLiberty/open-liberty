@@ -1,0 +1,60 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Export-Package: \
+  org.apache.cxf.microprofile.client.cdi,\
+  org.apache.cxf.microprofile.client;version="3.2.2",\
+  org.apache.cxf.microprofile.client.cdi;version="3.2.2",\
+  org.apache.cxf.microprofile.client.config;version="3.2.2",\
+  org.apache.cxf.microprofile.client.proxy;version="3.2.2",\
+  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.2"
+
+Import-Package: \
+ javax.annotation;version="[1.2,2)",\
+ javax.enterprise.context;version="[1.1,2.1)",\
+ javax.enterprise.context.spi;version="[1.1,2.1)",\
+ javax.enterprise.event;version="[1.1,2.1)",\
+ javax.enterprise.inject;version="[1.1,2.1)",\
+ javax.enterprise.inject.spi;version="[1.1,2.1)",\
+ javax.enterprise.util;version="[1.1,2.1)",\
+ javax.ws.rs;version="[2.0,3)",\
+ javax.ws.rs.client;version="[2.0,3)",\
+ javax.ws.rs.core;version="[2.0,3)",\
+ javax.ws.rs.ext;version="[2.0,3)",\
+ org.apache.cxf;version="[3.1,4)",\
+ org.apache.cxf.common.classloader;version="[3.1,4)",\
+ org.apache.cxf.common.i18n;version="[3.1,4)",\
+ org.apache.cxf.common.util;version="[3.1,4)",\
+ org.apache.cxf.endpoint;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.client;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.client.blueprint;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.impl;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.model;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.provider;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.utils;version="[3.1,4)",\
+ org.apache.cxf.message;version="[3.1,4)",\
+ org.eclipse.microprofile.config;version="[1.0,2)";resolution:=optional,\
+ org.eclipse.microprofile.rest.client;version="[1.0,2)",\
+ org.eclipse.microprofile.rest.client.annotation;version="[1.0,2)",\
+ org.eclipse.microprofile.rest.client.ext;version="[1.0,2)",\
+ org.eclipse.microprofile.rest.client.inject;version="[1.0,2)",\
+ org.eclipse.microprofile.rest.client.spi;version="[1.0,2)",\
+ com.ibm.websphere.ras,\
+ com.ibm.wsspi.classloading,\
+ com.ibm.ws.cdi.extension;resolution:=optional
+# org.apache.cxf.jaxrs.provider.jsrjsonp;version="[3.1,4)",\
+
+
+app-resources= \
+  META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver
+
+Service-Component: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"

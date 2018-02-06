@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: P\u0159\u00edstup k metadat\u016fm datab\u00e1ze 
 META_DATA_EXCEPTION.explanation=P\u0159i pokusu aplika\u010dn\u00edho serveru o z\u00edsk\u00e1n\u00ed objektu metadat pro datab\u00e1zi nebo o p\u0159\u00edstup k n\u011bmu do\u0161lo k v\u00fdjimce.
 META_DATA_EXCEPTION.useraction=Ov\u011b\u0159te, \u017ee jsou povolena v datab\u00e1zi typu back-end povolena metadata.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Aplika\u010dn\u00ed server zak\u00e1zal intern\u00ed pou\u017eit\u00ed fondu p\u0159ipojen\u00ed.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Aplika\u010dn\u00ed server zjistil povoleno ukl\u00e1d\u00e1n\u00ed p\u0159ipojen\u00ed do mezipam\u011bti prost\u0159ednictv\u00edm datab\u00e1ze. Pou\u017eit\u00ed fondu p\u0159ipojen\u00ed na aplika\u010dn\u00edm serveru bude zak\u00e1z\u00e1no.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Nechcete-li zak\u00e1zat pou\u017eit\u00ed fondu p\u0159ipojen\u00ed na aplika\u010dn\u00edm serveru, zaka\u017ete pou\u017eit\u00ed fondu p\u0159ipojen\u00ed pro datab\u00e1zov\u00fd server.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

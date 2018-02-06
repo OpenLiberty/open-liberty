@@ -1,0 +1,9 @@
+<client>
+	<include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>javaeeClient-7.0</feature>
+    </featureManager>
+    
+   <application id="JsonpAppClient" name="JsonpAppClient" type="ear" location="JsonpAppClient.ear"/>
+
+</client>

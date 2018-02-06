@@ -1,0 +1,20 @@
+<server description="Server for testing ejb-3.2 on CDI">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>cdi-1.2</feature>
+        <feature>ejb-3.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
+    </featureManager>
+
+    <application type="ear" location="ejbInLibExt.ear" >
+    	<classloader commonLibraryRef="EjbInLibExtJAR" />
+    </application>
+
+    <library id="EjbInLibExtJAR">
+        <fileset dir="${server.config.dir}/lib" includes="ejbInLibExtJAR.jar" />
+    </library> 
+
+</server>

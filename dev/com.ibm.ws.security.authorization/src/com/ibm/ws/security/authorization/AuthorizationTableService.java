@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,19 @@ public interface AuthorizationTableService {
      *         If there is no resource by the specified resourceName, {@code null} is returned.
      */
     RoleSet getRolesForAccessId(String resourceName, String accessId);
+
+    /**
+     * Get the roles that are mapped to the specified accessId for a given resource.
+     * 
+     * @param resourceName the name of the resource being accessed, used to
+     *            look up the corresponding authorization table. Must not be {@code null}.
+     * @param accessId the accessId in the Subject attempting to access the resource
+     * @param realmName the realm name in the wscredential attempting to access the resource
+     * @return a RoleSet of the roles mapped to the accessId. If no roles are mapped
+     *         to that accessId for the given resource, an empty RoleSet is returned.
+     *         If there is no resource by the specified resourceName, {@code null} is returned.
+     */
+    RoleSet getRolesForAccessId(String resourceName, String accessId, String realmName);
 
     /**
      * Is an authorization table available for the application.

@@ -39,15 +39,29 @@ public class ServiceWrapper {
   
   private static final String ComponentMetaData = "com-ibm-ws-runtime-metadata-ComponentMetaData-V1";
   
+  /*
+   * newFromPushedData - creating new SW for next dispatch/Runnable.  
+   *    Xferred context data and classloaders to new SW.
+   */
   static ServiceWrapper newFromPushedData (AsyncContextImpl asynContext) { // PM90834: added method
       ServiceWrapper orginalServiceWrapper = asynContext.serviceWrapper;
       ServiceWrapper sw = new ServiceWrapper(asynContext);
       sw.setContextData(orginalServiceWrapper.getContextData());
       sw.originalCL = orginalServiceWrapper.originalCL;
+      sw.newCL= orginalServiceWrapper.newCL;             //PI92334 newCL is the current thread's classLoader
+
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {           
+          logger.logp(Level.FINEST, CLASS_NAME, "newFromPushedData","created ServiceWrapper [" + sw +"] , original ServiceWrapper ["+orginalServiceWrapper+"]");
+          logger.logp(Level.FINEST, CLASS_NAME, "newFromPushedData","transferred to new ServiceWrapper, originalCL [" + sw.originalCL +"] , newCL ["+ sw.newCL +"]");
+      }
+
       return sw;
   }
   
   public ServiceWrapper(AsyncContextImpl asyncContext) {
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST))           
+          logger.logp(Level.FINEST, CLASS_NAME, "constructor","creating with async context -> "+ asyncContext);
+      
       this.asyncContext = asyncContext;
   }
 
@@ -59,6 +73,10 @@ public class ServiceWrapper {
       return this.contextData;
   }
 
+  /*
+   * pushContextData - save all the current context data and ClassLoader into the current servlet's ServiceWrapper.  
+   * These will be transferred to the next dispatch/Runnable servlet's ServiceWrapper
+   */
   @SuppressWarnings("deprecation")
   public void pushContextData() {
     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINEST)) { 
@@ -74,6 +92,9 @@ public class ServiceWrapper {
         }
     });
 
+    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+        logger.logp(Level.FINEST, CLASS_NAME, "pushContextData", "thread context class loader [" + this.newCL +"]");
+      }
     
     this.contextData = new HashMap();
     
@@ -123,6 +144,10 @@ public class ServiceWrapper {
             return old;
         }
     });
+    
+    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+        logger.logp(Level.FINEST, CLASS_NAME, "popContextData", "old context class loader [" + this.originalCL + "] , new context class loader ["+ newCL + "]");
+    }
 
     if (this.contextData != null) {
 
@@ -197,8 +222,17 @@ public class ServiceWrapper {
    * @param runnable
    */
   void wrapAndRun (Runnable runnable) { // PM90834 added method
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINEST)) { 
+          logger.entering(CLASS_NAME,"wrapAndRun",runnable);
+      }
+
       try {
           this.popContextData();
+
+          if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+              logger.logp(Level.FINEST, CLASS_NAME, "wrapAndRun", "run with context class loader: " + Thread.currentThread().getContextClassLoader());
+          }
+
           runnable.run();
       } finally {
           try {
@@ -206,6 +240,10 @@ public class ServiceWrapper {
           }finally {
               if (runnable instanceof CompleteRunnable) {
                   asyncContext.notifyITransferContextCompleteState();
+              }
+
+              if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINEST)) { 
+                  logger.exiting(CLASS_NAME,"wrapAndRun",runnable);
               }
           }
       }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,13 @@ public interface WebAppSecurityConfig {
     String getLoginFormURL();
 
     /**
+     * Returns loginErrorURL metadata in webAppSecurity.
+     *
+     * @return String the URL of the global login error page.
+     */
+    String getLoginErrorURL();
+
+    /**
      * Is failover to FORM from CLIENT_CERT allowed?
      *
      * @return {@code true} if FORM failover is allowed
@@ -107,4 +114,19 @@ public interface WebAppSecurityConfig {
     ReferrerURLCookieHandler createReferrerURLCookieHandler();
 
     WebAuthenticatorProxy createWebAuthenticatorProxy();
+
+    /**
+     * Returns the value of overrideHttpAuthenticationMechanism
+     */
+    String getOverrideHttpAuthenticationMechanism();
+
+    /**
+     * Returns the value of loginFormContextRoot
+     */
+    String getLoginFormContextRoot();
+
+    /**
+     * Returns the value of basicAuthRealmName
+     */
+    String getBasicAuthRealmName();
 }

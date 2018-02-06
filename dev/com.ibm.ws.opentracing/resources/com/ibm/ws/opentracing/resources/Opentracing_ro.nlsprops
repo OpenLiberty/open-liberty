@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Invocarea metodei Opentracin
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Caracteristica construie\u015fte implement\u0103ri Tracer cu un OpentracingTracerFactory furnizat de utilizator. Metoda OpentracingTracerFactory.newInstance a returnat null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determina\u0163i de ce metoda OpentracingTracerFactory newInstance furnizat\u0103 de utilizator a returnat null.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: Atributul pattern al unui element de configura\u0163ie Opentracing excludeSpans sau includeSpans este blanc.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Trebuie specificat un model URI \u015fi acesta nu poate fi blanc.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Consulta\u0163i documenta\u0163ia pentru modele valide.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: Atributul pattern {0} al unui element de configura\u0163ie Opentracing excludeSpans sau includeSpans este un URI invalid (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Trebuie specificat un model URI valid. Cea mai obi\u015fnuit\u0103 problem\u0103 este codificarea necorespunz\u0103toare URL cu % pentru caractere invalide.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Consulta\u0163i RFC 2396 \u015fi asigura\u0163i-v\u0103 c\u0103 a\u0163i codificat cu % corect caracterele invalide \u00een URL.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

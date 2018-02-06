@@ -14,13 +14,20 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Pou\u017eit\u00ed: java [JVM volby] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName [akce] [volby]  
-scriptUsage=Pou\u017eit\u00ed: {0} action serverName [volby]
+briefUsage=Pou\u017eit\u00ed: java [volby JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName {0} [volby]  
+scriptUsage=Pou\u017eit\u00ed: {0} {1} serverName [volby]
 
 use.actions=Akce:
 use.options=Volby:
+use.options.gen.desc=\ \ \ \ Pomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
 use.jvmarg=Volby JVM:
+category-key.lifecycle=\u017divotn\u00ed cyklus serveru
+category-key.win=Windows
+category-key.service=Ur\u010dov\u00e1n\u00ed p\u0159\u00ed\u010din probl\u00e9m\u016f
+category-key.help=Informace
+category-key.misc=R\u016fzn\u00e9
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -110,22 +117,36 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tVy\u010dist\u00ed ve\u0161ker\u00e9 informace ulo\u017een\u00e9 v mezipam\u011bti vztahuj\u00edc\u00ed se k t\u00e9to instanci serveru.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="cesta k c\u00edlov\u00e9mu souboru archivu"
-option-desc.archive=\tUr\u010dete c\u00edl archivu, kter\u00fd m\u00e1 vytvo\u0159it akce bal\u00edku nebo \n\
-\tv\u00fdpisu pam\u011bti. C\u00edl lze ur\u010dit bu\u010f jako absolutn\u00ed cestu, nebo jako     \n\
-\trelativn\u00ed cestu. Je-li tato volba vynech\u00e1na, archivn\u00ed soubor bude\n\
-\tvytvo\u0159en ve v\u00fdstupn\u00edm adres\u00e1\u0159i serveru. P\u0159\u00edpona n\u00e1zvu c\u00edlov\u00e9ho \n\
-\tsouboru m\u016f\u017ee ovlivnit form\u00e1t vygenerovan\u00e9ho archivu.       \n\
-\tV\u00fdchoz\u00edm form\u00e1tem archivu pro akci bal\u00edku v opera\u010dn\u00edm syst\u00e9mu z/OS je "pax" \n\
-\ta na v\u0161ech ostatn\u00edch platform\u00e1ch "zip".                                    \n\
-\tForm\u00e1t archivu "jar" vytvo\u0159\u00ed samorozbalovac\u00ed soubor jar podobn\u00fd \n\
-\tp\u016fvodn\u00edmu archivu instala\u010dn\u00edho programu.                                      \n\
-\tForm\u00e1t archivu "jar" v kombinaci s hodnotou "runnable" volby --include\n\
-\tvytvo\u0159\u00ed spustiteln\u00fd soubor jar, kter\u00fd dok\u00e1\u017ee spustit server Liberty ze \n\
-\tsouboru jar s pomoc\u00ed volby java -jar.
+option-desc.dump.archive=\tUr\u010dete c\u00edl archivu, kter\u00fd m\u00e1 b\u00fdt vygenerov\u00e1n akc\u00ed v\u00fdpisu pam\u011bti.       \n\
+\tC\u00edl lze ur\u010dit bu\u010f jako absolutn\u00ed cestu, nebo jako      \n\
+\trelativn\u00ed cestu. Je-li tato volba vynech\u00e1na, vytvo\u0159\u00ed se archivn\u00ed soubor \n\
+\tin v\u00fdstupn\u00edho adres\u00e1\u0159e serveru. P\u0159\u00edpona n\u00e1zvu c\u00edlov\u00e9ho souboru m\u016f\u017ee \n\
+\tnepou\u017e\u00edt form\u00e1t vygenerovan\u00e9ho archivu. V\u00fdchoz\u00edm form\u00e1tem archivu \n\
+\tpro akci bal\u00edku v opera\u010dn\u00edm syst\u00e9mu z/OS je "pax" a na v\u0161ech ostatn\u00edch \n\
+\tplatform\u00e1ch "zip". Form\u00e1t archivu "jar" vytvo\u0159\u00ed samorozbalovac\u00ed soubor JAR podobn\u00fd \n\
+\tp\u016fvodn\u00edmu archivu instala\u010dn\u00edho programu. 
+option-desc.package.archive=\tUr\u010dete c\u00edl archivu, kter\u00fd m\u00e1 b\u00fdt vygenerov\u00e1n akc\u00ed bal\u00edku.    \n\
+\tC\u00edl lze ur\u010dit bu\u010f jako absolutn\u00ed cestu, nebo jako      \n\
+\trelativn\u00ed cestu. Je-li tato volba vynech\u00e1na, vytvo\u0159\u00ed se archivn\u00ed soubor \n\
+\tin v\u00fdstupn\u00edho adres\u00e1\u0159e serveru. P\u0159\u00edpona n\u00e1zvu c\u00edlov\u00e9ho souboru m\u016f\u017ee \n\
+\tnepou\u017e\u00edt form\u00e1t vygenerovan\u00e9ho archivu. V\u00fdchoz\u00edm form\u00e1tem archivu \n\
+\tpro akci bal\u00edku v opera\u010dn\u00edm syst\u00e9mu z/OS je "pax" a na v\u0161ech ostatn\u00edch \n\
+\tplatform\u00e1ch "zip". Form\u00e1t archivu "jar" vytvo\u0159\u00ed samorozbalovac\u00ed soubor JAR podobn\u00fd \n\
+\tp\u016fvodn\u00edmu archivu instala\u010dn\u00edho programu. Form\u00e1t archivu "jar" \n\
+\tv kombinaci s hodnotou "runnable" volby --include vytvo\u0159\u00ed spustiteln\u00fd soubor \n\
+\tjar, kter\u00fd dok\u00e1\u017ee spustit server Liberty ze souboru jar s pomoc\u00ed volby \n\
+\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=hodnota,hodnota,...
-option-desc.include=\tSeznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkami. Platn\u00e9 hodnoty se r\u016fzn\u00ed v z\u00e1vislosti na\n\
-\tp\u0159\u00edslu\u0161n\u00e9 akci.
+option-desc.javadump.include=\tSeznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkami. Platn\u00e9 hodnoty jsou: heap, system \n\
+\tthread.
+option-desc.package.include=\tSeznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkami. Platn\u00e9 hodnoty jsou: all*, usr,   \n\
+\tminify, runnable. Pokud ur\u010d\u00edte spustiteln\u00fd soubor, bude v\u00fdsledn\u00fd bal\u00edk \n\
+\tspustiteln\u00fd soubor jar, kter\u00fd spou\u0161t\u00ed server. Volba minify vytvo\u0159\u00ed\n\
+\tnejmen\u0161\u00ed mo\u017en\u00fd obraz pro server. Volba usr vytvo\u0159\u00ed \n\
+\tbal\u00edk obsahuj\u00edc\u00ed server a aplikaci, ale nikoli \n\
+\tb\u011bhov\u00e9 prost\u0159ed\u00ed. V\u0161echny v\u00fdchoz\u00ed volby vytvo\u0159\u00ed bal\u00edk serveru, kter\u00fd \n\
+\tobsahuje v\u0161e.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="n\u00e1zev_\u0161ablony"
 option-desc.template=\tUr\u010dete n\u00e1zev \u0161ablony, je\u017e m\u00e1 b\u00fdt pou\u017eita k vytvo\u0159en\u00ed nov\u00e9ho serveru. 

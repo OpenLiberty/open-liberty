@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: Dost\u0119p do metadanych bazy danych spowodowa\u
 META_DATA_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek, gdy serwer aplikacji pr\u00f3bowa\u0142 pobra\u0107 obiekt metadanych dla bazy danych lub uzyska\u0107 do niego dost\u0119p.
 META_DATA_EXCEPTION.useraction=Sprawd\u017a, czy metadane s\u0105 w\u0142\u0105czone w zapleczu bazy danych.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Serwer aplikacji wy\u0142\u0105czy\u0142 wewn\u0119trzne zestawianie po\u0142\u0105cze\u0144.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Serwer aplikacji wykry\u0142, \u017ce w\u0142\u0105czono buforowanie po\u0142\u0105czenia przy u\u017cyciu bazy danych. Zestawianie po\u0142\u0105cze\u0144 w serwerze aplikacji zostanie wy\u0142\u0105czone.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Je\u015bli nie chcesz wy\u0142\u0105cza\u0107 zestawiania po\u0142\u0105cze\u0144 w serwerze aplikacji, wy\u0142\u0105cz zestawianie po\u0142\u0105cze\u0144 dla serwera bazy danych.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

@@ -319,7 +319,7 @@ public class H2Headers {
                                       LiteralIndexType type, boolean huffman) throws CompressionException, IOException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.entry(tc, "encodeHeader", "Encoding [" + name + ", " + "value");
+            Tr.entry(tc, "encodeHeader", "Encoding [" + name + ", " + value);
         }
 
         if (table == null || !table.isDynamicTableValid()) {
@@ -454,24 +454,6 @@ public class H2Headers {
             if (isTrailerField) {
                 throw new CompressionException("Psuedo-headers are not allowed in trailers: " + header.toString());
             }
-        }
-        if (isTrailerField) {
-            checkIsValidTrailerHeader(header);
-        }
-    }
-
-    /**
-     * Validate headers in a header block fragment. From the HTTP/1.1 spec, trailer block headers MUST NOT
-     * contain the following fields: Transfer-Encoding, Content-Length, or Trailer
-     *
-     * @param H2HeaderField
-     * @throws CompressionException if the header field was Transfer-Encoding, Content-Length, or Trailer
-     */
-    private static void checkIsValidTrailerHeader(H2HeaderField header) throws CompressionException {
-        String name = header.getName();
-        if ("Content-Length".equalsIgnoreCase(name) || "Transfer-Encoding".equalsIgnoreCase(name) ||
-            "Trailer".equalsIgnoreCase(name)) {
-            throw new CompressionException("Invalid trailer header received: " + header.toString());
         }
     }
 

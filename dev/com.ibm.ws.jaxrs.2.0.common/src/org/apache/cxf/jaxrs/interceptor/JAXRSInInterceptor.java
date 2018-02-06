@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -225,7 +226,8 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
                                                 BUNDLE,
                                                 message.get(Message.REQUEST_URI),
                                                 rawPath);
-                LOG.warning(errorMsg.toString());
+                Level logLevel = JAXRSUtils.getExceptionLogLevel(message, NotFoundException.class);
+                LOG.log(logLevel == null ? Level.FINE : logLevel, errorMsg.toString());
                 Response resp = JAXRSUtils.createResponse(resources, message, errorMsg.toString(),
                                                           Response.Status.NOT_FOUND.getStatusCode(), false);
                 throw ExceptionUtils.toNotFoundException(null, resp);

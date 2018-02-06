@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -29,10 +30,10 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
  * Provides access to services needed by various parts of J2C/RRA code.
- * 
+ *
  * A declarative services component can be completely POJO based
  * (no awareness/use of OSGi services).
- * 
+ *
  * OSGi methods (activate/deactivate) should be protected.
  */
 public class ConnectorServiceImpl extends ConnectorService {
@@ -41,32 +42,32 @@ public class ConnectorServiceImpl extends ConnectorService {
     /**
      * Auth data service.
      */
-    public final AtomicServiceReference<AuthDataService> authDataServiceRef =
-                    new AtomicServiceReference<AuthDataService>("authDataService");
+    public final AtomicServiceReference<AuthDataService> authDataServiceRef = new AtomicServiceReference<AuthDataService>("authDataService");
+
+    /**
+     * Class loader identifier service.
+     */
+    private ClassLoaderIdentifierService classLoaderIdentifierService;
 
     /**
      * Scheduled executor service for deferrable alarms.
      */
-    final AtomicServiceReference<ScheduledExecutorService> deferrableSchedXSvcRef =
-                    new AtomicServiceReference<ScheduledExecutorService>("deferrableScheduledExecutor");
+    final AtomicServiceReference<ScheduledExecutorService> deferrableSchedXSvcRef = new AtomicServiceReference<ScheduledExecutorService>("deferrableScheduledExecutor");
 
     /**
      * Executor service for PoolManager.
      */
-    final AtomicServiceReference<ExecutorService> execSvcRef =
-                    new AtomicServiceReference<ExecutorService>("executor");
+    final AtomicServiceReference<ExecutorService> execSvcRef = new AtomicServiceReference<ExecutorService>("executor");
 
     /**
      * Scheduled executor service for non-deferrable alarms.
      */
-    final AtomicServiceReference<ScheduledExecutorService> nonDeferrableSchedXSvcRef =
-                    new AtomicServiceReference<ScheduledExecutorService>("nonDeferrableScheduledExecutor");
+    final AtomicServiceReference<ScheduledExecutorService> nonDeferrableSchedXSvcRef = new AtomicServiceReference<ScheduledExecutorService>("nonDeferrableScheduledExecutor");
 
     /**
      * RRS XA resource factory service reference.
      */
-    final AtomicServiceReference<Object> rrsXAResFactorySvcRef =
-                    new AtomicServiceReference<Object>("rRSXAResourceFactory");
+    final AtomicServiceReference<Object> rrsXAResFactorySvcRef = new AtomicServiceReference<Object>("rRSXAResourceFactory");
 
     /**
      * Transaction manager service reference.
@@ -76,13 +77,12 @@ public class ConnectorServiceImpl extends ConnectorService {
     /**
      * Variable registry service reference.
      */
-    private final AtomicServiceReference<VariableRegistry> variableRegistrySvcRef =
-                    new AtomicServiceReference<VariableRegistry>("variableRegistry");
+    private final AtomicServiceReference<VariableRegistry> variableRegistrySvcRef = new AtomicServiceReference<VariableRegistry>("variableRegistry");
 
     /**
      * Declarative Services method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context context for this component
      */
     protected void activate(ComponentContext context) {
@@ -99,7 +99,7 @@ public class ConnectorServiceImpl extends ConnectorService {
     /**
      * Declarative Services method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context context for this component
      */
     protected void deactivate(ComponentContext context) {
@@ -111,6 +111,11 @@ public class ConnectorServiceImpl extends ConnectorService {
         nonDeferrableSchedXSvcRef.deactivate(context);
         rrsXAResFactorySvcRef.deactivate(context);
         variableRegistrySvcRef.deactivate(context);
+    }
+
+    @Override
+    public final ClassLoaderIdentifierService getClassLoaderIdentifierService() {
+        return classLoaderIdentifierService;
     }
 
     @Override
@@ -132,7 +137,7 @@ public class ConnectorServiceImpl extends ConnectorService {
      * Utility method that gets the onError setting.
      * This method should be invoked every time it is needed in order to allow for
      * changes to the onError setting.
-     * 
+     *
      * @return the onError setting if configured. Otherwise the default value.
      */
     private final OnError ignoreWarnOrFail(TraceComponent tc) {
@@ -154,7 +159,7 @@ public class ConnectorServiceImpl extends ConnectorService {
      * Ignore, warn, or fail when a configuration error occurs.
      * This is copied from Tim's code in tWAS and updated slightly to
      * override with the Liberty ignore/warn/fail setting.
-     * 
+     *
      * @param tc the TraceComponent from where the message originates
      * @param throwable an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
@@ -199,7 +204,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for setting the AuthDataService reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setAuthDataService(ServiceReference<AuthDataService> ref) {
@@ -209,8 +214,17 @@ public class ConnectorServiceImpl extends ConnectorService {
     }
 
     /**
+     * Declarative Services method for setting the class loader identifier service
+     *
+     * @param svc the service
+     */
+    protected void setClassLoaderIdentifierService(ClassLoaderIdentifierService svc) {
+        classLoaderIdentifierService = svc;
+    }
+
+    /**
      * Declarative Services method for setting the deferrable scheduled executor service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setDeferrableScheduledExecutor(ServiceReference<ScheduledExecutorService> ref) {
@@ -221,7 +235,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for setting the executor service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setExecutor(ServiceReference<ExecutorService> ref) {
@@ -232,7 +246,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for setting the non-deferrable scheduled executor service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setNonDeferrableScheduledExecutor(ServiceReference<ScheduledExecutorService> ref) {
@@ -243,7 +257,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for setting the RRS XA resource factory service implementation reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setRRSXAResourceFactory(ServiceReference<Object> ref) {
@@ -254,7 +268,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setVariableRegistry(ServiceReference<VariableRegistry> ref) {
@@ -265,7 +279,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for unsetting the AuthDataService reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetAuthDataService(ServiceReference<AuthDataService> ref) {
@@ -275,8 +289,17 @@ public class ConnectorServiceImpl extends ConnectorService {
     }
 
     /**
+     * Declarative Services method for unsetting the class loader identifier service
+     *
+     * @param svc the service
+     */
+    protected void unsetClassLoaderIdentifierService(ClassLoaderIdentifierService svc) {
+        classLoaderIdentifierService = null;
+    }
+
+    /**
      * Declarative Services method for unsetting the deferrable scheduled executor service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetDeferrableScheduledExecutor(ServiceReference<ScheduledExecutorService> ref) {
@@ -287,7 +310,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for unsetting the executor service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetExecutor(ServiceReference<ExecutorService> ref) {
@@ -298,7 +321,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for unsetting the non-deferrable scheduled executor service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetNonDeferrableScheduledExecutor(ServiceReference<ScheduledExecutorService> ref) {
@@ -309,7 +332,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for unsetting the RRS XA resource factory service implementation reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetRRSXAResourceFactory(ServiceReference<Object> ref) {
@@ -320,7 +343,7 @@ public class ConnectorServiceImpl extends ConnectorService {
 
     /**
      * Declarative Services method for unsetting the variable registry service implementation reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetVariableRegistry(ServiceReference<VariableRegistry> ref) {

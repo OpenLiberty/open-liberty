@@ -76,6 +76,9 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
     /** Reusable exception used for intra function communication. */
     private SessionClosedException sessionClosedException = null;
 
+    private final Object closeSync = new Object();
+    private boolean closeCalled = false;
+
     /**
      * Constructor.
      *
@@ -1103,23 +1106,33 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "close, vc=" + getVCHash());
         }
-        if (null != this.netBuffer) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Releasing netBuffer during close "
-                             + SSLUtils.getBufferTraceInfo(netBuffer));
+
+        synchronized (closeSync) {
+            if (closeCalled) {
+                return;
             }
-            this.netBuffer.release();
-            this.netBuffer = null;
-        }
-        cleanupDecBuffers();
-        if (unconsumedDecData != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Releasing unconsumed decrypted buffers, "
-                             + SSLUtils.getBufferTraceInfo(unconsumedDecData));
+
+            closeCalled = true;
+            if (null != this.netBuffer) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Releasing netBuffer during close "
+                                 + SSLUtils.getBufferTraceInfo(netBuffer));
+                }
+                this.netBuffer.release();
+                this.netBuffer = null;
             }
-            WsByteBufferUtils.releaseBufferArray(unconsumedDecData);
-            unconsumedDecData = null;
+
+            cleanupDecBuffers();
+            if (unconsumedDecData != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Releasing unconsumed decrypted buffers, "
+                                 + SSLUtils.getBufferTraceInfo(unconsumedDecData));
+                }
+                WsByteBufferUtils.releaseBufferArray(unconsumedDecData);
+                unconsumedDecData = null;
+            }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "close");
         }
@@ -1338,6 +1351,15 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
             }
             exception = ssle;
             cleanupDecBuffers();
+        } catch (Exception up) {
+            synchronized (closeSync) {
+                // if close has been called then assume this exception was due to a race condition
+                // with the close logic and consume the exception without FFDC. Otherwise rethrow
+                // as the logic did before this change.
+                if (!closeCalled) {
+                    throw up;
+                }
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1727,23 +1749,41 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                 Tr.entry(tc, "complete, vc=" + getVCHash());
             }
 
-            // We set a single buffer to be read into, so there will only ever be one. Call getBuffer()
-            netBuffer = tcpRead.getBuffer();
-            // Prepare the input buffer for call to unwrap.
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "just after async read, but before flip\r\n\t"
-                             + SSLUtils.getBufferTraceInfo(netBuffer));
-            }
-            // Remember where the position was before flipping in case more reading necessary.
-            netBuffer.limit(netBuffer.position());
-            netBuffer.position(netBufferMark);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Read bytes: " + netBuffer.remaining());
+            synchronized (closeSync) {
+                if (closeCalled) {
+                    // close will cleanup the buffers, so we have to return at this point
+                    return;
+                }
+
+                // We set a single buffer to be read into, so there will only ever be one. Call getBuffer()
+                netBuffer = tcpRead.getBuffer();
+                // Prepare the input buffer for call to unwrap.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "just after async read, but before flip\r\n\t"
+                                 + SSLUtils.getBufferTraceInfo(netBuffer));
+                }
+                // Remember where the position was before flipping in case more reading necessary.
+                netBuffer.limit(netBuffer.position());
+                netBuffer.position(netBufferMark);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Read bytes: " + netBuffer.remaining());
+                }
             }
 
             // Decrypt the message. Note that since we are already on a new thread,
             // so don't force queue here.
+
+            // added sync, but I'm not willing to hold the lock through-out decryptMessage, to much risk of a deadlock for
+            // a mainline fix/change, decryptMessage will need to catch exceptions and ignore
+            // them if close has been invoked, fixes are ugly sometimes.
             Exception exception = decryptMessage(true);
+            synchronized (closeSync) {
+                if (closeCalled) {
+                    // close will cleanup the buffers, so we have to return at this point
+                    return;
+                }
+            }
+
             if (exception == null) {
                 // Check if has been read.
                 if (bytesRequested > bytesProduced) {
@@ -1807,21 +1847,25 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.entry(tc, "error, vc=" + getVCHash());
             }
-            // Protect future reads from thinking data was read.
-            // Current netbuffers has space to read into between pos and lim.
-            if (null == netBuffer) {
-                // this callback shouldn't be happening
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Unexpected callback, unable to proceed");
+
+            synchronized (closeSync) {
+                // Protect future reads from thinking data was read.
+                // Current netbuffers has space to read into between pos and lim.
+                if ((null == netBuffer) || (closeCalled)) {
+                    // this callback shouldn't be happening
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(tc, "Unexpected callback, unable to proceed");
+                    }
+                    return;
                 }
-                return;
+                netBuffer.limit(netBuffer.position());
+                netBuffer.position(netBufferMark);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Reset buffers after read error: netBuffer:"
+                                 + SSLUtils.getBufferTraceInfo(netBuffer));
+                }
             }
-            netBuffer.limit(netBuffer.position());
-            netBuffer.position(netBufferMark);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Reset buffers after read error: netBuffer:"
-                             + SSLUtils.getBufferTraceInfo(netBuffer));
-            }
+
             // Report error up the chain. Already on a new thread so no special logic needed.
             callback.error(vc, readContext, ioe);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

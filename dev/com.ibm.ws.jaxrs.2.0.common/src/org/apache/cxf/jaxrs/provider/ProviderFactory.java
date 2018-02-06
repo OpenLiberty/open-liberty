@@ -210,7 +210,7 @@ public abstract class ProviderFactory {
                              //new StringProvider<Object>(), // Liberty Change for CXF
                              //new JAXBElementSubProvider(),
                              createJsonpProvider(), // Liberty Change for CXF Begin
-                             createJacksonProvider(),
+                             createJsonBindingProvider(),
                              new IBMMultipartProvider(), // Liberty Change for CXF End
                              new MultipartProvider());
         Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
@@ -247,7 +247,7 @@ public abstract class ProviderFactory {
     }
 
     // Liberty Change for CXF Begin
-    private static Object createJsonpProvider() {
+    public static Object createJsonpProvider() {
 
         // We can only create the JSON-P provider if the jsonp feature is provisioned. This usually
         // requires the user to explicitly add the jsonp-1.0 feature in the server.xml (or some feature
@@ -288,7 +288,7 @@ public abstract class ProviderFactory {
         return c;
     }
 
-    private static Object createJacksonProvider() {
+    public static Object createJsonBindingProvider() {
 
         JacksonJaxbJsonProvider jacksonjaxbprovider = new JacksonJaxbJsonProviderWrapper();
         jacksonjaxbprovider.addUntouchable(DataSource.class);//Let DataSourceProvider handle DataSource.class
@@ -1119,7 +1119,7 @@ public abstract class ProviderFactory {
         }
     }
 
-    static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
+    public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
         Boolean custom1 = p1.isCustom();
         Boolean custom2 = p2.isCustom();
         int result = custom1.compareTo(custom2) * -1;

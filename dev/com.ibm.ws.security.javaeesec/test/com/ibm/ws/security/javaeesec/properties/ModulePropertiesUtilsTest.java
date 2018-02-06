@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -185,8 +186,6 @@ public class ModulePropertiesUtilsTest {
      */
     @Test
     public void testGetHttpAuthenticationMechanismNoMPP() {
-        final String APPLNAME = "ApplicationName";
-        withAppName(APPLNAME);
         mpu.setComponentMetaData(cmd);
         mockery.checking(new Expectations() {
             {
@@ -194,8 +193,12 @@ public class ModulePropertiesUtilsTest {
                 will(returnValue(null));
             }
         });
-        assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1913E  message was not logged", outputMgr.checkForStandardErr("CWWKS1913E:"));
+        try {
+            mpu.getHttpAuthenticationMechanism();
+            fail("RuntimeException should be thrown.");
+        } catch (RuntimeException e) {
+            assertEquals("The message of RuntimeException does not match.", e.getMessage(), "ModulePropertiesProvider object cannot be identified.");
+        }
     }
 
     /**
@@ -203,11 +206,14 @@ public class ModulePropertiesUtilsTest {
      */
     @Test
     public void testGetHttpAuthenticationMechanismMPPUnsatisified() {
-        final String APPLNAME = "ApplicationName";
         mpu.setComponentMetaData(cmd);
-        withAppName(APPLNAME).withModulePropertiesProvider(true, false);
-        assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1913E  message was not logged", outputMgr.checkForStandardErr("CWWKS1913E:"));
+        withModulePropertiesProvider(true, false);
+        try {
+            mpu.getHttpAuthenticationMechanism();
+            fail("RuntimeException should be thrown.");
+        } catch (RuntimeException e) {
+            assertEquals("The message of RuntimeException does not match.", e.getMessage(), "ModulePropertiesProvider object cannot be identified.");
+        }
     }
 
     /**
@@ -215,11 +221,14 @@ public class ModulePropertiesUtilsTest {
      */
     @Test
     public void testGetHttpAuthenticationMechanismMPPambiguous() {
-        final String APPLNAME = "ApplicationName";
         mpu.setComponentMetaData(cmd);
-        withAppName(APPLNAME).withModulePropertiesProvider(false, true);
-        assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1913E  message was not logged", outputMgr.checkForStandardErr("CWWKS1913E:"));
+        withModulePropertiesProvider(false, true);
+        try {
+            mpu.getHttpAuthenticationMechanism();
+            fail("RuntimeException should be thrown.");
+        } catch (RuntimeException e) {
+            assertEquals("The message of RuntimeException does not match.", e.getMessage(), "ModulePropertiesProvider object cannot be identified.");
+        }
     }
 
     /**
@@ -233,8 +242,7 @@ public class ModulePropertiesUtilsTest {
         withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1912E message with application and module name, and list of classeswas not logged",
-                   outputMgr.checkForStandardErr("CWWKS1912E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
+        // since one of multiple modules might not have a HAM configured, there is no error/warning message logged. Only a debug message.
     }
 
     /**
@@ -250,8 +258,7 @@ public class ModulePropertiesUtilsTest {
         withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1915E  message with application and module name, and list of classeswas not logged",
-                   outputMgr.checkForStandardErr("CWWKS1915E:.*" + MODULENAME + ".*" + APPLNAME + ".*String.*String.*"));
+        // since CDI code checks this condition and log the error, only debug output is logged for this case.
     }
 
     /**
@@ -331,19 +338,15 @@ public class ModulePropertiesUtilsTest {
 
     @Test
     public void testGetHttpAuthenticationMechanismOneAuthMechAmbiguousMultipleModuleHAM() {
-        final String APPLNAME = "ApplicationName";
-        final String MODULENAME = "ModuleName";
         final List<Class> list = new ArrayList<Class>();
         list.add(String.class);
         final Set<Bean> hams = new HashSet<Bean>();
         hams.add(bean1);
         hams.add(bean2);
-        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
+        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
         withBeanManager(bm1).withModuleHAM(String.class, hams);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1915E  message with application and module name, and list of classeswas not logged",
-                   outputMgr.checkForStandardErr("CWWKS1915E:.*" + MODULENAME + ".*" + APPLNAME + ".*HttpAuthenticationMechanism.*HttpAuthenticationMechanism.*"));
     }
 
     /*************** support methods **************/

@@ -127,6 +127,10 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Kilka adapter\u00f3w zasob\u00
 J2CA8815.duplicate.resource.adapter.id.explanation=Wiele adapter\u00f3w zasob\u00f3w zawiera ten sam unikalny identyfikator (id) lub zosta\u0142y one skonfigurowane przy u\u017cyciu tego samego unikalnego identyfikatora.
 J2CA8815.duplicate.resource.adapter.id.useraction=Przypisz unikalne identyfikatory do jednego lub kilku adapter\u00f3w zasob\u00f3w, aby wyeliminowa\u0107 konflikt.
 
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: Atrybut identyfikatora elementu resourceAdapter dla modu\u0142u adaptera zasob\u00f3w {0} nie mo\u017ce by\u0107 jednym z identyfikator\u00f3w zarezerwowanych {1}.
+J2CA8816.reserved.resource.adapter.id.explanation=Identyfikator okre\u015blony w konfiguracji lub pochodz\u0105cy z nazwy modu\u0142u jest identyfikatorem zarezerwowanym. Identyfikatory zarezerwowane s\u0105 przeznaczone tylko do u\u017cytku wewn\u0119trznego.
+J2CA8816.reserved.resource.adapter.id.useraction=Podaj niezarezerwowan\u0105 warto\u015b\u0107 dla atrybutu identyfikatora elementu resourceAdapter lub dla nazwy modu\u0142u w konfiguracji serwera.
+
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
 # ---------------------------------

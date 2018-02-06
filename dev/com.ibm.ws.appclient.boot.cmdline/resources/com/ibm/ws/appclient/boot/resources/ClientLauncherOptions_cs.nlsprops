@@ -20,7 +20,11 @@ scriptUsage=Pou\u017eit\u00ed: {0} action clientName [volby]
 
 use.actions=Akce:
 use.options=Volby:
+use.options.gen.desc=\ \ \ \ Pomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
 use.jvmarg=Volby JVM:
+category-key.lifecycle=\u017divotn\u00ed cyklus serveru
+category-key.help=Informace
+category-key.misc=R\u016fzn\u00e9
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -67,17 +71,18 @@ option-desc.clean=\tVy\u010dist\u00ed ve\u0161ker\u00e9 informace ulo\u017een\u0
 option-key.archive=\ \ \ \ --archive="cesta k c\u00edlov\u00e9mu souboru archivu"
 option-desc.archive=\tUr\u010dete c\u00edl archivu, kter\u00fd m\u00e1 vytvo\u0159it akce \n\
 \tbal\u00edku. C\u00edl lze ur\u010dit bu\u010f jako absolutn\u00ed cestu, nebo jako     \n\
-\trelativn\u00ed cestu. Je-li tato volba vynech\u00e1na, archivn\u00ed souboru bude\n\
-\tvytvo\u0159en ve v\u00fdstupn\u00edm adres\u00e1\u0159i klienta. P\u0159\u00edpona n\u00e1zvu c\u00edlov\u00e9ho \n\
-\tsouboru m\u016f\u017ee ovlivnit form\u00e1t vygenerovan\u00e9ho archivu.       \n\
-\tV\u00fdchoz\u00edm form\u00e1tem archivu pro akci bal\u00edku v opera\u010dn\u00edm syst\u00e9mu z/OS je "pax" \n\
-\ta na v\u0161ech ostatn\u00edch platform\u00e1ch "zip".                                    \n\
-\tForm\u00e1t archivu "jar" vytvo\u0159\u00ed samorozbalovac\u00ed soubor JAR, kter\u00fd je obdobou   \n\
-\tp\u016fvodn\u00edho archivu instala\u010dn\u00edho programu
+\trelativn\u00ed cestu. Je-li tato volba vynech\u00e1na, vytvo\u0159\u00ed se archiv \n\
+\t v\u00fdstupn\u00edho adres\u00e1\u0159e klienta. P\u0159\u00edpona n\u00e1zvu c\u00edlov\u00e9ho souboru m\u016f\u017ee \n\
+\tnepou\u017e\u00edt form\u00e1t vygenerovan\u00e9ho archivu. V\u00fdchoz\u00edm form\u00e1tem archivu \n\
+\tpro akci bal\u00edku v opera\u010dn\u00edm syst\u00e9mu z/OS je "pax" a na v\u0161ech ostatn\u00edch \n\
+\tplatform\u00e1ch "zip". Form\u00e1t archivu "jar" vytvo\u0159\u00ed samorozbalovac\u00ed soubor JAR podobn\u00fd \n\
+\tp\u016fvodn\u00edmu archivu instala\u010dn\u00edho programu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=hodnota,hodnota,...
-option-desc.include=\tSeznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkami. Platn\u00e9 hodnoty se r\u016fzn\u00ed v z\u00e1vislosti na\n\
-\tp\u0159\u00edslu\u0161n\u00e9 akci.
+option-desc.include=\tSeznam hodnot odd\u011blen\u00fdch \u010d\u00e1rkami. Platn\u00e9 hodnoty jsou: all*, usr,   \n\
+\tminify. Volba usr vytvo\u0159\u00ed bal\u00edk, kter\u00fd obsahuje server    \n\
+\ta aplikaci, ale nikoli b\u011bhov\u00e9 prost\u0159ed\u00ed. V\u0161echny v\u00fdchoz\u00ed volby vytvo\u0159\u00ed bal\u00edk \n\
+\tklienta, kter\u00fd obsahuje v\u0161e.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="n\u00e1zev_\u0161ablony"
 option-desc.template=\tUr\u010dete n\u00e1zev \u0161ablony, je\u017e m\u00e1 b\u00fdt pou\u017eita k vytvo\u0159en\u00ed nov\u00e9ho klienta. 

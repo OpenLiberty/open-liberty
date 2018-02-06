@@ -42,3 +42,41 @@ JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Pokud n\u00e1zev oblasti vy\u017eaduj
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Implementace pro modul {0} v aplikaci {1} se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Seznam t\u0159\u00edd je {2}. S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed se jedn\u00e1 o probl\u00e9m balen\u00ed aplikace. Ujist\u011bte se, \u017ee v ka\u017ed\u00e9m modulu existuje pouze jedna implementace HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Tato situace nen\u00ed povolena.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Ujist\u011bte se, \u017ee v aplikaci pro ka\u017ed\u00fd modul existuje pouze jedna implementace HttpAuthenticationMechanism.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Do\u0161lo k chyb\u011b p\u0159i \u0159e\u0161en\u00ed konfigurace ''{0}'' pro \u00falo\u017ei\u0161t\u011b identit. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. V\u00fdchoz\u00ed hodnota je ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Konfiguraci \u00falo\u017ei\u0161t\u011b identit nelze vy\u0159e\u0161it na platnou hodnotu.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Pou\u017e\u00edv\u00e1te-li v\u00fdrazy EL, ujist\u011bte se, \u017ee jsou platn\u00e9 a \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Parametr hashAlgorithm poskytnut\u00fd pro algoritmus hashAlgorithm {0} je v chybn\u00e9m form\u00e1tu. P\u0159ijat\u00fd parametr je {1}. Po\u017eadovan\u00fd form\u00e1t je n\u00e1zev=hodnota.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Seznam parametr\u016f hashAlgorithm je v chybn\u00e9m form\u00e1tu a nelze jej analyzovat.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Opravte prvek hashAlgorithmParameters v anotaci DatabaseIdentityStore.
+
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: Dotaz ''{1}'' pro z\u00edsk\u00e1n\u00ed volaj\u00edc\u00edho {0} se nezda\u0159il v \u00falo\u017ei\u0161ti DatabaseIdentityStore s chybou: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=Vyhled\u00e1v\u00e1n\u00ed poskytnut\u00e9ho volaj\u00edc\u00edho se nezda\u0159ilo s chybou.
+JAVAEESEC_WARNING_GEN_DB.useraction=Zkontrolujte uvedenou chybu.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Dotaz ''{1}'' pro z\u00edsk\u00e1n\u00ed skupiny pro volaj\u00edc\u00edho {0} se nezda\u0159ilo v \u00falo\u017ei\u0161ti DatabaseIdentityStore. D\u00edl\u010d\u00ed seznam skupin je {2}. Chyba: {3}
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Vyhled\u00e1v\u00e1n\u00ed skupin pro volaj\u00edc\u00edho se nezda\u0159ilo s chybou.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Zkontrolujte uvedenou chybu. Vr\u00e1t\u00ed se d\u00edl\u010d\u00ed seznam skupin.
+
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro IdentityStore nen\u00ed pov\u011b\u0159en\u00edm UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro IdentityStore nen\u00ed pov\u011b\u0159en\u00edm UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=Zrevidujte typ pov\u011b\u0159en\u00ed p\u0159edan\u00e9ho do \u00falo\u017ei\u0161t\u011b IdentityStore.
+
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: Do \u00falo\u017ei\u0161t\u011b DatabaseIdentityStore bylo poskytnuto heslo s hodnotou null a nelze jej ov\u011b\u0159it.
+JAVAEESEC_WARNING_NULL_PWD.explanation=Pov\u011b\u0159en\u00ed UsernamePasswordCredential obsahovalo heslo s hodnotou null.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Zadejte platn\u00e9 heslo.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Objekt typu hash algorithm bean nebyl pro t\u0159\u00eddu {0} nalezen.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Ha\u0161ovac\u00ed algoritmus uveden\u00fd v prvku hashAlgorithm v anotaci DatabaseIdentityStore nebyl nalezen.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=P\u0159idejte vlastn\u00ed ha\u0161ovac\u00ed algoritmus jako objekt typu bean, kter\u00fd je dostupn\u00fd pro aplikaci.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Dotaz ''{1}'' nevr\u00e1til heslo pro volaj\u00edc\u00edho {0} v \u00falo\u017ei\u0161ti DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=Dotaz nevr\u00e1til heslo pro poskytnut\u00fd dotaz volaj\u00edc\u00edho.
+JAVAEESEC_WARNING_NO_PWD.useraction=Pokud bylo o\u010dek\u00e1v\u00e1no heslo, zkontrolujte dotaz volaj\u00edc\u00edho a obsah datab\u00e1ze.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Dotaz ''{1}'' vr\u00e1til v\u00edce v\u00fdsledk\u016f pro volaj\u00edc\u00edho {0} v \u00falo\u017ei\u0161ti DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Pro po\u017eadovan\u00e9ho volaj\u00edc\u00edho bylo vr\u00e1ceno v\u00edce v\u00fdsledk\u016f. Dotaz volaj\u00edc\u00edho by m\u011bl vr\u00e1tit pouze jeden v\u00fdsledek.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Zrevidujte dotaz volaj\u00edc\u00edho a obsah datab\u00e1ze. Zm\u011b\u0148te dotaz volaj\u00edc\u00edho tak, aby vr\u00e1til jeden v\u00fdsledek.
+
+#>>>>>>> Add messages for IdentityStore

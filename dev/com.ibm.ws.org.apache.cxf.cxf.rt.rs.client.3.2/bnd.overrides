@@ -17,5 +17,6 @@ Import-Package: \
 
 Export-Package: com.ibm.ws.jaxrs21.clientconfig,\
   org.apache.cxf.jaxrs.client,\
+  org.apache.cxf.jaxrs.client.blueprint;version=3.2.2,\
   org.apache.cxf.jaxrs.client.spec
   

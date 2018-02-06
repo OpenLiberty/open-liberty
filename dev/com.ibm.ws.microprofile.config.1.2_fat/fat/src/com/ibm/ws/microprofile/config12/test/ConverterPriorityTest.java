@@ -51,7 +51,7 @@ public class ConverterPriorityTest extends FATServletClient {
         // Include the 'app1.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config12.converter.priority.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config12.converter.*");
 
         server.startServer();
     }

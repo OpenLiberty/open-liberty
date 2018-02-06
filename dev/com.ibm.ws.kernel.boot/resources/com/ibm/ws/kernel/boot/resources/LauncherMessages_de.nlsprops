@@ -665,6 +665,14 @@ error.zosProcStart.jobname.invalid=CWWKE0943E: Die z/OS-STC-Prozedur {0} konnte 
 error.zosProcStart.jobname.invalid.explanation=Der mit der Eigenschaft WLP_ZOS_JOBNAME in der Datei server.env angegebene STC-Jobname ist nicht g\u00fcltig. Der Jobname darf nicht l\u00e4nger als acht Zeichen sein und kein Komma enthalten.
 error.zosProcStart.jobname.invalid.useraction=Stellen Sie sicher, dass der Jobname nicht l\u00e4nger als acht Zeichen ist und dass er kein Komma enth\u00e4lt.
 
+error.server.pause.command.port.disabled=CWWKE0944E: Es wurde eine Anforderung zum Anhalten f\u00fcr den Server {0} empfangen, aber der Serverbefehlsport ist inaktiviert. Die Anforderung kann nicht verarbeitet werden. Aktivieren Sie den Befehlsport und wiederholen Sie die Operation.
+error.server.pause.command.port.disabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich. Der Befehlsport f\u00fcr diesen Server ist inaktiviert, daher konnte die Anforderung zum Anhalten nicht verarbeitet werden. Beachten Sie, dass der Befehlsport standardm\u00e4\u00dfig inaktiviert ist, wenn ein Server als gestartete Task unter z/OS gestartet wird.
+error.server.pause.command.port.disabled.useraction=Aktivieren Sie den Befehlsport f\u00fcr diesen Server. Wenn der Server als gestartete Task unter z/OS ausgef\u00fchrt wird, k\u00f6nnen Sie diese Anforderung zum Anhalten alternativ auch \u00fcber die Bedienerkonsole anfordern.
+
+error.server.resume.command.port.disabled=CWWKE0945E: Es wurde eine Anforderung zur Wiederaufnahme f\u00fcr den Server {0} empfangen, aber der Serverbefehlsport ist inaktiviert. Die Anforderung kann nicht verarbeitet werden. Aktivieren Sie den Befehlsport und wiederholen Sie die Operation.
+error.server.resume.command.port.disabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich. Der Befehlsport f\u00fcr diesen Server ist inaktiviert, daher konnte die Anforderung zur Wiederaufnahme nicht verarbeitet werden. Beachten Sie, dass der Befehlsport standardm\u00e4\u00dfig inaktiviert ist, wenn ein Server als gestartete Task unter z/OS gestartet wird.
+error.server.resume.command.port.disabled.useraction=Aktivieren Sie den Befehlsport f\u00fcr diesen Server. Wenn der Server als gestartete Task unter z/OS ausgef\u00fchrt wird, k\u00f6nnen Sie diese Anforderung zur Wiederaufnahme alternativ auch \u00fcber die Bedienerkonsole anfordern.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

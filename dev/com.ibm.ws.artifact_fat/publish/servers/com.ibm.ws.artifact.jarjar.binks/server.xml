@@ -1,0 +1,13 @@
+<server description="JAR Needer Host Server - useJarUrls">
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="jarneeder.war"/>
+	
+  <classloading useJarUrls="true"/> 
+
+</server>

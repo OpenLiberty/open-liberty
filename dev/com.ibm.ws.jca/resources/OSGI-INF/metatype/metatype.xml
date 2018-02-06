@@ -27,6 +27,7 @@
   <AD id="bootstrapContext.target"            type="String"  default="(id=${properties.0.resourceAdapterConfig.id})" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="destination.target"                 type="String"  default="(service.pid=${properties.0.destinationRef})" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="maxEndpoints"                       type="Integer" required="false" name="%maxEndpoints" description="%maxEndpoints.desc" min="0" default="500"/>
+  <AD id="autoStart"                          type="Boolean" required="false" default="true" name="%autoStart" description="%autoStart.desc"/>
  </OCD>
 
  <!-- Admin Object -->

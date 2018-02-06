@@ -1,1 +1,1 @@
-com.ibm.ws.microprofile.config.archaius.impl.ArchaiusConfigProviderResolverImpl
+com.ibm.ws.microprofile.config.archaius.ConfigProviderResolverImpl

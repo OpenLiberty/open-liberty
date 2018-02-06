@@ -56,6 +56,9 @@ public class SSLUtils {
         emptyBuffer.limit(0);
     }
 
+    /** Inteface for grizzly-npn and jetty-alpn to support ALPN on JDK8. We should get rid of this when JDK9 is in use. */
+    private static SSLAlpnNegotiatorJdk8 JDK8AlpnNegotiator = new SSLAlpnNegotiatorJdk8();
+
     /**
      * Shut down the engine for the given SSL connection link.
      *
@@ -648,6 +651,9 @@ public class SSLUtils {
         TCPWriteRequestContext deviceWriteContext = connLink.getDeviceWriteInterface();
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
+        // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
+        JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+
         int amountToWrite = 0;
         boolean firstPass = true;
         HandshakeStatus hsstatus = HandshakeStatus.NEED_WRAP;
@@ -1133,6 +1139,7 @@ public class SSLUtils {
             Tr.entry(tc, "getOutboundSSLEngine, host=" + host + ", port=" + port);
         }
         SSLEngine engine = context.createSSLEngine(host, port);
+
         configureEngine(engine, FlowType.OUTBOUND, config);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getOutboundSSLEngine, hc=" + engine.hashCode());
@@ -1154,6 +1161,7 @@ public class SSLUtils {
         }
         // Create a new SSL engine for this connection.
         SSLEngine engine = context.createSSLEngine();
+
         configureEngine(engine, type, config);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getSSLEngine, hc=" + engine.hashCode());

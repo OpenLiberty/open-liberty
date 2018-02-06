@@ -44,6 +44,7 @@ public class ClassloadingTest extends FATServletClient {
         // Build test app with JSF (Mojarra) and a test servlet
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP, "jsf.container.bean", "jsf.container.nojsf.web");
         FATSuite.addMojarra(jsfApp);
+        jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources");
         ShrinkHelper.exportAppToServer(server, jsfApp);
         server.addInstalledAppForValidation(JSF_APP);
 
@@ -55,6 +56,7 @@ public class ClassloadingTest extends FATServletClient {
                         .addAsModule(ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
                                         .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
                                         .addAsLibraries(new File("publish/files/mojarra/").listFiles()));
+        jsfEarApp = (EnterpriseArchive) ShrinkHelper.addDirectory(jsfEarApp, "test-applications/jsfApp/resources");
         ShrinkHelper.exportAppToServer(server, jsfEarApp);
 
         // Create some jar that we can use as a library

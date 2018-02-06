@@ -1,0 +1,22 @@
+<client description="new client">
+	<featureManager>
+		<feature>javaeeClient-7.0</feature>
+	</featureManager>
+
+<!--
+	<mailSession>
+		<mailSessionID>testPop3MailSession</mailSessionID>
+		<jndiName>TestingApp/POP3MailSessionServlet/testPOP3MailSession</jndiName>
+		<description>mailSession for testing Pop3 protocol</description>
+		<storeProtocol>pop3</storeProtocol>
+		<host>testserver.com</host>
+		<user>test</user>
+		<password>test</password>
+		<from>smtp@testserver.com</from>
+		<property name="mail.pop3.host" value="localhost" />
+		<property name="mail.pop3.port" value="3110" />
+	</mailSession>
+-->
+	
+	<enterpriseApplication location="JavaMailClientEAR.ear" clientModule="JavaMailClientApp.jar" />
+</client>

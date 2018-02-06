@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package web.war.servlets.nojavaeesec;
 
-import web.jar.base.FlexibleBaseServlet;
+import web.jar.base.FlexibleBaseNoJavaEESecServlet;
 
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.HttpMethodConstraint;
@@ -20,7 +20,7 @@ import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
 
 @WebServlet("/NoJavaEESecServlet")
 @ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY), httpMethodConstraints = {@HttpMethodConstraint(value = "GET", rolesAllowed = "group1")})
-public class NoJavaEESecServlet extends FlexibleBaseServlet {
+public class NoJavaEESecServlet extends FlexibleBaseNoJavaEESecServlet {
     private static final long serialVersionUID = 1L;
 
     public NoJavaEESecServlet() {
@@ -33,6 +33,5 @@ public class NoJavaEESecServlet extends FlexibleBaseServlet {
         mySteps.add(new WritePublicCredentialsStep());
         mySteps.add(new WriteRunAsSubjectStep());
         mySteps.add(new WriteCookiesStep());
-        mySteps.add(new WriteJSR375Step());
     }
 }

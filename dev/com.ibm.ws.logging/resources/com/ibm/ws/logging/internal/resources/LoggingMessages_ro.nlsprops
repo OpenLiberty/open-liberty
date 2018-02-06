@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Urm\u0103toarele mesaje sunt ascunse pen
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Mesajele care sunt configurate pentru a fi ascunse nu sunt scrise \u00een fi\u015fierele console.log \u015fi messages.log. Ele sunt scrise la fi\u015fierul trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nu este necesar\u0103 nicio ac\u0163iune
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Formatul de ie\u015fire messages.log a fost actualizat acum la '' {0} ''.
+MESSAGE_FORMAT_UPDATED.explanation=Formatul de ie\u015fire pentru messages.log a fost actualizat acum.
+MESSAGE_FORMAT_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Formatul de ie\u015fire al consolei a fost actualizat acum la ''{0}''.
+CONSOLE_FORMAT_UPDATED.explanation=Formatul de ie\u015fire pentru consol\u0103 a fost actualizat acum.
+CONSOLE_FORMAT_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

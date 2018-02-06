@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2015 IBM Corporation and others.
+ * Copyright (c) 2001, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,16 +31,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
-import com.ibm.ws.jdbc.timedoperations.WSJdbcObjectHelper;
 import com.ibm.ws.rsadapter.AdapterUtil;
-import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.wsspi.uow.UOWManager; 
 import com.ibm.wsspi.uow.UOWManagerFactory; 
 
 /**
  * This class wraps a java.sql.Statement object.
  */
-public class WSJdbcStatement extends WSJdbcObject implements Statement, WSJdbcObjectHelper {
+public class WSJdbcStatement extends WSJdbcObject implements Statement {
     private static final TraceComponent tc = Tr.register(
                                                          WSJdbcStatement.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
@@ -673,23 +671,6 @@ public class WSJdbcStatement extends WSJdbcObject implements Statement, WSJdbcOb
     final protected Wrapper getJDBCImplObject() 
     {
         return stmtImpl;
-    }
-
-    // TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
-    /**
-     * @see com.ibm.ws.jdbc.timedoperations.WSJdbcObjectHelper#getUniqueIdentifier()
-     * 
-     * @return jndiName if available, otherwise the xpath style unique identifier
-     */
-    public String getUniqueIdentifier(){
-        DSConfig config = dsConfig.get();
-        return config.jndiName == null ? config.id : config.jndiName;
-    }    
-
-    //TODO remove once WSJdbcObjectHelper has been fully replaced with TimedOpsAccessor
-    public String getSql(){
-        return null; //dummy method, not used 
-        
     }
 
     public int getMaxFieldSize() throws SQLException {

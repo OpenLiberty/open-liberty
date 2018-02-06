@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=To enable the HttpAuthenticat
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: The realm name for basic authentication is not set, so the default value, defaultRealm, was used.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Because realm name for the basic authentication is not defined, the realm name was set to the default value of defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=To set the realm name, define it on a BasicAuthenticationMechanismDefinition annotation in the application.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=To set the realm name, define it on a BasicAuthenticationMechanismDefinition annotation in the application. Alternatively, when the overrideHttpAuthenticationMechanism attribute is set as BASIC, set the value of attribute basicAuthenticationMechanismRealmName.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: The value {0} of the configuration parameter {1} is invalid.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The value of the configuration parameter is not valid.
@@ -61,6 +61,14 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that t
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: The hashed data is invalid. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The hashed value in the database is not valid.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Make sure that the hashed data in the database was hashed by the hash algorithm which PasswordHash implementation class supports.
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: The attribute {0} is not set in webAppSecurity element, the container overrides HttpAuthenticationMechanism will not be functioning properly."
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=Because the required attribute is not set, the container overrides HttpAuthenticationMechanism form authentication is not functioning.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=the attribute in the message needs to be set.
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: The value {0} of contextRootForFormAuthenticationMechanism attribute does not match the context root value {1} of attribute {2} in webAppSecurity element, the container overrides HttpAuthenticationMechanism will not be functioning properly."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Because the context root value does not match with the specified attribute, the container overrides HttpAuthenticationMechanism form authentication is not functioning."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=the attribute in the message needs to match with the specified context root.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=The iterations {0} is not a number.

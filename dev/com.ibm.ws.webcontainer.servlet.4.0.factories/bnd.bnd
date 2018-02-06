@@ -24,12 +24,8 @@ Service-Component: \
   com.ibm.ws.webcontainer.v40.dd; \
     implementation:=com.ibm.ws.javaee.version.ServletVersion; \
     provide:=com.ibm.ws.javaee.version.ServletVersion; \
-    properties:="version:Integer=40", \
-  com.ibm.ws.webcontainer.v40.httpTransportBehavior; \
-    implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
-    provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
-    properties:="useEE7Streams:Boolean=true"
-    
+    properties:="version:Integer=40"
+
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
@@ -55,7 +51,7 @@ Import-Package: \
     *
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
- 
+
 -buildpath: \
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\
@@ -73,5 +69,5 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.webcontainer.servlet.4.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.ws.resource;version=latest
-    
+    com.ibm.ws.resource;version=latest
+
