@@ -110,7 +110,7 @@ public class CacheStoreService implements SessionStoreService {
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
-        if (Boolean.TRUE.equals(configurationProperties.get("useMultiRowSchema")))
+        if ("true".equals(configurationProperties.get("useMultiRowSchema")))
             smc.setUsingMultirow(true); // TODO temporary code for experimenting with cache entry per session property
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));

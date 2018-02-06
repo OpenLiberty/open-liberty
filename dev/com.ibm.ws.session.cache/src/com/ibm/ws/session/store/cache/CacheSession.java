@@ -13,7 +13,6 @@ package com.ibm.ws.session.store.cache;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.logging.Level;
 
 import javax.transaction.UserTransaction;
 
@@ -79,6 +78,10 @@ public class CacheSession extends BackedSession {
                 refillAttrNames(swappable);
             }
         }
+    }
+
+    boolean getPopulatedAppData() {
+        return populatedAppData;
     }
 
     /**

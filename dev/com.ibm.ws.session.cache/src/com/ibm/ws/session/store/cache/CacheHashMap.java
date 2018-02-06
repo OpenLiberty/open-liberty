@@ -27,6 +27,7 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
 import com.ibm.ws.session.store.cache.serializable.SessionData;
 import com.ibm.ws.session.store.cache.serializable.SessionKey;
+import com.ibm.ws.session.store.cache.serializable.SessionPropertyKey;
 import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStore;
@@ -83,7 +84,7 @@ public class CacheHashMap extends BackedHashMap {
         if (sessionData == null)
             return null;
 
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         byte[] bytes = sessionData.getBytes();
 
         if (bytes != null && bytes.length > 0) {
@@ -102,7 +103,7 @@ public class CacheHashMap extends BackedHashMap {
 
         SessionStatistics pmiStats = getIStore().getSessionStatistics();
         if (pmiStats != null) {
-            pmiStats.readTimes(bytes == null ? 0 : bytes.length, System.currentTimeMillis() - startTime);
+            pmiStats.readTimes(bytes == null ? 0 : bytes.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
         }
 
         return tmp;
@@ -157,11 +158,52 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * Copied from DatabaseHashMap.
+     * For multirow db, attempts to get the requested attr from the db
+     * Returns null if attr doesn't exist or we're not running multirow
+     * We consider populatedAppData as well
+     * populatedAppData is true when session is new or when the entire session is read into memory
+     * in those cases, we don't want to go to the backend to retrieve the attribute
+     * 
      * @see com.ibm.ws.session.store.common.BackedHashMap#loadOneValue(java.lang.String, com.ibm.ws.session.store.common.BackedSession)
      */
     @Override
-    protected Object loadOneValue(String id, BackedSession bs) {
-        throw new UnsupportedOperationException();
+    protected Object loadOneValue(String attrName, BackedSession sess) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        Object value = null;
+        if (_smc.isUsingMultirow() && !((CacheSession) sess).getPopulatedAppData()) {
+            String id = sess.getId();
+            String appName = getIStore().getId();
+
+            SessionPropertyKey key = new SessionPropertyKey(id, attrName);
+            byte[] bytes = cacheStoreService.getCache(appName).get(key);
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, key.toString(), bytes.length);
+
+            if (bytes != null && bytes.length > 0) {
+                long startTime = System.nanoTime();
+
+                BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
+                try {
+                    try {
+                        value = ((CacheStore) getIStore()).getLoader().loadObject(in);
+                    } finally {
+                        in.close();
+                    }
+                } catch (ClassNotFoundException | IOException x) {
+                    FFDCFilter.processException(x, getClass().getName(), "197", sess);
+                    throw new RuntimeException(x);
+                }
+
+                SessionStatistics pmiStats = getIStore().getSessionStatistics();
+                if (pmiStats != null) {
+                    pmiStats.readTimes(bytes == null ? 0 : bytes.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                }
+            }
+        }
+        return value;
     }
 
     /**
