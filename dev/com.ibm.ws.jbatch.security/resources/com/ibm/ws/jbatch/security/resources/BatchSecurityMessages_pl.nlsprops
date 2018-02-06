@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Je\u015bli u\u017cytkownik nie jest 
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: U\u017cytkownik {0} nie jest autoryzowany do uruchamiania zada\u0144 wsadowych.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=U\u017cytkownik nie jest cz\u0119\u015bci\u0105 roli zadania wsadowego, kt\u00f3ra jest autoryzowana do uruchamiania zada\u0144 wsadowych.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Je\u015bli u\u017cytkownik nie jest autoryzowany do uruchamiania zada\u0144 wsadowych, nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli u\u017cytkownik jest autoryzowany do wykonywania \u017c\u0105danej operacji zadania wsadowego, nale\u017cy skonfigurowa\u0107 autoryzacj\u0119 zabezpiecze\u0144 zada\u0144 wsadowych i doda\u0107 tego u\u017cytkownika do wymaganych r\u00f3l zada\u0144 wsadowych.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: Odmowa dost\u0119pu do instancji zadania {0}. Dla zadania zdefiniowano nazw\u0119 grupy operacji, a u\u017cytkownik {1} ma uprawnienie batchGroupMonitor lub batchGroupAdmin. Jednak ten u\u017cytkownik nie jest cz\u0142onkiem nast\u0119puj\u0105cych skonfigurowanych grup: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=U\u017cytkownik batchGroupAdmin lub batchGroupMonitor nie nale\u017cy do grupy zabezpiecze\u0144, z kt\u00f3r\u0105 powi\u0105zano to zadnie.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Je\u015bli u\u017cytkownik powinien mie\u0107 uprawnienia dost\u0119pu grupy do tego zadania, dodaj go do odpowiedniej grupy zabezpiecze\u0144.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: Odmowa dost\u0119pu do zadania {0}. Dla zadania zdefiniowano nazw\u0119 grupy operacji {1}, a u\u017cytkownik nie ma uprawnienia batchGroupMonitor lub batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=U\u017cytkownik nie jest cz\u0119\u015bci\u0105 \u017cadnych r\u00f3l zada\u0144 wsadowych grupy i nie jest autoryzowany do wykonywania operacji zada\u0144 wsadowych.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Je\u015bli u\u017cytkownik nie jest autoryzowany, aby by\u0142 u\u017cytkownikiem zadania wsadowego grupy, nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli u\u017cytkownik jest autoryzowany do wykonywania operacji zada\u0144 wsadowych grupy i s\u0105 w\u0142\u0105czone zabezpieczenia zada\u0144 wsadowych, nale\u017cy skonfigurowa\u0107 autoryzacj\u0119 zabezpiecze\u0144 zada\u0144 wsadowych i doda\u0107 tego u\u017cytkownika do wymaganych r\u00f3l zada\u0144 wsadowych grupy.

@@ -194,3 +194,18 @@ INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=\u00cenl\u0103tura\u0163i clasa 
 INVALID_CLASS_CNTR4115E=CNTR4115E: Elementul <ejb-class> din fi\u015fierul ejb-jar.xml specific\u0103 numele clasei {0} pentru bean-ul de \u00eentreprindere {1}, dar fi\u015fierul clasei nu a fost g\u0103sit.
 INVALID_CLASS_CNTR4115E.explanation=Fie fi\u015fierul ejb-jar.xml specific\u0103 un nume de clas\u0103 invalid, fie fi\u015fierul clasei nu a fost \u00eempachetat \u00een aplica\u0163ie.
 INVALID_CLASS_CNTR4115E.useraction=Corecta\u0163i numele clasei \u00een fi\u015fierul ejb-jar.xml sau \u00eempacheta\u0163i fi\u015fierul clasei \u00een aplica\u0163ie.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W

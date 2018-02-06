@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Pokud u\u017eivatel nem\u00e1 autori
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: U\u017eivatel {0} nem\u00e1 autorizaci ke spou\u0161t\u011bn\u00ed d\u00e1vkov\u00fdch \u00faloh.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=U\u017eivatel nen\u00ed obsazen v \u017e\u00e1dn\u00e9 roli d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, kter\u00e1 m\u00e1 autorizaci ke spou\u0161t\u011bn\u00ed d\u00e1vkov\u00fdch \u00faloh.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Pokud u\u017eivatel nem\u00e1 autorizaci ke spu\u0161t\u011bn\u00ed d\u00e1vkov\u00fdch \u00faloh, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud m\u00e1 u\u017eivatel autorizaci k prov\u00e1d\u011bn\u00ed po\u017eadovan\u00e9 d\u00e1vkov\u00e9 operace, nakonfigurujte p\u0159\u00edslu\u0161nou autorizaci v r\u00e1mci zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed a p\u0159idejte tohoto u\u017eivatele do po\u017eadovan\u00fdch rol\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: P\u0159\u00edstup k instanci \u00falohy {0} byl odep\u0159en. \u00daloha m\u00e1 nadefinov\u00e1n n\u00e1zev provozn\u00ed skupiny a u\u017eivatel {1} m\u00e1 opr\u00e1vn\u011bn\u00ed batchGroupMonitor nebo batchGroupAdmin; nicm\u00e9n\u011b dan\u00fd u\u017eivatel nen\u00ed \u010dlenem n\u00e1sleduj\u00edc\u00edch nakonfigurovan\u00fdch skupin: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=U\u017eivatel batchGroupAdmin nebo batchGroupMonitor nen\u00ed sou\u010d\u00e1st skupiny zabezpe\u010den\u00ed, ke kter\u00e9 je tato \u00faloha p\u0159idru\u017eena.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Jestli\u017ee by m\u011bl m\u00edt u\u017eivatel skupinov\u00e1 p\u0159\u00edstupov\u00e1 pr\u00e1va k t\u00e9to \u00faloze, p\u0159idejte u\u017eivatele do p\u0159\u00edslu\u0161n\u00e9 skupiny zabezpe\u010den\u00ed.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: P\u0159\u00edstup k \u00faloze {0} byl odep\u0159en. \u00daloha m\u00e1 nadefinovan\u00fd n\u00e1zev provozn\u00ed skupiny {1} a u\u017eivatel nem\u00e1 opr\u00e1vn\u011bn\u00ed batchGroupMonitor nebo batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=U\u017eivatel nen\u00ed sou\u010d\u00e1st\u00ed \u017e\u00e1dn\u00e9 z rol\u00ed skupin pro d\u00e1vkov\u00e9 zpracov\u00e1n\u00ed a nem\u00e1 autorizaci k prov\u00e1d\u011bn\u00ed d\u00e1vkov\u00fdch operac\u00ed.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Pokud u\u017eivatel nem\u00e1 autorizaci, aby byl u\u017eivatelem skupiny d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud m\u00e1 u\u017eivatel autorizaci k prov\u00e1d\u011bn\u00ed d\u00e1vkov\u00fdch operac\u00ed skupiny a je zapnuto zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed, nakonfigurujte p\u0159\u00edslu\u0161nou autorizaci v r\u00e1mci zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed a p\u0159idejte tohoto u\u017eivatele do po\u017eadovan\u00fdch rol\u00ed pro d\u00e1vkov\u00e9 zpracov\u00e1n\u00ed.
