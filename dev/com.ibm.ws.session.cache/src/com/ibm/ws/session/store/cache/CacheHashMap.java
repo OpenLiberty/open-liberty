@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
@@ -178,7 +179,7 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected boolean isPresent(String id) {
-        throw new UnsupportedOperationException();
+        return cacheStoreService.cache.containsKey(createSessionKey(id, getAppName()));
     }
 
     /**
@@ -268,8 +269,9 @@ public class CacheHashMap extends BackedHashMap {
      * @see com.ibm.ws.session.store.common.BackedHashMap#performInvalidation()
      */
     @Override
+    @Trivial
     protected void performInvalidation() {
-        throw new UnsupportedOperationException();
+        // no-op: JCache will invalidate sessions on its own
     }
 
     /**
