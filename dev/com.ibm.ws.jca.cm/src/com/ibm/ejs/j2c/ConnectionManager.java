@@ -204,7 +204,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         EmbeddableWebSphereTransactionManager tm = pm.connectorSvc.transactionManager;
         if (tm != null) {
             if (!rrsTransactional) {
-                recoveryToken = registerXAResourceInfo(tm, jxri, commitPriority);
+                recoveryToken = registerXAResourceInfo(tm, jxri, commitPriority, null);
             } else {
                 if (!TransactionSupportLevel.NoTransaction.equals(gconfigProps.transactionSupport)) {
                     RRSXAResourceFactory xaFactory = (RRSXAResourceFactory) _pm.connectorSvc.rrsXAResFactorySvcRef.getService();
@@ -1667,11 +1667,6 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * @param commitPriority priority to use when committing multiple XA resources.
      * @return the recovery ID (or -1 if an error occurs)
      */
-    final int registerXAResourceInfo(EmbeddableWebSphereTransactionManager tm,
-                                     CommonXAResourceInfo xaResourceInfo, int commitPriority) {
-        return registerXAResourceInfo(tm, xaResourceInfo, commitPriority, null);
-    }
-
     final int registerXAResourceInfo(EmbeddableWebSphereTransactionManager tm,
                                      CommonXAResourceInfo xaResourceInfo, int commitPriority, String qmid) {
         if (tc.isEntryEnabled())
