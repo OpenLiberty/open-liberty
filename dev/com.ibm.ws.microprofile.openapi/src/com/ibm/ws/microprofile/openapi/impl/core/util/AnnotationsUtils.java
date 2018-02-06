@@ -282,6 +282,16 @@ public abstract class AnnotationsUtils {
         if (schema.enumeration().length > 0) {
             schemaObject.setEnumeration(Arrays.asList(schema.enumeration()));
         }
+        if (schema.maxItems() != Integer.MIN_VALUE) {
+            schemaObject.setMaxItems(schema.maxItems());
+        }
+        if (schema.minItems() != Integer.MAX_VALUE) {
+            schemaObject.setMinItems(schema.minItems());
+        }
+        if (schema.uniqueItems()) {
+            schemaObject.setUniqueItems(true);
+        }
+        
         if (!schema.not().equals(Void.class)) {
             Class<?> schemaImplementation = schema.not();
             Schema notSchemaObject = resolveSchemaFromType(schemaImplementation, components);
