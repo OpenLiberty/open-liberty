@@ -48,6 +48,9 @@ import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIV3Parser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent.Severity;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidator;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -202,7 +205,33 @@ public class ApplicationProcessor {
             }
         }
 
+        // Validate the document if the validation property has been enabled.
+        final boolean validating = configProcessor.isValidating();
+        if (validating) {
+            try {
+                validateDocument(newDocument);
+            } catch (Throwable e) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Failed to call OASValidator: " + e.getMessage());
+                }
+            }
+        }
+
         return newDocument;
+    }
+
+    private void validateDocument(OpenAPI document) {
+        final OASValidator validator = new OASValidator();
+        final OASValidationResult result = validator.validate(document);
+        if (result.hasEvents()) {
+            result.getEvents().stream().forEach(v -> {
+                if (v.severity == Severity.ERROR) {
+                    Tr.error(tc, "OPENAPI_DOCUMENT_VALIDATION_ERROR", v.message, v.location);
+                } else if (v.severity == Severity.WARNING) {
+                    Tr.warning(tc, "OPENAPI_DOCUMENT_VALIDATION_WARNING", v.message, v.location);
+                }
+            });
+        }
     }
 
     @FFDCIgnore(UnableToAdaptException.class)

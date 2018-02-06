@@ -1,12 +1,4 @@
-#CMVCPATHNAME N/A
-#COMPONENTPREFIX CWMMC
-#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API 
-#NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
-#ISMESSAGEFILE true
-# #########################################################################
-###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,12 +6,21 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-###############################################################################
-# This file follows the WebSphere Message Guidelines.
-# For more information, visit: 
-# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
-#
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
 
-#-----------------------------------------------------------------------------------------------------------------------------
-# Messages used by OpenAPI Implementation
-#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKO1650 - CWWKO1699
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: Validation of the Open API document produced the following error. Message: {0}, Location: {1}
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=The Open API document is invalid.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Provide a valid Open API document that resolves the reported error.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Validation of the Open API document produced the following warning. Message: {0}, Location: {1}
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=The Open API document contains data that is not in the recommended format.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Provide a valid Open API document that resolves the reported warning.

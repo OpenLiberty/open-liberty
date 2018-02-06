@@ -31,7 +31,7 @@ public class ConfigProcessor {
     /**
      * Configuration property to enable/disable validation of the OpenAPI model.
      */
-    private static final String VALIDATION = OASConfig.EXTENSIONS_PREFIX + "validation";
+    private static final String VALIDATION = OASConfig.EXTENSIONS_PREFIX + "liberty.validation";
 
     private String modelReaderClassName = null;
     private String openAPIFilterClassName = null;
