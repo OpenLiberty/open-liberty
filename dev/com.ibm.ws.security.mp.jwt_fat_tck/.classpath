@@ -4,5 +4,13 @@
 	<classpathentry kind="src" path="fat/resources"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/junit/old/junit.jar">
+		<attributes>
+			<attribute name="bsn" value="C:\Users\IBM_ADMIN\libertyGit\open-liberty\dev/build.sharedResources/lib/junit/old/junit.jar"/>
+			<attribute name="type" value="EXTERNAL"/>
+			<attribute name="project" value="build.example_fat"/>
+			<attribute name="version" value="file"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
