@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.websphere.servlet.response.IResponse;
@@ -47,7 +48,8 @@ import com.ibm.wsspi.webcontainer40.WCCustomProperties40;
  */
 public class SRTServletResponse40 extends SRTServletResponse31 implements HttpServletResponse {
 
-    protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer40.srt");
+    private static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer40.srt");
+    private static final TraceNLS servlet40NLS = TraceNLS.getTraceNLS(SRTServletResponse40.class, "com.ibm.ws.webcontainer40.resources.Messages");
     private static final String CLASS_NAME = "com.ibm.ws.webcontainer40.srt.SRTServletResponse40";
 
     ArrayList<Cookie> addedCookies;
@@ -120,7 +122,7 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         }
 
         if (isCommitted()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(servlet40NLS.getString("set.trailer.fields.committed.response"));
         }
 
         // Only Http/1.1 + supports trailers so we need to determine the version used.
@@ -155,12 +157,12 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
 
             // throw IllegalStateException if not chunked
             if ((transferEncoding != null && !transferEncoding.equals("chunked")) || contentLengthValue > 0) {
-                throw new IllegalStateException();
+                throw new IllegalStateException(servlet40NLS.getString("set.trailer.fields.incorrect.transfer.encoding"));
             }
 
         } else {
             // throw IllegalStateException if not HTTP/1.1 +
-            throw new IllegalStateException();
+            throw new IllegalStateException(servlet40NLS.getString("set.trailer.fields.incorrect.http.version"));
         }
 
         trailerFieldSupplier = supplier;
