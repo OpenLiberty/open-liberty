@@ -141,13 +141,8 @@ public class DerbyManagedConnectionFactory implements ManagedConnectionFactory, 
         this.password = password;
     }
 
-    public void setQmid(String qmid) throws ResourceException {
-        String expectedString = "This-QMID-Is-Required-For-XA-Recovery";
-        if (qmid.equals(expectedString)) {
-            this.qmid = qmid;
-        } else {
-            throw new ResourceException("Did not find the right qmid string, expecting " + expectedString + " but received string " + qmid);
-        }
+    public void setQmid(String qmid) {
+        this.qmid = qmid;
     }
 
     /** {@inheritDoc} */

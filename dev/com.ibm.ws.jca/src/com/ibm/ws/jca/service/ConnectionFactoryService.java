@@ -32,7 +32,6 @@ import javax.resource.spi.ValidatingManagedConnectionFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ejs.j2c.CMConfigDataImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -45,6 +44,7 @@ import com.ibm.ws.jca.internal.BootstrapContextImpl;
 import com.ibm.ws.jca.internal.ResourceAdapterMetaData;
 import com.ibm.ws.jca.internal.Utils;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -475,17 +475,19 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
             Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();
             Integer recoveryToken = null;
             try {
-                Method m = mcfImplClass.getMethod("setQmid", String.class);
+                Method mcfSetQmid = mcfImplClass.getMethod("setQmid", String.class);
 
                 ArrayList<Byte> byteList = (ArrayList<Byte>) xaresinfo;
                 byte[] bytes = new byte[byteList.size()];
                 int i = 0;
                 for (Byte b : byteList)
                     bytes[i++] = b;
-                CMConfigDataImpl cmcfd = (CMConfigDataImpl) ConnectorService.deserialize(bytes);
-                String qmid = cmcfd.getQmid();
+                ResourceRefInfo resRefInfo = (ResourceRefInfo) ConnectorService.deserialize(bytes);
+                Class<? extends Object> resRefInfoImplClass = resRefInfo.getClass();
+                Method resRefGetQmid = resRefInfoImplClass.getMethod("getQmid", (Class<?>[]) null);
+                String qmid = (String) resRefGetQmid.invoke(resRefInfo, (Object[]) null);
                 if (qmid != null) {
-                    m.invoke((Object) mcf, qmid);
+                    mcfSetQmid.invoke((Object) mcf, qmid);
                 }
             } catch (NoSuchMethodException nsme) {
                 qmidenabled = false;
