@@ -8,8 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.logging.data;
+
 /**
- * @version 1.0.16
+ * Marker interface created to group KeyValuePair and KeyValuePairList
  */
-@org.osgi.annotation.versioning.Version("1.0.16")
-package com.ibm.ws.http.logging.data;
+
+public interface Pair {
+
+}
