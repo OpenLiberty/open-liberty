@@ -695,8 +695,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         if (result != null) {
             return result.booleanValue();
         }
-        if (webRequest.hasAuthenticationData())
-            return true;
+//        if (webRequest.hasAuthenticationData())
+//            return true;
         return isUnprotectedResourceAuthenRequired(webRequest);
     }
 
