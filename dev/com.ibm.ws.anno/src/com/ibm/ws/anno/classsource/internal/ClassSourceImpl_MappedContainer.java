@@ -98,7 +98,9 @@ public class ClassSourceImpl_MappedContainer
      */
     @Override
     @Trivial
+    @FFDCIgnore({ UnableToAdaptException.class })
     public void close() throws ClassSource_Exception {
+        String methodName = "close";
         try {
             FastModeControl fastMode = getContainer().adapt(FastModeControl.class);
             // 'adapt' throws UnableToAdaptException
@@ -107,9 +109,9 @@ public class ClassSourceImpl_MappedContainer
         } catch ( UnableToAdaptException e ) {
             String eMsg =
                 "[ " + getHashText() + " ]" +
-                " Failed to adapt [ " + getCanonicalName() + " ]" +
+                " Failed to close [ " + getCanonicalName() + " ]" +
                 " to [ " + FastModeControl.class.getName() + " ]";
-            Tr.warning(tc, eMsg);
+            throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);            
         }
 
         if ( tc.isDebugEnabled() ) {
@@ -309,10 +311,11 @@ public class ClassSourceImpl_MappedContainer
 
                             // TODO: NEW_MESSAGE: Need a new message here.
 
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process class [ " + nextClassName + " ]" +
-                            //               " under root [ " + getContainer() + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
+                             String eMsg = "[ " + getHashText() + " ]" +
+                                           " Failed to process class [ " + nextClassName + " ]" +
+                                           " under root [ " + getContainer() + " ]";
+                            // CWWKC0068W: An exception occurred while processing class [ {0} ] in container [ {1} ] 
+                            // identified by [ {2} ]. The exception was {3}.
                             Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
                         }
 
@@ -408,44 +411,49 @@ public class ClassSourceImpl_MappedContainer
     @SuppressWarnings("deprecation")
     @Override
     protected Index getJandexIndex() {
+        
         String useJandexIndexPath = getJandexIndexPath();
 
-        System.out.println("Looking for JANDEX [ " + useJandexIndexPath + " ]" +
-                           " in [ " + getContainer().getPhysicalPath() + " ]");
-
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]", 
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } ));        
+        }
+        
         InputStream jandexStream;
 
         try {
             jandexStream = openResourceStream(null, useJandexIndexPath); // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
-            String errorMessage =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
-                " as JANDEX index";
-            Tr.error(tc, errorMessage);
+            // CWWKC0066E: An exception occurred while attempting to open Jandex index file [ {0} ] The identifier for the class source is [ {1} ].
+            Tr.error(tc, "JANDEX_INDEX_OPEN_EXCEPTION", useJandexIndexPath, getCanonicalName());
             return null;
         }
 
         if ( jandexStream == null ) {
-            System.out.println("No JANDEX index was found");
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] No JANDEX index was found", getHashText()));        
+            }
             return null;
         }
 
-        System.out.println("Located JANDEX index");
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Located JANDEX index", getHashText()));        
+        }        
 
         long startJandexTime = getTime();
 
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
-            System.out.println(
-                "Read JANDEX index [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]:" +
-                " Classes [ " + Integer.toString(jandexIndex.getKnownClasses().size()) + " ]");
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]", 
+                        new Object[] {  getHashText(), useJandexIndexPath,  getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));        
+            }
             return jandexIndex;
 
         } catch ( Exception e ) {
-            String errorMessage =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
-                " as JANDEX index";
-            Tr.error(tc, errorMessage);
+
+            // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
+            Tr.error(tc, "JANDEX_INDEX_READ_EXCEPTION", useJandexIndexPath, getCanonicalName());
             return null;
 
         } finally {
@@ -554,6 +562,7 @@ public class ClassSourceImpl_MappedContainer
             inputStream.close(); // throws IOException
 
         } catch ( IOException e ) {
+            // TODO:   pull from properties file
             String eMsg =
                 "[ " + getHashText() + " ]" +
                 " Failed to close [ " + resourceName + " ]" +
