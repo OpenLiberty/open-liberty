@@ -32,7 +32,7 @@ import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
@@ -352,9 +352,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         //All HTTP/2.0 requests MUST include exactly one valid value for
         //':method', ':scheme', and ':path'. Check that the map of parsed
         //pseudo-headers contains a non-null entry for each required token.
-        return (pseudoHeaders.get(HpackConstants.METHOD) != null) &&
-               (pseudoHeaders.get(HpackConstants.PATH) != null) &&
-               (pseudoHeaders.get(HpackConstants.SCHEME) != null);
+        if (pseudoHeaders.get(HpackConstants.METHOD) != null && pseudoHeaders.get(HpackConstants.PATH) != null &&
+            pseudoHeaders.get(HpackConstants.SCHEME) != null) {
+            // OPTIONS requests must include the ":path" pseudo-header field with a value of '*'
+            if (pseudoHeaders.get(HpackConstants.METHOD).equals("OPTIONS") && !pseudoHeaders.get(HpackConstants.PATH).equals("*")) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+
     }
 
     /*
@@ -2011,9 +2018,11 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
             }
 
-            // Encode authority with hostname:port
-            String authority = isc.getLocalAddr().getHostName() + ":" + isc.getLocalPort();
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, authority, LiteralIndexType.NOINDEXING));
+            // Encode authority
+            String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
+            if (auth != null) {
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+            }
 
             // Encode headers, if any are present
             Set<HeaderField> headerSet = pushBuilder.getHeaders();
@@ -2118,9 +2127,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (existingSP != null) {
             try {
                 existingSP.processNextFrame(pushPromiseFrame, Constants.Direction.WRITING_OUT);
-            } catch (ProtocolException pe) {
+            } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): processNextFrame threw a ProtocolException " + pe);
+                    Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): processNextFrame threw a ProtocolException " + e);
                 }
                 return;
             }

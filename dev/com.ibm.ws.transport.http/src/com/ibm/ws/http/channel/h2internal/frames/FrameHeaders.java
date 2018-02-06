@@ -239,17 +239,15 @@ public class FrameHeaders extends Frame {
     public void validate(H2ConnectionSettings settings) throws ProtocolException, FrameSizeException {
         if (streamId == 0) {
             throw new ProtocolException("HEADERS frame streamID cannot be 0x0");
-        }
-        if (this.getPayloadLength() > settings.maxFrameSize) {
+        } else if (this.getPayloadLength() <= 0) {
+            throw new ProtocolException("HEADERS payload length must be greater than 0");
+        } else if (this.getPayloadLength() > settings.maxFrameSize) {
             throw new FrameSizeException("HEADERS payload greater than allowed by the max frame size");
-        }
-        if (this.paddingLength >= this.payloadLength) {
+        } else if (this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("HEADERS padding length must be less than the length of the payload");
-        }
-        if (this.streamId == this.streamDependency) {
+        } else if (this.streamId == this.streamDependency) {
             throw new ProtocolException("HEADERS frame stream cannot depend on itself");
-        }
-        if (this.paddingLength < 0) {
+        } else if (this.paddingLength < 0) {
             throw new ProtocolException("HEADERS padding length is invalid");
         }
     }

@@ -30,7 +30,7 @@ import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
 import com.ibm.ws.http.channel.h2internal.H2VirtualConnectionImpl;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
@@ -2043,6 +2043,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 //We will then continue on from there
                 if (msg.isBodyExpected()) {
                     complete = false;
+                }
+                // if the method is HEAD we know no body will be written out; we need to mark the headers as end of stream
+                if (this.getRequestMethod().equals(MethodValues.HEAD)) {
+                    complete = true;
                 }
                 ArrayList<Frame> headerFrames = link.prepareHeaders(WsByteBufferUtils.asByteArray(headerBuffers), complete);
 
@@ -5079,8 +5083,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         try {
             // Add the four required pseudo headers to the push_promise frame header block fragment
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, "GET", LiteralIndexType.NOINDEXING));
-            String authority = getLocalAddr().getHostName() + ":" + getLocalPort();
-            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, authority, LiteralIndexType.NOINDEXING));
+            // Encode authority
+            String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
+            if (auth != null) {
+                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+            }
             if (this.isSecure()) {
                 ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
             } else {
@@ -5137,9 +5144,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (existingSP != null) {
             try {
                 existingSP.processNextFrame(pushPromiseFrame, com.ibm.ws.http.channel.h2internal.Constants.Direction.WRITING_OUT);
-            } catch (ProtocolException pe) {
+            } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "handleH2LinkPreload(): Protocol exception when sending the push_promise frame: " + pe);
+                    Tr.exit(tc, "handleH2LinkPreload(): Protocol exception when sending the push_promise frame: " + e);
                 }
                 return;
             }

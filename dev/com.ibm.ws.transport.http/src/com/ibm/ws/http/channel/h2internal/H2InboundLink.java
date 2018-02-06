@@ -114,6 +114,8 @@ public class H2InboundLink extends HttpInboundLink {
 
     int h2NextPromisedStreamId = 0;
 
+    private String authority = null;
+
     private H2HeaderTable readContextTable = null;
     private H2HeaderTable writeContextTable = null;
 
@@ -1149,6 +1151,24 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    /**
+     * Set the authority string to use for the :authority header
+     *
+     * @param String
+     */
+    protected void setAuthority(String a) {
+        this.authority = a;
+    }
+
+    /**
+     * Get the server authority string to use for the :authority header. Needed for push promise frames.
+     *
+     * @return authority String
+     */
+    public String getAuthority() {
+        return this.authority;
     }
 
 }
