@@ -51,7 +51,7 @@ public class ValidatorUtils {
 
         if (!isValid) {
             final String location = context.getLocation();
-            final String message = Tr.formatMessage(tc, "requiredFieldMissing", location, fieldName);
+            final String message = Tr.formatMessage(tc, "requiredFieldMissing", fieldName);
             ValidationEvent event = new ValidationEvent(Severity.ERROR, location, message);
             return Optional.of(event);
         }
