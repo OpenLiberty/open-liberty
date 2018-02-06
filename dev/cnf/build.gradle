@@ -395,13 +395,13 @@ task createSingleJson {
 task generateMavenArtifact {
 dependsOn parent.subprojects.assemble
 doLast {
-        ant.taskdef(name:'featuresToMavenRepo', classname:'mavenFeatures.SingleJsonRepositoryGenerator') {
+        ant.taskdef(name:'featuresToMavenRepo', classname:'com.ibm.ws.wlp.mavenFeatures.LibertyFeaturesToMavenRepo') {
             classpath {
            	//	fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/lib/"){
            	//		include(name:'LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT-jar-with-dependencies.jar')
            //		}
-                fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/build/libs") {
-                    include(name: 'LibertyFeaturesToMavenRepo.jar')
+                fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo") {
+                    include(name: 'LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT.jar')
                 }
                 fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
                     include(name: 'com.ibm.ws.logging.core.jar')
@@ -414,15 +414,14 @@ doLast {
                }               
             }
         }
-        def files = fileTree(dir:'.').matching{ include '**/*.esa'}
-        files.each {esa ->
-        ant.featuresToMavenRepo(inputDirPath:esa,
-                   outputDirPath:'cnf/build/temp',
-                  openLibertyJson:'cnf/build/temp')
+        
+        ant.featuresToMavenRepo(inputDirPath:'build/temp/esas',
+                   outputDirPath:'build/temp/mavenArtifact',
+                  openLibertyJson:'build/temp/json/features.json')
         
         }
-	}
 }
+
 
 
 publishing {

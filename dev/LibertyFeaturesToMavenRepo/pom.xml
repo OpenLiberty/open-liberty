@@ -19,7 +19,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>generator.LibertyFeaturesToMavenRepo</mainClass>
+              <mainClass>com.ibm.ws.wlp.mavenFeatures.LibertyFeaturesToMavenRepo</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
@@ -35,6 +35,11 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-shade-plugin</artifactId>
+      	<version>2.3</version>
       </plugin>
     </plugins>
 

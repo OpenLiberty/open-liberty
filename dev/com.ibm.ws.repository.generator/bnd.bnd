@@ -20,6 +20,11 @@ WS-TraceGroup: repo.resource
 javac.source: 1.7
 javac.target: 1.7
 
+Export-Package: \
+    com.ibm.ws.repository.generator;version=1.0
+    
+    
+    
 -buildpath: \
     com.ibm.ws.repository;version=latest, \
     com.ibm.ws.repository.parsers;version=latest,\
