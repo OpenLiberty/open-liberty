@@ -729,6 +729,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             throw e;
         }
 
+        qmidenabled = !(mc instanceof WSManagedConnection);
         if (qmidenabled) {
             Class<? extends Object> mcImplClass = ((Object) mc).getClass();
             Integer recoveryToken = null;

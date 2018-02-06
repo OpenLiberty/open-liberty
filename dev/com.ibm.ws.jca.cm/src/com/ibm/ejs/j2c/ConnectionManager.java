@@ -1676,9 +1676,6 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                                      CommonXAResourceInfo xaResourceInfo, int commitPriority, String qmid) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "registerXAResourceInfo");
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "registerXAResourceInfo", tm, xaResourceInfo, commitPriority, qmid);
-        }
         // Transaction service will use the filter we provide to query the service registry for an XAResourceFactory.
         // If possible, filter on the JNDI name because the id field is optional (in which case cfKey defaults to the JNDI name)
         // and any generated unique identifier (config.id) might not be consistent across server restarts.

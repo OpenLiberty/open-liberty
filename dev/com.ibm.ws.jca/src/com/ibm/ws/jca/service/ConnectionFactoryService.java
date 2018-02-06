@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jca.service;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -28,6 +32,7 @@ import javax.resource.spi.ValidatingManagedConnectionFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ejs.j2c.CMConfigDataImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -126,6 +131,12 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      * Implementation class name for the managed connection factory.
      */
     private String mcfImplClassName;
+
+    /**
+     * MQ Queue manager id function is enabled by default. This will automatically be disabled if
+     * this function is not required by the resource adapter.
+     */
+    private boolean qmidenabled = true;
 
     /**
      * Config properties.
@@ -456,5 +467,36 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
             String embeddedApp = metadata.getJ2EEName().getApplication();
             Utils.checkAccessibility(jndiName, adapterName, embeddedApp, currentApp, false);
         }
+    }
+
+    @Override
+    public void setMQQueueManager(Serializable xaresinfo) throws Exception {
+        if (qmidenabled) {
+            Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();
+            Integer recoveryToken = null;
+            try {
+                Method m = mcfImplClass.getMethod("setQmid", String.class);
+
+                ArrayList<Byte> byteList = (ArrayList<Byte>) xaresinfo;
+                byte[] bytes = new byte[byteList.size()];
+                int i = 0;
+                for (Byte b : byteList)
+                    bytes[i++] = b;
+                CMConfigDataImpl cmcfd = (CMConfigDataImpl) ConnectorService.deserialize(bytes);
+                String qmid = cmcfd.getQmid();
+                if (qmid != null) {
+                    m.invoke((Object) mcf, qmid);
+                }
+            } catch (NoSuchMethodException nsme) {
+                qmidenabled = false;
+            } catch (InvocationTargetException ite) {
+                qmidenabled = false;
+            } catch (IllegalAccessException e) {
+                qmidenabled = false;
+            } catch (IllegalArgumentException e) {
+                qmidenabled = false;
+            }
+        }
+
     }
 }

@@ -11,8 +11,6 @@
 package com.ibm.ws.jca.cm;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -38,7 +36,6 @@ import javax.transaction.xa.XAResource;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
-import com.ibm.ejs.j2c.CMConfigDataImpl;
 import com.ibm.ejs.j2c.CommonFunction;
 import com.ibm.ejs.j2c.ConnectorServiceImpl;
 import com.ibm.ejs.j2c.J2CConstants;
@@ -120,12 +117,6 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
      * Service reference to the auth alias (if any) for XA recovery.
      */
     private ServiceReference<?> recoveryAuthDataRef;
-
-    /**
-     * MQ Queue manager id function is enabled by default. This will automatically be disabled if
-     * this function is not required by the resource adapter.
-     */
-    private boolean qmidenabled = true;
 
     /**
      * Create a connection factory.
@@ -428,32 +419,7 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
             // TODO supply class loader identifier if resource was loaded from application
             ManagedConnectionFactory mcf = getManagedConnectionFactory(null);
 
-            if (qmidenabled) {
-                Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();
-                Integer recoveryToken = null;
-                try {
-                    Method m = mcfImplClass.getMethod("setQmid", String.class);
-
-                    ArrayList<Byte> byteList = (ArrayList<Byte>) xaresinfo;
-                    byte[] bytes = new byte[byteList.size()];
-                    int i = 0;
-                    for (Byte b : byteList)
-                        bytes[i++] = b;
-                    CMConfigDataImpl cmcfd = (CMConfigDataImpl) ConnectorService.deserialize(bytes);
-                    String qmid = cmcfd.getQmid();
-                    if (qmid != null) {
-                        m.invoke((Object) mcf, qmid);
-                    }
-                } catch (NoSuchMethodException nsme) {
-                    qmidenabled = false;
-                } catch (InvocationTargetException ite) {
-                    qmidenabled = false;
-                } catch (IllegalAccessException e) {
-                    qmidenabled = false;
-                } catch (IllegalArgumentException e) {
-                    qmidenabled = false;
-                }
-            }
+            setMQQueueManager(xaresinfo);
 
             Subject subject = getSubjectForRecovery(mcf, xaresinfo);
             mc = mcf.createManagedConnection(subject, null);
@@ -585,4 +551,12 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
             lock.writeLock().unlock();
         }
     }
+
+    /**
+     * Set the MQ QMID if one is available.
+     *
+     * @return constant indicating the transaction support of the resource adapter.
+     */
+    public abstract void setMQQueueManager(Serializable xaresinfo) throws Exception;
+
 }
