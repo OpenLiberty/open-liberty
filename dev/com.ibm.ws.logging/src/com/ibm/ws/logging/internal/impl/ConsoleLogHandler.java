@@ -93,11 +93,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         synchronized (this) {
             //check if message need to be written to stderr or stdout
             if (isStderr) {
-//                sysErrHolder.originalStream.println(messageOutput);
                 BTS.writeStreamOutput(sysErrHolder, messageOutput, false);
             } else if (messageOutput != null) {
                 BTS.writeStreamOutput(sysLogHolder, messageOutput, false);
-//                sysLogHolder.originalStream.println(messageOutput);
             }
         }
 
