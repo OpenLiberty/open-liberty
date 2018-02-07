@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,7 @@ public interface WebSphereConfig extends Config, Closeable {
     /**
      * The same as {@link #getValue(String, Type)} except that the value is wrapped in a SourcedPropertyValue which can also provide the id
      * if the ConfigSource that the property came from.
-     * 
+     *
      * @param propertyName The name of the property
      * @param type The type to convert to
      * @return A SourcedPropertyValue containing the converted value and the source id
@@ -81,7 +81,7 @@ public interface WebSphereConfig extends Config, Closeable {
 
     /**
      * Generate a human readable String representation of all of the properties in the Config, giving their property names and which source they came from.
-     * 
+     *
      * @return a String representation of the config
      */
     public String dump();
