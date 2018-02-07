@@ -95,22 +95,15 @@ securitySchemeInFieldInvalid=The \"{0}\" SecurityScheme object has an error. The
 securitySchemeInvalidURL=The SecurityScheme object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
 securitySchemeNonApplicableField=One or more fields defined are not applicable to a SecurityScheme instance of type \"{0}\"
 
-<<<<<<< HEAD
-schemaTypeArrayNullItems=Array schema \"{0}\" must have "items" property defined.
-schemaReadOnlyOrWriteOnly=Schema \"{0}\" must not have both "readOnly" and writeOnly" set to true.
-schemaMultipleOfLessThanOne=Schema \"{0}\" must have property "multipleOf" set to a number strictly greater than zero.
-schemaPropertyLessThanZero=Property \"{0}\" of schema \"{1}\" must be greater or equal to zero.
-schemaTypeDoesNotMatchProperty=Property \"{0}\" is not appropriate for schema \"{1}\" of type \"{2}\".
+schemaTypeArrayNullItems=Array schema \"{0}\" must have "items" property defined
+schemaReadOnlyOrWriteOnly=Schema \"{0}\" must not have both "readOnly" and writeOnly" set to true
+schemaMultipleOfLessThanOne=Schema \"{0}\" must have property "multipleOf" set to a number strictly greater than zero
+schemaPropertyLessThanZero=Property \"{0}\" of schema \"{1}\" must be greater or equal to zero
+schemaTypeDoesNotMatchProperty=Property \"{0}\" is not appropriate for schema \"{1}\" of type \"{2}\"
 
-serverVariableNotDefined=The \"{0}\" variable in the Server object is not defined.
-serverInvalidURL=The Server object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
+keyNotARegex=\"{0}\" key of components map must be a regular expression
 
-requiredFieldMissing=Validation error at location: \"{0}\". Required \"{1}\" field is missing or is set to an invalid value.
-
-keyNotARegex=\"{0}\" key of components map must be a regular expression.
-=======
 serverVariableNotDefined=The \"{0}\" variable in the Server object is not defined
 serverInvalidURL=The Server object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
 
 requiredFieldMissing=Required \"{0}\" field is missing or is set to an invalid value
->>>>>>> f2efe24947ebbab7e67547423afcf95630000255
