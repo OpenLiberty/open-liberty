@@ -342,7 +342,23 @@ public abstract class AnnotationsUtils {
                     schemaMap.forEach((key, schema) -> {
                         components.addSchema(key, schema);
                     });
-                    schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    Schema property = new SchemaImpl((SchemaImpl) resolvedSchema.schema);
+                    boolean inline = false;
+                    if (annotationSchema != null && AnnotationsUtils.hasSchemaAnnotation(annotationSchema)) {
+                        if (annotationSchema.nullable()) {
+                            property.setNullable(true);
+                            inline = true;
+                        }
+                        if (annotationSchema.maxProperties() > 0) {
+                            property.setMaxProperties(annotationSchema.maxProperties());
+                            inline = true;
+                        }
+                    }
+                    if (!inline)
+                        schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    else {
+                        schemaObject = property;
+                    }
                 }
             }
             if (StringUtils.isBlank(schemaObject.getRef()) && schemaObject.getType() == null) {
