@@ -88,6 +88,7 @@ public class CapturedOutputHolder extends BaseTraceService {
         }
     }
 
+    //Overwritten for old BaseTraceService behaviour for echo
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
@@ -113,6 +114,7 @@ public class CapturedOutputHolder extends BaseTraceService {
         }
     }
 
+    //Overwritten for old BaseTraceService behaviour for publishTraceLogRecord
     @Override
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
         if (formattedVerboseMsg == null) {
