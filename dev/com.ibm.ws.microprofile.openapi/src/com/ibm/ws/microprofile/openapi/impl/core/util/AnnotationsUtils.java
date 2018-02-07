@@ -282,6 +282,16 @@ public abstract class AnnotationsUtils {
         if (schema.enumeration().length > 0) {
             schemaObject.setEnumeration(Arrays.asList(schema.enumeration()));
         }
+        if (schema.maxItems() != Integer.MIN_VALUE) {
+            schemaObject.setMaxItems(schema.maxItems());
+        }
+        if (schema.minItems() != Integer.MAX_VALUE) {
+            schemaObject.setMinItems(schema.minItems());
+        }
+        if (schema.uniqueItems()) {
+            schemaObject.setUniqueItems(true);
+        }
+        
         if (!schema.not().equals(Void.class)) {
             Class<?> schemaImplementation = schema.not();
             Schema notSchemaObject = resolveSchemaFromType(schemaImplementation, components);
@@ -332,7 +342,23 @@ public abstract class AnnotationsUtils {
                     schemaMap.forEach((key, schema) -> {
                         components.addSchema(key, schema);
                     });
-                    schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    Schema property = new SchemaImpl((SchemaImpl) resolvedSchema.schema);
+                    boolean inline = false;
+                    if (annotationSchema != null && AnnotationsUtils.hasSchemaAnnotation(annotationSchema)) {
+                        if (annotationSchema.nullable()) {
+                            property.setNullable(true);
+                            inline = true;
+                        }
+                        if (annotationSchema.maxProperties() > 0) {
+                            property.setMaxProperties(annotationSchema.maxProperties());
+                            inline = true;
+                        }
+                    }
+                    if (!inline)
+                        schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    else {
+                        schemaObject = property;
+                    }
                 }
             }
             if (StringUtils.isBlank(schemaObject.getRef()) && schemaObject.getType() == null) {
