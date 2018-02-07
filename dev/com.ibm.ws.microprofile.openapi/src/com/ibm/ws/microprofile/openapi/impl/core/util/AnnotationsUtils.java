@@ -291,7 +291,7 @@ public abstract class AnnotationsUtils {
         if (schema.uniqueItems()) {
             schemaObject.setUniqueItems(true);
         }
-        
+
         if (!schema.not().equals(Void.class)) {
             Class<?> schemaImplementation = schema.not();
             Schema notSchemaObject = resolveSchemaFromType(schemaImplementation, components);
@@ -374,35 +374,16 @@ public abstract class AnnotationsUtils {
             } else {
                 return Optional.of(schemaObject);
             }
-
         } else {
-            Optional<Schema> schemaFromAnnotation = AnnotationsUtils.getSchemaFromAnnotation(annotationSchema, components);
-            if (schemaFromAnnotation.isPresent()) {
-                if (StringUtils.isBlank(schemaFromAnnotation.get().getRef()) && schemaFromAnnotation.get().getType() == null) {
-                    // default to string
-                    schemaFromAnnotation.get().setType(SchemaType.STRING);
-                }
-                return Optional.of(schemaFromAnnotation.get());
-            }
-//                else {
-//                Optional<Schema> arraySchemaFromAnnotation = AnnotationsUtils.getArraySchema(annotationContent.array());
-//                if (arraySchemaFromAnnotation.isPresent()) {
-//                    if (StringUtils.isBlank(arraySchemaFromAnnotation.get().getItems().getRef()) && arraySchemaFromAnnotation.get().getItems().getType() == null) {
-//                        // default to string
-//                        arraySchemaFromAnnotation.get().getItems().setType(SchemaType.STRING);
-//                    }
-//                    return Optional.of(arraySchemaFromAnnotation.get());
-//                }
-//            }
+            return AnnotationsUtils.getSchemaFromAnnotation(annotationSchema, components);
         }
-        return Optional.empty();
     }
 
     public static Schema resolveSchemaFromType(Class<?> schemaImplementation, Components components) {
         Schema schemaObject = new SchemaImpl();
-        if (schemaImplementation.getName().startsWith("java.lang")) {
-            // TODO
-            // schemaObject.setType(schemaImplementation.getSimpleName().toLowerCase());
+        PrimitiveType pt = PrimitiveType.fromType(schemaImplementation);
+        if (pt != null) {
+            schemaObject = pt.createProperty();
         } else {
             ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
             Map<String, Schema> schemaMap;
