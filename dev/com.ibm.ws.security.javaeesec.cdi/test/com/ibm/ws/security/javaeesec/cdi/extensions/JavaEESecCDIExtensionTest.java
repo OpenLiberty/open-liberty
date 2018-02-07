@@ -20,9 +20,12 @@ import static org.junit.Assert.assertTrue;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,6 +38,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.util.TypeLiteral;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
@@ -99,6 +103,8 @@ public class JavaEESecCDIExtensionTest {
     private final WebModuleMetaData wmmd2 = context.mock(WebModuleMetaData.class, "wmmd2");
     private final J2EEName j2en1 = context.mock(J2EEName.class, "j2en1");
     private final J2EEName j2en2 = context.mock(J2EEName.class, "j2en2");
+    private final ProcessBeanAttributes pba = context.mock(ProcessBeanAttributes.class, "pba1");
+    
 
     private final static String MODULE_NAME1 = "module1.war";
     private final static String MODULE_NAME2 = "module2.war";
@@ -990,6 +996,161 @@ public class JavaEESecCDIExtensionTest {
         assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd2));
     }
 
+    @Test
+    public void processBasicHttpAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processBasicHttpAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processBasicHttpAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processBasicHttpAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processFormAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+//        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processFormAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processCustomFormAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processCustomFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processCustomFormAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processCustomFormAuthMechNeeded(pba, bm);
+    }
+
+
     private void equalsLdapDefinitionTest(String key, Object value1, Object value2) {
         LdapIdentityStoreDefinition lisd1, lisd2;
         Map map1 = new HashMap<String, Object>();
@@ -1471,6 +1632,23 @@ public class JavaEESecCDIExtensionTest {
         });
         mmds.put(url1, wmmd1);
         mmds.put(url2, wmmd2);
+    }
+
+    private Map<String, ModuleProperties> createModuleMap(List<Class> cls) {
+        Map<String, ModuleProperties> mm = new LinkedHashMap<String, ModuleProperties>();
+        Iterator<Class> it = cls.iterator();
+        int i = 1;
+        while(it.hasNext()) {
+            Class cl = it.next();
+            Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
+            amm.put(cl, new Properties());
+            // since location is not used, set null.
+            ModuleProperties mp = new ModuleProperties(amm);
+            // since module name does not matter, just put some dummy string.
+            mm.put(("item-" + Integer.toString(i)), mp);
+            i++;
+        }
+        return mm;
     }
 
     class HAMClass1 {};
