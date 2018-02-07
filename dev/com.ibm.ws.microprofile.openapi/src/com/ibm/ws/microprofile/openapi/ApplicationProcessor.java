@@ -195,9 +195,9 @@ public class ApplicationProcessor {
         OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
 
         if (oasFilter != null) {
-            OpenAPIModelWalker walker = new OpenAPIModelWalker(newDocument);
+            final OpenAPIFilter filter = new OpenAPIFilter(oasFilter);
             try {
-                walker.accept(new OpenAPIFilter(oasFilter));
+                filter.filter(newDocument);
             } catch (Throwable e) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
                     Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
