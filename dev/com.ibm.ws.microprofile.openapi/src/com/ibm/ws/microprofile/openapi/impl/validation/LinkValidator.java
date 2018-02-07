@@ -45,77 +45,90 @@ public class LinkValidator extends TypeValidator<Link> {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
                 return;
             }
+            Boolean operationRefDefined = t.getOperationRef() != null && !t.getOperationRef().isEmpty();
+            Boolean operationIdDefined = t.getOperationId() != null && !t.getOperationId().isEmpty();
+            Boolean operationRefNull = t.getOperationRef() == null || t.getOperationRef().isEmpty();
+            Boolean operationIdNull = t.getOperationId() == null || t.getOperationId().isEmpty();
 
-            if (t.getOperationRef() != null && !t.getOperationRef().isEmpty()
-                && t.getOperationId() != null && !t.getOperationId().isEmpty()) {
-                final String message = Tr.formatMessage(tc, "linkOperationRefOrId", t);
+            if (operationRefDefined && operationIdDefined) {
+                final String message = Tr.formatMessage(tc, "linkOperationRefOrId", t.toString());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
-            if (t.getOperationRef() != null && !t.getOperationRef().isEmpty()) {
-                if (t.getOperationRef().startsWith("#")) {
-                    String[] operationRef = t.getOperationRef().split("/");
-                    String pathKey = operationRef[2].replace("~1", "/").replace("~0", "~");
-                    Paths paths = context.getModel().getPaths();
+            if (operationRefDefined || operationIdDefined) {
+                if (operationRefDefined) {
                     Boolean isValid = true;
+                    if (t.getOperationRef().startsWith("#")) {
+                        String[] operationRef = t.getOperationRef().split("/");
+                        if (operationRef.length != 4) {
+                            isValid = false;
+                        } else {
+                            String pathKey = operationRef[2].replace("~1", "/").replace("~0", "~");
+                            Paths paths = context.getModel().getPaths();
 
-                    if (paths.containsKey(pathKey) && paths.get(pathKey) != null) {
-                        String op = operationRef[3];
-                        switch (op) {
-                            case "get":
-                                if (paths.get(pathKey).getGET() == null) {
-                                    isValid = false;
+                            if (paths.containsKey(pathKey) && paths.get(pathKey) != null) {
+                                String op = operationRef[3];
+                                switch (op) {
+                                    case "get":
+                                        if (paths.get(pathKey).getGET() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "put":
+                                        if (paths.get(pathKey).getPUT() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "post":
+                                        if (paths.get(pathKey).getPOST() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "delete":
+                                        if (paths.get(pathKey).getDELETE() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "trace":
+                                        if (paths.get(pathKey).getTRACE() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "head":
+                                        if (paths.get(pathKey).getHEAD() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "patch":
+                                        if (paths.get(pathKey).getPATCH() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    case "options":
+                                        if (paths.get(pathKey).getOPTIONS() == null) {
+                                            isValid = false;
+                                        }
+                                        break;
+                                    default:
+                                        isValid = false;
+                                        break;
                                 }
-                                break;
-                            case "put":
-                                if (paths.get(pathKey).getPUT() == null) {
-                                    isValid = false;
-                                }
-                                break;
-                            case "post":
-                                if (paths.get(pathKey).getPOST() == null) {
-                                    isValid = false;
-                                }
-                                break;
-                            case "delete":
-                                if (paths.get(pathKey).getDELETE() == null) {
-                                    isValid = false;
-                                }
-                                break;
-                            case "trace":
-                                if (paths.get(pathKey).getTRACE() == null) {
-                                    isValid = false;
-                                }
-                                break;
-                            case "head":
-                                if (paths.get(pathKey).getHEAD() == null) {
-                                    isValid = false;
-                                }
-                                break;
-                            case "patch":
-                                if (paths.get(pathKey).getPATCH() == null) {
-                                    isValid = false;
-                                }
-                                break;
-                            case "options":
-                                if (paths.get(pathKey).getOPTIONS() == null) {
-                                    isValid = false;
-                                }
-                                break;
+                            } else {
+                                isValid = false;
+                            }
                         }
-                    } else {
-                        isValid = false;
+                        if (!isValid) {
+                            final String message = Tr.formatMessage(tc, "linkOperationRefInvalidOrMissing", t.getOperationRef());
+                            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                        }
                     }
-                    if (!isValid) {
-                        final String message = Tr.formatMessage(tc, "linkOperationRefInvalidOrMissing", t);
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-                    }
-                } else if (t.getOperationRef().startsWith("http:") || t.getOperationRef().startsWith("https:")) {
-                    return; //To be noted in documentation that external operationRefs are not validated.
                 }
-            }
-            if (t.getOperationId() != null && !t.getOperationId().isEmpty()) {
-                helper.addLinkOperationId(t.getOperationId(), context.getLocation());
+                if (operationIdDefined) {
+                    helper.addLinkOperationId(t.getOperationId(), context.getLocation());
+                }
+            } else if (operationRefNull && operationIdNull) {
+                final String message = Tr.formatMessage(tc, "linkMustSpecifyOperationRefOrId", t.toString());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
     }

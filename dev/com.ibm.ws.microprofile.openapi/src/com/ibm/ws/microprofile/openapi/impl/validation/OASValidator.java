@@ -60,8 +60,8 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
 
     private OASValidationResult result;
     private final Set<String> operationIds = new HashSet<>();
-    private final Map<String, String> linkOperationIds = new HashMap<String, String>();
-    private static final TraceComponent tc = Tr.register(OperationValidator.class);
+    private final Map<String, Set<String>> linkOperationIds = new HashMap<String, Set<String>>();
+    private static final TraceComponent tc = Tr.register(OASValidator.class);
 
     public OASValidationResult validate(OpenAPI model) {
         result = new OASValidationResult();
@@ -92,14 +92,22 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
     /** {@inheritDoc} */
     @Override
     public void addLinkOperationId(String operationId, String location) {
-        linkOperationIds.put(operationId, location);
+        if (linkOperationIds.containsKey(operationId)) {
+            linkOperationIds.get(operationId).add(location);
+        } else {
+            Set<String> locations = new HashSet<String>();
+            locations.add(location);
+            linkOperationIds.put(operationId, locations);
+        }
     }
 
     public void validateLinkOperationIds() {
         for (String k : linkOperationIds.keySet()) {
             if (!operationIds.contains(k)) {
                 final String message = Tr.formatMessage(tc, "linkOperationIdInvalid", k);
-                addValidationEvent(new ValidationEvent(Severity.ERROR, linkOperationIds.get(k), message));
+                for (String location : linkOperationIds.get(k)) {
+                    addValidationEvent(new ValidationEvent(Severity.ERROR, location, message));
+                }
             }
         }
     }
