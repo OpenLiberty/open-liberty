@@ -332,9 +332,9 @@ public abstract class AnnotationsUtils {
         Map<String, Schema> schemaMap;
         if (schemaImplementation != Void.class) {
             Schema schemaObject = new SchemaImpl();
-            if (schemaImplementation.getName().startsWith("java.lang")) {
-                //schemaObject.setType(schemaImplementation.getSimpleName().toLowerCase());
-                //TODO: support simple type to schema mapping
+            PrimitiveType pt = PrimitiveType.fromType(schemaImplementation);
+            if (pt != null) {
+                schemaObject = pt.createProperty();
             } else {
                 ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
                 if (resolvedSchema != null) {
