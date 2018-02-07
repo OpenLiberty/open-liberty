@@ -220,14 +220,7 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                         boolean inline = false;
                         property = new SchemaImpl((SchemaImpl) mi);
                         if (schema != null && AnnotationsUtils.hasSchemaAnnotation(schema)) {
-                            if (schema.nullable()) {
-                                property.setNullable(true);
-                                inline = true;
-                            }
-                            if (schema.maxProperties() > 0) {
-                                property.setMaxProperties(schema.maxProperties());
-                                inline = true;
-                            }
+                            inline = AnnotationsUtils.overrideSchemaFromAnnotation(property, schema);
                         }
                         if (!inline) {
                             property = new SchemaImpl().ref(constructRef(name));
