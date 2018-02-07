@@ -17,7 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.ConcurrentModificationException;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
@@ -39,25 +38,6 @@ public class CacheHashMap extends BackedHashMap {
     private static final long serialVersionUID = 1L; // not serializable, rejects writeObject
 
     private static final TraceComponent tc = Tr.register(CacheHashMap.class);
-
-    /**
-     * Indices and size for ArrayList values that are stored in the cache.
-     * 
-     * Data types are:
-     * long   - CREATION_TIME
-     * long   - LAST_ACCESS
-     * int    - MAX_INACTIVE_TIME
-     * short  - LISTENER_COUNT
-     * String - USER
-     * BitSet - BITS
-     * 
-     * BitSet is used to wrap the byte[] because it is both Serializable and supports a .equals comparison that matches
-     * its contents (and is provided by the JDK, so it can deserialize on the server side).
-     * Direct use of byte[] would not be valid because its .equals method is an instance comparison.
-     * TODO it will hopefully be possible to switch to byte[] once other fields are removed
-     * such that we no longer require Cache.replace operations. 
-     */
-    static int CREATION_TIME = 0, LAST_ACCESS = 1, MAX_INACTIVE_TIME = 2, LISTENER_COUNT = 3, USER = 4, BITS = 5, SIZE = 6; 
 
     // this is set to true for multirow in DatabaseHashMapMR if additional conditions are satisfied
     boolean appDataTablesPerThread = false;
@@ -124,18 +104,18 @@ public class CacheHashMap extends BackedHashMap {
             throw new IllegalArgumentException(id + " != " + s.getId()); // internal error
 
         String key = createSessionKey(id, getIStore().getId());
-        ArrayList<?> sessionData = cacheStoreService.cache.get(key);
+        ArrayList<?> value = cacheStoreService.cache.get(key);
+
+        if (value == null)
+            return null;
+
+        SessionData sessionData = new SessionData(value);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, key.toString(), sessionData);
 
-        if (sessionData == null)
-            return null;
-
         long startTime = System.nanoTime();
-        BitSet bitset = (BitSet) sessionData.get(BITS);
-        byte[] bytes = bitset == null ? null : bitset.toByteArray();
-
+        byte[] bytes = sessionData.getBytes();
         if (bytes != null && bytes.length > 0) {
             BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
             try {
@@ -178,16 +158,9 @@ public class CacheHashMap extends BackedHashMap {
         long tmpCreationTime = d2.getCreationTime();
         d2.setLastWriteLastAccessTime(tmpCreationTime);
 
-        // When adding array elements, order must match the numeric value of the constants
-        ArrayList<Object> sessionData = new ArrayList<Object>(SIZE);
-        sessionData.add(tmpCreationTime); // CREATION_TIME
-        sessionData.add(tmpCreationTime); // LAST_ACCESS
-        sessionData.add(d2.getMaxInactiveInterval()); // MAX_INACTIVE_TIME
-        sessionData.add(d2.listenerFlag); // LISTENER_COUNT
-        sessionData.add(d2.getUserName()); // USER
-        sessionData.add(null); // BITS
+        SessionData sessionData = new SessionData(tmpCreationTime, d2.getMaxInactiveInterval(), d2.listenerFlag, d2.getUserName());
 
-        if (!cacheStoreService.cache.putIfAbsent(key, sessionData))
+        if (!cacheStoreService.cache.putIfAbsent(key, sessionData.getArrayList()))
             throw new IllegalStateException("Cache already contains " + key);
 
         d2.needToInsert = false;
@@ -270,16 +243,16 @@ public class CacheHashMap extends BackedHashMap {
 
         int updateCount;
 
-        ArrayList<?> oldSessionData = cacheStoreService.cache.get(key);
+        ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+        SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
         synchronized (sess) {
-            if (oldSessionData == null || (Long) oldSessionData.get(LAST_ACCESS) != sess.getCurrentAccessTime() || (Long) oldSessionData.get(LAST_ACCESS) == nowTime) {
+            if (sessionData == null || sessionData.getLastAccess() != sess.getCurrentAccessTime() || sessionData.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                @SuppressWarnings("unchecked")
-                ArrayList<Object> newSessionData = (ArrayList<Object>) oldSessionData.clone();
-                newSessionData.set(LAST_ACCESS, nowTime);
+                sessionData.setLastAccess(nowTime);
+                ArrayList<?> newValue = sessionData.getArrayList();
 
-                if (cacheStoreService.cache.replace(key, oldSessionData, newSessionData)) {
+                if (cacheStoreService.cache.replace(key, oldValue, newValue)) {
                     sess.updateLastAccessTime(nowTime);
                     updateCount = 1;
                 } else {
@@ -337,42 +310,42 @@ public class CacheHashMap extends BackedHashMap {
             long startTimeNS = System.nanoTime();
 
             for (boolean updated = false; !updated;) {
-                ArrayList<?> oldSessionData = cacheStoreService.cache.get(key);
-                if (oldSessionData == null)
+                ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+                if (oldValue == null)
                     return false;
 
-                @SuppressWarnings("unchecked")
-                ArrayList<Object> newSessionData = (ArrayList<Object>) oldSessionData.clone();
+                SessionData sessionData = new SessionData(oldValue).clone();
 
                 if (d2.userWriteHit) {
                     d2.userWriteHit = false;
-                    newSessionData.set(USER, d2.getUserName());
+                    sessionData.setUser(d2.getUserName());
                 }
 
                 if (d2.maxInactWriteHit) {
                     d2.maxInactWriteHit = false;
-                    newSessionData.set(MAX_INACTIVE_TIME, d2.getMaxInactiveInterval());
+                    sessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
                 }
 
                 if (d2.listenCntHit) {
                     d2.listenCntHit = false;
-                    newSessionData.set(LISTENER_COUNT, d2.listenerFlag);
+                    sessionData.setListenerCount(d2.listenerFlag);
                 }
 
                 long time = d2.getCurrentAccessTime();
                 if (!_smc.getEnableEOSWrite() || _smc.getScheduledInvalidation()) {
                     d2.setLastWriteLastAccessTime(time);
-                    newSessionData.set(LAST_ACCESS, time);
+                    sessionData.setLastAccess(time);
                 }
 
                 if (propHit && !_smc.isUsingMultirow()) {
-                    newSessionData.set(BITS, BitSet.valueOf(objbuf));
+                    sessionData.setBytes(objbuf);
                 }
 
                 if (trace & tc.isDebugEnabled())
-                    Tr.debug(this, tc, key.toString(), newSessionData);
+                    Tr.debug(this, tc, key.toString(), sessionData);
 
-                updated = cacheStoreService.cache.replace(key, oldSessionData, newSessionData);
+                ArrayList<?> newValue = sessionData.getArrayList();
+                updated = cacheStoreService.cache.replace(key, oldValue, newValue);
             }
 
             if (objbuf != null && propHit && !_smc.isUsingMultirow()) {
@@ -397,15 +370,16 @@ public class CacheHashMap extends BackedHashMap {
         String key = createSessionKey(id, appName);
 
         CacheSession sess = null;
-        ArrayList<?> sessionData = cacheStoreService.cache.get(key);
-        if (sessionData != null) {
+        ArrayList<?> value = cacheStoreService.cache.get(key);
+        if (value != null) {
+            SessionData sessionData = new SessionData(value);
             sess = new CacheSession(this, id, getIStore().getStoreCallback());
-            sess.updateLastAccessTime((Long) sessionData.get(LAST_ACCESS));
-            sess.setCreationTime((Long) sessionData.get(CREATION_TIME));
-            sess.internalSetMaxInactive((Integer) sessionData.get(MAX_INACTIVE_TIME));
-            sess.internalSetUser((String) sessionData.get(USER));
+            sess.updateLastAccessTime((Long) sessionData.getLastAccess());
+            sess.setCreationTime((Long) sessionData.getCreationTime());
+            sess.internalSetMaxInactive((Integer) sessionData.getMaxInactiveTime());
+            sess.internalSetUser((String) sessionData.getUser());
             sess.setIsValid(true);
-            sess.setListenerFlag((Short) sessionData.get(LISTENER_COUNT));
+            sess.setListenerFlag((Short) sessionData.getListenerCount());
         }
         return sess;
     }
@@ -474,14 +448,14 @@ public class CacheHashMap extends BackedHashMap {
         int updateCount = -1;
 
         while (updateCount == -1) {
-            ArrayList<?> oldSessionData = cacheStoreService.cache.get(key);
-            if (oldSessionData == null || (Long) oldSessionData.get(LAST_ACCESS) == nowTime) {
+            ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+            SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
+            if (sessionData == null || sessionData.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                @SuppressWarnings("unchecked")
-                ArrayList<Object> newSessionData = (ArrayList<Object>) oldSessionData.clone();
-                newSessionData.set(LAST_ACCESS, nowTime);
-                if (cacheStoreService.cache.replace(key, oldSessionData, newSessionData))
+                sessionData.setLastAccess(nowTime);
+                ArrayList<Object> newValue = sessionData.getArrayList();
+                if (cacheStoreService.cache.replace(key, oldValue, newValue))
                     updateCount = 1;
             }
         }
