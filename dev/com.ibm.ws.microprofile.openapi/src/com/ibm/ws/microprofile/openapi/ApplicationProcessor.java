@@ -259,7 +259,8 @@ public class ApplicationProcessor {
                                 if (openAPI != null) {
                                     currentApp = appInfo;
                                     this.document = openAPI;
-                                    setApplicationPath(openAPI, wmi.getContextRoot());
+                                    handleApplicationPath(openAPI, wmi.getContextRoot());
+                                    handleUserServer(openAPI);
                                     break;
                                 }
                             }
@@ -282,26 +283,33 @@ public class ApplicationProcessor {
             OpenAPI openAPI = processWebModule(appContainer, moduleInfo);
             if (openAPI != null) {
                 currentApp = appInfo;
-                setApplicationPath(openAPI, moduleInfo.getContextRoot());
+                handleApplicationPath(openAPI, moduleInfo.getContextRoot());
+                handleUserServer(openAPI);
                 this.document = openAPI;
             }
         }
     }
 
-    private void setApplicationPath(final OpenAPI openAPI, String contextRoot) {
-    	//Check the first path item to determine if it already starts with contextRoot
+    private void handleApplicationPath(final OpenAPI openAPI, String contextRoot) {
+        //Check the first path item to determine if it already starts with contextRoot
         if (openAPI != null) {
             Paths paths = openAPI.getPaths();
             if (paths != null && !paths.isEmpty() && paths.keySet().iterator().next().startsWith(contextRoot)) {
-            	if (OpenAPIUtils.isDebugEnabled(tc)) {
+                if (OpenAPIUtils.isDebugEnabled(tc)) {
                     Tr.debug(tc, "Path already starts with context root: " + contextRoot);
                 }
-            	return; //no-op
+                return; //no-op
             }
         }
-        
+
         //Path doesn't start with context root, so add it
         serverInfo.setApplicationPath(contextRoot);
+    }
+
+    private void handleUserServer(final OpenAPI openapi) {
+        if (openapi != null && openapi.getServers() != null && openapi.getServers().size() > 0) {
+            serverInfo.setIsUserServer(true);
+        }
     }
 
     private void handleServers(OpenAPI openapi, ConfigProcessor configProcessor) {
@@ -375,6 +383,7 @@ public class ApplicationProcessor {
             if (currentApp != null && currentApp.getName().equals(appInfo.getName())) {
                 currentApp = null;
                 this.serverInfo.setApplicationPath(null);
+                this.serverInfo.setIsUserServer(false);
                 this.document = createBaseOpenAPIDocument();
                 Iterator<java.util.Map.Entry<String, ApplicationInfo>> iterator = applications.entrySet().iterator();
                 while (iterator.hasNext()) {
