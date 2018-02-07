@@ -523,7 +523,7 @@ public class AuthenticateApi {
             case FAILURE:
                 String reason = authResult.getReason();
                 if (reason != null && reason.contains("JASPIC"))
-                    return new DenyReply(reason);
+                    return new ChallengeReply(realm, reason);
                 return DENY_AUTHN_FAILED;
 
             case SEND_401:

@@ -28,13 +28,19 @@ public class ChallengeReply extends WebReply {
     public static final String REALM_HDR_SUFFIX = "\"";
 
     public ChallengeReply(String realm) {
+        this(realm, null);
+    }
+
+    public ChallengeReply(String realm, String reason) {
         this(realm, HttpServletResponse.SC_UNAUTHORIZED, AuthResult.UNKNOWN);
+        message = REALM_HDR_PREFIX + realm + REALM_HDR_SUFFIX;
+        if (reason != null) {
+            message = message + ";" + reason;
+        }
     }
 
     public ChallengeReply(String realm, int code, AuthResult status) {
         super(code, null);
-        message = REALM_HDR_PREFIX + realm + REALM_HDR_SUFFIX;
-
         if (status == AuthResult.TAI_CHALLENGE)
             taiChallengeReply = true;
         else
