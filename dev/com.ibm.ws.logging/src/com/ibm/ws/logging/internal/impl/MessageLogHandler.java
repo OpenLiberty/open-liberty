@@ -78,7 +78,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
             messageOutput = formatter.messageLogFormat(genData);
 
         }
-        if (messageOutput != null) {
+        if (messageOutput != null && traceWriter != null) {
             traceWriter.writeRecord(messageOutput);
         }
 

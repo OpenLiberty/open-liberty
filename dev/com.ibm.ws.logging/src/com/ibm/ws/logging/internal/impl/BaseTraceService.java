@@ -342,7 +342,7 @@ public class BaseTraceService implements TrService {
          * if the user wishes to switch to 'json' messages or console at a later time (other than
          * startup) they will not be able to subscribe to accessLog and ffdc sources.
          */
-        if (messageLogHandler == null) {
+        if (messageLogHandler == null && messagesLog != null) {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
             collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
             messageLogHandler.setWriter(messagesLog);
@@ -359,8 +359,8 @@ public class BaseTraceService implements TrService {
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
-            messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
             if (messageLogHandler != null) {
+                messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
                 messageLogHandler.setWriter(messagesLog);
                 ArrayList<String> filteredList = new ArrayList<String>();
                 filteredList.add("message");
@@ -422,7 +422,9 @@ public class BaseTraceService implements TrService {
                 updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
             }
         }
-        messageLogHandler.setFormatter(formatter);
+        if (messageLogHandler != null) {
+            messageLogHandler.setFormatter(formatter);
+        }
         consoleLogHandler.setFormatter(formatter);
         consoleLogHandler.setBTS(this);
         //check if json source list has sourcelist
@@ -1050,12 +1052,6 @@ public class BaseTraceService implements TrService {
         }
         holder.originalStream.println(txt);
     }
-//    public synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {
-//        if (holder == systemErr && rawStream) {
-//            txt = "[err] " + txt;
-//        }
-//        holder.originalStream.println(txt);
-//    }
 
     /**
      * Trim stack traces. This isn't as sophisticated as what TruncatableThrowable
