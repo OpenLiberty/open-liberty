@@ -416,8 +416,30 @@ public class Reader {
                     }
 
                     if (operationParameters.size() > 0) {
+                        Map<String, Parameter> params = new HashMap<>();
+
+                        if (operation.getParameters() != null) {
+                            for (Parameter param : operation.getParameters()) {
+                                if (param.getIn() != null) {
+                                    params.put(param.getName() + '/' + param.getIn().toString(), param);
+                                } else {
+                                    params.put(param.getName(), param);
+                                }
+                            }
+                        }
+
                         for (Parameter operationParameter : operationParameters) {
-                            operation.addParameter(operationParameter);
+                            Parameter p = null;
+                            if (operationParameter.getIn() != null)
+                                p = params.get(operationParameter.getName() + '/' + operationParameter.getIn().toString());
+                            if (p == null) {
+                                p = params.get(operationParameter.getName());
+                            }
+                            if (p != null) {
+                                ReaderUtils.copyParamValues(p, operationParameter);
+                            } else {
+                                operation.addParameter(operationParameter);
+                            }
                         }
                     }
 
