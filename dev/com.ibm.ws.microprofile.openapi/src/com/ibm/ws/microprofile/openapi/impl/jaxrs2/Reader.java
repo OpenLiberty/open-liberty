@@ -1047,7 +1047,7 @@ public class Reader {
         getParametersListFromAnnotation(callbackOp.parameters(), null, null, operation).ifPresent(p -> p.forEach(operation::addParameter));
         SecurityParser.getSecurityRequirements(callbackOp.security()).ifPresent(operation::setSecurity);
         OperationParser.getApiResponses(callbackOp.responses(), null, null, components).ifPresent(operation::setResponses);
-        // TODO: Request body has to be processed.
+        processRequestBody(new ParameterImpl(), operation, null, null, null, callbackOp.requestBody());
     }
 
     protected String getOperationId(String operationId) {
