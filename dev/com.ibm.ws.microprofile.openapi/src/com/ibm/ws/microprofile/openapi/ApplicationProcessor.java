@@ -259,7 +259,7 @@ public class ApplicationProcessor {
                                 if (openAPI != null) {
                                     currentApp = appInfo;
                                     this.document = openAPI;
-                                    serverInfo.setApplicationPath(wmi.getContextRoot());
+                                    setApplicationPath(openAPI, wmi.getContextRoot());
                                     break;
                                 }
                             }
@@ -282,10 +282,26 @@ public class ApplicationProcessor {
             OpenAPI openAPI = processWebModule(appContainer, moduleInfo);
             if (openAPI != null) {
                 currentApp = appInfo;
-                serverInfo.setApplicationPath(moduleInfo.getContextRoot());
+                setApplicationPath(openAPI, moduleInfo.getContextRoot());
                 this.document = openAPI;
             }
         }
+    }
+
+    private void setApplicationPath(final OpenAPI openAPI, String contextRoot) {
+    	//Check the first path item to determine if it already starts with contextRoot
+        if (openAPI != null) {
+            Paths paths = openAPI.getPaths();
+            if (paths != null && !paths.isEmpty() && paths.keySet().iterator().next().startsWith(contextRoot)) {
+            	if (OpenAPIUtils.isDebugEnabled(tc)) {
+                    Tr.debug(tc, "Path already starts with context root: " + contextRoot);
+                }
+            	return; //no-op
+            }
+        }
+        
+        //Path doesn't start with context root, so add it
+        serverInfo.setApplicationPath(contextRoot);
     }
 
     private void handleServers(OpenAPI openapi, ConfigProcessor configProcessor) {
