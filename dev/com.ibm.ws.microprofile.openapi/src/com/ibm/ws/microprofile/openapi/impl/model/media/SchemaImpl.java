@@ -76,6 +76,10 @@ public class SchemaImpl implements Schema {
     public SchemaImpl() {}
 
     public SchemaImpl(SchemaImpl schema) {
+        if (schema == null) {
+            return;
+        }
+
         this._default = schema.getDefaultValue();
         this.name = schema.getName();
         this.title = schema.getTitle();
