@@ -114,7 +114,7 @@ public class LogSource implements Source, WsLogHandler {
 
             LogRecord logRecord = routedMessage.getLogRecord();
             if (logRecord != null && bufferMgr != null) {
-                GenericData parsedMessage = parse(routedMessage);
+                LogTraceData parsedMessage = parse(routedMessage);
                 if (!BufferManagerImpl.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
                     BufferManagerImpl.removeEMQTrigger();
                 }
