@@ -27,7 +27,6 @@ import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
-import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
@@ -235,12 +234,6 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
     public void visitMediaType(Context context, String key, MediaType mediaType) {
         final MediaTypeValidator v = MediaTypeValidator.getInstance();
         v.validate(this, context, key, mediaType);
-    }
-
-    @Override
-    public void visitEncoding(Context context, String key, Encoding encoding) {
-        final EncodingValidator v = EncodingValidator.getInstance();
-        v.validate(this, context, key, encoding);
     }
 
     @Override
