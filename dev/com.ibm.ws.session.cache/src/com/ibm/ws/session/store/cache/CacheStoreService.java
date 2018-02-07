@@ -41,6 +41,7 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.store.cache.serializable.SessionData;
 import com.ibm.ws.session.store.cache.serializable.SessionKey;
+import com.ibm.ws.session.store.cache.serializable.SessionPropertyKey;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.session.IStore;
@@ -55,7 +56,13 @@ public class CacheStoreService implements SessionStoreService {
     
     private Map<String, Object> configurationProperties;
 
+    /**
+     * For single-cache path, the whole session is store as an entry in this cache.
+     * For multi-cache path, separate caches are created per application to store the session properties each as their own cache entry,
+     * and this cache only contains information about the session rather than its contents.
+     */
     Cache<SessionKey, SessionData> cache;
+
     CacheManager cacheManager;
 
     private volatile boolean completedPassivation = true;
@@ -103,6 +110,8 @@ public class CacheStoreService implements SessionStoreService {
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
+        if (Boolean.TRUE.equals(configurationProperties.get("useMultiRowSchema")))
+            smc.setUsingMultirow(true); // TODO temporary code for experimenting with cache entry per session property
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
         setCompletedPassivation(false);
@@ -118,6 +127,32 @@ public class CacheStoreService implements SessionStoreService {
     @Deactivate
     protected void deactivate(ComponentContext context) {
         cacheManager.close();
+    }
+
+    /**
+     * Obtains the session cache for the specified application.
+     * For multi-cache path, each session property is a separate entry in this cache.
+     * 
+     * @param appName the application name.
+     * @return the cache.
+     */
+    Cache<SessionPropertyKey, byte[]> getCache(String appName) {
+        // TODO replace / and : characters (per spec for cache names) and ensure the name is still unique.
+        String cacheName = "com.ibm.ws.session.cache." + appName;
+
+        Cache<SessionPropertyKey, byte[]> cache = cacheManager.getCache(cacheName, SessionPropertyKey.class, byte[].class);
+        if (cache == null) {
+            Configuration<SessionPropertyKey, byte[]> config = new MutableConfiguration<SessionPropertyKey, byte[]>()
+                            .setTypes(SessionPropertyKey.class, byte[].class);
+            try {
+                cache = cacheManager.createCache(cacheName, config);
+            } catch (CacheException x) {
+                cache = cacheManager.getCache(cacheName, SessionPropertyKey.class, byte[].class);
+                if (cache == null)
+                    throw x;
+            }
+        }
+        return cache;
     }
 
     @Override
