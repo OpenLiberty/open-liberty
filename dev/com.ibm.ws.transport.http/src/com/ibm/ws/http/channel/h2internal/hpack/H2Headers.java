@@ -235,6 +235,11 @@ public class H2Headers {
                 Tr.debug(tc, "Decoding header name.");
             }
             decodedName = decodeFragment(buffer);
+
+            if (decodedName.trim().isEmpty()) {
+                throw new CompressionException("Header field names must not be empty.");
+            }
+
             if (!HpackUtils.isAllLower(decodedName)) {
                 throw new CompressionException("Header field names must not contain uppercase "
                                                + "characters. Decoded header name: " + decodedName);
@@ -297,7 +302,7 @@ public class H2Headers {
             //Transfer bytes from the buffer into byte array.
             buffer.get(bytes);
 
-            if (huffman) {
+            if (huffman && bytes.length > 0) {
                 HuffmanDecoder decoder = new HuffmanDecoder();
                 bytes = decoder.convertHuffmanToAscii(bytes);
             }
