@@ -245,4 +245,44 @@ public class ReaderUtils {
         }
         return null;
     }
+
+    public static void copyParamValues(Parameter paramTo, Parameter operationParameter) {
+        if (operationParameter.getIn() != null) {
+            paramTo.setIn(operationParameter.getIn());
+        }
+        if (operationParameter.getAllowEmptyValue() != null) {
+            paramTo.setAllowEmptyValue(operationParameter.getAllowEmptyValue());
+        }
+        if (operationParameter.getAllowReserved() != null) {
+            paramTo.setAllowReserved(operationParameter.getAllowReserved());
+        }
+        if (operationParameter.getDeprecated() != null) {
+            paramTo.setDeprecated(operationParameter.getDeprecated());
+        }
+        if (operationParameter.getDescription() != null) {
+            paramTo.setDescription(operationParameter.getDescription());
+        }
+        if (operationParameter.getStyle() != null) {
+            paramTo.setStyle(operationParameter.getStyle());
+        }
+        if (paramTo.getSchema() == null) {
+            paramTo.setSchema(operationParameter.getSchema());
+        }
+        if (paramTo.getContent() == null) {
+            paramTo.setContent(operationParameter.getContent());
+        }
+        if (operationParameter.getExample() != null) {
+            paramTo.setExample(operationParameter.getExample());
+        }
+        if (operationParameter.getRequired() != null) {
+            paramTo.setRequired(operationParameter.getRequired());
+        }
+        if (operationParameter.getExplode() != null) {
+            paramTo.setExplode(operationParameter.getExplode());
+        }
+        if (operationParameter.getExamples() != null) {
+            paramTo.setExamples(operationParameter.getExamples());
+        }
+
+    }
 }

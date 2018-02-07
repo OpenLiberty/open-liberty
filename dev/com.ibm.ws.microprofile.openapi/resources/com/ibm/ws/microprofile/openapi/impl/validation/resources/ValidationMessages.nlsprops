@@ -1,4 +1,4 @@
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,6 +33,11 @@ invalidUrl=The \"{0}\" object must contain a valid URL. The \"{1}\" value specif
 invalidUri=The \"{0}\" object must contain a valid URI. The \"{1}\" value specified for the URI is not valid.
 
 invalidExtensionFieldName=The field name of \"{0}\" extension must start with "x-".
+
+headerExampleOrExamples=The Header object \"{0}\" specifies both an example object and an examples object. Only one of them should be specified.
+headerSchemaAndContent=The Header object \"{0}\" MUST contain either a schema property, or a content property, but not both.
+headerSchemaOrContent=The Header object \"{0}\" MUST contain either a schema property or a content property.
+headerContentMap=The \"content\" map within header object \"{0}\" must only contain one entry.
 
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid.
 
