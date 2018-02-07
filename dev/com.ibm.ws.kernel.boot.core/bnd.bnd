@@ -14,6 +14,7 @@ bVersion=1.0
 Export-Package: \
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.kernel.boot.archive,\
+	com.ibm.ws.kernel.boot.archive.internal,\
 	com.ibm.ws.kernel.boot.cmdline,\
 	com.ibm.ws.kernel.boot.delegated.zos,\
 	com.ibm.ws.kernel.boot.internal,\
@@ -26,6 +27,13 @@ Export-Package: \
 	com.ibm.ws.kernel.productinfo,\
 	com.ibm.ws.kernel.provisioning,\
 	com.ibm.wsspi.kernel.embeddable
+	
+Private-Package: \
+ 	org.apache.commons.compress.archivers, \
+ 	org.apache.commons.compress.archivers.zip, \
+ 	org.apache.commons.compress.compressors, \
+ 	org.apache.commons.compress.compressors.lzw, \
+ 	org.apache.commons.compress.utils
 
 instrument.disabled: true
 
@@ -35,4 +43,7 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.kernel.boot.java7;version=latest, \
+	org.apache.commons:commons-compress;version=1.10
