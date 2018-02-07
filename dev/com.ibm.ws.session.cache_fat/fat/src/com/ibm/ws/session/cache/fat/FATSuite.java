@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SessionCacheTest.class
+                SessionCacheTest.class,
+                MultiServerCacheTest.class
 })
 public class FATSuite {}
