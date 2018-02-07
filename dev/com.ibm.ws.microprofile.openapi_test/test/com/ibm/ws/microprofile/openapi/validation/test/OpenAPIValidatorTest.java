@@ -108,6 +108,7 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"openapi\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -139,6 +140,7 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"info\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -170,6 +172,7 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"paths\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -203,6 +206,7 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI object must contain a valid OpenAPI specification version."));
     }
 
     @Test
@@ -259,5 +263,6 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI object must contain unique tag names."));
     }
 }
