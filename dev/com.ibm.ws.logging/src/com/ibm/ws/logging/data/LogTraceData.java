@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+
 /**
  *
  */
@@ -61,8 +63,24 @@ public class LogTraceData extends GenericData {
         this.genData = genData;
     }
 
+    @Override
+    public ArrayList<Pair> getPairs() {
+        return genData.getPairs();
+    }
+
+    @Override
+    public String getSourceType() {
+        return genData.getSourceType();
+    }
+
+    @Override
     public String getMessageID() {
-        return "Test LogData getMessageID()";
+        return this.genData.getMessageID();
+    }
+
+    @Override
+    public String toString() {
+        return this.genData.toString();
     }
 
 }
