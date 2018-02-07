@@ -45,5 +45,5 @@ public interface SSLChannelConstants {
     /** HTTP/2 Version protocol */
     public static final String PROTOCOL_VERSION_2 = "http/2";
     /** Can be set to specify the http protocol version. Ex: http/1.1, http/2 */
-    public static final String PROPNAME_PROTOCOL_VERSION = "protocolVersion";
+    public static final String PROPNAME_PROTOCOL_VERSION = "protocolVersionInternal";
 }

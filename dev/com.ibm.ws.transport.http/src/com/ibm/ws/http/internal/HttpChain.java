@@ -365,9 +365,10 @@ public class HttpChain implements ChainEventListener {
                        chanProps = new HashMap<Object, Object>(sslOptions);
                        // Put the protocol version, which allows the http channel to dynamically
                        // know what http version it will use.
-                       chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
-
-                       sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), chanProps);
+                       if(owner.getProtocolVersion() != null){
+                         chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                       }
+                      sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), chanProps);
                    }
                }
 
@@ -380,7 +381,9 @@ public class HttpChain implements ChainEventListener {
                    chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
                    // Put the protocol version, which allows the http channel to dynamically
                    // know what http version it will use.
-                   chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                   if (owner.getProtocolVersion() != null){
+                     chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                   }
                    httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPInboundChannel"), chanProps);
                }
 

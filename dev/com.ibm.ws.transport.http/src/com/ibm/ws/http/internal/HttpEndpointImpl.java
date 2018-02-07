@@ -304,7 +304,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
         }
 
-        protocolVersion = ((String) config.get("protocolVersion")).toLowerCase(Locale.ENGLISH);
+        //Find and resolve the protocolVersion if has been defined.
+        protocolVersion = (String) config.get("protocolVersion");
 
         httpPort = MetatypeUtils.parseInteger(HttpServiceConstants.ENPOINT_FPID_ALIAS, "httpPort",
                                               config.get("httpPort"),

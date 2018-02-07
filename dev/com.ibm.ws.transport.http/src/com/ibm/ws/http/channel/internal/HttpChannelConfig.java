@@ -1275,9 +1275,9 @@ public class HttpChannelConfig {
         if (null != protocolVersionProperty && !HttpConfigConstants.NEVER_20.equalsIgnoreCase(servletSetting)) {
 
             String protocolVersion = ((String) protocolVersionProperty).toLowerCase();
-            if ("http/1.1".equals(protocolVersion)) {
+            if (HttpConfigConstants.PROTOCOL_VERSION_11.equals(protocolVersion)) {
                 this.protocolVersion = VersionValues.V11;
-            } else if ("http/2".equals(protocolVersion)) {
+            } else if (HttpConfigConstants.PROTOCOL_VERSION_2.equals(protocolVersion)) {
                 this.protocolVersion = VersionValues.V20;
 
             }
@@ -1292,7 +1292,7 @@ public class HttpChannelConfig {
 
     /**
      * Configured http protocol version used by this HttpChannel
-     * 
+     *
      * @return
      */
     public VersionValues getProtocolVersion() {
