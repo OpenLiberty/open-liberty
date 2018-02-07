@@ -395,12 +395,15 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "Querying security service for alias=[" + aliasFinal + "]");
                 }
                 props = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+
                     @Override
                     public Properties run() throws Exception {
                         return jsseHelper.getProperties(aliasFinal, connectionInfo, null);
                     }
                 });
-            } catch (Exception e) {
+            } catch (
+
+            Exception e) {
                 // no FFDC required
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception getting SSL properties from alias: " + this.alias);
@@ -493,6 +496,18 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
             Tr.debug(tc, "timeoutValueInSSLClosingHandshake : " + this.timeoutValueInSSLClosingHandshake);
         }
         return this.timeoutValueInSSLClosingHandshake;
+    }
+
+    /**
+     * Indicates whether the SSL Channel is configured to use HTTP/2
+     *
+     * @return
+     */
+    public boolean getUseH2Protocol() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "useH2Protocol : " + this.useH2Protocol);
+        }
+        return this.useH2Protocol;
     }
 
     /*
@@ -630,32 +645,18 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     }
                 }
 
-                String alpnProtocolForServlet31 = channelProps.getProperty(SSLChannelConstants.ALPN_PROTOCOL_SERVLET_31);
-                if (alpnProtocolForServlet31 != null && SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
+                String protocolVersion = channelProps.getProperty(SSLChannelConstants.PROPNAME_PROTOCOL_VERSION);
+                if (protocolVersion != null && !SSLChannelConstants.NEVER_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
 
-                    if (SSLChannelConstants.H2_ALPN_PROTOCOL.equalsIgnoreCase(alpnProtocolForServlet31)) {
+                    if (SSLChannelConstants.PROTOCOL_VERSION_11.equalsIgnoreCase(protocolVersion)) {
+                        this.useH2Protocol = false;
+                    } else if (SSLChannelConstants.PROTOCOL_VERSION_2.equalsIgnoreCase(protocolVersion)) {
                         this.useH2Protocol = true;
                     }
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found alpnProtocolForServlet31 in SSL system properties, " + alpnProtocolForServlet31);
-                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel has enabled use of HTTP/2" : "Config: Channel has disabled use of HTTP/2");
 
+                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                        Tr.event(tc, "SSL Channel Config: versionProtocol has been set to " + protocolVersion);
                     }
-                }
-
-                String alpnProtocolForServlet40AndHigher = channelProps.getProperty(SSLChannelConstants.ALPN_PROTOCOL_SERVLET_40_AND_HIGHER);
-                if (alpnProtocolForServlet40AndHigher != null && SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
-
-                    if (SSLChannelConstants.HTTP11_ALPN_PROTOCOL.equalsIgnoreCase(alpnProtocolForServlet40AndHigher)) {
-                        this.useH2Protocol = false;
-                    }
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found alpnProtocolForServlet40AndHigher in SSL system properties, " + alpnProtocolForServlet40AndHigher);
-                        Tr.event(tc, this.useH2Protocol ? "Config: SSLChannel has enabled use of HTTP/2" : "Config: SSLChannel has disabled use of HTTP/2");
-
-                    }
-
                 }
 
             }

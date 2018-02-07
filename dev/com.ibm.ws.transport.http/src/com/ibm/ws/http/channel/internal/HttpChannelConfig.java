@@ -135,7 +135,9 @@ public class HttpChannelConfig {
     private int h2ConnectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the connection read window to the spec max
     /** PI81572 Purge the remaining response body off the wire when clear is called */
     private boolean purgeRemainingResponseBody = true;
-    private boolean useH2Protocol = false;
+
+    /** Default http version for the channel is http/1.1 **/
+    private VersionValues protocolVersion = VersionValues.V11;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -173,7 +175,9 @@ public class HttpChannelConfig {
             Tr.debug(tc, "Configured Http Version Setting, " + ((configuredHttpVersionSetting == null) ? HttpConfigConstants.NEVER_20 : configuredHttpVersionSetting));
         }
 
-        this.useH2Protocol = HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting);
+        if (HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
+            this.protocolVersion = VersionValues.V20;
+        }
 
         Map<Object, Object> propsIn = cc.getPropertyBag();
 
@@ -361,18 +365,16 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE, value);
                 continue;
             }
-            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31)) {
-                props.put(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31, value);
-                continue;
-            }
-            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER)) {
-                props.put(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER, value);
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION)) {
+                props.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, value);
                 continue;
             }
 
             props.put(key, value);
         }
 
+        parseProtocolVersion(props);
         parsePersistence(props);
         parseOutgoingVersion(props);
         parseBufferType(props);
@@ -410,8 +412,6 @@ public class HttpChannelConfig {
         parseH2ConnCloseTimeout(props);
         parseH2ConnReadWindowSize(props);
         parsePurgeRemainingResponseBody(props); //PI81572
-        parseNonSslHttp2ForServlet31(props);
-        parseNonSslHttp2ForServlet40AndHigher(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1263,53 +1263,40 @@ public class HttpChannelConfig {
         }
     }
 
-    private void parseNonSslHttp2ForServlet31(Map<?, ?> props) {
-        String value = ((String) props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_SERVLET_31)).trim();
-        String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
+    /**
+     * Check the configuration to see if there is a desired http protocol version
+     * that has been provided for this HTTP Channel
+     *
+     * @param props
+     */
+    private void parseProtocolVersion(Map<?, ?> props) {
+        Object protocolVersionProperty = props.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION);
+        String servletSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
+        if (null != protocolVersionProperty && !HttpConfigConstants.NEVER_20.equalsIgnoreCase(servletSetting)) {
 
-        if (null != value && HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(servletHttpVersionSetting)) {
+            String protocolVersion = ((String) protocolVersionProperty).toLowerCase();
+            if ("http/1.1".equals(protocolVersion)) {
+                this.protocolVersion = VersionValues.V11;
+            } else if ("http/2".equals(protocolVersion)) {
+                this.protocolVersion = VersionValues.V20;
 
-            if (HttpConfigConstants.PROP_ENABLED.equalsIgnoreCase(value)) {
-                this.useH2Protocol = true;
             }
 
-            else if (HttpConfigConstants.PROP_DISABLED.equalsIgnoreCase(value)) {
-                this.useH2Protocol = false;
-            }
-
-            if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
-                Tr.event(tc, "Config: nonSslHttp2ForServlet3.1 is, " + value);
-                Tr.event(tc, this.useH2Protocol ? "Config: Channel has enabled use of HTTP/2" : "Config: Channel has disabled use of HTTP/2");
-            }
-        }
-    }
-
-    private void parseNonSslHttp2ForServlet40AndHigher(Map<?, ?> props) {
-        String value = ((String) props.get(HttpConfigConstants.PROPNAME_NON_SSL_HTTP2_FOR_SERVLET_40_AND_HIGHER)).trim();
-        String servletHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
-
-        if (null != value && HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(servletHttpVersionSetting)) {
-
-            if (HttpConfigConstants.PROP_ENABLED.equalsIgnoreCase(value)) {
-                this.useH2Protocol = true;
-            }
-
-            else if (HttpConfigConstants.PROP_DISABLED.equalsIgnoreCase(value)) {
-                this.useH2Protocol = false;
-            }
-
-            if ((TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())) {
-                Tr.event(tc, "Config: nonSslHttp2ForServlet4.0AndHigher is, " + value);
-                Tr.event(tc, this.useH2Protocol ? "Config: Channel has enabled use of HTTP/2" : "Config: Channel has disabled use of HTTP/2");
-
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+                Tr.event(tc, "HTTP Channel Config: versionProtocol has been set to " + protocolVersion);
             }
 
         }
 
     }
 
-    public boolean shouldUseH2Protocol() {
-        return this.useH2Protocol;
+    /**
+     * Configured http protocol version used by this HttpChannel
+     * 
+     * @return
+     */
+    public VersionValues getProtocolVersion() {
+        return this.protocolVersion;
     }
 
     /**

@@ -40,12 +40,10 @@ public interface SSLChannelConstants {
     public static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
     /** The channel will be enabled for HTTP/2.0 by default". */
     public static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
-
-    /** If value is set to 'h2' and the Servlet feature 3.1 is enabled, this sets the channel to use HTTP/2 */
-    public static final String ALPN_PROTOCOL_SERVLET_31 = "alpnProtocolForServlet3.1";
-    /** If value is set to 'http/1.1 and the Servlet feature 4.0 is enabled, this disables use of HTTP/2 */
-    public static final String ALPN_PROTOCOL_SERVLET_40_AND_HIGHER = "alpnProtocolForServlet4.0AndHigher";
-
-    public static final String H2_ALPN_PROTOCOL = "h2";
-    public static final String HTTP11_ALPN_PROTOCOL = "http/1.1";
+    /** HTTP/1.1 Version protocol */
+    public static final String PROTOCOL_VERSION_11 = "http/1.1";
+    /** HTTP/2 Version protocol */
+    public static final String PROTOCOL_VERSION_2 = "http/2";
+    /** Can be set to specify the http protocol version. Ex: http/1.1, http/2 */
+    public static final String PROPNAME_PROTOCOL_VERSION = "protocolVersion";
 }

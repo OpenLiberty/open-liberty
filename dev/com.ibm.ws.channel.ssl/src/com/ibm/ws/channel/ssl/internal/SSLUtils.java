@@ -23,13 +23,13 @@ import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
 
+import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiatorJdk8.ThirdPartyAlpnNegotiator;
-import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
+import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiatorJdk8.ThirdPartyAlpnNegotiator;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -651,10 +651,12 @@ public class SSLUtils {
         TCPReadRequestContext deviceReadContext = connLink.getDeviceReadInterface();
         TCPWriteRequestContext deviceWriteContext = connLink.getDeviceWriteInterface();
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
+        ThirdPartyAlpnNegotiator negotiator = null;
+        if (connLink.getChannel().getUseH2Protocol()) {
+            // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
+            negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+        }
 
-        // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
-        ThirdPartyAlpnNegotiator negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
-        
         int amountToWrite = 0;
         boolean firstPass = true;
         HandshakeStatus hsstatus = HandshakeStatus.NEED_WRAP;
