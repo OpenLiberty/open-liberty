@@ -258,12 +258,12 @@ public class SecurityContextTest extends JavaEESecTestBase {
      * <OL>
      * <LI> Access a protected servlet configured for basic authentication.
      * <LI> Login with a valid userId and password in the not in javaeesec_basic role and verify that
-     * <LI> the caller does not have access to the Web resource "/Protected" and method POST
+     * <LI> the caller does not have access to the Web resource "/Protected" and method GET
      * </OL>
      * <P> Expected Results:
      * <OL>
      * <LI> Return code 200
-     * <LI> The caller has access, hasAccessToWebResource returns true
+     * <LI> The caller does not have access, hasAccessToWebResource returns false
      * </OL>
      */
     @Mode(TestMode.LITE)

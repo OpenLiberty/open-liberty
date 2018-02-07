@@ -36,7 +36,7 @@ public interface SecurityConstraintCollection {
      * @param method The HTTP method.
      * @return The MatchResponse object.
      */
-    public abstract List<MatchResponse> getMatchResponse(String resourceName, String... method);
+    public abstract List<MatchResponse> getMatchResponses(String resourceName, String... method);
 
     /**
      * Gets the list of security constraints in this collection

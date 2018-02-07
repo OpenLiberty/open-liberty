@@ -54,14 +54,14 @@ public class SecurityConstraintCollectionImpl implements SecurityConstraintColle
      * @see com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection#getMatchResponse(java.lang.String, java.lang.String[])
      */
     @Override
-    public List<MatchResponse> getMatchResponse(String resourceName, String... methods) {
+    public List<MatchResponse> getMatchResponses(String resourceName, String... methods) {
         List<MatchResponse> matchResponses = new ArrayList<MatchResponse>();
         Set<String> methodList = new HashSet<String>();
         if (securityConstraints == null || securityConstraints.isEmpty()) {
             return null;
         }
 
-        if (methods.length == 1 && methods[0].isEmpty()) {
+        if (methods == null || (methods.length == 0) || (methods.length == 1 && methods[0].isEmpty())) {
             // fill in code to get list of all methods here start with standard list then add in custom methods
             methodList.addAll(STANDARD_METHODS);
 
@@ -76,7 +76,6 @@ public class SecurityConstraintCollectionImpl implements SecurityConstraintColle
                 }
             }
         } else {
-
             methodList.addAll(new HashSet<String>(Arrays.asList(methods)));
         }
 

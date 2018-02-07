@@ -133,7 +133,7 @@ public class SecurityContextImpl implements SecurityContext {
             AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
             Subject callerSubject = getCallerSubject();
 
-            List<MatchResponse> matchResponses = collection.getMatchResponse(resource, methods);
+            List<MatchResponse> matchResponses = collection.getMatchResponses(resource, methods);
 
             for (MatchResponse response : matchResponses) {
 
