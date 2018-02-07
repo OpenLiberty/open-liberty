@@ -28,7 +28,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
-import com.ibm.ws.session.store.cache.serializable.SessionPropertyKey;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStore;
 
@@ -60,22 +59,23 @@ public class CacheHashMapMR extends CacheHashMap {
         long startTime = System.nanoTime();
         long readSize = 0;
 
-        Cache<SessionPropertyKey, byte[]> cache = cacheStoreService.getCache(getAppName());
+        Cache<String, byte[]> cache = cacheStoreService.getCache(getAppName());
 
         Hashtable<String, Object> h = new Hashtable<String, Object>();
         try {
-            for (Iterator<Cache.Entry<SessionPropertyKey, byte[]>> it = cache.iterator(); it.hasNext(); ) {
-                Cache.Entry<SessionPropertyKey, byte[]> entry = it.next();
-                SessionPropertyKey key = entry == null ? null : entry.getKey();
-                if (key != null && id.equals(key.sessionId)) {
+            for (Iterator<Cache.Entry<String, byte[]>> it = cache.iterator(); it.hasNext(); ) {
+                Cache.Entry<String, byte[]> entry = it.next();
+                String key = entry == null ? null : entry.getKey();
+                if (key != null && key.startsWith(id)) {
+                    String propId = key.substring(id.length() + 1);
                     // If an attribute is already in appDataRemovals or appDataChanges, then the attribute was already retrieved from the cache.  Skip retrieval from the cache here.
-                    if (sess.appDataRemovals != null && sess.appDataRemovals.containsKey(key.propId)) {
+                    if (sess.appDataRemovals != null && sess.appDataRemovals.containsKey(propId)) {
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Found property " + key.propId + " in appDataRemovals, skipping query for this prop");
+                            Tr.debug(this, tc, "Found property " + propId + " in appDataRemovals, skipping query for this prop");
                         continue;
-                    } else if (sess.appDataChanges != null && sess.appDataChanges.containsKey(key.propId)) {
+                    } else if (sess.appDataChanges != null && sess.appDataChanges.containsKey(propId)) {
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Found property " + key.propId + " in appDataChanges, skipping query for this prop");
+                            Tr.debug(this, tc, "Found property " + propId + " in appDataChanges, skipping query for this prop");
                         continue;
                     }
 
@@ -97,9 +97,9 @@ public class CacheHashMapMR extends CacheHashMap {
 
                     if (obj != null) {
                         if (trace && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "put prop in mSwappableData: " + key.propId);
+                            Tr.debug(this, tc, "put prop in mSwappableData: " + propId);
                         }
-                        h.put(key.propId, obj);
+                        h.put(propId, obj);
                     }
                 }
             }
@@ -122,7 +122,7 @@ public class CacheHashMapMR extends CacheHashMap {
         String sessId = s.getId();
         Object tmp = null;
 
-        SessionPropertyKey key = new SessionPropertyKey(sessId, id);
+        String key = createSessionPropertyKey(sessId, id);
         byte[] sessionPropBytes = cacheStoreService.getCache(getIStore().getId()).get(key);
 
         if (trace && tc.isDebugEnabled())
@@ -206,7 +206,7 @@ public class CacheHashMapMR extends CacheHashMap {
             }
 
             if (doWrite) {
-                Cache<SessionPropertyKey, byte[]> cache = cacheStoreService.getCache(getAppName());
+                Cache<String, byte[]> cache = cacheStoreService.getCache(getAppName());
                 int enumCount = 0;
                 while (vEnum.hasMoreElements()) {
                     enumCount++;
@@ -234,7 +234,7 @@ public class CacheHashMapMR extends CacheHashMap {
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
 
-                    SessionPropertyKey key = new SessionPropertyKey(id, propid);
+                    String key = createSessionPropertyKey(id, propid);
                     cache.put(key, objbuf);
 
                     SessionStatistics pmiStats = _iStore.getSessionStatistics();
@@ -286,13 +286,13 @@ public class CacheHashMapMR extends CacheHashMap {
                 }
 
                 if (vEnum2 != null && vEnum2.hasMoreElements()) {
-                    Cache<SessionPropertyKey, byte[]> cache = cacheStoreService.getCache(getAppName());
+                    Cache<String, byte[]> cache = cacheStoreService.getCache(getAppName());
                     while (vEnum2.hasMoreElements()) {
                         propid = (String) vEnum2.nextElement();
                         if (trace && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "deleting prop " + propid + " for session " + id);
                         }
-                        SessionPropertyKey key = new SessionPropertyKey(id, propid);
+                        String key = createSessionPropertyKey(id, propid);
                         cache.remove(key);
                     }
                 }
@@ -326,10 +326,10 @@ public class CacheHashMapMR extends CacheHashMap {
     protected void removePersistedSession(String id) {
         super.removePersistedSession(id);
 
-        Cache<SessionPropertyKey, byte[]> cache = cacheStoreService.getCache(_iStore.getId());
-        for (Iterator<Cache.Entry<SessionPropertyKey, byte[]>> it = cache.iterator(); it.hasNext(); ) {
-            Cache.Entry<SessionPropertyKey, byte[]> entry = it.next();
-            if (entry != null && id.equals(entry.getKey().sessionId))
+        Cache<String, byte[]> cache = cacheStoreService.getCache(_iStore.getId());
+        for (Iterator<Cache.Entry<String, byte[]>> it = cache.iterator(); it.hasNext(); ) {
+            Cache.Entry<String, byte[]> entry = it.next();
+            if (entry != null && entry.getKey().startsWith(id))
                 it.remove();
         }
     }

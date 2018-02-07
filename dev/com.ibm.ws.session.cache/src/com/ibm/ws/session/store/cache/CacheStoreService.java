@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.cache.Cache;
@@ -39,9 +40,6 @@ import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
-import com.ibm.ws.session.store.cache.serializable.SessionData;
-import com.ibm.ws.session.store.cache.serializable.SessionKey;
-import com.ibm.ws.session.store.cache.serializable.SessionPropertyKey;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.session.IStore;
@@ -61,7 +59,8 @@ public class CacheStoreService implements SessionStoreService {
      * For multi-cache path, separate caches are created per application to store the session properties each as their own cache entry,
      * and this cache only contains information about the session rather than its contents.
      */
-    Cache<SessionKey, SessionData> cache;
+    @SuppressWarnings("rawtypes")
+    Cache<String, ArrayList> cache;
 
     CacheManager cacheManager;
 
@@ -90,22 +89,25 @@ public class CacheStoreService implements SessionStoreService {
 
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
-        cacheManager = provider.getCacheManager(null, new CacheClassLoader()); // TODO When class loader is specified, it isn't being used for deserialization. Why?
-        cache = cacheManager.getCache("com.ibm.ws.session.cache", SessionKey.class, SessionData.class);
+        cacheManager = provider.getCacheManager(null, null, null);
+        cache = cacheManager.getCache("com.ibm.ws.session.cache", String.class, ArrayList.class);
         if (cache == null) {
-            Configuration<SessionKey, SessionData> config = new MutableConfiguration<SessionKey, SessionData>().setTypes(SessionKey.class, SessionData.class);
+            @SuppressWarnings("rawtypes")
+            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>().setTypes(String.class, ArrayList.class);
             try {
                 cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Created a new session info cache", cache);
             } catch (CacheException x) {
-                cache = cacheManager.getCache("com.ibm.ws.session.cache", SessionKey.class, SessionData.class);
+                cache = cacheManager.getCache("com.ibm.ws.session.cache", String.class, ArrayList.class);
                 if (cache == null)
                     throw x;
             }
-            if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Created a new cache: " + cache);
-        } else if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Found existing cache: " + cache);
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Using session info cache", cache);
     }
 
     @Override
@@ -136,18 +138,22 @@ public class CacheStoreService implements SessionStoreService {
      * @param appName the application name.
      * @return the cache.
      */
-    Cache<SessionPropertyKey, byte[]> getCache(String appName) {
+    Cache<String, byte[]> getCache(String appName) {
         // TODO replace / and : characters (per spec for cache names) and ensure the name is still unique.
         String cacheName = "com.ibm.ws.session.cache." + appName;
 
-        Cache<SessionPropertyKey, byte[]> cache = cacheManager.getCache(cacheName, SessionPropertyKey.class, byte[].class);
+        // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
+        Cache<String, byte[]> cache = cacheManager.getCache(cacheName, String.class, byte[].class);
         if (cache == null) {
-            Configuration<SessionPropertyKey, byte[]> config = new MutableConfiguration<SessionPropertyKey, byte[]>()
-                            .setTypes(SessionPropertyKey.class, byte[].class);
+            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
+                            .setTypes(String.class, byte[].class);
             try {
                 cache = cacheManager.createCache(cacheName, config);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Created a new session property cache");
             } catch (CacheException x) {
-                cache = cacheManager.getCache(cacheName, SessionPropertyKey.class, byte[].class);
+                cache = cacheManager.getCache(cacheName, String.class, byte[].class);
                 if (cache == null)
                     throw x;
             }
