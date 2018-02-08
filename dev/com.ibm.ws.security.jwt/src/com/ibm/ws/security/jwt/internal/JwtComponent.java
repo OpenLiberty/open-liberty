@@ -64,7 +64,6 @@ public class JwtComponent implements JwtConfig {
 	private String trustedAlias;
 	private long jwkRotationTime;
 	private int jwkSigningKeySize;
-	private boolean tokenEndpointHttpsRequired;
 
 	private PublicKey publicKey = null;
 	private PrivateKey privateKey = null;
@@ -158,7 +157,6 @@ public class JwtComponent implements JwtConfig {
 		// Rotation time is in minutes, so convert value to milliseconds
 		jwkRotationTime = jwkRotationTime * 60 * 1000;
 		jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
-		tokenEndpointHttpsRequired = (Boolean) props.get(JwtUtils.CFG_KEY_TOKEN_ENDPOINT_HTTPS_REQD);
 
 		if ("RS256".equals(sigAlg)) {
 			initializeJwkProvider(this);
@@ -310,11 +308,6 @@ public class JwtComponent implements JwtConfig {
 	public boolean isJwkEnabled() {
 		// TODO Auto-generated method stub
 		return isJwkEnabled;
-	}
-
-	@Override
-	public boolean isTokenEndpointHttpsRequired() {
-		return tokenEndpointHttpsRequired;
 	}
 
 	@Override

@@ -160,15 +160,14 @@ public class JwtEndpointServices {
 			return;
 		case token:
 			try {
-				if (jwtConfig.isTokenEndpointHttpsRequired()) {
+				if (!isTransportSecure(request)) {
 					String url = request.getRequestURL().toString();
-					if (url != null && !url.startsWith("https")) {
-						Tr.error(tc, "SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME", new Object[] { url });
-						response.sendError(HttpServletResponse.SC_NOT_FOUND,
-								Tr.formatMessage(tc, "SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME", new Object[] { url }));
-						return;
-					}
+					Tr.error(tc, "SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME", new Object[] { url });
+					response.sendError(HttpServletResponse.SC_NOT_FOUND,
+							Tr.formatMessage(tc, "SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME", new Object[] { url }));
+					return;
 				}
+
 				boolean result = request.authenticate(response);
 				if (tc.isDebugEnabled()) {
 					Tr.debug(tc, "request.authenticate result: " + result);
@@ -189,6 +188,28 @@ public class JwtEndpointServices {
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * determine if transport is secure. Either the protocol must be https or we
+	 * must see a forwarding header that indicates it was https upstream of a
+	 * proxy. Use of a configuration property to allow plain http was rejected
+	 * in review.
+	 *
+	 * @param req
+	 * @return
+	 */
+	private boolean isTransportSecure(HttpServletRequest req) {
+		String url = req.getRequestURL().toString();
+		if (req.getScheme().equals("https")) {
+			return true;
+		}
+
+		String value = req.getHeader("X-Forwarded-Proto");
+		if (value != null & value.toLowerCase().equals("https")) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
