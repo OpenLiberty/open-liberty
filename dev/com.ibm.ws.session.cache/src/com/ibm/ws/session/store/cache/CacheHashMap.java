@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
@@ -25,8 +26,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStatistics;
-import com.ibm.ws.session.store.cache.serializable.SessionData;
-import com.ibm.ws.session.store.cache.serializable.SessionKey;
 import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStore;
@@ -39,6 +38,9 @@ public class CacheHashMap extends BackedHashMap {
     private static final long serialVersionUID = 1L; // not serializable, rejects writeObject
 
     private static final TraceComponent tc = Tr.register(CacheHashMap.class);
+
+    // this is set to true for multirow in DatabaseHashMapMR if additional conditions are satisfied
+    boolean appDataTablesPerThread = false;
 
     CacheStoreService cacheStoreService;
     IStore _iStore;
@@ -53,11 +55,41 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * Create a key for a session, of the form: SessionId@Application
+     * 
+     * @param sessionId the session id
+     * @param app the application
+     * @return the key
+     */
+    static final String createSessionKey(String sessionId, String app) {
+        return new StringBuilder(sessionId.length() + 1 + app.length())
+                        .append(sessionId)
+                        .append('@')
+                        .append(app)
+                        .toString();
+    }
+
+    /**
+     * Create a key for a session property, of the form: SessionId.PropertyId
+     * 
+     * @param sessionId the session id
+     * @param propertyId the session property
+     * @return the key
+     */
+    static final String createSessionPropertyKey(String sessionId, String propertyId) {
+        return new StringBuilder(sessionId.length() + 1 + propertyId.length())
+                        .append(sessionId)
+                        .append('.')
+                        .append(propertyId)
+                        .toString();
+    }
+
+    /**
      * @see com.ibm.ws.session.store.common.BackedHashMap#getAppDataTablesPerThread()
      */
     @Override
     public boolean getAppDataTablesPerThread() {
-        return false; // TODO implement
+        return appDataTablesPerThread;
     }
 
     /**
@@ -71,18 +103,19 @@ public class CacheHashMap extends BackedHashMap {
         if (!s.getId().equals(id))
             throw new IllegalArgumentException(id + " != " + s.getId()); // internal error
 
-        SessionKey key = new SessionKey(id, getIStore().getId());
-        SessionData sessionData = cacheStoreService.cache.get(key);
+        String key = createSessionKey(id, getIStore().getId());
+        ArrayList<?> value = cacheStoreService.cache.get(key);
+
+        if (value == null)
+            return null;
+
+        SessionData sessionData = new SessionData(value);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, key.toString(), sessionData);
 
-        if (sessionData == null)
-            return null;
-
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         byte[] bytes = sessionData.getBytes();
-
         if (bytes != null && bytes.length > 0) {
             BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
             try {
@@ -99,10 +132,17 @@ public class CacheHashMap extends BackedHashMap {
 
         SessionStatistics pmiStats = getIStore().getSessionStatistics();
         if (pmiStats != null) {
-            pmiStats.readTimes(bytes == null ? 0 : bytes.length, System.currentTimeMillis() - startTime);
+            pmiStats.readTimes(bytes == null ? 0 : bytes.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
         }
 
         return tmp;
+    }
+
+    /**
+     * Override in subclass for multi-row.
+     */
+    boolean handlePropertyHits(BackedSession d2) {
+        return true;
     }
 
     /**
@@ -111,21 +151,16 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected void insertSession(BackedSession d2) {
         // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
-        SessionKey key = new SessionKey(d2.getId(), d2.getAppName());
+        String key = createSessionKey(d2.getId(), d2.getAppName());
 
         listenerFlagUpdate(d2);
 
         long tmpCreationTime = d2.getCreationTime();
         d2.setLastWriteLastAccessTime(tmpCreationTime);
 
-        SessionData sessionData = new SessionData();
-        sessionData.setListenerCount(d2.listenerFlag);
-        sessionData.setLastAccess(tmpCreationTime);
-        sessionData.setCreationTime(tmpCreationTime);
-        sessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
-        sessionData.setUserName(d2.getUserName());
+        SessionData sessionData = new SessionData(tmpCreationTime, d2.getMaxInactiveInterval(), d2.listenerFlag, d2.getUserName());
 
-        if (!cacheStoreService.cache.putIfAbsent(key, sessionData))
+        if (!cacheStoreService.cache.putIfAbsent(key, sessionData.getArrayList()))
             throw new IllegalStateException("Cache already contains " + key);
 
         d2.needToInsert = false;
@@ -147,11 +182,52 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * Copied from DatabaseHashMap.
+     * For multirow db, attempts to get the requested attr from the db
+     * Returns null if attr doesn't exist or we're not running multirow
+     * We consider populatedAppData as well
+     * populatedAppData is true when session is new or when the entire session is read into memory
+     * in those cases, we don't want to go to the backend to retrieve the attribute
+     * 
      * @see com.ibm.ws.session.store.common.BackedHashMap#loadOneValue(java.lang.String, com.ibm.ws.session.store.common.BackedSession)
      */
     @Override
-    protected Object loadOneValue(String id, BackedSession bs) {
-        throw new UnsupportedOperationException();
+    protected Object loadOneValue(String attrName, BackedSession sess) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        Object value = null;
+        if (_smc.isUsingMultirow() && !((CacheSession) sess).getPopulatedAppData()) {
+            String id = sess.getId();
+            String appName = getIStore().getId();
+
+            String key = createSessionPropertyKey(id, attrName);
+            byte[] bytes = cacheStoreService.getCache(appName).get(key);
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, key.toString(), bytes.length);
+
+            if (bytes != null && bytes.length > 0) {
+                long startTime = System.nanoTime();
+
+                BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
+                try {
+                    try {
+                        value = ((CacheStore) getIStore()).getLoader().loadObject(in);
+                    } finally {
+                        in.close();
+                    }
+                } catch (ClassNotFoundException | IOException x) {
+                    FFDCFilter.processException(x, getClass().getName(), "197", sess);
+                    throw new RuntimeException(x);
+                }
+
+                SessionStatistics pmiStats = getIStore().getSessionStatistics();
+                if (pmiStats != null) {
+                    pmiStats.readTimes(bytes == null ? 0 : bytes.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                }
+            }
+        }
+        return value;
     }
 
     /**
@@ -163,19 +239,20 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected int overQualLastAccessTimeUpdate(BackedSession sess, long nowTime) {
         String id = sess.getId();
-        SessionKey key = new SessionKey(id, sess.getAppName());
+        String key = createSessionKey(id, sess.getAppName());
 
         int updateCount;
 
-        SessionData oldSessionData = cacheStoreService.cache.get(key);
+        ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+        SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
         synchronized (sess) {
-            if (oldSessionData == null || oldSessionData.getLastAccess() != sess.getCurrentAccessTime() || oldSessionData.getLastAccess() == nowTime) {
+            if (sessionData == null || sessionData.getLastAccess() != sess.getCurrentAccessTime() || sessionData.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                SessionData newSessionData = oldSessionData.clone();
-                newSessionData.setLastAccess(nowTime);
+                sessionData.setLastAccess(nowTime);
+                ArrayList<?> newValue = sessionData.getArrayList();
 
-                if (cacheStoreService.cache.replace(key, oldSessionData, newSessionData)) {
+                if (cacheStoreService.cache.replace(key, oldValue, newValue)) {
                     sess.updateLastAccessTime(nowTime);
                     updateCount = 1;
                 } else {
@@ -205,7 +282,7 @@ public class CacheHashMap extends BackedHashMap {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String id = d2.getId();
-        SessionKey key = new SessionKey(id, d2.getAppName());
+        String key = createSessionKey(id, d2.getAppName());
 
         try {
             // if nothing changed, then just return
@@ -221,50 +298,57 @@ public class CacheHashMap extends BackedHashMap {
 
             byte[] objbuf = null;
             if (propHit) {
-                objbuf = serializeAppData(d2);
+                if (_smc.isUsingMultirow()) {
+                    if (!handlePropertyHits(d2)) {
+                        return false;
+                    }
+                } else {
+                    objbuf = serializeAppData(d2);
+                }
             }
 
             long startTimeNS = System.nanoTime();
 
             for (boolean updated = false; !updated;) {
-                SessionData oldSessionData = cacheStoreService.cache.get(key);
-                if (oldSessionData == null)
+                ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+                if (oldValue == null)
                     return false;
 
-                SessionData newSessionData = oldSessionData.clone();
+                SessionData sessionData = new SessionData(oldValue).clone();
 
                 if (d2.userWriteHit) {
                     d2.userWriteHit = false;
-                    newSessionData.setUserName(d2.getUserName());
+                    sessionData.setUser(d2.getUserName());
                 }
 
                 if (d2.maxInactWriteHit) {
                     d2.maxInactWriteHit = false;
-                    newSessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
+                    sessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
                 }
 
                 if (d2.listenCntHit) {
                     d2.listenCntHit = false;
-                    newSessionData.setListenerCount(d2.listenerFlag);
+                    sessionData.setListenerCount(d2.listenerFlag);
                 }
 
                 long time = d2.getCurrentAccessTime();
                 if (!_smc.getEnableEOSWrite() || _smc.getScheduledInvalidation()) {
                     d2.setLastWriteLastAccessTime(time);
-                    newSessionData.setLastAccess(time);
+                    sessionData.setLastAccess(time);
                 }
 
-                if (propHit) {
-                    newSessionData.setBytes(objbuf);
+                if (propHit && !_smc.isUsingMultirow()) {
+                    sessionData.setBytes(objbuf);
                 }
 
                 if (trace & tc.isDebugEnabled())
-                    Tr.debug(this, tc, key.toString(), newSessionData);
+                    Tr.debug(this, tc, key.toString(), sessionData);
 
-                updated = cacheStoreService.cache.replace(key, oldSessionData, newSessionData);
+                ArrayList<?> newValue = sessionData.getArrayList();
+                updated = cacheStoreService.cache.replace(key, oldValue, newValue);
             }
 
-            if (objbuf != null && propHit) {
+            if (objbuf != null && propHit && !_smc.isUsingMultirow()) {
                 SessionStatistics pmiStats = _iStore.getSessionStatistics();
                 if (pmiStats != null) {
                     pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNS));
@@ -283,18 +367,19 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected BackedSession readFromExternal(String id) {
         String appName = getIStore().getId();
-        SessionKey key = new SessionKey(id, appName);
+        String key = createSessionKey(id, appName);
 
         CacheSession sess = null;
-        SessionData sessionData = cacheStoreService.cache.get(key);
-        if (sessionData != null) {
+        ArrayList<?> value = cacheStoreService.cache.get(key);
+        if (value != null) {
+            SessionData sessionData = new SessionData(value);
             sess = new CacheSession(this, id, getIStore().getStoreCallback());
-            sess.updateLastAccessTime(sessionData.getLastAccess());
-            sess.setCreationTime(sessionData.getCreationTime());
-            sess.internalSetMaxInactive(sessionData.getMaxInactiveTime());
-            sess.internalSetUser(sessionData.getUserName());
+            sess.updateLastAccessTime((Long) sessionData.getLastAccess());
+            sess.setCreationTime((Long) sessionData.getCreationTime());
+            sess.internalSetMaxInactive((Integer) sessionData.getMaxInactiveTime());
+            sess.internalSetUser((String) sessionData.getUser());
             sess.setIsValid(true);
-            sess.setListenerFlag(sessionData.getListenerCount());
+            sess.setListenerFlag((Short) sessionData.getListenerCount());
         }
         return sess;
     }
@@ -307,7 +392,7 @@ public class CacheHashMap extends BackedHashMap {
         //If the app calls invalidate, it may not be removed from the local cache yet.
         superRemove(id);
 
-        SessionKey key = new SessionKey(id, _iStore.getId());
+        String key = createSessionKey(id, _iStore.getId());
 
         cacheStoreService.cache.remove(key);
 
@@ -358,18 +443,19 @@ public class CacheHashMap extends BackedHashMap {
     protected int updateLastAccessTime(BackedSession sess, long nowTime) {
         String appName = getIStore().getId();
         String id = sess.getId();
-        SessionKey key = new SessionKey(id, appName);
+        String key = createSessionKey(id, appName);
 
         int updateCount = -1;
 
         while (updateCount == -1) {
-            SessionData oldSessionData = cacheStoreService.cache.get(key);
-            if (oldSessionData == null || oldSessionData.getLastAccess() == nowTime) {
+            ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+            SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
+            if (sessionData == null || sessionData.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                SessionData newSessionData = oldSessionData.clone();
-                newSessionData.setLastAccess(nowTime);
-                if (cacheStoreService.cache.replace(key, oldSessionData, newSessionData))
+                sessionData.setLastAccess(nowTime);
+                ArrayList<Object> newValue = sessionData.getArrayList();
+                if (cacheStoreService.cache.replace(key, oldValue, newValue))
                     updateCount = 1;
             }
         }
