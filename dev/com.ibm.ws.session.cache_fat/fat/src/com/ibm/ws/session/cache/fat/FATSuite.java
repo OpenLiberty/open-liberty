@@ -24,8 +24,10 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SessionCacheTest.class,
-                MultiServerCacheTest.class
+                CacheEntryPerSessionPropertyTest.class,
+                CacheEntryPerSessionTest.class,
+                MultiServerCacheEntryPerSessionPropertyTest.class,
+                MultiServerCacheEntryPerSessionTest.class
 })
 public class FATSuite {
 

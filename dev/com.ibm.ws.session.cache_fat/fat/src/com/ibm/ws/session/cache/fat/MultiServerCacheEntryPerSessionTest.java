@@ -24,7 +24,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class MultiServerCacheTest extends FATServletClient {
+public class MultiServerCacheEntryPerSessionTest extends FATServletClient {
 
     @Server("sessionCacheServerA")
     public static LibertyServer serverA;
