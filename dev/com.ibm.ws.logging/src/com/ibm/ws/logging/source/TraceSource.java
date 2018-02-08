@@ -85,12 +85,22 @@ public class TraceSource implements Source, WsTraceHandler {
     }
 
     /** {@inheritDoc} */
-//    @Override
     public void publish(RoutedMessage routedMessage, Object id) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
             if (routedMessage.getLogRecord() != null && bufferMgr != null) {
                 bufferMgr.add(parse(routedMessage, id));
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void publish(RoutedMessage routedMessage) {
+        //Publish the message if it is not coming from a handler thread
+        if (!ThreadLocalHandler.get()) {
+            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+                bufferMgr.add(parse(routedMessage, null));
             }
         }
     }
@@ -165,16 +175,5 @@ public class TraceSource implements Source, WsTraceHandler {
         } catch (ClassCastException ex) {
             return null;
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.logging.WsTraceHandler#publish(com.ibm.ws.logging.RoutedMessage)
-     */
-    @Override
-    public void publish(RoutedMessage routedMessage) {
-        // TODO Auto-generated method stub
-
     }
 }
