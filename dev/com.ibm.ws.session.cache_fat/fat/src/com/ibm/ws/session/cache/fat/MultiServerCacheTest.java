@@ -10,29 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class MultiServerCacheTest extends FATServletClient {
-
-    public static final String APP_NAME = "multiServerApp";
 
     @Server("sessionCacheServerA")
     public static LibertyServer serverA;
@@ -40,10 +32,13 @@ public class MultiServerCacheTest extends FATServletClient {
     @Server("sessionCacheServerB")
     public static LibertyServer serverB;
 
+    public static SessionCacheApp appA;
+    public static SessionCacheApp appB;
+
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(serverA, APP_NAME, "session.multiserver.web");
-        ShrinkHelper.defaultDropinApp(serverB, APP_NAME, "session.multiserver.web");
+        appA = new SessionCacheApp(serverA);
+        appB = new SessionCacheApp(serverB);
         serverB.useSecondaryHTTPPort();
 
         serverA.startServer();
@@ -64,41 +59,46 @@ public class MultiServerCacheTest extends FATServletClient {
      * serialized when the session is evicted from memory, and deserialized
      * when the session is accessed again.
      */
-    @AllowedFFDC("java.lang.UnsupportedOperationException") // TODO remove once we implement performInvalidation and possibly other methods
     @Test
-    public void testSerialization() throws Exception {
+    public void testBasicSerialization() throws Exception {
         List<String> session = new ArrayList<>();
-        run(serverA, "testSerialization", session);
-        run(serverB, "testSerialization_complete", session);
+        try {
+            appA.invokeServlet("testSerialization", session);
+            appB.invokeServlet("testSerialization_complete", session);
+        } finally {
+            appA.invalidateSession(session);
+            appB.invalidateSession(session);
+        }
     }
 
-    private void run(LibertyServer server, String testMethod, List<String> session) throws Exception {
-        HttpURLConnection con = HttpUtils.getHttpConnection(server, APP_NAME + "/MultiServerTestServlet?" + FATServletClient.TEST_METHOD + '=' + testMethod);
+    /**
+     * Test that calling session.invalidate() on one server will propagate the
+     * invalidation to the other server
+     */
+    @Test
+    public void testCrossServerInvalidation() throws Exception {
+        List<String> session = new ArrayList<>();
+        appA.invokeServlet("testSerialization", session);
+        appB.invokeServlet("testSerialization_complete", session);
 
-        if (session != null) {
-            for (String cookie : session) {
-                con.addRequestProperty("Cookie", cookie);
-            }
-        }
+        appA.invalidateSession(session);
+        appB.invokeServlet("testSessionEmpty", session);
+    }
 
-        con.connect();
-        try {
-            String servletResponse = HttpUtils.readConnection(con);
+    // @Test // TODO still in progress
+    public void testMaxSessions() throws Exception {
+        List<String> session1 = new ArrayList<>();
+        List<String> session2 = new ArrayList<>();
+        appA.sessionPut("testMaxSessions-session1", "hello", session1, true);
+        appB.sessionGet("testMaxSessions-session1", "hello", session1);
 
-            if (servletResponse == null || !servletResponse.contains(FATServletClient.SUCCESS))
-                Assert.fail("Servlet call was not successful: " + servletResponse);
+        // Starting a new session should push session1 out of the cache
+        appA.sessionPut("testMaxSessions-session2", "hello2", session2, true);
 
-            if (session != null) {
-                List<String> setCookies = con.getHeaderFields().get("Set-Cookie");
-                if (setCookies != null) {
-                    session.clear();
-                    for (String setCookie : setCookies) {
-                        session.add(setCookie.split(";", 2)[0]);
-                    }
-                }
-            }
-        } finally {
-            con.disconnect();
-        }
+        // Verify that session2 is in the server and session1 is not
+        appA.sessionGet("testMaxSessions-session2", "hello2", session2);
+        appB.sessionGet("testMaxSessions-session2", "hello2", session2);
+        appB.sessionGet("testMaxSessions-session1", null, session1);
+        appA.sessionGet("testMaxSessions-session1", null, session1);
     }
 }

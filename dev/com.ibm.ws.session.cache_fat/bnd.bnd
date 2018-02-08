@@ -13,8 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/sessionCacheApp/src,\
-	test-applications/multiServerApp/src
+	test-applications/sessionCacheApp/src
 
 fat.project: true
 
