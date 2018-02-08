@@ -470,6 +470,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
     }
 
     @Override
+    @FFDCIgnore(NoSuchMethodException.class)
     public void setMQQueueManager(Serializable xaresinfo) throws Exception {
         if (qmidenabled) {
             Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();

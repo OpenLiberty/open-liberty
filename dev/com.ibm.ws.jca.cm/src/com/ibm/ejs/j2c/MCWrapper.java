@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.j2c.TranWrapper;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
@@ -721,6 +722,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      *
      * The recovery token is set at this time.
      */
+    @FFDCIgnore(NoSuchMethodException.class)
     protected void setConnectionManager(ConnectionManager cm) {
 
         if (cm == null) {

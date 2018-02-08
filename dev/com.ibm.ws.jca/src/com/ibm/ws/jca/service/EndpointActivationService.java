@@ -465,6 +465,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
      * @see com.ibm.tx.jta.XAResourceFactory#getXAResource(java.io.Serializable)
      */
     @Override
+    @FFDCIgnore(NoSuchMethodException.class)
     public XAResource getXAResource(Serializable xaresinfo) throws XAResourceNotAvailableException {
         XAResource xa = null;
         if (xaresinfo != null) {
@@ -522,6 +523,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
      * @return activation spec instance.
      * @throws ResourceException
      */
+    @FFDCIgnore(NoSuchMethodException.class)
     public Object activateEndpoint(WSMessageEndpointFactory mef,
                                    @Sensitive Properties activationProperties,
                                    String authenticationAlias,
