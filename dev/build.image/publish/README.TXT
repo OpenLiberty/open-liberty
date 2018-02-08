@@ -11,12 +11,14 @@ The script supports the following actions:
  * run       -- launches the server in the foreground
  * debug     -- launches the server in the foreground with JVM debug options
  * stop      -- stops a running server
- * status    -- check to see if a specified server is running.
+ * status    -- check to see if a specified server is running
  * package   -- packages server runtime and target server configuration/application(s) into zip archive file
  * dump      -- dump diagnostic information from the server into an archive
  * javadump  -- dump diagnostic information from the server JVM
  * list      -- list existing servers
  * version   -- displays the version of the server runtime
+ * pause     -- pause all the components in the server that can be paused
+ * resume    -- resume all paused components in the server
  * help      -- get command-line/script help, including descriptions of additional options
 
 To use the script on Windows (the .bat extension is optional):
