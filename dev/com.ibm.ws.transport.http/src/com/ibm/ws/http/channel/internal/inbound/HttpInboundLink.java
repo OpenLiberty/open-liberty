@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
+import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -77,24 +78,24 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     protected boolean bIsActive = false;
     /** List of all unique app side callbacks used for this connection */
     protected List<ConnectionReadyCallback> appSides = null;
+    /** Flag on whether this link has been marked for HTTP/2 */
+    private boolean alreadyH2Upgraded = false;
 
     /**
      * Constructor for an HTTP inbound link object.
-     * 
+     *
      * @param channel
      * @param vc
      */
     public HttpInboundLink(HttpInboundChannel channel, VirtualConnection vc) {
         init(vc, channel);
-//        if (!(this instanceof H2InboundLink) && !(this instanceof H2HttpInboundLinkWrap)) {
         // allocate an empty ISC object
         this.myInterface = new HttpInboundServiceContextImpl(null, this, getVirtualConnection(), getChannel().getHttpConfig());
-//        }
     }
 
     /**
      * Initialize this object.
-     * 
+     *
      * @param inVC
      * @param channel
      */
@@ -179,7 +180,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query the interface value.
-     * 
+     *
      * @return Object (HttpInboundServiceContextImpl)
      */
     @Override
@@ -189,7 +190,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query the HTTP service context for this connection.
-     * 
+     *
      * @return HttpInboundServiceContextImpl
      */
     public HttpInboundServiceContextImpl getHTTPContext() {
@@ -198,7 +199,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query the channel that owns this object.
-     * 
+     *
      * @return HttpInboundChannel
      */
     public HttpInboundChannel getChannel() {
@@ -208,7 +209,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     /**
      * Find out whether we've served the maximum number of requests allowed
      * on this connection already.
-     * 
+     *
      * @return boolean
      */
     protected boolean maxRequestsServed() {
@@ -235,7 +236,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query whether this is the first request on the socket or not.
-     * 
+     *
      * @return boolean
      */
     protected boolean isFirstRequest() {
@@ -246,7 +247,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query whether the request is partially parsed or not.
-     * 
+     *
      * @return boolean (true means still parsing the request)
      */
     protected boolean isPartiallyParsed() {
@@ -256,16 +257,32 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     /**
      * Allow the flag to be set as to whether or not the request is
      * fully parsed.
-     * 
+     *
      * @param b
      */
     protected void setPartiallyParsed(boolean b) {
         this.bPartialParsedRequest = b;
     }
 
+    public boolean isAlpnHttp2Link(VirtualConnection vc) {
+        if (alreadyH2Upgraded) {
+            return true;
+        }
+        HttpInboundServiceContextImpl sc = getHTTPContext();
+        if (this.myTSC.getSSLContext() != null &&
+            !sc.isH2Connection() &&
+            this.myTSC.getSSLContext().getAlpnProtocol() != null &&
+            this.myTSC.getSSLContext().getAlpnProtocol().equals("h2") &&
+            checkForH2MagicString(sc)) {
+            alreadyH2Upgraded = true;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Called by the device side channel when a new request is ready for work.
-     * 
+     *
      * @param inVC
      */
     @Override
@@ -280,7 +297,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         if (getChannel().getHttpConfig().getDebugLog().isEnabled(DebugLog.Level.INFO)) {
             getChannel().getHttpConfig().getDebugLog().log(DebugLog.Level.INFO, HttpMessages.MSG_CONN_STARTING, sc);
         }
-
         processRequest();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -319,7 +335,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Handle parsing the incoming request message.
-     * 
+     *
      * @return whether an error happend and this connection is already done
      */
     private boolean handleNewInformation() {
@@ -347,6 +363,11 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         }
 
         boolean completed = false;
+
+        // if this is an http/2 link, don't perform additional parsing
+        if (this.isAlpnHttp2Link(switchedVC)) {
+            return false;
+        }
         try {
             completed = sc.parseMessage();
         } catch (UnsupportedMethodException meth) {
@@ -381,6 +402,13 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             }
             handleGenericHNIError(iae, sc);
             return true;
+        } catch (CompressionException ce) {
+            //no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "parseMessage encountered a CompressionException : " + ce);
+            }
+            handleGenericHNIError(ce, sc);
+            return true;
         } catch (Throwable t) {
             FFDCFilter.processException(t,
                                         "HttpInboundLink.handleNewInformation",
@@ -410,26 +438,29 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * discrimination to pass it along the channel chain.
      */
     private void handleNewRequest() {
-        final HttpInboundServiceContextImpl sc = getHTTPContext();
-        // save the request info that was parsed in case somebody changes it
-        sc.setRequestVersion(sc.getRequest().getVersionValue());
-        sc.setRequestMethod(sc.getRequest().getMethodValue());
 
-        // get the response message initialized. Note: in the proxy env, this
-        // response message will be overwritten; however, this is the only
-        // spot to init() it correctly for all other cases.
-        sc.getResponseImpl().init(sc);
+        // if this is an http/2 request, skip to discrimination
+        if (!isAlpnHttp2Link(this.vc)) {
+            final HttpInboundServiceContextImpl sc = getHTTPContext();
+            // save the request info that was parsed in case somebody changes it
+            sc.setRequestVersion(sc.getRequest().getVersionValue());
+            sc.setRequestMethod(sc.getRequest().getMethodValue());
 
-        this.numRequestsProcessed++;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Received request number " + this.numRequestsProcessed + " on link " + this);
+            // get the response message initialized. Note: in the proxy env, this
+            // response message will be overwritten; however, this is the only
+            // spot to init() it correctly for all other cases.
+            sc.getResponseImpl().init(sc);
+
+            this.numRequestsProcessed++;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Received request number " + this.numRequestsProcessed + " on link " + this);
+            }
+
+            // check for the 100-continue scenario
+            if (!sc.check100Continue()) {
+                return;
+            }
         }
-
-        // check for the 100-continue scenario
-        if (!sc.check100Continue()) {
-            return;
-        }
-
         handleDiscrimination();
     }
 
@@ -527,7 +558,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Send an error message when a generic throwable occurs.
-     * 
+     *
      * @param t
      */
     private void sendErrorMessage(Throwable t) {
@@ -540,7 +571,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     /**
      * Send an error message back to the client with a defined
      * status code, instead of an exception.
-     * 
+     *
      * @param code
      */
     private void sendErrorMessage(StatusCodes code) {
@@ -827,7 +858,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Called when this request is complete.
-     * 
+     *
      * @param inVC
      */
     @Override
@@ -837,7 +868,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Called when an error occurs on this connection.
-     * 
+     *
      * @param inVC
      * @param t
      */
@@ -856,7 +887,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Whether or not to filter the exceptions on a close.
-     * 
+     *
      * @param b
      */
     protected void setFilterCloseExceptions(boolean b) {
@@ -865,7 +896,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
     /**
      * Query the Http object factory link.
-     * 
+     *
      * @return HttpObjectFactory
      */
     public HttpObjectFactory getObjectFactory() {
@@ -947,4 +978,33 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         return false;
     }
 
+    /**
+     * Check the beginning of the current read buffer for the http/2 preface string
+     *
+     * @param isc the HttpInboundServiceContextImpl to use
+     * @return true if the magic string was found
+     */
+    private boolean checkForH2MagicString(HttpInboundServiceContextImpl isc) {
+
+        // read the buffer, flip it, and if there is a backing array pull that out
+        WsByteBuffer buffer = this.myTSC.getReadInterface().getBuffer().duplicate();
+        buffer.flip();
+        byte[] bufferArray = null;
+        if (buffer.hasArray()) {
+            bufferArray = buffer.array();
+        }
+
+        boolean hasMagicString = false;
+        // return true if the read buffer starts with the magic string
+        if (bufferArray != null && bufferArray.length >= 24) {
+            String bufferString = new String(bufferArray, 0, 24);
+            if (bufferString.startsWith(HttpConstants.HTTP2PrefaceString)) {
+                hasMagicString = true;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "checkForH2MagicString: returning " + hasMagicString);
+        }
+        return hasMagicString;
+    }
 }

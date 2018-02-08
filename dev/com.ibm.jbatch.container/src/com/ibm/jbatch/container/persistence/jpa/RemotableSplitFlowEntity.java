@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
@@ -22,60 +25,69 @@ import javax.persistence.ManyToOne;
 @IdClass(RemotableSplitFlowKey.class)
 public class RemotableSplitFlowEntity extends JobThreadExecutionBase {
 
-	@Id
-	private String flowName;
-	
-	@Id @ManyToOne
-	private JobExecutionEntity jobExec;
-	
-	private int internalStatus;
+    // Repeat everywhere we use so caller has to think through granting privilege
+    protected static String eol = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        @Override
+        public String run() {
+            return System.getProperty("line.separator");
+        }
+    });
 
-	public RemotableSplitFlowEntity() {}
+    @Id
+    private String flowName;
 
-	/**
-	 * @return the flowName
-	 */
-	public String getFlowName() {
-		return flowName;
-	}
+    @Id
+    @ManyToOne
+    private JobExecutionEntity jobExec;
 
-	/**
-	 * @param flowName the flowName to set
-	 */
-	public void setFlowName(String flowName) {
-		this.flowName = flowName;
-	}
+    private int internalStatus;
 
-	/**
-	 * @return the jobExecution
-	 */
-	public JobExecutionEntity getJobExecution() {
-		return jobExec;
-	}
+    public RemotableSplitFlowEntity() {}
 
-	/**
-	 * @param jobExecution the jobExecution to set
-	 */
-	public void setJobExecution(JobExecutionEntity jobExec) {
-		this.jobExec = jobExec;
-	}
-	
-	public int getInternalStatus() {
-		return internalStatus;
-	}
+    /**
+     * @return the flowName
+     */
+    public String getFlowName() {
+        return flowName;
+    }
 
-	public void setInternalStatus(int internalStatus) {
-		this.internalStatus = internalStatus;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder buf = new StringBuilder();
-		buf.append(super.toString() + System.getProperty("line.separator"));
-		buf.append("For RemotableSplitFlowExecutionEntity:");
-		buf.append(" flowName = " + flowName);
-		buf.append(", internal status = " + internalStatus);
-		return buf.toString();
-	}
+    /**
+     * @param flowName the flowName to set
+     */
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
+    }
+
+    /**
+     * @return the jobExecution
+     */
+    public JobExecutionEntity getJobExecution() {
+        return jobExec;
+    }
+
+    /**
+     * @param jobExecution the jobExecution to set
+     */
+    public void setJobExecution(JobExecutionEntity jobExec) {
+        this.jobExec = jobExec;
+    }
+
+    public int getInternalStatus() {
+        return internalStatus;
+    }
+
+    public void setInternalStatus(int internalStatus) {
+        this.internalStatus = internalStatus;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(super.toString() + eol);
+        buf.append("For RemotableSplitFlowExecutionEntity:");
+        buf.append(" flowName = " + flowName);
+        buf.append(", internal status = " + internalStatus);
+        return buf.toString();
+    }
 
 }

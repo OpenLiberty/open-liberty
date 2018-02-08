@@ -27,30 +27,39 @@ Private-Package: \
   com.ibm.ws.beanvalidation.v20.cdi.*
 
 Import-Package: \
+  org.hibernate.validator.internal,\
   org.hibernate.validator.cdi.internal,\
+  com.ibm.ws.cdi.internal.interfaces,\
   *
 
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF
+  OSGI-INF=resources/OSGI-INF,\
+  META-INF=resources/META-INF
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl
+  com.ibm.ws.beanvalidation.v20.cdi.internal.BvalManagedObjectBuilderImpl,\
+  com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyHibernateValidatorExtension
 
 -buildpath: \
-	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest,\
-	com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.beanvalidation;version=latest,\
-	com.ibm.ws.managedobject;version=latest,\
-	com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.ws.classloading;version=latest,\
-	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
-	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.validation.2.0;version=latest,\
+    com.ibm.websphere.appserver.spi.logging;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.beanvalidation;version=latest,\
+    com.ibm.ws.beanvalidation.core;version=latest,\
+    com.ibm.ws.managedobject;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.cdi.interfaces;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.ws.classloading;version=latest,\
+    com.ibm.ws.javaee.dd;version=latest,\
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
+    com.ibm.ws.org.hibernate.validator.6.0.4.Final;version=latest, \
+    com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest, \
+    com.ibm.ws.cdi.internal;version=latest, \
+    com.ibm.ws.logging.core,\
+    com.ibm.ws.kernel.service;version=latest

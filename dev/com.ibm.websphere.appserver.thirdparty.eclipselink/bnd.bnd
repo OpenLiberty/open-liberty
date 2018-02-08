@@ -105,7 +105,7 @@ Include-Resource: \
   @${repo;org.eclipse.persistence.asm;5.0.1.v201405080102;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.5.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.5.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.5.WAS-v20171031-22b68cc;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.5.WAS-v20180104-90e991c;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.5.WAS;EXACT}!/!META-INF/maven/*
 
 

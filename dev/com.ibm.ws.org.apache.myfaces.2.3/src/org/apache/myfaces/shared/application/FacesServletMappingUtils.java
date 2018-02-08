@@ -151,56 +151,79 @@ public class FacesServletMappingUtils
             Map<String, ? extends ServletRegistration> map = servletContext.getServletRegistrations();
             if (map != null)
             {
+                FacesServletMapping facesExtensionMapping = null;
+                FacesServletMapping facesPrefixMapping = null;
+                FacesServletMapping facesExactMapping = null;
+                
                 for (Map.Entry<String, ? extends ServletRegistration> entry : map.entrySet())
                 {
                     try
                     {
+                        Collection<String> mappings = entry.getValue().getMappings();
+                        
                         if (isFacesServlet(facesContext, (String)entry.getValue().getClassName()))
                         {
-                            Collection<String> mappings = entry.getValue().getMappings();
-                            FacesServletMapping extensionMapping = null;
-                            FacesServletMapping prefixMapping = null;
-                            FacesServletMapping exactMapping = null;
                             for (String mapping : mappings)
                             {
                                 if (mapping.startsWith("*."))
                                 {
                                     // extension mapping, use it.
-                                    extensionMapping = FacesServletMapping.createExtensionMapping(
+                                    facesExtensionMapping = FacesServletMapping.createExtensionMapping(
                                             mapping.substring(1));
                                 }
                                 else if (mapping.startsWith("/") && mapping.endsWith("/*"))
                                 {
                                     // prefix mapping, use it.
-                                    prefixMapping = FacesServletMapping.createPrefixMapping(
+                                    facesPrefixMapping = FacesServletMapping.createPrefixMapping(
                                             mapping.substring(0, mapping.length()-2));
                                 }
                                 else if (allowExactMatch && mapping.startsWith("/") && mapping.equals(servletPath))
                                 {
-                                    exactMapping = FacesServletMapping.createPrefixMapping(servletPath);
+                                    facesExactMapping = FacesServletMapping.createPrefixMapping(servletPath);
+                                }
+                            }                            
+                        }
+                        else
+                        {
+                            //This is not a FacesServlet mapping.  It could be a non-faces request
+                            //Need to look for exact mapping to servletPath
+                            String servletPrefixMapping = null;
+                            for (String mapping : mappings)
+                            {                                
+                                if (mapping.startsWith("/") && mapping.endsWith("/*"))
+                                {
+                                    mapping = mapping.substring(0, mapping.length()-2);
+                                }                                
+                                if (mapping.equals(servletPath))
+                                {
+                                    return FacesServletMapping.createPrefixMapping(mapping);
                                 }
                             }
-                            // Choose exact mapping if preferred.
-                            if (allowExactMatch && exactMapping != null)
-                            {
-                                return exactMapping;
-                            }
-                            else if (prefixMapping != null)
-                            {
-                                return prefixMapping;
-                            }
-                            else if (extensionMapping != null)
-                            {
-                                return extensionMapping;
-                            }
-                        }
+                       }
                     }
                     catch (Exception ex)
                     {
                         //No op
                     }
                 }
-                return FacesServletMapping.createPrefixMapping(servletPath);
+
+                // Choose exact mapping if preferred.
+                if (allowExactMatch && facesExactMapping != null)
+                {
+                    return facesExactMapping;
+                }
+                else if (facesPrefixMapping != null)
+                {
+                    return facesPrefixMapping;
+                }
+                else if (facesExtensionMapping != null)
+                {
+                    return facesExtensionMapping;
+                }
+                else
+                {
+                    return FacesServletMapping.createPrefixMapping(servletPath);
+                }
             }
             else
             {

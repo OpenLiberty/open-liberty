@@ -1,0 +1,67 @@
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Collector Manager
+Bundle-SymbolicName: com.ibm.ws.collector.manager
+Bundle-Description: Collector Manager: Collector Manager; version=${bVersion}
+
+WS-TraceGroup: collectorManager
+
+Export-Package: \
+	com.ibm.ws.logging.ffdc.source
+
+Import-Package: com.ibm.ejs.ras, \
+                com.ibm.websphere.ras, \
+                com.ibm.websphere.ras.annotation, \
+                com.ibm.ws.ffdc, \
+                com.ibm.ws.ras.instrument.annotation, \
+                com.ibm.wsspi.kernel.service.location, \
+                com.ibm.wsspi.kernel.service.utils, \
+                org.osgi.framework, \
+                javax.management, \
+                com.ibm.ws.logging, \
+                com.ibm.ws.logging.source, \
+                com.ibm.ws.http.logging.data, \
+                com.ibm.ws.health.center.data, \
+                com.ibm.ws.logging.internal, \
+                com.ibm.wsspi.collector.manager, \
+                com.ibm.ws.collector.manager.buffer, \
+                com.ibm.websphere.logging, \
+                com.ibm.tools.attach, \
+                org.osgi.service.cm, \
+                com.ibm.wsspi.logging
+
+Service-Component:\
+    com.ibm.ws.collector.manager; \
+        implementation:=com.ibm.ws.collector.manager.internal.CollectorManagerImpl; \
+        provide:=com.ibm.wsspi.collector.manager.CollectorManager; \
+        configurationAdmin=org.osgi.service.cm.ConfigurationAdmin;\
+        source=com.ibm.wsspi.collector.manager.Source~; \
+        handler=com.ibm.wsspi.collector.manager.Handler~; \
+        multiple:='source,handler'; \
+        dynamic:='source,handler'; \
+        modified:='modified'; \
+        immediate:='true'; \
+	    properties:="service.vendor=IBM", \
+    com.ibm.ws.logging.source.ffdcsource;\
+        implementation:=com.ibm.ws.logging.ffdc.source.FFDCSource;\
+        provide:=com.ibm.wsspi.collector.manager.Source; \
+        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.ffdc.source.ffdcsource)'; \
+        properties:="service.vendor=IBM"
+
+	
+Private-Package: \
+  com.ibm.ws.collector.manager.internal*
+
+Include-Resource: \
+    META-INF/MessageRouter.properties=resources/MessageRouter.properties
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

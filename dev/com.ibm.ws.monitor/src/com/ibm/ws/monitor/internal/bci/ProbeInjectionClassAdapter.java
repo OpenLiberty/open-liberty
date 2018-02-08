@@ -15,6 +15,9 @@ import static org.objectweb.asm.Opcodes.ACC_STATIC;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,16 +50,29 @@ public class ProbeInjectionClassAdapter extends ClassVisitor {
 
     Set<ProbeListener> interestedListeners;
 
-    public ProbeInjectionClassAdapter(ClassVisitor delegate, ProbeManagerImpl probeManager, Class<?> clazz) {
+    public ProbeInjectionClassAdapter(ClassVisitor delegate, ProbeManagerImpl probeManager, final Class<?> clazz) {
         super(Opcodes.ASM5, delegate);
         this.probeManager = probeManager;
         this.probedClasses = clazz;
         this.interestedListeners = probeManager.getInterestedByClass(clazz);
-        for (Method m : clazz.getDeclaredMethods()) {
-            methodMap.put(m.getName() + Type.getMethodDescriptor(m), m);
-        }
-        for (Constructor<?> c : clazz.getDeclaredConstructors()) {
-            constructorMap.put("<init>" + Type.getConstructorDescriptor(c), c);
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws Exception {
+                    for (Method m : clazz.getDeclaredMethods()) {
+                        methodMap.put(m.getName() + Type.getMethodDescriptor(m), m);
+                    }
+                    for (Constructor<?> c : clazz.getDeclaredConstructors()) {
+                        constructorMap.put("<init>" + Type.getConstructorDescriptor(c), c);
+                    }
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof RuntimeException)
+                throw (RuntimeException) e.getCause();
+            else
+                throw new RuntimeException(e);
         }
     }
 

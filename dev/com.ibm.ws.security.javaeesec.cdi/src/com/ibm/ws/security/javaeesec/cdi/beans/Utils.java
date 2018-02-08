@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,13 +43,9 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 public class Utils {
 
     private static final TraceComponent tc = Tr.register(Utils.class);
-    private static Utils self = new Utils();
+    private boolean logNoIDWarning = false;
 
     protected Utils() {}
-
-    public static Utils getInstance() {
-        return self;
-    }
 
     protected boolean validateResult(CredentialValidationResult result) throws AuthenticationException {
         Principal principal = result.getCallerPrincipal();
@@ -82,11 +78,15 @@ public class Utils {
         if (identityStoreHandler != null) {
             status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler, httpMessageContext);
         } else {
-            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER");
-        }
-        if (identityStoreHandler == null || status == AuthenticationStatus.NOT_DONE) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml.");
+            }
+            if (!logNoIDWarning) {
+                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER");
+                logNoIDWarning = true;
+            }
             // If an identity store is not available, fall back to the original user registry.
-            status = Utils.getInstance().validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
+            status = validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
         }
         return status;
     }

@@ -20,7 +20,11 @@ scriptUsage=Uso: {0} action clientName [opciones]
 
 use.actions=Acciones:
 use.options=Opciones:
+use.options.gen.desc=\ \ \ \ Utilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
 use.jvmarg=Opciones de JVM:
+category-key.lifecycle=Ciclo de vida de servidor
+category-key.help=Informaci\u00f3n
+category-key.misc=Diversos
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -66,17 +70,18 @@ option-desc.clean=\tBorre toda la informaci\u00f3n almacenada en la memoria cach
 option-key.archive=\ \ \ \ --archive="v\u00eda al archivador de destino"
 option-desc.archive=\tEspecifique el destino de archivado que va a generar\n\
 \tla acci\u00f3n de empaquetado. El destino puede especificarse como v\u00eda de acceso absoluta o como \n\
-\tv\u00eda de acceso relativa. Si se omite esta opci\u00f3n, el archivo de archivado se crear\u00e1\n\
-\ten el directorio de salida del cliente. La extensi\u00f3n del nombre \n\
-\tdel archivo de destino podr\u00eda influir en el formato del archivo generado.       \n\
-\tEl formato de archivo predeterminado para la acci\u00f3n de empaquetado es "pax"\n\
-\ten z/OS y "zip" para todas las dem\u00e1s plataformas.                                    \n\
-\tEl formato de archivo "jar" generar\u00e1 un jar de autoextracci\u00f3n similar al   \n\
-\tarchivador del instalador original
+\tv\u00eda de acceso relativa. Si se omite esta opci\u00f3n, el archivo se crea\n\
+\ten el directorio de salida de cliente. Es posible que la extensi\u00f3n de nombre de archivo de destino \n\
+\tafecte al formato del archivo generado. El formato de archivo \n\
+\tpredeterminado para la acci\u00f3n de paquete es "pax" en z/OS y "zip" en todas \n\
+\tlas dem\u00e1s plataformas. El formato de archivo "jar" producir\u00e1 un jar de \n\
+\tautoextracci\u00f3n similar al archivo de instalador original.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos var\u00edan en funci\u00f3n de \n\
-\tla acci\u00f3n.
+option-desc.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos son: all*, usr,   \n\
+\tminify. La opci\u00f3n usr crea un paquete que contiene el servidor  \n\
+\ty la aplicaci\u00f3n, pero no el tiempo de ejecuci\u00f3n. La opci\u00f3n all predeterminada produce\n\
+\tun paquete de cliente que lo contiene todo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nombrePlantilla"
 option-desc.template=\tEspecifique el nombre de la plantilla que se va a utilizar cuando se cree un nuevo cliente. 

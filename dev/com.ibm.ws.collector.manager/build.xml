@@ -1,0 +1,4 @@
+<project name="com.ibm.ws.collector.manager" default="build">
+	<import file="../ant_build/public_imports/standard_imports.xml"/>
+	<bndOutputJar file="${basedir}/bnd-osgi.bnd" property="osgi.output.jar" versionProperty="bVersion" />
+</project>	

@@ -29,4 +29,9 @@
     <quickStartSecurity userName="admin" userPassword="adminpwd"/>
 
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    
+    <!-- These permissions are needed due to missing doPrivs in JAX-RS spec API and CXF code -->
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="javax.ws.rs.client.ClientBuilder" actions="read"/>
 </server>

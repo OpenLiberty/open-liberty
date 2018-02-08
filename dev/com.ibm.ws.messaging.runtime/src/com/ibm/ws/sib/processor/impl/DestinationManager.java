@@ -113,6 +113,8 @@ import com.ibm.wsspi.sib.core.exception.SIInvalidDestinationPrefixException;
 import com.ibm.wsspi.sib.core.exception.SILimitExceededException;
 import com.ibm.wsspi.sib.core.exception.SITemporaryDestinationNotFoundException;
 
+import com.ibm.ws.kernel.service.util.CpuInfo;
+
 /**
  * @author millwood
  * 
@@ -600,7 +602,7 @@ public final class DestinationManager extends SIMPItemStream
                 //get the thread pool size from the custom property
                 maxThreadPoolSize = messageProcessor.getCustomProperties().get_max_reconstitute_threadpool_size();
 
-                int noOfCores = Runtime.getRuntime().availableProcessors();
+                int noOfCores = CpuInfo.getAvailableProcessors();
 
                 if (maxThreadPoolSize <= 0)
                 {

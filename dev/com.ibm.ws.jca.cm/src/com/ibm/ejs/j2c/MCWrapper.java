@@ -2193,7 +2193,15 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
                 this.clearHandleList();
                 try {
-                    this.releaseToPoolManager();
+                    if (state != STATE_INACTIVE) { // If this MCWrapper is inactive then it has already been destroyed, likely because
+                        //a connection error occurred event was called on this connection while it was in the free pool.  Skipping a second
+                        //cleanup and destroy so the connection count is not double decremented and we don't get an IllegalStateException.
+                        this.releaseToPoolManager();
+                    } else {
+                        if (isTracingEnabled && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Skipping release since the MCWrapper state was already STATE_INACTIVE");
+                        }
+                    }
                 } catch (Exception ex) {
                     // Nothing to do here. PoolManager has already logged it.
                     // Since we are in cleanup mode, we will not surface a Runtime exception to the ResourceAdapter

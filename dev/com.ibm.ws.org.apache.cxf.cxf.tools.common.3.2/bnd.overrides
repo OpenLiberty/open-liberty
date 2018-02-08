@@ -1,0 +1,10 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2
+
+Import-Package: \
+  !javax.wsdl,\
+  !org.apache.velocity.*,\
+  !org.junit.*,\
+  *

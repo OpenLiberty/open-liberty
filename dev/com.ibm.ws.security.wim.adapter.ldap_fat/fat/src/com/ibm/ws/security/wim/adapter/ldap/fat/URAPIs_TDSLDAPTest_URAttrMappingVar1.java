@@ -11,14 +11,12 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -103,8 +101,8 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar1 {
         String user = "vmmtestuser";
         String password = "vmmtestuserpwd";
         Log.info(c, "checkPassword", "Checking good credentials");
-        equalDNs("Authentication should succeed.",
-                 "cn=vmmtestuser,o=ibm,c=us", servlet.checkPassword(user, password));
+        assertDNsEqual("Authentication should succeed.",
+                       "cn=vmmtestuser,o=ibm,c=us", servlet.checkPassword(user, password));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -205,7 +203,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar1 {
         String group = "vmmgrp1";
         String userDisplayName = "cn=vmmgrp1,o=ibm,c=us";
         Log.info(c, "getGroupDisplayName", "Checking with a valid group.");
-        equalDNs(null, userDisplayName, servlet.getGroupDisplayName(group));
+        assertDNsEqual("userDisplayName is incorrect", userDisplayName, servlet.getGroupDisplayName(group));
     }
 
     /**
@@ -217,7 +215,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar1 {
         String group = "vmmgrp1";
         String uniqueGroupId = "cn=vmmgrp1,o=vmm";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -229,7 +227,7 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar1 {
         String uniqueGroupId = "cn=vmmgrp1,o=vmm";
         String userSecurityName = "cn=vmmgrp1,o=ibm,c=us";
         Log.info(c, "getGroupSecurityName", "Checking with a valid group.");
-        equalDNs(null, userSecurityName, servlet.getGroupSecurityName(uniqueGroupId));
+        assertDNsEqual("Groupsecurityname is incorrect", userSecurityName, servlet.getGroupSecurityName(uniqueGroupId));
     }
 
     /**
@@ -257,9 +255,4 @@ public class URAPIs_TDSLDAPTest_URAttrMappingVar1 {
         assertEquals("There should only be 2 entries", 2, list.size());
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

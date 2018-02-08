@@ -18,46 +18,48 @@ import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 
 public interface JwtConfig {
 
-    String getId();
+	String getId();
 
-    String getIssuerUrl();
+	String getIssuerUrl();
 
-    boolean isJwkEnabled();
+	boolean isJwkEnabled();
 
-    long getValidTime();
+	long getValidTime();
 
-    List<String> getAudiences();
+	List<String> getAudiences();
 
-    String getSignatureAlgorithm();
+	String getSignatureAlgorithm();
 
-    List<String> getClaims();
+	List<String> getClaims();
 
-    String getScope();
+	String getScope();
 
-    boolean getJti();
+	boolean getJti();
 
-    String getSharedKey();
+	String getSharedKey();
 
-    String getTrustStoreRef();
+	String getTrustStoreRef();
 
-    String getKeyStoreRef();
+	String getKeyStoreRef();
 
-    String getKeyAlias();
+	String getKeyAlias();
 
-    String getTrustedAlias();
+	String getTrustedAlias();
 
-    String getJwkJsonString();
+	String getJwkJsonString();
 
-    JSONWebKey getJSONWebKey();
+	JSONWebKey getJSONWebKey();
 
-    long getJwkRotationTime();
+	long getJwkRotationTime();
 
-    int getJwkSigningKeySize();
+	int getJwkSigningKeySize();
 
-    String getResolvedHostAndPortUrl();
+	String getResolvedHostAndPortUrl();
 
-    PrivateKey getPrivateKey();
+	PrivateKey getPrivateKey();
 
-    PublicKey getPublicKey();
+	PublicKey getPublicKey();
+
+	boolean isTokenEndpointHttpsRequired();
 
 }

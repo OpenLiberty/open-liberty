@@ -78,7 +78,7 @@ public class ProgrammaticTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        myServer.stopServer();
+        myServer.stopServer("CWWKS1932W");
         myServer.setServerConfigurationFile("server.xml");
     }
 

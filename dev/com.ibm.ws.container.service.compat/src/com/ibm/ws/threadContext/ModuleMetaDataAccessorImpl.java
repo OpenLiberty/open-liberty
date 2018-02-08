@@ -10,7 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.threadContext;
 
-import java.util.List;
+import java.net.URL;
+import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -28,10 +29,10 @@ public final class ModuleMetaDataAccessorImpl {
 
     private static ModuleMetaDataAccessorImpl mmdai = new ModuleMetaDataAccessorImpl();
 
-    private ThreadContext<List<ModuleMetaData>> threadContext = null;
+    private ThreadContext<Map<URL, ModuleMetaData>> threadContext = null;
 
     private ModuleMetaDataAccessorImpl() {
-        threadContext = new ThreadContextImpl<List<ModuleMetaData>>();
+        threadContext = new ThreadContextImpl<Map<URL, ModuleMetaData>>();
     }
 
     /**
@@ -43,9 +44,9 @@ public final class ModuleMetaDataAccessorImpl {
     }
 
     /**
-     * @return List<ModuleMetaData>
+     * @return Map<URL, ModuleMetaData>
      */
-    public List<ModuleMetaData> getModuleMetaDataList() {
+    public Map<URL, ModuleMetaData> getModuleMetaDataMap() {
         return threadContext.getContext();
     }
 
@@ -53,20 +54,20 @@ public final class ModuleMetaDataAccessorImpl {
      * @return ThreadContext
      */
     @Deprecated
-    public ThreadContext<List<ModuleMetaData>> getThreadContext() {
+    public ThreadContext<Map<URL, ModuleMetaData>> getThreadContext() {
         return threadContext;
     }
 
     /**
-     * Begin the context for the List of ModuleMetaData provided.
+     * Begin the context for the map of ModuleMetaData provided.
      * 
-     * @param List<ModuleMetaData> It Must not be null. Tr.error will be logged if it is null.
+     * @param Map<URL, ModuleMetaData> It Must not be null. Tr.error will be logged if it is null.
      * @return Previous Object, which was on the stack. It can be null.
      */
-    public Object beginContext(List<ModuleMetaData> mmdi) {
+    public Object beginContext(Map<URL, ModuleMetaData> mmdi) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             if (mmdi != null && !mmdi.isEmpty())
-                Tr.debug(tc, "begin context " + mmdi.get(0).getJ2EEName());
+                Tr.debug(tc, "begin context " + mmdi.values().iterator().next().getJ2EEName());
             else
                 Tr.debug(tc, "null or empty object was passed.");
         }
@@ -75,30 +76,30 @@ public final class ModuleMetaDataAccessorImpl {
     }
 
     /**
-     * Establish default context for when there should be no List of ModuleMetaData on the thread.
+     * Establish default context for when there should be no Map of URL and ModuleMetaData on the thread.
      * 
-     * @return Previous List of ModuleMetaData which was on the thread. It can be null.
+     * @return Previous Map of ModuleMetaData which was on the thread. It can be null.
      */
-    public List<ModuleMetaData> beginDefaultContext() {
+    public Map<URL, ModuleMetaData> beginDefaultContext() {
         return threadContext.beginContext(null);
     }
 
     /**
-     * End the context for the current List of ModuleMetaData
+     * End the context for the current Map of URL (location where the module is loaded from), ModuleMetaData
      * 
      * @return Object which was removed (pop) from the stack.
      */
     public Object endContext() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            List<ModuleMetaData> mmdi = getModuleMetaDataList();
-            ModuleMetaData mmd = ((mmdi != null) && !mmdi.isEmpty()) ? mmdi.get(0) : null;
+            Map<URL, ModuleMetaData> mmdi = getModuleMetaDataMap();
+            ModuleMetaData mmd = ((mmdi != null) && !mmdi.isEmpty()) ? mmdi.values().iterator().next() : null;
             Tr.debug(tc, "end context " + (mmd == null ? null : mmd.getJ2EEName()));
         }
         return threadContext.endContext();
     }
 
     /**
-     * @return The index of List<ModuleMetaData>
+     * @return The index of Map<URL, ModuleMetaData>
      */
     public int getModuleMetaDataListIndex() {
         return threadContext.getContextIndex();

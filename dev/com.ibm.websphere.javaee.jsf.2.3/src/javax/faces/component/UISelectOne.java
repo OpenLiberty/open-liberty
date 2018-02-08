@@ -113,10 +113,8 @@ public class UISelectOne extends UIInput
                 }
             });
         }
-        if (!isEmpty(submittedValue))
-        {
-            super.processValidators(context);
-        }
+
+        super.processValidators(context);
     }
 
     /**

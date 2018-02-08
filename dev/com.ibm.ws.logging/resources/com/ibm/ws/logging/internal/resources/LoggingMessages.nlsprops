@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: The following messages are hidden from t
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Messages that are configured to be hidden are not written to the console.log and messages.log files. They are written to the trace.log file. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=No action is required
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: The messages.log output format has now been updated to '{0}'.
+MESSAGE_FORMAT_UPDATED.explanation=The output format for messages.log has now been updated.
+MESSAGE_FORMAT_UPDATED.useraction=No action is required.
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: The console output format has now been updated to '{0}'.
+CONSOLE_FORMAT_UPDATED.explanation=The output format for console has now been updated.
+CONSOLE_FORMAT_UPDATED.useraction=No action is required.
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

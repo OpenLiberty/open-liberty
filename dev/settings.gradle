@@ -20,10 +20,6 @@
 def loadBuildProps() {
   Properties props = new Properties()
 
-  // Property for Artifactory matrix parameters
-  def branchName = gitBranch()
-  def matrixParams = ";GIT_BRANCH=master;GIT_FEATURE_BRANCH=${branchName}"
-
   // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
   def isAutomatedBuild = false
   def isContinuousBuild = false
@@ -44,10 +40,7 @@ def loadBuildProps() {
   }
 
   if (usrHomeProps.exists()) {
-    usrHomeProps.withInputStream { props.load(it) }    
-    props.each {      
-      props.setProperty(it.key, it.value)      
-    }
+    usrHomeProps.withInputStream { props.load(it) }
   }
 
   // Retain properties from prior builds; used in automated build publishing
@@ -95,18 +88,23 @@ def loadBuildProps() {
     } else {
       jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
     }
-    isFirstPass = false;
+    isFirstPass = false
   }
 
   props.setProperty('javac.bootclasspath.1.4', jdkLibString)
   props.setProperty('javac.bootclasspath.1.6', jdkLibString)
   props.setProperty('javac.bootclasspath.1.7', jdkLibString)
   props.setProperty('javac.bootclasspath.1.8', jdkLibString)
- 
+
+  // Property for Artifactory matrix parameters
+  def branchName = gitBranch()
+  def matrixParams = ";GIT_BRANCH=master;GIT_FEATURE_BRANCH=${branchName}"
+
+  def artifactoryExists = false
   if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
     //Some functionality is added if we are able to access particular internal systems.
     //This is to support more controlled dependency management, and multiple JDK paths for cross-compilation
-    def artifactoryExists = true;
+    artifactoryExists = true
     def repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
     def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
     fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;local=~/.ibmartifactory/repository;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
@@ -136,7 +134,13 @@ def loadBuildProps() {
 
   // Must be run after isRelease is set
   def (qualifier, timestamp) = getVersionQualifier(isRelease)
-
+  
+  //For release builds we can use a consistent qualifier of the build label.
+  //This comes from the RTC build engines
+  if (isRelease && (props.getProperty('buildLabel') != null)) {
+    qualifier = props.getProperty('buildLabel')
+  }
+  
   props.setProperty('version.qualifier', qualifier)
   props.setProperty('buildLabel', timestamp)
   props.setProperty('artifactory.matrix.parameters', matrixParams)
@@ -147,7 +151,7 @@ def loadBuildProps() {
   props.setProperty('is.automated.build', isAutomatedBuild.toString())
   props.setProperty('is.continuous.build', isContinuousBuild.toString())
   props.setProperty('is.release', isRelease.toString())
-  props.setProperty('maven.release.name', mavenLocalPath)
+  props.setProperty('maven.release.name', "release")
   props.setProperty('is.remote.publishing', isRemotePublishing.toString())
   props.setProperty('is.public.publishing', isPublicPublishing.toString())
 
@@ -168,10 +172,12 @@ def loadBuildProps() {
     rootProject.ext.isAutomatedBuild = parseBoolean(props.getProperty("is.automated.build"))
     rootProject.ext.isContinuousBuild = parseBoolean(props.getProperty("is.continuous.build"))
     rootProject.ext.isRelease = parseBoolean(props.getProperty('is.release'))
+    rootProject.ext.artifactoryExists = artifactoryExists
     rootProject.ext.isRemotePublishing = parseBoolean(props.getProperty('is.remote.publishing'))
     rootProject.ext.isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
     rootProject.ext.releaseVersionOverride = props.getProperty('release.version.override')
     rootProject.ext.usrHomeProps = usrHomeProps
+    rootProject.ext.generatedProps = props
 
     // Test results for this run
     rootProject.ext.testCountTotal = 0
@@ -183,7 +189,7 @@ def loadBuildProps() {
 
 def getVersionQualifier(boolean isRelease) {
   //ex: 201708101600
-  def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+  def timestamp = new SimpleDateFormat("yyyyMMdd-HHmm").format(new java.util.Date())
   if (isRelease) {
     return [timestamp, timestamp]
   }
@@ -238,10 +244,14 @@ buildscript {
     }
   }
 
-  /* Pass bnd gradle plugin classpath to rootProject once created */
+  /* Add bnd gradle plugin to buildscript classpath of rootProject */
   def bndPlugin = files(configurations.classpath.files)
-  gradle.rootProject { rootProject ->
-    rootProject.ext.bndPlugin = bndPlugin
+  gradle.projectsLoaded { gradle ->
+    gradle.rootProject.buildscript {
+      dependencies {
+        classpath bndPlugin
+      }
+    }
   }
 }
 
@@ -253,7 +263,7 @@ import java.text.SimpleDateFormat
 
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
-def workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
 gradle.bndWorkspaceConfigure(workspace)
 
 /* Add cnf project to the graph */
@@ -296,46 +306,18 @@ if (projectNames.remove('')) {
   }
 }
 
-def projectNameSet = new HashSet()
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->
-  if (projectNameSet.add(projectName)) {
-    def project = getBndProject(workspace, projectName)
+  def project = workspace.getProject(projectName)
+  if (project) {
+    include projectName
     project?.getDependson()*.getName().each {
-      projectNameSet.add(it)
+      include it
     }
   }
 }
-projectNameSet.each { include it }
 
-/* Get the bnd project for the specified project name */
-def getBndProject(Workspace workspace, String projectName) {
-  def project = workspace.getProject(projectName)
-  if (project == null) {
-    return null
-  }
-  project.prepare()
-  if (project.isValid()) {
-    return project
-  }
-
-  project.getInfo(workspace, "${rootDir} :")
-  def errorCount = 0
-  project.getWarnings().each {
-    println "Warning: ${it}"
-  }
-  project.getErrors().each {
-    println "Error  : ${it}"
-    errorCount++
-  }
-  if (!project.isOk()) {
-    def str = 'even though no errors were reported'
-    if (errorCount == 1) {
-      str = 'one error was reported'
-    } else if (errorCount > 1) {
-      str = "${errorCount} errors were reported"
-    }
-    throw new GradleException("Project ${rootDir}/${projectName} is invalid, ${str}")
-  }
-  throw new GradleException("Project ${rootDir}/${projectName} is not a valid bnd project")
+/* Pass workspace to root project */
+gradle.projectsLoaded { gradle ->
+  gradle.rootProject.ext.bndWorkspace = workspace
 }

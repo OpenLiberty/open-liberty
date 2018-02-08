@@ -64,7 +64,7 @@ public class DumpCommandTest {
         Log.info(c, "before", "java -version  stderr: " + stderr);
         assertEquals("Unexpected return code from java -version", 0, javaVersionOutput.getReturnCode());
 
-        if ((stdout != null && stdout.contains("IBM")) || (stderr != null && stderr.contains("IBM"))) {
+        if ((stdout != null && stdout.contains("IBM J9 VM")) || (stderr != null && stderr.contains("IBM J9 VM"))) {
             isIBM_JVM = true;
         }
     }

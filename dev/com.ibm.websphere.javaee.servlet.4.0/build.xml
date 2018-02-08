@@ -8,10 +8,6 @@
     <property name="javac.source" value="1.8" />
     <property name="javac.target" value="1.8" />
 
-    <!-- skip findbugs until it works with Java 8 -->
-    <property name="skip.findbugs" value="true"/>
-
-
     <import file="../ant_build/public_imports/spec_imports.xml"/>
  
     <target name="package" depends="spec.package"/>

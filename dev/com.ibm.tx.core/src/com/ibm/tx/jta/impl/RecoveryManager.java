@@ -126,7 +126,7 @@ public class RecoveryManager implements Runnable {
     protected String _classPath; // current classpath for recovery
     // These are static as they are only initialized from the "server's" own log
     // We use our own classpaths and not from other servers in case we recover
-    // for a filesystem that does not match our own.  
+    // for a filesystem that does not match our own.
     protected static String _loggedClassPath; // classpath read from the log at startup
 
     // Server States logged for serviceability
@@ -150,15 +150,16 @@ public class RecoveryManager implements Runnable {
 
     protected boolean _cleanRemoteShutdown;
 
-    public RecoveryManager(FailureScopeController fsc, RecoveryAgent agent, RecoveryLog tranLog, RecoveryLog xaLog, RecoveryLog recoverXaLog, byte[] defaultApplId, int defaultEpoch)/*
-                                                                                                                                                                                      * throws
-                                                                                                                                                                                      * Exception
-                                                                                                                                                                                      */
+    public RecoveryManager(FailureScopeController fsc, RecoveryAgent agent, RecoveryLog tranLog, RecoveryLog xaLog, RecoveryLog recoverXaLog, byte[] defaultApplId,
+                           int defaultEpoch)/*
+                                             * throws
+                                             * Exception
+                                             */
     {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "RecoveryManager", new Object[] { fsc, agent, tranLog, xaLog, recoverXaLog,
-                                                          (defaultApplId == null ? "null" : Util.toHexString(defaultApplId)),
-                                                          defaultEpoch });
+                                                           (defaultApplId == null ? "null" : Util.toHexString(defaultApplId)),
+                                                           defaultEpoch });
         }
 
         // @240834D
@@ -210,7 +211,7 @@ public class RecoveryManager implements Runnable {
      * previous failure. Any service data is assembled and merged with that
      * from the Partner log.
      * <p>
-     * 
+     *
      */
     protected void replayTranLog() throws Exception {
         if (tc.isEntryEnabled())
@@ -393,7 +394,8 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "replayTranLog");
     }
 
-    protected boolean handleTranRecord(RecoverableUnit ru, boolean recoveredTransactions, LogCursor recoverableUnits) throws SystemException, NotSupportedException, InternalLogException {
+    protected boolean handleTranRecord(RecoverableUnit ru, boolean recoveredTransactions,
+                                       LogCursor recoverableUnits) throws SystemException, NotSupportedException, InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "handleTranRecord", new Object[] { ru, recoveredTransactions, recoverableUnits, new Exception("handleTranRecord Stack") });
 
@@ -422,14 +424,14 @@ public class RecoveryManager implements Runnable {
 
         // Recovery processing associated with this specific recovery manager can be
         // be in a number of states:-
-        // 
+        //
         // 1. Not yet started (about to be run from the TxServiceImpl class)
         // 2. Running (on a separate thread)
         // 3. Complete (dormant)
-        // 
+        //
         // Either way, it will eventually complete and allow the waitForRecoveryCompletion()
         // call to return (see below).
-        // 
+        //
         // However, we need to get this shutdown process going asap to allow quick shutdown
         // for reasons of speed and complience with the HA-framework requirements. For this
         // reason, we set a flag '_shutdownInProgress' to cause any recovery thread to drop
@@ -451,28 +453,28 @@ public class RecoveryManager implements Runnable {
     /**
      * Informs the RecoveryManager that the transaction service is being shut
      * down.
-     * 
+     *
      * The shutdown method can be driven in one of two ways:-
-     * 
+     *
      * 1. Real server shutdown. The TxServiceImpl.destroy method runs through
      * all its FailureScopeControllers and calls shutdown on them. This in
      * turn directs the associated RecoveryManagers to shutdown.
-     * 
+     *
      * 2. Peer recovery termination. The Recovery Log Service has directed the
      * transactions RecoveryAgent (TxServiceImpl again) to terminateRecovery
      * for the associated failure scope. TxServiceImpl directs the
      * corrisponding FailureScopeController to shutdown and again this directs
      * the associated RecoveryManager to shutdown (on its own this time others
      * stay running)
-     * 
+     *
      * For immediate shutdown,
-     * 
+     *
      * For quiesce,
-     * 
+     *
      * YOU MUST HAVE CALLED "prepareToShutdown" BEFORE MAKING THIS CALL. THIS IS
      * REQUIRED IN ORDER THAT RECOVERY PROCESSING IS STOPPED BEFORE DRIVING
      * THE SHUTDOWN LOGIC.
-     * 
+     *
      * @param immediate Indicates whether to stop immediately.
      */
     public void preShutdown(boolean transactionsLeft) throws Exception /* @PK31789C */
@@ -547,9 +549,9 @@ public class RecoveryManager implements Runnable {
         } finally {
             // If this is a peer server, or a local server where there are no transactions left running
             // then close the log. In the case of the local failure scope, we are unable to close the log if
-            // there are transactions running as this shutdown represents the real server shutdown and 
+            // there are transactions running as this shutdown represents the real server shutdown and
             // transactions may still attempt to write to the recovery log. If we close the log now in this
-            // situation, server shutdown will be peppered with LogClosedException errors. Needs refinement.          
+            // situation, server shutdown will be peppered with LogClosedException errors. Needs refinement.
             if (_tranLog != null && ((!_failureScopeController.localFailureScope()) || (!transactionsLeft))) {
                 try {
                     _tranLog.closeLog();
@@ -628,16 +630,13 @@ public class RecoveryManager implements Runnable {
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
                 }
 
-                try
-                {
-                    if (_leaseLog != null)
-                    {
+                try {
+                    if (_leaseLog != null) {
                         _leaseLog.deleteServerLease(_failureScopeController.serverName());
                     }
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                    // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
                     e.printStackTrace();
                 }
             }
@@ -660,10 +659,10 @@ public class RecoveryManager implements Runnable {
 
     /**
      * Reads the Partner log entries and replays them with the PartnerLogTable.
-     * 
+     *
      * Returns the number of XA RM records found in the log, ie the number we will need
      * to perform recover on.
-     * 
+     *
      * Note: the partner log is read before the transaction log.
      */
     protected int replayPartnerLog() throws Exception {
@@ -717,10 +716,10 @@ public class RecoveryManager implements Runnable {
                         if (tc.isEventEnabled())
                             Tr.event(tc, "Replaying section " + rusId, Util.toHexString(logData));
                         switch (rusId) {
-                        //
-                        // The XAResource and WSCoordinator sections exist in single recoverable units
-                        // so they can be individually accessed by recoverable unit id from the tranlog
-                        //
+                            //
+                            // The XAResource and WSCoordinator sections exist in single recoverable units
+                            // so they can be individually accessed by recoverable unit id from the tranlog
+                            //
                             case TransactionImpl.XARESOURCEDATA_SECTION:
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "XA resources data record");
@@ -918,7 +917,7 @@ public class RecoveryManager implements Runnable {
                         result++;
                     }
 
-                    // Determine if shutdown processing started during replayPartnerLog processing. 
+                    // Determine if shutdown processing started during replayPartnerLog processing.
                     // If it has, no further action can be taken.
                     if (shutdownInProgress()) {
                         shuttingDown = true;
@@ -1006,7 +1005,7 @@ public class RecoveryManager implements Runnable {
 
     /**
      * Update service data in the tran log files
-     * 
+     *
      */
     protected void updateTranLogServiceData() throws Exception {
         if (tc.isEntryEnabled())
@@ -1044,7 +1043,7 @@ public class RecoveryManager implements Runnable {
 
     /**
      * Update service data in the partner log files
-     * 
+     *
      */
     protected void updatePartnerServiceData() throws Exception {
         if (tc.isEntryEnabled())
@@ -1363,7 +1362,7 @@ public class RecoveryManager implements Runnable {
                                     if (recoveredTransactions[i].getTransactionState().getState() != TransactionState.STATE_NONE) {
                                         Tr.warning(tc, "WTRN0114_TRAN_RETRY_NEEDED",
                                                    new Object[] { recoveredTransactions[i].getTranName(),
-                                                                 retryWait });
+                                                                  retryWait });
                                     }
                                 }
                             }
@@ -1392,7 +1391,7 @@ public class RecoveryManager implements Runnable {
                         // have fully completed recovery as this is a indication to shutdown the server.
                         // For the other case of local recovery, recoveryComplete indicates that we are far enough
                         // through recovery to allow further HA recovery to be enabled by joining their HA groups
-                        // if everything was successful or shutdown the server if anything failed. 
+                        // if everything was successful or shutdown the server if anything failed.
                         // For peer recovery we only call recoveryComplete once we have stopped any recovery action
                         // as this is used as a "lock" to wait on failback log tidy up.
                         // So this does not indicate that recovery has completed...
@@ -1452,7 +1451,7 @@ public class RecoveryManager implements Runnable {
                 if (_failureScopeController.localFailureScope()) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "local failure scope resync interupted");
-                    // FailureScopeController.shutdown() closes the logs            
+                    // FailureScopeController.shutdown() closes the logs
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Non-local failure scope resync interupted");
@@ -1503,7 +1502,7 @@ public class RecoveryManager implements Runnable {
                     { /* @PK31789A */
                         try /* @PK31789A */
                         {
-                            // keypoint will ensure that the tranlog is forced.       @PK31789A   
+                            // keypoint will ensure that the tranlog is forced.       @PK31789A
                             // If there are any exceptions, then it is not safe to    @PK31789A
                             // tidy up the partnerlog (clearUnused skipped).          @PK31789A
 
@@ -1603,7 +1602,7 @@ public class RecoveryManager implements Runnable {
                     // No FFDC required
                 }
 
-                postShutdown(true); // Process the partner log 
+                postShutdown(true); // Process the partner log
             }
         }
 
@@ -1614,10 +1613,10 @@ public class RecoveryManager implements Runnable {
     /**
      * Close the loggs without any keypoint - to be called on a failure to leave
      * the logs alone and ensure distributed shutdown code does not update them.
-     * 
+     *
      * The closeLeaseLog parameter will be false in the case that we have determined that a peer is
      * recovering the server's logs.
-     * 
+     *
      * @param closeLeaseLog is true if we should process a lease log
      */
     protected void closeLogs(boolean closeLeaseLog) {
@@ -1642,16 +1641,13 @@ public class RecoveryManager implements Runnable {
             _xaLog = null;
         }
 
-        try
-        {
-            if (_leaseLog != null && closeLeaseLog)
-            {
+        try {
+            if (_leaseLog != null && closeLeaseLog) {
                 _leaseLog.deleteServerLease(_failureScopeController.serverName());
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         if (tc.isEntryEnabled())
@@ -1672,11 +1668,9 @@ public class RecoveryManager implements Runnable {
                 Tr.debug(tc, "Performing recovery for " + _failureScopeController.serverName());
 
             // Lets update our entry in the leaseLog early
-            if (_leaseLog != null)
-            {
+            if (_leaseLog != null) {
                 // TODO - need a sensible lease time
-                try
-                {
+                try {
                     //Don't update the server lease if this is a peer rather than local server.
                     if (_localRecoveryIdentity.equals(_failureScopeController.serverName()))
                         _leaseLog.updateServerLease(_failureScopeController.serverName(), _recoveryGroup, true);
@@ -1715,7 +1709,7 @@ public class RecoveryManager implements Runnable {
                     // product. For example 5.1 and 6.0 servers in the same cluster. When a 6.0 server
                     // attempts to peer recover the 5.1 log (as will be the case since the 5.1 server
                     // will not join an HA group get ownership of its recovery logs) a
-                    // LogIncompatibleException will be generated. To try and avoid confusion, this is 
+                    // LogIncompatibleException will be generated. To try and avoid confusion, this is
                     // logged in a single place only (in the trace - to be replaced with messages asap)
                     // Additionally, no FFDC is generated.
                     //
@@ -1791,7 +1785,7 @@ public class RecoveryManager implements Runnable {
                     // product. For example 5.1 and 6.0 servers in the same cluster. When a 6.0 server
                     // attempts to peer recover the 5.1 log (as will be the case since the 5.1 server
                     // will not join an HA group get ownership of its recovery logs) a
-                    // LogIncompatibleException will be generated. To try and avoid confusion, this is 
+                    // LogIncompatibleException will be generated. To try and avoid confusion, this is
                     // logged in a single place only (in the trace - to be replaced with messages asap)
                     // Additionally, no FFDC is generated.
                     //
@@ -1886,7 +1880,7 @@ public class RecoveryManager implements Runnable {
                 _XAEntries = 0;
             }
 
-            // Determine if shutdown processing started during replayPartnerLog processing. 
+            // Determine if shutdown processing started during replayPartnerLog processing.
             // If it has, no further action can be taken.
             if (shutdownInProgress()) {
                 if (tc.isEntryEnabled())
@@ -1898,8 +1892,7 @@ public class RecoveryManager implements Runnable {
             // directly if it retun true.
             if (_tranLog != null) {
                 try {
-                    if ((_xaLog instanceof DistributedRecoveryLog) && (_tranLog instanceof DistributedRecoveryLog))
-                    {
+                    if ((_xaLog instanceof DistributedRecoveryLog) && (_tranLog instanceof DistributedRecoveryLog)) {
                         // When the partner log fails non-HA can still process JTA transactions that do not require a new partner
                         // to be logged, hence pass false to associateLog on _xaLog
                         ((DistributedRecoveryLog) _xaLog).associateLog((DistributedRecoveryLog) _tranLog, false);
@@ -1930,7 +1923,7 @@ public class RecoveryManager implements Runnable {
                 Tr.debug(tc, "_recoveredEpoch = " + _recoveredEpoch);
             }
 
-            // Determine if shutdown processing started during replayTranLog processing. 
+            // Determine if shutdown processing started during replayTranLog processing.
             // If it has, no further action can be taken.
             if (shutdownInProgress()) {
                 if (tc.isEntryEnabled())
@@ -1940,7 +1933,7 @@ public class RecoveryManager implements Runnable {
 
             validateServiceData();
 
-            // If this is main server startup recovery then update the overall server applId and Epoch in the main 
+            // If this is main server startup recovery then update the overall server applId and Epoch in the main
             // Configuration as these will be used to create new GlobalTIDs and XIDs for this server instance.
             if (_failureScopeController.localFailureScope()) {
                 Configuration.setApplId(_ourApplId);
@@ -1950,7 +1943,7 @@ public class RecoveryManager implements Runnable {
             registerGlobalCoordinator();
 
             //
-            // Inform the logs that all recovery work has been finished 
+            // Inform the logs that all recovery work has been finished
             // so that they can keypoint.
             //
             if (_xaLog != null) {
@@ -1963,7 +1956,7 @@ public class RecoveryManager implements Runnable {
                         updatePartnerServiceData(); // this includes the status
                     }
 
-                    // Determine if shutdown processing started during update processing. 
+                    // Determine if shutdown processing started during update processing.
                     // If it has, no further action can be taken.
                     if (shutdownInProgress()) {
                         if (tc.isEntryEnabled())
@@ -1975,7 +1968,7 @@ public class RecoveryManager implements Runnable {
                         _tranLog.recoveryComplete();
                     }
 
-                    // Determine if shutdown processing started during recoveryComplete processing. 
+                    // Determine if shutdown processing started during recoveryComplete processing.
                     // If it has, no further action can be taken.
                     if (shutdownInProgress()) {
                         if (tc.isEntryEnabled())
@@ -1987,7 +1980,7 @@ public class RecoveryManager implements Runnable {
                         _xaLog.recoveryComplete();
                     }
 
-                    // Determine if shutdown processing started during recoveryComplete processing. 
+                    // Determine if shutdown processing started during recoveryComplete processing.
                     // If it has, no further action can be taken.
                     if (shutdownInProgress()) {
                         if (tc.isEntryEnabled())
@@ -2050,15 +2043,15 @@ public class RecoveryManager implements Runnable {
             if (_recoveredServerName == null) // New logs - output what we will write to logs and use for xid creation
             {
                 Tr.audit(tc, "WTRN0132_RECOVERY_INITIATED", new Object[] {
-                                                                          //                     _failureScopeController.serverName(), Util.toHexString(_ourApplId), _recoveredEpoch});     // PM07874
-                                                                          _failureScopeController.serverName(), (_ourApplId == null ? "null" : Util.toHexString(_ourApplId)),
-                                                                          _recoveredEpoch });
+                                                                           //                     _failureScopeController.serverName(), Util.toHexString(_ourApplId), _recoveredEpoch});     // PM07874
+                                                                           _failureScopeController.serverName(), (_ourApplId == null ? "null" : Util.toHexString(_ourApplId)),
+                                                                           _recoveredEpoch });
             } else // output data from the logs - maybe recovering another servers logs
             {
                 Tr.audit(tc, "WTRN0132_RECOVERY_INITIATED", new Object[] {
-                                                                          //                     _recoveredServerName, Util.toHexString(_recoveredApplId), _recoveredEpoch});               // PM07874
-                                                                          _recoveredServerName, (_recoveredApplId == null ? "null" : Util.toHexString(_recoveredApplId)),
-                                                                          _recoveredEpoch });
+                                                                           //                     _recoveredServerName, Util.toHexString(_recoveredApplId), _recoveredEpoch});               // PM07874
+                                                                           _recoveredServerName, (_recoveredApplId == null ? "null" : Util.toHexString(_recoveredApplId)),
+                                                                           _recoveredEpoch });
             }
         }
 
@@ -2092,7 +2085,7 @@ public class RecoveryManager implements Runnable {
      * Registers a recovered transactions existance. This method is triggered from
      * the FailureScopeController.registerTransaction for all transactions that
      * have been created during a recovery process.
-     * 
+     *
      * @param tran The transaction reference object.
      */
     public void registerTransaction(TransactionImpl tran) {
@@ -2108,7 +2101,7 @@ public class RecoveryManager implements Runnable {
     /**
      * Deregisters a recovered transactions existance. This method is triggered from
      * the FailureScopeController.deregisterTransaction for recovered transactions.
-     * 
+     *
      * @param tran The transaction reference object.
      */
     public void deregisterTransaction(TransactionImpl tran) {
@@ -2155,7 +2148,7 @@ public class RecoveryManager implements Runnable {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "haltDownlevelRecovery");
 
-        // Mark recovery as prevented to allow the FailureScopeController to pick this up 
+        // Mark recovery as prevented to allow the FailureScopeController to pick this up
         // and bypass the shutdown logic.
         _recoveryPrevented = true;
 
@@ -2171,8 +2164,7 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "haltDownlevelRecovery");
     }
 
-    public void setLeaseLog(SharedServerLeaseLog leaseLog)
-    {
+    public void setLeaseLog(SharedServerLeaseLog leaseLog) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setLeaseLog", new Object[] { leaseLog });
 
@@ -2182,8 +2174,7 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "RecoveryManager", this);
     }
 
-    public void setRecoveryGroup(String recoveryGroup)
-    {
+    public void setRecoveryGroup(String recoveryGroup) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRecoveryGroup", new Object[] { recoveryGroup });
         _recoveryGroup = recoveryGroup;
@@ -2191,8 +2182,7 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "setRecoveryGroup");
     }
 
-    public void setLocalRecoveryIdentity(String recoveryIdentity)
-    {
+    public void setLocalRecoveryIdentity(String recoveryIdentity) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setLocalRecoveryIdentity", new Object[] { recoveryIdentity });
         _localRecoveryIdentity = recoveryIdentity;

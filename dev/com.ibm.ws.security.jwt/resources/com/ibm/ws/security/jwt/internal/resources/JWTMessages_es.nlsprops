@@ -309,3 +309,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Aseg\u00farese de que la red est\u00e9 conf
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: El emisor [{0}] del JSON Web Token (JWT) proporcionado no es de confianza porque la configuraci\u00f3n JWT [{1}] no especifica ning\u00fan emisor de confianza.
 JWT_TRUSTED_ISSUERS_NULL.explanation=La configuraci\u00f3n del servidor especifica los emisores de confianza con la validaci\u00f3n de JWT. La configuraci\u00f3n de JWT no especifica ning\u00fan emisor de confianza, por lo tanto, no se puede validar la se\u00f1al.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Asegurese que la configuraci\u00f3n JWT que se especifica en el mensaje, define como m\u00ednimo un emisor de confianza. Aseg\u00farese que el emisor de JWT coincide con un emisor especificado en la configuraci\u00f3n JWT.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Se utiliza un esquema HTTP en el punto final especificado: {0}, se necesita HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=El punto final especificado requiere HTTPS, pero se ha utilizado HTTP en el URL de solicitud.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Compruebe el URL de solicitud y aseg\u00farese de que utiliza HTTPS o cambie la configuraci\u00f3n para que no sea necesario HTTPS.

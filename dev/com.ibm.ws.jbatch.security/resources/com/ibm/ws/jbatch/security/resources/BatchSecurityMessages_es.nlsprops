@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Si el usuario no est\u00e1 autorizad
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: El usuario {0} no est\u00e1 autorizado a iniciar trabajos de proceso por lotes.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=El usuario no forma parte de un rol de proceso por lotes que est\u00e9 autorizado a iniciar trabajos de proceso por lotes.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Si el usuario no est\u00e1 autorizado a iniciar trabajos de proceso por lotes, entonces no es necesaria ninguna acci\u00f3n. Si el usuario est\u00e1 autorizado a realizar la operaci\u00f3n por lotes solicitada, configure la autorizaci\u00f3n de seguridad de proceso por lotes y a\u00f1ada este usuario a los roles de proceso por lotes necesarios.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: Se ha denegado el acceso a la instancia de trabajo {0}. El trabajo tiene un nombre de grupo de operaciones definido y el usuario {1} tiene autoridad batchGroupMonitor o batchGroupAdmin; sin embargo, el usuario no es miembro de los siguientes grupos configurados: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=El usuario batchGroupAdmin o batchGroupMonitor no forma parte de un grupo de seguridad al que est\u00e1 asociado este trabajo.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Si el usuario debe tener derechos de acceso de grupo a este trabajo, a\u00f1ada el usuario al grupo de seguridad apropiado.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: Se ha denegado el acceso al trabajo {0}. El trabajo tiene el nombre de grupo de operaciones {1} definido y el usuario no tiene autoridad batchGroupMonitor o batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=El usuario no forma parte de ning\u00fan rol de grupo de proceso por lotes y no est\u00e1 autorizado a realizar operaciones de proceso por lotes.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Si el usuario no est\u00e1 autorizado a ser un usuario de grupo de proceso por lotes, no es necesaria ninguna acci\u00f3n. Si el usuario est\u00e1 autorizado a realizar las operaciones de grupo de proceso por lotes y la seguridad de proceso por lotes est\u00e1 habilitada, configure la autorizaci\u00f3n de seguridad de proceso por lotes y a\u00f1ada este usuario a los roles de grupo de proceso por lotes necesarios.

@@ -21,6 +21,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +91,18 @@ class Util {
      */
     static ExpressionFactory getExpressionFactory() {
 
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader tccl;
+        if (System.getSecurityManager() != null) {
+            tccl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
+        } else {
+            tccl = Thread.currentThread().getContextClassLoader();
+        }
+
         CacheValue cacheValue = null;
         ExpressionFactory factory = null;
 

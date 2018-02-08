@@ -264,6 +264,11 @@ UNABLE_TO_FIND_TOOLS_JAR=Der Liberty-Java-Agent konnte nicht zugeordnet werden, 
 
 UNABLE_TO_FIND_JAVA_AGENT=Der Liberty-Java-Agent konnte nicht geladen werden. Der Server wird zwar ausgef\u00fchrt, kann aber keine Funktionen ausf\u00fchren, die den Java-Agenten erfordern, wie z. B. \u00dcberwachung und Traceerstellung.
 
+RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG wurde festgelegt. Der Server wird in einer separaten Java Virtual Machine ausgef\u00fchrt.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=Die JAR-Datei enth\u00e4lt jvm.options-Dateien. Der Server wird in einer separaten Java Virtual Machine ausgef\u00fchrt.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Ein IBM SDK wird ohne die Option -XX:+EnableHCR verwendet. Der Server wird in einer separaten Java Virtual Machine ausgef\u00fchrt.
+RUN_IN_CHILD_JVM_JRE=Es wird eine Java Runtime Environment-Installation verwendet. Der Server wird in einer separaten Java Virtual Machine ausgef\u00fchrt.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Das Verzeichnis {0} ist keine g\u00fcltige Liberty-Installation. Geben Sie das Stammverzeichnis der Liberty-Installation an, f\u00fcr das Sie das Upgrade durchf\u00fchren m\u00f6chten.
 LICENSE_invalidVersion=Das Lizenzupgrade kann nicht durchgef\u00fchrt werden, weil die angegebene Produktinstallation die Version {0} hat. Ein Lizenzupgrade ist nur von Version {1} m\u00f6glich.

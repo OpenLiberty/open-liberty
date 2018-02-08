@@ -12,7 +12,7 @@
 # The kernel boot bundle has an extra include: it brings in the default
 # values for the kernel/os extensions/log provider versions.
 #
--include= ~../cnf/resources/bnd/bundle.props, publish/platform/defaults
+-include= ~../cnf/resources/bnd/bundle.props
 -nouses=true
 bVersion=1.0
 

@@ -10,43 +10,57 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Date;
 
 import javax.batch.runtime.JobExecution;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.UniqueConstraint;
 
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 
 /**
  * @author skurz
- * 
+ *
  */
-/* 222050 - Backout 205106
-@NamedQueries({
-
-               @NamedQuery(name = RemotablePartitionEntity.GET_ALL_RELATED_REMOTABLE_PARTITIONS,
-                               query = "SELECT r FROM RemotablePartitionEntity r WHERE r.stepExecutionEntity.stepExecutionId IN (SELECT s.stepExecutionId FROM StepThreadExecutionEntity s WHERE s.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId AND TYPE(s) = StepThreadExecutionEntity ) ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
-               @NamedQuery(name = RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY,
-                               query = "SELECT r FROM RemotablePartitionEntity r WHERE r.serverId = :serverid AND r.stepExecutionEntity.batchStatus IN :status ORDER BY r.stepExecutionEntity.startTime DESC"),
-})*/
+/*
+ * 222050 - Backout 205106
+ *
+ * @NamedQueries({
+ *
+ * @NamedQuery(name = RemotablePartitionEntity.GET_ALL_RELATED_REMOTABLE_PARTITIONS,
+ * query =
+ * "SELECT r FROM RemotablePartitionEntity r WHERE r.stepExecutionEntity.stepExecutionId IN (SELECT s.stepExecutionId FROM StepThreadExecutionEntity s WHERE s.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId AND TYPE(s) = StepThreadExecutionEntity ) ORDER BY r.stepExecutionEntity.partitionNumber ASC"
+ * ),
+ *
+ * @NamedQuery(name = RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY,
+ * query = "SELECT r FROM RemotablePartitionEntity r WHERE r.serverId = :serverid AND r.stepExecutionEntity.batchStatus IN :status ORDER BY r.stepExecutionEntity.startTime DESC"),
+ * })
+ */
 @IdClass(RemotablePartitionKey.class)
 
-/* 222050 - Backout 205106
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
-@Entity
-*/
+/*
+ * 222050 - Backout 205106
+ *
+ * @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
+ *
+ * @Entity
+ */
 public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
+
+    // Repeat everywhere we use so caller has to think through granting privilege
+    protected static String eol = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        @Override
+        public String run() {
+            return System.getProperty("line.separator");
+        }
+    });
 
     public static final String GET_ALL_RELATED_REMOTABLE_PARTITIONS = "RemotablePartitionEntity.getAllRelatedRemotablePartitions";
     public static final String GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY = "RemotablePartitionEntity.getPartitionStepExecutionByServerIdAndStatusesQuery";
@@ -191,7 +205,7 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
         StringBuilder buf = new StringBuilder();
 
         Long jobExecutionId = jobExec == null ? null : jobExec.getExecutionId();
-        buf.append(super.toString() + System.getProperty("line.separator"));
+        buf.append(super.toString() + eol);
         buf.append("For RemotablePartitionExecutionEntity:");
         buf.append(", job executionId = " + jobExecutionId);
         buf.append(" stepName = " + stepName);

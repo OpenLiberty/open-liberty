@@ -52,8 +52,7 @@ public class TestConverterExceptions implements AppConfigTestApp {
             CustomPropertyObject1 p1 = c.getValue("p1", CustomPropertyObject1.class);
             return "FAILED: IllegalArgumentException not thrown";
         } catch (IllegalArgumentException e) {
-            TestUtils.assertEquals("com.ibm.ws.microprofile.config.interfaces.ConversionException: CWMCG0007E: A Converter of type com.ibm.ws.microprofile.appConfig.converters.test.MyBadConverter threw an exception. The input string was: \"setting1=customV1,setting2=customV2\". The exception is: java.lang.IllegalArgumentException: Converter throwing intentional exception.",
-                                   e.getMessage());
+            TestUtils.assertEquals("Converter throwing intentional exception", e.getMessage());
         }
 
         return "PASSED";

@@ -3,31 +3,28 @@ package web.war.formlogin;
 import java.io.IOException;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.security.enterprise.SecurityContext;
-import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
-import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
+import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.HttpMethodConstraint;
 import javax.servlet.annotation.ServletSecurity;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
 import javax.servlet.annotation.ServletSecurity.TransportGuarantee;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 /**
  * Servlet implementation class Security10Servlet
  */
 @ApplicationScoped
 @WebServlet("/JavaEEsecFormAuthServlet")
-@ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY), httpMethodConstraints = {@HttpMethodConstraint(value = "POST", rolesAllowed = "javaeesec_form", transportGuarantee = TransportGuarantee.CONFIDENTIAL)})
-@FormAuthenticationMechanismDefinition(loginToContinue=@LoginToContinue(loginPage="/login.jsp", errorPage="/loginError.jsp"))
+@ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY),
+                 httpMethodConstraints = { @HttpMethodConstraint(value = "POST", rolesAllowed = "javaeesec_form", transportGuarantee = TransportGuarantee.CONFIDENTIAL) })
+@FormAuthenticationMechanismDefinition(loginToContinue = @LoginToContinue(loginPage = "/login.jsp", errorPage = "/loginError.jsp"))
 //FOR REDIRECT UNCOMMENT THIS
 //@FormAuthenticationMechanismDefinition(loginToContinue=@LoginToContinue(loginPage="/login.jsp", useForwardToLogin=false, errorPage="/loginError.jsp"))
 //@BasicAuthenticationMechanismDefinition(realmName="My Basic Realm")
@@ -37,17 +34,17 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
                              callerBaseDn = "",
                              callerSearchBase = "o=ibm,c=us",
                              callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             callerSearchFilter = "(objectclass=person)",
+                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
                              callerNameAttribute = "uid",
                              groupNameAttribute = "cn",
                              groupSearchBase = "o=ibm,c=us",
                              groupSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             groupSearchFilter = "(objectclass=groupofnames)",
+                             groupSearchFilter = "(&(objectclass=groupofnames)(member=%v))",
                              groupMemberAttribute = "member",
                              bindDn = "uid=jaspildapuser1,o=ibm,c=us",
                              bindDnPassword = "s3cur1ty")
 public class JavaEEsecFormAuthServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 //	@Inject
 //	private SecurityContext securityContext;
@@ -59,21 +56,23 @@ public class JavaEEsecFormAuthServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        response.getWriter().append("Served at: ").append(request.getContextPath());
 //		response.getWriter().append("SecurityContext:" + securityContext);
-	}
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
 }

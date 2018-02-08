@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,9 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -186,7 +184,6 @@ public class URAPIs_ADLDAP_SSLTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4537E");
@@ -354,7 +351,7 @@ public class URAPIs_ADLDAP_SSLTest {
         String user = "vmmtestuser";
         String uniqueUserId = "CN=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
-        equalDNs("", uniqueUserId, servlet.getUniqueUserId(user));
+        assertDNsEqual("UniqueUserId is incorrect", uniqueUserId, servlet.getUniqueUserId(user));
     }
 
     /**
@@ -519,7 +516,6 @@ public class URAPIs_ADLDAP_SSLTest {
      * servlet.getGroups(group, -1);
      * } catch (RegistryException e) {
      * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-     * // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
      * e.printStackTrace();
      * }
      * server.waitForStringInLog("CWIML1022E"); //CWIML1022E The '-1' count limit specified in the SearchControl data object is invalid.
@@ -605,7 +601,7 @@ public class URAPIs_ADLDAP_SSLTest {
         String group = "TelnetClients";
         String uniqueGroupId = "CN=TelnetClients,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -831,10 +827,4 @@ public class URAPIs_ADLDAP_SSLTest {
         }
     }
 
-    // TODO REPLACE
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

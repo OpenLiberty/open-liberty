@@ -10,40 +10,45 @@
  *******************************************************************************/
 package web.war.basic;
 
-import java.util.Set;
 import java.util.HashSet;
-import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import javax.security.enterprise.CallerPrincipal;
 import javax.security.enterprise.credential.BasicAuthenticationCredential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStorePermission;
 
-import com.ibm.websphere.simplicity.log.Log;
-
 @Named("web.DummyIdentityStore")
 @ApplicationScoped
 public class DummyIdentityStore implements IdentityStore {
 
-    private static Logger log = Logger.getLogger(DummyIdentityStore.class.getName());
+    private static final String sourceClass = DummyIdentityStore.class.getName();
+    private final Logger logger = Logger.getLogger(sourceClass);
 
     public CredentialValidationResult validate(BasicAuthenticationCredential basicAuthenticationCredential) {
         return validate(new UsernamePasswordCredential(basicAuthenticationCredential.getCaller(), basicAuthenticationCredential.getPasswordAsString()));
     }
 
     public CredentialValidationResult validate(UsernamePasswordCredential usernamePasswordCredential) {
-        log.info("validate");
-        Set<String> groups = new HashSet<String>();
-        groups.add("group1");
-        CredentialValidationResult result = new CredentialValidationResult("DummyIdentityStore", "jaspiuser1", "jaspiuser1", "jaspiuser1", groups);
+
+        logger.entering(sourceClass, "validate", usernamePasswordCredential);
+        CredentialValidationResult result = CredentialValidationResult.INVALID_RESULT;
+
+        // FOR TESTING ONLY!!! NEVER DO THIS FROM A REAL IDENTITY STORE
+        if (usernamePasswordCredential.getCaller().startsWith("jaspiuser1") && "s3cur1ty".equals(usernamePasswordCredential.getPasswordAsString())) {
+            String securityName = usernamePasswordCredential.getCaller().toLowerCase();
+            CallerPrincipal callerPrincipal = new CallerPrincipal(securityName);
+            Set<String> groups = new HashSet<String>();
+            groups.add("group1");
+            result = new CredentialValidationResult("DummyIdentityStore", callerPrincipal, securityName + "_DN", securityName + "_UID", groups);
+        }
+        logger.exiting(sourceClass, "validate", result);
         return result;
-//        return CredentialValidationResult.INVALID_RESULT;
-//        return CredentialValidationResult.NOT_VALIDATED_RESULT;
     }
 
     @Override

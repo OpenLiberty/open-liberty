@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal.hpack;
 
+import java.util.List;
+
 public class HpackConstants {
 
     public static final String HPACK_CHAR_SET = "US-ASCII";
@@ -37,6 +39,9 @@ public class HpackConstants {
     public final static int PATH_HASH = ":path".hashCode();
     public final static int SCHEME_HASH = ":scheme".hashCode();
     public final static int STATUS_HASH = ":status".hashCode();
+
+    static final List<String> connectionSpecificHeaderList = java.util.Arrays.asList(new String[] { "Keep-Alive", "Proxy-Connection",
+                                                                                                    "Transfer-Encoding", "Upgrade" });
 
     /*
      * This value is determined by the SETTINGS_HEADER_TABLE_SIZE setting

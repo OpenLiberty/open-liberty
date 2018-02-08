@@ -76,21 +76,14 @@ public class FrameReadProcessor {
                 // this is a connection error; we need to send a GOAWAY on the connection
                 throw e;
             }
+        } catch (Exception e) {
+            throw new ProtocolException("Error processing the payload for " + currentFrame.getFrameType()
+                                        + " frame on stream " + currentFrame.getStreamId());
         }
 
         // call the stream processor to process this stream. For now, don't return from here until the
         // frame has been fully processed.
         int streamId = currentFrame.getStreamId();
-
-        //if (muxLink.checkStreamCloseVersusLinkState(streamId)) {
-        //    if (tc.isDebugEnabled()) {
-        //        Tr.debug(tc, "GOAWAY previously received and the stream ID for the current frame is greater than the ID indicated in the GOAWAY frame");
-        //    }
-        //    throw new ProtocolException("Stream ID for current frame is greater than the ID indicated in GOAWAY frame");
-        //}
-
-        //getStream will return a stream if it's active or in the closed table
-        //Null will be returned if it's in neither table, meaning it's new or has already been closed and removed
         H2StreamProcessor stream = muxLink.getStream(streamId);
 
         if (stream != null && stream.isStreamClosed() && muxLink.significantlyPastCloseTime(streamId)) {
@@ -98,9 +91,6 @@ public class FrameReadProcessor {
                 Tr.debug(tc, "Stream found, but it was closed and significantly past the close time. stream-id: " + streamId);
             }
             throw new ProtocolException("Stream significantly past close time");
-        }
-        if (stream == null && streamId < muxLink.getHighestClientStreamId()) {
-            throw new ProtocolException("Cannot initialize a stream with an ID lower than one previously created. stream-id: " + streamId);
         }
 
         // Even stream IDs can not originate from the client
@@ -243,6 +233,11 @@ public class FrameReadProcessor {
             int streamId = new Integer(grabNext24BitInt(frameSixthByte));
 
             this.currentFrame = FrameFactory.getFrame(byteFrameType, streamId, payloadLength, flags, frameReserveBit == 1, Frame.FrameDirection.READ);
+            if (this.currentFrame.getFrameType() == FrameTypes.UNKNOWN) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "ignoring a frame of unknown type");
+                }
+            }
             frameState = FrameState.FIND_PAYLOAD;
         }
 

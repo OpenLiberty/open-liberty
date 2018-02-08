@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,11 +20,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
+
+import componenttest.topology.impl.LibertyFileManager;
+
 /**
  * Reads client.xml into memory, writes changes back to client.xml
- * 
+ *
  * @author Tim Burns
- * 
+ *
  */
 public class ClientConfigurationFactory {
 
@@ -35,6 +40,30 @@ public class ClientConfigurationFactory {
             INSTANCE = new ClientConfigurationFactory();
         }
         return INSTANCE;
+    }
+
+    public static ClientConfiguration fromFile(File file) throws Exception {
+        return getInstance().unmarshal(new FileInputStream(file));
+    }
+
+    public static void toFile(File targetFile, ClientConfiguration config) throws Exception {
+        // write contents to a temporary file
+        RemoteFile originalFile = LibertyFileManager.createRemoteFile(Machine.getLocalMachine(), targetFile.getAbsolutePath());
+        RemoteFile newServerFile = LibertyFileManager.createRemoteFile(Machine.getLocalMachine(), targetFile.getAbsolutePath() + ".tmp");
+        OutputStream os = newServerFile.openForWriting(false);
+        ClientConfigurationFactory.getInstance().marshal(config, os);
+
+        if (newServerFile.length() == originalFile.length()) {
+            config.setDescription(config.getDescription() + " (this is some random text to make the file size bigger)");
+            os = newServerFile.openForWriting(false);
+            ClientConfigurationFactory.getInstance().marshal(config, os);
+        }
+
+        // replace the file
+        // This logic does not need to be time protected (as we do in method
+        // replaceServerConfiguration) because of the "extra random text" logic
+        // above. Even if the timestamp would not be changed, the size out be.
+        LibertyFileManager.moveLibertyFile(newServerFile, originalFile);
     }
 
     private final Marshaller marshaller;
@@ -49,7 +78,7 @@ public class ClientConfigurationFactory {
 
     /**
      * Expresses a client configuration in an XML document.
-     * 
+     *
      * @param sourceConfig
      *            the configuration you want to marshal
      * @param targetFile
@@ -68,7 +97,7 @@ public class ClientConfigurationFactory {
 
     /**
      * Expresses a client configuration in an XML document.
-     * 
+     *
      * @param sourceConfig
      *            the configuration you want to marshal
      * @param outputStream
@@ -90,7 +119,7 @@ public class ClientConfigurationFactory {
 
     /**
      * Converts a client configuration XML file into a series of Java objects.
-     * 
+     *
      * @param inputStream
      *            a client configuration XML file as a stream
      * @return a Java object representation of the client configuration, or null
@@ -111,7 +140,7 @@ public class ClientConfigurationFactory {
 
     /**
      * Tests client configuration factory; prints client.xml for easy debug
-     * 
+     *
      * @param args
      *            nothing
      * @throws Exception

@@ -47,6 +47,8 @@ public class StartCommandTest {
         machine.setWorkDir(null);
         installPath = LibertyFileManager.getInstallPath(bootstrap);
         defaultServerPath = installPath + "/usr/servers/" + defaultServerName;
+        // Use absolute path in case this is running on Windows without CYGWIN
+        bootstrap.setValue("libertyInstallPath", installPath);
     }
 
     @AfterClass

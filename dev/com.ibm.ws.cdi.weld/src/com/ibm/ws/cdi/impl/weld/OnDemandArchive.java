@@ -101,7 +101,7 @@ public class OnDemandArchive extends AbstractCDIArchive implements CDIArchive {
      * @throws CDIException
      */
     @Override
-    public ClassLoader getClassLoader() throws CDIException {
+    public ClassLoader getClassLoader() {
         ClassLoader classLoader = this.initialClass.getClassLoader();
         if (classLoader == null) {
             classLoader = application.getClassLoader();

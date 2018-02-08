@@ -69,9 +69,9 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Set<String> failed = new HashSet<String>();
 
-        if (tracker.getTrackingCount() == 0) {
+        if (tracker.getTracked().isEmpty()) {
             Tr.warning(tc, "warning.server.pause.no.targets");
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.pause.no.targets"));
         }
 
         //Add each pauseable component to this list. If the tracked values get modified
@@ -106,7 +106,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
             Tr.error(tc, "error.server.pause.failed", Arrays.toString(failed.toArray()));
 
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "error.server.pause.failed", Arrays.toString(failed.toArray())));
 
         } else {
 
@@ -131,7 +131,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         if (targetList.isEmpty()) {
             Tr.warning(tc, "warning.server.pause.invalid.targets");
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.pause.invalid.targets"));
         }
 
         Set<String> failed = new HashSet<String>();
@@ -182,13 +182,13 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
             Tr.error(tc, "error.server.pause.failed", Arrays.toString(failed.toArray()));
 
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "error.server.pause.failed", Arrays.toString(failed.toArray())));
 
         } else {
             Tr.info(tc, "info.server.pause.request.completed");
 
             if (targetsNotFound) {
-                throw new PauseableComponentControllerRequestFailedException();
+                throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.pause.missing.targets", Arrays.toString(targetList.toArray())));
             }
         }
 
@@ -206,9 +206,9 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Set<String> failed = new HashSet<String>();
 
-        if (tracker.getTrackingCount() == 0) {
+        if (tracker.getTracked().isEmpty()) {
             Tr.warning(tc, "warning.server.resume.no.targets");
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.resume.no.targets"));
         }
 
         //Add each pauseable component to this list. If the tracked values get modified
@@ -243,7 +243,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
             Tr.error(tc, "error.server.resume.failed", Arrays.toString(failed.toArray()));
 
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "error.server.resume.failed", Arrays.toString(failed.toArray())));
 
         } else {
 
@@ -267,7 +267,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         if (targetList.isEmpty()) {
             Tr.warning(tc, "warning.server.resume.invalid.targets");
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.resume.invalid.targets"));
         }
 
         Set<String> failed = new HashSet<String>();
@@ -318,13 +318,13 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
             Tr.error(tc, "error.server.resume.failed", Arrays.toString(failed.toArray()));
 
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "error.server.resume.failed", Arrays.toString(failed.toArray())));
 
         } else {
             Tr.info(tc, "info.server.resume.request.completed");
 
             if (targetsNotFound) {
-                throw new PauseableComponentControllerRequestFailedException();
+                throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.resume.missing.targets", Arrays.toString(targetList.toArray())));
             }
         }
     }
@@ -381,6 +381,11 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Set<String> targetList = createTargetList(targets);
 
+        if (targetList.isEmpty()) {
+            Tr.warning(tc, "warning.server.status.invalid.targets");
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.status.invalid.targets"));
+        }
+
         //Add each pauseable component to this list. If the tracked values get modified
         //while we are iterating and we start over, skip anyone already in this list
         Set<PauseableComponent> processedList = new HashSet<PauseableComponent>();
@@ -415,7 +420,7 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
         if (!targetList.isEmpty()) {
             // We could not find targets specified. Return false: not everyone was paused
             Tr.warning(tc, "warning.server.status.missing.targets", Arrays.toString(targetList.toArray()));
-            throw new PauseableComponentControllerRequestFailedException();
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.status.missing.targets", Arrays.toString(targetList.toArray())));
 
         } else {
             return true;

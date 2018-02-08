@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=A\u00f1adiendo aplicaciones de resoluci\u00f3n de espacio de nombre
+
+create_descriptors=Creando descriptores
+
+create_mappings=A\u00f1adiendo correlaciones a descriptores
+
+error=Error: 
+
+generate_files=Escribiendo XML de despliegue y configuraci\u00f3n de sesi\u00f3n
+
+generate_source=Generando clases de implementaci\u00f3n
+
+impl_package_missing=Falta el nombre de paquete de clase de implementaci\u00f3n
+
+io_exception_error=Error: IOException inesperada
+
+malformed_url_error=Error: MalformedURLException inesperada
+
+missing_customization=Falta archivo personalizado de entrada
+
+missing_output_dir=Falta el nombre del directorio de salida de TopLink
+
+missing_project_dir=Falta el nombre del directorio de proyecto de TopLink Workbench
+
+missing_schema_file=Falta el archivo de esquema de entrada
+
+missing_src_dir=Falta el nombre del directorio de salida de origen
+
+missing_target_package=Falta el nombre de paquete de destino
+
+read_customization=Leyendo archivo personalizado
+
+setup_inheritance=Configuraci\u00f3n de herencia
+
+start_mw_project=Creando proyecto de entorno de trabajo de correlaci\u00f3n
+
+start_orajaxb=Invocando orajaxb
+
+start_toplink=Invocando generaci\u00f3n de TopLink
+
+version=Versi\u00f3n: 
+

@@ -309,3 +309,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Asigura\u0163i-v\u0103 c\u0103 lucrul \u00e
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Emitentul [{0}] al jetonului JWT (JSON Web Token) nu este de \u00eencredere deoarece configura\u0163ia JWT [{1}] nu specific\u0103 niciun emitent de \u00eencredere.
 JWT_TRUSTED_ISSUERS_NULL.explanation=Configura\u0163ia de server specific\u0103 ce emiten\u0163i sunt de \u00eencredere pentru validarea jetoanelor JWT. Configura\u0163ia JWT nu specific\u0103 niciun emitent de \u00eencredere, a\u015fa c\u0103 jetonul nu poate fi validat.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ia JWT care este specificat\u0103 \u00een mesaj este definit cel pu\u0163in un emitent de \u00eencredere. Asigura\u0163i-v\u0103 c\u0103 emitentul se potrive\u015fte cu unul din emiten\u0163ii de \u00eencredere specifica\u0163i \u00een configura\u0163ia dumneavoastr\u0103 JWT.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Este utilizat\u0103 schema HTTP \u00een punctul final specificat: {0}, este necesar HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Punctul final specificat necesit\u0103 HTTPS, dar a fost utilizat HTTP \u00een URL-ul de cerere.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifica\u0163i URL-ul de cerere \u015fi asigura\u0163i-v\u0103 c\u0103 utilizeaz\u0103 HTTPS sau modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t HTTPS s\u0103 nu fie necesar.

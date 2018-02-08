@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.AppDefinedResource;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -95,7 +96,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
     private int recoveryToken;
 
-    protected transient SecurityHelper securityHelper = null;
+    private final transient SecurityHelper securityHelper;
     private final boolean isJDBC;
     private transient int commitPriority = 0;
     private boolean localTranSupportSet = false;
@@ -119,6 +120,16 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     protected transient PoolManager _pm = null;
     protected J2CGlobalConfigProperties gConfigProps = null;
 
+    /*
+     * Indicates if the configured MCF is RRSTransactional. If so,
+     * transactions will be processed using z/OS Resource Recovery
+     * Services (RRS) instead of the transaction support indicated
+     * by the connector's Deployment descriptor.
+     *
+     * This property is applicable to WAS z/OS only.
+     */
+    private final boolean rrsTransactional;
+
     /**
      * @param cfSvc connection factory service
      * @param mcfXProps MCFExtendedProperties
@@ -130,8 +141,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     ConnectionManager(AbstractConnectionFactoryService cfSvc,
                       PoolManager pm,
                       J2CGlobalConfigProperties gconfigProps,
-                      CommonXAResourceInfo jxri,
-                      SecurityHelper securityHelper) {
+                      CommonXAResourceInfo jxri) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "<init>");
@@ -151,14 +161,28 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
         isJDBC = cfSvc.getClass().getName().startsWith("com.ibm.ws.jdbc.");
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        int[] zosInfo = cfSvc.getThreadIdentitySecurityAndRRSSupport(null); // TODO supply identifier on XA recovery path?
+        rrsTransactional = zosInfo[2] > 0;
 
+        // Indicates if the configured MCF requires an z/OS ACEE to be placed
+        // on the thread (TCB) when "current thread identity" is used for
+        // getConnection() processing.
+        boolean threadSecurity = zosInfo[1] > 0;
+
+        // Indicates if the configured MCF allows "current thread identity" to be used for getConnection() processing.
+        int threadIdentitySupport = zosInfo[0];
+
+        // If thread identity is enabled, a ThreadIdentitySecurityHelper; otherwise a DefaultSecurityHelper.
+        if (ThreadIdentityManager.isThreadIdentityEnabled() && threadIdentitySupport != AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED)
+            securityHelper = new ThreadIdentitySecurityHelper(threadIdentitySupport, threadSecurity);
+        else
+            securityHelper = new DefaultSecurityHelper();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, " globalConfigProps " + gConfigProps);
             Tr.debug(this, tc, " jxri      " + jxri);
             Tr.debug(this, tc, " securityHelper " + securityHelper);
         }
-
-        this.securityHelper = securityHelper;
 
         containerManagedAuth = (cmConfig.getAuth() == J2CConstants.AUTHENTICATION_CONTAINER);
 
@@ -177,7 +201,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
         EmbeddableWebSphereTransactionManager tm = pm.connectorSvc.transactionManager;
         if (tm != null) {
-            if (!gConfigProps.rrsTransactional) {
+            if (!rrsTransactional) {
                 recoveryToken = registerXAResourceInfo(tm, jxri, commitPriority);
             } else {
                 if (!TransactionSupportLevel.NoTransaction.equals(gconfigProps.transactionSupport)) {
@@ -793,7 +817,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     // resource adapter supports neither resource manager nor JTA transactions
                     case NoTransaction:
 
-                        if (!mcWrapper.gConfigProps.rrsTransactional) { // No RRS-coordinated transaction support
+                        if (!rrsTransactional) { // No RRS-coordinated transaction support
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 if (uowCoord.isGlobal()) {
                                     Tr.debug(this, tc, "Creating NoTransactionWrapper for use in Global Transaction. RA supports No Transaction.");
@@ -818,7 +842,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                         Tr.debug(this, tc, "Creating LocalTransactionWrapper for use in Local Transaction under RRSTransactional adapter.");
                                     }
-                                    wrapper = mcWrapper.getLocalTransactionWrapper(mcWrapper.gConfigProps.rrsTransactional);
+                                    wrapper = mcWrapper.getLocalTransactionWrapper(rrsTransactional);
                                 } else { // not CICS ECI resource adapter
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                         Tr.debug(this, tc, "Creating RRSLocalTransactionWrapper for use in Local Transaction under RRSTransactional adapter.");
@@ -833,7 +857,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     // resource adapter supports resource manager local transactios
                     case LocalTransaction:
 
-                        if (!mcWrapper.gConfigProps.rrsTransactional) { // No RRS-coordinated transaction support
+                        if (!rrsTransactional) { // No RRS-coordinated transaction support
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 if (uowCoord.isGlobal()) { // global transaction scope
                                     Tr.debug(this, tc, "Creating LocalTransactionWrapper for use in Global Transaction. RA supports Local Transaction.");
@@ -862,7 +886,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                         Tr.debug(this, tc, "Creating LocalTransactionWrapper for use in Local Transaction under RRSTransactional adapter.");
                                     }
-                                    wrapper = mcWrapper.getLocalTransactionWrapper(mcWrapper.gConfigProps.rrsTransactional);
+                                    wrapper = mcWrapper.getLocalTransactionWrapper(rrsTransactional);
                                 } else { // not CICS ECI resource adapter
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                         Tr.debug(this, tc, "Creating RRSLocalTransactionWrapper for use in Local Transaction under RRSTransactional adapter.");
@@ -877,7 +901,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     // resource adapter supports both resource manager local and JTA transactions
                     case XATransaction:
 
-                        if (!mcWrapper.gConfigProps.rrsTransactional) { // No RRS-coordinated transaction support
+                        if (!rrsTransactional) { // No RRS-coordinated transaction support
                             if (uowCoord.isGlobal()) { // global transaction scope
                                 if (isJDBC && mcWrapper.getManagedConnection().getXAResource() instanceof com.ibm.tx.jta.OnePhaseXAResource) {
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -915,7 +939,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                         Tr.debug(this, tc, "Creating LocalTransactionWrapper for use in Local Transaction under RRSTransactional adapter.");
                                     }
-                                    wrapper = mcWrapper.getLocalTransactionWrapper(mcWrapper.gConfigProps.rrsTransactional);
+                                    wrapper = mcWrapper.getLocalTransactionWrapper(rrsTransactional);
                                 } else { // Not CICS ECI resource adapter
                                     wrapper = mcWrapper.getRRSLocalTransactionWrapper();
                                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -996,7 +1020,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                         //  necessary to track states via the enlistment, and this needs to be done as soon as
                         //  the connection is obtained
 
-                        if (!mcWrapper.gConfigProps.isDynamicEnlistmentSupported() || mcWrapper.gConfigProps.rrsTransactional) {
+                        if (!mcWrapper.gConfigProps.isDynamicEnlistmentSupported() || rrsTransactional) {
 
                             wrapper.enlist();
                             enlisted = true;

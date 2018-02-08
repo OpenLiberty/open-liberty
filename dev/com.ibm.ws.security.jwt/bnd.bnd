@@ -29,9 +29,13 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
         com.ibm.websphere.security.jwt;provide:=true; \
         com.ibm.ws.security.jwt.config; \
-        com.ibm.ws.security.jwt.builder.utils
+        com.ibm.ws.security.jwt.builder.utils; \
+        com.ibm.ws.security.jwt.utils
 
 Import-Package: \
+    javax.security.auth, \
+    com.ibm.websphere.security.auth, \
+    com.ibm.websphere.security.cred, \
     com.ibm.websphere.ras, \
     com.ibm.websphere.ras.annotation, \
     com.ibm.ejs.ras, \
@@ -133,4 +137,5 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest
+    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.slf4j.api.1.7.7;version=latest

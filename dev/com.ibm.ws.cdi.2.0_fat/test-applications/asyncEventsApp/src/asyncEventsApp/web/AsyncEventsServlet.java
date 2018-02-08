@@ -21,6 +21,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
@@ -94,5 +95,18 @@ public class AsyncEventsServlet extends FATServlet {
         assertNotNull("No cake report from async observer", cakeReport);
         assertTrue("Unexpected cake observer - " + cakeReport.getCakeObserver(), cakeReport.getCakeObserver().equals("asyncCakeObserver"));
         assertFalse("async thread id is not different", myTid == cakeReport.getTid());
+    }
+
+    /**
+     * Test use of Liberty ScheduledExecutorService
+     *
+     * This invocation of fireAsync will throw an exception if no Liberty ScheduledExecutorService is set.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testGetTimerExecutor() throws Exception {
+        CakeArrival newCake = new CakeArrival();
+        cakeEvent.fireAsync(newCake, NotificationOptions.of("weld.async.notification.timeout", 1000));
     }
 }

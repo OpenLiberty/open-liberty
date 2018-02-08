@@ -61,4 +61,10 @@ public interface SessionStoreService {
      */
     public Map<String, Object> getConfiguration();
 
+    /**
+     * Invoked to indicate whether or not the session store is in the process of stopping.
+     * 
+     * @param isInProcessOfStopping
+     */
+    public void setCompletedPassivation(boolean isInProcessOfStopping);
 }

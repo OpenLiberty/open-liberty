@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.artifact_fat" default="buildandrun" basedir=".">
+  <import file="../ant_build/public_imports/fat_imports.xml" />
+
+  <target name="addAutoInstallApplications"
+          description="Automatically Install applications on LibertyServer instance creation">
+    <mkdir dir="${basedir}/publish/servers/com.ibm.ws.artifact.jarjar.binks/apps" />
+
+    <copy file="${basedir}/publish/files/jar-needer-servlet.zip"
+          tofile="${basedir}/publish/servers/com.ibm.ws.artifact.jarjar.binks/apps/jarneeder.war" />
+
+    <mkdir dir="${basedir}/publish/servers/com.ibm.ws.artifact.dynamism/apps" />
+
+     <copy file="${basedir}/publish/files/jar-needer-servlet.zip"
+           tofile="${basedir}/publish/servers/com.ibm.ws.artifact.dynamism/apps/jarneeder.war" />
+
+</target>
+
+</project>

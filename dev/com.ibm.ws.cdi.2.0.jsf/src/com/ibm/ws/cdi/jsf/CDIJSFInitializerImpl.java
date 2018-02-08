@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,22 @@ public class CDIJSFInitializerImpl implements CDIJSFInitializer {
 
     /** {@inheritDoc} */
     @Override
-    public void initializeJSF(Application application) {
+    public void initializeCDIJSFELContextListenerAndELResolver(Application application) {
+        CDIService cdiService = cdiServiceRef.getService();
+        if (cdiService != null) {
+            BeanManager beanManager = cdiService.getCurrentBeanManager();
+            if (beanManager != null) {
+                application.addELContextListener(new WeldELContextListener());
+
+                ELResolver elResolver = beanManager.getELResolver();
+                application.addELResolver(elResolver);
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void initializeCDIJSFViewHandler(Application application) {
         CDIService cdiService = cdiServiceRef.getService();
         if (cdiService != null) {
             BeanManager beanManager = cdiService.getCurrentBeanManager();
@@ -42,9 +57,6 @@ public class CDIJSFInitializerImpl implements CDIJSFInitializer {
                 CDIRuntime cdiRuntime = (CDIRuntime) cdiService;
                 String contextID = cdiRuntime.getCurrentApplicationContextID();
                 application.setViewHandler(new IBMViewHandler(application.getViewHandler(), contextID));
-
-                ELResolver elResolver = beanManager.getELResolver();
-                application.addELResolver(elResolver);
             }
         }
     }

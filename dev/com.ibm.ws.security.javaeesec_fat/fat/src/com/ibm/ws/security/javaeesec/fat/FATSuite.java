@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
                 AlwaysPassesTest.class,
-//                CustomFormHttpAuthenticationMechanismTest.class,
-                HttpAuthenticationMechanismTest.class,
+                //                CustomFormHttpAuthenticationMechanismTest.class,
+                BasicAuthenticationMechanismTest.class,
                 RememberMeTest.class,
                 AutoApplySessionTest.class,
                 FormHttpAuthenticationMechanismTest.class,
@@ -37,9 +38,16 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleIdentityStoreApplLoginToContinueTest.class,
                 LoginToContinueELTest.class,
                 HttpAuthenticationMechanismDBTest.class,
+                HttpAuthenticationMechanismDBNoUserTest.class,
                 HttpAuthenticationMechanismDBAuthAliasTest.class,
+                HttpAuthenticationMechanismDBShortNameTest.class,
                 ProgrammaticTest.class,
-                MultipleModuleTest.class
+                MultipleModuleTest.class,
+                SecurityContextTest.class,
+                SecurityContextJaxRSTest.class,
+                DatabaseIdentityStoreDeferredSettingsTest.class,
+                EAREJBModuleTest.class,
+                MultipleModuleGlobalLoginTest.class
 })
 
 /**

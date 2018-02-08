@@ -13,15 +13,26 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
     
+    <OCD description="internal use only" name="internal" 
+        id="com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder">
+
+    <AD name="internal" description="internal use only"
+        id="type" required="true" type="String"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder">
+        <Object ocdref="com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder"/>
+    </Designate>
+    
     <OCD name="internal" description="internal use only"
          id="com.ibm.ws.beanvalidation.v20.ValidatorFactoryBuilderImpl">
 
         <AD name="internal" description="internal use only"
-            id="ValidationReleasableFactory" required="true" type="String" cardinality="100"
-            ibm:type="pid" ibm:reference="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory" default="*" ibm:final="true"/> 
+            id="BvalManagedObjectBuilder" required="true" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder" default="*" ibm:final="true"/> 
 
-        <AD id="ValidationReleasableFactory.cardinality.minimum" name="internal"  description="internal use only" 
-            type="String" required="true" default="${count(ValidationReleasableFactory)}"/>
+        <AD id="BvalManagedObjectBuilder.cardinality.minimum" name="internal"  description="internal use only" 
+            type="String" required="true" default="${count(BvalManagedObjectBuilder)}"/>
     </OCD>
     
     <Designate pid="com.ibm.ws.beanvalidation.v20.ValidatorFactoryBuilderImpl">

@@ -49,6 +49,5 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
         com.ibm.wsspi.org.osgi.service.component;version=latest, \
         com.ibm.wsspi.org.osgi.core;version=latest, \
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-        com.ibm.websphere.org.osgi.service.cm;version=latest
-
-
+        com.ibm.websphere.org.osgi.service.cm;version=latest, \
+        com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0;version=latest

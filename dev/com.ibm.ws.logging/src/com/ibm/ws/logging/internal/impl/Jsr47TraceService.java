@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.logging.LogRecord;
 
 import com.ibm.ws.kernel.boot.logging.WsLogManager;
+import com.ibm.ws.logging.utils.FileLogHolder;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 
 /**

@@ -13,11 +13,11 @@ package com.ibm.ws.security.javaeesec.identitystore;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
@@ -32,10 +32,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
-//TODO to be removed
-import javax.security.enterprise.credential.BasicAuthenticationCredential;
-import javax.security.enterprise.credential.UsernamePasswordCredential;
-
 
 @Default
 @ApplicationScoped
@@ -89,7 +85,10 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             if (result != null && result.getStatus() == CredentialValidationResult.Status.VALID) {
                 Set<String> groups = getGroups(identityStores, result, supportGroups);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore ID : " + result.getIdentityStoreId() + ", CallerPrincipal : " + (result.getCallerPrincipal() != null ? result.getCallerPrincipal().getName() : "null") +  ", CallerDN : " + result.getCallerDn() + ", CallerUniqueId : " + result.getCallerUniqueId() + ", Groups : " +  groups);
+                    Tr.debug(tc,
+                             "IdentityStore ID : " + result.getIdentityStoreId() + ", CallerPrincipal : "
+                                 + (result.getCallerPrincipal() != null ? result.getCallerPrincipal().getName() : "null") + ", CallerDN : " + result.getCallerDn()
+                                 + ", CallerUniqueId : " + result.getCallerUniqueId() + ", Groups : " + groups);
                 }
                 result = new CredentialValidationResult(result.getIdentityStoreId(), result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
             } else if (firstInvalid != null) {
@@ -143,11 +142,10 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return AccessController.doPrivileged(action);
     }
 
-    protected CDI getCDI() {
+    protected CDI<Object> getCDI() {
         return CDI.current();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected Set<IdentityStore> getIdentityStores(ConcurrentHashMap<String, Set<IdentityStore>> identityStoreMap) {
         String moduleName = getModuleName();
         Set<IdentityStore> stores = identityStoreMap.get(moduleName);
@@ -155,6 +153,13 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             stores = new TreeSet<IdentityStore>(priorityComparator);
             scanIdentityStores(stores);
             identityStoreMap.put(moduleName, stores);
+        } else if (stores.size() > 1) {
+            /*
+             * We need to re-sort since priority can change due to deferred EL expressions.
+             */
+            Set<IdentityStore> oldStores = stores;
+            stores = new TreeSet<IdentityStore>(priorityComparator);
+            stores.addAll(oldStores);
         }
         return stores;
     }
@@ -166,7 +171,8 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         if (identityStoreInstances != null) {
             for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore from the CDI: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                    Tr.debug(tc, "IdentityStore from the CDI: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : "
+                                 + identityStore.priority());
                 }
                 identityStores.add(identityStore);
             }
@@ -175,7 +181,8 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
             for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore from module BeanManager: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                    Tr.debug(tc, "IdentityStore from module BeanManager: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : "
+                                 + identityStore.priority());
                 }
                 identityStores.add(identityStore);
             }
@@ -195,7 +202,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         // Comparator returns 0 if both objects are identical.
         @Override
         public int compare(IdentityStore o1, IdentityStore o2) {
-            int result =1;
+            int result = 1;
             if (o1.equals(o2)) {
                 result = 0;
             } else if (o1.priority() < o2.priority()) {
@@ -215,6 +222,5 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
     protected void clearIdentityStoreMap() {
         identityStoreMap.clear();
     }
-
 
 }

@@ -20,4 +20,16 @@
       <name>wssecurity.getRunAsSubject</name>
    </permission>
 
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>org.glassfish.web.rfc2109_cookie_names_enforced</name>
+      <actions>read</actions>
+   </permission>
+
 </permissions>

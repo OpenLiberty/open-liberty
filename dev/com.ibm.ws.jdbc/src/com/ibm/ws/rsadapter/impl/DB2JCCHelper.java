@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2017 IBM Corporation and others.
+ * Copyright (c) 2003, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
+import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -126,7 +127,7 @@ public class DB2JCCHelper extends DB2Helper {
                            -1776);
 
         isRRSTransaction = false;
-        threadIdentitySupport = THREAD_IDENTITY_SUPPORT_NOTALLOWED;
+        threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
         threadSecurity = false;
         boolean traceAppend = false;
         String traceDir = null;
@@ -161,7 +162,7 @@ public class DB2JCCHelper extends DB2Helper {
                 throw new ResourceException(AdapterUtil.getNLSMessage("DB2ZOS_TYPE2_ERROR"));
             } else if (dsClassName.equals("com.ibm.db2.jcc.DB2ConnectionPoolDataSource")) {
                 isRRSTransaction = true;
-                threadIdentitySupport = THREAD_IDENTITY_SUPPORT_ALLOWED;
+                threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED;
                 threadSecurity = true;
                 Tr.info(tc, "DB2ZOS_CONFIG_INFO");
             }

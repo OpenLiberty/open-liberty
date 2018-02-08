@@ -19,7 +19,7 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20171016-074050-275:sources'
+    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20180110-104032-383:sources'
     javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.0-beta:javadoc'
 }
 

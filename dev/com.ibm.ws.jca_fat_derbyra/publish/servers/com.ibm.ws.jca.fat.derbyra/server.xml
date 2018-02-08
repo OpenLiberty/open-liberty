@@ -5,6 +5,7 @@
       <feature>jca-1.7</feature>
       <feature>jndi-1.0</feature>
       <feature>localConnector-1.0</feature>
+      <feature>mdb-3.2</feature>
       <feature>servlet-3.1</feature>
       <feature>monitor-1.0</feature>
     </featureManager>
@@ -19,12 +20,29 @@
       <connectionManager maxPoolSize="2" connectionTimeout="0"/>
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.DerbyRA/>
-    </connectionFactory>    
+    </connectionFactory>
     
     <connectionFactory jndiName="eis/ds2">
       <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
       <properties.DerbyRA exceptionOnDestroy="true"/>
-    </connectionFactory>   
+    </connectionFactory>
+
+    <connectionFactory jndiName="eis/ds3">
+      <connectionManager maxPoolSize="1"/>
+      <properties.DerbyRA userName="DS1USER" password="{xor}GwxuDwgb" xaSuccessLimit="0"/>
+    </connectionFactory>
+    
+    <connectionFactory jndiName="eis/ds4">
+      <connectionManager enableSharingForDirectLookups="false"/>
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <properties.DerbyRA/>
+    </connectionFactory>
+
+    <activationSpec id="derbyRAApp/fvtweb/DerbyRAMessageDrivenBean">
+      <recoveryAuthData userName="ActvSpecUser" password="ActvSpecPwd"/> <!-- convenient place to test recoveryAuthData for activation specs -->
+      <!-- TODO remove configuration of qmid once application server starts setting the value on XA recovery path -->
+      <properties.DerbyRA keyPrefix="mdbtest" qmid="This-QMID-Is-Required-For-XA-Recovery"/>
+    </activationSpec>
 
     <adminObject jndiName="eis/bootstrapContext">
       <properties.DerbyRA.BootstrapContext/>
@@ -38,9 +56,20 @@
     <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
 
     <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
+
+    <transaction heuristicRetryInterval="2s"/>
+
+    <!-- 
+    NOTE: for this bucket to run cleanly with j2sec enabled with IBM JDK, the following permission must 
+    be manually granted in the java.policy file at $JAVA_HOME/jre/lib/security/java.policy: 
+    permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
+    -->
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/connectors/DerbyRA.rar" className="java.security.AllPermission"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 </server>

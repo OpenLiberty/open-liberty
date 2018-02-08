@@ -17,7 +17,7 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20171016-074423-270:sources'
+    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20180110-104402-374:sources'
 }
 
 task copySource(type: Copy) {

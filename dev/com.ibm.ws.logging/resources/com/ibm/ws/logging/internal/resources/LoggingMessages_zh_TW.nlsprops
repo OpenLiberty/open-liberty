@@ -117,6 +117,12 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: console.log \u548c messages.log \u6a94\u
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=\u914d\u7f6e\u8981\u96b1\u85cf\u7684\u8a0a\u606f\u4e0d\u6703\u5beb\u5165\u81f3 console.log \u548c messages.log \u6a94\u3002\u6703\u5beb\u5165\u81f3 trace.log \u6a94\u3002
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: messages.log \u8f38\u51fa\u683c\u5f0f\u73fe\u5728\u5df2\u66f4\u65b0\u70ba ''{0}''\u3002
+MESSAGE_FORMAT_UPDATED.explanation=messages.log \u7684\u8f38\u51fa\u683c\u5f0f\u73fe\u5728\u5df2\u66f4\u65b0\u3002
+MESSAGE_FORMAT_UPDATED.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
+CONSOLE_FORMAT_UPDATED=TRAS3003I: \u4e3b\u63a7\u53f0\u8f38\u51fa\u683c\u5f0f\u73fe\u5728\u5df2\u66f4\u65b0\u70ba ''{0}''\u3002
+CONSOLE_FORMAT_UPDATED.explanation=\u4e3b\u63a7\u53f0\u7684\u8f38\u51fa\u683c\u5f0f\u73fe\u5728\u5df2\u66f4\u65b0\u3002
+CONSOLE_FORMAT_UPDATED.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

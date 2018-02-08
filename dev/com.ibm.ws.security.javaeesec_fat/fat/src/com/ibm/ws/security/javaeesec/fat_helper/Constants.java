@@ -116,13 +116,15 @@ public class Constants {
     public final static String jaspi_notInRegistryInFormRoleUser = "jaspiuser102";
     public final static String jaspi_notInRegistryInFormRolePwd = "jaspiuser102Pwd";
 
+    // unauthenticated user
+    public final static String unauthenticated_user = "UNAUTHENTICATED";
     // Jaspi roles
     public final static String BasicRole = "javaeesec_basic";
     public final static String FormRole = "javaeesec_form";
 
     // Values to be verified in servlet response
 
-    public final static String RESPONSE_AUTHENTICATION_FAILED = "AuthenticationFailed";
+    public final static String RESPONSE_AUTHENTICATION_FAILED = "JASPIC Authenticated with status: SEND_FAILURE";
     public final static String RESPONSE_AUTHORIZATION_FAILED = "AuthorizationFailed";
 
     public final static String jaspiValidateRequest = "JASPI validateRequest called with auth provider=";
@@ -144,6 +146,9 @@ public class Constants {
     public final static String isManadatoryTrue = "isManadatory=true";
     public final static String requestIsWrapped = "The httpServletRequest has been wrapped by httpServletRequestWrapper.";
     public final static String responseIsWrapped = "The httpServletRestponse has been wrapped by httpServletResponseWrapper.";
+    public final static String secContextGetPrincipal = "securityContext.getCallerPrincipal():";
+    public final static String secContextGetPrincipalName = "securityContext.getCallerPrincipal().getName():";
+    public final static String secContextIsCallerInRole = "securityContext.isCallerInRole";
 
     public final static String messageLayerRuntime = "null";
     public final static String messageLayerDefault = "HttpServlet";
@@ -163,14 +168,19 @@ public class Constants {
     public final static String SERVLET_SECURITY_JASPI_SERVER_XML = "dynamicSecurityFeature/servlet31_appSecurity20_withJaspi.xml";
 
     public final static String DB_USER1 = "blue1";
-    public final static String DB_USER1_PWD = "pwd";
+    public final static String DB_USER1_PWD = "thisismypwd";
+    // hashed with Pbkdf2PasswordHashImpl
+    public final static String DB_USER1_PWD_HASH = "PBKDF2WithHmacSHA256:2048:vHups5wO1Zws+IDirtdHjd0S6UIOnTiHrRUMKlheYzQ=:6PtLstQacpH68NbBn1F0UlzeA92LYp44Z3pCQaSBv2Q=";
     public final static String DB_USER2 = "blue2";
-    public final static String DB_USER2_PWD = "pwd2";
+    public final static String DB_USER2_PWD = "thisismypwd2";
+    // hashed with Pbkdf2PasswordHashImpl
+    public final static String DB_USER2_PWD_HASH = "PBKDF2WithHmacSHA256:2048:1aPPQurxfie2FLiaC2HqjvUYe1IX57jJrB5bbW9sJgs=:OjT8ialvm7BB3pdfCYzEO83LypU+O/D7AQegy6JqT0Q=";
     public final static String DB_USER3 = "blue3";
-    public final static String DB_USER3_PWD = "pwd3";
+    public final static String DB_USER3_PWD = "thisismypwd3";
+    // hashed with Pbkdf2PasswordHashImpl
+    public final static String DB_USER3_PWD_HASH = "PBKDF2WithHmacSHA256:2048:fM4/a3w9V/YEkClSXhY3LScnAZzT8MbOw/eaj7noVK8=:tKUr6l9oez55Zh5AM6PBKcGHdv2IqHuIJe0HZZ/e6Qg=";
     public final static String DB_USER_DUPE = "dupUser";
     public final static String DB_GROUP2 = "group2";
     public final static String DB_GROUP3 = "group3";
     public final static String DB_USER_NOPWD = "userNoPwd";
-
 }

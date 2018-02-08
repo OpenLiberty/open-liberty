@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Ellen\u0151rizze, hogy az akt
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: A(z) {0} \u00fczenetvez\u00e9relt komponens \u00fczenetv\u00e9gpontja nem aktiv\u00e1lhat\u00f3, mert a(z) {1} c\u00edmzett nem \u00e9rhet\u0151 el. Az \u00fczenetv\u00e9gpont nem fogad \u00fczeneteket, am\u00edg a c\u00edmzett el\u00e9rhet\u0151 nem lesz.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja az \u00fczenetvez\u00e9relt komponenst, de az \u00fczenetv\u00e9gpontot nem tudja aktiv\u00e1lni, mert a c\u00edmzett nem tal\u00e1lhat\u00f3. Az \u00fczenetv\u00e9gpont nem fogad \u00fczeneteket, am\u00edg a v\u00e9gpont aktiv\u00e1l\u00e1sra nem ker\u00fcl.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Ellen\u0151rizze, hogy a c\u00edmzett a megadott n\u00e9vvel be lett-e \u00e1ll\u00edtva. Ha a konfigur\u00e1ci\u00f3 l\u00e9tezik, akkor v\u00e1rja meg, hogy a c\u00edmzett el\u00e9rhet\u0151 legyen.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: A(z) {0} \u00fczenetvez\u00e9relt komponenshez tartoz\u00f3 \u00fczenet v\u00e9gpont a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban nem lett aktiv\u00e1lva, mert a(z) {3} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s az autoStart=false be\u00e1ll\u00edt\u00e1ssal lett konfigur\u00e1lva.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Az \u00fczenet v\u00e9gpont nem lett aktiv\u00e1lva, mert az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s autoStart=false be\u00e1ll\u00edt\u00e1ssal lett konfigur\u00e1lva. Az \u00fczenet v\u00e9gpont egy resume parancs kiad\u00e1sakor lesz aktiv\u00e1lva.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Nincs teend\u0151.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: A sz\u00fcneteltet\u00e9si m\u0171veletnek nincs hat\u00e1sa, mivel a(z) {0} beanhez tartoz\u00f3 \u00fczenet v\u00e9gpont a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban m\u00e1r sz\u00fcneteltetve van.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=Az \u00fczenet v\u00e9gpont csak akkor sz\u00fcneteltethet\u0151, amikor akt\u00edv \u00e1llapotban van.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Nincs teend\u0151.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: A folytat\u00e1s m\u0171veletnek nincs hat\u00e1sa, mivel a(z) {0} beanhez tartoz\u00f3 \u00fczenet v\u00e9gpont a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban m\u00e1r akt\u00edv.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=Az \u00fczenet v\u00e9gpont csak akkor folytathat\u00f3, amikor inakt\u00edv \u00e1llapotban van.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Nincs teend\u0151.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban l\u00e9v\u0151 {0} beanhez tartoz\u00f3 \u00fczenet v\u00e9gpont sz\u00fcneteltet\u00e9s\u00e9re ir\u00e1nyul\u00f3 k\u00e9r\u00e9s v\u00e9grehajt\u00e1sa nem siker\u00fclt, mert a v\u00e9gpont nem akt\u00edv.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=Az \u00fczenet v\u00e9gpont csak akkor sz\u00fcneteltethet\u0151, amikor akt\u00edv \u00e1llapotban van.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=V\u00e1rja meg, hogy az \u00fczenet v\u00e9gpont akt\u00edv \u00e1llapotba ker\u00fclj\u00f6n, miel\u0151tt megk\u00eds\u00e9reln\u00e9 a sz\u00fcneteltet\u00e9st.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: A(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban l\u00e9v\u0151 {0} beanhez tartoz\u00f3 \u00fczenet v\u00e9gpont folytat\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9r\u00e9s v\u00e9grehajt\u00e1sa nem siker\u00fclt, mert a v\u00e9gpont nincs sz\u00fcneteltetve.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=Az \u00fczenet v\u00e9gpont csak akkor folytathat\u00f3, amikor sz\u00fcneteltetett \u00e1llapotban van.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=V\u00e1rja meg, hogy az \u00fczenet v\u00e9gpont sz\u00fcneteltetett \u00e1llapotba ker\u00fclj\u00f6n, miel\u0151tt megk\u00eds\u00e9reln\u00e9 a folytat\u00e1st.

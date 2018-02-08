@@ -107,7 +107,8 @@ public class ProviderInjectionTest extends FATServletClient {
                         .addClass(ProviderInjectionEndpoint.class)
                         .addClass(TCKApplication.class)
                         .addAsWebInfResource("beans.xml", "beans.xml")
-                        .addAsWebInfResource("web.xml", "web.xml");
+                        .addAsWebInfResource("web.xml", "web.xml")
+                        .addAsManifestResource("permissions.xml");
         System.out.printf("WebArchive: %s\n", webArchive.toString(true));
         ShrinkHelper.exportToServer(server1, "dropins", webArchive);
 

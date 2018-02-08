@@ -11,15 +11,13 @@
 
 package com.ibm.ws.security.wim.registry.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -111,7 +109,6 @@ public class DefaultWIMRealmMultipleReposTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4538E");
@@ -157,11 +154,9 @@ public class DefaultWIMRealmMultipleReposTest {
             assertEquals(displayName, servlet.getUserDisplayName(user));
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4538E");
@@ -178,18 +173,12 @@ public class DefaultWIMRealmMultipleReposTest {
         String uniqueUserId = "uid=vmmtestuser,o=defaultWIMFileBasedRealm";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
         try {
-            equalDNs("", uniqueUserId, servlet.getUniqueUserId(user));
-        } catch (InvalidNameException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            e.printStackTrace();
+            assertDNsEqual("UniqueUserId is incorrect", uniqueUserId, servlet.getUniqueUserId(user));
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4538E");
@@ -278,18 +267,12 @@ public class DefaultWIMRealmMultipleReposTest {
         String uniqueGroupId = "cn=vmmgroup1,dc=rtp,dc=raleigh,dc=ibm,dc=com";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
         try {
-            equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
-        } catch (InvalidNameException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            e.printStackTrace();
+            assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4538E");
@@ -305,18 +288,12 @@ public class DefaultWIMRealmMultipleReposTest {
         String uniqueGroupId = "vmmgroup1";
         Log.info(c, "getGroupSecurityName", "Checking with a valid group.");
         try {
-            equalDNs("", "cn=group1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com", servlet.getGroupSecurityName(uniqueGroupId));
-        } catch (InvalidNameException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            e.printStackTrace();
+            assertDNsEqual("Group nmae is incorrect", "cn=group1,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com", servlet.getGroupSecurityName(uniqueGroupId));
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4538E");
@@ -331,7 +308,7 @@ public class DefaultWIMRealmMultipleReposTest {
     public void getGroupSecurityNameAD() throws Exception {
         String uniqueGroupId = "TelnetClients";
         Log.info(c, "getGroupSecurityNameAD", "Checking with a valid group.");
-        equalDNs("", "CN=TelnetClients,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", servlet.getGroupSecurityName(uniqueGroupId));
+        assertDNsEqual("Group name is incorrect", "CN=TelnetClients,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", servlet.getGroupSecurityName(uniqueGroupId));
     }
 
     /**
@@ -346,11 +323,9 @@ public class DefaultWIMRealmMultipleReposTest {
             servlet.getGroupsForUser(user);
         } catch (EntryNotFoundException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4538E");
@@ -381,9 +356,4 @@ public class DefaultWIMRealmMultipleReposTest {
         assertEquals("There should only be one entry", 2, list.size());
     }
 
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.interfaces.ConversionException;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public abstract class AbstractConfig implements WebSphereConfig {
@@ -38,18 +40,10 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * @param converters
      * @param executor
      */
-    public AbstractConfig(SortedSources sources, ConversionManager conversionManager) {
+    public AbstractConfig(ConversionManager conversionManager, SortedSources sources) {
         this.sources = sources;
         this.conversionManager = conversionManager;
     }
-
-    /**
-     * @param <T>
-     * @param propertyName
-     * @param propertyType
-     * @return
-     */
-    protected abstract <T> T getTypedValue(String propertyName, Class<T> propertyType);
 
     /**
      * @return
@@ -63,16 +57,16 @@ public abstract class AbstractConfig implements WebSphereConfig {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
         assertNotClosed();
-        Optional<T> optional = null;
-        try {
-            T value = getTypedValue(propertyName, propertyType);
-            optional = Optional.ofNullable(value);
-        } catch (ConverterNotFoundException | ConversionException e) {
-            throw new IllegalArgumentException(e);
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+        T value = null;
+        if (sourced != null) {
+            value = (T) sourced.getValue();
         }
+        Optional<T> optional = Optional.ofNullable(value);
         return optional;
     }
 
@@ -103,43 +97,78 @@ public abstract class AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String toString() {
+        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
+
         assertNotClosed();
+
         StringBuilder sb = new StringBuilder();
         sb.append("Config ");
         sb.append(hashCode());
-        sb.append("[");
-        sb.append(getPropertyNames().size());
-        sb.append(" keys from ");
-        sb.append(sources.size());
-        sb.append(" sources] : ");
-        sb.append(sources);
-        return sb.toString();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public <T> T getValue(String propertyName, Class<T> propertyType) {
-        T value = null;
-        assertNotClosed();
-        try {
-            value = getTypedValue(propertyName, propertyType);
-            if (value == null) {
-                if (!getKeySet().contains(propertyName)) {
-                    throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
-                }
-            }
-        } catch (ConverterNotFoundException | ConversionException e) {
-            throw new IllegalArgumentException(e);
+        if (dumpEnabled) {
+            sb.append(dump());
+        } else {
+            sb.append("(");
+            sb.append(sources.size());
+            sb.append(" sources)");
         }
-        return value;
+        return sb.toString();
     }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T convertValue(String rawValue, Class<T> type) {
-        assertNotClosed();
-        return (T) conversionManager.convert(rawValue, type);
+    public <T> T getValue(String propertyName, Class<T> propertyType) {
+        T value = (T) getValue(propertyName, propertyType, false);
+        return value;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType) {
+        Object value = getValue(propertyName, propertyType, false);
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType, boolean optional) {
+        Object value = null;
+        assertNotClosed();
+        if (getKeySet().contains(propertyName)) {
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+            value = sourced.getValue();
+        } else {
+            if (optional) {
+                value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
+            } else {
+                throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
+            }
+        }
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object getValue(String propertyName, Type propertyType, String defaultString) {
+        Object value = null;
+        assertNotClosed();
+        if (getKeySet().contains(propertyName)) {
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+            value = sourced.getValue();
+        } else {
+            value = convertValue(defaultString, propertyType);
+        }
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object convertValue(String rawValue, Type type) {
+        assertNotClosed();
+        Object value = conversionManager.convert(rawValue, type);
+        return value;
+    }
+
 }

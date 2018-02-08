@@ -11,7 +11,7 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
-import static com.ibm.ws.security.wim.adapter.ldap.fat.LDAPFatUtils.updateConfigDynamically;
+import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,6 +39,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.LDAPFatUtils;
 import componenttest.topology.utils.LDAPUtils;
 
 /**

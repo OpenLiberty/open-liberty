@@ -18,6 +18,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 /**
@@ -25,11 +27,13 @@ import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
  */
 public class EnvConfigSource extends AbstractConfigSource implements ConfigSource {
 
+    private static final TraceComponent tc = Tr.register(EnvConfigSource.class);
+
     /**
      * @param ordinal
      */
     public EnvConfigSource() {
-        super(getEnvOrdinal(), "Environment Variables Config Source");
+        super(getEnvOrdinal(), Tr.formatMessage(tc, "environment.variables.config.source"));
     }
 
     /** {@inheritDoc} */

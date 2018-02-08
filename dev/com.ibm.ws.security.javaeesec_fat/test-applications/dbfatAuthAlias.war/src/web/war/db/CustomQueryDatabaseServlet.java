@@ -38,14 +38,9 @@ public class CustomQueryDatabaseServlet extends FATDatabaseServlet {
 
             FATDatabaseServlet.createTable(ds, callerGroups, "group_name VARCHAR(36), caller_name VARCHAR(36)");
 
-            // this is a hashed value of "pwd".
-            String testpwd = "PBKDF2WithHmacSHA256:2048:kIXIFshHqJ0mAnniyEjpKUxwX/51CCEDgWrMTxM0TLo=:sWUA2L7TnQnWKCEmbukp9WrrW53TeBUWxeMsKU8UoP4=";
-            // this is a hashed value of "pwd2".
-            String testpwd2 = "PBKDF2WithHmacSHA256:2048:xfie8G2Na/NQEhApya9odyAphjBgJqEtWK1HCU4hWXs=:ZWUZIQR/7HfxHHhiWOl4dvHQa+DYzKLgdFsNzY1gh8c=";
-
             Connection conn = ds.getConnection();
             Statement stmt1 = conn.createStatement();
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd + "' , '" + Constants.DB_USER1 + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER1_PWD_HASH + "' , '" + Constants.DB_USER1 + "')");
             stmt1.close();
 
             stmt1 = conn.createStatement();
@@ -53,7 +48,7 @@ public class CustomQueryDatabaseServlet extends FATDatabaseServlet {
             stmt1.close();
 
             stmt1 = conn.createStatement();
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd2 + "' , '" + Constants.DB_USER2 + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER2_PWD_HASH + "' , '" + Constants.DB_USER2 + "')");
             stmt1.close();
 
             stmt1 = conn.createStatement();

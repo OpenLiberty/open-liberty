@@ -821,6 +821,10 @@ public class AsyncContextImpl implements AsyncContext {
     // Start:PM90834
     protected void captureContext () {
         this.serviceWrapper = new ServiceWrapper(this);
+        
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST))           
+            logger.logp(Level.FINEST, CLASS_NAME, "captureContext","created ServiceWrapper [" + this.serviceWrapper +"] for context " + this );
+        
         this.serviceWrapper.pushContextData();
     }
     // End:PM90834

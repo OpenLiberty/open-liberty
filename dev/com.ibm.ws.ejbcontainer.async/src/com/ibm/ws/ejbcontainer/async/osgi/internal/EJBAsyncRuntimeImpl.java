@@ -76,23 +76,23 @@ public class EJBAsyncRuntimeImpl implements EJBAsyncRuntime {
     /**
      * Create the default set of thread context providers that must be propagated
      * for EJB async methods. Specifically, the specification calls out:
-     * 
+     *
      * - Security
-     * 
+     *
      * The EJB Container will establish the following, so they don't need to
      * be propagated:
-     * 
+     *
      * - ClassLoader
      * - Java EE Component
      * - Transaction
-     * 
+     *
      * And the following known context providers are not required by the
      * EJB Specification, so will not be propagated by default; only
      * if a custom context service is configured:
-     * 
+     *
      * - WLM Enclave (com.ibm.ws.zos.wlm.context.provider)
      * - SyncToOSThread (com.ibm.ws.security.thread.zos.context.provider)
-     * 
+     *
      * When EJB async methods are not configured with a specific contextService
      * instance, this set will indicate to the default context service singleton
      * all of the contexts that will be propagated. However, when concurrency is
@@ -101,9 +101,9 @@ public class EJBAsyncRuntimeImpl implements EJBAsyncRuntime {
      * be used exactly as configured by the customer.
      */
     @SuppressWarnings("unchecked")
-    private static final Map<String, ?>[] DEFAULT_ASYNC_REQUIRED_CONTEXTS = new Map[]
-    {
-     Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER, "com.ibm.ws.security.context.provider"),
+    private static final Map<String, ?>[] DEFAULT_ASYNC_REQUIRED_CONTEXTS = new Map[] {
+                                                                                        Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                                 "com.ibm.ws.security.context.provider"),
     };
 
     private WSContextService defaultContextService;
@@ -199,15 +199,16 @@ public class EJBAsyncRuntimeImpl implements EJBAsyncRuntime {
     @Modified
     protected synchronized void modified(Map<String, Object> properties) {
         Long unclaimedRemoteResultTimeout = (Long) properties.get("unclaimedRemoteResultTimeout");
-        this.unclaimedRemoteResultTimeoutMillis = unclaimedRemoteResultTimeout != null ?
-                        TimeUnit.MILLISECONDS.convert(unclaimedRemoteResultTimeout, TimeUnit.SECONDS) :
-                        DEFAULT_UNCLAIMED_REMOTE_RESULT_TIMEOUT_MILLIS;
+        this.unclaimedRemoteResultTimeoutMillis = unclaimedRemoteResultTimeout != null ? TimeUnit.MILLISECONDS.convert(unclaimedRemoteResultTimeout,
+                                                                                                                       TimeUnit.SECONDS) : DEFAULT_UNCLAIMED_REMOTE_RESULT_TIMEOUT_MILLIS;
 
         Integer maxUnclaimedRemoteResults = (Integer) properties.get("maxUnclaimedRemoteResults");
         this.maxUnclaimedRemoteResults = maxUnclaimedRemoteResults != null ? maxUnclaimedRemoteResults : DEFAULT_MAX_UNCLAIMED_REMOTE_RESULTS;
 
-        if (remoteAsyncResultReaper != null) {
-            remoteAsyncResultReaper.configure(unclaimedRemoteResultTimeout, maxUnclaimedRemoteResults);
+        synchronized (this) {
+            if (remoteAsyncResultReaper != null) {
+                remoteAsyncResultReaper.configure(unclaimedRemoteResultTimeoutMillis, this.maxUnclaimedRemoteResults);
+            }
         }
     }
 

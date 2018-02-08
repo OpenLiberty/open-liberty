@@ -1,0 +1,24 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2014
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector.manager/resources/com/ibm/ws/collector/manager/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# New messages starting December 1, 2016 should use message block TRAS4001 - TRAS4100.
+
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING=TRAS0120W: Mened\u017cer kolektora wykry\u0142, \u017ce procedura obs\u0142ugi {0} utraci\u0142a nast\u0119puj\u0105c\u0105 liczb\u0119 zdarze\u0144: {1} pochodz\u0105cych ze \u017ar\u00f3d\u0142a {2} od chwili jej uruchomienia.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.explanation=Procedura obs\u0142ugi traci zdarzenia, je\u015bli nie mo\u017ce ich konsumowa\u0107 w tempie, w jakim s\u0105 one tworzone przez \u017ar\u00f3d\u0142o. Wielko\u015b\u0107 bufor\u00f3w wewn\u0119trznych mened\u017cera kolektora umo\u017cliwia mu dostosowanie si\u0119 do powolnego tempa konsumpcji zdarze\u0144 przez procedur\u0119 obs\u0142ugi. Jednak \u017ar\u00f3d\u0142o tworz\u0105ce du\u017ce ilo\u015bci zdarze\u0144 spowoduje w ko\u0144cu nadpisanie tych bufor\u00f3w, co oznacza, \u017ce zdarzenia zostan\u0105 utracone, zanim procedura obs\u0142ugi skonsumuje je.
+HANDLER_STARTED_TO_LOSE_EVENTS_WARNING.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+HANDLER_LOST_EVENTS_WARNING=TRAS0121W: Mened\u017cer kolektora wykry\u0142, \u017ce procedura obs\u0142ugi {0} utraci\u0142a nast\u0119puj\u0105c\u0105 liczb\u0119 zdarze\u0144: {1} pochodz\u0105cych ze \u017ar\u00f3d\u0142a {2} w okresie ostatnich {3} min. Utracono \u0142\u0105cznie nast\u0119puj\u0105c\u0105 liczb\u0119 zdarze\u0144: {4} pochodz\u0105cych z tego \u017ar\u00f3d\u0142a od chwili uruchomienia procedury obs\u0142ugi.
+HANDLER_LOST_EVENTS_WARNING.explanation= Procedura obs\u0142ugi traci zdarzenia, je\u015bli nie mo\u017ce ich konsumowa\u0107 w tempie, w jakim s\u0105 one tworzone przez \u017ar\u00f3d\u0142o. Wielko\u015b\u0107 bufor\u00f3w wewn\u0119trznych mened\u017cera kolektora umo\u017cliwia mu dostosowanie si\u0119 do powolnego tempa konsumpcji zdarze\u0144 przez procedur\u0119 obs\u0142ugi. Jednak \u017ar\u00f3d\u0142o tworz\u0105ce du\u017ce ilo\u015bci zdarze\u0144 spowoduje w ko\u0144cu nadpisanie tych bufor\u00f3w, co oznacza, \u017ce zdarzenia zostan\u0105 utracone, zanim procedura obs\u0142ugi skonsumuje je. 
+HANDLER_LOST_EVENTS_WARNING.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.

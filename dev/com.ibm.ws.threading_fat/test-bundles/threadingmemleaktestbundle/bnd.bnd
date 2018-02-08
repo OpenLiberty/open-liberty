@@ -11,8 +11,6 @@
 -include= ~../../../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 Bundle-Name: ThreadingMemLeakTestBundle
 Bundle-SymbolicName: test.bundle.threading.memleak; singleton:=true
 Bundle-Description: Bundle that tests that Liberty's threading model - particularly the ScheduledExecutorService - does not leak things like classloaders

@@ -42,6 +42,7 @@ import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.wim.AccessControllerHelper;
 import com.ibm.ws.security.wim.util.NodeHelper;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.wsspi.security.wim.SchemaConstants;
@@ -408,8 +409,8 @@ public class LdapConfigManager {
     /**
      * Flag to determine whether to use membership (memberOf) attribute or member attribute.
      * True means membership was not set, so the default is used. False means the user set the membership attribute.
-     * If both member and membership attributes are set in groupProperties, member will take precedence.          
-     */    
+     * If both member and membership attributes are set in groupProperties, member will take precedence.
+     */
     private boolean iDefaultMembershipAttr = true;
 
     /**
@@ -534,7 +535,7 @@ public class LdapConfigManager {
         // iNeedTranslateRDN = reposConfig.getBoolean(ConfigConstants.CONFIG_PROP_TRANSLATE_RDN);
 
         // CUSTOM PROPERTY
-        useEncodingInSearchExpression = System.getProperty(ConfigConstants.CONFIG_CUSTOM_PROP_USE_ENCODING_IN_SEARCH_EXPRESSION);
+        useEncodingInSearchExpression = AccessControllerHelper.getSystemProperty(ConfigConstants.CONFIG_CUSTOM_PROP_USE_ENCODING_IN_SEARCH_EXPRESSION);
         if (useEncodingInSearchExpression != null) {
             try {
                 "string to test encoding".getBytes(useEncodingInSearchExpression);

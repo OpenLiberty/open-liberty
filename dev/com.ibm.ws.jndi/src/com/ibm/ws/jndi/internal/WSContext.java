@@ -62,11 +62,17 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         this.env = env;
     }
 
-    private ServiceRegistration<?> bindIntoServiceRegistry(WSName wsName, Object o) {
+    private ServiceRegistration<?> bindIntoServiceRegistry(WSName wsName, final Object o) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Binding object into registry with name for bundle", o, wsName, userContext.getBundle().getSymbolicName());
         String className = o == null ? null : o.getClass().getName();
-        ServiceRegistration<?> reg = userContext.registerService(Object.class, o, createServiceProperties(wsName, className));
+        final Hashtable<String, Object> props = createServiceProperties(wsName, className);
+        ServiceRegistration<?> reg = AccessController.doPrivileged(new PrivilegedAction<ServiceRegistration<?>>() {
+            @Override
+            public ServiceRegistration<?> run() {
+                return userContext.registerService(Object.class, o, props);
+            }
+        });
         if (tc.isDebugEnabled())
             Tr.debug(tc, "bind succeeded", reg);
         return reg;
@@ -87,7 +93,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
     /**
      * Perform any needed conversions on an object retrieved from the context tree.
-     * 
+     *
      * @param o the object to be resolved
      * @return the resolved object
      * @throws Exception
@@ -325,7 +331,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         try {
             unbind(subname);
         } catch (NameNotFoundException nnfe) {
-            // Swallow exception. This is intentional as items    
+            // Swallow exception. This is intentional as items
             // we are rebinding don't have to already exist
         }
         myNode.rebind(subname, makeReference(subname, o));
@@ -481,7 +487,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
     private void checkNotExternal(WSName subname, Object entry, String opName) throws OperationNotSupportedException, InvalidNameException {
         if (entry instanceof ServiceReference) {
             // this entry was created by something else registering a service
-            // so we cannot update the properties via JNDI - only the 
+            // so we cannot update the properties via JNDI - only the
             // registering bundle can update the properties
             throw new OperationNotSupportedException(opName + ": " + myNode.fullName.plus(subname));
         }

@@ -20,4 +20,20 @@
       <name>wssecurity.getRunAsSubject</name>
    </permission>
 
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>modifyPrivateCredentials</name>
+   </permission>
+
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>javax.security.enterprise.identitystore.IdentityStorePermission</class-name>
+      <name>getGroups</name>
+   </permission>
+
 </permissions>

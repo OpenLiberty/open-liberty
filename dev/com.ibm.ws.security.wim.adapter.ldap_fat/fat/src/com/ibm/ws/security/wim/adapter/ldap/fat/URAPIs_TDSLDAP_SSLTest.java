@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.wim.adapter.ldap.fat;
 
+import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,9 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 import org.junit.AfterClass;
 import org.junit.Assume;
@@ -217,7 +215,6 @@ public class URAPIs_TDSLDAP_SSLTest {
             servlet.checkPassword(user, password);
         } catch (RegistryException e) {
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
         server.waitForStringInLog("CWIML4537E");
@@ -342,7 +339,6 @@ public class URAPIs_TDSLDAP_SSLTest {
      * servlet.getUsers(user, -1);
      * } catch (RegistryException e) {
      * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-     * // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
      * e.printStackTrace();
      * }
      * server.waitForStringInLog("CWIML1022E"); //CWIML1022E The '-1' count limit specified in the SearchControl data object is invalid.
@@ -407,7 +403,7 @@ public class URAPIs_TDSLDAP_SSLTest {
         String uniqueUserId = "cn=vmmtestuser,o=ibm,c=us";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
         //assertEquals("", uniqueUserId, servlet.getUniqueUserId(user));
-        equalDNs("Unique names should be equal ", uniqueUserId, servlet.getUniqueUserId(user));
+        assertDNsEqual("Unique names should be equal ", uniqueUserId, servlet.getUniqueUserId(user));
     }
 
     /**
@@ -593,7 +589,6 @@ public class URAPIs_TDSLDAP_SSLTest {
      * servlet.getGroups(group, -1);
      * } catch (RegistryException e) {
      * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-     * // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
      * e.printStackTrace();
      * }
      * server.waitForStringInLog("CWIML1022E"); //CWIML1022E The '-1' count limit specified in the SearchControl data object is invalid.
@@ -678,7 +673,7 @@ public class URAPIs_TDSLDAP_SSLTest {
         String group = "vmmgrp1";
         String uniqueGroupId = "cn=vmmgrp1,o=ibm,c=us";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        equalDNs(null, uniqueGroupId, servlet.getUniqueGroupId(group));
+        assertDNsEqual("UniqueGroupId is incorrect", uniqueGroupId, servlet.getUniqueGroupId(group));
     }
 
     /**
@@ -929,10 +924,4 @@ public class URAPIs_TDSLDAP_SSLTest {
         }
     }
 
-    // TODO REPLACE
-    private void equalDNs(String msg, String dn1, String dn2) throws InvalidNameException {
-        LdapName ln1 = new LdapName(dn1);
-        LdapName ln2 = new LdapName(dn2);
-        assertEquals(msg, ln1, ln2);
-    }
 }

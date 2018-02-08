@@ -463,13 +463,12 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
         @Trivial
         @Override
         public boolean handleContent(DDParser parser) throws ParseException {
-            parser.skipSubtree();
             return true;
         }
 
         @Override
         public boolean handleChild(DDParser parser, String localName) throws ParseException {
-            return false;
+            return true;
         }
 
         @Override

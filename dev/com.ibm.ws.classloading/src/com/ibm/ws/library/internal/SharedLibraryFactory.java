@@ -48,8 +48,8 @@ import com.ibm.wsspi.library.Library;
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
-                       Constants.SERVICE_VENDOR + "=" + "IBM",
-                       Constants.SERVICE_PID + "=" + SharedLibraryConstants.SERVICE_PID
+                        Constants.SERVICE_VENDOR + "=" + "IBM",
+                        Constants.SERVICE_PID + "=" + SharedLibraryConstants.SERVICE_PID
            })
 public class SharedLibraryFactory implements ManagedServiceFactory, ModuleDelegateClassLoaderFactory, LibraryAccess {
 
@@ -100,7 +100,6 @@ public class SharedLibraryFactory implements ManagedServiceFactory, ModuleDelega
         } catch (IOException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             // e.printStackTrace();
         }
         return f;
@@ -249,7 +248,7 @@ public class SharedLibraryFactory implements ManagedServiceFactory, ModuleDelega
 
         // UPDATE if there was already an instance
         synchronized (existingInstance) {
-            // synchronized so we know inserted instance is 
+            // synchronized so we know inserted instance is
             existingInstance.update(properties);
         }
     }

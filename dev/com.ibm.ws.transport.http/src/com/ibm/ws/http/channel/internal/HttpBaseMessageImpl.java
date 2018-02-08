@@ -64,7 +64,7 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
  * controls
  * the header storage, the trailer header storage, etc. It is extended by the
  * Request and Response messages that add their specifics to the base message.
- * 
+ *
  */
 public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements HttpBaseMessage {
 
@@ -140,7 +140,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Constructor for the Request/Response messages to use.
-     * 
+     *
      */
     protected HttpBaseMessageImpl() {
         super();
@@ -155,7 +155,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Initialize this message with a service context.
-     * 
+     *
      * @param hsc
      */
     protected void init(HttpServiceContext hsc) {
@@ -328,7 +328,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Duplicate the cookie caches into the given object.
-     * 
+     *
      * @param msg
      */
     private void duplicateCookieCaches(HttpBaseMessageImpl msg) {
@@ -363,7 +363,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Take the given object and copy local values into it, passing it
      * on to super classes. A null input message will trigger a
      * NullPointerException.
-     * 
+     *
      * @param msg
      */
     protected void duplicate(HttpBaseMessageImpl msg) {
@@ -455,7 +455,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether or not this particular message is incoming.
-     * 
+     *
      * @return boolean
      */
     @Override
@@ -465,7 +465,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the flag as to whether or not this message is incoming.
-     * 
+     *
      * @param b
      */
     public void setIncoming(boolean b) {
@@ -478,7 +478,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Query whether or not this message is considered "committed" by the
      * application channel.
-     * 
+     *
      * @return boolean
      */
     @Override
@@ -490,7 +490,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Allow an application channel to set this message as committed which
      * they can then check later in their code with the isCommitted() method.
      * The message cannot be "uncommitted" without being cleared entirely.
-     * 
+     *
      */
     @Override
     public void setCommitted() {
@@ -503,7 +503,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Allow internal channel code to set the committed flag to a specific
      * boolean value.
-     * 
+     *
      * @param b
      */
     protected void setCommitted(boolean b) {
@@ -516,7 +516,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * check the necessary headers, status codes, etc, to see if any indicate
      * a body should be present. Without actually reading for a body, this
      * cannot be sure however.
-     * 
+     *
      * @return boolean (true -- a body is expected to be present)
      */
     @Override
@@ -548,7 +548,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Query whether or not a body is allowed to be present for this
      * message. This is not whether a body is present, but rather only
      * whether it is allowed to be present.
-     * 
+     *
      * @return boolean (true if allowed)
      */
     @Override
@@ -562,7 +562,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * to be updated when a body is not allowed with the message. For example,
      * a response does not allow a body when the request was a HEAD method but
      * the length delimiters are not updated in that case.
-     * 
+     *
      * @return boolean (whether the caller should modify body headers)
      */
     public boolean shouldUpdateBodyHeaders() {
@@ -571,7 +571,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the local variable to the input value.
-     * 
+     *
      * @param value
      */
     protected void setMyHSC(HttpServiceContextImpl value) {
@@ -580,7 +580,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query the owning service context.
-     * 
+     *
      * @return HttpServiceContextImpl
      */
     public HttpServiceContextImpl getServiceContext() {
@@ -589,7 +589,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query the HTTP object factory.
-     * 
+     *
      * @return HttpObjectFactory
      */
     protected HttpObjectFactory getObjectFactory() {
@@ -601,7 +601,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Get access to the trailers object.
-     * 
+     *
      * @return HttpTrailersImpl
      */
     public HttpTrailersImpl getTrailersImpl() {
@@ -610,9 +610,10 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Utility method to create the appropriate trailer headers object.
-     * 
+     *
      * @return HttpTrailersImpl
      */
+    @Override
     public HttpTrailersImpl createTrailers() {
         if (null == this.myTrailers) {
             this.myTrailers = (null == getObjectFactory()) ? new HttpTrailersImpl() : getObjectFactory().getTrailers();
@@ -639,7 +640,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query the value of the HTTP version.
-     * 
+     *
      * @return VersionValues
      */
     @Override
@@ -649,7 +650,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query the value of the HTTP version.
-     * 
+     *
      * @return String
      */
     @Override
@@ -659,7 +660,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the version of this message.
-     * 
+     *
      * @param version
      * @throws NullPointerException
      *             if the input version is null
@@ -680,7 +681,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the version of this message.
-     * 
+     *
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
@@ -701,7 +702,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the version of this message.
-     * 
+     *
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
@@ -734,7 +735,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the Content-Length header to the given number of bytes.
-     * 
+     *
      * @param length
      * @throws IllegalArgumentException
      *             if input length is invalid
@@ -772,7 +773,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Sets the Content-Length header's integer representation to the input
      * bytes; however, it is not committed to storage.
-     * 
+     *
      * @param value
      * @return boolean (true if success)
      */
@@ -834,7 +835,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query the value of the Content-Length header as a byte number.
-     * 
+     *
      * @return int
      */
     @Override
@@ -873,7 +874,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Utility method to search the list of Connection header values for one
      * that needs to be replaced by a new value. If the old one does not exist,
      * then this simply adds the new one on the end of any existing values.
-     * 
+     *
      * @param target
      * @param item
      */
@@ -898,7 +899,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Add another item onto the private list of Connection header values. This
      * will grow the array if necessary.
-     * 
+     *
      * @param item
      */
     private void addConnection(ConnectionValues item) {
@@ -930,7 +931,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Set the Connection header to a specific constant (i.e. CLOSE).
      * If you want more specific information (token=field) then you
      * must use the setHeader() API with some character representation.
-     * 
+     *
      * @param value
      */
     @Override
@@ -949,7 +950,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Set the Connection header to the input list of defined values.
      * These will be set in the order of the array.
-     * 
+     *
      * @param values
      */
     @Override
@@ -973,7 +974,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Method to remove a single value from the Connection header. If
      * that was the only existing value, then the entire header is removed.
      * Caller must call commitConnection() when they are done modifying values.
-     * 
+     *
      * @param value
      */
     void removeConnection(ConnectionValues value) {
@@ -1014,7 +1015,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Commit the local changes to the Connection header to storage.
-     * 
+     *
      */
     private void commitConnection() {
 
@@ -1043,7 +1044,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Users calling this method should be aware that the removal is not
      * at the header storage layer, but only at the base message layer where
      * the data is converted.
-     * 
+     *
      * @param data
      */
     public void removeConnectionHeader(byte[] data) {
@@ -1059,7 +1060,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * This method will find the next token in the input byte[] data.
-     * 
+     *
      * @param data
      * @param td
      * @return boolean
@@ -1112,7 +1113,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Take the input data and parse out all possible "tokens" from it. This
      * ignores leading and trailing spaces around each "token word".
-     * 
+     *
      * @param data
      */
     private void matchAndParseConnection(byte[] data) {
@@ -1136,7 +1137,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * tokens found in the header, thus "Connection: TE, Keep-Alive"
      * would return { CONN_TE, CONN_KEEPALIVE }. A CONN_NOTSET means
      * that the header is not present.
-     * 
+     *
      * @return ConnectionValues[]
      */
     @Override
@@ -1153,7 +1154,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Quick method to check whether the Connection header contains
      * the "Keep-Alive" token currently.
-     * 
+     *
      * @return boolean
      */
     @Override
@@ -1163,7 +1164,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether the Connection header has Close in it.
-     * 
+     *
      * @return boolean
      */
     public boolean isCloseSet() {
@@ -1173,7 +1174,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Quick method to check whether the Connection header has been
      * set to any value yet or not.
-     * 
+     *
      * @return boolean
      */
     @Override
@@ -1189,7 +1190,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Query what the outermost encoding is currently set to for this message's
      * Content-Encoding header value. This will return null if there is no
      * header present.
-     * 
+     *
      * @return ContentEncodingValues
      */
     public ContentEncodingValues getOutermostEncoding() {
@@ -1202,7 +1203,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Utility method to remove only the outermost encoding.
-     * 
+     *
      */
     public void removeOutermostEncoding() {
         if (0 == this.indexContentEncoding) {
@@ -1226,7 +1227,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether or not this message contains an encoded body.
-     * 
+     *
      * @return boolean
      */
     public boolean isBodyEncoded() {
@@ -1235,7 +1236,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether the outermost encoding (if any) is the Deflate encoding.
-     * 
+     *
      * @return boolean
      */
     public boolean isDeflateOutermostEncoding() {
@@ -1244,7 +1245,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether the outermost encoding (if any) is the GZip encoding.
-     * 
+     *
      * @return boolean
      */
     public boolean isGZipOutermostEncoding() {
@@ -1253,7 +1254,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether the outermost encoding (if any) is the X-GZip encoding.
-     * 
+     *
      * @return boolean
      */
     public boolean isXGZipOutermostEncoding() {
@@ -1262,7 +1263,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Add a particular content encoding to the stored list.
-     * 
+     *
      * @param value
      */
     private void addContentEncoding(ContentEncodingValues value) {
@@ -1282,7 +1283,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Remove a particular content encoding value from the list.
-     * 
+     *
      * @param value
      */
     private void removeContentEncoding(ContentEncodingValues value) {
@@ -1302,7 +1303,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Add the input value to the end of any existing header value.
-     * 
+     *
      * @param value
      */
     protected void appendContentEncoding(ContentEncodingValues value) {
@@ -1312,7 +1313,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the Content-Encoding header to the given encoding identifier.
-     * 
+     *
      * @param value
      */
     @Override
@@ -1331,7 +1332,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Set the Content-Encoding header to the given list of values,
      * in the same order as the array.
-     * 
+     *
      * @param values
      */
     @Override
@@ -1353,7 +1354,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Commit the local changes to the Content-Encoding header to storage.
-     * 
+     *
      */
     private void commitContentEncoding() {
 
@@ -1382,7 +1383,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Users calling this method should be aware that the removal is not
      * at the header storage layer, but only at the base message layer where
      * the data is converted.
-     * 
+     *
      * @param data
      */
     public void removeContentEncodingHeader(byte[] data) {
@@ -1398,7 +1399,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Reset the Content-Encoding information.
-     * 
+     *
      */
     private void removeLocalContentEncoding() {
         for (int i = 0; i < this.indexContentEncoding; i++) {
@@ -1410,7 +1411,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Take the input data and parse out all possible "tokens" from it. This
      * ignores leading and trailing spaces around each "token word".
-     * 
+     *
      * @param data
      */
     private void matchAndParseContent(byte[] data) {
@@ -1435,7 +1436,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * actual data being reported through the getName() method.
      * The array is given in the order in which values were
      * found in the header.
-     * 
+     *
      * @return ContentEncodingValues[]
      */
     @Override
@@ -1457,7 +1458,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Add another item onto the private list of TransferEncoding header values.
      * This will grow the array if necessary.
-     * 
+     *
      * @param item
      */
     private void addTransferEncoding(TransferEncodingValues item) {
@@ -1482,7 +1483,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Append the input Transfer-Encoding item to the header and commit it to
      * storage.
-     * 
+     *
      * @param item
      */
     protected void appendTransferEncoding(TransferEncodingValues item) {
@@ -1493,7 +1494,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Set the Transfer-Encoding header to one of the encoding
      * identifiers.
-     * 
+     *
      * @param value
      */
     @Override
@@ -1512,7 +1513,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Set the Transfer-Encoding header to the input list of values,
      * in the same order as the array.
-     * 
+     *
      * @param values
      */
     @Override
@@ -1534,7 +1535,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Commit the local changes to the Transfer-Encoding header to storage.
-     * 
+     *
      */
     protected void commitTransferEncoding() {
 
@@ -1560,7 +1561,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Method to remove a single value from the Transfer-Encoding header. If
      * that was the only existing value, then the entire header is removed.
-     * 
+     *
      * @param value
      */
     protected void removeTransferEncoding(TransferEncodingValues value) {
@@ -1601,7 +1602,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Users calling this method should be aware that the removal is not
      * at the header storage layer, but only at the base message layer where
      * the data is converted.
-     * 
+     *
      * @param data
      */
     public void removeTransferEncodingHeader(byte[] data) {
@@ -1618,7 +1619,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Take the input data and parse out all possible "tokens" from it. This
      * ignores leading and trailing spaces around each "token word".
-     * 
+     *
      * @param data
      */
     private void matchAndParseTransfer(byte[] data) {
@@ -1643,7 +1644,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * actual data being reported through the getName() method.
      * The array is returned in the same order as the values found
      * in the header.
-     * 
+     *
      * @return TransferEncodingValues[]
      */
     @Override
@@ -1660,7 +1661,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Quick method to check whether the Transfer-Encoding header
      * contains the "chunked" token currently.
-     * 
+     *
      * @return boolean
      */
     @Override
@@ -1675,7 +1676,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * When we've received an expect header value, either from parsing or from
      * the user, this method encapsulates any special logic we need to perform.
-     * 
+     *
      * @param value
      */
     private void addExpect(ExpectValues value) {
@@ -1687,7 +1688,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Take the input data and parse out all possible "tokens" from it. This
      * ignores leading and trailing spaces around each "token word".
-     * 
+     *
      * @param data
      */
     private void matchAndParseExpect(byte[] data) {
@@ -1731,7 +1732,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Users calling this method should be aware that the removal is not
      * at the header storage layer, but only at the base message layer where
      * the data is converted.
-     * 
+     *
      * @param data
      */
     public void removeExpectHeader(byte[] data) {
@@ -1749,7 +1750,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query the current value of the HTTP Expect header.
-     * 
+     *
      * @return byte[]
      */
     @Override
@@ -1775,7 +1776,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Query whether or not the current HTTP Expect header on the message
      * contains the sequence "100-continue".
-     * 
+     *
      * @return boolean (true if present)
      */
     @Override
@@ -1786,7 +1787,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Query the MIME type of the HTTP body (e.g. text/html). This will return
      * null if the type is not known.
-     * 
+     *
      * @return String
      */
     @Override
@@ -1796,7 +1797,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Parses MIME type from a <code>Content-Type</code> header.
-     * 
+     *
      * @return Returns the MIME type of the flow, or null if not known.
      */
     private String parseMIMEType() {
@@ -1829,7 +1830,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Set the MIME type of the HTTP body to the input string.
-     * 
+     *
      * @param type
      * @throws NullPointerException
      *             if input string is null
@@ -1853,7 +1854,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Returns a named mapping between sequences of sixteen-bit Unicode
      * characters and sequences of bytes in the body of the flow. If this is
      * not explicitly set, then it will return the mapping for ISO-8859-1.
-     * 
+     *
      * @return Charset
      */
     @Override
@@ -1864,7 +1865,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Parses a named mapping between sequences of sixteen-bit Unicode
      * characters and sequences of bytes in the body of the flow from a <code>Content-Type</code> header.
-     * 
+     *
      * @return Returns the appropriate mapping for the flow, or a mapping for <code>ISO-8859-1</code> (Latin-1) if the flow does not specify
      *         a character encoding.
      */
@@ -1892,7 +1893,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Parse the character encoding from the specified content type header.
      * If the content type is null, or there is no explicit character encoding, <code>null</code> is returned.
-     * 
+     *
      * @param contentType
      *            a content type header.
      * @return Returns the character encoding for this flow, or null if the given
@@ -1928,7 +1929,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Sets the named mapping between sequences of sixteen-bit Unicode
      * characters and sequences of bytes in the body of the flow.
-     * 
+     *
      * @param set
      * @throws NullPointerException
      *             if the input Charset is null
@@ -1957,7 +1958,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Before marshalling headers into a buffer, this will run the data
      * through a compliancy check and take appropriate action (throw
      * errors, add missing headers, etc).
-     * 
+     *
      * @throws MessageSentException
      */
     @Override
@@ -2039,10 +2040,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
             }
 
             else if (getVersionValue().equals(VersionValues.V20)) {
-                //If content-length is set, remove content-length header
-                if (getContentLength() != HeaderStorage.NOTSET) {
-                    setContentLength(HeaderStorage.NOTSET);
-                }
                 //If chunked-encoding is set, remove this header
                 if (isChunkedEncodingSet()) {
                     removeTransferEncoding(TransferEncodingValues.CHUNKED);
@@ -2089,14 +2086,14 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Called for marshalling the first line of binary HTTP responses.
-     * 
+     *
      * @return WsByteBuffer[]
      */
     public abstract WsByteBuffer[] marshallBinaryFirstLine();
 
     /**
      * Marshall the binary HTTP message into WsByteBuffers to be sent out.
-     * 
+     *
      * @return WsByteBuffer[]
      * @throws MessageSentException
      */
@@ -2246,7 +2243,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * During discrimination, we are only attempting to parse the first line so
      * that we can verify the HTTP protocol information.
-     * 
+     *
      * @param buffer
      * @return boolean (true means first line fully parsed)
      * @throws Exception
@@ -2262,7 +2259,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Begin parsing line out from a given buffer. Returns boolean
      * as to whether it has found the end of the first line.
-     * 
+     *
      * @param buff
      * @return boolean
      * @throws MalformedMessageException
@@ -2273,7 +2270,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Parses the binary HTTP message. Returns whether or not it has
      * successfully parsed the full message. There is no delayed
      * extraction of header values.
-     * 
+     *
      * @param buff
      * @return boolean
      * @throws Exception
@@ -2299,7 +2296,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Marshall the given cookie cache object into base header storage.
-     * 
+     *
      * @param cache
      */
     private void marshallCookieCache(CookieCacheData cache) {
@@ -2314,7 +2311,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Query whether the cookie cache for the given header is dirty or not.
-     * 
+     *
      * @param key
      * @return boolean
      */
@@ -2372,12 +2369,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * from the name=value parameter, this API can be used to get just that.
      * It will avoid any extra object creation such as Strings or Cookies
      * themselves.
-     * 
+     *
      * Any leading or trailing whitespace will be removed from the value;
      * however, no error checking is performed to see if any whitespace in the
      * middle is encapsulated with quotes... whatever is found will be returned.
-     * Thus [Cookie: id=12 34] would return "12  34" as the value for "id".
-     * 
+     * Thus [Cookie: id=12 34] would return "12 34" as the value for "id".
+     *
      * @param name
      * @param hdr
      * @return byte[] (null if target cookie was not found)
@@ -2548,7 +2545,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Gather the list of all cookie values present in the message for the given
      * header key and input cookie name. Add these values to the input list.
-     * 
+     *
      * @param name
      * @param header
      * @param list
@@ -2565,7 +2562,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Search for a cookie under the input header name that matchs the target
      * cookie name.
-     * 
+     *
      * @param name
      * @param header
      * @return the <code>Cookie</code> for the specified name.
@@ -2611,7 +2608,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Method to parse all of the unparsed header instances for the given input
      * type into Cookie objects to store in the cache.
-     * 
+     *
      * @param cache
      * @param header
      */
@@ -2632,7 +2629,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Add all cookies from this message under the input header into the input
      * list.
-     * 
+     *
      * @param header
      * @param list
      */
@@ -2648,7 +2645,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Find all instances of a cookie under the given header with the input name
      * and place a clone of that object into the input list.
-     * 
+     *
      * @param name
      * @param header
      * @param list
@@ -2666,7 +2663,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Adds the cookie to the parsedCookieList of the appropriate cookie cache
      * data. The set operation does not have the semantics of the replace
      * operation. This is allowed on an outgoing message only.
-     * 
+     *
      * @param cookie
      *            the <code>HttpCookie</code> to add.
      * @param cookieType
@@ -2689,7 +2686,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Get access to the cookie parser for this message.
-     * 
+     *
      * @return An instance of the Cookie header parser
      */
     private CookieHeaderByteParser getCookieParser() {
@@ -2701,7 +2698,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Check whether the cookie cache already exists for this particular header.
-     * 
+     *
      * @param header
      * @return boolean
      */
@@ -2724,7 +2721,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     /**
      * Return the set of objects for effectively caching Cookies as they
      * are processed.
-     * 
+     *
      * @param header
      * @return the caching data for the particular set of Cookies.
      * @throws IllegalArgumentException
@@ -2780,7 +2777,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Remove a cookie with a specific name from a message. Requests can remove
      * ones of type "Cookie" or "Cookie2", while response messages can remove
      * "Set-Cookie" or "Set-Cookie2" cookies.
-     * 
+     *
      * @param name
      * @param header
      * @return TRUE if a cookie with this name was removed, FALSE if the
@@ -2825,7 +2822,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Marshall the list of Cookies into the base header storage area.
-     * 
+     *
      * @param list
      *            the list of new cookies.
      * @param header
@@ -2864,7 +2861,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
 
         if (getServiceContext().getHttpConfig().doNotAllowDuplicateSetCookies() && setCookieNames != null) {
-            //Loop here to append all the cookies from the HashMap 
+            //Loop here to append all the cookies from the HashMap
             Iterator<String> keyIt = setCookieNames.keySet().iterator();
             while (keyIt.hasNext()) {
                 appendHeader(header, setCookieNames.get(keyIt.next()));
@@ -2879,7 +2876,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /**
      * Get the start time of this request in nanoseconds
-     * 
+     *
      * @return long
      */
     public long getStartTime() {
@@ -2890,7 +2887,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Private class used while parsing through header value tokens. Instances
      * of this class will provide the caller with information on where the
      * token is in the overall array.
-     * 
+     *
      */
     protected class TokenDelimiter {
         /** Start index of this token */
@@ -2902,7 +2899,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
         /**
          * Clear the information back to defaults.
-         * 
+         *
          * @return TokenDelimiter (this)
          */
         protected TokenDelimiter clear() {
@@ -2917,7 +2914,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Java security requires that the Charset interaction be performed inside
      * a privileged block of code. This class encapsulates running a Charset
      * lookup based on an input string name.
-     * 
+     *
      */
     private class privCharsetLookup implements PrivilegedAction<Charset> {
         /** Encoding string to lookup */
@@ -2925,7 +2922,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
         /**
          * Constructor.
-         * 
+         *
          * @param enc
          */
         public privCharsetLookup(String enc) {
@@ -2934,7 +2931,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
         /**
          * Perform the privileged action now.
-         * 
+         *
          * @return Object (Charset)
          */
         @Override

@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config.fat.suite;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -26,6 +27,7 @@ import com.ibm.ws.microprofile.config.fat.tests.CDIMissingConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIScopeTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIXtorInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
+import com.ibm.ws.microprofile.config.fat.tests.ConverterPriorityTest;
 import com.ibm.ws.microprofile.config.fat.tests.ConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CustomSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
@@ -34,6 +36,9 @@ import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
 import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Tests specific to appConfig
@@ -51,6 +56,7 @@ import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
                 CDIScopeTest.class,
                 CDIXtorInjectionTest.class,
                 ClassLoadersTest.class,
+                ConverterPriorityTest.class,
                 ConvertersTest.class,
                 CustomSourcesTest.class,
                 DefaultSourcesTest.class,
@@ -64,6 +70,10 @@ import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 
 public class FATSuite {
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction("mpConfig-1.1", "mpConfig-1.2"));
+
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
      */
@@ -73,4 +83,3 @@ public class FATSuite {
     }
 
 }
-

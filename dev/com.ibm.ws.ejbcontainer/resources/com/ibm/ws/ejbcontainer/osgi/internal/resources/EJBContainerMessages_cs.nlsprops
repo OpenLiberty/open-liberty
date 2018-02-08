@@ -194,3 +194,18 @@ INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=Odeberte t\u0159\u00eddu ze soub
 INVALID_CLASS_CNTR4115E=CNTR4115E: Prvek <ejb-class> v souboru ejb-jar.xml ur\u010duje n\u00e1zev t\u0159\u00eddy {0} pro objekt typu enterprise bean {1}, ale soubor t\u0159\u00eddy nebyl nalezen.
 INVALID_CLASS_CNTR4115E.explanation=Bu\u010f soubor ejb-jar.xml ur\u010duje neplatn\u00fd n\u00e1zev t\u0159\u00eddy, nebo nebyl do aplikace zabalen soubor t\u0159\u00eddy.
 INVALID_CLASS_CNTR4115E.useraction=Opravte n\u00e1zev t\u0159\u00eddy v souboru ejb-jar.xml nebo zabalte soubor t\u0159\u00eddy do aplikace.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W

@@ -1,6 +1,7 @@
 -include= ~../cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxrsClient-2.1
 visibility=public
+singleton=true
 IBM-API-Package: javax.ws.rs; type="spec", \
  javax.ws.rs.container; type="spec", \
  javax.ws.rs.core; type="spec", \

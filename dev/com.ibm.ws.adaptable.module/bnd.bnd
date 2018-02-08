@@ -8,8 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -69,6 +67,7 @@ Service-Component: \
 -buildpath: \
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

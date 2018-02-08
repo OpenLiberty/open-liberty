@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verifique que se haya configu
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: El punto final de mensaje para el bean controlado por mensaje {0} no se puede activar porque el destino {1} no est\u00e1 disponible. El punto final de mensaje no recibir\u00e1 mensajes hasta que el destino est\u00e9 disponible.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=El servidor est\u00e1 iniciando el bean controlado por mensaje, pero no puede activar el punto final de mensaje porque no se ha encontrado el destino. El punto final de mensaje no recibir\u00e1 mensajes hasta que pueda activarse el punto final.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Verifique que se haya configurado un destino con el nombre especificado. Si la configuraci\u00f3n existe, espere a que el destino est\u00e9 disponible.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: El punto final de mensaje para el bean controlado por mensaje {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} no se hab\u00eda activado porque la especificaci\u00f3n de activaci\u00f3n {3} se hab\u00eda configurado con autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=El punto final de mensaje no se ha activado porque la especificaci\u00f3n de activaci\u00f3n se hab\u00eda configurado con autoStart=false. El punto final de mensaje se activar\u00e1 cuando se emita un mandato resume.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=No se requiere ninguna acci\u00f3n.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: La operaci\u00f3n de pausa no ha tenido ning\u00fan efecto porque el punto final de mensaje para el bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} ya est\u00e1 en pausa.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=El punto final de mensaje s\u00f3lo se puede poner en pausa cuando est\u00e1 en un estado activo.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=No se requiere ninguna acci\u00f3n.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: La operaci\u00f3n de reanudaci\u00f3n no ha tenido ning\u00fan efecto porque el punto final de mensaje para el bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} ya est\u00e1 activo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=El punto final de mensaje s\u00f3lo se puede reanudar cuando est\u00e1 en un estado inactivo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=No se requiere ninguna acci\u00f3n.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: La solicitud para poner en pausa el punto final de mensaje para el bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} no se ha completado correctamente porque el punto final no est\u00e1 activo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=El punto final de mensaje s\u00f3lo se puede poner en pausa cuando est\u00e1 en un estado activo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Espere hasta que el punto final de mensaje est\u00e9 en un estado activo antes de intentar ponerlo en pausa.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: La solicitud para reanudar el punto final de mensaje para el bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} no se ha completado correctamente porque el punto final no est\u00e1 en pausa.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=El punto final de mensaje s\u00f3lo se puede reanudar cuando est\u00e1 en un estado de pausa.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Espere hasta que el punto final de mensaje est\u00e9 en un estado de pausa antes de intentar reanudarlo.

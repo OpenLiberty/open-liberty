@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.wsspi.genericbnf.HeaderField;
@@ -25,7 +24,6 @@ import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
-import com.ibm.wsspi.http.ee8.Http2PushException;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
 /**
@@ -212,15 +210,8 @@ public class HttpRequestImpl implements Http2Request {
      * @return
      */
     @Override
-    public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException {
-        try {
-            this.message.pushNewRequest(pushBuilder);
-
-        } catch (Http2PushException he) {
-            throw he;
-        } catch (ProtocolException pe) {
-            throw new Http2PushException(pe.toString());
-        }
+    public void pushNewRequest(Http2PushBuilder pushBuilder) {
+        this.message.pushNewRequest(pushBuilder);
     }
 
     /*
@@ -269,7 +260,7 @@ public class HttpRequestImpl implements Http2Request {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.http.HttpRequest#isPushSupported()
      */
     @Override

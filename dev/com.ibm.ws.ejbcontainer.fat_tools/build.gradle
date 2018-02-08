@@ -9,3 +9,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+// Special publish feature task since this is a test feature
+task publishFeatureManifests(type: Copy) {
+    dependsOn jar
+    from project.file('publish/features')
+    into buildImage.file('wlp/lib/features')
+    include '*.mf'
+}
+
+assemble.dependsOn publishFeatureManifests

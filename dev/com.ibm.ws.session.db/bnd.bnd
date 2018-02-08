@@ -8,8 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -18,7 +16,6 @@ Bundle-SymbolicName: com.ibm.ws.session.db
 Bundle-Description: Allows persistence of sessions to a database, version ${bVersion}
 
 Private-Package: \
-   	com.ibm.ws.session.store.common, \
    	com.ibm.ws.session.store.db, \
     com.ibm.ws.session.db.resources
 
@@ -38,16 +35,13 @@ Service-Component: \
     uowCurrent=com.ibm.ws.Transaction.UOWCurrent; \
     userTransaction=javax.transaction.UserTransaction; \
     dynamic:="dataSourceFactory,embeddableWebSphereTransactionManager,localTransactionCurrent,resourceRefConfigFactory,uowCurrent,userTransaction"; \
-    properties:='service.vendor=IBM,service.ranking:Integer=100,dataSourceFactory.target=(id=unbound)', \
-  com.ibm.ws.session.db.deserialization; \
-    implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
-    provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
-    properties:='classes=com.ibm.ws.session.store.common.J2EEObjectWrapper'
+    properties:='service.vendor=IBM,service.ranking:Integer=100,dataSourceFactory.target=(id=unbound)'
 
 instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.session;version=latest,\
+	com.ibm.ws.session.store;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\

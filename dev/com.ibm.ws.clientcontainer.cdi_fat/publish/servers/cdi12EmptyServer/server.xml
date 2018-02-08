@@ -1,0 +1,9 @@
+<server description="Server to test that CDI can start as a feature on its own">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>cdi-1.2</feature>
+	</featureManager>
+
+</server>

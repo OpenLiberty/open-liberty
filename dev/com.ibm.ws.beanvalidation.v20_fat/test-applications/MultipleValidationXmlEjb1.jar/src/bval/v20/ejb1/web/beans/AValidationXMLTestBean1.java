@@ -51,10 +51,16 @@ public class AValidationXMLTestBean1 {
     boolean setToFail = false;
 
     @Resource
+    Validator validator;
+
+    @Resource
     ValidatorFactory validatorFactory;
 
     @Inject
-    Validator validator;
+    ValidatorFactory injectedValidatorFactory;
+
+    @Inject
+    Validator injectedValidator;
 
     private void setValidationToFail() {
         svLogger.entering(CLASS_NAME, "setValidationToFail", this);
@@ -74,6 +80,11 @@ public class AValidationXMLTestBean1 {
         address1 = "1625 19th St NE";
         setToFail = false;
         svLogger.exiting(CLASS_NAME, "resetValidation" + this);
+    }
+
+    public void testMethodParmConstraintEJB1(@NotNull @Size(max = 5) @Size(min = 5) String testString) {
+        // This method is used for method parameter constraint testing.
+        // The parameter 'testString' must not be null and must have a length of 5
     }
 
     @NotNull
@@ -135,7 +146,8 @@ public class AValidationXMLTestBean1 {
         return true;
     }
 
-    public boolean checkAtInjectValidator() {
+    public boolean checkAtInjectValidatorFactory() {
+        Validator validator = injectedValidatorFactory.getValidator();
         Set<ConstraintViolation<AValidationXMLTestBean1>> cvSet = validator.validate(this);
         if (cvSet != null && !cvSet.isEmpty()) {
             svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
@@ -146,6 +158,52 @@ public class AValidationXMLTestBean1 {
         setValidationToFail();
         try {
             cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
+    public boolean checkAtResourceValidator() {
+        Set<ConstraintViolation<AValidationXMLTestBean1>> cvSet = validator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = validator.validate(this);
+            if (cvSet != null && cvSet.size() != 2) {
+                svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                     "when there should have been 2: " + formatConstraintViolations(cvSet));
+                return false;
+            }
+        } finally {
+            resetValidation();
+        }
+
+        return true;
+    }
+
+    public boolean checkAtInjectValidator() {
+        Set<ConstraintViolation<AValidationXMLTestBean1>> cvSet = injectedValidator.validate(this);
+        if (cvSet != null && !cvSet.isEmpty()) {
+            svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
+                                                 "when there shouldn't have been any: " + formatConstraintViolations(cvSet));
+            return false;
+        }
+
+        setValidationToFail();
+        try {
+            cvSet = injectedValidator.validate(this);
             if (cvSet != null && cvSet.size() != 2) {
                 svLogger.log(Level.INFO, CLASS_NAME, "found " + cvSet.size() + " contstraints " +
                                                      "when there should have been 2: " + formatConstraintViolations(cvSet));

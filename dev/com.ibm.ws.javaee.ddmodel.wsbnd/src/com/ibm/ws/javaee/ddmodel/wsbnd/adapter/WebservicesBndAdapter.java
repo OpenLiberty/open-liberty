@@ -100,14 +100,14 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
         return fromConfig;
     }
 
-    private WebservicesBndComponentImpl getConfigOverrides(OverlayContainer rootOverlay, ArtifactContainer artifactContainer) throws UnableToAdaptException {
+    private WebservicesBndComponentImpl getConfigOverrides(OverlayContainer overlay, ArtifactContainer artifactContainer) throws UnableToAdaptException {
         if (configurations == null || configurations.isEmpty())
             return null;
 
-        ApplicationInfo appInfo = (ApplicationInfo) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
+        ApplicationInfo appInfo = (ApplicationInfo) overlay.getFromNonPersistentCache(artifactContainer.getPath(), ApplicationInfo.class);
         ModuleInfo moduleInfo = null;
-        if (appInfo == null && rootOverlay.getParentOverlay() != null) {
-            moduleInfo = (ModuleInfo) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), ModuleInfo.class);
+        if (appInfo == null) {
+            moduleInfo = (ModuleInfo) overlay.getFromNonPersistentCache(artifactContainer.getPath(), ModuleInfo.class);
             if (moduleInfo == null)
                 return null;
             appInfo = moduleInfo.getApplicationInfo();
@@ -117,6 +117,10 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
             configHelper = ((ExtendedApplicationInfo) appInfo).getConfigHelper();
         if (configHelper == null)
             return null;
+		
+		OverlayContainer rootOverlay = overlay;
+		if (overlay.getParentOverlay() != null)
+			rootOverlay = overlay.getParentOverlay();
 
         Set<String> configuredModuleNames = new HashSet<String>();
         String servicePid = (String) configHelper.get("service.pid");
@@ -129,9 +133,9 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
                     return configImpl;
                 String moduleName = (String) configImpl.getConfigAdminProperties().get("moduleName");
                 if (moduleName == null) {
-                    if (rootOverlay.getParentOverlay().getFromNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, WebservicesBndAdapter.class) == null) {
+                    if (rootOverlay.getFromNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, WebservicesBndAdapter.class) == null) {
                         Tr.error(tc, "module.name.not.specified", WEBSERVICES_BND_ELEMENT_NAME);
-                        rootOverlay.getParentOverlay().addToNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, WebservicesBndAdapter.class, MODULE_NAME_NOT_SPECIFIED);
+                        rootOverlay.addToNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, WebservicesBndAdapter.class, MODULE_NAME_NOT_SPECIFIED);
                     }
                     continue;
                 }
@@ -142,7 +146,7 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
             }
         }
         if (moduleInfo != null && !configuredModuleNames.isEmpty()) {
-            if (rootOverlay.getParentOverlay().getFromNonPersistentCache(MODULE_NAME_INVALID, WebservicesBndAdapter.class) == null) {
+            if (rootOverlay.getFromNonPersistentCache(MODULE_NAME_INVALID, WebservicesBndAdapter.class) == null) {
                 HashSet<String> moduleNames = new HashSet<String>();
                 Application app = appInfo.getContainer().adapt(Application.class);
                 for (Module m : app.getModules()) {
@@ -151,7 +155,7 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
                 configuredModuleNames.removeAll(moduleNames);
                 if (!configuredModuleNames.isEmpty())
                     Tr.error(tc, "module.name.invalid", configuredModuleNames, WEBSERVICES_BND_ELEMENT_NAME);
-                rootOverlay.getParentOverlay().addToNonPersistentCache(MODULE_NAME_INVALID, WebservicesBndAdapter.class, MODULE_NAME_INVALID);
+                rootOverlay.addToNonPersistentCache(MODULE_NAME_INVALID, WebservicesBndAdapter.class, MODULE_NAME_INVALID);
             }
         }
         return null;

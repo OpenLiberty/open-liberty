@@ -1,0 +1,40 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JPA Container Bean Validation 2.0 Integration
+Bundle-SymbolicName: com.ibm.ws.jpa.container.beanvalidation.2.0
+Bundle-Description: Container-managed JPA/Bean validation 2.0 support, version ${bVersion}
+
+javac.target: 1.8
+javac.source: 1.8
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"  
+
+WS-TraceGroup: JPA
+
+-dsannotations: \
+  com.ibm.ws.jpa.container.beanvalidation.JPABV20ComponentImpl
+
+Import-Package: \
+  javax.validation.*;version="[2.0,3)",\
+  *
+
+Private-Package: com.ibm.ws.jpa.container.beanvalidation
+
+-buildpath: \
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.beanvalidation.core;version=latest,\
+	com.ibm.ws.jpa.container.core;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.logging.core
