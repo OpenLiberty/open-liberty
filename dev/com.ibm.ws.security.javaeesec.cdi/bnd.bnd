@@ -35,7 +35,8 @@ Private-Package: \
 
 -dsannotations: \
     com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension,\
-    com.ibm.ws.security.javaeesec.cdi.extensions.SecurityContextHelper
+    com.ibm.ws.security.javaeesec.cdi.extensions.SecurityContextHelper,\
+    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecurityServiceImpl
 
 -dsannotations-inherit: true
 

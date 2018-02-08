@@ -27,10 +27,12 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.appbnd.internal.TraceConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
+import com.ibm.ws.security.authentication.JavaEESecurityService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.helper.AuthenticateUserHelper;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.delegation.DelegationProvider;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * This class defines the interface for creating
@@ -42,10 +44,15 @@ public class DefaultDelegationProvider implements DelegationProvider {
     private final Map<String, Map<String, RunAs>> roleToRunAsMappingPerApp = new HashMap<String, Map<String, RunAs>>();
     private final Map<String, Map<String, Boolean>> roleToWarningMappingPerApp = new HashMap<String, Map<String, Boolean>>();
     private SecurityService securityService;
+    private AtomicServiceReference<JavaEESecurityService> javaEESecurityServiceRef = null;
     public String delegationUser = "";
 
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
+    }
+
+    public void setJavaEESecurityService(AtomicServiceReference<JavaEESecurityService> javaEESecurityServiceRef) {
+        this.javaEESecurityServiceRef = javaEESecurityServiceRef;
     }
 
     @Override
@@ -161,7 +168,18 @@ public class DefaultDelegationProvider implements DelegationProvider {
     private Subject authenticateRunAsUser(RunAs runAs) throws AuthenticationException {
         String username = runAs.getUserid();
         String password = PasswordUtil.passwordDecode(runAs.getPassword());
-        if (password != null) {
+        JavaEESecurityService javaEESecurityService = getJavaEESecurityService();
+        if (javaEESecurityService != null && javaEESecurityService.isIdentityStoreHanderAvailable()) {
+            Subject inSubject;
+            if (password != null) {
+                inSubject= javaEESecurityService.createLoginHashtable(username, password);
+                AuthenticationData authenticationData = createAuthenticationData(username, null);
+                return securityService.getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, inSubject);
+            } else {
+                return null;
+            }
+        }
+        else if (password != null) {
             AuthenticationData authenticationData = createAuthenticationData(username, password);
             return securityService.getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, null);
         } else {
@@ -221,5 +239,12 @@ public class DefaultDelegationProvider implements DelegationProvider {
             authenticationData.set(AuthenticationData.PASSWORD, password.toCharArray());
         }
         return authenticationData;
+    }
+
+    private JavaEESecurityService getJavaEESecurityService() {
+        if (javaEESecurityServiceRef != null) {
+            return javaEESecurityServiceRef.getService();
+        }
+        return null;
     }
 }
