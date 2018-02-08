@@ -14,13 +14,21 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Syntaxe : java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName [actions] [options]  
-scriptUsage=Syntaxe : {0} action nomServeur [options]
+briefUsage=Syntaxe : java [JVM options] \
+-javaagent:bin/tools/ws-javaagent.jar \\        \n \t-jar bin/tools/ws-server.jar \
+serverName {0} [options]  
+scriptUsage=Syntaxe : {0} {1} serverName [options]
 
 use.actions=Actions :
 use.options=Options :
+use.options.gen.desc=\ \ \ \ Utilisez help [nom_action] pour obtenir des informations d\u00e9taill\u00e9es sur les options de chaque action.
 use.jvmarg=Options JVM :
+category-key.lifecycle=Cycle de vie du serveur
+category-key.win=Windows
+category-key.service=Identification des probl\u00e8mes
+category-key.help=Informations
+category-key.misc=Divers
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -116,22 +124,38 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tEfface du cache toutes les donn\u00e9es relatives \u00e0 cette instance de serveur
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="chemin fichier archive cible"
-option-desc.archive=\tIndiquez la cible d'archive \u00e0 g\u00e9n\u00e9rer par le package ou l'action \n\
-\tde vidage. La cible peut \u00eatre sp\u00e9cifi\u00e9e comme chemin absolu ou chemin \n\
-\trelatif. Si cette option est omise, le fichier d'archive sera cr\u00e9\u00e9 \n\
-\tdans le r\u00e9pertoire de sortie du serveur. L'extension du nom de \n\
-\tfichier cible peut avoir des cons\u00e9quences sur le format de l'archive       \n\
-\tLe format d'archive par d\u00e9faut pour l'action de package est "pax" sur\n\
-\tz/OS et "zip" sur toutes les autres plateformes.                                    \n\
-\tLe format d'archive "jar" g\u00e9n\u00e8re un fichier JAR auto-extractible\n\
-\tsemblable \u00e0 l'archive du programme d'installation d'origine.                                      \n\
-\tLe format d'archive "jar" associ\u00e9 \u00e0 "runnable" dans l'option --include\n\
-\tg\u00e9n\u00e8re un fichier JAR ex\u00e9cutable qui peut ex\u00e9cuter le serveur Liberty \n\
-\tdepuis le fichier jar \u00e0 l'aide de java -jar.
+option-desc.dump.archive=\tSp\u00e9cifiez la cible d'archive que l'action de vidage doit g\u00e9n\u00e9rer.       \n\
+\tLa cible peut \u00eatre sp\u00e9cifi\u00e9e comme chemin d'acc\u00e8s absolu ou         \n\
+\trelatif. Si cette option est omise, le fichier archive est cr\u00e9\u00e9\n\
+\tdans le r\u00e9pertoire de sortie du serveur. L'extension du nom de fichier\n\
+\tcible peut avoir un impact sur le format de l'archive g\u00e9n\u00e9r\u00e9e. Le format\n\
+\td'archive par d\u00e9faut pour l'action de package est "pax" sous z/OS et "zip"\n\
+\tsur les autres plateformes. Le format d'archive "jar" g\u00e9n\u00e8re un fichier jar\n\
+\tauto-extractible similaire \u00e0 l'archive de programme d'installation d'origine.
+
+option-desc.package.archive=\tSp\u00e9cifiez la cible d'archive que l'action de package doit g\u00e9n\u00e9rer.       \n\
+\tLa cible peut \u00eatre sp\u00e9cifi\u00e9e comme chemin d'acc\u00e8s absolu ou         \n\
+\trelatif. Si cette option est omise, le fichier archive est cr\u00e9\u00e9\n\
+\tdans le r\u00e9pertoire de sortie du serveur. L'extension du nom de fichier\n\
+\tcible peut avoir un impact sur le format de l'archive g\u00e9n\u00e9r\u00e9e. Le format\n\
+\td'archive par d\u00e9faut pour l'action de package est "pax" sous z/OS et "zip"\n\
+\tsur les autres plateformes. Le format d'archive "jar" g\u00e9n\u00e8re un fichier jar\n\
+\tauto-extractible similaire \u00e0 l'archive de programme d'installation d'origine. \
+Le format d'archive "jar"      \n\
+\tcombin\u00e9 avec l'argument "runnable" de l'option --include g\u00e9n\u00e8re un fichier jar\n\
+\tex\u00e9cutable qui peut ex\u00e9cuter le serveur Liberty depuis le fichier jar avec\n\
+\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tListe de valeurs d\u00e9limit\u00e9e par des virgules. Les valeurs valides varient\n\
-\ten fonction de l'action.
+option-desc.javadump.include=\tListe de valeurs d\u00e9limit\u00e9e par des virgules. Les valeurs valides sont : heap, system \n\
+\tthread.
+option-desc.package.include=\tListe de valeurs d\u00e9limit\u00e9e par des virgules. Les valeurs valides sont : all*, usr,   \n\
+\tminify, runnable. Si vous sp\u00e9cifiez runnable, le package g\u00e9n\u00e9r\u00e9 sera \n\
+\tun fichier jar ex\u00e9cutable qui ex\u00e9cute le serveur. L'option minify g\u00e9n\u00e8re\n\
+\tla plus petite image possible pour le serveur. L'option usr cr\u00e9e un\n\
+\tpackage qui contient le serveur et l'application, mais pas l'environnement\n\
+\td'ex\u00e9cution. L'option par d\u00e9faut all g\u00e9n\u00e8re un package serveur qui\n\
+\tcontient tout.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tIndiquez le nom du mod\u00e8le \u00e0 utiliser lors de la cr\u00e9ation d'un serveur. 

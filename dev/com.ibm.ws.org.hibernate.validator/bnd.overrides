@@ -104,7 +104,8 @@ DynamicImport-Package: \
  
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/*.xsd, \
-  @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services/*
+  @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services/*,\
+  org=resources/org
   
 Service-Component:\
   org.hibernate.validator.HibernateValidator;\

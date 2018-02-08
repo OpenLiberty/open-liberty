@@ -13,7 +13,6 @@ package com.ibm.ws.security.common.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -31,7 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.security.common.test.CommonTestClass;
+import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
 import test.common.SharedOutputManager;
@@ -145,17 +144,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
     @Test
     public void test_getJavaScriptHtmlCookieString_nullName_nullValue() throws Exception {
         try {
-            utils = getUtilsWithHtmlCookieStringMethodMocked();
-
-            final String mockedCookieString = "";
-            setMockedCookieStringExpectation(mockedCookieString);
-
             String name = null;
             String value = null;
 
+            final String expectedCookieString = "";
+
             String result = utils.getJavaScriptHtmlCookieString(name, value);
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + mockedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -172,17 +168,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
     @Test
     public void test_getJavaScriptHtmlCookieString_emptyName_emptyValue() throws Exception {
         try {
-            utils = getUtilsWithHtmlCookieStringMethodMocked();
-
-            final String mockedCookieString = "";
-            setMockedCookieStringExpectation(mockedCookieString);
-
             String name = "";
             String value = "";
 
+            final String expectedCookieString = "";
+
             String result = utils.getJavaScriptHtmlCookieString(name, value);
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + mockedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -199,44 +192,14 @@ public class JavaScriptUtilsTest extends CommonTestClass {
     @Test
     public void test_getJavaScriptHtmlCookieString_nonEmptyName_nonEmptyValue() throws Exception {
         try {
-            utils = getUtilsWithHtmlCookieStringMethodMocked();
-
             String name = "some value";
             String value = "some value";
 
-            final String mockedCookieString = name + "=" + value;
-            setMockedCookieStringExpectation(mockedCookieString);
+            final String expectedCookieString = name + "=" + value + ";";
 
             String result = utils.getJavaScriptHtmlCookieString(name, value);
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + mockedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
-     * - Cookie property map: Null
-     * Expects:
-     * - Result should be a document.cookie string set to the provided name + "=" + value
-     */
-    @Test
-    public void test_getJavaScriptHtmlCookieString_nullCookieSettings() throws Exception {
-        try {
-            utils = getUtilsWithHtmlCookieStringMethodMocked();
-
-            String name = "some value";
-            String value = "some value";
-            Map<String, String> cookieProps = null;
-
-            final String mockedCookieString = name + "=" + value;
-            setMockedCookieStringExpectation(mockedCookieString);
-
-            String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
-
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + mockedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -250,20 +213,17 @@ public class JavaScriptUtilsTest extends CommonTestClass {
      * - Result should be a document.cookie string set to the provided name + "=" + value
      */
     @Test
-    public void test_getJavaScriptHtmlCookieString_emptyCookieSettings() throws Exception {
+    public void test_getJavaScriptHtmlCookieString_emptyCookieProperties() throws Exception {
         try {
-            utils = getUtilsWithHtmlCookieStringMethodMocked();
-
             String name = "some value";
             String value = "some value";
             Map<String, String> cookieProps = new HashMap<String, String>();
 
-            final String mockedCookieString = name + "=" + value;
-            setMockedCookieStringExpectation(mockedCookieString);
+            final String expectedCookieString = name + "=" + value + ";";
 
             String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + mockedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -277,22 +237,187 @@ public class JavaScriptUtilsTest extends CommonTestClass {
      * - Result should be a document.cookie string set to the provided name + "=" + value + all extra properties
      */
     @Test
-    public void test_getJavaScriptHtmlCookieString_withCookieSettings() throws Exception {
+    public void test_getJavaScriptHtmlCookieString_withCookieProperties() throws Exception {
         try {
-            utils = getUtilsWithHtmlCookieStringMethodMocked();
-
             String name = "some value";
             String value = "some value";
             Map<String, String> cookieProps = new HashMap<String, String>();
             cookieProps.put("key1", "value1");
             cookieProps.put("key2", "value2");
 
-            final String mockedCookieString = name + "=" + value + "; key1=value1; key2=value2";
-            setMockedCookieStringExpectation(mockedCookieString);
-
             String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + mockedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            final String expectedCookieString = name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+            verifyCookiePropertyStrings(result, cookieProps);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** getUnencodedJavaScriptHtmlCookieString **************************************/
+
+    /**
+     * Tests:
+     * - Cookie name: Null
+     * - Cookie value: Null
+     * Expects:
+     * - Result should be a document.cookie string set to an empty string
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_nullName_nullValue() throws Exception {
+        try {
+            String name = null;
+            String value = null;
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
+
+            String expectedCookieString = "";
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Empty string
+     * - Cookie value: Null
+     * Expects:
+     * - Result should be a document.cookie string set to an empty string
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_emptyName_nullValue() throws Exception {
+        try {
+            String name = "";
+            String value = null;
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
+
+            String expectedCookieString = "";
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Null
+     * Expects:
+     * - Result should be a document.cookie string set to create the cookie without any HTML encoding
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_htmlCharsInName_nullValue() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = null;
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
+
+            String expectedCookieString = name + ";";
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Empty string
+     * Expects:
+     * - Result should be a document.cookie string set to create the cookie without any HTML encoding
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_htmlCharsInName_emptyValue() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = "";
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
+
+            String expectedCookieString = name + "=;";
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Non-empty string, contains characters that must be HTML-encoded
+     * Expects:
+     * - Result should be a document.cookie string set to create the cookie without any HTML encoding
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_htmlCharsInName_htmlCharsInValue() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = ">cookie'<\" value ";
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value);
+
+            String expectedCookieString = name + "=" + value + ";";
+            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Non-empty string, contains characters that must be HTML-encoded
+     * Expects:
+     * - Result should be a document.cookie string set to create the cookie without any HTML encoding
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_emptyCookieProperties() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = ">cookie'<\" value ";
+            Map<String, String> cookieProps = new HashMap<String, String>();
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value, cookieProps);
+
+            String expectedCookieString = DOCUMENT_COOKIE_START + name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Non-empty string, contains characters that must be HTML-encoded
+     * Expects:
+     * - Result should be a document.cookie string set to create the cookie without any HTML encoding
+     */
+    @Test
+    public void test_getUnencodedJavaScriptHtmlCookieString_withCookieProperties() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = ">cookie'<\" value ";
+            Map<String, String> cookieProps = new HashMap<String, String>();
+            cookieProps.put("key1", "value1");
+            cookieProps.put("key2", "value2");
+
+            String result = utils.getUnencodedJavaScriptHtmlCookieString(name, value, cookieProps);
+
+            String expectedCookieString = DOCUMENT_COOKIE_START + name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+            verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -529,29 +654,6 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
     /**
      * Tests:
-     * - Cookie property map: Null
-     * Expects:
-     * - Cookie name + "=" + value should be only string present, with appropriate HTML encoding
-     */
-    @Test
-    public void test_getHtmlCookieString_nullPropertyMap() throws Exception {
-        try {
-            String name = "some name";
-            String value = "a value";
-            Map<String, String> cookieProps = null;
-
-            String result = utils.getHtmlCookieString(name, value, cookieProps);
-
-            String expectedCookieString = name + "=" + value + ";";
-            verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
      * - Cookie property map: Empty
      * Expects:
      * - Cookie name + "=" + value should be only string present, with appropriate HTML encoding
@@ -597,6 +699,172 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
             String expectedCookieNameAndValue = name + "=" + value + ";";
             verifyPattern(result, Pattern.quote(expectedCookieNameAndValue), "Expected cookie name and value did not appear in the result.");
+            verifyCookiePropertyStrings(result, cookieProps);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** getUnencodedHtmlCookieString **************************************/
+
+    /**
+     * Tests:
+     * - Cookie name: Null
+     * - Cookie value: Non-empty string
+     * Expects:
+     * - Result should be an empty string
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_nullName() throws Exception {
+        try {
+            String name = null;
+            String value = "some value";
+
+            String result = utils.getUnencodedHtmlCookieString(name, value);
+
+            assertEquals("Result should have been an empty string since the cookie name is null.", "", result);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Empty string
+     * - Cookie value: Non-empty string
+     * Expects:
+     * - Result should be an empty string
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_emptyName() throws Exception {
+        try {
+            String name = "";
+            String value = "some value";
+
+            String result = utils.getUnencodedHtmlCookieString(name, value);
+
+            assertEquals("Result should have been an empty string since the cookie name is empty.", "", result);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string
+     * - Cookie value: Null
+     * Expects:
+     * - Cookie name + ";", without appropriate HTML encoding
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_nullValue() throws Exception {
+        try {
+            String name = "some value";
+            String value = null;
+
+            String result = utils.getUnencodedHtmlCookieString(name, value);
+
+            String expectedCookieString = name + ";";
+            verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Contains HTML special characters
+     * - Cookie value: Empty string
+     * Expects:
+     * - Cookie name + "=;", without appropriate HTML encoding
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_emptyValue() throws Exception {
+        try {
+            String name = "& some<\"name,";
+            String value = "";
+
+            String result = utils.getUnencodedHtmlCookieString(name, value);
+
+            String expectedCookieString = name + "=;";
+            verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Contains HTML special characters
+     * - Cookie value: Contains HTML special characters
+     * Expects:
+     * - Cookie name + "=" + value, without appropriate HTML encoding
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_htmlSpecialChars() throws Exception {
+        try {
+            String name = ">\"name,";
+            String value = "&value<";
+
+            String result = utils.getUnencodedHtmlCookieString(name, value);
+
+            String expectedCookieString = name + "=" + value + ";";
+            verifyCaseInsensitiveQuotedPatternMatches(result, expectedCookieString, "Cookie string did not match expected pattern.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Non-empty string, contains characters that must be HTML-encoded
+     * Expects:
+     * - Cookie name + "=" + value, without appropriate HTML encoding
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_emptyCookieProperties() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = ">cookie'<\" value ";
+            Map<String, String> cookieProps = new HashMap<String, String>();
+
+            String result = utils.getUnencodedHtmlCookieString(name, value, cookieProps);
+
+            String expectedCookieString = name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Cookie name: Non-empty string, contains characters that must be HTML-encoded
+     * - Cookie value: Non-empty string, contains characters that must be HTML-encoded
+     * Expects:
+     * - Cookie name + "=" + value + all properties, without appropriate HTML encoding
+     */
+    @Test
+    public void test_getUnencodedHtmlCookieString_withCookieProperties() throws Exception {
+        try {
+            String name = "<cookie name\"'>";
+            String value = ">cookie'<\" value ";
+            Map<String, String> cookieProps = new HashMap<String, String>();
+            cookieProps.put("key1", "value1");
+            cookieProps.put("key2", "value2");
+
+            String result = utils.getUnencodedHtmlCookieString(name, value, cookieProps);
+
+            String expectedCookieString = name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
             verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
@@ -729,11 +997,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
      * - Redirect URL: Valid URL
      * Expects:
      * - Valid JavaScript HTML block should be returned
-     * - Block should set the cookie with the specified name and appropriate value
+     * - Block should set the cookie with the specified name, appropriate value, and properties
      * - Block should contain browser redirect statement
      */
     @Test
-    public void test_getJavaScriptForRedirect_nonEmptyCookieName() throws Exception {
+    public void test_getJavaScriptForRedirect() throws Exception {
         try {
             String requestUrlCookieName = "some cookie name";
             String redirectUrl = VALID_URL;
@@ -747,11 +1015,10 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
 
-            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl);
-
             Map<String, String> cookieProps = new HashMap<String, String>();
             cookieProps.put("path", "/");
-            verifyCookiePropertyStrings(result, cookieProps);
+
+            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl, cookieProps);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -764,11 +1031,11 @@ public class JavaScriptUtilsTest extends CommonTestClass {
      * - Redirect URL: Valid URL
      * Expects:
      * - Valid JavaScript HTML block should be returned
-     * - Block should set the cookie with the specified name and appropriate value
+     * - Block should set the cookie with the specified name, appropriate value, and properties
      * - Block should contain browser redirect statement
      */
     @Test
-    public void test_getJavaScriptForRedirect_nonEmptyCookieName_secureCookie() throws Exception {
+    public void test_getJavaScriptForRedirect_secureCookie() throws Exception {
         try {
             String requestUrlCookieName = "some cookie name";
             String redirectUrl = VALID_URL;
@@ -782,12 +1049,138 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
             String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
 
-            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl);
-
             Map<String, String> cookieProps = new HashMap<String, String>();
             cookieProps.put("path", "/");
             cookieProps.put("secure", null);
-            verifyCookiePropertyStrings(result, cookieProps);
+
+            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl, cookieProps);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Request URL cookie name: Non-empty string
+     * - Redirect URL: Contains a query string
+     * Expects:
+     * - Exception should be thrown with CWWKS6106E message saying the redirect URL is invalid
+     */
+    @Test
+    public void test_getJavaScriptForRedirect_redirectUrlWithQuery() throws Exception {
+        try {
+            String requestUrlCookieName = "some cookie name";
+            String redirectUrl = VALID_URL + "?test=value";
+
+            mockery.checking(new Expectations() {
+                {
+                    one(webAppConfig).getSSORequiresSSL();
+                    will(returnValue(false));
+                }
+            });
+
+            try {
+                String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
+                fail("Should have thrown an exception but did not. Result was: [" + result + "].");
+            } catch (Exception e) {
+                assertInvalidRedirectUrlException(e, redirectUrl);
+            }
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Request URL cookie name: Non-empty string with characters that must be HTML escaped
+     * - Redirect URL: Valid URL
+     * Expects:
+     * - Valid JavaScript HTML block should be returned
+     * - Block should set the cookie with the specified name, appropriate value, and properties
+     * - Block should contain browser redirect statement
+     */
+    @Test
+    public void test_getJavaScriptForRedirect_cookieNameEscapedHtml() throws Exception {
+        try {
+            String requestUrlCookieName = "a'cookie \"name<with> HTML&chars";
+            String redirectUrl = VALID_URL;
+
+            mockery.checking(new Expectations() {
+                {
+                    one(webAppConfig).getSSORequiresSSL();
+                    will(returnValue(false));
+                }
+            });
+
+            String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl);
+
+            Map<String, String> cookieProps = new HashMap<String, String>();
+            cookieProps.put("path", "/");
+
+            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl, cookieProps);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Request URL cookie name: Non-empty string with characters that must be HTML escaped
+     * - Redirect URL: Valid URL
+     * - Cookie property map: Empty
+     * Expects:
+     * - Valid JavaScript HTML block should be returned
+     * - Block should set the cookie with the specified name and appropriate value, without any cookie properties
+     * - Block should contain browser redirect statement
+     */
+    @Test
+    public void test_getJavaScriptForRedirect_emptyCookieProperties() throws Exception {
+        try {
+            String requestUrlCookieName = "some cookie name";
+            String redirectUrl = VALID_URL;
+
+            Map<String, String> cookieProps = new HashMap<String, String>();
+
+            String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl, cookieProps);
+
+            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl, cookieProps);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Request URL cookie name: Non-empty string with characters that must be HTML escaped
+     * - Redirect URL: Valid URL
+     * - Cookie property map: Non-empty
+     * Expects:
+     * - Valid JavaScript HTML block should be returned
+     * - Block should set the cookie with the specified name and appropriate value, without any cookie properties
+     * - Block should contain browser redirect statement
+     */
+    @Test
+    public void test_getJavaScriptForRedirect_withCookieProperties() throws Exception {
+        try {
+            String requestUrlCookieName = "some cookie name";
+            String redirectUrl = VALID_URL;
+
+            Map<String, String> cookieProps = new HashMap<String, String>();
+            cookieProps.put(">\"name,", "&value<");
+            cookieProps.put(null, "null_key_value");
+            cookieProps.put("", "empty_key_value");
+            cookieProps.put(";", "semi_colon_value");
+            cookieProps.put("path", "https://localhost:43/");
+            cookieProps.put("NullValue", null);
+            cookieProps.put("EmptyValue", "");
+
+            String result = utils.getJavaScriptForRedirect(requestUrlCookieName, redirectUrl, cookieProps);
+
+            verifyValidJavaScriptForRedirectBlock(result, requestUrlCookieName, redirectUrl, cookieProps);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -796,24 +1189,6 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
     /************************************** Helper methods **************************************/
 
-    private JavaScriptUtils getUtilsWithHtmlCookieStringMethodMocked() {
-        return new JavaScriptUtils() {
-            @Override
-            public String getHtmlCookieString(String name, String value, Map<String, String> cookieProps) {
-                return mockInterface.getHtmlCookieString();
-            }
-        };
-    }
-
-    private void setMockedCookieStringExpectation(final String mockedCookieString) {
-        mockery.checking(new Expectations() {
-            {
-                one(mockInterface).getHtmlCookieString();
-                will(returnValue(mockedCookieString));
-            }
-        });
-    }
-
     private void verifyCaseInsensitiveQuotedPatternMatches(String result, String patternString, String failureMsg) {
         Pattern expectedPattern = getCaseInsensitiveQuotedPattern(patternString);
         verifyPatternMatches(result, expectedPattern, failureMsg);
@@ -821,16 +1196,6 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
     private Pattern getCaseInsensitiveQuotedPattern(String value) {
         return Pattern.compile(Pattern.quote(value), Pattern.CASE_INSENSITIVE);
-    }
-
-    private void verifyPatternMatches(String input, Pattern pattern, String failureMsg) {
-        assertNotNull(failureMsg + " Value should not have been null but was. Expected pattern [" + pattern.toString() + "].", input);
-        assertTrue(failureMsg + " Expected [" + pattern.toString() + "]. Value was [" + input + "].", pattern.matcher(input).matches());
-    }
-
-    private void verifyPatternExists(String input, Pattern pattern, String failureMsg) {
-        assertNotNull(failureMsg + " Value should not have been null but was. Expected pattern [" + pattern.toString() + "].", input);
-        assertTrue(failureMsg + " Expected [" + pattern.toString() + "]. Value was [" + input + "].", pattern.matcher(input).find());
     }
 
     private void verifyCookiePropertyStrings(String cookieString, Map<String, String> cookieProperties) {
@@ -872,8 +1237,13 @@ public class JavaScriptUtilsTest extends CommonTestClass {
     }
 
     private void verifyValidJavaScriptForRedirectBlock(String result, String cookieName, String redirectUrl) {
+        verifyValidJavaScriptForRedirectBlock(result, cookieName, redirectUrl, null);
+    }
+
+    private void verifyValidJavaScriptForRedirectBlock(String result, String cookieName, String redirectUrl, Map<String, String> cookieProps) {
         assertIsValidJavaScriptHtmlBlock(result);
         assertContainsAppropriateCookieString(result, cookieName);
+        assertContainsAppropriateCookieProperties(result, cookieName, cookieProps);
         assertContainsWindowReplaceString(result, redirectUrl);
     }
 
@@ -892,8 +1262,21 @@ public class JavaScriptUtilsTest extends CommonTestClass {
         }
     }
 
+    private void assertContainsAppropriateCookieProperties(String result, String cookieName, Map<String, String> cookieProps) {
+        if (cookieProps == null) {
+            return;
+        }
+        if (cookieProps.isEmpty()) {
+            // Ensure that result contains only the cookie name and value - no properties should be included
+            Pattern expectedPattern = getExpectedCookieNameAndValuePattern(cookieName);
+            verifyPattern(result, expectedPattern.pattern() + DOCUMENT_COOKIE_END);
+        } else {
+            verifyCookiePropertyStrings(result, cookieProps);
+        }
+    }
+
     private void assertContainsWindowReplaceString(String result, String redirectUrl) {
-        String windowReplaceRegex = Pattern.quote(WINDOW_LOCATION_REPLACE_START + redirectUrl + WINDOW_LOCATION_REPLACE_END);
+        String windowReplaceRegex = Pattern.quote(WINDOW_LOCATION_REPLACE_START + WebUtils.htmlEncode(redirectUrl) + WINDOW_LOCATION_REPLACE_END);
         verifyPattern(result, windowReplaceRegex, "Result did not contain the expected pattern to redirect the browser.");
     }
 
@@ -910,7 +1293,7 @@ public class JavaScriptUtilsTest extends CommonTestClass {
 
     private Pattern getExpectedCookieNameAndValuePattern(String cookieName) {
         String expectedCookieVal = Pattern.quote("\"+encodeURI(") + "[a-zA-Z0-9]+" + Pattern.quote(")+\"");
-        return Pattern.compile(Pattern.quote(DOCUMENT_COOKIE_START + cookieName + "=") + expectedCookieVal + Pattern.quote(";"));
+        return Pattern.compile(Pattern.quote(DOCUMENT_COOKIE_START + WebUtils.htmlEncode(cookieName) + "=") + expectedCookieVal + Pattern.quote(";"));
     }
 
 }

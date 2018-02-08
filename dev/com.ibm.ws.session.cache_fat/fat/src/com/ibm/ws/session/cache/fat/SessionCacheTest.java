@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -55,6 +56,7 @@ public class SessionCacheTest extends FATServletClient {
      * serialized when the session is evicted from memory, and deserialized
      * when the session is accessed again.
      */
+    @AllowedFFDC("java.lang.UnsupportedOperationException") // TODO remove once we implement performInvalidation and possibly other methods
     @Test
     public void testSerialization() throws Exception {
         List<String> session = new ArrayList<>();

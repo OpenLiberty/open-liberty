@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: Az adatb\u00e1zis metaadatainak el\u00e9r\u00e9se
 META_DATA_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lt hozz\u00e1f\u00e9rni az adatb\u00e1zis metaadat-objektum\u00e1hoz.
 META_DATA_EXCEPTION.useraction=Ellen\u0151rizze, hogy a metaadatok a h\u00e1tt\u00e9r-adatb\u00e1zison enged\u00e9lyezve vannak-e.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 kikapcsolta a bels\u0151 kapcsolatt\u00e1rol\u00e1st.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 a kapcsolat gyors\u00edt\u00f3t\u00e1raz\u00e1s\u00e1nak bekapcsol\u00e1s\u00e1t \u00e9szlelte az adatb\u00e1zisban. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 kapcsolatt\u00e1rol\u00e1sa letilt\u00e1sra ker\u00fcl.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Ha nem akarja az alkalmaz\u00e1skiszolg\u00e1l\u00f3 kapcsolatt\u00e1rol\u00e1s\u00e1t letiltani, akkor csak az adatb\u00e1zis-kiszolg\u00e1l\u00f3 kapcsolatt\u00e1rol\u00e1s\u00e1t tiltsa le.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

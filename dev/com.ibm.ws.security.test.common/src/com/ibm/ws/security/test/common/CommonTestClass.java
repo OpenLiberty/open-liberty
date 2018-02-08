@@ -1,6 +1,7 @@
 package com.ibm.ws.security.test.common;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.regex.Matcher;
@@ -34,14 +35,22 @@ public class CommonTestClass {
 
     protected void verifyPattern(String input, String regex) {
         Pattern pattern = Pattern.compile(regex);
-        Matcher m = pattern.matcher(input);
-        assertTrue("Input did not match expected expression. Expected: [" + regex + "]. Value was: [" + input + "]", m.find());
+        verifyPatternExists(input, pattern, "Input did not contain the expected expression.");
     }
 
     protected void verifyPattern(String input, String regex, String failureMsg) {
         Pattern pattern = Pattern.compile(regex);
-        Matcher m = pattern.matcher(input);
-        assertTrue(failureMsg + " Input did not match expected expression. Expected: [" + regex + "]. Value was: [" + input + "]", m.find());
+        verifyPatternExists(input, pattern, failureMsg);
+    }
+
+    protected void verifyPatternMatches(String input, Pattern pattern, String failureMsg) {
+        assertNotNull(failureMsg + " Value should not have been null but was. Expected pattern [" + pattern.toString() + "].", input);
+        assertTrue(failureMsg + " Expected to find pattern [" + pattern.toString() + "]. Value was [" + input + "].", pattern.matcher(input).matches());
+    }
+
+    protected void verifyPatternExists(String input, Pattern pattern, String failureMsg) {
+        assertNotNull(failureMsg + " Value should not have been null but was. Expected pattern [" + pattern.toString() + "].", input);
+        assertTrue(failureMsg + " Expected to find pattern [" + pattern.toString() + "]. Value was [" + input + "].", pattern.matcher(input).find());
     }
 
     protected void verifyNoLogMessage(SharedOutputManager outputMgr, String messageRegex) {

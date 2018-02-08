@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: O acesso aos metadados do banco de dados causou u
 META_DATA_EXCEPTION.explanation=Ocorreu uma exce\u00e7\u00e3o quando o Application Server estava tentando obter ou acessar o objeto de metadados do banco de dados.
 META_DATA_EXCEPTION.useraction=Verifique se os metadados est\u00e3o ativados no banco de dados backend.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: O Application Server desativou o conjunto de conex\u00f5es interno.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=O Application Server detectou a ativa\u00e7\u00e3o do cache de conex\u00e3o atrav\u00e9s do banco de dados. O conjunto de conex\u00f5es no Application Server ser\u00e1 desativado.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Se voc\u00ea n\u00e3o quiser desativar o conjunto de conex\u00f5es no Application Server, desative o conjunto de conex\u00f5es para o servidor de banco de dados.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

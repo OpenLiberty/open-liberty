@@ -309,3 +309,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Assegure-se de que a rede esteja configurad
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: O emissor [{0}] do JSON Web Token (JWT) fornecido n\u00e3o \u00e9 confi\u00e1vel porque a configura\u00e7\u00e3o do JWT [{1}] n\u00e3o especifica nenhum emissor confi\u00e1vel.
 JWT_TRUSTED_ISSUERS_NULL.explanation=A configura\u00e7\u00e3o do servidor especifica quais emissores s\u00e3o confi\u00e1veis para valida\u00e7\u00e3o dos JWTs. A configura\u00e7\u00e3o do JWT n\u00e3o especifica nenhum emissor confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Assegure-se de que a configura\u00e7\u00e3o do JWT especificada na mensagem defina pelo menos um emissor confi\u00e1vel. Assegure-se de que o emissor do JWT corresponda a um dos emissores confi\u00e1veis especificados na sua configura\u00e7\u00e3o do JWT.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: O esquema HTTP \u00e9 usado no terminal especificado: {0}, HTTPS \u00e9 necess\u00e1rio.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=O terminal especificado requer HTTPS, mas HTTP foi usado na URL de solicita\u00e7\u00e3o.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifique a URL de solicita\u00e7\u00e3o e certifique-se de que ela use HTTPS ou mude a configura\u00e7\u00e3o para que HTTPS n\u00e3o seja necess\u00e1rio.

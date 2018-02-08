@@ -266,6 +266,11 @@ vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo traso
 UNABLE_TO_FIND_JAVA_AGENT=Nelze nal\u00e9zt agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo \
 trasov\u00e1n\u00ed.
 
+RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG byl nastaven. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=Soubor jar obsahuje soubory jvm.options. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Sada IBM SDK se pou\u017e\u00edv\u00e1 bez volby -XX:+EnableHCR. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
+RUN_IN_CHILD_JVM_JRE=Pou\u017e\u00edv\u00e1 se instalace prost\u0159ed\u00ed Java Runtime Environment. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Adres\u00e1\u0159 {0} nen\u00ed platnou instalac\u00ed Liberty. Ur\u010dete ko\u0159enov\u00fd adres\u00e1\u0159 instalace Liberty, kterou chcete upgradovat.
 LICENSE_invalidVersion=Licenci nelze upgradovat, proto\u017ee ur\u010den\u00e1 instalace produktu je ve verzi {0}, licenci lze upgradovat pouze z verze {1}.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.anno.targets.internal;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,6 +21,9 @@ import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.MethodInfo;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -34,6 +38,8 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
  * and {@link #convertIndex(String, Index, ScanPolicy)}.
  */
 public class AnnotationTargetsImpl_JandexConverter {
+    public static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_JandexConverter.class);
+    
     /** Name of package classes.*/
     public static final String PACKAGE_INFO_CLASS_NAME = "package-info";
 
@@ -59,9 +65,11 @@ public class AnnotationTargetsImpl_JandexConverter {
     }
 
     //
-
+    protected final String hashText;
+    
     public AnnotationTargetsImpl_JandexConverter(AnnotationTargetsImpl_Targets annotationTargets) {
         this.annotationTargets = annotationTargets;
+        this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
     }
 
     //
@@ -135,7 +143,11 @@ public class AnnotationTargetsImpl_JandexConverter {
         ScanPolicy scanPolicy) {
 
         Collection<ClassInfo> knownClasses = index.getKnownClasses();
-        System.out.println("Classes [ " + Integer.toString(knownClasses.size()) + " ]");
+
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Classes [ {1} ]", 
+                     new Object[] { hashText, Integer.toString(knownClasses.size()) } ));
+        }
 
         for ( ClassInfo jandexClassInfo : knownClasses ) {
             convertClassInfo(i_classSourceName, jandexClassInfo, scanPolicy);
@@ -153,16 +165,24 @@ public class AnnotationTargetsImpl_JandexConverter {
         String className = classDotName.toString();
 
         if ( isPackageName(className) ) {
-            // System.out.println( methodName + " Package load [ " + className + " ]");
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Package load [ {1} ]", 
+                         new Object[] { hashText, className } ));
+            }
+
             return;
         }
-
-        // System.out.println( methodName + " Class load [ " + className + " ]");
+        
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Class load [ {1} ]", 
+                     new Object[] { hashText, className } ));
+        }
 
         String i_className = internClassName(className);
 
         if ( !i_recordScannedClassName(scanPolicy, i_classSourceName, i_className) ) {
-            System.out.println(methodName + " WARNING: Duplicate class [ " + i_className + " ]");
+            // "Class scanning internal error: Jandex processing duplicate processing of class [ {0} ]."
+            Tr.warning(tc, "ANNO_TARGETS_JANDEX_DUPLICATE_CLASS", i_className);
             return;
         }
 

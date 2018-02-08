@@ -1,0 +1,19 @@
+<server description="JavaEESec Multiple Module Global Login Form FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsf-2.3</feature>
+    </featureManager>
+
+    <webAppSecurity loginFormURL="globalLogin/globalLogin.jsp" loginErrorURL="globalLogin/globalLoginError.jsp"
+     overrideHttpAuthenticationMechanism="FORM" />
+
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="ear" id="multipleModule" name="multipleModule" location="multipleModule.ear"/>
+
+    <application type="war" id="globalLogin" name="globalLogin" location="globalLogin.war"/>
+
+    <include location="../fatTestPorts.xml" />
+</server>

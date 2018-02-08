@@ -343,9 +343,14 @@ public class ClassSourceImpl_MappedDirectory
 
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
-            System.out.println(
-                "Read JANDEX index [ " + fullJandexPath + " ]" +
-                " Classes [ " + Integer.toString(jandexIndex.getKnownClasses().size()) + " ]");
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
+                         new Object[] { getHashText(),
+                                        fullJandexPath,
+                                        getCanonicalName(),
+                                        Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+            }            
             return jandexIndex;
 
         } catch ( Exception e ) {

@@ -11,14 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
--sub: *.bnd, \
-	test-bundles/message.source.handler/bnd.bnd, \
-	test-bundles/sample.source.handler/bnd.bnd, \
-	test-bundles/ffdc.source.handler/bnd.bnd, \
-	test-bundles/accesslog.source.handler/bnd.bnd, \
-	test-bundles/trace.source.handler/bnd.bnd, \
-	test-bundles/test.configuration.fallalloverthefloor.ibmfeature/bnd.bnd, \
-	test-bundles/test.configuration.fallalloverthefloor.userfeature/bnd.bnd
+-sub: *.bnd
 
 src: \
 	fat/src,\

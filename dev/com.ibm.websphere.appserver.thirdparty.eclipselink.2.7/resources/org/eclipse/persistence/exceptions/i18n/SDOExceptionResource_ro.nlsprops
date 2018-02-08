@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -136,4 +140,8 @@
 45209=A fost f\u0103cut\u0103 o \u00eencercare de resetare a instan\u0163ei ApplicationResolver \u00een SDOHelperContext.  Numai o setare este permis\u0103.
 
 45210=DataObject ce este marshalled nu este din acela\u015fi HelperContext ca \u015fi XMLHelper.
+
+45211=Tipul nu a putut fi definit cu numele [{0}]. Numele nu este un nume valid XML.
+
+45212=Proprietatea nu a putut fi definit\u0103 cu numele [{0}]. Numele nu este un nume valid XML.
 

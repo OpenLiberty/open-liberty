@@ -1,5 +1,9 @@
 /*******************************************************************************
+<<<<<<< HEAD
  * Copyright (c) 2011, 2018 IBM Corporation and others.
+=======
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,7 +298,12 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         if ( !streamer.doProcess(className, scanPolicy) ) {
             if ( logParms != null ) {
+<<<<<<< HEAD
                 Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: Filtered by streamer", logParms));
+=======
+                Tr.exit(tc, methodName,
+                        MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: Filtered by streamer", logParms));
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
             }
             return false;
         }
@@ -443,11 +452,22 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         int initialClasses = i_seedClassNames.size();
+<<<<<<< HEAD
         System.out.println(
             "Processing [ " + getCanonicalName() + " ]" +
             " Initial classes [ " + Integer.valueOf(initialClasses) + " ]");
 
         String processCase;
+=======
+        
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] Initial classes [ {2} ]", 
+                     new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) } ));
+        }
+
+        String processCase;
+        
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
         if ( !processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
             processFromScratch(streamer, i_seedClassNames, scanPolicy);
             processCase = "from scratch";
@@ -456,10 +476,18 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         int finalClasses = i_seedClassNames.size();
+<<<<<<< HEAD
         System.out.println("Processing [ " + getCanonicalName() + " ] " + processCase + ";" +
                            " Final classes [ " + Integer.valueOf(finalClasses) + " ]");
 
         if ( tc.isDebugEnabled() ) {
+=======
+
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]", 
+                    new Object[] {  getHashText(), getCanonicalName(), processCase, Integer.valueOf(finalClasses) } ));            
+            
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
             Object[] logParms = new Object[] { getHashText(), null, null };
 
             logParms[1] = Integer.valueOf(finalClasses - initialClasses);
@@ -529,6 +557,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         ClassSource_Streamer streamer,
         Set<String> i_seedClassNames,
         ScanPolicy scanPolicy) {
+<<<<<<< HEAD
 
         if ( streamer == null ) {
             return false;
@@ -536,6 +565,31 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         Index jandexIndex = getJandexIndex();
         if ( jandexIndex == null ) {
+=======
+        
+        if ( streamer == null ) {
+            return false;
+        }
+        
+        boolean useJandex = getUseJandex();
+
+        Index jandexIndex = getJandexIndex();
+        
+        if ( useJandex ) {
+            if ( jandexIndex == null ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is enabled but no index was found", getHashText()));
+                return false;
+            } else {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is enabled; using index which was found", getHashText()));
+                // Fall into the processing case
+            }
+        } else {
+            if ( jandexIndex == null ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is disabled and no index was found", getHashText()));
+            } else {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is disabled; ignoring index which was found", getHashText()));
+            }
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
             return false;
         }
 
@@ -548,7 +602,11 @@ public abstract class ClassSourceImpl implements ClassSource {
             markResult(ClassSource_ScanCounts.ResultField.ENTRY);
             markResult(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
             markResult(ClassSource_ScanCounts.ResultField.CLASS);
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
             // Processing notes:
             //
             // Make sure to record the class before attempting processing.
@@ -582,10 +640,15 @@ public abstract class ClassSourceImpl implements ClassSource {
                     } catch ( ClassSource_Exception e ) {
                         didProcess = false;
 
+<<<<<<< HEAD
                         // autoFFDC will display the stack trace
                         // "[ {0} ] The processing of Jandex information for class [{1}] caused an exception. The message is: {2}"
                         Tr.warning(tc, "ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION",
                             getHashText(), i_nextClassName, e.getMessage());
+=======
+                        // CWWKC0065W: An exception occurred while processing class [ {0} ].  The identifier for the class source is [ {1} ]. The exception was {2}.
+                        Tr.warning(tc, "JANDEX_SCAN_EXCEPTION", i_nextClassName, getHashText(), e);
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
                     }
                 }
 
@@ -599,4 +662,12 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         return true;
     }
+<<<<<<< HEAD
+=======
+
+    private boolean getUseJandex() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+>>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
 }

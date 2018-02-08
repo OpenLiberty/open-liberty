@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class WCApplicationHelper {
     private static final String DIR_APPS = "apps";
     private static final String DIR_DROPINS = "dropins";
     private static final String DIR_PUBLISH = "publish/servers/";
+
     /*
      * Helper method to create a war and add it to the dropins directory
      */
@@ -66,13 +67,12 @@ public class WCApplicationHelper {
                        packageNames);
     }
 
-
     /*
      * Helper method to create a war and placed it to the specified directory which is relative from /publish/servers/ directory.
      */
     public static void createWar(LibertyServer server, String dir, String warName, boolean addWarResources, String jarName, boolean addJarResources,
-                                          String... packageNames) throws Exception {
-        addEarToServer(server, dir , null, false, warName, addWarResources, jarName, addJarResources, packageNames);
+                                 String... packageNames) throws Exception {
+        addEarToServer(server, dir, null, false, warName, addWarResources, jarName, addJarResources, packageNames);
     }
 
     /*
@@ -105,16 +105,16 @@ public class WCApplicationHelper {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, earName);
         if (addEarResources) {
+
             ShrinkHelper.addDirectory(ear, "test-applications/" + earName + "/resources");
 
         }
         for (String warFile : warFiles) {
-            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir +  warFile));
+            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir + warFile));
             ear.addAsModule(war);
         }
         ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
     }
-
 
     public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) throws Exception {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
@@ -135,7 +135,7 @@ public class WCApplicationHelper {
     public static EnterpriseArchive packageWars(LibertyServer server, String dir, EnterpriseArchive ear, String... warFiles) throws Exception {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
         for (String warFile : warFiles) {
-            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir +  warFile));
+            WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir + warFile));
             ear.addAsModule(war);
         }
         return ear;
@@ -146,12 +146,11 @@ public class WCApplicationHelper {
     public static EnterpriseArchive packageJars(LibertyServer server, String dir, EnterpriseArchive ear, String... jarFiles) throws Exception {
         String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
         for (String jarFile : jarFiles) {
-            JavaArchive jar = ShrinkWrap.createFromZipFile(JavaArchive.class, new File(baseDir +  jarFile));
+            JavaArchive jar = ShrinkWrap.createFromZipFile(JavaArchive.class, new File(baseDir + jarFile));
             ear.addAsLibrary(jar);
         }
         return ear;
     }
-
 
     /*
      * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
@@ -215,7 +214,7 @@ public class WCApplicationHelper {
             ShrinkHelper.addDirectory(war, "test-applications/" + warName + "/resources");
 
         boolean deploy = false;
-        if (dir.equals(DIR_APPS) || dir.equals( DIR_DROPINS)) {
+        if (dir.equals(DIR_APPS) || dir.equals(DIR_DROPINS)) {
             deploy = true;
         }
 
@@ -228,14 +227,14 @@ public class WCApplicationHelper {
             }
             if (deploy) {
                 // delete
-                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" +  ear.getName());
+                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" + ear.getName());
                 ShrinkHelper.exportToServer(server, dir, ear);
             } else {
                 ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
             }
         } else {
             if (deploy) {
-                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" +  war.getName());
+                deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" + war.getName());
                 ShrinkHelper.exportToServer(server, dir, war);
             } else {
                 ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);

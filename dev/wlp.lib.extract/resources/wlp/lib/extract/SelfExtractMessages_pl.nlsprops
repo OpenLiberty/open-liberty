@@ -304,6 +304,11 @@ UNABLE_TO_FIND_TOOLS_JAR=Nie mo\u017cna przy\u0142\u0105czy\u0107 agenta Java se
 
 UNABLE_TO_FIND_JAVA_AGENT=Nie mo\u017cna znale\u017a\u0107 agenta Java serwera Liberty. Ten serwer b\u0119dzie dzia\u0142a\u0107, ale nie b\u0119dzie m\u00f3g\u0142 wykonywa\u0107 funkcji wymagaj\u0105cych agenta Java, na przyk\u0142ad monitorowania lub \u015bledzenia.
 
+RUN_IN_CHILD_JVM_DEBUG=Ustawiono zmienn\u0105 WLP_JAR_DEBUG. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=Plik jar zawiera pliki jvm.options. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Pakiet IBM SDK jest u\u017cywany bez opcji -XX:+EnableHCR. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
+RUN_IN_CHILD_JVM_JRE=U\u017cywana jest instalacja \u015brodowiska wykonawczego program\u00f3w Java. Serwer zostanie uruchomiony w osobnej wirtualnej maszynie j\u0119zyka Java.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Katalog {0} nie zawiera poprawnej instalacji produktu Liberty. Podaj katalog g\u0142\u00f3wny instalacji produktu Liberty, kt\u00f3ry chcesz zaktualizowa\u0107.
 LICENSE_invalidVersion=Nie mo\u017cna zaktualizowa\u0107 licencji, poniewa\u017c zainstalowano produkt w wersji {0}, a mo\u017cna aktualizowa\u0107 wy\u0142\u0105cznie licencj\u0119 wersji {1}.

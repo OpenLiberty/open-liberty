@@ -127,6 +127,10 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E: R\u016fzn\u00e9 adapt\u00e9ry 
 J2CA8815.duplicate.resource.adapter.id.explanation=R\u016fzn\u00e9 adapt\u00e9ry prost\u0159edk\u016f jsou nakonfigurov\u00e1ny se stejn\u00fdm jedine\u010dn\u00fdm identifik\u00e1torem (id) nebo j\u00edm implicitn\u011b kon\u010d\u00ed.
 J2CA8815.duplicate.resource.adapter.id.useraction=P\u0159i\u0159a\u010fte jednomu \u010di v\u00edce adapt\u00e9r\u016fm prost\u0159edk\u016f jedine\u010dn\u00e9 identifik\u00e1tory, aby ji\u017e nedoch\u00e1zelo ke konfliktu.
 
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: Atribut ID prvku resourceAdapter pro modul adapt\u00e9ru prost\u0159edku {0} nem\u016f\u017ee b\u00fdt jedn\u00edm z vyhrazen\u00fdch identifik\u00e1tor\u016f {1}.
+J2CA8816.reserved.resource.adapter.id.explanation=ID uveden\u00e9 v konfiguraci nebo odvozen\u00e9 z n\u00e1zvu modulu je vyhrazen\u00fd identifik\u00e1tor. Vyhrazen\u00e9 identifik\u00e1tory jsou pouze pro intern\u00ed pou\u017eit\u00ed.
+J2CA8816.reserved.resource.adapter.id.useraction=Zadejte nevyhrazenou hodnotu pro atribut ID prvku resourceAdapter nebo pro n\u00e1zev modulu v konfiguraci serveru.
+
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
 # ---------------------------------

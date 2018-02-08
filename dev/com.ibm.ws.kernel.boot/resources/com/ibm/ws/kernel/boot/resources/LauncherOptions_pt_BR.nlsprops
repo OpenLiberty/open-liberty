@@ -14,13 +14,20 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Uso: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName [actions] [options]  
-scriptUsage=Uso: {0} action serverName [options]
+briefUsage=Uso: java [op\u00e7\u00f5es de JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName {0} [op\u00e7\u00f5es]  
+scriptUsage=Uso: {0} {1} serverName [op\u00e7\u00f5es]
 
 use.actions=A\u00e7\u00f5es:
 use.options=Op\u00e7\u00f5es:
+use.options.gen.desc=\ \ \ \ Use help [actionName] para obter informa\u00e7\u00f5es de op\u00e7\u00e3o detalhadas de cada a\u00e7\u00e3o.
 use.jvmarg=Op\u00e7\u00f5es da JVM:
+category-key.lifecycle=Ciclo de vida do servidor
+category-key.win=Windows
+category-key.service=Determina\u00e7\u00e3o de problema
+category-key.help=Informa\u00e7\u00f5es
+category-key.misc=Outros Termos
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -117,20 +124,36 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tLimpar todas as informa\u00e7\u00f5es em cache relacionadas a esta inst\u00e2ncia do servidor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="caminho para o arquivo de archive de destino"
-option-desc.archive=\tEspecifique o destino do archive a ser gerado pela a\u00e7\u00e3o do    \n\
-\tpacote ou de dump. O destino pode ser especificado como um caminho absoluto ou como \n\
-\tum caminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1\n\
-\tcriado no diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de      \n\
-\tdestino pode influenciar o formato do archive gerado.       \n \tO formato de archive padr\u00e3o da a\u00e7\u00e3o do pacote \u00e9 "pax" no z/OS   \n\
-\te "zip" em todas as outras plataformas.                                    \n\
-\tO formato de archive "jar" produzir\u00e1 um jar autoextrator semelhante ao   \n\
-\tarchive do instalador original.                                      \n\
-\tO formato de archive "jar" combinado com "runnable" na op\u00e7\u00e3o --include\n\
-\tproduz um arquivo jar execut\u00e1vel que pode executar o servidor Liberty a partir    \n\
-\tdo arquivo jar usando java -jar.
+option-desc.dump.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o dump.       \n\
+\tO destino pode ser especificado como um caminho absoluto ou como um       \n\
+\tcaminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\
+\tno diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de destino pode \n\
+\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\
+\tpara a a\u00e7\u00e3o do pacote \u00e9 "pax" em z/OS e "zip" em todas as outras\n\
+\tplataformas. O formato de archive "jar" produz um jar autoextrator \n\
+\tsimilar ao archive do instalador original.                                      
+option-desc.package.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o do pacote.    \n\
+\tO destino pode ser especificado como um caminho absoluto ou como um       \n\
+\tcaminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\
+\tno diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de destino pode \n\
+\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\
+\tpara a a\u00e7\u00e3o do pacote \u00e9 "pax" em z/OS e "zip" em todas as outras\n\
+\tplataformas. O formato de archive "jar" produzir\u00e1 um jar autoextrator \n\
+\t similar ao archive do instalador original. O formato de archive "jar" \n\
+\tcombinado com "runnable" na op\u00e7\u00e3o --include produz um arquivo jar \n\
+\texecut\u00e1vel que pode executar o servidor Liberty por meio do arquivo jar usando \n\
+\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos variam, dependendo da\n \ta\u00e7\u00e3o.
+option-desc.javadump.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: heap, system \n\
+\tthread.
+option-desc.package.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: all*, usr,   \n\
+\tminify, runnable. Se voc\u00ea especificar runnable, o pacote resultante \n\
+\tser\u00e1 um jar execut\u00e1vel que executa o servidor. A op\u00e7\u00e3o minify produz \n\
+\ta menor imagem poss\u00edvel para o servidor. A op\u00e7\u00e3o usr cria um \n\
+\tpacote que cont\u00e9m o servidor e o aplicativo, mas n\u00e3o o \n\
+\ttempo de execu\u00e7\u00e3o. A op\u00e7\u00e3o all padr\u00e3o produz um pacote do servidor que \n\
+\tcont\u00e9m tudo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nome_do_Modelo"
 option-desc.template=\tEspecifique o nome do modelo a ser usado ao criar um novo servidor. 

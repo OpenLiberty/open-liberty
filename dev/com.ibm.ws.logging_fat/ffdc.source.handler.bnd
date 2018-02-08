@@ -1,0 +1,36 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: FFDC Source Handler
+Bundle-SymbolicName: ffdc.source.handler
+Bundle-Description: FFDC SourceHandler: Sample source and handler for collector manager framework; version=${bVersion}
+  
+WS-TraceGroup: FFDCHandler
+
+Import-Package: com.ibm.ejs.ras, \
+                com.ibm.websphere.ras, \
+                com.ibm.websphere.ras.annotation, \
+                com.ibm.ws.ffdc, \
+                com.ibm.ws.ras.instrument.annotation, \
+                com.ibm.wsspi.kernel.service.location, \
+                com.ibm.wsspi.kernel.service.utils, \
+                org.osgi.framework, \
+                com.ibm.wsspi.collector.manager               
+
+Private-Package: ffdc.source.handler
+
+Include-Resource: \
+        OSGI-INF=test-bundles/ffdc.source.handler/resources/OSGI-INF
+        
+Service-Component: \
+  FFDCHandler;\
+    implementation:=ffdc.source.handler.FFDCHandlerImpl;\
+    provide:=com.ibm.wsspi.collector.manager.Handler; \
+     executor=java.util.concurrent.ExecutorService; \
+    modified:='modified'; \
+    immediate:='true'; \
+    properties:="service.vendor=IBM", \
+    
+ 

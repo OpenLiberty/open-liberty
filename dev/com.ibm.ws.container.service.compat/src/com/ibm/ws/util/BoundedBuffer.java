@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.ibm.ws.kernel.service.util.CpuInfo;
+
 /**
  * A fixed size FIFO of Objects. Null objects are not allowed in
  * the buffer.
@@ -107,7 +109,7 @@ public class BoundedBuffer {
 
         // D638088 - modified spinning defaults to adjust to the number
         // of physical processors on host system.
-        SPINS_TAKE_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", Runtime.getRuntime().availableProcessors() - 1).intValue(); // D371967
+        SPINS_TAKE_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", CpuInfo.getAvailableProcessors() - 1).intValue(); // D371967
         SPINS_PUT_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_put", SPINS_TAKE_ / 4).intValue(); // D371967
 
         // D638088 - default split threshold to 50 (default web container thread
@@ -144,7 +146,7 @@ public class BoundedBuffer {
         private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
         private final Lock readLock = rwl.readLock();
         private final Lock writeLock = rwl.writeLock();
-        private final boolean useRwl = Runtime.getRuntime().availableProcessors() > 4;
+        private final boolean useRwl = CpuInfo.getAvailableProcessors() > 4;
         private int val_;
 
         public LiteAtomicInteger(int v) {
@@ -391,7 +393,7 @@ public class BoundedBuffer {
 
     /**
      * Create a BoundedBuffer with the given capacity.
-     * 
+     *
      * @exception IllegalArgumentException
      *                if the requested capacity
      *                is less or equal to zero.
@@ -455,7 +457,7 @@ public class BoundedBuffer {
     /**
      * Puts an object into the buffer. If the buffer is full,
      * the call will block indefinitely until space is freed up.
-     * 
+     *
      * @param x
      *            the object being placed in the buffer.
      * @exception IllegalArgumentException
@@ -506,7 +508,7 @@ public class BoundedBuffer {
      * Puts an object into the buffer. If the buffer is full,
      * the call will block for up to the specified timeout
      * period.
-     * 
+     *
      * @param x
      *            the object being placed in the buffer.
      * @param timeoutInMillis
@@ -567,7 +569,7 @@ public class BoundedBuffer {
      * Puts an object into the buffer. If the buffer is at or above the
      * specified maximum capacity, the call will block for up to the
      * specified timeout period.
-     * 
+     *
      * @param x
      *            the object being placed in the buffer.
      * @param timeoutInMillis
@@ -632,7 +634,7 @@ public class BoundedBuffer {
      * Puts an object into the buffer. If the buffer is full,
      * the call will block for up to the specified amount of
      * time, waiting for space to be freed up.
-     * 
+     *
      * @param x
      *            the object being placed into the buffer.
      * @param timeout
@@ -695,7 +697,7 @@ public class BoundedBuffer {
      * Removes an object from the buffer. If the buffer is
      * empty, then the call blocks until something becomes
      * available.
-     * 
+     *
      * @return Object the next object from the buffer.
      */
     public Object take() throws InterruptedException {
@@ -744,7 +746,7 @@ public class BoundedBuffer {
      * Removes an object from the buffer. If the buffer is empty, the call blocks
      * for up to
      * a specified amount of time before it gives up.
-     * 
+     *
      * @param timeout
      *            -
      *            the amount of time (in milliseconds), that the caller is willing
@@ -861,7 +863,7 @@ public class BoundedBuffer {
 
     /**
      * Increases the buffer's capacity by the given amount.
-     * 
+     *
      * @param additionalCapacity
      *            The amount by which the buffer's capacity should be increased.
      */

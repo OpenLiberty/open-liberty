@@ -80,6 +80,7 @@ public class ClassSourceImpl_MappedContainer
 
         } catch ( UnableToAdaptException e ) {
             // do NOT process with FFDC
+
             String eMsg =
                 "[ " + getHashText() + " ]" +
                 " Failed to adapt [ " + getCanonicalName() + " ]" +
@@ -99,7 +100,10 @@ public class ClassSourceImpl_MappedContainer
      */
     @Override
     @Trivial
+    @FFDCIgnore({ UnableToAdaptException.class })
     public void close() throws ClassSource_Exception {
+        String methodName = "close";
+
         try {
             FastModeControl fastMode = getContainer().adapt(FastModeControl.class);
             // 'adapt' throws UnableToAdaptException
@@ -405,8 +409,10 @@ public class ClassSourceImpl_MappedContainer
     protected Index getJandexIndex() {
         String useJandexIndexPath = getJandexIndexPath();
 
-        System.out.println("Looking for JANDEX [ " + useJandexIndexPath + " ]" +
-                           " in [ " + getContainer().getPhysicalPath() + " ]");
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]", 
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } ));        
+        }
 
         InputStream jandexStream;
 
@@ -417,11 +423,14 @@ public class ClassSourceImpl_MappedContainer
             // [ {0} ] Open of Jandex index resource [{1}] caused an exception.  The message is: {2}.
             Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION",
                getHashText(), useJandexIndexPath, e.getMessage());
+
             return null;
         }
 
         if ( jandexStream == null ) {
-            System.out.println("No JANDEX index was found");
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] No JANDEX index was found", getHashText()));        
+            }
             return null;
         }
 
@@ -431,9 +440,13 @@ public class ClassSourceImpl_MappedContainer
 
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
-            System.out.println(
-                "Read JANDEX index [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]:" +
-                " Classes [ " + Integer.toString(jandexIndex.getKnownClasses().size()) + " ]");
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]", 
+                        new Object[] {  getHashText(),
+                                        useJandexIndexPath,
+                                        getCanonicalName(),
+                                        Integer.toString(jandexIndex.getKnownClasses().size()) } ));        
+            }
             return jandexIndex;
 
         } catch ( Exception e ) {
@@ -535,6 +548,7 @@ public class ClassSourceImpl_MappedContainer
             // [ {0} ]: The entry [{1}] could not be located under root [{2}] for class [{3}].
             Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_NOTFOUND",
                 getHashText(), resourceName, getContainer(), className);
+
         } else {
             closeResourceStream(className, resourceName, entry, inputStream);
         }
@@ -548,6 +562,7 @@ public class ClassSourceImpl_MappedContainer
 
         try {
             inputStream.close(); // throws IOException
+
         } catch ( IOException e ) {
             // autoFFDC will display the stack trace
             // [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
