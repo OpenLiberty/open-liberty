@@ -25,7 +25,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
@@ -229,13 +228,16 @@ public class FATOpentracingService extends Application implements FATOpentracing
         traceReturn("getManual", "ResponseText", responseText);
         return responseText;
     }
+    
+//    Currently OpenTracing doesn't support AsyncResponse.
+//    
+//    @param asyncResponse An asynchronous response used to provide
+//        the response from the delay thread.  This is injected using
+//        {@link Suspended}.
 
     /**
      * <p>Service API: Handle a delayed GET.</p>
-     *
-     * @param asyncResponse An asynchronous response used to provide
-     *     the response from the delay thread.  This is injected using
-     *     {@link Suspended}.
+     * 
      * @param delay The count of seconds to delay the response.
      *     This is injected as the "delay" query parameter.
      * @param responseText The text to answer by the service request.
@@ -244,22 +246,30 @@ public class FATOpentracingService extends Application implements FATOpentracing
     @GET
     @Path(GET_DELAYED_PATH)
     @Produces(MediaType.TEXT_PLAIN)
-    public void getDelayed(
-        @Suspended AsyncResponse asyncResponse,
+    public String getDelayed(
+        //@Suspended AsyncResponse asyncResponse,
         @QueryParam(DELAY_PARAM_NAME) int delay,
         @QueryParam(RESPONSE_PARAM_NAME) String responseText) {
 
         String methodName = "getDelayed";
         traceEnter(methodName, "Delay", Integer.valueOf(delay), "ResponseText", responseText);
 
-        Thread delayThread = new Thread(
-            delayResponse(asyncResponse,
-            delay * MSEC_IN_SEC,
-            responseText) );
-
-        delayThread.start();
-
+//        Thread delayThread = new Thread(
+//            delayResponse(asyncResponse,
+//            delay * MSEC_IN_SEC,
+//            responseText) );
+//
+//        delayThread.start();
+        
+        try {
+            Thread.sleep(delay * MSEC_IN_SEC);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        
         traceReturn(methodName);
+        
+        return responseText;
     }
 
     // Delay utility ...
@@ -294,6 +304,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
      *
      * @return Runnable A new runnable used to delay responding to a request.
      */
+    @SuppressWarnings("unused")
     private static Runnable delayResponse(
         final AsyncResponse asyncResponse,
         final int delayMS,
@@ -311,7 +322,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
                     Thread.sleep(delayMS);
                     asyncResponse.resume(responseText);
                 } catch ( InterruptedException ex ) {
-                    // Do nothing
+                    throw new RuntimeException(ex);
                 }
 
                 innerTraceReturn(methodName);
@@ -410,7 +421,6 @@ public class FATOpentracingService extends Application implements FATOpentracing
                 delay4Parameters);
                 // throws UnsupportedEncodingException
             String delay4Url = FATUtilsService.getRequestUrl(hostName, portNumber, delay4Path);
-
 
             Map<String, Object> delay6Parameters  = new HashMap<String, Object>();
             delay6Parameters.put(DELAY_PARAM_NAME, Integer.valueOf(6));
