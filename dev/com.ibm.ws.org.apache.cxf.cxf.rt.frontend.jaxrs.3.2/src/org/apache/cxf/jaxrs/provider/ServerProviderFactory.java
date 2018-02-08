@@ -431,7 +431,7 @@ public final class ServerProviderFactory extends ProviderFactory {
 
     private static class ServerFeatureContextConfigurable extends ConfigurableImpl<FeatureContext> {
         protected ServerFeatureContextConfigurable(FeatureContext mc) {
-            super(mc, RuntimeType.SERVER, ServerConfigurableFactory.SERVER_FILTER_INTERCEPTOR_CLASSES);
+            super(mc, RuntimeType.SERVER);
         }
     }
 

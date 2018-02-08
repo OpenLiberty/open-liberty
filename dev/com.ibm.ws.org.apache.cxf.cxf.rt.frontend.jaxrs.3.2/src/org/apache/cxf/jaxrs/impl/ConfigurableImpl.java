@@ -19,11 +19,20 @@
 
 package org.apache.cxf.jaxrs.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.Priorities;
 import javax.ws.rs.RuntimeType;
+import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseFilter;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
@@ -33,27 +42,54 @@ import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 
 public class ConfigurableImpl<C extends Configurable<C>> implements Configurable<C> {
     private static final Logger LOG = LogUtils.getL7dLogger(ConfigurableImpl.class);
+
+    private static final Class<?>[] RESTRICTED_CLASSES_IN_SERVER = {ClientRequestFilter.class, 
+                                                                    ClientResponseFilter.class};
+    private static final Class<?>[] RESTRICTED_CLASSES_IN_CLIENT = {ContainerRequestFilter.class, 
+                                                                    ContainerResponseFilter.class};
+
     private ConfigurationImpl config;
     private final C configurable;
-    private final Class<?>[] supportedProviderClasses;
-    
+
+    private final Class<?>[] restrictedContractTypes;
+
     public interface Instantiator {
         <T> Object create(Class<T> cls);
     }
-    
-    public ConfigurableImpl(C configurable, RuntimeType rt, Class<?>[] supportedProviderClasses) {
-        this(configurable, supportedProviderClasses, new ConfigurationImpl(rt));
-    }
-    
-    public ConfigurableImpl(C configurable, Class<?>[] supportedProviderClasses, Configuration config) {
-        this(configurable, supportedProviderClasses);
-        this.config = config instanceof ConfigurationImpl
-            ? (ConfigurationImpl)config : new ConfigurationImpl(config, supportedProviderClasses);
+
+    public ConfigurableImpl(C configurable, RuntimeType rt) {
+        this(configurable, new ConfigurationImpl(rt));
     }
 
-    private ConfigurableImpl(C configurable, Class<?>[] supportedProviderClasses) {
+    public ConfigurableImpl(C configurable, Configuration config) {
         this.configurable = configurable;
-        this.supportedProviderClasses = supportedProviderClasses;
+        this.config = config instanceof ConfigurationImpl
+            ? (ConfigurationImpl)config : new ConfigurationImpl(config);
+        restrictedContractTypes = RuntimeType.CLIENT.equals(config.getRuntimeType()) ? RESTRICTED_CLASSES_IN_CLIENT 
+            : RESTRICTED_CLASSES_IN_SERVER;
+    }
+
+    //Liberty change start
+    // keeping old constructors so that MP Rest Client can extend both the 3.1.X and 3.2.X version of this class
+    public ConfigurableImpl(C configurable, RuntimeType rt, Class<?>[] supportedProviderClasses) {
+        this(configurable, rt);
+    }
+    public ConfigurableImpl(C configurable, Class<?>[] supportedProviderClasses, Configuration config) {
+        this(configurable, config);
+    }
+    //Liberty change end
+    
+    static Class<?>[] getImplementedContracts(Object provider, Class<?>[] restrictedClasses) {
+        Class<?> providerClass = provider instanceof Class<?> ? ((Class<?>)provider) : provider.getClass();
+        Set<Class<?>> interfaces = Arrays.stream(providerClass.getInterfaces()).collect(Collectors.toSet());
+        providerClass = providerClass.getSuperclass();
+        for (;providerClass != null && providerClass != Object.class; providerClass = providerClass.getSuperclass()) {
+            interfaces.addAll(Arrays.stream(providerClass.getInterfaces()).collect(Collectors.toSet()));
+        }
+        List<Class<?>> implementedContracts = interfaces.stream()
+            .filter(el -> Arrays.stream(restrictedClasses).noneMatch(el::equals))
+            .collect(Collectors.toList());
+        return implementedContracts.toArray(new Class<?>[]{});
     }
 
     protected C getConfigurable() {
@@ -78,7 +114,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
 
     @Override
     public C register(Object provider, int bindingPriority) {
-        return doRegister(provider, bindingPriority, supportedProviderClasses);
+        return doRegister(provider, bindingPriority, getImplementedContracts(provider, restrictedContractTypes));
     }
 
     @Override
@@ -98,7 +134,8 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
 
     @Override
     public C register(Class<?> providerClass, int bindingPriority) {
-        return doRegister(getInstantiator().create(providerClass), bindingPriority, supportedProviderClasses);
+        return doRegister(getInstantiator().create(providerClass), bindingPriority, 
+                          getImplementedContracts(providerClass, restrictedContractTypes));
     }
 
     @Override
@@ -122,7 +159,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
         }
         return doRegister(provider, ConfigurationImpl.initContractsMap(bindingPriority, contracts));
     }
-    
+
     private C doRegister(Object provider, Map<Class<?>, Integer> contracts) {
         if (provider instanceof Feature) {
             Feature feature = (Feature)provider;
