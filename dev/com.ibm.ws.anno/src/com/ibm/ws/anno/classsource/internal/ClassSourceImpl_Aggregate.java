@@ -29,6 +29,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -37,7 +38,6 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
  * <p>Standard aggregate class source implementation.</p>
  */
 public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassSource_Aggregate {
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_Aggregate.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_Aggregate.class);
 
@@ -46,9 +46,10 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     public ClassSourceImpl_Aggregate(
         ClassSourceImpl_Factory factory,
         Util_InternMap internMap,
-        String name) {
+        String name,
+        ClassSource_Options options) {
 
-        super(factory, internMap, name, null);
+        super(factory, internMap, name, options, null);
 
         this.seedClassSources = new HashSet<ClassSource>();
         this.partialClassSources = new HashSet<ClassSource>();
@@ -214,7 +215,8 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
         if ( openCount == 0 ) { // Last one which is active; need to close the children.
             for ( ClassSource nextClassSource : getSuccessfulOpens() ) {
-                String nextClassSourceName = nextClassSource.getCanonicalName();
+                @SuppressWarnings("unused")
+				String nextClassSourceName = nextClassSource.getCanonicalName();
 
                 try {
                     nextClassSource.close(); // throws ClassSource_Exception

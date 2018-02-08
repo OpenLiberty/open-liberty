@@ -30,6 +30,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -38,19 +39,18 @@ public class ClassSourceImpl_MappedContainer
     extends ClassSourceImpl
     implements ClassSource_MappedContainer {
 
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_MappedContainer.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedContainer.class);
 
     // Top O' the world
 
-    @SuppressWarnings("unused")
     @Trivial
     public ClassSourceImpl_MappedContainer(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
-        String name, Container container) throws ClassSource_Exception {
+        String name, ClassSource_Options options,
+        Container container) throws ClassSource_Exception {
 
-        super(factory, internMap, name, String.valueOf(container));
+        super(factory, internMap, name, options, String.valueOf(container));
 
         this.container = container;
     }
@@ -102,8 +102,6 @@ public class ClassSourceImpl_MappedContainer
     @Trivial
     @FFDCIgnore({ UnableToAdaptException.class })
     public void close() throws ClassSource_Exception {
-        String methodName = "close";
-
         try {
             FastModeControl fastMode = getContainer().adapt(FastModeControl.class);
             // 'adapt' throws UnableToAdaptException

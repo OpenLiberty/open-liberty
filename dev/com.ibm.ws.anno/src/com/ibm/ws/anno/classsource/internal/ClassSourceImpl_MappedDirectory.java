@@ -28,6 +28,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedDirectory;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -36,19 +37,18 @@ public class ClassSourceImpl_MappedDirectory
     extends ClassSourceImpl
     implements ClassSource_MappedDirectory {
 
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_MappedDirectory.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedDirectory.class);
 
     // Top O' the world
 
-    @SuppressWarnings("unused")
     @Trivial
     public ClassSourceImpl_MappedDirectory(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
-        String name, String dirPath) throws ClassSource_Exception {
+        String name, ClassSource_Options options,
+        String dirPath) throws ClassSource_Exception {
 
-        super(factory, internMap, name, dirPath);
+        super(factory, internMap, name, options, dirPath);
 
         this.dirPath = dirPath; // TODO: verify the path?
     }
