@@ -47,19 +47,59 @@ task publishWLPJars(type: Copy) {
   }
 }
 
-task publishDevApiIBMJavadoc(type: Copy) {
+task apiSpiJavadoc(type: Javadoc) {
   dependsOn jar
-  from project.projectDir
-  into buildImage.file('wlp/dev/api/ibm/javadoc')
-  include 'com.ibm.websphere.appserver.api.*.javadoc.zip'
-  rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
+  def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
+  enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
+
+  onlyIf {
+    !new File(buildDir, "javadoc").exists()
+  }
+
+  def sp = files()
+  def cp = files()
+  bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
+    def proj = it.getProject()
+    sp += files(proj.getSourcePath())
+    cp += files(it.getFile())
+    cp += files(proj.getBuildpath()*.getFile())
+  }
+
+  destinationDir = file("$buildDir/javadoc")
+  classpath += cp
+  source = sp
+
+  include bnd('Export-Package', '').split(',').collect {
+    def pkg = it
+    int index = pkg.indexOf(";")
+    if (index != -1) {
+      pkg = pkg.substring(0, index)
+    }
+    // Replace . with / (path separator) and * (package name wildcard) with **
+    pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
+    return pkg
+  }
+  exclude "**/internal/**"
+  title = bnd('Bundle-Name')
+  options.source '1.6'
+  options.memberLevel = 'PUBLIC'
+  options.noIndex true
+  options.use true
+  if (JavaVersion.current().isJava8Compatible()) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+  }
 }
 
-task publishDevSpiIBMJavadoc(type: Copy) {
-  dependsOn jar
-  from project.projectDir
-  into buildImage.file('wlp/dev/spi/ibm/javadoc')
-  include 'com.ibm.websphere.appserver.spi.*.javadoc.zip'
+task zipJavadoc(type: Zip) {
+  dependsOn apiSpiJavadoc
+  archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+  from new File(project.buildDir, "javadoc")
+}
+
+task publishJavadoc(type: Copy) {
+  dependsOn zipJavadoc
+  from zipJavadoc
+  into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
   rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
 }
 
@@ -261,8 +301,7 @@ task publishFeatureResources {
 assemble {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
-  dependsOn publishDevApiIBMJavadoc
-  dependsOn publishDevSpiIBMJavadoc
+  dependsOn publishJavadoc
   dependsOn publishToolJars
   dependsOn publishSchemaResources
   dependsOn publishPlatformFiles
