@@ -260,7 +260,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                        getRealm(customProperties),
                                                        username);
             }
-            setPrincipalAndCredentials(temporarySubject, username, null, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
+            setPrincipalAndCredentials(temporarySubject, username, null, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
             addJaspicPrincipal(temporarySubject);
             addJsonWebToken(temporarySubject);
             updateSharedState();
@@ -330,7 +330,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       userRegistry.getRealm(),
                                                       uniqueUserId);
-        setPrincipalAndCredentials(temporarySubject, username, urAuthenticatedId, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
+        setPrincipalAndCredentials(temporarySubject, username, urAuthenticatedId, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
         addJaspicPrincipal(temporarySubject);
     }
 
