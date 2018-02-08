@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.jandex.internal.Jandex_Utils;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedDirectory;
@@ -172,6 +173,7 @@ public class ClassSourceImpl_MappedDirectory
 
         File[] childFiles = UtilImpl_FileUtils.listFiles(targetDir);
         if ( childFiles == null ) {
+            // [ {0} ]: No files were found in [{1}] under root [{2}].
             Tr.warning(tc, "ANNO_CLASSSOURCE_EMPTY_DIR", getHashText(), targetDir, getDirPath());
 
             if ( tc.isEntryEnabled() ) {
@@ -237,17 +239,13 @@ public class ClassSourceImpl_MappedDirectory
                         try {
                             didProcess = process(streamer, nextClassName, nextResourceName, nextDirPrefix, scanPolicy);
 
-                        } catch (ClassSource_Exception e) {
+                        } catch ( ClassSource_Exception e ) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
-
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process resource [ " + nextResourceName + " ]" +
-                            //               " under root [ " + getDirPath() + " ]" +
-                            //               " for class [ " + nextClassName + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            // autoFFDC will display the stack trace
+                            // "[ {0} ] The processing of file [ {1} ] for class [{2}] caused an exception. The message is: {3}"
+                            Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION",
+                                getHashText(), nextResourceName, nextClassName, e.getMessage();
                         }
 
                         if (didProcess) {
@@ -329,9 +327,13 @@ public class ClassSourceImpl_MappedDirectory
         InputStream jandexStream;
         try {
             jandexStream = openResourceStream(null, useJandexPath, fullJandexPath);
+
         } catch ( ClassSource_Exception e ) {
-            String errorMessage = "Failed to read [ " + fullJandexPath + " ] as JANDEX index";
-            Tr.error(tc, errorMessage);
+            // autoFFDC will display the stack trace
+            // [ {0} ] Open of Jandex index file [{1}] caused an exception.  The message is: {2}.
+            Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION",
+                getHashText(), useJandexIndexPath, e.getMessage());
+
             return null;
         }
 
@@ -347,8 +349,11 @@ public class ClassSourceImpl_MappedDirectory
             return jandexIndex;
 
         } catch ( Exception e ) {
-            String errorMessage = "Failed to read [ " + fullJandexPath + " ] as JANDEX index";
-            Tr.error(tc, errorMessage);
+            // autoFFDC will display the stack trace
+            // [ {0} ] Read of Jandex index file [{1}] failed with an exception.  The message is: {2}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION",
+                getHashText(), useJandexIndexPath, e.getMessage());
+
             return null;
 
         } finally {
@@ -377,6 +382,7 @@ public class ClassSourceImpl_MappedDirectory
         // throws ClassSource_Exception
     }
 
+    @FFDCIgnore({ IOException.class })
     protected InputStream openResourceStream(
         String className, String resourceName, String externalResourceName)
         throws ClassSource_Exception {
@@ -410,7 +416,10 @@ public class ClassSourceImpl_MappedDirectory
         InputStream inputStream;
         try {
             inputStream = UtilImpl_FileUtils.createFileInputStream(file); // throws IOException
-        } catch (IOException e) {
+
+        } catch ( IOException e ) {
+            // do NOT process with FFDC
+
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
@@ -454,12 +463,9 @@ public class ClassSourceImpl_MappedDirectory
             inputStream.close(); // throws IOException
 
         } catch ( IOException e ) {
-            // String eMsg = "[ " + getHashText() + " ]" +
-            //               " Failed to close resource [ " + externalResourceName + " ]" +
-            //               " under root [ " + getDirPath() + " ]" +
-            //               " for class [ " + className + " ]";
-            Tr.warning(tc,
-                "ANNO_CLASSSOURCE_CLOSE4_EXCEPTION",
+            // autoFFDC will display the stack trace
+            // "[ {0} ]: The close of file [{1}] under root [{2}] for class [{3}] failed. The message is {4}"
+            Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION",
                 getHashText(), externalResourceName, getDirPath(), className);
         }
     }

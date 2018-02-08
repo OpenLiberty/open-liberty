@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.anno.jandex.internal;
 
 import java.io.File;
@@ -16,93 +27,147 @@ import org.jboss.jandex.Indexer;
 
 public class Jandex_Utils {
 
+    /**
+     * Create and return a new Jandex indexer.
+     *
+     * @return A new Jandex indexer.
+     */
     public static Indexer createIndexer() {
         return new Indexer();
     }
 
-    public static void updateIndexer(Indexer indexer, String classPath, InputStream classStream) throws IOException {
+    /**
+     * Update an indexer with data for a class.
+     *
+     * @param indexer The indexer to update with class data.
+     * @param classPath The path to the class resource which provides the class data.
+     * @param classStream The input stream of the class resource.
+     *
+     * @throws IOException Thrown if class data cannot be read from the stream.
+     */
+    public static void updateIndexer(Indexer indexer, String classPath, InputStream classStream)
+        throws IOException {
+
         indexer.index(classStream); // throws IOException 
     }
 
+    /**
+     * Complete a Jandex indexer.
+     *
+     * @param indexer The indexer which is to be completed.
+     */
     public static Index completeIndexer(Indexer indexer) {
         return indexer.complete();
     }
 
     //
 
-    public static Index readIndex(String jarPath) {
-        try {
-            return basicReadIndex(jarPath); // throws Exception
-        } catch ( Exception e ) {
-            throw new RuntimeException("Failed to read index [ " + jarPath + " ]");
-        }
+    /**
+     * Write a Jandex index to an output stream.
+     *
+     * @param outputStream The stream to which to write the index.
+     * @param index The index which is to be written to the stream.
+     *
+     * @throws IOException Thrown if the write failed.
+     */
+    public static void basicWriteIndex(OutputStream outputStream, Index index)
+        throws IOException {
+
+        IndexWriter indexWriter = new IndexWriter(outputStream);
+        indexWriter.write(index); // throws IOException
     }
 
-    public static Index basicReadIndex(String jarPath) throws Exception {
-        FileInputStream inputStream =
-            new FileInputStream(jarPath); // throws FileNotFoundException
-        try {
-            return Jandex_Utils.basicReadIndex(inputStream); // throws IOException
-        } finally {
-            inputStream.close(); // throws IOException
-        }
-    }
+    /**
+     * Read a Jandex index from an input stream.
+     *
+     * @param inputStream The stream from which to read the index.
+     *
+     * *return The index which was read from the stream.
+     *
+     * @throws IOException Thrown if the write fails.
+     */
+    public static Index basicReadIndex(InputStream inputStream)
+        throws IOException {
 
-    public static Index basicReadIndex(InputStream inputStream) throws IOException {
         IndexReader indexReader = new IndexReader(inputStream);
         return indexReader.read(); // throws IOException
     }
 
-    public static void writeIndex(String jarPath, Index index) {
-        try {
-            basicWriteIndex(jarPath, index); // throws Exception
-        } catch ( Exception e ) {
-            throw new RuntimeException("Failed to write index [ " + jarPath + " ]");
-        }
-    }
+    //
 
-    public static void basicWriteIndex(String jarPath, Index index) throws Exception {
+    /**
+     * Write an index to a specified file.  Truncate the file if it
+     * already exists.
+     *
+     * @param indexFilePath The path to which to write the index.
+     * @param index The index which is to be written.
+     *
+     * @throws IOException Thrown if the write fails.
+     */
+    public static void writeIndex(String indexFilePath, Index index) throws IOException {
         FileOutputStream outputStream =
-            new FileOutputStream(jarPath); // throws FileNotFoundException
+            new FileOutputStream(indexFilePath); // throws FileNotFoundException
         try {
-            Jandex_Utils.basicWriteIndex(outputStream, index, "Write [ " + jarPath+ " ]");
-            // throws IOException
+            basicWriteIndex(outputStream, index); // throws IOException
         } finally {
             outputStream.close(); // throws IOException
         }
     }
 
-    public static void basicWriteIndex(OutputStream outputStream, Index index, String writeCase)
-        throws IOException {
-
-        IndexWriter indexWriter = new IndexWriter(outputStream);
-        indexWriter.write(index);
+    /**
+     * Read an index from a specified file.
+     *
+     * @param indexFilePath The path from which to read the index.
+     *
+     * @return The index which was read.
+     *
+     * @throws IOException Thrown if the write fails.
+     */
+    public static Index readIndex(String indexFilePath) throws IOException {
+        FileInputStream inputStream =
+            new FileInputStream(indexFilePath); // throws FileNotFoundException
+        try {
+            return basicReadIndex(inputStream); // throws IOException
+        } finally {
+            inputStream.close(); // throws IOException
+        }
     }
 
     //
 
-    public static Index createIndex(String path) {
+    /**
+     * Create a Jandex index from a specified JAR file.
+     *
+     * The specified file must exist and must be a JAR file.
+     *
+     * A new Jandex index is created.  All classes of the specified JAR are
+     * added to the index.  The index is completed and returned.
+     *
+     * @param path The path to the JAR file which is to be read.
+     *
+     * @return The index which was created from the JAR file.
+     *
+     * @throws IOException Thrown if any step of creating the index fails.
+     */
+    public static Index createIndex(String path) throws IOException {
+        // TODO: NLS Enable
+
         File pathFile = new File(path);
         if ( !pathFile.exists() ) {
-            throw new IllegalArgumentException("Target [ " + path + " ] does not exist");
+            throw new IOException("Target [ " + path + " ] does not exist");
         } else if ( pathFile.isDirectory() ) {
-            throw new IllegalArgumentException("Target [ " + path + " ] is a directory");
+            throw new IOException("Target [ " + path + " ] is a directory");
         }
 
         Indexer indexer = createIndexer();
 
-        FileInputStream pathInputStream;
-        try {
-            pathInputStream = new FileInputStream(path);
-        } catch ( IOException e ) {
-            throw new RuntimeException("Failed to open [ " + path + " ]", e);
-        }
+        FileInputStream pathInputStream = new FileInputStream(path); // throws IOExcepion
 
         try {
-            ZipInputStream zipInputStream = new ZipInputStream(pathInputStream);
+            ZipInputStream zipInputStream = new ZipInputStream(pathInputStream); // throws IOException
 
             ZipEntry zipEntry;
-            while ( (zipEntry = zipInputStream.getNextEntry()) != null ) {
+            while ( (zipEntry = zipInputStream.getNextEntry()) != null ) { // throws IOException
                 if ( zipEntry.isDirectory() ) {
                     continue;
                 }
@@ -112,18 +177,11 @@ public class Jandex_Utils {
                     continue;
                 }
 
-                updateIndexer(indexer, zipEntry.getName(), zipInputStream);
+                updateIndexer(indexer, zipEntry.getName(), zipInputStream); // throws IOException
             }
-
-        } catch ( Exception e ) {
-            throw new RuntimeException("Failed to process [ " + path + " ]", e);
 
         } finally {
-            try {
-                pathInputStream.close();
-            } catch ( IOException e ) {
-                throw new RuntimeException("Failed to open [ " + path + " ]", e);
-            }
+            pathInputStream.close(); // throws IOException
         }
 
         return completeIndexer(indexer);

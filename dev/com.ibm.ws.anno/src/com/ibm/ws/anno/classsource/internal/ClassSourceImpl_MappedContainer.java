@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,7 @@ public class ClassSourceImpl_MappedContainer
             fastMode.useFastMode();
 
         } catch ( UnableToAdaptException e ) {
+            // do NOT process with FFDC
             String eMsg =
                 "[ " + getHashText() + " ]" +
                 " Failed to adapt [ " + getCanonicalName() + " ]" +
@@ -105,11 +106,10 @@ public class ClassSourceImpl_MappedContainer
             fastMode.stopUsingFastMode();
 
         } catch ( UnableToAdaptException e ) {
-            String eMsg =
-                "[ " + getHashText() + " ]" +
-                " Failed to adapt [ " + getCanonicalName() + " ]" +
-                " to [ " + FastModeControl.class.getName() + " ]";
-            Tr.warning(tc, eMsg);
+            // autoFFDC will display the stack trace
+            // [ {0} ]: The container of this class source failed to convert to [{1}]. The message is {2}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION",
+                getHashText(), FastModeControl.class.getName(), e.getMessage());
         }
 
         if ( tc.isDebugEnabled() ) {
@@ -218,13 +218,10 @@ public class ClassSourceImpl_MappedContainer
             } catch ( Throwable th ) {
                 nextChildContainer = null;
 
-                // String eMsg = "[ " + getHashText() + " ]" +
-                //               " Failed to adapt [ " + nextChildName + " ]" +
-                //               " as [ " + nextEntry + " ]" +
-                //               " under root [ " + targetContainer + " ]" +
-                //               " for prefix [ " + prefix + " ]";
-                Tr.warning(tc, "ANNO_CLASSSOURCE_ADAPT_EXCEPTION",
-                           getHashText(), nextChildName, nextEntry, targetContainer, prefix);
+                // autoFFDC will display the stack trace
+                // [ {0} ]: The conversion of [{1}] as [{2}] under root [{3}] for prefix [{4}] failed. The message is {5}
+                Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION",
+                    getHashText(), nextChildName, nextEntry, targetContainer, prefix, th.getMessage());
             }
 
             if ( nextChildContainer != null ) {
@@ -292,7 +289,7 @@ public class ClassSourceImpl_MappedContainer
 
                     boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
 
-                    if (!didAdd) {
+                    if ( !didAdd ) {
                         incrementClassExclusionCount();
 
                         localScanCounts.increment(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
@@ -304,19 +301,17 @@ public class ClassSourceImpl_MappedContainer
 
                         try {
                             didProcess = process(streamer, nextClassName, nextPrefix, nextEntry, scanPolicy);
-                        } catch (ClassSource_Exception e) {
+
+                        } catch ( ClassSource_Exception e ) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
-
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process class [ " + nextClassName + " ]" +
-                            //               " under root [ " + getContainer() + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            // autoFFDC will display the stack trace
+                            // "[ {0} ] The processing of entry [ {1} ] for class [{1}] caused an exception. The message is: {2}"
+                            Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION",
+                                nextEntry.getName(), nextClassName, getHashText(), e);
                         }
 
-                        if (didProcess) {
+                        if ( didProcess ) {
                             localScanCounts.increment(ClassSource_ScanCounts.ResultField.PROCESSED_CLASS);
 
                         } else {
@@ -418,10 +413,10 @@ public class ClassSourceImpl_MappedContainer
         try {
             jandexStream = openResourceStream(null, useJandexIndexPath); // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
-            String errorMessage =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
-                " as JANDEX index";
-            Tr.error(tc, errorMessage);
+            // autoFFDC will display the stack trace
+            // [ {0} ] Open of Jandex index resource [{1}] caused an exception.  The message is: {2}.
+            Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION",
+               getHashText(), useJandexIndexPath, e.getMessage());
             return null;
         }
 
@@ -442,10 +437,11 @@ public class ClassSourceImpl_MappedContainer
             return jandexIndex;
 
         } catch ( Exception e ) {
-            String errorMessage =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
-                " as JANDEX index";
-            Tr.error(tc, errorMessage);
+            // autoFFDC will display the stack trace
+            // [ {0} ] Read of Jandex index resource [{1}] failed with an exception.  The message is: {2}.
+            Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION",
+               getHashText(), useJandexIndexPath, e.getMessage());
+
             return null;
 
         } finally {
@@ -460,7 +456,7 @@ public class ClassSourceImpl_MappedContainer
 
     @Override
     public InputStream openResourceStream(String className, String resourceName)
-                    throws ClassSource_Exception {
+        throws ClassSource_Exception {
 
         Entry entry = getContainer().getEntry(resourceName);
         if ( entry == null ) {
@@ -471,6 +467,7 @@ public class ClassSourceImpl_MappedContainer
         // throws ClassSource_Exception
     }
 
+    @FFDCIgnore({ Throwable.class })
     public InputStream openResourceStream(
         String className, String resourceName, Entry entry)
         throws ClassSource_Exception {
@@ -493,10 +490,12 @@ public class ClassSourceImpl_MappedContainer
             }
 
         } catch ( Throwable th ) {
+            // do NOT process with FFDC
+
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
-            //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
+            // Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
             //           getHashText(), resourceName, entry, getContainer(), className);
 
             String eMsg = "[ " + getHashText() + " ]" +
@@ -513,7 +512,7 @@ public class ClassSourceImpl_MappedContainer
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
-            //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
+            // Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
             //           getHashText(), resourceName, entry, getContainer(), className);
 
             String eMsg = "[ " + getHashText() + " ]" +
@@ -533,12 +532,9 @@ public class ClassSourceImpl_MappedContainer
     public void closeResourceStream(String className, String resourceName, InputStream inputStream) {
         Entry entry = getContainer().getEntry(resourceName);
         if ( entry == null ) {
-            // String eMsg = "[ " + getHashText() + " ]" +
-            //               " Failed to locate entry [ " + resourceName + " ]" +
-            //               " under root [ " + getContainer() + " ]" +
-            //               " for class [ " + className + " ]";
+            // [ {0} ]: The entry [{1}] could not be located under root [{2}] for class [{3}].
             Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_NOTFOUND",
-                       getHashText(), resourceName, getContainer(), className);
+                getHashText(), resourceName, getContainer(), className);
         } else {
             closeResourceStream(className, resourceName, entry, inputStream);
         }
@@ -552,16 +548,11 @@ public class ClassSourceImpl_MappedContainer
 
         try {
             inputStream.close(); // throws IOException
-
         } catch ( IOException e ) {
-            String eMsg =
-                "[ " + getHashText() + " ]" +
-                " Failed to close [ " + resourceName + " ]" +
-                " in [ " + getCanonicalName() + " ]";
-            if ( className != null ) {
-                eMsg += " for class [ " + className + " ]";
-            }
-            Tr.warning(tc, eMsg);
+            // autoFFDC will display the stack trace
+            // [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION",
+                getHashText(), resourceName, className, e.getMessage());
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
@@ -112,6 +113,7 @@ public class ClassSourceImpl_ClassLoader
     //
 
     @Override
+    @FFDCIgnore({ IOException.class })
     public InputStream openResourceStream(String className, String resourceName)
         throws ClassSource_Exception {
 
@@ -128,6 +130,8 @@ public class ClassSourceImpl_ClassLoader
             return url.openStream(); // throws IOException
 
         } catch ( IOException e) {
+            // do NOT process with FFDC
+
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
@@ -147,10 +151,10 @@ public class ClassSourceImpl_ClassLoader
             inputStream.close(); // throws IOException
 
         } catch ( IOException e ) {
-            // String eMsg = "[ " + getHashText() + " ]" +
-            //               " Failed to close resource [ " + resourceName + " ]" +
-            //               " for class [ " + className + " ]";
-            Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE2_EXCEPTION", getHashText(), resourceName, className);
+            // autoFFDC will display the stack trace
+            // [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION",
+                getHashText(), resourceName, className, e.getMessage());
         }
     }
 

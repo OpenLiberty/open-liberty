@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.jandex.internal.Jandex_Utils;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedJar;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
@@ -71,6 +72,7 @@ public class ClassSourceImpl_MappedJar
      */
     @Override
     @Trivial
+    @FFDCIgnore({ IOException.class })
     public void open() throws ClassSource_Exception {
         String methodName = "open";
         if ( tc.isEntryEnabled() ) {
@@ -84,7 +86,9 @@ public class ClassSourceImpl_MappedJar
              ((opens == 0) && (jarFile != null)) ||
              ((opens > 0) && (jarFile == null)) ) {
 
-            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD", getHashText(), getJarPath(), Integer.valueOf(opens));
+            // [ {0} ]: The Jar file [{1}] open counter [{2}] is in an incorrect state for close.
+            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD",
+                getHashText(), getJarPath(), Integer.valueOf(opens));
 
             String eMsg = "[ " + getHashText() + " ]" +
                 " Failed to open [ " + getJarPath() + " ]" +
@@ -99,7 +103,7 @@ public class ClassSourceImpl_MappedJar
             try {
                 jarFile = UtilImpl_FileUtils.createJarFile(jarPath); // throws IOException
             } catch ( IOException e ) {
-                Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN4_EXCEPTION", getHashText(), jarPath);
+                // do NOT process with FFDC
                 String eMsg = "[ " + getHashText() + " ] Failed to open [ " + jarPath + " ]";
                 throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
             }
@@ -125,6 +129,7 @@ public class ClassSourceImpl_MappedJar
     @SuppressWarnings("resource")
     @Override
     @Trivial
+    @FFDCIgnore({ IOException.class })
     public void close() throws ClassSource_Exception {
         String methodName = "close";
         if ( tc.isEntryEnabled() ) {
@@ -136,14 +141,19 @@ public class ClassSourceImpl_MappedJar
              ((opens == 0) && (useJarFile != null)) ||
              ((opens > 0) && (useJarFile == null)) ) {
 
-            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD", getHashText(), getJarPath(), Integer.valueOf(opens));
+            // [ {0} ]: The Jar file [{1}] open counter [{2}] is in an incorrect state for close.
+            Tr.warning(tc, "ANNO_CLASSSOURCE_JAR_STATE_BAD",
+               getHashText(), getJarPath(), Integer.valueOf(opens));
 
             opens = 0;
             useJarFile = clearJarFile();
             if ( useJarFile != null ) {
                 try {
                     useJarFile.close(); // throws IOException
+
                 } catch ( IOException e ) {
+                    // do NOT process with FFDC
+
                     // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
                     // Disable the following warning and defer message generation to a higher level, 
                     // preferably the ultimate consumer of the exception.
@@ -163,7 +173,10 @@ public class ClassSourceImpl_MappedJar
 
             try {
                 useJarFile.close(); // throws IOException
+
             } catch ( IOException e ) {
+                // do NOT process with FFDC
+
                 // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
                 // Disable the following warning and defer message generation to a higher level, 
                 // preferably the ultimate consumer of the exception.
@@ -271,17 +284,13 @@ public class ClassSourceImpl_MappedJar
                         try {
                             didProcess = process(streamer, nextClassName, nextEntryName, scanPolicy); // throws ClassSource_Exception
 
-                        } catch (ClassSource_Exception e) {
+                        } catch ( ClassSource_Exception e ) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
-
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process entry [ " + nextEntryName + " ]" +
-                            //               " under root [ " + getJarPath() + " ]" +
-                            //               " for class [ " + nextClassName + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            // autoFFDC will display the stack trace
+                            // [ {0} ] The processing of JAR entry [{1}] for class [{2}] caused an exception. The message is: {3}
+                            Tr.warning(tc, "ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION",
+                                getHashText(), nextEntryName, nextClassName, e.getMessage());
                         }
 
                         if ( didProcess ) {
@@ -338,11 +347,13 @@ public class ClassSourceImpl_MappedJar
         try {
             jandexStream = openResourceStream(null, useJandexIndexPath);
             // throws ClassSource_Exception
+
         } catch ( ClassSource_Exception e ) {
-            String errorMessage =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
-                " as JANDEX index: " + e.getMessage();
-            Tr.error(tc, errorMessage);
+            // autoFFDC will display the stack trace
+            // [ {0} ] Open of Jandex index resource [{1}] caused an exception.  The message is: {2}.
+            Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION",
+                getHashText(), useJandexIndexPath, e.getMessage());
+
             return null;
         }
 
@@ -356,12 +367,13 @@ public class ClassSourceImpl_MappedJar
                 "Read JANDEX index [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]:" +
                 " Classes [ " + Integer.toString(jandexIndex.getKnownClasses().size()) + " ]");
             return jandexIndex;
+
         } catch ( IOException e ) {
-            String eMsg =
-                "Failed to read [ " + useJandexIndexPath + " ] from [ " + getCanonicalName() + " ]" +
-                " as JANDEX index: " +
-                e.getMessage();
-            Tr.error(tc, eMsg);
+            // autoFFDC will display the stack trace
+            // [ {0} ] Read of Jandex index resource [{1}] failed with an exception.  The message is: {2}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION",
+                getHashText(), useJandexIndexPath, e.getMessage());
+
             return null;
         }
     }
@@ -369,6 +381,7 @@ public class ClassSourceImpl_MappedJar
     //
 
     @Override
+    @FFDCIgnore({ IOException.class })
     public InputStream openResourceStream(String className, String resourceName)
         throws ClassSource_Exception {
 
@@ -385,7 +398,10 @@ public class ClassSourceImpl_MappedJar
 
         try {
             inputStream = useJarFile.getInputStream(jarEntry); // throws IOException
+
         } catch ( IOException e ) {
+            // do NOT process with FFDC
+
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
@@ -407,12 +423,12 @@ public class ClassSourceImpl_MappedJar
     public void closeResourceStream(String className, String resourceName, InputStream inputStream) {
         try {
             inputStream.close(); // throws IOException
+
         } catch ( IOException e ) {
-            // String eMsg = "[ " + getHashText() + " ]" +
-            //               " Failed to close [ " + resourceName + " ]" + " for class [ " + className + " ]" +
-            //               " in [ " + getJarPath() + " ]";
-            Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE6_EXCEPTION",
-                       getHashText(), resourceName, className, getJarPath());
+            // autoFFDC will display the stack trace
+            // [ {0} ]: The close of JAR entry [{1}] for class [{2}] in [{3}] failed with an exception. The message is {4}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION",
+                getHashText(), resourceName, className, getJarPath(), e.getMessage());
         }
     }
 

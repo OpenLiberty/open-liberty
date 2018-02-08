@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -287,17 +288,13 @@ public class ClassSourceImpl_MappedSimple
                         try {
                             didProcess = process(streamer, nextClassName, nextResourceName, scanPolicy); // throws ClassSource_Exception
 
-                        } catch (ClassSource_Exception e) {
+                        } catch ( ClassSource_Exception e ) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
-
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process entry [ " + nextResourceName + " ]" +
-                            //               " under root [ " + getJarPath() + " ]" +
-                            //               " for class [ " + nextClassName + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            // autoFFDC will display the stack trace
+                            // [ {0} ] The processing of resource [{1}] for class [{2}] caused an exception. The message is: {3}
+                            Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION",
+                                getHashText(), nextResourceName, nextClassName, e.getMessage());
                         }
 
                         if ( didProcess ) {
@@ -501,14 +498,18 @@ public class ClassSourceImpl_MappedSimple
      *             the resource. Usually, because of an {@link IOException} from {@link ClassSource_MappedSimple.SimpleClassProvider#openResource(String)}.
      */
     @Override
+    @FFDCIgnore({ Throwable.class })
     public InputStream openResourceStream(String className, String resourceName)
-                    throws ClassSource_Exception {
+        throws ClassSource_Exception {
+
         String methodName = "openResourceStream";
 
-        if (!isProviderResource(resourceName)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] [ {1} ] ENTER/RETURN [ null ]: Provider does not contain [ {2} ]",
-                                                  getHashText(), methodName, resourceName));
+        if ( !isProviderResource(resourceName) ) {
+            if ( tc.isDebugEnabled()) {
+                String msg = MessageFormat.format(
+                    "[ {0} ] [ {1} ] ENTER/RETURN [ null ]: Provider does not contain [ {2} ]",
+                    getHashText(), methodName, resourceName);
+                Tr.debug(tc, msg);
             }
             return null;
         }
@@ -521,7 +522,9 @@ public class ClassSourceImpl_MappedSimple
             long finalTime = getTime();
             addStreamTime(finalTime - initialTime);
 
-        } catch (Throwable th) {
+        } catch ( Throwable th ) {
+            // do NOT process with FFDC
+
             // defect 84235:we are generating multiple Warning/Error messages for each error
             // due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
@@ -535,7 +538,7 @@ public class ClassSourceImpl_MappedSimple
             throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, th);
         }
 
-        if (result == null) {
+        if ( result == null ) {
             // defect 84235:we are generating multiple Warning/Error messages for each error
             // due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level, 
@@ -557,14 +560,11 @@ public class ClassSourceImpl_MappedSimple
         try {
             inputStream.close(); // throws IOException
 
-        } catch (IOException e) {
-            // String eMsg = "[ " + getHashText() + " ]" +
-            //               " Failed to close [ " + resourceName + " ]" +
-            //               " as [ " + entry + " ]" +
-            //               " under root [ " + getContainer() + " ]" +
-            //               " for class [ " + className + " ]";
-            Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE3_EXCEPTION",
-                       getHashText(), resourceName, null, null, className);
+        } catch ( IOException e ) {
+            // autoFFDC will display the stack trace
+            // [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
+            Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION",
+                getHashText(), resourceName, className, e.getMessage());
         }
     }
 

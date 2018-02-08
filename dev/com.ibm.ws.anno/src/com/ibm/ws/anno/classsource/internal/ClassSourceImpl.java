@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,8 +294,7 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         if ( !streamer.doProcess(className, scanPolicy) ) {
             if ( logParms != null ) {
-                Tr.exit(tc, methodName,
-                        MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: Filtered by streamer", logParms));
+                Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: Filtered by streamer", logParms));
             }
             return false;
         }
@@ -582,13 +581,11 @@ public abstract class ClassSourceImpl implements ClassSource {
                         didProcess = streamer.process(useClassSourceName, nextJandexClassInfo, scanPolicy);
                     } catch ( ClassSource_Exception e ) {
                         didProcess = false;
-                        // TODO: NEW_MESSAGE: Need a new message here.
-                        // String eMsg = "[ " + getHashText() + " ]" +
-                        //               " Failed to process entry [ " + nextEntryName + " ]" +
-                        //               " under root [ " + getJarPath() + " ]" +
-                        //               " for class [ " + nextClassName + " ]";
-                        // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                        Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+
+                        // autoFFDC will display the stack trace
+                        // "[ {0} ] The processing of Jandex information for class [{1}] caused an exception. The message is: {2}"
+                        Tr.warning(tc, "ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION",
+                            getHashText(), i_nextClassName, e.getMessage());
                     }
                 }
 
