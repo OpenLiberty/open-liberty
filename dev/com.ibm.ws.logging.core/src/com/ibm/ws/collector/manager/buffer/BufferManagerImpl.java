@@ -64,6 +64,7 @@ public class BufferManagerImpl extends BufferManager {
         if (event == null)
             throw new NullPointerException();
 
+        SynchronousHandler[] arrayCopy = null;
         RERWLOCK.readLock().lock();
         try {
 
@@ -78,10 +79,7 @@ public class BufferManagerImpl extends BufferManager {
                  * method is forwarding log events to synchronous handlers and an
                  * addSyncHandler or removeSyncHandler is called
                  */
-                for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
-                    synchronousHandler.synchronousWrite(event);
-                }
-
+            	arrayCopy = synchronousHandlerSet.toArray(new SynchronousHandler[0]);
             }
             
             if(ringBuffer !=  null){
@@ -96,6 +94,12 @@ public class BufferManagerImpl extends BufferManager {
 
         } finally {
             RERWLOCK.readLock().unlock();
+            if (arrayCopy != null){
+	                for (SynchronousHandler synchronousHandler : arrayCopy) {
+	                	synchronousHandler.synchronousWrite(event);
+	                }
+	            }
+	            arrayCopy = null;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

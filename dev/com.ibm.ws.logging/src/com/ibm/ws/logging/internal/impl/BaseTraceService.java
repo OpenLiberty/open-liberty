@@ -307,6 +307,8 @@ public class BaseTraceService implements TrService {
         //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
+            collectorMgrPipelineUtils.setJsonTrService(true);
+
         }
 
         //Sources
