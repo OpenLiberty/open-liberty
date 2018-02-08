@@ -32,10 +32,10 @@ infoTermsOfServiceInvalidURL=The Info object must contain a valid URL. The \"{0}
 invalidUrl=The \"{0}\" object must contain a valid URL. The \"{1}\" value specified for the URL is not valid
 invalidUri=The \"{0}\" object must contain a valid URI. The \"{1}\" value specified for the URI is not valid
 
-headerExampleOrExamples=The Header object \"{0}\" specifies both an example object and an examples object. Only one of them should be specified
-headerSchemaAndContent=The Header object \"{0}\" MUST contain either a schema property, or a content property, but not both
-headerSchemaOrContent=The Header object \"{0}\" MUST contain either a schema property or a content property
-headerContentMap=The \"content\" map within header object \"{0}\" must only contain one entry
+headerExampleOrExamples=The Header \"{0}\" object cannot have both \"examples\" and \"example\"
+headerSchemaAndContent=The Header \"{0}\" object must contain either a schema property or a content property, but it cannot contain both
+headerSchemaOrContent=The Header \"{0}\" object must contain either a schema property or a content property
+headerContentMap=The \"content\" map within the \"{0}\" Header object must contain only one entry
 
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
 
@@ -44,7 +44,7 @@ mediaTypeEncodingProperty=The \"{0}\" encoding property specified in the MediaTy
 mediaTypeEmptySchema=The encoding property specified cannot be validated because the corresponding schema property is null
 
 oAuthFlowInvalidURL=The OAuthFlow Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
-nonApplicableField=The "\{0}\" field with value \"{1}\" is not applicable for \"{2}\"
+nonApplicableField=The "\{0}\" field with the \"{1}\" value is not applicable for \"{2}\"
 
 openAPIVersionInvalid=The OpenAPI object must contain a valid OpenAPI specification version. The \"{0}\" value specified for the OpenAPI specification version is not valid
 openAPITagIsNotUnique=The OpenAPI object must contain unique tag names. The \"{0}\" tag name is not unique
