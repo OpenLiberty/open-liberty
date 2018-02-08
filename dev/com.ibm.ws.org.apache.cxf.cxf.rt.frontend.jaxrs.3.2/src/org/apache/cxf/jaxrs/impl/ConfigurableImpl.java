@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.ws.rs.ConstrainedTo;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.RuntimeType;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -42,25 +43,25 @@ import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 
 public class ConfigurableImpl<C extends Configurable<C>> implements Configurable<C> {
     private static final Logger LOG = LogUtils.getL7dLogger(ConfigurableImpl.class);
-
+    
     private static final Class<?>[] RESTRICTED_CLASSES_IN_SERVER = {ClientRequestFilter.class, 
                                                                     ClientResponseFilter.class};
     private static final Class<?>[] RESTRICTED_CLASSES_IN_CLIENT = {ContainerRequestFilter.class, 
                                                                     ContainerResponseFilter.class};
-
+    
     private ConfigurationImpl config;
     private final C configurable;
-
+    
     private final Class<?>[] restrictedContractTypes;
 
     public interface Instantiator {
         <T> Object create(Class<T> cls);
     }
-
+    
     public ConfigurableImpl(C configurable, RuntimeType rt) {
         this(configurable, new ConfigurationImpl(rt));
     }
-
+    
     public ConfigurableImpl(C configurable, Configuration config) {
         this.configurable = configurable;
         this.config = config instanceof ConfigurationImpl
@@ -91,7 +92,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
             .collect(Collectors.toList());
         return implementedContracts.toArray(new Class<?>[]{});
     }
-
+    
     protected C getConfigurable() {
         return configurable;
     }
@@ -147,20 +148,23 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
     public C register(Class<?> providerClass, Map<Class<?>, Integer> contracts) {
         return register(getInstantiator().create(providerClass), contracts);
     }
-    
+
     protected Instantiator getInstantiator() {
         return ConfigurationImpl::createProvider;
     }
 
     private C doRegister(Object provider, int bindingPriority, Class<?>... contracts) {
         if (contracts == null || contracts.length == 0) {
-            LOG.warning("Null or empty contracts specified for " + provider + "; ignoring.");
+            LOG.warning("Null, empty or invalid contracts specified for " + provider + "; ignoring.");
             return configurable;
         }
         return doRegister(provider, ConfigurationImpl.initContractsMap(bindingPriority, contracts));
     }
 
     private C doRegister(Object provider, Map<Class<?>, Integer> contracts) {
+        if (!checkConstraints(provider)) {
+            return configurable;
+        }
         if (provider instanceof Feature) {
             Feature feature = (Feature)provider;
             boolean enabled = feature.configure(new FeatureContextImpl(this));
@@ -170,5 +174,34 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
         }
         config.register(provider, contracts);
         return configurable;
+    }
+
+    private boolean checkConstraints(Object provider) {
+        Class<?> providerClass = provider.getClass();
+        ConstrainedTo providerConstraint = providerClass.getAnnotation(ConstrainedTo.class);
+        if (providerConstraint != null) {
+            RuntimeType currentRuntime = config.getRuntimeType();
+            RuntimeType providerRuntime = providerConstraint.value();
+            // need to check (1) whether the registration is occurring in the specified runtime type
+            // and (2) does the provider implement an invalid interface based on the constrained runtime type
+            if (!providerRuntime.equals(currentRuntime)) {
+                LOG.warning("Provider " + provider + " cannot be registered in this " + currentRuntime
+                            + " runtime because it is constrained to " + providerRuntime + " runtimes.");
+                return false;
+            }
+            
+            Class<?>[] restrictedInterfaces = RuntimeType.CLIENT.equals(providerRuntime) ? RESTRICTED_CLASSES_IN_CLIENT
+                                                                                         : RESTRICTED_CLASSES_IN_SERVER;
+            for (Class<?> restrictedContract : restrictedInterfaces) {
+                if (restrictedContract.isAssignableFrom(providerClass)) {
+                    RuntimeType opposite = RuntimeType.CLIENT.equals(providerRuntime) ? RuntimeType.SERVER
+                                                                                      : RuntimeType.CLIENT;
+                    LOG.warning("Provider " + providerClass.getName() + " is invalid - it is constrained to "
+                        + providerRuntime + " runtimes but implements a " + opposite + " interface ");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
