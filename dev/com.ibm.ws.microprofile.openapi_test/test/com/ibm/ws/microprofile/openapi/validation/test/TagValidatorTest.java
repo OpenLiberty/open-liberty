@@ -67,7 +67,7 @@ public class TagValidatorTest {
 
         validator.validate(vh, context, key, tag);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"name\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"name\" field is missing or is set to an invalid value"));
     }
 
 }

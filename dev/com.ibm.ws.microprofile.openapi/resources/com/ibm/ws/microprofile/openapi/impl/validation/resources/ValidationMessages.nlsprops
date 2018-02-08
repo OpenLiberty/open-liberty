@@ -55,7 +55,7 @@ parameterInFieldInvalid=The value of the \"in\" field of Parameter object \"{0}\
 parameterExampleOrExamples=The \"{0}\" Parameter object specifies both an example object and an examples object. Only one of them should be specified
 parameterSchemaOrContent=The \"{0}\" Parameter object does not contain a schema property or a content property
 parameterSchemaAndContent=The \"{0}\" Parameter object must not contain a schema property and a content property
-parameterContentMapMustNotBeEmpty=The \"content\" map within the \"{0}\" Parameter object must only contain one entry
+parameterContentMapMustNotBeEmpty=The \"content\" map within the \"{0}\" Parameter object must contain only one entry
 
 pathItemInvalidRef=The PathItem object has an invalid $ref \"{0}\" value for \"{1}\" path item. A reference to a path item must be external.
 pathItemRequiredField=The PathItem object must contain a valid path. The \"{0}\" path parameter from the \"{1}\" path does not contain the \"required\" field or its value is not \"true\"

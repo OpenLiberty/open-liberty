@@ -34,8 +34,8 @@ public class InfoValidatorTest {
         InfoImpl info = new InfoImpl();//everything null
         validator.validate(vh, context, info);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value."));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"title\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"title\" field is missing or is set to an invalid value"));
 
     }
 
@@ -60,7 +60,7 @@ public class InfoValidatorTest {
         info.setTitle("test");
         validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class InfoValidatorTest {
         info.setVersion("1.0");
         validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"title\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"title\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class InfoValidatorTest {
         info.setTermsOfService("notValidURL");
         validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Info object must contain a valid URL."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Info object must contain a valid URL"));
     }
 
     @Test

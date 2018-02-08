@@ -36,15 +36,16 @@ public class ResponseValidator extends TypeValidator<APIResponse> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, APIResponse t) {
 
-        String reference = t.getRef();
+        if (t != null) {
+            String reference = t.getRef();
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
+            }
+
+            final String description = t.getDescription();
+            ValidatorUtils.validateRequiredField(description, context, "description").ifPresent(helper::addValidationEvent);
         }
-
-        final String description = t.getDescription();
-        ValidatorUtils.validateRequiredField(description, context, "description").ifPresent(helper::addValidationEvent);
-
     }
 }

@@ -64,7 +64,7 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with blank entry must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("The Callback object's URL template is empty and is not a valid URL."))
+        if (!message.contains("The Callback object's URL template is empty and is not a valid URL"))
             Assert.fail("Callback with blank entry reported an incorrect error:" + vh);
     }
 

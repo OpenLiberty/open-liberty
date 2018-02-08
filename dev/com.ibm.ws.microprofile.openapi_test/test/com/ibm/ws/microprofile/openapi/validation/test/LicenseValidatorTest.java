@@ -36,7 +36,7 @@ public class LicenseValidatorTest {
         LicenseImpl license = new LicenseImpl();
         validator.validate(vh, context, license);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"name\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"name\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class LicenseValidatorTest {
         license.setUrl("notAValidURL");
         validator.validate(vh, context, license);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The License object must contain a valid URL."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The License object must contain a valid URL"));
     }
 
     @Test

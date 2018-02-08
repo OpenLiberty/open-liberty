@@ -111,8 +111,8 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"tokenUrl\" field with value \"http://test-authorization-url.com\" is not applicable for \"implicit OAuthFlow\"."));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"authorizationUrl\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"tokenUrl\" field with value \"http://test-authorization-url.com\" is not applicable for \"implicit OAuthFlow\""));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"authorizationUrl\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -132,8 +132,8 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with value \"http://test-token-url.com\" is not applicable for \"password OAuthFlow\"."));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with value \"http://test-token-url.com\" is not applicable for \"password OAuthFlow\""));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -152,8 +152,8 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with value \"http://test-client-url.com\" is not applicable for \"clientCredentials OAuthFlow\"."));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with value \"http://test-client-url.com\" is not applicable for \"clientCredentials OAuthFlow\""));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value."));
-        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"authorizationUrl\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"authorizationUrl\" field is missing or is set to an invalid value"));
     }
 }

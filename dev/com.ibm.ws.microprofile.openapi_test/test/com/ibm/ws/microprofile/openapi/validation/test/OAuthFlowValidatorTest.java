@@ -38,7 +38,7 @@ public class OAuthFlowValidatorTest {
 
         validator.validate(vh, context, oauthflow);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"scopes\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"scopes\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class OAuthFlowValidatorTest {
 
         validator.validate(vh, context, oauthflow);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OAuthFlow Object must contain a valid URL."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OAuthFlow Object must contain a valid URL"));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class OAuthFlowValidatorTest {
 
         validator.validate(vh, context, oauthflow);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OAuthFlow Object must contain a valid URL."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OAuthFlow Object must contain a valid URL"));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class OAuthFlowValidatorTest {
 
         validator.validate(vh, context, oauthflow);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OAuthFlow Object must contain a valid URL."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OAuthFlow Object must contain a valid URL"));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class OAuthFlowValidatorTest {
 
         validator.validate(vh, context, oauthflow);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains(" Required \"scopes\" field is missing or is set to an invalid value."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"scopes\" field is missing or is set to an invalid value"));
     }
 
     @Test

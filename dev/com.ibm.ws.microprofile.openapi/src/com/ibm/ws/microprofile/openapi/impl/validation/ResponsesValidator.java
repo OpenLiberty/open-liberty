@@ -37,12 +37,14 @@ public class ResponsesValidator extends TypeValidator<APIResponses> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, APIResponses t) {
-        if (t.size() == 0 && t.getDefault() == null) {
-            final String message = Tr.formatMessage(tc, "responseMustContainOneCode");
-            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
-        } else if (!t.keySet().stream().anyMatch(v -> isSuccessStatusCode(v))) {
-            final String message = Tr.formatMessage(tc, "responseShouldContainSuccess");
-            helper.addValidationEvent(new ValidationEvent(Severity.WARNING, context.getLocation(), message));
+        if (t != null) {
+            if (t.size() == 0 && t.getDefault() == null) {
+                final String message = Tr.formatMessage(tc, "responseMustContainOneCode");
+                helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
+            } else if (!t.keySet().stream().anyMatch(v -> isSuccessStatusCode(v))) {
+                final String message = Tr.formatMessage(tc, "responseShouldContainSuccess");
+                helper.addValidationEvent(new ValidationEvent(Severity.WARNING, context.getLocation(), message));
+            }
         }
     }
 
