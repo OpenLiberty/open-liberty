@@ -59,8 +59,7 @@ public class ReferenceValidator {
                 || $ref.startsWith("http://")
                 || $ref.startsWith("https://")) {
 
-                final String message = Tr.formatMessage(tc, "referenceExternalOrExtension", $ref);
-                LOGGER.warning(message);
+                return null;
 
             } else {
 

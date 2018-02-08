@@ -37,8 +37,12 @@ public class ServerVariablesValidator extends TypeValidator<ServerVariables> {
     public void validate(ValidationHelper helper, Context context, String key, ServerVariables t) {
         if (t != null) {
             for (String k : t.keySet()) {
-                if (k.isEmpty() || k == null) {
-                    final String message = Tr.formatMessage(tc, "serverVariablesNullKey");
+                if (k == null || k.isEmpty()) {
+                    final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap", t.toString());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                }
+                if (t.get(k) == null) {
+                    final String message = Tr.formatMessage(tc, "nullValueInMap", t.toString());
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }

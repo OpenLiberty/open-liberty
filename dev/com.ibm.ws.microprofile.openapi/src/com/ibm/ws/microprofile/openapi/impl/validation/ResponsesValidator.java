@@ -45,6 +45,12 @@ public class ResponsesValidator extends TypeValidator<APIResponses> {
                 final String message = Tr.formatMessage(tc, "responseShouldContainSuccess");
                 helper.addValidationEvent(new ValidationEvent(Severity.WARNING, context.getLocation(), message));
             }
+            for (String k : t.keySet()) {
+                if (t.get(k) == null) {
+                    final String message = Tr.formatMessage(tc, "nullValueInMap", t.toString());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                }
+            }
         }
     }
 

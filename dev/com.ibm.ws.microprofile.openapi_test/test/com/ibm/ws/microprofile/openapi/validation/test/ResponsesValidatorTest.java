@@ -58,6 +58,85 @@ public class ResponsesValidatorTest {
     }
 
     @Test
+    public void testNullKeyResponses() {
+        ResponsesValidator validator = ResponsesValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        APIResponseImpl responseOne = new APIResponseImpl();
+        responseOne.description("Successful Operation");
+
+        APIResponseImpl responseTwo = new APIResponseImpl();
+        responseTwo.description("Bad Request");
+
+        APIResponseImpl responseThree = new APIResponseImpl();
+        responseThree.description("Server Error");
+
+        APIResponseImpl responseFour = new APIResponseImpl();
+        responseFour.description("Default response");
+
+        APIResponsesImpl responses = new APIResponsesImpl();
+        responses.addApiResponse(null, responseOne);
+        responses.addApiResponse("400", responseTwo);
+        responses.addApiResponse("500", responseThree);
+        responses.addApiResponse("default", responseFour);
+
+        validator.validate(vh, context, key, responses);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
+    public void testEmptyKeyResponses() {
+        ResponsesValidator validator = ResponsesValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        APIResponseImpl responseOne = new APIResponseImpl();
+        responseOne.description("Successful Operation");
+
+        APIResponseImpl responseTwo = new APIResponseImpl();
+        responseTwo.description("Bad Request");
+
+        APIResponseImpl responseThree = new APIResponseImpl();
+        responseThree.description("Server Error");
+
+        APIResponseImpl responseFour = new APIResponseImpl();
+        responseFour.description("Default response");
+
+        APIResponsesImpl responses = new APIResponsesImpl();
+        responses.addApiResponse("", responseOne);
+        responses.addApiResponse("400", responseTwo);
+        responses.addApiResponse("500", responseThree);
+        responses.addApiResponse("default", responseFour);
+
+        validator.validate(vh, context, key, responses);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
+    public void testNullValueResponses() {
+        ResponsesValidator validator = ResponsesValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        APIResponseImpl responseOne = new APIResponseImpl();
+        responseOne.description("Successful Operation");
+
+        APIResponseImpl responseThree = new APIResponseImpl();
+        responseThree.description("Server Error");
+
+        APIResponseImpl responseFour = new APIResponseImpl();
+        responseFour.description("Default response");
+
+        APIResponsesImpl responses = new APIResponsesImpl();
+        responses.addApiResponse("200", responseOne);
+        responses.addApiResponse("400", null);
+        responses.addApiResponse("500", responseThree);
+        responses.addApiResponse("default", responseFour);
+
+        validator.validate(vh, context, key, responses);
+        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be null"));
+    }
+
+    @Test
     public void testEmptyResponses() {
         ResponsesValidator validator = ResponsesValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
