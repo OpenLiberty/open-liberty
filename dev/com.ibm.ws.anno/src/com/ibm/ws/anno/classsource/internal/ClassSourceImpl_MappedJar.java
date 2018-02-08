@@ -28,6 +28,7 @@ import com.ibm.ws.anno.jandex.internal.Jandex_Utils;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedJar;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
@@ -37,19 +38,18 @@ public class ClassSourceImpl_MappedJar
     extends ClassSourceImpl
     implements ClassSource_MappedJar {
 
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_MappedJar.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedJar.class);
 
     // Top O' the world
 
-    @SuppressWarnings("unused")
     @Trivial
     public ClassSourceImpl_MappedJar(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
-        String name, String jarPath) throws ClassSource_Exception {
+        String name, ClassSource_Options options,
+        String jarPath) throws ClassSource_Exception {
 
-        super(factory, internMap, name, jarPath);
+        super(factory, internMap, name, options, jarPath);
 
         this.jarPath = jarPath;
     }

@@ -25,6 +25,7 @@ import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -60,6 +61,7 @@ public abstract class ClassSourceImpl implements ClassSource {
     protected ClassSourceImpl(ClassSourceImpl_Factory factory,
                               Util_InternMap internMap,
                               String name,
+                              ClassSource_Options options,
                               String hashTextSuffix) {
         super();
 
@@ -71,6 +73,8 @@ public abstract class ClassSourceImpl implements ClassSource {
         this.canonicalName = factory.getCanonicalName(this.name);
 
         this.parentSource = null;
+
+        this.options = options;
 
         String useHashText = AnnotationServiceImpl_Logging.getBaseHash(this);
         useHashText += "(" + this.canonicalName;
@@ -130,6 +134,16 @@ public abstract class ClassSourceImpl implements ClassSource {
     @Override
     public void setParentSource(ClassSource parentSource) {
         this.parentSource = parentSource;
+    }
+
+    //
+    
+    protected final ClassSource_Options options;
+
+    @Override
+    @Trivial
+    public ClassSource_Options getOptions() {
+    	return options;
     }
 
     //
