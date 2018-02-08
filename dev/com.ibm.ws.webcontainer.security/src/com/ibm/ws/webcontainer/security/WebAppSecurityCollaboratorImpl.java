@@ -60,6 +60,7 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
 import com.ibm.ws.webcontainer.security.internal.FormLoginExtensionProcessor;
@@ -431,7 +432,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     @Override
     public boolean isCDINeeded() {
         Set<String> installedFeatures = provisionerService.getInstalledFeatures();
-        return installedFeatures.contains("servlet-4.0");
+        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 && installedFeatures.contains("appSecurity-3.0");
     }
 
     /**
