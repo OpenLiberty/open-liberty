@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -30,7 +31,6 @@ public class ClassSourceImpl_ClassLoader
     extends ClassSourceImpl
     implements ClassSource_ClassLoader {
 
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_ClassLoader.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_ClassLoader.class);
 
@@ -39,9 +39,10 @@ public class ClassSourceImpl_ClassLoader
     public ClassSourceImpl_ClassLoader(ClassSourceImpl_Factory factory,
                                        Util_InternMap internMap,
                                        String name,
+                                       ClassSource_Options options,
                                        ClassLoader classLoader) {
 
-        super(factory, internMap, name, String.valueOf(classLoader));
+        super(factory, internMap, name, options, String.valueOf(classLoader));
 
         this.classLoader = classLoader;
 

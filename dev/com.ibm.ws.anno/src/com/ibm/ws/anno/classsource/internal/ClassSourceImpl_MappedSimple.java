@@ -24,6 +24,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -42,7 +43,6 @@ public class ClassSourceImpl_MappedSimple
     implements ClassSource_MappedSimple {
 
     /** <p>Cache of the class name for logging.</p> */
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_MappedSimple.class.getName();
 
     /** <p>Trace component for simple class sources.</p> */
@@ -58,6 +58,7 @@ public class ClassSourceImpl_MappedSimple
      * @param name A simple name for this class source. The name is intended
      *            both for logging, and as a unique identified for any enclosing
      *            class source.
+     * @param options Options for the class source.
      * @param provider Call-out utility for obtaining resource names and for
      *            opening resource.
      * 
@@ -68,10 +69,11 @@ public class ClassSourceImpl_MappedSimple
     public ClassSourceImpl_MappedSimple(ClassSourceImpl_Factory factory,
                                         Util_InternMap internMap,
                                         String name,
+                                        ClassSource_Options options,
                                         ClassSource_MappedSimple.SimpleClassProvider provider)
         throws ClassSource_Exception {
 
-        super(factory, internMap, name, provider.getName());
+        super( factory, internMap, name, options, provider.getName() );
 
         this.provider = provider;
     }

@@ -30,6 +30,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -38,19 +39,18 @@ public class ClassSourceImpl_MappedContainer
     extends ClassSourceImpl
     implements ClassSource_MappedContainer {
 
-    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_MappedContainer.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedContainer.class);
 
     // Top O' the world
 
-    @SuppressWarnings("unused")
     @Trivial
     public ClassSourceImpl_MappedContainer(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
-        String name, Container container) throws ClassSource_Exception {
+        String name, ClassSource_Options options,
+        Container container) throws ClassSource_Exception {
 
-        super(factory, internMap, name, String.valueOf(container));
+        super(factory, internMap, name, options, String.valueOf(container));
 
         this.container = container;
     }
@@ -59,7 +59,7 @@ public class ClassSourceImpl_MappedContainer
 
     /**
      * <p>Open this class source.</p>
-     * 
+     *
      * @throws ClassSource_Excewption Thrown if the open failed.
      */
     @Override
@@ -93,7 +93,7 @@ public class ClassSourceImpl_MappedContainer
 
     /**
      * <p>Close this class source.</p>
-     * 
+     *
      * @throws ClassSource_Excewption Thrown if the close failed.
      */
     @Override
@@ -111,7 +111,7 @@ public class ClassSourceImpl_MappedContainer
                 "[ " + getHashText() + " ]" +
                 " Failed to close [ " + getCanonicalName() + " ]" +
                 " to [ " + FastModeControl.class.getName() + " ]";
-            throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);            
+            throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
         }
 
         if ( tc.isDebugEnabled() ) {
@@ -314,7 +314,7 @@ public class ClassSourceImpl_MappedContainer
                              String eMsg = "[ " + getHashText() + " ]" +
                                            " Failed to process class [ " + nextClassName + " ]" +
                                            " under root [ " + getContainer() + " ]";
-                            // CWWKC0068W: An exception occurred while processing class [ {0} ] in container [ {1} ] 
+                            // CWWKC0068W: An exception occurred while processing class [ {0} ] in container [ {1} ]
                             // identified by [ {2} ]. The exception was {3}.
                             Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
                         }
@@ -411,14 +411,14 @@ public class ClassSourceImpl_MappedContainer
     @SuppressWarnings("deprecation")
     @Override
     protected Index getJandexIndex() {
-        
+
         String useJandexIndexPath = getJandexIndexPath();
 
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]", 
-                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } ));        
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } ));
         }
-        
+
         InputStream jandexStream;
 
         try {
@@ -431,22 +431,22 @@ public class ClassSourceImpl_MappedContainer
 
         if ( jandexStream == null ) {
             if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] No JANDEX index was found", getHashText()));        
+                Tr.debug(tc, MessageFormat.format("[ {0} ] No JANDEX index was found", getHashText()));
             }
             return null;
         }
 
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Located JANDEX index", getHashText()));        
-        }        
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Located JANDEX index", getHashText()));
+        }
 
         long startJandexTime = getTime();
 
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
             if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]", 
-                        new Object[] {  getHashText(), useJandexIndexPath,  getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));        
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
+                        new Object[] {  getHashText(), useJandexIndexPath,  getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
             }
             return jandexIndex;
 
@@ -502,7 +502,7 @@ public class ClassSourceImpl_MappedContainer
 
         } catch ( Throwable th ) {
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
-            // Disable the following warning and defer message generation to a higher level, 
+            // Disable the following warning and defer message generation to a higher level,
             // preferably the ultimate consumer of the exception.
             //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
             //           getHashText(), resourceName, entry, getContainer(), className);
@@ -519,7 +519,7 @@ public class ClassSourceImpl_MappedContainer
 
         if ( result == null ) {
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
-            // Disable the following warning and defer message generation to a higher level, 
+            // Disable the following warning and defer message generation to a higher level,
             // preferably the ultimate consumer of the exception.
             //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
             //           getHashText(), resourceName, entry, getContainer(), className);
