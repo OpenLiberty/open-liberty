@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.service;
 
-import org.eclipse.microprofile.opentracing.Traced;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -21,10 +20,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.container.AsyncResponse;
+
+import org.eclipse.microprofile.opentracing.Traced;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
@@ -229,15 +231,12 @@ public class FATOpentracingService extends Application implements FATOpentracing
         return responseText;
     }
     
-//    Currently OpenTracing doesn't support AsyncResponse.
-//    
-//    @param asyncResponse An asynchronous response used to provide
-//        the response from the delay thread.  This is injected using
-//        {@link Suspended}.
-
     /**
      * <p>Service API: Handle a delayed GET.</p>
-     * 
+     *
+     * @param asyncResponse An asynchronous response used to provide
+     *     the response from the delay thread.  This is injected using
+     *     {@link Suspended}.
      * @param delay The count of seconds to delay the response.
      *     This is injected as the "delay" query parameter.
      * @param responseText The text to answer by the service request.
@@ -246,52 +245,32 @@ public class FATOpentracingService extends Application implements FATOpentracing
     @GET
     @Path(GET_DELAYED_PATH)
     @Produces(MediaType.TEXT_PLAIN)
-    public String getDelayed(
-        //@Suspended AsyncResponse asyncResponse,
+    public void getDelayed(
+        @Suspended AsyncResponse asyncResponse,
         @QueryParam(DELAY_PARAM_NAME) int delay,
         @QueryParam(RESPONSE_PARAM_NAME) String responseText) {
 
         String methodName = "getDelayed";
         traceEnter(methodName, "Delay", Integer.valueOf(delay), "ResponseText", responseText);
 
-//        Thread delayThread = new Thread(
-//            delayResponse(asyncResponse,
-//            delay * MSEC_IN_SEC,
-//            responseText) );
-//
-//        delayThread.start();
-        
         try {
             Thread.sleep(delay * MSEC_IN_SEC);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         
-        traceReturn(methodName);
+        asyncResponse.resume(responseText);
+
+        // Current OT spec doesn't support AsyncResponse in a different thread.
+        // 
+        // Thread delayThread = new Thread(
+        //    delayResponse(asyncResponse,
+        //    delay * MSEC_IN_SEC,
+        //    responseText) );
+        // delayThread.start();
         
-        return responseText;
-    }
-
-    // Delay utility ...
-
-    /** <p>The count of milliseconds in one second.</p> */
-    private final int MSEC_IN_SEC = 1000;
-
-    private static final String INNER_CLASS_NAME = FATOpentracingService.class.getSimpleName() + "$Runnable";
-
-    protected static void innerTraceEnter(
-            String methodName,
-            String value1Name, Object value1,
-            String value2Name, Object value2) {
-
-            System.out.println(
-                INNER_CLASS_NAME + "." + methodName + " ENTER " +
-                value1Name + " [ " + value1 + " ]" +
-                value2Name + " [ " + value2 + " ]");
-    }
-
-    protected static void innerTraceReturn(String methodName) {
-        System.out.println(INNER_CLASS_NAME + "." + methodName + " RETURN");
+        
+        traceReturn(methodName);
     }
 
     /**
@@ -328,6 +307,28 @@ public class FATOpentracingService extends Application implements FATOpentracing
                 innerTraceReturn(methodName);
             }
         };
+    }
+
+    // Delay utility ...
+
+    /** <p>The count of milliseconds in one second.</p> */
+    private final int MSEC_IN_SEC = 1000;
+
+    private static final String INNER_CLASS_NAME = FATOpentracingService.class.getSimpleName() + "$Runnable";
+
+    protected static void innerTraceEnter(
+            String methodName,
+            String value1Name, Object value1,
+            String value2Name, Object value2) {
+
+            System.out.println(
+                INNER_CLASS_NAME + "." + methodName + " ENTER " +
+                value1Name + " [ " + value1 + " ]" +
+                value2Name + " [ " + value2 + " ]");
+    }
+
+    protected static void innerTraceReturn(String methodName) {
+        System.out.println(INNER_CLASS_NAME + "." + methodName + " RETURN");
     }
 
     // Nested service API ... 'getNested'
