@@ -178,8 +178,7 @@ task publishLibNative(type: Copy) {
 task prereqFeatureResources {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
-  dependsOn publishDevApiIBMJavadoc
-  dependsOn publishDevSpiIBMJavadoc
+  dependsOn publishJavadoc
   dependsOn publishToolJars
   dependsOn publishSchemaResources
   dependsOn publishPlatformFiles
