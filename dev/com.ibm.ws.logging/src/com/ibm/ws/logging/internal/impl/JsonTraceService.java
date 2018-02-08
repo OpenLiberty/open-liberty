@@ -61,6 +61,7 @@ public class JsonTraceService extends BaseTraceService {
         //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
+            collectorMgrPipelineUtils.setJsonTrService(true);
         }
 
         //Sources
