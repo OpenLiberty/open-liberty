@@ -1,9 +1,5 @@
 /*******************************************************************************
-<<<<<<< HEAD
  * Copyright (c) 2011, 2018 IBM Corporation and others.
-=======
- * Copyright (c) 2011, 2017 IBM Corporation and others.
->>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,10 +25,7 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-<<<<<<< HEAD
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-=======
->>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -227,19 +220,10 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
                     nextClassSource.close(); // throws ClassSource_Exception
 
                 } catch ( ClassSource_Exception e )  {
-<<<<<<< HEAD
                     // autoFFDC will display the stack trace
                     // [ {0} ]: The close of child class source [{1}] failed with an exception. The message is {3}
                     Tr.warning(tc, "ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION",
                         getHashText(), nextClassSource.getHashText(), e.getMessage());
-=======
-                    // String eMsg = "Class source [ " + getHashText() + " ]" +
-                    //               " failed to close child class source [ " + nextClassSource.getHashText() + " ]";
-                    Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE1_EXCEPTION",
-                        getHashText(),
-                        nextClassSourceName,
-                        nextClassSource.getHashText());
->>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
                 }
             }
         }
@@ -457,7 +441,6 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     //
     // Would need to be implemented if aggregate class sources could be put
     // within aggregate class sources.  That is not currently supported.
-<<<<<<< HEAD
 
     @Override
     public void scanClasses(
@@ -469,19 +452,6 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
     }
 
     @Override
-=======
-
-    @Override
-    public void scanClasses(
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNamesSet,
-        ScanPolicy scanPolicy) {
-
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
->>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
     protected void processFromScratch(
         ClassSource_Streamer streamer,
         Set<String> i_seedClassNames,
@@ -760,11 +730,8 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
                     }
 
                 } catch ( ClassSource_Exception e ) {
-<<<<<<< HEAD
                     // do NOT process with FFDC
 
-=======
->>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
                     i_setGlobalResult(i_className, true);
                     i_setFirstSuccess(i_className, nextClassSource);
 
@@ -805,17 +772,10 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
             inputStream.close(); // throws IOException
 
         } catch ( IOException e ) {
-<<<<<<< HEAD
             // autoFFDC will display the stack trace
             // [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
             Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION",
                 getHashText(), resourceName, className, e.getMessage());
-=======
-            // String eMsg = "[ " + getHashText() + " ]" +
-            //               " Failed to close resource [ " + resourceName + " ]" +
-            //               " for class [ " + className + " ]";
-            Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE2_EXCEPTION", getHashText(), resourceName, className);
->>>>>>> e987c115bdad64476cd0dcfef6f5d48beef29230
         }
     }
 

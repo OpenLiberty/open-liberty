@@ -245,7 +245,7 @@ public class ClassSourceImpl_MappedDirectory
                             // autoFFDC will display the stack trace
                             // "[ {0} ] The processing of file [ {1} ] for class [{2}] caused an exception. The message is: {3}"
                             Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION",
-                                getHashText(), nextResourceName, nextClassName, e.getMessage();
+                                getHashText(), nextResourceName, nextClassName, e.getMessage());
                         }
 
                         if (didProcess) {
@@ -332,7 +332,7 @@ public class ClassSourceImpl_MappedDirectory
             // autoFFDC will display the stack trace
             // [ {0} ] Open of Jandex index file [{1}] caused an exception.  The message is: {2}.
             Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION",
-                getHashText(), useJandexIndexPath, e.getMessage());
+                getHashText(), fullJandexPath, e.getMessage());
 
             return null;
         }
@@ -357,7 +357,7 @@ public class ClassSourceImpl_MappedDirectory
             // autoFFDC will display the stack trace
             // [ {0} ] Read of Jandex index file [{1}] failed with an exception.  The message is: {2}
             Tr.warning(tc, "ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION",
-                getHashText(), useJandexIndexPath, e.getMessage());
+                getHashText(), fullJandexPath, e.getMessage());
 
             return null;
 
