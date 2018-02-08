@@ -41,6 +41,7 @@ import com.ibm.websphere.security.audit.context.AuditThreadContext;
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -148,6 +149,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
     private WebAppAuthorizationHelper wasch = this;
+    private FeatureProvisioner provisionerService;
 
     private boolean isJaspiEnabled = false;
     private Subject savedSubject = null;
@@ -296,6 +298,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         wasch = this;
     }
 
+    protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {
+        this.provisionerService = provisionerService;
+    }
+
+    protected synchronized void unsetKernelProvisioner(FeatureProvisioner provisionerService) {
+        this.provisionerService = null;
+    }
+
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         isActive = true;
         locationAdminRef.activate(cc);
@@ -416,6 +426,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             throw ex;
         }
         reply.writeResponse(rsp);
+    }
+
+    @Override
+    public boolean isCDINeeded() {
+        Set<String> installedFeatures = provisionerService.getInstalledFeatures();
+        return installedFeatures.contains("servlet-4.0");
     }
 
     /**

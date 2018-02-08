@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2005 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,8 @@ public interface IWebAppSecurityCollaborator {
                                         Throwable wse) throws ServletException, IOException;
 
     public java.security.Principal getUserPrincipal();
+
+    public boolean isCDINeeded();
 
     public boolean isUserInRole(String role, IExtendedRequest req);
 

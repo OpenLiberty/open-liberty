@@ -445,17 +445,19 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
                 }
             }
 
-            // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available.
-            //HttpServletRequest javadocs describe it as:
-            //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
-            collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
-            
+            boolean servletRequestListenersNotificationNeeded = true;
             if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
                 securityEnforced = dispatchContext.isEnforceSecurity() // PK70824
                                   || (httpRequest!=null && httpRequest.getDispatcherType().equals(DispatcherType.ERROR));
+                // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available.
+                if (securityCollaborator.isCDINeeded()) {
+                    // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available. 
+                    collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
+                    servletRequestListenersNotificationNeeded = false;
+                }
+                
                 Object securityObject = securityCollaborator.preInvoke(httpRequest, httpResponse, servletName, securityEnforced);
-                collabMetaData.setSecurityObject(securityObject);
-                httpRequest.getSession(false); // Get the session to force the session management to set the correct user. 
+                collabMetaData.setSecurityObject(securityObject); 
             }
 
             if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.CONNECTION)) {
@@ -483,6 +485,13 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
             if (sessionInvoke) {
                 dispatchContext.sessionPreInvoke();
             }
+            
+            //HttpServletRequest javadocs describe it as:
+            //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
+            if (servletRequestListenersNotificationNeeded) { 
+                collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
+            }
+            
         } finally {
             if (sessionSecurityIntegrationEnabled) {
                 ((IExtendedRequest) wasreq).setRunningCollaborators(false); // PK01801
@@ -506,9 +515,10 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
 
         boolean sessionInvoke = collabMetaData.isSessionInvokeRequired();
 
-        // TODO: Determine effect on other collaborators.
         // Invoke security collaborator here because JSR 375 requires that all CDI scopes are available.
-        if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
+        boolean postInvokeForSecureResponseNeeded = true;
+        if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY) && securityCollaborator.isCDINeeded()) {
+            postInvokeForSecureResponseNeeded = false;
             Object secObject = collabMetaData.getSecurityObject();
             this.securityCollaborator.postInvokeForSecureResponse(secObject);
         }
@@ -578,6 +588,9 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
 
         if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
             Object secObject = collabMetaData.getSecurityObject();
+            if (postInvokeForSecureResponseNeeded) {
+                this.securityCollaborator.postInvokeForSecureResponse(secObject);
+            }
             this.securityCollaborator.postInvoke(secObject);
         }
         
