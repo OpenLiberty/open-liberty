@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.converters.UserConverter;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
-import com.ibm.ws.microprofile.config.interfaces.DefaultSources;
+import com.ibm.ws.microprofile.config.sources.DefaultSources;
 
 /**
  *

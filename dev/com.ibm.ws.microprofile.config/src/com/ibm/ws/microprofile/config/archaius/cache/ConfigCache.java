@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 import com.ibm.ws.microprofile.config.archaius.composite.ConfigListener;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 
 public class ConfigCache implements ConfigListener {
 
@@ -35,7 +35,7 @@ public class ConfigCache implements ConfigListener {
     /**
      * Cache of Typed Properties
      */
-    private final ConcurrentMap<String, TypedProperty> cache = new ConcurrentHashMap<String, TypedProperty>();
+    private final ConcurrentMap<String, TypeContainer> cache = new ConcurrentHashMap<String, TypeContainer>();
 
     /**
      * Monotonically incrementing version number whenever a change in the Config
@@ -60,11 +60,11 @@ public class ConfigCache implements ConfigListener {
      * @param propName
      * @return the property's container
      */
-    private TypedProperty getProperty(String propName) {
-        TypedProperty container = cache.get(propName);
+    private TypeContainer getProperty(String propName) {
+        TypeContainer container = cache.get(propName);
         if (container == null) {
-            container = new TypedProperty(propName, config, version);
-            TypedProperty existing = cache.putIfAbsent(propName, container);
+            container = new TypeContainer(propName, config, version);
+            TypeContainer existing = cache.putIfAbsent(propName, container);
             if (existing != null) {
                 return existing;
             }
@@ -99,10 +99,10 @@ public class ConfigCache implements ConfigListener {
      * @param propertyType
      * @return
      */
-    public SourcedPropertyValue getSourcedValue(String propertyName, Type propertyType) {
-        TypedProperty container = getProperty(propertyName);
-        TypedPropertyValue property = container.asType(propertyType);
-        SourcedPropertyValue value = property.getSourced();
+    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
+        TypeContainer container = getProperty(propertyName);
+        StampedValue property = container.asType(propertyType);
+        SourcedValue value = property.getSourced();
         return value;
     }
 

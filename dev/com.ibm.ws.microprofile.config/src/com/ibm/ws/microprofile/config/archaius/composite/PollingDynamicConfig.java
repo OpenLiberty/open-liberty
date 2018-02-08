@@ -27,7 +27,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -44,8 +43,6 @@ public class PollingDynamicConfig implements Closeable {
 
     private volatile Map<String, String> current = new HashMap<String, String>();
     private final AtomicBoolean busy = new AtomicBoolean();
-    private final AtomicLong updateCounter = new AtomicLong();
-    private final AtomicLong errorCounter = new AtomicLong();
     private Future<?> future;
 
     private final ScheduledExecutorService executor;
@@ -157,7 +154,6 @@ public class PollingDynamicConfig implements Closeable {
     private void update() throws Exception {
         // OK to ignore calls to update() if already busy updating
         if (busy.compareAndSet(false, true)) {
-            updateCounter.incrementAndGet();
             try {
                 current = getToAdd();
                 notifyConfigUpdated();
@@ -165,8 +161,6 @@ public class PollingDynamicConfig implements Closeable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "update: Exception updating dynamic source: {0}. Exception: {1}", this, e);
                 }
-
-                errorCounter.incrementAndGet();
 
                 throw e;
             } finally {
