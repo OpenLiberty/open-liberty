@@ -1,0 +1,31 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/resources/MapBasedInstallKernelMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1650 to 1699 are reserved for the asset manager.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: El directorio de instalaci\u00f3n del perfil Liberty no se ha establecido.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=El sistema no puede encontrar el directorio de instalaci\u00f3n del perfil Liberty porque el directorio no se ha especificado.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: El directorio de instalaci\u00f3n del perfil Liberty siguiente no existe: {0}
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=El directorio de instalaci\u00f3n del perfil Liberty especificado no existe.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: {0} no es un directorio v\u00e1lido.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=El directorio de instalaci\u00f3n del perfil Liberty especificado es un archivo.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: El instalador no se ha inicializado.
+MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=El instalador no se ha inicializado debido a un error interno.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: El instalador no se ha inicializado porque se ha producido el siguiente error: {0}
+MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=El instalador no se ha inicializado debido a un error interno.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

@@ -1,0 +1,230 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+ERROR_DEPENDENCIES_INVALID_OPTION=CWWKF1401E: Der Wert {0} ist f\u00fcr --dependencies nicht g\u00fcltig.
+ERROR_DEPENDENCIES_INVALID_OPTION.explanation=Sie m\u00fcssen g\u00fcltige Werte f\u00fcr die Option --dependencies verwenden.
+ERROR_DEPENDENCIES_INVALID_OPTION.useraction=F\u00fchren Sie den Befehl mit einem g\u00fcltigen Wert f\u00fcr --dependencies, z. B. 'all', aus.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1402E: Die folgenden Features wurden nicht heruntergeladen, weil sie bereits installiert sind: {0}. Verwenden Sie einen anderen Wert f\u00fcr --dependencies, z. B. all oder none.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Die angegebenen Features wurden bereits installiert.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=F\u00fchren Sie den Befehl mit einem anderen Wert f\u00fcr die Option --dependencies erneut aus, z. B. all oder none.
+
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST=CWWKF1404E: Die Datei {0} ist nicht vorhanden.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.explanation=Die mit der Installationsaktion angegebene Serverpaketarchivdatei ist nicht vorhanden.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.useraction=Stellen Sie sicher, dass der Name der Serverpaketarchivdatei ordnungsgem\u00e4\u00df angegeben wurde, und f\u00fchren Sie die Installationsaktion erneut aus.
+
+ERROR_ARCHIVE_NOT_SUPPORT=CWWKF1405E: Der Dateityp {0} wird von der Installationsaktion nicht unterst\u00fctzt.
+ERROR_ARCHIVE_NOT_SUPPORT.explanation=Die Serverpaketarchivdatei muss eine ZIP-Datei sein.
+ERROR_ARCHIVE_NOT_SUPPORT.useraction=Stellen Sie sicher, dass der Name der Serverpaketarchivdatei ordnungsgem\u00e4\u00df angegeben wurde, und f\u00fchren Sie die Installationsaktion erneut aus.
+
+ERROR_REPO_INVALID_URL=CWWKF1409E: Die URL {0} ist ung\u00fcltig. F\u00fchren Sie den Befehl mit einer g\u00fcltigen URL erneut aus.
+ERROR_REPO_INVALID_URL.explanation=Die angegebene URL ist ung\u00fcltig.
+ERROR_REPO_INVALID_URL.useraction=F\u00fchren Sie den Befehl mit einer g\u00fcltigen URL erneut aus.
+
+ERROR_REPO_UNSUPPORT_PROTOCOL=CWWKF1416E: Das Protokoll der URL {0} wird nicht unterst\u00fctzt. Es werden nur die Protokolle http, https und file unterst\u00fctzt.
+ERROR_REPO_UNSUPPORT_PROTOCOL.explanation=Es wurde ein nicht unterst\u00fctztes URL-Protokoll verwendet.
+ERROR_REPO_UNSUPPORT_PROTOCOL.useraction=F\u00fchren Sie den Befehl mit einer g\u00fcltigen URL erneut aus.
+
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION=CWWKF1417E: In der Betaversion werden vom Befehl installUtility weder mehrere lokale Verzeichnisse noch lokale Verzeichnisse unterst\u00fctzt, die mit einem On-Premise-Repository gemischt sind.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.explanation=Die festgelegte Konfiguration wird vom Befehl installUtility nicht unterst\u00fctzt.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.useraction=Entfernen Sie das Repository, das Sie nicht ben\u00f6tigen, und f\u00fcgen Sie das Repository hinzu, das Sie ben\u00f6tigen.
+
+ERROR_REPO_NOT_IN_LIST=CWWKF1418E: Der Repository-Name {0} ist nicht in der Konfigurationsdatei {1} konfiguriert. \u00dcberpr\u00fcfen Sie die Konfigurationsdatei oder verwenden Sie die Aktion viewSettings, um den konfigurierten Repository-Namen zu finden.
+ERROR_REPO_NOT_IN_LIST.explanation=Der angegebene Repository-Name wurde nicht in der Konfiguration gefunden.
+ERROR_REPO_NOT_IN_LIST.useraction=Verwenden Sie die Aktion viewSettings, um alle konfigurierten Repositorys aufzulisten, und f\u00fchren Sie dann den Befehl mit einem g\u00fcltigen Repository-Namen erneut aus.
+
+ERROR_INVALID_URL=CWWKF1420E: Die URL {0} des Repositorys {1} ist ung\u00fcltig. Verwenden Sie die Konfigurationsaktion, um das Repository zu korrigieren.
+ERROR_INVALID_URL.explanation=Die in der Konfiguration gespeicherte Repository-URL ist nicht g\u00fcltig.
+ERROR_INVALID_URL.useraction=Korrigieren Sie die Konfiguration und f\u00fchren Sie den Befehl erneut aus.
+
+ERROR_REPO_IS_FILE=CWWKF1421E: Die URL {0} des Repositorys {1} ist eine Datei. Es ist ein Verzeichnispfad erforderlich. Verwenden Sie die Konfigurationsaktion, um das Repository zu korrigieren.
+ERROR_REPO_IS_FILE.explanation=Das Repository darf keine Datei sein.
+ERROR_REPO_IS_FILE.useraction=Korrigieren Sie die Konfiguration und f\u00fchren Sie den Befehl erneut aus.
+
+ERROR_REPO_URL_IS_FILE=CWWKF1422E: {0} ist eine Datei. Es ist ein Verzeichnispfad erforderlich.
+ERROR_REPO_URL_IS_FILE.explanation=Die angegebene URL ist kein Verzeichnis.
+ERROR_REPO_URL_IS_FILE.useraction=F\u00fchren Sie den Befehl mit einem Verzeichnis oder einer g\u00fcltigen URL erneut aus.
+
+ERROR_REPO_NOT_EXISTS=CWWKF1423E: Die URL {0} des Repositorys {1} ist nicht vorhanden. Verwenden Sie die Konfigurationsaktion, um das Repository zu korrigieren.
+ERROR_REPO_NOT_EXISTS.explanation=Das Repository ist nicht vorhanden.
+ERROR_REPO_NOT_EXISTS.useraction=Korrigieren Sie die Konfiguration und f\u00fchren Sie den Befehl erneut aus.
+
+ERROR_NO_ARGUMENT=CWWKF1424E: Die Aktion {0} erfordert mindestens einen Elementnamen.
+ERROR_NO_ARGUMENT.explanation=Beim Aufrufen der Aktion wurde die falsche Anzahl an Argumenten verwendet.
+ERROR_NO_ARGUMENT.useraction=F\u00fchren Sie den Befehl mit den richtigen Argumenten erneut aus. 
+
+ERROR_TYPE_INVALID_OPTION=CWWKF1427E: Der Wert {0} ist f\u00fcr --type nicht g\u00fcltig. Die g\u00fcltigen Werte sind addon, feature, opensource, sample und all.
+ERROR_TYPE_INVALID_OPTION.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr die Option --type verwendet.
+ERROR_TYPE_INVALID_OPTION.useraction=F\u00fchren Sie den Befehl mit einem g\u00fcltigen Wert f\u00fcr --type aus, z. B. addon, feature, opensource, sample oder all.
+
+ERROR_NO_SEARCHSTRING_NAME_OPTION=CWWKF1428E: Der Suchbegriff wurde nicht angegeben.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.explanation=Der Suchbegriff ist erforderlich, wenn die Option --name verwendet wird.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.useraction=F\u00fchren Sie den Befehl mit dem Suchbegriff erneut aus.
+
+ERROR_FAILED_TO_CONNECT_REPO=CWWKF1429E: Der Repository-Server ist nicht erreichbar. Stellen Sie sicher, dass das System auf das Internet und das konfigurierte Repository zugreifen kann.
+ERROR_FAILED_TO_CONNECT_REPO.explanation=Beim Herstellen einer Verbindung zum Repository ist ein Fehler aufgetreten.
+ERROR_FAILED_TO_CONNECT_REPO.useraction=Stellen Sie sicher, dass das System auf das Internet und das entsprechende Repository zugreifen kann.
+
+ERROR_REPO_REQUIRES_AUTH=CWWKF1430E: Die Berechtigungsnachweise f\u00fcr das konfigurierte Repository k\u00f6nnen nicht authentifiziert werden. Stellen Sie sicher, dass g\u00fcltige Berechtigungsnachweise f\u00fcr das konfigurierte Repository in der folgenden Konfigurationsdatei definiert sind: {0}
+ERROR_REPO_REQUIRES_AUTH.explanation=Der konfigurierte Repository-Server setzt eine Authentifizierung voraus, aber es wurden keine g\u00fcltigen Berechtigungsnachweise in der Konfigurationsdatei angegeben.
+ERROR_REPO_REQUIRES_AUTH.useraction=Geben Sie g\u00fcltige Berechtigungsnachweise f\u00fcr den Repository-Server in der Konfigurationsdatei an und f\u00fchren Sie dann den Befehl erneut aus.
+
+ERROR_NO_CONNECTION=CWWKF1431E: Es kann keine Verbindung zum konfigurierten Repository-Server hergestellt werden.
+ERROR_NO_CONNECTION.explanation=Die Verbindung zum Repository-Server kann nicht hergestellt werden.
+ERROR_NO_CONNECTION.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS=CWWKF1432E: {0} erfordert maximal 1 Argument, aber es wurden {1} Argumente angegeben.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.explanation=Beim Aufrufen der Aktion wurde die falsche Anzahl an Argumenten verwendet.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.useraction=F\u00fchren Sie den Befehl mit den richtigen Argumenten erneut aus. 
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWK1433E: Die Berechtigungsnachweise f\u00fcr den konfigurierten Proxy-Server k\u00f6nnen nicht authentifiziert werden. Stellen Sie sicher, dass g\u00fcltige Berechtigungsnachweise f\u00fcr den konfigurierten Proxy-Server in der folgenden Konfigurationsdatei definiert sind: {0}
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Der konfigurierte Proxy-Server erfordert eine Authentifizierung, aber die Berechtigungsnachweise k\u00f6nnen nicht authentifiziert werden.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Geben Sie g\u00fcltige Berechtigungsnachweise f\u00fcr den Proxy-Server in der Konfigurationsdatei an und f\u00fchren Sie dann den Befehl erneut aus.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWK1434E: Die Datei server.xml wurde nicht im Verzeichnis {0} gefunden. Stellen Sie sicher, dass die Datei vorhanden und zug\u00e4nglich ist.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Die Datei server.xml f\u00fcr den angegebenen Server wurde nicht im Serververzeichnis gefunden.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Stellen Sie sicher, dass die Datei vorhanden und zug\u00e4nglich ist, und f\u00fchren Sie dann den Befehl erneut aus.
+
+ERROR_UNABLE_TO_ACCESS_SERVER_XML=CWWK1435E: Der Zugriff auf die Datei {0} ist nicht m\u00f6glich. Stellen Sie sicher, dass der Benutzeraccount die Datei aufrufen und lesen kann.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.explanation=Der Benutzeraccount hat nicht die erforderlichen Berechtigungen zum Lesen der Datei server.xml.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.useraction=Stellen Sie sicher, dass der Benutzeraccount die Datei aufrufen und lesen kann, und f\u00fchren Sie dann den Befehl erneut aus.
+
+MSG_REPO_FILE_NOT_FOUND=Es wurde keine Benutzerkonfiguration gefunden. IBM WebSphere Liberty Repository ist das Standardasset-Repository.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Zum Anpassen der installUtility-Einstellungen erstellen Sie eine Datei repositories.properties an der folgenden Position: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Verwenden Sie das folgende Beispiel als Vorlage f\u00fcr die Erstellung Ihrer eigenen Datei repositories.properties. Entfernen Sie das Kommentarzeichen aus den Zeilen, die mit einem einzelnen Nummernzeichen (#) markiert sind, und ersetzen Sie die Werte durch Ihre eigenen angepassten Werte.
+
+ERROR_UNINSTALL_FEATURES_FAIL=CWWK1436E: Mindestens ein Feature kann nicht deinstalliert werden: {0}
+ERROR_UNINSTALL_FEATURES_FAIL.explanation=Beim Verarbeiten der Metadaten wurde ein interner Fehler festgestellt. 
+ERROR_UNINSTALL_FEATURES_FAIL.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE=CWWK1437E: Der Wert {0} ist f\u00fcr --downloadDependencies nicht g\u00fcltig. Die g\u00fcltigen Werte sind true und false.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.explanation=Es wurde ein ung\u00fcltiger Wert f\u00fcr die Option --downloadDependencies verwendet.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.useraction=F\u00fchren Sie den Befehl mit einem g\u00fcltigen Wert f\u00fcr --downloadDependencies, d. h. true oder false, aus.
+
+ERROR_ALL_CONFIG_REPOS_FAIL=CWWKF1440E: Keines der in der folgenden Konfigurationsdatei angegebenen Repositorys ist erreichbar oder die Berechtigungsnachweise k\u00f6nnen nicht validiert werden: {0}. Stellen Sie sicher, dass die Repositorys in der Konfigurationsdatei ordnungsgem\u00e4\u00df konfiguriert sind, und verwenden Sie dann die Aktionen viewSettings und testConnection, um die Verbindung zu verifizieren.
+ERROR_ALL_CONFIG_REPOS_FAIL.explanation=Der Befehl installUtility kann zu keinem der konfigurierten Repositorys eine Verbindung herstellen.
+ERROR_ALL_CONFIG_REPOS_FAIL.useraction=Vergewissern Sie sich, dass das System auf das Internet zugreifen kann. Stellen Sie sicher, dass die Repositorys in der Konfigurationsdatei ordnungsgem\u00e4\u00df konfiguriert sind. Verwenden Sie die Aktion viewSettings, um die konfigurierten Repositorys zu verifizieren, und testen Sie die Verbindung anschlie\u00dfend mit der Aktion testConnection.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1441E: Der Repository-Server ist nicht erreichbar, weil die Java Runtime Environment (JRE) das Serverzertifikat nicht anerkennt. F\u00fcgen Sie das Zertifikat des Repository-Servers als vertrauensw\u00fcrdiges Zertifikat in Ihrer JRE hinzu.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=Beim Herstellen der Verbindung zum Repository ist eine Ausnahme des Typs java.security.cert.CertPathBuilderException eingetreten, weil die JRE das Sicherheitszertifikat des Repository-Servers nicht als vertrauensw\u00fcrdiges Zertifikat erkennt. Zur Verifizierung der Repository-Server-Identit\u00e4t ist ein vertrauensw\u00fcrdiges Zertifikat erforderlich.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=F\u00fcgen Sie das Zertifikat des Repository-Servers als vertrauensw\u00fcrdiges Zertifikat in Ihrer JRE hinzu.
+
+ERROR_REPO_IS_INVALID=CWWKF1442E: {0} ist kein g\u00fcltiges verzeichnisbasiertes Repository. F\u00fchren Sie den Befehl erneut mit einem g\u00fcltigen verzeichnisbasierten Repository aus.
+ERROR_REPO_IS_INVALID.explanation=Der angegebene Dateipfad ist kein g\u00fcltiges verzeichnisbasiertes Repository. Sie k\u00f6nnen ein g\u00fcltiges verzeichnisbasiertes Repository mit dem installUtility-Downloadbefehl erstellen oder indem Sie die Datei wlp-featureRepo-<Version>.zip von IBM Fix Central herunterladen.
+ERROR_REPO_IS_INVALID.useraction=Vergewissern Sie sich, dass der angegebene Pfad ein g\u00fcltiges verzeichnisbasiertes Repository angibt, und f\u00fchren Sie den Befehl erneut aus.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1443E: Die Option uninstall --force kann jeweils nur f\u00fcr ein einziges Feature angegeben werden. F\u00fchren Sie den Befehl uninstall mit der Option --force f\u00fcr ein einziges Feature aus.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Die Option --force wurde angegeben, als mehrere Features deinstalliert wurden.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=F\u00fchren Sie den Befehl uninstall mit der Option --force f\u00fcr ein einziges Feature aus.
+
+MSG_DEPLOY_SERVER_OK=Der Server wurde erfolgreich implementiert.
+MSG_DEPLOY_SERVER_PACKAGE_OK=Das Serverpaket wurde erfolgreich implementiert.
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Der Server erfordert keine zus\u00e4tzlichen Features. Es wurden keine Features installiert.
+MSG_SERVER_NEW_FEATURES_REQUIRED=Der Server erfordert die folgenden zus\u00e4tzlichen Features: {0}. Die Features werden aus dem Repository installiert...
+MSG_INSTALLED_FEATURES=Die Features wurden erfolgreich installiert: {0}.
+MSG_INSTALLED_SAMPLES=Die Beispiele wurden erfolgreich installiert: {0}.
+MSG_INSTALLED_OPENSOURCE=Die Open-Source-Integrationen wurden erfolgreich installiert: {0}.
+MSG_INSTALLED_ADDONS=Die Add-ons wurden erfolgreich installiert: {0}.
+
+MSG_DOWNLOADED_FEATURES=Die Features wurden erfolgreich heruntergeladen: {0}.
+MSG_DOWNLOADED_SAMPLES=Die Beispiele wurden erfolgreich heruntergeladen: {0}.
+MSG_DOWNLOADED_OPENSOURCE=Die Open-Source-Integrationen wurden erfolgreich heruntergeladen: {0}.
+MSG_DOWNLOADED_ADDONS=Die Add-ons wurden erfolgreich heruntergeladen: {0}.
+MSG_UNINSTALL_FEATURES=Die Features wurden erfolgreich deinstalliert: {0}.
+
+MSG_DISABLED_REPO=Die Repositorys wurden inaktiviert.
+MSG_NO_ASSET_FIND=Es wurde kein Asset gefunden.
+MSG_CONNECT_REPO_SUCCESS=Die Verbindung zum konfigurierten Repository wurde erfolgreich hergestellt.
+MSG_CONNECT_ALL_REPO_SUCCESS=Es wurden Verbindungen zu allen konfigurierten Repositorys hergestellt.\n
+MSG_CONNECT_REPO_FAILED=Die Herstellung der Verbindung zum konfigurierten Repository ist fehlgeschlagen.
+MSG_CONNECT_NOT_TESTED=Die Verbindung zum Repository wurde nicht getestet.
+MSG_DEFAULT_NOT_ENABLED=Das Standard-Asset-Repository ist in der folgenden Konfigurationsdatei {0} nicht aktiviert.
+MSG_DEFAULT_REPO_LABEL=IBM WebSphere Liberty Repository (Standard-Asset-Repository)
+MSG_SAVE_CONFIG_CONFIRMATION=Die Konfiguration wurde ge\u00e4ndert. \u00c4nderungen in {0} speichern (J/N)?
+MSG_UPDATE_CONFIGURATION=Die Konfiguration wurde erfolgreich aktualisiert.
+MSG_VIEW_EXAMPLE=Zum Anzeigen eines Beispiels der Datei repositories.props dr\u00fccken Sie die Eingabetaste. Zum \u00dcberspringen dieser Option geben Sie ein 'x' ein.
+MSG_SEARCHING=Assets werden gesucht. Die Ausf\u00fchrung dieses Prozesses kann mehrere Minuten dauern.
+MSG_ASSETMGR_SETTINGS=installUtility-Einstellungen
+MSG_CONFIG_REPO_LABEL=Konfigurierte Repositorys
+MSG_NO_CONFIG_REPO=Keine Repositorys konfiguriert
+MSG_NO_CONFIG_PROXY=Keine Proxys konfiguriert
+MSG_DEFAULT_REPO_NAME=IBM WebSphere Liberty Repository
+MSG_PROXY_LABEL=Proxy-Einstellungen
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_UNSPECIFIED=<Nicht angegeben>
+MSG_INAPPLICABLE=<Nicht zutreffend>
+MSG_TESTING=Die Verbindung zum Repository {0} wird getestet...\nDieser Prozess kann mehrere Minuten dauern.\n 
+MSG_TESTING_ALL=Die Verbindung zu allen konfigurierten Repositorys wird getestet...\nDieser Prozess kann mehrere Minuten dauern.\n
+MSG_REQUIRE_DOWNLOAD_DEPENDENCIES=Mindestens ein Beispiel setzt Open-Source-Bibliotheken voraus. 
+MSG_DOWNLOAD_DEPENDENCIES=Das Argument {0} ist auf {1} gesetzt. Dies weist darauf hin, dass Sie die Lizenzen akzeptiert haben, um das Installationsprogramm anzuweisen, die vorausgesetzten Open-Source-Bibliotheken herunterzuladen.
+MSG_NOT_DOWNLOAD_DEPENDENCIES=Das Argument {0} ist auf {1} gesetzt. Diese weist darauf hin, dass das Installationsprogramm die vorausgesetzten Bibliotheken nicht herunterladen soll.
+MSG_CONNECTING=Die Verbindungen zu den konfigurierten Repositorys werden hergestellt...\nDieser Prozess kann mehrere Minuten dauern.\n
+MSG_AUTHENTICATION_PROMPT=Es ist eine Authentifizierung erforderlich. Geben Sie die Berechtigungsnachweise f\u00fcr den folgenden Server ein.
+MSG_AUTHENTICATION_RETRY=Die Authentifizierung ist fehlgeschlagen, weil die angegebenen Berechtigungsnachweise ung\u00fcltig sind.\nVergewissern Sie sich, dass die Berechtigungsnachweise g\u00fcltig sind, und wiederholen Sie dann die Operation. \nDie Anzahl verbliebener Wiederholungen ist {0}. \nGeben Sie die Berechtigungsnachweise f\u00fcr den folgenden Server ein.
+MSG_AUTHENTICATION_FAIL=Die Authentifizierung beim folgenden Repository ist fehlgeschlagen: {0}
+MSG_PROXY_AUTHENTICATION_FAIL=Die Authentifizierung beim folgenden Proxy-Server ist fehlgeschlagen: {0}
+MSG_REACHED_MAX_RETRIES=Die maximale Anzahl an Wiederholungen wurde \u00fcberschritten. Sie k\u00f6nnen zwar ohne Authentifizierung fortfahren, aber dann wird dieses Repository von der Operation ausgeschlossen. Die Operation {0} wird mit anderen g\u00fcltigen Repositorys versucht. 
+MSG_REACHED_MAX_PROXY_RETRIES=Die maximale Anzahl an Wiederholungen wurde \u00fcberschritten. Sie k\u00f6nnen ohne Authentifizierung fortfahren. Die Operation {0} wird mit anderen lokalen Repositorys versucht, die in der Konfigurationsdatei {1} definiert sind. 
+MSG_WARNING_SKIPPED_REPOS=Warnung: Die folgenden konfigurierten Repositorys wurden in dieser Operation \u00fcbersprungen, weil keine Verbindung hergestellt werden kann oder weil die Berechtigungsnachweise nicht validiert werden k\u00f6nnen: {0}
+MSG_VERIFY_REPO_CONNECTION=Wenn Sie diese Repositorys verwenden m\u00f6chten, stellen Sie sicher, dass sie ordnungsgem\u00e4\u00df in der Konfiguration konfiguriert sind. Verwenden Sie die Aktion testConnection, um die Verbindung zu den konfigurierten Repositorys zu verifizieren. Die Operation {0} wird mit anderen g\u00fcltigen Repositorys in der Konfiguration fortgesetzt.
+MSG_PASSWORD_NOT_ENCODED=Das Kennwort f\u00fcr dieses Repository ist nicht verschl\u00fcsselt. Sie k\u00f6nnen Kennw\u00f6rter mit dem securityUtility-Befehl encode und der Option --encoding mit einem unterst\u00fctzten Verschl\u00fcsselungstyp wie xor (Standardeinstellung), aes oder hash verschl\u00fcsseln.
+MSG_PASSWORD_NOT_ENCODED_PROXY=Das Kennwort f\u00fcr diesen Proxy ist nicht verschl\u00fcsselt. Sie k\u00f6nnen das Kennwort mit dem securityUtility-Befehl encode und der Option --encoding mit einem unterst\u00fctzten Verschl\u00fcsselungstyp wie xor (Standardeinstellung), aes oder hash verschl\u00fcsseln.
+MSG_DIRECTORY_REPO_CONFIGURED=\nDas Verzeichnis {0} ist bereits als verwendbares Repository in der Datei repositories.properties konfiguriert.
+MSG_DIRECTORY_REPO_NOT_CONFIGURED=\nSie k\u00f6nnen die folgende URL zur Datei repositories.properties hinzuf\u00fcgen, um sie als Repository f\u00fcr den Befehl installUtility zu verwenden: {0}
+MSG_ALL_DOWNLOADING_FILES_EXISTS=\nAlle Assets sind bereits im folgenden Repository vorhanden: {0}
+MSG_ADDITIONAL_FEATURES_FOR_SERVER_PACKAGE=Wenn Sie dieses Serverpaket installieren m\u00f6chten, m\u00fcssen Sie au\u00dferdem zus\u00e4tzliche Liberty-Features installieren.
+MSG_ADDITIONAL_FEATURES_FOR_SERVER=F\u00fcr diesen Server m\u00fcssen zus\u00e4tzliche Liberty-Features installiert werden.
+MSG_INSTALL_ADDITIONAL_FEATURES_FOR_SAMPLES=Es m\u00fcssen zus\u00e4tzliche Liberty-Features installiert werden, um die folgenden Beispiele oder Open-Source-Integrationen zu installieren: {0}
+MSG_INSTALL_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Lesen und akzeptieren Sie die Featurelizenzvereinbarung, um die zus\u00e4tzlichen Features zu installieren:
+MSG_DOWNLOAD_ADDITIONAL_FEATURES_FOR_SAMPLES=Es m\u00fcssen zus\u00e4tzliche Liberty-Features heruntergeladen werden, um die folgenden Beispiele oder Open-Source-Integrationen herunterzuladen: {0}
+MSG_DOWNLOAD_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Lesen und akzeptieren Sie die Featurelizenzvereinbarung, um die zus\u00e4tzlichen Features herunterzuladen:
+MSG_VALIDATION_SUCCESSFUL=Die Validierung der Eigenschaftendatei war erfolgreich.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Die Validierung der Eigenschaftendatei ist fehlgeschlagen. Verwenden Sie die Option --viewValidationMessages, um detaillierte Validierungsnachrichten anzuzeigen.
+MSG_VALIDATION_NUM_OF_ERRORS=Anzahl der Fehler: {0}
+MSG_VALIDATION_MESSAGES=Validierung der Eigenschaftendatei
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Name: {0}
+FIELD_REPO_LOCATION=Position: {0}
+FIELD_REPO_STATUS=Status: {0}
+FIELD_REPO_REASON=Ursache: {0}
+FIELD_REPO_WARNING=Warnung: {0}
+FIELD_NAME=Name:
+FIELD_PORT=Port:
+FIELD_LOCATION=Position:
+FIELD_PROXY_SERVER=Proxy-Server:
+FIELD_USER=Benutzername:
+FIELD_PASS=Kennwort:
+FIELD_PROPS_FILE=Eigenschaftendatei: {0}
+FIELD_REPO=Repository-Server: {0} ({1})
+FIELD_PROXY=Proxy-Server: {0}
+FIELD_VALIDATION_RESULTS=Validierungsergebnisse: {0}
+FIELD_VALIDATION_LINE=Zeile: {0}
+MSG_DEFAULT_REPO_USEAGE_LABEL=Standardrepository verwenden:
+MSG_DEFAULT_REPO_NAME_LABEL=Standard-Asset-Repository:
+
+
+MSG_NO_NAME=<Name>
+
+TOOL_PROMPT_USERNAME=Benutzernamen eingeben:
+TOOL_PROMPT_PASSWORD=Kennwort eingeben:
+TOOL_PROMPT_CONTINUE_OR_QUIT=Zum Fortfahren die Eingabetaste dr\u00fccken oder zum Beenden der Operation {0} die Taste x dr\u00fccken.
+
+LOG_PROMPT_PROXY_AUTHENTICATION=Der Proxy-Server wird mit den angegebenen Berechtigungsnachweisen authentifiziert.
+LOG_PROMPT_PROXY_SUCCESS=Der Proxy-Server {0} wurde erfolgreich authentifiziert.\n
+LOG_PROMPT_REPO_AUTHENTICATION=Das Repository {0} wird mit den angegebenen Berechtigungsnachweise authentifiziert.
+LOG_PROMPT_REPO_SUCCESS=Das Repository {0} wurde erfolgreich authentifiziert.\n
+LOG_REPO_CONNECTION_EXCEPTION=Die Herstellung der Verbindung zum Repository {0} ist mit der folgenden Ausnahme fehlgeschlagen: {1}
+LOG_HTTP_SERVER_RESPONSE_CODE=Der Server hat den HTTP-Antwortcode {0} f\u00fcr die folgende URL zur\u00fcckgegeben: {1}
+LOG_PASSWORD_NOT_ENCODED=Die Kennw\u00f6rter f\u00fcr die folgenden Repositorys sind nicht verschl\u00fcsselt: {0}. Sie k\u00f6nnen Kennw\u00f6rter mit dem securityUtility-Befehl encode und der Option --encoding mit einem unterst\u00fctzten Verschl\u00fcsselungstyp wie xor (Standardeinstellung), aes oder hash verschl\u00fcsseln. Beispiel: securityUtility encode --encoding=aes repoPassword
+LOG_VALIDATION_FAILED=Die Validierung der Eigenschaftendatei ist fehlgeschlagen. F\u00fchren Sie den Befehl viewSettings mit der Option --viewValidationMessages aus, um detaillierte Validierungsnachrichten anzuzeigen.

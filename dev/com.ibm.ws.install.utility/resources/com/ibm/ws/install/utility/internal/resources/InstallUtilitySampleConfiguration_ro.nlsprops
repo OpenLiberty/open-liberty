@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Utilizarea IBM WebSphere Liberty Repository online##\n\
+## Setarea propriet\u0103\u0163ii useDefaultRepository la false pentru a \u00eempiedica\n\
+## installUtility s\u0103 acceseze internetul pentru a se conect la\n\
+## magazia IBM WebSphere Liberty Repository. Implicit, accesul\n\
+## este activat.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## Utilizarea magaziilor personalizate                           ##\n\
+## installUtility poate instala aseturi dun magazii comprimate sau \n\
+## necomprimate bazate \u00een director \u015fi instan\u0163e g\u0103zduite ale Liberty\n\
+## Asset Repository Service. Furniza\u0163i un nume de magazie \u015fi calea \n\
+## de director, calea fi\u015fierului sau URL-ul pentru fiecare magazie \n\
+## personalizat\u0103 ce con\u0163ine aseturi Liberty.\n\
+## Magaziile sunt accesate \u00een ordinea \u00een care sunt specificate.\n\
+\n\
+## Specifica\u0163i numele \u015fi calea directorului, calea fi\u015fierului arhiv\u0103 \n\
+## sau URL-ul magaziilor bazate \u00een director.\n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Specifica\u0163i numele \u015fi URL-ul magaziilor g\u0103zduite.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## Specifica\u0163i acredit\u0103rile pentru fiecare magazie, dac\u0103 este necesar.\n\
+## Pentru a \u00eembun\u0103t\u0103\u0163i securitatea, codifica\u0163i valoarea propriet\u0103\u0163ii\n\
+## .password prin utilizarea ac\u0163iunii de codificare securityUtility.\n\
+## Dac\u0103 nu seta\u0163i utilizatorul \u015fi parola, primi\u0163i un prompt\n\
+## pentru a le furniza.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizarea unui server proxy (op\u0163ional) ##\n\
+## Dac\u0103 utiliza\u0163i un server proxy pentru a accesa internetul,\n\
+## specifica\u0163i valorile pentru propriet\u0103\u0163ile set\u0103rilor de proxy.\n\
+## Pentru a \u00eembun\u0103t\u0103\u0163i securitatea, codifica\u0163i valoarea propriet\u0103\u0163ii\n\
+## proxyPassword prin utilizarea ac\u0163iunii de codificare securityUtility.\n\
+## Dac\u0103 nu seta\u0163i proxyUser \u015fi proxyPassword, primi\u0163i\n\
+## un prompt pentru a le furniza.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword
