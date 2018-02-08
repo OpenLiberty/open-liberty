@@ -91,13 +91,9 @@ public class ResponsesValidatorTest {
         APIResponseImpl responseThree = new APIResponseImpl();
         responseThree.description("Server Error");
 
-        APIResponseImpl responseFour = new APIResponseImpl();
-        responseFour.description("Default response");
-
         APIResponsesImpl responses = new APIResponsesImpl();
         responses.addApiResponse("400", responseTwo);
         responses.addApiResponse("500", responseThree);
-        responses.addApiResponse("default", responseFour);
 
         validator.validate(vh, context, key, responses);
         Assert.assertEquals(1, vh.getEventsSize());

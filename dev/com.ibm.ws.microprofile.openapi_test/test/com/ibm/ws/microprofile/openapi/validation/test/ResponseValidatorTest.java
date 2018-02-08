@@ -76,5 +76,4 @@ public class ResponseValidatorTest {
         Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"description\" field is missing or is set to an invalid value"));
     }
-
 }
