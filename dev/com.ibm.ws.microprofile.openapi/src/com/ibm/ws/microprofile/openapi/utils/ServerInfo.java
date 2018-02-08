@@ -131,7 +131,8 @@ public class ServerInfo {
         openapi.setServers(null);
 
         if (httpPort > 0) {
-            String url = "http://" + host + ":" + httpPort;
+            String port = httpPort == 80 ? "" : (":" + httpPort);
+            String url = "http://" + host + port;
             if (applicationPath != null) {
                 url += applicationPath;
             }
@@ -139,7 +140,8 @@ public class ServerInfo {
             openapi.addServer(server);
         }
         if (httpsPort > 0) {
-            String secureUrl = "https://" + host + ":" + httpsPort;
+            String port = httpsPort == 443 ? "" : (":" + httpsPort);
+            String secureUrl = "https://" + host + port;
             if (applicationPath != null) {
                 secureUrl += applicationPath;
             }

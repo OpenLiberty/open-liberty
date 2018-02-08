@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
@@ -33,6 +35,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -52,6 +56,7 @@ import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent.Severity;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidator;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+import com.ibm.ws.microprofile.openapi.utils.ProxySupportUtil;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -401,10 +406,15 @@ public class ApplicationProcessor {
     }
 
     @FFDCIgnore(JsonProcessingException.class)
-    public String getOpenAPIDocument(DocType docType) {
+    public String getOpenAPIDocument(HttpServletRequest request, DocType docType) {
         String oasResult = null;
         synchronized (this.document) {
-            serverInfo.updateOpenAPIWithServers(this.document);
+            ServerInfo reqServerInfo = null;
+            synchronized (serverInfo) {
+                reqServerInfo = new ServerInfo(serverInfo);
+            }
+            ProxySupportUtil.processRequest(request, reqServerInfo);
+            reqServerInfo.updateOpenAPIWithServers(this.document);
             try {
                 if (DocType.YAML == docType) {
                     oasResult = Yaml.mapper().writeValueAsString(this.document);
@@ -452,17 +462,46 @@ public class ApplicationProcessor {
 
         String alias = String.valueOf(value);
 
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(this, tc, "Received new alias: " + alias);
+        }
+
         synchronized (this.serverInfo) {
-            String host = vhost.getHostName(alias);
-            int port = vhost.getHttpPort(alias);
-            int securePort = vhost.getSecureHttpPort(alias);
-            serverInfo.setHttpPort(port);
-            serverInfo.setHttpsPort(securePort);
-            serverInfo.setHost(host);
+            serverInfo.setHttpPort(vhost.getHttpPort(alias));
+            serverInfo.setHttpsPort(vhost.getSecureHttpPort(alias));
+            serverInfo.setHost(vhost.getHostName(alias));
+            checkVCAPHost(serverInfo);
         }
 
         if (OpenAPIUtils.isEventEnabled(tc)) {
-            Tr.event(this, tc, "Received new alias: " + alias);
+            Tr.event(this, tc, "Updated server information: " + serverInfo);
+        }
+    }
+
+    /**
+     * This method check the environment variable"VCAP_APPLICATION", which in Cloud Foundry (where Bluemix runs)
+     * will be set to the actual host that is visible to the user. In that environment the VHost from Liberty
+     * is private and not accessible externally.
+     */
+    @FFDCIgnore(Exception.class)
+    private void checkVCAPHost(ServerInfo server) {
+        String VCAP_APPLICATION = System.getenv("VCAP_APPLICATION");
+        if (VCAP_APPLICATION != null) {
+            try {
+                JsonNode node = Json.mapper().readValue(VCAP_APPLICATION, JsonNode.class);
+                ArrayNode uris = (ArrayNode) node.get("uris");
+                if (uris != null && uris.size() > 0 && uris.get(0) != null) {
+                    server.setHost(uris.get(0).textValue());
+                }
+
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Changed hostPort using VCAP_APPLICATION.  New value: " + server.getHost());
+                }
+            } catch (Exception e) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Exception while parsing VCAP_APPLICATION env: " + e.getMessage());
+                }
+            }
         }
     }
 
