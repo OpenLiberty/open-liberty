@@ -269,7 +269,6 @@ public class FATOpentracingService extends Application implements FATOpentracing
         //    responseText) );
         // delayThread.start();
         
-        
         traceReturn(methodName);
     }
 
