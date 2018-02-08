@@ -46,6 +46,6 @@ set.trailer.fields.incorrect.http.version.explanation=HTTP Trailers are only sup
 set.trailer.fields.incorrect.http.version.useraction=Ensure that HTTP 1.1 or higher is being used.
 
 # -----------------------------------------------
-set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Trailers can not be set if the transfer encoding is not "chunked".
-set.trailer.fields.incorrect.transfer.encoding.explanation=Trailers are only supported if the "chunked" transfer-encoding is used.
-set.trailer.fields.incorrect.transfer.encoding.useraction=Ensure that the "chunked" transfer-encoding is used.
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Trailers can not be set if the Transfer-Encoding header value is not "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=Trailers are only supported if the Transfer-Encoding header value is "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Ensure that the Transfer-Encoding header contains the "chunked" value.
