@@ -132,6 +132,17 @@ public final class ApplicationConfig {
         }
         return true;
     }
+    
+    public boolean getUseJandex() {
+        Dictionary<String, ?> config = _config;
+        if (config != null) {
+            Object result = config.get(AppManagerConstants.USE_JANDEX);
+            if (result instanceof Boolean) {
+                return (Boolean) result;
+            }
+        }
+        return true;
+    }    
 
     void describe(StringBuilder sb) {
         sb.append("app[" + getName() + "," + getType() + "]");
