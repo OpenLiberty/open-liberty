@@ -185,7 +185,9 @@ public class ApplicationProcessor {
                         }
                     }
                 }
-                newDocument = new Reader(newDocument).read(classes);
+                Reader reader = new Reader(newDocument);
+                reader.setApplicationPath(scanner.getURLMapping());
+                newDocument = reader.read(classes);
             }
         }
 
