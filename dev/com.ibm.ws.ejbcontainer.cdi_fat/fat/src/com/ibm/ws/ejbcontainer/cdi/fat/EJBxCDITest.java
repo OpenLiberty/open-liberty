@@ -66,7 +66,7 @@ public class EJBxCDITest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWNEN0054E");
+            server.stopServer();
         }
     }
 }
