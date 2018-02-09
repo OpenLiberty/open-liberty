@@ -37,8 +37,17 @@ public class PathsValidator extends TypeValidator<Paths> {
     public void validate(ValidationHelper helper, Context context, String key, Paths t) {
         if (t != null) {
             for (String path : t.keySet()) {
-                if (!path.startsWith("/")) {
-                    final String message = Tr.formatMessage(tc, "pathsRequiresSlash", path);
+                if (path != null && !path.isEmpty()) {
+                    if (!path.startsWith("/")) {
+                        final String message = Tr.formatMessage(tc, "pathsRequiresSlash", path);
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                    }
+                } else {
+                    final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap", t.toString());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                }
+                if (t.get(path) == null) {
+                    final String message = Tr.formatMessage(tc, "nullValueInMap", t.toString());
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
