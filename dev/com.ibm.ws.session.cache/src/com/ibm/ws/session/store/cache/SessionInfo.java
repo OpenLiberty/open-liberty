@@ -12,37 +12,28 @@
 package com.ibm.ws.session.store.cache;
 
 import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.Set;
+import java.util.TreeSet;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * A layer on top of the ArrayList data structure that is stored in JCache.
  * This provides for type safety and hides the details of accessing the ArrayList.
  */
-class SessionData {
-    private static final TraceComponent tc = Tr.register(SessionData.class);
-
+class SessionInfo {
     /**
      * Indices and size for ArrayList values that are stored in the cache.
      * 
      * Data types are:
-     * long   - CREATION_TIME
-     * long   - LAST_ACCESS
-     * int    - MAX_INACTIVE_TIME
-     * short  - LISTENER_COUNT
-     * String - USER
-     * BitSet - BITS
-     * 
-     * BitSet is used to wrap the byte[] because it is both Serializable and supports a .equals comparison that matches
-     * its contents (and is provided by the JDK, so it can deserialize on the server side).
-     * Direct use of byte[] would not be valid because its .equals method is an instance comparison.
-     * TODO it will hopefully be possible to switch to byte[] once other fields are removed
-     * such that we no longer require Cache.replace operations. 
+     * long            - CREATION_TIME
+     * long            - LAST_ACCESS
+     * int             - MAX_INACTIVE_TIME
+     * short           - LISTENER_COUNT
+     * String          - USER
+     * TreeSet<String> - PROP_IDS
      */
-    private static int CREATION_TIME = 0, LAST_ACCESS = 1, MAX_INACTIVE_TIME = 2, LISTENER_COUNT = 3, USER = 4, BITS = 5, SIZE = 6; 
+    private static int CREATION_TIME = 0, LAST_ACCESS = 1, MAX_INACTIVE_TIME = 2, LISTENER_COUNT = 3, USER = 4, PROP_IDS = 5, SIZE = 6; 
 
     /**
      * The ArrayList backing this instance.
@@ -56,7 +47,7 @@ class SessionData {
      * @param list ArrayList obtained from the cache.
      */
     @SuppressWarnings("unchecked")
-    SessionData(ArrayList<?> list) {
+    SessionInfo(ArrayList<?> list) {
         this.list = (ArrayList<Object>) list;
     }
 
@@ -68,7 +59,7 @@ class SessionData {
      * @param listenerCount
      * @param userName
      */
-    SessionData(long creationTime, int maxInactiveInterval, short listenerCount, String userName) {
+    SessionInfo(long creationTime, int maxInactiveInterval, short listenerCount, String userName) {
         // When adding array elements, order must match the numeric value of the constants
         list = new ArrayList<Object>(SIZE);
         list.add(creationTime); // CREATION_TIME
@@ -76,7 +67,18 @@ class SessionData {
         list.add(maxInactiveInterval);
         list.add(listenerCount);
         list.add(userName);
-        list.add(null); // BITS
+        list.add(null); // PROP_IDS
+    }
+
+    void addSessionPropertyIds(Set<String> propIdsToAdd) {
+        Object o = list.get(PROP_IDS);
+        if (o instanceof TreeSet) {
+            @SuppressWarnings("unchecked")
+            TreeSet<String> propIds = (TreeSet<String>) o;
+            propIds.addAll(propIdsToAdd);
+        } else {
+            list.set(PROP_IDS, new TreeSet<String>(propIdsToAdd));
+        }
     }
 
     /**
@@ -84,10 +86,10 @@ class SessionData {
      * 
      * @return the clone.
      */
-    protected SessionData clone() {
+    protected SessionInfo clone() {
         @SuppressWarnings("unchecked")
         ArrayList<Object> newList = (ArrayList<Object>) list.clone();
-        return new SessionData(newList);
+        return new SessionInfo(newList);
     }
 
     /**
@@ -98,15 +100,6 @@ class SessionData {
     @Trivial
     ArrayList<Object> getArrayList() {
         return list;
-    }
-
-    @Trivial
-    byte[] getBytes() {
-        Object o = list.get(BITS);
-        byte[] bytes = o instanceof BitSet ? ((BitSet) o).toByteArray() : null;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "getBytes", bytes == null ? null : bytes.length);
-        return bytes;
     }
 
     long getCreationTime() {
@@ -125,15 +118,23 @@ class SessionData {
         return (Integer) list.get(MAX_INACTIVE_TIME);
     }
 
+    @SuppressWarnings("unchecked")
+    Set<String> getSessionPropertyIds() {
+        Object o = list.get(PROP_IDS);
+        return o instanceof TreeSet ? (TreeSet<String>) o : null;
+    }
+
     String getUser() {
         return (String) list.get(USER);
     }
 
-    @Trivial
-    void setBytes(byte[] bytes) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "setBytes", bytes == null ? null : bytes.length);
-        list.set(BITS, bytes == null ? null : BitSet.valueOf(bytes));
+    void removeSessionPropertyIds(Set<String> propIdsToRemove) {
+        Object o = list.get(PROP_IDS);
+        if (o instanceof TreeSet) {
+            @SuppressWarnings("unchecked")
+            TreeSet<String> propIds = (TreeSet<String>) o;
+            propIds.removeAll(propIdsToRemove);
+        }        
     }
 
     void setLastAccess(long time) {
@@ -154,14 +155,12 @@ class SessionData {
 
     @Override
     public String toString() {
-        Object o = list.get(BITS);
-        Integer length = o instanceof BitSet ? (((BitSet) o).length() + 7) / 8 : null; // per BitSet.toByteArray
-        return new StringBuilder("SessionData[").append(length)
-                        .append("] for ").append(list.get(USER))
+        return new StringBuilder("SessionInfo for ").append(list.get(USER))
                         .append(" created ").append(list.get(CREATION_TIME))
                         .append(" accessed " ).append(list.get(LAST_ACCESS))
                         .append(" listeners ").append(list.get(LISTENER_COUNT))
                         .append(" maxInactive ").append(list.get(MAX_INACTIVE_TIME))
+                        .append(' ').append(list.get(PROP_IDS))
                         .toString();
     }
 }

@@ -62,12 +62,16 @@ public class CacheHashMap extends BackedHashMap {
      * @param app the application
      * @return the key
      */
+    @Trivial
     static final String createSessionKey(String sessionId, String app) {
-        return new StringBuilder(sessionId.length() + 1 + app.length())
+        String key = new StringBuilder(sessionId.length() + 1 + app.length())
                         .append(sessionId)
                         .append('@')
                         .append(app)
                         .toString();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "session key: " + key);
+        return key;
     }
 
     /**
@@ -77,12 +81,16 @@ public class CacheHashMap extends BackedHashMap {
      * @param propertyId the session property
      * @return the key
      */
+    @Trivial
     static final String createSessionPropertyKey(String sessionId, String propertyId) {
-        return new StringBuilder(sessionId.length() + 1 + propertyId.length())
+        String key = new StringBuilder(sessionId.length() + 1 + propertyId.length())
                         .append(sessionId)
                         .append('.')
                         .append(propertyId)
                         .toString();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "session property key: " + key);
+        return key;
     }
 
     /**
@@ -205,7 +213,7 @@ public class CacheHashMap extends BackedHashMap {
             byte[] bytes = cacheStoreService.getCache(appName).get(key);
 
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, key.toString(), bytes.length);
+                Tr.debug(this, tc, key.toString(), bytes == null ? null : bytes.length);
 
             if (bytes != null && bytes.length > 0) {
                 long startTime = System.nanoTime();
@@ -226,6 +234,14 @@ public class CacheHashMap extends BackedHashMap {
                 if (pmiStats != null) {
                     pmiStats.readTimes(bytes == null ? 0 : bytes.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
                 }
+            }
+
+            // Before returning the value, confirm that the session hasn't expired
+            if (!cacheStoreService.cache.containsKey(createSessionKey(id, appName))) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, id + " does not appear to be a valid session for " + appName);
+                value = null;
+                throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
             }
         }
         return value;
@@ -436,6 +452,11 @@ public class CacheHashMap extends BackedHashMap {
             Tr.event(this, tc,  "CacheHashMap.deferWrite", d2.getId());
         }
         return objbuf;
+    }
+
+    @Trivial
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).toString();
     }
 
     /**
