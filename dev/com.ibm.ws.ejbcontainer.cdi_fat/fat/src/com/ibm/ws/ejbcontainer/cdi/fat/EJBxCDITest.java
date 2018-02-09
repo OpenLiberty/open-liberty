@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -24,6 +25,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import suite.r80.base.ejb31misc.jcdi.web.BeanManagerInjectionServlet;
@@ -39,9 +42,8 @@ public class EJBxCDITest extends FATServletClient {
                     @TestServlet(servlet = InterceptorIntegrationServlet.class, contextRoot = "EJB31JCDIWeb") })
     public static LibertyServer server;
 
-    //TODO: Get repeat tests to work
-    //@ClassRule
-    //public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB31-CDI10-Server"));
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server"));
 
     @BeforeClass
     public static void setUp() throws Exception {
