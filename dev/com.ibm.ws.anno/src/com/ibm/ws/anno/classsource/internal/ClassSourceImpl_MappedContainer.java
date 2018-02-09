@@ -402,9 +402,14 @@ public class ClassSourceImpl_MappedContainer
         return jandexIndexPath;
     }
 
+    @Override    
+    protected boolean basicHasJandexIndex() {
+    	return ( getContainer().getEntry( getJandexIndexPath() ) != null );    	
+    }
+    
     @SuppressWarnings("deprecation")
     @Override
-    protected Index getJandexIndex() {
+    protected Index basicGetJandexIndex() {
         String useJandexIndexPath = getJandexIndexPath();
 
         if ( tc.isDebugEnabled() ) {

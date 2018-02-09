@@ -339,7 +339,12 @@ public class ClassSourceImpl_MappedJar
     //
 
     @Override
-    protected Index getJandexIndex() {
+    protected boolean basicHasJandexIndex() {
+        return ( getJarFile().getJarEntry( getJandexIndexPath() ) != null );
+    }
+
+    @Override
+    protected Index basicGetJandexIndex() {
         String useJandexIndexPath = getJandexIndexPath();
 
         InputStream jandexStream;
