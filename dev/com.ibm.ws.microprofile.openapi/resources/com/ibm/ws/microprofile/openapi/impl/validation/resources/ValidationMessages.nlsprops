@@ -46,8 +46,8 @@ mediaTypeEmptySchema=The encoding property specified cannot be validated because
 oAuthFlowInvalidURL=The OAuthFlow Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
 nonApplicableField=The "\{0}\" field with the \"{1}\" value is not applicable for \"{2}\"
 
-nullOrEmptyKeyInMap=A key in "\{0}\" map must not be empty or null
-nullValueInMap=A value in "\{0}\" map must not be null
+nullOrEmptyKeyInMap=The "\{0}\" object is a map with an empty or null key. A map should not have empty or null keys
+nullValueInMap=The "\{0}\" object is a map with a null value. A map should not have null values
 
 openAPIVersionInvalid=The OpenAPI object must contain a valid OpenAPI specification version. The \"{0}\" value specified for the OpenAPI specification version is not valid
 openAPITagIsNotUnique=The OpenAPI object must contain unique tag names. The \"{0}\" tag name is not unique
