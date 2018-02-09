@@ -86,7 +86,7 @@ referenceExternalOrExtension=The \"{0}\" value is an external reference or an ex
 referenceNotPartOfModel=The specified reference \"{0}\" is not part of the model components
 referenceNotValid=The specified reference \"{0}\" is not valid.
 referenceNotValidFormat=The \"{0}\" reference is not in a valid format.
-referenceNull=The \"{0}\" model components object is null or $ref \"{1}\" is null
+referenceNull=The specified reference object is null
 referenceToObjectInvalid=The \"{0}\" value is an invalid reference for \"{1}\"
 
 responseMustContainOneCode=The Responses object must contain at least one response code
