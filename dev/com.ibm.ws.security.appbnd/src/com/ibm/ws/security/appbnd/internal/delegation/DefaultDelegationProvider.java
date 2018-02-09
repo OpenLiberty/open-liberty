@@ -173,11 +173,10 @@ public class DefaultDelegationProvider implements DelegationProvider {
             Subject inSubject;
             if (password != null) {
                 inSubject= javaEESecurityService.createLoginHashtable(username, password);
-                AuthenticationData authenticationData = createAuthenticationData(username, null);
-                return securityService.getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, inSubject);
             } else {
-                return null;
+                inSubject= javaEESecurityService.createLoginHashtable(username);
             }
+            return securityService.getAuthenticationService().authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, inSubject);
         }
         else if (password != null) {
             AuthenticationData authenticationData = createAuthenticationData(username, password);

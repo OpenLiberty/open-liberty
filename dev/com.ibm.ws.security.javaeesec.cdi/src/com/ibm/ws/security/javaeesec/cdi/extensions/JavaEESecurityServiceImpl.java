@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.credential.CallerOnlyCredential;
+import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
@@ -60,12 +62,30 @@ public class JavaEESecurityServiceImpl implements JavaEESecurityService {
      */
     @Override
     public Subject createLoginHashtable(String username, @Sensitive String password) throws AuthenticationException {
+        UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
+        return createLoginHashtable(credential);
+    }
+
+    /**
+     * Returns the partial subject for hashtable login
+     *
+     * @param username
+     *
+     * @return the partial subject which can be used for hashtable login if username and password are valid.
+     * @throws com.ibm.ws.security.authentication.AuthenticationException
+     */
+    @Override
+    public Subject createLoginHashtable(String username) throws AuthenticationException {
+        CallerOnlyCredential credential = new CallerOnlyCredential(username);
+        return createLoginHashtable(credential);
+    }
+
+    private Subject createLoginHashtable(Credential credential) throws AuthenticationException {
         if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
             IdentityStoreHandler identityStoreHandler = utils.getIdentityStoreHandler(getCDI());
             if (identityStoreHandler != null) {
                 Subject inSubject = new Subject();
                 Hashtable<String, Object> subjectHashtable = utils.createNewSubjectHashtable(inSubject);
-                UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
                 AuthenticationStatus status = utils.validateWithIdentityStore("defaultRealm", inSubject, credential, identityStoreHandler);
                 if (status != AuthenticationStatus.SUCCESS) {
                     throw new AuthenticationException("Authentication by IdentityStoreHandler was failed.");
@@ -78,6 +98,7 @@ public class JavaEESecurityServiceImpl implements JavaEESecurityService {
             throw new AuthenticationException("HttpAuthenticationMechansim is not used in this module.");
         }
     }
+
 
     /**
      * Returns whether an IdentiyStoreHander is available for validation.

@@ -32,6 +32,18 @@ public interface JavaEESecurityService {
     public Subject createLoginHashtable(String username, String password) throws AuthenticationException;
 
     /**
+     * Returns the partial subject for hashtable login
+     * This method only works if the IdentityStores can validate users without using password which is a unique
+     * function which the container provided IdentityStores have.
+     *
+     * @param username
+     *
+     * @return the partial subject which can be used for hashtable login if username and password are valid.
+     * @throws com.ibm.ws.security.authentication.AuthenticationException
+     */
+    public Subject createLoginHashtable(String username) throws AuthenticationException;
+
+    /**
      * Returns whether an IdentiyStoreHander is available for validation.
      *
      * @return whether an identityStoreHander is available.
