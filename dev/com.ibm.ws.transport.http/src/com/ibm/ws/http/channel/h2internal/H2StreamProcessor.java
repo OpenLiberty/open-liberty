@@ -88,6 +88,9 @@ public class H2StreamProcessor {
     // the anticipated content length, as passed in from a content-length header
     private int expectedContentLength = -1;
 
+    // set to true if this stream services a request with the CONNECT method
+    private boolean isConnectStream = false;
+
     // objects to track http2 connection initialization
     private boolean connection_preface_settings_ack_rcvd = false;
     private boolean connection_preface_settings_rcvd = false;
@@ -1465,8 +1468,6 @@ public class H2StreamProcessor {
         }
     }
 
-    boolean isConnectStream = false;
-
     /**
      * Check to see if the passed headers contain values for :method, :scheme, and :path
      * If the CONNECT method header was found, :path and :scheme are not allowed, and :authority is required
@@ -1476,8 +1477,8 @@ public class H2StreamProcessor {
      */
     private boolean isValidH2Request(HashMap<String, String> pseudoHeaders) {
         if (MethodValues.CONNECT.getName().equals(pseudoHeaders.get(HpackConstants.METHOD))) {
-            if (pseudoHeaders.get(HpackConstants.METHOD) != null && pseudoHeaders.get(HpackConstants.PATH) == null
-                && pseudoHeaders.get(HpackConstants.SCHEME) == null) {
+            if (pseudoHeaders.get(HpackConstants.PATH) == null && pseudoHeaders.get(HpackConstants.SCHEME) == null
+                && pseudoHeaders.get(HpackConstants.AUTHORITY) != null) {
                 this.isConnectStream = true;
                 return true;
             }

@@ -2387,7 +2387,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "sendFullOutgoing : creating trailers");
                     }
-                    framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(this.marshallOutgoingH2Trailers(h2Link.getWriteTable())), true));
+                    WsByteBuffer[] trailers = marshallOutgoingH2Trailers(h2Link.getWriteTable());
+                    if (trailers != null) {
+                        framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(trailers), true));
+                    }
                 } else {
                     framesToWrite.addAll(h2Link.prepareBody(null, this.isFinalWrite));
                 }
