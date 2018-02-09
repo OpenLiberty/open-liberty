@@ -32,12 +32,16 @@ infoTermsOfServiceInvalidURL=The Info object must contain a valid URL. The \"{0}
 invalidUrl=The \"{0}\" object must contain a valid URL. The \"{1}\" value specified for the URL is not valid
 invalidUri=The \"{0}\" object must contain a valid URI. The \"{1}\" value specified for the URI is not valid
 
+invalidExtensionFieldName=The field name of \"{0}\" extension must start with "x-"
+
 headerExampleOrExamples=The \"{0}\" Header object cannot have both \"examples\" and \"example\"
 headerSchemaAndContent=The \"{0}\" Header object must contain either a schema property or a content property, but it cannot contain both
 headerSchemaOrContent=The \"{0}\" Header object must contain either a schema property or a content property
 headerContentMap=The \"content\" map within the \"{0}\" Header object must contain only one entry
 
 licenseInvalidURL=The License object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+linkOperationRefOrId=\"operationRef\" and \"operationId\" properties of the \"{0}\" Link object are mutually exclusive
 
 mediaTypeExampleOrExamples=The MediaType object cannot have both \"examples\" and \"example\" fields. Specify only one field
 mediaTypeEncodingProperty=The \"{0}\" encoding property specified in the MediaType object does not exist in the schema as a property
@@ -90,6 +94,14 @@ securityRequirementIsEmpty=The SecurityRequirement object must not be empty
 securitySchemeInFieldInvalid=The \"{0}\" SecurityScheme object has an error. The value of its \"in\" field is \"{1}\", but must be one of (\"query\", \"header\", \"cookie\")
 securitySchemeInvalidURL=The SecurityScheme object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
 securitySchemeNonApplicableField=One or more fields defined are not applicable to a SecurityScheme instance of type \"{0}\"
+
+schemaTypeArrayNullItems=The \"{0}\" array Schema object must have "items" property defined
+schemaReadOnlyOrWriteOnly=The \"{0}\" Schema object must not have both "readOnly" and writeOnly" set to true
+schemaMultipleOfLessThanOne=The \"{0}\" Schema object must have property "multipleOf" set to a number strictly greater than zero
+schemaPropertyLessThanZero=Property \"{0}\" of the \"{1}\" Schema object must be greater or equal to zero
+schemaTypeDoesNotMatchProperty=Property \"{0}\" is not appropriate for the \"{1}\" Schema object of type \"{2}\"
+
+keyNotARegex=The \"{0}\" key of Components object must be a regular expression
 
 serverVariableNotDefined=The \"{0}\" variable in the Server object is not defined
 serverInvalidURL=The Server object must contain a valid URL. The \"{0}\" value specified for the URL is not valid

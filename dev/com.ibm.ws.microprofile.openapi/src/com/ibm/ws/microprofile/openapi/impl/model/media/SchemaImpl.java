@@ -55,9 +55,9 @@ public class SchemaImpl implements Schema {
     private String description = null;
     private String format = null;
     private String $ref = null;
-    private Boolean nullable = null;
-    private Boolean readOnly = null;
-    private Boolean writeOnly = null;
+    private Boolean nullable = false;
+    private Boolean readOnly = false;
+    private Boolean writeOnly = false;
     protected Object example = null;
     private ExternalDocumentation externalDocs = null;
     private Boolean deprecated = null;
