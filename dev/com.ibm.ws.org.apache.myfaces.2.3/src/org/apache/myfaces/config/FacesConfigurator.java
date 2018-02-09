@@ -230,7 +230,13 @@ public class FacesConfigurator
         }
         _externalContext = externalContext;
 
-        _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
+        // In dev mode a new Faces Configurator is created for every request so only
+        // create a new bean storage list if we don't already have one which will be
+        // the case first time through during init.
+        if (_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY) == null) 
+        {
+            _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
+        }
     }
 
     /**
@@ -724,12 +730,18 @@ public class FacesConfigurator
             application.setMessageBundle(dispenser.getMessageBundle());
         }
         
+        // First build the object
         NavigationHandler navigationHandler = ClassUtils.buildApplicationObject(NavigationHandler.class,
-                ConfigurableNavigationHandler.class,
-                BackwardsCompatibleNavigationHandlerWrapper.class,
                 dispenser.getNavigationHandlerIterator(),
                 application.getNavigationHandler());
+        // Invoke inject and post construct
         _callInjectAndPostConstruct(navigationHandler);
+        // Finally wrap the object with the BackwardsCompatibleNavigationHandlerWrapper
+        navigationHandler = ClassUtils.wrapBackwardCompatible(NavigationHandler.class,
+                ConfigurableNavigationHandler.class,
+                BackwardsCompatibleNavigationHandlerWrapper.class,
+                application.getNavigationHandler(),
+                navigationHandler);
         application.setNavigationHandler(navigationHandler);
 
         StateManager stateManager = ClassUtils.buildApplicationObject(StateManager.class,

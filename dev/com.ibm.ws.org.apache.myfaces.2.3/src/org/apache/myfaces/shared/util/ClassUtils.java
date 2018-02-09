@@ -629,45 +629,70 @@ public final class ClassUtils
                     newCurrent = (T) ClassUtils.newInstance(implClass);
                 }
                 
-                // now we have a new current object (newCurrent)
-                // --> find out if it is assignable from extendedInterfaceClass
-                // and if not, wrap it in a backwards compatible wrapper (if available)
-                if (extendedInterfaceWrapperClass != null
-                        && !extendedInterfaceClass.isAssignableFrom(newCurrent.getClass()))
-                {
-                    try
-                    {
-                        Constructor<? extends T> wrapperConstructor
-                                = extendedInterfaceWrapperClass.getConstructor(
-                                        new Class[] {interfaceClass, extendedInterfaceClass});
-                        newCurrent = wrapperConstructor.newInstance(new Object[] {newCurrent, current});
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InstantiationException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.log(Level.SEVERE, e.getMessage(), e);
-                        throw new FacesException(e);
-                    }
-                }
-                
-                current = newCurrent;
+                current = wrapBackwardCompatible(interfaceClass, extendedInterfaceClass, 
+                                                    extendedInterfaceWrapperClass, current, newCurrent);
             }
         }
 
         return current;
     }
+    
+    
+    /**
+     * Wrap an object using a backwards compatible wrapper if available
+     * @param interfaceClass The class from which the implementation has to inherit from.
+     * @param extendedInterfaceClass A subclass of interfaceClass which specifies a more
+     *                               detailed implementation.
+     * @param extendedInterfaceWrapperClass A wrapper class for the case that you have an ApplicationObject
+     *                                      which only implements the interfaceClass but not the 
+     *                                      extendedInterfaceClass.
+     * @param defaultObject The default implementation for the given ApplicationObject.
+     * @param newCurrent The new current object
+     * @return
+     */
+    public static <T> T wrapBackwardCompatible(Class<T> interfaceClass, Class<? extends T> extendedInterfaceClass,
+                                               Class<? extends T> extendedInterfaceWrapperClass, 
+                                               T defaultObject, T newCurrent)
+    {
+        
+        T current = newCurrent;
+        
+        // now we have a new current object (newCurrent)
+        // --> find out if it is assignable from extendedInterfaceClass
+        // and if not, wrap it in a backwards compatible wrapper (if available)
+        if (extendedInterfaceWrapperClass != null
+                && !extendedInterfaceClass.isAssignableFrom(current.getClass()))
+        {
+            try
+            {
+                Constructor<? extends T> wrapperConstructor
+                        = extendedInterfaceWrapperClass.getConstructor(
+                                new Class[] {interfaceClass, extendedInterfaceClass});
+                current = wrapperConstructor.newInstance(new Object[] {newCurrent, defaultObject});
+            }
+            catch (NoSuchMethodException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+                throw new FacesException(e);
+            }
+            catch (InstantiationException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+                throw new FacesException(e);
+            }
+            catch (IllegalAccessException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+                throw new FacesException(e);
+            }
+            catch (InvocationTargetException e)
+            {
+                log.log(Level.SEVERE, e.getMessage(), e);
+                throw new FacesException(e);
+            }
+        }
+        
+        return current;
+    }
+    
 }
