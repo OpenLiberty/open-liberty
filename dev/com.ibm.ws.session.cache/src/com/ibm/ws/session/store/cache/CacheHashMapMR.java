@@ -185,7 +185,7 @@ public class CacheHashMapMR extends CacheHashMap {
             Set<String> propsToWrite = null;
 
             // we are not synchronized here - were not in old code either
-            Hashtable sht = null;
+            Hashtable tht = null;
             if (_smc.writeAllProperties()) {
                 Hashtable ht = d2.getSwappableData();
                 propsToWrite = ht.keySet();
@@ -195,11 +195,11 @@ public class CacheHashMapMR extends CacheHashMap {
             } else {
                 if (d2.appDataChanges != null) {
                     if (appDataTablesPerThread) {
-                        if ((sht = (Hashtable) d2.appDataChanges.get(t)) != null) {
+                        if ((tht = (Hashtable) d2.appDataChanges.get(t)) != null) {
                             if (trace && tc.isDebugEnabled()) {
                                 Tr.debug(this, tc, "doing app changes for " + id + " on thread " + t);
                             }
-                            propsToWrite = sht.keySet();
+                            propsToWrite = tht.keySet();
                         }
                     } else { // appDataTablesPerSession
                         propsToWrite = d2.appDataChanges.keySet();
@@ -274,11 +274,11 @@ public class CacheHashMapMR extends CacheHashMap {
                         Tr.debug(this, tc, "doing app removals for " + id + " on ALL threads");
                     }
                 } else { //appDataTablesPerThread
-                    if ((sht = (Hashtable) d2.appDataRemovals.get(t)) != null) {
+                    if ((tht = (Hashtable) d2.appDataRemovals.get(t)) != null) {
                         if (trace && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "doing app removals for " + id + " on thread ", t);
                         }
-                        propsToRemove = sht.keySet();
+                        propsToRemove = tht.keySet();
                     }
                 }
 
@@ -313,7 +313,19 @@ public class CacheHashMapMR extends CacheHashMap {
             if (propsToWrite != null || propsToRemove != null) {
                 String sessionKey = createSessionKey(id, appName);
                 ArrayList<?> oldValue, newValue;
+                long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
                 do {
+                    if ((backoff *= 2) > 100)
+                        try {
+                            // TODO remove this error and switch to enforce a maximum on backoff time
+                            // This error is temporarily here to identify how often this is reached
+                            if (backoff > 500)
+                                throw new RuntimeException("Giving up on retries"); 
+                            TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
+                        } catch (InterruptedException x) {
+                            FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { sessionKey, backoff, propsToWrite, propsToRemove });
+                            throw new RuntimeException(x);
+                        }
                     oldValue = cacheStoreService.cache.get(sessionKey);
                     if (oldValue == null)
                         throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?

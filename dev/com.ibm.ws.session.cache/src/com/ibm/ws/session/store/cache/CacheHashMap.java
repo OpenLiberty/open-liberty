@@ -213,7 +213,7 @@ public class CacheHashMap extends BackedHashMap {
             byte[] bytes = cacheStoreService.getCache(appName).get(key);
 
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, key.toString(), bytes == null ? null : bytes.length);
+                Tr.debug(this, tc, "byte length", bytes == null ? null : bytes.length);
 
             if (bytes != null && bytes.length > 0) {
                 long startTime = System.nanoTime();
