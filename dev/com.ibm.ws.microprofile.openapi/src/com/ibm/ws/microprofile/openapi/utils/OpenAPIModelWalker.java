@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.utils;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -145,9 +145,9 @@ public final class OpenAPIModelWalker {
         // Flag indicating whether objects are visited before or after their children.
         private final boolean previsit;
         // A stack containing the ancestor objects of the object currently being traversed.
-        private final Deque<Object> ancestors = new ArrayDeque<>();
+        private final Deque<Object> ancestors = new LinkedList<>();
         // A stack containing path segments for the object currently being traversed.
-        private final Deque<String> pathSegments = new ArrayDeque<>();
+        private final Deque<String> pathSegments = new LinkedList<>();
         // A map containing all objects that have already been traversed.
         private final IdentityHashMap<Object, Object> traversedObjects = new IdentityHashMap<>();
 
@@ -201,6 +201,7 @@ public final class OpenAPIModelWalker {
         //  * Replace ~ with ~0.
         //  * Replace / with ~1.
         private String escapeJSONPointerPathSegment(String pathSegment) {
+            pathSegment = String.valueOf(pathSegment);
             return pathSegment.replace("~", "~0").replace("/", "~1");
         }
 

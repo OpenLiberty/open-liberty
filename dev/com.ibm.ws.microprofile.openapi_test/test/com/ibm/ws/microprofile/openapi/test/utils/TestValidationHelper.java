@@ -11,11 +11,16 @@
 */
 package com.ibm.ws.microprofile.openapi.test.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.impl.validation.ValidationHelper;
 
 public class TestValidationHelper implements ValidationHelper {
+
+    private final Set<String> operationIds = new HashSet<>();
 
     OASValidationResult result = new OASValidationResult();
 
@@ -30,7 +35,7 @@ public class TestValidationHelper implements ValidationHelper {
     /** {@inheritDoc} */
     @Override
     public boolean addOperationId(String operationId) {
-        return false;
+        return !operationIds.add(operationId);
     }
 
     /** {@inheritDoc} */

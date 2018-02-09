@@ -31,10 +31,8 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -98,11 +96,11 @@ public class Reader {
     public static final String DEFAULT_MEDIA_TYPE_VALUE = "*/*";
     public static final String DEFAULT_DESCRIPTION = "default response";
 
-    private Application application;
     private final OpenAPI openAPI;
     private final Components components;
     private final Paths paths;
     private final Set<Tag> openApiTags;
+    private String applicationPath;
 
     private static final String GET_METHOD = "get";
     private static final String POST_METHOD = "post";
@@ -151,7 +149,7 @@ public class Reader {
      * Scans a single class for Swagger annotations - does not invoke ReaderListeners
      */
     public OpenAPI read(Class<?> cls) {
-        return read(cls, resolveApplicationPath());
+        return read(cls, this.applicationPath != null ? this.applicationPath : "");
     }
 
     /**
@@ -179,51 +177,13 @@ public class Reader {
         sortedClasses.addAll(classes);
 
         for (Class<?> cls : sortedClasses) {
-            read(cls, resolveApplicationPath());
+            read(cls, this.applicationPath != null ? applicationPath : "");
         }
         return openAPI;
     }
 
     public OpenAPI read(Set<Class<?>> classes, Map<String, Object> resources) {
         return read(classes);
-    }
-
-    protected String resolveApplicationPath() {
-        if (application != null) {
-            ApplicationPath applicationPath = application.getClass().getAnnotation(ApplicationPath.class);
-            if (applicationPath != null) {
-                if (StringUtils.isNotBlank(applicationPath.value())) {
-                    return applicationPath.value();
-                }
-            }
-            // look for inner application, e.g. ResourceConfig
-            try {
-                Application innerApp = application;
-                Method m = application.getClass().getMethod("getApplication", null);
-                while (m != null) {
-                    Application retrievedApp = (Application) m.invoke(innerApp, null);
-                    if (retrievedApp == null) {
-                        break;
-                    }
-                    if (retrievedApp.getClass().equals(innerApp.getClass())) {
-                        break;
-                    }
-                    innerApp = retrievedApp;
-                    applicationPath = innerApp.getClass().getAnnotation(ApplicationPath.class);
-                    if (applicationPath != null) {
-                        if (StringUtils.isNotBlank(applicationPath.value())) {
-                            return applicationPath.value();
-                        }
-                    }
-                    m = innerApp.getClass().getMethod("getApplication", null);
-                }
-            } catch (NoSuchMethodException e) {
-                // no inner application found
-            } catch (Exception e) {
-                // no inner application found
-            }
-        }
-        return "";
     }
 
     public OpenAPI read(Class<?> cls, String parentPath) {
@@ -415,12 +375,7 @@ public class Reader {
                     }
 
                     if (operation.getRequestBody() == null) {
-                        processRequestBody(new ParameterImpl(),
-                                           operation,
-                                           methodConsumes,
-                                           classConsumes,
-                                           null,
-                                           methodRequestBody);
+                        processRequestBody(new ParameterImpl(), operation, methodConsumes, classConsumes, null, methodRequestBody);
                     }
 
                     if (operationParameters.size() > 0) {
@@ -438,8 +393,9 @@ public class Reader {
 
                         for (Parameter operationParameter : operationParameters) {
                             Parameter p = null;
-                            if (operationParameter.getIn() != null)
+                            if (operationParameter.getIn() != null) {
                                 p = params.get(operationParameter.getName() + '/' + operationParameter.getIn().toString());
+                            }
                             if (p == null) {
                                 p = params.get(operationParameter.getName());
                             }
@@ -1179,8 +1135,8 @@ public class Reader {
         return false;
     }
 
-    public void setApplication(Application application) {
-        this.application = application;
+    public void setApplicationPath(String applicationPath) {
+        this.applicationPath = applicationPath;
     }
 
     protected boolean ignoreOperationPath(String path, String parentPath) {

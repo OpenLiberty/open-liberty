@@ -34,6 +34,12 @@ public class DiscriminatorValidator extends TypeValidator<Discriminator> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Discriminator t) {
-        // TODO Auto-generated method stub
+
+        if (t != null) {
+
+            if (t.getPropertyName() == null || t.getPropertyName().isEmpty()) {
+                ValidatorUtils.validateRequiredField(t.getPropertyName(), context, "propertyName").ifPresent(helper::addValidationEvent);
+            }
+        }
     }
 }

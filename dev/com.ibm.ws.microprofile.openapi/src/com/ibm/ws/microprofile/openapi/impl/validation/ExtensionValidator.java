@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.openapi.impl.validation;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -32,6 +33,12 @@ public class ExtensionValidator extends TypeValidator<Object> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Object t) {
-        // TODO Auto-generated method stub
+
+        if (key != null) {
+            if (!key.startsWith("x-")) {
+                final String message = Tr.formatMessage(tc, "invalidExtensionFieldName", t);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+        }
     }
 }

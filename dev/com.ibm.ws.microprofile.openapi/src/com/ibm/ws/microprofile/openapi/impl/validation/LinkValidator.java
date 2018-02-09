@@ -45,6 +45,7 @@ public class LinkValidator extends TypeValidator<Link> {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
                 return;
             }
+          
             Boolean operationRefDefined = t.getOperationRef() != null && !t.getOperationRef().isEmpty();
             Boolean operationIdDefined = t.getOperationId() != null && !t.getOperationId().isEmpty();
             Boolean operationRefNull = t.getOperationRef() == null || t.getOperationRef().isEmpty();
