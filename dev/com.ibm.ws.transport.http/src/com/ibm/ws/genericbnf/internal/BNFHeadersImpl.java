@@ -1043,6 +1043,13 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 //instead of marshallHeader
                 if (this.table != null) {
                     try {
+                        if (!H2Headers.checkIsValidH2WriteHeader(elem.getName())) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "On an HTTP/2 connection - will not encode this header header: " + elem.getName());
+                            }
+                            // this is a connection-specific header; don't encode it
+                            continue;
+                        }
                         buffers = encodeHeader(buffers, elem);
                     } catch (Exception e) {
                         // Three possible scenarios -
@@ -1053,7 +1060,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         // Show error and return null, so caller can invalidate the table
                         // and close the stream.
                         // 3.) IOException for not being able to write into Byte Array stream
-                        Tr.error(tc, e.getMessage());
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
+                            Tr.error(tc, e.getMessage());
+                        }
                         // Release all allocated buffers of this message
                         for (WsByteBuffer buffer : buffers) {
                             buffer.release();

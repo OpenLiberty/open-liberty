@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -455,6 +455,24 @@ public class H2Headers {
                 throw new CompressionException("Psuedo-headers are not allowed in trailers: " + header.toString());
             }
         }
+    }
+
+    /**
+     * Check to see if a given header name is valid to write on an HTTP/2 connection
+     *
+     * @param H2HeaderField
+     * @throws CompressionException if the H2HeaderField is not valid
+     */
+    public static boolean checkIsValidH2WriteHeader(String headerName) {
+        if (!headerName.startsWith(":")) {
+            if ("Connection".equalsIgnoreCase(headerName)) {
+                return false;
+            }
+            if ("TE".equalsIgnoreCase(headerName)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

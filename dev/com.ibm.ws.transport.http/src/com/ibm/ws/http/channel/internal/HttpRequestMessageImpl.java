@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -322,13 +322,17 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         //Authority is not required to be present, check if it is.
         if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
             this.sUrlHost = pseudoHeaders.get(HpackConstants.AUTHORITY);
+            this.sHdrHost = pseudoHeaders.get(HpackConstants.AUTHORITY);
         }
-        //Set Method
-        this.setMethod(pseudoHeaders.get(HpackConstants.METHOD));
-        //Set Path
-        this.setRequestURI(pseudoHeaders.get(HpackConstants.PATH));
-        //Set Scheme
-        this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
+        if (pseudoHeaders.containsKey(HpackConstants.METHOD)) {
+            this.setMethod(pseudoHeaders.get(HpackConstants.METHOD));
+        }
+        if (pseudoHeaders.containsKey(HpackConstants.PATH)) {
+            this.setRequestURI(pseudoHeaders.get(HpackConstants.PATH));
+        }
+        if (pseudoHeaders.containsKey(HpackConstants.SCHEME)) {
+            this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
+        }
 
     }
 
@@ -349,19 +353,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     @Override
     protected boolean checkMandatoryPseudoHeaders(HashMap<String, String> pseudoHeaders) {
-        //All HTTP/2.0 requests MUST include exactly one valid value for
-        //':method', ':scheme', and ':path'. Check that the map of parsed
-        //pseudo-headers contains a non-null entry for each required token.
-        if (pseudoHeaders.get(HpackConstants.METHOD) != null && pseudoHeaders.get(HpackConstants.PATH) != null &&
-            pseudoHeaders.get(HpackConstants.SCHEME) != null) {
-            // OPTIONS requests must include the ":path" pseudo-header field with a value of '*'
-            if (pseudoHeaders.get(HpackConstants.METHOD).equals("OPTIONS") && !pseudoHeaders.get(HpackConstants.PATH).equals("*")) {
-                return false;
-            }
-            return true;
-        }
-        return false;
-
+        // noop: already checked in H2StreamProcessor
+        return true;
     }
 
     /*

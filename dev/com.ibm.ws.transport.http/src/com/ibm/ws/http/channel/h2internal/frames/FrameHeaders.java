@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,9 @@ import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.h2internal.FrameReadProcessor;
 import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
+import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
+import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.huffman.HuffmanEncoder;
 
@@ -236,11 +238,11 @@ public class FrameHeaders extends Frame {
     }
 
     @Override
-    public void validate(H2ConnectionSettings settings) throws ProtocolException, FrameSizeException {
+    public void validate(H2ConnectionSettings settings) throws Http2Exception {
         if (streamId == 0) {
             throw new ProtocolException("HEADERS frame streamID cannot be 0x0");
         } else if (this.getPayloadLength() <= 0) {
-            throw new ProtocolException("HEADERS payload length must be greater than 0");
+            throw new CompressionException("HEADERS frame must have a header block fragment");
         } else if (this.getPayloadLength() > settings.maxFrameSize) {
             throw new FrameSizeException("HEADERS payload greater than allowed by the max frame size");
         } else if (this.paddingLength >= this.payloadLength) {
