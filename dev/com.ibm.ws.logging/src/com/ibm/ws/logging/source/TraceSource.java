@@ -28,7 +28,7 @@ import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
 public class TraceSource implements Source, WsTraceHandler {
-
+    //remove WsLogHandler
     private static final TraceComponent tc = Tr.register(TraceSource.class);
 
     private final String sourceName = "com.ibm.ws.logging.source.trace";

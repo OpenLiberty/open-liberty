@@ -182,16 +182,16 @@ public class BaseTraceService implements TrService {
     protected final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
-    private volatile LogSource logSource = null;
-    private volatile TraceSource traceSource = null;
-    private volatile MessageLogHandler messageLogHandler = null;
-    private volatile ConsoleLogHandler consoleLogHandler = null;
-    private volatile BufferManagerImpl logConduit;
-    private volatile BufferManagerImpl traceConduit;
-    private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
+    protected volatile LogSource logSource = null;
+    protected volatile TraceSource traceSource = null;
+    protected volatile MessageLogHandler messageLogHandler = null;
+    protected volatile ConsoleLogHandler consoleLogHandler = null;
+    protected volatile BufferManagerImpl logConduit;
+    protected volatile BufferManagerImpl traceConduit;
+    protected volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
-    private volatile String serverName = null;
-    private volatile String wlpUserDir = null;
+    protected volatile String serverName = null;
+    protected volatile String wlpUserDir = null;
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {

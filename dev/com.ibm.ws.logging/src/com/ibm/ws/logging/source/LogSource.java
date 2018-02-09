@@ -36,6 +36,7 @@ import com.ibm.wsspi.collector.manager.Source;
 
 public class LogSource implements Source, WsLogHandler {
 
+    //remove WsLogHandler
     private static final TraceComponent tc = Tr.register(LogSource.class);
 
     private final String sourceName = "com.ibm.ws.logging.source.message";

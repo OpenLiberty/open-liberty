@@ -21,6 +21,7 @@ import com.ibm.ws.logging.internal.impl.BaseTraceService;
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
 import com.ibm.ws.logging.internal.impl.RoutedMessageImpl;
 import com.ibm.wsspi.logging.MessageRouter;
+import com.ibm.wsspi.logprovider.LogProviderConfig;
 
 /**
  *
@@ -29,15 +30,26 @@ import com.ibm.wsspi.logging.MessageRouter;
 public class HpelBaseTraceService extends BaseTraceService {
     private final HpelTraceServiceWriter trWriter = new HpelTraceServiceWriter(this);
 
+    @Override
+    public synchronized void update(LogProviderConfig config) {
+        super.update(config);
+        //remove this after
+        collectorMgrPipelineUtils.setJsonTrService(false);
+        logConduit.removeSyncHandler(consoleLogHandler);
+    }
+
     /** {@inheritDoc} */
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
+        //replace this with the echo in BTS
         if (copySystemStreams) {
             writeFilteredStreamOutput(holder, logRecord);
         }
+        //keep this
         trWriter.repositoryPublish(logRecord);
     }
 
+    //remove this method
     boolean notifyConsole(LogRecord logRecord) {
         int levelValue = logRecord.getLevel().intValue();
 
@@ -69,7 +81,6 @@ public class HpelBaseTraceService extends BaseTraceService {
                 }
             }
         }
-
         return true;
     }
 
@@ -97,6 +108,7 @@ public class HpelBaseTraceService extends BaseTraceService {
                     return;
             }
             trWriter.repositoryPublish(logRecord);
+            //logsource.publish
         }
         //Route other types of logs (<INFO) to trace (RTC237423)
         else {
