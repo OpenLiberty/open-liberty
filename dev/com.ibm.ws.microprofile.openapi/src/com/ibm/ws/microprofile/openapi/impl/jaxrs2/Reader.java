@@ -375,12 +375,7 @@ public class Reader {
                     }
 
                     if (operation.getRequestBody() == null) {
-                        processRequestBody(new ParameterImpl(),
-                                           operation,
-                                           methodConsumes,
-                                           classConsumes,
-                                           null,
-                                           methodRequestBody);
+                        processRequestBody(new ParameterImpl(), operation, methodConsumes, classConsumes, null, methodRequestBody);
                     }
 
                     if (operationParameters.size() > 0) {
@@ -398,8 +393,9 @@ public class Reader {
 
                         for (Parameter operationParameter : operationParameters) {
                             Parameter p = null;
-                            if (operationParameter.getIn() != null)
+                            if (operationParameter.getIn() != null) {
                                 p = params.get(operationParameter.getName() + '/' + operationParameter.getIn().toString());
+                            }
                             if (p == null) {
                                 p = params.get(operationParameter.getName());
                             }
