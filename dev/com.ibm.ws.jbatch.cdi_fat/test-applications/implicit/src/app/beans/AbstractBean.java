@@ -33,9 +33,7 @@ public abstract class AbstractBean {
      */
 
     @Inject
-    @BatchProperty
-    // To recreate issue: https://github.com/OpenLiberty/open-liberty/issues/1960,  replace the @BatchProperty qualifier with this:
-    //   @BatchProperty(name = "color")
+    @BatchProperty(name = "color")
     protected String color;
 
     @PostConstruct
