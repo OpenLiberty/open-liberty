@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.wsspi.http;
 import java.util.List;
 
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
-import com.ibm.wsspi.http.ee8.Http2PushException;
 
 /**
  * Representation of an HTTP request message provided by the dispatcher to any
@@ -160,7 +159,7 @@ public interface HttpRequest {
      *
      * @return
      */
-    void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException;
+    void pushNewRequest(Http2PushBuilder pushBuilder);
 
     /*
      * Access the list of names for all trailer headers in the request

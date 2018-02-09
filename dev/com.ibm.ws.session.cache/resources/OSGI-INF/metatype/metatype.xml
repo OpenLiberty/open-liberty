@@ -21,8 +21,7 @@
  <!-- TODO add NLS -->
  <OCD id="com.ibm.ws.session.cache" ibm:alias="httpSessionCache" name="internal" description="internal use only">
   <AD id="libraryRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="internal" description="internal use only"/>
-  <AD id="library.target"              type="String"  default="(service.pid=${libraryRef})" ibm:final="true" name="internal" description="internal use only"/>
-  <AD id="library.cardinality.minimum" type="String"  default="${count(libraryRef)}" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="library.target"              type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>
   <!-- TODO JCache CacheManager properties -->
   <AD id="service.ranking"             type="Integer" default="50" ibm:final="true" name="internal" description="internal use only"/> <!-- httpSessionDatabase takes precedence -->
  </OCD>

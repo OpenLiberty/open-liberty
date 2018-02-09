@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Dac\u0103 utilizatorul nu este autor
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: Utilizatorul {0} nu este autorizat s\u0103 porneasc\u0103 joburi batch.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=Utilizatorul nu este parte a unui rol de batch care este autorizat s\u0103 porneasc\u0103 joburi de batch.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Dac\u0103 utilizatorul nu este autorizat s\u0103 porneasc\u0103 joburi de batch, atunci nicio ac\u0163iune nu este necesar\u0103. Dac\u0103 utilizatorul este autorizat s\u0103 realizeze opera\u0163ia de batch cerut\u0103, atunci configura\u0163i autoriza\u0163ia de securitate batch \u015fi ad\u0103uga\u0163i acest utilizator la rolurile de batch necesare. 
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: Accesul la instan\u0163a de joburi {0} a fost refuzat. Jobul are un nume de grup de operare definit \u015fi utilizatorul {1} are autoritate de batchGroupMonitor sau batchGroupAdmin; totu\u015fi, acel utilizator nu este membru al urm\u0103toarelor grupuri configurate: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=Utilizatorul batchGroupAdmin sau batchGroupMonitor nu este parte a grupului de securitate la care este asociat acest job.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Dac\u0103 utilizatorul ar avea drepturi de acces de grup la acest job, ad\u0103uga\u0163i utilizatorul la grupul de securitate corespunz\u0103tor.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: Accesul la jobul {0} este refuzat. Jobul are definit numele grupului de operare {1} \u015fi utilizatorul nu are autoritate de batchGroupMonitor sau de batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=Utilizatorul nu este parte din niciun rol de grup de batch-uri \u015fi nu este autorizat s\u0103 realizeze opera\u0163ii de batch.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Dac\u0103 utilizatorul nu este autorizat s\u0103 fie un utilizator de grup de batch-uri, atunci nicio ac\u0163iune nu este necesar\u0103. Dac\u0103 utilizatorul este autorizat s\u0103 realizeze opera\u0163ii de grup de batch-uri \u015fi este activat\u0103 securitatea de batch, atunci configura\u0163i autoriza\u0163ia de securitate batch \u015fi ad\u0103uga\u0163i acest utilizator la rolurile de grup de batch-uri necesare.

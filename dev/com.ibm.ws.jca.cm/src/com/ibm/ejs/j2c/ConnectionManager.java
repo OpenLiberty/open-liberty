@@ -92,6 +92,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
     private String cfDetailsKey = "NameNotSet";
     protected CMConfigData cmConfig = null;
+    protected HashMap<String, Integer> qmidcmConfigMap = null;
+
     private boolean shareable = false;
 
     private int recoveryToken;
@@ -202,7 +204,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         EmbeddableWebSphereTransactionManager tm = pm.connectorSvc.transactionManager;
         if (tm != null) {
             if (!rrsTransactional) {
-                recoveryToken = registerXAResourceInfo(tm, jxri, commitPriority);
+                recoveryToken = registerXAResourceInfo(tm, jxri, commitPriority, null);
             } else {
                 if (!TransactionSupportLevel.NoTransaction.equals(gconfigProps.transactionSupport)) {
                     RRSXAResourceFactory xaFactory = (RRSXAResourceFactory) _pm.connectorSvc.rrsXAResFactorySvcRef.getService();
@@ -1666,13 +1668,15 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * @return the recovery ID (or -1 if an error occurs)
      */
     final int registerXAResourceInfo(EmbeddableWebSphereTransactionManager tm,
-                                     CommonXAResourceInfo xaResourceInfo, int commitPriority) {
+                                     CommonXAResourceInfo xaResourceInfo, int commitPriority, String qmid) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "registerXAResourceInfo");
         // Transaction service will use the filter we provide to query the service registry for an XAResourceFactory.
         // If possible, filter on the JNDI name because the id field is optional (in which case cfKey defaults to the JNDI name)
         // and any generated unique identifier (config.id) might not be consistent across server restarts.
         // In the case of app-defined resources (@DataSourceDefinition), however, the JNDI name is not guaranteed to be unique,
         // and so the unique identifer (which for app-defined resources is always specified) must be used instead.
-        CMConfigData cmConfigData = xaResourceInfo.getCmConfig();
+        CMConfigDataImpl cmConfigData = (CMConfigDataImpl) (xaResourceInfo != null ? xaResourceInfo.getCmConfig() : this.cmConfig);
         String id = cmConfigData.getCfKey();
         String jndiName = cmConfigData.getJNDIName();
         String filter;
@@ -1686,7 +1690,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         // Need to use List<Byte> instead of byte[] because XARecoveryWrapper does a shallow compare. Icck.
         ArrayList<Byte> resInfo;
         try {
-            byte[] bytes = CommonFunction.serObjByte(xaResourceInfo.getCmConfig());
+            if (qmid != null)
+                cmConfigData.setQmid(qmid);
+            byte[] bytes = CommonFunction.serObjByte(cmConfigData);
             resInfo = new ArrayList<Byte>(bytes.length);
             for (byte b : bytes)
                 resInfo.add(b);
@@ -1696,6 +1702,29 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         }
 
         int recoveryToken = tm.registerResourceInfo(filter, resInfo, commitPriority);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "registerXAResourceInfo");
+
         return recoveryToken;
+    }
+
+    public synchronized Integer getQMIDRecoveryToken(String qmid, PoolManager pm) {
+        Integer i = null;
+        if (qmidcmConfigMap == null)
+            qmidcmConfigMap = new HashMap<String, Integer>();
+        else {
+            i = qmidcmConfigMap.get(qmid);
+        }
+        if (i == null) {
+            EmbeddableWebSphereTransactionManager tm = pm.connectorSvc.transactionManager;
+
+            if (tm != null) {
+                if (!rrsTransactional) {
+                    i = new Integer(registerXAResourceInfo(tm, null, this.commitPriority, qmid));
+                    qmidcmConfigMap.put(qmid, i);
+                }
+            }
+        }
+        return i;
     }
 }

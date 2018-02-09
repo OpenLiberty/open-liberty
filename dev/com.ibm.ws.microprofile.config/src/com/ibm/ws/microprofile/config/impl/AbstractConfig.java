@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.interfaces.ConversionException;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public abstract class AbstractConfig implements WebSphereConfig {
@@ -58,20 +57,16 @@ public abstract class AbstractConfig implements WebSphereConfig {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
         assertNotClosed();
-        Optional<T> optional = null;
-        try {
-            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
-            T value = null;
-            if (sourced != null) {
-                value = (T) sourced.getValue();
-            }
-            optional = Optional.ofNullable(value);
-        } catch (ConverterNotFoundException | ConversionException e) {
-            throw new IllegalArgumentException(e);
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+        T value = null;
+        if (sourced != null) {
+            value = (T) sourced.getValue();
         }
+        Optional<T> optional = Optional.ofNullable(value);
         return optional;
     }
 
@@ -102,17 +97,22 @@ public abstract class AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String toString() {
+        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
+
         assertNotClosed();
+
         StringBuilder sb = new StringBuilder();
         sb.append("Config ");
         sb.append(hashCode());
-        sb.append("[");
-        sb.append(getPropertyNames().size());
-        sb.append(" keys from ");
-        sb.append(sources.size());
-        sb.append(" sources] : ");
-        sb.append(sources);
+        if (dumpEnabled) {
+            sb.append(dump());
+        } else {
+            sb.append("(");
+            sb.append(sources.size());
+            sb.append(" sources)");
+        }
         return sb.toString();
     }
 
@@ -136,19 +136,15 @@ public abstract class AbstractConfig implements WebSphereConfig {
     public Object getValue(String propertyName, Type propertyType, boolean optional) {
         Object value = null;
         assertNotClosed();
-        try {
-            if (getKeySet().contains(propertyName)) {
-                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
-                value = sourced.getValue();
+        if (getKeySet().contains(propertyName)) {
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+            value = sourced.getValue();
+        } else {
+            if (optional) {
+                value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
             } else {
-                if (optional) {
-                    value = convertValue(ConfigProperty.UNCONFIGURED_VALUE, propertyType);
-                } else {
-                    throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
-                }
+                throw new NoSuchElementException(Tr.formatMessage(tc, "no.such.element.CWMCG0015E", propertyName));
             }
-        } catch (ConverterNotFoundException | ConversionException e) {
-            throw new IllegalArgumentException(e);
         }
         return value;
     }
@@ -158,15 +154,11 @@ public abstract class AbstractConfig implements WebSphereConfig {
     public Object getValue(String propertyName, Type propertyType, String defaultString) {
         Object value = null;
         assertNotClosed();
-        try {
-            if (getKeySet().contains(propertyName)) {
-                SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
-                value = sourced.getValue();
-            } else {
-                value = convertValue(defaultString, propertyType);
-            }
-        } catch (ConverterNotFoundException | ConversionException e) {
-            throw new IllegalArgumentException(e);
+        if (getKeySet().contains(propertyName)) {
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+            value = sourced.getValue();
+        } else {
+            value = convertValue(defaultString, propertyType);
         }
         return value;
     }
@@ -175,7 +167,8 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public Object convertValue(String rawValue, Type type) {
         assertNotClosed();
-        return conversionManager.convert(rawValue, type);
+        Object value = conversionManager.convert(rawValue, type);
+        return value;
     }
 
 }

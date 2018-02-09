@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verifique se uma especifica\u
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W:  O terminal de mensagem do bean acionado por mensagens {0} n\u00e3o pode ser ativado porque o destino {1} n\u00e3o est\u00e1 dispon\u00edvel. O terminal de mensagem n\u00e3o receber\u00e1 mensagens at\u00e9 que o destino esteja dispon\u00edvel.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation= O servidor est\u00e1 iniciando o bean acionado por mensagens, mas n\u00e3o conseguiu ativar o terminal de mensagem, porque o destino n\u00e3o foi localizado. O terminal de mensagens n\u00e3o receber\u00e1 mensagens at\u00e9 que o terminal possa ser ativado.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction= Verifique se um destino foi configurado com o nome especificado. Se a configura\u00e7\u00e3o existir, aguarde at\u00e9 que o destino se torne dispon\u00edvel.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: O terminal de mensagem para o bean acionado por mensagens {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o foi ativado porque a especifica\u00e7\u00e3o da ativa\u00e7\u00e3o {3} foi configurada com autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=O terminal de mensagem n\u00e3o foi ativado porque a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o foi configurada com autoStart=false. O terminal de mensagem ser\u00e1 ativado quando for emitido um comando de continua\u00e7\u00e3o.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: A opera\u00e7\u00e3o de pausa n\u00e3o teve nenhum efeito porque o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} j\u00e1 est\u00e1 pausado.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=O terminal de mensagem s\u00f3 pode ser pausado quando ele est\u00e1 em estado ativo.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: A opera\u00e7\u00e3o de continua\u00e7\u00e3o n\u00e3o teve nenhum efeito porque o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} j\u00e1 est\u00e1 ativo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=O terminal de mensagem s\u00f3 pode ser retomado quando ele est\u00e1 em um estado inativo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: A solicita\u00e7\u00e3o para pausar o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o foi conclu\u00edda com sucesso porque o terminal n\u00e3o est\u00e1 ativo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=O terminal de mensagem s\u00f3 pode ser pausado quando ele est\u00e1 em estado ativo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Aguarde at\u00e9 que o terminal de mensagem esteja em um estado ativo antes de tentar pausar.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: A solicita\u00e7\u00e3o para continuar o terminal de mensagem para o bean {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o foi conclu\u00edda com sucesso porque o terminal n\u00e3o est\u00e1 pausado.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=O terminal de mensagem s\u00f3 pode ser continuado quando ele est\u00e1 em um estado pausado.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Aguarde at\u00e9 que o terminal de mensagem esteja em um estado pausado antes de tentar continuar.

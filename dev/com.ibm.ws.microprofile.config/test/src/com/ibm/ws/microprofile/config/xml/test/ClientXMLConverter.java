@@ -24,6 +24,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 
@@ -31,7 +32,7 @@ public class ClientXMLConverter implements Converter<Client> {
 
     /** {@inheritDoc} */
     @Override
-    public Client convert(String value) throws ConversionException {
+    public Client convert(String value) {
 
         Client client = new Client();
         InputStream inputStream = null;
@@ -60,6 +61,8 @@ public class ClientXMLConverter implements Converter<Client> {
 
         } catch (ParserConfigurationException e) {
             throw new ConversionException(e);
+        } catch (SAXParseException e) {
+            throw new IllegalArgumentException(e);
         } catch (SAXException e) {
             throw new ConversionException(e);
         } catch (IOException e) {

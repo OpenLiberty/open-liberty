@@ -30,6 +30,11 @@ public class ImplicitConverterServlet extends FATServlet {
     }
 
     @Test
+    public void stringConstructorMissingTest() throws Exception {
+        bean.stringConstructorMissingTest();
+    }
+
+    @Test
     public void overrideConverterTest() throws Exception {
         bean.overrideConverterTest();
     }

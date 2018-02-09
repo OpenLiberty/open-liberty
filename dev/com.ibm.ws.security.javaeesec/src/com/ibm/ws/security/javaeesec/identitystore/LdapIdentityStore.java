@@ -198,7 +198,7 @@ public class LdapIdentityStore implements IdentityStore {
             String callerName = null;
             String userDn = null;
 
-            filter = String.format(filter, user);
+            filter = getFormattedFilter(filter, user, idStoreDefinition.getCallerNameAttribute());
 
             Set<String> groups = new HashSet<String>();
 
@@ -372,7 +372,8 @@ public class LdapIdentityStore implements IdentityStore {
         int scope = getSearchScope(idStoreDefinition.getGroupSearchScope());
 
         SearchControls controls = new SearchControls(scope, limit, timeOut, attrIds, false, false);
-        String filter = "(&" + groupSearchFilter + "(" + idStoreDefinition.getGroupMemberAttribute() + "=" + callerDn + "))";
+
+        String filter = getFormattedFilter(groupSearchFilter, callerDn, idStoreDefinition.getGroupMemberAttribute());
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JNDI_CALL search", new Object[] { groupSearchBase, filter, printControls(controls) });
@@ -402,6 +403,29 @@ public class LdapIdentityStore implements IdentityStore {
             Tr.debug(tc, "getGroupsByMember", groupNames);
         }
         return groupNames;
+    }
+
+    /**
+     * Format the callerSearchFilter or groupSearchFilter. We need to check for String substitution.
+     * If a substitution is needed, use the result as is. Otherwise, construct the remainder of the
+     * filter using the name attribute of the group or caller.
+     *
+     * @param searchFilter The filter set in LdapIdentityStore
+     * @param caller The name of the caller whose groups or DN we are searching for
+     * @return The new filter after string replacements or constructing the filter
+     */
+    private String getFormattedFilter(String searchFilter, String caller, String attribute) {
+        //Allow %v in addition to %s for string replacement
+        String filter = searchFilter.replaceAll("%v", "%s");
+        if (!(filter.startsWith("(") && filter.endsWith(")")) && !filter.isEmpty()) {
+            filter = "(" + filter + ")";
+        }
+        if (filter.contains("%s")) {
+            filter = String.format(filter, caller);
+        } else {
+            filter = "(&" + filter + "(" + attribute + "=" + caller + "))";
+        }
+        return filter;
     }
 
     /**

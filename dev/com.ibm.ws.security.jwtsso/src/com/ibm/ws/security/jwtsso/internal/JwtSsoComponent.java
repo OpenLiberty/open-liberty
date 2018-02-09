@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.internal;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.List;
 import java.util.Map;
 
@@ -30,37 +28,16 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.common.jwk.impl.JWKProvider;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
+import com.ibm.ws.security.jwtsso.utils.JwtSsoUtils;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 
 @Component(service = JwtSsoConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoConfig", property = "service.vendor=IBM")
 public class JwtSsoComponent implements JwtSsoConfig {
 
-	// todo: clean this up, implement the interface.
 	private static final TraceComponent tc = Tr.register(JwtSsoComponent.class);
-
-	private final String issuer = null;
-	private final String issuerUrl = null;
-	private long valid;
-	private boolean isJwkEnabled;
-	private boolean jti;
-	private List<String> audiences;
-	private String sigAlg;
-	private List<String> claims;
-	private String scope;
-	private String sharedKey;
-	private String keyStoreRef;
-	private String trustStoreRef;
-	private String keyAlias;
-	private String trustedAlias;
-	private long jwkRotationTime;
-	private int jwkSigningKeySize;
-	private boolean tokenEndpointHttpsRequired;
-
-	private final PublicKey publicKey = null;
-	private final PrivateKey privateKey = null;
-
-	private final JWKProvider jwkProvider = null;
 
 	private DynamicMBean httpsendpointInfoMBean;
 
@@ -68,22 +45,99 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
 	private ServerInfoMBean serverInfoMBean;
 
+	private boolean setCookiePathToWebAppContextPath;
+	private boolean includeLtpaCookie;
+	private boolean fallbackToLtpa;
+	private String groupBaseDnOmitted;
+	private String jwtBuilderRef;
+	private String jwtConsumerRef;
+	private WebAppSecurityConfig webAppSecConfig;
+
+	@Override
+	public boolean isHttpOnlyCookies() {
+		return WebConfigUtils.getWebAppSecurityConfig().getHttpOnlyCookies();
+	}
+
+	@Override
+	public boolean isSsoUseDomainFromURL() {
+		return WebConfigUtils.getWebAppSecurityConfig().getSSOUseDomainFromURL();
+	}
+
+	@Override
+	public boolean isSsoRequiresSSL() {
+		return WebConfigUtils.getWebAppSecurityConfig().getSSORequiresSSL();
+	}
+
+	@Override
+	public List<String> getSsoDomainNames() {
+		return WebConfigUtils.getWebAppSecurityConfig().getSSODomainList();
+	}
+
+	@Override
+	public boolean isSetCookiePathToWebAppContextPath() {
+		return setCookiePathToWebAppContextPath;
+	}
+
+	@Override
+	public boolean isIncludeLtpaCookie() {
+		return includeLtpaCookie;
+	}
+
+	@Override
+	public boolean isFallbackToLtpa() {
+		return fallbackToLtpa;
+	}
+
+	@Override
+	public String getGroupBaseDnOmitted() {
+		return groupBaseDnOmitted;
+	}
+
+	@Override
+	public String getJwtBuilderRef() {
+		return jwtBuilderRef;
+	}
+
+	@Override
+	public String getJwtConsumerRef() {
+		return jwtConsumerRef;
+	}
+
+	// todo: base sec is going to make WebAppSecurityConfig an osgi service, but
+	// it's not there yet.
+	// Meanwhile we'll get it in a non-dynamic way from WebConfigUtils
+	/*
+	 * @org.osgi.service.component.annotations.Reference(cardinality =
+	 * ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
+	 * policyOption = ReferencePolicyOption.GREEDY) protected void
+	 * setWebAppSecConfig(WebAppSecurityConfig config) {
+	 * System.out.println("**** webappSecConfig set called"); webAppSecConfig =
+	 * config; }
+	 *
+	 * protected void unsetWebAppSecConfig(WebAppSecurityConfig config) {
+	 * webAppSecConfig = null; }
+	 */
+
+	// todo: remove if not needed
 	@org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	protected void setEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
 		httpendpointInfoMBean = endpointInfoMBean;
 	}
 
+	// todo: remove if not needed
 	protected void unsetEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
 		if (httpendpointInfoMBean == endpointInfoMBean) {
 			httpendpointInfoMBean = null;
 		}
 	}
 
+	// todo: remove if not needed
 	@org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint-ssl)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	protected void setHttpsEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
 		httpsendpointInfoMBean = endpointInfoMBean;
 	}
 
+	// todo: remove if not needed
 	protected void unsetHttpsEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
 		if (httpsendpointInfoMBean == endpointInfoMBean) {
 			httpsendpointInfoMBean = null;
@@ -106,6 +160,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
 	@Activate
 	protected void activate(Map<String, Object> properties, ComponentContext cc) {
+		System.out.println("***** JWTSSO activate *****"); // todo: removeme
 		process(properties);
 	}
 
@@ -120,12 +175,15 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	}
 
 	private void process(Map<String, Object> props) {
-		// TODO Auto-generated method stub
 		if (props == null || props.isEmpty()) {
 			return;
 		}
-		// todo: implement
-		// issuer = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_ID));
+		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoUtils.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
+		includeLtpaCookie = (Boolean) props.get(JwtSsoUtils.CFG_KEY_INCLUDELTPACOOKIE);
+		fallbackToLtpa = (Boolean) props.get(JwtSsoUtils.CFG_KEY_FALLBACKTOLTPA);
+		groupBaseDnOmitted = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_GROUPBASEDNOMITTED));
+		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTBUILDERREF));
+		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTCONSUMERREF));
 
 	}
 

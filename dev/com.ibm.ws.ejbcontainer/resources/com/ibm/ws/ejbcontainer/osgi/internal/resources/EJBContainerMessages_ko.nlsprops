@@ -194,3 +194,18 @@ INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=ejb-jar.xml\uc5d0\uc11c \ud074\u
 INVALID_CLASS_CNTR4115E=CNTR4115E: ejb-jar.xml \ud30c\uc77c\uc758 <ejb-class> \uc694\uc18c\ub294 {1} \uc5d4\ud130\ud504\ub77c\uc774\uc988 Bean\uc758 {0} \ud074\ub798\uc2a4 \uc774\ub984\uc744 \uc9c0\uc815\ud558\uc9c0\ub9cc, \ud074\ub798\uc2a4 \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 INVALID_CLASS_CNTR4115E.explanation=ejb-jar.xml \ud30c\uc77c\uc5d0 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ud074\ub798\uc2a4 \uc774\ub984\uc774 \uc9c0\uc815\ub418\uc5c8\uac70\ub098 \ud074\ub798\uc2a4 \ud30c\uc77c\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud328\ud0a4\uc9c0\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 INVALID_CLASS_CNTR4115E.useraction=ejb-jar.xml \ud30c\uc77c\uc5d0 \uc788\ub294 \ud074\ub798\uc2a4 \uc774\ub984\uc744 \uc815\uc815\ud558\uac70\ub098 \ud074\ub798\uc2a4 \ud30c\uc77c\uc744 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud328\ud0a4\uc9c0\ud558\uc2ed\uc2dc\uc624.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W

@@ -15,9 +15,6 @@ Bundle-Name: JCache Store for HTTP Sessions
 Bundle-SymbolicName: com.ibm.ws.session.cache
 Bundle-Description: Allows persistence of sessions via a JCache provider, version ${bVersion}
 
-Export-Package: \
-    com.ibm.ws.session.store.cache.serializable
-
 Private-Package: \
     com.ibm.ws.session.store.cache
 
@@ -25,7 +22,8 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-  com.ibm.ws.session.store.cache.CacheStoreService
+  com.ibm.ws.session.store.cache.CacheStoreService,\
+  com.ibm.ws.session.store.cache.DefaultCachingProviderSupport
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

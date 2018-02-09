@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Se o usu\u00e1rio n\u00e3o for autor
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: O usu\u00e1rio {0} n\u00e3o est\u00e1 autorizado a iniciar tarefas em lote.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=O usu\u00e1rio n\u00e3o \u00e9 parte de nenhuma fun\u00e7\u00e3o em lote que est\u00e1 autorizada a iniciar tarefas em lote.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Se o usu\u00e1rio n\u00e3o for autorizado a iniciar tarefas em lote, nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Se o usu\u00e1rio for autorizado a executar a opera\u00e7\u00e3o em lote solicitada, configure a autoriza\u00e7\u00e3o de seguran\u00e7a em lote e inclua este usu\u00e1rio \u00e0s fun\u00e7\u00f5es em lote requeridas.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: O acesso \u00e0 inst\u00e2ncia da tarefa {0} foi negado. A tarefa tem um nome de grupo de opera\u00e7\u00f5es definido e o usu\u00e1rio {1} tem a autoridade batchGroupMonitor ou batchGroupAdmin; no entanto, esse usu\u00e1rio n\u00e3o \u00e9 um membro dos grupos configurados a seguir: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=O usu\u00e1rio batchGroupAdmin ou batchGroupMonitor n\u00e3o faz parte de um grupo de seguran\u00e7a ao qual essa tarefa est\u00e1 associada.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Se o usu\u00e1rio precisar ter direitos de acesso do grupo a essa tarefa, inclua o usu\u00e1rio no grupo de seguran\u00e7a apropriado.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: O acesso \u00e0 tarefa {0} foi negado. A tarefa tem o nome do grupo de opera\u00e7\u00f5es {1} definido e o usu\u00e1rio n\u00e3o tem autoridade batchGroupMonitor ou batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=O usu\u00e1rio n\u00e3o \u00e9 parte de nenhuma fun\u00e7\u00e3o de grupo de lote e n\u00e3o est\u00e1 autorizado a executar opera\u00e7\u00f5es em lote.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Se o usu\u00e1rio n\u00e3o estiver autorizado a ser um usu\u00e1rio de grupo de lote, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Se o usu\u00e1rio estiver autorizado a executar as opera\u00e7\u00f5es em grupo do lote e a seguran\u00e7a do lote estiver ativada, configure a autoriza\u00e7\u00e3o de seguran\u00e7a do lote e inclua esse usu\u00e1rio nas fun\u00e7\u00f5es do grupo de lote necess\u00e1rias.

@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Se l'utente non \u00e8 autorizzato a
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: L''utente {0} non \u00e8 autorizzato ad avviare lavori batch.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=L'utente non fa parte di un ruolo batch autorizzato ad avviare i lavori batch.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Se l'utente non \u00e8 autorizzato ad avviare lavori batch, non \u00e8 richiesta alcuna azione. Se l'utente \u00e8 autorizzato ad eseguire l'operazione batch richiesta, configurare l'autorizzazione di sicurezza batch ed aggiungere questo utente ai ruoli batch richiesti.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: Accesso all''istanza lavoro {0} negato. Il lavoro ha un nome gruppo di operazioni definito e l''utente {1} ha l''autorizzazione batchGroupMonitor o batchGroupAdmin; tuttavia, tale utente non \u00e8 un membro dei seguenti gruppi configurato: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=L'utente batchGroupAdmin o batchGroupMonitor non fa parte di un gruppo di sicurezza a cui questo lavoro \u00e8 associato.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Se l'utente deve avere diritti di accesso gruppo per questo lavoro, aggiungere l'utente al gruppo di sicurezza appropriato.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: Accesso al lavoro {0} negato. Il lavoro ha il nome gruppo di operazioni {1} definito e l''utente non ha l''autorizzazione batchGroupMonitor o batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=L'utente non fa parte di alcun ruolo gruppo batch e non \u00e8 autorizzato ad eseguire operazioni batch.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Se l'utente non \u00e8 autorizzato ad essere un utente gruppo batch, non \u00e8 richiesta alcuna azione. Se l'utente \u00e8 autorizzato ad eseguire le operazioni gruppo batch e la sicurezza batch \u00e8 abilitata, configurare l'autorizzazione di sicurezza batch ed aggiungere questo utente ai ruoli gruppo batch richiesti.

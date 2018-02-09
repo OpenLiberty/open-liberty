@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verificare che sia stata conf
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Impossibile attivare endpoint messaggi per MDB {0} perch\u00e9 la destinazione {1} non \u00e8 disponibile. L''endpoint messaggi non ricever\u00e0 messaggi fino a quando la destinazione non diventa disponibile.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Il server sta avviando l'MDB ma non \u00e8 in grado di attivare l'endpoint messaggi, in quanto non \u00e8 stato possibile trovare la destinazione. L'endpoint messaggi non ricever\u00e0 messaggi fino a quando non sar\u00e0 possibile attivarlo.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Verificare che sia stata configurata una destinazione con il nome indicato. Se tale configurazione esiste, attendere che la destinazione diventi disponibile.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: L''endpoint messaggio per l''MDB (message-driven bean) {0} nel modulo {1} dell''applicazione {2} non \u00e8 stato attivato in quanto la specifica di attivazione {3} \u00e8 stata configurata con autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=L'endpoint messaggio non \u00e8 stato attivato perch\u00e9 la specifica di attivazione \u00e8 stata configurata con autoStart=false.  L'endpoint messaggio sar\u00e0 attivato quando viene emesso un comando di ripresa.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Non sono richieste azioni.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: L''operazione di pausa non ha avuto alcun effetto perch\u00e9 l''endpoint messaggio per il bean {0} nel modulo {1} dell''applicazione {2} \u00e8 gi\u00e0 in pausa.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=L'endpoint messaggio pu\u00f2 essere messo in pausa solo quando \u00e8 in uno stato attivo.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Non sono richieste azioni.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: L''operazione di ripresa non ha avuto alcun effetto perch\u00e9 l''endpoint messaggio per il bean {0} nel modulo {1} dell''applicazione {2} \u00e8 gi\u00e0 attivo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=L'endpoint messaggio pu\u00f2 essere riattivato solo quando \u00e8 in uno stato inattivo.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Non sono richieste azioni.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: La richiesta di mettere in pausa l''endpoint messaggio per il bean {0} nel modulo {1} dell''applicazione {2} non \u00e8 stata completata correttamente perch\u00e9 l''endpoint non \u00e8 attivo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=L'endpoint messaggio pu\u00f2 essere messo in pausa solo quando \u00e8 in uno stato attivo.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Attendere che l'endpoint messaggio sia in stato attivo prima di tentare di metterlo in pausa.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: La richiesta di riattivare l''endpoint messaggio per il bean {0} nel modulo {1} dell''applicazione {2} non \u00e8 stata completata correttamente perch\u00e9 l''endpoint non \u00e8 in pausa.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=L'endpoint messaggio pu\u00f2 essere riattivato solo quando \u00e8 in stato di pausa.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Attendere che l'endpoint messaggio sia in stato di pausa prima di tentare di riattivarlo.

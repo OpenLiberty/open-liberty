@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,6 +61,14 @@ import com.ibm.jbatch.container.ws.WSJobExecution;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @ClassExtractor(JobExecutionEntityExtractor.class)
 public class JobExecutionEntity extends JobThreadExecutionBase implements JobExecution, WSJobExecution {
+
+    // Repeat everywhere we use so caller has to think through granting privilege
+    protected static String eol = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        @Override
+        public String run() {
+            return System.getProperty("line.separator");
+        }
+    });
 
     public static final String UPDATE_JOB_EXECUTION_AND_INSTANCE_SERVER_NOT_SET = "JobExecutionEntity.updateJobExecutionAndInstanceServerNotSet";
     public static final String UPDATE_JOB_EXECUTION_SERVERID_AND_RESTURL_FOR_STARTING_JOB = "JobExecutionEntity.updateJobExecutionServerIdAndRestUrlForStartingJob";
@@ -200,7 +210,7 @@ public class JobExecutionEntity extends JobThreadExecutionBase implements JobExe
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append(super.toString() + System.getProperty("line.separator"));
+        buf.append(super.toString() + eol);
         buf.append("For JobExecutionEntity:");
         buf.append(" execution Id = " + jobExecId);
         buf.append(", execution sequence num = " + executionNumberForThisInstance);
