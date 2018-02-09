@@ -94,9 +94,9 @@ public class PathItemValidator extends TypeValidator<PathItem> {
             boolean isMultiple = undeclaredParameters.size() > 1;
             final String message;
             if (isMultiple) {
-                message = Tr.formatMessage(tc, "pathItemParameterNotDeclaredMultiple", path, undeclaredParameters.size(), undeclaredParameters);
+                message = Tr.formatMessage(tc, "pathItemParameterNotDeclaredMultiple", pathStr, undeclaredParameters.size(), undeclaredParameters);
             } else {
-                message = Tr.formatMessage(tc, "pathItemParameterNotDeclaredSingle", path, undeclaredParameters);
+                message = Tr.formatMessage(tc, "pathItemParameterNotDeclaredSingle", pathStr, undeclaredParameters);
             }
             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
         }
