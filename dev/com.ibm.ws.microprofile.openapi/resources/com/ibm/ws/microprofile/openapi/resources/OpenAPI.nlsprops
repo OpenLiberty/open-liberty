@@ -24,3 +24,23 @@ OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Provide a valid OpenAPI document th
 OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Validation of the OpenAPI document produced the following warning. Message: {0}, Location: {1}
 OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=The OpenAPI document contains data that is not in the recommended format.
 OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Provide a valid OpenAPI document that resolves the reported warning.
+
+CSS_NOT_PROCESSED=CWWKO1652W: The server cannot read the specified CSS document {0} due to {1} : {2}.
+CSS_NOT_PROCESSED.explanation=The CSS document cannot be processed due to a valid error.
+CSS_NOT_PROCESSED.useraction=Provide a valid CSS document.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1653W: The value that was specified for the {0} property is not supported. The value must be {1}.
+UNSUPPORTED_CSS_VALUE.explanation=The value of the specified property is either invalid or is not supported by the OpenAPI framework.
+UNSUPPORTED_CSS_VALUE.useraction=Provide a valid value for the property within the custom CSS file for the OpenAPI UI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1654W: The background image that was specified at {0} either does not exist or is invalid.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=The background image either does not exist or is invalid.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Provide a valid image.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1655W: The custom CSS file {0} that was specified for the OpenAPI UI was not processed. The server will restore the default values for the OpenAPI UI. Reason={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=The server cannot process the custom CSS file. The server will restore the default values for the OpenAPI UI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Provide a valid custom CSS file for the OpenAPI UI along with all the dependencies.
+
+CSS_SECTION_NOT_FOUND=CWWKO1656W: The server read the specified CSS document {0}, but was unable to find a [.swagger-ui .headerbar ].
+CSS_SECTION_NOT_FOUND.explanation=The CSS document that is specified does not contain [.swagger-ui .headerbar ], or it is not formatted to meet the constraints that are required by the server.
+CSS_SECTION_NOT_FOUND.useraction=Provide a valid CSS file that contains a [.swagger-ui .headerbar ] in the required format.
