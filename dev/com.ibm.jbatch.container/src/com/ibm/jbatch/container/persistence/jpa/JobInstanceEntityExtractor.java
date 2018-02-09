@@ -28,6 +28,12 @@ public class JobInstanceEntityExtractor extends ClassExtractor {
     @Override
     public Class extractClassFromRow(Record record, Session session) {
 
+        //
+        // If we understood the lifecycle of ClassExtractor within EclipseLink we 
+        // might want to cache the tableversion here, but to be safe, let's call
+        // each time, (and there's no particular reason to be concerned about performance here).
+        //
+        
         Integer tableversion = null;
 
         try {
@@ -37,7 +43,6 @@ public class JobInstanceEntityExtractor extends ClassExtractor {
         }
 
         if (tableversion == 3) {
-            //if update time is found we can assume v3 (groupnames)
             return JobInstanceEntityV3.class;
         } else if (tableversion == 2) {
             return JobInstanceEntityV2.class;

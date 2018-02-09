@@ -26,12 +26,12 @@ public class JobExecutionEntityExtractor extends ClassExtractor {
     /** {@inheritDoc} */
     @Override
     public Class extractClassFromRow(Record record, Session session) {
-//        try {
-//            Vector result = session.executeSelectingCall(new SQLCall("SELECT * FROM JBATCH.JOBPARAMETER"));
-//        } catch (Exception e) {
-//            return JobExecutionEntity.class;
-//        }
-        //return JobExecutionEntityV2.class;
+
+        //
+        // If we understood the lifecycle of ClassExtractor within EclipseLink we 
+        // might want to cache the tableversion here, but to be safe, let's call
+        // each time, (and there's no particular reason to be concerned about performance here).
+        //
 
         Integer tableversion = null;
 
@@ -47,5 +47,14 @@ public class JobExecutionEntityExtractor extends ClassExtractor {
             return JobExecutionEntity.class;
         }
     }
+
+
+/// OLD CODE we tried once:
+//        try {
+//            Vector result = session.executeSelectingCall(new SQLCall("SELECT * FROM JBATCH.JOBPARAMETER"));
+//        } catch (Exception e) {
+//            return JobExecutionEntity.class;
+//        }
+        //return JobExecutionEntityV2.class;
 
 }
