@@ -70,6 +70,9 @@ public class ParameterProcessor {
                 if (p.hidden()) {
                     return null;
                 }
+                if (StringUtils.isNotBlank(p.ref())) {
+                    parameter.setRef(p.ref());
+                }
                 if (StringUtils.isNotBlank(p.description())) {
                     parameter.setDescription(p.description());
                 }
@@ -101,7 +104,7 @@ public class ParameterProcessor {
 
                 Map<String, Example> exampleMap = new HashMap<>();
                 for (ExampleObject exampleObject : p.examples()) {
-                    AnnotationsUtils.getExample(exampleObject).ifPresent(example -> exampleMap.put(exampleObject.name(), example));
+                    AnnotationsUtils.getExample(exampleObject).ifPresent(example -> exampleMap.put(AnnotationsUtils.getNameOfReferenceableItem(exampleObject), example));
                 }
                 if (exampleMap.size() > 0) {
                     parameter.setExamples(exampleMap);
@@ -202,15 +205,11 @@ public class ParameterProcessor {
             return null;
         }
         org.eclipse.microprofile.openapi.annotations.media.Schema rootSchema = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema rootArraySchema = null;
         org.eclipse.microprofile.openapi.annotations.media.Schema contentSchema = null;
         org.eclipse.microprofile.openapi.annotations.media.Schema paramSchema = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema paramArraySchema = null;
         for (Annotation annotation : annotations) {
             if (annotation instanceof org.eclipse.microprofile.openapi.annotations.media.Schema) {
                 rootSchema = (org.eclipse.microprofile.openapi.annotations.media.Schema) annotation;
-            } else if (annotation instanceof org.eclipse.microprofile.openapi.annotations.media.ArraySchema) {
-                rootArraySchema = (org.eclipse.microprofile.openapi.annotations.media.ArraySchema) annotation;
             } else if (annotation instanceof org.eclipse.microprofile.openapi.annotations.parameters.Parameter) {
                 org.eclipse.microprofile.openapi.annotations.parameters.Parameter paramAnnotation = (org.eclipse.microprofile.openapi.annotations.parameters.Parameter) annotation;
                 if (paramAnnotation.content().length > 0) {
@@ -226,7 +225,7 @@ public class ParameterProcessor {
 //                }
             }
         }
-        if (rootSchema != null || rootArraySchema != null) {
+        if (rootSchema != null) {
             return null;
         }
         if (contentSchema != null) {
@@ -234,9 +233,6 @@ public class ParameterProcessor {
         }
         if (paramSchema != null) {
             return paramSchema;
-        }
-        if (paramArraySchema != null) {
-            return paramArraySchema;
         }
         return null;
     }
@@ -247,7 +243,6 @@ public class ParameterProcessor {
         }
         org.eclipse.microprofile.openapi.annotations.media.Schema contentSchema = null;
         org.eclipse.microprofile.openapi.annotations.media.Schema paramSchema = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema paramArraySchema = null;
 
         if (paramAnnotation.content().length > 0) {
             if (AnnotationsUtils.hasSchemaAnnotation(paramAnnotation.content()[0].schema())) {
@@ -265,9 +260,6 @@ public class ParameterProcessor {
         }
         if (paramSchema != null) {
             return AnnotationsUtils.getSchemaType(paramSchema);
-        }
-        if (paramArraySchema != null) {
-            return AnnotationsUtils.getSchemaType(paramArraySchema.schema());
         }
         return String.class;
     }

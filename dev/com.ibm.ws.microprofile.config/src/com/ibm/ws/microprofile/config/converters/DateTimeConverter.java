@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.converters;
 
-import java.time.DateTimeException;
+import java.time.format.DateTimeParseException;
+
+import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 
 /**
  *
@@ -27,8 +29,13 @@ public class DateTimeConverter extends AutomaticConverter {
         Object converted = null;
         try {
             converted = super.convert(value);
-        } catch (DateTimeException e) {
-            throw new IllegalArgumentException(e);
+        } catch (ConversionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof DateTimeParseException) {
+                throw new IllegalArgumentException(cause);
+            } else {
+                throw e;
+            }
         }
 
         return converted;

@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# cmvc_en_version_level=
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} the application name
+#    {1} the exception message from trying to register the CDI extension
+# -----------------------------------------------------------------------
+UNABLE_TO_REGISTER_WITH_CDI=CWNBV0200W: L''extension Hibernate Validator CDI pour l''application {0} ne peut pas \u00eatre enregistr\u00e9e ; par cons\u00e9quent, l''int\u00e9gration de CDI pour la validation de bean n''est pas disponible pour cette application. Le probl\u00e8me suivant est survenu lors de l''enregistrement de l''extension CDI : {1}
+UNABLE_TO_REGISTER_WITH_CDI.explanation=Une extension CDI est mise \u00e0 disposition pour le fournisseur de validation de bean int\u00e9gr\u00e9 (Hibernate Validator), mais elle n'est prise en charge que lorsque le fournisseur de validation int\u00e9gr\u00e9 est utilis\u00e9 et que le fichier validation.xml pour l'application est valide. 
+UNABLE_TO_REGISTER_WITH_CDI.useraction=Voir la cause premi\u00e8re indiqu\u00e9e \u00e0 la fin du message. Les causes possibles incluent un contenu non valide dans le fichier META-INF/validation.xml ou un fournisseur par d\u00e9faut autre que le fournisseur org.hibernate.validator.HibernateValidator.
+

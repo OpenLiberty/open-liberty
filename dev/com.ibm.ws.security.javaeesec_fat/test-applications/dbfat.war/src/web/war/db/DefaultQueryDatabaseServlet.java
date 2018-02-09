@@ -37,19 +37,11 @@ public class DefaultQueryDatabaseServlet extends FATDatabaseServlet {
             FATDatabaseServlet.createTable(ds, callerTable, "name varchar(30), password varchar(300)");
             FATDatabaseServlet.createTable(ds, groupTable, "group_name VARCHAR(36), caller_name VARCHAR(36)");
 
-            // create passwords
-            // this is a hashed value of "pwd".
-            String testpwd = "PBKDF2WithHmacSHA256:2048:cRXf00gdzCPVfeflEINqBWEjm0Vhvlq9IXRI5nYorLU=:68P/amIBNLCGdlGqViThbeL2YJXPJzLdUUohhAltydc=";
-            // this is a hashed value of "pwd2".
-            String testpwd2 = "PBKDF2WithHmacSHA256:2048:Su7sJuASLoYmKknP/L2nhH2t9XsnX5YEFaYkrgr0T2c=:e12Ym58HsS9PzZPnLfcTL/gFwUhikFllB/cVKa2Obes=";
-            // this is a hashed value of "pwd3".
-            String testpwd3 = "PBKDF2WithHmacSHA256:2048:4ax3fqYXsu3FWftO+vap99PASwpCkBdZLTsY/6oj3+k=:uhDD9IlbxRRdjQt9Iji5mQV8rMqaYoFb0Fxxb7EnVk4=";
-
             Connection conn = ds.getConnection();
             Statement stmt1 = conn.createStatement();
 
             // good users
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd + "' , '" + Constants.DB_USER1 + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER1_PWD_HASH + "' , '" + Constants.DB_USER1 + "')");
             stmt1.close();
 
             stmt1 = conn.createStatement();
@@ -57,7 +49,7 @@ public class DefaultQueryDatabaseServlet extends FATDatabaseServlet {
             stmt1.close();
 
             stmt1 = conn.createStatement();
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd2 + "' , '" + Constants.DB_USER2 + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER2_PWD_HASH + "' , '" + Constants.DB_USER2 + "')");
             stmt1.close();
 
             stmt1 = conn.createStatement();
@@ -66,16 +58,16 @@ public class DefaultQueryDatabaseServlet extends FATDatabaseServlet {
 
             // user with no group
             stmt1 = conn.createStatement();
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd3 + "' , '" + Constants.DB_USER3 + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER3_PWD_HASH + "' , '" + Constants.DB_USER3 + "')");
             stmt1.close();
 
             // add duplicate user
             stmt1 = conn.createStatement();
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd + "' , '" + Constants.DB_USER_DUPE + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER1_PWD_HASH + "' , '" + Constants.DB_USER_DUPE + "')");
             stmt1.close();
 
             stmt1 = conn.createStatement();
-            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + testpwd + "' , '" + Constants.DB_USER_DUPE + "')");
+            stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER1_PWD_HASH + "' , '" + Constants.DB_USER_DUPE + "')");
             stmt1.close();
 
             // add user with no password

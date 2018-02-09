@@ -52,3 +52,15 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Wenn der Benutzer nicht als Stapelve
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: Der Benutzer {0} ist nicht berechtigt, Stapeljobs zu starten.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=Der Benutzer geh\u00f6rt zu keiner Stapelverarbeitungsrolle, die berechtigt ist, Stapeljobs zu starten.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Wenn der Benutzer nicht berechtigt ist, Stapeljobs zu starten, ist keine Aktion erforderlich. Wenn der Benutzer zur Ausf\u00fchrung der angeforderten Stapelverarbeitungsoperation berechtigt ist, konfigurieren Sie die Sicherheitsberechtigung und f\u00fcgen Sie diesen Benutzer den erforderlichen Stapelverarbeitungsrollen hinzu.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: Der Zugriff auf die Jobinstanz {0} wurde verweigert. F\u00fcr den Job ist ein Operationsgruppenname definiert und der Benutzer {1} hat batchGroupMonitor- oder batchGroupAdmin-Berechtigung. Dieser Benutzer ist jedoch kein Mitglied der folgenden konfigurierten Gruppen: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=Der batchGroupAdmin- oder batchGroupMonitor-Benutzer geh\u00f6rt nicht zu einer Sicherheitsgruppe, der dieser Job zugeordnet ist.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Wenn der Benutzer Gruppenzugriffsrechte f\u00fcr diesen Job haben soll, f\u00fcgen Sie den Benutzer der entsprechenden Sicherheitsgruppe hinzu.
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: Der Zugriff auf den Job {0} wurde verweigert. F\u00fcr den Job wurde der Operationsgruppenname {1} definiert und der Benutzer hat nicht batchGroupMonitor- oder batchGroupAdmin-Berechtigung.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=Der Benutzer geh\u00f6rt zu keiner Stapelverarbeitungsgruppenrolle und ist deshalb nicht berechtigt, Stapelverarbeitungsoperationen auszuf\u00fchren.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Wenn der Benutzer nicht als Stapelverarbeitungsgruppenbenutzer berechtigt ist, ist keine Aktion erforderlich. Wenn der Benutzer berechtigt ist, Stapelverarbeitungsgruppenoperationen auszuf\u00fchren und die Stapelverarbeitungssicherheit aktiviert ist, konfigurieren Sie die Berechtigung f\u00fcr die Stapelverarbeitungssicherheit und f\u00fcgen Sie diesen Benutzer den erforderlichen Stapelverarbeitungsgruppenrollen hinzu.

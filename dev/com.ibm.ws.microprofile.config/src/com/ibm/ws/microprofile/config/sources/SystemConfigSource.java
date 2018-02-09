@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 /**
@@ -26,11 +28,10 @@ import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
  */
 public class SystemConfigSource extends AbstractConfigSource implements ConfigSource {
 
-    /**
-     * @param ordinal
-     */
+    private static final TraceComponent tc = Tr.register(SystemConfigSource.class);
+
     public SystemConfigSource() {
-        super(getSystemOrdinal(), "System Properties Config Source");
+        super(getSystemOrdinal(), Tr.formatMessage(tc, "system.properties.config.source"));
     }
 
     /** {@inheritDoc} */
