@@ -139,7 +139,7 @@ public class ValidatorUtils {
         ReferenceValidator referenceValidator = ReferenceValidator.getInstance();
         Object component = referenceValidator.validate(helper, context, key, reference);
         if (!t.getClass().isInstance(component)) {
-            final String message = Tr.formatMessage(tc, "referenceToObjectInvalid", reference, t.getClass().getName());
+            final String message = Tr.formatMessage(tc, "referenceToObjectInvalid", reference);
             helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
         }
     }
