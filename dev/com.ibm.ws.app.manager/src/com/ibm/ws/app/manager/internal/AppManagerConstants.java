@@ -28,4 +28,5 @@ public interface AppManagerConstants {
     public static final String EXPANDED_APPS_DIR = SERVER_APPS_DIR + "expanded/";
     public static final String SHARED_APPS_DIR = WsLocationConstants.SYMBOL_SHARED_APPS_DIR;
     public static final String AUTO_INSTALL_PROP = ".installedByDropins";
+    public static final String USE_JANDEX = "useJandex";
 }
