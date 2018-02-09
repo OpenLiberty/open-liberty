@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2013, 2016
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal.adaptor;
 
 import java.io.BufferedOutputStream;
@@ -205,8 +204,7 @@ public class FixAdaptor {
 
     private static void extract(File targetFile, InputStream zis) throws IOException {
         byte[] buf = new byte[4096];
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(
-                        targetFile, false));
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(targetFile, false));
         try {
             for (int read; (read = zis.read(buf)) != -1;) {
                 os.write(buf, 0, read);

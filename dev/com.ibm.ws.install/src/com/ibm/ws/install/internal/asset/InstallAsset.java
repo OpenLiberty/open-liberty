@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2013, 2016
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal.asset;
 
 import java.io.File;
@@ -117,18 +116,19 @@ public abstract class InstallAsset {
             String url = installResource.getMainAttachment().getURL();
             logger.log(Level.FINEST,
                        "Downloading "
-                                       + installResource.getName()
-                                       + " from "
-                                       + (url.contains("public.dhe.ibm.com") ? "the IBM WebSphere Liberty Repository" : url
-                                                                                                                        + " of the repository "
-                                                                                                                        + installResource.getRepositoryConnection().getRepositoryLocation()));
+                                     + installResource.getName()
+                                     + " from "
+                                     + (url.contains("public.dhe.ibm.com") ? "the IBM WebSphere Liberty Repository" : url
+                                                                                                                      + " of the repository "
+                                                                                                                      + installResource.getRepositoryConnection().getRepositoryLocation()));
 
             File d = InstallUtils.download(installTempDir, installResource);
-            logger.log(Level.FINEST, d == null ?
-                            installResource.getName() + " is an unsupported type " + installResource.getType() + " to be downloaded." :
-                            "Downloaded " + installResource.getName() + " from " + (url.contains("public.dhe.ibm.com") ? "the IBM WebSphere Liberty Repository" :
-                                            url + " of the repository " + installResource.getRepositoryConnection().getRepositoryLocation())
-                                            + " to " + d.getAbsolutePath());
+            logger.log(Level.FINEST,
+                       d == null ? installResource.getName() + " is an unsupported type " + installResource.getType()
+                                   + " to be downloaded." : "Downloaded " + installResource.getName() + " from "
+                                                            + (url.contains("public.dhe.ibm.com") ? "the IBM WebSphere Liberty Repository" : url + " of the repository "
+                                                                                                                                             + installResource.getRepositoryConnection().getRepositoryLocation())
+                                                            + " to " + d.getAbsolutePath());
             return d;
         } catch (RuntimeException e) {
             throw e;

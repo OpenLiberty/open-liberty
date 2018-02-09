@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2015
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal.asset;
 
 import java.io.IOException;
@@ -20,10 +19,10 @@ import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.ibm.ws.kernel.feature.internal.cmdline.ThirdPartyLicenseProvider;
+
 import wlp.lib.extract.LicenseProvider;
 import wlp.lib.extract.ZipLicenseProvider;
-
-import com.ibm.ws.kernel.feature.internal.cmdline.ThirdPartyLicenseProvider;
 
 /**
  *
@@ -70,7 +69,7 @@ public class ESAVirtualAsset extends ESABaseAsset {
 
         // If this is a localizable header that indicates it wants to be localized...
         if (value.charAt(0) == '%') {
-            // Find the resource bundle... 
+            // Find the resource bundle...
             ResourceBundle rb = getResourceBundle(locale);
             if (rb != null) {
                 // Find the new value in the resource bundle

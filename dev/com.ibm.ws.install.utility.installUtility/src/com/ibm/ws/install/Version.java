@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2015,2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2015,2017
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install;
 
 /**
@@ -25,7 +24,7 @@ public class Version {
 
     /**
      * Constructor Method for Version
-     * 
+     *
      * @param major
      * @param minor
      * @param micro
@@ -59,7 +58,7 @@ public class Version {
 
     /**
      * Compares the current version with the parameter Version v
-     * 
+     *
      * @param v - Version object
      * @return: the difference between the object parameter's values (eg.this.major - v.major)
      */
@@ -81,7 +80,7 @@ public class Version {
     /**
      * Creates a new object of type Version
      * This method extracts the values for the object parameters from vStr
-     * 
+     *
      * @param vStr - string input
      */
     public static Version createVersion(String vStr) {
@@ -128,7 +127,7 @@ public class Version {
     /**
      * {@inheritDoc}
      * Converts the Object's paramters into a string sequence
-     * 
+     *
      * @return: String with object parameters separated with a "."
      */
     @Override

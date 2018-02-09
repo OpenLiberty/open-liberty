@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2015, 2016
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal.asset;
 
 import java.io.File;
@@ -25,9 +24,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import wlp.lib.extract.LicenseProvider;
-import wlp.lib.extract.ZipLicenseProvider;
-
 import com.ibm.ws.install.InstallLicense;
 import com.ibm.ws.install.internal.InstallLicenseImpl;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -42,6 +38,9 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.ExtensionConstants;
+
+import wlp.lib.extract.LicenseProvider;
+import wlp.lib.extract.ZipLicenseProvider;
 
 /**
  *
@@ -152,7 +151,7 @@ public class ESABaseAsset extends InstallAsset implements FeatureAsset, FeatureC
 
         // If this is a localizable header that indicates it wants to be localized...
         if (value.charAt(0) == '%') {
-            // Find the resource bundle... 
+            // Find the resource bundle...
             ResourceBundle rb = getResourceBundle(locale);
             if (rb != null) {
                 // Find the new value in the resource bundle

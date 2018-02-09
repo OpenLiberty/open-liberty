@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2015
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal.asset;
 
 import java.io.ByteArrayOutputStream;
@@ -92,7 +91,7 @@ public class ServerAsset implements Comparable<ServerAsset> {
     /**
      * Generates a server name that does not already exist in the Liberty's servers
      * directory.
-     * 
+     *
      * @return the name for the temporary server
      */
     private static String generateTempServerName() {
@@ -171,9 +170,7 @@ public class ServerAsset implements Comparable<ServerAsset> {
             InstallLogUtils.getInstallLogger().log(Level.FINEST,
                                                    serverName + (isTempServer ? " is " : " is not ") + " a temp server which serverInfo is " + serverInfo.getAbsolutePath());
 
-            File serverXML = (isTempServer) ?
-                            createTempServer(serverInfo, serverName) :
-                            serverInfo;
+            File serverXML = (isTempServer) ? createTempServer(serverInfo, serverName) : serverInfo;
 
             InstallLogUtils.getInstallLogger().log(Level.FINEST, "serverXML of " + serverName + " is " + serverXML.getAbsolutePath());
 
@@ -184,8 +181,7 @@ public class ServerAsset implements Comparable<ServerAsset> {
                 if (null == features) {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("UNABLE_TO_DETERMINE_FEATURES",
                                                                                               serverName,
-                                                                                              getServerLogsDirectoryPath(isTempServer ? serverXML.getParentFile() : Utils.getServerOutputDir(serverName))),
-                                    InstallException.RUNTIME_EXCEPTION);
+                                                                                              getServerLogsDirectoryPath(isTempServer ? serverXML.getParentFile() : Utils.getServerOutputDir(serverName))), InstallException.RUNTIME_EXCEPTION);
                 }
 
                 // If temp server was created then delete the root temp directory
@@ -229,16 +225,14 @@ public class ServerAsset implements Comparable<ServerAsset> {
                 if (!tempServDir.mkdirs()) {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_CREATING_TEMP_SERVER_DIR",
                                                                                               tempServDir.getAbsolutePath(),
-                                                                                              tmpdir.getAbsolutePath()),
-                                    InstallException.IO_FAILURE);
+                                                                                              tmpdir.getAbsolutePath()), InstallException.IO_FAILURE);
                 } else {
                     InstallLogUtils.getInstallLogger().log(Level.FINEST, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_CREATED_TEMP_SERVER_DIR",
                                                                                                                         tempServDir.getAbsolutePath()));
                 }
             } catch (SecurityException se) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_CREATING_DIR", tempServDir.getAbsolutePath(), se.getMessage()),
-                                se,
-                                InstallException.IO_FAILURE);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_CREATING_DIR", tempServDir.getAbsolutePath(),
+                                                                                          se.getMessage()), se, InstallException.IO_FAILURE);
             }
 
             File destServerXML = new File(tempServDir, InstallUtils.SERVER_XML);
@@ -250,9 +244,7 @@ public class ServerAsset implements Comparable<ServerAsset> {
 
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_COPYING_FILE",
                                                                                           serverXML.getAbsolutePath(),
-                                                                                          tempServDir.getAbsolutePath()),
-                                ioe,
-                                InstallException.IO_FAILURE);
+                                                                                          tempServDir.getAbsolutePath()), ioe, InstallException.IO_FAILURE);
             }
 
             return destServerXML;
@@ -313,8 +305,8 @@ public class ServerAsset implements Comparable<ServerAsset> {
             EmbeddedServerImpl server = (EmbeddedServerImpl) sb.build();
 
             if (server.isRunning()) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER", serverName),
-                                InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER",
+                                                                                          serverName), InstallException.RUNTIME_EXCEPTION);
             }
 
             //add in the 'do not pass go' property.
@@ -330,24 +322,22 @@ public class ServerAsset implements Comparable<ServerAsset> {
                 if (rc == null || !rc.successful()) {
                     if (rc != null && rc.getException() != null) {
                         Exception e = rc.getException();
-                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName, e.getMessage()),
-                                        e, rc.getReturnCode());
+                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName, e.getMessage()), e, rc.getReturnCode());
                     } else {
                         throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("UNABLE_TO_STOP_START_SERVER",
                                                                                                   serverName,
-                                                                                                  getServerLogsDirectoryPath(isTempServer ? serverXML.getParentFile() : Utils.getServerOutputDir(serverName))),
-                                        InstallException.RUNTIME_EXCEPTION);
+                                                                                                  getServerLogsDirectoryPath(isTempServer ? serverXML.getParentFile() : Utils.getServerOutputDir(serverName))), InstallException.RUNTIME_EXCEPTION);
                     }
                 }
             } catch (TimeoutException to) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName, to.getMessage()),
-                                to, InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName,
+                                                                                          to.getMessage()), to, InstallException.RUNTIME_EXCEPTION);
             } catch (InterruptedException inte) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName, inte.getMessage()),
-                                inte, InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName,
+                                                                                          inte.getMessage()), inte, InstallException.RUNTIME_EXCEPTION);
             } catch (ExecutionException ee) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName, ee.getMessage()),
-                                ee, InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STARTING_SERVER", serverName,
+                                                                                          ee.getMessage()), ee, InstallException.RUNTIME_EXCEPTION);
             }
 
             return server;
@@ -362,24 +352,22 @@ public class ServerAsset implements Comparable<ServerAsset> {
                 if (rc == null || (!rc.successful() && rc.getReturnCode() != com.ibm.ws.kernel.boot.ReturnCode.REDUNDANT_ACTION_STATUS.getValue())) {
                     if (rc != null && rc.getException() != null) {
                         Exception e = rc.getException();
-                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName, e.getMessage()),
-                                        e, rc.getReturnCode());
+                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName, e.getMessage()), e, rc.getReturnCode());
                     } else {
                         throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("UNABLE_TO_STOP_START_SERVER",
                                                                                                   serverName,
-                                                                                                  getServerLogsDirectoryPath(isTempServer ? serverXML.getParentFile() : Utils.getServerOutputDir(serverName))),
-                                        InstallException.RUNTIME_EXCEPTION);
+                                                                                                  getServerLogsDirectoryPath(isTempServer ? serverXML.getParentFile() : Utils.getServerOutputDir(serverName))), InstallException.RUNTIME_EXCEPTION);
                     }
                 }
             } catch (TimeoutException to) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName, to.getMessage()),
-                                to, InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName,
+                                                                                          to.getMessage()), to, InstallException.RUNTIME_EXCEPTION);
             } catch (InterruptedException inte) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName, inte.getMessage()),
-                                inte, InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName,
+                                                                                          inte.getMessage()), inte, InstallException.RUNTIME_EXCEPTION);
             } catch (ExecutionException ee) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName, ee.getMessage()),
-                                ee, InstallException.RUNTIME_EXCEPTION);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("EXCEPTION_STOPPING_SERVER", serverName,
+                                                                                          ee.getMessage()), ee, InstallException.RUNTIME_EXCEPTION);
             }
         }
 

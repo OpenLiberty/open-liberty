@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2014, 2015
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.internal.asset;
 
 import java.io.File;
@@ -76,8 +75,8 @@ public class ServerPackageJarAsset extends JarAsset implements ServerPackageAsse
         try {
             manifestAttrs = ArchiveUtils.processArchiveManifest(jar);
         } catch (Throwable e) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_PACKAGE", getAsset().getAbsolutePath()),
-                            e, InstallException.IO_FAILURE);
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_PACKAGE",
+                                                                                      getAsset().getAbsolutePath()), e, InstallException.IO_FAILURE);
         }
     }
 
@@ -104,7 +103,7 @@ public class ServerPackageJarAsset extends JarAsset implements ServerPackageAsse
     private void processServers() throws InstallException {
         String rootDir = getArchiveRoot();
 
-        // We only want to the top most directory of the archive root. 
+        // We only want to the top most directory of the archive root.
         if (!rootDir.isEmpty()) {
             if (!rootDir.contains("/")) {
                 rootDir += "/";
@@ -112,8 +111,7 @@ public class ServerPackageJarAsset extends JarAsset implements ServerPackageAsse
                 String[] dirs = rootDir.split("/");
 
                 if (dirs.length > 0) {
-                    rootDir = (rootDir.startsWith("/")) ?
-                                    "/" + dirs[1] + "/" : dirs[0] + "/";
+                    rootDir = (rootDir.startsWith("/")) ? "/" + dirs[1] + "/" : dirs[0] + "/";
                 }
             }
         }
