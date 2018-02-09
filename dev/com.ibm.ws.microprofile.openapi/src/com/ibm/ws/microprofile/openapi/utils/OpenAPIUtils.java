@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 
@@ -122,6 +127,29 @@ public class OpenAPIUtils {
         } catch (IllegalAccessException e) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed to access class for filter: " + OASFilterClassName);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the resource at the specified URL as an InputStream
+     *
+     * @param url - resource location
+     * @param acceptValue - Request property for 'Accept' header
+     */
+    public static InputStream getUrlAsStream(URL url, String acceptValue) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        if (acceptValue != null && !acceptValue.trim().isEmpty()) {
+            connection.setRequestProperty("Accept", acceptValue);
+        }
+        final int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            return connection.getInputStream();
+        } else {
+            if (isDebugEnabled(tc)) {
+                Tr.debug(tc, "Did not find resource at " + url + ".  ResponseCode: " + responseCode);
             }
         }
         return null;
