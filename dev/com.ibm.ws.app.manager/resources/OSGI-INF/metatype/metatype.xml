@@ -16,6 +16,7 @@
 
 	<OCD description="%appmgmt.desc" name="%appmgmt.name" id="com.ibm.ws.app.management" ibm:alias="applicationManager">
 		<AD id="autoExpand" name="%appmgmt.autoExpand" description="%appmgmt.autoExpand.desc" required="false" type="Boolean" default="false"/>
+		<AD id="useJandex" name="%appmgmt.useJandex" description="%appmgmt.useJandex.desc" required="false" type="Boolean" default="false"/>
 		<AD id="startTimeout" name="%appmgmt.startTimeout" description="%appmgmt.startTimeout.desc" required="false" type="String" default="30s" ibm:type="duration(s)" />
 		<AD id="stopTimeout" name="%appmgmt.stopTimeout" description="%appmgmt.stopTimeout.desc" required="false" type="String" default="30s" ibm:type="duration(s)" />
 	</OCD>
@@ -29,6 +30,7 @@
         <AD id="type" name="%appmgr.type.name" description="%appmgr.type.desc" type="String" required="false"/>
         <AD id="context-root" name="%appmgr.contextRoot.name" description="%appmgr.contextRoot.desc" type="String" required="false"/>
         <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>
+        <AD id="useJandex" name="%appmgr.useJandex.name" description="%appmgr.useJandex.desc" type="Boolean" required="false" default="false"/>
         <AD id="suppressUncoveredHttpMethodWarning" name="%appmgr.suppressUncoveredHttpMethodWarning.name" description="%appmgr.suppressUncoveredHttpMethodWarning.desc" type="Boolean" required="false" default="false"/>     
     </OCD>
     <Designate factoryPid="com.ibm.ws.app.manager">
