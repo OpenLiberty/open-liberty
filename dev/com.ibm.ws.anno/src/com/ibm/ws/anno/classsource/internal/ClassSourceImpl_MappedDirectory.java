@@ -321,8 +321,23 @@ public class ClassSourceImpl_MappedDirectory
 
     //
 
+    @Override    
+    protected boolean basicHasJandexIndex() {
+        String useJandexPath = getJandexIndexPath();
+        String fullJandexPath = getFilePath(useJandexPath);
+
+        File file = new File(fullJandexPath);
+        if ( !UtilImpl_FileUtils.exists(file) ) {
+            return false;
+        } else if ( UtilImpl_FileUtils.isDirectory(file).booleanValue() ) {
+        	return false;
+        } else {
+        	return true;
+        }
+    }
+    
     @Override
-    protected Index getJandexIndex() {
+    protected Index basicGetJandexIndex() {
         String useJandexPath = getJandexIndexPath();
         String fullJandexPath = getFilePath(useJandexPath);
 

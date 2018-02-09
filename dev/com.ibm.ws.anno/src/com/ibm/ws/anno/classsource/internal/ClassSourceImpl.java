@@ -146,6 +146,11 @@ public abstract class ClassSourceImpl implements ClassSource {
     	return options;
     }
 
+    @Trivial
+    public boolean getUseJandex() {
+    	return getOptions().getUseJandex();
+    }
+    
     //
 
     @Trivial
@@ -453,31 +458,36 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     @Override
     public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
+    	String methodName = "scanClasses";
+
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER", getHashText()));
         }
 
         int initialClasses = i_seedClassNames.size();
-        
+
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] Initial classes [ {2} ]", 
                      new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) } ));
         }
 
-        String processCase;
+        boolean fromJandex;
         
-        if ( !processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
-            processFromScratch(streamer, i_seedClassNames, scanPolicy);
-            processCase = "from scratch";
+        if ( processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
+        	fromJandex = true;
         } else {
-            processCase = "from JANDEX";
+            processFromScratch(streamer, i_seedClassNames, scanPolicy);
+            fromJandex = false;
         }
 
         int finalClasses = i_seedClassNames.size();
 
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]", 
-                    new Object[] {  getHashText(), getCanonicalName(), processCase, Integer.valueOf(finalClasses) } ));            
+                    new Object[] { getHashText(),
+                    		       getCanonicalName(),
+                    		       (fromJandex ? "New Scan" : "Jandex"),
+                    		       Integer.valueOf(finalClasses) } ));            
             
             Object[] logParms = new Object[] { getHashText(), null, null };
 
@@ -492,6 +502,30 @@ public abstract class ClassSourceImpl implements ClassSource {
                 logParms[2] = nextResultTag;
 
                 Tr.debug(tc, MessageFormat.format("[ {0} ]  [ {1} ] {2}", logParms));
+            }
+        }
+        
+        if ( fromJandex && ClassSourceImpl_Options.doJandexLog() ) {
+        	String useHashText = getHashText();
+        	
+        	String msg = MessageFormat.format(
+        		"[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]", 
+        		useHashText, getCanonicalName(),
+        		(fromJandex ? "New Scan" : "Jandex"),
+        		Integer.valueOf(finalClasses) );            
+        	ClassSourceImpl_Options.jandexLog(CLASS_NAME, methodName, msg);
+
+        	ClassSourceImpl_Options.jandexLog(CLASS_NAME, methodName, 
+        		MessageFormat.format("[ {0} ] Added classes [ {1} ]",
+        			useHashText, Integer.valueOf(finalClasses - initialClasses))); 
+
+        	for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
+        		int nextResult = getResult(resultField);
+        		String nextResultTag = resultField.getTag();
+
+            	ClassSourceImpl_Options.jandexLog(CLASS_NAME, methodName,         		
+                    MessageFormat.format("[ {0} ]  [ {1} ] {2}",
+                    	useHashText, Integer.valueOf(nextResult), nextResultTag)); 
             }
         }
     }
@@ -524,14 +558,86 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     /**
+     * Attempt to read the Jandex index.
+     * 
+     * If Jandex is not enabled, immediately answer null.
+     * 
+     * If no Jandex index is available, or if it cannot be read, answer null.
+     * 
+     * @return The read Jandex index.
+     */
+    protected Index getJandexIndex() {
+    	String methodName = "getJandexIndex";
+
+        boolean doLog = tc.isDebugEnabled();
+        boolean doJandexLog = ClassSourceImpl_Options.doJandexLog();
+
+        boolean useJandex = getUseJandex();
+
+        if ( !useJandex ) {
+        	// Figuring out if there is a Jandex index is mildly expensive,
+        	// and is to be avoided when logging is disabled.
+
+        	if ( doLog || doJandexLog ) {
+        		boolean haveJandex = basicHasJandexIndex();
+        		
+        		String msg;
+        		if ( haveJandex ) {
+        			msg = MessageFormat.format("[ {0} ] Jandex disabled; Jandex index found", getHashText());
+        		} else {
+        			msg = MessageFormat.format("[ {0} ] Jandex disabled; Jandex index not found", getHashText());
+        		}
+        		if ( doLog ) {
+        	        Tr.debug(tc, msg);
+        		}
+        		if ( doJandexLog ) {
+        			ClassSourceImpl_Options.jandexLog(CLASS_NAME,  methodName, msg);
+        		}
+        	}
+
+        	return null;
+
+        } else {
+        	Index jandexIndex = basicGetJandexIndex();
+
+        	if ( doLog || doJandexLog ) {
+        		String msg;
+        		if ( jandexIndex != null ) {
+        			msg = MessageFormat.format("[ {0} ] Jandex enabled; Jandex index found", getHashText());
+        		} else {
+        			msg = MessageFormat.format("[ {0} ] Jandex enabled; Jandex index not found", getHashText());
+        		}
+        		if ( doLog ) {
+        	        Tr.debug(tc, msg);	
+        		}
+        		if ( doJandexLog ) {
+        			ClassSourceImpl_Options.jandexLog(CLASS_NAME,  methodName, msg);
+        		}        		
+        	}
+        		
+        	return jandexIndex;
+        }
+    }
+
+    /**
      * <p>Answer the JANDEX index for this class source.  Answer null if none
      * is available.</p>
      * 
      * @return The JANDEX index for this class source.  This default implementation
      *     always answers null.
      */
-    protected Index getJandexIndex() {
+    protected Index basicGetJandexIndex() {
         return null;
+    }
+    
+    /**
+     * <p>Tell if a Jandex index is available.</p>
+     * 
+     * @return Whether a Jandex index is available.  This implementation always
+     *     answers false.
+     */
+    protected boolean basicHasJandexIndex() {
+        return false;
     }
 
     /**
@@ -552,26 +658,10 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( streamer == null ) {
             return false;
         }
-        
-        boolean useJandex = getUseJandex();
 
         Index jandexIndex = getJandexIndex();
-        
-        if ( useJandex ) {
-            if ( jandexIndex == null ) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is enabled but no index was found", getHashText()));
-                return false;
-            } else {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is enabled; using index which was found", getHashText()));
-                // Fall into the processing case
-            }
-        } else {
-            if ( jandexIndex == null ) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is disabled and no index was found", getHashText()));
-            } else {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Jandex is disabled; ignoring index which was found", getHashText()));
-            }
-            return false;
+        if ( jandexIndex == null ) {
+        	return false;
         }
 
         String useClassSourceName = getCanonicalName();
