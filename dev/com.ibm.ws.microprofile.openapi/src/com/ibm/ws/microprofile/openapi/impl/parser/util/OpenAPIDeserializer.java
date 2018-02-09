@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -193,13 +193,17 @@ public class OpenAPIDeserializer {
             ArrayNode array = getArray("servers", rootNode, false, location, result);
             if (array != null && array.size() > 0) {
                 openAPI.setServers(getServersList(array, String.format("%s.%s'", location, "servers"), result));
-            } else {
-                Server defaultServer = new ServerImpl();
-                defaultServer.setUrl("/");
-                List<Server> servers = new ArrayList<>();
-                servers.add(defaultServer);
-                openAPI.setServers(servers);
             }
+            // Don't add server if not specified by user - Liberty servers will be added in that case
+            /*
+             * else {
+             * Server defaultServer = new ServerImpl();
+             * defaultServer.setUrl("/");
+             * List<Server> servers = new ArrayList<>();
+             * servers.add(defaultServer);
+             * openAPI.setServers(servers);
+             * }
+             */
 
             obj = getObject("externalDocs", rootNode, false, location, result);
             if (obj != null) {
@@ -387,13 +391,24 @@ public class OpenAPIDeserializer {
                 Server server = getServer((ObjectNode) item, location, result);
                 if (server != null) {
                     servers.add(server);
-                } else {
-                    Server defaultServer = new ServerImpl();
-                    defaultServer.setUrl("/");
-                    servers.add(defaultServer);
                 }
+
+                // Don't add server if not specified by user - Liberty servers will be added in that case
+                /*
+                 * else {
+                 * Server defaultServer = new ServerImpl();
+                 * defaultServer.setUrl("/");
+                 * servers.add(defaultServer);
+                 * }
+                 */
             }
         }
+
+        if (servers.isEmpty()) {
+            //No servers were added, return null
+            return null;
+        }
+
         return servers;
     }
 

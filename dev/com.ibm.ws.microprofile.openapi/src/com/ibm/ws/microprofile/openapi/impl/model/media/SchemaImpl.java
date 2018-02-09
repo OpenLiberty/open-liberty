@@ -73,6 +73,53 @@ public class SchemaImpl implements Schema {
     private Object additionalProperties;
     private Schema items = null;
 
+    public SchemaImpl() {}
+
+    public SchemaImpl(SchemaImpl schema) {
+        if (schema == null) {
+            return;
+        }
+
+        this._default = schema.getDefaultValue();
+        this.name = schema.getName();
+        this.title = schema.getTitle();
+        this.multipleOf = schema.getMultipleOf();
+        this.maximum = schema.getMaximum();
+        this.exclusiveMaximum = schema.getExclusiveMaximum();
+        this.minimum = schema.getMinimum();
+        this.exclusiveMinimum = schema.getExclusiveMinimum();
+        this.maxLength = schema.getMaxLength();
+        this.minLength = schema.getMinLength();
+        this.pattern = schema.getPattern();
+        this.maxItems = schema.getMaxItems();
+        this.minItems = schema.getMinItems();
+        this.uniqueItems = schema.getUniqueItems();
+        this.maxProperties = schema.getMaxProperties();
+        this.minProperties = schema.getMinProperties();
+        this.required = schema.getRequired();
+        this.type = schema.getType();
+        this.not = schema.getNot();
+        this.properties = schema.getProperties();
+        this.description = schema.getDescription();
+        this.format = schema.getFormat();
+        this.$ref = schema.getRef();
+        this.nullable = schema.getNullable();
+        this.readOnly = schema.getReadOnly();
+        this.writeOnly = schema.getWriteOnly();
+        this.example = schema.getExample();
+        this.externalDocs = schema.getExternalDocs();
+        this.deprecated = schema.getDeprecated();
+        this.xml = schema.getXml();
+        this.extensions = schema.getExtensions();
+        this._enum = schema.getEnumeration();
+        this.discriminator = schema.getDiscriminator();
+        this.anyOf = schema.getAnyOf();
+        this.allOf = schema.getAllOf();
+        this.oneOf = schema.getOneOf();
+        this.additionalProperties = schema.getAdditionalProperties();
+        this.items = schema.getItems();
+    }
+
     @Override
     public Discriminator getDiscriminator() {
         return discriminator;
