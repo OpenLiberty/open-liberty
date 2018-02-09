@@ -15,7 +15,6 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,10 +23,8 @@ import org.junit.rules.TestName;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 

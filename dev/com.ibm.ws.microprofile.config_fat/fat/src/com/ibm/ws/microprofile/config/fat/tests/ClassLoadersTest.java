@@ -1,29 +1,26 @@
- /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
- 
+/*******************************************************************************
+* Copyright (c) 2016 IBM Corporation and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     IBM Corporation - initial API and implementation
+*******************************************************************************/
+
 package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
@@ -53,7 +50,7 @@ public class ClassLoadersTest extends AbstractConfigApiTest {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"),
                                                "microprofile-config.properties")
                         .add(new FileAsset(new File("test-applications/" + APP_NAME + ".war/resources/CUSTOM-DIR/META-INF/microprofile-config.properties")),
-                                       "/CUSTOM-DIR/META-INF/microprofile-config.properties")
+                             "/CUSTOM-DIR/META-INF/microprofile-config.properties")
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + ".war/resources/WEB-INF/classes/META-INF/microprofile-config.properties"),
                                              "classes/META-INF/microprofile-config.properties");
 
