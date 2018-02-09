@@ -129,10 +129,12 @@ public class ApplicationProcessor {
         //Retrieve OpenAPI document as a string
         String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
         if (openAPIStaticFile != null) {
-            isOASApp = true;
             SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
             if (result.getOpenAPI() != null) {
                 newDocument = result.getOpenAPI();
+                isOASApp = true;
+            } else {
+                Tr.error(tc, "OPENAPI_FILE_PARSE_ERROR", moduleInfo.getApplicationInfo().getDeploymentName());
             }
         }
 
