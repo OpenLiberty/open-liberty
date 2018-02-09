@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  *
@@ -48,6 +49,14 @@ public class PathItemValidator extends TypeValidator<PathItem> {
         if (ref != null && ref.startsWith("#")) {
             final String message = Tr.formatMessage(tc, "pathItemInvalidRef", ref, key);
             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+        }
+
+        if (key.contains("{$")) {
+            //Path within a Callback can contain variables (e.g. {$request.query.callbackUrl}/data ) which shouldn't be validated since they are not path params
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.debug(tc, "Path contains variables. Skip validation: " + key);
+            }
+            return;
         }
 
         validateParameters(helper, context, key, t);
