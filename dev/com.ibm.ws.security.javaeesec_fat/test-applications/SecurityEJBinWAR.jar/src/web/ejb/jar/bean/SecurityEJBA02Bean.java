@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
 package web.ejb.jar.bean;
 
 import java.util.logging.Logger;
@@ -17,7 +7,7 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 
@@ -25,34 +15,26 @@ import javax.security.enterprise.SecurityContext;
  * Bean implementation class for Enterprise Bean
  */
 
-@Stateless
-@RolesAllowed({ "Manager", "Employee" })
-public class SecurityEJBA03Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
+@Singleton
+@PermitAll
+public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
 
-    // get the Security Context
-    @Inject
-    private SecurityContext securityContext;
-
-    private static final Class<?> c = SecurityEJBA03Bean.class;
+    private static final Class<?> c = SecurityEJBA02Bean.class;
     protected Logger logger = Logger.getLogger(c.getCanonicalName());
+
+    @Inject
+    SecurityContext securityContext;
 
     @Resource
     private SessionContext context;
 
-    public SecurityEJBA03Bean() {
-        withDeprecation();
-    }
+    public SecurityEJBA02Bean() {}
 
     @Override
     protected SessionContext getContext() {
         return context;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
-     */
     @Override
     protected SecurityContext getSecurityContext() {
         return securityContext;
@@ -76,13 +58,11 @@ public class SecurityEJBA03Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
-    @PermitAll
     public String permitAll() {
         return authenticate("permitAll");
     }
 
     @Override
-    @PermitAll
     public String permitAll(String input) {
         return authenticate("permitAll(input)");
     }
@@ -123,30 +103,32 @@ public class SecurityEJBA03Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
+    @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager() {
         return authenticate("employeeAndManager");
     }
 
     @Override
+    @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager(String input) {
         return authenticate("employeeAndManager(input)");
     }
 
     @Override
+    @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager(String input, String input2) {
         return authenticate("employeeAndManager(string1, string2)");
     }
 
     @Override
+    @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager(int i) {
         return authenticate("employeeAndManager(3)");
     }
 
     @Override
     public String declareRoles01() {
-
         String result1 = authenticate("declareRoles01");
-        //TODO only when using JSR 375 Change to use securityContext
         boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);

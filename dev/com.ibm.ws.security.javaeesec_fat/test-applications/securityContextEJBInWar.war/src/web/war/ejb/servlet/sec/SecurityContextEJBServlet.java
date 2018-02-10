@@ -1,50 +1,22 @@
-/*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package web.war.ejb.servlet;
+package web.war.ejb.servlet.sec;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
-import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 import web.ejb.jar.bean.SecurityEJBInterface;
 
 /**
  * Security EJB servlet used for Pure Annotation tests - PureAnnA0xTest.
  */
-@BasicAuthenticationMechanismDefinition(realmName = "ejbRealm")
-@LdapIdentityStoreDefinition(
-                             url = "ldap://127.0.0.1:10389/",
-                             callerBaseDn = "",
-                             callerSearchBase = "ou=users,o=ibm,c=us",
-                             callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
-                             callerNameAttribute = "uid",
-                             groupNameAttribute = "cn",
-                             groupSearchBase = "ou=groups,o=ibm,c=us",
-                             groupSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             groupSearchFilter = "(objectclass=groupofnames)",
-                             groupMemberAttribute = "member",
-                             bindDn = "uid=admin,ou=users,o=ibm,c=us",
-                             bindDnPassword = "s3cur1ty",
-                             priority = 100)
 @SuppressWarnings("serial")
-public class SecurityEJBServlet extends SecurityEJBBaseServlet {
+public class SecurityContextEJBServlet extends SecurityContextEJBBaseServlet {
 
     final String servletName;
 
-    public SecurityEJBServlet() {
-        this.servletName = "SecurityEJBServlet";
+    public SecurityContextEJBServlet() {
+        this.servletName = "SecurityContextEJBServlet";
     }
 
     @Override
