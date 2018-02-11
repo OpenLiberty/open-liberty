@@ -98,7 +98,7 @@ public class ParameterValidatorTest {
 
         validator.validate(vh, context, key, parameter);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter object must not contain a schema property and a content property"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter Object must not contain a \"schema\" property and a \"content\" property"));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ParameterValidatorTest {
 
         validator.validate(vh, context, key, parameter);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter object does not contain a schema property or a content property"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter Object does not contain a \"schema\" property or a \"content\" property"));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ParameterValidatorTest {
 
         validator.validate(vh, context, key, parameter);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter object specifies both an example object and an examples object"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter Object specifies both an \"example\" field and an \"examples\" field"));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class ParameterValidatorTest {
 
         validator.validate(vh, context, key, parameter);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter object must contain only one entry"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Parameter Object must contain only one entry"));
     }
 
 }

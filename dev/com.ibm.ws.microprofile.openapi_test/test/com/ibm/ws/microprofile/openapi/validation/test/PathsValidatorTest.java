@@ -68,7 +68,7 @@ public class PathsValidatorTest {
 
         validator.validate(vh, context, paths);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be empty or null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map contains an invalid key. A map should not have empty or null keys"));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class PathsValidatorTest {
 
         validator.validate(vh, context, paths);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be empty or null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map contains an invalid key. A map should not have empty or null keys"));
     }
 
     @Test
@@ -93,12 +93,11 @@ public class PathsValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         PathsImpl paths = new PathsImpl();
-        PathItemImpl pathItem = new PathItemImpl();
         paths.addPathItem("/test-path-item", null);
 
         validator.validate(vh, context, paths);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map specifies an invalid value for the \"/test-path-item\" key. A map should not have null values"));
     }
 
     @Test
@@ -113,7 +112,7 @@ public class PathsValidatorTest {
 
         validator.validate(vh, context, paths);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("path does not begin with a slash"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("path value does not begin with a slash"));
     }
 
 }

@@ -131,6 +131,6 @@ public class OperationValidatorTest {
         validator.validate(vh, context, key, getPathItemOne);
         validator.validate(vh, context, key, getPathItemTwo);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("More than one Operation object with operationId: \"pathItemOneGetId\" was found. IDs must be unique"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("More than one Operation Objects with \"pathItemOneGetId\" value for \"operationId\" field was found."));
     }
 }

@@ -133,7 +133,7 @@ public class ResponsesValidatorTest {
 
         validator.validate(vh, context, key, responses);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map specifies an invalid value for the \"400\" key. A map should not have null values"));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class ResponsesValidatorTest {
 
         validator.validate(vh, context, key, responses);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Responses object must contain at least one response code"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Responses Object must contain at least one response code"));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class ResponsesValidatorTest {
 
         validator.validate(vh, context, key, responses);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Responses object should contain at least one response code for a successful operation"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Responses Object should contain at least one response code for a successful operation"));
     }
 
 }

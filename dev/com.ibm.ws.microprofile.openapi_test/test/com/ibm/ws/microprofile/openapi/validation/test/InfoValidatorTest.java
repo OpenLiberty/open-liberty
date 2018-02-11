@@ -88,7 +88,7 @@ public class InfoValidatorTest {
         info.setTermsOfService("notValidURL");
         validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Info object must contain a valid URL"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Info Object must contain a valid URL"));
     }
 
     @Test

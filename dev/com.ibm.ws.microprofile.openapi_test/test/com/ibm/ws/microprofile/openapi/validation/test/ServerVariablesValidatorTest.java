@@ -78,7 +78,7 @@ public class ServerVariablesValidatorTest {
 
         validator.validate(vh, context, serverVariables);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be empty or null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map contains an invalid key. A map should not have empty or null keys"));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ServerVariablesValidatorTest {
 
         validator.validate(vh, context, serverVariables);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be empty or null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map contains an invalid key. A map should not have empty or null keys"));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class ServerVariablesValidatorTest {
 
         validator.validate(vh, context, serverVariables);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must not be null"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map specifies an invalid value for the \"three\" key. A map should not have null values"));
     }
 
 }

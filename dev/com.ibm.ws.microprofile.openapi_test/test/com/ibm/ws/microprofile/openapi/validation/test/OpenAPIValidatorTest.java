@@ -206,7 +206,7 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI object must contain a valid OpenAPI specification version."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI Object must contain a valid OpenAPI specification version."));
     }
 
     @Test
@@ -263,6 +263,6 @@ public class OpenAPIValidatorTest {
 
         validator.validate(vh, context, openapi);
         Assert.assertEquals(1, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI object must contain unique tag names."));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The OpenAPI Object must contain unique tag names."));
     }
 }

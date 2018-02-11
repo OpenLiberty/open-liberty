@@ -84,7 +84,7 @@ public class ComponentsValidatorTest {
         validator.validate(vh, context, null, components);
         Assert.assertEquals(1, vh.getEventsSize());
 
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must be a regular expression"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("match the regular expression as defined by the OpenAPI Specification"));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ComponentsValidatorTest {
         validator.validate(vh, context, null, components);
         Assert.assertEquals(2, vh.getEventsSize());
 
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("must be a regular expression"));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("match the regular expression as defined by the OpenAPI Specification"));
     }
 
     @Test
