@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,22 +36,28 @@ public class PathsValidator extends TypeValidator<Paths> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Paths t) {
         if (t != null) {
+            boolean mapContainsInvalidKey = false;
             for (String path : t.keySet()) {
                 if (path != null && !path.isEmpty()) {
                     if (!path.startsWith("/")) {
                         final String message = Tr.formatMessage(tc, "pathsRequiresSlash", path);
-                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(path), message));
+                    }
+
+                    //Ensure map doesn't contain null value
+                    if (t.get(path) == null) {
+                        final String message = Tr.formatMessage(tc, "nullValueInMap", path);
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(path), message));
                     }
                 } else {
-                    final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap", t.toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-                }
-                if (t.get(path) == null) {
-                    final String message = Tr.formatMessage(tc, "nullValueInMap", t.toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                    mapContainsInvalidKey = true;
                 }
             }
-        }
 
+            if (mapContainsInvalidKey) {
+                final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap");
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+        }
     }
 }

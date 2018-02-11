@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class ParameterValidator extends TypeValidator<Parameter> {
             ValidatorUtils.validateRequiredField(in, context, "in").ifPresent(helper::addValidationEvent);
 
             if (in != null && in != In.COOKIE && in != In.HEADER && in != In.PATH && in != In.QUERY) {
-                final String message = Tr.formatMessage(tc, "parameterInFieldInvalid", t.getName(), in);
+                final String message = Tr.formatMessage(tc, "parameterInFieldInvalid", in, t.getName());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("in"), message));
             }
 

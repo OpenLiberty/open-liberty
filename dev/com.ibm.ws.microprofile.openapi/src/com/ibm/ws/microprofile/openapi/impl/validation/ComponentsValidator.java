@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.Components;
@@ -41,43 +40,43 @@ public class ComponentsValidator extends TypeValidator<Components> {
     public void validate(ValidationHelper helper, Context context, String key, Components t) {
 
         if (t != null) {
-
-            List<Map<String, ?>> components = new ArrayList<Map<String, ?>>();
-
+            Map<String, Map<String, ?>> components = new HashMap<String, Map<String, ?>>();
             if (t.getCallbacks() != null && !t.getCallbacks().isEmpty()) {
-                components.add(t.getCallbacks());
+                components.put("callbacks", t.getCallbacks());
             }
             if (t.getExamples() != null && !t.getExamples().isEmpty()) {
-                components.add(t.getExamples());
+                components.put("examples", t.getExamples());
             }
             if (t.getHeaders() != null && !t.getHeaders().isEmpty()) {
-                components.add(t.getHeaders());
+                components.put("headers", t.getHeaders());
             }
             if (t.getLinks() != null && !t.getLinks().isEmpty()) {
-                components.add(t.getLinks());
+                components.put("links", t.getLinks());
             }
             if (t.getParameters() != null && !t.getParameters().isEmpty()) {
-                components.add(t.getParameters());
+                components.put("parameters", t.getParameters());
             }
             if (t.getRequestBodies() != null && !t.getRequestBodies().isEmpty()) {
-                components.add(t.getRequestBodies());
+                components.put("requestBodies", t.getRequestBodies());
             }
             if (t.getResponses() != null && !t.getResponses().isEmpty()) {
-                components.add(t.getResponses());
+                components.put("responses", t.getResponses());
             }
             if (t.getSchemas() != null && !t.getSchemas().isEmpty()) {
-                components.add(t.getSchemas());
+                components.put("schemas", t.getSchemas());
             }
             if (t.getSecuritySchemes() != null && !t.getSecuritySchemes().isEmpty()) {
-                components.add(t.getSecuritySchemes());
+                components.put("securitySchemes", t.getSecuritySchemes());
             }
+
             if (!components.isEmpty()) {
-                for (Map<String, ?> component : components) {
+                for (String field : components.keySet()) {
+                    Map<String, ?> component = components.get(field);
                     for (String k : component.keySet()) {
                         if (k != null) {
                             if (!k.matches("^[a-zA-Z0-9\\.\\-_]+$")) {
                                 final String message = Tr.formatMessage(tc, "keyNotARegex", k);
-                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(field), message));
                             }
                         }
                     }

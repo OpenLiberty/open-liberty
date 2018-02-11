@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
                 String type = "implicit OAuthFlow";
                 if (StringUtils.isNotBlank(implicit.getTokenUrl())) {
                     final String message = Tr.formatMessage(tc, "nonApplicableField", "tokenUrl", implicit.getTokenUrl(), type);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(implicit.getAuthorizationUrl(), context, "authorizationUrl").ifPresent(helper::addValidationEvent);
             }
@@ -52,7 +52,7 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
                 String type = "password OAuthFlow";
                 if (StringUtils.isNotBlank(password.getAuthorizationUrl())) {
                     final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", password.getAuthorizationUrl(), type);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(password.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
@@ -61,7 +61,7 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
                 String type = "clientCredentials OAuthFlow";
                 if (StringUtils.isNotBlank(clientCred.getAuthorizationUrl())) {
                     final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", clientCred.getAuthorizationUrl(), type);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, null, message));
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(clientCred.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
