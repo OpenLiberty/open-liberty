@@ -15,12 +15,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Implementation of storage for an overlay cache.
  */
 public class OverlayCache {
 	private static final String CLASS_NAME = OverlayCache.class.getSimpleName();
-	private static final Logger overlayCacheLogger = Logger.getLogger("com.ibm.ws.overlaycache");
+	protected static final Logger overlayCacheLogger = Logger.getLogger("com.ibm.ws.overlaycache");
 
 	private static final String ABSENT = "Absent";
 	private static final String PRESENT = "Present";
@@ -29,6 +31,7 @@ public class OverlayCache {
     private Map<String, Map<Class<?>, Object>> pathTypeStorage =
     	new HashMap<String, Map<Class<?>, Object>>();
 
+    @Trivial
     public synchronized void addToCache(String pathKey, Class<?> typeKey, Object data) {
     	String methodName = "addToCache";
 
@@ -60,6 +63,7 @@ public class OverlayCache {
         }
     }
 
+    @Trivial    
     public synchronized void removeFromCache(String pathKey, Class<?> typeKey) {
     	String methodName = "removeFromCache";
 
@@ -90,6 +94,7 @@ public class OverlayCache {
         }
     }
 
+    @Trivial    
     public synchronized Object getFromCache(String pathKey, Class<?> typeKey) {
     	String methodName = "getFromCache";
 
