@@ -45,15 +45,15 @@ CSS_SECTION_NOT_FOUND=CWWKO1656W: The server read the specified CSS document {0}
 CSS_SECTION_NOT_FOUND.explanation=The CSS document that is specified does not contain <.swagger-ui .headerbar >, or it is not formatted to meet the constraints that are required by the server.
 CSS_SECTION_NOT_FOUND.useraction=Provide a valid CSS file that contains <.swagger-ui .headerbar > in the required format.
 
-OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Failed to load OpenAPI filter class: {0}.
+OPENAPI_FILTER_LOAD_ERROR=CWWKO1657E: Failed to load the OpenAPI filter class: {0}.
 OPENAPI_FILTER_LOAD_ERROR.explanation=Specified OpenAPI filter class could not be found or loaded.
 OPENAPI_FILTER_LOAD_ERROR.useraction=Make sure that the class specified exists and implements OASFilter interface.
 
-OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Failed to load OpenAPI model reader class: {0}.
+OPENAPI_MODEL_READER_LOAD_ERROR=CWWKO1658E: Failed to load the OpenAPI model reader class: {0}.
 OPENAPI_MODEL_READER_LOAD_ERROR.explanation=Specified OpenAPI model reader class could not be found or loaded.
 OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Make sure that the class specified exists and implements OASModelReader interface.
 
-OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Failed to parse OpenAPI document for application: {0}.
+OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Failed to parse the OpenAPI document for application: {0}.
 OPENAPI_FILE_PARSE_ERROR.explanation=Failed to parse OpenAPI document from META-INF folder.
 OPENAPI_FILE_PARSE_ERROR.useraction=Make sure that the file is in correct YAML or JSON format.
 
