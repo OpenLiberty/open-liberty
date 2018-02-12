@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -202,3 +202,17 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Either correct the application el
 APPLICATION_UPDATED=CWWKZ0062I: The {0} application has been updated, but not restarted.
 APPLICATION_UPDATED.explanation=A minor change has occurred in the specified application, and the change has been deemed minor enough that there is no need to restart the application.
 APPLICATION_UPDATED.useraction=No action is required.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Jandex use is enabled for all applications.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=For all applications, and when Jandex indexes are available, class and annotation data will be obtained from Jandex indexes.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=No action is required.
+
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: Jandex use is enabled for application {0}.
+APPLICATION_JANDEX_ENABLED.explanation=For the specified application, when Jandex indexes are available, class and annotation data will be obtained from Jandex indexes.
+APPLICATION_JANDEX_ENABLED.useraction=No action is required.
+
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Jandex use is disabled for application {0}.
+APPLICATION_JANDEX_DISABLED.explanation=Jandex index has been disabled for the specified application.
+APPLICATION_JANDEX_DISABLED.useraction=No action is required.

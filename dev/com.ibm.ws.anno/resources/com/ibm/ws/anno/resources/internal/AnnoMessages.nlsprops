@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,14 +33,16 @@
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The class name of the resource
 # # {2} the hashcode id of the resource
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: The close of source [{1}] [{2}] failed with an exception.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: The close of source [{1}] [{2}] failed with an exception. The message is {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=The close for the resource caused an exception.
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource
 # # {2} the name of the class associated with the resource
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=The close of the input stream for the resource caused an exception.
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
@@ -115,7 +117,8 @@ ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=See the exception and the associated
 # # {1} a resource name
 # # {2} a directory path
 # # {3} a class name
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: The close of resource [{1}] under root [{2}] for class [{3}] failed.
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: The close of resource [{1}] under root [{2}] for class [{3}] failed. The message is {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=The close of the InputStream for the resource caused an exception.
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
@@ -150,7 +153,8 @@ ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=See the exception and the associated
 # # {1} a resource name
 # # {2} a class name
 # # {3} a jar file path 
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: The close of resource [{1}] for class [{2}] in [{3}] failed with an exception.
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: The close of resource [{1}] for class [{2}] in [{3}] failed with an exception. The message is {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=An InputStream close for the resource caused an exception.
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
@@ -404,8 +408,149 @@ ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: Discarding extra close exc
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=An exception occurred when trying to close the resource.
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
 
-# {0} The name of the class
-# {1} The name of the jar the class was in.
+# # {0} The name of the class
+# # {1} The name of the jar the class was in.
 ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: It was not possible to process the class {0} in {1} for annotations as it appears to be corrupt.
 ANNO_TARGETS_CORRUPT_CLASS.explanation=A problem occurred when reading a class file to determine whether there were any annotations of interest. The class is likely to be an invalid class file. As a result, annotations from this class will not be recognized.
 ANNO_TARGETS_CORRUPT_CLASS.useraction=The class can be replaced, removed or this message ignored depending on how important the class is to the function of the application.
+
+<<<<<<< HEAD
+#### Added 07-Feb-2018:
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]: The open of child class source [{1}] caused an exception. The message is: {2}
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=The open of the child class source caused an exception.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A hashcode id used to identify the object causing the exception
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]: The close of child class source [{1}] failed with an exception. The message is {3}
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=The close of the child class sourcecaused an exception.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} an entry name
+# # {2} a class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ] The processing of entry [{1}] for class [{2}] caused an exception. The message is: {3}
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=The processing of class information read from an entry caused an exception.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a JAR entry name
+# # {2} a class name
+# # {3} a jar name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]: The close of entry [{1}] for class [{2}] in [{3}] failed with an exception. The message is {4}
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=The close of the entry caused an exception.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a file name
+# # {2} a class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ] The processing of file [{1}] for class [{2}] caused an exception. The message is: {3}
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=The processing of class information read from a file caused an exception.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a directory path
+# # {3} a class name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]: The close of resource [{1}] under root [{2}] for class [{3}] failed. The message is {4}
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=The close of the file caused an exception.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a JAR entry name
+# # {2} a class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ] The processing of JAR entry [{1}] for class [{2}] caused an exception. The message is: {3}
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=The processing of class information read from a JAR entry caused an exception.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a JAR entry name
+# # {2} a class name
+# # {3} a jar name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]: The close of JAR entry [{1}] for class [{2}] in [{3}] failed with an exception. The message is {4}
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=The close of the file caused an exception.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} a class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ] The processing of resource [{1}] for class [{2}] caused an exception. The message is: {3}
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=The processing of class information read from a resource caused an exception.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the resource name
+# # {2} the class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]: The close of resource [{1}] for class [{2}] failed with an exception. The message is {3}
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=The close of the resource caused an exception.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} the target convertion type
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC00075W: [ {0} ]: The container of this class source failed to convert to [{1}]. The message is {2}
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=The file could not be converted to the new type object.
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=No user action is available.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} file name
+# # {2} a class name
+# # {3} a file name
+# # {4} the file path name of {1}
+# # {5} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION=CWWKC0076W: [ {0} ]: The conversion of [{1}] as [{2}] under root [{3}] for prefix [{4}] failed. The message is {5}
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.explanation=The entry could not be converted to the new type object.
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=No user action is available.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a class name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] The processing of Jandex information for class [{1}] caused an exception. The message is: {2}
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=The processing of Jandex information of a class caused an exception.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Open of Jandex index resource [{1}] caused an exception.  The message is: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=The attempt to open the Jandex index resource caused an exception.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Read of Jandex index resource [{1}] failed with an exception.  The message is: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=The attempt to read the Jandex index failed with an exception.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] Open of Jandex index file [{1}] caused an exception.  The message is: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=The attempt to open the Jandex index resource caused an exception.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] Read of Jandex index file [{1}] failed with an exception.  The message is: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=The attempt to read the Jandex index failed with an exception.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=See the exception and the associated FFDC message for more information.
+
+# # {0} a class name
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Class scanning internal error: Jandex processing duplicate processing of class [ {0} ].
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
