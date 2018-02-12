@@ -15,6 +15,7 @@ import java.util.logging.LogRecord;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.data.GenericData;
@@ -163,12 +164,9 @@ public class TraceSource implements Source, WsTraceHandler {
         traceData.setLevelValue(logRecord.getLevel().intValue());
 
         return traceData;
-
     }
 
-    /**
-     * @return
-     */
+    @FFDCIgnore(value = { ClassCastException.class })
     private WsLogRecord getWsLogRecord(LogRecord logRecord) {
         try {
             return (WsLogRecord) logRecord;

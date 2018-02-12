@@ -133,9 +133,9 @@ public class JsonTraceService extends BaseTraceService {
                 //check if trace.log is set to stdout
                 if (traceLog == systemOut) {
                     filteredList.add("trace");
-                    consoleLogHandler.setIsTraceStdout(true);
+                    consoleLogHandler.setTraceStdout(true);
                 } else {
-                    consoleLogHandler.setIsTraceStdout(false);
+                    consoleLogHandler.setTraceStdout(false);
                 }
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
                 consoleLogHandler.setCopySystemStreams(copySystemStreams);
@@ -215,9 +215,13 @@ public class JsonTraceService extends BaseTraceService {
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
         TraceWriter detailLog = traceLog;
         // Tee to messages.log (always)
-
-        RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
-
+        RoutedMessage routedMessage = null;
+        if (externalMessageRouter.get() != null) {
+            String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+            routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord);
+        } else {
+            routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
+        }
         /* Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler */
         invokeMessageRouters(routedMessage);
         if (logSource != null) {
@@ -301,8 +305,13 @@ public class JsonTraceService extends BaseTraceService {
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
 
-            RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
-
+            RoutedMessage routedMessage = null;
+            if (externalMessageRouter.get() != null) {
+                String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+                routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord);
+            } else {
+                routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
+            }
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
             // This has to be checked in this method: direct invocation of system.out

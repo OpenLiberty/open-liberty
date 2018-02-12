@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.data.GenericData;
@@ -204,6 +205,7 @@ public class LogSource implements Source, WsLogHandler {
         //return logtracedata
         LogTraceData logData = new LogTraceData(genData);
         logData.setLevelValue(logRecord.getLevel().intValue());
+        logData.setLogLevel(LogFormatUtils.mapLevelToRawType(logRecord));
 
         return logData;
 
@@ -211,77 +213,7 @@ public class LogSource implements Source, WsLogHandler {
 
     /* Overloaded method for test, should be removed down the line */
     public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-
-        GenericData genData = new GenericData();
-        String messageVal = extractMessage(routedMessage, logRecord);
-
-        long dateVal = logRecord.getMillis();
-        genData.addPair("ibm_datetime", dateVal);
-
-        String messageIdVal = null;
-
-        if (messageVal != null) {
-            messageIdVal = parseMessageId(messageVal);
-        }
-
-        genData.addPair("ibm_messageId", messageIdVal);
-
-        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        genData.addPair("ibm_threadId", threadIdVal);
-        genData.addPair("module", logRecord.getLoggerName());
-        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
-        genData.addPair("ibm_className", logRecord.getSourceClassName());
-        genData.addPair("levelValue", logRecord.getLevel().intValue());
-        String threadName = Thread.currentThread().getName();
-        genData.addPair("threadName", threadName);
-
-        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
-
-        if (wsLogRecord != null) {
-            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
-            genData.addPair("org", wsLogRecord.getOrganization());
-            genData.addPair("product", wsLogRecord.getProduct());
-            genData.addPair("component", wsLogRecord.getComponent());
-        }
-
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
-        if (logRecord instanceof WsLogRecord) {
-            extMap = ((WsLogRecord) logRecord).getExtensions();
-            for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                extensions.addPair(entry.getKey(), entry.getValue());
-            }
-        }
-
-        genData.addPairs(extensions);
-        genData.addPair("ibm_sequence", sequenceNumber.next(dateVal));
-        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
-
-        Throwable thrown = logRecord.getThrown();
-        if (thrown != null) {
-            String stackTrace = DataFormatHelper.throwableToString(thrown);
-            if (stackTrace != null) {
-                genData.addPair("throwable", stackTrace);
-            }
-            String s = thrown.getLocalizedMessage();
-            if (s == null) {
-                s = thrown.toString();
-            }
-            genData.addPair("throwable_localized", s);
-        }
-        genData.addPair("message", messageVal);
-        if (routedMessage.getFormattedMsg() != null) {
-            genData.addPair("formattedMsg", routedMessage.getFormattedMsg());
-        }
-
-        genData.setSourceType(sourceName);
-        //return logtracedata
-        LogTraceData logData = new LogTraceData(genData);
-        logData.setLevelValue(logRecord.getLevel().intValue());
-
-        return logData;
+        return parse(routedMessage);
 
     }
 
@@ -296,6 +228,7 @@ public class LogSource implements Source, WsLogHandler {
         return messageId;
     }
 
+    @FFDCIgnore(value = { ClassCastException.class })
     private WsLogRecord getWsLogRecord(LogRecord logRecord) {
         try {
             return (WsLogRecord) logRecord;
