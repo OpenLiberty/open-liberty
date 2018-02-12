@@ -191,8 +191,8 @@ task prereqFeatureResources {
 task publishFeatureResources {
   // Start building feature resources after all other assemble artifacts are done being published
   dependsOn {
-    rootProject.subprojects.collect {
-      it.tasks.getByName 'prereqFeatureResources'
+    bndWorkspace.getProject(project.name)?.getDependson()*.getName().collect {
+      rootProject.project(it).tasks.getByName 'prereqFeatureResources'
     }
   }
 
@@ -308,6 +308,9 @@ assemble {
   dependsOn publishBinScripts
   dependsOn publishClientScripts
   dependsOn publishLibNative
+}
+
+publish {
   dependsOn publishFeatureResources
 }
 
