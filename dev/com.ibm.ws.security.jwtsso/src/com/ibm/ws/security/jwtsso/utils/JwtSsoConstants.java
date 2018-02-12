@@ -13,8 +13,8 @@ package com.ibm.ws.security.jwtsso.utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class JwtSsoUtils {
-	private static final TraceComponent tc = Tr.register(JwtSsoUtils.class);
+public class JwtSsoConstants {
+	private static final TraceComponent tc = Tr.register(JwtSsoConstants.class);
 
 	public static final String CFG_KEY_COOKIENAME = "cookieName";
 	public static final String CFG_KEY_HTTPONLYCOOKIES = "httpOnlyCookies";
@@ -28,5 +28,6 @@ public class JwtSsoUtils {
 	public static final String CFG_KEY_GROUPBASEDNOMITTED = "groupBaseDnOmitted";
 	public static final String CFG_KEY_JWTBUILDERREF = "jwtBuilderRef";
 	public static final String CFG_KEY_JWTCONSUMERREF = "jwtConsumerRef";
+	public static final String GROUP_PREFIX = "group:";
 
 }
