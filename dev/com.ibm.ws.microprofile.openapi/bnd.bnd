@@ -49,11 +49,14 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.openapi.ApplicationListener, \
 	com.ibm.ws.microprofile.openapi.ApplicationProcessor,\
-	com.ibm.ws.microprofile.openapi.OASFactoryResolverImpl
+	com.ibm.ws.microprofile.openapi.OASFactoryResolverImpl, \
+	com.ibm.ws.microprofile.openapi.impl.CustomCSSProcessor
 WS-TraceGroup: MPOPENAPI
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.kernel.filemonitor;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
