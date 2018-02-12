@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Pou\u017eit\u00ed online \u00falo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository ##\n\
+## Nastavte vlastnost useDefaultRepository na hodnotu false, abyste zabr\u00e1nili\n\
+## n\u00e1stroji installUtility v p\u0159\u00edstupu k internetu a nemohl se p\u0159ipojit\n\
+## k \u00falo\u017ei\u0161ti IBM WebSphere Liberty Repository. P\u0159i v\u00fdchoz\u00edm nastaven\u00ed\n\
+## je p\u0159\u00edstup povolen.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## Pou\u017eit\u00ed vlastn\u00edch \u00falo\u017ei\u0161\u0165 ##\n\
+## Program installUtility nainstaluje aktiva z komprimovan\u00fdch nebo dekompri-\n\
+## movan\u00fdch adres\u00e1\u0159ov\u00fdch \u00falo\u017ei\u0161\u0165 a hostovan\u00fdch instanc\u00ed slu\u017eby Liberty\n\
+## Asset Repository Service. Pro ka\u017ed\u00e9 vlastn\u00ed \u00falo\u017ei\u0161t\u011b s aktivy\n\
+## Liberty zadejte n\u00e1zev \u00falo\u017ei\u0161\u0165 a cestu k adres\u00e1\u0159i, cestu k souboru nebo \n\
+## adresu URL. \n\
+## K \u00falo\u017ei\u0161t\u00edm se p\u0159istupuje v po\u0159ad\u00ed, ve kter\u00e9m jsou uvedena.\n\
+\n\
+## Pro adres\u00e1\u0159ov\u00e1 \u00falo\u017ei\u0161t\u011b zadejte n\u00e1zev a cestu k adres\u00e1\u0159i, cestu \n\
+## k archivn\u00edmu souboru nebo adresu URL.\n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Pro hostovan\u00e1 \u00falo\u017ei\u0161t\u011b zadejte n\u00e1zev a adresu URL. \n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## Je-li to t\u0159eba, zadejte pov\u011b\u0159en\u00ed pro jednotliv\u00e1 \u00falo\u017ei\u0161t\u011b.\n\
+## Pro lep\u0161\u00ed zabezpe\u010den\u00ed zak\u00f3dujte hodnotu vlastnosti .password\n\
+## pomoc\u00ed akce encode n\u00e1stroje securityUtility.\n\
+## Pokud nenastav\u00edte u\u017eivatele a heslo, budete k jejich zad\u00e1n\u00ed\n\
+## vyzv\u00e1ni.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Pou\u017eit\u00ed serveru proxy (nepovinn\u00e9) ##\n\
+## Pokud pro p\u0159\u00edstup k internetu pou\u017e\u00edv\u00e1te server proxy,\n\
+## zadejte hodnoty vlastnost\u00ed jeho nastaven\u00ed.\n\
+## Pro lep\u0161\u00ed zabezpe\u010den\u00ed zak\u00f3dujte hodnotu vlastnosti proxyPassword\n\
+## pomoc\u00ed akce encode n\u00e1stroje securityUtility.\n\
+## Pokud nenastav\u00edte vlastnosti proxyUser a proxyPassword, budete\n\
+## k jejich zad\u00e1n\u00ed vyzv\u00e1ni.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword

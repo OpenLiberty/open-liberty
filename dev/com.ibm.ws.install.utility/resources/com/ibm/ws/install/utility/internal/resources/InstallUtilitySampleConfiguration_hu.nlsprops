@@ -1,0 +1,68 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Az online IBM WebSphere Liberty lerakat haszn\u00e1lata ##\n\
+## \u00c1ll\u00edtsa a useDefaultRepository tulajdons\u00e1got false\n\
+## (hamis) \u00e9rt\u00e9kre, hogy megakad\u00e1lyozza az installUtility\n\
+## seg\u00e9dprogram internetel\u00e9r\u00e9s\u00e9t, \u00e9s \u00edgy az IBM WebSphere\n\
+## Liberty lerakathoz val\u00f3 csatlakoz\u00e1s\u00e1t. A hozz\u00e1f\u00e9r\u00e9s\n\
+## alap\u00e9rtelmez\u00e9sben enged\u00e9lyezett.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## Egy\u00e9ni lerakatok haszn\u00e1lata ##\n\
+## Az installUtility k\u00e9pes telep\u00edteni eszk\u00f6z\u00f6ket t\u00f6m\u00f6r\u00edtett vagy nem  \n\
+## t\u00f6m\u00f6r\u00edtett k\u00f6nyvt\u00e1r alap\u00fa lerakatokb\u00f3l \u00e9s a Liberty eszk\u00f6zlerakat  \n\
+## szolg\u00e1ltat\u00e1s hosztolt p\u00e9ld\u00e1nyaib\u00f3l. Adjon meg egy lerakatnevet \u00e9s a\n\
+## Liberty eszk\u00f6z\u00f6ket tartalmaz\u00f3 egyes egy\u00e9ni lerakatok k\u00f6nyvt\u00e1r-     \n\
+## \u00fatvonal\u00e1t, f\u00e1jl\u00fatvonal\u00e1t vagy URL c\u00edm\u00e9t.                           \n\
+## A lerakatokat a rendszer azok megad\u00e1si sorrendj\u00e9ben \u00e9ri el.        \n\
+\n\
+## Adja meg a k\u00f6nyvt\u00e1r alap\u00fa lerakatok nev\u00e9t \u00e9s k\u00f6nyvt\u00e1r-\u00fatvonal\u00e1t,   \n\
+## arch\u00edvumf\u00e1jl-\u00fatvonal\u00e1t vagy URL c\u00edm\u00e9t.                             \n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Adja meg a hosztolt lerakatok nev\u00e9t \u00e9s URL c\u00edm\u00e9t.                  \n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## Sz\u00fcks\u00e9g szerint adja meg az egyes lerakatok hiteles\u00edt\u00e9si adatait.\n\
+## A kiterjesztett biztons\u00e1g \u00e9rdek\u00e9ben k\u00f3dolja a .password tulajdons\u00e1g\n\
+## \u00e9rt\u00e9k\u00e9t a securityUtility encode m\u0171velettel.\n\
+## Ha nem \u00e1ll\u00edtja be a felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t, a rendszer\n\
+## felsz\u00f3l\u00edtja azok megad\u00e1s\u00e1ra.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Proxykiszolg\u00e1l\u00f3 haszn\u00e1lata (elhagyhat\u00f3) ##\n\
+## Ha proxykiszolg\u00e1l\u00f3 seg\u00edts\u00e9g\u00e9vel \u00e9ri el az internetet, akkor\n\
+## adja meg a proxybe\u00e1ll\u00edt\u00e1sok tulajdons\u00e1g\u00e9rt\u00e9keit.\n\
+## A kiterjesztett biztons\u00e1g \u00e9rdek\u00e9ben k\u00f3dolja a proxyPassword\n\
+## tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a securityUtility encode m\u0171velettel.\n\
+## Ha nem \u00e1ll\u00edtja be a proxyUser \u00e9s proxyPassword \u00e9rt\u00e9ket, akkor\n\
+## a rendszer felsz\u00f3l\u00edtja azok megad\u00e1s\u00e1ra.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword
