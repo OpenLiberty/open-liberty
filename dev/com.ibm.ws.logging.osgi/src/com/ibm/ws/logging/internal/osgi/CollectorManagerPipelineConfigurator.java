@@ -120,8 +120,6 @@ public class CollectorManagerPipelineConfigurator {
         //Register the LogSource and TraceSource as Source
     	bundleContext.registerService(new String[] {Source.class.getName(), WsLogHandler.class.getName()}, logSource, returnSourceServiceProps());
     	bundleContext.registerService(new String[] {Source.class.getName(), WsTraceHandler.class.getName()}, traceSource, returnSourceServiceProps());
-//    	bundleContext.registerService(new String[] {Source.class.getName()}, logSource, returnSourceServiceProps());
-//    	bundleContext.registerService(new String[] {Source.class.getName()}, traceSource, returnSourceServiceProps());
     	
     	
     	/* Retrieve and register the Handler, if it exists. JsonTraceService creates it and sets it
