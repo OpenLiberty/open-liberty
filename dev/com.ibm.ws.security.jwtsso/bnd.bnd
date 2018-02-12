@@ -78,6 +78,16 @@ instrument.classesExcludes: com/ibm/ws/security/jwtsso/internal/resources/*.clas
     com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.jwt;version=latest
 
+# some strange ncdf's will happen if any of these are removed because the junit.extensions
+# have transitive dependencies. 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    com.ibm.ws.junit.extensions;version=latest
+    com.ibm.ws.junit.extensions;version=latest, \
+    org.jmock:jmock-legacy;version=2.5.0, \
+    cglib:cglib-nodep;version=2.1.0.3, \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock;strategy=exact;version=2.5.1, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    com.ibm.ws.kernel.boot;version=latest, \
+    com.ibm.ws.org.jose4j.0.5.1;version=latest
