@@ -21,9 +21,9 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11CDI12;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -33,7 +33,7 @@ public class CDIBuiltInConverterTest extends LoggingTest {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+                    .andWith(RepeatConfig11CDI12.INSTANCE);
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
