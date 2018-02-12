@@ -10,20 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.suite;
 
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 
 /**
  *
  */
-public class RepeatConfig11CDI12 extends EE7FeatureReplacementAction {
+public class RepeatConfig12EE8 extends EE8FeatureReplacementAction {
 
-    public static final FeatureReplacementAction INSTANCE = new RepeatConfig11CDI12();
+    public static final FeatureReplacementAction INSTANCE = new RepeatConfig12EE8();
 
-    public RepeatConfig11CDI12() {
+    public RepeatConfig12EE8() {
         super();
-        removeFeature("mpConfig-1.2");
-        addFeature("mpConfig-1.1");
+        removeFeature("mpConfig-1.1");
+        addFeature("mpConfig-1.2");
     }
 
 }

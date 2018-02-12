@@ -23,7 +23,8 @@ import org.junit.rules.TestName;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE8;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -37,8 +38,7 @@ public class ConvertersTest extends AbstractConfigApiTest {
     private final static String testClassName = "ConvertersTest";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(RepeatConfig11.INSTANCE);
+    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE8.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("ConvertersServer");
