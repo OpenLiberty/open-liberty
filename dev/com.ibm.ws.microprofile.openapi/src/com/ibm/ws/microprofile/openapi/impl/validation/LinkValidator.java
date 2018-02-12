@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,21 +45,26 @@ public class LinkValidator extends TypeValidator<Link> {
                 ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
                 return;
             }
-          
-            Boolean operationRefDefined = t.getOperationRef() != null && !t.getOperationRef().isEmpty();
-            Boolean operationIdDefined = t.getOperationId() != null && !t.getOperationId().isEmpty();
-            Boolean operationRefNull = t.getOperationRef() == null || t.getOperationRef().isEmpty();
-            Boolean operationIdNull = t.getOperationId() == null || t.getOperationId().isEmpty();
+
+            boolean operationRefDefined = t.getOperationRef() != null && !t.getOperationRef().isEmpty();
+            boolean operationIdDefined = t.getOperationId() != null && !t.getOperationId().isEmpty();
 
             if (operationRefDefined && operationIdDefined) {
-                final String message = Tr.formatMessage(tc, "linkOperationRefOrId", t.toString());
+                final String message = Tr.formatMessage(tc, "linkOperationRefAndId", key);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
-            if (operationRefDefined || operationIdDefined) {
+            if (!operationRefDefined && !operationIdDefined) {
+                final String message = Tr.formatMessage(tc, "linkMustSpecifyOperationRefOrId", key);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            } else {
+                if (operationIdDefined) {
+                    helper.addLinkOperationId(t.getOperationId(), context.getLocation());
+                }
+
                 if (operationRefDefined) {
-                    Boolean isValid = true;
                     if (t.getOperationRef().startsWith("#")) {
+                        boolean isValid = true;
                         String[] operationRef = t.getOperationRef().split("/");
                         if (operationRef.length != 4) {
                             isValid = false;
@@ -67,7 +72,7 @@ public class LinkValidator extends TypeValidator<Link> {
                             String pathKey = operationRef[2].replace("~1", "/").replace("~0", "~");
                             Paths paths = context.getModel().getPaths();
 
-                            if (paths.containsKey(pathKey) && paths.get(pathKey) != null) {
+                            if (paths != null && paths.get(pathKey) != null) {
                                 String op = operationRef[3];
                                 switch (op) {
                                     case "get":
@@ -119,17 +124,11 @@ public class LinkValidator extends TypeValidator<Link> {
                             }
                         }
                         if (!isValid) {
-                            final String message = Tr.formatMessage(tc, "linkOperationRefInvalidOrMissing", t.getOperationRef());
+                            final String message = Tr.formatMessage(tc, "linkOperationRefInvalidOrMissing", key, t.getOperationRef());
                             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }
                     }
                 }
-                if (operationIdDefined) {
-                    helper.addLinkOperationId(t.getOperationId(), context.getLocation());
-                }
-            } else if (operationRefNull && operationIdNull) {
-                final String message = Tr.formatMessage(tc, "linkMustSpecifyOperationRefOrId", t.toString());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
         }
     }

@@ -70,15 +70,30 @@ public class ComponentsValidator extends TypeValidator<Components> {
             }
 
             if (!components.isEmpty()) {
-                for (String field : components.keySet()) {
-                    Map<String, ?> component = components.get(field);
+                for (String mapName : components.keySet()) {
+                    Map<String, ?> component = components.get(mapName);
+                    boolean mapContainsInvalidKey = false;
                     for (String k : component.keySet()) {
                         if (k != null) {
                             if (!k.matches("^[a-zA-Z0-9\\.\\-_]+$")) {
                                 final String message = Tr.formatMessage(tc, "keyNotARegex", k);
-                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(field), message));
+                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(mapName), message));
                             }
+
+                            //Ensure map doesn't contain null value
+                            if (component.get(k) == null) {
+                                final String message = Tr.formatMessage(tc, "nullValueInMap", k);
+                                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(mapName), message));
+                            }
+                        } else {
+                            mapContainsInvalidKey = true;
                         }
+                    }
+
+                    //Ensure map doesn't contain an invalid key
+                    if (mapContainsInvalidKey) {
+                        final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap");
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(mapName), message));
                     }
                 }
             }

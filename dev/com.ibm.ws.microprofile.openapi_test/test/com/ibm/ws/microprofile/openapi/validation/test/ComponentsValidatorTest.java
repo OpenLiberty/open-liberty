@@ -138,7 +138,23 @@ public class ComponentsValidatorTest {
         components.setSecuritySchemes(securitySchemes);
 
         validator.validate(vh, context, null, components);
-        Assert.assertEquals(0, vh.getEventsSize());
+        Assert.assertEquals(1, vh.getEventsSize());
+    }
+
+    @Test
+    public void testNullMapValue() {
+
+        ComponentsValidator validator = ComponentsValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        ComponentsImpl components = new ComponentsImpl();
+
+        Map<String, SecurityScheme> securitySchemes = new HashMap<String, SecurityScheme>();
+        securitySchemes.put("mySecurity", null);
+        components.setSecuritySchemes(securitySchemes);
+
+        validator.validate(vh, context, null, components);
+        Assert.assertEquals(1, vh.getEventsSize());
     }
 
 }

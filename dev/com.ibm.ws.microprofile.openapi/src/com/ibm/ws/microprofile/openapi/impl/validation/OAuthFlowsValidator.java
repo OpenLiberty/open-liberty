@@ -39,28 +39,26 @@ public class OAuthFlowsValidator extends TypeValidator<OAuthFlows> {
     public void validate(ValidationHelper helper, Context context, String key, OAuthFlows t) {
         if (t != null) {
             if (t.getImplicit() != null) {
-                OAuthFlow implicit = t.getImplicit();
-                String type = "implicit OAuthFlow";
+                OAuthFlow implicit = t.getImplicit();;
                 if (StringUtils.isNotBlank(implicit.getTokenUrl())) {
-                    final String message = Tr.formatMessage(tc, "nonApplicableField", "tokenUrl", implicit.getTokenUrl(), type);
+                    final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "tokenUrl", implicit.getTokenUrl(), "OAuth Flow Object", "implicit");
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(implicit.getAuthorizationUrl(), context, "authorizationUrl").ifPresent(helper::addValidationEvent);
             }
             if (t.getPassword() != null) {
                 OAuthFlow password = t.getPassword();
-                String type = "password OAuthFlow";
                 if (StringUtils.isNotBlank(password.getAuthorizationUrl())) {
-                    final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", password.getAuthorizationUrl(), type);
+                    final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "authorizationUrl", password.getAuthorizationUrl(), "OAuth Flow Object", "password");
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(password.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);
             }
             if (t.getClientCredentials() != null) {
                 OAuthFlow clientCred = t.getClientCredentials();
-                String type = "clientCredentials OAuthFlow";
                 if (StringUtils.isNotBlank(clientCred.getAuthorizationUrl())) {
-                    final String message = Tr.formatMessage(tc, "nonApplicableField", "authorizationUrl", clientCred.getAuthorizationUrl(), type);
+                    final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "authorizationUrl", clientCred.getAuthorizationUrl(), "OAuth Flow Object",
+                                                            "clientCredentials");
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
                 }
                 ValidatorUtils.validateRequiredField(clientCred.getTokenUrl(), context, "tokenUrl").ifPresent(helper::addValidationEvent);

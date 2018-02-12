@@ -54,6 +54,7 @@ public class PathsValidator extends TypeValidator<Paths> {
                 }
             }
 
+            //Ensure map doesn't contain an invalid key
             if (mapContainsInvalidKey) {
                 final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap");
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));

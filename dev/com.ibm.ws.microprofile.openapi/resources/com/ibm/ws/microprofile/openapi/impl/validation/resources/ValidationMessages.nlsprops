@@ -32,7 +32,7 @@ infoTermsOfServiceInvalidURL=The Info Object must contain a valid URL. The \"{0}
 invalidUrl=The \"{0}\" Object must contain a valid URL. The \"{1}\" value specified for the URL is not valid
 invalidUri=The \"{0}\" value specified for the URI is not valid. Value must be in the form of an absolute URI
 
-invalidExtensionFieldName=The field name of \"{0}\" extension must start with "x-"
+invalidExtensionName=The name of \"{0}\" extension must begin with \"x-\"
 
 headerExampleOrExamples=The \"{0}\" Header Object cannot have both \"examples\" and \"example\" fields. Specify only one field
 headerSchemaAndContent=The \"{0}\" Header Object must contain either a schema property or a content property, but it cannot contain both
@@ -41,17 +41,19 @@ headerContentMap=The \"content\" map within the \"{0}\" Header Object must conta
 
 licenseInvalidURL=The License Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
 
-linkOperationRefInvalidOrMissing=Link Object specified a relative \"operationRef\" field with value \"{0}\" that points to an invalid Operation Object
-linkOperationRefOrId=The \"{0}\" Link Object defines \"operationRef\" field and \"operationId\" field, which are mutually exclusive
-linkOperationIdInvalid=Link Object specified an \"operationId\" field with value \"{0}\" that points to an Operation Object that does not exist
-linkMustSpecifyOperationRefOrId=The \"{0}\" Link Object must be identified using either an operationRef or operationId
+linkOperationRefInvalidOrMissing=The \"{0}\" Link Object specified a relative \"operationRef\" field with \"{1}\" value that points to an invalid Operation Object
+linkOperationRefAndId=The \"{0}\" Link Object defines \"operationRef\" field and \"operationId\" field, which are mutually exclusive
+linkOperationIdInvalid=The Link Object specified an \"operationId\" field with \"{0}\" value which points to an Operation Object that does not exist
+linkMustSpecifyOperationRefOrId=The \"{0}\" Link Object must be identified using either an \"operationRef\" or \"operationId\"
 
 mediaTypeExampleOrExamples=The MediaType Object cannot have both \"examples\" and \"example\" fields. Specify only one field
 mediaTypeEncodingProperty=The \"{0}\" encoding property specified in the MediaType Object does not exist in the schema as a property
 mediaTypeEmptySchema=The encoding property specified cannot be validated because the corresponding schema property is null
 
-oAuthFlowInvalidURL=The OAuthFlow Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
-nonApplicableField=The \"{0}\" field with the \"{1}\" value is not applicable for \"{2}\"
+oAuthFlowInvalidURL=The OAuth Flow Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
+
+nonApplicableField=The \"{0}\" field is not applicable for \"{1}\" of \"{2}\" type
+nonApplicableFieldWithValue=The \"{0}\" field with the \"{1}\" value is not applicable for \"{2}\" of \"{3}\" type
 
 nullOrEmptyKeyInMap=The map contains an invalid key. A map should not have empty or null keys
 nullValueInMap=The map specifies an invalid value for the \"{0}\" key. A map should not have null values
@@ -99,12 +101,11 @@ securityRequirementIsEmpty=The Security Requirement Object must not be empty
 
 securitySchemeInFieldInvalid=The \"{0}\" Security Scheme Object is invalid. The value of its \"in\" field is \"{1}\", but must be one of (\"query\", \"header\", \"cookie\")
 securitySchemeInvalidURL=The Security Scheme Object must contain a valid URL. The \"{0}\" value specified for the URL is not valid
-securitySchemeNonApplicableField=One or more fields defined are not applicable to a SecurityScheme instance of type \"{0}\"
 
 schemaTypeArrayNullItems=The Schema Object of \"array\" type must have \"items\" property defined
 schemaReadOnlyOrWriteOnly=The Schema Object must not have both \"readOnly\" and \"writeOnly\" fields set to true
 schemaMultipleOfLessThanOne=The Schema Object must have the \"multipleOf\" property set to a number strictly greater than zero
-schemaPropertyLessThanZero=The \"{0}\" property of the Schema Object must be greater or equal to zero
+schemaPropertyLessThanZero=The \"{0}\" property of the Schema Object must be greater than or equal to zero
 schemaTypeDoesNotMatchProperty=The \"{0}\" property is not appropriate for the Schema Object of \"{1}\" type
 
 keyNotARegex=The \"{0}\" name declared within the Components Object is invalid. It must match the regular expression as defined by the OpenAPI Specification

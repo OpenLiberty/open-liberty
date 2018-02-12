@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,9 +55,9 @@ public class SchemaImpl implements Schema {
     private String description = null;
     private String format = null;
     private String $ref = null;
-    private Boolean nullable = false;
-    private Boolean readOnly = false;
-    private Boolean writeOnly = false;
+    private Boolean nullable = null;
+    private Boolean readOnly = null;
+    private Boolean writeOnly = null;
     protected Object example = null;
     private ExternalDocumentation externalDocs = null;
     private Boolean deprecated = null;

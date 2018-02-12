@@ -111,7 +111,7 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"tokenUrl\" field with the \"http://test-authorization-url.com\" value is not applicable for \"implicit OAuthFlow\""));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"tokenUrl\" field with the \"http://test-authorization-url.com\" value is not applicable for \"OAuth Flow Object\" of \"implicit\" type"));
         Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"authorizationUrl\" field is missing or is set to an invalid value"));
     }
 
@@ -132,7 +132,7 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with the \"http://test-token-url.com\" value is not applicable for \"password OAuthFlow\""));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with the \"http://test-token-url.com\" value is not applicable for \"OAuth Flow Object\" of \"password\" type"));
         Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
     }
 
@@ -152,7 +152,7 @@ public class OAuthFlowsValidatorTest {
 
         validator.validate(vh, context, oauthflows);
         Assert.assertEquals(2, vh.getEventsSize());
-        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with the \"http://test-client-url.com\" value is not applicable for \"clientCredentials OAuthFlow\""));
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"authorizationUrl\" field with the \"http://test-client-url.com\" value is not applicable for \"OAuth Flow Object\" of \"clientCredentials\" type"));
         Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"tokenUrl\" field is missing or is set to an invalid value"));
     }
 

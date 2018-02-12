@@ -52,10 +52,11 @@ public class SchemaValidator extends TypeValidator<Schema> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
-            if (t.getReadOnly() && t.getWriteOnly()) {
+            if (t.getReadOnly() != null && t.getWriteOnly() != null && t.getReadOnly() && t.getWriteOnly()) {
                 final String message = Tr.formatMessage(tc, "schemaReadOnlyOrWriteOnly");
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
+
             if (t.getMultipleOf() != null && (t.getMultipleOf().compareTo(BigDecimal.ONE) < 1)) {
                 final String message = Tr.formatMessage(tc, "schemaMultipleOfLessThanOne");
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
