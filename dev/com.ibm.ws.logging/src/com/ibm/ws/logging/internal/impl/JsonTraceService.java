@@ -139,7 +139,6 @@ public class JsonTraceService extends BaseTraceService {
                 }
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
                 consoleLogHandler.setCopySystemStreams(copySystemStreams);
-                consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
             }
         }
 
@@ -179,6 +178,7 @@ public class JsonTraceService extends BaseTraceService {
         //set formatters in the handlers
         messageLogHandler.setFormatter(formatter);
         consoleLogHandler.setFormatter(formatter);
+        consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
     }
 
     /*
@@ -308,9 +308,9 @@ public class JsonTraceService extends BaseTraceService {
             RoutedMessage routedMessage = null;
             if (externalMessageRouter.get() != null) {
                 String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
-                routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord);
+                routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, message, logRecord);
             } else {
-                routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
+                routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
             }
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
