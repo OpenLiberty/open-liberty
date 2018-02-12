@@ -320,13 +320,15 @@ public class FeatureReplacementAction implements RepeatTestAction {
         // Make sure config update is pushed to the wlp version of the server & client
         if (serverConfigs.size() > 0) {
             for (String serverName : servers) {
-                LibertyServerFactory.getLibertyServer(serverName);
+                if (!serverName.equals(ALL_SERVERS))
+                    LibertyServerFactory.getLibertyServer(serverName);
             }
         }
 
         if (clientConfigs.size() > 0) {
             for (String clientName : clients) {
-                LibertyClientFactory.getLibertyClient(clientName);
+                if (!clientName.equals(ALL_CLIENTS))
+                    LibertyClientFactory.getLibertyClient(clientName);
             }
         }
 
