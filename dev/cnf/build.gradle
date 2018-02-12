@@ -330,19 +330,38 @@ task copyEsas(type: Copy) {
    // dependsOn rootProject.project("com.ibm.ws.repository.generator").getTasks().getByPath("jar")
    // dependsOn project(“:com.ibm.ws.repository.generator.jar”)
 
-    from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
+  //  from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
+   from cnf.fileTree(".").matching{
+      		include '**/*.esa' 
+      		include '**/*.esa.metadata.zip'
+      	} 
    // into  "${rootDir}/com.ibm.ws.repository.generator/build/esas"
-  // into "build/temp/esas"
-  	into "."
+   into "build/temp/esas"
+  // mkdir "${buildDir}/repo"
+   //	ant.touch("assetInfo.properties")
+	//ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
+    //      entry(key: "licenseType", value: "UNSPECIFIED")
+     //   }
    
 }
-
 task createSingleJson {
     // Run after all feature ESAs have been built
     dependsOn copyMavenLibs
+  //  dependsOn publishFeatureResources
 	//dependsOn copyEsas
+	dependsOn parent.subprojects.assemble
+	dependsOn parent.subprojects.publishFeatureResources
 	        
     doLast {
+    //	mkdir "build/repo"
+   		//ant.touch("assetInfo.properties")
+   // 	ant.propertyfile(file: "build/repo/assetInfo.properties") {
+    //      entry(key: "licenseType", value: "UNSPECIFIED")
+    //    }
+    //    ant.zip(destfile: "build/repo/${props['symbolicName']}.esa.metadata.zip") {
+    //      fileset(dir: "build/repo", includes: "assetInfo.properties")
+    //    }
+        
         ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
             classpath {
                 fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
@@ -392,8 +411,6 @@ task createSingleJson {
             ant.singleJsonRepo(assetFile:file(esa),
                    assetType:'FEATURE',
                   jsonFile: 'SingleJson.json')
-        
-        
         }
         
       ant.delete() {
@@ -403,6 +420,7 @@ task createSingleJson {
 	 }
     }
 }
+publish{ dependsOn createSingleJson }
 
 task generateMavenArtifact {
 dependsOn parent.subprojects.assemble
@@ -430,8 +448,8 @@ doLast {
         
         ant.featuresToMavenRepo(inputDirPath:'build/temp/all',
                    outputDirPath:'build/temp/all/mavenArtifact',
-                   openLibertyJson:'build/temp/json/features.json',
-                  websphereLibertyJson:'build/temp/alljson/features.json')
+                   openLibertyJson:'build/temp/OLjson/features.json',
+                  websphereLibertyJson:'build/temp/CLjson/features.json')
        
          
       // ant.featuresToMavenRepo(
