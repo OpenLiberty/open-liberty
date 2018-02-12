@@ -30,7 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
-import com.ibm.ws.security.jwtsso.utils.JwtSsoUtils;
+import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 
@@ -178,12 +178,12 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		if (props == null || props.isEmpty()) {
 			return;
 		}
-		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoUtils.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
-		includeLtpaCookie = (Boolean) props.get(JwtSsoUtils.CFG_KEY_INCLUDELTPACOOKIE);
-		fallbackToLtpa = (Boolean) props.get(JwtSsoUtils.CFG_KEY_FALLBACKTOLTPA);
-		groupBaseDnOmitted = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_GROUPBASEDNOMITTED));
-		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTBUILDERREF));
-		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTCONSUMERREF));
+		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
+		includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
+		fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
+		groupBaseDnOmitted = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_GROUPBASEDNOMITTED));
+		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
+		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
 
 	}
 

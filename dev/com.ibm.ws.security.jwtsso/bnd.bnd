@@ -73,6 +73,9 @@ instrument.classesExcludes: com/ibm/ws/security/jwtsso/internal/resources/*.clas
 	com.ibm.ws.security.common;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.json4j;version=latest,\
+    com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
+    com.ibm.ws.security.mp.jwt;version=latest,\
+    com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.jwt;version=latest
 
 -testpath: \
