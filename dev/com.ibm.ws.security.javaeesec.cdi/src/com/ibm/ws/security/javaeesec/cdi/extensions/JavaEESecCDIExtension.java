@@ -37,6 +37,7 @@ import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
@@ -162,7 +163,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType, RememberMeInterceptor.class.getName());
     }
 
-    <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
+    public <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         try {
@@ -194,7 +195,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
+    public void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "processBean : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         if (!identityStoreHandlerRegistered) {
@@ -205,6 +206,33 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (!identityStoreRegistered) {
             if (isIdentityStore(processBean)) {
                 identityStoreRegistered = true;
+            }
+        }
+    }
+
+    public void processBasicHttpAuthMechNeeded(@Observes ProcessBeanAttributes<BasicHttpAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
+        if (!existAuthMech(BasicHttpAuthenticationMechanism.class)) {
+            processBeanAttributes.veto();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "BasicHttpAuthenticationMechanism is disabled since another HttpAuthorizationMechanism is registered.");
+            }
+        }
+    }
+
+    public void processFormAuthMechNeeded(@Observes ProcessBeanAttributes<FormAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
+        if (!existAuthMech(FormAuthenticationMechanism.class)) {
+            processBeanAttributes.veto();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "FormAuthenticationMechanism is disabled since another HttpAuthorizationMechanism is registered.");
+            }
+        }
+    }
+
+    public void processCustomFormAuthMechNeeded(@Observes ProcessBeanAttributes<CustomFormAuthenticationMechanism>  processBeanAttributes, BeanManager beanManager) {
+        if (!existAuthMech(CustomFormAuthenticationMechanism.class)) {
+            processBeanAttributes.veto();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "CustomFormAuthenticationMechanism is disabled since another HttpAuthorizationMechanism is registered.");
             }
         }
     }
@@ -1015,4 +1043,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return output;
     }
 
+    private boolean existAuthMech(Class authMechToExist) {
+        Map<Class<?>, Properties> authMechs = null;
+        Map<String, ModuleProperties> moduleMap = getModuleMap();
+        for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+            authMechs = entry.getValue().getAuthMechMap();
+            for (Class<?> authMech : authMechs.keySet()) {
+                if (authMech.equals(authMechToExist)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
