@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
@@ -83,6 +84,12 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * @return
      */
     private PollingDynamicConfig addConfig(ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
+        //if it is an internal config source then it should not refresh
+        //this is a hack for now ... dynamic config sources will be fixed properly in the next version
+        if (source instanceof InternalConfigSource) {
+            refreshInterval = 0;
+        }
+
         //we wrap each source up as an archaius config
         PollingDynamicConfig archaiusConfig = new PollingDynamicConfig(source, executor, refreshInterval);
 

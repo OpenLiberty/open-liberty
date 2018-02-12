@@ -26,7 +26,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
-public class PropertiesConfigSource extends AbstractConfigSource implements ConfigSource {
+public class PropertiesConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(PropertiesConfigSource.class);
 

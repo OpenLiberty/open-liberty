@@ -15,12 +15,12 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 /**
  *
  */
-public abstract class AbstractConfigSource implements ConfigSource {
+public abstract class InternalConfigSource implements ConfigSource {
 
     private final int ordinal;
     private final String id;
 
-    public AbstractConfigSource(int ordinal, String id) {
+    public InternalConfigSource(int ordinal, String id) {
         this.ordinal = ordinal;
         this.id = id;
     }
