@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.openapi.ConfigProcessor;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
@@ -98,6 +99,7 @@ public final class CustomCSSProcessor implements FileMonitor {
 
     @Deactivate
     protected void deactivate(ComponentContext cc, int reason) {
+        deactivateFileMonitor();
         executorServiceRef.deactivate(cc);
     }
 
@@ -112,31 +114,41 @@ public final class CustomCSSProcessor implements FileMonitor {
         filesToMonitor.add(normalizePath(DEFAULT_LOCATION_CSS).getAbsolutePath());
     }
 
+    private synchronized void activateFileMonitor(ComponentContext cc) {
+        final int pollingInterval = new ConfigProcessor(CustomCSSProcessor.class.getClassLoader()).getFilePollingInterval();
+        if (pollingInterval > 0) {
+            final BundleContext bundleContext = cc.getBundleContext();
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put(Constants.SERVICE_VENDOR, "IBM");
+            props.put(FileMonitor.MONITOR_INTERVAL, String.valueOf(pollingInterval) + "s");
+            props.put(FileMonitor.MONITOR_FILES, filesToMonitor);
+            if (fileMonitor == null) {
+                fileMonitor = bundleContext.registerService(FileMonitor.class, this, props);
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc,
+                             "Registered FileMonitor service : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
+                }
+            } else {
+                fileMonitor.setProperties(props);
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Updated FileMonitor service : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
+                }
+            }
+        } else {
+            deactivateFileMonitor();
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc,
+                         "FileMonitor service has been disabled : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
+            }
+        }
+    }
+
     private synchronized void deactivateFileMonitor() {
         if (fileMonitor != null) {
             fileMonitor.unregister();
             fileMonitor = null;
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(this, tc, "Deactivated FileMonitor service.");
-            }
-        }
-    }
-
-    private synchronized void activateFileMonitor(ComponentContext cc) {
-        final BundleContext bundleContext = cc.getBundleContext();
-        final Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put(Constants.SERVICE_VENDOR, "IBM");
-        props.put(FileMonitor.MONITOR_INTERVAL, "2s");
-        props.put(FileMonitor.MONITOR_FILES, filesToMonitor);
-        if (fileMonitor == null) {
-            fileMonitor = bundleContext.registerService(FileMonitor.class, this, props);
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(this, tc, "Registered FileMonitor service : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
-            }
-        } else {
-            fileMonitor.setProperties(props);
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(this, tc, "Updated FileMonitor service : fileLocations=" + filesToMonitor.stream().map(f -> f.toString()).collect(Collectors.joining(", ", "{", "}")));
             }
         }
     }
