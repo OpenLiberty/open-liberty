@@ -402,7 +402,7 @@ public class ClassSourceImpl_MappedContainer
 
         Container useContainer = getContainer();
         if ( !useContainer.isRoot() && useContainer.getPath().equals("/WEB-INF/classes") ) {
-            jandexIndexPath = "../../" + jandexIndexPath;
+            jandexIndexPath = "../.." + jandexIndexPath;
         }
 
         return jandexIndexPath;

@@ -25,7 +25,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.ExtractableArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
@@ -45,36 +47,91 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * keyed by type.
  */
 public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
+	private static final String CLASS_NAME = DirectoryBasedOverlayContainerImpl.class.getSimpleName();
+
+	@Trivial
+	private static String getFullPath(ArtifactContainer container) {
+		StringBuilder pathBuilder = new StringBuilder();
+
+		if ( container.isRoot() ) {
+			getFullPath(container, pathBuilder);
+		} else {
+			ArtifactContainer rootContainer = container.getRoot();
+			getFullPath(rootContainer, pathBuilder);
+			
+			String containerPath = container.getPath();
+			if ( pathBuilder.charAt( pathBuilder.length() - 1) != '/' ) {
+				pathBuilder.append(containerPath);
+			} else {
+				pathBuilder.append( containerPath.substring(1) );
+			}
+		}
+
+		return pathBuilder.toString();
+	}
+
+	@Trivial	
+	private static void getFullPath(ArtifactContainer rootRontainer, StringBuilder pathBuilder) {
+		ArtifactEntry enclosingEntry = rootRontainer.getEntryInEnclosingContainer();
+		if ( enclosingEntry != null ) {
+			ArtifactContainer enclosingRootContainer = enclosingEntry.getRoot();
+			getFullPath(enclosingRootContainer, pathBuilder);
+			
+			String entryPath = enclosingEntry.getPath();
+			if ( pathBuilder.charAt( pathBuilder.length() - 1) != '/' ) {
+				pathBuilder.append(entryPath);
+			} else {
+				pathBuilder.append( entryPath.substring(1) );
+			}
+
+		} else {
+			pathBuilder.append("/");
+		}
+	}
+
     /**
      * Collect the paths of entries of the container.
      * 
-     * Collect local paths: Do not descend into nested containers.
+     * Collect local paths: Descend into local containers, but not into
+     * enclosed containers.
+     * 
+     * Collect the path of the initial container, unless it is a root container.
      * 
      * @param container The container for which to collect paths.
-     * @param storage The collected paths.
+     * @param paths Storage for the collected paths.
      */
-    private static void collectPaths(ArtifactContainer container, Set<String> storage) {
-        if ( !"/".equals( container.getPath() ) ) {
-            storage.add( container.getPath() );
+	@Trivial
+	private static void collectPaths(ArtifactContainer container, Set<String> paths) {
+        if ( !container.isRoot() ) {
+            paths.add( container.getPath() );
         }
 
-        // TODO: This is very expensive!
-        //
-        // Conversion should be to local containers, only.
-        //
-        // Also, entries are added twice, since 'collectPaths' also does
-        // an add.
+        collectChildPaths(container, paths);
+    }
 
+    /**
+     * Collect the paths of entries of the container.
+     * 
+     * Collect local paths: Descend into local containers, but not into
+     * enclosed containers.
+     * 
+     * Do not collect the path of the initial container.
+     * 
+     * @param container The container for which to collect paths.
+     * @param paths Storage for the collected paths.
+     */
+	@Trivial
+    private static void collectChildPaths(ArtifactContainer container, Set<String> paths) {
         for ( ArtifactEntry entry : container ) {
-            storage.add( entry.getPath() );
+            paths.add( entry.getPath() );
 
-            ArtifactContainer entryAsContainer = entry.convertToContainer();
-            if ( (entryAsContainer != null) && !entryAsContainer.isRoot()) {
-                collectPaths(entryAsContainer, storage);
+            ArtifactContainer childContainer = entry.convertToContainer(true);
+            if ( childContainer != null) {
+                collectChildPaths(childContainer, paths);
             }
         }
     }
-
+    
     /**
      * Recursively delete a file.
      * 
@@ -144,6 +201,12 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     // Base container nesting ...
 
     /**
+     * Path used for logging: The full path of the container back to
+     * the root-of-roots.
+     */
+    private final String fullPath;
+
+    /**
      * Link to the enclosing container (of the base container),
      * for a non-root-of-roots container.
      */
@@ -176,7 +239,11 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     /** Paths of removed entries. */
     private final Set<String> maskedEntries;
 
-    /** The artifact container containing added and replaced entries. */
+    /**
+     * The artifact container containing added and replaced entries.
+     *
+     * The overlay container is always a root-of-roots type container.
+     */
     private ArtifactContainer overlayContainer;
 
     /** On-disk root directory containing added and replaced entries. */
@@ -204,11 +271,14 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     /**
      * Create a new root-of-roots overlay.
      * 
-     * @param base The base container of the new container.
-     * @param cfHolder The factory which is creating the container.
+     * @param baseContainer The base container of the new container.
+     * @param containerFactory The factory which is creating the container.
      */
-    public DirectoryBasedOverlayContainerImpl(ArtifactContainer base, ContainerFactoryHolder cfHolder) {
-        this(base, cfHolder, null, null, null);
+    public DirectoryBasedOverlayContainerImpl(
+    	ArtifactContainer baseContainer,
+    	ContainerFactoryHolder containerFactory) {
+
+        this(baseContainer, containerFactory, null, null, null);
     }
 
     /**
@@ -226,11 +296,14 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
      * @param enclosingOverlay The overlay of the root container of the enclosing
      *     entry.
      */
-    public DirectoryBasedOverlayContainerImpl(
+    @SuppressWarnings("deprecation")
+	public DirectoryBasedOverlayContainerImpl(
     	ArtifactContainer baseContainer,
     	ContainerFactoryHolder containerFactory,
     	ArtifactContainer enclosingContainer, ArtifactEntry entryInEnclosingContainer,
     	DirectoryBasedOverlayContainerImpl enclosingOverlay) {
+
+    	String methodName = "<init>";
 
     	// Restrict overlays to root type base containers.
     	// That simplifies the implementation.
@@ -243,7 +316,8 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         
         // The container which is being overlaid.
         this.baseContainer = baseContainer;
-
+        this.fullPath = getFullPath(baseContainer);
+        
         // Links to the next highest tier of containers.
         // Null if this container is the root-of-roots.
         this.enclosingContainer = enclosingContainer;
@@ -272,6 +346,17 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         // this.overlayDirectory
         // this.overlayContainer
         // this.overlayNotifier
+
+    	if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Overlay Container [ {0} ]", this);
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Container factory     [ {0} ]", containerFactory);
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Base container        [ {0} ]", baseContainer);
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Base physical path    [ {0} ]", baseContainer.getPhysicalPath());
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Base full path        [ {0} ]", fullPath);
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Enclosing container   [ {0} ]", enclosingContainer);
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Enclosing entry       [ {0} ]", entryInEnclosingContainer);
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName, "Enclosing overlay     [ {0} ]", enclosingOverlay);
+    	}
     }
 
     /**
@@ -300,11 +385,9 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         if ( !FileUtils.fileExists(cacheDir) || !Utils.fileIsDirectory(cacheDir) ) {
             throw new IllegalArgumentException();
         }
-
         if ( !FileUtils.fileExists(parentOverlayDirectory) || !Utils.fileIsDirectory(parentOverlayDirectory) ) {
             throw new IllegalArgumentException();
         }
-
         File useOverlayDirectory = new File(parentOverlayDirectory, ".overlay");
         if ( !( (FileUtils.listFiles(parentOverlayDirectory).length == 0) ||
                 (FileUtils.fileExists(useOverlayDirectory) && FileUtils.fileIsDirectory(useOverlayDirectory)) ) ) {
@@ -328,6 +411,9 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         }
 
         // All tests have passed ... go ahead and assign the cache and overlay.
+
+        // This method is an extension of the constructor ... keeping 'this' on
+        // variable references to reinforce this sense.
 
         this.cacheDir = cacheDir;
 
@@ -363,27 +449,32 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     //
 
     @Override
+	@Trivial
     public boolean isRoot() {
         return true;
     }
 
     @Override
+	@Trivial
     public ArtifactContainer getRoot() {
         return this;
     }
 
     @Override
+	@Trivial
     public ArtifactContainer getContainerBeingOverlaid() {
         return baseContainer;
     }
 
     @Override
+	@Trivial
     public String getPath() {
     	// Should be just '/', since this is a root container.
         return baseContainer.getPath();
     }
 
     @Override
+	@Trivial
     public String getName() {
         return "/";
     }
@@ -391,11 +482,13 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     //
 
     @Override
+	@Trivial
     public ArtifactContainer getEnclosingContainer() {
         return enclosingContainer;
     }
 
     @Override
+	@Trivial
     public ArtifactEntry getEntryInEnclosingContainer() {
         return entryInEnclosingContainer;
     }
@@ -436,11 +529,13 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     }
 
     @Override
+	@Trivial
     public void useFastMode() {
         baseContainer.useFastMode();
     }
 
     @Override
+	@Trivial
     public void stopUsingFastMode() {
         baseContainer.stopUsingFastMode();
     }
@@ -459,6 +554,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     //
 
     @Override
+	@Trivial
     public ArtifactNotifier getArtifactNotifier() {
         if ( overlayNotifier == null ) {
             throw new IllegalStateException();
@@ -468,6 +564,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
 
     @Override
+	@Trivial
     public OverlayContainer getParentOverlay() {
         return enclosingOverlay;
     }
@@ -476,131 +573,276 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
     @Override
     public void addToNonPersistentCache(String path, Class<?> owner, Object data) {
+    	String methodName = "addToNonPersistentCache";
+
+        // Use the cache logger to avoid interactions with injected trace.
+        // Placing the logger in OverlayCache means it will be used
+        // both for custom logging and for injected trace.
+    	
+    	if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName,
+    			"Overlay [ {0} ] at [ {1} : {2} ] put [ {3} ]",
+    			new Object[] { fullPath, path, owner.getSimpleName(), data });
+    	}
+    	
         cacheStore.addToCache(path, owner, data);
     }
 
     @Override
     public void removeFromNonPersistentCache(String path, Class<?> owner) {
+    	String methodName = "removeFromNonPersistentCache";
+    
+        // Use the cache logger to avoid interactions with injected trace.
+        // Placing the logger in OverlayCache means it will be used
+        // both for custom logging and for injected trace.
+
+    	if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName,
+    			"Overlay [ {0} ] at [ {1} : {2} ]",
+    			new Object[] { fullPath, path, owner.getSimpleName() });
+    	}
+    	
         cacheStore.removeFromCache(path, owner);
     }
 
     @Override
     public Object getFromNonPersistentCache(String path, Class<?> owner) {
-        return cacheStore.getFromCache(path, owner);
+    	String methodName = "getFromNonPersistentCache";
+    	
+        // Use the cache logger to avoid interactions with injected trace.
+        // Placing the logger in OverlayCache means it will be used
+        // both for custom logging and for injected trace.
+    	
+        Object data = cacheStore.getFromCache(path, owner);
+        
+    	if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+    		OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName,
+    			"Overlay [ {0} ] at [ {1} : {2} ] [ {3} ]",
+    			new Object[] { fullPath, path, owner.getSimpleName(), data });
+    	}
+
+    	return data;
     }
     
     //
 
+    /**
+     * Answer the entry for a specified path.
+     * 
+     * If the path is masked, answer null: Masking has the effect of removing
+     * a path from the container.
+     * 
+     * If the path has an alternate, answer the entry from the overlay container.
+     * 
+     * If the path does not have an alternate, answer the entry from the base
+     * container.
+     * 
+     * Answer null if the path is found in neither the overlay nor the base
+     * container.
+     * 
+     * The path may contain relative path entries ("." and "..").  Self entries
+     * (".") are simply removed.  Upwards entries ("..") are removed together with
+     * their immediately preceding path entry.
+     * 
+     * Paths which reach above the container always answer null: <code>getEntry</code>
+     * does not traverse to enclosing containers.
+     * 
+     * A path which reaches into an enclosed container always answers null:
+     * <code>getEntry</code> does not traverse to enclosed containers. 
+     * 
+     * The receiver is always a root container: The result does not change depending on
+     * whether a relative or an absolute path is specified.
+     * 
+     * @param path The path of the entry to retrieve.
+     * 
+     * @return The entry having the specified path.  Answer null if the path is
+     *    masked or does not exist in either the base container or in the overlay
+     *    container.
+     */
     @Override
-    public ArtifactEntry getEntry(String pathAndName) {
-        //added to make getEntry go faster for non-overlaid containers (most jar files)
-        if (isPassThroughMode) {
-            ArtifactEntry baseEntry = baseContainer.getEntry(pathAndName);
-            if (baseEntry != null) {
-                //note use of baseEntry.getPath to set the overlay entry path, pathAndName is unsanitized, 
-                //getPath will always be clean.
-                return new OverlayDelegatingEntry(this, baseEntry, baseEntry.getName(), baseEntry.getPath(), overlayContainer);
+    public ArtifactEntry getEntry(String path) {
+        if ( isPassThroughMode ) {
+            ArtifactEntry baseEntry = baseContainer.getEntry(path);
+            if ( baseEntry != null ) {
+            	// The result must be shifted back to the overlay level.
+            	// Subsequent accesses to the artifact file system through
+            	// the returned entry must use the overlay information.
+            	//
+            	// Local access through the base entry can safely disregard the
+            	// overlay settings.  Access from the base entry to the enclosing
+            	// container or to an enclosed container cannot disregard the
+            	// overlay settings.
+
+            	// Note that the path has not been normalized.  That is done
+            	// by 'baseContainer.getEntry'.  The path from the base entry
+            	// which is normalized, must be used when constructing the
+            	// overlay entry.
+
+                return new OverlayDelegatingEntry(
+                	this,
+                	baseEntry, baseEntry.getName(), baseEntry.getPath(),
+                	overlayContainer);
+
             } else {
                 return null;
             }
         }
 
-        pathAndName = PathUtils.normalizeUnixStylePath(pathAndName);
-
-        //check the path is not trying to go upwards.
-        if (!PathUtils.isNormalizedPathAbsolute(pathAndName)) {
+        // Consume any '.' and '..' entries ...
+        path = PathUtils.normalizeUnixStylePath(path);
+        // ... and make sure there are no remaining leading '..' entries.
+        if ( !PathUtils.isNormalizedPathAbsolute(path) ) {
             return null;
         }
 
-        //overlay only works at root, so all relative
-        //paths can be converted to absolute safely.
-        if (!pathAndName.startsWith("/")) {
-            pathAndName = "/" + pathAndName;
-        }
+        // Check for root paths, and convert any non-root path to
+        // be a root path.
 
-        if (pathAndName.equals("/") || pathAndName.equals("")) {
-            return null;
-        }
-
-        //ignore masked entries.
-        if (!maskedEntries.contains(pathAndName)) {
-            ArtifactEntry target = null;
-            if (overlayContainer != null) {
-                target = overlayContainer.getEntry(pathAndName);
-            }
-            if (target == null) {
-                //if attempting to use overrides failed, try the base ArtifactContainer.
-                target = baseContainer.getEntry(pathAndName);
-            }
-            //make sure we always wrapper the return, so we get to handle the
-            //navigation calls.
-            if (target != null) {
-                //swapped from using pathAndName, to using getPath, to build path-sanitised overlay entries 
-                return new OverlayDelegatingEntry(this, target, target.getName(), target.getPath(), overlayContainer);
-            } else {
-                return null;
-            }
+        if ( path.isEmpty() ) {
+            // Initial path was "": Non-absolute but root.
+    		// The root path has no entry. 
+        	return null;
+        } if ( path.charAt(0) == '/' ) {
+        	if ( path.length() == 1 ) {
+        		// Initial path was "/": Absolute and root
+        		// The root path has no entry. 
+        		return null;
+        	} else {
+        		// Initial path was "/" plus text: Absolute and non-root
+        		// No adjustment is needed.
+        	}
         } else {
+        	// Initial path is absolute and non-root.
+        	// Adjust to be an absolute path.
+        	path = "/" + path;
+        }
+
+        if ( maskedEntries.contains(path) ) {
             return null;
         }
+
+        ArtifactEntry entry = null;
+        if ( overlayContainer != null ) {
+        	entry = overlayContainer.getEntry(path);
+        }
+        if ( entry == null ) {
+        	entry = baseContainer.getEntry(path);
+        }
+        if ( entry == null ) {
+        	return null;
+        }
+        
+        // The path *should* be OK to use at this point, since it
+        // has been normalized.  But, to keep in parallel with the
+        // pass-through case, use the name and path from the selected
+        // entry.
+        
+    	// The result must be shifted back to the overlay level.
+    	// Subsequent accesses to the artifact file system through
+    	// the returned entry must use the overlay information.
+        
+        return new OverlayDelegatingEntry(
+        	this,
+        	entry, entry.getName(), entry.getPath(),
+        	overlayContainer);
     }
 
     //
 
+    // TODO:
+    //
+    // Need to define and handle interactions between masked entries and overlaid entries.
+    //
+    // The current implementation doesn't handle those interactions at all.
+
     @Override
     public void mask(String path) {
-        this.isPassThroughMode = false;
-        //notifier is created when the dir overlay path is set via setOverlayDirectory
-        if (this.overlayNotifier == null) {
+    	// State check: Don't allow masking until the overlay is set.
+    	if ( overlayNotifier == null ) {
             throw new IllegalStateException();
         }
-        //use getEntry to see if we know about the path currently.
-        if (this.getEntry(path) != null) {
 
-            Set<String> paths = new HashSet<String>();
-            paths.add(path);
-            //convert the entry we know not to be null, into a container, only if it is not a new root.
-            ArtifactContainer entryAsContainer = this.getEntry(path).convertToContainer(true);
-            if (entryAsContainer != null) {
-                collectPaths(entryAsContainer, paths);
-            }
+    	// Don't do anything if the entry doesn't exist, or if it was
+    	// already masked.
 
-            //kick the notifier to tell it the path has 'gone'.
-            this.overlayNotifier.notifyEntryChange(new DefaultArtifactNotification(this, Collections.<String> emptySet()),
-                                                   new DefaultArtifactNotification(this, paths),
-                                                   new DefaultArtifactNotification(this, Collections.<String> emptySet()));
+    	ArtifactEntry maskedEntry = getEntry(path);
+    	if ( maskedEntry == null ) {
+    		return; // Nothing there to remove!
+    	} else if ( !maskedEntries.add(path) ) {
+    		return; // Already removed!
+    	}
+
+        isPassThroughMode = false;
+
+        Set<String> newlyRemovedPaths;
+
+        ArtifactContainer entryAsContainer = getEntry(path).convertToContainer(true);
+        if ( entryAsContainer == null ) {
+        	newlyRemovedPaths = Collections.singleton(path);
+        } else {
+        	newlyRemovedPaths = new HashSet<String>();
+        	newlyRemovedPaths.add(path);
+        	// TODO: Does this account for removed children of the
+        	//       newly masked container?
+        	collectChildPaths(entryAsContainer, newlyRemovedPaths);
         }
-        maskedEntries.add(path);
+
+        // Let the world now that the paths are now absent: Masking them
+        // is the equivalent of removing them.
+        
+        overlayNotifier.notifyEntryChange(
+        	new DefaultArtifactNotification(this, Collections.<String> emptySet()),
+        	new DefaultArtifactNotification(this, newlyRemovedPaths),
+        	new DefaultArtifactNotification(this, Collections.<String> emptySet()));
     }
 
     @Override
     public void unMask(String path) {
-
-        //notifier is created when the dir overlay path is set via setOverlayDirectory
-        if (this.overlayNotifier == null) {
+    	// State check: Don't allow masking until the overlay is set.
+        if ( overlayNotifier == null ) {
             throw new IllegalStateException();
         }
-        maskedEntries.remove(path);
 
-        // TODO: This is wrong!  Have to test if the overlay is empty, too.        
-        this.isPassThroughMode = maskedEntries.isEmpty();
-
-        //use getEntry to see if we know about the path now it's unmasked.
-        if (this.getEntry(path) != null) {
-
-            Set<String> paths = new HashSet<String>();
-            paths.add(path);
-            //convert the entry we know not to be null, into a container, only if it is not a new root.
-            ArtifactContainer entryAsContainer = this.getEntry(path).convertToContainer(true);
-            if (entryAsContainer != null) {
-                collectPaths(entryAsContainer, paths);
-            }
-
-            //kick the notifier to tell it the path has been 'added'. 
-            this.overlayNotifier.notifyEntryChange(new DefaultArtifactNotification(this, paths),
-                                                   new DefaultArtifactNotification(this, Collections.<String> emptySet()),
-                                                   new DefaultArtifactNotification(this, Collections.<String> emptySet()));
+        // Nothing to do: The entry was not previously masked.
+        if ( !maskedEntries.remove(path) ) {
+        	return;
         }
+
+        isPassThroughMode = maskedEntries.isEmpty(); // TODO: But what about the overlay contents???
+
+        ArtifactEntry removedEntry = getEntry(path);
+
+        if ( removedEntry == null ) {
+        	// This can happen because interaction between the overlay and masking is incomplete:
+        	// This sequence shows the problem:
+        	//   Add entry to overlay;
+        	//   Mask entry;
+        	//   Remove entry from overlay;
+        	//   Remove mask from entry
+
+        	return;
+        }
+
+        Set<String> previouslyRemovedPaths;
+
+        ArtifactContainer entryAsContainer = getEntry(path).convertToContainer(true);
+        if ( entryAsContainer == null ) {
+        	previouslyRemovedPaths = Collections.singleton(path);
+        } else {
+        	previouslyRemovedPaths = new HashSet<String>();
+        	previouslyRemovedPaths.add(path);
+        	// TODO: Does this account for removed children of the
+        	//       newly masked container?
+        	collectChildPaths(entryAsContainer, previouslyRemovedPaths);
+        }
+
+        // Let the world now that the paths are now present: Unmasking them
+        // is the equivalent of adding them.
+
+        overlayNotifier.notifyEntryChange(
+        	new DefaultArtifactNotification(this, previouslyRemovedPaths),
+        	new DefaultArtifactNotification(this, Collections.<String> emptySet()),
+        	new DefaultArtifactNotification(this, Collections.<String> emptySet()));
     }
 
     @Override
@@ -613,149 +855,281 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         return maskedEntries;
     }
 
-    /**
-     * Clones an ArtifactEntry to the overlay directory, by reading the data from the ArtifactEntry, and writing
-     * it to the directory at the requested path, or converting it to a ArtifactContainer and processing
-     * the entries recursively.<br>
-     * Entries that convert to ArtifactContainers that claim to be isRoot true, are not processed recursively.
-     * 
-     * @param e The ArtifactEntry to add
-     * @param path The path to add the ArtifactEntry at
-     * @param addAsRoot If the ArtifactEntry converts to a ArtifactContainer, should the isRoot be overridden? null = no, non-null=override value
-     * @return true if the ArtifactEntry added successfully
-     * @throws IOException if error occurred during reading of the streams.
-     */
-    private synchronized boolean cloneEntryToOverlay(ArtifactEntry e, String path, Boolean addAsRoot) throws IOException {
+    private static long transfer(InputStream sourceStream, File targetFile) throws IOException {
+    	long totalBytesRead = 0L;
 
-        //validate the ArtifactEntry.. 
-        InputStream i = null;
-        ArtifactContainer c = null;
+        FileOutputStream targetStream = null;
         try {
-            i = e.getInputStream();
-            c = e.convertToContainer();
-            if (i == null && c == null) {
-                return false; //reject nonsense entries with no data & no ArtifactContainer.
+            targetStream = Utils.getOutputStream(targetFile, false); // Overwrite // throws IOException
+
+            sourceStream = new BufferedInputStream(sourceStream);
+
+            byte transferBuffer[] = new byte[1024 * 32];
+
+            int bytesRead;
+            while ( (bytesRead = sourceStream.read(transferBuffer)) > 0 ) {
+                totalBytesRead += bytesRead;
+                targetStream.write(transferBuffer, 0, bytesRead); // throws IOException
             }
-            if (i == null && c != null) {
-                boolean root = addAsRoot != null ? addAsRoot.booleanValue() : c.isRoot();
-                if (root)
-                    return false; //reject ArtifactContainers with no data that wish to be a new root. 
-            }
 
-            if (i != null) {
-                File f = new File(overlayDirectory, path);
-                //make a dir to put it in if there isnt one yet..
-                File parent = f.getParentFile();
-                if (!FileUtils.fileExists(parent)) {
-                    //might not be able to add this, if there's a file already clashing where we need a dir.
-                    if (!FileUtils.fileMkDirs(parent))
-                        return false;
-                }
-
-                FileOutputStream fos = null;
-                try {
-                    //set false to overwrite if its already there..
-                    fos = Utils.getOutputStream(f, false);
-
-                    //wrap it up in an attempt to ensure it's got some buffering.
-                    i = new BufferedInputStream(i);
-
-                    //rip out the data & spew it to the file.
-                    byte buf[] = new byte[1024];
-                    int len;
-                    while ((len = i.read(buf)) > 0) {
-                        fos.write(buf, 0, len);
-                    }
-                    fos.close();
-
-                } finally {
-                    if (fos != null) {
-                        fos.close();
-                    }
-                }
-
-            } else {
-                //can't obtain inputstream.. is this convertible ??
-                if (c != null) {
-                    for (ArtifactEntry nested : c) {
-                        //we don't use the boolean root, as the override only applies for the 1st conversion.
-                        //where it prevents us adding c.isRoot when we are told not to care.
-                        cloneEntryToOverlay(nested, path + "/" + nested.getName(), c.isRoot());
-                    }
-                }
-            }
         } finally {
-            if (i != null) {
-                try {
-                    i.close();
-                } catch (IOException e1) {
-                }
+            if ( targetStream != null ) {
+                targetStream.close(); // throws IOException
             }
         }
+        
+        return totalBytesRead;
+    }
+
+    /**
+     * Copy an artifact entry into the overlay directory.
+     * 
+     * Either, copy the entry as a basic file, or, traverse the entry as a container
+     * and copy each of* the child entries.
+	 *
+     * Entries which convert to root containers are not copied, unless the override
+     * flag is provided and is false.
+     * 
+     * @param sourceEntry The entry to add to the overlay.
+     * @param path A path prefix used for entries which are added.
+     * @param rootOverride Flag which overrides processing of entries which are
+     *     root containers.
+     * 
+     * @return True or false telling if the entry was added.
+     *
+     * @throws IOException If an error occurred while copying the entry.
+     */
+    private synchronized boolean copyToOverlay(
+    	ArtifactEntry sourceEntry,
+    	String path,
+    	Boolean rootOverride) throws IOException {
+
+    	// TODO: Note that no attempt is made to convert the source entry to
+    	//       a container if immediate data is available for the entry.
+    	//
+    	//       Then, nested containers which have immediate data are always
+    	//       simply copied.  In particular, nested archives will always
+    	//       be simply copied.
+    	//
+    	//       That doesn't seem to match the intent expressed in the
+    	//       documentation.
+
+        InputStream sourceStream = null;
+        try {
+            sourceStream = sourceEntry.getInputStream(); // throws IOException
+
+            if ( sourceStream == null ) {
+            	// The entry has no immediate data ...
+
+                ArtifactContainer sourceContainer = sourceEntry.convertToContainer();
+            	if ( sourceContainer == null ) {
+            		// ... and it cannot be converted to a container!
+            		return false;
+            	}
+
+            	// Apply the override, and do not process the entry if it is a root
+            	// container.
+
+                boolean sourceIsRoot = sourceContainer.isRoot();
+                if ( ((rootOverride != null) && rootOverride.booleanValue()) ||
+                     ((rootOverride == null) && sourceIsRoot) ) {
+                    return false;
+                }
+
+                // Don't use the root override for child entries.
+
+                Boolean childRootOverride = Boolean.valueOf(sourceIsRoot);
+            	for ( ArtifactEntry childEntry : sourceContainer ) {
+            		copyToOverlay(childEntry, path + "/" + childEntry.getName(), childRootOverride);
+                }
+            	
+            	// TODO: The root override processing seems muddled (and incorrect) ...
+            	//
+            	//       The override value is not used for any entry which has immediate data,
+            	//       which means it won't apply to nested archives.
+            	//
+            	//       The override value used for child entries is confused.  This follows
+            	//       from a review of cases for directory and archive type entries considered
+            	//       with cases of an initial override value and with combinations of
+            	//       directory and archive type entries having a parent/child relationship. 
+
+            } else {
+            	// The source entry has immediate data ...
+
+                File targetFile = new File(overlayDirectory, path);
+
+                File parentTargetFile = targetFile.getParentFile();
+                if ( !FileUtils.fileExists(parentTargetFile) ) {
+                    if ( !FileUtils.fileMkDirs(parentTargetFile) ) {
+                        return false;
+                    }
+                }
+
+                @SuppressWarnings("unused")
+				long bytesRead = transfer(sourceStream, targetFile);
+            }
+
+        } finally {
+            if ( sourceStream != null ) {
+            	sourceStream.close(); // throws IOException
+            }
+        }
+
         return true;
     }
 
+    /**
+     * Copy an entry into the overlay.  Use the path of the entry as the path
+     * at which to add the entry.
+     *
+     * {@link #addToOverlay(ArtifactEntry)} differs from
+     * {@link #addToOverlay(ArtifactEntry, String, boolean} in that
+     * the latter requires a root override value, while the former
+     * invokes {@link #copyToOverlay} with a null root override value.
+     *
+     * @param entry The entry to copy into the overlay.
+     *
+     * @return True or false telling if the entry was fully copied into
+     *     the overlay.
+     */    
     @Override
-    public boolean addToOverlay(ArtifactEntry e) {
-        //don't allow the add if we're not set with a dir yet!
-        if (overlayContainer == null)
+    public boolean addToOverlay(ArtifactEntry entry) {
+    	// State check: Don't allow overlay additions until the overlay is set.
+        if ( overlayContainer == null ) {
             throw new IllegalStateException();
+        }
 
-        this.isPassThroughMode = false;
+        // TODO: What should happen if an entry which does not exist in either
+        //       the base container or the overlay is masked, then that entry
+        //       is added to the overlay?
+
+        isPassThroughMode = false;
 
         try {
-            return cloneEntryToOverlay(e, e.getPath(), null);
-        } catch (IOException e1) {
+            return copyToOverlay(entry, entry.getPath(), null);
+
+        } catch ( IOException e ) {
+        	// FFDC
             return false;
+
+            // TODO: A failure to copy an entry to the overlay will have
+            //       an indeterminate effect: The overlay may receive
+            //       nothing at all, or may receive a partial update.
+        	//       The result is that pass-through mode may be incorrect
+        	//       set after a failure.
         }
     }
 
+    /**
+     * Copy an entry into the overlay at the specified path.
+     * 
+     * @param entry The entry to copy into the overlay.
+     * @param path The path at which to place the entry.
+     * @param rootOverride Flag which overrides processing of entries which are
+     *     root containers.
+     *  
+     * @return True or false telling if the entry was fully copied into
+     *     the overlay.
+     */
     @Override
-    public boolean addToOverlay(ArtifactEntry e, String path, boolean addAsRoot) {
-        //don't allow the add if we're not set with a dir yet!
-        if (overlayContainer == null)
+    public boolean addToOverlay(ArtifactEntry entry, String path, boolean rootOverride) {
+    	// State check: Don't allow overlay additions until the overlay is set.
+        if ( overlayContainer == null ) {
             throw new IllegalStateException();
+        }
 
-        this.isPassThroughMode = false;
+        // TODO: What should happen if an entry which does not exist in either
+        //       the base container or the overlay is masked, then that entry
+        //       is added to the overlay?
+        
+        isPassThroughMode = false;
 
         try {
-            return cloneEntryToOverlay(e, path, addAsRoot);
-        } catch (IOException e1) {
+            return copyToOverlay(entry, path, rootOverride);
+
+        } catch ( IOException e ) {
+        	// FFDC
             return false;
+            
+            // TODO: A failure to copy an entry to the overlay will have
+            //       an indeterminate effect: The overlay may receive
+            //       nothing at all, or may receive a partial update.
+        	//       The result is that pass-through mode may be incorrect
+        	//       set after a failure.            
         }
     }
 
+    /**
+     * Remove the entry at a specified path from the overlay.
+     * 
+     * If the path is a local container of the overlay (meaning, a directory),
+     * remove the directory contents recursively, then remove the
+     * directory.
+     * 
+     * @return True or false telling if the entry is completely
+     *     removed from the overlay.
+     */
     @Override
     public synchronized boolean removeFromOverlay(String path) {
-        //don't allow the remove if we're not set with a dir yet!
-        if (overlayContainer == null)
+    	// State check: Don't allow overlay removals until the overlay is set.
+        if ( overlayContainer == null ) {
             throw new IllegalStateException();
-
-        //if path exists under this.overlayDirectory, then delete it, and any content beneath it.
-        File f = new File(overlayDirectory, path);
-        if (FileUtils.fileExists(f)) {
-            return removeFile(f);
         }
-        return false;
+
+        // TODO: This does not adjust pass-through mode!
+
+        File overlayFile = new File(overlayDirectory, path);
+        return ( FileUtils.fileExists(overlayFile) && removeFile(overlayFile) );
     }
-    
+
+    /**
+     * Tell if a path has an overlay value.
+     * 
+     * The root path is never overlaid.  That would mean the entire container
+     * was replaced, and that would be done by the enclosing container.
+     *
+     * The result does not take into account masked entries.  A separate check
+     * must be made to tell if a path is masked.
+     * 
+     * A path which is overlaid may represent either a replacement of an existing
+     * entry or the the addition of a whole new entry.
+     * 
+     * @param path The path to test.
+     * 
+     * @return True or false telling if an overlay entry is available for the
+     *     path.
+     */
     @Override
     public boolean isOverlaid(String path) {
-        //the root is never allowed to be overlaid, that's the purpose of this overlay container.
-        if ("/".equals(path))
+        if ( "/".equals(path) ) {
             return false;
+        }
+        
+        // TODO: This is not consistent with the other overlay APIs,
+        //       most of which fail with an IllegalArgumentException
+        //       if the overlay container is not yet set.
 
-        if (overlayContainer != null)
+        if ( overlayContainer != null ) {
             return overlayContainer.getEntry(path) != null;
-        else
+        } else {
             return false;
+        }
     }
 
+    /**
+     * Collect and return all overlaid paths.
+     * 
+     * @return All overlaid paths.
+     */
     @Override
     public Set<String> getOverlaidPaths() {
-        Set<String> paths = new HashSet<String>();
-        collectPaths(overlayContainer, paths); // This is expensive!
-        return paths;
+        // TODO: This is not consistent with the other overlay APIs,
+        //       most of which fail with an IllegalArgumentException
+        //       if the overlay container is not yet set.
+
+        Set<String> overlaidPaths = new HashSet<String>();
+        collectChildPaths(overlayContainer, overlaidPaths);
+        return overlaidPaths;
     }
 
     //
@@ -903,8 +1277,6 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
     }
 
-    //
-    
     //
     
     /**
@@ -1304,7 +1676,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
     	return result;
     }
 
-    //
+    // TODO: Are these used anywhere?  They seem to be obsolete.
     
     /**
      * Represents an Imaginary node.
@@ -1381,6 +1753,8 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
             return null;
         }
 
+        // Eclipse incorrectly doesn't notice the deprecation.        
+        @SuppressWarnings("deprecation")
         @Override
         public String getPhysicalPath() {
             return null;
@@ -1468,12 +1842,14 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
             throw new UnsupportedOperationException();
         }
 
+        // Eclipse incorrectly doesn't notice the deprecation.
+        @SuppressWarnings("deprecation")
         @Override
         public String getPhysicalPath() {
             return null;
         }
 
-        @Override
+        @Override        
         public ArtifactNotifier getArtifactNotifier() {
             throw new UnsupportedOperationException();
         }
