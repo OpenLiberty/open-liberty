@@ -41,15 +41,12 @@ public class HpelBaseTraceService extends BaseTraceService {
     /** {@inheritDoc} */
     @Override
     public void echo(SystemLogHolder holder, LogRecord logRecord) {
-        //replace this with the echo in BTS
         if (copySystemStreams) {
             writeFilteredStreamOutput(holder, logRecord);
         }
-        //keep this
         trWriter.repositoryPublish(logRecord);
     }
 
-    //remove this method
     boolean notifyConsole(LogRecord logRecord) {
         int levelValue = logRecord.getLevel().intValue();
 
@@ -108,7 +105,6 @@ public class HpelBaseTraceService extends BaseTraceService {
                     return;
             }
             trWriter.repositoryPublish(logRecord);
-            //logsource.publish
         }
         //Route other types of logs (<INFO) to trace (RTC237423)
         else {

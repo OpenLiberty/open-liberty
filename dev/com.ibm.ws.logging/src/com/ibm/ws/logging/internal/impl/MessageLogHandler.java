@@ -25,10 +25,6 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class MessageLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     private TraceWriter traceWriter;
-    /*
-     * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
-     */
-//    private volatile Object sync;
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
