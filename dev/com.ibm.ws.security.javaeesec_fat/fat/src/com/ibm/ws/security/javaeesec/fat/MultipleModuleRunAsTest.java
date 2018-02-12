@@ -387,7 +387,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * <LI> runas user is properly set.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -503,7 +503,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * <LI> runas user is properly set.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAsAppBndXml() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
