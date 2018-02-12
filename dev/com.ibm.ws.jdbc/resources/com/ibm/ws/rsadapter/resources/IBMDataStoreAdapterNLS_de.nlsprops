@@ -282,14 +282,7 @@ META_DATA_EXCEPTION=DSRA7018I: Der Zugriff auf die Metadaten der Datenbank haben
 META_DATA_EXCEPTION.explanation=Es ist eine Ausnahme vom Typ eingetreten, als der Anwendungsserver versucht hat, auf das Metadatenobjekt f\u00fcr die Datenbank zuzugreifen.
 META_DATA_EXCEPTION.useraction=Stellen Sie sicher, dass die Metadaten in der Back-End-Datenbank aktiviert sind.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Der Anwendungsserver hat das interne Pooling von Verbindungen inaktiviert.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Der Anwendungsserver hat festgestellt, dass das Verbindungs-Caching \u00fcber die Datenbank aktiviert ist. Das Verbindungs-Pooling im Anwendungsserver wird inaktiviert.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Wenn Sie das Verbindungs-Pooling im Anwendungsserver nicht inaktivieren m\u00f6chten, inaktivieren Sie das Verbindungs-Pooling f\u00fcr den Datenbankserver.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

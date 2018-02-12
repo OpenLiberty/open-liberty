@@ -115,6 +115,12 @@ INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=\u8bf7\u53c2\u9605\u4ea7
 MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: console.log \u548c messages.log \u6587\u4ef6\u4e2d\u9690\u85cf\u4e86\u4ee5\u4e0b\u6d88\u606f\uff1a{0}
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=\u914d\u7f6e\u4e3a\u9690\u85cf\u7684\u6d88\u606f\u4e0d\u4f1a\u5199\u81f3 console.log \u548c messages.log \u6587\u4ef6\u3002\u5b83\u4eec\u4f1a\u5199\u81f3 trace.log \u6587\u4ef6\u3002
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c
+MESSAGE_FORMAT_UPDATED=TRAS3002I: messages.log \u8f93\u51fa\u683c\u5f0f\u73b0\u5728\u5df2\u66f4\u65b0\u4e3a\u201c{0}\u201d\u3002
+MESSAGE_FORMAT_UPDATED.explanation=\u73b0\u5728\u5df2\u66f4\u65b0 messages.log \u7684\u8f93\u51fa\u683c\u5f0f\u3002
+MESSAGE_FORMAT_UPDATED.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+CONSOLE_FORMAT_UPDATED=TRAS3003I: \u63a7\u5236\u53f0\u8f93\u51fa\u683c\u5f0f\u73b0\u5728\u5df2\u66f4\u65b0\u4e3a\u201c{0}\u201d\u3002
+CONSOLE_FORMAT_UPDATED.explanation=\u73b0\u5728\u5df2\u66f4\u65b0\u63a7\u5236\u53f0\u7684\u8f93\u51fa\u683c\u5f0f\u3002
+CONSOLE_FORMAT_UPDATED.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

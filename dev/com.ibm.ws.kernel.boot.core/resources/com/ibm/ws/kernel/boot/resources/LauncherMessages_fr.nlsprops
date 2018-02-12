@@ -663,6 +663,15 @@ error.zosProcStart.jobname.invalid=CWWKE0943E: Echec du d\u00e9marrage de la pro
 error.zosProcStart.jobname.invalid.explanation=Le nom de travail STC sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 WLP_ZOS_JOBNAME dans le fichier server.env n'est pas valide. Le nom de travail ne doit pas d\u00e9passer huit caract\u00e8res et ne doit pas comporter de virgule.
 error.zosProcStart.jobname.invalid.useraction=V\u00e9rifiez que le nom du travail ne d\u00e9passe pas huit caract\u00e8res et ne contient pas de virgule.
 
+error.server.pause.command.port.disabled=CWWKE0944E: Une demande de mise en pause a \u00e9t\u00e9 re\u00e7ue pour le serveur {0}, mais le port de commande du serveur est d\u00e9sactiv\u00e9. Impossible de traiter la demande. Activez le port de commande et r\u00e9essayez.
+error.server.pause.command.port.disabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution. Le port de commande est d\u00e9sactiv\u00e9 pour ce serveur ; par cons\u00e9quent, la demande de mise en pause n'a pas pu \u00eatre trait\u00e9e. Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.server.pause.command.port.disabled.useraction=Activez le port de commande pour ce serveur. Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, cette mise en pause peut aussi \u00eatre demand\u00e9e depuis la console op\u00e9rateur.
+
+error.server.resume.command.port.disabled=CWWKE0945E: Une demande de reprise a \u00e9t\u00e9 re\u00e7ue pour le serveur {0}, mais le port de commande du serveur est d\u00e9sactiv\u00e9. Impossible de traiter la demande. Activez le port de commande et r\u00e9essayez.
+error.server.resume.command.port.disabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution. Le port de commande est d\u00e9sactiv\u00e9 pour ce serveur ; par cons\u00e9quent, la demande de reprise n'a pas pu \u00eatre trait\u00e9e. \
+Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.server.resume.command.port.disabled.useraction=Activez le port de commande pour ce serveur. Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, cette reprise peut aussi \u00eatre demand\u00e9e depuis la console op\u00e9rateur.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.

@@ -48,21 +48,74 @@ class ThroughputDistribution {
     double ewmaVariance = Double.NEGATIVE_INFINITY;
 
     /**
+     * The standard deviation of the observed data.
+     * <p>
+     * The value {@code Double.NEGATIVE_INFINITY} indicates no observations
+     * have been made.
+     */
+    double ewmaStddev = Double.NEGATIVE_INFINITY;
+
+    /**
+     * The last controller cycle when this distribution was updated. The controller
+     * will discard old data.
+     * This is an int - at 1500ms controller cycles, that allows for 100+ years of
+     * continuous controller operation (no restarts) before it would recycle.
+     */
+    int lastUpdate = 0;
+
+    synchronized void setLastUpdate(int update) {
+        lastUpdate = update;
+    }
+
+    synchronized int getLastUpdate() {
+        return lastUpdate;
+    }
+
+    /**
+     * How many times in a row this distribution has received an outlier value (as
+     * determined by the caller).
+     */
+    int consecutiveOutliers = 0;
+
+    synchronized int incrementAndGetConsecutiveOutliers() {
+        consecutiveOutliers++;
+        return consecutiveOutliers;
+    }
+
+    synchronized void resetConsecutiveOutliers() {
+        consecutiveOutliers = 0;
+    }
+
+    /**
      * Reset the distribution by throwing away all history and
      * adding a single data point.
-     * 
+     *
      * @param value the single data point that makes up the distribution
      */
-    synchronized void reset(double value) {
+    synchronized void reset(double value, int updated) {
         ewma = value;
-        ewmaVariance = value * SINGLE_VALUE_STDDEV;
-        ewmaVariance *= ewmaVariance;
+        ewmaStddev = value * SINGLE_VALUE_STDDEV;
+        ewmaVariance = ewmaStddev * ewmaStddev;
+        consecutiveOutliers = 0;
+        lastUpdate = updated;
+    }
+
+    /**
+     * Get the standard deviation of the observed data.
+     *
+     * @return the standard deviation of the observed data
+     */
+    synchronized double getStddev() {
+        if (ewmaStddev == Double.NEGATIVE_INFINITY) {
+            return 0.0;
+        }
+        return ewmaStddev;
     }
 
     /**
      * Get the variance of the observed data. The variance is the square
      * of the standard deviation.
-     * 
+     *
      * @return the variance of the observed data
      */
     synchronized double getVariance() {
@@ -75,7 +128,7 @@ class ThroughputDistribution {
     /**
      * Get the exponentially weighted moving average of the observed data.
      * This value can be treated as a forecast of future values.
-     * 
+     *
      * @return the moving average of the observed data
      */
     synchronized double getMovingAverage() {
@@ -83,15 +136,15 @@ class ThroughputDistribution {
     }
 
     /**
-     * Add a throughput observation to the distribution.
-     * 
+     * Add a throughput observation to the distribution, setting lastUpdate
+     *
      * @param value the observed throughput
      */
-    synchronized void addDataPoint(double value) {
+    synchronized void addDataPoint(double value, int updated) {
         // 8/10/2012: Force the standard deviation to 1/3 of the first data point
         // 8/11:2012: Force it to 1/6th of the first data point (more accurate)
         if (ewmaVariance == Double.NEGATIVE_INFINITY) {
-            reset(value);
+            reset(value, updated);
             return;
         }
 
@@ -100,6 +153,9 @@ class ThroughputDistribution {
 
         ewma += increment;
         ewmaVariance = (1 - ALPHA) * (ewmaVariance + delta * increment);
+        ewmaStddev = Math.sqrt(ewmaVariance);
+
+        lastUpdate = updated;
     }
 
     /**
@@ -107,12 +163,12 @@ class ThroughputDistribution {
      * throughput data. The z-score helps to normalize a distribution
      * to the <em>standard</em> normal distribution required to use
      * cumulative tables to determine probability.
-     * 
+     *
      * @param value the random value to evaluate against the distribution
-     * 
+     *
      * @return the number of standard deviations between the specified value
      *         and the mean
-     * 
+     *
      * @see http://en.wikipedia.org/wiki/Standard_normal_table
      */
     synchronized double getZScore(double value) {
@@ -124,7 +180,7 @@ class ThroughputDistribution {
             return Math.random() - 0.5;
         }
 
-        double score = (value - ewma) / Math.sqrt(ewmaVariance);
+        double score = (value - ewma) / ewmaStddev;
 
         // Limit the z-score to the range where we've calculated the
         // standard normal distribution probabilities
@@ -140,9 +196,9 @@ class ThroughputDistribution {
     /**
      * Calculate the probability that the throughput of the next interval
      * will be less than the specified value.
-     * 
+     *
      * @param the random value to be evaluated
-     * 
+     *
      * @return the probability that the throughput of the next interval will
      *         be less than the specified random value
      */
@@ -157,9 +213,9 @@ class ThroughputDistribution {
     /**
      * Calculate the probability that the throughput of the next interval
      * will be greater than the specified value.
-     * 
+     *
      * @param the random value to be evaluated
-     * 
+     *
      * @return the probability that the throughput of the next interval will
      *         be greater than the specified random value
      */
@@ -173,10 +229,13 @@ class ThroughputDistribution {
     @Override
     public synchronized String toString() {
         StringBuilder sb = new StringBuilder();
-        double variance = (ewmaVariance == Double.NEGATIVE_INFINITY) ? 0.0 : ewmaVariance;
+        double stddev = (ewmaStddev == Double.NEGATIVE_INFINITY) ? 0.0 : ewmaStddev;
 
         sb.append(" ewma=").append(String.format("%16.6f", Double.valueOf(ewma)));
-        sb.append(" stddev=").append(String.format("%16.6f", Double.valueOf(Math.sqrt(variance))));
+        sb.append(" stddev=").append(String.format("%16.6f", Double.valueOf(stddev)));
+        sb.append(" updated= ").append(String.format("%10d", Integer.valueOf(lastUpdate)));
+        if (consecutiveOutliers > 0)
+            sb.append(" consecutiveOutliers=").append(String.format("%2d", Integer.valueOf(consecutiveOutliers)));
 
         return sb.toString();
     }
@@ -184,13 +243,16 @@ class ThroughputDistribution {
     /**
      * Values from the standard normal cumulative distribution table for
      * z-scores ranging from -3.40 to +3.40 in increments of 0.01.
-     * 
+     *
      * This table was generated in Excel with the following formulas:
-     * <pre><tt>
+     *
+     * <pre>
+     * <tt>
      * B1 = 0, D1 = =B1-3.4, F1 = =NORMDIST(D1,0,1,TRUE)
      * B2 = =B1+1, D2 = =D1+.01, F2 = =NORMDIST(D2,0,1,TRUE)
-     * </tt></pre>
-     * 
+     * </tt>
+     * </pre>
+     *
      * @see http://en.wikipedia.org/wiki/Normal_distribution
      * @see http://en.wikipedia.org/wiki/Standard_normal_table
      */

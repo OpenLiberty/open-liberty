@@ -15,12 +15,19 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Syntax: java [JVM-Optionen] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar Servername [Aktionen] [Optionen]  
-scriptUsage=Syntax: {0} Aktion Servername [Optionen]
+\t-jar bin/tools/ws-server.jar Servername {0} [Optionen]  
+scriptUsage=Syntax: {0} {1} Servername [Optionen]
 
 use.actions=Aktionen:
 use.options=Optionen:
+use.options.gen.desc=\ \ \ \ Verwenden Sie den Befehl help [Aktionsname], um detaillierte Optionsinformationen f\u00fcr jede Aktion anzuzeigen.
 use.jvmarg=JVM-Optionen:
+category-key.lifecycle=Serverlebenszyklus
+category-key.win=Windows
+category-key.service=Fehlerbestimmung
+category-key.help=Informationen
+category-key.misc=Sonstiges
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -120,25 +127,36 @@ option-desc.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\
 \tdie sich auf diese Serverinstanz beziehen.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="Pfad zur Zielarchivdatei"
-option-desc.archive=\tGeben Sie das durch das Paket oder Speicherauszugsaktion zu generierende \n\
-\tArchivierungsziel an. Das Ziel kann als absoluter Pfad oder als relativer Pfad \n\
-\tangegeben werden. Wird diese Option ausgelassen, wird die Archivdatei im\n\
-\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens \n\
-\tkann Einfluss auf das Format des generierten Archivs haben.         \n\
-\tDas Standardarchivformat f\u00fcr die Paketaktion ist "pax" unter z/OS   \n\
-\tund "zip" auf allen anderen Plattformen. \
-                                   \n\
-\tDas Archivformat "jar" erzeugt eine selbst extrahierende JAR-Datei, die dem \n\
-\turspr\u00fcnglichen Installationsarchiv gleicht. \
-                                     \n\
-\tDas Archivformat "jar" erzeugt in Kombination mit "runnable" \n\
-\tin der Option --include eine ausf\u00fchrbare JAR-Datei, mit der \n\
-\tder Liberty-Server unter Verwendung von java -jar ausgef\u00fchrt\n\
-\twerden kann.
+option-desc.dump.archive=\tGeben Sie das durch die Speicherauszugsaktion zu generierende Archivierungsziel an.\n\
+\tDas Ziel kann als absoluter Pfad oder als relativer Pfad angegeben\n\
+\twerden. Wird diese Option ausgelassen, wird die Archivdatei im\n\
+\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens\n\
+\tkann Einfluss auf das Format des generierten Archivs haben. Das Standardarchivformat\n\
+\tf\u00fcr die Paketaktion ist "pax" unter z/OS und "zip" auf allen anderen\n\
+\tPlattformen. Das Archivformat "jar" erzeugt eine selbstextrahierende JAR-Datei, die\n\
+\tdem urspr\u00fcnglichen Installationsarchiv gleicht. 
+option-desc.package.archive=\tGeben Sie das durch die Paketaktion zu generierende Archivierungsziel an.\n\
+\tDas Ziel kann als absoluter Pfad oder als relativer Pfad angegeben\n\
+\twerden. Wird diese Option ausgelassen, wird die Archivdatei im\n\
+\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens\n\
+\tkann Einfluss auf das Format des generierten Archivs haben. Das Standardarchivformat\n\
+\tf\u00fcr die Paketaktion ist "pax" unter z/OS und "zip" auf allen anderen\n\
+\tPlattformen. Das Archivformat "jar" erzeugt eine selbstextrahierende JAR-Datei, die\n\
+\tdem urspr\u00fcnglichen Installationsarchiv gleicht. Das Archivformat "jar" erzeugt in\n\
+\tKombination mit "runnable" in der Option --include eine ausf\u00fcrbare JAR-Datei, \n\
+\tmit der der Liberty-Server unter Verwendung von java -jar ausgef\u00fchrt werden\n\
+\tkann.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=Wert,Wert,...
-option-desc.include=\tEine durch Kommas begrenzte Liste mit Werten. Die g\u00fcltigen Werte variieren je\n\
-\tnach Aktion.
+option-desc.javadump.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: heap, system \n\
+\tthread.
+option-desc.package.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: all*, usr,   \n\
+\tminify, runnable. Wenn Sie runnable angeben, wird das resultierende Paket\n\
+\teine ausf\u00fchrbare JAR-Datei, in der der Server ausgef\u00fchrt wird. Die Option minify erzeugt\n\
+\tdas f\u00fcr den Server kleinstm\u00f6gliche Image. Die Option usr erstellt ein Paket, \n\
+\tdas den Server und die Anwendung enth\u00e4lt, aber nicht die \n\
+\tLaufzeit. Die Option default all erzeugt ein Serverpaket, das \n\
+\talles enth\u00e4lt.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="Schablonenname"
 option-desc.template=\tGibt den Namen der Schablone an, die beim Erstellen eines neuen Servers verwendet werden soll.

@@ -20,7 +20,11 @@ scriptUsage=Syntax: {0} Aktion Clientname [Optionen]
 
 use.actions=Aktionen:
 use.options=Optionen:
+use.options.gen.desc=\ \ \ \ Verwenden Sie den Befehl help [Aktionsname], um detaillierte Optionsinformationen f\u00fcr jede Aktion anzuzeigen.
 use.jvmarg=JVM-Optionen:
+category-key.lifecycle=Serverlebenszyklus
+category-key.help=Informationen
+category-key.misc=Sonstiges
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -68,19 +72,20 @@ option-desc.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="Pfad zur Zielarchivdatei"
 option-desc.archive=\tGeben Sie das durch die Paketaktion zu generierende \n\
-\tArchivierungsziel an. Das Ziel kann als absoluter Pfad oder als relativer Pfad \n\
-\tangegeben werden. Wird diese Option ausgelassen, wird die Archivdatei im\n\
-\tAusgabeverzeichnis des Clients erstellt. Die Erweiterung des Zieldateinamens \n\
-\tkann Einfluss auf das Format des generierten Archivs haben.         \n\
-\tDas Standardarchivformat f\u00fcr die Paketaktion ist "pax" unter z/OS   \n\
-\tund "zip" auf allen anderen Plattformen. \
-                                   \n\
-\tDas Archivformat "jar" erzeugt eine selbst extrahierende JAR-Datei, die dem \n\
-\turspr\u00fcnglichen Installationsarchiv gleicht.
+\tArchivierungsziel an. Das Ziel kann als absoluter Pfad oder als \n\
+\trelativer Pfad angegeben werden. Wird diese Option ausgelassen, wird \n\
+\tdas Archiv im Ausgabeverzeichnis des Clients erstellt. Die Erweiterung\n\
+\tdes Zielnamens kann Einfluss auf das Format des generierten Archivs \n\
+\thaben. Das Standardarchivformat f\u00fcr die Paketaktion ist "pax" unter\n\
+\tz/OS und "zip" auf allen anderen Plattformen.\n\
+\tDas Archivformat "jar" erzeugt eine selbstextrahierende\n\
+\tJAR-Datei, die dem urspr\u00fcnglichen Installationsarchiv gleicht.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=Wert,Wert,...
-option-desc.include=\tEine durch Kommas begrenzte Liste mit Werten. Die g\u00fcltigen Werte variieren je\n\
-\tnach Aktion.
+option-desc.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: all*, usr,   \n\
+\tminify. Die Option usr erstellt ein Paket, das den Server und die \n\
+\tAnwendung enth\u00e4lt, aber nicht die Laufzeit. Die Option default all \n\
+\terzeugt ein Clientpaket, das alles enth\u00e4lt.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="Schablonenname"
 option-desc.template=\tGibt den Namen der Vorlage an, die beim Erstellen eines neuen Clients verwendet werden soll.

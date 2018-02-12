@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,16 @@ public interface CDIService {
      * @return the bean manager for the current module
      */
     public BeanManager getCurrentModuleBeanManager();
+
+    /**
+     * Return the context ID used by CDI to identify the current application. The exact format should not be relied on
+     * and it is recommended that this method should only be used for debug and trace. At time of writing, the
+     * string happens to be the same as the application's J2EEName. The current application is determined
+     * using ComponentMetaDataAccessorImpl.
+     *
+     * @return the current application context id
+     */
+    public String getCurrentApplicationContextID();
 
     /**
      * Returns whether CDI is enabled for the current module.

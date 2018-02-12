@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,10 +56,15 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_SSO_USE_DOMAIN_FROM_URL = "ssoUseDomainFromURL";
     public static final String CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED = "useAuthenticationDataForUnprotectedResource";
     static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
+    static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
     public static final String CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD = "allowAuthenticationFailOverToAuthMethod";
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
+    static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
+    static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
+    static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
+    
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
     private final Boolean singleSignonEnabled;
@@ -80,10 +85,14 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean ssoUseDomainFromURL;
     private final Boolean useAuthenticationDataForUnprotectedResource;
     private final String loginFormURL;
+    private final String loginErrorURL;
     private final String allowFailOverToAuthMethod;
     private final Boolean includePathInWASReqURL;
     private final Boolean trackLoggedOutSSOCookies;
     private final Boolean useOnlyCustomCookieName;
+    private final String overrideHttpAuthenticationMechanism;
+    private final String loginFormContextRoot;
+    private final String basicAuthRealmName;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -112,10 +121,14 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         ssoUseDomainFromURL = (Boolean) newProperties.get(CFG_KEY_SSO_USE_DOMAIN_FROM_URL);
         useAuthenticationDataForUnprotectedResource = (Boolean) newProperties.get(CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED);
         loginFormURL = (String) newProperties.get(CFG_KEY_LOGIN_FORM_URL);
+        loginErrorURL = (String) newProperties.get(CFG_KEY_LOGIN_ERROR_URL);
         allowFailOverToAuthMethod = (String) newProperties.get(CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD);
         includePathInWASReqURL = (Boolean) newProperties.get(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL);
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
         useOnlyCustomCookieName = (Boolean) newProperties.get(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME);
+        overrideHttpAuthenticationMechanism = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
+        loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
+        basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -301,6 +314,12 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return loginFormURL;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getLoginErrorURL() {
+        return loginErrorURL;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -314,6 +333,21 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public boolean isUseOnlyCustomCookieName() {
         return useOnlyCustomCookieName;
+    }
+
+    @Override
+    public String getOverrideHttpAuthenticationMechanism() {
+        return overrideHttpAuthenticationMechanism;
+    }
+
+    @Override
+    public String getLoginFormContextRoot() {
+        return loginFormContextRoot;
+    }
+
+    @Override
+    public String getBasicAuthRealmName() {
+        return basicAuthRealmName;
     }
 
     /**
@@ -394,6 +428,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.webAlwaysLogin, orig.webAlwaysLogin);
         appendToBufferIfDifferent(buf, "loginFormURL",
                                   this.loginFormURL, orig.loginFormURL);
+        appendToBufferIfDifferent(buf, "loginErrorURL",
+                                  this.loginErrorURL, orig.loginErrorURL);
         appendToBufferIfDifferent(buf, "allowFailOverToAuthMethod",
                                   this.allowFailOverToAuthMethod, orig.allowFailOverToAuthMethod);
         appendToBufferIfDifferent(buf, "includePathInWASReqURL",
@@ -404,7 +440,12 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.useOnlyCustomCookieName, orig.useOnlyCustomCookieName);
         appendToBufferIfDifferent(buf, "wasReqURLRedirectDomainNames",
                                   this.wasReqURLRedirectDomainNames, orig.wasReqURLRedirectDomainNames);
-
+        appendToBufferIfDifferent(buf, "overrideHttpAuthenticationMechanism",
+                                  this.overrideHttpAuthenticationMechanism, orig.overrideHttpAuthenticationMechanism);
+        appendToBufferIfDifferent(buf, "loginFormContextRoot",
+                                  this.loginFormContextRoot, orig.loginFormContextRoot);
+        appendToBufferIfDifferent(buf, "basicAuthRealmName",
+                                  this.basicAuthRealmName, orig.basicAuthRealmName);
         return buf.toString();
     }
 

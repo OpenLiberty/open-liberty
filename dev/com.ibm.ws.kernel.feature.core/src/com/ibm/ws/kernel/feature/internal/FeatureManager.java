@@ -464,12 +464,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         this.runtimeUpdateManager = runtimeUpdateManager;
     }
 
-    @Reference(cardinality=ReferenceCardinality.OPTIONAL, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setLibertyBoot(LibertyBootRuntime libertyBoot) {
         this.libertyBoot = libertyBoot;
     }
-    
-    public LibertyBootRuntime getLibertyBoot(){
+
+    public LibertyBootRuntime getLibertyBoot() {
         return libertyBoot;
     }
 
@@ -1180,7 +1180,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     regionsToRemove = provisioner.createAndUpdateProductRegions();
                 }
 
-                // always do the install bundle operation becuase it associates bundles with refeature resources
+                // always do the install bundle operation because it associates bundles with refeature resources
                 // TODO would be good if we could avoid this when features have not changed.
                 provisioner.installBundles(bundleContext,
                                            bundleCache,
@@ -1189,6 +1189,14 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                                            ProvisionerConstants.LEVEL_FEATURE_CONTAINERS,
                                            fwStartLevel.getInitialBundleStartLevel(),
                                            locService);
+
+                // add all installed bundles to list of bundlesToStart.
+                // TODO would be good if we could avoid this when features have not changed, but in
+                // some scenarios, the framework may reinstall a features bundle even on a warm restart,
+                // which would leave the bundle in INSTALLED state (see issue #2081).
+                if (installStatus.contextIsValid() && installStatus.bundlesToStart()) {
+                    installedBundles.addAll(installStatus.getBundlesToStart());
+                }
 
                 featureRepository.updateServices();
 
@@ -1215,10 +1223,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     // refresh any gateway bundles that may need it.
                     provisioner.refreshGatewayBundles(shutdownHook);
 
-                    // If any (new) bundles were installed, add them to the list to be started
-                    if (installStatus.contextIsValid() && installStatus.bundlesToStart()) {
-                        installedBundles.addAll(installStatus.getBundlesToStart());
-                    }
                 }
             }
         } catch (Throwable t) {
@@ -1462,14 +1466,14 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             reportedErrors = true;
             //Check if using Open Liberty before suggesting install util for missing features
             if (!getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
-	            if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
-	                // Only report this message for core features included as root features in the server.xml
-	                Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
-	            } else {
-	                Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
-	            }
+                if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
+                    // Only report this message for core features included as root features in the server.xml
+                    Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
+                } else {
+                    Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+                }
             } else {
-            		Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+                Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
             }
             installStatus.addMissingFeature(missing);
         }
@@ -1722,7 +1726,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
         return noExceptions;
     }
-    
+
     /**
      * Return a display name for the currently running server.
      */

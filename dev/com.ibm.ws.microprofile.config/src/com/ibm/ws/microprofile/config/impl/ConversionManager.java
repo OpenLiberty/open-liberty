@@ -31,8 +31,6 @@ import com.ibm.ws.microprofile.config.converters.ExtendedGenericConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.ibm.ws.microprofile.config.interfaces.ConversionException;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
 
 public class ConversionManager {
 
@@ -57,25 +55,31 @@ public class ConversionManager {
         if (converters.hasType(type)) {
             PriorityConverter converter = converters.getConverter(type);
             if (converter != null) {
+                Object converted = null;
                 try {
-                    Object converted = null;
                     if (converter instanceof ExtendedGenericConverter) {
                         converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this, this.classLoader);
                     } else {
                         converted = converter.convert(rawString);
                     }
                     status.setConverted(converted);
-                } catch (ConversionException e) {
-                    throw e;
                 } catch (IllegalArgumentException e) {
-                    throw new ConversionException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
-                } catch (Throwable e) {
-                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter, rawString, e));
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "simpleConversion: A converter ''{0}'', for type ''{1}'', sub type ''{2}'' and raw String '{3}' threw an exception: {4}.", converter, type,
+                                 genericSubType, rawString, e);
+                    }
+                    throw e;
+                } catch (Throwable t) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "simpleConversion: A converter ''{0}'', for type ''{1}'', sub type ''{2}'' and raw String ''{3}'' threw an exception: {4}.", converter, type,
+                                 genericSubType, rawString, t);
+                    }
+                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", type, rawString, t.getMessage()), t);
                 }
 
                 if (status.isConverterFound() && status.getConverted() == null) {
-                    if (TraceComponent.isAnyTracingEnabled()) {
-                        Tr.debug(tc, "The converted value is null. The rawString is " + rawString);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "simpleConversion: The converted value is null. The rawString is {0}", rawString);
                     }
                 }
 
@@ -104,7 +108,7 @@ public class ConversionManager {
                 Class<?> genericClassArg = (Class<?>) genericTypeArg;
                 value = convert(rawString, pType.getRawType(), genericClassArg);
             } else {
-                throw new IllegalArgumentException("Generic Type Variables are not supported: " + genericTypeArg);
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "generic.type.variables.notsupported.CWMCG0018E", type, genericTypeArg));
             }
         } else {
             value = convert(rawString, type, null);
@@ -121,7 +125,7 @@ public class ConversionManager {
      * @param type
      * @return
      */
-    public Object convert(String rawString, Type type, Class<?> genericSubType) {
+    protected Object convert(String rawString, Type type, Class<?> genericSubType) {
         //first box any primitives
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
@@ -169,7 +173,7 @@ public class ConversionManager {
         }
 
         if (!status.isConverterFound()) {
-            throw new ConverterNotFoundException(Tr.formatMessage(tc, "could.not.find.converter.CWMCG0014E", type.getTypeName()));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "could.not.find.converter.CWMCG0014E", type.getTypeName()));
         }
 
         Object converted = status.getConverted();

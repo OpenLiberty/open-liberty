@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Vyvol\u00e1n\u00ed u\u017eiv
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Funkce vytv\u00e1\u0159\u00ed implementace modulu trasov\u00e1n\u00ed s u\u017eivatelem, kter\u00fd je dod\u00e1n metodou OpentracingTracerFactory. Metoda OpentracingTracerFactory.newInstance vr\u00e1tila null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Ur\u010dete, pro\u010d se pro u\u017eivatele dodan\u00e9ho metodou OpentracingTracerFactory newInstance vr\u00e1tila hodnota null.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: Atribut vzoru prvku konfigurace opentracing excludeSpans nebo includeSpans je pr\u00e1zdn\u00fd.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Mus\u00ed b\u00fdt ur\u010den platn\u00fd vzor identifik\u00e1toru URI a nem\u016f\u017ee b\u00fdt pr\u00e1zdn\u00fd.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Nahl\u00e9dn\u011bte do dokumentace platn\u00fdch vzor\u016f.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: Atribut vzoru {0} prvku konfigurace opentracing excludeSpans nebo includeSpans je neplatn\u00fd identifik\u00e1tor URI (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Mus\u00ed b\u00fdt ur\u010den platn\u00fd vzor identifik\u00e1toru URI. Obvykl\u00fdm probl\u00e9mem je nespr\u00e1vn\u00e9 % zak\u00f3dov\u00e1n\u00ed neplatn\u00fdch znak\u016f adresy URL.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Ujist\u011bte se, \u017ee m\u00e1te v souladu se standardem RFC 2396 spr\u00e1vn\u011b % zak\u00f3dovan\u00e9 neplatn\u00e9 znaky adresy URL.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -127,6 +127,10 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Ugyanaz az egyedi azonos\u00ed
 J2CA8815.duplicate.resource.adapter.id.explanation=T\u00f6bb er\u0151forr\u00e1s-illeszt\u0151 ugyanazzal az egyedi azonos\u00edt\u00f3val (id) van be\u00e1ll\u00edtva vagy \u00e9rtelemszer\u0171en arra v\u00e9gz\u0151dik.
 J2CA8815.duplicate.resource.adapter.id.useraction=Rendeljen hozz\u00e1 egyedi azonos\u00edt\u00f3kat az er\u0151forr\u00e1s-illeszt\u0151kh\u00f6z, hogy ne legyenek \u00fctk\u00f6z\u00e9sek.
 
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 modul resourceAdapter elem\u00e9nek id attrib\u00fatuma nem lehet fenntartott azonos\u00edt\u00f3 {1}.
+J2CA8816.reserved.resource.adapter.id.explanation=A konfigur\u00e1ci\u00f3ban megadott vagy moduln\u00e9vb\u0151l sz\u00e1rmaztatott id egy fenntartott azonos\u00edt\u00f3. Fenntartott azonos\u00edt\u00f3k csak bels\u0151 haszn\u00e1latra szolg\u00e1lnak.
+J2CA8816.reserved.resource.adapter.id.useraction=Adjon meg nem fenntartott \u00e9rt\u00e9ket a resourceAdapter elem id attrib\u00fatumak\u00e9nt vagy moduln\u00e9vk\u00e9nt a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1saiban.
+
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
 # ---------------------------------

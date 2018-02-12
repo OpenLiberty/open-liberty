@@ -42,3 +42,40 @@ JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Ha a tartom\u00e1nyneve be kell \u00e
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: A(z) {0} modul telep\u00edt\u00e9se a(z) {1} alkalmaz\u00e1sban nem siker\u00fclt, mart t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3. Az oszt\u00e1lyok list\u00e1ja: {2}. Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel alkalmaz\u00e1scsomagol\u00e1si hiba. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulban csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult, mivel t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s l\u00e9tezik. Ez a felt\u00e9tel nem megengedett.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulhoz csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Hiba t\u00f6rt\u00e9nik, amikor a program feloldja az azonoss\u00e1gt\u00e1r ''{0}'' konfigur\u00e1ci\u00f3j\u00e1t.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. Az alap\u00e9rtelmezett \u00e9rt\u00e9k: ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Az azonoss\u00e1gt\u00e1r konfigur\u00e1ci\u00f3ja nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon.  EL kifejez\u00e9sek haszn\u00e1lata eset\u00e9n gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy azok \u00e9rv\u00e9nyesek-e, \u00e9s hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k-e.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm sz\u00e1m\u00e1ra megadott {0} hashAlgorithm param\u00e9ter nem megfelel\u0151 form\u00e1tumban van. A fogadott param\u00e9ter: {1}. A k\u00f6telez\u0151 form\u00e1tum n\u00e9v=\u00e9rt\u00e9k.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Egy hashAlgorithm param\u00e9terlista nem megfelel\u0151 form\u00e1tumban van, \u00e9s nem \u00e9rtelmezhet\u0151.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Jav\u00edtsa ki a hashAlgorithmParameters elemet a DatabaseIdentityStore feljegyz\u00e9sen.
+
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: A(z) ''{0}'' h\u00edv\u00f3t lek\u00e9r\u0151 {1} lek\u00e9rdez\u00e9s elakadt a DatabaseIdentityStore feljegyz\u00e9sen a k\u00f6vetkez\u0151 hib\u00e1val: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=A megadott h\u00edv\u00f3 keres\u00e9se hib\u00e1val akadt el.
+JAVAEESEC_WARNING_GEN_DB.useraction=Tekintse \u00e1t a megadott hib\u00e1t.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: A(z) ''{0}'' h\u00edv\u00f3t lek\u00e9r\u0151 {1} lek\u00e9rdez\u00e9s meghi\u00fasult a DatabaseIdentityStore feljegyz\u00e9sen. A csoportok r\u00e9szleges list\u00e1ja: {2}. A hiba: {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A h\u00edv\u00f3 csoportjainak keres\u00e9se hib\u00e1val elakadt.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Tekintse \u00e1t a megadott hib\u00e1t. A csoportok r\u00e9szleges list\u00e1ja ker\u00fclt visszaad\u00e1sra. 
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: Az IdentityStore sz\u00e1m\u00e1ra megadott hiteles\u00edt\u00e9si adatok nem felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 azonos\u00edt\u00f3k, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=Az IdentityStore sz\u00e1m\u00e1ra megadott hiteles\u00edt\u00e9si adatok nem felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 azonos\u00edt\u00f3k, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=Vizsg\u00e1lja fel\u00fcl az IdentityStore sz\u00e1m\u00e1ra \u00e1tadott hiteles\u00edt\u00e9si adatok t\u00edpus\u00e1t.
+
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: A DatabaseIdentityStore sz\u00e1m\u00e1ra null\u00e9rt\u00e9k\u0171 jelsz\u00f3 ker\u00fclt megad\u00e1sra, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151.
+JAVAEESEC_WARNING_NULL_PWD.explanation=A felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 azonos\u00edt\u00f3 null\u00e9rt\u00e9k\u0171 jelsz\u00f3t tartalmazott.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Adjon meg egy \u00e9rv\u00e9nyes jelsz\u00f3t.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: A kivonatol\u00e1si algoritmus komponens nem tal\u00e1lhat\u00f3 a {0} oszt\u00e1ly eset\u00e9n.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=A DatabaseIdentityStore feljegyz\u00e9s hashAlgorithm elem\u00e9ben felsorolt kivonatol\u00e1si algoritmus nem tal\u00e1lhat\u00f3.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Vegye fel az egy\u00e9ni kivonatol\u00e1si algoritmust az alkalmaz\u00e1s sz\u00e1m\u00e1ra el\u00e9rhet\u0151 komponensk\u00e9nt.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: A(z) ''{1}'' lek\u00e9rdez\u00e9s nem adott vissza jelsz\u00f3t a(z) {0} h\u00edv\u00f3nak a DatabaseIdentityStore feljegyz\u00e9sen.
+JAVAEESEC_WARNING_NO_PWD.explanation=A lek\u00e9rdez\u00e9s nem adott vissza jelsz\u00f3t a megadott h\u00edv\u00f3 lek\u00e9rdez\u00e9snek.
+JAVAEESEC_WARNING_NO_PWD.useraction=Ha a v\u00e1rt eredm\u00e9ny jelsz\u00f3 volt, akkor tekintse \u00e1t a h\u00edv\u00f3 lek\u00e9rdez\u00e9st \u00e9s az adatb\u00e1zis tartalmakat.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: A(z) ''{1}'' lek\u00e9rdez\u00e9s t\u00f6bb eredm\u00e9ny adott vissza a(z) {0} h\u00edv\u00f3nak a DatabaseIdentityStore feljegyz\u00e9sen.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=T\u00f6bb eredm\u00e9ny \u00e9rkezett vissza a lek\u00e9r\u0151 h\u00edv\u00f3nak. A h\u00edv\u00f3 lek\u00e9rdez\u00e9s csak egyetlen eredm\u00e9nyt adhat vissza.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Tekintse \u00e1t a h\u00edv\u00f3 lek\u00e9rdez\u00e9st \u00e9s az adatb\u00e1zis tartalmakat. M\u00f3dos\u00edtsa a h\u00edv\u00f3 lek\u00e9rdez\u00e9st, hogy csak egy eredm\u00e9nyt adjon vissza.
+
+#>>>>>>> Add messages for IdentityStore

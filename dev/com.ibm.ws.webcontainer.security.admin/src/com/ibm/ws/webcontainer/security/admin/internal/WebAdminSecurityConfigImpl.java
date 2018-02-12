@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -194,6 +194,16 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
         return null;
     }
 
+    /**
+     * {@inheritDoc} Admin Applications do not have a default Form Error URL.
+     *
+     * @return {@code null}
+     */
+    @Override
+    public String getLoginErrorURL() {
+        return null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean getAllowFailOverToFormLogin() {
@@ -233,6 +243,24 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     /** {@inheritDoc} */
     @Override
     public WebAuthenticatorProxy createWebAuthenticatorProxy() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getOverrideHttpAuthenticationMechanism() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getLoginFormContextRoot() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getBasicAuthRealmName() {
         return null;
     }
 

@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -33,7 +37,7 @@ connected=\uc5f0\uacb0\ub428
 
 connector=\ucee4\ub125\ud130
 
-context=\ucee8\ud14d\uc2a4\ud2b8:	
+context=\ucee8\ud14d\uc2a4\ud2b8:
 
 database_name=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc774\ub984
 
@@ -160,6 +164,10 @@ staticweave_commandline_help_message_7of19=           \uc774 \uc635\uc158\uc740 
 staticweave_commandline_help_message_8of19=    -persistencexml
 
 staticweave_commandline_help_message_9of19=           META-INF/persistence.xml\uc774 \uc544\ub2cc \uc704\uce58\uc5d0 \uc788\ub294 \uacbd\uc6b0 \uc9c0\uc18d\uc131 \ub2e8\uc704\uc758 \ub8e8\ud2b8\uc5d0 \uc0c1\ub300\uc801\uc73c\ub85c persistence.xml\uc758 \uc704\uce58\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+staticweave_processor_dir_not_created={0} \ub514\ub809\ud1a0\ub9ac\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+staticweave_processor_file_not_created={0} \ud30c\uc77c\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
 staticweave_processor_unknown_outcome=\ub514\ub809\ud1a0\ub9ac\uc5d0 \uc800\uc7a5\ub41c \ud074\ub798\uc2a4\ub97c \uc704\ube0c\ud558\uace0 JAR\ub85c \ucd9c\ub825\ud558\uba74 \uc885\uc885 \uc608\uc0c1\uce58 \ubabb\ud55c \uacb0\uacfc\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
 

@@ -69,7 +69,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
 	${javac.bootclasspath.${javac.source}}
 
 -buildpath: \
-    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180124-1753,\
 	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
 	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170927-0015,\
 	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\

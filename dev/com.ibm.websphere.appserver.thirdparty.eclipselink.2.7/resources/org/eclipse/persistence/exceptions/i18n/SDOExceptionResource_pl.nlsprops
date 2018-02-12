@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -136,4 +140,8 @@
 45209=Podj\u0119to pr\u00f3b\u0119 zresetowania instancji ApplicationResolver w kontek\u015bcie SDOHelperContext.  Dozwolony jest tylko jeden zestaw.
 
 45210=Zestawiany obiekt DataObject nie pochodzi z tego samego kontekstu HelperContext co XMLHelper.
+
+45211=Nie mo\u017cna zdefiniowa\u0107 typu przy u\u017cyciu nazwy [{0}]. Ta nazwa nie jest poprawn\u0105 nazw\u0105 XML.
+
+45212=Nie mo\u017cna zdefiniowa\u0107 w\u0142a\u015bciwo\u015bci przy u\u017cyciu nazwy [{0}]. Ta nazwa nie jest poprawn\u0105 nazw\u0105 XML.
 

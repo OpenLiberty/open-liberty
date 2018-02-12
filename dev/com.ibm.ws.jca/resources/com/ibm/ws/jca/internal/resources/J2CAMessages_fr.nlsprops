@@ -127,6 +127,10 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E : Plusieurs adaptateurs de ress
 J2CA8815.duplicate.resource.adapter.id.explanation=Plusieurs adaptateurs de ressources sont configur\u00e9s avec ou se terminent implicitement par le m\u00eame identificateur unique (id).
 J2CA8815.duplicate.resource.adapter.id.useraction=Affectez des identificateurs uniques \u00e0 un ou plusieurs adaptateurs de ressources de sorte qu'il n'y ait plus de conflit.
 
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: L''attribut id de l''\u00e9l\u00e9ment resourceAdapter pour le module d''adaptateur de ressource {0} ne peut pas \u00eatre l''un des identificateurs r\u00e9serv\u00e9s {1}.
+J2CA8816.reserved.resource.adapter.id.explanation=L'ID sp\u00e9cifi\u00e9 dans la configuration ou d\u00e9riv\u00e9 du nom de module est un identificateur r\u00e9serv\u00e9. Les identificateurs r\u00e9serv\u00e9s sont destin\u00e9s \u00e0 un usage interne seulement.
+J2CA8816.reserved.resource.adapter.id.useraction=Fournissez une valeur non r\u00e9serv\u00e9e pour l'attribut id de l'\u00e9l\u00e9ment resourceAdapter ou pour le nom de module dans la configuration de serveur.
+
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
 # ---------------------------------

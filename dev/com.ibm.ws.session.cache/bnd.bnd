@@ -22,7 +22,8 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-  com.ibm.ws.session.store.cache.CacheStoreService
+  com.ibm.ws.session.store.cache.CacheStoreService,\
+  com.ibm.ws.session.store.cache.DefaultCachingProviderSupport
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

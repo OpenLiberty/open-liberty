@@ -309,3 +309,7 @@ display.unresolved.jsl=CWWKY0043I:  Az adott feladat eset\u00e9n feloldatlan JSL
 display.unresolved.jsl.explanation=A feladathoz haszn\u00e1lt JSL a param\u00e9terek \u00e9s tulajdons\u00e1gok felold\u00e1sa el\u0151tt ker\u00fcl megjelen\u00edt\u00e9sre.
 display.unresolved.jsl.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JSL f\u00e1jln\u00e9v helyes-e, \u00e9s ellen\u0151rizze, hogy a JSL forr\u00e1sa a megfelel\u0151 JSL-t tartalmazza-e.
 
+#The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: A(z) {0} operationGroup neve nem lett feloldva egy \u00e9rv\u00e9nyes csoportn\u00e9vre.
+JOB_GROUP_NAME_NOT_VALID.explanation=A feladat csoporthozz\u00e1f\u00e9r\u00e9sen kereszt\u00fcl t\u00f6rt\u00e9n\u0151 el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rletek meghi\u00fasulhatnak egy \u00e9rv\u00e9nytelen csoportn\u00e9v haszn\u00e1lat\u00e1nak megk\u00eds\u00e9rl\u00e9sekor.
+JOB_GROUP_NAME_NOT_VALID.useraction=Jav\u00edtsa a csoportnevet a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban.

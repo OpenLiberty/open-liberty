@@ -754,6 +754,14 @@ v\u00edrgula.
 error.zosProcStart.jobname.invalid.useraction=Verifique se o nome da tarefa n\u00e3o tem mais de oito caracteres e n\u00e3o \
 cont\u00e9m v\u00edrgula.
 
+error.server.pause.command.port.disabled=CWWKE0944E: Uma solicita\u00e7\u00e3o de pausa foi recebida para o servidor {0}, mas a porta de comando do servidor est\u00e1 desativada. A solicita\u00e7\u00e3o n\u00e3o pode ser processada. Ative a porta de comando e tente novamente.
+error.server.pause.command.port.disabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o. A porta de comando est\u00e1 desativada para esse servidor, portanto, a solicita\u00e7\u00e3o de pausa n\u00e3o p\u00f4de ser processada. Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
+error.server.pause.command.port.disabled.useraction=Ative a porta de comando para este servidor. Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, esta pausa poder\u00e1, alternativamente, ser solicitada do console do operador.
+
+error.server.resume.command.port.disabled=CWWKE0945E: Uma solicita\u00e7\u00e3o de continua\u00e7\u00e3o foi recebida para o servidor {0}, mas a porta de comando do servidor est\u00e1 desativada. A solicita\u00e7\u00e3o n\u00e3o pode ser processada. Ative a porta de comando e tente novamente.
+error.server.resume.command.port.disabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o. A porta de comando est\u00e1 desativada para esse servidor, portanto, a solicita\u00e7\u00e3o para continuar n\u00e3o p\u00f4de ser processada. Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
+error.server.resume.command.port.disabled.useraction=Ative a porta de comando para este servidor. Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, esta continua\u00e7\u00e3o poder\u00e1, alternativamente, ser solicitada do console do operador.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

@@ -257,10 +257,13 @@ public class InvocationBuilderImpl implements Invocation.Builder {
 
     @Override
     public Builder headers(MultivaluedMap<String, Object> headers) {
-        RuntimeDelegate rd = HttpUtils.getOtherRuntimeDelegate();
-        for (Map.Entry<String, List<Object>> entry : headers.entrySet()) {
-            for (Object value : entry.getValue()) {
-                doSetHeader(rd, entry.getKey(), value);
+        webClient.removeAllHeaders();
+        if (headers != null) {
+            RuntimeDelegate rd = HttpUtils.getOtherRuntimeDelegate();
+            for (Map.Entry<String, List<Object>> entry : headers.entrySet()) {
+                for (Object value : entry.getValue()) {
+                    doSetHeader(rd, entry.getKey(), value);
+                }
             }
         }
         return this;

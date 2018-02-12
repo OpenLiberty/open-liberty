@@ -194,3 +194,18 @@ INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=\u8acb\u5f9e ejb-jar.xml \u4e2d\
 INVALID_CLASS_CNTR4115E=CNTR4115E: ejb-jar.xml \u6a94\u4e2d\u7684 <ejb-class> \u5143\u7d20\u70ba {1} Enterprise Bean \u6307\u5b9a\u4e86 {0} \u985e\u5225\u540d\u7a31\uff0c\u4f46\u537b\u627e\u4e0d\u5230\u985e\u5225\u6a94\u3002
 INVALID_CLASS_CNTR4115E.explanation=ejb-jar.xml \u6a94\u53ef\u80fd\u6307\u5b9a\u4e86\u7121\u6548\u7684\u985e\u5225\u540d\u7a31\uff0c\u6216\u662f\u985e\u5225\u6a94\u672a\u5957\u88dd\u5728\u61c9\u7528\u7a0b\u5f0f\u4e2d\u3002
 INVALID_CLASS_CNTR4115E.useraction=\u8acb\u66f4\u6b63 ejb-jar.xml \u6a94\u4e2d\u7684\u985e\u5225\u540d\u7a31\uff0c\u6216\u662f\u5c07\u985e\u5225\u6a94\u5957\u88dd\u5728\u61c9\u7528\u7a0b\u5f0f\u4e2d\u3002
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W

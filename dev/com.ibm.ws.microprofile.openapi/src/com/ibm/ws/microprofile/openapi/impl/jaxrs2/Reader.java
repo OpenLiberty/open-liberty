@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,17 +28,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
+import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
 import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
@@ -46,12 +49,15 @@ import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.Paths;
 import org.eclipse.microprofile.openapi.models.callbacks.Callback;
+import org.eclipse.microprofile.openapi.models.examples.Example;
+import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
+import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
@@ -79,6 +85,8 @@ import com.ibm.ws.microprofile.openapi.impl.model.PathsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.callbacks.CallbackImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.parameters.ParameterImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.parameters.RequestBodyImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponsesImpl;
@@ -226,35 +234,17 @@ public class Reader {
                                                                                                                                                            org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement.class);
         List<org.eclipse.microprofile.openapi.annotations.servers.Server> apiServers = ReflectionUtils.getRepeatableAnnotations(cls,
                                                                                                                                 org.eclipse.microprofile.openapi.annotations.servers.Server.class);
+        List<org.eclipse.microprofile.openapi.annotations.callbacks.Callback> apiCallbacks = ReflectionUtils.getRepeatableAnnotations(cls,
+                                                                                                                                      org.eclipse.microprofile.openapi.annotations.callbacks.Callback.class);
 
         ExternalDocumentation apiExternalDocs = ReflectionUtils.getAnnotation(cls, ExternalDocumentation.class);
         org.eclipse.microprofile.openapi.annotations.tags.Tag[] apiTags = ReflectionUtils.getRepeatableAnnotationsArray(cls,
                                                                                                                         org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
+        org.eclipse.microprofile.openapi.annotations.tags.Tags tagsAnnotation = ReflectionUtils.getAnnotation(cls,
+                                                                                                              org.eclipse.microprofile.openapi.annotations.tags.Tags.class);
 
         javax.ws.rs.Consumes classConsumes = ReflectionUtils.getAnnotation(cls, javax.ws.rs.Consumes.class);
         javax.ws.rs.Produces classProduces = ReflectionUtils.getAnnotation(cls, javax.ws.rs.Produces.class);
-
-        // OpenApiDefinition
-        OpenAPIDefinition openAPIDefinition = ReflectionUtils.getAnnotation(cls, OpenAPIDefinition.class);
-
-        if (openAPIDefinition != null) {
-
-            // info
-            AnnotationsUtils.getInfo(openAPIDefinition.info()).ifPresent(info -> openAPI.setInfo(info));
-
-            // OpenApiDefinition security requirements
-            SecurityParser.getSecurityRequirements(openAPIDefinition.security()).ifPresent(s -> openAPI.setSecurity(s));
-            //
-            // OpenApiDefinition external docs
-            AnnotationsUtils.getExternalDocumentation(openAPIDefinition.externalDocs()).ifPresent(docs -> openAPI.setExternalDocs(docs));
-
-            // OpenApiDefinition tags
-            AnnotationsUtils.getTags(openAPIDefinition.tags(), false).ifPresent(tags -> openApiTags.addAll(tags));
-
-            // OpenApiDefinition servers
-            AnnotationsUtils.getServers(openAPIDefinition.servers()).ifPresent(servers -> openAPI.setServers(servers));
-
-        }
 
         // class security schemes
         if (apiSecurityScheme != null) {
@@ -293,10 +283,25 @@ public class Reader {
             }
         }
 
+        Map<String, Callback> classCallbacks = null;
+        if (apiCallbacks != null) {
+            Map<String, Callback> callbacks = new LinkedHashMap<>();
+            for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback classCallback : apiCallbacks) {
+                Map<String, Callback> currentCallbacks = getCallbacks(classCallback);
+                callbacks.putAll(currentCallbacks);
+            }
+            if (callbacks.size() > 0) {
+                classCallbacks = callbacks;
+            }
+        }
+
         // class tags, consider only name to add to class operations
         final Set<String> classTags = new LinkedHashSet<>();
         if (apiTags != null) {
             AnnotationsUtils.getTags(apiTags, false).ifPresent(tags -> tags.stream().map(t -> t.getName()).forEach(t -> classTags.add(t)));
+        }
+        if (tagsAnnotation != null && tagsAnnotation.refs() != null) {
+            classTags.addAll(Stream.of(tagsAnnotation.refs()).filter(StringUtils::isNotBlank).collect(Collectors.toList()));
         }
 
         // class external docs
@@ -352,7 +357,9 @@ public class Reader {
                                                   classConsumes,
                                                   classSecurityRequirements,
                                                   classExternalDocumentation,
-                                                  classTags, classServers);
+                                                  classTags,
+                                                  classServers,
+                                                  classCallbacks);
                 if (operation != null) {
                     PathItem pathItemObject;
                     if (openAPI.getPaths() != null && openAPI.getPaths().get(operationPath) != null) {
@@ -366,7 +373,7 @@ public class Reader {
                         continue;
                     }
                     setPathItemOperation(pathItemObject, httpMethod, operation);
-
+                    org.eclipse.microprofile.openapi.annotations.parameters.RequestBody methodRequestBody = method.getAnnotation(org.eclipse.microprofile.openapi.annotations.parameters.RequestBody.class);
                     List<Parameter> operationParameters = new ArrayList<>();
                     Annotation[][] paramAnnotations = ReflectionUtils.getParameterAnnotations(method);
                     if (annotatedMethod == null) { // annotatedMethod not null only when method with 0-2 parameters
@@ -383,9 +390,8 @@ public class Reader {
                                                    operation,
                                                    methodConsumes,
                                                    classConsumes,
-                                                   operationParameters,
                                                    paramAnnotations[i],
-                                                   type, method.getAnnotation(org.eclipse.microprofile.openapi.annotations.parameters.RequestBody.class));
+                                                   methodRequestBody);
                             }
                         }
                     } else {
@@ -402,16 +408,46 @@ public class Reader {
                                                    operation,
                                                    methodConsumes,
                                                    classConsumes,
-                                                   operationParameters,
                                                    paramAnnotations[i],
-                                                   type, method.getAnnotation(org.eclipse.microprofile.openapi.annotations.parameters.RequestBody.class));
+                                                   methodRequestBody);
                             }
                         }
                     }
 
+                    if (operation.getRequestBody() == null) {
+                        processRequestBody(new ParameterImpl(),
+                                           operation,
+                                           methodConsumes,
+                                           classConsumes,
+                                           null,
+                                           methodRequestBody);
+                    }
+
                     if (operationParameters.size() > 0) {
+                        Map<String, Parameter> params = new HashMap<>();
+
+                        if (operation.getParameters() != null) {
+                            for (Parameter param : operation.getParameters()) {
+                                if (param.getIn() != null) {
+                                    params.put(param.getName() + '/' + param.getIn().toString(), param);
+                                } else {
+                                    params.put(param.getName(), param);
+                                }
+                            }
+                        }
+
                         for (Parameter operationParameter : operationParameters) {
-                            operation.addParameter(operationParameter);
+                            Parameter p = null;
+                            if (operationParameter.getIn() != null)
+                                p = params.get(operationParameter.getName() + '/' + operationParameter.getIn().toString());
+                            if (p == null) {
+                                p = params.get(operationParameter.getName());
+                            }
+                            if (p != null) {
+                                ReaderUtils.copyParamValues(p, operationParameter);
+                            } else {
+                                operation.addParameter(operationParameter);
+                            }
                         }
                     }
 
@@ -423,11 +459,6 @@ public class Reader {
                     openAPI.setPaths(this.paths);
                 }
             }
-        }
-
-        // if no components object is defined in openApi instance passed by client, set openAPI.components to resolved components (if not empty)
-        if (!isEmptyComponents(components) && openAPI.getComponents() == null) {
-            openAPI.setComponents(components);
         }
 
         // add tags from class to definition tags
@@ -450,7 +481,146 @@ public class Reader {
             openAPI.setTags(new ArrayList<>(tagsSet));
         }
 
+        // Process OpenAPIDefinition annotation last since it takes precedence over any conflicting items specified elsewhere.
+        // If there are more than one openAPIDefinition annotation is present across the app, there is no guarantee which one is picked.
+        handleOpenAPIDefinition(ReflectionUtils.getAnnotation(cls, OpenAPIDefinition.class));
+
+        // if no components object is defined in openApi instance passed by client, set openAPI.components to resolved components (if not empty)
+        //Note: this must be done after invoking 'handleOpenAPIDefinition' method so the 'components' from OpenAPIDefinition would have been processed.
+        if (!isEmptyComponents(components) && openAPI.getComponents() == null) {
+            openAPI.setComponents(components);
+        }
+
         return openAPI;
+    }
+
+    /**
+     * @param openAPIDefinition OpenAPI information from OpenAPIDefinition annotation. Overrides other definitions.
+     */
+    private void handleOpenAPIDefinition(OpenAPIDefinition openAPIDefinition) {
+        if (openAPIDefinition != null) {
+            // info
+            AnnotationsUtils.getInfo(openAPIDefinition.info()).ifPresent(info -> openAPI.setInfo(info));
+
+            // OpenApiDefinition security requirements
+            SecurityParser.getSecurityRequirements(openAPIDefinition.security()).ifPresent(s -> openAPI.setSecurity(s));
+
+            // OpenApiDefinition external docs
+            AnnotationsUtils.getExternalDocumentation(openAPIDefinition.externalDocs()).ifPresent(docs -> openAPI.setExternalDocs(docs));
+
+            // OpenApiDefinition tags
+            AnnotationsUtils.getTags(openAPIDefinition.tags(), false).ifPresent(tags -> openApiTags.addAll(tags));
+
+            // OpenApiDefinition servers
+            AnnotationsUtils.getServers(openAPIDefinition.servers()).ifPresent(servers -> openAPI.setServers(servers));
+
+            // handle components from the OpenAPIDefinition annotation
+            handleComponentsAnnotation(openAPIDefinition.components());
+        }
+    }
+
+    private void handleComponentsAnnotation(org.eclipse.microprofile.openapi.annotations.Components annotationComponents) {
+        if (annotationComponents == null) {
+            return;
+        }
+
+        // headers
+        Optional<Map<String, org.eclipse.microprofile.openapi.models.headers.Header>> headers = AnnotationsUtils.getHeaders(annotationComponents.headers());
+        if (headers.isPresent()) {
+            if (components.getHeaders() == null) {
+                components.setHeaders(headers.get());
+            } else {
+                components.getHeaders().putAll(headers.get());
+            }
+        }
+
+        // responses
+        Optional<APIResponses> responses = AnnotationsUtils.getApiResponses(annotationComponents.responses(), null, null, components, false);
+        if (responses.isPresent()) {
+            if (components.getResponses() == null) {
+                components.setResponses(responses.get());
+            } else {
+                components.getResponses().putAll(responses.get());
+            }
+        }
+
+        // parameters
+        Optional<List<Parameter>> parameters = getParametersListFromAnnotation(annotationComponents.parameters(), null, null, null);
+        if (parameters.isPresent()) {
+            for (org.eclipse.microprofile.openapi.models.parameters.Parameter parameter : parameters.get()) {
+                components.addParameter(parameter.getName(), parameter);
+            }
+        }
+
+        // examples
+        Map<String, Example> exampleMap = new HashMap<>();
+        for (ExampleObject exampleObject : annotationComponents.examples()) {
+            AnnotationsUtils.getExample(exampleObject).ifPresent(example -> exampleMap.put(exampleObject.name(), example));
+        }
+        if (exampleMap.size() > 0) {
+            if (components.getExamples() == null) {
+                components.setExamples(exampleMap);
+            } else {
+                components.getExamples().putAll(exampleMap);
+            }
+        }
+
+        // requestBodies
+        Map<String, RequestBody> requestBodyMap = new HashMap<>();
+        for (org.eclipse.microprofile.openapi.annotations.parameters.RequestBody requestBody : annotationComponents.requestBodies()) {
+            OperationParser.getRequestBody(requestBody, null, null, components).ifPresent(request -> requestBodyMap.put(requestBody.name(), request));
+        }
+        if (requestBodyMap.size() > 0) {
+            if (components.getRequestBodies() == null) {
+                components.setRequestBodies(requestBodyMap);
+            } else {
+                components.getRequestBodies().putAll(requestBodyMap);
+            }
+        }
+
+        // securitySchemes
+        Map<String, SecurityScheme> securitySchemeMap = new HashMap<>();
+        for (org.eclipse.microprofile.openapi.annotations.security.SecurityScheme securityScheme : annotationComponents.securitySchemes()) {
+            SecurityParser.getSecurityScheme(securityScheme).ifPresent(security -> securitySchemeMap.put(securityScheme.securitySchemeName(), security));
+        }
+        if (securitySchemeMap.size() > 0) {
+            if (components.getSecuritySchemes() == null) {
+                components.setSecuritySchemes(securitySchemeMap);
+            } else {
+                components.getSecuritySchemes().putAll(securitySchemeMap);
+            }
+        }
+
+        // links
+        Map<String, Link> linksMap = AnnotationsUtils.getLinks(annotationComponents.links());
+        if (linksMap.size() > 0) {
+            if (components.getLinks() == null) {
+                components.setLinks(linksMap);
+            } else {
+                components.getLinks().putAll(linksMap);
+            }
+        }
+
+        // callbacks
+        Map<String, Callback> callbackMap = new LinkedHashMap<>();
+        for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback callback : annotationComponents.callbacks()) {
+            callbackMap.putAll(getCallbacks(callback));
+        }
+        if (callbackMap.size() > 0) {
+            if (components.getCallbacks() == null) {
+                components.setCallbacks(callbackMap);
+            } else {
+                components.getCallbacks().putAll(callbackMap);
+            }
+        }
+
+        // schemas
+        for (org.eclipse.microprofile.openapi.annotations.media.Schema schema : annotationComponents.schemas()) {
+            Optional<? extends Schema> optSchema = AnnotationsUtils.getSchema(schema, components);
+            if (optSchema.isPresent()) {
+                components.addSchema(schema.name(), optSchema.get());
+            }
+        }
     }
 
     protected Content processContent(Content content, Schema schema, Consumes methodConsumes, Consumes classConsumes) {
@@ -471,17 +641,19 @@ public class Reader {
         return content;
     }
 
-    protected void processRequestBody(Parameter requestBodyParameter, Operation operation,
-                                      Consumes methodConsumes, Consumes classConsumes,
-                                      List<Parameter> operationParameters,
-                                      Annotation[] paramAnnotations, Type type, org.eclipse.microprofile.openapi.annotations.parameters.RequestBody methododRequestBody) {
+    protected void processRequestBody(Parameter requestBodyParameter,
+                                      Operation operation,
+                                      Consumes methodConsumes,
+                                      Consumes classConsumes,
+                                      Annotation[] paramAnnotations,
+                                      org.eclipse.microprofile.openapi.annotations.parameters.RequestBody methodRequestBody) {
         if (operation.getRequestBody() == null) {
-            org.eclipse.microprofile.openapi.annotations.parameters.RequestBody requestBodyAnnotation = getRequestBody(Arrays.asList(paramAnnotations));
-
-            if (requestBodyAnnotation == null) {
-                if (methododRequestBody != null) {
-                    requestBodyAnnotation = methododRequestBody;
-                }
+            org.eclipse.microprofile.openapi.annotations.parameters.RequestBody requestBodyAnnotation = null;
+            if (paramAnnotations != null) {
+                requestBodyAnnotation = getRequestBody(Arrays.asList(paramAnnotations));
+            }
+            if (requestBodyAnnotation == null && methodRequestBody != null) {
+                requestBodyAnnotation = methodRequestBody;
             }
 
             if (requestBodyAnnotation != null) {
@@ -499,6 +671,9 @@ public class Reader {
                                !requestBody.getContent().isEmpty()) {
                         if (requestBodyParameter.getSchema() != null) {
                             for (MediaType mediaType : requestBody.getContent().values()) {
+                                if (mediaType.getSchema() == null) {
+                                    mediaType.setSchema(new SchemaImpl());
+                                }
                                 if (mediaType.getSchema().getType() == null) {
                                     mediaType.getSchema().setType(requestBodyParameter.getSchema().getType());
                                 }
@@ -568,7 +743,9 @@ public class Reader {
                            null,
                            new ArrayList<>(),
                            Optional.empty(),
-                           new HashSet<>(), null);
+                           new HashSet<>(),
+                           null,
+                           null);
     }
 
     public Operation parseMethod(
@@ -580,7 +757,9 @@ public class Reader {
                                  Consumes classConsumes,
                                  List<SecurityRequirement> classSecurityRequirements,
                                  Optional<org.eclipse.microprofile.openapi.models.ExternalDocumentation> classExternalDocs,
-                                 Set<String> classTags, List<org.eclipse.microprofile.openapi.models.servers.Server> classServers) {
+                                 Set<String> classTags,
+                                 List<org.eclipse.microprofile.openapi.models.servers.Server> classServers,
+                                 Map<String, Callback> classCallbacks) {
         JavaType classType = TypeFactory.defaultInstance().constructType(method.getDeclaringClass());
         return parseMethod(
                            classType.getClass(),
@@ -592,7 +771,9 @@ public class Reader {
                            classConsumes,
                            classSecurityRequirements,
                            classExternalDocs,
-                           classTags, classServers);
+                           classTags,
+                           classServers,
+                           classCallbacks);
     }
 
     private Operation parseMethod(
@@ -605,7 +786,9 @@ public class Reader {
                                   Consumes classConsumes,
                                   List<SecurityRequirement> classSecurityRequirements,
                                   Optional<org.eclipse.microprofile.openapi.models.ExternalDocumentation> classExternalDocs,
-                                  Set<String> classTags, List<org.eclipse.microprofile.openapi.models.servers.Server> classServers) {
+                                  Set<String> classTags,
+                                  List<org.eclipse.microprofile.openapi.models.servers.Server> classServers,
+                                  Map<String, Callback> classCallbacks) {
         Operation operation = new OperationImpl();
 
         org.eclipse.microprofile.openapi.annotations.Operation apiOperation = ReflectionUtils.getAnnotation(method, org.eclipse.microprofile.openapi.annotations.Operation.class);
@@ -617,6 +800,8 @@ public class Reader {
         List<Server> apiServers = ReflectionUtils.getRepeatableAnnotations(method, Server.class);
         List<org.eclipse.microprofile.openapi.annotations.tags.Tag> apiTags = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                        org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
+        org.eclipse.microprofile.openapi.annotations.tags.Tags tagsAnnotation = ReflectionUtils.getAnnotation(method,
+                                                                                                              org.eclipse.microprofile.openapi.annotations.tags.Tags.class);
         List<org.eclipse.microprofile.openapi.annotations.parameters.Parameter> apiParameters = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                                          org.eclipse.microprofile.openapi.annotations.parameters.Parameter.class);
         List<org.eclipse.microprofile.openapi.annotations.responses.APIResponse> apiResponses = ReflectionUtils.getRepeatableAnnotations(method,
@@ -627,15 +812,16 @@ public class Reader {
 
         // callbacks
         Map<String, Callback> callbacks = new LinkedHashMap<>();
-
         if (apiCallbacks != null) {
             for (org.eclipse.microprofile.openapi.annotations.callbacks.Callback methodCallback : apiCallbacks) {
-                Map<String, Callback> currentCallbacks = getCallbacks(methodCallback, methodProduces, classProduces, methodConsumes, classConsumes);
+                Map<String, Callback> currentCallbacks = getCallbacks(methodCallback);
                 callbacks.putAll(currentCallbacks);
             }
         }
-        if (callbacks.size() > 0) {
+        if (!callbacks.isEmpty()) {
             operation.setCallbacks(callbacks);
+        } else {
+            operation.setCallbacks(classCallbacks);
         }
 
         // security
@@ -659,23 +845,28 @@ public class Reader {
         AnnotationsUtils.getExternalDocumentation(apiExternalDocumentation).ifPresent(operation::setExternalDocs);
 
         // method tags
-        if (apiTags != null && apiTags.size() > 0) {
-
-            Predicate<org.eclipse.microprofile.openapi.annotations.tags.Tag> tagPredicate = (t) -> operation.getTags() == null
-                                                                                                   || (operation.getTags() != null && (!operation.getTags().contains(t.name())
-                                                                                                                                       || !operation.getTags().contains(t.ref())));
-            apiTags.stream().filter(tagPredicate).filter(t -> StringUtils.isNotBlank(t.name()) || StringUtils.isNotBlank(t.ref())).map(t -> {
-                if (StringUtils.isNotBlank(t.ref())) {
-                    return t.ref();
-                } else {
-                    return t.name();
-                }
-            }).forEach(operation::addTag);
-            AnnotationsUtils.getTags(apiTags.toArray(new org.eclipse.microprofile.openapi.annotations.tags.Tag[apiTags.size()]), true).ifPresent(tags -> openApiTags.addAll(tags));
+        if ((apiTags != null && !apiTags.isEmpty()) || (tagsAnnotation != null && ArrayUtils.isNotEmpty(tagsAnnotation.refs()))) {
+            Stream<String> operationTags = Stream.empty();
+            if (apiTags != null) {
+                operationTags = apiTags.stream().filter(t -> StringUtils.isNotBlank(t.name()) || StringUtils.isNotBlank(t.ref())).map(t -> {
+                    if (StringUtils.isNotBlank(t.ref())) {
+                        return t.ref();
+                    } else {
+                        return t.name();
+                    }
+                });
+                AnnotationsUtils.getTags(apiTags.toArray(new org.eclipse.microprofile.openapi.annotations.tags.Tag[apiTags.size()]),
+                                         true).ifPresent(tags -> openApiTags.addAll(tags));
+            }
+            if (tagsAnnotation != null && ArrayUtils.isNotEmpty(tagsAnnotation.refs())) {
+                operationTags = Stream.concat(operationTags, Stream.of(tagsAnnotation.refs()).filter(StringUtils::isNotBlank));
+            }
+            operationTags.distinct().forEach(operation::addTag);
         }
+
         // class tags after tags defined as field of @Operation
-        else if (classTags != null) {
-            classTags.stream().filter(t -> operation.getTags() == null || (operation.getTags() != null && !operation.getTags().contains(t))).forEach(operation::addTag);
+        else if (classTags != null && !classTags.isEmpty()) {
+            operation.setTags(new ArrayList<>(classTags));
         }
 
         // parameters
@@ -766,32 +957,28 @@ public class Reader {
         return ignore;
     }
 
-    private Map<String, Callback> getCallbacks(
-                                               org.eclipse.microprofile.openapi.annotations.callbacks.Callback apiCallback,
-                                               Produces methodProduces,
-                                               Produces classProduces,
-                                               Consumes methodConsumes,
-                                               Consumes classConsumes) {
+    private Map<String, Callback> getCallbacks(org.eclipse.microprofile.openapi.annotations.callbacks.Callback apiCallback) {
         Map<String, Callback> callbackMap = new HashMap<>();
         if (apiCallback == null) {
             return callbackMap;
         }
         Callback callbackObject = new CallbackImpl();
-        PathItem pathItemObject = new PathItemImpl();
-        for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
-            Operation callbackNewOperation = new OperationImpl();
-            setOperationObjectFromApiOperationAnnotation(
-                                                         callbackNewOperation,
-                                                         callbackOperation,
-                                                         methodProduces,
-                                                         classProduces,
-                                                         methodConsumes,
-                                                         classConsumes);
-            setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
+
+        if (StringUtils.isNotBlank(apiCallback.ref())) {
+            callbackObject.setRef(apiCallback.ref());
         }
 
-        callbackObject.addPathItem(apiCallback.callbackUrlExpression(), pathItemObject);
-        callbackMap.put(apiCallback.name(), callbackObject);
+        if (apiCallback.operations().length > 0) {
+            PathItem pathItemObject = new PathItemImpl();
+            for (org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOperation : apiCallback.operations()) {
+                Operation callbackNewOperation = new OperationImpl();
+                setOperationObjectFromApiOperationAnnotation(callbackNewOperation, callbackOperation);
+                setPathItemOperation(pathItemObject, callbackOperation.method(), callbackNewOperation);
+            }
+            callbackObject.addPathItem(apiCallback.callbackUrlExpression(), pathItemObject);
+        }
+
+        callbackMap.put(AnnotationsUtils.getNameOfReferenceableItem(apiCallback), callbackObject);
 
         return callbackMap;
     }
@@ -849,19 +1036,18 @@ public class Reader {
         }
     }
 
-    private void setOperationObjectFromApiOperationAnnotation(
-                                                              Operation operation,
-                                                              org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOp,
-                                                              Produces methodProduces,
-                                                              Produces classProduces,
-                                                              Consumes methodConsumes,
-                                                              Consumes classConsumes) {
+    private void setOperationObjectFromApiOperationAnnotation(Operation operation, org.eclipse.microprofile.openapi.annotations.callbacks.CallbackOperation callbackOp) {
         if (StringUtils.isNotBlank(callbackOp.summary())) {
             operation.setSummary(callbackOp.summary());
         }
         if (StringUtils.isNotBlank(callbackOp.description())) {
             operation.setDescription(callbackOp.description());
         }
+        AnnotationsUtils.getExternalDocumentation(callbackOp.externalDocs()).ifPresent(operation::setExternalDocs);
+        getParametersListFromAnnotation(callbackOp.parameters(), null, null, operation).ifPresent(p -> p.forEach(operation::addParameter));
+        SecurityParser.getSecurityRequirements(callbackOp.security()).ifPresent(operation::setSecurity);
+        OperationParser.getApiResponses(callbackOp.responses(), null, null, components).ifPresent(operation::setResponses);
+        processRequestBody(new ParameterImpl(), operation, null, null, null, callbackOp.requestBody());
     }
 
     protected String getOperationId(String operationId) {

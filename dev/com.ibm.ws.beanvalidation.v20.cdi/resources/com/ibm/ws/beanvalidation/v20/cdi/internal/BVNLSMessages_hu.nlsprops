@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# cmvc_en_version_level=
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} the application name
+#    {1} the exception message from trying to register the CDI extension
+# -----------------------------------------------------------------------
+UNABLE_TO_REGISTER_WITH_CDI=CWNBV0200W: A(z) {0} alkalmaz\u00e1shoz nem regisztr\u00e1lhat\u00f3 a Hibernate Validator CDI kiterjeszt\u00e9s, \u00edgy ehhez az alkalmaz\u00e1shoz nem \u00e9rhet\u0151 el a CDI integr\u00e1ci\u00f3 a Bean \u00e9rv\u00e9nyes\u00edt\u00e9shez. A k\u00f6vetkez\u0151 probl\u00e9ma mer\u00fclt fel a CDI kiterjeszt\u00e9s regisztr\u00e1l\u00e1sa sor\u00e1n: {1}
+UNABLE_TO_REGISTER_WITH_CDI.explanation=A be\u00e9p\u00edtett Bean \u00e9rv\u00e9nyes\u00edt\u00e9s szolg\u00e1ltat\u00f3hoz (Hibernate Validator) biztos\u00edtva van egy CDI kiterjeszt\u00e9s, amely csak a be\u00e9p\u00edtett ValidationProvider haszn\u00e1latakor t\u00e1mogatott, \u00e9s ha az alkalmaz\u00e1s validation.xml f\u00e1jlja \u00e9rv\u00e9nyes. 
+UNABLE_TO_REGISTER_WITH_CDI.useraction=Tekintse meg a gy\u00f6k\u00e9rprobl\u00e9m\u00e1t az \u00fczenet v\u00e9g\u00e9n. A val\u00f3sz\u00edn\u0171 okok k\u00f6z\u00e9 tartoznak: \u00e9rv\u00e9nytelen tartalom a META-INF/validation.xml f\u00e1jlban, vagy a <default-provider> nem az org.hibernate.validator.HibernateValidator szolg\u00e1ltat\u00f3.
+

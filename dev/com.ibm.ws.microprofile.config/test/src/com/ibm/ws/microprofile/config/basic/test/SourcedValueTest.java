@@ -80,6 +80,9 @@ public class SourcedValueTest {
         WebSphereConfig config = (WebSphereConfig) builder.build();
 
         String dump = config.dump();
-        assertEquals("[key1=value1 (100)(Basic Source 100),key2=value2 (200)(Basic Source 200),key3=value3 (300)(Basic Source 300),key4=value4 (400)(Basic Source 400)]", dump);
+
+        assertEquals("[key1=value1 (100)[type:class java.lang.String;source:Basic Source 100],key2=value2 (200)[type:class java.lang.String;source:Basic Source 200],key3=value3 (300)[type:class java.lang.String;source:Basic Source 300],key4=value4 (400)[type:class java.lang.String;source:Basic Source 400]]",
+                     dump);
+
     }
 }
