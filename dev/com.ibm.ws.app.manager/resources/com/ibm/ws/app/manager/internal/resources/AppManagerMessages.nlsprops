@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -89,7 +89,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: An exception occurred while stopping the app
 APPLICATION_STOP_FAILED.explanation=The server could not stop the application.
 APPLICATION_STOP_FAILED.useraction=Ensure that the application is in a state where it can be stopped.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: An exception occurred while searching for the file {0}. The exception message was: {1}
@@ -98,7 +98,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: The application {0} was not started.
-APPLICATION_NOT_STARTED.explanation=The application could not be started because of earlier errors. 
+APPLICATION_NOT_STARTED.explanation=The application could not be started because of earlier errors.
 APPLICATION_NOT_STARTED.useraction=Check the application configuration and check the logs for errors during the application start.
 
 #{0} the application name
@@ -134,7 +134,7 @@ PARTIAL_START.useraction=Resolve the problem with the part of the application th
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Application {0} not updated.
-APPLICATION_NOT_UPDATED.explanation=The application could not be started because of earlier errors. 
+APPLICATION_NOT_UPDATED.explanation=The application could not be started because of earlier errors.
 APPLICATION_NOT_UPDATED.useraction=Check the application configuration and check the logs for errors during the application start.
 
 #Existing message changed per resolution to design issue 117781
@@ -175,7 +175,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=The application monitor could not r
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Start the server with a cold start.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitoring {0} for applications. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitoring {0} for applications.
 APPLICATION_MONITOR_STARTED.explanation=The server is monitoring a directory for applications to be deployed.
 APPLICATION_MONITOR_STARTED.useraction=No action is required.
 
@@ -192,7 +192,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=If the old directory is no longer needed, re
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: Unable to monitor the {0} application.
-APPLICATION_MONITORING_FAIL.explanation=An application was installed but monitoring was not started on it so if a file is updated within the application the change will not be detected by the server. 
+APPLICATION_MONITORING_FAIL.explanation=An application was installed but monitoring was not started on it so if a file is updated within the application the change will not be detected by the server.
 APPLICATION_MONITORING_FAIL.useraction=When updating files in this application the application will need to be uninstalled and re-installed into the server.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Application {0} at location {1} is inside the monitored directory {2}. The application element will be ignored.
@@ -204,15 +204,15 @@ APPLICATION_UPDATED.explanation=A minor change has occurred in the specified app
 APPLICATION_UPDATED.useraction=No action is required.
 
 APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Jandex use is enabled for all applications.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=For all applications, and when Jandex indexes are available, class and annotation data will be obtained from Jandex indexes.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=For all applications, and when Jandex indexes are available, class and annotation data is obtained from Jandex indexes.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=No action is required.
 
 #{0} is application name
 APPLICATION_JANDEX_ENABLED=CWWKZ0064I: Jandex use is enabled for application {0}.
-APPLICATION_JANDEX_ENABLED.explanation=For the specified application, when Jandex indexes are available, class and annotation data will be obtained from Jandex indexes.
+APPLICATION_JANDEX_ENABLED.explanation=For the specified application, when Jandex indexes are available, class and annotation data is obtained from Jandex indexes.
 APPLICATION_JANDEX_ENABLED.useraction=No action is required.
 
 #{0} is application name
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Jandex use is disabled for application {0}.
-APPLICATION_JANDEX_DISABLED.explanation=Jandex index has been disabled for the specified application.
+APPLICATION_JANDEX_DISABLED.explanation=Jandex index is disabled for the specified application.
 APPLICATION_JANDEX_DISABLED.useraction=No action is required.
