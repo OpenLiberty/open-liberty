@@ -284,6 +284,8 @@ public class ApplicationProcessor {
                                     this.document = openAPI;
                                     handleApplicationPath(openAPI, wmi.getContextRoot());
                                     handleUserServer(openAPI);
+
+                                    Tr.info(tc, "OPENAPI_APPLICATION_PROCESSED", wmi.getApplicationInfo().getDeploymentName());
                                     break;
                                 }
                             }
@@ -309,6 +311,7 @@ public class ApplicationProcessor {
                 handleApplicationPath(openAPI, moduleInfo.getContextRoot());
                 handleUserServer(openAPI);
                 this.document = openAPI;
+                Tr.info(tc, "OPENAPI_APPLICATION_PROCESSED", moduleInfo.getApplicationInfo().getDeploymentName());
             }
         }
     }

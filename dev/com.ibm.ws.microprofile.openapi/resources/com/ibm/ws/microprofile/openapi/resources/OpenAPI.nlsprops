@@ -56,3 +56,7 @@ OPENAPI_MODEL_READER_LOAD_ERROR.useraction=Make sure the class specified exists 
 OPENAPI_FILE_PARSE_ERROR=CWWKO1659E: Failed to parse OpenAPI document for application: {0}.
 OPENAPI_FILE_PARSE_ERROR.explanation=Failed to parse OpenAPI document from META-INF folder.
 OPENAPI_FILE_PARSE_ERROR.useraction=Make sure the file is in correct YAML or JSON format.
+
+OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: The application {0} was processed and an OpenAPI document was produced.
+OPENAPI_APPLICATION_PROCESSED.explanation=Generated the OpenAPI document for the specified application. It can be viewed at /openapi endpoint.
+OPENAPI_APPLICATION_PROCESSED.useraction=No action is required.
