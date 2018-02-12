@@ -25,10 +25,6 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class MessageLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     private TraceWriter traceWriter;
-    /*
-     * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
-     */
-//    private volatile Object sync;
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
@@ -55,10 +51,6 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public void synchronousWrite(Object event) {
         /*
-         * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
-         */
-
-        /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
@@ -84,16 +76,10 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
 
     }
 
-    /**
-     * @return the json
-     */
     public BaseTraceFormatter getFormatter() {
         return formatter;
     }
 
-    /**
-     * @param json the json to set
-     */
     public void setFormatter(BaseTraceFormatter formatter) {
         this.formatter = formatter;
     }

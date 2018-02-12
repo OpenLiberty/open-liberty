@@ -52,22 +52,28 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
         GenericData genData = null;
+        Integer levelVal = null;
         if (event instanceof LogTraceData) {
             genData = ((LogTraceData) event).getGenData();
+            levelVal = ((LogTraceData) event).getLevelValue();
         } else if (event instanceof GenericData) {
             genData = (GenericData) event;
         }
 
-        String evensourcetType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
         boolean isStderr = false;
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
-            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
-        }
-        //add in formatter here for basic
-        else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
+            String eventsourceType = getSourceTypeFromDataObject(genData);
+            if (eventsourceType.equals(CollectorConstants.MESSAGES_SOURCE) && levelVal != null) {
+                if (levelVal >= consoleLogLevel) {
+                    messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                }
+            } else {
+                messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+            }
+        } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if traceFilename=stdout write everything to console.log in trace format
-            Integer levelVal = ((LogTraceData) event).getLevelValue();
+            String logLevel = ((LogTraceData) event).getLogLevel();
             if (isTraceStdout) {
                 //check if message need to be written to stderr
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
@@ -76,8 +82,12 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 messageOutput = formatter.traceFormatGenData(genData);
             } // copySystemStream and stderr/stdout level=700
             else if (copySystemStreams && (levelVal == 700)) {
-                messageOutput = formatter.filteredStreamOutput(genData);
-
+                if (logLevel != null) {
+                    if (logLevel.equals("SystemErr")) {
+                        isStderr = true;
+                    }
+                }
+                messageOutput = formatter.formatStreamOutput(genData);
             }
             //if !isTraceStdout && level >= consoleloglevel
             else if (levelVal >= consoleLogLevel) {
@@ -104,42 +114,27 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         this.sysLogHolder = (SystemLogHolder) writer;
     }
 
-    /**
-     * @param formatter the formatter to set
-     */
     public void setFormatter(BaseTraceFormatter formatter) {
         this.formatter = formatter;
     }
 
-    /**
-     * @return the consoleLogLevel
-     */
     public void setConsoleLogLevel(Integer consoleLogLevel) {
         this.consoleLogLevel = consoleLogLevel;
     }
 
-    /**
-     * @param format the format to set
-     */
     public void setFormat(String format) {
         this.format = format;
     }
 
-    /**
-     * @param copySystemStreams the copySystemStreams to set
-     */
     public void setCopySystemStreams(boolean copySystemStreams) {
         this.copySystemStreams = copySystemStreams;
     }
 
-    /**
-     * @param sysErrHolder the sysErrHolder to set
-     */
     public void setSysErrHolder(SystemLogHolder sysErrHolder) {
         this.sysErrHolder = sysErrHolder;
     }
 
-    public void setIsTraceStdout(boolean isTraceStdout) {
+    public void setTraceStdout(boolean isTraceStdout) {
         this.isTraceStdout = isTraceStdout;
     }
 

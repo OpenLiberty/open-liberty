@@ -517,9 +517,7 @@ public class BaseTraceFormatter extends Formatter {
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
                     message = kvp.getValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
-
                     datetime = Long.parseLong(kvp.getValue());
-
                 } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
                     level = kvp.getValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
@@ -532,7 +530,7 @@ public class BaseTraceFormatter extends Formatter {
 
             }
         }
-        name = nonNullString(srcClassName, loggerName);
+        name = nonNullString(loggerName, srcClassName);
         sb.append('[').append(DateFormatHelper.formatTime(datetime, useIsoDateFormat)).append("] ");
         sb.append(DataFormatHelper.getThreadId()).append(' ');
         formatFixedString(sb, name, enhancedNameLength);
@@ -1089,7 +1087,7 @@ public class BaseTraceFormatter extends Formatter {
      * @param genData object to filter
      * @return filtered message of the genData
      */
-    protected String filteredStreamOutput(GenericData genData) {
+    protected String formatStreamOutput(GenericData genData) {
         String txt = null;
         String loglevel = null;
         KeyValuePair kvp = null;
@@ -1103,8 +1101,6 @@ public class BaseTraceFormatter extends Formatter {
                 if (kvp.getKey().equals("message")) {
                     txt = kvp.getValue();
                 } else if (kvp.getKey().equals("loglevel")) {
-                    loglevel = kvp.getValue();
-                } else if (kvp.getKey().equals("throwable")) {
                     loglevel = kvp.getValue();
                 }
             }
