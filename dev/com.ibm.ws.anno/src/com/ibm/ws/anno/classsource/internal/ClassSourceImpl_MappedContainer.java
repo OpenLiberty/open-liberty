@@ -396,7 +396,7 @@ public class ClassSourceImpl_MappedContainer
 
         Container useContainer = getContainer();
         if ( !useContainer.isRoot() && useContainer.getPath().equals("/WEB-INF/classes") ) {
-            jandexIndexPath = "../../" + jandexIndexPath;
+            jandexIndexPath = "../.." + jandexIndexPath;
         }
 
         return jandexIndexPath;
@@ -437,7 +437,9 @@ public class ClassSourceImpl_MappedContainer
             return null;
         }
 
-        System.out.println("Located JANDEX index");
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Located JANDEX index was found", getHashText()));        
+        }
 
         long startJandexTime = getTime();
 

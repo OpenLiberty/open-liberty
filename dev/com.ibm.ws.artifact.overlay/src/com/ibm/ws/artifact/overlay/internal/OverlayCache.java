@@ -13,16 +13,12 @@ package com.ibm.ws.artifact.overlay.internal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Implementation of storage for an overlay cache.
  */
 public class OverlayCache {
 	private static final String CLASS_NAME = OverlayCache.class.getSimpleName();
-	protected static final Logger overlayCacheLogger = Logger.getLogger("com.ibm.ws.overlaycache");
 
 	private static final String ABSENT = "Absent";
 	private static final String PRESENT = "Present";
@@ -31,7 +27,6 @@ public class OverlayCache {
     private Map<String, Map<Class<?>, Object>> pathTypeStorage =
     	new HashMap<String, Map<Class<?>, Object>>();
 
-    @Trivial
     public synchronized void addToCache(String pathKey, Class<?> typeKey, Object data) {
     	String methodName = "addToCache";
 
@@ -56,14 +51,17 @@ public class OverlayCache {
         	}
         }
         
-        if ( overlayCacheLogger.isLoggable(Level.FINER) ) {
-        	overlayCacheLogger.logp(Level.FINER, CLASS_NAME, methodName,
+        // Use the cache logger to avoid interactions with injected trace.
+        // Placing the logger in OverlayCache means it will be used
+        // both for custom logging and for injected trace.
+
+        if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+        	OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName,
         		"Path ({0}) [ {1} ] Type ({2}) [ {3} ] Data(Old) [ {4} ] Data(New) [ {5} ]",
         		new Object[] { pathCase, pathKey, typeCase, typeKey, oldData, data });
         }
     }
 
-    @Trivial    
     public synchronized void removeFromCache(String pathKey, Class<?> typeKey) {
     	String methodName = "removeFromCache";
 
@@ -87,14 +85,17 @@ public class OverlayCache {
             }            
         }
 
-        if ( overlayCacheLogger.isLoggable(Level.FINER) ) {
-        	overlayCacheLogger.logp(Level.FINER, CLASS_NAME, methodName,
+        // Use the cache logger to avoid interactions with injected trace.
+        // Placing the logger in OverlayCache means it will be used
+        // both for custom logging and for injected trace.
+        
+        if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+        	OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName,
         		"Path ({0}) [ {1} ] Type ({2}) [ {3} ] Data [ {4} ]",
         		new Object[] { pathCase, pathKey, typeCase, typeKey, data });
         }
     }
 
-    @Trivial    
     public synchronized Object getFromCache(String pathKey, Class<?> typeKey) {
     	String methodName = "getFromCache";
 
@@ -113,8 +114,12 @@ public class OverlayCache {
             }
         }
 
-        if ( overlayCacheLogger.isLoggable(Level.FINER) ) {
-        	overlayCacheLogger.logp(Level.FINER, CLASS_NAME, methodName,
+        // Use the cache logger to avoid interactions with injected trace.
+        // Placing the logger in OverlayCache means it will be used
+        // both for custom logging and for injected trace.
+        
+        if ( OverlayCacheLogger.logger.isLoggable(Level.FINER) ) {
+        	OverlayCacheLogger.logger.logp(Level.FINER, CLASS_NAME, methodName,
         		"Path ({0}) [ {1} ] Type ({2}) [ {3} ] Data [ {4} ]",
         		new Object[] { pathCase, pathKey, typeCase, typeKey, data });
         }

@@ -504,7 +504,7 @@ public abstract class ClassSourceImpl implements ClassSource {
             }
         }
         
-        if ( fromJandex && ClassSourceImpl_Options.doJandexLog() ) {
+        if ( fromJandex && JandexLogger.doLog() ) {
         	String useHashText = getHashText();
         	
         	String msg = MessageFormat.format(
@@ -512,9 +512,9 @@ public abstract class ClassSourceImpl implements ClassSource {
         		useHashText, getCanonicalName(),
         		(fromJandex ? "New Scan" : "Jandex"),
         		Integer.valueOf(finalClasses) );            
-        	ClassSourceImpl_Options.jandexLog(CLASS_NAME, methodName, msg);
+        	JandexLogger.log(CLASS_NAME, methodName, msg);
 
-        	ClassSourceImpl_Options.jandexLog(CLASS_NAME, methodName, 
+        	JandexLogger.log(CLASS_NAME, methodName, 
         		MessageFormat.format("[ {0} ] Added classes [ {1} ]",
         			useHashText, Integer.valueOf(finalClasses - initialClasses))); 
 
@@ -522,7 +522,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         		int nextResult = getResult(resultField);
         		String nextResultTag = resultField.getTag();
 
-            	ClassSourceImpl_Options.jandexLog(CLASS_NAME, methodName,         		
+            	JandexLogger.log(CLASS_NAME, methodName,         		
                     MessageFormat.format("[ {0} ]  [ {1} ] {2}",
                     	useHashText, Integer.valueOf(nextResult), nextResultTag)); 
             }
@@ -553,7 +553,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      */
     @Trivial
     public String getJandexIndexPath() {
-        return "META-INF/jandex.idx";
+        return "/META-INF/jandex.idx";
     }
 
     /**
@@ -569,7 +569,7 @@ public abstract class ClassSourceImpl implements ClassSource {
     	String methodName = "getJandexIndex";
 
         boolean doLog = tc.isDebugEnabled();
-        boolean doJandexLog = ClassSourceImpl_Options.doJandexLog();
+        boolean doJandexLog = JandexLogger.doLog();
 
         boolean useJandex = getUseJandex();
 
@@ -582,15 +582,20 @@ public abstract class ClassSourceImpl implements ClassSource {
         		
         		String msg;
         		if ( haveJandex ) {
-        			msg = MessageFormat.format("[ {0} ] Jandex disabled; Jandex index found", getHashText());
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
+        				getHashText(), getJandexIndexPath());
         		} else {
-        			msg = MessageFormat.format("[ {0} ] Jandex disabled; Jandex index not found", getHashText());
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] not found",
+        				getHashText(), getJandexIndexPath());
+        				
         		}
         		if ( doLog ) {
         	        Tr.debug(tc, msg);
         		}
         		if ( doJandexLog ) {
-        			ClassSourceImpl_Options.jandexLog(CLASS_NAME,  methodName, msg);
+        			JandexLogger.log(CLASS_NAME,  methodName, msg);
         		}
         	}
 
@@ -602,15 +607,19 @@ public abstract class ClassSourceImpl implements ClassSource {
         	if ( doLog || doJandexLog ) {
         		String msg;
         		if ( jandexIndex != null ) {
-        			msg = MessageFormat.format("[ {0} ] Jandex enabled; Jandex index found", getHashText());
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] found",
+        				getHashText(), getJandexIndexPath());
         		} else {
-        			msg = MessageFormat.format("[ {0} ] Jandex enabled; Jandex index not found", getHashText());
+        			msg = MessageFormat.format(
+        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] not found",
+        				getHashText(), getJandexIndexPath());
         		}
         		if ( doLog ) {
         	        Tr.debug(tc, msg);	
         		}
         		if ( doJandexLog ) {
-        			ClassSourceImpl_Options.jandexLog(CLASS_NAME,  methodName, msg);
+        			JandexLogger.log(CLASS_NAME,  methodName, msg);
         		}        		
         	}
         		
