@@ -111,9 +111,9 @@ public class MetricRegistryImpl extends MetricRegistry {
         return MetricType.INVALID;
     }
 
-    private final ConcurrentMap<String, Metric> metrics;
-    private final ConcurrentMap<String, Metadata> metadata;
-    private final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
+    protected final ConcurrentMap<String, Metric> metrics;
+    protected final ConcurrentMap<String, Metadata> metadata;
+    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
 
     /**
      * Creates a new {@link MetricRegistry}.
@@ -150,25 +150,18 @@ public class MetricRegistryImpl extends MetricRegistry {
     @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
         // For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
-        return register(new Metadata(name, from(metric)), metric);
+        return register(name, metric, new Metadata(name, from(metric)));
     }
 
     @Override
-    @Deprecated
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
-        return register(metadata, metric);
-    }
-
-    @Override
-    public <T extends Metric> T register(Metadata metadata, T metric) throws IllegalArgumentException {
-
-        final Metric existing = metrics.putIfAbsent(metadata.getName(), metric);
-        this.metadata.putIfAbsent(metadata.getName(), metadata);
+        final Metric existing = metrics.putIfAbsent(name, metric);
+        this.metadata.putIfAbsent(name, metadata);
         if (existing == null) {
         } else {
-            throw new IllegalArgumentException("A metric named " + metadata.getName() + " already exists");
+            throw new IllegalArgumentException("A metric named " + name + " already exists");
         }
-        addNameToApplicationMap(metadata.getName());
+        addNameToApplicationMap(name);
         return metric;
     }
 
@@ -179,7 +172,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      *
      * @param name
      */
-    private void addNameToApplicationMap(String name) {
+    protected void addNameToApplicationMap(String name) {
         String appName = getApplicationName();
 
         // If it is a base metric, the name will be null
@@ -437,7 +430,7 @@ public class MetricRegistryImpl extends MetricRegistry {
             return (T) metric;
         } else if (metric == null) {
             try {
-                return register(metadata, builder.newMetric());
+                return register(metadata.getName(), builder.newMetric(), metadata);
             } catch (IllegalArgumentException e) {
                 final Metric added = metrics.get(metadata.getName());
                 if (builder.isInstance(added)) {

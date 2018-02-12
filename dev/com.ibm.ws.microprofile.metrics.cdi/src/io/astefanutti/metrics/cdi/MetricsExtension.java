@@ -62,9 +62,11 @@ import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
@@ -82,7 +84,12 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
     private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
-    Set<MetricsParameter> getParameters() {
+    @Reference
+    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        MetricRegistryFactory.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
+    }
+
+    public Set<MetricsParameter> getParameters() {
         return configuration.getParameters();
     }
 
@@ -128,7 +135,7 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 || hasInjectionPoints(bean.getValue()))
                 continue;
             Metadata metadata = name.metadataOf(bean.getValue());
-            registry.register(metadata, (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
+            registry.register(metadata.getName(), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), metadata);
             addMetricName(metadata.getName());
         }
 
