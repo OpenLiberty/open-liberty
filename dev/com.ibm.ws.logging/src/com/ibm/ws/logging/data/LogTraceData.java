@@ -21,33 +21,21 @@ public class LogTraceData {
     private String logLevel;
 
     public LogTraceData(GenericData genData) {
-        this.setGenData(genData);
+        setGenData(genData);
     }
 
-    /**
-     * @return the levelValue
-     */
     public Integer getLevelValue() {
         return levelValue;
     }
 
-    /**
-     * @param levelValue the levelValue to set
-     */
     public void setLevelValue(Integer levelValue) {
         this.levelValue = levelValue;
     }
 
-    /**
-     * @return the genData
-     */
     public GenericData getGenData() {
         return genData;
     }
 
-    /**
-     * @param genData the genData to set
-     */
     public void setGenData(GenericData genData) {
         this.genData = genData;
     }
@@ -61,24 +49,18 @@ public class LogTraceData {
     }
 
     public String getMessageID() {
-        return this.genData.getMessageID();
+        return genData.getMessageID();
     }
 
     @Override
     public String toString() {
-        return this.genData.toString();
+        return genData.toString();
     }
 
-    /**
-     * @return the logLevel
-     */
     public String getLogLevel() {
         return logLevel;
     }
 
-    /**
-     * @param logLevel the logLevel to set
-     */
     public void setLogLevel(String logLevel) {
         this.logLevel = logLevel;
     }
