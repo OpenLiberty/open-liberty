@@ -20,5 +20,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.repository"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.product.utility"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.boot"/>
-	<classpathentry kind="output" path="build/classes"/>
+
 </classpath>
