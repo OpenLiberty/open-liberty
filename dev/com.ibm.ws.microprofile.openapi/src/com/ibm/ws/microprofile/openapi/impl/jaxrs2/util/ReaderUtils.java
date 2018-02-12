@@ -246,42 +246,42 @@ public class ReaderUtils {
         return null;
     }
 
-    public static void copyParamValues(Parameter paramTo, Parameter operationParameter) {
-        if (operationParameter.getIn() != null) {
-            paramTo.setIn(operationParameter.getIn());
+    public static void copyParamValues(Parameter to, Parameter from) {
+        if (from.getIn() != null) {
+            to.setIn(from.getIn());
         }
-        if (operationParameter.getAllowEmptyValue() != null) {
-            paramTo.setAllowEmptyValue(operationParameter.getAllowEmptyValue());
+        if (from.getAllowEmptyValue() != null) {
+            to.setAllowEmptyValue(from.getAllowEmptyValue());
         }
-        if (operationParameter.getAllowReserved() != null) {
-            paramTo.setAllowReserved(operationParameter.getAllowReserved());
+        if (from.getAllowReserved() != null) {
+            to.setAllowReserved(from.getAllowReserved());
         }
-        if (operationParameter.getDeprecated() != null) {
-            paramTo.setDeprecated(operationParameter.getDeprecated());
+        if (from.getDeprecated() != null) {
+            to.setDeprecated(from.getDeprecated());
         }
-        if (operationParameter.getDescription() != null) {
-            paramTo.setDescription(operationParameter.getDescription());
+        if (from.getDescription() != null) {
+            to.setDescription(from.getDescription());
         }
-        if (operationParameter.getStyle() != null) {
-            paramTo.setStyle(operationParameter.getStyle());
+        if (from.getStyle() != null) {
+            to.setStyle(from.getStyle());
         }
-        if (paramTo.getSchema() == null) {
-            paramTo.setSchema(operationParameter.getSchema());
+        if (to.getSchema() == null) {
+            to.setSchema(from.getSchema());
         }
-        if (paramTo.getContent() == null) {
-            paramTo.setContent(operationParameter.getContent());
+        if (to.getContent() == null) {
+            to.setContent(from.getContent());
         }
-        if (operationParameter.getExample() != null) {
-            paramTo.setExample(operationParameter.getExample());
+        if (from.getExample() != null) {
+            to.setExample(from.getExample());
         }
-        if (operationParameter.getRequired() != null) {
-            paramTo.setRequired(operationParameter.getRequired());
+        if (from.getRequired() != null) {
+            to.setRequired(from.getRequired());
         }
-        if (operationParameter.getExplode() != null) {
-            paramTo.setExplode(operationParameter.getExplode());
+        if (from.getExplode() != null) {
+            to.setExplode(from.getExplode());
         }
-        if (operationParameter.getExamples() != null) {
-            paramTo.setExamples(operationParameter.getExamples());
+        if (from.getExamples() != null) {
+            to.setExamples(from.getExamples());
         }
 
     }
