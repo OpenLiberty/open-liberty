@@ -2,21 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
-        <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.feature"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/wlp.lib.extract"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.boot"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.apache.aries.util"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.product.utility"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.repository"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.repository.liberty"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.repository.resolver"/>
-	<classpathentry kind="src" path="/com.ibm.ws.kernel.service"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.crypto.passwordutil"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
