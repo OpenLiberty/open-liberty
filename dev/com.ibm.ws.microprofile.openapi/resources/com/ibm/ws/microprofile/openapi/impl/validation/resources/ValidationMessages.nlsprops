@@ -15,6 +15,8 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
+validationMessage=Message: {0}, Location: {1}
+
 callbackURLTemplateEmpty=The URL template of Callback Object is empty and is not a valid URL
 callbackInvalidSubstitutionVariables=The Callback Object contains invalid substitution variables: \"{0}\"
 callbackMustBeRuntimeExpression=The Callback Object must contain a valid runtime expression as defined in the OpenAPI Specification. The \"{0}\" value specified for the runtime expression is not valid

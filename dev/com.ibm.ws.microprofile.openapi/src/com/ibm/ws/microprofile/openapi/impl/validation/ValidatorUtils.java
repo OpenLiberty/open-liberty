@@ -144,4 +144,8 @@ public class ValidatorUtils {
         }
     }
 
+    public static String formatMessage(String messageId, String... strings) {
+        return Tr.formatMessage(tc, messageId, strings);
+    }
+
 }

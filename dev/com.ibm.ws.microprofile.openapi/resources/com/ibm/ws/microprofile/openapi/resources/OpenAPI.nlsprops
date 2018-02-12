@@ -17,11 +17,11 @@
 
 # Message prefix block: CWWKO1650 - CWWKO1699
 
-OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: Validation of the OpenAPI document produced the following error. Message: {0}, Location: {1}
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1650E: Validation of the OpenAPI document produced the following error(s):
 OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=The OpenAPI document is invalid.
 OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Provide a valid OpenAPI document that resolves the reported error.
 
-OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Validation of the OpenAPI document produced the following warning. Message: {0}, Location: {1}
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1651W: Validation of the OpenAPI document produced the following warning(s):
 OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=The OpenAPI document contains data that is not in the recommended format.
 OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Provide a valid OpenAPI document that resolves the reported warning.
 
