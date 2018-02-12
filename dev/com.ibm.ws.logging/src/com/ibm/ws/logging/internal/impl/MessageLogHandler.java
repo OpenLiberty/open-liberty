@@ -51,10 +51,6 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public void synchronousWrite(Object event) {
         /*
-         * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
-         */
-
-        /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
@@ -80,16 +76,10 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
 
     }
 
-    /**
-     * @return the json
-     */
     public BaseTraceFormatter getFormatter() {
         return formatter;
     }
 
-    /**
-     * @param json the json to set
-     */
     public void setFormatter(BaseTraceFormatter formatter) {
         this.formatter = formatter;
     }

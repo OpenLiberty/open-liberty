@@ -15,38 +15,27 @@ import java.util.ArrayList;
 /**
  *
  */
-public class LogTraceData extends GenericData {
-    private Integer LevelValue;
+public class LogTraceData {
+    private Integer levelValue;
     private GenericData genData;
+    private String logLevel;
 
-    /**
-     *
-     */
     public LogTraceData(GenericData genData) {
         this.setGenData(genData);
-        // TODO Auto-generated constructor stub
-    }
-
-    /**
-    *
-    */
-    public LogTraceData() {
-        super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
      * @return the levelValue
      */
     public Integer getLevelValue() {
-        return LevelValue;
+        return levelValue;
     }
 
     /**
      * @param levelValue the levelValue to set
      */
     public void setLevelValue(Integer levelValue) {
-        LevelValue = levelValue;
+        this.levelValue = levelValue;
     }
 
     /**
@@ -63,17 +52,14 @@ public class LogTraceData extends GenericData {
         this.genData = genData;
     }
 
-    @Override
     public ArrayList<Pair> getPairs() {
         return genData.getPairs();
     }
 
-    @Override
     public String getSourceType() {
         return genData.getSourceType();
     }
 
-    @Override
     public String getMessageID() {
         return this.genData.getMessageID();
     }
@@ -81,6 +67,20 @@ public class LogTraceData extends GenericData {
     @Override
     public String toString() {
         return this.genData.toString();
+    }
+
+    /**
+     * @return the logLevel
+     */
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    /**
+     * @param logLevel the logLevel to set
+     */
+    public void setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
     }
 
 }
