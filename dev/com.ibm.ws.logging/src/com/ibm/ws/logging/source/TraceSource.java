@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
@@ -86,33 +88,49 @@ public class TraceSource implements Source, WsTraceHandler {
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
-            LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null) {
-                if (bufferMgr != null) {
-                    bufferMgr.add(parse(routedMessage, logRecord));
-                }
+            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+                bufferMgr.add(parse(routedMessage));
             }
         }
     }
 
-    public TraceLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-        String message = routedMessage.getFormattedVerboseMsg();
-        if (message == null)
-            message = logRecord.getMessage();
-        long timestamp = logRecord.getMillis();
-        int threadId = logRecord.getThreadID();
-        String loggerName = logRecord.getLoggerName();
-        String logLevel = LogFormatUtils.mapLevelToType(logRecord);
-        String logLevelRaw = LogFormatUtils.mapLevelToRawType(logRecord);
-        String methodName = logRecord.getSourceMethodName();
-        String className = logRecord.getSourceClassName();
-        Map<String, String> extensions = null;
-        if (logRecord instanceof WsLogRecord)
-            extensions = ((WsLogRecord) logRecord).getExtensions();
-        String sequence = sequenceNumber.next(timestamp);
-        //String sequence = timestamp + "_" + String.format("%013X", seq.incrementAndGet());
+    public GenericData parse(RoutedMessage routedMessage) {
 
-        return new TraceLogData(timestamp, threadId, loggerName, logLevel, logLevelRaw, message, methodName, className, extensions, sequence);
+        GenericData genData = new GenericData();
+        LogRecord logRecord = routedMessage.getLogRecord();
+        String verboseMessage = routedMessage.getFormattedVerboseMsg();
+        if (verboseMessage == null) {
+            genData.addPair("message", logRecord.getMessage());
+        } else {
+            genData.addPair("message", verboseMessage);
+        }
+
+        long datetimeValue = logRecord.getMillis();
+        genData.addPair("ibm_datetime", datetimeValue);
+        genData.addPair("ibm_threadId", logRecord.getThreadID());
+        genData.addPair("module", logRecord.getLoggerName());
+        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
+        genData.addPair("ibm_className", logRecord.getSourceClassName());
+        String sequenceNum = sequenceNumber.next(datetimeValue);
+        genData.addPair("ibm_sequence", sequenceNum);
+
+        KeyValuePairList extensions = new KeyValuePairList();
+        Map<String, String> extMap = null;
+        if (logRecord instanceof WsLogRecord) {
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                extMap = ((WsLogRecord) logRecord).getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    extensions.addPair(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        genData.addPairs(extensions);
+
+        genData.setSourceType(sourceName);
+        return genData;
 
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,9 +114,14 @@ public class FramePriority extends Frame {
     public void validate(H2ConnectionSettings settings) throws ProtocolException {
         if (streamId == 0) {
             throw new ProtocolException("PRIORITY frame stream ID cannot be 0x0");
-        }
-        if (this.streamId == this.streamDependency) {
-            throw new ProtocolException("PRIORITY frame stream cannot depend on itself");
+        } else if (this.streamId == this.streamDependency) {
+            ProtocolException pe = new ProtocolException("PRIORITY frame stream cannot depend on itself");
+            pe.setConnectionError(false);
+            throw pe;
+        } else if (this.payloadLength != 5) {
+            ProtocolException pe = new ProtocolException("PRIORITY frame must have a length of 5 octets");
+            pe.setConnectionError(false);
+            throw pe;
         }
 
     }

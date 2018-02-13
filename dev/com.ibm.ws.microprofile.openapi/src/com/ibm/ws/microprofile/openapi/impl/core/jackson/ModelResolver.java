@@ -216,7 +216,16 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                         // create a reference for the property
                         final BeanDescription beanDesc = _mapper.getSerializationConfig().introspect(propType);
                         String name = _typeName(propType, beanDesc);
-                        property = new SchemaImpl().ref(constructRef(name));
+                        org.eclipse.microprofile.openapi.annotations.media.Schema schema = getSchemaAnnotation(annotations);
+                        boolean inline = false;
+                        property = new SchemaImpl((SchemaImpl) mi);
+                        if (schema != null && AnnotationsUtils.hasSchemaAnnotation(schema)) {
+                            inline = AnnotationsUtils.overrideSchemaFromAnnotation(property, schema);
+                        }
+                        if (!inline) {
+                            property = new SchemaImpl().ref(constructRef(name));
+                        }
+
                     } else if (mi.getRef() != null) {
                         property = new SchemaImpl().ref(StringUtils.isNotEmpty(mi.getRef()) ? mi.getRef() : ((SchemaImpl) mi).getName());
                     } else {

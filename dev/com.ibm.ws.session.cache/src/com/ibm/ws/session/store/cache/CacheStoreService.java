@@ -19,6 +19,7 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.Configuration;
 import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.EternalExpiryPolicy;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
@@ -87,20 +88,28 @@ public class CacheStoreService implements SessionStoreService {
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = props;
 
+        // Use different cache names depending on whether session property values are all stored in a single entry
+        // within this main cache vs as separate entries in other caches.
+        // The use of different cache names prevents servers from colliding on the same cache when they have different
+        // options selected for how to store session properties.
+        String cacheName = "true".equals(configurationProperties.get("useMultiRowSchema"))
+                                        ? "com.ibm.ws.session.info"   // no session property values are kept in this cache
+                                        : "com.ibm.ws.session.cache"; // all session property values are stored in a single entry per session
+
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
         cacheManager = provider.getCacheManager(null, null, null);
-        cache = cacheManager.getCache("com.ibm.ws.session.cache", String.class, ArrayList.class);
+        cache = cacheManager.getCache(cacheName, String.class, ArrayList.class);
         if (cache == null) {
             @SuppressWarnings("rawtypes")
             Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>().setTypes(String.class, ArrayList.class);
             try {
-                cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
+                cache = cacheManager.createCache(cacheName, config);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Created a new session info cache", cache);
             } catch (CacheException x) {
-                cache = cacheManager.getCache("com.ibm.ws.session.cache", String.class, ArrayList.class);
+                cache = cacheManager.getCache(cacheName, String.class, ArrayList.class);
                 if (cache == null)
                     throw x;
             }
@@ -140,13 +149,14 @@ public class CacheStoreService implements SessionStoreService {
      */
     Cache<String, byte[]> getCache(String appName) {
         // TODO replace / and : characters (per spec for cache names) and ensure the name is still unique.
-        String cacheName = "com.ibm.ws.session.cache." + appName;
+        String cacheName = "com.ibm.ws.session.app." + appName;
 
         // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
         Cache<String, byte[]> cache = cacheManager.getCache(cacheName, String.class, byte[].class);
         if (cache == null) {
             Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
-                            .setTypes(String.class, byte[].class);
+                            .setTypes(String.class, byte[].class)
+                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
             try {
                 cache = cacheManager.createCache(cacheName, config);
 

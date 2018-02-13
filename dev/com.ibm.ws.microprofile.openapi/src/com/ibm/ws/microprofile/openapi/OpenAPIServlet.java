@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,12 +55,22 @@ public class OpenAPIServlet extends HttpServlet {
 
             response.setCharacterEncoding("UTF-8");
             if (format.equals("json")) {
-                response.setContentType(Constants.CONTENT_TYPE_JSON);
-                Writer writer = response.getWriter();
-                writer.write(applicationProcessor.getOpenAPIDocument(DocType.JSON));
+                String document = applicationProcessor.getOpenAPIDocument(request, DocType.JSON);
+                if (document != null) {
+                    response.setContentType(Constants.CONTENT_TYPE_JSON);
+                    Writer writer = response.getWriter();
+                    writer.write(document);
+                } else {
+                    response.setStatus(500);
+                }
             } else {
-                Writer writer = response.getWriter();
-                writer.write(applicationProcessor.getOpenAPIDocument(DocType.YAML));
+                String document = applicationProcessor.getOpenAPIDocument(request, DocType.YAML);
+                if (document != null) {
+                    Writer writer = response.getWriter();
+                    writer.write(document);
+                } else {
+                    response.setStatus(500);
+                }
             }
         } else {
             response.setStatus(405);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -62,9 +62,11 @@ import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
@@ -82,7 +84,12 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
     private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
-    Set<MetricsParameter> getParameters() {
+    @Reference
+    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        MetricRegistryFactory.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
+    }
+
+    public Set<MetricsParameter> getParameters() {
         return configuration.getParameters();
     }
 

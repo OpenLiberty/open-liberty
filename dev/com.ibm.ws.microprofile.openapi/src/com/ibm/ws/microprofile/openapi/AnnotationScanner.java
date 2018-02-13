@@ -48,15 +48,11 @@ public class AnnotationScanner {
                                                                              JAX_RS_APP_PATH_ANNOTATION_CLASS_NAME,
                                                                              OPENAPI_SCHEMA_ANNOTATION_CLASS_NAME);
 
-    private final ClassLoader webModuleClassLoader;
     private final WebAnnotations webAnnotations;
-    private Set<Class<?>> annotatedClasses;
-    private Set<Class<?>> scannedClasses;
     private String urlMapping;
     private final WebAppConfig appConfig;
 
     public AnnotationScanner(ClassLoader classLoader, Container containerToAdapt) throws UnableToAdaptException {
-        webModuleClassLoader = classLoader;
         webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
         appConfig = containerToAdapt.adapt(WebModuleMetaData.class).getConfiguration();
     }
@@ -183,43 +179,10 @@ public class AnnotationScanner {
         return Collections.unmodifiableSet(restAPIClasses);
     }
 
-    /**
-     * Returns the set of classes in the web module that are annotated with
-     * Open API annotations that can be added to a class or <code>javax.ws.rs.Path</code>.
-     */
-    private synchronized Set<Class<?>> getAllAnnotatedClasses() {
-        if (this.annotatedClasses == null) {
-            Set<String> restAPIClasses = new HashSet<String>();
-            restAPIClasses = getAnnotatedClassesNames();
-            Set<Class<?>> classes = new HashSet<Class<?>>();
-            for (String className : restAPIClasses) {
-                try {
-                    classes.add(webModuleClassLoader.loadClass(className));
-                } catch (ClassNotFoundException e) {
-                    Tr.event(tc, "Failed to load class " + className + " returned from the annotation scanner.");
-                    Tr.error(tc, "FAILED_FINDING_CLASS", className, getClass().getName(), e.toString());
-                } catch (NoClassDefFoundError e) {
-                    Tr.event(tc, "Failed to load class " + className + " returned from the annotation scanner.");
-                    Tr.error(tc, "FAILED_FINDING_CLASS", className, getClass().getName(), e.toString());
-                }
-            }
-            this.annotatedClasses = Collections.unmodifiableSet(classes);
-        }
-        return this.annotatedClasses;
-    }
-
-    /**
-     *
-     * @param reader
-     * @return Set of object that represent scanned classes
-     * @throws UnableToAdaptException
-     */
-    public synchronized Set<Class<?>> getAnnotatedClasses() {
+    public String getURLMapping() {
+        this.urlMapping = null;
         try {
-            Set<Class<?>> scanClasses = new HashSet<>();
-            Set<Class<?>> annotated = getAllAnnotatedClasses();
             Set<String> appClassNames = getAllApplicationClasses();
-            this.urlMapping = null;
 
             if (appClassNames.size() < 2) {
                 String urlMapping = null;
@@ -232,21 +195,12 @@ public class AnnotationScanner {
                     urlMapping = findServletMappingForApp(appClassNames.iterator().next());
                 }
                 this.urlMapping = urlMapping;
-                scanClasses.addAll(annotated);
             } else {
                 Tr.event(tc, "Found multiple Application classes. This is not supported at this time.");
             }
-
-            this.scannedClasses = Collections.unmodifiableSet(scanClasses);
-            Tr.event(tc, "Finished scanning for annotated classes");
-        } catch (UnableToAdaptException e) {
-            Tr.event(tc, "Unable to get annotated classes");
-            return null;
+        } catch (Exception e) {
+            Tr.event(tc, "Unable to get url mapping");
         }
-        return scannedClasses;
-    }
-
-    public String getURLMapping() {
         return this.urlMapping;
     }
 }

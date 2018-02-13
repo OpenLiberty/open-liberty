@@ -1,0 +1,776 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/InstallKernel.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Kernel
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1200 to 1399 are reserved for the InstallKernel.
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# The following five messages are for InstallException and should not occur.
+# No user action exists to recover from these exceptions without assistance from IBM.
+# The installer may be IM, WDT, FeatureManager or others.
+ERROR_FEATURES_LIST_INVALID=CWWKF1200E: Dodan\u00fd seznam funkc\u00ed je null nebo pr\u00e1zdn\u00fd.
+ERROR_FEATURES_LIST_INVALID.explanation=Seznam funkc\u00ed, kter\u00e9 maj\u00ed b\u00fdt nainstalov\u00e1ny, chyb\u00ed nebo je pr\u00e1zdn\u00fd.
+ERROR_FEATURES_LIST_INVALID.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED=CWWKF1201E: Nepodporovan\u00e1 operace.
+ERROR_UNSUPPORTED.explanation=Instala\u010dn\u00ed program se pokusil prov\u00e9st nepodporovanou operaci.
+ERROR_UNSUPPORTED.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED_ASSETTYPE=CWWKF1202E: Typ aktiva {0} nen\u00ed podporov\u00e1n.
+ERROR_UNSUPPORTED_ASSETTYPE.explanation=Ur\u010den\u00fd typ aktiva nen\u00ed podporov\u00e1n instala\u010dn\u00edm programem.
+ERROR_UNSUPPORTED_ASSETTYPE.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA=CWWKF1217E: Funkce {0} nem\u016f\u017ee b\u00fdt odinstalov\u00e1na.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.explanation=Byla zji\u0161t\u011bna intern\u00ed chyba p\u0159i zpracov\u00e1n\u00ed metadat. 
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA=CWWKF1218E: Opravu {0} nelze odinstalovat.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.explanation=Byla zji\u0161t\u011bna intern\u00ed chyba p\u0159i zpracov\u00e1n\u00ed metadat. 
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Following messages for InstallException
+ERROR_FAILED_TO_RESOLVE_FEATURES=CWWKF1203E: Nelze z\u00edskat n\u00e1sleduj\u00edc\u00ed funkce: {0} Ujist\u011bte se, \u017ee jsou funkce platn\u00e9.
+ERROR_FAILED_TO_RESOLVE_FEATURES.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee na\u010d\u00edst ur\u010den\u00e9 funkce z produktu IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_RESOLVE_FEATURES.useraction=Ujist\u011bte se, \u017ee ur\u010den\u00e9 funkce jsou platn\u00e9.
+
+ERROR_FAILED_TO_RESOLVE_IFIX=CWWKF1204E: Nelze z\u00edskat n\u00e1sleduj\u00edc\u00ed prozatimn\u00ed opravy: {0}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k produktu IBM WebSphere Liberty Repository a ID prozatimn\u00ed opravy jsou platn\u00e1.
+ERROR_FAILED_TO_RESOLVE_IFIX.explanation=Instala\u010dn\u00ed program\u016f nem\u016f\u017ee na\u010d\u00edst prozat\u00edmn\u00ed opravy z produktu IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_RESOLVE_IFIX.useraction=Ujist\u011bte se, \u017ee je ur\u010deno platn\u00e9 ID prozat\u00edmn\u00ed opravy, jsou dod\u00e1ny spr\u00e1vn\u00e9 ID u\u017eivatele a heslo a je p\u0159\u00edstupn\u00fd produkt IBM WebSphere Liberty Repository.
+
+ERROR_INVALID_ESA=CWWKF1205E: Sta\u017een\u00e9 ur\u010den\u00e9 aktivum funkce je neplatn\u00e9: {0}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+ERROR_INVALID_ESA.explanation=Ur\u010den\u00e9 aktivum funkce bylo \u00fasp\u011b\u0161n\u011b na\u010dteno z \u00falo\u017ei\u0161t\u011b, je ale neplatn\u00e9.
+ERROR_INVALID_ESA.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+
+ERROR_INVALID_IFIX=CWWKF1206E: Sta\u017een\u00e9 ur\u010den\u00e9 aktivum opravy je neplatn\u00e9: {0}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+ERROR_INVALID_IFIX.explanation=Ur\u010den\u00e9 aktivum opravy bylo \u00fasp\u011b\u0161n\u011b na\u010dteno z \u00falo\u017ei\u0161t\u011b, je ale neplatn\u00e9.
+ERROR_INVALID_IFIX.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+
+ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: Funkce {0} nen\u00ed nainstalov\u00e1na.
+ERROR_FEATURE_NOT_INSTALLED.explanation=Ur\u010den\u00e1 funkce neexistuje a nem\u016f\u017ee b\u00fdt odinstalov\u00e1na. 
+ERROR_FEATURE_NOT_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: Funkce, kter\u00e9 chcete odinstalovat, vy\u017eaduj\u00ed n\u00e1sleduj\u00edc\u00ed funkce: {0}.
+ERROR_OTHER_FEATURE_DEPEND_ON.explanation=Ur\u010denou funkci nelze odebrat v dob\u011b, kdy\u017e ji st\u00e1le vy\u017eaduje jin\u00e1 funkce.
+ERROR_OTHER_FEATURE_DEPEND_ON.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_IFIX_NOT_INSTALLED=CWWKF1209E: Oprava {0} nen\u00ed nainstalov\u00e1na.
+ERROR_IFIX_NOT_INSTALLED.explanation=Ur\u010den\u00e1 oprava neexistuje.
+ERROR_IFIX_NOT_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_IFIX_UNINSTALLABLE=CWWKF1210E: Opravu {0} nelze odinstalovat.
+ERROR_IFIX_UNINSTALLABLE.explanation=Ur\u010denou opravu nelze odebrat v dob\u011b, kdy\u017e ji st\u00e1le vy\u017eaduje jin\u00e1 oprava.
+ERROR_IFIX_UNINSTALLABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_LICENSES_NOT_ACCEPTED=CWWKF1211E: Licence nebyla p\u0159ijata.
+ERROR_LICENSES_NOT_ACCEPTED.explanation=Funkce nem\u016f\u017ee b\u00fdt odinstalov\u00e1na, dokud nebude licence p\u0159ijata. 
+ERROR_LICENSES_NOT_ACCEPTED.useraction=P\u0159ijm\u011bte licenci a zopakujte operaci.
+
+ERROR_FAILED_TO_DOWNLOAD_FEATURE=CWWKF1212E: Nelze st\u00e1hnout funkci {0} do {1}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.explanation=Do\u0161lo k chyb\u011b p\u0159i stahov\u00e1n\u00ed funkce do do\u010dasn\u00e9ho adres\u00e1\u0159e. 
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+
+ERROR_FAILED_TO_DOWNLOAD_IFIX=CWWKF1213E: Nelze st\u00e1hnout opravu {0} do {1}.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.explanation=Do\u0161lo k chyb\u011b p\u0159i stahov\u00e1n\u00ed opravy do do\u010dasn\u00e9ho adres\u00e1\u0159e. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE=CWWKF1214E: Oprava {0} je vy\u017eadovanou funkc\u00ed {1}. P\u0159idat --verbose, abyste vid\u011bli v\u0161echny z\u00e1visl\u00e9 funkce.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.explanation=Opravu nelze odebrat v dob\u011b, kdy ji st\u00e1le vy\u017eaduje funkce {1}.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_FAILED_TO_GET_FEATURE_LICENSE=CWWKF1215E: Nelze z\u00edskat licenci pro funkci {0}.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.explanation=Do\u0161lo k chyb\u011b p\u0159i na\u010d\u00edt\u00e1n\u00ed ur\u010den\u00e9 licence funkce.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Ujist\u011bte se, \u017ee ur\u010den\u00fd n\u00e1zev funkce je platn\u00fd, jsou ur\u010deny spr\u00e1vn\u00e9 ID u\u017eivatele a heslo a je p\u0159\u00edstup k produktu IBM WebSphere Liberty Repository.
+
+ALREADY_INSTALLED=CWWKF1216I: N\u00e1sleduj\u00edc\u00ed funkce ji\u017e existuj\u00ed: {0}. Nebudou p\u0159einstalov\u00e1ny. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.
+ALREADY_INSTALLED.explanation=Ur\u010den\u00e9 funkce jsou ji\u017e nainstalov\u00e1ny.
+ALREADY_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_FAILED_TO_CONNECT=CWWKF1219E: \u00dalo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository je nedosa\u017eiteln\u00e9. Ov\u011b\u0159te, zda m\u00e1 v\u00e1\u0161 po\u010d\u00edta\u010d p\u0159\u00edstup k s\u00edti a jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny br\u00e1ny firewall, a operaci zopakujte. Pokud se nad\u00e1le neda\u0159\u00ed p\u0159ipojit, mo\u017en\u00e1 je server \u00falo\u017ei\u0161t\u011b do\u010dasn\u011b nedostupn\u00fd.
+ERROR_FAILED_TO_CONNECT.explanation=Do\u0161lo k chyb\u011b p\u0159i p\u0159ipojov\u00e1n\u00ed se k produktu IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_CONNECT.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a p\u0159\u00edslu\u0161n\u00e9mu \u00falo\u017ei\u0161ti.
+
+ERROR_FAILED_TO_AUTHENICATE=CWWKF1220E: Poskytnut\u00e1 pov\u011b\u0159en\u00ed jsou neplatn\u00e1.
+ERROR_FAILED_TO_AUTHENICATE.explanation=Vyskytla se chyba p\u0159i ov\u011b\u0159en\u00ed. Zadan\u00e1 pov\u011b\u0159en\u00ed jsou neplatn\u00e1.
+ERROR_FAILED_TO_AUTHENICATE.useraction=Ujist\u011bte se, \u017ee jsou zad\u00e1ny spr\u00e1vn\u00e9 ID u\u017eivatele a heslo.
+
+ERROR_MISSING_DEPENDENT=CWWKF1221E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v \u00falo\u017ei\u0161ti IBM WebSphere Liberty k dispozici. Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte tuto chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zkuste znovu nainstalovat {0}.
+ERROR_MISSING_DEPENDENT.explanation=Funkci, dopl\u0148kov\u00fd modul nebo prozat\u00edmn\u00ed opravu nelze nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
+ERROR_MISSING_DEPENDENT.useraction=Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zopakujte akci znovu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_INSTALL_FIX=CWWKF1222E: Oprava {0} nebyla \u00fasp\u011b\u0161n\u011b pou\u017eita.
+ERROR_FAILED_TO_INSTALL_FIX.explanation=P\u0159i aplikaci opravy do\u0161lo k chyb\u011b.
+ERROR_FAILED_TO_INSTALL_FIX.useraction=Zjist\u011bte p\u0159\u00ed\u010dinu v protokolu wlp/lib/fixes/fixinstall.log.
+
+ERROR_INVALID_PRODUCT_VERSION=CWWKF1224E: Funkci {0} nelze instalovat do {1} {2}, proto\u017ee plat\u00ed pouze na verzi {3}. Pomoc\u00ed akce "find" p\u0159\u00edkazu featureManager na\u010dt\u011bte seznam funkc\u00ed, kter\u00e9 jsou pou\u017eiteln\u00e9 pro {1} {2}.
+ERROR_INVALID_PRODUCT_VERSION.explanation=Funkce nen\u00ed pro aktu\u00e1ln\u00ed verzi instalovan\u00e9ho produktu pou\u017eiteln\u00e1.
+ERROR_INVALID_PRODUCT_VERSION.useraction=Nainstalujte funkce, kter\u00e9 dan\u00e1 verze produktu podporuje.
+
+ERROR_INVALID_PRODUCT_EDITION=CWWKF1225E: Funkci {0} nelze nainstalovat na vyd\u00e1n\u00ed {1} {2}, proto\u017ee ji lze pou\u017e\u00edt pouze pro vyd\u00e1n\u00ed {3}. Pomoc\u00ed akce "find" p\u0159\u00edkazu featureManager na\u010dt\u011bte seznam funkc\u00ed, kter\u00e9 lze pou\u017e\u00edt ve vyd\u00e1n\u00ed {4} {5}. 
+ERROR_INVALID_PRODUCT_EDITION.explanation=Funkce nen\u00ed pro aktu\u00e1ln\u00ed vyd\u00e1n\u00ed instalovan\u00e9ho produktu pou\u017eiteln\u00e1.
+ERROR_INVALID_PRODUCT_EDITION.useraction=Nainstalujte funkce, kter\u00e9 dan\u00e9 vyd\u00e1n\u00ed produktu podporuje.
+
+ERROR_INVALID_PRODUCT_INSTALLTYPE=CWWKF1226E: Aktivum {0} nelze st\u00e1hnout nebo nainstalovat pomoc\u00ed p\u0159\u00edkazu featureManager, proto\u017ee byl produkt nainstalov\u00e1n pomoc\u00ed p\u0159\u00edkazu {1} a toto aktivum lze pou\u017e\u00edt jen pro instalace proveden\u00e9 pomoc\u00ed p\u0159\u00edkazu {2}. Pomoc\u00ed akce hled\u00e1n\u00ed featureManager na\u010dt\u011bte seznam aktiv, kter\u00e9 je mo\u017en\u00e9 st\u00e1hnout nebo nainstalovat prost\u0159ednictv\u00edm tohoto p\u0159\u00edkazu.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.explanation=P\u0159\u00edkaz featureManager nem\u016f\u017ee aktivum st\u00e1hnout nebo nainstalovat do va\u0161\u00ed instalace Liberty, proto\u017ee toto aktivum lze pou\u017e\u00edt pouze v jin\u00e9m typu instalac\u00ed.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.useraction=Pomoc\u00ed akce hled\u00e1n\u00ed featureManager na\u010dt\u011bte seznam aktiv, kter\u00e9 je mo\u017en\u00e9 st\u00e1hnout nebo nainstalovat prost\u0159ednictv\u00edm tohoto p\u0159\u00edkazu. Dal\u0161\u00ed informace viz dokumentace produktu pro dan\u00e9 aktivum.
+
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR=CWWKF1227E: Nelze z\u00edskat funkci {0} z adres\u00e1\u0159e {1}.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Instala\u010dn\u00ed program nemohl z\u00edskat z uveden\u00e9ho lok\u00e1ln\u00edho adres\u00e1\u0159e uvedenou funkci.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Zkontrolujte, zda dan\u00fd adres\u00e1\u0159 tuto funkci obsahuje, a operaci zopakujte.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Nelze naj\u00edt spustiteln\u00fd soubor {0} po kontrole t\u011bchto um\u00edst\u011bn\u00ed: {1}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee naj\u00ed spustiteln\u00fd soubor
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Zkontrolujte, zda tento spustiteln\u00fd soubor v jednom z uveden\u00fdch um\u00edst\u011bn\u00ed existuje.
+
+ERROR_EXECUTING_COMMAND=CWWKF1229E: Do\u0161lo k chyb\u011b p\u0159i prov\u00e1d\u011bn\u00ed p\u0159\u00edkazu: {0}  P\u0159\u00edkaz vr\u00e1til k\u00f3d ukon\u010den\u00ed {1} a chybovou zpr\u00e1vu: {2}
+ERROR_EXECUTING_COMMAND.explanation=P\u0159\u00edkaz nebylo mo\u017en\u00e9 \u00fasp\u011b\u0161n\u011b prov\u00e9st.
+ERROR_EXECUTING_COMMAND.useraction=Zkontrolujte k\u00f3d ukon\u010den\u00ed a chybovou zpr\u00e1vu a ujist\u011bte se, \u017ee m\u00e1te ke spu\u0161t\u011bn\u00ed tohoto p\u0159\u00edkazu dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
+
+ERROR_INVALID_EXTATTR_PARMS=CWWKF1230E: Parametry {0} nejsou pro p\u0159\u00edkaz extattr platn\u00e9
+ERROR_INVALID_EXTATTR_PARMS.explanation=Platn\u00e9 parametry p\u0159\u00edkazu extattr jsou: [+alps] [-alps]
+ERROR_INVALID_EXTATTR_PARMS.useraction=Zkontrolujte, zda jsou pou\u017eit\u00e9 parametry platn\u00e9.
+
+ERROR_UNABLE_TO_GET_UMASK=CWWKF1231E: Nastaven\u00ed umask nelze na\u010d\u00edst pomoc\u00ed p\u0159\u00edkazu: {0}
+ERROR_UNABLE_TO_GET_UMASK.explanation=Po proveden\u00ed p\u0159\u00edkazu umask nebyla vr\u00e1cena hodnota nastaven\u00ed umask.
+ERROR_UNABLE_TO_GET_UMASK.useraction=Zkontrolujte, zda dok\u00e1\u017eete \u00fasp\u011b\u0161n\u011b spustit p\u0159\u00edkaz umask.
+
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=CWWKF1232E: U n\u00e1sleduj\u00edc\u00edch p\u0159\u00edkaz\u016f nelze nastavit opr\u00e1vn\u011bn\u00ed k prov\u00e1d\u011bn\u00ed: {0}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.explanation=P\u0159i pokusu o nastaven\u00ed opr\u00e1vn\u011bn\u00ed k prov\u00e1d\u011bn\u00ed do\u0161lo k chyb\u011b. Mo\u017en\u00e1 dan\u00e9 ID u\u017eivatele nem\u00e1 opr\u00e1vn\u011bn\u00ed ke zm\u011bn\u011b opr\u00e1vn\u011bn\u00ed pro tento soubor.
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.useraction=Zkontrolujte, zda maj\u00ed soubory nastaven\u00e9 opr\u00e1vn\u011bn\u00ed k prov\u00e1d\u011bn\u00ed.
+
+ERROR_UNABLE_TO_SET_EXT_ATTR=CWWKF1233E: Nelze nastavit roz\u0161\u00ed\u0159en\u00e9 atributy {0} pro tyto soubory: {1}
+ERROR_UNABLE_TO_SET_EXT_ATTR.explanation=P\u0159i pokusu o nastaven\u00ed roz\u0161\u00ed\u0159en\u00fdch atribut\u016f do\u0161lo k chyb\u011b. Mo\u017en\u00e1 dan\u00e9 ID u\u017eivatele nem\u00e1 opr\u00e1vn\u011bn\u00ed ke zm\u011bn\u011b roz\u0161\u00ed\u0159en\u00fdch atribut\u016f.
+ERROR_UNABLE_TO_SET_EXT_ATTR.useraction=Zkontrolujte, zda maj\u00ed soubory nastaven\u00e9 nezbytn\u00e9 roz\u0161\u00ed\u0159en\u00e9 atributy.
+
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED=CWWKF1234E: Funkci {0} nelze odinstalovat, proto\u017ee je soubor {1} zam\u010den. Zastavte v\u0161echny spu\u0161t\u011bn\u00e9 servery a operaci zopakujte.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.explanation=P\u0159i pokusu odstranit soubor do\u0161lo k chyb\u011b.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.useraction=Ujist\u011bte se, \u017ee nen\u00ed zam\u010den \u017e\u00e1dn\u00fd soubor.
+
+ERROR_UNINSTALL_FIX_FILE_LOCKED=CWWKF1235E: Opravu {0} nelze odinstalovat, proto\u017ee je zam\u010den soubor {1}. Zastavte v\u0161echny spu\u0161t\u011bn\u00e9 servery a operaci zopakujte.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.explanation=P\u0159i pokusu odstranit soubor do\u0161lo k chyb\u011b.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.useraction=Ujist\u011bte se, \u017ee nen\u00ed zam\u010den \u017e\u00e1dn\u00fd soubor.
+
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED=CWWKF1236E: Funkce produktu {0} nelze odinstalovat, proto\u017ee je zam\u010den soubor {1}. Zastavte v\u0161echny spu\u0161t\u011bn\u00e9 servery a operaci zopakujte.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.explanation=P\u0159i pokusu odstranit soubor do\u0161lo k chyb\u011b.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.useraction=Ujist\u011bte se, \u017ee nen\u00ed zam\u010den \u017e\u00e1dn\u00fd soubor.
+
+ERROR_UNINSTALL_RUNNING_SERVER=CWWKF1237E: Funkci {0} nelze odinstalovat, proto\u017ee je server spu\u0161t\u011bn\u00fd. \nZastavte n\u00e1sleduj\u00edc\u00ed spu\u0161t\u011bn\u00e9 servery a zopakujte operaci: {1}
+ERROR_UNINSTALL_RUNNING_SERVER.explanation=P\u0159i pokusu odinstalovat funkci byl server spu\u0161t\u011bn\u00fd.
+ERROR_UNINSTALL_RUNNING_SERVER.useraction=Ujist\u011bte se, \u017ee jsou v\u0161echny servery zastaven\u00e9 a neb\u011b\u017e\u00ed.
+
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER_=CWWKF1238E: Funkci {0} nelze odinstalovat, proto\u017ee je server spu\u0161t\u011bn\u00fd a nelze ho zastavit. \nZastavte n\u00e1sleduj\u00edc\u00ed spu\u0161t\u011bn\u00e9 servery a zopakujte operaci: {1}
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.explanation=Server je spu\u0161t\u011bn\u00fd a b\u011bhem pokusu odinstalovat funkci ho nebylo mo\u017en\u00e9 zastavit.
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.useraction=Ujist\u011bte se, \u017ee jsou v\u0161echny servery zastaven\u00e9 a neb\u011b\u017e\u00ed.
+
+ERROR_INVALID_SERVER_PACKAGE=CWWKF1239E: Soubor {0} je neplatn\u00fdm souborem bal\u00edku serveru.
+ERROR_INVALID_SERVER_PACKAGE.explanation=Uveden\u00fd archivn\u00ed soubor je neplatn\u00fdm souborem bal\u00edku serveru.
+ERROR_INVALID_SERVER_PACKAGE.useraction=Pomoc\u00ed p\u0159\u00edkazu server vytvo\u0159te soubor bal\u00edku serveru.
+
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME=CWWKF1240E: Soubor bal\u00edku serveru {0} nelze nainstalovat, proto\u017ee obsahuje b\u011bhov\u00e9 prost\u0159ed\u00ed Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.explanation=Bal\u00edk serveru nelze nainstalovat, pokud obsahuje b\u011bhov\u00e9 prost\u0159ed\u00ed Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.useraction=Rozbalte soubor bal\u00edku serveru.
+
+ERROR_INVALID_SERVER_XML=CWWKF1241E: Nezda\u0159ilo se p\u0159e\u010d\u00edst {0}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed chyb\u011b: Chyba: {1}
+ERROR_INVALID_SERVER_XML.explanation=Soubor server.xml je neplatn\u00fd.
+ERROR_INVALID_SERVER_XML.useraction=Ujist\u011bte se, \u017ee je soubor server.xml platn\u00fd.
+
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED=CWWKF1242E: Soubor bal\u00edku serveru {0} nelze nainstalovat, proto\u017ee server {1} ji\u017e existuje.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.explanation=Instalovan\u00fd server ji\u017e existuje.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1243E: N\u00e1sleduj\u00edc\u00ed funkce nebyly sta\u017eeny, proto\u017ee jsou ji\u017e nainstalovan\u00e9: {0}. Pou\u017eijte jinou hodnotu volby --downloadOnly, jako nap\u0159. all (v\u0161e) nebo none (\u017e\u00e1dn\u00e1).
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Ur\u010den\u00e9 funkce jsou ji\u017e nainstalov\u00e1ny.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Znovu spus\u0165te p\u0159\u00edkaz s jinou hodnotou volby --downloadOnly, jako nap\u0159. all (v\u0161e) nebo none (\u017e\u00e1dn\u00e1).
+
+ERROR_FEATURE_NOT_APPLICABLE=CWWKF1244E: Funkci {0} nelze pou\u017e\u00edt k instalaci produktu {1}. {2}
+ERROR_FEATURE_NOT_APPLICABLE.explanation=Zadan\u00e1 funkce nen\u00ed platnou funkc\u00ed pro instalaci uveden\u00e9ho produktu.
+ERROR_FEATURE_NOT_APPLICABLE.useraction=Ujist\u011bte se, \u017ee vlastnost plat\u00ed pro instalaci produktu. Pomoc\u00ed akce "find" p\u0159\u00edkazu featureManager na\u010dt\u011bte seznam funkc\u00ed pou\u017eiteln\u00fdch funkc\u00ed.
+
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY=CWWKF1245E: Nelze st\u00e1hnout {0} do {1}. Ujist\u011bte se, \u017ee c\u00edlov\u00fd adres\u00e1\u0159 je schopn\u00fd z\u00e1pisu a m\u00e1 dostatek prostoru na disku.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.explanation=Instala\u010dn\u00ed program vy\u017eaduje p\u0159\u00edstup pro z\u00e1pis k adres\u00e1\u0159i pro stahov\u00e1n\u00ed.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 existuje, je schopn\u00fd z\u00e1pisu a m\u00e1 dostatek prostoru na disku.
+
+ERROR_UNINSTALL_FAILED_ADDON=CWWKF1246E: D\u00e1le uveden\u00e9 funkce nelze odinstalovat, proto\u017ee jsou dopl\u0148kov\u00fdmi aktivy: {0}
+ERROR_UNINSTALL_FAILED_ADDON.explanation=Ur\u010den\u00e9 funkce jsou dopl\u0148kov\u00fdmi aktivy, nelze je odinstalovat.
+ERROR_UNINSTALL_FAILED_ADDON.useraction=Neodinstalov\u00e1vejte dopl\u0148kov\u00e1 aktiva.
+
+ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: D\u00e1le uveden\u00e9 funkce nelze odinstalovat, proto\u017ee jsou u\u017eivatelsk\u00fdmi funkcemi: {0}
+ERROR_UNINSTALL_FAILED_USR.explanation=Ur\u010den\u00e9 funkce jsou u\u017eivatelsk\u00fdmi funkcemi, nelze je odinstalovat.
+ERROR_UNINSTALL_FAILED_USR.useraction=Neodinstalov\u00e1vejte u\u017eivatelsk\u00e9 funkce.
+
+ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Jedno z \u00falo\u017ei\u0161\u0165 ur\u010den\u00fdch v konfiguraci je nedosa\u017eiteln\u00e9. Ov\u011b\u0159te, zda m\u00e1 v\u00e1\u0161 po\u010d\u00edta\u010d p\u0159\u00edstup k s\u00edti a jsou spr\u00e1vn\u011b nakonfigurov\u00e1ny br\u00e1ny firewall, a operaci zopakujte. Pokud se nad\u00e1le neda\u0159\u00ed p\u0159ipojit, mo\u017en\u00e1 je server \u00falo\u017ei\u0161t\u011b do\u010dasn\u011b nedostupn\u00fd.
+ERROR_FAILED_TO_CONNECT_REPOS.explanation=Vyskytla se chyba p\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti.
+ERROR_FAILED_TO_CONNECT_REPOS.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a p\u0159\u00edslu\u0161n\u00e9mu \u00falo\u017ei\u0161ti.
+
+ERROR_ASSETS_LIST_INVALID=CWWKF1249E: Dodan\u00fd seznam aktiv je null nebo pr\u00e1zdn\u00fd.
+ERROR_ASSETS_LIST_INVALID.explanation=Seznam aktiv, kter\u00e9 maj\u00ed b\u00fdt nainstalov\u00e1ny, chyb\u00ed nebo je pr\u00e1zdn\u00fd.
+ERROR_ASSETS_LIST_INVALID.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ASSETS_ALREADY_INSTALLED=CWWKF1250I: N\u00e1sleduj\u00edc\u00ed aktiva ji\u017e existuj\u00ed: {0}. Nebudou p\u0159einstalov\u00e1ny. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.
+ASSETS_ALREADY_INSTALLED.explanation=Ur\u010den\u00e1 aktiva jsou ji\u017e nainstalov\u00e1na.
+ASSETS_ALREADY_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE=CWWKF1251E: Nelze st\u00e1hnout uk\u00e1zku produktu {0} do {1}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.explanation=Do\u0161lo k chyb\u011b p\u0159i stahov\u00e1n\u00ed uk\u00e1zky produktu do do\u010dasn\u00e9ho adres\u00e1\u0159e. 
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE=CWWKF1252E: Nelze st\u00e1hnout integraci typu open source {0} do {1}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.explanation=Do\u0161lo k chyb\u011b p\u0159i stahov\u00e1n\u00ed integrace typu open source do do\u010dasn\u00e9ho adres\u00e1\u0159e. 
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup na Internet, existuje do\u010dasn\u00fd adres\u00e1\u0159 a je zapisovateln\u00fd, a operaci opakujte.
+
+ERROR_INVALID_SAMPLE=CWWKF1253E: Sta\u017een\u00e9 ur\u010den\u00e9 aktivum uk\u00e1zky produktu je neplatn\u00e9: {0}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+ERROR_INVALID_SAMPLE.explanation=Ur\u010den\u00e9 aktivum uk\u00e1zky produktu bylo \u00fasp\u011b\u0161n\u011b na\u010dteno z \u00falo\u017ei\u0161t\u011b, je ale neplatn\u00e9.
+ERROR_INVALID_SAMPLE.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+
+ERROR_INVALID_OPENSOURCE=CWWKF1254E: Sta\u017een\u00e9 ur\u010den\u00e9 aktivum integrace typu open source je neplatn\u00e9: {0}. Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+ERROR_INVALID_OPENSOURCE.explanation=Ur\u010den\u00e9 aktivum integrace typu open source bylo \u00fasp\u011b\u0161n\u011b na\u010dteno z \u00falo\u017ei\u0161t\u011b, je ale neplatn\u00e9.
+ERROR_INVALID_OPENSOURCE.useraction=Ujist\u011bte se, \u017ee syst\u00e9m m\u00e1 p\u0159\u00edstup k Internetu a opakov\u00e1n\u00edm.
+
+ERROR_ASSET_INVALID_PRODUCT_VERSION=CWWKF1255E: Aktivum {0} nelze instalovat do {1} {2}, proto\u017ee plat\u00ed pouze na verzi {3}. Pomoc\u00ed akce "find" p\u0159\u00edkazu installUtility na\u010dt\u011bte seznam aktiv, kter\u00e9 jsou pou\u017eiteln\u00e9 pro {1} {2}.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.explanation=Aktivum nen\u00ed pro aktu\u00e1ln\u00ed verzi instalovan\u00e9ho produktu pou\u017eiteln\u00e9.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.useraction=Nainstalujte aktiva, kter\u00e1 dan\u00e1 verze produktu podporuje.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION=CWWKF1256E: Aktivum {0} nelze nainstalovat na vyd\u00e1n\u00ed {1} {2}, proto\u017ee jej lze pou\u017e\u00edt pouze pro vyd\u00e1n\u00ed {3}. Pomoc\u00ed akce "find" p\u0159\u00edkazu installUtility na\u010dt\u011bte seznam aktiv, kter\u00e9 lze pou\u017e\u00edt ve vyd\u00e1n\u00ed {4} {5}. 
+ERROR_ASSET_INVALID_PRODUCT_EDITION.explanation=Aktivum nen\u00ed pro aktu\u00e1ln\u00ed vyd\u00e1n\u00ed instalovan\u00e9ho produktu pou\u017eiteln\u00e9.
+ERROR_ASSET_INVALID_PRODUCT_EDITION.useraction=Nainstalujte aktiva, kter\u00e1 dan\u00e9 vyd\u00e1n\u00ed produktu podporuje.
+
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE=CWWKF1257E: Aktivum {0} nelze st\u00e1hnout nebo nainstalovat pomoc\u00ed p\u0159\u00edkazu installUtility, proto\u017ee byl produkt nainstalov\u00e1n pomoc\u00ed p\u0159\u00edkazu {1} a toto aktivum lze pou\u017e\u00edt jen pro instalace proveden\u00e9 pomoc\u00ed p\u0159\u00edkazu {2}. Pomoc\u00ed n\u00e1stroje installUtility vyhledejte akci pro na\u010dten\u00ed seznamu aktiv, kter\u00e9 je mo\u017en\u00e9 st\u00e1hnout nebo nainstalovat prost\u0159ednictv\u00edm tohoto p\u0159\u00edkazu.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.explanation=P\u0159\u00edkaz installUtility nem\u016f\u017ee aktivum st\u00e1hnout nebo nainstalovat do va\u0161\u00ed instalace Liberty, proto\u017ee toto aktivum lze pou\u017e\u00edt pouze v jin\u00e9m typu instalac\u00ed.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=Pomoc\u00ed n\u00e1stroje installUtility vyhledejte akci pro na\u010dten\u00ed seznamu aktiv, kter\u00e9 je mo\u017en\u00e9 st\u00e1hnout nebo nainstalovat prost\u0159ednictv\u00edm tohoto p\u0159\u00edkazu. Dal\u0161\u00ed informace viz dokumentace produktu pro dan\u00e9 aktivum.
+
+ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch k dispozici. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b.
+ERROR_ASSET_MISSING_DEPENDENT.explanation=Aktivum nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nelze z\u00edskat n\u00e1sleduj\u00edc\u00ed aktiva: {0} Ujist\u011bte se, \u017ee ur\u010den\u00e1 aktiva jsou platn\u00e1. Chcete-li naj\u00edt ID pou\u017eiteln\u00fdch aktiv, spus\u0165te vyhled\u00e1vac\u00ed p\u0159\u00edkaz installUtility.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee z \u00falo\u017ei\u0161\u0165 na\u010d\u00edst ur\u010den\u00e1 aktiva.
+ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Ujist\u011bte se, \u017ee ur\u010den\u00e1 aktiva jsou platn\u00e1, jsou dod\u00e1ny spr\u00e1vn\u00e9 ID u\u017eivatele a heslo a je p\u0159\u00edstup k \u00falo\u017ei\u0161t\u00edm.
+
+ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: Aktivum {0} nelze pou\u017e\u00edt k instalaci produktu {1}. {2}
+ERROR_ASSET_NOT_APPLICABLE.explanation=Zadan\u00e9 aktivum nen\u00ed platn\u00fdm aktivem pro instalaci uveden\u00e9ho produktu.
+ERROR_ASSET_NOT_APPLICABLE.useraction=Ujist\u011bte se, \u017ee aktivum plat\u00ed pro instalaci produktu. Pomoc\u00ed akce "find" p\u0159\u00edkazu installUtility na\u010dt\u011bte seznam pou\u017eiteln\u00fdch aktiv.
+
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED=CWWKF1261E: Uk\u00e1zku {0} nelze nainstalovat, proto\u017ee server {1} ji\u017e existuje.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.explanation=Instalovan\u00fd uk\u00e1zkov\u00fd server ji\u017e existuje.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED=CWWKF1262E: Integraci typu open source {0} nelze nainstalovat, proto\u017ee server {1} ji\u017e existuje.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.explanation=Instalovan\u00fd server integrace typu open source ji\u017e existuje.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED=\nCWWKF1263E: Funkce, kter\u00e9 se pokou\u0161\u00edte odinstalovat, jsou st\u00e1le vy\u017eadov\u00e1ny jin\u00fdmi funkcemi, kter\u00e9 z\u016fst\u00e1vaj\u00ed nainstalovan\u00e9:\n \n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.explanation=Ur\u010den\u00e9 funkce, je\u017e se maj\u00ed odinstalovat, jsou st\u00e1le vy\u017eadov\u00e1ny jin\u00fdmi funkcemi, kter\u00e9 z\u016fst\u00e1vaj\u00ed nainstalovan\u00e9.
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.useraction=Odinstalujte v\u0161echny funkce s po\u017eadavky, kter\u00e9 byly d\u0159\u00edve nebo ve stejn\u00fd \u010das jako funkce ur\u010den\u00e9 k odinstalov\u00e1n\u00ed.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_REQUIRED_BY=[{0}] je povinn\u00e9: {1}.\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_ACTION=\nOdinstalujte v\u0161echny funkce s po\u017eadavky, kter\u00e9 byly d\u0159\u00edve nebo ve stejn\u00fd \u010das jako funkce ur\u010den\u00e9 k odinstalov\u00e1n\u00ed.\n
+
+ERROR_UNABLE_RUN_EXTRACTOR=CWWKF1264E: Archivn\u00ed soubor {0} nelze nainstalovat z d\u016fvodu: {1}
+ERROR_UNABLE_RUN_EXTRACTOR.explanation=P\u0159i instalaci archivn\u00edho souboru dojde k v\u00fdjimce.
+ERROR_UNABLE_RUN_EXTRACTOR.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_GET_ASSET_LICENSE=CWWKF1265E: Nelze z\u00edskat licenci pro aktivum {0}. Ov\u011b\u0159te, \u017ee ur\u010den\u00fd n\u00e1zev aktiva je platn\u00fd a \u00falo\u017ei\u0161t\u011b jsou p\u0159\u00edstupn\u00e1. 
+ERROR_FAILED_TO_GET_ASSET_LICENSE.explanation=Do\u0161lo k chyb\u011b p\u0159i na\u010d\u00edt\u00e1n\u00ed ur\u010den\u00e9 licence aktiva.
+ERROR_FAILED_TO_GET_ASSET_LICENSE.useraction=Ujist\u011bte se, \u017ee ur\u010den\u00fd n\u00e1zev aktiva je platn\u00fd a dan\u00e1 \u00falo\u017ei\u0161t\u011b jsou p\u0159\u00edstupn\u00e1.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWKF1266E: Nelze naj\u00edt soubor server.xml v \u00falo\u017ei\u0161ti {0}. Ujist\u011bte se, \u017ee soubor existuje a je p\u0159\u00edstupn\u00fd.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Soubor server.xml pro ur\u010den\u00fd n\u00e1zev nelze v adres\u00e1\u0159i serveru naj\u00edt.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Ujist\u011bte se, \u017ee soubor existuje a je p\u0159\u00edstupn\u00fd.
+
+ERROR_INSTALL_ESA_FILE_NOTEXIST=CWWKF1267E: Soubor {0} neexistuje.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.explanation=Ur\u010den\u00fd soubor Enterprise Subsystem Archive (.esa) dodan\u00fd k instalaci neexistuje.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.useraction=Zajist\u011bte spr\u00e1vn\u00e9 zad\u00e1n\u00ed n\u00e1zvu archivn\u00edho souboru esa a zopakujte akci instalace.
+
+ERROR_DEPOLY_DIRECTORY=CWWKF1268E: {0} je adres\u00e1\u0159. Archivn\u00ed soubor je povinn\u00fd.
+ERROR_DEPOLY_DIRECTORY.explanation=Do\u0161lo k pokusu nainstalovat adres\u00e1\u0159.
+ERROR_DEPOLY_DIRECTORY.useraction=Znovu spus\u0165te p\u0159\u00edkaz s pou\u017eit\u00edm archivn\u00edho souboru.
+
+ERROR_INVALID_LOCAL_ESA=CWWKF1269E: Soubor {0} je neplatn\u00fd soubor ESA (Enterprise Subsystem Archive).
+ERROR_INVALID_LOCAL_ESA.explanation=Uveden\u00fd archivn\u00ed soubor je neplatn\u00fdm archivn\u00edm souborem esa (Enterprise Subsystem Archive).
+ERROR_INVALID_LOCAL_ESA.useraction=Spus\u0165te p\u0159\u00edkaz s platn\u00fdm archivn\u00edm souborem esa (Enterprise Subsystem Archive).
+
+EXCEPTION_STARTING_SERVER=CWWKF1270E: P\u0159i pokusu o spu\u0161t\u011bn\u00ed serveru {0} do\u0161lo k v\u00fdjimce. V\u00fdjimka: {1}
+EXCEPTION_STARTING_SERVER.explanation=P\u0159i pokusu o spu\u0161t\u011bn\u00ed serveru do\u0161lo k v\u00fdjimce.
+EXCEPTION_STARTING_SERVER.useraction=Dal\u0161\u00ed informace viz uveden\u00e1 v\u00fdjimka a protokoly serveru.
+
+EXCEPTION_STOPPING_SERVER=CWWKF1271E: P\u0159i pokusu o zastaven\u00ed serveru {0} do\u0161lo k v\u00fdjimce. V\u00fdjimka: {1}
+EXCEPTION_STOPPING_SERVER.explanation=P\u0159i pokusu o zastaven\u00ed serveru do\u0161lo k v\u00fdjimce.
+EXCEPTION_STOPPING_SERVER.useraction=Dal\u0161\u00ed informace viz uveden\u00e1 v\u00fdjimka a protokoly serveru.
+
+UNABLE_TO_STOP_START_SERVER=CWWKF1272E: Nelze spustit nebo zastavit server {0}. Dal\u0161\u00ed informace viz protokoly serveru v \u00falo\u017ei\u0161ti {1}.
+UNABLE_TO_STOP_START_SERVER.explanation=P\u0159i pokusu o spu\u0161t\u011bn\u00ed nebo zastaven\u00ed serveru do\u0161lo k chyb\u011b.
+UNABLE_TO_STOP_START_SERVER.useraction=Dal\u0161\u00ed informace vyhledejte v protokolech serveru.
+
+UNABLE_TO_DETERMINE_FEATURES=CWWKF1273E: Nelze ur\u010dit funkce po\u017eadovan\u00e9 serverem {0}. Dal\u0161\u00ed informace najdete v protokolech serveru v \u00falo\u017ei\u0161ti {1}.
+UNABLE_TO_DETERMINE_FEATURES.explanation=Instala\u010dn\u00ed program nedok\u00e1zal ur\u010dit funkce vy\u017eadovan\u00e9 serverem.
+UNABLE_TO_DETERMINE_FEATURES.useraction=Ujist\u011bte se, zda existuje adres\u00e1\u0159 serveru a je dostupn\u00fd. Dal\u0161\u00ed informace vyhledejte v protokolech serveru.
+
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER=CWWKF1274E: Instala\u010dn\u00ed program nem\u016f\u017ee zkontrolovat, jak\u00e9 funkce server {0} vy\u017eaduje, proto\u017ee je server pr\u00e1v\u011b spu\u0161t\u011bn\u00fd. Zastavte server a zadejte p\u0159\u00edkaz znovu.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.explanation=Ne\u017e bude moci instala\u010dn\u00ed program zkontrolovat po\u017eadovan\u00e9 funkce, je nutn\u00e9 zastavit server.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.useraction=Zastavte server a zadejte p\u0159\u00edkaz znovu.
+
+ERROR_UNABLE_TO_READ_SERVER_XML=CWWKF1275E: Nelze na\u010d\u00edst prvek {0} ze souboru server.xml: {1}. Ov\u011b\u0159te, zda soubor server.xml obsahuje prvek {0} a pou\u017e\u00edv\u00e1 spr\u00e1vnou syntaxi XML.
+ERROR_UNABLE_TO_READ_SERVER_XMLL.explanation=Soubor nen\u00ed platn\u00fd soubor server.xml nebo obsahuje chyby.
+ERROR_UNABLE_TO_READ_SERVER_XML.useraction=Ujist\u011bte se, \u017ee je soubor server.xml platn\u00fd a pou\u017e\u00edv\u00e1 spr\u00e1vnou syntaxi XML.
+
+ERROR_DOWNLOAD_TO_SOURCE_REPO=CWWKF1276E: Nelze st\u00e1hnout funkci {0} do {1}. Cesta ke zdrojov\u00e9 slo\u017ece \u00falo\u017ei\u0161t\u011b aktiva je stejn\u00e1 jako cesta k um\u00edst\u011bn\u00ed pro stahovan\u00e9 soubory.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.explanation=Aktiva nelze stahovat do zdrojov\u00e9 slo\u017eky \u00falo\u017ei\u0161t\u011b.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.useraction=Zadejte nov\u00e9 um\u00edst\u011bn\u00ed pro stahovan\u00e9 soubory.
+
+ERROR_CREATING_TEMP_SERVER_DIR=CWWKF1277E: Nebyl vytvo\u0159en tento do\u010dasn\u00fd adres\u00e1\u0159 serveru: {0} Zkontrolujte, zda m\u00e1te opr\u00e1vn\u011bn\u00ed k z\u00e1pisu do adres\u00e1\u0159e {1} a zda je v adres\u00e1\u0159i voln\u00e9 m\u00edsto.
+ERROR_CREATING_TEMP_SERVER_DIR.explanation=V uveden\u00e9m adres\u00e1\u0159i nelze vytvo\u0159it do\u010dasn\u00fd adres\u00e1\u0159 serveru kv\u016fli nedostate\u010dn\u00fdm opr\u00e1vn\u011bn\u00edm nebo souborov\u00e9mu prostoru.
+ERROR_CREATING_TEMP_SERVER_DIR.useraction=Ujist\u011bte se, \u017ee m\u00e1te opr\u00e1vn\u011bn\u00ed k z\u00e1pisu do nad\u0159\u00edzen\u00e9ho adres\u00e1\u0159e a je v tomto adres\u00e1\u0159i voln\u00e9 m\u00edsto.
+
+ERROR_CREATING_DIR=CWWKF1278E: Nebyl vytvo\u0159en adres\u00e1\u0159 {0} kv\u016fli t\u00e9to v\u00fdjimce: {1}
+ERROR_CREATING_DIR.explanation=Uveden\u00fd adres\u00e1\u0159 nebyl vytvo\u0159en, proto\u017ee do\u0161lo k chyb\u011b.
+ERROR_CREATING_DIR.useraction=Informace o tom, pro\u010d nebyl adres\u00e1\u0159 vytvo\u0159en, naleznete v odkazovan\u00e9 v\u00fdjimce.
+
+ERROR_COPYING_FILE=CWWKF1279E: Soubor {0} nebyl zkop\u00edrov\u00e1n do adres\u00e1\u0159e {1} kv\u016fli n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {2}
+ERROR_COPYING_FILE.explanation=Soubor nebyl zkop\u00edrov\u00e1n do uveden\u00e9ho adres\u00e1\u0159e, proto\u017ee do\u0161lo k chyb\u011b.
+ERROR_COPYING_FILE.useraction=Informace o tom, pro\u010d nebyl soubor zkop\u00edrov\u00e1n, naleznete v odkazovan\u00e9 v\u00fdjimce.
+
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT=CWWKF1280E: \u00dalo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository je nedosa\u017eiteln\u00e9, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed Java (JRE) ned\u016fv\u011b\u0159uje certifik\u00e1tu serveru. P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.explanation=P\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti IBM WebSphere Liberty Repository do\u0161lo k v\u00fdjimce java.security.cert.CertPathBuilderException, proto\u017ee prost\u0159ed\u00ed JRE neuzn\u00e1v\u00e1 bezpe\u010dnostn\u00ed certifik\u00e1t serveru \u00falo\u017ei\u0161t\u011b jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t. Pro ov\u011b\u0159en\u00ed identity serveru \u00falo\u017ei\u0161t\u011b je nezbytn\u00fd d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.useraction=P\u0159idejte certifik\u00e1t serveru IBM WebSphere Liberty Repository do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT=CWWKF1281E: Jedno z \u00falo\u017ei\u0161\u0165, kter\u00e9 je uvedeno v konfiguraci, je nedosa\u017eiteln\u00e9, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed Java (JRE) ned\u016fv\u011b\u0159uje certifik\u00e1tu serveru. P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.explanation=P\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti do\u0161lo k v\u00fdjimce java.security.cert.CertPathBuilderException, proto\u017ee prost\u0159ed\u00ed JRE neuzn\u00e1v\u00e1 bezpe\u010dnostn\u00ed certifik\u00e1t serveru \u00falo\u017ei\u0161t\u011b jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t. Pro ov\u011b\u0159en\u00ed identity serveru \u00falo\u017ei\u0161t\u011b je nezbytn\u00fd d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.useraction=P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1282E: \u00dalo\u017ei\u0161t\u011b {0} je nedosa\u017eiteln\u00e9, proto\u017ee b\u011bhov\u00e9 prost\u0159ed\u00ed Java (JRE) ned\u016fv\u011b\u0159uje certifik\u00e1tu serveru. P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=P\u0159i p\u0159ipojov\u00e1n\u00ed k \u00falo\u017ei\u0161ti do\u0161lo k v\u00fdjimce java.security.cert.CertPathBuilderException, proto\u017ee prost\u0159ed\u00ed JRE neuzn\u00e1v\u00e1 bezpe\u010dnostn\u00ed certifik\u00e1t serveru \u00falo\u017ei\u0161t\u011b jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t. Pro ov\u011b\u0159en\u00ed identity serveru \u00falo\u017ei\u0161t\u011b je nezbytn\u00fd d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=P\u0159idejte certifik\u00e1t dan\u00e9ho serveru \u00falo\u017ei\u0161t\u011b do sv\u00e9ho prost\u0159ed\u00ed JRE jako d\u016fv\u011bryhodn\u00fd certifik\u00e1t.
+
+# In the following 4 messages (CWWKF1282E to CWWKF1285E),
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The webCacheMonitor-1.0 feature cannot be downloaded ...
+# 	The extendedPackage-1.0 addon cannot be downloaded ...
+# 	The ServletSample product sample cannot be downloaded ...
+# 	The SpringSample open source integration cannot be downloaded ...
+ 
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP=CWWKF1283E: {0} {1} nelze st\u00e1hnout do adres\u00e1\u0159e {2}. Ujist\u011bte se, \u017ee do\u010dasn\u00fd adres\u00e1\u0159 existuje a lze do n\u011bj zapisovat, a spus\u0165te p\u0159\u00edkaz znovu.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.explanation=Uveden\u00e9 aktivum nebylo sta\u017eeno do do\u010dasn\u00e9ho adres\u00e1\u0159e. Mo\u017en\u00e1 adres\u00e1\u0159 neexistuje, nebo v n\u011bm nen\u00ed m\u00edsto, p\u0159\u00edpadn\u011b nem\u00e1te opr\u00e1vn\u011bn\u00ed k z\u00e1pisu do tohoto adres\u00e1\u0159e.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.useraction=Ujist\u011bte se, \u017ee do\u010dasn\u00fd adres\u00e1\u0159 existuje a lze do n\u011bj zapisovat, a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS=CWWKF1284E: {0} {1} nelze st\u00e1hnout. Ujist\u011bte se, \u017ee nakonfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b aktiv Liberty toto aktivum obsahuj\u00ed, a spus\u0165te p\u0159\u00edkaz znovu.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.explanation=Uveden\u00e9 aktivum nebylo sta\u017eeno z \u017e\u00e1dn\u00e9ho z nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165, proto\u017ee dan\u00e1 \u00falo\u017ei\u0161t\u011b toto aktivum neobsahuj\u00ed.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b aktiv Liberty toto aktivum obsahuj\u00ed, a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO=CWWKF1285E: {0} {1} nelze st\u00e1hnout z \u00falo\u017ei\u0161t\u011b {2}. Ujist\u011bte se, \u017ee dan\u00e9 \u00falo\u017ei\u0161t\u011b toto aktivum obsahuje, a spus\u0165te p\u0159\u00edkaz znovu.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.explanation=Uveden\u00e9 aktivum nebylo sta\u017eeno z uveden\u00e9ho \u00falo\u017ei\u0161t\u011b, proto\u017ee toto \u00falo\u017ei\u0161t\u011b neobsahuje platnou verzi aktiva.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.useraction=Ujist\u011bte se, \u017ee dan\u00e9 \u00falo\u017ei\u0161t\u011b toto aktivum obsahuje, a spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO=CWWKF1286E: {0} {1} nelze st\u00e1hnout z \u00falo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository. Informace pro ur\u010den\u00ed p\u0159\u00ed\u010din probl\u00e9mu naleznete na webov\u00e9 str\u00e1nce podpory pro WebSphere Application Server.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.explanation=Uveden\u00e9 aktivum nebylo sta\u017eeno z \u00falo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_BUNDLE_IN_ESA=CWWKF1287E: Funkci {0} nelze nainstalovat, proto\u017ee soubor {1} v souboru ESA (Enterprise Subsystem Archive) nen\u00ed soubor bal\u00edku program\u016f. Ko\u0159en ESA sm\u00ed obsahovat pouze adres\u00e1\u0159e a soubory bal\u00edk\u016f program\u016f. Pokud jste tento soubor ESA vytvo\u0159ili vy, ov\u011b\u0159te, zda je obsah souboru spr\u00e1vn\u00fd.
+ERROR_INVALID_BUNDLE_IN_ESA.explanation=Chcete-li nainstalovat funkci, sm\u00ed ko\u0159en souboru ESA obsahovat pouze platn\u00fd obsah bal\u00edk\u016f nebo adres\u00e1\u0159e. Soubory bal\u00edk\u016f program\u016f mus\u00ed b\u00fdt soubory JAR, kter\u00e9 obsahuj\u00ed platn\u00fd soubor manifest.mf.
+ERROR_INVALID_BUNDLE_IN_ESA.useraction=Pokud jste tento soubor ESA vytvo\u0159ili vy, ov\u011b\u0159te, zda je obsah souboru spr\u00e1vn\u00fd. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# In the following message CWWKF1288E,
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The content of the webCacheMonitor-1.0 feature was changed ..., so the feature is not valid. 
+# 	The content of the extendedPackage-1.0 addon was changed ..., so the addon is not valid. 
+# 	The content of the ServletSample product sample was changed ..., so the sample is not valid. 
+# 	The content of the SpringSample open source integration was changed ..., so the open source integration is not valid. 
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM=CWWKF1288E: Obsah {0} {1} byl b\u011bhem stahov\u00e1n\u00ed zm\u011bn\u011bn, tak\u017ee {1} nen\u00ed platn\u00e9. Znovu spus\u0165te p\u0159\u00edkaz.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.explanation=Kontroln\u00ed sou\u010det sta\u017een\u00fdch aktiv nen\u00ed spr\u00e1vn\u00fd. Obsah sta\u017een\u00fdch aktiv nen\u00ed stejn\u00fd jako obsah z \u00falo\u017ei\u0161t\u011b, tak\u017ee aktivum nelze nainstalovat.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.useraction=Znovu spus\u0165te p\u0159\u00edkaz. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNABLE_TO_CREATE_FILE=CWWKF1289E: N\u00e1sleduj\u00edc\u00ed soubor nelze vytvo\u0159it: {0}. Ov\u011b\u0159te, zda existuje nad\u0159\u00edzen\u00fd adres\u00e1\u0159 a zda m\u00e1te pro vytv\u00e1\u0159en\u00ed soubor\u016f v dan\u00e9m adres\u00e1\u0159i pot\u0159ebn\u00e1 opr\u00e1vn\u011bn\u00ed, a pot\u00e9 spus\u0165te p\u0159\u00edkaz znovu.
+ERROR_UNABLE_TO_CREATE_FILE.explanation=P\u0159\u00edkaz featureManager nebo installUtility nedok\u00e1zal nainstalovat nebo st\u00e1hnout aktivum do uveden\u00e9ho um\u00edst\u011bn\u00ed, proto\u017ee toto um\u00edst\u011bn\u00ed neexistuje nebo nem\u00e1te opr\u00e1vn\u011bn\u00ed pot\u0159ebn\u00e1 k vytv\u00e1\u0159en\u00ed soubor\u016f.
+ERROR_UNABLE_TO_CREATE_FILE.useraction=Ov\u011b\u0159te, zda existuje nad\u0159\u00edzen\u00fd adres\u00e1\u0159 a zda m\u00e1te pro vytv\u00e1\u0159en\u00ed soubor\u016f v dan\u00e9m adres\u00e1\u0159i pot\u0159ebn\u00e1 opr\u00e1vn\u011bn\u00ed, a pot\u00e9 spus\u0165te p\u0159\u00edkaz znovu.
+
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nelze st\u00e1hnout nebo nainstalovat na {2}, {3}, {4}. Aktivum {1} v aktu\u00e1ln\u011b nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch plat\u00ed pouze pro n\u00e1sleduj\u00edc\u00ed vyd\u00e1n\u00ed a verze produktu: {5}. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval verzi aktiva, kter\u00e9 plat\u00ed pro va\u0161\u00ed instalaci. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul toto aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=Aktivum nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9. Verze po\u017eadovan\u00e9ho aktiva sice byla nalezena, ale neplat\u00ed pro nainstalovanou verzi nebo vyd\u00e1n\u00ed produktu.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte bal\u00edk zip jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul toto aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nelze st\u00e1hnout nebo nainstalovat na {2}, {3}, {4}. Aktivum {1} v \u00falo\u017ei\u0161ti IBM WebSphere Liberty Repository plat\u00ed pouze pro n\u00e1sleduj\u00edc\u00ed verze a vyd\u00e1n\u00ed produktu: {5}. Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zopakujte instalaci {0} znovu.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=Funkci, dopl\u0148kov\u00fd modul nebo prozat\u00edmn\u00ed opravu nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9. Verze po\u017eadovan\u00e9ho aktiva sice byla nalezena, ale neplat\u00ed pro nainstalovanou verzi nebo vyd\u00e1n\u00ed produktu.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.useraction=Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zopakujte akci znovu. Pokud probl\u00e9m trv\u00e1, projd\u011bte si informace t\u00fdkaj\u00edc\u00ed se ur\u010den\u00ed probl\u00e9mu na webov\u00e9 str\u00e1nce podpory produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1292E: Volbu odinstalov\u00e1n\u00ed --force je mo\u017en\u00e9 ur\u010dit v\u017edy pouze pro jednu funkci. Spus\u0165te p\u0159\u00edkaz uninstall s volbou --force pro jednu funkci.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Volba --force byla ur\u010dena p\u0159i odinstalov\u00e1n\u00ed v\u00edce funkc\u00ed.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Spus\u0165te p\u0159\u00edkaz uninstall s volbou --force pro jednu funkci.
+
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION=CWWKF1293E: Funkce {0} nebyla pod roz\u0161\u00ed\u0159en\u00edm produktu {1} nalezena. Chcete-li nal\u00e9zt roz\u0161\u00ed\u0159en\u00ed produktu p\u0159\u00edslu\u0161n\u00e9 funkce, pou\u017eijte p\u0159\u00edkaz productInfo featureInfo.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.explanation=Funkce nebyla odinstalov\u00e1na, proto\u017ee nebyla nalezena pod uveden\u00fdm roz\u0161\u00ed\u0159en\u00edm.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.action=Chcete-li nal\u00e9zt roz\u0161\u00ed\u0159en\u00ed produktu p\u0159\u00edslu\u0161n\u00e9 funkce, pou\u017eijte p\u0159\u00edkaz productInfo featureInfo. A\u017e zjist\u00edte spr\u00e1vnou funkci a roz\u0161\u00ed\u0159en\u00ed, znovu pou\u017eijte p\u0159\u00edkaz installUtility uninstall.
+
+ERROR_EXTENSION_NOT_FOUND=CWWKF1294E: Funkce {0} nebyla odinstalov\u00e1na, proto\u017ee v produktu nebylo nalezeno roz\u0161\u00ed\u0159en\u00ed produktu {1}. Chcete-li vyhledat v\u0161echna nainstalovan\u00e1 aktiva a roz\u0161\u00ed\u0159en\u00ed produktu, pou\u017eijte p\u0159\u00edkaz productInfo featureInfo.
+ERROR_EXTENSION_NOT_FOUND.explanation=Funkce nebyla odinstalov\u00e1na, proto\u017ee uveden\u00e9 roz\u0161\u00ed\u0159en\u00ed produktu nebylo v produktu nalezeno.
+ERROR_EXTENSION_NOT_FOUND.action=Chcete-li vyhledat v\u0161echna nainstalovan\u00e1 aktiva a roz\u0161\u00ed\u0159en\u00ed produktu, pou\u017eijte p\u0159\u00edkaz productInfo featureInfo. A\u017e zjist\u00edte spr\u00e1vnou funkci a roz\u0161\u00ed\u0159en\u00ed, znovu pou\u017eijte p\u0159\u00edkaz installUtility uninstall.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION=CWWKF1295E: Aktivum {0} nelze st\u00e1hnout nebo nainstalovat do {1} {2} {3}, proto\u017ee plat\u00ed pouze na n\u00e1sleduj\u00edc\u00ed vyd\u00e1n\u00ed a verze produktu: {4}Pou\u017eijte akci hled\u00e1n\u00ed installUtility k na\u010dten\u00ed seznamu aktiv, kter\u00e9 plat\u00ed pro va\u0161i instalaci.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.explanation=Aktivum nen\u00ed pro aktu\u00e1ln\u00ed vyd\u00e1n\u00ed nebo verzi instalovan\u00e9ho produktu pou\u017eiteln\u00e9.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.useraction=Pomoc\u00ed n\u00e1stroje installUtility vyhledejte akci pro na\u010dten\u00ed seznamu aktiv, kter\u00e9 plat\u00ed pro instalaci.
+
+ERROR_INVALID_PRODUCT_EDITION_VERSION=CWWKF1296E: Aktivum {0} nelze st\u00e1hnout nebo nainstalovat do {1} {2} {3}, proto\u017ee plat\u00ed pouze na n\u00e1sleduj\u00edc\u00ed vyd\u00e1n\u00ed a verze produktu: {4}Pou\u017eijte akci hled\u00e1n\u00ed featureManager k na\u010dten\u00ed seznamu funkc\u00ed, kter\u00e9 plat\u00ed pro va\u0161i instalaci.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.explanation=Funkce nebo p\u0159\u00eddavn\u00fd modul nen\u00ed pro aktu\u00e1ln\u00ed verzi instalovan\u00e9ho produktu pou\u017eiteln\u00fd.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.useraction=Pomoc\u00ed akce hled\u00e1n\u00ed featureManager na\u010dt\u011bte seznam aktiv, kter\u00e9 plat\u00ed pro instalaci.
+
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND=CWWKF1297E: Funkci {0} nelze nainstalovat, proto\u017ee v produktu nebylo nalezeno roz\u0161\u00ed\u0159en\u00ed produktu {1}. Vytvo\u0159te uveden\u00e9 roz\u0161\u00ed\u0159en\u00ed produktu, nebo zadejte jin\u00e9 existuj\u00edc\u00ed roz\u0161\u00ed\u0159en\u00ed produktu.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.explanation=Funkce nebyla nainstalov\u00e1na, proto\u017ee v produktu nebylo nalezeno uveden\u00e9 roz\u0161\u00ed\u0159en\u00ed produktu.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.action= Chcete-li funkci nainstalovat do uveden\u00e9ho roz\u0161\u00ed\u0159en\u00ed produktu, nejprve toto roz\u0161\u00ed\u0159en\u00ed vytvo\u0159te. P\u0159\u00edpadn\u011b ur\u010dete jin\u00e9 existuj\u00edc\u00ed roz\u0161\u00ed\u0159en\u00ed produktu. Po identifikaci platn\u00e9ho roz\u0161\u00ed\u0159en\u00ed produktu znovu spus\u0165te instala\u010dn\u00ed p\u0159\u00edkaz installUtility.
+
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} nen\u00ed funkce, a proto ji nelze nainstalovat do roz\u0161\u00ed\u0159en\u00ed produktu. Spus\u0165te p\u0159\u00edkaz bez ur\u010den\u00ed roz\u0161\u00ed\u0159en\u00ed.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Do roz\u0161\u00ed\u0159en\u00ed produktu lze instalovat pouze funkce.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Znovu spus\u0165te instala\u010dn\u00ed p\u0159\u00edkaz installUtility bez ur\u010den\u00ed roz\u0161\u00ed\u0159en\u00ed.
+
+# Following messages for info logging purpose
+LOG_INSTALL_FEATURES=CWWKF1300I: Instalace n\u00e1sleduj\u00edc\u00edch funkc\u00ed: {0}.
+LOG_INSTALL_FEATURES.explanation=Ur\u010den\u00e9 funkce budou nainstalov\u00e1ny.
+LOG_INSTALL_FEATURES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_INSTALL_FIXES=CWWKF1301I: Instalace n\u00e1sleduj\u00edc\u00edch oprav: {0}.
+LOG_INSTALL_FIXES.explanation=Ur\u010den\u00e9 opravy budou nainstalov\u00e1ny.
+LOG_INSTALL_FIXES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_UNINSTALL_FEATURES=CWWKF1302I: Odinstalace n\u00e1sleduj\u00edc\u00edch funkc\u00ed: {0}.
+LOG_UNINSTALL_FEATURES.explanation=Ur\u010den\u00e9 funkce budou odinstalov\u00e1ny.
+LOG_UNINSTALL_FEATURES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_UNINSTALL_FIXES=CWWKF1303I: Odinstalace n\u00e1sleduj\u00edc\u00edch oprav: {0}.
+LOG_UNINSTALL_FIXES.explanation=Ur\u010den\u00e9 opravy budou odinstalov\u00e1ny.
+LOG_UNINSTALL_FIXES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_INSTALLED_FEATURE=CWWKF1304I: \u00dasp\u011b\u0161n\u011b nainstalovan\u00e1 funkce {0}.
+LOG_INSTALLED_FEATURE.explanation=Ur\u010den\u00e1 funkce byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+LOG_INSTALLED_FEATURE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_INSTALLED_FIX=CWWKF1305I: \u00dasp\u011b\u0161n\u011b nainstalovan\u00e1 oprava {0}.
+LOG_INSTALLED_FIX.explanation=Ur\u010den\u00e1 oprava byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+LOG_INSTALLED_FIX.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_UNINSTALLED_FEATURE=CWWKF1306I: \u00dasp\u011b\u0161n\u011b odinstalovan\u00e1 funkce {0}.
+LOG_UNINSTALLED_FEATURE.explanation=Ur\u010den\u00e1 funkce byla odinstalov\u00e1na.
+LOG_UNINSTALLED_FEATURE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_UNINSTALLED_FIX=CWWKF1307I: \u00dasp\u011b\u0161n\u011b odinstalovan\u00e1 oprava {0}.
+LOG_UNINSTALLED_FIX.explanation=Ur\u010den\u00e1 oprava byla \u00fasp\u011b\u0161n\u011b odinstalov\u00e1na.
+LOG_UNINSTALLED_FIX.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_INSTALL_ESA=CWWKF1308I: Prob\u00edh\u00e1 instalace {0}.
+LOG_INSTALL_ESA.explanation=Nainstaluje se uveden\u00fd soubor Enterprise Subsystem Archive (.esa).
+LOG_INSTALL_ESA.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_REINSTALL_FIXES_WARNING=Varov\u00e1n\u00ed: D\u00e1le uveden\u00e9 d\u0159\u00edve nainstalovan\u00e9 opravy nelze p\u0159einstalovat: {0}. P\u0159einstalujte opravy ru\u010dn\u011b.
+LOG_REAPPLY_FIXES_WARNING=CWWKF1309W: Nezda\u0159ilo se znovu aplikovat n\u00e1sleduj\u00edc\u00ed opravy: {0}
+LOG_REAPPLY_FIXES_WARNING.explanation=Nainstalovan\u00e9 opravy nelze znovu aplikovat.
+LOG_REAPPLY_FIXES_WARNING.useraction=Znovu aplikujte opravy ru\u010dn\u011b.
+
+LOG_UNABLE_TO_DETERMINE_CODEPAGE=WWKF1310W: Nelze ur\u010dit k\u00f3dovou str\u00e1nku syst\u00e9mu pro {0}. Pou\u017eije se v\u00fdchoz\u00ed k\u00f3dov\u00e1 str\u00e1nka {1}.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.explanation=Instala\u010dn\u00ed program nemohl ur\u010dit k\u00f3dovou str\u00e1nku syst\u00e9mu, a bude tedy p\u0159i instalaci soubor\u016f pou\u017e\u00edvat v\u00fdchoz\u00ed k\u00f3dovou str\u00e1nku.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.useraction=Ujist\u011bte se, \u017ee syst\u00e9m podporuje v\u00fdchoz\u00ed k\u00f3dovou str\u00e1nku.
+
+LOG_INSTALLED_SAMPLE=CWWKF1312I: \u00dasp\u011b\u0161n\u011b nainstalovan\u00e1 uk\u00e1zka produktu {0}.
+LOG_INSTALLED_SAMPLE.explanation=Ur\u010den\u00e1 uk\u00e1zka produktu byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+LOG_INSTALLED_SAMPLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_INSTALLED_OPENSOURCE=CWWKF1313I: \u00dasp\u011b\u0161n\u011b nainstalovan\u00e1 integrace typu open source {0}.
+LOG_INSTALLED_OPENSOURCE.explanation=Ur\u010den\u00e1 integrace typu open source byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+LOG_INSTALLED_OPENSOURCE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOG_UNINSTALL_FEATURE_DEPENDENCIES=Odinstalov\u00e1vanou funkci vy\u017eaduj\u00ed jin\u00e9 nainstalovan\u00e9 funkce:
+LOG_UNINSTALL_FEATURE_DEPENDENCIES_EXPLANATION=Odinstalov\u00e1n\u00ed t\u00e9to funkce m\u016f\u017ee zp\u016fsobit, \u017ee nebudou spr\u00e1vn\u011b fungovat z\u00e1visl\u00e9 funkce.
+
+LOG_DEPLOY_SERVER_FEATURES=Server {0} vy\u017eaduje n\u00e1sleduj\u00edc\u00ed funkce: {1}
+LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED=Servery {0} vy\u017eaduj\u00ed instalaci t\u011bchto dal\u0161\u00edch funkc\u00ed: {1}
+LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED=Servery {0} nevy\u017eaduj\u00ed instalaci \u017e\u00e1dn\u00fdch dal\u0161\u00edch funkc\u00ed.
+LOG_DEPLOY_FILE=Implementace bal\u00edku serveru {0}
+
+LOG_NO_REPO_NAME=Nebyl zad\u00e1n \u017e\u00e1dn\u00fd n\u00e1zev \u00falo\u017ei\u0161t\u011b. N\u00e1sleduj\u00edc\u00ed nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b bude p\u0159esko\u010deno: {0}\n
+LOG_DUPLICATE_REPO_NAMES=Byly zji\u0161t\u011bny duplicitn\u00ed n\u00e1zvy \u00falo\u017ei\u0161\u0165 {0}. N\u00e1sleduj\u00edc\u00ed nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b bude p\u0159esko\u010deno: {1}\n
+LOG_DEFAULT_INVALID_VALUE=Byla zad\u00e1na neplatn\u00e1 hodnota "{0}" vlastnosti "useDefaultRepository". \u00dalo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository bude standardn\u011b povoleno.\n
+LOG_VALIDATING=Ov\u011b\u0159ov\u00e1n\u00ed n\u00e1sleduj\u00edc\u00edho konfigura\u010dn\u00edho souboru: {0}\n
+LOG_VALIDATION_DONE=Ov\u011b\u0159ov\u00e1n\u00ed konfigura\u010dn\u00edho souboru \u00fasp\u011b\u0161n\u011b dokon\u010deno.\n
+
+LOG_DELETING_TEMP_SERVER_DIR=Odstra\u0148ov\u00e1n\u00ed do\u010dasn\u00e9ho adres\u00e1\u0159e serveru {0}...
+LOG_NOT_DELETING_TEMP_SERVER_DIR=Do\u010dasn\u00fd adres\u00e1\u0159 serveru {0} nebyl odstran\u011bn, proto\u017ee adres\u00e1\u0159 protokolu m\u016f\u017ee obsahovat informace o chyb\u00e1ch. Pokud tyto informace nepot\u0159ebujete, m\u016f\u017eete adres\u00e1\u0159 {1} odstranit ru\u010dn\u011b.
+LOG_CREATED_TEMP_SERVER_DIR=Byl vytvo\u0159en do\u010dasn\u00fd adres\u00e1\u0159 serveru {0}.
+
+LOG_CANNOT_DELETE_FILE=Soubor {0} nelze odstranit. Bude odstran\u011bn po ukon\u010den\u00ed prost\u0159ed\u00ed JVM.
+
+LOG_CANNOT_CLOSE_OBJECT=Do\u010dasn\u00e9 soubory nelze odstranit.
+LOG_CANNOT_CLOSE_OBJECT.explanation=Uk\u00e1zka vy\u017eaduje k odstran\u011bn\u00ed adres\u00e1\u0159e installTmp prost\u0159ed\u00ed Java 7 nebo vy\u0161\u0161\u00ed.
+LOG_CANNOT_CLOSE_OBJECT.action=Odeberte adres\u00e1\u0159 installTmp ru\u010dn\u011b, nebo pou\u017eijte prost\u0159ed\u00ed Java 7 nebo vy\u0161\u0161\u00ed.
+
+LOG_PASSWORD_NOT_ENCODED_PROXY=Heslo pro tento server proxy nen\u00ed zak\u00f3dovan\u00e9: {0}. Heslo je mo\u017en\u00e9 zak\u00f3dovat pomoc\u00ed p\u0159\u00edkazu securityUtility encode s volbou --encoding nastavenou na podporovan\u00fd typ k\u00f3dov\u00e1n\u00ed, tedy xor (v\u00fdchoz\u00ed), aes nebo hash. Nap\u0159\u00edklad: securityUtility encode --encoding=aes proxyPassword
+LOG_PENDING_UNINSTALLING_FEATURE=Funkce ur\u010den\u00e9 k odinstalaci:
+# Following messages for debug logging purpose
+STATE_STARTING_INSTALL=Spu\u0161t\u011bn\u00ed instalace...
+STATE_STARTING_UNINSTALL=Zah\u00e1jen\u00ed odinstalov\u00e1n\u00ed...
+STATE_STARTING_DEPLOY=Spu\u0161t\u011bn\u00ed implementace...
+STATE_STARTING_DOWNLOAD=Zah\u00e1jen\u00ed stahov\u00e1n\u00ed...
+STATE_CHECKING=Kontrola vlastnost\u00ed...
+STATE_CHECKING_FIXES=Kontrola oprav...
+STATE_CHECKING_MISSING_SERVER_FEATURES=Prob\u00edh\u00e1 kontrola chyb\u011bj\u00edc\u00edch funkc\u00ed vy\u017eadovan\u00fdch serverem...
+STATE_CHECKING_ASSETS=Kontrola aktiv...
+STATE_DOWNLOADING=Sta\u017een\u00ed {0}...
+STATE_DOWNLOADING_DEPENDENCY=Stahuje se z\u00e1visl\u00e1 funkce...
+STATE_DOWNLOADING_IGNORE_ASSET=N\u00e1sleduj\u00edc\u00ed aktivum ji\u017e v adres\u00e1\u0159i existuje: {0}\nNen\u00ed pou\u017eita volba --overwrite, tak\u017ee se aktivum nebude stahovat.\n
+STATE_DOWNLOADING_REPLACE_ASSET=N\u00e1sleduj\u00edc\u00ed aktivum ji\u017e v adres\u00e1\u0159i existuje: {0}\nJe zad\u00e1na volba --overwrite, tak\u017ee se aktivum st\u00e1hne a nahrad\u00ed ji\u017e existuj\u00edc\u00ed soubor.\n
+STATE_DOWNLOADING_IGNORE_ASSETS=N\u00e1sleduj\u00edc\u00ed aktiva ji\u017e v adres\u00e1\u0159i existuj\u00ed: {0}\nNen\u00ed pou\u017eita volba --overwrite, tak\u017ee se aktiva nebudou stahovat.\n
+STATE_DOWNLOADING_REPLACE_ASSETS=N\u00e1sleduj\u00edc\u00ed aktiva ji\u017e v adres\u00e1\u0159i existuj\u00ed: {0}\nJe zad\u00e1na volba --overwrite, tak\u017ee se aktiva st\u00e1hnou a nahrad\u00ed ji\u017e existuj\u00edc\u00ed soubory.\n
+STATE_DOWNLOADING_FEATURES=Stahuj\u00ed se vzd\u00e1len\u00e9 funkce...
+STATE_DOWNLOADING_ASSETS=Stahuj\u00ed se vzd\u00e1len\u00e1 aktiva...
+STATE_INSTALLING=Instalace {0}...
+STATE_INSTALLING_DEPENDENCY=Instalace z\u00e1visl\u00e9 funkce...
+STATE_INSTALLING_FEATURES=Instalace vlastnost\u00ed...
+STATE_INSTALLING_ASSETS=Instalace aktiv...
+STATE_UNINSTALLING=Odinstalace {0}...
+STATE_UNINSTALLING_FEATURES=Odinstalov\u00e1n\u00ed vlastnost\u00ed...
+STATE_REAPPLYING_FIXES=Op\u011btovn\u00e9 pou\u017eit\u00ed oprav {0}...
+STATE_VALIDATING_FIXES=Ov\u011b\u0159ov\u00e1n\u00ed nainstalovan\u00fdch oprav...
+STATE_SET_SCRIPTS_PERMISSION=Nastaven\u00ed opr\u00e1vn\u011bn\u00ed skript\u016f...
+STATE_DEPLOYING=Implementace  {0}...
+STATE_CLEANING=Prob\u00edh\u00e1 vy\u010di\u0161t\u011bn\u00ed do\u010dasn\u00fdch soubor\u016f...
+STATE_COMPLETED_INSTALL=Instalace dokon\u010dena
+STATE_COMPLETED_UNINSTALL=Odinstalace dokon\u010dena
+STATE_COMPLETED_DOWNLOAD=Stahov\u00e1n\u00ed dokon\u010deno\n
+STATE_COMPLETED_DEPLOY=Implementace dokon\u010dena
+STATE_RESOLVING=\u0158e\u0161en\u00ed vzd\u00e1len\u00fdch funkc\u00ed. Proveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
+STATE_PREPARING_ASSETS=P\u0159\u00edprava aktiv k instalaci. Proveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
+STATE_INITIALIZING=Prob\u00edh\u00e1 inicializace...
+STATE_CONTACTING_REPO=Kontaktov\u00e1n\u00ed \u00falo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository...
+STATE_DOWNLOAD_FILES_OK=\nV\u0161echna aktiva byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
+PROGRESS_STEP=Krok {0} z {1}
+
+MSG_DOWNLOAD_SUCCESS=Funkce {0} \u00fasp\u011b\u0161n\u011b sta\u017eena.
+MSG_CLEANUP_SUCCESS=Maz\u00e1n\u00ed do\u010dasn\u00fdch soubor\u016f \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+
+MSG_CANCEL_INSTALL=Instalace byla zru\u0161ena.
+MSG_TAKE_SEVERAL_MINUTES=Proveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
+MSG_SEARCHING=Hled\u00e1n\u00ed aktiv. Proveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
+MSG_SEARCHING_FEATURES=Vyhled\u00e1v\u00e1n\u00ed vlastnost\u00ed...
+MSG_SEARCHING_ADDONS=Vyhled\u00e1v\u00e1n\u00ed p\u0159\u00eddavn\u00fdch modul\u016f...
+MSG_SEARCHING_SAMPLES=Vyhled\u00e1v\u00e1n\u00ed uk\u00e1zek...
+MSG_SEARCHING_OPENSOURCE=Prohled\u00e1v\u00e1n\u00ed integrac\u00ed typu open source...
+
+FEATURE_ASSET=funkce
+ADDON_ASSET=p\u0159\u00eddavn\u00fd modul
+SAMPLE_ASSET=uk\u00e1zka produktu
+OPENSOURCE_ASSET=integrace typu open source
+GENERAL_ASSET=aktivum
+
+MSG_INVALID_FOR_OS=Prost\u0159edek funkce {0} je pro aktu\u00e1ln\u00ed opera\u010dn\u00ed syst\u00e9m neplatn\u00fd, a nebude nainstalov\u00e1n.
+
+# Following are validation messages for viewSettings
+MSG_VALIDATION_EMPTY_KEY=Nen\u00ed zad\u00e1n n\u00e1zev vlastnosti. Bu\u010f zadejte platn\u00fd n\u00e1zev vlastnosti, nebo vlastnost ozna\u010dte jako koment\u00e1\u0159, pokud se nepou\u017e\u00edv\u00e1.
+MSG_VALIDATION_INVALID_KEY={0} nen\u00ed podporovan\u00e1 vlastnost. Bu\u010f zadejte platn\u00fd n\u00e1zev vlastnosti, nebo vlastnost ozna\u010dte jako koment\u00e1\u0159, pokud se nepou\u017e\u00edv\u00e1.
+MSG_VALIDATION_EMPTY_REPONAME=Nen\u00ed zad\u00e1n n\u00e1zev \u00falo\u017ei\u0161t\u011b. Bu\u010f zadejte n\u00e1zev \u00falo\u017ei\u0161t\u011b, nebo vlastnost ozna\u010dte jako koment\u00e1\u0159, pokud se nepou\u017e\u00edv\u00e1.
+MSG_VALIDATION_DUPLICATE_KEY=N\u00e1zev vlastnosti {0} je stejn\u00fd jako n\u00e1zev vlastnosti, kter\u00e1 se nach\u00e1z\u00ed na \u0159\u00e1dku {1}. Pro ka\u017edou vlastnost zadejte jedine\u010dn\u00fd n\u00e1zev.
+MSG_VALIDATION_EMPTY_VALUE=Pro vlastnost {0} nen\u00ed zad\u00e1na \u017e\u00e1dn\u00e1 hodnota. Bu\u010f zadejte platnou hodnotu vlastnosti, nebo vlastnost ozna\u010dte jako koment\u00e1\u0159, pokud se nepou\u017e\u00edv\u00e1.
+MSG_VALIDATION_INVALID_DEFAULTREPO_VALUE=Vlastnost useDefaultRepository nepodporuje hodnotu {0}. Zadejte platnou hodnotu, co\u017e je bu\u010f True, nebo False.
+MSG_VALIDATION_INVALID_PORT_VALUE=Hodnota portu {0} je neplatn\u00e1. Zadejte hodnotu portu pro server proxy jako cel\u00e9 \u010d\u00edslo od 1 do 65535.
+MSG_VALIDATION_MISSING_PORT_VALUE=Nen\u00ed ur\u010den\u00e1 hodnota portu. Zadejte hodnotu portu pro server proxy jako cel\u00e9 \u010d\u00edslo od 1 do 65535.
+MSG_VALIDATION_MISSING_HOST=Nen\u00ed ur\u010den n\u00e1zev hostitele serveru proxy. Zadejte n\u00e1zev hostitele pro server proxy, nebo ozna\u010dte ostatn\u00ed vlastnosti serveru proxy jako koment\u00e1\u0159.
+MSG_VALIDATION_INVALID_URL=N\u00e1sleduj\u00edc\u00ed adresa URL je neplatn\u00e1: {0}. Podporov\u00e1ny jsou pouze adresy HTTP, HTTPS a adresy URL soubor\u016f. Zkontrolujte, zda je adresa URL zad\u00e1na spr\u00e1vn\u011b.
+MSG_VALIDATION_UNSUPPORT_PROTOCOL=Pro n\u00e1sleduj\u00edc\u00ed \u00falo\u017ei\u0161t\u011b nen\u00ed podporov\u00e1n protokol URL: {0}. Podporovan\u00e9 protokoly jsou HTTP, HTTPS a soubor. Zkontrolujte, zda je adresa URL zad\u00e1na spr\u00e1vn\u011b.
+MSG_VALIDATION_INVALID_HOST=N\u00e1sleduj\u00edc\u00ed hostitel serveru proxy je neplatn\u00fd: {0}. Zadejte platn\u00fd n\u00e1zev hostitele serveru proxy HTTP. P\u0159edpona http:// nen\u00ed nutn\u00e1.
+
+VALIDATION_INVALID_VALUE=Nepodporovan\u00e1 hodnota
+VALIDATION_INVALID_KEY=Nepodporovan\u00fd n\u00e1zev vlastnosti
+VALIDATION_EMPTY_KEY=Pr\u00e1zdn\u00fd n\u00e1zev vlastnosti
+VALIDATION_EMPTY_VALUE=Pr\u00e1zdn\u00e1 hodnota
+VALIDATION_MISSING_REPONAME=Chyb\u00ed n\u00e1zev \u00falo\u017ei\u0161t\u011b
+VALIDATION_MISSING_PORT=Chyb\u00ed hodnota portu
+VALIDATION_INVALID_PORT=Nepodporovan\u00e1 hodnota portu
+VALIDATION_MISSING_HOST=Chyb\u00ed n\u00e1zev hostitele
+VALIDATION_INVALID_HOST=Neplatn\u00fd n\u00e1zev hostitele
+VALIDATION_INVALID_URL=Nepodporovan\u00fd form\u00e1t adresy URL
+VALIDATION_DUPLICATE_KEY=Duplicitn\u00ed n\u00e1zev vlastnosti
+VALIDATION_UNSUPPORTED_PROTOCOL=Nepodporovan\u00fd protokol
+
+# Following for tool
+TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Minim\u00e1ln\u011b jedna funkce byla odinstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}.
+TOOL_UNINSTALL_FEATURE_OK.explanation=Ur\u010den\u00e1 funkce byla odinstalov\u00e1na.
+TOOL_UNINSTALL_FEATURE_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+TOOL_UNININSTALL_FEATURE_CONFIRMATION=Varov\u00e1n\u00ed: P\u0159ed odinstalov\u00e1n\u00edm funkc\u00ed se ujist\u011bte, \u017ee jsou zastaven\u00e9 v\u0161echny procesy serveru. \nOdinstalov\u00e1n\u00ed funkc\u00ed z b\u011b\u017e\u00edc\u00edch server\u016f m\u016f\u017ee v\u00e9st k chyb\u00e1m b\u011bhov\u00e9ho prost\u0159ed\u00ed nebo k neo\u010dek\u00e1van\u00e9mu chov\u00e1n\u00ed. \n\nStisknut\u00edm kl\u00e1vesy Enter pokra\u010dujte, nebo stisknut\u00edm tla\u010d\u00edtka "x" ukon\u010dete operaci odinstalov\u00e1n\u00ed funkc\u00ed.
+
+TOOL_PASSWORD_PROMPT=Zadejte heslo:
+TOOL_RE_ENTER_PASSWORD_PROMPT=Potvr\u010fte heslo:
+TOOL_PASSWORD_DOES_NOT_MATCH=Polo\u017eky si neodpov\u00eddaly.
+
+TOOL_FEATURES_INSTALLATION_COMPLETED=V\u0161echny funkce byly \u00fasp\u011b\u0161n\u011b nainstalov\u00e1ny.
+TOOL_INSTALLATION_COMPLETED=V\u0161echna aktiva byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+
+ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Heslo pro ID u\u017eivatele ur\u010den\u00e9 ve volb\u011b --user nebylo dod\u00e1no.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=P\u0159i ur\u010dov\u00e1n\u00ed ID u\u017eivatele je nezbytn\u00e9 heslo.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.useraction=Pomoc\u00ed volby --password nebo --passwordfile dodejte heslo pro ID u\u017eivatele ur\u010den\u00e9 ve volb\u011b --user a operaci opakujte.
+
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION=CWWKF1352E: Nelze naj\u00edt ur\u010den\u00fd soubor hesel {0}.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu p\u0159istoupit k ur\u010den\u00e9mu souboru hesel.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.useraction=Ujist\u011bte se, \u017ee cesta k ur\u010den\u00e9mu souboru je platn\u00e1 a \u017ee u\u017eivatel m\u00e1 nezbytnou autorizaci pro p\u0159\u00edstup k souboru.
+
+ERROR_TOOL_INVALID_LOG_LEVEL=Ur\u010den\u00e1 \u00farove\u0148 protokolov\u00e1n\u00ed {0} je neplatn\u00e1. Protokol nen\u00ed povolen\u00fd.
+
+ERROR_TOOL_DIRECTORY_NOT_EXISTS=CWWKF1353E: Ur\u010den\u00fd adres\u00e1\u0159 neexistuje: {0}
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.explanation=Syst\u00e9m nem\u016f\u017ee nal\u00e9zt zadan\u00fd adres\u00e1\u0159.
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.useraction=Spus\u0165te p\u0159\u00edkaz znovu s platn\u00fdm adres\u00e1\u0159em.
+
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA=CWWKF1354E: Volbu --downloadOnly nelze pou\u017e\u00edt k instalaci {0}.
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.explanation=Neplatn\u00e9 pou\u017eit\u00ed volby --downloadOnly. 
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.useraction=Spus\u0165te p\u0159\u00edkaz znovu bez parametru --downloadOnly.
+
+ERROR_TOOL_DOWNLOADONLY_IS_FILE=CWWKF1355E: {0} je soubor. Je nutn\u00e1 cesta k adres\u00e1\u0159i.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.explanation=Do\u0161lo k pokusu o sta\u017een\u00ed archiv\u016f subsyst\u00e9mu do souboru.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.useraction=Spus\u0165te p\u0159\u00edkaz znovu s cestou k adres\u00e1\u0159i.
+
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR=CWWKF1356E: Nelze vytvo\u0159it adres\u00e1\u0159ovou strukturu {0}.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.explanation=Nelze vytvo\u0159it adres\u00e1\u0159e nezbytn\u00e9 ke sta\u017een\u00ed archiv\u016f subsyst\u00e9mu.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 poskytovatele existuje a nezbytn\u00e1 opr\u00e1vn\u011bn\u00ed jsou na m\u00edst\u011b, aby bylo mo\u017en\u00e9 vytvo\u0159it adres\u00e1\u0159ovou strukturu. Spus\u0165te operaci znovu.
+
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY=CWWKF1357E: Volbu --downloadOnly nelze pou\u017e\u00edt s volbou --offlineOnly.
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.explanation=Neplatn\u00e9 pou\u017eit\u00ed volby --offlineOnly. 
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.useraction=Spus\u0165te p\u0159\u00edkaz znovu bez volby --offlineOnly.
+
+ERROR_TOOL_MISSING_DIRECTORY=CWWKF1358E: Pro {0} je nezbytn\u00e1 volba --location.
+ERROR_TOOL_MISSING_DIRECTORY.explanation=Nebyla nalezena volba --location.
+ERROR_TOOL_MISSING_DIRECTORY.useraction=Spus\u0165te p\u0159\u00edkaz znovu s volbou --location.
+
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION=CWWKF1359E: Hodnota {0} nen\u00ed platn\u00e1 pro volbu --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.explanation=Mus\u00edte pou\u017e\u00edt hodnoty platn\u00e9 pro volbu --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.useraction=Spus\u0165te p\u0159\u00edkaz s hodnotou platnou pro volbu --downloadOnly, jako nap\u0159. all (v\u0161e).
+
+ERROR_TOOL_LOCATION_WITH_ESA=CWWKF1360E: Volbu --location nem\u016f\u017eete pou\u017e\u00edt k instalaci souboru s archivem subsyst\u00e9mu (.esa).
+ERROR_TOOL_LOCATION_WITH_ESA.explanation=Neplatn\u00e9 pou\u017eit\u00ed volby --location. 
+ERROR_TOOL_LOCATION_WITH_ESA.useraction=Spus\u0165te p\u0159\u00edkaz znovu bez volby --location.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED=CWWKF1361E: Vlastnosti \u00falo\u017ei\u0161t\u011b nelze na\u010d\u00edst z {0}. Potvr\u010fte, \u017ee je cesta k ur\u010den\u00e9mu souboru vlastnost\u00ed platn\u00e1 a \u017ee soubor obsahuje nezbytn\u00e9 vlastnosti.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o p\u0159\u00edstup k ur\u010den\u00e9mu souboru vlastnost\u00ed.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.useraction=Ujist\u011bte se, \u017ee cesta k ur\u010den\u00e9mu souboru je platn\u00e1, soubor existuje a obsahuje nezbytn\u00e9 vlastnosti.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE=CWWKF1362E: Ur\u010den\u00e1 cesta {0} nen\u00ed soubor.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.explanation=Syst\u00e9mov\u00e1 vlastnost k p\u0159eps\u00e1n\u00ed v\u00fdchoz\u00edho um\u00edst\u011bn\u00ed souboru vlastnost\u00ed mus\u00ed b\u00fdt nastavena jako cesta k souboru, nikoli k adres\u00e1\u0159i. 
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.useraction=Spus\u0165te p\u0159\u00edkaz znovu se syst\u00e9movou vlastnost\u00ed nastavenou na platnou cestu k souboru.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS=CWWKF1363E: Zadan\u00fd soubor {0} neexistuje.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.explanation=Syst\u00e9m nem\u016f\u017ee nal\u00e9zt zadan\u00fd soubor vlastnost\u00ed \u00falo\u017ei\u0161\u0165.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.useraction=Ov\u011b\u0159te, \u017ee soubor existuje v ur\u010den\u00e9 cest\u011b, a pak znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED=CWWKF1364E: Heslo pro server proxy nen\u00ed \u0161ifrov\u00e1no. Heslo mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.explanation=Heslo pro server proxy mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.useraction=Spus\u0165te p\u0159\u00edkaz znovu s pou\u017eit\u00edm \u0161ifrovan\u00e9ho hesla.
+
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED=CWWKF1365E: \u0160ifrovan\u00e9 heslo pro server proxy je neplatn\u00e9. Heslo pro server proxy mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding. 
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.explanation=\u0160ifrovac\u00ed algoritmus pou\u017eit\u00fd k \u0161ifrov\u00e1n\u00ed hesla pro server proxy nen\u00ed podporov\u00e1n. Heslo pro server proxy mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding.
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.useraction=Spus\u0165te p\u0159\u00edkaz znovu s pou\u017eit\u00edm platn\u00e9ho \u0161ifrovan\u00e9ho hesla.
+
+ERROR_TOOL_PROXY_PORT_MISSING=CWWKF1366E: \u010c\u00edslo portu serveru proxy nen\u00ed ur\u010deno.
+ERROR_TOOL_PROXY_PORT_MISSING.explanation=\u010c\u00edslo portu se po\u017eaduje, kdy\u017e je ur\u010den n\u00e1zev hostitele pro server proxy.
+ERROR_TOOL_PROXY_PORT_MISSING.useraction=Spus\u0165te p\u0159\u00edkaz znovu s platn\u00fdm \u010d\u00edslem portu serveru proxy.
+
+ERROR_TOOL_PROXY_HOST_MISSING=CWWKF1367E: N\u00e1zev hostitele serveru proxy nen\u00ed ur\u010den.
+ERROR_TOOL_PROXY_HOST_MISSING.explanation=N\u00e1zev hostitele se po\u017eaduje, kdy\u017e je ur\u010deno \u010d\u00edslo portu pro server proxy.
+ERROR_TOOL_PROXY_HOST_MISSING.useraction=Spus\u0165te p\u0159\u00edkaz znovu s platn\u00fdm n\u00e1zvem hostitele serveru proxy.
+
+ERROR_TOOL_INVALID_PROXY_PORT=CWWKF1368E: \u010c\u00edslo portu serveru proxy {0} nen\u00ed platn\u00e9. \u010c\u00edslo portu mus\u00ed b\u00fdt \u010d\u00edslo v rozsahu od 1 do 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.explanation=Ur\u010den\u00e9 \u010d\u00edslo serveru proxy mus\u00ed b\u00fdt \u010d\u00edslo v rozsahu od 1 do 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.useraction=Spus\u0165te p\u0159\u00edkaz znovu s platn\u00fdm \u010d\u00edslem portu serveru proxy.
+
+ERROR_TOOL_PROXY_PWD_MISSING=CWWKF1369E: Heslo pro server proxy nen\u00ed ur\u010deno.
+ERROR_TOOL_PROXY_PWD_MISSING.explanation=Heslo se po\u017eaduje, kdy\u017e je ur\u010deno ID u\u017eivatele pro server proxy.
+ERROR_TOOL_PROXY_PWD_MISSING.useraction=Spus\u0165te p\u0159\u00edkaz znovu s po\u017eadovan\u00fdm heslem pro server proxy.
+
+ERROR_TOOL_UNKNOWN_PROXY_HOST=CWWKF1370E: N\u00e1zev hostitele serveru proxy {0} je nezn\u00e1m\u00fd.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.explanation=N\u00e1zev hostitele serveru proxy nelze vy\u0159e\u0161it.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.useraction=Spus\u0165te p\u0159\u00edkaz znovu se zn\u00e1m\u00fdm n\u00e1zvem hostitele serveru proxy.
+
+ERROR_TOOL_INCORRECT_PROXY_PORT=CWWKF1371E: Nezda\u0159ilo se p\u0159ipojit k serveru proxy na port {0}.
+ERROR_TOOL_INCORRECT_PROXY_PORT.explanation=Ur\u010den\u00e9 \u010d\u00edslo portu serveru proxy je nespr\u00e1vn\u00e9. Neexistuj\u00ed \u017e\u00e1dn\u00e9 slu\u017eby naslouchaj\u00edc\u00ed ur\u010den\u00e9mu \u010d\u00edslu portu pro server proxy. 
+ERROR_TOOL_INCORRECT_PROXY_PORT.useraction=Spus\u0165te p\u0159\u00edkaz znovu se spr\u00e1vn\u00fdm \u010d\u00edslem portu serveru proxy.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWKF1372E: Ur\u010den\u00e1 pov\u011b\u0159en\u00ed serveru proxy jsou chybn\u00e1.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Ur\u010den\u00e1 pov\u011b\u0159en\u00ed serveru proxy nelze ov\u011b\u0159it. 
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Spus\u0165te p\u0159\u00edkaz znovu se spr\u00e1vn\u00fdmi pov\u011b\u0159en\u00edmi serveru proxy.
+
+ERROR_NO_REPO_WAS_ENABLED=CWWKF1373E: P\u0159\u00edkaz nelze prov\u00e9st, proto\u017ee nen\u00ed povoleno \u017e\u00e1dn\u00e9 \u00falo\u017ei\u0161t\u011b.
+ERROR_NO_REPO_WAS_ENABLED.explanation=V\u0161echna \u00falo\u017ei\u0161t\u011b byla konfigurac\u00ed zak\u00e1z\u00e1na.
+ERROR_NO_REPO_WAS_ENABLED.useraction=Povolte jedno nebo v\u00edce \u00falo\u017ei\u0161\u0165 a znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_TOOL_PWD_NOT_ENCRYPTED=CWWKF1374E: Heslo nen\u00ed \u0161ifrovan\u00e9. Heslo mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.explanation=Heslo mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.useraction=Spus\u0165te p\u0159\u00edkaz znovu s pou\u017eit\u00edm \u0161ifrovan\u00e9ho hesla.
+
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED=CWWKF1375E: \u0160ifrovan\u00e9 heslo je neplatn\u00e9. Heslo mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding. 
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.explanation=\u0160ifrovac\u00ed algoritmus pou\u017eit\u00fd k \u0161ifrov\u00e1n\u00ed hesla nen\u00ed podporov\u00e1n. Heslo mus\u00ed b\u00fdt \u0161ifrov\u00e1no pomoc\u00ed p\u0159\u00edkazu securityUtility s \u0161ifrovac\u00edm algoritmem AES, jak doporu\u010duje volba --encoding.
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.useraction=Spus\u0165te p\u0159\u00edkaz znovu s pou\u017eit\u00edm platn\u00e9ho \u0161ifrovan\u00e9ho hesla.
+
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E: {0} nen\u00ed ani pr\u00e1zdn\u00e1 slo\u017eka, ani platn\u00e9 \u00falo\u017ei\u0161t\u011b adres\u00e1\u0159\u016f. Pro stahov\u00e1n\u00ed pou\u017eijte pr\u00e1zdnou slo\u017eku, nebo ji\u017e existuj\u00edc\u00ed \u00falo\u017ei\u0161t\u011b adres\u00e1\u0159\u016f.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.explanation=Do\u0161lo k pokusu o sta\u017een\u00ed do neplatn\u00e9ho adres\u00e1\u0159e pro stahov\u00e1n\u00ed.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.useraction=Zopakujte p\u0159\u00edkaz s platnou cestou k adres\u00e1\u0159i.
+
+ERROR_TOOL_DIRECTORY_REQUIRED=CWWKF1377E: V r\u00e1mci volby --{0} mus\u00ed b\u00fdt uvedena platn\u00e1 cesta k souboru. Zadejte cestu k souboru a znovu spus\u0165te p\u0159\u00edkaz.
+ERROR_TOOL_DIRECTORY_REQUIRED.explanation=Volba --location vy\u017eaduje platnou cestu k souboru, ale bu\u010f nebyla \u017e\u00e1dn\u00e1 cesta k souboru zad\u00e1na, nebo je zadan\u00e1 cesta k souboru neplatn\u00e1.
+ERROR_TOOL_DIRECTORY_REQUIRED.useraction=V r\u00e1mci volby --location zadejte platnou cestu, kam chcete stahovat soubory, a potom znovu spus\u0165te p\u0159\u00edkaz.
+
+ERROR_TOOL_DIRECTORY_INACCESSIBLE=CWWKF1378E: N\u00e1sleduj\u00edc\u00ed adres\u00e1\u0159 nen\u00ed p\u0159\u00edstupn\u00fd: {0} Ujist\u011bte se, \u017ee m\u00e1 aktu\u00e1ln\u00ed u\u017eivatel opr\u00e1vn\u011bn\u00ed pro \u010dten\u00ed a z\u00e1pis do tohoto adres\u00e1\u0159e. 
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.explanation=P\u0159\u00edkaz nem\u016f\u017ee st\u00e1hnout soubory do uveden\u00e9ho adres\u00e1\u0159e, proto\u017ee aktu\u00e1ln\u00ed u\u017eivatel nem\u00e1 nezbytn\u00e1 opr\u00e1vn\u011bn\u00ed pro \u010dten\u00ed a z\u00e1pis.
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.useraction=Ov\u011b\u0159te, zda m\u00e1 aktu\u00e1ln\u00ed u\u017eivatel opr\u00e1vn\u011bn\u00ed pro \u010dten\u00ed a z\u00e1pis do dan\u00e9ho adres\u00e1\u0159e, a p\u0159\u00edkaz zopakujte.
+
+ERROR_TEMP_DIR_NO_SPACE=CWWKF1379E: Aktivum nelze st\u00e1hnout, proto\u017ee v n\u00e1sleduj\u00edc\u00edm do\u010dasn\u00e9m adres\u00e1\u0159i Java je nedostatek m\u00edsta na disku: {0}. Celkem je pot\u0159eba {2} m\u00edsta. Celkem je dostupn\u00fdch {1} m\u00edsta. Odstra\u0148te z adres\u00e1\u0159e nepot\u0159ebn\u00e9 soubory nebo zm\u011b\u0148te cestu java.io.tempdir na jin\u00fd adres\u00e1\u0159 a znovu spus\u0165te p\u0159\u00edkaz.
+ERROR_TEMP_DIR_NO_SPACE.explanation=P\u0159\u00edkaz nem\u016f\u017ee st\u00e1hnout soubory do do\u010dasn\u00e9ho adres\u00e1\u0159e Java, proto\u017ee tento adres\u00e1\u0159 nem\u00e1 dostatek m\u00edsta.
+ERROR_TEMP_DIR_NO_SPACE.useraction=Ujist\u011bte se, \u017ee do\u010dasn\u00fd adres\u00e1\u0159 Java m\u00e1 dostatek m\u00edsta t\u00edm, \u017ee odstran\u00edte nepot\u0159ebn\u00e9 soubory nebo zm\u011bn\u00edte cestu java.io.tempdir na jin\u00fd adres\u00e1\u0159, a znovu pou\u017eijte p\u0159\u00edkaz.
+
+ERROR_WLP_DIR_NO_SPACE=CWWKF1380E: Aktivum nelze nainstalovat, proto\u017ee v n\u00e1sleduj\u00edc\u00edm instala\u010dn\u00edm adres\u00e1\u0159i nen\u00ed dostatek m\u00edsta: {0}. Celkem je pot\u0159eba {2} m\u00edsta. Celkem je dostupn\u00fdch {1} m\u00edsta. Odstra\u0148te ze syst\u00e9mu soubor\u016f nepot\u0159ebn\u00e9 soubory a zopakujte p\u0159\u00edkaz.
+ERROR_WLP_DIR_NO_SPACE.explanation=P\u0159\u00edkaz nem\u016f\u017ee nainstalovat aktiva do instala\u010dn\u00edho adres\u00e1\u0159e, proto\u017ee tento adres\u00e1\u0159 nem\u00e1 dostatek m\u00edsta.
+ERROR_WLP_DIR_NO_SPACE.useraction=Odstran\u011bn\u00edm nepot\u0159ebn\u00fdch soubor\u016f ze syst\u00e9mu soubor\u016f se ujist\u011bte, \u017ee instala\u010dn\u00ed adres\u00e1\u0159 m\u00e1 dostatek m\u00edsta, a zopakujte p\u0159\u00edkaz.
+
+ERROR_FAILED_TO_CONNECT_JDK_WRONG=CWWKF1381E: \u00dalo\u017ei\u0161t\u011b IBM WebSphere Liberty Repository je nedosa\u017eiteln\u00e9 kv\u016fli chyb\u011b tov\u00e1rny soket\u016f SSL. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, pokud pou\u017e\u00edv\u00e1te sadu Java SDK dodanou pro WebSphere Application Server Classic with Liberty. Nainstalujte sadu Java SDK dodanou pro Liberty nebo vyma\u017ete poskytovatele tov\u00e1rny soket\u016f SSL v existuj\u00edc\u00ed sad\u011b SDK, jak je pops\u00e1no v dokumentaci k odstra\u0148ov\u00e1n\u00ed probl\u00e9m\u016f Liberty.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.explanation=Zobraz\u00ed se nakonfigurovan\u00e1 sada Java SDK ur\u010den\u00e1 pro WebSphere Application Server Classic. Tuto sadu Java SDK nelze v t\u00e9to podob\u011b pou\u017e\u00edt s produktem WebSphere Application Server Liberty, proto\u017ee zp\u016fsob\u00ed chybu tov\u00e1rny soket\u016f SSL.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.useraction=Nainstalujte a nakonfigurujte sadu Java SDK pro Liberty. \n\nVoliteln\u011b m\u016f\u017eete pou\u017e\u00edt existuj\u00edc\u00ed sadu SDK a obej\u00edt tento probl\u00e9m vymaz\u00e1n\u00edm poskytovatel\u016f tov\u00e1rny soket\u016f SSL pro sadu Java SDK. Dal\u0161\u00ed informace viz dokumentace Liberty t\u00fdkaj\u00edc\u00ed se odstra\u0148ov\u00e1n\u00ed probl\u00e9m\u016f se SSL. 
+
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION=CWWKF1382E: Nelze z\u00edskat n\u00e1sleduj\u00edc\u00ed aktiva: {0} Minim\u00e1ln\u011b jedeno z nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 nemus\u00ed b\u00fdt p\u0159\u00edstupn\u00e9, nebo ur\u010den\u00e1 aktiva nemusej\u00ed b\u00fdt platn\u00e1. Ujist\u011bte se, \u017ee syst\u00e9m m\u016f\u017ee p\u0159istupovat k \u00falo\u017ei\u0161t\u00edm a \u017ee k ov\u011b\u0159en\u00ed p\u0159ipojen\u00ed pou\u017e\u00edv\u00e1te akce viewSettings a testConnection. Chcete-li naj\u00edt ID pou\u017eiteln\u00fdch aktiv, spus\u0165te vyhled\u00e1vac\u00ed p\u0159\u00edkaz installUtility.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee z \u00falo\u017ei\u0161\u0165 na\u010d\u00edst ur\u010den\u00e1 aktiva.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Ujist\u011bte se, \u017ee ur\u010den\u00e1 aktiva jsou platn\u00e1, jsou dod\u00e1ny spr\u00e1vn\u00e9 ID u\u017eivatele a heslo a je p\u0159\u00edstup k \u00falo\u017ei\u0161t\u00edm. M\u016f\u017eete pou\u017e\u00edt akci viewSettings k ov\u011b\u0159en\u00ed nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 a potom k otestov\u00e1n\u00ed p\u0159ipojen\u00ed zvolit akci testConnection.
+
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch k dispozici. Minim\u00e1ln\u011b jedno z nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 nemus\u00ed b\u00fdt p\u0159\u00edstupn\u00e9. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Aktivum nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. M\u016f\u017eete pou\u017e\u00edt akci viewSettings k ov\u011b\u0159en\u00ed nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 a potom k otestov\u00e1n\u00ed p\u0159ipojen\u00ed zvolit akci testConnection. \n\nNebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. \n\nPokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. \n\nDal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Aktiva {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch k dispozici. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Aktiva nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktiva i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Aktiva {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v \u00falo\u017ei\u0161ti IBM WebSphere Liberty k dispozici. Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte tuto chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zkuste znovu nainstalovat {0}.
+ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Funkce, dopl\u0148kov\u00e9 moduly nebo prozat\u00edmn\u00ed opravy nelze nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
+ERROR_MISSING_MULTIPLE_DEPENDENT.useraction=Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zopakujte akci znovu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNKNOWN_OPERATING_SYSTEM=CWWKF1386E: Aktu\u00e1ln\u00ed opera\u010dn\u00ed syst\u00e9m nen\u00ed rozpozn\u00e1n.
+ERROR_UNKNOWN_OPERATING_SYSTEM.explanation=Kontroly kompatibility souborov\u00e9ho opera\u010dn\u00edho syst\u00e9mu se p\u0159eskakuj\u00ed, proto\u017ee v\u00e1\u0161 opera\u010dn\u00ed syst\u00e9m nen\u00ed rozpozn\u00e1n.
+ERROR_UNKNOWN_OPERATING_SYSTEM.useraction=P\u0159epn\u011bte na jeden z opera\u010dn\u00edch syst\u00e9m\u016f: AIX, HP-UX, macOS, Linux, OS/400, Solaris, Windows nebo z/OS.
+
+ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Hodnota {0} nen\u00ed platn\u00e1 polo\u017eka pro direktivu OS {1}.
+ERROR_UNKNOWN_OSLIST_VALUE.explanation=Tato hodnota bude ignorov\u00e1na, proto\u017ee se nejedn\u00e1 o rozpoznan\u00fd n\u00e1zev opera\u010dn\u00edho syst\u00e9mu.
+ERROR_UNKNOWN_OSLIST_VALUE.useraction=Hodnotu upravte, nebo ji odeberte ze souboru typu manifest funkce.
+
+TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Funkce byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
+TOOL_DOWNLOAD_FEATURE_OK.explanation=Funkce byla sta\u017eena.
+TOOL_DOWNLOAD_FEATURE_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+TOOL_DOWNLOAD_FEATURES_OK=CWWKF1501I: Funkce byly \u00fasp\u011b\u0161n\u011b sta\u017eeny.
+TOOL_DOWNLOAD_FEATURES_OK.explanation=Funkce byly sta\u017eeny.
+TOOL_DOWNLOAD_FEATURES_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Soubor {0} nelze nainstalovat, proto\u017ee se jedn\u00e1 o nepodporovan\u00fd typ souboru. Podporov\u00e1na je pouze instalace ze soubor\u016f ESA.
+MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Soubor nebyl nainstalov\u00e1n, proto\u017ee se jednalo o nepodporovan\u00fd typ souboru.
+MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MSG_STABILIZING_FEATUREMANAGER=Tato akce featureManager je stabilizov\u00e1na. M\u00edsto toho pou\u017eijte p\u0159\u00edkaz installUtility {0}. P\u0159\u00edkaz installUtility je doporu\u010den\u00fd pro instalaci a akce souvisej\u00edc\u00ed s \u00falo\u017ei\u0161t\u011bm.

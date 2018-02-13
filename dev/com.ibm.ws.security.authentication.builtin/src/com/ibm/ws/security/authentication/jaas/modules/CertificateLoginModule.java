@@ -52,6 +52,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
     private static final TraceComponent tc = Tr.register(CertificateLoginModule.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private String username = null;
     private String authenticatedId = null;
+    private String securityName = null;
     private boolean collectiveCert = false;
 
     /**
@@ -249,13 +250,20 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, AccessIdUtil.getUniqueId(accessId));
         temporarySubject.getPublicCredentials().add(hashtable);
-        setPrincipalAndCredentials(temporarySubject, username, null, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setPrincipalAndCredentials(temporarySubject, username, null, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
         temporarySubject.getPublicCredentials().remove(hashtable);
     }
 
     /**
      * Handles a non-collective certificate login.
-     * 
+     *
+     * Note:
+     * In distributed env, both username and securityName in this method are the same.
+     * In zOS env, username has platform cred appended while securityName does not.
+     *
+     * username : TESTUSER::c2c2c70001013....00
+     * securityName: TESTUSER
+     *
      * @param certChain
      * @throws RegistryException
      * @throws CertificateMapNotSupportedException
@@ -269,6 +277,12 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         UserRegistry userRegistry = getUserRegistry();
         username = userRegistry.mapCertificate(cert);
         authenticatedId = userRegistry.getUniqueUserId(username);
+        securityName = userRegistry.getUserSecurityName(authenticatedId);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "username=[" + username +
+                         "] authenticatedId=[" + authenticatedId +
+                         "] securityName=[" + securityName + "]");
+        }
         setUpTemporarySubject();
     }
 
@@ -288,7 +302,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       ur.getRealm(),
                                                       ur.getUniqueUserId(username));
-        setPrincipalAndCredentials(temporarySubject, username, authenticatedId, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setPrincipalAndCredentials(temporarySubject, username, authenticatedId, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
 
     }
 

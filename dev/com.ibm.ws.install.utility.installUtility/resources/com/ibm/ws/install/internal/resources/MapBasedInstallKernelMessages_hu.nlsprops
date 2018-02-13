@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/resources/MapBasedInstallKernelMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1650 to 1699 are reserved for the asset manager.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: A Liberty Profile k\u00f6rnyezet telep\u00edt\u00e9si k\u00f6nyvt\u00e1ra nincs be\u00e1ll\u00edtva.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=A rendszer nem tal\u00e1lja a Liberty Profile k\u00f6rnyezet telep\u00edt\u00e9si k\u00f6nyvt\u00e1r\u00e1t, mivel a k\u00f6nyvt\u00e1r nem ker\u00fclt megad\u00e1sra.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: A Liberty Profile k\u00f6rnyezet k\u00f6vetkez\u0151 telep\u00edt\u00e9si k\u00f6nyvt\u00e1ra nem l\u00e9tezik: {0}
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=A Liberty Profile k\u00f6rnyezet megadott telep\u00edt\u00e9si k\u00f6nyvt\u00e1ra nem l\u00e9tezik.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: A(z) {0} nem \u00e9rv\u00e9nyes k\u00f6nyvt\u00e1r.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=A Liberty Profile k\u00f6rnyezet megadott telep\u00edt\u00e9si k\u00f6nyvt\u00e1ra egy f\u00e1jl.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: A telep\u00edt\u0151 nem ker\u00fclt inicializ\u00e1l\u00e1sra.
+MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=A telep\u00edt\u0151 bels\u0151 hiba miatt nem ker\u00fclt inicializ\u00e1l\u00e1sra.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: A telep\u00edt\u0151 a k\u00f6vetkez\u0151 hiba bek\u00f6vetkez\u00e9se miatt nem ker\u00fclt inicializ\u00e1l\u00e1sra: {0}
+MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=A telep\u00edt\u0151 bels\u0151 hiba miatt nem ker\u00fclt inicializ\u00e1l\u00e1sra.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.

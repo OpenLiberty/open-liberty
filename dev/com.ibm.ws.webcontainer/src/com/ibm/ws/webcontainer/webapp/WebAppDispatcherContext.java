@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -440,7 +440,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
 
 
-    private WebAppDispatcherContext getParentContext() {
+    protected WebAppDispatcherContext getParentContext() {
         return this.parentContext;
     }
     /* (non-Javadoc)
@@ -984,6 +984,11 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     public boolean isInclude()
     {
         return (this.dispatcherType == DispatcherType.INCLUDE);
+    }
+    
+    public boolean isAsync() 
+    {
+        return (this.dispatcherType == DispatcherType.ASYNC);
     }
 
     /* (non-Javadoc)

@@ -49,7 +49,7 @@ public class HeaderValidator extends TypeValidator<Header> {
 
             // The examples object is mutually exclusive of the example object.
             if ((t.getExample() != null) && (t.getExamples() != null && !t.getExamples().isEmpty())) {
-                final String message = Tr.formatMessage(tc, "headerExampleOrExamples", t);
+                final String message = Tr.formatMessage(tc, "headerExampleOrExamples", key);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
 
@@ -57,19 +57,18 @@ public class HeaderValidator extends TypeValidator<Header> {
             Content content = t.getContent();
             // A parameter MUST contain either a schema property, or a content property, but not both.
             if (schema == null && content == null) {
-                final String message = Tr.formatMessage(tc, "headerSchemaOrContent", t);
+                final String message = Tr.formatMessage(tc, "headerSchemaOrContent", key);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
             }
 
             if (schema != null && content != null) {
-                final String message = Tr.formatMessage(tc, "headerSchemaAndContent", t);
+                final String message = Tr.formatMessage(tc, "headerSchemaAndContent", key);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-
             }
 
             //The 'content' map MUST only contain one entry.
             if (content != null && content.size() > 1) {
-                final String message = Tr.formatMessage(tc, "headerContentMap", t);
+                final String message = Tr.formatMessage(tc, "headerContentMap", key);
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
 
             }

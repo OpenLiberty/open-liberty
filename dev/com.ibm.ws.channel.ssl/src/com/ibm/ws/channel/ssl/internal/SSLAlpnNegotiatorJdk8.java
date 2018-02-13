@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -322,6 +322,7 @@ public class SSLAlpnNegotiatorJdk8 {
          * @return the protocol we want to use in order of preference: h2, http/1.1
          */
         protected String selectProtocol(SSLEngine engine, String[] protocolList) {
+            removeServerNegotiatorEngine();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "selectProtocol entry engine: " + engine + " protocols: " + protocolList);
             }
@@ -357,6 +358,7 @@ public class SSLAlpnNegotiatorJdk8 {
          * @param protocol
          */
         protected void selectProtocol(SSLEngine engine, String protocol) {
+            removeClientNegotiatorEngine();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "selectProtocol entry engine: " + engine + " protocol: " + protocol);
             }
@@ -373,5 +375,26 @@ public class SSLAlpnNegotiatorJdk8 {
             }
         }
 
+        public void removeServerNegotiatorEngine() {
+            try {
+                Method m = grizzlyNegotiationSupport.getMethod("removeAlpnServerNegotiator", SSLEngine.class);
+                m.invoke(grizzlyNegotiationSupportObject, this.engine);
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "removeEngine failed\n" + t);
+                }
+            }
+        }
+
+        public void removeClientNegotiatorEngine() {
+            try {
+                Method m = grizzlyNegotiationSupport.getMethod("removeAlpnClientNegotiator", SSLEngine.class);
+                m.invoke(grizzlyNegotiationSupportObject, this.engine);
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "removeEngine failed\n" + t);
+                }
+            }
+        }
     }
 }

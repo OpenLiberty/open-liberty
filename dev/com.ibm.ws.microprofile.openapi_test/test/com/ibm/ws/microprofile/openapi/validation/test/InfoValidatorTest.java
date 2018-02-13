@@ -14,12 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.info.ContactImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.info.InfoImpl;
-import com.ibm.ws.microprofile.openapi.impl.model.info.LicenseImpl;
-import com.ibm.ws.microprofile.openapi.impl.validation.ContactValidator;
 import com.ibm.ws.microprofile.openapi.impl.validation.InfoValidator;
-import com.ibm.ws.microprofile.openapi.impl.validation.LicenseValidator;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationContextHelper;
 import com.ibm.ws.microprofile.openapi.test.utils.TestValidationHelper;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
@@ -30,28 +26,7 @@ public class InfoValidatorTest {
     Context context = new TestValidationContextHelper(model);
 
     @Test
-    public void testLicenseValidator() {
-        LicenseValidator validator = LicenseValidator.getInstance();
-        TestValidationHelper vh = new TestValidationHelper();
-
-        LicenseImpl license = new LicenseImpl();//everything null
-        validator.validate(vh, context, license);
-        Assert.assertEquals(1, vh.getEventsSize());
-
-        vh.resetResults();
-        license.setUrl("notAValidURL");
-        validator.validate(vh, context, license);
-        Assert.assertEquals(2, vh.getEventsSize());
-
-        vh.resetResults();
-        license.setName("Apache 2.0");
-        license.setUrl("http://myWebsite.com");
-        validator.validate(vh, context, license);
-        Assert.assertFalse(vh.hasEvents());
-    }
-
-    @Test
-    public void testInfoValidator() {
+    public void testNewInfoObject() {
 
         InfoValidator validator = InfoValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
@@ -59,60 +34,90 @@ public class InfoValidatorTest {
         InfoImpl info = new InfoImpl();//everything null
         validator.validate(vh, context, info);
         Assert.assertEquals(2, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("Required \"title\" field is missing or is set to an invalid value"));
 
-        vh.resetResults();
-        info.setTitle("test");
-        validator.validate(vh, context, info);
-        Assert.assertEquals(1, vh.getEventsSize());
-
-        vh.resetResults();
-        info.setVersion("1.0");
-        validator.validate(vh, context, info);
-        Assert.assertFalse(vh.hasEvents());
-
-        vh.resetResults();
-        info.setTermsOfService("notValidURL");
-        validator.validate(vh, context, info);
-        Assert.assertEquals(1, vh.getEventsSize());
-
-        vh.resetResults();
-        info.setTermsOfService("http://myWebsite.com");
-        validator.validate(vh, context, info);
-        Assert.assertFalse(vh.hasEvents());
     }
 
     @Test
-    public void testContactValidator() {
-        ContactValidator validator = ContactValidator.getInstance();
+    public void testNullInfo() {
+
+        InfoValidator validator = InfoValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
 
-        ContactImpl contact = new ContactImpl();//everything null
-        validator.validate(vh, context, contact);
-        Assert.assertFalse(vh.hasEvents());
+        InfoImpl info = null;
+        validator.validate(vh, context, info);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
 
-        vh.resetResults();
-        contact.setName("test");
-        validator.validate(vh, context, contact);
-        Assert.assertFalse(vh.hasEvents());
+    @Test
+    public void testInfoWithTitleOnly() {
 
-        vh.resetResults();
-        contact.setUrl("notValidURL");
-        validator.validate(vh, context, contact);
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();//everything null
+        info.setTitle("test");
+        validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"version\" field is missing or is set to an invalid value"));
+    }
 
-        vh.resetResults();
-        contact.setUrl("http://myWebsite.com");
-        validator.validate(vh, context, contact);
-        Assert.assertFalse(vh.hasEvents());
+    @Test
+    public void testInfoWithVersionOnly() {
 
-        vh.resetResults();
-        contact.setEmail("invalidEmail");
-        validator.validate(vh, context, contact);
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();//everything null
+        info.setVersion("1.0");
+        validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"title\" field is missing or is set to an invalid value"));
+    }
 
-        vh.resetResults();
-        contact.setEmail("myEmail@myCompany.com");
-        validator.validate(vh, context, contact);
+    @Test
+    public void testInfoWithInvalidUrlForTermsOfService() {
+
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();
+        info.setTitle("test");
+        info.setVersion("1.0");
+        info.setTermsOfService("notValidURL");
+        validator.validate(vh, context, info);
+        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Info Object must contain a valid URL"));
+    }
+
+    @Test
+    public void testInfoWithNullTermsOfService() {
+
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();
+        info.setTitle("test");
+        info.setVersion("1.0");
+        info.setTermsOfService(null);
+
+        validator.validate(vh, context, info);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
+    public void testCorrectInfo() {
+
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();
+        info.setTitle("test");
+        info.setVersion("1.0");
+        info.setTermsOfService("http://myWebsite.com");
+
+        validator.validate(vh, context, info);
         Assert.assertFalse(vh.hasEvents());
     }
 }

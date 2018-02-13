@@ -64,7 +64,7 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with blank entry must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("The Callback object's URL template is empty and is not a valid URL."))
+        if (!message.contains("The URL template of Callback Object is empty and is not a valid URL"))
             Assert.fail("Callback with blank entry reported an incorrect error:" + vh);
     }
 
@@ -76,7 +76,7 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback missing a path must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("The Callback object must contain a valid path item."))
+        if (!message.contains("The Callback Object must contain a valid path item."))
             Assert.fail("Callback with null value path reported an incorrect error:" + vh);
     }
 
@@ -88,7 +88,7 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid url must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("The Callback object must contain a valid URL."))
+        if (!message.contains("The Callback Object must contain a valid URL."))
             Assert.fail("Callback with invalid url reported an incorrect error:" + vh);
     }
 
@@ -101,7 +101,7 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid runtime expression must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("The Callback object must contain a valid runtime expression as defined in the OpenAPI specification."))
+        if (!message.contains("The Callback Object must contain a valid runtime expression as defined in the OpenAPI Specification."))
             Assert.fail("Callback with invalid runtime expression reported an incorrect error:" + vh);
     }
 
@@ -114,7 +114,7 @@ public class CallbacksValidatorTest {
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid url template must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
-        if (!message.contains("The Callback object contains invalid substitution variables:"))
+        if (!message.contains("The Callback Object contains invalid substitution variables:"))
             Assert.fail("Callback with invalid url template reported an incorrect error:" + vh);
     }
 }

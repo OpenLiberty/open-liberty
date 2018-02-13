@@ -1,0 +1,30 @@
+<ejb-jar-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+             version="1.0">
+
+  <session name="NoInterceptorBasicStateless">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:NoInterceptorBasicStateless"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/NoInterceptorBasicStateless"/>
+  </session>
+
+  <session name="EJBInterceptorStateless">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:EJBInterceptorStateless"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/EJBInterceptorStateless"/>
+  </session>
+
+  <session name="CDIInterceptorStateless">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:CDIInterceptorStateless"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/CDIInterceptorStateless"/>
+  </session>
+
+  <session name="BothInterceptorStateless">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:BothInterceptorStateless"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/BothInterceptorStateless"/>
+  </session>
+
+  <session name="BothInterceptorStateful">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorStatefulLocal" binding-name="ejblocal:BothInterceptorStateful"/>
+  </session>
+
+</ejb-jar-bnd>

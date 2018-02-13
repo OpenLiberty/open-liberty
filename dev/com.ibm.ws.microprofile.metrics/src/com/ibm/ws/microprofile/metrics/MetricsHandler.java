@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -31,6 +32,7 @@ import com.ibm.ws.microprofile.metrics.exceptions.HTTPMethodNotAllowedException;
 import com.ibm.ws.microprofile.metrics.exceptions.HTTPNotAcceptableException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchRegistryException;
+import com.ibm.ws.microprofile.metrics.helper.Util;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetadataWriter;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetricWriter;
@@ -52,13 +54,20 @@ public class MetricsHandler implements RESTHandler {
     private static final TraceComponent tc = Tr.register(MetricsHandler.class);
 
     BaseMetrics bm;
+    SharedMetricRegistries sharedMetricRegistry;
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
-        bm = BaseMetrics.getInstance();
+        bm = BaseMetrics.getInstance(sharedMetricRegistry);
         for (String registry : Constants.REGISTRY_NAMES_LIST) {
-            SharedMetricRegistries.getOrCreate(registry);
+            sharedMetricRegistry.getOrCreate(registry);
         }
+        Util.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
+    }
+
+    @Reference
+    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        this.sharedMetricRegistry = sharedMetricRegistry;
     }
 
     @Deactivate

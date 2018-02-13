@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.utils;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -145,9 +145,9 @@ public final class OpenAPIModelWalker {
         // Flag indicating whether objects are visited before or after their children.
         private final boolean previsit;
         // A stack containing the ancestor objects of the object currently being traversed.
-        private final Deque<Object> ancestors = new ArrayDeque<>();
+        private final Deque<Object> ancestors = new LinkedList<>();
         // A stack containing path segments for the object currently being traversed.
-        private final Deque<String> pathSegments = new ArrayDeque<>();
+        private final Deque<String> pathSegments = new LinkedList<>();
         // A map containing all objects that have already been traversed.
         private final IdentityHashMap<Object, Object> traversedObjects = new IdentityHashMap<>();
 
@@ -180,7 +180,6 @@ public final class OpenAPIModelWalker {
         // Returns the location as a JSON pointer.
         // See definition for JSON pointer here: https://tools.ietf.org/html/rfc6901
         public String getLocation(String suffix) {
-            // REVISIT: Need to add JSON pointer escaping before we activate the validator.
             final Iterator<String> i = pathSegments.descendingIterator();
             final StringBuilder sb = new StringBuilder();
             boolean first = true;
@@ -188,14 +187,22 @@ public final class OpenAPIModelWalker {
                 if (!first) {
                     sb.append('/');
                 }
-                sb.append(i.next());
+                sb.append(escapeJSONPointerPathSegment(i.next()));
                 first = false;
             }
             if (suffix != null && !suffix.isEmpty()) {
                 sb.append('/');
-                sb.append(suffix);
+                sb.append(escapeJSONPointerPathSegment(suffix));
             }
             return sb.toString();
+        }
+
+        // JSON pointer escaping rules:
+        //  * Replace ~ with ~0.
+        //  * Replace / with ~1.
+        private String escapeJSONPointerPathSegment(String pathSegment) {
+            pathSegment = String.valueOf(pathSegment);
+            return pathSegment.replace("~", "~0").replace("/", "~1");
         }
 
         // Traversal methods call this method to check whether
@@ -418,42 +425,42 @@ public final class OpenAPIModelWalker {
                     this.name = name;
                 }
             }
-            final OperationProperty[] operations = { new OperationProperty(item.getDELETE(), "DELETE"),
-                                                     new OperationProperty(item.getGET(), "GET"),
-                                                     new OperationProperty(item.getHEAD(), "HEAD"),
-                                                     new OperationProperty(item.getOPTIONS(), "OPTIONS"),
-                                                     new OperationProperty(item.getPATCH(), "PATCH"),
-                                                     new OperationProperty(item.getPOST(), "POST"),
-                                                     new OperationProperty(item.getPUT(), "PUT"),
-                                                     new OperationProperty(item.getTRACE(), "TRACE") };
+            final OperationProperty[] operations = { new OperationProperty(item.getDELETE(), "delete"),
+                                                     new OperationProperty(item.getGET(), "get"),
+                                                     new OperationProperty(item.getHEAD(), "head"),
+                                                     new OperationProperty(item.getOPTIONS(), "options"),
+                                                     new OperationProperty(item.getPATCH(), "patch"),
+                                                     new OperationProperty(item.getPOST(), "post"),
+                                                     new OperationProperty(item.getPUT(), "put"),
+                                                     new OperationProperty(item.getTRACE(), "trace") };
             final PathItem _item = item;
             Arrays.stream(operations).forEach((v) -> {
                 pathSegments.push(v.name);
                 final Operation o = traverseOperation(v.o);
                 if (o != v.o) {
                     switch (v.name) {
-                        case "DELETE":
+                        case "delete":
                             _item.setDELETE(o);
                             break;
-                        case "GET":
+                        case "get":
                             _item.setGET(o);
                             break;
-                        case "HEAD":
+                        case "head":
                             _item.setHEAD(o);
                             break;
-                        case "OPTIONS":
+                        case "options":
                             _item.setOPTIONS(o);
                             break;
-                        case "PATCH":
+                        case "patch":
                             _item.setPATCH(o);
                             break;
-                        case "POST":
+                        case "post":
                             _item.setPOST(o);
                             break;
-                        case "PUT":
+                        case "put":
                             _item.setPUT(o);
                             break;
-                        case "TRACE":
+                        case "trace":
                             _item.setTRACE(o);
                             break;
                     }

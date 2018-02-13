@@ -133,20 +133,21 @@ public class SecurityContextImpl implements SecurityContext {
             AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
             Subject callerSubject = getCallerSubject();
 
-            for (String method : methods) {
-                MatchResponse matchResponse = collection.getMatchResponse(resource, method);
+            List<MatchResponse> matchResponses = collection.getMatchResponses(resource, methods);
 
-                if (matchResponse.equals(MatchResponse.NO_MATCH_RESPONSE)) {
+            for (MatchResponse response : matchResponses) {
+
+                if (response.equals(MatchResponse.NO_MATCH_RESPONSE)) {
                     // There are no constraints so user has access
                     return true;
                 }
 
-                if (matchResponse.isAccessPrecluded()) {
+                if (response.isAccessPrecluded()) {
                     //This methods access is precluded proceed to next method
                     continue;
                 }
 
-                List<String> roles = matchResponse.getRoles();
+                List<String> roles = response.getRoles();
 
                 if (roles != null && !roles.isEmpty()) {
                     if (authService.isAuthorized(appName, roles, callerSubject)) {
