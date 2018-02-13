@@ -48,7 +48,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	private boolean setCookiePathToWebAppContextPath;
 	private boolean includeLtpaCookie;
 	private boolean fallbackToLtpa;
-	private String groupBaseDnOmitted;
+	private boolean cookieSecureFlag;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
 	private WebAppSecurityConfig webAppSecConfig;
@@ -61,11 +61,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Override
 	public boolean isSsoUseDomainFromURL() {
 		return WebConfigUtils.getWebAppSecurityConfig().getSSOUseDomainFromURL();
-	}
-
-	@Override
-	public boolean isSsoRequiresSSL() {
-		return WebConfigUtils.getWebAppSecurityConfig().getSSORequiresSSL();
 	}
 
 	@Override
@@ -89,8 +84,8 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	}
 
 	@Override
-	public String getGroupBaseDnOmitted() {
-		return groupBaseDnOmitted;
+	public boolean isCookieSecured() {
+		return cookieSecureFlag;
 	}
 
 	@Override
@@ -178,10 +173,11 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		if (props == null || props.isEmpty()) {
 			return;
 		}
-		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
+		setCookiePathToWebAppContextPath = (Boolean) props
+				.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
 		includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
 		fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
-		groupBaseDnOmitted = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_GROUPBASEDNOMITTED));
+		cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
 		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
 		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
 
