@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -226,8 +227,8 @@ public class CacheHashMapMR extends CacheHashMap {
             // we are not synchronized here - were not in old code either
             Hashtable tht = null;
             if (_smc.writeAllProperties()) {
-                Hashtable ht = d2.getSwappableData();
-                propsToWrite = ht.keySet();
+                Map<?, ?> ht = d2.getSwappableData();
+                propsToWrite = (Set<String>) ht.keySet();
                 if (trace && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "doing app changes for ALL mSwappable Data", ht);
                 }
