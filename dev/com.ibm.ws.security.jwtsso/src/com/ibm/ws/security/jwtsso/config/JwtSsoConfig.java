@@ -18,8 +18,6 @@ public interface JwtSsoConfig {
 
 	boolean isSsoUseDomainFromURL();
 
-	boolean isSsoRequiresSSL();
-
 	List<String> getSsoDomainNames();
 
 	boolean isSetCookiePathToWebAppContextPath();
@@ -28,7 +26,7 @@ public interface JwtSsoConfig {
 
 	boolean isFallbackToLtpa();
 
-	String getGroupBaseDnOmitted();
+	boolean isCookieSecured();
 
 	String getJwtBuilderRef();
 
