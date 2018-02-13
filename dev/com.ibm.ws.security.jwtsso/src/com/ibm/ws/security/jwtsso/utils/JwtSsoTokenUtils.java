@@ -22,8 +22,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.Claims;
+import com.ibm.websphere.security.jwt.InvalidBuilderException;
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
+import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.jwt.utils.TokenBuilder;
@@ -38,15 +40,28 @@ public class JwtSsoTokenUtils {
 	JwtConsumer consumer = null;
 	String builderId = null;
 	String consumerId = null;
+	boolean isValid = true;
 
-	JwtSsoTokenUtils(String builderId, String consumerId) {
+	public JwtSsoTokenUtils(String builderId, String consumerId) {
 		this.builderId = builderId;
 		this.consumerId = consumerId;
 		try {
+			JwtBuilder.create(builderId); // fail fast if id or config is
+											// invalid
 			consumer = JwtConsumer.create(consumerId);
-		} catch (InvalidConsumerException e) {
+		} catch (InvalidConsumerException | InvalidBuilderException e) {
 			// ffdc
+			isValid = false;
 		}
+	}
+
+	/**
+	 * return true if the object was constructed successfully
+	 *
+	 * @return
+	 */
+	public boolean isValid() {
+		return isValid;
 	}
 
 	/**
@@ -61,7 +76,9 @@ public class JwtSsoTokenUtils {
 	 *
 	 */
 	public JsonWebToken buildSecurityPrincipalFromToken(String jwtTokenString) {
-
+		if (!isValid) {
+			return null;
+		}
 		JwtToken token = null;
 		try {
 			token = consumer.createJwt(jwtTokenString);
@@ -85,7 +102,9 @@ public class JwtSsoTokenUtils {
 	 *         authenticated.
 	 */
 	public JsonWebToken buildTokenFromSecuritySubject() throws WSSecurityException {
-
+		if (!isValid) {
+			return null;
+		}
 		Subject subj = WSSubject.getRunAsSubject();
 		Set<Principal> principals = subj.getPrincipals();
 		// maybe we already have one, check.
