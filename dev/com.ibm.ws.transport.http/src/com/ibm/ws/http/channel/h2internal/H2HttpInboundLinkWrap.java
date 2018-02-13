@@ -273,7 +273,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             // if this isn't an http/2 exception, don't pass it down, since that will cause a GOAWAY to be sent immediately
             if (e == null || e instanceof Http2Exception) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close: closing with exception: " + e.getMessage());
+                    Tr.debug(tc, "close: closing with exception: " + e);
                 }
                 this.muxLink.close(inVC, e);
             } else {

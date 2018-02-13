@@ -1004,7 +1004,6 @@ public class H2StreamProcessor {
             if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet())
                 && writeCompleted) {
                 endStream = true;
-//                updateStreamState(StreamState.CLOSED);
 
             } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
