@@ -1476,9 +1476,6 @@ public class H2StreamProcessor {
         }
         if (pseudoHeaders.get(HpackConstants.METHOD) != null && pseudoHeaders.get(HpackConstants.PATH) != null &&
             pseudoHeaders.get(HpackConstants.SCHEME) != null) {
-//            if (pseudoHeaders.get(HpackConstants.METHOD).equals("OPTIONS") && pseudoHeaders.get(HpackConstants.PATH).equals("*")) {
-//                pseudoHeaders.put(HpackConstants.PATH, "*");
-//            }
             return true;
         }
         return false;
