@@ -71,7 +71,7 @@ public class LinkValidatorTest {
 
         LinkImpl correctLink = new LinkImpl();
         correctLink.setDescription("This is a correct test link");
-        String operationRef = "#/paths/my-test-path-two/get";
+        String operationRef = "#/paths/~1my-test-path-two/get";
         correctLink.setOperationRef(operationRef);
 
         validator.validate(vh, context, key, correctLink);
@@ -116,7 +116,7 @@ public class LinkValidatorTest {
         String operationId = "pathItemOneGetId";
         link.setOperationId(operationId);
 
-        String operationRef = "#/paths/my-test-path-two/get";
+        String operationRef = "#/paths/~1my-test-path-two/get";
         link.setOperationRef(operationRef);
 
         OperationValidator opValidator = OperationValidator.getInstance();
@@ -161,7 +161,7 @@ public class LinkValidatorTest {
 
         LinkImpl correctLink = new LinkImpl();
         correctLink.setDescription("This is a link with invalid operationRef lenths");
-        String operationRef = "#/paths/my-test-path-two/somethingElse/get";
+        String operationRef = "#/paths/~1my-test-path-two/somethingElse/get";
         correctLink.setOperationRef(operationRef);
 
         validator.validate(vh, context, key, correctLink);
@@ -176,29 +176,12 @@ public class LinkValidatorTest {
 
         LinkImpl correctLink = new LinkImpl();
         correctLink.setDescription("This is a link with invalid operation in operationRef");
-        String operationRef = "#/paths/my-test-path-two/write";
+        String operationRef = "#/paths/~1my-test-path-two/write";
         correctLink.setOperationRef(operationRef);
 
         validator.validate(vh, context, key, correctLink);
         Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Link Object specified a relative \"operationRef\" field"));
-    }
-
-    @Test
-    public void testLinkWithCorrectId() {
-        LinkValidator validator = LinkValidator.getInstance();
-        TestValidationHelper vh = new TestValidationHelper();
-
-        LinkImpl link = new LinkImpl();
-        link.setDescription("This is a link with correct operationId defined");
-        String operationId = "pathItemOneGetId";
-        link.setOperationId(operationId);
-
-        OperationValidator opValidator = OperationValidator.getInstance();
-        opValidator.validate(vh, context, context.getModel().getPaths().get("/my-test-path-one").getGET());
-
-        validator.validate(vh, context, key, link);
-        Assert.assertEquals(0, vh.getEventsSize());
     }
 
     @Test
