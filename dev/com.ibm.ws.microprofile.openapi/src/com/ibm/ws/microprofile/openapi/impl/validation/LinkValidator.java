@@ -69,7 +69,7 @@ public class LinkValidator extends TypeValidator<Link> {
                         if (operationRef.length != 4) {
                             isValid = false;
                         } else {
-                            String pathKey = operationRef[2].replace("~1", "/").replace("~0", "~");
+                            String pathKey = "/" + operationRef[2].replace("~1", "/").replace("~0", "~");
                             Paths paths = context.getModel().getPaths();
 
                             if (paths != null && paths.get(pathKey) != null) {
