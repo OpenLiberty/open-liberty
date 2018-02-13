@@ -987,38 +987,17 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (GLOBAL_JAVA2SECURITY) {
+        if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             if (serverNeedsToRunWithJava2Security()) {
-                addJava2SecurityPropertiesToBootstrapFile(f);
+                addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT server " + getServerName() +
                             " is exempt from Java 2 Security regression testing.");
             }
 
-            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_JAVA2SECURITY=true");
-        }
-        if (GLOBAL_DEBUG_JAVA2SECURITY) {
-            // update the bootstrap.properties file with the java 2 security property
-            RemoteFile f = getServerBootstrapPropertiesFile();
-            if (f.exists()) {
-                java.io.OutputStream w = f.openForWriting(true);
-                try {
-                    w.write("\n".getBytes());
-                    w.write("websphere.java.security=true".getBytes());
-                    w.write("\n".getBytes());
-                    w.write("websphere.java.security.norethrow=true".getBytes());
-                    w.write("\n".getBytes());
-                    w.write("websphere.java.security.unique=true".getBytes());
-                    w.write("\n".getBytes());
-                } catch (Exception e) {
-                    Log.info(c, "getServerBootstrapPropertiesFile", "caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
-                }
-                w.flush();
-                w.close();
-            }
-            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_DEBUG_JAVA2SECURITY=true");
-            isJava2SecurityEnabled = true;
+            String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
+            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
         }
 
         // Look for forced server trace..
@@ -1297,14 +1276,18 @@ public class LibertyServer implements LogMonitorClient {
         return j2secEnabled;
     }
 
-    private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f) throws Exception {
+    private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f, boolean debug) throws Exception {
         java.io.OutputStream w = f.openForWriting(true);
         try {
             w.write("\n".getBytes());
             w.write("websphere.java.security".getBytes());
             w.write("\n".getBytes());
-            w.write("websphere.java.security.norethrow=false".getBytes());
+            w.write(("websphere.java.security.norethrow=" + debug).getBytes());
             w.write("\n".getBytes());
+            if (debug) {
+                w.write("websphere.java.security.unique=true".getBytes());
+                w.write("\n".getBytes());
+            }
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
         } catch (Exception e) {
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
