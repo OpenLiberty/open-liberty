@@ -86,13 +86,8 @@ public class OpenAPITckTest {
         
         ResultsUtil result = new ResultsUtil();
         result.xPathProcessor();
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-
-//        Assert.assertTrue(server.getInstallRoot() + "  com.ibm.ws.microprofile.openapi_fat_tck:org.eclipse.microprofile.openapi.fat.tck.OpenAPITckTest:testTck:TCK has returned non-zero return code of: " + rc
-//                          +
-//                          " This indicates test failure, see:" +
-//                          " autoFVT/publish/tckRunner/tck/target/surefire-reports/index.html", rc == 0);
-    }
+        
+        Assert.assertTrue("Therese are some failures", rc == 0);
+   }
 
 }
