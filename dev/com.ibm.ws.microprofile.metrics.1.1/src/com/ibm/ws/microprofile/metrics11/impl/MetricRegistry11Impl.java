@@ -45,9 +45,14 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
 
     @Override
     public <T extends Metric> T register(Metadata metadata, T metric) throws IllegalArgumentException {
-
+        //Create Copy of Metadata object so it can't be changed after its registered
+        Metadata metadataCopy = new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+        for (String tag : metadata.getTags().keySet()) {
+            metadataCopy.getTags().put(tag, metadata.getTags().get(tag));
+        }
+        metadataCopy.setReusable(metadata.isReusable());
         final Metric existing = metrics.putIfAbsent(metadata.getName(), metric);
-        this.metadata.putIfAbsent(metadata.getName(), metadata);
+        this.metadata.putIfAbsent(metadata.getName(), metadataCopy);
         if (existing == null) {
         } else {
             throw new IllegalArgumentException("A metric named " + metadata.getName() + " already exists");
