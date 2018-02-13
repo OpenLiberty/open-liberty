@@ -732,11 +732,13 @@ public class FacesConfigurator
         
         // First build the object
         NavigationHandler navigationHandler = ClassUtils.buildApplicationObject(NavigationHandler.class,
+                ConfigurableNavigationHandler.class, null,
                 dispenser.getNavigationHandlerIterator(),
                 application.getNavigationHandler());
         // Invoke inject and post construct
         _callInjectAndPostConstruct(navigationHandler);
-        // Finally wrap the object with the BackwardsCompatibleNavigationHandlerWrapper
+        // Finally wrap the object with the BackwardsCompatibleNavigationHandlerWrapper if it is not assignable
+        // from ConfigurableNavigationHandler
         navigationHandler = ClassUtils.wrapBackwardCompatible(NavigationHandler.class,
                 ConfigurableNavigationHandler.class,
                 BackwardsCompatibleNavigationHandlerWrapper.class,
