@@ -70,6 +70,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     protected static String XML_FALLBACK_NAME = "multipleModuleRunAsFallBack.xml";
     protected static String XML_MIXED_NAME = "multipleModuleRunAsMixed.xml";
     protected static String XML_APPBNDXML_NAME = "multipleModuleRunAsMixedAppBndXml.xml";
+    protected static String XML_DB_NAME = "multipleModuleRunAsDB.xml";
     protected static String APP_NAME = "multipleModuleRunAs";
     protected static String APP_MIXED_NAME = "multipleModuleRunAsMixed";
     protected static String APP_APPBNDXML_NAME = "multipleModuleRunAsMixedAppBndXml";
@@ -178,7 +179,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @Test
+//
+//    @Test
     public void testMultipleModuleWarsAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -281,7 +283,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @Test
+//    @Test
     @ExpectedFFDC("javax.naming.AuthenticationException")
     public void testMultipleModuleWarsAllRunAsFallBackToCaller() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -388,7 +390,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.FULL)
-    @Test
+//    @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -504,7 +506,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.FULL)
-    @Test
+//    @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAsAppBndXml() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -601,6 +603,111 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         myServer.removeInstalledAppForValidation(APP_APPBNDXML_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
+     * one FormHttpAuthenticationMechanismDefinision, and one DatabaeIdentityStoreDefinision which points to different form.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> In this case, the IdentityStores which are defined by LdapIdentityStoreDefinision are visible from any module, however,
+     * the one which are bundled with each module is only visible within the module.
+     * <LI> runas user is properly set.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMultipleModuleWarsAllRunAsWithDB() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // create module1, form login, redirect, ldap1. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",
+                                      "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1", "web.war.identitystores.db.db1");
+        // create module2, custom form login, forward, ldap2. grouponly.
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR2CUSTOM_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
+                                      "web.war.servlets.customform.get.forwardrunas", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
+                                      "web.war.identitystores.custom.realm2", "web.war.identitystores.db.db2");
+
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
+
+        WCApplicationHelper.addWarToServerApps(myServer, "multipleDB.war", true, JAR_NAME, false, "web.jar.base", "web.war.db.multiple");
+
+        startServer(XML_DB_NAME, APP_NAME);
+
+        // ------------- accessing module1 ---------------
+        // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS, Constants.DB_USER1);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for LdapIdentityStoreDefinision on the other module.
+
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        // since runas user is authenticated by IS1, the realm name of IS1 shows up in the response, therefore skip validating invalid realm.
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, null, IS2_GROUPS, Constants.DB_USER1);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in this module.
+        response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, REALM1_USER, REALM1_PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        // since runas user is authenticated by IS1, the realm name of IS1 shows up in the response, therefore skip validating invalid realm.
+        verifyResponse(response, REALM1_USER, REALM1_REALM_NAME, null, REALM1_GROUPS, Constants.DB_USER1);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // ------------- accessing module2 ---------------
+        // Execute Form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS, Constants.DB_USER2);
+
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location with a user which exists in ldapidentitystore definision in another module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        // since runas user is authenticated by IS2, the realm name of IS2 shows up in the response, therefore skip validating invalid realm.
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, null, IS1_GROUPS, Constants.DB_USER2);
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        // Execute Form login and get redirect location for custom identity store in this module.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
+        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, REALM2_USER, REALM2_PASSWORD, getViewState(response));
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        // since runas user is authenticated by IS2, the realm name of IS2 shows up in the response, therefore skip validating invalid realm.
+        verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, null, REALM2_GROUPS, Constants.DB_USER2);
+        httpclient.getConnectionManager().shutdown();
+
+        myServer.removeInstalledAppForValidation(APP_NAME);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+
 
 /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
