@@ -410,7 +410,7 @@ task createSingleJson {
             ant.singleJsonRepo(assetFile:file(esa),
                    assetType:'FEATURE',
                    metadataFile:file("build/repo/${basename}.metadata.zip"),
-                  jsonFile: 'SingleJson.json')
+                  jsonFile: "build/temp/SingleJson.json")
         }
         
     }
@@ -427,7 +427,7 @@ doLast {
            	//	fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/"){
            	//		include(name:'LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT-jar-with-dependencies.jar')
            //		}
-                fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/target") {
+                fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/") {
                     include(name: 'LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT.jar')
                 }
                 fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
@@ -455,7 +455,6 @@ doLast {
         }
 }
 
-
 publish{dependsOn generateMavenArtifact}
 
 task zipMavenArtifact(type: Zip) {
@@ -469,7 +468,30 @@ task zipMavenArtifact(type: Zip) {
    }
 }
 
+task packageForClosed {
+	dependsOn zipMavenArtifact
+	doLast{
+   		copy{
+   			from "SingleJson.json"
+   			into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+   		}
+   		copy{
+   		
+   			from "${rootDir}/LibertyFeaturesToMavenRepo/"
+           	into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+            include "LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT.jar"            
+           
+   		}
+   		copy{
+   			from "${rootDir}/com.ibm.ws.repository.generator/build/libs"
+           	into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+            include "com.ibm.ws.repository.generator.jar"
+   	
+   		}
+   }
+}
 publish{dependsOn zipMavenArtifact}
+publish {dependsOn packageForClosed}
 
 publishing {
   publications {
