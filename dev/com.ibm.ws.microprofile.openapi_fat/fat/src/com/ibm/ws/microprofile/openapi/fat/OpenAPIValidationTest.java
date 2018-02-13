@@ -26,10 +26,7 @@ public class OpenAPIValidationTest {
 	
 	@Server("validationServer")
     public static LibertyServer server;
-    private static final String OPENAPI_YAML = "openapi_yaml";
-
-    String DONE_MERGE_MSG = "Done merging OASProvider: OpenAPIWebProvider=.contextRoot=/";
-    String REMOVED_PROVIDER_MSG = "Done removing OASProvider: OpenAPIWebProvider=.contextRoot=/";
+    private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
     private static final int TIMEOUT = 10000; //in milliseconds (10 seconds)
 
@@ -39,10 +36,10 @@ public class OpenAPIValidationTest {
 
         server.startServer("OpenAPIValidationTest.log", true);
 
-        server.validateAppLoaded(OPENAPI_YAML);
+        server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
         
-        assertNotNull("Web application is not available at /api/docs/",
-                      server.waitForStringInLog("CWWKT0016I.*/api/docs/")); //wait for /api/docs/ endpoint to become available
+        assertNotNull("Web application is not available at /openapi_validation/",
+                      server.waitForStringInLog("CWWKT0016I.*/openapi_validation/")); //wait for endpoint to become available
         assertNotNull("CWWKF0011I.* not recieved on relationServer",
                       server.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet message
     }
