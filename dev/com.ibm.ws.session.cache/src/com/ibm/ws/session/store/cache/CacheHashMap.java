@@ -21,6 +21,8 @@ import java.util.ConcurrentModificationException;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
+import javax.cache.Cache;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -46,6 +48,13 @@ public class CacheHashMap extends BackedHashMap {
     CacheStoreService cacheStoreService;
     IStore _iStore;
     SessionManagerConfig _smc;
+
+    /**
+     * Per-application session property cache.
+     * This cache is used on the entry-per-session property path.
+     * Null if all session properties are stored in a single entry of the com.ibm.ws.session.cache cache.
+     */
+    Cache<String, byte[]> sessionPropertyCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
 
     public CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc);
@@ -210,7 +219,7 @@ public class CacheHashMap extends BackedHashMap {
             String appName = getIStore().getId();
 
             String key = createSessionPropertyKey(id, attrName);
-            byte[] bytes = cacheStoreService.getCache(appName).get(key);
+            byte[] bytes = sessionPropertyCache.get(key);
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "byte length", bytes == null ? null : bytes.length);
@@ -456,7 +465,10 @@ public class CacheHashMap extends BackedHashMap {
 
     @Trivial
     public String toString() {
-        return new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).toString();
+        return new StringBuilder(getClass().getSimpleName())
+                        .append('@').append(Integer.toHexString(System.identityHashCode(this)))
+                        .append(" for ").append(_iStore.getId())
+                        .toString();
     }
 
     /**
