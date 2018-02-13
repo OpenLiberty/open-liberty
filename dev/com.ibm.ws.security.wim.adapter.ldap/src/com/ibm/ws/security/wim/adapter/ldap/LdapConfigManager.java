@@ -890,9 +890,10 @@ public class LdapConfigManager {
                             attrNames.add(attribute);
                             attrScopes.add(scope);
                         }
-                        if (objectClass != null && !objectClasses.contains(objectClass.toLowerCase())) {
-                            if (getGroupTypes() != null && getGroupTypes().size() > 0)
-                                getLdapEntity(getGroupTypes().get(0)).addObjectClass(objectClass);
+                        if (objectClass != null && !objectClasses.contains(objectClass.toLowerCase())
+                            && getGroupTypes() != null && getGroupTypes().size() > 0
+                            && !SchemaConstants.VALUE_ALL_PROPERTIES.equals(objectClass)) {
+                            getLdapEntity(getGroupTypes().get(0)).addObjectClass(objectClass);
                         }
                     }
                     iMbrAttrs = attrNames.toArray(new String[0]);

@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -163,7 +165,7 @@ public class InputOutputMappingTest {
         ldapServer.add(entry);
 
         /*
-         * Create the user and group.
+         * Create the users and groups.
          */
         entry = ldapServer.newEntry(USER_DN);
         entry.add("objectclass", "inetorgperson");
@@ -173,6 +175,28 @@ public class InputOutputMappingTest {
         entry.add("userPassword", "password");
         entry.add("postalCode", userCode); // login in with this user
         entry.add("mail", userMail); // return this
+        ldapServer.add(entry);
+
+        entry = ldapServer.newEntry("uid=ldapuser4,o=ibm,c=us");
+        entry.add("objectclass", "inetorgperson");
+        entry.add("uid", "ldapuser4");
+        entry.add("sn", "ldapuser4");
+        entry.add("cn", "ldapuser4");
+        entry.add("userPassword", "password");
+        entry.add("postalCode", "ldapuser4");
+        entry.add("mail", "ldapuser4");
+        ldapServer.add(entry);
+
+        entry = ldapServer.newEntry("cn=ldapgroup1,o=ibm,c=us");
+        entry.add("objectclass", "groupofnames");
+        entry.add("cn", "ldapgroup1");
+        entry.add("member", "uid=ldapuser4,o=ibm,c=us");
+        ldapServer.add(entry);
+
+        entry = ldapServer.newEntry("cn=ldapgroup2,o=ibm,c=us");
+        entry.add("objectclass", "groupofuniquenames");
+        entry.add("cn", "ldapgroup2");
+        entry.add("uniquemember", "uid=ldapuser4,o=ibm,c=us");
         ldapServer.add(entry);
 
     }
@@ -202,7 +226,7 @@ public class InputOutputMappingTest {
          * is necessary to find the user since it will be configured as the output property for all
          * of the user registry mappings.
          */
-        ldap.setCustomFilters(new LdapFilters("(&(|(postalCode=%v)(mail=%v))(objectclass=inetorgperson))", null, "user:postalCode", null, null));
+        ldap.setCustomFilters(new LdapFilters("(&(|(postalCode=%v)(mail=%v))(objectclass=inetorgperson))", "(&amp;(cn=%v)(objectclass=groupofuniquenames))", "user:postalCode", null, "*:member;groupofuniquenames:uniquemember"));
 
         FederatedRepository federatedRepository = LDAPFatUtils.createFederatedRepository(server, "LDAPRealm", new String[] { ldap.getBaseDN() });
         federatedRepository.getPrimaryRealm().setUserDisplayNameMapping(new RealmPropertyMapping("principalName", "mail"));
@@ -259,4 +283,16 @@ public class InputOutputMappingTest {
         String userDisplayName = servlet.getUserDisplayName(userSecurityName);
         assertEquals("User did not return in expected format for getUserDisplayName", userMail, userDisplayName);
     }
+
+    /**
+     * Ensure that "objectclass=*" is not passed to the groupFilter.
+     *
+     * @throws Exception If the test fails for some unforeseen reason.
+     */
+    @Test
+    public void groupMemberIdMap_ExcludeAsterisk() throws Exception {
+        List<String> groups = servlet.getGroupsForUser("ldapuser4");
+        assertTrue("Wrong number of groups received. Expected 1: " + groups, groups.size() == 1);
+    }
+
 }
