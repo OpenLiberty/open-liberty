@@ -33,7 +33,6 @@ public class HpelBaseTraceService extends BaseTraceService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         super.update(config);
-        //remove this after
         collectorMgrPipelineUtils.setJsonTrService(false);
         logConduit.removeSyncHandler(consoleLogHandler);
     }
