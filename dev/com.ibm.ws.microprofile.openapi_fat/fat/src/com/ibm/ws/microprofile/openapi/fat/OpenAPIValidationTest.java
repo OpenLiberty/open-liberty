@@ -50,5 +50,14 @@ public class OpenAPIValidationTest {
             server.stopServer("CWWKO1603E");
         }
     }
+    
+    @Test
+    public void testValidationMessagesFromStaticDocOne() throws Exception {
+    	//Tests that correct validation messages are provided for the validation errors in the following models:
+    	//Info, Contact, License, ServerVariable(s), Server(s), PathItem, Operation, ExternalDocumentation, Parameter, RequestBody
+    	
+    	ServerConfiguration config = server.getServerConfiguration();
+        //OpenAPIConnection connection = OpenAPIConnection.publicDocsConnection(server, false).header("Accept", "application/json");
+    }
 
 }
