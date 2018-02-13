@@ -20,7 +20,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 
-public class WSJdbc41CallableStatement extends WSJdbcCallableStatement {
+public class WSJdbc41CallableStatement extends WSJdbcCallableStatement implements CallableStatement {
 
     public WSJdbc41CallableStatement(CallableStatement cstmtImplObject, WSJdbcConnection connWrapper,
                                      int theHoldability, String cstmtSQL) throws SQLException {

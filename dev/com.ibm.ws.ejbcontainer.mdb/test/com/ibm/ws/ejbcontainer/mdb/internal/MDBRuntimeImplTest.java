@@ -152,6 +152,8 @@ public class MDBRuntimeImplTest {
                 will(returnValue(id));
                 allowing(easSR).getProperty("maxEndpoints");
                 will(returnValue(0));
+                allowing(easSR).getProperty("autoStart");
+                will(returnValue(true));
             }
         });
         return easSR;

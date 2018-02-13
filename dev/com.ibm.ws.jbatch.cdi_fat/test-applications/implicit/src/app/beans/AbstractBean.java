@@ -31,8 +31,11 @@ public abstract class AbstractBean {
      * by virtue of thread context. It could be of some use for @Dependent scoped, though maybe kind of a bad fit for @ApplicationScoped
      * since it would depend who loaded it first.
      */
+
     @Inject
-    @BatchProperty(name = "color")
+    @BatchProperty
+    // To recreate issue: https://github.com/OpenLiberty/open-liberty/issues/1960,  replace the @BatchProperty qualifier with this:
+    //   @BatchProperty(name = "color")
     protected String color;
 
     @PostConstruct

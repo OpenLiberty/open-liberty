@@ -381,6 +381,11 @@ public class PauseableComponentControllerImpl implements PauseableComponentContr
 
         Set<String> targetList = createTargetList(targets);
 
+        if (targetList.isEmpty()) {
+            Tr.warning(tc, "warning.server.status.invalid.targets");
+            throw new PauseableComponentControllerRequestFailedException(Tr.formatMessage(tc, "warning.server.status.invalid.targets"));
+        }
+
         //Add each pauseable component to this list. If the tracked values get modified
         //while we are iterating and we start over, skip anyone already in this list
         Set<PauseableComponent> processedList = new HashSet<PauseableComponent>();

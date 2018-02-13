@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.wsspi.collector.manager;
 
-import com.ibm.ws.collector.manager.buffer.Buffer;
 
 /**
  * Buffer manager is a wrapper around the actual buffer, it controls access to the buffer.
@@ -19,12 +18,10 @@ import com.ibm.ws.collector.manager.buffer.Buffer;
  */
 public abstract class BufferManager {
 
-    /* Reference to ring buffer implementation */
-    protected final Buffer<Object> ringBuffer;
 
-    protected BufferManager(int capacity) {
-        ringBuffer = new Buffer<Object>(capacity);
+    protected BufferManager() {
     }
+
 
     /**
      * Method for adding an event to the buffer
@@ -56,4 +53,5 @@ public abstract class BufferManager {
      * @throws InterruptedException
      */
     public abstract Object[] getEvents(String handlerId, int noOfEvents) throws InterruptedException;
+
 }

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package apachebvalconfig.test;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.validation.MessageInterpolator;
 import javax.validation.ValidatorFactory;
 

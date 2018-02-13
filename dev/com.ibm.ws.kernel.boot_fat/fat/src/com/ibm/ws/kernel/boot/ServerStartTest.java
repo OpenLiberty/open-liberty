@@ -23,6 +23,7 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -47,14 +48,16 @@ public class ServerStartTest {
 
     @After
     public void after() throws Exception {
-        server.stopServer();
+        if (server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     @Test
     /**
      * This test validates that the server start script functions correctly when the CDPATH environment variable
      * is present.
-     * 
+     *
      * @throws Exception
      */
     public void testServerStartWithCDPATH() throws Exception {
@@ -93,11 +96,10 @@ public class ServerStartTest {
     /**
      * This test validates that the server start functions correctly when the server is referenced
      * via a symbolic link (on those systems which support same)
-     * 
+     *
      * @throws Exception
      */
-    public void testServerStartViaSymbolicLink() throws Exception
-    {
+    public void testServerStartViaSymbolicLink() throws Exception {
         String linkCommand = "/bin/ln";
 
         // only try this test if the unix ln command exists and can be executed
@@ -116,14 +118,16 @@ public class ServerStartTest {
             String[] unlinkParms = new String[] { symPath };
             po = server.getMachine().execute(unlinkCommand, unlinkParms);
 
-            String[] linkParms = new String[] { "-s", relocatedPath, symPath }; // Symbolic link relocated copy as 
+            String[] linkParms = new String[] { "-s", relocatedPath, symPath }; // Symbolic link relocated copy as
             po = server.getMachine().execute(linkCommand, linkParms);
 
             // Get a handle to the alias.Note that this must use a new entry point to get a handle to an already configured server.
             LibertyServer symlink_server = LibertyServerFactory.getExistingLibertyServer(SYMLINK_NAME);
 
             // Confirm it can start and stop
-            server.stopServer(); // Pause the original
+            if (server.isStarted()) {
+                server.stopServer(); // Pause the original
+            }
             symlink_server.startServer(); // Start the alias (and confirm)
             symlink_server.stopServer(); // stop the alias (and confirm)
             server.startServer(); // Resume original (in case following test needs it).
@@ -134,7 +138,7 @@ public class ServerStartTest {
     @Test
     /**
      * This test ensures that the servers starts without error when using the -Xfuture command line
-     * argument.  This argument enforces strict class file verification.  One customer ran into 
+     * argument. This argument enforces strict class file verification. One customer ran into
      * BundleExceptions due to empty package-info.class files (defect 177872).
      */
     public void testServerStartWithDashXFutureCmdArg() throws Exception {

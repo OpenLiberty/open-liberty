@@ -63,7 +63,7 @@ public class Injectables {
         JobContext jobCtx;
 
         @Inject
-        @BatchProperty(name = "color")
+        @BatchProperty
         protected String color;
 
         public void assertBatchInjectionsNull() {
@@ -94,7 +94,7 @@ public class Injectables {
         JobContext jobCtx;
 
         @Inject
-        @BatchProperty(name = "color")
+        @BatchProperty
         protected String color;
 
         @Override
@@ -118,7 +118,7 @@ public class Injectables {
         JobContext jobCtx;
 
         @Inject
-        @BatchProperty(name = "color")
+        @BatchProperty
         protected String color;
 
         @Override

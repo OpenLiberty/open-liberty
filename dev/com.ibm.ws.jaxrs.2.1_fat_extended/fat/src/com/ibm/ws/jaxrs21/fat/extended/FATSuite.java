@@ -19,6 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 PatchTest.class,
                 ProviderPriorityTest.class,
                 ClassSubResTest.class,
-                CDITest.class
+                CDITest.class,
+                PackageJsonBTestNoFeature.class,
+                PackageJsonBTestWithFeature.class
 })
 public class FATSuite {}

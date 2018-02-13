@@ -30,7 +30,7 @@ Import-Package: \
 
 Export-Package: \
  com.ibm.tx.jta.cdi,\
- com.ibm.tx.jta.cdi.interceptors
+ com.ibm.tx.jta.cdi.interceptors;thread-context=true;mandatory:="thread-context"
 
 -dsannotations-inherit: true
 -dsannotations: \

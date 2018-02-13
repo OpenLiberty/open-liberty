@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Les messages suivants sont masqu\u00e9s 
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Les messages qui sont configur\u00e9s pour \u00eatre masqu\u00e9s ne sont pas \u00e9crits dans les fichiers console.log et messages.log. Ils sont consign\u00e9s dans le fichier trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Aucune action n'est requise
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Le format de sortie de messages.log a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais ''{0}''.
+MESSAGE_FORMAT_UPDATED.explanation=Le format de sortie de messages.log a \u00e9t\u00e9 mis \u00e0 jour.
+MESSAGE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais ''{0}''.
+CONSOLE_FORMAT_UPDATED.explanation=Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour.
+CONSOLE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

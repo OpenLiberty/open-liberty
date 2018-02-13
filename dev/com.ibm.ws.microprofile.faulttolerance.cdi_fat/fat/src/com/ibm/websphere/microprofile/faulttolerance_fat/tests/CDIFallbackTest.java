@@ -21,12 +21,19 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @Mode(TestMode.LITE)
 public class CDIFallbackTest extends LoggingTest {
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultTolerance");
+
+    //run against both EE8 and EE7 features
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE7_FEATURES());
 
     @Test
     public void testFallback() throws Exception {

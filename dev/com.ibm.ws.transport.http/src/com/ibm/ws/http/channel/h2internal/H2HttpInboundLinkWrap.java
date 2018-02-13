@@ -20,8 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
-import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
@@ -312,8 +310,10 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         //At this point our side should be in the close state, as we have sent out our data
         //Should probably check if the connection is closed, if so issue the destroy up the chain
         //Then call the close on the underlying muxLink so we can close the connection if everything has been closed
-
-        this.muxLink.close(inVC, e);
+        //Additionally, don't close the underlying link if this is a push stream
+        if (streamID == 0 || streamID % 2 == 1) {
+            this.muxLink.close(inVC, e);
+        }
     }
 
     public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) {
@@ -342,7 +342,9 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 if (streamProcessor != null) {
                     streamProcessor.processNextFrame(currentFrame, Direction.WRITING_OUT);
                 } else {
-                    throw new StreamClosedException("stream " + streamID + " was already closed!");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "writeFramesSync stream " + streamID + " was already closed; cannot write");
+                    }
                 }
 
             } catch (Http2Exception e) {
@@ -350,16 +352,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processRead an error occurred processing a frame: " + e.getErrorString());
                 }
-                try {
-
-                    muxLink.getStreamProcessor(0).sendGOAWAYFrame(e);
-
-                } catch (ProtocolException x) {
-                    // nothing to do here, since we can't even send the GOAWAY frame.
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "writeFramesSync, ProtocolException occurred while sending a goaway frame: " + x);
-                    }
-                }
+                muxLink.close(vc, e);
 
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

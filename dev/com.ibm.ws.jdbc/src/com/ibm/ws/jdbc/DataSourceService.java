@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc;
 
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -22,6 +25,7 @@ import java.util.NavigableMap;
 import java.util.Observable;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -42,6 +46,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
@@ -128,6 +133,15 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
+     * Privileged action to obtain the thread context class loader.
+     */
+    private static final PrivilegedAction<ClassLoader> getContextClassLoader = new PrivilegedAction<ClassLoader>() {
+        public ClassLoader run() {
+            return Thread.currentThread().getContextClassLoader();
+        }
+    };
+
+    /**
      * Properties to skip when parsing configuration.
      */
     private static final HashSet<String> WPROPS_TO_SKIP = new HashSet<String>(Arrays.asList
@@ -189,27 +203,24 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     private JDBCRuntimeVersion jdbcRuntime;
 
     /**
+     * Managed connection factory for data sources where the jdbcDriver service has a configured library.
+     * Null if the application's thread context class loader is used to load the JDBC driver classes instead.
+     * Only access the value of this field when holding the lock for this instance that is defined in AbstractConnectionFactoryService.
+     */
+    private WSManagedConnectionFactoryImpl mcf;
+
+    /**
+     * Map of class loader identifier to managed connection factory.
+     * Entries are added to this map when the jdbcDriver element lacks a library,
+     * causing data source classes to be loaded from the application's thread context class loader.
+     * Null if the jdbcDriver is configured with a library.
+     */
+    private ConcurrentHashMap<String, WSManagedConnectionFactoryImpl> mcfPerClassLoader;
+
+    /**
      * Service properties
      */
     private Map<String, Object> properties;
-
-    /**
-     * Indicates whether or not this is an RRS enabled data source. Only rely on this value when initialized.
-     */
-    private boolean rrsTransactional;
-
-    /**
-     * Thread Identity Support: Either "ALLOWED", "REQUIRED", or "NOTALLOWED". Only rely on this value when initialized.
-     */
-    private String threadIdentitySupport;
-
-    /**
-     * Flag indicating whether or not we should "synch to thread" for the
-     * allocateConnection, i.e., push an ACEE corresponding to the current java
-     * Subject on the native OS thread.
-     * Only rely on this value when initialized.
-     */
-    private boolean threadSecurity;
 
     /**
      * Declarative Services method to activate this component.
@@ -390,12 +401,76 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
     /**
      * Returns the managed connection factory.
+     * 
+     * Prerequisite: the invoker must hold a read or write lock on this instance.
      *
+     * @param identifier identifier for the class loader from which to load vendor classes (for XA recovery path). Otherwise, null.
      * @return the managed connection factory.
+     * @throws Exception if an error occurs obtaining the managed connection factory.
      */
     @Override
-    public final ManagedConnectionFactory getManagedConnectionFactory() {
-        return dsConfigRef.get().getManagedConnectionFactory(); // TODO cache mcf on DataSourceService if JDBC driver loaded from libraryRef. Otherwise, get instance based on classloader identifier.
+    public final ManagedConnectionFactory getManagedConnectionFactory(String identifier) throws Exception {
+        WSManagedConnectionFactoryImpl mcf1;
+        if (jdbcDriverSvc.loadFromApp()) {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            // data source class is loaded from thread context class loader
+            if (identifier == null) {
+                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
+                // TODO better error handling when thread context class loader does not have an identifier
+            }
+            mcf1 = mcfPerClassLoader.get(identifier);
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "getManagedConnectionFactory", identifier, mcf1);
+
+            if (mcf1 == null) {
+                PropertyService vProps = new PropertyService();
+                NavigableMap<String, Object> wProps = parseConfiguration(properties, vProps);
+
+                // Clone properties so that we can later detect modifications from the current values
+                vProps = (PropertyService) vProps.clone();
+
+                String jndiName = (String) wProps.remove(JNDI_NAME);
+                String type = (String) wProps.remove(DSConfig.TYPE);
+
+                // Trace some of the most important config settings
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "create new data source", id, jndiName, type);
+
+                CommonDataSource ds;
+                Class<? extends CommonDataSource> ifc;
+
+                if (type == null){
+                    ds = id != null && id.contains("dataSource[DefaultDataSource]") ? jdbcDriverSvc.createDefaultDataSource(vProps)
+                                    :jdbcDriverSvc.createAnyDataSource(vProps);
+                    ifc = ds instanceof XADataSource ? XADataSource.class
+                                    : ds instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
+                                                    : DataSource.class;
+                } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
+                    ifc = ConnectionPoolDataSource.class;
+                    ds = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
+                } else if (XADataSource.class.getName().equals(type)) {
+                    ifc = XADataSource.class;
+                    ds = jdbcDriverSvc.createXADataSource(vProps);
+                } else if (DataSource.class.getName().equals(type)) {
+                    ifc = DataSource.class;
+                    ds = jdbcDriverSvc.createDataSource(vProps);
+                } else
+                    throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
+
+                mcf1 = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, ds, jdbcRuntime);
+                WSManagedConnectionFactoryImpl mcf0 = mcfPerClassLoader.putIfAbsent(identifier, mcf1);
+                mcf1 = mcf0 == null ? mcf1 : mcf0;
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, mcf0 == null ? "created" : "found", mcf1);
+            }
+        } else
+            mcf1 = mcf;
+
+        return mcf1;
     }
 
     /**
@@ -412,19 +487,40 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         return false;
     }
 
+    /**
+     * Indicates whether or not thread identity, sync-to-thread, and RRS transactions are supported.
+     * The result is a 3 element array, of which,
+     * <ul>
+     * <li>The first element indicates support for thread identity. 2=REQUIRED, 1=ALLOWED, 0=NOT ALLOWED.</li>
+     * <li>The second element indicates support for "synch to thread" for the
+     * allocateConnection, i.e., push an ACEE corresponding to the current java
+     * Subject on the native OS thread. 1=supported, 0=not supported.</li>
+     * <li>The third element indicates support for RRS transactions. 1=supported, 0=not supported.</li>
+     * </ul>
+     *
+     * Prerequisite: the invoker must hold a read or write lock on this instance.
+     *
+     * @param identifier identifier for the class loader from which to load vendor classes (for XA recovery path). Otherwise, null.
+     * @return boolean array indicating whether or not each of the aforementioned capabilities are supported.
+     */
     @Override
-    public boolean getRRSTransactional() {
-        return rrsTransactional;
-    }
+    public int[] getThreadIdentitySecurityAndRRSSupport(String identifier) {
+        WSManagedConnectionFactoryImpl mcf1;
+        if (jdbcDriverSvc.loadFromApp()) {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-    @Override
-    public String getThreadIdentitySupport() {
-        return threadIdentitySupport;
-    }
+            // data source class is loaded from thread context class loader
+            if (identifier == null) {
+                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
+                // TODO better error handling when thread context class loader does not have an identifier
+            }
+            mcf1 = mcfPerClassLoader.get(identifier);
+        } else
+            mcf1 = mcf;
 
-    @Override
-    public boolean getThreadSecurity() {
-        return threadSecurity;
+        DatabaseHelper dbHelper = mcf1.getHelper();
+        return new int[] { dbHelper.getThreadIdentitySupport(), dbHelper.getThreadSecurity() ? 1 : 0, dbHelper.getRRSTransactional() ? 1 : 0 };
     }
 
     /** {@inheritDoc} */
@@ -527,13 +623,22 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 }
             }
 
-            WSManagedConnectionFactoryImpl mcf = new WSManagedConnectionFactoryImpl(
-                dsConfigRef, id, jndiName, ifc, wProps, vProps, ds, connectorSvc, jdbcRuntime);
+            dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
 
-            DatabaseHelper helper = mcf.getHelper();
-            rrsTransactional = helper.getRRSTransactional();
-            threadIdentitySupport = helper.getThreadIdentitySupport();
-            threadSecurity = helper.getThreadSecurity();
+            WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, ds, jdbcRuntime);
+
+            if (jdbcDriverSvc.loadFromApp()) {
+                // data source class loaded from thread context class loader
+                mcf = null;
+                mcfPerClassLoader = new ConcurrentHashMap<String, WSManagedConnectionFactoryImpl>();
+                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                String identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
+                mcfPerClassLoader.put(identifier, mcfImpl);
+            } else {
+                // data source class loaded from shared library
+                mcf = mcfImpl;
+                mcfPerClassLoader = null;
+            }
 
             isInitialized.set(true);
         } catch (Exception x) {
@@ -865,4 +970,9 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     /** {@inheritDoc} */
     @Override
     protected void checkAccess() throws ResourceException {}
+
+    @Override
+    public void setMQQueueManager(Serializable xaresinfo) throws Exception {
+        // no-op, not implemented for data sources        
+    }
 }

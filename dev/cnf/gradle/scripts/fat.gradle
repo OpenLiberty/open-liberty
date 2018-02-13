@@ -307,13 +307,13 @@ task runfat(type: Exec) {
 // For example './gradlew buildfat' (to build all FATs) or './gradlew build.example_fat:buildandrun'
 def buildFatEnabled = false;
 if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
-	buildFatEnabled = true;
+  buildFatEnabled = true;
 } else {
-	gradle.startParameter.taskNames.each {
-		if(it.contains("fat")) {
-			buildFatEnabled = true;
-		}
-	}
+  gradle.startParameter.taskNames.each {
+    if(it.contains("fat")) {
+      buildFatEnabled = true;
+    }
+  }
 }
 
 assemble {

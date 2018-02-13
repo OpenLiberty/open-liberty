@@ -91,7 +91,7 @@ public class AuthModule implements ServerAuthModule {
         } catch (Exception e) {
             // TODO: Issue serviceability message.
             e.printStackTrace();
-            AuthException authException = new AuthException();
+            AuthException authException = new AuthException(e.getMessage());
             authException.initCause(e);
             throw authException;
         }

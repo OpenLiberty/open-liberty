@@ -12,19 +12,6 @@
 
   <display-name>JavamailFATWeb</display-name>
 
-  <!-- SERVLET DEFINITIONS -->
-  <servlet id="Default">
-    <servlet-name>Javamail FAT Servlet</servlet-name>
-    <servlet-class>fvtweb.web.JavamailFATServlet</servlet-class>
-    <load-on-startup></load-on-startup>
-  </servlet>
-
-  <!-- SERVLET MAPPINGS -->        
-  <servlet-mapping id="ServletMapping_Default">
-    <servlet-name>Javamail FAT Servlet</servlet-name>
-    <url-pattern>/*</url-pattern>
-  </servlet-mapping>
-
 <mail-session>
     <name>javamail/jm1Def</name>
 	<user>jm1test</user>

@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,10 +35,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import com.ibm.websphere.simplicity.PortType;
+import com.ibm.ws.fat.util.Props;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -47,7 +51,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class MvnUtils {
 
-    public static File home;
+    public static File resultsDir;
     public static String wlp;
     public static File tckRunnerDir;
     public static File pomXml;
@@ -55,7 +59,9 @@ public class MvnUtils {
     public static String[] mvnCliRaw;
     public static String[] mvnCliRoot;
     public static String[] mvnCliTckRoot;
+    public static String mvnOutputFilename = "mvnOutput_TCK";
     static List<String> jarsFromWlp = new ArrayList<String>(3);
+    private static File mvnOutput;
 
     /**
      * Initialise shared values for a particular server.
@@ -81,15 +87,20 @@ public class MvnUtils {
      */
     public static void init(LibertyServer server, String pomRelativePath) throws Exception {
         wlp = server.getInstallRoot();
-        home = new File(System.getProperty("user.dir"));
+        resultsDir = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
+
         tckRunnerDir = new File("publish/tckRunner");
 
         pomXml = new File(tckRunnerDir, pomRelativePath);
 
         populateJarsFromWlp(pomXml);
 
-        mvnCliRaw = new String[] { "mvn", "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
-                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + home.getAbsolutePath() + "/results/tck" };
+        String mvn = "mvn";
+        if (System.getProperty("os.name").contains("Windows")) {
+            mvn = mvn + ".cmd";
+        }
+        mvnCliRaw = new String[] { mvn, "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
+                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/tck" };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
 
@@ -98,6 +109,8 @@ public class MvnUtils {
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
         mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
+
+        mvnOutput = new File(resultsDir, mvnOutputFilename);
 
         init = true;
     }
@@ -179,6 +192,36 @@ public class MvnUtils {
             System.arraycopy(b, 0, result, a.length, b.length);
             return result;
         }
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     */
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
+        if (!init) {
+            init(server);
+        }
+        // Everything under autoFVT/results is collected from the child build machine
+
+        int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
+        Assert.assertEquals("mvn returned non-zero: " + rc, 0, rc);
+        File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
+        File tgt = new File(MvnUtils.resultsDir, "junit");
+        try {
+            Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
+        } catch (java.nio.file.NoSuchFileException nsfe) {
+            Assert.assertNull(
+                              "The TCK tests' results directory does not exist which suggests the TCK tests did not run - check build logs."
+                              + src.getAbsolutePath(), nsfe);
+        }
+
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals(bucketName + ":" + testName + ":TCK has returned non-zero return code of: " + rc +
+                            " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
+
+        return rc;
     }
 
     /**
@@ -275,32 +318,39 @@ public class MvnUtils {
         String result = null;
         File dirFileObj = new File(dir);
         String[] files = dirFileObj.list();
-        log("looking for jar " + jarNameFragment + " in dir " + dir);
+
+        //Allow for some users using ".jar" at the end and some not
+        if (jarNameFragment.endsWith(".jar")) {
+            jarNameFragment = jarNameFragment.substring(0, jarNameFragment.length() - ".jar".length());
+        }
+
+        //In pom.xml <systemPath>${wildcard}</systemPath>
+        // "."-> matches literal "." which is "\\." in a regex and "\\\\\\." in a string
+        // "DOT" is a regex "." which matches a single char
+        // "STAR (or DOTSTAR) is ".*" which matches any sequence of chars.
+        // "_" can be used and will match "_"
+        // Other char sequences will be passed into the regex pattern but ONLY valid environment variable chars can
+        // be passed to the mvn command line so chars like ^[]- are off limits
+        //
+        String expandedJarNameFragment = jarNameFragment.replaceAll("\\.", "\\\\\\.").replaceAll("DOTSTAR", ".*").replaceAll("DOT", "\\.").replaceAll("STAR", ".*");
+        String stringPattern = ".*" + expandedJarNameFragment + ".*" + "\\.jar";
+        log("looking for jar " + jarNameFragment + " using " + stringPattern + " in dir " + dir);
 
         // Looking for (for example):
         //              <systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
         //              <systemPath>${lib}com.ibm.ws.microprofile.config_${liberty.version}.jar</systemPath>
         //              <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
 
+        Pattern p = Pattern.compile(stringPattern);
         for (int i = 0; i < files.length; i++) {
-            if (files[i].contains(jarNameFragment)) {
+            Matcher m = p.matcher(files[i]);
+            if (m.matches()) {
                 result = files[i];
-                log("dir " + dir + " contains " + jarNameFragment + " as " + result);
-                // Do we have a match ignoring version numbers
-                String r = result.replaceAll(".jar", "");
-                r = r.replaceAll("[0-9]", "");
-                r = r.replaceAll("\\.", "");
-                r = r.replaceAll("\\_", "");
-                log("r testing " + r);
-                if (r.equals(jarNameFragment.replaceAll("\\.", ""))) {
-                    log(jarNameFragment + " jar found in dir " + dir + result);
-                    return result;
-                } else {
-                    log("close match failed for " + jarNameFragment + " in " + dir + result);
-                }
+                log("dir " + dir + " matches " + stringPattern + " for " + jarNameFragment + " as " + result);
+                return result;
             }
         }
-        log("returning NOT FOUND for " + jarNameFragment);
+        log("returning NOT FOUND for " + jarNameFragment + " " + expandedJarNameFragment + " " + stringPattern);
         return null;
     }
 

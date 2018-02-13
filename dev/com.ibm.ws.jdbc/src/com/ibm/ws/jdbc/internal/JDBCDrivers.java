@@ -76,8 +76,8 @@ public class JDBCDrivers {
                                 "com.microsoft.sqlserver.jdbc.SQLServerXADataSource"
         };
         classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.microsoft.sqlserver", classes);
-        classNamesByKey.put("SQLJDBC4.JAR", classes);
-        classNamesByKey.put("SQLJDBC.JAR", classes);
+        classNamesByKey.put("MSSQL-JDBC", classes);
+        classNamesByKey.put("SQLJDBC", classes);
 
         // Informix JDBC driver
         classes = new String[] {
@@ -129,13 +129,23 @@ public class JDBCDrivers {
         classes = new String[] { className, className, className };
         classNamesByKey.put("MARIADB-JAVA-CLIENT", classes);
 
-        // MySQL
+        // MySQL before version 6.0
         classes = new String[] {
                                 "com.mysql.jdbc.jdbc2.optional.MysqlDataSource",                                
                                 "com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource",
                                 "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
         };
-        classNamesByKey.put("MYSQL-CONNECTOR-JAVA", classes);
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-2", classes);
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-3", classes);
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-5", classes);
+        
+        // MySQL after version 6.0
+        classes = new String[] {
+                                "com.mysql.cj.jdbc.MysqlDataSource",                                
+                                "com.mysql.cj.jdbc.MysqlConnectionPoolDataSource",
+                                "com.mysql.cj.jdbc.MysqlXADataSource"
+        };
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-", classes);
 
         // Sybase JDBC 4 driver
         classes = new String[] {

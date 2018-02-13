@@ -263,6 +263,11 @@ UNABLE_TO_FIND_TOOLS_JAR=Agentul Liberty Java nu a putut fi ata\u015fat deoarece
 
 UNABLE_TO_FIND_JAVA_AGENT=Agentul Liberty Java nu a putut fi localizat. Acest server va rula dar nu poate realiza func\u0163ii care necesit\u0103 agentul Java, precum monitorizarea sau urm\u0103rirea.
 
+RUN_IN_CHILD_JVM_DEBUG=A fost setat WLP_JAR_DEBUG. Serverul va rula \u00eentr-o ma\u015fin\u0103 virtual\u0103 separat\u0103 Java.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=Jar-ul con\u0163ine fi\u015fiere jvm.options. Serverul va rula \u00eentr-o ma\u015fin\u0103 virtual\u0103 separat\u0103 Java.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Este utilizat un IBM SDK f\u0103r\u0103 op\u0163iunea -XX:+EnableHCR. Serverul va rula \u00eentr-o ma\u015fin\u0103 virtual\u0103 separat\u0103 Java.
+RUN_IN_CHILD_JVM_JRE=Este utilizat\u0103 o instalare de mediu de runtime Java. Serverul va rula \u00eentr-o ma\u015fin\u0103 virtual\u0103 separat\u0103 Java.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Directorul {0} nu este o instalare Liberty valid\u0103. Specifica\u0163i directorul root al instal\u0103rii Liberty pe care vre\u0163i s\u0103 o moderniza\u0163i.
 LICENSE_invalidVersion=Licen\u0163a nu poate fi modernizat\u0103 deoarece instalarea de produs specificat\u0103 este la versiunea {0}, dar licen\u0163a nu poate fi modernizat\u0103 dec\u00e2t de la versiunea {1}.

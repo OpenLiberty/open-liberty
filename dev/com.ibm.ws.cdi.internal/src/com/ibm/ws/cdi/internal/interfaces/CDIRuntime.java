@@ -140,13 +140,6 @@ public interface CDIRuntime extends CDIService {
     public MetaDataSlot getApplicationSlot();
 
     /**
-     * Get the unique id for the deployment of the current application.
-     *
-     * @return
-     */
-    public String getCurrentApplicationContextID();
-
-    /**
      * Gets the bean manager for the module to which the given Container belongs.
      *
      * @param moduleMetaData the ModuleMetaData for the module
@@ -169,13 +162,6 @@ public interface CDIRuntime extends CDIService {
      * @throws CDIException if there is a problem finding the application
      */
     public boolean isApplicationCDIEnabled(ApplicationMetaData applicationMetaData);
-
-    /**
-     * Returns whether CDI is enabled for the current module.
-     *
-     * @return true if the current module, or any module or libraries it can access, has any CDI Beans
-     */
-    public boolean isCurrentModuleCDIEnabled();
 
     /**
      * Returns whether CDI is enabled for the given module.

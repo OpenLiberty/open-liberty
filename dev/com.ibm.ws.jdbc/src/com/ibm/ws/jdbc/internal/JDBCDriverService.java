@@ -195,6 +195,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (cause instanceof SQLException)
             return (SQLException) cause;
 
+        // TODO need an appropriate message when sharedLib is null and classes are loaded from the application
         String sharedLibId = sharedLib.id();
         String message = sharedLibId.startsWith("com.ibm.ws.jdbc.jdbcDriver-")
                         ? AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", name)
@@ -235,7 +236,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     ClassLoader loader, origTCCL = Thread.currentThread().getContextClassLoader();
                     try {
                         if (classloader == null)
-                            loader = origTCCL; // Use thread context class loader of appliaction in absence of server configured library
+                            loader = origTCCL; // Use thread context class loader of application in absence of server configured library
                         else
                             Thread.currentThread().setContextClassLoader(loader = classloader);
 
@@ -336,9 +337,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().lock();
                     
                     if (!isInitialized) {
-                        if (// TODO sharedLib != null
-                                   !Boolean.parseBoolean((String) properties.get("ibm.internal.nonship.function"))
-                                || !"ibm.internal.simulate.no.library.do.not.ship".equals(sharedLib.id()))
+                        if (!loadFromApp())
                             classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
                         isInitialized = true;
                     }
@@ -395,9 +394,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().lock();
 
                     if (!isInitialized) {
-                        if (// TODO sharedLib != null
-                                   !Boolean.parseBoolean((String) properties.get("ibm.internal.nonship.function"))
-                                || !"ibm.internal.simulate.no.library.do.not.ship".equals(sharedLib.id()))
+                        if (!loadFromApp())
                             classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
                         isInitialized = true;
                     }
@@ -448,9 +445,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().lock();
 
                     if (!isInitialized) {
-                        if (// TODO sharedLib != null
-                                   !Boolean.parseBoolean((String) properties.get("ibm.internal.nonship.function"))
-                                || !"ibm.internal.simulate.no.library.do.not.ship".equals(sharedLib.id()))
+                        if (!loadFromApp())
                             classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
                         isInitialized = true;
                     }
@@ -491,9 +486,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().lock();
 
                     if (!isInitialized) {
-                        if (// TODO sharedLib != null
-                                   !Boolean.parseBoolean((String) properties.get("ibm.internal.nonship.function"))
-                                || !"ibm.internal.simulate.no.library.do.not.ship".equals(sharedLib.id()))
+                        if (!loadFromApp())
                             classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
                         isInitialized = true;
                     }
@@ -534,9 +527,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().lock();
 
                     if (!isInitialized) {
-                        if (// TODO sharedLib != null
-                                   !Boolean.parseBoolean((String) properties.get("ibm.internal.nonship.function"))
-                                || !"ibm.internal.simulate.no.library.do.not.ship".equals(sharedLib.id()))
+                        if (!loadFromApp())
                             classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
                         isInitialized = true;
                     }
@@ -630,6 +621,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getClasspath", classpath);
         return classpath;
+    }
+
+    /**
+     * Returns true if configured to load the data source class from the application's thread context class loader.
+     * Otherwise, false.
+     * 
+     * @return true if configured to load the data source class from the application's thread context class loader.
+     */
+    public boolean loadFromApp() {
+        return // TODO sharedLib != null
+               Boolean.parseBoolean((String) properties.get("ibm.internal.nonship.function"))
+               && "ibm.internal.simulate.no.library.do.not.ship".equals(sharedLib.id());
     }
 
     /**

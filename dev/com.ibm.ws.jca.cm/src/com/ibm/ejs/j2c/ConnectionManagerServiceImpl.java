@@ -33,14 +33,12 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.j2c.SecurityHelper;
 import com.ibm.ws.j2c.poolmanager.ConnectionPoolProperties;
 import com.ibm.ws.javaee.dd.common.ResourceRef;
 import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
 import com.ibm.ws.jca.cm.ConnectorService;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
@@ -402,12 +400,11 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             cm = cfKeyToCM.get(cfDetailsKey);
             if (cm == null) {
                 CommonXAResourceInfo xaResInfo = new EmbXAResourceInfo(cmConfigData);
-                SecurityHelper securityHelper = createSecurityHelper(svc);
                 J2CGlobalConfigProperties gConfigProps = pm.getGConfigProps();
                 synchronized (this) {
                     cm = cfKeyToCM.get(cfDetailsKey);
                     if (cm == null) {
-                        cm = new ConnectionManager(svc, pm, gConfigProps, xaResInfo, securityHelper);
+                        cm = new ConnectionManager(svc, pm, gConfigProps, xaResInfo);
                         cfKeyToCM.put(cfDetailsKey, cm);
                     }
                 }
@@ -420,28 +417,6 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getConnectionManager", cm);
         return cm;
-    }
-
-    /**
-     * Creates a new instance of DefaultSecurityHelper or ThreadIdentitySecurityHelper,
-     * based on the config of the connection factory.
-     *
-     * @param cfSvc the connection factory service.
-     * @return If thread identity is enabled, a ThreadIdentitySecurityHelper; otherwise a DefaultSecurityHelper.
-     * @throws ResourceException if an error occurs.
-     */
-    private SecurityHelper createSecurityHelper(AbstractConnectionFactoryService cfSvc) throws ResourceException {
-
-        if (ThreadIdentityManager.isThreadIdentityEnabled()) {
-            String threadIdentitySupport = cfSvc.getThreadIdentitySupport();
-            if (threadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_ALLOWED)
-                || threadIdentitySupport.equals(J2CGlobalConfigProperties.THREADIDENTITY_REQUIRED)) {
-                return new ThreadIdentitySecurityHelper(threadIdentitySupport, cfSvc.getThreadSecurity());
-            }
-        }
-
-        // If we got here, thread identity must not be enabled.  Return default.
-        return new DefaultSecurityHelper();
     }
 
     /**

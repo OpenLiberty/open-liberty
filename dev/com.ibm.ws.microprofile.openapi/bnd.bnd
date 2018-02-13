@@ -25,6 +25,7 @@ Web-ContextPath: /openapi
 
 Import-Package: \
 	org.apache.commons.io*;version=1.4;packageType=was_internal,\
+	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	*
 
 Private-Package: \

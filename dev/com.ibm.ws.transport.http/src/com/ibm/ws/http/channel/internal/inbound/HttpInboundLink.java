@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
-import com.ibm.ws.http.channel.h2internal.H2InboundLink;
+import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -89,10 +89,8 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      */
     public HttpInboundLink(HttpInboundChannel channel, VirtualConnection vc) {
         init(vc, channel);
-//        if (!(this instanceof H2InboundLink) && !(this instanceof H2HttpInboundLinkWrap)) {
         // allocate an empty ISC object
         this.myInterface = new HttpInboundServiceContextImpl(null, this, getVirtualConnection(), getChannel().getHttpConfig());
-//        }
     }
 
     /**
@@ -266,6 +264,22 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         this.bPartialParsedRequest = b;
     }
 
+    public boolean isAlpnHttp2Link(VirtualConnection vc) {
+        if (alreadyH2Upgraded) {
+            return true;
+        }
+        HttpInboundServiceContextImpl sc = getHTTPContext();
+        if (this.myTSC.getSSLContext() != null &&
+            !sc.isH2Connection() &&
+            this.myTSC.getSSLContext().getAlpnProtocol() != null &&
+            this.myTSC.getSSLContext().getAlpnProtocol().equals("h2") &&
+            checkForH2MagicString(sc)) {
+            alreadyH2Upgraded = true;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Called by the device side channel when a new request is ready for work.
      *
@@ -283,18 +297,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         if (getChannel().getHttpConfig().getDebugLog().isEnabled(DebugLog.Level.INFO)) {
             getChannel().getHttpConfig().getDebugLog().log(DebugLog.Level.INFO, HttpMessages.MSG_CONN_STARTING, sc);
         }
-
-        // check to see if new data is an http/2 connection preface
-        if (this.myTSC.getSSLContext() != null &&
-            !sc.isH2Connection() &&
-            this.myTSC.getSSLContext().getAlpnProtocol() != null &&
-            this.myTSC.getSSLContext().getAlpnProtocol().equals("h2") &&
-            checkForH2MagicString(sc)) {
-            alreadyH2Upgraded = true;
-            handleHttp2();
-        } else {
-            processRequest();
-        }
+        processRequest();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "ready");
@@ -360,6 +363,11 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         }
 
         boolean completed = false;
+
+        // if this is an http/2 link, don't perform additional parsing
+        if (this.isAlpnHttp2Link(switchedVC)) {
+            return false;
+        }
         try {
             completed = sc.parseMessage();
         } catch (UnsupportedMethodException meth) {
@@ -394,6 +402,13 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             }
             handleGenericHNIError(iae, sc);
             return true;
+        } catch (CompressionException ce) {
+            //no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "parseMessage encountered a CompressionException : " + ce);
+            }
+            handleGenericHNIError(ce, sc);
+            return true;
         } catch (Throwable t) {
             FFDCFilter.processException(t,
                                         "HttpInboundLink.handleNewInformation",
@@ -423,26 +438,29 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      * discrimination to pass it along the channel chain.
      */
     private void handleNewRequest() {
-        final HttpInboundServiceContextImpl sc = getHTTPContext();
-        // save the request info that was parsed in case somebody changes it
-        sc.setRequestVersion(sc.getRequest().getVersionValue());
-        sc.setRequestMethod(sc.getRequest().getMethodValue());
 
-        // get the response message initialized. Note: in the proxy env, this
-        // response message will be overwritten; however, this is the only
-        // spot to init() it correctly for all other cases.
-        sc.getResponseImpl().init(sc);
+        // if this is an http/2 request, skip to discrimination
+        if (!isAlpnHttp2Link(this.vc)) {
+            final HttpInboundServiceContextImpl sc = getHTTPContext();
+            // save the request info that was parsed in case somebody changes it
+            sc.setRequestVersion(sc.getRequest().getVersionValue());
+            sc.setRequestMethod(sc.getRequest().getMethodValue());
 
-        this.numRequestsProcessed++;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Received request number " + this.numRequestsProcessed + " on link " + this);
+            // get the response message initialized. Note: in the proxy env, this
+            // response message will be overwritten; however, this is the only
+            // spot to init() it correctly for all other cases.
+            sc.getResponseImpl().init(sc);
+
+            this.numRequestsProcessed++;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Received request number " + this.numRequestsProcessed + " on link " + this);
+            }
+
+            // check for the 100-continue scenario
+            if (!sc.check100Continue()) {
+                return;
+            }
         }
-
-        // check for the 100-continue scenario
-        if (!sc.check100Continue()) {
-            return;
-        }
-
         handleDiscrimination();
     }
 
@@ -958,18 +976,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             return true;
         }
         return false;
-    }
-
-    /**
-     * Set up this link for http/2
-     */
-    private void handleHttp2() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "handleHttp2: " + this);
-        }
-        H2InboundLink h2link = new H2InboundLink(this.myChannel, this.vc, this.myTSC);
-        h2link.handleHTTP2AlpnConnect(this);
-        h2link.processRead(h2link.vc, this.myTSC.getReadInterface());
     }
 
     /**

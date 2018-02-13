@@ -1307,6 +1307,65 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Test a managed completable future using a managed executor with maxPolicy of strict and maximum concurrency of 1.
+     * This should prevent multiple async actions from running at the same time, even if runIfQueueFull is true.
+     */
+    @Test
+    public void testMaxPolicyStrict() throws Exception {
+        // max concurrency: 1, max queue size: 1, runIfQueueFull: true, policy: strict
+        Executor max1strictExecutor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        CompletableFuture<Integer> cf0, cf1, cf2, cf3, cf4;
+        try {
+            cf0 = new ManagedCompletableFuture<Integer>(max1strictExecutor);
+
+            // Use up the single max concurrency permit with an async action that blocks
+            cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyStrict1", beginLatch, continueLatch, false));
+            assertTrue(cf0.complete(190));
+            assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // Use up the single queue position
+            cf2 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyStrict2", null, null, false));
+
+            // It will not be possible to submit another async action.
+            // Even though runIfQueueFull=true, strict enforcement of max concurrency means that the action cannot run on the submitter's thread.
+            cf3 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyStrict3", null, null, false));
+            assertTrue(cf3.isCompletedExceptionally());
+            assertFalse(cf3.isCancelled());
+
+            try {
+                Integer i = cf3.getNow(193);
+                fail("Should not be able to get result for CompletableFuture: " + i);
+            } catch (CompletionException x) {
+                if (x.getCause() instanceof RejectedExecutionException) {
+                    String message = x.getCause().getMessage();
+                    if (message == null || !message.contains("CWWKE1201E") || !message.contains("maxQueueSize") || !message.contains(" 1"))
+                        throw x;
+                } else
+                    throw x;
+            }
+
+            // It is, however, possible to submit a synchronous action, as these do not go through the executor, and thus are not subject
+            // to its concurrency policy.
+            cf4 = cf0.thenApply(new BlockableIncrementFunction("testMaxPolicyStrict4", null, null, false));
+            assertEquals(Integer.valueOf(191), cf4.getNow(194));
+            assertTrue(cf4.isDone());
+            assertFalse(cf4.isCompletedExceptionally());
+
+            assertFalse(cf1.isDone());
+            assertFalse(cf2.isDone());
+        } finally {
+            // Allow the async stages to complete
+            continueLatch.countDown();
+        }
+
+        assertEquals(Integer.valueOf(191), cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(191), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
      * When runIfQueueFull is false, verify that additional async stages are rejected when all max concurrency permits are
      * taken and the queue is at capacity.
      */

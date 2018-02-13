@@ -119,10 +119,11 @@ public class LibertyServer implements LogMonitorClient {
 
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
-    protected static final boolean GLOBAL_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
-                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
-                    : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = PrivHelper.getBoolean("global.debug.java2.sec");
+    protected static final boolean GLOBAL_JAVA2SECURITY = Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FATRunner.FAT_TEST_LOCALRUN //
+                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
+                    : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
+
     protected static final String GLOBAL_TRACE = PrivHelper.getProperty("global.trace.spec", "").trim();
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
 
@@ -996,7 +997,8 @@ public class LibertyServer implements LogMonitorClient {
             }
 
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_JAVA2SECURITY=true");
-        } else if (GLOBAL_DEBUG_JAVA2SECURITY) {
+        }
+        if (GLOBAL_DEBUG_JAVA2SECURITY) {
             // update the bootstrap.properties file with the java 2 security property
             RemoteFile f = getServerBootstrapPropertiesFile();
             if (f.exists()) {
@@ -2142,12 +2144,6 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
 
-        // Do not blow up for any Java 2 security errors or warnings, we want
-        // the tests to continue on and run as much as possible
-        if (GLOBAL_DEBUG_JAVA2SECURITY) {
-            ignorePatterns.add(Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)"));
-        }
-
         // Remove any ignored warnings or patterns
         for (Pattern ignorePattern : ignorePatterns) {
             Iterator<String> iter = errorsInLogs.iterator();
@@ -2161,12 +2157,28 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         Exception ex = null;
+
         if (!errorsInLogs.isEmpty()) {
+            // Check which errors were j2sec related
+            Pattern j2secPattern = Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)");
+            List<String> j2secIssues = new ArrayList<String>();
+            for (String errorInLog : errorsInLogs)
+                if (j2secPattern.matcher(errorInLog).find()) {
+                    j2secIssues.add(errorInLog);
+                }
+
             // There were unexpected errors in logs, print them
             // and set an exception to return
             StringBuilder sb = new StringBuilder("Errors/warnings were found in server ");
             sb.append(getServerName());
             sb.append(" logs:");
+            if (!j2secIssues.isEmpty()) {
+                // When things go wrong with j2sec, a LOT of things tend to go wrong, so just leave a pointer
+                // to the nicely formatted ACE report instead of putting every single issue in the exception msg
+                sb.append("\n <br>");
+                sb.append("Java 2 security issues were found in logs.  See autoFVT/ACE-report-*.log for details.");
+                errorsInLogs.removeAll(j2secIssues);
+            }
             for (String errorInLog : errorsInLogs) {
                 sb.append("\n <br>");
                 sb.append(errorInLog);

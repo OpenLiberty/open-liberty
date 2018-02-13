@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.opentracing.cdi;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
@@ -21,10 +17,5 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE)
-public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {
-    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-        AnnotatedType<OpentracingProducerBean> at = bm.createAnnotatedType(OpentracingProducerBean.class);
-        bbd.addAnnotatedType(at);
-    }
-}
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {}

@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: Accestul la metadatele bazei de date au cauzat o 
 META_DATA_EXCEPTION.explanation=A ap\u0103rut o exception c\u00e2nd serverul de aplica\u0163ii \u00eencerca s\u0103 ob\u0163in\u0103 sau s\u0103 acceseze obie ctul de metadate pentru baza de date.
 META_DATA_EXCEPTION.useraction=Verifica\u0163i c\u0103 metadatele sunt activate pe baza de date back-end.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Server-ul de aplica\u0163ii a dezactivat pool-ul de conexiuni interne.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Serverul de aplica\u0163ii a detectat activarea punerii \u00een cache a conexiunii prin baza de date. Pooling de conexiune din serverul de aplica\u0163ii va fi dezactivat.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Dac\u0103 nu dori\u0163i s\u0103 dezactiva\u0163i pooling de conexiune din serverul de aplica\u0163ii, dezactiva\u0163i pooling de conexiune pentru serverul de baz\u0103 de date.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

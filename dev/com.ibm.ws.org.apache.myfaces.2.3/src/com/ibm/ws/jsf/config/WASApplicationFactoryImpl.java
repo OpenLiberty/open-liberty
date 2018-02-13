@@ -1,41 +1,74 @@
-/*
-* IBM Confidential
-*
-* OCO Source Materials
-*
-* Copyright IBM Corp. 2018
-*
-* The source code for this program is not published or otherwise divested 
-* of its trade secrets, irrespective of what has been deposited with the 
-* U.S. Copyright Office.
-*/
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.jsf.config;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 
 import org.apache.myfaces.application.ApplicationFactoryImpl;
-
+import com.ibm.ws.jsf.config.WASApplicationImpl;
 import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
 
 /**
- * WAS custom application factory that initializes CDI per application
+ * WAS custom application factory that initializes CDIJSFELResolver per application
  */
-public class WASApplicationFactoryImpl extends ApplicationFactoryImpl {
+public class WASApplicationFactoryImpl extends ApplicationFactory 
+{
+    private static final Logger log = Logger.getLogger(WASApplicationFactoryImpl.class.getName());
     
-    private volatile boolean initialized = false;
+    private ApplicationFactory _applicationFactory;
+    private Application _application;
+    
+    public WASApplicationFactoryImpl(ApplicationFactory applicationFactory)
+    {
+        this._applicationFactory = applicationFactory;
+        if (log.isLoggable(Level.FINE))
+        {
+            log.fine("New WASApplicationFactory instance created");
+        }
+    }
 
     @Override
-    public Application getApplication() {
-        Application app = super.getApplication();
-        if (!initialized) {
-            synchronized (this) {
-                if (!initialized) {
-                    JSFExtensionFactory.initializeCDI(app);
-                    initialized = true;
+    public Application getApplication() 
+    {
+        if (_application == null) 
+        {
+            synchronized (this) 
+            {
+                if (_application == null) 
+                {
+                    _application = new WASApplicationImpl(_applicationFactory.getApplication());
+                    JSFExtensionFactory.initializeCDIJSFELContextListenerAndELResolver(_application);
                 }
             }
         }
-        return app;
+        return _application;
+    }
+    
+    @Override
+    public void setApplication(Application application) 
+    {
+        synchronized (this) 
+        {
+            _applicationFactory.setApplication(application);
+        }
+    }
+    
+    @Override
+    public ApplicationFactory getWrapped() 
+    {
+        return _applicationFactory;
     }
 
 }

@@ -22,6 +22,8 @@ src: \
 	test-applications/sharedLibUser.jar/src,\
 	test-applications/customSources.war/src,\
 	test-applications/classLoaders.war/src,\
+	test-applications/converterApp/src,\
+	test-applications/converterApp/resources,\
 	test-applications/converters.war/src,\
 	test-applications/testAppUtils.jar/src,\
 	test-applications/sharedLib.jar/src,\
@@ -40,6 +42,9 @@ fat.project: true
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
+        com.ibm.ws.microprofile.config;version=latest,\
+        com.ibm.ws.microprofile.config.cdi;version=latest,\
+        com.ibm.ws.microprofile.config.1.2;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest

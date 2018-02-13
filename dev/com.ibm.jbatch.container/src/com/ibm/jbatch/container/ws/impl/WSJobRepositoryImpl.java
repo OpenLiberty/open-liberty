@@ -12,9 +12,11 @@ package com.ibm.jbatch.container.ws.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.batch.operations.JobSecurityException;
 import javax.batch.operations.NoSuchJobExecutionException;
@@ -47,6 +49,9 @@ import com.ibm.jbatch.spi.BatchSecurityHelper;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class WSJobRepositoryImpl implements WSJobRepository {
+
+    private final static String CLASSNAME = WSJobRepositoryImpl.class.getName();
+    private final static Logger logger = Logger.getLogger(CLASSNAME);
 
     private IPersistenceManagerService persistenceManagerService;
 
@@ -126,30 +131,16 @@ public class WSJobRepositoryImpl implements WSJobRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<WSJobInstance> getJobInstances(int page, int pageSize) {
-
-        //Return the whole list for an admin or monitor
-        if (authService == null || authService.isAdmin() || authService.isMonitor()) {
-            return new ArrayList<WSJobInstance>(persistenceManagerService.getJobInstances(page, pageSize));
-        } else if (authService.isSubmitter()) {
-            //filter based on current user if not admin or monitor
-            return new ArrayList<WSJobInstance>(persistenceManagerService.getJobInstances(page, pageSize, authService.getRunAsUser()));
-        }
-
-        throw new JobSecurityException("The current user " + batchSecurityHelper.getRunAsUser() + " is not authorized to perform any batch operations.");
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<WSJobInstance> getJobInstances(IJPAQueryHelper queryHelper, int page, int pageSize) throws NoSuchJobExecutionException, JobSecurityException {
 
         if (authService == null || authService.isAdmin() || authService.isMonitor()) {
             return new ArrayList<WSJobInstance>(persistenceManagerService.getJobInstances(queryHelper, page, pageSize));
+        } else if (authService.isGroupAdmin() || authService.isGroupMonitor()) {
+            queryHelper.setGroups(authService.getGroupsForSubject());
+            queryHelper.setQueryIssuer(authService.getRunAsUser());
+            return new ArrayList<WSJobInstance>(persistenceManagerService.getJobInstances(queryHelper, page, pageSize));
         } else if (authService.isSubmitter()) {
-            queryHelper.setAuthSubmitter(authService.getRunAsUser());
+            queryHelper.setQueryIssuer(authService.getRunAsUser());
             return new ArrayList<WSJobInstance>(persistenceManagerService.getJobInstances(queryHelper, page, pageSize));
         }
 
@@ -384,4 +375,21 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     public int getJobInstanceTableVersion() throws Exception {
         return persistenceManagerService.getJobInstanceTableVersion();
     }
+
+    @Override
+    public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames) {
+
+        if (authService == null) {
+            //issue a new message?
+            // no auth service (ie security feature not present, so cannot perform group security
+            return persistenceManagerService.updateJobInstanceWithGroupNames(jobInstanceId, groupNames);
+        } else {
+            Set<String> normalizedNames = new HashSet<String>();
+
+            normalizedNames = authService.normalizeGroupNames(groupNames);
+
+            return persistenceManagerService.updateJobInstanceWithGroupNames(jobInstanceId, normalizedNames);
+        }
+    }
+
 }

@@ -69,6 +69,18 @@ public class ShrinkHelper {
     }
 
     /**
+     * Writes an application to a a file in the 'publish/clients/<client_name>/apps/' directory
+     * with the file name returned by a.getName(), which should include the
+     * file type extension (.ear, .war, .jar, .rar, etc)
+     *
+     * @param client The client to publish the application to
+     * @param a The archive to export as a file
+     */
+    public static void exportAppToClient(LibertyClient client, Archive<?> a) throws Exception {
+        exportToClient(client, "apps", a);
+    }
+
+    /**
      * Writes an Archive to a a file in the 'publish/servers/<server_name>' directory
      * with the file name returned by a.getName(), which should include the
      * file type extension (ear, war, jar, rar, etc)
@@ -103,8 +115,26 @@ public class ShrinkHelper {
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
+            return exportArtifact(a, dest, printArchiveContents, false);
+    }
+
+    /**
+     * Writes an Archive to a a file in the target destination
+     * with the file name returned by a.getName(), which should include the
+     * file type extension (ear, war, jar, rar, etc).
+     *
+     * @param a The archive to export as a file
+     * @param dest The target folder to export the archive to (i.e. publish/files/apps)
+     * @param printArchiveContents Whether or not to log the contents of the archive being exported
+     * @param overWrite Wheather or not to overwrite an existing artifact
+     */
+    public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite) {
         Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
         File outputFile = new File(dest, a.getName());
+        if (outputFile.exists() && ! overWrite) {
+            Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
+            return a;
+        }
         outputFile.getParentFile().mkdirs();
         a.as(ZipExporter.class).exportTo(outputFile, true);
         if (printArchiveContents)

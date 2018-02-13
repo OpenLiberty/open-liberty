@@ -263,6 +263,11 @@ UNABLE_TO_FIND_TOOLS_JAR=Impossibile collegare l''agent Liberty Java perch\u00e9
 
 UNABLE_TO_FIND_JAVA_AGENT=Impossibile individuare l''agent Liberty Java. Questo server funzioner\u00e0, ma non potr\u00e0 eseguire funzioni che richiedono l''agent Java, come monitoraggio e traccia.
 
+RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG impostato. Il server funzioner\u00e0 in una JVM separata.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=Il jar contiene file jvm.options. Il server funzioner\u00e0 in una JVM separata.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Si sta utilizzando un IBM SDK senza l''opzione -XX:+EnableHCR. Il server funzioner\u00e0 in una JVM separata.
+RUN_IN_CHILD_JVM_JRE=Si sta utilizzando un''installazione JRE (Java runtime environment). Il server funzioner\u00e0 in una JVM separata.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=La directory {0} non \u00e8 un''installazione Liberty valida. Specificare la directory root dell''installazione Liberty che si desidera aggiornare.
 LICENSE_invalidVersion=Impossibile aggiornare la licenza perch\u00e9 l''installazione del prodotto specificata \u00e8 alla versione {0}, ma la licenza pu\u00f2 essere aggiornata solo dalla versione {1}.

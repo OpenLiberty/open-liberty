@@ -39,6 +39,43 @@ JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: No se ha establecido el nombre de re
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=No se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica; se utiliza el valor predeterminado defaultRealm.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si el nombre de reino debe establecerse, establ\u00e9zcalo utilizando la anotaci\u00f3n BasicAuthenticationMechanismDefinition en la aplicaci\u00f3n.
 
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: El despliegue del m\u00f3dulo {0} en la aplicaci\u00f3n {1} ha fallado debido a que se se han encontrado varias implementaciones de HttpAuthenticationMechanism. La lista de clases es {2}. Probablemente se trate de un problema del empaquetado de la aplicaci\u00f3n. Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo.
+JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: El despliegue del m\u00f3dulo {0} en la aplicaci\u00f3n {1} ha fallado debido a que se han encontrado varias implementaciones de HttpAuthenticationMechanism. La lista de clases es {2}. Probablemente se trate de un problema del empaquetado de la aplicaci\u00f3n. Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=El despliegue de la aplicaci\u00f3n ha fallado porque se ha encontrado m\u00e1s de una implementaci\u00f3n de HttpAuthenticationMechanism. Esta condici\u00f3n no est\u00e1 permitida.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Aseg\u00farese de que solo haya una implementaci\u00f3n HttpAuthenticationMechanism en cada m\u00f3dulo de la aplicaci\u00f3n.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Se produce un error cuando el programa resuelve la configuraci\u00f3n ''{0}'' para el almac\u00e9n de identidades. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se puede resolver. El valor predeterminado es ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=La configuraci\u00f3n del almac\u00e9n de identidades no puede resolverse en un valor v\u00e1lido.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Si utiliza expresiones EL, aseg\u00farese de que son v\u00e1lidas y de que los beans referenciados que se utilizan en la expresi\u00f3n se pueden resolver.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Un par\u00e1metro hashAlgorithm proporcionado para hashAlgorithm, {0}, est\u00e1 en un formato incorrecto. El par\u00e1metro recibido es {1}. El formato necesario es nombre=valor.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Una lista de par\u00e1metros hashAlgorithm est\u00e1 en un formato incorrecto y no se puede analizar.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Corrija el elemento hashAlgorithmParameters en la anotaci\u00f3n DatabaseIdentityStore.
+
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: La consulta ''{1}'' para obtener el interlocutor {0} ha fallado en DatabaseIdentityStore con un error: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=La b\u00fasqueda del interlocutor proporcionado ha fallado con un error.
+JAVAEESEC_WARNING_GEN_DB.useraction=Revise el error proporcionado.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: La consulta ''{1}'' para obtener los grupos para el interlocutor {0} ha fallado en DatabaseIdentityStore. La lista parcial de grupos es {2}. El error es {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=La b\u00fasqueda de grupos para el interlocutor ha fallado con un error.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Revise el error proporcionado. Se devuelve una lista parcial de grupos.
+
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: La credencial proporcionada a IdentityStore no es una UsernamePasswordCredential y no se puede validar.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=La credencial proporcionada a IdentityStore no es una UsernamePasswordCredential y no se puede validar.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=Revise el tipo de credencial pasado a IdentityStore.
+
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: Se ha proporcionado una contrase\u00f1a nula a DatabaseIdentityStore y no se puede validar.
+JAVAEESEC_WARNING_NULL_PWD.explanation=La UsernamePasswordCredential conten\u00eda una contrase\u00f1a nula.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Proporcione una contrase\u00f1a v\u00e1lida.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: El algoritmo hash no se ha encontrado para la clase {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=El algoritmo hash listado en el elemento hashAlgorithm en la anotaci\u00f3n DatabaseIdentityStore no se ha encontrado.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=A\u00f1ada el algoritmo hash personalizado como un bean que est\u00e9 disponible para la aplicaci\u00f3n.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: La consulta ''{1}'' no ha devuelto una contrase\u00f1a para el interlocutor {0} en DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=La consulta no ha devuelto una contrase\u00f1a para la consulta de interlocutor proporcionada.
+JAVAEESEC_WARNING_NO_PWD.useraction=Si se esperaba una contrase\u00f1a, revise la consulta de interlocutor y el contenido de base de datos.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: La consulta ''{1}'' ha devuelto varios resultados para el interlocutor {0} en DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Se han devuelto varios resultados para el interlocutor solicitado. La consulta de interlocutor s\u00f3lo debe devolver un \u00fanico resultado.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Revise la consulta de interlocutor y el contenido de base de datos. Cambie la consulta de interlocutor para que se devuelva un resultado.
+#>>>>>>> Add messages for IdentityStore

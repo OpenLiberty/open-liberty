@@ -48,7 +48,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  * <li>{@link FATOpentracing#testNested2Sync}</li>
  * <li>{@link FATOpentracing#testNested2Async}</li>
  * <li>{@link FATOpentracing#testNested4Sync}</li>
- * <li>{@link FATOpentracing#testNested4ASync}</li> *
+ * <li>{@link FATOpentracing#testNested4ASync}</li>
+ * <li>{@link FATOpentracing#testExcludes}</li>
  * </ul>
  *
  * <p>Each test invokes an API within the FAT test service.  Two
@@ -286,7 +287,13 @@ public class FATOpentracing implements FATOpentracingConstants {
                 continue;
             }
 
-            String operation = completedSpan.getOperation();
+            String operation = completedSpan.getTag("http.url");
+            
+            // If operation is null, it's a manual span
+            
+            if (operation == null) {
+                operation = completedSpan.getOperation();
+            }
 
             boolean foundAll = true;
             for ( String text : selectText ) {
@@ -607,7 +614,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** The completed span event must be be for a get tracer state request. ***
 
-        assertEq("Operation", requestUrl, completedSpan.getOperation());
+        assertEq("Operation", "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState", completedSpan.getOperation());
 
         // *** The completed span must have valid state and finish times. ***
 
@@ -1511,11 +1518,36 @@ public class FATOpentracing implements FATOpentracingConstants {
             requestPath );
     }
 
-    /*
+    /**
      * Removed filter processing until microprofile spec for it is approved. Expect to add back in 1Q18 - smf
      * Disable the tests until we add the code back in.
+     * 
+     * A collection of tests of the exclude and include filters.
+     *
+     * There is a single endpoint, /excludeTest which takes a query parameter `response`
+     * which is what's sent back to the client. We use this query parameter as a way
+     * to test the various filters because filter matching occurs on the full URI,
+     * including query parameters, so we can simply vary the parameter.
+     * 
+     * To test exclude filters, we call {@link FATOpentracing#testExcludedPath(String)}
+     * which ensures that the number of completed spans is the same before and after
+     * the call (taking into account that the call to get the completed spans itself counts).
+     * 
+     * To test include filters, we call {@link FATOpentracing#testIncludedPath(String)}
+     * which ensures that the expected span is created.
+     * 
+     * To test that the filters correctly pass through spans besides those that are
+     * excluded and that filters work with nested calls, we call
+     * {@link FATOpentracing#testNestedExcludePath(String, int, boolean)} for both
+     * an excluded span and an included span, and confirm the proper spans.
+     * 
+     * To understand the tests in full, find the filters configuration in the test
+     * server.xml based on the query parameter passed to the test*Path methods.
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
      */
-    //@Test
+    // @Test
     public void testExcludes() throws Exception {
         testExcludedPath("simple");
         testExcludedPath("wildcardTest");
@@ -1528,10 +1560,6 @@ public class FATOpentracing implements FATOpentracingConstants {
         testIncludedPath("incomingIncluded");
     }
 
-    /**
-     * @throws Exception
-     * @throws UnsupportedEncodingException
-     */
     private void testExcludedPath(String param) throws Exception, UnsupportedEncodingException {
         int initialCompletedSpansSize = getCompletedSpans(GET_EXCLUDE_TEST_PATH).size();
 
@@ -1568,10 +1596,6 @@ public class FATOpentracing implements FATOpentracingConstants {
         verifyContiguousSpans(completedSpans, 1);
     }
 
-    /**
-     * @throws UnsupportedEncodingException
-     * @throws Exception
-     */
     private void sendRequest(String path, String responseText) throws UnsupportedEncodingException, Exception {
         String methodName = "sendRequest";
         Map<String, Object> requestParms = new HashMap<String, Object>();

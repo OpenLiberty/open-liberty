@@ -371,9 +371,9 @@ public class FrameSettings extends Frame {
         frameToString.append("EnablePush: " + this.getEnablePush() + "\n");
         frameToString.append("HeaderTableSize: " + this.getHeaderTableSize() + "\n");
         frameToString.append("InitialWindowSize: " + this.getInitialWindowSize() + "\n");
-        frameToString.append("MaxHeaderListSize: " + this.getMaxHeaderListSize() + "\n");
         frameToString.append("MaxFrameSize: " + this.getMaxFrameSize() + "\n");
         frameToString.append("MaxHeaderListSize: " + this.getMaxHeaderListSize() + "\n");
+        frameToString.append("MaxConcurrentStreams: " + this.getMaxConcurrentStreams() + "\n");
 
         return frameToString.toString();
 

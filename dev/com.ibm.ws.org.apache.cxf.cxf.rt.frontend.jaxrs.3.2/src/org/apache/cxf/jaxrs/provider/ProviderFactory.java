@@ -188,7 +188,7 @@ public abstract class ProviderFactory {
                              //new StringProvider<Object>(), // Liberty Change for CXF
                              //new JAXBElementSubProvider(),
                              createJsonpProvider(), // Liberty Change for CXF Begin
-                             createJsonbProvider(),
+                             createJsonBindingProvider(),
                              new IBMMultipartProvider(), // Liberty Change for CXF End
                              new MultipartProvider());
         Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
@@ -223,7 +223,7 @@ public abstract class ProviderFactory {
     }
 
     // Liberty Change for CXF Begin
-    private static Object createJsonpProvider() {
+    public static Object createJsonpProvider() {
         JsonProvider jsonProvider = AccessController.doPrivileged(new PrivilegedAction<JsonProvider>(){
 
             @Override
@@ -257,7 +257,7 @@ public abstract class ProviderFactory {
         return c;
     }
     
-    private static Object createJsonbProvider() {
+    public static Object createJsonBindingProvider() {
         JsonbProvider jsonbProvider = AccessController.doPrivileged(new PrivilegedAction<JsonbProvider>(){
 
             @Override
@@ -1077,7 +1077,7 @@ public abstract class ProviderFactory {
         }
     }
 
-    static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
+    public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
         Boolean custom1 = p1.isCustom();
         Boolean custom2 = p2.isCustom();
         int result = custom1.compareTo(custom2) * -1;

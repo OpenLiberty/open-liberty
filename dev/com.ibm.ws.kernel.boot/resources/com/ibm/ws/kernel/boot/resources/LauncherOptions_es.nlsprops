@@ -14,13 +14,19 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Uso: java [opciones de JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName [acciones] [opciones]  
-scriptUsage=Uso: {0} action serverName [opciones]
-
+briefUsage=Uso: java [opciones de JVM ] -javaagent:bin/tools/ws-javaagent.jar \\      \n\
+\t-jar bin/tools/ws-server.jar serverName {0} [opciones]  
+scriptUsage=Uso: {0} {1} serverName [opciones]
 use.actions=Acciones:
 use.options=Opciones:
+use.options.gen.desc=\ \ \ \ Utilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
 use.jvmarg=Opciones de JVM:
+category-key.lifecycle=Ciclo de vida de servidor
+category-key.win=Windows
+category-key.service=Determinaci\u00f3n de problemas
+category-key.help=Informaci\u00f3n
+category-key.misc=Diversos
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -111,22 +117,36 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tLimpiar toda la informaci\u00f3n almacenada en memoria cach\u00e9 relacionada con esta instancia de servidor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="v\u00eda al archivador de destino"
-option-desc.archive=\tEspecificar el destino de archivado que la acci\u00f3n de empaquetado o volcado \n\
-\tdebe generar. El destino puede especificarse como v\u00eda de acceso absoluta o como \n\
-\tv\u00eda de acceso relativa. Si se omite esta opci\u00f3n, el archivo de archivado \n\
-\tse crear\u00e1 en el directorio de salida del servidor. La extensi\u00f3n del nombre \n\
-\tdel archivo de destino podr\u00eda influir en el formato del archivo generado.       \n\
-\tEl formato de archivo predeterminado para la acci\u00f3n de empaquetado es "pax"\n\
-\ten z/OS y "zip" para todas las dem\u00e1s plataformas. El formato de archivo              \n\
-\t"jar" generar\u00e1 un jar de autoextracci\u00f3n similar al archivador del   \n\
-\tinstalador original. El formato de archivo "jar" combinado con      \n\
-\t"runnable" en la opci\u00f3n --include genera un archivo jar ejecutable\n\
-\tque puede ejecutar el servidor de Liberty desde el archivo jar    \n\
-\tutilizando java -jar.
+option-desc.dump.archive=\tEspecifique el destino de archivado que la acci\u00f3n de volcado debe generar.       \n\
+\tEl destino puede especificarse como una v\u00eda de acceso absoluta o como una    \n\
+\tv\u00eda de acceso relativa. Si se omite esta opci\u00f3n, el archivo de archivado se crea\n\
+\ten el directorio de salida de servidor. Es posible que la extensi\u00f3n de nombre de archivo de destino \n\
+\tafecte al formato del archivo generado. El formato de archivo \n\
+\tpredeterminado para la acci\u00f3n de paquete es "pax" en z/OS y "zip" en todas \n\
+\tlas dem\u00e1s plataformas. El formato de archivo "jar" produce un jar de autoextracci\u00f3n \n\
+\tsimilar al archivador de instalador original.                                      
+option-desc.package.archive=\tEspecifique el destino de archivado que la acci\u00f3n de paquete debe generar.       \n\
+\tEl destino puede especificarse como una v\u00eda de acceso absoluta o como una    \n\
+\tv\u00eda de acceso relativa. Si se omite esta opci\u00f3n, el archivo de archivado se crea\n\
+\ten el directorio de salida de servidor. Es posible que la extensi\u00f3n de nombre de archivo de destino \n\
+\tafecte al formato del archivo generado. El formato de archivo \n\
+\tpredeterminado para la acci\u00f3n de paquete es "pax" en z/OS y "zip" en todas \n\
+\tlas dem\u00e1s plataformas. El formato de archivo "jar" producir\u00e1 un jar de autoextracci\u00f3n \n\
+\tsimilar al archivador de instalador original. El formato de archivo "jar"      \n\
+\tcombinado con "runnable" en la opci\u00f3n --include produce un archivo \n\
+\tjar ejecutable que puede ejecutar el servidor Liberty desde el archivo jar utilizando  \n\
+\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos var\u00edan en funci\u00f3n de \n\
-\tla acci\u00f3n.
+option-desc.javadump.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos son: heap, system \n\
+\tthread.
+option-desc.package.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos son: all*, usr,   \n\
+\tminify, runnable. Si especifica runnable, el paquete resultante ser\u00e1 \n\
+\tun jar ejecutable que ejecuta el servidor. La opci\u00f3n minify produce\n\
+\tla imagen m\u00e1s peque\u00f1a posible para el servidor. La opci\u00f3n usr crea un \n\
+\tpaquete que contiene el servidor y la aplicaci\u00f3n, pero no el \n\
+\ttiempo de ejecuci\u00f3n. La opci\u00f3n all predeterminada produce un paquete de servidor que  \n\
+\tlo contiene todo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nombrePlantilla"
 option-desc.template=\tEspecifique el nombre de la plantilla que debe utilizarse al crear un servidor. 

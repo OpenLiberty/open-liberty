@@ -553,4 +553,14 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      */
     String getPersistenceType();
 
+    /**
+     *
+     * @param jobInstanceID
+     * @return list of group names if any exist
+     */
+    /*
+     * public List<String> getGroupNamesForJobID(long jobInstanceID) throws NoSuchJobInstanceException;
+     */
+
+    public JobInstanceEntity updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames);
 }

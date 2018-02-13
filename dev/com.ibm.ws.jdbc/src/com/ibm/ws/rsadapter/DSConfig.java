@@ -149,11 +149,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
     public final String jndiName;
 
     /**
-     * Managed connection factory with this configuration.
-     */
-    private WSManagedConnectionFactoryImpl mcf;
-
-    /**
      * List of SQL commands to execute once per newly established connection. Can be null if none are configured.
      */
     public final String[] onConnect;
@@ -205,8 +200,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * @throws Exception if an error occurs.
      */
     public DSConfig(DSConfig source, NavigableMap<String, Object> wProps) throws Exception {
-        this(source.id, source.jndiName, wProps, source.vendorProps,
-             source.mcf.getDataSourceClass(), source.connectorSvc, source.mcf);
+        this(source.id, source.jndiName, wProps, source.vendorProps, source.connectorSvc);
     }
 
     /**
@@ -216,15 +210,12 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * @param jndi the JNDI name of the data source.
      * @param wProps WebSphere data source properties
      * @param vProps JDBC driver vendor data source properties
-     * @param dsImplClass JDBC driver vendor class that provides the data source implementation
      * @param connectorSvc connector service instance
-     * @param mcf managed connection factory
      * @throws Exception if an error occurs
      */
     public DSConfig(String id, String jndi,
                     NavigableMap<String, Object> wProps, Properties vProps,
-                    Class<?> dsImplClass, ConnectorService connectorSvc,
-                    WSManagedConnectionFactoryImpl mcf) throws Exception {
+                    ConnectorService connectorSvc) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, getClass().getSimpleName(), new Object[] { jndi, wProps });
@@ -232,7 +223,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
         this.connectorSvc = connectorSvc;
         this.id = id;
         jndiName = jndi;
-        this.mcf = mcf;
         vendorProps = vProps;
 
         entries = wProps;
@@ -247,7 +237,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
-        statementCacheSize = remove(STATEMENT_CACHE_SIZE, mcf.isUCP ? 0 : 10, 0, null);
+        statementCacheSize = remove(STATEMENT_CACHE_SIZE, 10, 0, null); // If UCP support is ever added to Liberty, can document how to disable statement caching
         supplementalJDBCTrace = remove(SUPPLEMENTAL_JDBC_TRACE, (Boolean) null);
         syncQueryTimeoutWithTransactionTimeout = remove(SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT, false);
         transactional = remove(DataSourceDef.transactional.name(), true);
@@ -273,22 +263,12 @@ public class DSConfig implements FFDCSelfIntrospectable {
     }
 
     /**
-     * Returns the managed connection factory.
-     * 
-     * @return the managed connection factory.
-     */
-    public final WSManagedConnectionFactoryImpl getManagedConnectionFactory() {
-        return mcf;
-    }
-
-    /**
      * Returns information to log on first failure.
      * 
      * @return information to log on first failure.
      */
     @Override
     public String[] introspectSelf() {
-        @SuppressWarnings("unchecked")
         List<?> nameValuePairs = Arrays.asList(
                                                BEGIN_TRAN_FOR_SCROLLING_APIS, beginTranForResultSetScrollingAPIs,
                                                BEGIN_TRAN_FOR_VENDOR_APIS, beginTranForVendorAPIs,

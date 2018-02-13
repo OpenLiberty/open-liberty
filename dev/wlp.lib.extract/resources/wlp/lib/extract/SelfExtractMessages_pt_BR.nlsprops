@@ -266,6 +266,11 @@ UNABLE_TO_FIND_TOOLS_JAR=O agente Java do Liberty n\u00e3o p\u00f4de ser conecta
 
 UNABLE_TO_FIND_JAVA_AGENT=O agente Java do Liberty n\u00e3o p\u00f4de ser localizado. Esse servidor ser\u00e1 executado, mas n\u00e3o poder\u00e1 executar fun\u00e7\u00f5es que requeiram o agente Java, como monitoramento ou rastreio.
 
+RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG foi configurado. O servidor ser\u00e1 executado em uma Java virtual machine separada.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=O jar cont\u00e9m arquivos jvm.options. O servidor ser\u00e1 executado em uma Java virtual machine separada.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Um IBM SDK est\u00e1 sendo usado sem a op\u00e7\u00e3o -XX:+EnableHCR. O servidor ser\u00e1 executado em uma Java virtual machine separada.
+RUN_IN_CHILD_JVM_JRE=A instala\u00e7\u00e3o do Java Runtime Environment est\u00e1 sendo usada. O servidor ser\u00e1 executado em uma Java virtual machine separada.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=O diret\u00f3rio {0} n\u00e3o \u00e9 uma instala\u00e7\u00e3o Liberty v\u00e1lida. Especifique o diret\u00f3rio-raiz da instala\u00e7\u00e3o Liberty do qual voc\u00ea deseja fazer upgrade.
 LICENSE_invalidVersion=N\u00e3o \u00e9 poss\u00edvel fazer upgrade da licen\u00e7a porque a instala\u00e7\u00e3o do produto especificada est\u00e1 na vers\u00e3o {0}, mas \u00e9 poss\u00edvel fazer upgrade da licen\u00e7a somente da vers\u00e3o {1}.

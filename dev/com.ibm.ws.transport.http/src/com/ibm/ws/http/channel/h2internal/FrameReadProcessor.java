@@ -77,7 +77,8 @@ public class FrameReadProcessor {
                 throw e;
             }
         } catch (Exception e) {
-            throw new ProtocolException("Error processing the payload for " + currentFrame);
+            throw new ProtocolException("Error processing the payload for " + currentFrame.getFrameType()
+                                        + " frame on stream " + currentFrame.getStreamId());
         }
 
         // call the stream processor to process this stream. For now, don't return from here until the

@@ -35,3 +35,7 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Ensure that the specified configuratio
 CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID=CWWKS6105W: The required configuration attribute [{0}] is either missing or empty in the configuration [{1}] and a default value is not provided. Verify that the attribute is configured, that it is not empty, and that it does not consist of only white space characters.
 CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.explanation=The specified configuration attribute might be missing from the specified server configuration element. If a value is specified, white space at the beginning and end of the value is removed when the value is processed, so the value in the configuration might be empty or consist of only white space characters.
 CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID.useraction=Ensure that the specified configuration attribute is configured, that it is not empty, and that it does not consist of only white space characters.
+
+JAVASCRIPT_REDIRECT_URL_NOT_VALID=CWWKS6106E: The security service cannot create the appropriate JavaScript to redirect the browser because the redirect URL [{0}] is not valid.
+JAVASCRIPT_REDIRECT_URL_NOT_VALID.explanation=The browser must be redirected to a valid URL, but the specified URL is not valid. The URL might be null or empty, or might contain characters that are not allowed by RFC 3986.
+JAVASCRIPT_REDIRECT_URL_NOT_VALID.useraction=Check the format of the URL to ensure that it is not null or empty and that it contains only characters that are allowed in URI paths by RFC 3986.

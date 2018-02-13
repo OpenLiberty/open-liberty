@@ -86,8 +86,8 @@ public class TestUtils {
      * @param string3
      */
     public static void assertSource(WebSphereConfig config, String key, String value, String source) {
-        SourcedValue<String> sourcedValue = config.getSourcedValue(key, String.class);
-        String actual = sourcedValue.getValue();
+        SourcedValue sourcedValue = config.getSourcedValue(key, String.class);
+        String actual = (String) sourcedValue.getValue();
         assertEquals(value, actual);
         String actualSource = sourcedValue.getSource();
         assertEquals(source, actualSource);

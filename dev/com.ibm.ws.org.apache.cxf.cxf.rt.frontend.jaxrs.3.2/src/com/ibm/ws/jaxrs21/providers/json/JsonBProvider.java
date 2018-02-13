@@ -15,6 +15,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.ServiceLoader;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
@@ -41,12 +48,48 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     
     public JsonBProvider(JsonbProvider jsonbProvider) {
         if(jsonbProvider != null) {
-            this.jsonb = jsonbProvider.create().build();            
+            this.jsonb = jsonbProvider.create().build();
         } else {
-            if(Boolean.getBoolean("com.ibm.ws.jaxrs.testing")) {
-                this.jsonb = null;
-            } else {
-                throw new IllegalArgumentException("jsonbProvider can't be null");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "<init> called with null provider - looking up via META-INF/services/"
+                                + JsonbProvider.class.getName());
+            }
+            try {
+                JsonbProvider provider = AccessController.doPrivileged(new PrivilegedExceptionAction<JsonbProvider>(){
+
+                    @Override
+                    public JsonbProvider run() throws Exception {
+                        // first try thread context classloader
+                        Iterator<JsonbProvider> providers = ServiceLoader.load(JsonbProvider.class).iterator();
+                        if (providers.hasNext()) {
+                            return providers.next();
+                        }
+                        // next try this classloader
+                        providers = ServiceLoader.load(JsonbProvider.class, JsonBProvider.class.getClassLoader()).iterator();
+                        if (providers.hasNext()) {
+                            return providers.next();
+                        }
+
+                        // not good - but maybe we're in a test environment where there will be no
+                        // need for a JSON-B provider...
+                        if (Boolean.getBoolean("com.ibm.ws.jaxrs.testing")) {
+                            return null;
+                        }
+
+                        throw new IllegalArgumentException("jsonbProvider can't be null");
+                    }});
+                if (provider != null) {
+                    this.jsonb = provider.create().build();
+                } else {
+                    this.jsonb = null;
+                }
+                
+            } catch (PrivilegedActionException ex) {
+                Throwable t = ex.getCause();
+                if (t instanceof RuntimeException) {
+                    throw (RuntimeException) t;
+                }
+                throw new IllegalArgumentException(t);
             }
         }
     }

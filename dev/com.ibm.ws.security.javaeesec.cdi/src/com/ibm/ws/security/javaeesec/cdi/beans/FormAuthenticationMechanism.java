@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
+    private Utils utils = new Utils();
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -50,17 +51,13 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         String password = null;
         // in order to preserve the post parameter, unless the target url is j_security_check, do not read
         // j_username and j_password.
-        String method = req.getMethod();
-        String uri = null;
-        if ("POST".equalsIgnoreCase(method)) {
-            uri = req.getRequestURI();
-            if (uri.contains("/j_security_check")) {
-                username = req.getParameter("j_username");
-                password = req.getParameter("j_password");
-            }
+        String uri = uri = req.getRequestURI();
+        if (uri.contains("/j_security_check")) {
+            username = req.getParameter("j_username");
+            password = req.getParameter("j_password");
         }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "method : " + method + ", URI : " + uri + ", j_username : " + username);
+            Tr.debug(tc, "URI : " + uri + ", j_username : " + username);
         }
 
         if (httpMessageContext.isAuthenticationRequest()) {
@@ -110,7 +107,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
-        status = Utils.getInstance().validateUserAndPassword(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
+        status = utils.validateUserAndPassword(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
             httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
             rspStatus = HttpServletResponse.SC_OK;

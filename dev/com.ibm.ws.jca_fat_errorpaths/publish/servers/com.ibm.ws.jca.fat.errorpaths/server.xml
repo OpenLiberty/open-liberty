@@ -8,7 +8,12 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <resourceAdapter location="${server.config.dir}/connectors/ErrorPathRA.rar"/>
+    <!--  id is required, otherwise the effective id is ambiguous because of two resourceAdatper elements
+    pointing to same rar  The effective id could be either ErrorPathRA or ErrorPathRA_2 depending on order
+    in which the elements get processed, resulting in sporadic test failures  -->
+    <resourceAdapter id="ErrorPathRA" location="${server.config.dir}/connectors/ErrorPathRA.rar"/>
+    <!-- following adapter should fail to load because it uses a reserved id-->
+    <resourceAdapter id="wmqJms" location="${server.config.dir}/connectors/ErrorPathRA.rar"/>
 
     <activationSpec id="ActivationSpecMissingProp1">
       <properties.ErrorPathRA requiredProp2="TWO"/>
