@@ -215,6 +215,9 @@ public class ApplicationProcessor {
             }
         }
 
+        if (newDocument != null && newDocument.getInfo() == null) {
+            newDocument.setInfo(new InfoImpl().title("Deployed API").version("1.0.0"));
+        }
         // Validate the document if the validation property has been enabled.
         final boolean validating = configProcessor.isValidating();
         if (validating) {

@@ -184,7 +184,7 @@ public class OpenAPIV3Parser implements SwaggerParserExtension {
                 } else {
                     try {
                         JsonNode rootNode = mapper.readTree(swaggerAsString.getBytes());
-                        result = new OpenAPIDeserializer().deserialize(rootNode, null);
+                        result = new OpenAPIDeserializer().deserialize(rootNode, startingModel);
 
                     } catch (Exception e) {
                         result.setMessages(Arrays.asList(e.getMessage()));
@@ -201,7 +201,7 @@ public class OpenAPIV3Parser implements SwaggerParserExtension {
             } else {
                 try {
                     JsonNode rootNode = mapper.readTree(swaggerAsString.getBytes());
-                    result = new OpenAPIDeserializer().deserialize(rootNode, null);
+                    result = new OpenAPIDeserializer().deserialize(rootNode, startingModel);
 
                 } catch (Exception e) {
                     result.setMessages(Arrays.asList(e.getMessage()));
