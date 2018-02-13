@@ -171,8 +171,13 @@ public class CollectorJsonUtils {
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
-        LogTraceData logTraceData = (LogTraceData) event;
-        GenericData genData = logTraceData.getGenData();
+        GenericData genData = null;
+        if (event instanceof LogTraceData) {
+            LogTraceData logTraceData = (LogTraceData) event;
+            genData = logTraceData.getGenData();
+        } else {
+            genData = (GenericData) event;
+        }
         StringBuilder sb = new StringBuilder();
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
