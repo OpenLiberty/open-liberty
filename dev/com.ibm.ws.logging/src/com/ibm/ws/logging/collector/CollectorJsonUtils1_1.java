@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.data.Pair;
 
 /**
@@ -286,8 +287,8 @@ public class CollectorJsonUtils1_1 {
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
-
-        GenericData genData = (GenericData) event;
+        LogTraceData logTraceData = (LogTraceData) event;
+        GenericData genData = logTraceData.getGenData();
         StringBuilder sb = new StringBuilder();
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
