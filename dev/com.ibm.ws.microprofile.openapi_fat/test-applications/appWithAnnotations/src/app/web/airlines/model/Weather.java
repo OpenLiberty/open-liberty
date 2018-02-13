@@ -29,7 +29,7 @@ public class Weather {
     private int temperture;
 
     @Schema(required = true)
-    private String narrative;
+    private final String narrative;
 
     public Weather() {
         this.narrative = "Weather information is not yet available.";

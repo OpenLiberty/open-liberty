@@ -14,7 +14,7 @@
 package app.web.airlines.exception;
 
 public class BadRequestException extends ApiException {
-    private int code;
+    private final int code;
 
     public BadRequestException(int code, String msg) {
         super(code, msg);

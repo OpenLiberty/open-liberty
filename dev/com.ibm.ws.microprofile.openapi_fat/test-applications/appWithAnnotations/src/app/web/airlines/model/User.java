@@ -240,8 +240,8 @@ public class User {
     }
 
     @Schema(
-            name = "status",
-            title = "User Status")
+        name = "status",
+        title = "User Status")
 
     /**
      * Returns the status of this User instance.

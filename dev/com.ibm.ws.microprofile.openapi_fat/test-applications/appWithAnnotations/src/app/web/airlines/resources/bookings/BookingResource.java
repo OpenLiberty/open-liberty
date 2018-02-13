@@ -53,37 +53,37 @@ import app.web.airlines.model.Booking;
 @Path("/bookings")
 @Tag(ref = "Bookings")
 @Tags(
-      value = @Tag(
-                   name = "Reservations",
-                   description = "All the reservation methods"))
+    value = @Tag(
+        name = "Reservations",
+        description = "All the reservation methods"))
 @SecurityScheme(
-                securitySchemeName = "bookingSecurityScheme",
-                type = SecuritySchemeType.OPENIDCONNECT,
-                description = "Security Scheme for booking resource",
-                openIdConnectUrl = "http://openidconnect.com/testurl")
+    securitySchemeName = "bookingSecurityScheme",
+    type = SecuritySchemeType.OPENIDCONNECT,
+    description = "Security Scheme for booking resource",
+    openIdConnectUrl = "http://openidconnect.com/testurl")
 @Server(description = "Secure server", url = "https://gigantic-server.com:443")
 @Server(description = "Unsecure server", url = "http://gigantic-server.com:80")
 public class BookingResource {
-    private Map<Integer, Booking> bookings = new ConcurrentHashMap<Integer, Booking>();
+    private final Map<Integer, Booking> bookings = new ConcurrentHashMap<Integer, Booking>();
     private volatile int currentId = 0;
 
     @GET
     @Tag(ref = "bookings")
     @APIResponses(value = {
                             @APIResponse(
-                                         responseCode = "200",
-                                         description = "Bookings retrieved",
-                                         content = @Content(
-                                                            schema = @Schema(
-                                                                             type = SchemaType.ARRAY,
-                                                                             implementation = Booking.class))),
+                                responseCode = "200",
+                                description = "Bookings retrieved",
+                                content = @Content(
+                                    schema = @Schema(
+                                        type = SchemaType.ARRAY,
+                                        implementation = Booking.class))),
                             @APIResponse(
-                                         responseCode = "404",
-                                         description = "No bookings found for the user.")
+                                responseCode = "404",
+                                description = "No bookings found for the user.")
     })
     @Operation(
-               summary = "Retrieve all bookings for current user",
-               operationId = "getAllBookings")
+        summary = "Retrieve all bookings for current user",
+        operationId = "getAllBookings")
     @Produces("application/json")
     public Response getBookings() {
         return Response.ok().entity(bookings.values()).build();
@@ -91,50 +91,50 @@ public class BookingResource {
 
     @POST
     @SecurityRequirement(
-                         name = "bookingSecurityScheme",
-                         scopes = { "write:bookings", "read:bookings" })
+        name = "bookingSecurityScheme",
+        scopes = { "write:bookings", "read:bookings" })
     @Callback(
-              name = "bookingCallback",
-              callbackUrlExpression = "http://localhost:9080/airlines/bookings",
-              operations = @CallbackOperation(
-                                              method = "get",
-                                              summary = "Retrieve all bookings for current user",
-                                              responses = {
-                                                            @APIResponse(
-                                                                         responseCode = "200",
-                                                                         description = "Bookings retrieved",
-                                                                         content = @Content(
-                                                                                            mediaType = "application/json",
-                                                                                            schema = @Schema(
-                                                                                                             type = SchemaType.ARRAY,
-                                                                                                             implementation = Booking.class))),
-                                                            @APIResponse(
-                                                                         responseCode = "404",
-                                                                         description = "No bookings found for the user.")
-                                              }))
+        name = "bookingCallback",
+        callbackUrlExpression = "http://localhost:9080/airlines/bookings",
+        operations = @CallbackOperation(
+            method = "get",
+            summary = "Retrieve all bookings for current user",
+            responses = {
+                          @APIResponse(
+                              responseCode = "200",
+                              description = "Bookings retrieved",
+                              content = @Content(
+                                  mediaType = "application/json",
+                                  schema = @Schema(
+                                      type = SchemaType.ARRAY,
+                                      implementation = Booking.class))),
+                          @APIResponse(
+                              responseCode = "404",
+                              description = "No bookings found for the user.")
+            }))
     @APIResponse(
-                 responseCode = "201",
-                 description = "Booking created",
-                 content = @Content(
-                                    schema = @Schema(
-                                                     name = "id",
-                                                     description = "id of the new booking",
-                                                     type = SchemaType.STRING)))
+        responseCode = "201",
+        description = "Booking created",
+        content = @Content(
+            schema = @Schema(
+                name = "id",
+                description = "id of the new booking",
+                type = SchemaType.STRING)))
     @Operation(
-               summary = "Create a booking",
-               description = "Create a new booking record with the booking information provided.",
-               operationId = "createBooking")
+        summary = "Create a booking",
+        description = "Create a new booking record with the booking information provided.",
+        operationId = "createBooking")
     @Consumes("application/json")
     @Produces("application/json")
     public Response createBooking(@RequestBody(
-                                               description = "Create a new booking with the provided information.",
-                                               content = @Content(
-                                                                  mediaType = "application/json",
-                                                                  schema = @Schema(ref = "Booking"),
-                                                                  examples = @ExampleObject(
-                                                                                            name = "booking",
-                                                                                            summary = "External booking example",
-                                                                                            externalValue = "http://foo.bar/examples/booking-example.json"))) Booking task) {
+        description = "Create a new booking with the provided information.",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(ref = "Booking"),
+            examples = @ExampleObject(
+                name = "booking",
+                summary = "External booking example",
+                externalValue = "http://foo.bar/examples/booking-example.json"))) Booking task) {
         bookings.put(currentId, task);
         return Response.status(Status.CREATED).entity("{\"id\":" + currentId++ + "}").build();
     }
@@ -143,27 +143,27 @@ public class BookingResource {
     @Path("{id}")
     @Parameters({
                   @Parameter(
-                             name = "id",
-                             description = "ID of the booking",
-                             required = true,
-                             in = ParameterIn.PATH,
-                             style = ParameterStyle.SIMPLE)
+                      name = "id",
+                      description = "ID of the booking",
+                      required = true,
+                      in = ParameterIn.PATH,
+                      style = ParameterStyle.SIMPLE)
     })
 
     @Produces("application/json")
     @Operation(
-               summary = "Get a booking with ID",
-               operationId = "getBookingById")
+        summary = "Get a booking with ID",
+        operationId = "getBookingById")
     @APIResponses(value = {
                             @APIResponse(
-                                         responseCode = "200",
-                                         description = "Booking retrieved",
-                                         content = @Content(
-                                                            schema = @Schema(
-                                                                             implementation = Booking.class))),
+                                responseCode = "200",
+                                description = "Booking retrieved",
+                                content = @Content(
+                                    schema = @Schema(
+                                        implementation = Booking.class))),
                             @APIResponse(
-                                         responseCode = "404",
-                                         description = "Booking not found")
+                                responseCode = "404",
+                                description = "Booking not found")
     })
     public Response getBooking(
                                @PathParam("id") int id) {
@@ -180,14 +180,14 @@ public class BookingResource {
     @Consumes("application/json")
     @Produces("text/plain")
     @APIResponse(
-                 responseCode = "200",
-                 description = "Booking updated")
+        responseCode = "200",
+        description = "Booking updated")
     @APIResponse(
-                 responseCode = "404",
-                 description = "Booking not found")
+        responseCode = "404",
+        description = "Booking not found")
     @Operation(
-               summary = "Update a booking with ID",
-               operationId = "updateBookingId")
+        summary = "Update a booking with ID",
+        operationId = "updateBookingId")
     public Response updateBooking(
                                   @PathParam("id") int id, Booking booking) {
         if (bookings.get(id) != null) {
@@ -202,14 +202,14 @@ public class BookingResource {
     @Path("{id}")
     @Tag()
     @APIResponse(
-                 responseCode = "200",
-                 description = "Booking deleted successfully.")
+        responseCode = "200",
+        description = "Booking deleted successfully.")
     @APIResponse(
-                 responseCode = "404",
-                 description = "Booking not found.")
+        responseCode = "404",
+        description = "Booking not found.")
     @Operation(
-               summary = "Delete a booking with ID",
-               operationId = "deleteBookingById")
+        summary = "Delete a booking with ID",
+        operationId = "deleteBookingById")
     @Produces("text/plain")
     public Response deleteBooking(
                                   @PathParam("id") int id) {

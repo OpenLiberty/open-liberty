@@ -14,7 +14,7 @@
 package app.web.airlines.exception;
 
 public class NotFoundException extends ApiException {
-    private int code;
+    private final int code;
 
     public NotFoundException(int code, String msg) {
         super(code, msg);
