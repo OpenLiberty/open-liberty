@@ -206,7 +206,7 @@ public class JwtEndpointServices {
 		}
 
 		String value = req.getHeader("X-Forwarded-Proto");
-		if (value != null & value.toLowerCase().equals("https")) {
+		if (value != null && value.toLowerCase().equals("https")) {
 			return true;
 		}
 		return false;
