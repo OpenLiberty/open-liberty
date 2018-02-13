@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,10 @@ public class BaseMetrics {
     MBeanServer mbs;
     private static Set<String> gcObjectNames = new HashSet<String>();
 
-    public static synchronized BaseMetrics getInstance() {
+    private static SharedMetricRegistries SHARED_METRIC_REGISTRY;
+
+    public static synchronized BaseMetrics getInstance(SharedMetricRegistries sharedMetricRegistry) {
+        SHARED_METRIC_REGISTRY = sharedMetricRegistry;
         if (baseMetrics == null)
             baseMetrics = new BaseMetrics();
         return baseMetrics;
@@ -63,7 +66,7 @@ public class BaseMetrics {
     }
 
     public void createBaseMetrics() {
-        MetricRegistry registry = SharedMetricRegistries.getOrCreate(BASE);
+        MetricRegistry registry = SHARED_METRIC_REGISTRY.getOrCreate(BASE);
         //MEMORY METRICS
         registry.register("memory.usedHeap", new BMGauge<Number>(BaseMetricConstants.MEMORY_OBJECT_TYPE, "HeapMemoryUsage", "used"),
                           new Metadata("memory.usedHeap", "Used Heap Memory", "memory.usedHeap.description", MetricType.GAUGE, MetricUnits.BYTES));
