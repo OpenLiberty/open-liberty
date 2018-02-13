@@ -8,5 +8,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.cdi-1.2)(osgi.identity=com.ibm.websphere.appserver.cdi-2.0)))"
 -bundles=com.ibm.ws.microprofile.rest.client.cdi
 IBM-Install-Policy: when-satisfied
-kind=noship
+kind=beta
 edition=core
