@@ -78,8 +78,8 @@ instrument.classesExcludes: com/ibm/ws/security/jwtsso/internal/resources/*.clas
     com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.jwt;version=latest
 
-# some strange ncdf's will happen if any of these are removed because the junit.extensions
-# have transitive dependencies. 
+# some strange cnfe's & ncdf's will happen if any of these are removed because the junit.extensions
+# have transitive dependencies.  
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \

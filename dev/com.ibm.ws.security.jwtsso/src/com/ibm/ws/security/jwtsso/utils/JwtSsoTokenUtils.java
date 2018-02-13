@@ -101,6 +101,7 @@ public class JwtSsoTokenUtils {
 			// todo: ffdc or log exception here.
 			return null;
 		}
+		// todo: test for unauthentciated.
 
 		// we have a WSPrincipal, build the JsonWebToken
 		String name = prin.getName();
@@ -115,7 +116,7 @@ public class JwtSsoTokenUtils {
 	 * from becoming too large.
 	 *
 	 * @param groups
-	 * 
+	 *
 	 * @return
 	 */
 	private ArrayList<String> filterGroups(ArrayList<String> groups) {
@@ -130,7 +131,7 @@ public class JwtSsoTokenUtils {
 			// other attributes come from the jwtbuilder's configuration in
 			// server.xml
 			// possible attribs are audiences, claims, scope, sigalg, jti
-			// TODO: what about the groups???
+			builder.claim("group", groups.toArray()); // ??
 
 			token = builder.buildJwt();
 
