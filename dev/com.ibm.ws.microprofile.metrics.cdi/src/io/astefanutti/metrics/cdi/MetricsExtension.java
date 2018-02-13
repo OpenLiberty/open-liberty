@@ -24,6 +24,7 @@
 package io.astefanutti.metrics.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,10 +40,8 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -84,6 +83,16 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
     private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
+    /**
+     * Stores the member/annotation that were intercepted to their metric name.
+     */
+    private final Map<Member, Map<Annotation, String>> memberMap = Collections.synchronizedMap(new HashMap<Member, Map<Annotation, String>>());
+
+    /**
+     * Stores the CDI bean classes that were already visited, so we can skip re-registering them
+     */
+    private final Set<Class<?>> beansVisited = Collections.synchronizedSet(new HashSet<Class<?>>());
+
     @Reference
     public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         MetricRegistryFactory.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
@@ -91,12 +100,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
     public Set<MetricsParameter> getParameters() {
         return configuration.getParameters();
-    }
-
-    private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
-        declareAsInterceptorBinding(Counted.class, manager, bbd);
-        declareAsInterceptorBinding(Metered.class, manager, bbd);
-        declareAsInterceptorBinding(Timed.class, manager, bbd);
     }
 
     private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {
@@ -151,15 +154,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
         }
     }
 
-    private static <T extends Annotation> void declareAsInterceptorBinding(Class<T> annotation, BeanManager manager, BeforeBeanDiscovery bbd) {
-        AnnotatedType<T> annotated = manager.createAnnotatedType(annotation);
-        Set<AnnotatedMethod<? super T>> methods = new HashSet<>();
-        for (AnnotatedMethod<? super T> method : annotated.getMethods())
-            methods.add(new AnnotatedMethodDecorator<>(method, NON_BINDING));
-
-        bbd.addInterceptorBinding(new AnnotatedTypeDecorator<>(annotated, INTERCEPTOR_BINDING, methods));
-    }
-
     private static <T> T getReference(BeanManager manager, Class<T> type) {
         return getReference(manager, type, manager.resolve(manager.getBeans(type)));
     }
@@ -178,6 +172,27 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 return true;
         }
         return false;
+    }
+
+    public String getMetricNameForMember(Member member, Annotation annotation) {
+        Map<Annotation, String> map = memberMap.get(member);
+        if (map == null)
+            return null;
+        return map.get(annotation);
+    }
+
+    public void addMetricName(Member member, Annotation annotation, String name) {
+        Map<Annotation, String> map = memberMap.get(member);
+        if (map == null) {
+            map = Collections.synchronizedMap(new HashMap<Annotation, String>());
+            memberMap.put(member, map);
+        }
+        map.put(annotation, name);
+        metricNames.add(name);
+    }
+
+    public Set<Class<?>> getBeansVisited() {
+        return beansVisited;
     }
 
     public void addMetricName(String name) {
