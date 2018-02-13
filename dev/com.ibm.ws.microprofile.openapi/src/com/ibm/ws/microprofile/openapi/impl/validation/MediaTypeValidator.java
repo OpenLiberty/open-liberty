@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,7 @@ public class MediaTypeValidator extends TypeValidator<MediaType> {
                     ReferenceValidator referenceValidator = ReferenceValidator.getInstance();
                     Object component = referenceValidator.validate(helper, context, key, ref);
                     if (!schema.getClass().isInstance(component)) {
-                        final String message = Tr.formatMessage(tc, "referenceToObjectInvalid", ref, schema.getClass().getName());
+                        final String message = Tr.formatMessage(tc, "referenceToObjectInvalid", ref);
                         helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation(), message));
                     } else {
                         Schema componentSchema = (Schema) component;

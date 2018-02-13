@@ -55,12 +55,22 @@ public class OpenAPIServlet extends HttpServlet {
 
             response.setCharacterEncoding("UTF-8");
             if (format.equals("json")) {
-                response.setContentType(Constants.CONTENT_TYPE_JSON);
-                Writer writer = response.getWriter();
-                writer.write(applicationProcessor.getOpenAPIDocument(request, DocType.JSON));
+                String document = applicationProcessor.getOpenAPIDocument(request, DocType.JSON);
+                if (document != null) {
+                    response.setContentType(Constants.CONTENT_TYPE_JSON);
+                    Writer writer = response.getWriter();
+                    writer.write(document);
+                } else {
+                    response.setStatus(500);
+                }
             } else {
-                Writer writer = response.getWriter();
-                writer.write(applicationProcessor.getOpenAPIDocument(request, DocType.YAML));
+                String document = applicationProcessor.getOpenAPIDocument(request, DocType.YAML);
+                if (document != null) {
+                    Writer writer = response.getWriter();
+                    writer.write(document);
+                } else {
+                    response.setStatus(500);
+                }
             }
         } else {
             response.setStatus(405);

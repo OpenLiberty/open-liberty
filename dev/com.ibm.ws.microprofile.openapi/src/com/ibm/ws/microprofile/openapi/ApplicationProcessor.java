@@ -55,6 +55,7 @@ import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResul
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent.Severity;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidator;
+import com.ibm.ws.microprofile.openapi.impl.validation.ValidatorUtils;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.ws.microprofile.openapi.utils.ProxySupportUtil;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
@@ -129,10 +130,12 @@ public class ApplicationProcessor {
         //Retrieve OpenAPI document as a string
         String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
         if (openAPIStaticFile != null) {
-            isOASApp = true;
             SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
             if (result.getOpenAPI() != null) {
                 newDocument = result.getOpenAPI();
+                isOASApp = true;
+            } else {
+                Tr.error(tc, "OPENAPI_FILE_PARSE_ERROR", moduleInfo.getApplicationInfo().getDeploymentName());
             }
         }
 
@@ -185,7 +188,9 @@ public class ApplicationProcessor {
                         }
                     }
                 }
-                newDocument = new Reader(newDocument).read(classes);
+                Reader reader = new Reader(newDocument);
+                reader.setApplicationPath(scanner.getURLMapping());
+                newDocument = reader.read(classes);
             }
         }
 
@@ -228,14 +233,27 @@ public class ApplicationProcessor {
     private void validateDocument(OpenAPI document) {
         final OASValidator validator = new OASValidator();
         final OASValidationResult result = validator.validate(document);
+        final StringBuilder sbError = new StringBuilder();
+        final StringBuilder sbWarnings = new StringBuilder();
         if (result.hasEvents()) {
             result.getEvents().stream().forEach(v -> {
+                final String message = ValidatorUtils.formatMessage("validationMessage", v.message, v.location);
                 if (v.severity == Severity.ERROR) {
-                    Tr.error(tc, "OPENAPI_DOCUMENT_VALIDATION_ERROR", v.message, v.location);
+                    sbError.append("\n - " + message);
                 } else if (v.severity == Severity.WARNING) {
-                    Tr.warning(tc, "OPENAPI_DOCUMENT_VALIDATION_WARNING", v.message, v.location);
+                    sbWarnings.append("\n - " + message);
                 }
             });
+
+            String errors = sbError.toString();
+            if (!errors.isEmpty()) {
+                Tr.error(tc, "OPENAPI_DOCUMENT_VALIDATION_ERROR", errors + "\n");
+            }
+
+            String warnings = sbWarnings.toString();
+            if (!warnings.isEmpty()) {
+                Tr.warning(tc, "OPENAPI_DOCUMENT_VALIDATION_WARNING", warnings + "\n");
+            }
         }
     }
 
@@ -266,6 +284,8 @@ public class ApplicationProcessor {
                                     this.document = openAPI;
                                     handleApplicationPath(openAPI, wmi.getContextRoot());
                                     handleUserServer(openAPI);
+
+                                    Tr.info(tc, "OPENAPI_APPLICATION_PROCESSED", wmi.getApplicationInfo().getDeploymentName());
                                     break;
                                 }
                             }
@@ -291,6 +311,7 @@ public class ApplicationProcessor {
                 handleApplicationPath(openAPI, moduleInfo.getContextRoot());
                 handleUserServer(openAPI);
                 this.document = openAPI;
+                Tr.info(tc, "OPENAPI_APPLICATION_PROCESSED", moduleInfo.getApplicationInfo().getDeploymentName());
             }
         }
     }

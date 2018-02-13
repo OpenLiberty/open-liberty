@@ -37,12 +37,14 @@ public class OperationValidator extends TypeValidator<Operation> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Operation t) {
-        final String id = t.getOperationId();
-        if (id != null && helper.addOperationId(id)) {
-            final String message = Tr.formatMessage(tc, "operationIdsMustBeUnique", id);
-            helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation("operationId"), message));
+        if (t != null) {
+            final String id = t.getOperationId();
+            if (id != null && helper.addOperationId(id)) {
+                final String message = Tr.formatMessage(tc, "operationIdsMustBeUnique", id);
+                helper.addValidationEvent(new ValidationEvent(Severity.ERROR, context.getLocation("operationId"), message));
+            }
+            final APIResponses responses = t.getResponses();
+            ValidatorUtils.validateRequiredField(responses, context, "responses").ifPresent(helper::addValidationEvent);
         }
-        final APIResponses responses = t.getResponses();
-        ValidatorUtils.validateRequiredField(responses, context, "responses").ifPresent(helper::addValidationEvent);
     }
 }

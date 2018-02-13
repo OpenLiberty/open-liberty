@@ -14,6 +14,7 @@ import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
 
 /**
@@ -34,6 +35,25 @@ public class ServerVariablesValidator extends TypeValidator<ServerVariables> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, ServerVariables t) {
-        // TODO Auto-generated method stub
+        if (t != null) {
+            boolean mapContainsInvalidKey = false;
+            for (String k : t.keySet()) {
+                if (k == null || k.isEmpty()) {
+                    mapContainsInvalidKey = true;
+                } else {
+                    //Ensure map doesn't contain null value
+                    if (t.get(k) == null) {
+                        final String message = Tr.formatMessage(tc, "nullValueInMap", k);
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                    }
+                }
+            }
+
+            //Ensure map doesn't contain an invalid key
+            if (mapContainsInvalidKey) {
+                final String message = Tr.formatMessage(tc, "nullOrEmptyKeyInMap");
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+        }
     }
 }
