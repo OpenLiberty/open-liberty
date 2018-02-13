@@ -110,7 +110,7 @@ public class ExecutorServiceImplTest {
         ThreadPoolExecutor executor = executorService.getThreadPool();
 
         Assert.assertEquals(10, executor.getCorePoolSize());
-        Assert.assertEquals(20, executor.getMaximumPoolSize());
+        Assert.assertEquals(10, executor.getMaximumPoolSize());
 
         // coreThreads > maxThreads
         componentConfig.put("coreThreads", 20);
@@ -128,7 +128,7 @@ public class ExecutorServiceImplTest {
         executor = executorService.getThreadPool();
 
         Assert.assertEquals(10, executor.getCorePoolSize());
-        Assert.assertEquals(Integer.MAX_VALUE, executor.getMaximumPoolSize());
+        Assert.assertEquals(10, executor.getMaximumPoolSize());
 
         // coreThreads < 0 (simply make sure an IllegalArgumentException isn't thrown)
         componentConfig.put("coreThreads", -1);
@@ -149,14 +149,14 @@ public class ExecutorServiceImplTest {
         executor = executorService.getThreadPool();
 
         Assert.assertEquals(75, executor.getCorePoolSize());
-        Assert.assertEquals(150, executor.getMaximumPoolSize());
+        Assert.assertEquals(75, executor.getMaximumPoolSize());
 
         // sleep long enough for the ThreadPoolController to run for 2 cycles, to verify
         // that it does not shrink the core size
         Thread.sleep(3000);
 
         Assert.assertEquals(75, executor.getCorePoolSize());
-        Assert.assertEquals(150, executor.getMaximumPoolSize());
+        Assert.assertEquals(75, executor.getMaximumPoolSize());
     }
 
     @Test(timeout = 60000)

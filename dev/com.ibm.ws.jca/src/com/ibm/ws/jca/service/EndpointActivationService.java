@@ -12,6 +12,8 @@ package com.ibm.ws.jca.service;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -171,6 +173,8 @@ public class EndpointActivationService implements XAResourceFactory, Application
      * Thread context classloader to apply when starting/stopping the resource adapter.
      */
     private ClassLoader raClassLoader;
+
+    private boolean qmidenabled = true;
 
     /**
      * This class contains parameters used for endpoint activation.
@@ -461,6 +465,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
      * @see com.ibm.tx.jta.XAResourceFactory#getXAResource(java.io.Serializable)
      */
     @Override
+    @FFDCIgnore(NoSuchMethodException.class)
     public XAResource getXAResource(Serializable xaresinfo) throws XAResourceNotAvailableException {
         XAResource xa = null;
         if (xaresinfo != null) {
@@ -478,6 +483,18 @@ public class EndpointActivationService implements XAResourceFactory, Application
                                                              config.getDestinationRef(),
                                                              null,
                                                              config.getApplicationName());
+                if (qmidenabled) {
+                    Class<? extends Object> mcImplClass = activationSpec.getClass();
+                    try {
+                        String qmid = config.getQmid();
+                        Method m = mcImplClass.getMethod("setQmid", new Class[] { String.class });
+                        m.invoke(activationSpec, qmid);
+                    } catch (NoSuchMethodException nsme) {
+                        qmidenabled = false;
+                    } catch (InvocationTargetException ite) {
+                        qmidenabled = false;
+                    }
+                }
                 BootstrapContextImpl bootstrapContext = bootstrapContextRef.getServiceWithException();
                 ActivationSpec[] actspecs = new ActivationSpec[] { (ActivationSpec) activationSpec };
                 XAResource[] resources = bootstrapContext.resourceAdapter.getXAResources(actspecs);
@@ -506,6 +523,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
      * @return activation spec instance.
      * @throws ResourceException
      */
+    @FFDCIgnore(NoSuchMethodException.class)
     public Object activateEndpoint(WSMessageEndpointFactory mef,
                                    @Sensitive Properties activationProperties,
                                    String authenticationAlias,
@@ -539,6 +557,20 @@ public class EndpointActivationService implements XAResourceFactory, Application
             mef.setRAKey(adapterPid);
 
             ActivationConfig config = new ActivationConfig(activationProperties, adminObjSvcRefId, authenticationAlias, mef.getJ2EEName().getApplication());
+            if (qmidenabled) {
+                Class<? extends Object> mcImplClass = activationSpec.getClass();
+                try {
+                    Method m = mcImplClass.getMethod("getQmid", (Class<?>[]) null);
+                    String qmid = (String) m.invoke(activationSpec, (Object[]) null);
+                    if (qmid != null) {
+                        config.setQmid(qmid);
+                    }
+                } catch (NoSuchMethodException nsme) {
+                    qmidenabled = false;
+                } catch (InvocationTargetException ite) {
+                    qmidenabled = false;
+                }
+            }
             // register with the TM
             int recoveryId = isRRSTransactional(activationSpec) ? registerRRSXAResourceInfo(id) : registerXAResourceInfo(config);
             mef.setRecoveryID(recoveryId);
@@ -554,6 +586,21 @@ public class EndpointActivationService implements XAResourceFactory, Application
                     bootstrapContext.resourceAdapter.endpointActivation(mef, (ActivationSpec) activationSpec);
                 } finally {
                     jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
+                }
+                if (qmidenabled && config.getQmid() == null) {
+                    Class<? extends Object> mcImplClass = activationSpec.getClass();
+                    try {
+                        Method m = mcImplClass.getMethod("getQmid", (Class<?>[]) null);
+                        String qmid = (String) m.invoke(activationSpec, (Object[]) null);
+                        config.setQmid(qmid);
+                        // TODO - Need to finish this code
+                        // recoveryId = isRRSTransactional(activationSpec) ? registerRRSXAResourceInfo(id) : registerXAResourceInfo(config);
+                        // mef.setRecoveryID(recoveryId);
+                    } catch (NoSuchMethodException nsme) {
+                        qmidenabled = false;
+                    } catch (InvocationTargetException ite) {
+                        qmidenabled = false;
+                    }
                 }
                 endpointActivationParams.add(new ActivationParams(activationSpec, mef));
             } else {

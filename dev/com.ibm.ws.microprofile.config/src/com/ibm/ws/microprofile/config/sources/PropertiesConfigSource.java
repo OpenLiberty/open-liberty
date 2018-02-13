@@ -21,10 +21,14 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 public class PropertiesConfigSource extends AbstractConfigSource implements ConfigSource {
+
+    private static final TraceComponent tc = Tr.register(PropertiesConfigSource.class);
 
     private final ConcurrentMap<String, String> properties;
 
@@ -33,7 +37,7 @@ public class PropertiesConfigSource extends AbstractConfigSource implements Conf
     }
 
     public PropertiesConfigSource(ConcurrentMap<String, String> properties, String id) {
-        this(properties, getPropsOrdinal(properties), "Properties File Config Source: " + id);
+        this(properties, getPropsOrdinal(properties), Tr.formatMessage(tc, "properties.file.config.source", id));
     }
 
     public PropertiesConfigSource(ConcurrentMap<String, String> properties, int ordinal, String id) {

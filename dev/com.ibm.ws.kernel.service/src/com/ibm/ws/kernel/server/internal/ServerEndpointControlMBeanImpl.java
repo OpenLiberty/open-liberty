@@ -43,9 +43,6 @@ import com.ibm.ws.kernel.launch.service.PauseableComponentControllerRequestFaile
 
 public class ServerEndpointControlMBeanImpl extends StandardMBean implements ServerEndpointControlMBean {
 
-    @Reference(target = "(betaProperty=true)")
-    java.lang.Object betaDependency;
-
     /*
      * inject the service that will allow pause and resume control of endpoints
      *

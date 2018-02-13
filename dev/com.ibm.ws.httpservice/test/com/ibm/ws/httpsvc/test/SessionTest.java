@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,6 @@ import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
-import com.ibm.wsspi.http.ee8.Http2PushException;
 
 /**
  * Test session related apis.
@@ -207,7 +206,7 @@ public class SessionTest {
         }
 
         @Override
-        public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException {
+        public void pushNewRequest(Http2PushBuilder pushBuilder) {
             return;
         }
 
@@ -246,7 +245,7 @@ public class SessionTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.wsspi.http.HttpRequest#isPushSupported()
          */
         @Override

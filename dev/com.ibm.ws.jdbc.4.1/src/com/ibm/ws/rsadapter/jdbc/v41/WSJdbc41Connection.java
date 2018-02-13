@@ -29,7 +29,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 /**
  * This class wraps a JDBC Connection.
  */
-public class WSJdbc41Connection extends WSJdbcConnection {
+public class WSJdbc41Connection extends WSJdbcConnection implements Connection {
 
     private static final TraceComponent tc = Tr.register(WSJdbc41Connection.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 

@@ -29,7 +29,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
         com.ibm.websphere.security.jwt;provide:=true; \
         com.ibm.ws.security.jwt.config; \
-        com.ibm.ws.security.jwt.builder.utils
+        com.ibm.ws.security.jwt.builder.utils; \
+        com.ibm.ws.security.jwt.utils
 
 Import-Package: \
     javax.security.auth, \

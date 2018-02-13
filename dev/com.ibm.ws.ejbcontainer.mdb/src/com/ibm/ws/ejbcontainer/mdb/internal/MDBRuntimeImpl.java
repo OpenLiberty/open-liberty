@@ -83,6 +83,11 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      */
     private static final String ACT_SPEC_CFG_MAX_ENDPOINTS = "maxEndpoints";
 
+    /**
+     * ActivationSpec metatype constant for autoStart
+     */
+    private static final String ACT_SPEC_CFG_AUTOSTART = "autoStart";
+
     private static final String ADMIN_OBJECT_CFG_ID = "id";
     private static final String ADMIN_OBJECT_CFG_JNDI_NAME = "jndiName";
 
@@ -239,6 +244,8 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
          */
         private Integer maxEndpoints;
 
+        private Boolean autoStart;
+
         EndpointActivationServiceInfo(String id) {
             super(id);
         }
@@ -247,6 +254,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
             serviceRef = ref;
             service = null;
             maxEndpoints = null;
+            autoStart = null;
         }
 
         EndpointActivationService getService() {
@@ -264,6 +272,19 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
                 maxEndpoints = (Integer) serviceRef.getProperty(ACT_SPEC_CFG_MAX_ENDPOINTS);
             }
             return maxEndpoints;
+        }
+
+        boolean getAutoStart() {
+            if (serviceRef == null) {
+                //There is no ref to the endpoint activation service, so we are unable to get the
+                //autoStart value.  Return true here to preserve current behavior, regardless of this
+                //value the endpoint will not be brought up since the ref is null.
+                return true;
+            }
+            if (autoStart == null) {
+                autoStart = (Boolean) serviceRef.getProperty(ACT_SPEC_CFG_AUTOSTART);
+            }
+            return autoStart;
         }
     }
 
@@ -718,6 +739,11 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      */
     synchronized void activateEndpoint(MessageEndpointFactoryImpl mef) throws ResourceException {
         mef.endpointActivationServiceInfo = createEndpointActivationServiceInfo(mef.getActivationSpecId());
+        if (mef.endpointActivationServiceInfo.getAutoStart() == false && mef.shouldActivate == false) {
+            Tr.info(tc, "MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I", mef.getJ2EEName().getComponent(), mef.getJ2EEName().getModule(), mef.getJ2EEName().getApplication(),
+                    mef.endpointActivationServiceInfo.id);
+            return;
+        }
         mef.endpointActivationServiceInfo.addReferencingEndpoint(mef);
 
         String destId = mef.getDestinationId();
@@ -777,6 +803,12 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
         for (MessageEndpointFactoryImpl mef : mefs) {
             if (!mef.runtimeActivated) {
                 try {
+                    if (mef.endpointActivationServiceInfo.getAutoStart() == false && mef.shouldActivate == false) {
+                        Tr.info(tc, "MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I", mef.getJ2EEName().getComponent(), mef.getJ2EEName().getModule(),
+                                mef.getJ2EEName().getApplication(),
+                                mef.endpointActivationServiceInfo.id);
+                        return;
+                    }
                     activateEndpointInternal(mef, false);
                 } catch (Throwable ex) {
                     // The endpoint has been placed back in the pending state,

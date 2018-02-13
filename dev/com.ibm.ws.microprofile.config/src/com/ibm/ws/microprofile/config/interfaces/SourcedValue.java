@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.interfaces;
 
+import java.lang.reflect.Type;
+
 /**
- *
+ * A value, the type of the value and the id of its source
  */
-public interface SourcedValue<T> {
+public interface SourcedValue {
 
     /**
      * Get the actual value
      *
      * @return the value
      */
-    public T getValue();
+    public Object getValue();
+
+    /**
+     * Get the type of the value
+     *
+     * @return
+     */
+    public Type getType();
 
     /**
      * Get the ID of the source that provided the value
@@ -29,4 +38,6 @@ public interface SourcedValue<T> {
      */
     public String getSource();
 
+    @Override
+    public String toString();
 }

@@ -57,6 +57,7 @@
 STARTING_MODULE_CNTR4000I=CNTR4000I: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul elindul.
 STARTING_MODULE_CNTR4000I.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja az EJB modult.
 STARTING_MODULE_CNTR4000I.useraction=Semmit sem kell tennie.
+
 STARTED_MODULE_CNTR4001I=CNTR4001I: A(z) {1} alkalmaz\u00e1sban tal\u00e1lhat\u00f3 {0} EJB modul sikeresen elindult.
 STARTED_MODULE_CNTR4001I.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtotta az EJB modult.
 STARTED_MODULE_CNTR4001I.useraction=Semmit sem kell tennie.
@@ -193,3 +194,18 @@ INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=T\u00e1vol\u00edtsa el az oszt\u
 INVALID_CLASS_CNTR4115E=CNTR4115E: Az ejb-jar.xml f\u00e1jlban l\u00e9v\u0151 <ejb-class> elem a(z) {0} oszt\u00e1lynevet adja meg a(z) {1} nagyv\u00e1llalati komponens sz\u00e1m\u00e1ra, de az oszt\u00e1lyf\u00e1jl nem tal\u00e1lhat\u00f3.
 INVALID_CLASS_CNTR4115E.explanation=Vagy az ejb-jar.xml f\u00e1jl hat\u00e1roz meg \u00e9rv\u00e9nytelen oszt\u00e1lynevet, vagy az oszt\u00e1lyf\u00e1jl nem ker\u00fclt becsomagol\u00e1sra az alkalmaz\u00e1ssal.
 INVALID_CLASS_CNTR4115E.useraction=Jav\u00edtsa ki az oszt\u00e1lynevet az ejb-jar.xml f\u00e1jlban, vagy csomagolja az oszt\u00e1lyf\u00e1jlt az alkalmaz\u00e1shoz.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W

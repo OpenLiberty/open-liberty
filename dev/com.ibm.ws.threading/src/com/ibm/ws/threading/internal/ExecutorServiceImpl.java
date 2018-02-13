@@ -39,6 +39,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.threading.WSExecutorService;
 
@@ -61,7 +62,7 @@ public final class ExecutorServiceImpl implements WSExecutorService {
      * the underlying thread pool and adjust its size in an attempt to
      * maximize throughput.
      */
-    ThreadPoolController threadPoolController = new ThreadPoolController(this);
+    ThreadPoolController threadPoolController = null;
 
     /**
      * The thread pool name.
@@ -169,7 +170,8 @@ public final class ExecutorServiceImpl implements WSExecutorService {
             return;
         }
 
-        threadPoolController.deactivate();
+        if (threadPoolController != null)
+            threadPoolController.deactivate();
 
         ThreadPoolExecutor oldPool = threadPool;
 
@@ -185,15 +187,11 @@ public final class ExecutorServiceImpl implements WSExecutorService {
         }
 
         if (coreThreads < 0) {
-            coreThreads = 2 * Runtime.getRuntime().availableProcessors();
+            coreThreads = 2 * CpuInfo.getAvailableProcessors();
         }
 
         // If coreThreads is greater than maxThreads, automatically lower it and proceed
         coreThreads = Math.min(coreThreads, maxThreads);
-
-        // Propagate the core and maximum threads to the controller
-        threadPoolController.setCoreThreads(coreThreads);
-        threadPoolController.setMaxThreads(maxThreads);
 
         BlockingQueue<Runnable> workQueue = new BoundedBuffer<Runnable>(java.lang.Runnable.class, 1000, 1000);
 
@@ -201,7 +199,7 @@ public final class ExecutorServiceImpl implements WSExecutorService {
 
         threadPool = new ThreadPoolExecutor(coreThreads, maxThreads, keepAliveMillis, TimeUnit.MILLISECONDS, workQueue, threadFactory != null ? threadFactory : new ThreadFactoryImpl(poolName, threadGroupName), rejectedExecutionHandler);
 
-        threadPoolController.activate(threadPool);
+        threadPoolController = new ThreadPoolController(this, threadPool);
 
         if (oldPool != null) {
             softShutdown(oldPool);

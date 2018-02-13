@@ -16,6 +16,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -525,74 +527,87 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
      * @param clazz
      * @return
      */
-    private boolean hasValidConstructor(Class<?> clazz, boolean singleton) {
-        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        if (constructors.length == 0) {
-            return true;
-        }
-        for (Constructor<?> c : constructors) {
-            boolean hasInject = c.isAnnotationPresent(Inject.class);
-            Class<?>[] params = c.getParameterTypes();
-            Annotation[][] anns = c.getParameterAnnotations();
-            boolean match = true;
-            for (int i = 0; i < params.length; i++) {
-                if (singleton) {
-                    //annotation is not null and not equals context
-                    if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null && !(anns.length == 0 && hasInject)) {
-                        match = false;
-                        break;
-                    }
-                } else if ((!AnnotationUtils.isValidParamAnnotations(anns[i])) && !(anns.length == 0 && hasInject)) {
-                    match = false;
-                    break;
+    private boolean hasValidConstructor(final Class<?> clazz, final boolean singleton) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+                if (constructors.length == 0) {
+                    return true;
                 }
-            }
+                for (Constructor<?> c : constructors) {
+                    boolean hasInject = c.isAnnotationPresent(Inject.class);
+                    Class<?>[] params = c.getParameterTypes();
+                    Annotation[][] anns = c.getParameterAnnotations();
+                    boolean match = true;
+                    for (int i = 0; i < params.length; i++) {
+                        if (singleton) {
+                            //annotation is not null and not equals context
+                            if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null && !(anns.length == 0 && hasInject)) {
+                                match = false;
+                                break;
+                            }
+                        } else if ((!AnnotationUtils.isValidParamAnnotations(anns[i])) && !(anns.length == 0 && hasInject)) {
+                            match = false;
+                            break;
+                        }
+                    }
 
-            if (match) {
-                return true;
-            }
+                    if (match) {
+                        return true;
+                    }
 
-        }
-        return false;
+                }
+                return false;
+            }
+        });
+
     }
 
     /**
      * @param clazz
      * @return
      */
-    private boolean hasInjectAnnotation(Class<?> clazz) {
-        if (clazz.isAnnotationPresent(Inject.class)) {
-            return true;
-        } else {
+    private boolean hasInjectAnnotation(final Class<?> clazz) {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
-            Field[] fields = clazz.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++) {
-                if (fields[i].isAnnotationPresent(Inject.class)) {
+            @Override
+            public Boolean run() {
+                if (clazz.isAnnotationPresent(Inject.class)) {
                     return true;
                 }
-            }
 
-            Method[] methods = clazz.getDeclaredMethods();
-            for (int i = 0; i < methods.length; i++) {
-                if (methods[i].isAnnotationPresent(Inject.class)) {
-                    return true;
+                Field[] fields = clazz.getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    if (fields[i].isAnnotationPresent(Inject.class)) {
+                        return true;
+                    }
                 }
-            }
 
-            Constructor<?>[] c = clazz.getConstructors();
-            for (int i = 0; i < c.length; i++) {
-                if (c[i].isAnnotationPresent(Inject.class)) {
-                    return true;
+                Method[] methods = clazz.getDeclaredMethods();
+                for (int i = 0; i < methods.length; i++) {
+                    if (methods[i].isAnnotationPresent(Inject.class)) {
+                        return true;
+                    }
                 }
-            }
 
-            Class<?> cls = clazz.getSuperclass();
-            if (cls != null) {
-                return hasInjectAnnotation(cls);
-            } else {
+                Constructor<?>[] c = clazz.getConstructors();
+                for (int i = 0; i < c.length; i++) {
+                    if (c[i].isAnnotationPresent(Inject.class)) {
+                        return true;
+                    }
+                }
+
+                Class<?> cls = clazz.getSuperclass();
+                if (cls != null) {
+                    return hasInjectAnnotation(cls);
+                }
                 return false;
+
             }
-        }
+        });
+
     }
 
     /**

@@ -13,6 +13,7 @@ package com.ibm.ws.microprofile.config.cdi;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,7 +36,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-import com.ibm.ws.microprofile.config.interfaces.DefaultConverters;
+import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 
 /**
  * The ConfigCDIExtension observes all the @ConfigProperty qualified InjectionPoints and ensures that a ConfigPropertyBean is created for each type.
@@ -46,10 +47,18 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(ConfigCDIExtension.class);
 
-    Set<Type> validInjectionTypes = new HashSet<Type>(DefaultConverters.getDefaultConverters().getTypes());
-    Set<Type> badInjectionTypes = new HashSet<Type>();
+    protected Set<Type> validInjectionTypes = new HashSet<Type>();
+    protected Set<Type> badInjectionTypes = new HashSet<Type>();
 
     Map<ClassLoader, Config> configs = new HashMap<>();
+
+    public ConfigCDIExtension() {
+        validInjectionTypes.addAll(getDefaultConverterTypes());
+    }
+
+    protected Collection<? extends Type> getDefaultConverterTypes() {
+        return DefaultConverters.getDefaultConverters().getTypes();
+    }
 
     void processInjectionTarget(@Observes ProcessInjectionTarget<?> pit) {
         Class<?> targetClass = pit.getAnnotatedType().getJavaClass();
@@ -64,8 +73,7 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
                     ParameterizedType pType = (ParameterizedType) type;
                     configException = processParameterizedType(injectionPoint, pType, classLoader);
                 } else {
-
-                    configException = processConversionType(injectionPoint, type, type, classLoader, false);
+                    configException = processConversionType(injectionPoint, type, classLoader, false);
                 }
                 if (configException != null) {
                     Tr.error(tc, "unable.to.resolve.injection.point.CWMCG5003E", injectionPoint, configException);
@@ -97,41 +105,33 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
         }
     }
 
-    private Throwable processParameterizedType(InjectionPoint injectionPoint, ParameterizedType pType, ClassLoader classLoader) {
+    protected Throwable processParameterizedType(InjectionPoint injectionPoint, ParameterizedType pType, ClassLoader classLoader) {
         Throwable configException = null;
         Type rType = pType.getRawType();
         if (Provider.class.isAssignableFrom((Class<?>) rType)) {
             Type[] aTypes = pType.getActualTypeArguments();
             //instance must have exactly one type arg
             Type type = aTypes[0];
-            configException = processConversionType(injectionPoint, type, type, classLoader, false);
+            configException = processConversionType(injectionPoint, type, classLoader, false);
         } else if (Optional.class.isAssignableFrom((Class<?>) rType)) {
-            Type[] aTypes = pType.getActualTypeArguments();
-            //optional must have exactly one type arg
-            Type type = aTypes[0];
-            configException = processConversionType(injectionPoint, type, pType, classLoader, true);
+            //property is optional
+            configException = processConversionType(injectionPoint, pType, classLoader, true);
         } else {
-            configException = processConversionType(injectionPoint, pType, pType, classLoader, false);
+            configException = processConversionType(injectionPoint, pType, classLoader, false);
         }
         return configException;
     }
 
-    private Throwable processConversionType(InjectionPoint injectionPoint, Type conversionType, Type injectionType, ClassLoader classLoader,
-                                            boolean optional) {
+    protected Throwable processConversionType(InjectionPoint injectionPoint, Type injectionType, ClassLoader classLoader,
+                                              boolean optional) {
         Throwable configException = null;
 
-        if (conversionType instanceof Class) {
-            Class<?> clazz = (Class<?>) conversionType;
-            Config config = ConfigProvider.getConfig(classLoader);
-            try {
-                ConfigProducer.newValue(config, injectionPoint, clazz, optional);
-                validInjectionTypes.add(injectionType);
-            } catch (Throwable e) {
-                configException = e;
-                badInjectionTypes.add(injectionType);
-            }
-        } else {
-            configException = new ConfigTypeException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", injectionType));
+        Config config = ConfigProvider.getConfig(classLoader);
+        try {
+            ConfigProducer.newValue(config, injectionPoint, injectionType, optional);
+            validInjectionTypes.add(injectionType);
+        } catch (Throwable e) {
+            configException = e;
             badInjectionTypes.add(injectionType);
         }
 

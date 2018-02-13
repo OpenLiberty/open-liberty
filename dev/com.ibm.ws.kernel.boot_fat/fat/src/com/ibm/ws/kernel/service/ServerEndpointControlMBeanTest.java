@@ -127,7 +127,7 @@ public class ServerEndpointControlMBeanTest {
         if (restoreSavedConfig) {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
-            assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
+            assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null));
 
         }
         Log.exiting(c, METHOD_NAME);
@@ -276,7 +276,7 @@ public class ServerEndpointControlMBeanTest {
 
         // remove the servlet feature so that all endpoints are deactivated including the default instance of httpEndpoint
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("localConnector-1.0", "endpointControl-1.0"));
+        server.changeFeatures(Arrays.asList("localConnector-1.0"));
         assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
         try {
             server.setMarkToEndOfLog();
@@ -328,7 +328,7 @@ public class ServerEndpointControlMBeanTest {
 
         // remove the servlet feature so that all endpoints are deactivated including the default instance of httpEndpoint
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("localConnector-1.0", "endpointControl-1.0"));
+        server.changeFeatures(Arrays.asList("localConnector-1.0"));
         assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
         try {
             server.setMarkToEndOfLog();
@@ -338,6 +338,33 @@ public class ServerEndpointControlMBeanTest {
             // expected
         }
         assertNotNull("Didn't find CWWKE0934W in logs as expected.", server.waitForStringInLog("CWWKE0934W"));
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    //Test that an exception is thrown when isPaused(String targets) is supplied with an empty string
+    //or null for the target
+    @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
+    @Test
+    public void testIsPausedInvalidArgs() throws Exception {
+        final String METHOD_NAME = "testIsPausedInvalidArgs";
+        Log.entering(c, METHOD_NAME);
+        restoreSavedConfig = false;
+
+        try {
+            mbean.isPaused("");
+            fail("Failed to get expected exception from calling isPaused(\"\")");
+        } catch (MBeanException e) {
+            // expected
+        }
+
+        try {
+            mbean.isPaused(null);
+            fail("Failed to get expected exception from calling isPaused(null)");
+        } catch (MBeanException e) {
+            // expected
+        }
+
+        assertNotNull("Didn't find CWWKE0946W in logs as expected.", server.waitForStringInLog("CWWKE0946W"));
         Log.exiting(c, METHOD_NAME);
     }
 

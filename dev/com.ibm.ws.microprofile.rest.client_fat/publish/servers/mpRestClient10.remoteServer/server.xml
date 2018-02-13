@@ -1,0 +1,13 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jaxrs-2.1</feature>
+  </featureManager>
+
+  <include location="../fatTestCommon.xml"/>
+
+  <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+</server>

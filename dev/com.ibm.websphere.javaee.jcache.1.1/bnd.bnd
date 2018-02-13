@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.jcache.1.1
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Export-Package: \
+   javax.cache;version="1.1", \
+   javax.cache.annotation;version="1.1", \
+   javax.cache.configuration;version="1.1", \
+   javax.cache.event;version="1.1", \
+   javax.cache.expiry;version="1.1", \
+   javax.cache.integration;version="1.1", \
+   javax.cache.management;version="1.1", \
+   javax.cache.processor;version="1.1", \
+   javax.cache.spi;version="1.1"
+
+Import-Package: \
+   javax.enterprise.util;resolution:=optional
+
+Include-Resource: \
+  @${repo; javax.cache:cache-api;1.1.0}
+
+instrument.disabled: true
+
+-buildpath: \
+	javax.cache:cache-api;version=1.1.0

@@ -27,12 +27,17 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "api.classes=" +
+                                                                                                                 "javax.batch.api.BatchProperty;" +
+                                                                                                                 "javax.batch.runtime.context.JobContext;" +
+                                                                                                                 "javax.batch.runtime.context.StepContext",
+                                                                                                                 "service.vendor=IBM" })
+
 public class BatchCDIInjectionExtension implements WebSphereCDIExtension, Extension {
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<BatchProducerBean> at = bm.createAnnotatedType(BatchProducerBean.class);
-        bbd.addAnnotatedType(at);
+        bbd.addAnnotatedType(at, "com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtension");
     }
 
 }

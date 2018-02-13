@@ -42,3 +42,41 @@ JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Se il nome realm deve essere impostat
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: La distribuzione per il modulo {0} nell''applicazione {1} non \u00e8 riuscita perch\u00e9 sono state trovate pi\u00f9 implementazioni di HttpAuthenticationMechanism. L''elenco delle classi \u00e8 {2}. Molto probabilmente, questo \u00e8 un problema di packaging dell''applicazione. Assicurarsi che ci sia una sola implementazione di HttpAuthenticationMechanism in ogni modulo.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=La distribuzione dell'applicazione non \u00e8 riuscita perch\u00e9 sono state trovate pi\u00f9 implementazioni di HttpAuthenticationMechanism. Questa condizione non \u00e8 consentita.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Assicurarsi che ci sia una sola implementazione di HttpAuthenticationMechanism per ogni modulo nell'applicazione.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Si verifica un errore quando il programma risolve la configurazione ''{0}'' per l''archivio identit\u00e0. Assicurarsi che l''espressione EL e il risultato siano validi e verificare che tutti i bean di riferimento che vengono utilizzati nell''espressione siano risolvibili. Il valore acquisisce l''impostazione predefinita ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=La configurazione dell'archivio identit\u00e0 non pu\u00f2 essere risolto in un valore valido.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Assicurarsi che l'annotazione contenga un valore di configurazione valido. Se si utilizzano le espressioni EL, assicurarsi che siano valide e che tutti i bean di riferimento utilizzati nell'espressione siano risolvibili.
+
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Un parametro hashAlgorithm fornito per hashAlgorithm, {0}, \u00e8 in formato non corretto. Il parametro ricevuto \u00e8 {1}. Il formato richiesto \u00e8 nome=valore.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Un elenco di parametri hashAlgorithm \u00e8 nel formato non corretto e non pu\u00f2 essere analizzato.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Correggere l'elemento hashAlgorithmParameters nell'annotazione DatabaseIdentityStore.
+
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: La query ''{1}'' per ottenere il chiamante {0} ha avuto esito negativo su DatabaseIdentityStore con un errore: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=La ricerca del chiamante fornito non \u00e8 riuscita con un errore.
+JAVAEESEC_WARNING_GEN_DB.useraction=Esaminare l'errore indicato.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: La query ''{1}'' per ottenere i gruppi per il chiamante {0} ha avuto esito negativo su DatabaseIdentityStore. L''elenco parziale dei gruppi \u00e8 {2}. Errore: {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=La ricerca dei gruppi per il chiamante non \u00e8 riuscita con un errore.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Esaminare l'errore indicato. Viene restituito un elenco parziale dei gruppi.
+
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: La credenziale fornita a IdentityStore non \u00e8 una UsernamePasswordCredential e non pu\u00f2 essere convalidata.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=La credenziale fornita a IdentityStore non \u00e8 una UsernamePasswordCredential e non pu\u00f2 essere convalidata.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=Esaminare il tipo di credenziale trasmesso a IdentityStore.
+
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: \u00c8 stata fornita una password null a DatabaseIdentityStore e non pu\u00f2 essere convalidata.
+JAVAEESEC_WARNING_NULL_PWD.explanation=UsernamePasswordCredential conteneva una password null.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Fornire una password valida.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Bean algoritmo hash non trovato per la classe {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=L'algoritmo hash elencato nell'elemento hashAlgorithm nell'annotazione DatabaseIdentityStore non \u00e8 stato trovato.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Aggiungere l'algoritmo hash personalizzato come un bean che sia disponibile per l'applicazione.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: La query ''{1}'' non ha restituito una password per il chiamante {0} su DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=La query non ha restituito una password per la query chiamante fornita.
+JAVAEESEC_WARNING_NO_PWD.useraction=Se era prevista una password, esaminare il contenuto della query chiamante e del database.
+
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: La query ''{1}'' ha restituito pi\u00f9 risultati per il chiamante {0} su DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Sono stati restituiti pi\u00f9 risultati per il chiamante richiesto. La query chiamante deve restituire un solo risultato.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Esaminare il contenuto della query chiamante e del database. Modificare la query chiamante per restituire un solo risultato.
+
+#>>>>>>> Add messages for IdentityStore

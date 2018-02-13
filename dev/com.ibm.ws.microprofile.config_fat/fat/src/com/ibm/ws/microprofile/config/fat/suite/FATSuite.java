@@ -27,6 +27,7 @@ import com.ibm.ws.microprofile.config.fat.tests.CDIMissingConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIScopeTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIXtorInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
+import com.ibm.ws.microprofile.config.fat.tests.ConverterPriorityTest;
 import com.ibm.ws.microprofile.config.fat.tests.ConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CustomSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
@@ -36,6 +37,7 @@ import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
 import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -54,6 +56,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CDIScopeTest.class,
                 CDIXtorInjectionTest.class,
                 ClassLoadersTest.class,
+                ConverterPriorityTest.class,
                 ConvertersTest.class,
                 CustomSourcesTest.class,
                 DefaultSourcesTest.class,
@@ -69,7 +72,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new Config12FeatureReplacementAction());
+                    .andWith(new FeatureReplacementAction("mpConfig-1.1", "mpConfig-1.2"));
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

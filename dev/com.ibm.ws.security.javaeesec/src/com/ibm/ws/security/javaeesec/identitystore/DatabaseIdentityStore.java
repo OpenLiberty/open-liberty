@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -235,7 +235,7 @@ public class DatabaseIdentityStore implements IdentityStore {
                 conn.close();
             }
         } catch (NamingException | SQLException e) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_GEN_DB", new Object[] { caller, idStoreDefinition.getCallerQuery(), e });
+            Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, idStoreDefinition.getCallerQuery(), e });
             return CredentialValidationResult.INVALID_RESULT;
         }
 

@@ -39,3 +39,4 @@ javac.target: 1.8
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest

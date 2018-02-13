@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=V\u00e9rifiez qu'une sp\u00e9
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Le noeud final de message pour le bean pilot\u00e9 par message {0} ne peut pas \u00eatre activ\u00e9 car la destination {1} n''est pas disponible. Le noeud final de message ne recevra pas de messages tant que la destination ne sera pas disponible.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Le serveur d\u00e9marre le bean pilot\u00e9 par message mais ne peut pas activer le noeud final de message car la destination est introuvable. Le noeud final de message re\u00e7oit des messages uniquement le noeud final peut \u00eatre activ\u00e9.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=V\u00e9rifiez qu'une destination a \u00e9t\u00e9 configur\u00e9e avec le nom indiqu\u00e9. Si la configuration existe, attendez que la destination devienne disponible.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: Le noeud final de message pour le bean g\u00e9r\u00e9 par message {0} dans le module {1} de l''application {2} n''a pas \u00e9t\u00e9 activ\u00e9 car la sp\u00e9cification d''activation {3} a \u00e9t\u00e9 configur\u00e9e avec autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Le noeud final de message n'a pas \u00e9t\u00e9 activ\u00e9 car la sp\u00e9cification d'activation a \u00e9t\u00e9 configur\u00e9e avec autoStart=false. Il sera activ\u00e9 lorsqu'une commande de reprise aura \u00e9t\u00e9 \u00e9mise.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Aucune action n'est requise.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: L''op\u00e9ration de mise en pause n''a pas eu d''effet car le noeud final de message pour le bean {0} dans le module {1} de l''application {2} est d\u00e9j\u00e0 en pause.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=Le noeud final de message ne peut \u00eatre mis en pause que s'il est \u00e0 l'\u00e9tat actif.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Aucune action n'est requise.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: L''op\u00e9ration de reprise n''a pas eu d''effet car le noeud final de message pour le bean {0} dans le module {1} de l''application {2} est d\u00e9j\u00e0 actif.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=Le noeud final de message ne peut \u00eatre repris que s'il est \u00e0 l'\u00e9tat inactif.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Aucune action n'est requise.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: La demande de mise en pause du noeud final de message pour le bean {0} dans le module {1} de l''application {2} n''a pas abouti car le noeud final n''est pas actif.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=Le noeud final de message ne peut \u00eatre mis en pause que s'il est \u00e0 l'\u00e9tat actif.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Attendez que le noeud final de message soit \u00e0 l'\u00e9tat actif avant de tenter de le mettre en pause.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: La demande de reprise du noeud final de message pour le bean {0} dans le module {1} de l''application {2} n''a pas abouti car le noeud final n''est pas en pause.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=Le noeud final de message ne peut \u00eatre repris que s'il est en pause.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Attendez que le noeud final de message soit en pause avant de tenter sa reprise.

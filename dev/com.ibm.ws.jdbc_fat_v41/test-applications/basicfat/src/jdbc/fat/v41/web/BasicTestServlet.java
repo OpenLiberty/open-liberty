@@ -15,9 +15,13 @@ import static com.ibm.websphere.simplicity.config.DataSourceProperties.INFORMIX_
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.MICROSOFT_SQLSERVER;
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.SYBASE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -1387,5 +1391,76 @@ public class BasicTestServlet extends FATDatabaseServlet {
         System.out.println("   " + contents.replace("\n", "\n   "));
 
         return Integer.parseInt((String) mbs.getAttribute(bean.getObjectName(), "size"));
+    }
+
+    /**
+     * Invocation handler that delegates all operations to the specified instance.
+     */
+    private static class DelegatingInvocationHandler implements InvocationHandler {
+        private final Object instance;
+
+        private DelegatingInvocationHandler(Object instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            return method.invoke(instance, args);
+        }
+    }
+
+    /**
+     * Ensure it is possible to proxy the list of interfaces implemented by the Liberty JDBC connection,
+     * database meta data, statements, and result set classes.
+     */
+    @Test
+    public void testProxyForLibertyJDBCProxies() throws Exception {
+        Connection con = xads.getConnection();
+        try {
+            Connection conProxy = (Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                                                                      con.getClass().getInterfaces(),
+                                                                      new DelegatingInvocationHandler(con));
+            PreparedStatement ps = conProxy.prepareStatement("insert into " + colorTable + " values(?,?)");
+            PreparedStatement psProxy = (PreparedStatement) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                                                                                   ps.getClass().getInterfaces(),
+                                                                                   new DelegatingInvocationHandler(ps));
+            psProxy.setInt(1, 7);
+            psProxy.setString(2, "orange");
+            assertEquals(1, psProxy.executeUpdate());
+            psProxy.close();
+
+            ResultSet rs = con.createStatement().executeQuery("select color from " + colorTable + " where id=7");
+            ResultSet rsProxy = (ResultSet) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                                                                   rs.getClass().getInterfaces(),
+                                                                   new DelegatingInvocationHandler(rs));
+            assertTrue(rsProxy.next());
+            assertEquals("orange", rsProxy.getString(1));
+            Statement s = rsProxy.getStatement();
+            rsProxy.close();
+            s.close();
+
+            DatabaseMetaData mdata = conProxy.getMetaData();
+            DatabaseMetaData mdataProxy = (DatabaseMetaData) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                                                                                    mdata.getClass().getInterfaces(),
+                                                                                    new DelegatingInvocationHandler(mdata));
+
+            CallableStatement cs = mdataProxy.getConnection().prepareCall("update " + colorTable + " set id=? where id=?");
+            CallableStatement csProxy = (CallableStatement) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                                                                                   cs.getClass().getInterfaces(),
+                                                                                   new DelegatingInvocationHandler(cs));
+            csProxy.setInt(1, 8);
+            csProxy.setInt(2, 7);
+            assertEquals(1, csProxy.executeUpdate());
+            csProxy.close();
+
+            s = conProxy.createStatement();
+            Statement sProxy = (Statement) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                                                                  s.getClass().getInterfaces(),
+                                                                  new DelegatingInvocationHandler(s));
+            assertEquals(1, sProxy.executeUpdate("delete from " + colorTable + " where id=8"));
+            sProxy.close();
+        } finally {
+            con.close();
+        }
     }
 }

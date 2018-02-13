@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,10 @@ import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
-import com.ibm.ws.logging.source.FFDCData;
-import com.ibm.ws.logging.source.MessageLogData;
-import com.ibm.ws.logging.source.TraceLogData;
+import com.ibm.ws.logging.data.GenericData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
@@ -160,6 +157,7 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
+
         String eventType = CollectorJsonUtils.getEventType(source, location);
         String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
                                                          MAXFIELDLENGTH);
@@ -204,21 +202,22 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         return "";
     }
 
-    /*
-     * Get the type of source based on the object given by comparing it to the *Data classess
-     */
     protected String getSourceTypeFromDataObject(Object event) {
-        if (event instanceof MessageLogData) {
+
+        GenericData genData = (GenericData) event;
+        String sourceType = genData.getSourceType();
+
+        if (sourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
             return CollectorConstants.MESSAGES_SOURCE;
-        } else if (event instanceof TraceLogData) {
+        } else if (sourceType.equals(CollectorConstants.TRACE_SOURCE)) {
             return CollectorConstants.TRACE_SOURCE;
-        } else if (event instanceof AccessLogData) {
+        } else if (sourceType.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
             return CollectorConstants.ACCESS_LOG_SOURCE;
-        } else if (event instanceof FFDCData) {
+        } else if (sourceType.equals(CollectorConstants.FFDC_SOURCE)) {
             return CollectorConstants.FFDC_SOURCE;
         } else {
             return "";
         }
-
     }
+
 }

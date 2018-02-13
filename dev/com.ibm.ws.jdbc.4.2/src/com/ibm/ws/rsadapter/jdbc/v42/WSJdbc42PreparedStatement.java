@@ -24,7 +24,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41PreparedStatement;
 
-public class WSJdbc42PreparedStatement extends WSJdbc41PreparedStatement {
+public class WSJdbc42PreparedStatement extends WSJdbc41PreparedStatement implements PreparedStatement {
 
     private static final TraceComponent tc = Tr.register(WSJdbc42PreparedStatement.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 

@@ -133,7 +133,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
+    @Mode(TestMode.LITE)
     @Test
     public void testNoJavaEESec_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

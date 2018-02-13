@@ -81,29 +81,11 @@ public class SecurityContextImplTest {
     public void tearDown() throws Exception {}
 
     @Test
-    public void testGetCallerPrincipal_userInInvocationSubject() throws Exception {
-        final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
-
-        mockery.checking(new Expectations() {
-            {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(subject));
-            }
-        });
-
-        Principal callerPrinc = secContext.getCallerPrincipal();
-        assertEquals("Not expected princiapal.", callerPrinc, princ);
-
-    }
-
-    @Test
     public void testGetCallerPrincipal_userInCallerSubject() throws Exception {
         final Subject subject = new Subject(false, principals, pubCredentials, privCredentials);
 
         mockery.checking(new Expectations() {
             {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(null));
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(subject));
             }
@@ -119,8 +101,6 @@ public class SecurityContextImplTest {
 
         mockery.checking(new Expectations() {
             {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(null));
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(null));
             }
@@ -138,8 +118,6 @@ public class SecurityContextImplTest {
 
         mockery.checking(new Expectations() {
             {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(null));
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(subject));
             }
@@ -158,8 +136,6 @@ public class SecurityContextImplTest {
 
         mockery.checking(new Expectations() {
             {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(null));
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(subject));
             }
@@ -178,8 +154,6 @@ public class SecurityContextImplTest {
 
         mockery.checking(new Expectations() {
             {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(null));
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(subject));
             }
@@ -195,8 +169,6 @@ public class SecurityContextImplTest {
 
         mockery.checking(new Expectations() {
             {
-                one(subjectManagerService).getInvocationSubject();
-                will(returnValue(null));
                 one(subjectManagerService).getCallerSubject();
                 will(returnValue(subject));
             }

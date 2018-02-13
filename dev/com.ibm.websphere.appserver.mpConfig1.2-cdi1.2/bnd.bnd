@@ -13,4 +13,4 @@
 -nobundles=true
 
 -dependson: \
-	com.ibm.ws.microprofile.config.cdi;version=latest
+	com.ibm.ws.microprofile.config.1.2.cdi;version=latest

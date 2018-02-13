@@ -18,6 +18,7 @@
 		<url-pattern>/JavaEESecBasic</url-pattern>
 		<url-pattern>/Protected</url-pattern>
 		<url-pattern>/Unprotected</url-pattern>
+		<url-pattern>/CustomBasicAuth</url-pattern>
 	</servlet-mapping>
 
 	
@@ -40,7 +41,19 @@
 			<web-resource-name>unprotected_basic_auth_servlet</web-resource-name>
 			<url-pattern>/Unprotected</url-pattern>
 			<http-method>GET</http-method>
+			<http-method>CUSTOM</http-method>
 		</web-resource-collection>
+	</security-constraint>
+	<security-constraint>
+		<display-name>custom_basic_auth</display-name>
+		<web-resource-collection>
+			<web-resource-name>custom_basic_auth_servlet</web-resource-name>
+			<url-pattern>/CustomBasicAuth</url-pattern>
+			<http-method>CUSTOM</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>javaeesec_basic</role-name>
+		</auth-constraint>
 	</security-constraint>
 	
   <!-- CHALLENGE TYPE

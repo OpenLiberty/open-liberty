@@ -15,12 +15,19 @@
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 briefUsage=Utilizzo: java [opzioni JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName [azioni] [opzioni]  
-scriptUsage=Utilizzo: {0} azione nome server [opzioni]
+\t-jar bin/tools/ws-server.jar serverName {0} [opzioni]  
+scriptUsage=Utilizzo: {0} {1} nome server [opzioni]
 
 use.actions=Azioni:
 use.options=Opzioni:
+use.options.gen.desc=\ \ \ \ Utilizzare il comando help [nomeAzione] per informazioni dettagliate sulle opzioni di ciascuna azione.
 use.jvmarg=Opzioni JVM:
+category-key.lifecycle=Ciclo di vita server
+category-key.win=Finestre
+category-key.service=Determinazione dei problemi
+category-key.help=Informazioni
+category-key.misc=Varie
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -113,22 +120,38 @@ option-key.clean=\ \ \ \ --clean
 option-desc.clean=\tElimina tutte le informazioni memorizzate nella cache relative a questa istanza del server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="percorso del file di archivio di destinazione"
-option-desc.archive=\tSpecificare la destinazione di archivio che deve essere generata dall'azione di package \n\
-\to di dump. La destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
-\tun percorso relativo. Se questa opzione viene omessa, il file di archivio verr\u00e0\n\
-\tcreato nella directory di output del server. L'estensione \n\
-\tdel nome file di destinazione pu\u00f2 influire sul formato dell'archivio generato.       \n\
-\tIl formato dell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS   \n\
-\te "zip" su tutte le altre piattaforme.                                    \n\
-\tIl formato archivio "jar" produce un jar ad estrazione automatica simile\n\
-\tall'archivio del programma di installazione originale.                                      \n\
-\tIl formato archivio "jar" combinato con "runnable" nell'opzione --include\n\
-\tproduce un file jar eseguibile che pu\u00f2 eseguire il server Liberty dal \n\
-\tfile jar utilizzando java -jar.
+option-desc.dump.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione dump.       \n\
+\tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
+\tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\
+\tcreato nella directory di output del server. L'estensione del nome file \n\
+\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\
+\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\
+\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\
+\tad estrazione automatica simile all'archivio del programma di installazione originale.
+
+option-desc.package.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione package.       \n\
+\tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
+\tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\
+\tcreato nella directory di output del server. L'estensione del nome file \n\
+\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\
+\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\
+\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\
+\tad estrazione automatica simile all'archivio del programma di installazione originale. \
+Il formato archivio "jar"      \n\
+\tcombinato con "runnable" sull'opzione --include produce un file jar\n\
+\teseguibile che pu\u00f2 eseguire il server Liberty dal file jar utilizzando \n\
+\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.include=\tUn elenco di valori delimitati da virgole. I valori validi variano in base\n\
-\tall'azione.
+option-desc.javadump.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: heap, system \n\
+\tthread.
+option-desc.package.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: all*, usr,   \n\
+\tminify, runnable. Se si specifica runnable il package risultante sar\u00e0 \n\
+\tun jar eseguibile che esegue il server. L'opzione minify produce \n\
+\tl'immagine minima possibile per il server. L'opzione usr crea\n\
+\tun package che contiene il servere l'applicazione, ma non il\n\
+\truntime. L'opzione predefinita all produce un package server      \n\
+\tche contiene tutto.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica il nome del modello da utilizzare quando si crea un nuovo server. 

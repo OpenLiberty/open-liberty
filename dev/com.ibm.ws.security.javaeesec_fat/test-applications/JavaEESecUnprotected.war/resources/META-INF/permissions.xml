@@ -20,4 +20,14 @@
       <name>wssecurity.getRunAsSubject</name>
    </permission>
 
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.security.SecurityPermission</class-name>
+      <name>getProperty.authconfigprovider.factory</name>
+   </permission>
 </permissions>

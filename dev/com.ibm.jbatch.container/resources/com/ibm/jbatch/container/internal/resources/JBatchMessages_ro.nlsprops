@@ -321,3 +321,7 @@ display.unresolved.jsl=CWWKY0043I:  JSL-ul nerezolvat pentru acest job este \n\
 display.unresolved.jsl.explanation=JSL-ul folosit pentru job este afi\u015fat \u00eenainte de rezolvarea parametrilor \u015fi propriet\u0103\u0163ilor.
 display.unresolved.jsl.useraction=Verifica\u0163i c\u0103 numele de fi\u015fier pentru JSL este corect \u015fi c\u0103 sursa pentru JSL con\u0163ine JSL-ul corect.
 
+#The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Numele operationGroup {0} nu a fost rezolvat la un nume valid de grup.
+JOB_GROUP_NAME_NOT_VALID.explanation=\u00cencerc\u0103rile de a accesa jobul folosind accesul de grup pot e\u015fua dac\u0103 apar \u00eencerc\u0103ri de a utiliza un nume de grup invalid.
+JOB_GROUP_NAME_NOT_VALID.useraction=Corecta\u0163i numele grupului \u00een fi\u015fierul cu configura\u0163ia serverului.

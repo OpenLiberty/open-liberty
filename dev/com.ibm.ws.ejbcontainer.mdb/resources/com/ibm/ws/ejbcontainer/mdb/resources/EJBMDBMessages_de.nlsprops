@@ -66,3 +66,22 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Vergewissern Sie sich, dass e
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Der Nachrichtenendpunkt f\u00fcr die Message-driven Bean {0} kann nicht aktiviert werden, weil das Ziel {1} nicht verf\u00fcgbar ist. Der Nachrichtenendpunkt empf\u00e4ngt so lange keine Nachrichten, bis das Ziel wieder verf\u00fcgbar ist.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Der Server startet die Message-driven Bean gerade, kann aber den Nachrichtenendpunkt nicht aktivieren, weil das Ziel nicht gefunden wurde. Der Nachrichtenendpunkt empf\u00e4ngt so lange keine Nachrichten, bis der Endpunkt aktiviert werden kann.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Vergewissern Sie sich, dass ein Ziel mit dem angegebenen Namen konfiguriert wurde. Wenn die Konfiguration vorhanden ist, warten Sie, bis das Ziel verf\u00fcgbar ist.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: Der Nachrichtenendpunkt f\u00fcr die Message-driven Bean {0} im Modul {1} der Anwendung {2} wurde nicht aktiviert, weil die Aktivierungsspezifikation {3} mit autoStart=false konfiguriert wurde.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Der Nachrichtenendpunkt wurde nicht aktiviert, weil die Aktivierungsspezifikation mit autoStart = false konfiguriert wurde. Der Nachrichtenendpunkt wird aktiviert, wenn hierf\u00fcr ein Wiederaufnahmebefehl abgesetzt wird.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Es ist keine Aktion erforderlich.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: Die Operation zum Anhalten hatte keine Auswirkungen, da der Nachrichtenendpunkt f\u00fcr die Bean {0} im Modul {1} der Anwendung {2} bereits angehalten wurde.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=Der Nachrichtenendpunkt kann nur angehalten werden, wenn er sich in einem aktiven Status befindet.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Es ist keine Aktion erforderlich.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: Die Operation zur Wiederaufnahme hatte keine Auswirkungen, da der Nachrichtenendpunkt f\u00fcr die Bean {0} im Modul {1} der Anwendung {2} bereits aktiv ist.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=Der Nachrichtenendpunkt kann nur wiederaufgenommen werden, wenn er sich in einem inaktiven Status befindet.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Es ist keine Aktion erforderlich.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: Die Anforderung zum Anhalten des Nachrichtenendpunkts f\u00fcr die Bean {0} im Modul {1} der Anwendung {2} wurde nicht erfolgreich ausgef\u00fchrt, weil der Endpunkt nicht aktiv ist.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=Der Nachrichtenendpunkt kann nur angehalten werden, wenn er sich in einem aktiven Status befindet.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Warten Sie, bis sich der Nachrichtenendpunkt in einem aktiven Status befindet, bevor Sie versuchen, ihn anzuhalten. 
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: Die Anforderung zur Wiederaufnahme des Nachrichtenendpunkts f\u00fcr die Bean {0} im Modul {1} der Anwendung {2} wurde nicht erfolgreich ausgef\u00fchrt, weil der Endpunkt nicht angehalten ist.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=Der Nachrichtenendpunkt kann nur wiederaufgenommen werden, wenn er sich in einem Pausestatus befindet.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Warten Sie, bis sich der Nachrichtenendpunkt in einem Pausestatus befindet, bevor Sie die Operation zur Wiederaufnahme wiederholen. 

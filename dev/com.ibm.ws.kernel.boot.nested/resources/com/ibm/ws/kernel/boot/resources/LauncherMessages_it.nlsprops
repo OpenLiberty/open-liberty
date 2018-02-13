@@ -660,6 +660,14 @@ error.zosProcStart.jobname.invalid=CWWKE0943E: Avvio della procedura z/OS STC {0
 error.zosProcStart.jobname.invalid.explanation=Il nome lavoro STC specificato dalla propriet\u00e0 WLP_ZOS_JOBNAME nel file server.env non \u00e8 valido. Il nome lavoro non deve essere pi\u00f9 lungo di 8 caratteri e non deve contenere una virgola.
 error.zosProcStart.jobname.invalid.useraction=Verificare che il nome del lavoro non sia pi\u00f9 di otto caratteri e non contenga una virgola.
 
+error.server.pause.command.port.disabled=CWWKE0944E: \u00c8 stata ricevuta una richiesta di sospensione \u00e8 stata ricevuta per il server {0}, ma la porta comandi del server \u00e8 disabilitata. Impossibile elaborare la richiesta. Abilitare la porta comandi e riprovare.
+error.server.pause.command.port.disabled.explanation=La porta comandi del server \u00e8 obbligatoria per la comunicazione con il server in esecuzione. La porta comandi \u00e8 disabilitata per questo server, quindi la richiesta di sospensione non pu\u00f2 essere elaborata. Si noti che, per impostazione predefinita, la porta comandi \u00e8 disabilitata quando un server viene avviato come attivit\u00e0 avviata su z/OS.
+error.server.pause.command.port.disabled.useraction=Abilitare la porta comandi per questo server. Se il server \u00e8 in esecuzione come un'attivit\u00e0 avviata su z/OS, in alternativa questa interruzione pu\u00f2 essere richiesta dalla console dell'operatore.
+
+error.server.resume.command.port.disabled=CWWKE0945E: \u00c8 stata ricevuta una richiesta di ripresa \u00e8 stata ricevuta per il server {0}, ma la porta comandi del server \u00e8 disabilitata. Impossibile elaborare la richiesta. Abilitare la porta comandi e riprovare.
+error.server.resume.command.port.disabled.explanation=La porta comandi del server \u00e8 obbligatoria per la comunicazione con il server in esecuzione. La porta comandi \u00e8 disabilitata per questo server, quindi la richiesta di ripresa non pu\u00f2 essere elaborata. Si noti che, per impostazione predefinita, la porta comandi \u00e8 disabilitata quando un server viene avviato come attivit\u00e0 avviata su z/OS.
+error.server.resume.command.port.disabled.useraction=Abilitare la porta comandi per questo server. Se il server \u00e8 in esecuzione come un'attivit\u00e0 avviata su z/OS, in alternativa questa ripresa pu\u00f2 essere richiesta dalla console dell'operatore.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.

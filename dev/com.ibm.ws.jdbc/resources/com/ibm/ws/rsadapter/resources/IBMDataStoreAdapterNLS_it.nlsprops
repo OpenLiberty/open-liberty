@@ -283,14 +283,7 @@ META_DATA_EXCEPTION=DSRA7018I: L''accesso ai metadati del database ha causato un
 META_DATA_EXCEPTION.explanation=Si \u00e8 verificata un'eccezione mentre il server delle applicazioni stava tentando di acquisire o accedere all'oggetto dei metadati del database.
 META_DATA_EXCEPTION.useraction=Verificare che i metadati siano stati abilitati sul database di backend.
 
-# 7019-7039 deleted
-
-# DSRA7040I	WAS_CONNECTION_POOLING_DISABLED_INFO
-WAS_CONNECTION_POOLING_DISABLED_INFO=DSRA7040I: Il server delle applicazioni ha disabilitato il pool di connessioni interno.
-WAS_CONNECTION_POOLING_DISABLED_INFO.explanation=Il server delle applicazioni ha rilevato l'abilitazione alla memorizzazione nella cache della connessione tramite il database. Il pool di connessioni nel server delle applicazioni sar\u00e0 disabilitato.
-WAS_CONNECTION_POOLING_DISABLED_INFO.useraction=Se non si desidera disabilitare il pool di connessioni nel server delle applicazioni, disabilitare il pool di connessioni per il server di database.
-
-# 7041-7042 deleted
+# 7019-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

@@ -18,7 +18,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41DatabaseMetaData;
 
-public class WSJdbc42DatabaseMetaData extends WSJdbc41DatabaseMetaData {
+public class WSJdbc42DatabaseMetaData extends WSJdbc41DatabaseMetaData implements DatabaseMetaData {
 
     public WSJdbc42DatabaseMetaData(DatabaseMetaData metaDataImpl, WSJdbcConnection connWrapper) throws SQLException {
         super(metaDataImpl, connWrapper);

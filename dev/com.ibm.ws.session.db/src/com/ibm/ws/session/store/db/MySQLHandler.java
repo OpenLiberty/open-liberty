@@ -17,8 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 
-import com.ibm.ws.session.store.common.LoggingUtil;
-
 public class MySQLHandler extends DatabaseHandler {
 
     private static final String methodClassName = "MySQLHandler";

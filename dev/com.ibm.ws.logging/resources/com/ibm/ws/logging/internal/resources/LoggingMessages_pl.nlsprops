@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Nast\u0119puj\u0105ce komunikaty s\u0105
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Komunikaty, kt\u00f3re s\u0105 skonfigurowane jako ukryte, nie s\u0105 zapisywane w plikach console.log i messages.log. S\u0105 zapisywane w pliku trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Format danych wyj\u015bciowych pliku messages.log zosta\u0142 zaktualizowany do {0}.
+MESSAGE_FORMAT_UPDATED.explanation=Format danych wyj\u015bciowych pliku messages.log zosta\u0142 zaktualizowany.
+MESSAGE_FORMAT_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany do {0}.
+CONSOLE_FORMAT_UPDATED.explanation=Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany.
+CONSOLE_FORMAT_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

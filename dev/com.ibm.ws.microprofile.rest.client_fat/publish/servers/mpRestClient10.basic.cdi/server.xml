@@ -1,0 +1,11 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>mpRestClient-1.0</feature>
+    <feature>mpConfig-1.1</feature>
+    <feature>cdi-1.2</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+</server>

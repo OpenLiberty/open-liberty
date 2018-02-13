@@ -307,3 +307,7 @@ JWT_ERROR_GETTING_JWK_KEY.useraction=Stellen Sie sicher, dass der Netzbetrieb or
 JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Der Aussteller [{0}] des angegebenen JSON Web Token (JWT) wird nicht anerkannt, weil in der JWT-Konfiguration [{1}] keine anerkannten Aussteller angegeben sind.
 JWT_TRUSTED_ISSUERS_NULL.explanation=In der Serverkonfiguration werden die Aussteller angegeben, die f\u00fcr die Validierung von JWTs anerkannt werden. Da in der JWT-Konfiguration jedoch keine anerkannten Aussteller angegeben sind, kann das Token nicht validiert werden.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Stellen Sie sicher, dass in der in der Nachricht angegebenen JWT-Konfiguration mindestens ein anerkannter Aussteller definiert ist. Stellen Sie sicher, dass der Aussteller des JWT mit einem der in der JWT-Konfiguration angegebenen anerkannten Aussteller \u00fcbereinstimmt.
+
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Das HTTP-Schema wird am angegebenen Endpunkt {0} verwendet. Es ist aber HTTPS erforderlich.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=F\u00fcr den angegebenen Endpunkt ist HTTPS erforderlich, in der Anforderungs-URL wurde jedoch HTTP verwendet.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=\u00dcberpr\u00fcfen Sie die Anforderungs-URL und stellen Sie sicher, dass HTTPS verwendet wird, oder \u00e4ndern Sie die Konfiguration so, dass HTTPS nicht erforderlich ist.

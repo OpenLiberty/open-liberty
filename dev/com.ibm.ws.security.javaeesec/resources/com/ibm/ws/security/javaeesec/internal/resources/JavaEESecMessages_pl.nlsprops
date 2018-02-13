@@ -42,3 +42,38 @@ JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Je\u015bli nazwa dziedziny musi zosta
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Wdra\u017canie modu\u0142u {0} w aplikacji {1} zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Lista klas: {2}. Najprawdopodobniej przyczyn\u0105 jest problem z pakietem aplikacji. Upewnij si\u0119, \u017ce w ka\u017cdym module istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Wdro\u017cenie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Taka sytuacja nie jest dozwolona.
 JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism dla ka\u017cdego modu\u0142u.
+
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Wyst\u0119puje b\u0142\u0105d, gdy program rozstrzyga konfiguracj\u0119 {0} dla sk\u0142adnicy to\u017csamo\u015bci. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. Warto\u015bci\u0105 domy\u015bln\u0105 jest {1}.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Konfiguracja sk\u0142adnicy to\u017csamo\u015bci nie mo\u017ce zosta\u0107 rozstrzygni\u0119ta na poprawn\u0105 warto\u015b\u0107.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Je\u015bli u\u017cywane s\u0105 wyra\u017cenia EL, upewnij si\u0119, \u017ce s\u0105 one poprawne i \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. 
+JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Parametr hashAlgorithm podany dla elementu hashAlgorithm ({0}) ma niepoprawny format. Odebrany parametr: {1}. Wymagany format to nazwa=warto\u015b\u0107.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Lista parametr\u00f3w hashAlgorithm ma niepoprawny format i nie mo\u017cna jej przeanalizowa\u0107.
+JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Popraw element hashAlgorithmParameters w adnotacji DatabaseIdentityStore.
+
+JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: Zapytanie {1} w celu uzyskania programu wywo\u0142uj\u0105cego {0} nie powiod\u0142o si\u0119 w DatabaseIdentityStore. Zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}
+JAVAEESEC_WARNING_GEN_DB.explanation=Wyszukiwanie podanego programu wywo\u0142uj\u0105cego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Zosta\u0142 zwr\u00f3cony b\u0142\u0105d.
+JAVAEESEC_WARNING_GEN_DB.useraction=Przejrzyj udost\u0119pniony b\u0142\u0105d.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Zapytanie {1} w celu uzyskania grup dla programu wywo\u0142uj\u0105cego {0} nie powiod\u0142o si\u0119 w DatabaseIdentityStore. Cz\u0119\u015bciowa lista grup: {2}. B\u0142\u0105d: {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Wyszukiwanie grup dla programu wywo\u0142uj\u0105cego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Zosta\u0142 zwr\u00f3cony b\u0142\u0105d.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Przejrzyj udost\u0119pniony b\u0142\u0105d. Zwr\u00f3cono cz\u0119\u015bciow\u0105 list\u0119 grup.
+
+JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: Referencje udost\u0119pnione dla obiektu IdentityStore nie s\u0105 referencjami UsernamePasswordCredential i nie mo\u017cna sprawdzi\u0107 ich poprawno\u015bci.
+JAVAEESEC_WARNING_WRONG_CRED.explanation=Referencje udost\u0119pnione dla obiektu IdentityStore nie s\u0105 referencjami UsernamePasswordCredential i nie mo\u017cna sprawdzi\u0107 ich poprawno\u015bci.
+JAVAEESEC_WARNING_WRONG_CRED.useraction=Sprawd\u017a typ referencji przekazanych do obiektu IdentityStore.
+
+JAVAEESEC_WARNING_NULL_PWD=CWWKS1921W: Do elementu DatabaseIdentityStore przekazano has\u0142o o warto\u015bci NULL i nie mo\u017cna sprawdzi\u0107 jego poprawno\u015bci.
+JAVAEESEC_WARNING_NULL_PWD.explanation=Referencja UsernamePasswordCredential zawiera\u0142a has\u0142o o warto\u015bci NULL.
+JAVAEESEC_WARNING_NULL_PWD.useraction=Podaj poprawne has\u0142o.
+
+JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Nie znaleziono komponentu bean algorytmu mieszaj\u0105cego dla klasy {0}.
+JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Nie znaleziono algorytmu mieszaj\u0105cego wymienionego w elemencie hashAlgorithm w adnotacji DatabaseIdentityStore.
+JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Dodaj niestandardowy algorytm mieszaj\u0105cy jako komponent bean, kt\u00f3ry jest dost\u0119pny dla aplikacji.
+
+JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Zapytanie {1} nie zwr\u00f3ci\u0142o has\u0142a dla programu wywo\u0142uj\u0105cego {0} w DatabaseIdentityStore.
+JAVAEESEC_WARNING_NO_PWD.explanation=Zapytanie nie zwr\u00f3ci\u0142o has\u0142a dla podanego zapytania programu wywo\u0142uj\u0105cego.
+JAVAEESEC_WARNING_NO_PWD.useraction=Je\u015bli oczekiwano has\u0142a, sprawd\u017a zapytanie programu wywo\u0142uj\u0105cego i zawarto\u015b\u0107 bazy danych. 
+JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Zapytanie {1} zwr\u00f3ci\u0142o wiele wynik\u00f3w dla programu wywo\u0142uj\u0105cego {0} w DatabaseIdentityStore.
+JAVAEESEC_WARNING_MULTI_CALLER.explanation=Zwr\u00f3cono wiele wynik\u00f3w dla \u017c\u0105danego programu wywo\u0142uj\u0105cego. Zapytanie programu wywo\u0142uj\u0105cego musi zwr\u00f3ci\u0107 tylko jeden wynik.
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Przejrzyj zapytanie programu wywo\u0142uj\u0105cego i zawarto\u015bci bazy danych. Zmie\u0144 zapytanie programu wywo\u0142uj\u0105cego w taki spos\u00f3b, aby zwr\u00f3ci\u0142o jeden wynik. 
+#>>>>>>> Add messages for IdentityStore

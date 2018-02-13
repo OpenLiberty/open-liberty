@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.platform.v7.jndi.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -45,7 +47,13 @@ public class InAppClientContainerNamingHelper implements JavaColonNamingHelper {
     @Override
     public Object getObjectInstance(JavaColonNamespace namespace, String name) throws NamingException {
         if (JavaColonNamespace.COMP == namespace && COMP_NAME.equals(name)) {
-            return Boolean.valueOf(WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(bundleContext.getProperty(WsLocationConstants.LOC_PROCESS_TYPE)));
+            String processType = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return bundleContext.getProperty(WsLocationConstants.LOC_PROCESS_TYPE);
+                }
+            });
+            return Boolean.valueOf(WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(processType));
         }
         return null;
     }

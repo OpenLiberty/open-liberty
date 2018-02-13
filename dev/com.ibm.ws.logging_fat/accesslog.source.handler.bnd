@@ -1,0 +1,38 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Access Log Source Handler
+Bundle-SymbolicName: accesslog.source.handler
+Bundle-Description: AccessLog SourceHandler: Sample source and handler for collector manager framework; version=${bVersion}
+  
+WS-TraceGroup: AccessLogHandler
+
+Import-Package: com.ibm.ejs.ras, \
+                com.ibm.websphere.ras, \
+                com.ibm.websphere.ras.annotation, \
+                com.ibm.ws.ffdc, \
+                com.ibm.ws.ras.instrument.annotation, \
+                com.ibm.wsspi.kernel.service.location, \
+                com.ibm.wsspi.kernel.service.utils, \
+                org.osgi.framework, \
+                com.ibm.wsspi.collector.manager, \
+                com.ibm.ws.logging.data
+               
+
+Private-Package: accesslog.source.handler
+
+Include-Resource: \
+        OSGI-INF=test-bundles/accesslog.source.handler/resources/OSGI-INF
+ 
+Service-Component: \
+  AccessLogHandler;\
+    implementation:=accesslog.source.handler.AccessLogHandlerImpl;\
+    provide:=com.ibm.wsspi.collector.manager.Handler; \
+     executor=java.util.concurrent.ExecutorService; \
+    modified:='modified'; \
+    immediate:='true'; \
+    properties:="service.vendor=IBM", \
+    
+ 

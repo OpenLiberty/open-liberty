@@ -26,6 +26,8 @@ import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TruncatableThrowable;
+import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
@@ -212,6 +214,8 @@ public class BaseTraceService implements TrService {
         // Capture System.out/.err after registerLoggerHandler has initialized
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
+        //Remove EMQ from BufferManager after a certain amount of time has passed
+        BufferManagerImpl.removeEMQByTimer();
     }
 
     protected void registerLoggerHandlerSingleton() {

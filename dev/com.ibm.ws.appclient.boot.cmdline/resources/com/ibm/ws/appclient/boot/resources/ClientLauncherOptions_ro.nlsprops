@@ -20,7 +20,11 @@ scriptUsage=Utilizare: {0} action clientName [op\u0163iuni]
 
 use.actions=Ac\u0163iuni:
 use.options=Op\u0163iuni:
+use.options.gen.desc=\ \ \ \ Utiliza\u0163i help [actionName] pentru informa\u0163ii detaliate despre op\u0163iuni pentru fiecare op\u0163iune.
 use.jvmarg=Op\u0163iuni JVM:
+category-key.lifecycle=Ciclu de via\u0163\u0103 server
+category-key.help=Informa\u0163ii
+category-key.misc=Diverse
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -66,18 +70,19 @@ option-desc.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile puse \u00een
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="cale spre fi\u015fierul arhiv\u0103 \u0163int\u0103"
 option-desc.archive=\tSpecifica\u0163i \u0163inta arhivei de generat de ac\u0163iunea            \n\
-\tpachetului. \u0162inta poate fi spcificat\u0103 fie ca o cale absolut\u0103, fie ca o \n\
-\tcale relativ\u0103. Dac\u0103 aceast\u0103 op\u0163iune este omis\u0103, fi\u015fierul arhiv\u0103 va\n\
-\tfi creat \u00een directorul de ie\u015fire de client. Extensia de nume de fi\u015fier \u0163int\u0103      \n\
-\tar putea influen\u0163a formatul arhivei generate.       \n\
-\tFormatul implicit de arhiv\u0103 pentru ac\u0163iunea pachet este "pax" pe z/OS   \n\
-\t\u015fi "zip" pe toate celelalte platforme.                                    \n\
-\tFormatul de arhiv\u0103 "jar" va produce un jar care se auto-extrage, similar cu\n\
-\tarhiva programului de instalare original\u0103
+\tpachetului. \u0162inta poate fi specificat\u0103 fie ca o cale absolut\u0103, fie ca o \n\
+\tcale relativ\u0103. Dac\u0103 este omis\u0103 aceast\u0103 op\u0163iune, este creat\u0103 arhiva\n\
+\t\u00een directorul de ie\u015fire client. Extensia numelui de fi\u015fier \u0163int\u0103 ar\n\
+\tputea influen\u0163a formatul arhivei generate. Formatul arhivei implicite\n\
+\tpentru ac\u0163iunea de pachet este "pax" pe z/OS \u015fi "zip" pe toate      \n\
+\tcelelalte platforme. Formatul arhivei "jar" va produce un jar auto-extractor\n\
+\tsimilar arhivei programului de instalare original.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=valoare,valoare,...
-option-desc.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide variaz\u0103 func\u0163ie de\n\
-\tac\u0163iune.
+option-desc.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide sunt: all*, usr,   \n\
+\tminify. Op\u0163iunea usr creeaz\u0103 un pachet care con\u0163ine serverul \n\
+\t\u015fi aplica\u0163ia, dar nu runtime-ul. Op\u0163iunea implicit\u0103 all produce\n\
+\tun pachet client care con\u0163ine totul.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica\u0163i numele \u015fablonului de folosit la crearea unui nou client. 

@@ -107,6 +107,14 @@ public class ConfigFieldInjectionBean {
     @ConfigProperty(name = "PIZZA_GOOD_KEY", defaultValue = "")
     Pizza PIZZA_GOOD_PROP;
 
+//    @Inject
+//    @ConfigProperty(name = "BLUE_CAR_KEY")
+//    Car<Blue> BLUE_CAR_PROP;
+//
+//    @Inject
+//    @ConfigProperty(name = "RED_CAR_KEY")
+//    Car<Red> RED_CAR_PROP;
+
     public String getSIMPLE_KEY1() {
         return config.getValue("SIMPLE_KEY1", String.class);
     }
@@ -187,4 +195,11 @@ public class ConfigFieldInjectionBean {
         return PIZZA_GOOD_PROP;
     }
 
+//    public Car<Red> getRED_CAR_KEY() {
+//        return RED_CAR_PROP;
+//    }
+//
+//    public Car<Blue> getBLUE_CAR_KEY() {
+//        return BLUE_CAR_PROP;
+//    }
 }

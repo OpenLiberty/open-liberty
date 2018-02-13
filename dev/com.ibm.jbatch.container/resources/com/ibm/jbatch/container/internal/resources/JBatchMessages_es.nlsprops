@@ -309,3 +309,7 @@ display.unresolved.jsl=CWWKY0043I:  El JSL no resuelto para este trabajo es \n\
 display.unresolved.jsl.explanation=El JSL utilizado para el trabajo se muestra antes de resolver los par\u00e1metros y propiedades.
 display.unresolved.jsl.useraction=Aseg\u00farese de que el nombre de archivo del JSL sea correcto y compruebe que el origen del JSL contenga el JSL correcto.
 
+#The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: El nombre grupo de operaciones {0} no se ha resuelto en un nombre de grupo v\u00e1lido.
+JOB_GROUP_NAME_NOT_VALID.explanation=Es posible que los intentos de acceso al trabajo utilizando el acceso de grupo fallen, si se producen intentos de utilizar un nombre de grupo no v\u00e1lido.
+JOB_GROUP_NAME_NOT_VALID.useraction=Corrija el nombre de grupo en el archivo de configuraci\u00f3n del servidor.

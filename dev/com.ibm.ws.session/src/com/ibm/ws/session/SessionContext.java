@@ -542,9 +542,15 @@ public class SessionContext {
             ((ITimer) _storer).stop();
         }
 
-        SessionContextRegistry.remove(_sap.getAppName());
+        String appName = _sap.getAppName();
+        SessionContextRegistry.remove(appName);
         // need to update the SessionManagerRegistry to free up memory
-        SessionManagerRegistry.getSessionManagerRegistry().unregisterSessionManager(_sap.getAppName());
+        SessionManagerRegistry.getSessionManagerRegistry().unregisterSessionManager(appName);
+
+        SessionManager removedSessionManager = SessionManager.removeSessionManager(appName);
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINEST)) {
+            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINEST, methodClassName, methodNames[STOP], "Removed session manager: " + removedSessionManager);
+        }
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[STOP]);
