@@ -25,7 +25,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 
 /**
- * Tests to ensure MP OpenAPI annotations in a single app deployed on a server are read and
+ * Tests to ensure 	MP OpenAPI annotations in a single app deployed on a server are read and
  * an Open API documentation is returned.
  */
 public class ApplicationProcessorTest extends FATServletClient {
@@ -37,18 +37,18 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "app.web");
+        ShrinkHelper.defaultApp(server, APP_NAME, "app.web.airlines.*");
 
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKO1650E");
     }
 
     @Test
     public void verifyApplicationProcessor() throws Exception {
-
+    	Thread.sleep(5000);
     }
 }
