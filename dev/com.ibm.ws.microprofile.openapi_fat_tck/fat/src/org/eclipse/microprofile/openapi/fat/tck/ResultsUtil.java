@@ -1,7 +1,3 @@
-/** 
- * Returns the number of failed and 
- *  
- */
 package org.eclipse.microprofile.openapi.fat.tck;
 
 import java.io.IOException;

@@ -12,7 +12,7 @@
     <url>https://github.ibm.com/</url>
 
     <properties>
-        <microprofile.openapi.version>1.0.2-SNAPSHOT</microprofile.openapi.version>
+        <microprofile.openapi.version>1.0.1</microprofile.openapi.version>
         <surefire.version>2.19.1</surefire.version>
         <arquillian.version>1.1.14.Final</arquillian.version>
         <arquillian-wlp.version>1.0.0.Beta2</arquillian-wlp.version>
