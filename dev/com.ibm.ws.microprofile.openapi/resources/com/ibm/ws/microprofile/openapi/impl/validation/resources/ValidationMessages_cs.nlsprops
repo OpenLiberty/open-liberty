@@ -1,0 +1,92 @@
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+callbackURLTemplateEmpty=\u0160ablona adresy URL objektu Callback je pr\u00e1zdn\u00e1 a nen\u00ed platnou adresou URL.
+callbackInvalidSubstitutionVariables=Objekt Callback obsahuje neplatn\u00e9 substitu\u010dn\u00ed prom\u011bnn\u00e9: \"{0}\".
+callbackMustBeRuntimeExpression=Objekt Callback mus\u00ed obsahovat platn\u00fd b\u011bhov\u00fd v\u00fdraz, jak definuje specifikace OpenAPI. Hodnota ur\u010den\u00e1 pro b\u011bhov\u00fd v\u00fdraz: \"{0}\" nen\u00ed platn\u00e1.
+callbackInvalidURL=Objekt Callback mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+callbackInvalidPathItem=Objekt Callback mus\u00ed obsahovat platnou polo\u017eku cesty. Hodnota polo\u017eky cesty p\u0159idru\u017een\u00e1 ke kl\u00ed\u010di \"{0}\" nen\u00ed platn\u00e1 hodnota.
+
+contactInvalidURL=Objekt Contact mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+contactInvalidEmail=Objekt Contact mus\u00ed obsahovat platnou e-mailovou adresu. Hodnota \"{0}\" ur\u010den\u00e1 pro e-mailovou adresu nen\u00ed platn\u00e1.
+
+exampleOnlyValueOrExternalValue=Objekt Example \"{0}\" ur\u010duje pole \"value\" i \"externalValue\". Zadejte pouze jedno z pol\u00ed.
+
+externalDocumentationInvalidURL=Objekt ExternalDocumentation mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+
+infoTermsOfServiceInvalidURL=Objekt Info mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro \"termsOfService\" nen\u00ed platn\u00e1 adresa URL.
+invalidUrl=Objekt \"{0}\" mus\u00ed obsahovat platnou adresu URL. Hodnota \"{1}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+invalidUri=Objekt \"{0}\" mus\u00ed obsahovat platn\u00fd identifik\u00e1tor URI. Hodnota \"{1}\" ur\u010den\u00e1 pro identifik\u00e1tor URI nen\u00ed platn\u00e1.
+
+licenseInvalidURL=Objekt License mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+
+mediaTypeExampleOrExamples=Objekt MediaType nem\u016f\u017ee m\u00edt \"examples\" a \"example\".
+mediaTypeEncodingProperty=Vlastnost k\u00f3dov\u00e1n\u00ed \"{0}\" ur\u010den\u00e1 v objektu MediaType v sch\u00e9matu neexistuje jako vlastnost.
+mediaTypeEmptySchema=Uvedenou vlastnost k\u00f3dov\u00e1n\u00ed nelze ov\u011b\u0159it, proto\u017ee odpov\u00eddaj\u00edc\u00ed vlastnost sch\u00e9matu je null.
+
+oAuthFlowInvalidURL=Objekt OAuthFlow mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+nonApplicableField=Pole \"{0}\" s hodnotou \"{1}\" nelze aplikovat pro \"{2}\".
+
+openAPIVersionInvalid=Objekt OpenAPI mus\u00ed obsahovat platnou verzi specifikace OpenAPI. Hodnota \"{0}\" ur\u010den\u00e1 pro verzi specifikace OpenAPI nen\u00ed platn\u00e1.
+openAPITagIsNotUnique=Objekt OpenAPI mus\u00ed obsahovat jedine\u010dn\u00e9 n\u00e1zvy zna\u010dky. N\u00e1zev zna\u010dky \"{0}\" nen\u00ed jedine\u010dn\u00fd.
+
+operationIdsMustBeUnique=Byl nalezen v\u00edce ne\u017e jeden objekt Operation s operationId: \"{0}\". ID mus\u00ed b\u00fdt jedine\u010dn\u00e1.
+
+parameterInFieldInvalid=Hodnota pole \"in\" objektu Parameter \"{0}\" je neplatn\u00e1: \"{1}\".
+parameterExampleOrExamples=Objekt Parameter \"{0}\" ur\u010duje objekt Example i objekt Examples. M\u011bl by b\u00fdt ur\u010den pouze jeden z nich.
+parameterSchemaOrContent=Objekt Parameter \"{0}\" neobsahuje vlastnost Schema nebo vlastnost Content.
+parameterSchemaAndContent=Objekt Parameter \"{0}\" mus\u00ed obsahovat vlastnost Schema a vlastnost Content.
+parameterContentMapMustNotBeEmpty=Mapa \"content\" v r\u00e1mci objektu Parameter \"{0}\" mus\u00ed obsahovat pouze jednu polo\u017eku.
+
+pathItemInvalidRef=Objekt PathItem m\u00e1 neplatnou hodnotu $ref \"{0}\" pro polo\u017eku cesty \"{1}\". Odkaz na polo\u017eku cesty mus\u00ed b\u00fdt extern\u00ed.
+pathItemRequiredField=Objekt PathItem mus\u00ed obsahovat platnou cestu. Parametr cesty \"{0}\" z cesty \"{1}\" neobsahuje pole \"required\" nebo jeho hodnota nen\u00ed nastavena na \"true\".
+pathItemDuplicate=Objekt PathItem mus\u00ed obsahovat platnou cestu. Cesta \"{0}\" definuje duplicitn\u00ed parametr \"{1}\" na \u00farovni cesty: \"{2}\".
+pathItemParameterNotDeclaredSingle=Objekt PathItem mus\u00ed obsahovat platnou cestu. Cesta \"{0}\" definuje jeden parametr cesty, kter\u00fd nen\u00ed deklarov\u00e1n: \"{1}\".
+pathItemParameterNotDeclaredMultiple=Objekt PathItem mus\u00ed obsahovat platnou cestu. Cesta \"{0}\" definuje parametry cesty \"{1}\", kter\u00e9 nejsou deklarov\u00e1ny: \"{2}\".
+pathItemOperationRequiredField=Objekt PathItem mus\u00ed obsahovat platnou cestu. Parametr cesty \"{0}\" z operace \"{1}\" cesty \"{2}\" neobsahuje pole \"required\" nebo jeho hodnota nen\u00ed nastavena na \"true\".
+pathItemOperationDuplicate=Objekt PathItem mus\u00ed obsahovat platnou cestu. Operace \"{0}\" z cesty \"{1}\" definuje duplicitn\u00ed parametr \"{2}\": \"{3}\".
+pathItemOperationNullParameter=Objekt PathItem mus\u00ed obsahovat platnou cestu. Seznam parametr\u016f z operace \"{0}\" z cesty \"{1}\" obsahuje parametr null.
+pathItemOperationParameterNotDeclaredSingle=Objekt PathItem mus\u00ed obsahovat platnou cestu. Operace \"{0}\" z cesty \"{1}\" definuje jeden parametr cesty, kter\u00fd nen\u00ed deklarov\u00e1n: \"{2}\".
+pathItemOperationParameterNotDeclaredMultiple=Objekt PathItem mus\u00ed obsahovat platnou cestu. Operace \"{0}\" z cesty \"{1}\" definuje parametry cesty \"{2}\", kter\u00e9 nejsou deklarov\u00e1ny: \"{3}\".
+pathItemOperationNoPathParameterDeclared=Objekt PathItem mus\u00ed obsahovat platnou cestu. Operace \"{0}\" cesty \"{1}\" nedefinuje parametr cesty, kter\u00fd je deklarov\u00e1n: \"{2}\".
+pathItemInvalidFormat=Objekt PathItem mus\u00ed obsahovat platnou cestu. Form\u00e1t cesty \"{0}\" je neplatn\u00fd.
+
+pathsRequiresSlash=Objekt Paths mus\u00ed obsahovat platnou cestu. Cesta \"{0}\" neza\u010d\u00edn\u00e1 lom\u00edtkem.
+
+referenceExternalOrExtension=Hodnota \"{0}\" je extern\u00ed odkaz nebo roz\u0161\u00ed\u0159en\u00ed. Nen\u00ed k dispozici \u017e\u00e1dn\u00e9 ov\u011b\u0159en\u00ed.
+referenceNotPartOfModel=Ur\u010den\u00fd odkaz \"{0}\" nen\u00ed sou\u010d\u00e1st\u00ed komponent modelu.
+referenceNotValid=Ur\u010den\u00fd odkaz \"{0}\" nen\u00ed platn\u00fd.
+referenceNotValidFormat=Odkaz \"{0}\" nen\u00ed v platn\u00e9m form\u00e1tu.
+referenceNull=Objekt model components \"{0}\" je null nebo $ref \"{1}\" je null.
+referenceToObjectInvalid=Hodnota \"{0}\" je neplatn\u00fd odkaz pro \"{1}\".
+
+responseMustContainOneCode=Objekt Responses mus\u00ed obsahovat alespo\u0148 jeden k\u00f3d odezvy.
+responseShouldContainSuccess=Objekt Responses by m\u011bl pro \u00fasp\u011b\u0161nou operaci obsahovat alespo\u0148 jeden k\u00f3d odezvy.
+
+securityRequirementNotDeclared=N\u00e1zev \"{0}\" poskytnut\u00fd pro objekt SecurityRequirement neodpov\u00edd\u00e1 deklarovan\u00e9mu sch\u00e9matu zabezpe\u010den\u00ed.
+securityRequirementScopeNamesRequired=Pole \"{0}\" objektu SecurityRequirement by m\u011blo b\u00fdt seznamem n\u00e1zv\u016f rozsahu nezbytn\u00fdm pro proveden\u00ed, ale je: \"{1}\".
+securityRequirementFieldNotEmpty=Pole \"{0}\" objektu SecurityRequirement by m\u011blo pr\u00e1zdn\u00e9, ale je: \"{1}\".
+securityRequirementIsEmpty=Objekt SecurityRequirement nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+
+securitySchemeInFieldInvalid=Objekt SecurityScheme \"{0}\" m\u00e1 chybu. Hodnota pole \"in\" je \"{1}\", ale mus\u00ed b\u00fdt jedn\u00edm z (\"query\", \"header\", \"cookie\").
+securitySchemeInvalidURL=Objekt SecurityScheme mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+securitySchemeNonApplicableField=Jedno nebo v\u00edce nadefinovan\u00fdch pol\u00ed nen\u00ed pou\u017eiteln\u00e9 pro instanci SecurityScheme typu \"{0}\".
+
+serverVariableNotDefined=Prom\u011bnn\u00e1 \"{0}\" v objektu Server nen\u00ed definov\u00e1na.
+serverInvalidURL=Objekt Server mus\u00ed obsahovat platnou adresu URL. Hodnota \"{0}\" ur\u010den\u00e1 pro adresu URL nen\u00ed platn\u00e1.
+
+requiredFieldMissing=Chyba ov\u011b\u0159en\u00ed platnosti v um\u00edst\u011bn\u00ed: \"{0}\". Povinn\u00e9 pole \"{1}\" chyb\u00ed nebo je nastaveno na neplatnou hodnotu.

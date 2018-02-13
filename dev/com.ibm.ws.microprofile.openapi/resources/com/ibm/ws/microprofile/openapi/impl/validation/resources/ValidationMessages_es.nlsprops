@@ -1,0 +1,92 @@
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+callbackURLTemplateEmpty=La plantilla de URL del objeto Callback est\u00e1 vac\u00eda y no es un URL v\u00e1lido.
+callbackInvalidSubstitutionVariables=El objeto Callback contiene variables de sustituci\u00f3n no v\u00e1lidas: \"{0}\".
+callbackMustBeRuntimeExpression=El objeto Callback debe contener una expresi\u00f3n de ejecuci\u00f3n v\u00e1lida tal como se define en la especificaci\u00f3n OpenAPI. El valor especificado para la expresi\u00f3n de tiempo de ejecuci\u00f3n \"{0}\" no es v\u00e1lido.
+callbackInvalidURL=El objeto Callback debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+callbackInvalidPathItem=El objeto Callback debe contener un elemento de v\u00eda de acceso v\u00e1lido. El valor de elemento de v\u00eda de acceso con la clave \"{0}\" no es un valor v\u00e1lido.
+
+contactInvalidURL=El objeto Contact debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+contactInvalidEmail=El objeto Contact debe contener una direcci\u00f3n de correo electr\u00f3nico v\u00e1lida. El valor \"{0}\" especificado para la direcci\u00f3n de correo electr\u00f3nico no es v\u00e1lido.
+
+exampleOnlyValueOrExternalValue=El objeto Example \"{0}\" especifica los campos \"value\" y \"externalValue\". Especifique s\u00f3lo uno de estos campos.
+
+externalDocumentationInvalidURL=El objeto ExternalDocumentation debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+
+infoTermsOfServiceInvalidURL=El objeto de informaci\u00f3n debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para \"termsOfService\" no es un URL v\u00e1lido.
+invalidUrl=El objeto \"{0}\" debe contener un URL v\u00e1lido. El valor \"{1}\" especificado para el URL no es v\u00e1lido.
+invalidUri=El objeto \"{0}\" debe contener un URI v\u00e1lido. El valor \"{1}\" especificado para el URI no es v\u00e1lido.
+
+licenseInvalidURL=El objeto License debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+
+mediaTypeExampleOrExamples=El objeto MediaType no puede tener \"examples\" y \"example\".
+mediaTypeEncodingProperty=La propiedad de codificaci\u00f3n \"{0}\" especificada en el objeto MediaType no existe en el esquema como una propiedad.
+mediaTypeEmptySchema=La propiedad de codificaci\u00f3n especificada no se puede validar porque la propiedad de esquema correspondiente es nula.
+
+oAuthFlowInvalidURL=El objeto OAuthFlow debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+nonApplicableField=El campo \"{0}\" con el valor \"{1}\" no es aplicable para \"{2}\".
+
+openAPIVersionInvalid=El objeto OpenAPI debe contener una versi\u00f3n de especificaci\u00f3n OpenAPI v\u00e1lida. El valor \"{0}\" especificado para la versi\u00f3n de especificaci\u00f3n OpenAPI no es v\u00e1lido.
+openAPITagIsNotUnique=El objeto OpenAPI debe contener nombres de etiqueta exclusivos. El nombre de etiqueta \"{0}\" no es exclusivo.
+
+operationIdsMustBeUnique=Se ha encontrado m\u00e1s de un objeto Operation con operationId: \"{0}\". Los ID deben ser exclusivos.
+
+parameterInFieldInvalid=El valor del campo \"in\" del objeto Parameter \"{0}\" no es v\u00e1lido: \"{1}\".
+parameterExampleOrExamples=El objeto Parameter \"{0}\" especifica un objeto example y un objeto examples. S\u00f3lo se debe especificar uno de ellos.
+parameterSchemaOrContent=El objeto Parameter \"{0}\" no contiene una propiedad schema ni una propiedad content.
+parameterSchemaAndContent=El objeto Parameter \"{0}\" no debe contener una propiedad schema y una propiedad content.
+parameterContentMapMustNotBeEmpty=La correlaci\u00f3n \"content\" en el objeto Parameter \"{0}\" s\u00f3lo debe contener una \u00fanica entrada.
+
+pathItemInvalidRef=El objeto PathItem tiene un valor $ref \"{0}\" no v\u00e1lido para el elemento de v\u00eda de acceso \"{1}\". Una referencia a un elemento de v\u00eda de acceso debe ser externa.
+pathItemRequiredField=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. El par\u00e1metro path \"{0}\" de la v\u00eda de acceso \"{1}\" no contiene el campo \"required\" o su valor no es \"true\".
+pathItemDuplicate=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La v\u00eda de acceso \"{0}\" define un par\u00e1metro \"{1}\" duplicado a nivel de v\u00eda de acceso: \"{2}\".
+pathItemParameterNotDeclaredSingle=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La v\u00eda de acceso \"{0}\" define un \u00fanico par\u00e1metro path no declarado: \"{1}\".
+pathItemParameterNotDeclaredMultiple=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La v\u00eda de acceso \"{0}\" define los par\u00e1metros de v\u00eda de acceso \"{1}\" no declarados: \"{2}\".
+pathItemOperationRequiredField=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. El par\u00e1metro path \"{0}\" de la operaci\u00f3n \"{1}\" de la v\u00eda de acceso \"{2}\" no contiene el campo \"required\" o su valor no es \"true\".
+pathItemOperationDuplicate=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La operaci\u00f3n \"{0}\" de la v\u00eda de acceso \"{1}\" define un par\u00e1metro \"{2}\" duplicado: \"{3}\".
+pathItemOperationNullParameter=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La lista de par\u00e1metros de la operaci\u00f3n \"{0}\" de la v\u00eda de acceso \"{1}\" contiene un par\u00e1metro nulo.
+pathItemOperationParameterNotDeclaredSingle=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La operaci\u00f3n \"{0}\" de la v\u00eda de acceso \"{1}\" define un \u00fanico par\u00e1metro path no declarado: \"{2}\".
+pathItemOperationParameterNotDeclaredMultiple=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La operaci\u00f3n \"{0}\" de la v\u00eda de acceso \"{1}\" define par\u00e1metros path \"{2}\" no declarados: \"{3}\".
+pathItemOperationNoPathParameterDeclared=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. La operaci\u00f3n \"{0}\" de la v\u00eda de acceso \"{1}\" no define un par\u00e1metro path no declarado: \"{2}\".
+pathItemInvalidFormat=El objeto PathItem debe contener una v\u00eda de acceso v\u00e1lida. El formato de la v\u00eda de acceso \"{0}\" no es v\u00e1lido.
+
+pathsRequiresSlash=El objeto Paths debe contener una v\u00eda de acceso v\u00e1lida. La v\u00eda de acceso \"{0}\" debe empezar con una barra inclinada.
+
+referenceExternalOrExtension=El valor \"{0}\" es una referencia externa o una extensi\u00f3n. No hay ninguna validaci\u00f3n disponible.
+referenceNotPartOfModel=La referencia especificada \"{0}\" no forma parte de los componentes del modelo.
+referenceNotValid=La referencia especificada \"{0}\" no es v\u00e1lida.
+referenceNotValidFormat=La referencia \"{0}\" no tiene un formato v\u00e1lido.
+referenceNull=El objeto de componentes del modelo \"{0}\" es nulo o $ref \"{1}\" es nulo.
+referenceToObjectInvalid=El valor \"{0}\" es una referencia no v\u00e1lida para \"{1}\".
+
+responseMustContainOneCode=El objeto Responses debe contener al menos un c\u00f3digo de respuesta.
+responseShouldContainSuccess=El objeto Responses deber\u00eda contener al menos un c\u00f3digo de respuesta para que la operaci\u00f3n se realice correctamente.
+
+securityRequirementNotDeclared=El nombre \"{0}\" proporcionado para el objeto SecurityRequirement no se corresponde con un esquema de seguridad declarado.
+securityRequirementScopeNamesRequired=El campo \"{0}\" del objeto SecurityRequirement deber\u00eda ser una lista de nombres de \u00e1mbito necesarios para la ejecuci\u00f3n, pero es: \"{1}\".
+securityRequirementFieldNotEmpty=El campo \"{0}\" del objeto SecurityRequirement deber\u00eda estar vac\u00edo, pero es: \"{1}\".
+securityRequirementIsEmpty=El objeto SecurityRequirement no debe estar vac\u00edo.
+
+securitySchemeInFieldInvalid=El objeto SecurityScheme \"{0}\" tiene un error. El valor de su campo \"in\" es \"{1}\", pero debe ser uno de los siguientes: (\"query\", \"header\", \"cookie\").
+securitySchemeInvalidURL=El objeto SecurityScheme debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+securitySchemeNonApplicableField=Uno o varios campos definidos no son aplicables a una instancia SecurityScheme de tipo \"{0}\".
+
+serverVariableNotDefined=La variable \"{0}\" del objeto Server no est\u00e1 definida.
+serverInvalidURL=El objeto Server debe contener un URL v\u00e1lido. El valor \"{0}\" especificado para el URL no es v\u00e1lido.
+
+requiredFieldMissing=Error de validaci\u00f3n en la ubicaci\u00f3n: \"{0}\". Falta el campo obligatorio \"{1}\" o se ha establecido en un valor no v\u00e1lido.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: Atrybut UniqueId ma warto\u015b\u
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=Atrybut UniqueId w danym obiekcie CredentialValidationResult ma warto\u015b\u0107 NULL.
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Je\u015bli aplikacja udost\u0119pnia interfejs IdentityStore, upewnij si\u0119, \u017ce zwraca on poprawn\u0105 warto\u015b\u0107 UniqueId w ramach obiektu CredentialValidationResult.
 
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Nie znaleziono komponentu bean IdentityStoreHandler. U\u017cyj rejestru u\u017cytkownik\u00f3w zdefiniowanego w pliku server.xml.  Komponent bean IdentityStoreHandler jest tworzony, gdy istnieje co najmniej jeden komponent bean IdentityStore. Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Nie znaleziono komponentu bean IdentityStoreHandler. U\u017cyj rejestru u\u017cytkownik\u00f3w zdefiniowanego w pliku server.xml. Komponent bean IdentityStoreHandler jest tworzony, gdy istnieje co najmniej jeden komponent bean IdentityStore. Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Nie znaleziono komponentu bean IdentityStoreHandler. Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany. Komponent bean IdentityStoreHandler jest tworzony, gdy istnieje co najmniej jeden komponent bean IdentityStore.
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Je\u015bli aplikacja ma u\u017cywa\u0107 komponentu bean IdentityStore, upewnij si\u0119, \u017ce jest on poprawnie skonfigurowany.
 
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Aby w\u0142\u0105czy\u0107 ko
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona, zosta\u0142a wi\u0119c u\u017cyta warto\u015b\u0107 domy\u015blna defaultRealm.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Poniewa\u017c nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie zosta\u0142a zdefiniowana, nazwa dziedziny zosta\u0142a ustawiona na warto\u015b\u0107 domy\u015bln\u0105 defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Aby ustawi\u0107 nazw\u0119 dziedziny, zdefiniuj j\u0105 w adnotacji BasicAuthenticationMechanismDefinition w aplikacji.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Aby ustawi\u0107 nazw\u0119 dziedziny, zdefiniuj j\u0105 w adnotacji BasicAuthenticationMechanismDefinition w aplikacji.  Inna mo\u017cliwo\u015b\u0107 to ustawienie warto\u015bci atrybutu basicAuthenticationMechanismRealmName, je\u015bli atrybut overrideHttpAuthenticationMechanism na warto\u015b\u0107 BASIC.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Warto\u015b\u0107 {0} parametru konfiguracyjnego {1} jest niepoprawna.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Warto\u015b\u0107 parametru konfiguracyjnego jest niepoprawna.
@@ -61,6 +61,14 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Upewnij si\u0119
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Zakodowane dane s\u0105 niepoprawne. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Warto\u015b\u0107 zakodowana w bazie danych jest niepoprawna.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Upewnij si\u0119, \u017ce zakodowane dane w bazie danych zosta\u0142y zakodowane za pomoc\u0105 algorytmu mieszaj\u0105cego, kt\u00f3ry obs\u0142uguje klasa implementacji PasswordHash.
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: Atrybut {0} nie jest ustawiony w elemencie webAppSecurity, przes\u0142oni\u0119cie w kontenerze obiektu HttpAuthenticationMechanism nie b\u0119dzie dzia\u0142a\u0107 poprawnie.
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=Poniewa\u017c wymagany atrybut nie jest ustawiony, przes\u0142oni\u0119cie w kontenerze obiektu HttpAuthenticationMechanism uwierzytelniania za pomoc\u0105 formularza nie dzia\u0142a.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=Nale\u017cy ustawi\u0107 atrybut w komunikacie.
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E:  Warto\u015b\u0107 {0} atrybutu contextRootForFormAuthenticationMechanism nie jest zgodna z warto\u015bci\u0105 kontekstowego katalogu g\u0142\u00f3wnego {1} atrybutu {2} w elemencie webAppSecurity. Przes\u0142oni\u0119cie w kontenerze obiektu HttpAuthenticationMechanism nie b\u0119dzie dzia\u0142a\u0107 poprawnie.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation= Poniewa\u017c warto\u015b\u0107 kontekstowego katalogu g\u0142\u00f3wnego nie jest zgodna z okre\u015blonym atrybutem, przes\u0142oni\u0119cie w kontenerze obiektu HttpAuthenticationMechanism uwierzytelniania za pomoc\u0105 formularza nie dzia\u0142a.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=Atrybut w komunikacie nale\u017cy ustawi\u0107 na zgodny z okre\u015blonym kontekstowym katalogiem g\u0142\u00f3wnym.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=Warto\u015b\u0107 {0} iteracji nie jest liczb\u0105.

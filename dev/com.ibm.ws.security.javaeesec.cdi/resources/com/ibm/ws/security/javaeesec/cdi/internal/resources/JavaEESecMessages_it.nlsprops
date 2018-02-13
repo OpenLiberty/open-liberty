@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Per abilitare il bean HttpAut
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Il nome realm per l'autenticazione di base non \u00e8 impostato, pertanto viene utilizzato il valore predefinito defaultRealm.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Poich\u00e9 il nome realm per l'autenticazione di base non \u00e8 definito, il nome realm \u00e8 impostato sul valore predefinito defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Per impostare il nome realm, definirlo in una annotazione BasicAuthenticationMechanismDefinition nell'applicazione.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Per impostare il nome realm, definirlo in una annotazione BasicAuthenticationMechanismDefinition nell'applicazione. In alternativa, quando l'attributo overrideHttpAuthenticationMechanism \u00e8 impostato come BASIC, impostare il valore dell'attributo basicAuthenticationMechanismRealmName.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Il valore {0} del parametro di configurazione {1} non \u00e8 valido.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Il valore del parametro di configurazione non \u00e8 valido.
@@ -60,7 +60,16 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Assicurarsi che 
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: I dati hash non sono validi. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Il valore hash nel database non \u00e8 valido.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Verificare che i dati hash nel database siano stati resi tali dall'algoritmo hash supportato dalla classe di implementazione PasswordHash. 
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Verificare che i dati hash nel database siano stati resi tali dall'algoritmo hash supportato dalla classe di implementazione PasswordHash.
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: L''attributo {0} non \u00e8 impostato nell''elemento webAppSecurity, HttpAuthenticationMechanism sovrascritture contenitore non funzioner\u00e0 correttamente."
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=Poich\u00e9 l'attributo richiesto non \u00e8 impostato, l'autenticazione modulo HttpAuthenticationMechanism sovrascritture contenitore non funziona.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=L'attributo nel messaggio deve essere impostato.
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: Il valore {0} dell''attributo contextRootForFormAuthenticationMechanism non corrisponde al valore root di contesto {1} dell''attributo {2} nell''elemento webAppSecurity, HttpAuthenticationMechanism sovrascritture contenitore non funzioner\u00e0 correttamente."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Poich\u00e9 il valore root di contesto non corrisponde all'attributo specificato, l'autenticazione modulo HttpAuthenticationMechanism sovrascritture contenitore non funziona.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=L'attributo nel messaggio deve corrispondere alla root di contesto specificata.
+
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=L''iterazione {0} non \u00e8 un numero.
 JAVAEESEC_CDI_INVALID_ALGORITHM=L''algoritmo hash {0} non \u00e8 supportato.

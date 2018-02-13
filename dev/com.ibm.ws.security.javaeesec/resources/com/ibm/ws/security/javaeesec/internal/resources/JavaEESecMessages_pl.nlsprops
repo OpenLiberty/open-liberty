@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,42 +19,32 @@
 # Message prefix block: CWWKS1900 - CWWKS1924
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Nie znaleziono obiektu IdentityStore. Upewnij si\u0119, \u017ce zdefiniowano co najmniej jeden obiekt IdentityStore za pomoc\u0105 adnotacji w aplikacji.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Nie znaleziono obiektu IdentityStore. Jest on wymagany na potrzeby uwierzytelniania i autoryzacji.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Upewnij si\u0119, \u017ce aplikacja zawiera poprawne adnotacje, kt\u00f3re udost\u0119pniaj\u0105 co najmniej jeden obiekt IdentityStore.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Nie znaleziono skonfigurowanego obiektu IdentityStore. Upewnij si\u0119, \u017ce obiekt IdentityStore skonfigurowany przez aplikacj\u0119 jest dost\u0119pny.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Nie znaleziono obiektu IdentityStore wymaganego na potrzeby uwierzytelniania.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Zbadaj wszystkie komunikaty o b\u0142\u0119dzie pochodz\u0105ce z obiektu IdentityStore.
 
 JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: \u017baden obiekt IdentityStore nie obs\u0142uguje sprawdzania poprawno\u015bci u\u017cytkownika. Upewnij si\u0119, \u017ce co najmniej jeden obiekt IdentityStore obs\u0142uguje sprawdzanie poprawno\u015bci u\u017cytkownika.
-JAVAEESEC_ERROR_NO_VALIDATION.explanation=\u017baden z obiekt\u00f3w IdentityStore nie obs\u0142uguje sprawdzania poprawno\u015bci u\u017cytkownika i dlatego kod zabezpiecze\u0144 nie umo\u017cliwia uwierzytelnienia u\u017cytkownika.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nie znaleziono obiektu IdentityStore na potrzeby sprawdzenia poprawno\u015bci u\u017cytkownika i z tego powodu nie mo\u017cna uwierzytelni\u0107 u\u017cytkownika.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Upewnij si\u0119, \u017ce co najmniej jeden obiekt IdentityStore obs\u0142uguje sprawdzanie poprawno\u015bci u\u017cytkownika.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Nie znaleziono obiektu HttpAuthenticationMechanism dla modu\u0142u {0} w aplikacji {1}. Upewnij si\u0119, \u017ce ten modu\u0142 zawiera obiekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu HttpAuthenticationMechanism na potrzeby uwierzytelniania. By\u0107 mo\u017ce podanemu warunkowi nie odpowiada \u017caden obiekt lub odpowiada mu wiele obiekt\u00f3w. Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje jeden obiekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Nie mo\u017cna utworzy\u0107 obiektu HttpAuthenticationMechanism dla modu\u0142u {0} w aplikacji {1}.
+JAVAEESEC_ERROR_NO_HAM.explanation=Nie mo\u017cna utworzy\u0107 obiektu HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM.useraction=Zbadaj wszystkie komunikaty o b\u0142\u0119dzie pochodz\u0105ce z obiektu HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Nie mo\u017cna znale\u017a\u0107 obiektu ModuleProperties na potrzeby uwierzytelniania aplikacji {0}, poniewa\u017c aplikacja prawdopodobnie nie zawiera obiektu HttpAuthenticationMechanism. Upewnij si\u0119, \u017ce dla ka\u017cdego modu\u0142u zdefiniowany jest jeden obiekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Nie mo\u017cna zidentyfikowa\u0107 obiektu ModuleProperties wymaganego do uwierzytelnienia aplikacji. Ten b\u0142\u0105d zwykle jest spowodowany tym, \u017ce obiekt HttpAuthenticationMechanism nie jest zdefiniowany w aplikacji.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Upewnij si\u0119, \u017ce ka\u017cdy modu\u0142 w aplikacji zawiera obiekt HttpAuthenticationMechanism.
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas warto\u015bciowania wyra\u017cenia j\u0119zyka wyra\u017ce\u0144 (Expression Language \u2013 EL) dla atrybutu {0} adnotacji sk\u0142adnicy to\u017csamo\u015bci. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu.  Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna atrybutu: {1}.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Wyra\u017cenia EL atrybutu sk\u0142adnicy to\u017csamo\u015bci nie mo\u017cna rozstrzygn\u0105\u0107 na poprawn\u0105 warto\u015b\u0107.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Je\u015bli u\u017cywane s\u0105 wyra\u017cenia EL, upewnij si\u0119, \u017ce s\u0105 one poprawne i \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu.
 
-JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona. Jest u\u017cywana warto\u015b\u0107 defaultRealm.
-JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Nazwa dziedziny na potrzeby uwierzytelniania podstawowego nie jest ustawiona. Jest u\u017cywana warto\u015b\u0107 domy\u015blna defaultRealm.
-JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Je\u015bli nazwa dziedziny musi zosta\u0107 ustawiona, ustaw j\u0105 w aplikacji przy u\u017cyciu adnotacji BasicAuthenticationMechanismDefinition.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Wdra\u017canie modu\u0142u {0} w aplikacji {1} zako\u0144czy\u0142o si\u0119 niepowodzeniem, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Lista klas: {2}. Najprawdopodobniej przyczyn\u0105 jest problem z pakietem aplikacji. Upewnij si\u0119, \u017ce w ka\u017cdym module istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Wdro\u017cenie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wiele implementacji obiektu HttpAuthenticationMechanism. Taka sytuacja nie jest dozwolona.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Upewnij si\u0119, \u017ce w aplikacji istnieje tylko jedna implementacja obiektu HttpAuthenticationMechanism dla ka\u017cdego modu\u0142u.
-
-JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Wyst\u0119puje b\u0142\u0105d, gdy program rozstrzyga konfiguracj\u0119 {0} dla sk\u0142adnicy to\u017csamo\u015bci. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. Warto\u015bci\u0105 domy\u015bln\u0105 jest {1}.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Konfiguracja sk\u0142adnicy to\u017csamo\u015bci nie mo\u017ce zosta\u0107 rozstrzygni\u0119ta na poprawn\u0105 warto\u015b\u0107.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Je\u015bli u\u017cywane s\u0105 wyra\u017cenia EL, upewnij si\u0119, \u017ce s\u0105 one poprawne i \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. 
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Parametr hashAlgorithm podany dla elementu hashAlgorithm ({0}) ma niepoprawny format. Odebrany parametr: {1}. Wymagany format to nazwa=warto\u015b\u0107.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Lista parametr\u00f3w hashAlgorithm ma niepoprawny format i nie mo\u017cna jej przeanalizowa\u0107.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Popraw element hashAlgorithmParameters w adnotacji DatabaseIdentityStore.
 
-JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: Zapytanie {1} w celu uzyskania programu wywo\u0142uj\u0105cego {0} nie powiod\u0142o si\u0119 w DatabaseIdentityStore. Zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}
-JAVAEESEC_WARNING_GEN_DB.explanation=Wyszukiwanie podanego programu wywo\u0142uj\u0105cego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Zosta\u0142 zwr\u00f3cony b\u0142\u0105d.
-JAVAEESEC_WARNING_GEN_DB.useraction=Przejrzyj udost\u0119pniony b\u0142\u0105d.
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci referencji dla programu wywo\u0142uj\u0105cego {0}. Wykonanie zapytania {1} przez obiekt DatabaseIdentityStore nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 b\u0142\u0105d: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=Wyszukiwanie programu wywo\u0142uj\u0105cego nie powiod\u0142o si\u0119 z powodu b\u0142\u0119du.
+JAVAEESEC_ERROR_GEN_DB.useraction=Przejrzyj komunikat o b\u0142\u0119dzie.
 
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Zapytanie {1} w celu uzyskania grup dla programu wywo\u0142uj\u0105cego {0} nie powiod\u0142o si\u0119 w DatabaseIdentityStore. Cz\u0119\u015bciowa lista grup: {2}. B\u0142\u0105d: {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W:  Wykonanie zapytania {1} przez obiekt DatabaseIdentityStore w celu pobrania grup dla programu wywo\u0142uj\u0105cego {0} nie powiod\u0142o si\u0119. Cz\u0119\u015bciowa lista grup: {2}. B\u0142\u0105d: {3}.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Wyszukiwanie grup dla programu wywo\u0142uj\u0105cego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Zosta\u0142 zwr\u00f3cony b\u0142\u0105d.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Przejrzyj udost\u0119pniony b\u0142\u0105d. Zwr\u00f3cono cz\u0119\u015bciow\u0105 list\u0119 grup.
 
@@ -72,8 +62,8 @@ JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=Dodaj niestandardowy algorytm mieszaj\u
 
 JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Zapytanie {1} nie zwr\u00f3ci\u0142o has\u0142a dla programu wywo\u0142uj\u0105cego {0} w DatabaseIdentityStore.
 JAVAEESEC_WARNING_NO_PWD.explanation=Zapytanie nie zwr\u00f3ci\u0142o has\u0142a dla podanego zapytania programu wywo\u0142uj\u0105cego.
-JAVAEESEC_WARNING_NO_PWD.useraction=Je\u015bli oczekiwano has\u0142a, sprawd\u017a zapytanie programu wywo\u0142uj\u0105cego i zawarto\u015b\u0107 bazy danych. 
+JAVAEESEC_WARNING_NO_PWD.useraction=Je\u015bli oczekiwano has\u0142a, sprawd\u017a zapytanie programu wywo\u0142uj\u0105cego i zawarto\u015b\u0107 bazy danych.
+
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Zapytanie {1} zwr\u00f3ci\u0142o wiele wynik\u00f3w dla programu wywo\u0142uj\u0105cego {0} w DatabaseIdentityStore.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=Zwr\u00f3cono wiele wynik\u00f3w dla \u017c\u0105danego programu wywo\u0142uj\u0105cego. Zapytanie programu wywo\u0142uj\u0105cego musi zwr\u00f3ci\u0107 tylko jeden wynik.
-JAVAEESEC_WARNING_MULTI_CALLER.useraction=Przejrzyj zapytanie programu wywo\u0142uj\u0105cego i zawarto\u015bci bazy danych. Zmie\u0144 zapytanie programu wywo\u0142uj\u0105cego w taki spos\u00f3b, aby zwr\u00f3ci\u0142o jeden wynik. 
-#>>>>>>> Add messages for IdentityStore
+JAVAEESEC_WARNING_MULTI_CALLER.useraction=Przejrzyj zapytanie programu wywo\u0142uj\u0105cego i zawarto\u015bci bazy danych. Zmie\u0144 zapytanie programu wywo\u0142uj\u0105cego w taki spos\u00f3b, aby zwr\u00f3ci\u0142o jeden wynik.

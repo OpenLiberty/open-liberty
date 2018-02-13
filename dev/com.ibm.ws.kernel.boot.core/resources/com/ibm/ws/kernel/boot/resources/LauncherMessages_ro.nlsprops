@@ -85,7 +85,7 @@ error.serverNameCharacter.useraction=Redenumi\u0163i serverul folosind doar cara
 
 error.unknownArgument=CWWKE0013E: Op\u0163iune necunoscut\u0103: {0}
 error.unknownArgument.explanation=Op\u0163iunea specificat\u0103 nu a fost recunoscut\u0103.
-error.unknownArgument.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
+error.unknownArgument.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163i --help pentru o list\u0103 de op\u0163iuni valide.
 
 error.bootPropsStream=CWWKE0014E: Sistemul nu a putut deschide sau citi propriet\u0103\u0163ile bootstrap specificate. Cale: {0} Motiv: {1}
 error.bootPropsStream.explanation=Fi\u015fierul bootstrap.properties nu poate fi citit sau nu exist\u0103.
@@ -137,7 +137,7 @@ warning.noPlatformCache.useraction=Verifica\u0163i \u015fi rezolva\u0163i excep\
 
 warning.singleServer=CWWKE0027W: Un singur server poate fi specificat \u00een linia de comand\u0103; numele urm\u0103toare vor fi ignorate (server={0}, ignored={1}).
 warning.singleServer.explanation=Pute\u0163i specifica un singur server \u00een linia de comand\u0103. Primul nume de server a fost procesat; numele r\u0103mase au fost ignorate.
-warning.singleServer.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Specifica\u0163i un singur server pentru a evita acest avertisment.
+warning.singleServer.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Specifica\u0163i un singur server pentru a evita acest avertisment.
   
 error.serverAlreadyRunning=CWWKE0029E: O instan\u0163\u0103 a serverului {0} ruleaz\u0103 deja.
 error.serverAlreadyRunning.explanation=\u00cencerca\u0163i s\u0103 porni\u0163i un server ce ruleaz\u0103 deja.
@@ -173,7 +173,7 @@ error.initLog.useraction=Verifica\u0163i loca\u0163ia \u015fi starea fi\u015fier
 
 audit.kernelUpTime=CWWKE0036I: Serverul {0} s-a oprit dup\u0103 {1}.
 audit.kernelUpTime.explanation=Kernel-ul s-a oprit dup\u0103 intervalul specificat (\u00een secunde). Acest interval depinde de momentul \u00een care a fost lansat\u0103 platforma.
-audit.kernelUpTime.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+audit.kernelUpTime.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 error.unknown.console.protocol=CWWKE0037E: {0} nu este un protocol de consol\u0103 suportat. Protocolul telnet va fi utilizat \u00een schimb. 
 error.unknown.console.protocol.explanation=Protocolul specificat nu este suportat, a\u015fadar sistemul folose\u015fte \u00een loc protocolul (telnet) implicit.
@@ -193,7 +193,7 @@ error.frameworkRestart.useraction=Reporni\u0163i serverul folosind op\u0163iunea
 
 info.frameworkRestart=CWWKE0041I: Cache-ul platformei este nesincornizat. Se reporne\u015fte cadrul de lucru.
 info.frameworkRestart.explanation=Cadrul de lucru a fost repornit \u00eentruc\u00e2t cache-ul platformei era nesincronizat.
-info.frameworkRestart.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+info.frameworkRestart.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 # CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
 
@@ -250,14 +250,14 @@ error.fileNotFound.useraction=Verifica\u0163i c\u0103 exist\u0103 calea \u015fi 
 # Note {0,time,short} tells the message formatter to expand
 info.stop.request.received=CWWKE0055I: Oprirea serverului a fost cerut\u0103 pe {0,date,full} la {0,time,short}. Serverul {1} se opre\u015fte.
 info.stop.request.received.explanation=Acest mesaj este pur informativ.
-info.stop.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+info.stop.request.received.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 error.unableZipDir=CWWKE0056E: Nu se poate arhiva directorul datorit\u0103 unei excep\u0163ii IO {0}. 
 error.unableZipDir.explanation=A avut loc o excep\u0163ie IO.
 error.unableZipDir.useraction=Re\u00eencerca\u0163i opera\u0163ia. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 info.introspect.request.received=CWWKE0057I: Cerere introspect\u0103 primit\u0103. Serverul scap\u0103 de status.
-info.introspect.request.received.explanation=Acest mesaj este doar \u00een scop informativ.
+info.introspect.request.received.explanation=Acest mesaj este pur informativ.
 info.introspect.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
 warn.packageServer.include.unknownOption=CWWKE0058W: Nu se poate utiliza op\u0163iunea --include={0}, se va utiliza \u00een loc --include=all.
@@ -303,11 +303,11 @@ error.creatingNewServerMkDirFail.explanation=Serverul specificat nu poate fi cre
 error.creatingNewServerMkDirFail.useraction=Asigura\u0163i-v\u0103 c\u0103 este suficient spa\u0163iu pe disc pentru a crea serverul \u015fi c\u0103 loca\u0163ia are permisiunile de scriere corecte \u00eenainte de a \u00eencerca s\u0103 crea\u0163i din nou serverul.
 
 info.javadump.request.received=CWWKE0067I: A fost primit\u0103  o cerere de dump Java.
-info.javadump.request.received.explanation=Acest mesaj este doar \u00een scop informativ.
+info.javadump.request.received.explanation=Acest mesaj este pur informativ.
 info.javadump.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
 info.javadump.created=CWWKE0068I: S-a creat un dump Java: {0}
-info.javadump.created.explanation=Acest mesaj este doar \u00een scop informativ.
+info.javadump.created.explanation=Acest mesaj este pur informativ.
 info.javadump.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
 warn.javadump.unsupported=CWWKE0069W: Nu este suportat tipul de dump Java {0}.
@@ -384,28 +384,28 @@ audit.jvm.shutdown.explanation=Serverul a interceptat o cerere de a opri JVM \u0
 audit.jvm.shutdown.useraction=Dac\u0103 oprirea serverului a fost nea\u015fteptat\u0103, determina\u0163i dac\u0103 s-a trimis un semnal de terminare la procesul serverului.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Pornirea serverului a fost ini\u0163ializat\u0103 pentru serverul {0}, dar nu  este posibil s\u0103 se spun\u0103 dac\u0103 pornirea a fost finalizat\u0103 deoarece portul de comand\u0103 este dezactivat.
-warning.serverStartedCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat \u00een mod explicit pentru acest server, prin urmare nu este posibil de spus c\u00e2nd serverul \u015fi-a finalizat pornirea.
-warning.serverStartedCommandPortDisabled.useraction=Verifica\u0163i manual istoricele de server pentru a verifica faptul c\u0103 serverul a pornit cu succes.
+warning.serverStartedCommandPortDisabled.explanation=Portul de comenzi server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comenzi a fost dezactivat explicit pentru acest server, prin urmare nu se poate spune c\u00e2nd s-a finalizat pornirea.
+warning.serverStartedCommandPortDisabled.useraction=Verifica\u0163i manual jurnalele serverului pentru a verifica faptul c\u0103 serverul a pornit cu succes.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Pornirea serverului a fost ini\u0163ializat\u0103 pentru serverul {0} cu ID proces {1}, dar nu  este posibil s\u0103 se spun\u0103 dac\u0103 pornirea a fost finalizat\u0103 deoarece portul de comand\u0103 este dezactivat.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat \u00een mod explicit pentru acest server, prin urmare nu este posibil de spus c\u00e2nd serverul \u015fi-a finalizat pornirea.
-warning.serverStartedWithPIDCommandPortDisabled.useraction=Verifica\u0163i manual istoricele de server pentru a verifica faptul c\u0103 serverul a pornit cu succes.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Portul de comenzi server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comenzi a fost dezactivat explicit pentru acest server, prin urmare nu se poate spune c\u00e2nd s-a finalizat pornirea.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=Verifica\u0163i manual jurnalele serverului pentru a verifica faptul c\u0103 serverul a pornit cu succes.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Serverul {0} nu a putut fi oprit deoarece portul de comand\u0103 server este dezactivat.
-error.serverStopCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat pentru acest server, prin urmare nu poate fi oprit din acest script.  Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
-error.serverStopCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, serverul poate fi oprit din consola de operator.  Altfel, procesul de server poate fi oprit dintr-un shell.
+error.serverStopCommandPortDisabled.explanation=Portul de comenzi server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comenzi a fost dezactivat pentru acest server, prin urmare acesta nu poate fi oprit din acest script.  Re\u0163ine\u0163i c\u0103 portul de comenzi este dezactivat implicit c\u00e2nd este pornit un server ca task pornit pe z/OS.
+error.serverStopCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, serverul nu poate fi oprit din consola de operator.  Altfel, procesul de server poate fi oprit dintr-un shell.
 
 warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Dump-ul de server {0} complet \u00een {1}.  Unele informa\u0163ii nu au putut fi ob\u0163inute deoarece portul de comand\u0103 server este dezactivat, \u00eempiedic\u00e2nd comunica\u0163ia direct\u0103 cu serverul care ruleaz\u0103.
-warning.serverDumpCompleteCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat pentru acest server, prin urmare nu au putut fi ob\u0163inute unele por\u0163iuni din dump-ul de server care are nevoie de comunica\u0163ie direct\u0103 cu serverul.  Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
-warning.serverDumpCompleteCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, poate fi cerut un  dump complet de server din consola de operator.  Consulta\u0163i centrul de informare pentru detalii.
+warning.serverDumpCompleteCommandPortDisabled.explanation=Portul de comenzi server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comenzi a fost dezactivat pentru acest server, prin urmare nu au putut fi ob\u0163inute unele por\u0163iuni din dump-ul de server care necesit\u0103 comunica\u0163ie direct\u0103 cu serverul.  Re\u0163ine\u0163i c\u0103 portul de comenzi este dezactivat implicit c\u00e2nd este pornit un server ca task pornit pe z/OS.
+warning.serverDumpCompleteCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, poate fi necesar un dump complet de server din consola de operator.  Consulta\u0163i centrul de informare pentru detalii.
 
 error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Dump-ul de server {0} nu a putut fi oprit deoarece portul de comand\u0103 server este dezactivat.
-error.serverJavaDumpCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 este dezactivat pentru acest server, prin urmare dump-ul cerut nu a putut fi luat.  Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
+error.serverJavaDumpCommandPortDisabled.explanation=Portul de comenzi server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comenzi a fost dezactivat pentru acest server, prin urmare nu a putut fi luat dump-ul cerut.  Re\u0163ine\u0163i c\u0103 portul de comenzi este dezactivat implicit c\u00e2nd este pornit un server ca task pornit pe z/OS.
 error.serverJavaDumpCommandPortDisabled.useraction=Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, acest dump poate fi cerut din consola de operator.  Consulta\u0163i centrul de informare pentru detalii.
 
 info.javadump.zos.system.created=CWWKE0092I: Este finalizat\u0103 cererea Java System Transaction Dump (SYSTDUMP).
 info.javadump.zos.system.created.explanation=Acest mesaj este doar \u00een scop informativ. V\u0103 rug\u0103m s\u0103 v\u0103 referi\u0163i la istoricul de sistem pentru detalii despre numele \u015fi volumul setului de date care con\u0163ine ie\u015firea dump-ului de sistem Java.
-info.javadump.zos.system.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+info.javadump.zos.system.created.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 warn.fingerprintUnableToMkDirs=CWWKE0093W: Serverul nu a putut crea loca\u0163ia {0} la \u00eencercarea de a scrie fi\u015fierul {1}. 
 warn.fingerprintUnableToMkDirs.explanation=Opera\u0163ia de creare a directorului nu a reu\u015fit. Este posibil ca discul s\u0103 fie plin sau serverul s\u0103 nu aib\u0103 permisiune de scriere la loca\u0163ie.
@@ -425,7 +425,7 @@ warn.packageRuntime.include.unknownOption.useraction=Re\u00eencerca\u0163i coman
 
 audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Acest produs este licen\u0163iat pentru dezvoltare \u015fi utilizare \u00een produc\u0163ie limitat\u0103. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
 audit.licenseRestriction.base_ilan.ilan.explanation=Acest produs este licen\u0163iat pentru dezvoltare \u015fi utilizare \u00een produc\u0163ie limitat\u0103. Pentru a vedea defini\u0163ia utiliz\u0103rii pentru dezvoltare \u015fi pentru a \u00een\u0163elege limit\u0103rile pentru produc\u0163ie, citi\u0163i fi\u015fierele de licen\u0163\u0103 ale produsului.
-audit.licenseRestriction.base_ilan.ilan.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+audit.licenseRestriction.base_ilan.ilan.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 audit.licenseRestriction.developers.ilan=CWWKE0101I: Acest produs este licen\u0163iat pentru utilizare la dezvoltare. Termenii de licen\u0163\u0103 pot fi vizualiza\u0163i aici: {0}
 audit.licenseRestriction.developers.ilan.explanation=Acest produs este licen\u0163iat pentru utilizare la dezvoltare. Pentru a vedea defini\u0163ia utiliz\u0103rii pentru dezvoltare \u015fi pentru a \u00een\u0163elege limit\u0103rile, citi\u0163i fi\u015fierele de licen\u0163\u0103 ale produsului.
@@ -578,7 +578,7 @@ warning.java.security.permdenied.quickmsg.explanation=Metoda checkPermission() a
 warning.java.security.permdenied.quickmsg.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 \u015fi actualiza\u0163i fi\u015fierul de politic\u0103 de permisiuni pentru bundle sau aplica\u0163ii, dup\u0103 cum este necesar.
 
 error.package.missingLibExtractDir=CWWKE0922E: Comanda de pachet nu se poate finaliza deoarece instalarea nu are directorul lib/extract.
-error.package.missingLibExtractDir.explanation=Directorul lib/extract con\u0163ine metadate \u015fi clasele de auto-extrac\u0163ie pentru finalizarea comenzii package. Dac\u0103 acest director lipse\u015fte, aceasta poate ar\u0103ta c\u0103 instalarea WebSphere Liberty Profile nu a fost complet\u0103 sau c\u0103 directorul a fost \u015fters.
+error.package.missingLibExtractDir.explanation=Directorul lib/extract con\u0163ine metadate \u015fi clasele de auto-extrac\u0163ie pentru finalizarea comenzii package.  Dac\u0103 acest director lipse\u015fte, aceasta poate ar\u0103ta c\u0103 instalarea WebSphere Liberty Profile nu a fost complet\u0103 sau c\u0103 directorul a fost \u015fters.
 error.package.missingLibExtractDir.useraction=Reinstala\u0163i WebSphere Liberty Profile \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul lib/extract sub directorul WLP_HOME.
 
 info.server.pause.all.request.received=CWWKE0923I: A fost primit\u0103 o cerere de a trece \u00een pauz\u0103 toate componentele capabile de pauz\u0103 din server.
@@ -668,6 +668,10 @@ error.server.pause.command.port.disabled.useraction=Activa\u0163i portul de coma
 error.server.resume.command.port.disabled=CWWKE0945E: A fost recep\u0163ionat\u0103 o cerere de reluare pentru serverul {0}, dar portul de comand\u0103 al serverului este dezactivat. Cererea nu a putut fi procesat\u0103. Activa\u0163i portul de comand\u0103 \u015fi \u00eencerca\u0163i din nou.
 error.server.resume.command.port.disabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103. Portul de comand\u0103 este dezactivat pentru acest server, prin urmare nu a putut fi procesat\u0103 cererea de reluare. Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
 error.server.resume.command.port.disabled.useraction=Activa\u0163i portul de comand\u0103 pentru acest server. Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, aceast\u0103 reluare poate fi cerut\u0103 \u015fi de pe consola de operator.
+
+warning.server.status.invalid.targets=CWWKE0946W: A fost primit\u0103 o cerere de stare pentru anumite componente, dar lista de componente pe op\u0163iunea pentru \u0163inte a fost goal\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.status.invalid.targets.explanation=Un utilizator a lansat o cerere de stare cu o list\u0103 de \u0163inte goal\u0103 pe op\u0163iunea pentru \u0163inte. Cererea s-a finalizat, dar nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.status.invalid.targets.useraction=Specifica\u0163i pe op\u0163iunea pentru \u0163int\u0103 o list\u0103 de componente pentru a le verifica starea. Pentru a verifica starea cumulativ\u0103 a tuturor componentelor capabile de pauz\u0103 din server, lansa\u0163i o cerere de stare f\u0103r\u0103 op\u0163iunea pentru \u0163int\u0103.
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

@@ -1,0 +1,91 @@
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+callbackURLTemplateEmpty=Die URL-Vorlage des Callback-Objekts ist leer und keine g\u00fcltige URL.
+callbackInvalidSubstitutionVariables=Das Callback-Objekt enth\u00e4lt ung\u00fcltige Substitutionsvariablen: \"{0}\".
+callbackMustBeRuntimeExpression=Das Callback-Objekt muss einen g\u00fcltigen Laufzeitausdruck gem\u00e4\u00df Definition in der OpenAPI-Spezifikation enthalten. Der f\u00fcr den Laufzeitausdruck angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+callbackInvalidURL=Das Callback-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+callbackInvalidPathItem=Das Callback-Objekt muss ein g\u00fcltiges Pfadelement enthalten. Der dem Schl\u00fcssel \"{0}\" zugeordnete Pfadelementwert ist kein g\u00fcltiger Wert.
+
+contactInvalidURL=Das Contact-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+contactInvalidEmail=Das Contact-Objekt muss eine g\u00fcltige E-Mail-Adresse enthalten. Der f\u00fcr die E-Mail-Adresse angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+
+exampleOnlyValueOrExternalValue=Das Example-Objekt \"{0}\" gibt sowohl das Feld \"value\" als auch das Feld \"externalValue\" an. Geben Sie nur eines der Felder an.
+
+externalDocumentationInvalidURL=Das ExternalDocumentation-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+
+infoTermsOfServiceInvalidURL=Das Info-Objekt muss eine g\u00fcltige URL enthalten. Der Wert \"{0}\", der f\u00fcr \"termsOfService\" angegeben wurde, ist keine g\u00fcltige URL.
+invalidUrl=Das \"{0}\"-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{1}\" ist nicht g\u00fcltig.
+invalidUri=Das \"{0}\"-Objekt muss einen g\u00fcltigen URI enthalten. Der f\u00fcr den URI angegebene Wert \"{1}\" ist nicht g\u00fcltig.
+
+licenseInvalidURL=Das License-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+
+mediaTypeExampleOrExamples=Das MediaType-Objekt kann nicht \"examples\" und \"example\" enthalten.
+mediaTypeEncodingProperty=Die im MediaType-Objekt angegebene Codierungseigenschaft \"{0}\" ist im Schema nicht als Eigenschaft vorhanden.
+mediaTypeEmptySchema=Die angegebene Codierungseigenschaft kann nicht validiert werden, weil die entsprechende Schemaeigenschaft null ist.
+
+oAuthFlowInvalidURL=Das OAuthFlow-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+nonApplicableField=Das Feld \"{0}\" mit dem Wert \"{1}\" gilt nicht f\u00fcr \"{2}\".
+openAPIVersionInvalid=Das OpenAPI-Objekt muss eine g\u00fcltige OpenAPI-Spezifikationsversion enthalten. Der f\u00fcr die OpenAPI-Spezifikationsversion angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+openAPITagIsNotUnique=Das OpenAPI-Objekt muss eindeutige Tagnamen enthalten. Der Tagname \"{0}\" ist nicht eindeutig.
+
+operationIdsMustBeUnique=Es wurde mehr als ein Operation-Objekt mit der Operation-ID \"{0}\" gefunden. IDs m\u00fcssen eindeutig sein.
+
+parameterInFieldInvalid=Der Wert im Feld \"in\" des Parameter-Objekts \"{0}\" ist ung\u00fcltig: \"{1}\".
+parameterExampleOrExamples=Das Parameter-Objekt \"{0}\" gibt sowohl ein Objekt example als auch ein Objekt examples an. Es darf nur eines der beiden Objekte angegeben werden.
+parameterSchemaOrContent=Das Parameter-Objekt \"{0}\" enth\u00e4lt keine Schemaeigenschaft oder eine Inhaltseigenschaft.
+parameterSchemaAndContent=Das Parameter-Objekt \"{0}\" darf nicht eine Schemaeigenschaft und eine Inhaltseigenschaft enthalten.
+parameterContentMapMustNotBeEmpty=Die \"content\"-Zuordnung innerhalb des Parameter-Objekts \"{0}\" darf nur einen Eintrag enthalten.
+
+pathItemInvalidRef=Das PathItem-Objekt hat einen ung\u00fcltigen $ref-Wert \"{0}\" f\u00fcr das Pfadelement \"{1}\". Eine Referenz auf ein Pfadelement muss extern sein.
+pathItemRequiredField=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Der Pfadparameter \"{0}\" aus dem Pfad \"{1}\" enth\u00e4lt nicht das Feld \"required\" oder der zugeh\u00f6rige Wert ist nicht \"true\".
+pathItemDuplicate=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Der Pfad \"{0}\" definiert einen doppelten \"{1}\"-Parameter auf Pfadebene: \"{2}\".
+pathItemParameterNotDeclaredSingle=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Der Pfad \"{0}\" definiert einen Pfadparameter, der nicht deklariert ist: \"{1}\".
+pathItemParameterNotDeclaredMultiple=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Der Pfad \"{0}\" definiert \"{1}\"-Pfadparameter, die nicht deklariert sind: \"{2}\".
+pathItemOperationRequiredField=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Der Pfadparameter \"{0}\" der Operation \"{1}\" des Pfads \"{2}\" enth\u00e4lt nicht das Feld \"required\" oder der zugeh\u00f6rige Wert ist nicht \"true\".
+pathItemOperationDuplicate=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Die Operation \"{0}\" des Pfads \"{1}\" definiert einen doppelten \"{2}\"-Parameter: \"{3}\".
+pathItemOperationNullParameter=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Die Liste der Parameter aus der Operation \"{0}\" des Pfads \"{1}\" enth\u00e4lt einen Nullparameter.
+pathItemOperationParameterNotDeclaredSingle=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Die Operation \"{0}\" des Pfads \"{1}\" definiert einen Pfadparameter, der nicht deklariert ist: \"{2}\".
+pathItemOperationParameterNotDeclaredMultiple=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Die Operation \"{0}\" des Pfads \"{1}\" definiert \"{2}\"-Pfadparameter, die nicht deklariert sind: \"{3}\".
+pathItemOperationNoPathParameterDeclared=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Die Operation \"{0}\" des Pfads \"{1}\" definiert keinen Pfadparameter, der deklariert ist: \"{2}\".
+pathItemInvalidFormat=Das PathItem-Objekt muss einen g\u00fcltigen Pfad enthalten. Das Format des Pfads \"{0}\" ist ung\u00fcltig.
+
+pathsRequiresSlash=Das Paths-Objekt muss einen g\u00fcltigen Pfad enthalten. Der Pfad \"{0}\" beginnt nicht mit einem Schr\u00e4gstrich.
+
+referenceExternalOrExtension=Der Wert \"{0}\" ist eine externe Referenz oder eine Erweiterung. Eine Validierung ist nicht verf\u00fcgbar.
+referenceNotPartOfModel=Die angegebene Referenz \"{0}\" ist nicht Teil der Modellkomponente.
+referenceNotValid=Die angegebene Referenz \"{0}\" ist nicht g\u00fcltig.
+referenceNotValidFormat=Die Referenz \"{0}\" hat kein g\u00fcltiges Format.
+referenceNull=Das Modellkomponentenobjekt \"{0}\" ist null oder $ref \"{1}\" ist null.
+referenceToObjectInvalid=Der Wert \"{0}\" ist eine ung\u00fcltige Referenz f\u00fcr \"{1}\".
+
+responseMustContainOneCode=Das Responses-Objekt muss mindestens einen Antwortcode enthalten.
+responseShouldContainSuccess=Das Responses-Objekt muss mindestens einen Antwortcode f\u00fcr eine erfolgreiche Operation enthalten.
+
+securityRequirementNotDeclared=Der f\u00fcr das SecurityRequirement-Objekt angegebene Name \"{0}\" entspricht keinem deklarierten Sicherheitsschema.
+securityRequirementScopeNamesRequired=Das \"{0}\"-Feld des SecurityRequirement-Objekts muss eine Liste mit Geltungsbereichsnamen sein, die f\u00fcr die Ausf\u00fchrung erforderlich sind, es ist jedoch \"{1}\".
+securityRequirementFieldNotEmpty=Das \"{0}\"-Feld des SecurityRequirement-Objekts muss leer sein, es ist jedoch \"{1}\".
+securityRequirementIsEmpty=Das SecurityRequirement-Objekt darf nicht leer sein.
+
+securitySchemeInFieldInvalid=Das \"{0}\"-SecurityScheme-Objekt hat einen Fehler. Der Wert des zugeh\u00f6rigen Felds \"in\" ist \"{1}\". Es muss jedoch einen der folgenden Werte haben: \"query\", \"header\", \"cookie\".
+securitySchemeInvalidURL=Das SecurityScheme-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+securitySchemeNonApplicableField=Mindestens ein definiertes Feld ist f\u00fcr eine SecurityScheme-Instanz des Typs \"{0}\" nicht g\u00fcltig.
+
+serverVariableNotDefined=Die Variable \"{0}\" im Server-Objekt ist nicht definiert.
+serverInvalidURL=Das Server-Objekt muss eine g\u00fcltige URL enthalten. Der f\u00fcr die URL angegebene Wert \"{0}\" ist nicht g\u00fcltig.
+
+requiredFieldMissing=G\u00fcltigkeitsfehler an folgender Position: \"{0}\". Das erforderliche Feld \"{1}\" fehlt oder es ist auf einen ung\u00fcltigen Wert gesetzt.
