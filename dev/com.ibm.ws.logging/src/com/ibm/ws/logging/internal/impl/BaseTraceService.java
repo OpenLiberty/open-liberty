@@ -381,13 +381,12 @@ public class BaseTraceService implements TrService {
                 filteredList.add("message");
                 if (traceLog == systemOut) {
                     filteredList.add("trace");
-                    consoleLogHandler.setIsTraceStdout(true);
+                    consoleLogHandler.setTraceStdout(true);
                 } else {
-                    consoleLogHandler.setIsTraceStdout(false);
+                    consoleLogHandler.setTraceStdout(false);
                 }
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
                 consoleLogHandler.setCopySystemStreams(copySystemStreams);
-                consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
             }
         }
 
@@ -429,7 +428,7 @@ public class BaseTraceService implements TrService {
         }
         consoleLogHandler.setFormatter(formatter);
         consoleLogHandler.setBTS(this);
-        //check if json source list has sourcelist
+        consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
     }
 
     /**
@@ -596,13 +595,13 @@ public class BaseTraceService implements TrService {
         TraceWriter detailLog = traceLog;
         // Tee to messages.log (always)
 
-        RoutedMessage routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
-
-        /*
-         * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
-         * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
-         * However, LogstashCollector and BluemixLogCollector will receive all messages
-         */
+        RoutedMessage routedMessage = null;
+        if (externalMessageRouter.get() != null) {
+            String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+            routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord);
+        } else {
+            routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
+        }
         invokeMessageRouters(routedMessage);
         if (logSource != null) {
             logSource.publish(routedMessage);
@@ -724,8 +723,13 @@ public class BaseTraceService implements TrService {
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
 
-            RoutedMessage routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
-
+            RoutedMessage routedMessage = null;
+            if (externalMessageRouter.get() != null) {
+                String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+                routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, message, logRecord);
+            } else {
+                routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
+            }
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
             // This has to be checked in this method: direct invocation of system.out
