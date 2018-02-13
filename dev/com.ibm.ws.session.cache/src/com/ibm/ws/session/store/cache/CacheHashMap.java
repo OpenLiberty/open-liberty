@@ -17,8 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
@@ -437,29 +436,24 @@ public class CacheHashMap extends BackedHashMap {
         ObjectOutputStream oos = null;
         byte[] objbuf = null;
 
-        try {
-            @SuppressWarnings("rawtypes")
-            Hashtable ht;
-            synchronized (d2) {
-                ht = d2.getSwappableData();
-            }
-
-            // serialize session (app data only) into byte array buffer
-            baos = new ByteArrayOutputStream();
-            oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
-            oos.writeObject(ht);
-            oos.flush();
-            objbuf = baos.toByteArray();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc,  "success - size of byte array is " + objbuf.length);
-            }
-
-            oos.close();
-            baos.close();
-        } catch (ConcurrentModificationException cme) {
-            // TODO copied from DatabaseHashMap, but this seems suspicious. Need to investigate further. 
-            Tr.event(this, tc,  "CacheHashMap.deferWrite", d2.getId());
+        Map<Object, Object> ht;
+        synchronized (d2) {
+            ht = d2.getSwappableData();
         }
+
+        // serialize session (app data only) into byte array buffer
+        baos = new ByteArrayOutputStream();
+        oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+        oos.writeObject(ht);
+        oos.flush();
+        objbuf = baos.toByteArray();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc,  "success - size of byte array is " + objbuf.length);
+        }
+
+        oos.close();
+        baos.close();
+
         return objbuf;
     }
 

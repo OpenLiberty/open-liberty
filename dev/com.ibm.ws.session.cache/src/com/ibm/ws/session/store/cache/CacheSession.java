@@ -13,6 +13,8 @@ package com.ibm.ws.session.store.cache;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.UserTransaction;
 
@@ -29,7 +31,7 @@ public class CacheSession extends BackedSession {
     private static final TraceComponent tc = Tr.register(CacheSession.class);
 
     // The swappable data
-    private Hashtable<?, ?> mSwappableData;
+    private Map<Object, Object> mSwappableData;
 
     private boolean populatedAppData;
     private boolean usingMultirow;
@@ -63,10 +65,10 @@ public class CacheSession extends BackedSession {
      * need to call listeners or get all attribute names. Therefore, we add to the
      * existing swappable data rather than just calling setSwappable data.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("rawtypes")
     private void getMultiRowAppData() {
         populatedAppData = true;
-        Hashtable swappable = getSwappableData();
+        Map<Object, Object> swappable = getSwappableData();
         Hashtable props = (Hashtable) ((CacheHashMapMR) getSessions()).getAllValues(this);
         if (props != null) {
             Enumeration kys = props.keys();
@@ -101,8 +103,8 @@ public class CacheSession extends BackedSession {
     private void getSingleRowAppData() {
         // TODO copied from DatabaseSession.getSingleRowAppData
         populatedAppData = true;
-        @SuppressWarnings("rawtypes")
-        Hashtable swappable = (Hashtable) ((CacheHashMap) getSessions()).getValue(getId(), this);
+        @SuppressWarnings(value = "unchecked")
+        Map<Object, Object> swappable = (Map<Object, Object>) ((CacheHashMap) getSessions()).getValue(getId(), this);
         setSwappableData(swappable);
         synchronized (_attributeNames) {
             refillAttrNames(swappable);
@@ -112,9 +114,8 @@ public class CacheSession extends BackedSession {
     /**
      * @see com.ibm.ws.session.store.common.BackedSession#getSwappableData()
      */
-    @SuppressWarnings("rawtypes")
     @Override
-    public Hashtable getSwappableData() {
+    public Map<Object, Object> getSwappableData() {
         // TODO copied from DatabaseSession.getSwappableData
         if (mSwappableData == null) {
             if (!isNew() && !usingMultirow && !populatedAppData) {
@@ -122,7 +123,7 @@ public class CacheSession extends BackedSession {
             }
             //mSwappableData could have been updated
             if (mSwappableData == null) {
-                mSwappableData = new Hashtable();
+                mSwappableData = new ConcurrentHashMap<Object, Object>();
                 if (isNew()) {
                     //if this is a new session, then we have the updated app data
                     populatedAppData = true;
@@ -182,7 +183,7 @@ public class CacheSession extends BackedSession {
      * @see com.ibm.ws.session.store.common.BackedSession#setSwappableData(java.util.Hashtable)
      */
     @Override
-    public void setSwappableData(@SuppressWarnings("rawtypes") Hashtable ht) {
+    public void setSwappableData(Map<Object, Object> ht) {
         mSwappableData = ht;
     }
 }
