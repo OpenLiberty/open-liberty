@@ -272,19 +272,40 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         if (streamID == 0 || streamID % 2 == 1) {
             // if this isn't an http/2 exception, don't pass it down, since that will cause a GOAWAY to be sent immediately
             if (e == null || e instanceof Http2Exception) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close: closing with exception: " + e.getMessage());
+                }
                 this.muxLink.close(inVC, e);
             } else {
                 H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
-                int PROTOCOL_ERROR = 0x1;
-                Frame reset = new FrameRstStream(3, PROTOCOL_ERROR, false);
                 if (h2sp != null) {
                     try {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "close: attempting to reset stream: " + streamID);
+                        }
+                        int PROTOCOL_ERROR = 0x1;
+                        Frame reset = new FrameRstStream(streamID, PROTOCOL_ERROR, false);
                         h2sp.processNextFrame(reset, Constants.Direction.WRITING_OUT);
                     } catch (Http2Exception h2e) {
-                        this.muxLink.close(inVC, h2e);
+                        // if we can't write out RST frame, throw the original exception
+                        this.muxLink.close(inVC, e);
                     }
                 }
                 this.muxLink.close(inVC, null);
+            }
+        } else { // try to send an RST_STREAM to let the client know the push promise has been canceled
+            H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
+            if (h2sp != null && !h2sp.isStreamClosed() && !h2sp.isHalfClosed()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close: attempting to reset stream: " + streamID);
+                }
+                int PROTOCOL_ERROR = 0x1;
+                Frame reset = new FrameRstStream(streamID, PROTOCOL_ERROR, false);
+                try {
+                    h2sp.processNextFrame(reset, Constants.Direction.WRITING_OUT);
+                } catch (Http2Exception h2e) {
+                    // don't close
+                }
             }
         }
     }
