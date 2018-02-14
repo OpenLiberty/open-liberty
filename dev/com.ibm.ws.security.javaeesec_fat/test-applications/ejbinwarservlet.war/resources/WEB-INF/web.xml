@@ -5,9 +5,8 @@
   <description>This is a servlet to test EJBs</description>
 
   <!-- SERVLET DEFINITIONS -->
-   
   <servlet id="Default_Servlet_1">
-    <description>SecurityEJBServlet to be used in the PureAnnA0x tests</description>
+    <description>SecurityEJBServlet to be used for security context ejb tests</description>
     <display-name>SecurityEJBServlet</display-name>
     <servlet-name>SecurityEJBServlet</servlet-name>
     <servlet-class>web.war.ejb.servlet.SecurityEJBServlet</servlet-class>
@@ -15,12 +14,10 @@
   </servlet>
   
   <!-- SERVLET MAPPINGS -->   
-   
   <servlet-mapping id="Default_Servlet_Mapping_1">
     <servlet-name>SecurityEJBServlet</servlet-name>
     <url-pattern>/SimpleServlet</url-pattern>
   </servlet-mapping>
-  
   
   <!-- SECURITY CONSTRAINTS -->  
   <security-constraint id="SecurityConstraint_Ann_Default">

@@ -1,26 +1,15 @@
-
-/*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
 package web.ejb.jar.bean;
 
 import java.util.logging.Logger;
 
-
-
-import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
+import javax.annotation.security.RunAs;
+import javax.ejb.EJB;
+import javax.ejb.EJBAccessException;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 
@@ -28,29 +17,25 @@ import javax.security.enterprise.SecurityContext;
  * Bean implementation class for Enterprise Bean
  */
 
-@Singleton
-@PermitAll
-public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
+@Stateless
+@RolesAllowed({ "Manager" })
+@DeclareRoles("DeclaredRole01")
+@RunAs("Employee")
+public class SecurityEJBA01Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
 
-    private static final Class<?> c = SecurityEJBA02Bean.class;
+    private static final Class<?> c = SecurityEJBA01Bean.class;
     protected Logger logger = Logger.getLogger(c.getCanonicalName());
 
     @Inject
     SecurityContext securityContext;
 
+    @EJB(beanName = "SecurityEJBRunAsBean")
+    private SecurityEJBRunAsInterface injectedRunAs;
 
-    @Resource
-    private SessionContext context;
-
-    public SecurityEJBA02Bean() {}
-
-    @Override
-    protected SessionContext getContext() {
-        return context;
-    }
+    public SecurityEJBA01Bean() {}
 
     @Override
-    protected SecurityContext getSecurityContext() {
+    protected SecurityContext getContext() {
         return securityContext;
     }
 
@@ -72,16 +57,19 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
+    @PermitAll
     public String permitAll() {
         return authenticate("permitAll");
     }
 
     @Override
+    @PermitAll
     public String permitAll(String input) {
         return authenticate("permitAll(input)");
     }
 
     @Override
+    @PermitAll
     public String checkAuthenticated() {
         return authenticate("checkAuthenticated()");
     }
@@ -93,13 +81,12 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
-    @RolesAllowed("Manager")
     public String manager() {
         return authenticate("manager");
     }
 
     @Override
-    @RolesAllowed("Manager")
+    @RolesAllowed("manager")
     public String manager(String input) {
         return authenticate("manager(input)");
     }
@@ -141,29 +128,51 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
+    @PermitAll
     public String declareRoles01() {
         String result1 = authenticate("declareRoles01");
         boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);
         result2.append(result1);
-        result2.append("\n");
         result2.append("   isCallerInRole(DeclaredRole01)=");
         result2.append(isDeclaredMgr);
+        result2.append("\n");
         logger.info("result2: " + result2);
         return result2.toString();
     }
 
+    // This method is not used in PureAnnA01Test
     @Override
     @PermitAll
     public String runAsClient() {
-        return authenticate("runAsClient");
+        try {
+            String result = null;
+            result = authenticate("runAsClient");
+            result = result + "SecurityEJBA01Bean is invoking injected SecurityEJBRunAsBean running as client: \n";
+            result = result + injectedRunAs.employee();
+            return result;
+        } catch (EJBAccessException e) {
+            return e.toString();
+        }
     }
 
+    // The runAsSpecified method is used in PureAnnA01Test positive test to test RunAs annotation. This EJB is invoked with
+    // Manager role. The class level annotation sets RunAs (Employee). When this EJB invokes an injected
+    // EJB, that injected EJB, SecurityEJBRunAsBean, should be run as user99 in Employee role.
+    // Since the SecurityEJBRunAsBean employee method requires the Employee role, access is granted.
     @Override
     @PermitAll
     public String runAsSpecified() {
-        return authenticate("runAsSpecified");
+        try {
+            String result = null;
+            result = authenticate("runAsSpecified");
+            result = result + "SecurityEJBA01Bean is invoking injected SecurityEJBRunAsBean running as specified Employee role: \n";
+            result = result + injectedRunAs.employee();
+            return result;
+        } catch (EJBAccessException e) {
+            return e.toString();
+        }
     }
 
 }

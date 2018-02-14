@@ -33,7 +33,7 @@
 		<user name="user98" password="user98pwd" /> 
 		<user name="user99" password="user99pwd" />              		
 	</basicRegistry>
-	
+  
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
     <application type="ear" id="securitycontextejbinwar" name="securitycontextejbinwar" location="securitycontextejbinwar.ear">

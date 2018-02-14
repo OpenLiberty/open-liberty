@@ -65,6 +65,7 @@ fat.project: true
 	org.apache.directory.server:apacheds-service;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1,\
+	com.ibm.ws.security.javaeesec.cdi;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest, \

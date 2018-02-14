@@ -13,7 +13,10 @@ package web.ejb.jar.bean;
 import java.security.Principal;
 import java.util.logging.Logger;
 
+
 import javax.ejb.SessionContext;
+
+
 import javax.security.enterprise.SecurityContext;
 
 /**
@@ -22,6 +25,7 @@ import javax.security.enterprise.SecurityContext;
 public abstract class SecurityEJBBeanBase {
 
     private class Authentication {
+
 
         protected String authenticate(String method, SessionContext context, SecurityContext securityContext, Logger logger) {
             Principal principal = context.getCallerPrincipal();
@@ -34,6 +38,7 @@ public abstract class SecurityEJBBeanBase {
 
             boolean isManager = false;
             boolean isEmployee = false;
+
             isManager = securityContext.isCallerInRole("Manager");
             isEmployee = securityContext.isCallerInRole("Employee");
             int len = principalName.length() + 12;
@@ -61,6 +66,7 @@ public abstract class SecurityEJBBeanBase {
         }
     }
 
+
     private class AuthenticationWithDeprecatedAPI extends Authentication {
         @SuppressWarnings("deprecation")
         @Override
@@ -84,6 +90,7 @@ public abstract class SecurityEJBBeanBase {
         a = new Authentication();
     }
 
+
     protected abstract SessionContext getContext();
 
     protected abstract SecurityContext getSecurityContext();
@@ -97,5 +104,4 @@ public abstract class SecurityEJBBeanBase {
     protected String authenticate(String method) {
         return a.authenticate(method, getContext(), getSecurityContext(), getLogger());
     }
-
 }
