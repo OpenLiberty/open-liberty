@@ -1,4 +1,4 @@
-package com.ibm.ws.microprofile.openapi.fat;
+package com.ibm.ws.microprofile.openapi.validation.fat;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -22,7 +22,7 @@ import componenttest.topology.utils.HttpUtils;
  *
  */
 @RunWith(FATRunner.class)
-public class OpenAPIValidationTest {
+public class OpenAPIValidationTestOne {
 	
 	@Server("validationServer")
     public static LibertyServer server;
