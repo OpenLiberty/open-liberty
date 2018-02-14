@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Cannot retrieve a signing key from the
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=The truststore specified by the JWT consumer configuration does not contain any signer certificates. A signer certificate is required to validate the JWT token.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verify that the truststore that is used by the JWT consumer configuration contains at least one signer certificate. The truststore can be configured using the 'trustStoreRef' attribute in the JWT consumer configuration, or as part of the overall server SSL configuration.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
 JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Cannot determine which signer certificate in the truststore to use. Add the 'trustedAlias' attribute to the JWT consumer configuration or the 'keyName' attribute to the MP-JWT configuration.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Multiple signer certificates were found in the configured truststore. When there are multiple certificates in the truststore, the 'trustedAlias' attribute must be specified in the JWT consumer configuration or the 'keyName' attribute must be specified in the MP-JWT configuration to establish which of the certificates to use.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specify the 'trustedAlias' JWT consumer configuration attribute or the 'keyName' MP-JWT configuration attribute with the alias of the appropriate signer certificate.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Multiple signer certificates were found in the configured truststore. When there are multiple certificates in the truststore, the 'trustedAlias' attribute must be specified in the JWT consumer configuration or the 'keyName' attribute must be specified in the MP-JWT configuration to establish certificate to use.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specify which certificate to use in the truststore by adding the alias of the appropriate signer certificate to either the 'trustedAlias' JWT consumer configuration attribute or the 'keyName' MP-JWT configuration attribute.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: The client request filter API did not propagate the JSON Web Token (JWT).
