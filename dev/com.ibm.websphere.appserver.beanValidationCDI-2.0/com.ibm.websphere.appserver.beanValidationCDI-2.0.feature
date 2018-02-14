@@ -8,6 +8,6 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -bundles=\
   com.ibm.ws.beanvalidation.v20.cdi,\
-  com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final
+  com.ibm.ws.org.hibernate.validator.cdi.6.0.7.Final
 kind=beta
 edition=core

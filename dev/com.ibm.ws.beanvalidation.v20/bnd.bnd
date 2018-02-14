@@ -57,4 +57,4 @@ Service-Component: \
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.ws.beanvalidation;version=latest,\
     com.ibm.ws.beanvalidation.core;version=latest,\
-    com.ibm.ws.org.hibernate.validator.6.0.4.Final;version=latest
+    com.ibm.ws.org.hibernate.validator.6.0.7.Final;version=latest
