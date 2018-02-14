@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,14 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * A basic security registry. See /com.ibm.ws.security.registry.basic/resources/OSGI-INF/metatype/metatype.xml
- * 
+ *
  */
 public class BasicRegistry extends ConfigElement {
 
     /**
      * Represents group configuration for a basic registry. Nested inside parent to distinguish from group elements of other types. See
      * /com.ibm.ws.security.registry.basic/resources/OSGI-INF/metatype/metatype.xml
-     * 
+     *
      */
     @XmlType(name = "BasicRegistryGroup")
     public static class Group extends ConfigElement {
@@ -31,7 +31,7 @@ public class BasicRegistry extends ConfigElement {
         /**
          * Represents member configuration for a basic registry. Nested inside parent to distinguish from member elements of other types. See
          * /com.ibm.ws.security.registry.basic/resources/OSGI-INF/metatype/metatype.xml
-         * 
+         *
          */
         @XmlType(name = "BasicRegistryGroupMember")
         public static class Member extends ConfigElement {
@@ -79,7 +79,7 @@ public class BasicRegistry extends ConfigElement {
 
         /**
          * Retrieves the members in this group
-         * 
+         *
          * @return the members in this group
          */
         public ConfigElementList<Member> getMembers() {
@@ -121,7 +121,7 @@ public class BasicRegistry extends ConfigElement {
     /**
      * Represents user configuration for a basic registry. Nested inside parent to distinguish from user elements of other types. See
      * /com.ibm.ws.security.registry.basic/resources/OSGI-INF/metatype/metatype.xml
-     * 
+     *
      */
     @XmlType(name = "BasicRegistryUser")
     public static class User extends ConfigElement {
@@ -171,6 +171,26 @@ public class BasicRegistry extends ConfigElement {
     @XmlElement(name = "group")
     private ConfigElementList<Group> groups;
     private String realm;
+    private String certificateMapperId;
+    private String certificateMapMode;
+
+    public String getCertificateMapMode() {
+        return this.certificateMapMode;
+    }
+
+    @XmlAttribute
+    public void setCertificateMapMode(String mode) {
+        this.certificateMapMode = mode;
+    }
+
+    public String getCertificateMapperId() {
+        return this.certificateMapperId;
+    }
+
+    @XmlAttribute
+    public void setCertificateMapperId(String id) {
+        this.certificateMapperId = id;
+    }
 
     public String getRealm() {
         return this.realm;
@@ -183,7 +203,7 @@ public class BasicRegistry extends ConfigElement {
 
     /**
      * Retrieves the users for this role
-     * 
+     *
      * @return the users for this role
      */
     public ConfigElementList<User> getUsers() {
@@ -195,7 +215,7 @@ public class BasicRegistry extends ConfigElement {
 
     /**
      * Retrieves the groups for this role
-     * 
+     *
      * @return the groups for this role
      */
     public ConfigElementList<Group> getGroups() {
