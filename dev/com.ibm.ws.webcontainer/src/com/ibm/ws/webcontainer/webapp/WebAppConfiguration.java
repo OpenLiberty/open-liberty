@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -206,7 +207,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
      */
     public WebAppConfiguration(String id) {
         super(id);
-        this.servletInfo = new HashMap<String, IServletConfig>();
+        this.servletInfo = new ConcurrentHashMap<String, IServletConfig>(); //PI93226
         this.servletMappings = new HashMap<String, List<String>>();
         this.filterInfo = new HashMap<String, IFilterConfig>();
         this.filterMappings = new ArrayList();
@@ -238,6 +239,9 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     }
 
     public void addServletInfo(String name, IServletConfig info) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "addServletInfo", "name = " + name);
+        }
         this.servletInfo.put(name, info);
     }
 
