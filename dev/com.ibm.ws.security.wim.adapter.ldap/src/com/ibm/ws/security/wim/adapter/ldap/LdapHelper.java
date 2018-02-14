@@ -44,6 +44,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.wim.AccessControllerHelper;
 import com.ibm.wsspi.security.wim.exception.CertificateMapperException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
@@ -385,6 +387,7 @@ public class LdapHelper {
      *
      * @return The formatted DN. null will be returned if the specified DN is invalid.
      */
+    @FFDCIgnore(InvalidNameException.class)
     @SuppressWarnings("unchecked")
     public static String getValidDN(String dn) {
         Map<String, Map<String, String>> dnCache = null;
@@ -416,7 +419,6 @@ public class LdapHelper {
                 result = new LdapName(dn).toString();
                 dnCache.get(sDomainName).put(dn, result);
             } catch (InvalidNameException e) {
-                e.getMessage();
                 result = null;
             }
         }
@@ -821,6 +823,11 @@ public class LdapHelper {
      * Copy from com.ibm.ws.security.registry.ldap.CertificateMapper
      */
     public static String[] parseFilterDescriptor(String mapDesc) throws CertificateMapperException {
+        if (mapDesc == null || mapDesc.isEmpty()) {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, mapDesc);
+            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
+        }
+
         int prev_idx, cur_idx, end_idx;
         ArrayList<String> list = new ArrayList<String>();
         for (prev_idx = cur_idx = 0, end_idx = mapDesc.length(); cur_idx < end_idx; prev_idx = cur_idx) {
@@ -847,10 +854,8 @@ public class LdapHelper {
                 cur_idx = mapDesc.indexOf("}", prev_idx);
             }
             if (cur_idx == -1) {
-                throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, Tr.formatMessage(
-                                                                                                                tc,
-                                                                                                                WIMMessageKey.INVALID_CERTIFICATE_FILTER,
-                                                                                                                WIMMessageHelper.generateMsgParms(mapDesc)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, mapDesc);
+                throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
             }
             cur_idx++;
             list.add(mapDesc.substring(prev_idx, cur_idx));
