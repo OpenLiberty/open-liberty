@@ -87,7 +87,7 @@ public class OpenAPITckTest {
         ResultsUtil result = new ResultsUtil();
         result.xPathProcessor();
         
-        Assert.assertTrue("Therese are some failures", rc == 0);
+        Assert.assertTrue("There are some failures", rc == 0);
    }
 
 }
