@@ -29,10 +29,10 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
@@ -76,12 +76,11 @@ public class CompositeConfig implements Closeable, ConfigListener {
     }
 
     /**
-     * Add a config
      *
      * @param source
      * @param executor
+     * @param refreshInterval
      * @return
-     * @throws ConfigException
      */
     private PollingDynamicConfig addConfig(ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
         //we wrap each source up as an archaius config
@@ -115,11 +114,14 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * TODO: Cache keys
      */
     public Set<String> getKeySet() {
+        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
+        StringBuilder dump = null; //dump debug only
+        boolean first = true; //dump debug only
+
         HashSet<String> result = new HashSet<>();
-        StringBuilder debug = null; //debug only
-        boolean first = true; //debug only
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            debug = new StringBuilder("[");
+
+        if (dumpEnabled) {
+            dump = new StringBuilder("getKeySet: [");
         }
 
         for (PollingDynamicConfig config : children) {
@@ -127,22 +129,22 @@ public class CompositeConfig implements Closeable, ConfigListener {
             while (iter.hasNext()) {
                 String key = iter.next();
                 boolean added = result.add(key);
-                if (added && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                if (dumpEnabled && added) {
                     if (!first) {
-                        debug.append(";\n");
+                        dump.append(";\n");
                     } else {
                         first = false;
                     }
-                    debug.append("Key=");
-                    debug.append(key);
-                    debug.append(", Source=");
-                    debug.append(config.getSourceID());
+                    dump.append("Key=");
+                    dump.append(key);
+                    dump.append(", Source=");
+                    dump.append(config.getSourceID());
                 }
             }
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            debug.append("]");
-            Tr.debug(tc, "getKeySet", debug.toString());
+        if (dumpEnabled) {
+            dump.append("]");
+            Tr.dump(tc, dump.toString());
         }
 
         return result;
@@ -150,6 +152,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
@@ -171,7 +174,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
             String key = keyItr.next();
             sb.append(key);
             sb.append("=");
-            SourcedPropertyValue rawCompositeValue = getRawCompositeValue(key);
+            SourcedValue rawCompositeValue = getRawCompositeValue(key);
             if (rawCompositeValue == null) {
                 sb.append("null");
             } else {
@@ -195,18 +198,14 @@ public class CompositeConfig implements Closeable, ConfigListener {
         }
     }
 
-    public SourcedPropertyValue getSourcedValue(Type type, String key) {
-        SourcedPropertyValue rawProp = getRawCompositeValue(key);
+    public SourcedValue getSourcedValue(Type type, String key) {
+        SourcedValue rawProp = getRawCompositeValue(key);
         if (rawProp == null) {
             return null;
         } else {
-            try {
-                Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
-                SourcedPropertyValue composite = new SourcedPropertyValue(value, type, rawProp.getSource());
-                return composite;
-            } catch (NumberFormatException nfe) {
-                throw new ConfigException("Error parsing value \'" + rawProp.getValue() + "\' for property \'" + key + "\'", nfe);
-            }
+            Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
+            SourcedValue composite = new SourcedValueImpl(value, type, rawProp.getSource());
+            return composite;
         }
     }
 
@@ -214,12 +213,12 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * @param key
      * @return
      */
-    private SourcedPropertyValue getRawCompositeValue(String key) {
+    private SourcedValue getRawCompositeValue(String key) {
         for (PollingDynamicConfig child : children) {
             if (child.containsKey(key)) {
                 String value = child.getRawProperty(key);
                 String source = child.getSourceID();
-                SourcedPropertyValue raw = new SourcedPropertyValue(value, String.class, source);
+                SourcedValue raw = new SourcedValueImpl(value, String.class, source);
                 return raw;
             }
         }

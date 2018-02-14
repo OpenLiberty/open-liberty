@@ -18,6 +18,9 @@ import java.util.TreeSet;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+/**
+ * Contains a set of ConfigSources, sorted by ordinal, highest value first
+ */
 public class SortedSources implements Iterable<ConfigSource> {
 
     private SortedSet<ConfigSource> sources;

@@ -66,3 +66,23 @@ MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Ov\u011b\u0159te, \u017ee byl
 MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Koncov\u00fd bod zpr\u00e1vy pro objekty typu message-driven bean {0} nelze aktivovat, proto\u017ee c\u00edl {1} nen\u00ed dostupn\u00fd. Koncov\u00fd bod zpr\u00e1v neobdr\u017e\u00ed \u017e\u00e1dnou zpr\u00e1vu, dokud nebude c\u00edl dostupn\u00fd.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Server spustil objekt typu message-driven bean, ale nedok\u00e1zal aktivovat koncov\u00fd bod zpr\u00e1v, proto\u017ee nenalezl c\u00edl. Koncov\u00fd bod zpr\u00e1v nebude p\u0159ij\u00edmat zpr\u00e1vy, dokud nebude mo\u017en\u00e9 aktivovat koncov\u00fd bod.
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Ov\u011b\u0159te, \u017ee je c\u00edl s uveden\u00fdm n\u00e1zvem nakonfigurovan\u00fd. Pokud konfigurace existuje, po\u010dkejte, a\u017e bude c\u00edl dostupn\u00fd.
+
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: Koncov\u00fd bod zpr\u00e1v pro objekt typu message-driven {0} v modulu {1} aplikace {2} nebyl aktivov\u00e1n, proto\u017ee specifikace aktivace {3} byla nakonfigurov\u00e1na s autoStart=false.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Koncov\u00fd bod zpr\u00e1v nebyl aktivov\u00e1n, proto\u017ee specifikace aktivace byla nakonfigurov\u00e1na s autoStart=false. Koncov\u00fd bod zpr\u00e1v bude aktivov\u00e1n zad\u00e1n\u00edm p\u0159\u00edkazu pro pokra\u010dov\u00e1n\u00ed.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: Operace pozastaven\u00ed nem\u011bla \u017e\u00e1dn\u00fd vliv, proto\u017ee koncov\u00fd bod zpr\u00e1v pro objekt typu bean {0} v modulu {1} aplikace {2} je ji\u017e pozastaven.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.explanation=Koncov\u00fd bod zpr\u00e1v lze pozastavit jen, kdy\u017e je v aktivn\u00edm stavu.
+MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I=CNTR4118I: Operace aktivace nem\u011bla \u017e\u00e1dn\u00fd vliv, proto\u017ee koncov\u00fd bod zpr\u00e1v pro objekt typu bean {0} v modulu {1} aplikace {2} je ji\u017e aktivov\u00e1na.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.explanation=Koncov\u00fd bod zpr\u00e1v lze aktivovat jen, kdy\u017e je v neaktivn\u00edm stavu.
+MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W=CNTR4119W: Po\u017eadavek na pozastaven\u00ed koncov\u00e9ho bodu zpr\u00e1v pro objekt typu bean {0} v modulu {1} aplikace {2} nebyl dokon\u010den \u00fasp\u011b\u0161n\u011b, proto\u017ee nen\u00ed koncov\u00fd bod aktivn\u00ed.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.explanation=Koncov\u00fd bod zpr\u00e1v lze pozastavit jen, kdy\u017e je v aktivn\u00edm stavu.
+MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W.useraction=Vy\u010dkejte, dokud nebude koncov\u00fd bod zpr\u00e1v p\u0159ed pokusem o pozastaven\u00ed v aktivn\u00edm stavu.
+
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W=CNTR4120W: Po\u017eadavek na aktivaci koncov\u00e9ho bodu zpr\u00e1v pro objekt typu bean {0} v modulu {1} aplikace {2} nebyl dokon\u010den \u00fasp\u011b\u0161n\u011b, proto\u017ee nen\u00ed koncov\u00fd bod pozastaven.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.explanation=Koncov\u00fd bod zpr\u00e1v lze aktivovat jen, kdy\u017e je v pozastaven\u00e9m stavu.
+MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W.useraction=Vy\u010dkejte, dokud nebude koncov\u00fd bod zpr\u00e1v p\u0159ed pokusem o aktivaci v pozastaven\u00e9m stavu.

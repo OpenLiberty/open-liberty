@@ -93,7 +93,10 @@ public class DerbyResourceAdapterTest extends FATServletClient {
                     "com.ibm.websphere.csi.CSITransactionRolledbackException" })
     @Test
     public void testActivationSpecXARecovery() throws Exception {
+        server.setMarkToEndOfLog();
         runTest(DerbyRAAnnoServlet);
+        // Wait for FFDC messages which can be reported asynchronously to the servlet thread
+        server.waitForStringInLogUsingMark("FFDC1015I.*EJBException");
     }
 
     @Test

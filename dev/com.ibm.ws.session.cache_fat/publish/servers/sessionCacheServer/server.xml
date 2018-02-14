@@ -5,6 +5,7 @@
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jdbc-4.1</feature>
+        <feature>jndi-1.0</feature>
         <feature>sessionCache-1.0</feature>
     </featureManager>
     
@@ -30,5 +31,38 @@
 	</dataSource>
 
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<variable name="hazelcast" value="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
+    <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="hazelcast.xml"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="shutdownHooks"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${hazelcast}" className="java.net.NetPermission" name="getNetworkInformation"/>
+    <javaPermission codebase="${hazelcast}" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    <javaPermission codebase="${hazelcast}" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
+	<javaPermission codebase="${hazelcast}" className="java.util.PropertyPermission" actions="read,write" name="*"/>
 
+    <variable name="hazelcast" value="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
+    <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="hazelcast.xml"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="shutdownHooks"/>
+    <javaPermission codebase="${hazelcast}" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${hazelcast}" className="java.net.NetPermission" name="getNetworkInformation"/>
+    <javaPermission codebase="${hazelcast}" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    <javaPermission codebase="${hazelcast}" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
+	<javaPermission codebase="${hazelcast}" className="java.util.PropertyPermission" actions="read,write" name="*"/>	
 </server>

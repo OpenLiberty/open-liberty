@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Failed to set response character
 unsupported.response.encoding.[{0}].explanation=Response encoding specified on the response is not valid. This is an application error.
 unsupported.response.encoding.[{0}].useraction=Review logs to determine whether the specified encoding is a valid encoding.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Trailers can not be set if the response is committed.
+set.trailer.fields.committed.response.explanation=The response has already been committed.
+set.trailer.fields.committed.response.useraction=Ensure that the response has not been committed before trailers are set.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Trailers can not be set if the HTTP version is not 1.1 or higher.
+set.trailer.fields.incorrect.http.version.explanation=HTTP Trailers are only supported in HTTP 1.1 or higher.
+set.trailer.fields.incorrect.http.version.useraction=Ensure that HTTP 1.1 or higher is being used.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Trailers can not be set if the Transfer-Encoding header value is not "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=Trailers are only supported if the Transfer-Encoding header value is "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Ensure that the Transfer-Encoding header contains the "chunked" value.

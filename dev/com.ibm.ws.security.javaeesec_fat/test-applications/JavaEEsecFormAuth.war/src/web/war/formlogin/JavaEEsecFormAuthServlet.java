@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
                              groupNameAttribute = "cn",
                              groupSearchBase = "o=ibm,c=us",
                              groupSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
-                             groupSearchFilter = "(objectclass=groupofnames)",
+                             groupSearchFilter = "(&(objectclass=groupofnames)(member=%v))",
                              groupMemberAttribute = "member",
                              bindDn = "uid=jaspildapuser1,o=ibm,c=us",
                              bindDnPassword = "s3cur1ty")
