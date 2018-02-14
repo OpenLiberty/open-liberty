@@ -444,7 +444,7 @@ doLast {
         
         ant.featuresToMavenRepo(inputDirPath:'build/temp/esas',
                    outputDirPath:'build/temp/mavenArtifact',
-                   openLibertyJson:'SingleJson.json')
+                   openLibertyJson:'build/temp/SingleJson.json')
        
         ant.delete() {
       		fileset(dir: 'build/temp/esas') {
