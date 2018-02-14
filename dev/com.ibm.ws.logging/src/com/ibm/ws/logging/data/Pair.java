@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.http.ee8;
+package com.ibm.ws.logging.data;
 
 /**
- *
+ * Marker interface created to group KeyValuePair and KeyValuePairList
  */
-public class Http2PushException extends Exception {
 
-    /**
-     * @param string
-     */
-    public Http2PushException(String msg) {
-        super(msg);
-    }
-
-    /**  */
-    private static final long serialVersionUID = 1L;
+public interface Pair {
 
 }

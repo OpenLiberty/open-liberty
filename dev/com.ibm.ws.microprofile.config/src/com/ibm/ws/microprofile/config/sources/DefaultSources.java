@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.interfaces;
+package com.ibm.ws.microprofile.config.sources;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,9 +22,8 @@ import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.sources.EnvConfigSource;
-import com.ibm.ws.microprofile.config.sources.PropertiesConfigSource;
-import com.ibm.ws.microprofile.config.sources.SystemConfigSource;
+import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 public class DefaultSources {
 

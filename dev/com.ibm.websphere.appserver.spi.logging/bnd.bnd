@@ -24,4 +24,5 @@ Export-Package: com.ibm.websphere.ras,com.ibm.websphere.ras.annotation,com.ibm.w
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \
-	com.ibm.ws.logging;version=latest
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest

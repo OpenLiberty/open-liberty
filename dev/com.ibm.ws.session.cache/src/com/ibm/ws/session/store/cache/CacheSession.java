@@ -11,6 +11,7 @@
 
 package com.ibm.ws.session.store.cache;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.transaction.UserTransaction;
@@ -31,9 +32,56 @@ public class CacheSession extends BackedSession {
     private Hashtable<?, ?> mSwappableData;
 
     private boolean populatedAppData;
+    private boolean usingMultirow;
 
     public CacheSession(CacheHashMap sessions, String id, IStoreCallback storeCallback) {
         super(sessions, id, storeCallback);
+        usingMultirow = _smc.isUsingMultirow();
+    }
+
+    /**
+     * Ensures db data is read in and attribute names are populated
+     * 
+     * @see com.ibm.wsspi.session.ISession#getAttributeNames()
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public synchronized Enumeration getAttributeNames() {
+        if (!populatedAppData) {
+            if (usingMultirow) {
+                getMultiRowAppData();
+            } else {
+                getSingleRowAppData();
+            }
+        }
+        return super.getAttributeNames();
+    }
+
+    /**
+     * Copied from DatabaseSession:
+     * This method may or may not be called after retrieval depending on whether we
+     * need to call listeners or get all attribute names. Therefore, we add to the
+     * existing swappable data rather than just calling setSwappable data.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void getMultiRowAppData() {
+        populatedAppData = true;
+        Hashtable swappable = getSwappableData();
+        Hashtable props = (Hashtable) ((CacheHashMapMR) getSessions()).getAllValues(this);
+        if (props != null) {
+            Enumeration kys = props.keys();
+            while (kys.hasMoreElements()) {
+                Object key = kys.nextElement();
+                swappable.put(key, props.get(key));
+            }
+            synchronized (_attributeNames) {
+                refillAttrNames(swappable);
+            }
+        }
+    }
+
+    boolean getPopulatedAppData() {
+        return populatedAppData;
     }
 
     /**
@@ -69,7 +117,7 @@ public class CacheSession extends BackedSession {
     public Hashtable getSwappableData() {
         // TODO copied from DatabaseSession.getSwappableData
         if (mSwappableData == null) {
-            if (!isNew() && !populatedAppData) {
+            if (!isNew() && !usingMultirow && !populatedAppData) {
                 getSingleRowAppData(); // populate mSwappableData for single row db only, NOT multirow
             }
             //mSwappableData could have been updated
@@ -107,7 +155,11 @@ public class CacheSession extends BackedSession {
             if (!populatedAppData) {
                 try {
                     getSessions().getIStore().setThreadContext();
-                    getSingleRowAppData();
+                    if (usingMultirow) {
+                        getMultiRowAppData();
+                    } else {
+                        getSingleRowAppData();
+                    }
                 } finally {
                     getSessions().getIStore().unsetThreadContext();
                 }

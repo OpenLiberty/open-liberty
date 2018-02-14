@@ -19,7 +19,12 @@ src: \
 javac.source: 1.8
 javac.target: 1.8
 
-	
+tested.features: mpFaultTolerance-1.0,\
+                 mpConfig-1.1,\
+                 mpConfig-1.2,\
+                 cdi-1.2,\
+                 cdi-2.0
+
 fat.project: true
 
 -buildpath: \

@@ -19,7 +19,9 @@ import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.websphere.servlet40.IResponse40;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -28,6 +30,7 @@ import com.ibm.ws.webcontainer31.srt.SRTServletResponse31;
 import com.ibm.ws.webcontainer40.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.util.EncodingUtils;
 import com.ibm.wsspi.webcontainer40.WCCustomProperties40;
@@ -45,7 +48,8 @@ import com.ibm.wsspi.webcontainer40.WCCustomProperties40;
  */
 public class SRTServletResponse40 extends SRTServletResponse31 implements HttpServletResponse {
 
-    protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer40.srt");
+    private static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer40.srt");
+    private static final TraceNLS servlet40NLS = TraceNLS.getTraceNLS(SRTServletResponse40.class, "com.ibm.ws.webcontainer40.resources.Messages");
     private static final String CLASS_NAME = "com.ibm.ws.webcontainer40.srt.SRTServletResponse40";
 
     ArrayList<Cookie> addedCookies;
@@ -118,12 +122,53 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         }
 
         if (isCommitted()) {
-            throw new IllegalStateException();
-        } else {
-            trailerFieldSupplier = supplier;
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
-                logger.logp(Level.FINE, CLASS_NAME, "finish", "supplier is empty : " + trailerFieldSupplier.get().isEmpty());
+            throw new IllegalStateException(servlet40NLS.getString("set.trailer.fields.committed.response"));
+        }
+
+        // Only Http/1.1 + supports trailers so we need to determine the version used.
+        IExtendedRequest extendedReq = getRequest();
+        IRequest req = extendedReq.getIRequest();
+        String httpProtocol = req.getProtocol();
+        String[] args = httpProtocol.split("/");
+        float version = Float.valueOf(args[1]);
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+            logger.logp(Level.FINE, CLASS_NAME, "setTrailerFields", "httpProtocol = " + httpProtocol);
+            logger.logp(Level.FINE, CLASS_NAME, "setTrailerFields", "version = " + version);
+        }
+
+        // HTTP/1.1 + support  trailers
+        if (version >= 1.1) {
+            // Need to determine if chunked encoding is being used, if it is not
+            // we must also throw an IllegalStateException as trailers are not supported.
+            // If the content-length is set then we know we're not using chunked encoding.
+            String transferEncoding = getHeader("Transfer-Encoding");
+            String contentLength = getHeader("Content-Length");
+            int contentLengthValue = -1;
+
+            if (contentLength != null) {
+                contentLengthValue = Integer.valueOf(contentLength);
             }
+
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+                logger.logp(Level.FINE, CLASS_NAME, "setTrailerFields", "transferEncoding = " + transferEncoding);
+                logger.logp(Level.FINE, CLASS_NAME, "setTrailerFields", "contentLengthInt = " + contentLengthValue);
+            }
+
+            // throw IllegalStateException if not chunked
+            if ((transferEncoding != null && !transferEncoding.equals("chunked")) || contentLengthValue > 0) {
+                throw new IllegalStateException(servlet40NLS.getString("set.trailer.fields.incorrect.transfer.encoding"));
+            }
+
+        } else {
+            // throw IllegalStateException if not HTTP/1.1 +
+            throw new IllegalStateException(servlet40NLS.getString("set.trailer.fields.incorrect.http.version"));
+        }
+
+        trailerFieldSupplier = supplier;
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+            logger.logp(Level.FINE, CLASS_NAME, "setTrailerFields", "supplier : " + trailerFieldSupplier);
         }
 
     }
