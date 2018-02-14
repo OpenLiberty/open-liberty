@@ -160,8 +160,23 @@ public class LinkValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         LinkImpl correctLink = new LinkImpl();
-        correctLink.setDescription("This is a link with invalid operationRef lenths");
+        correctLink.setDescription("This is a link with invalid operationRef length");
         String operationRef = "#/paths/~1my-test-path-two/somethingElse/get";
+        correctLink.setOperationRef(operationRef);
+
+        validator.validate(vh, context, key, correctLink);
+        Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Link Object specified a relative \"operationRef\" field"));
+    }
+
+    @Test
+    public void testLinkWithRefNoPaths() {
+        LinkValidator validator = LinkValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        LinkImpl correctLink = new LinkImpl();
+        correctLink.setDescription("This is a link with invalid operationRef that does not start with 'path'");
+        String operationRef = "#/invalid/~1my-test-path-two/somethingElse/get";
         correctLink.setOperationRef(operationRef);
 
         validator.validate(vh, context, key, correctLink);
