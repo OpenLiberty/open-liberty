@@ -414,7 +414,7 @@ public class ServerEndpointControlMBeanTest {
         // save
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null, true));
+        assertNotNull("Didn't get expected config update log messages", server.waitForConfigUpdateInLogUsingMark(null));
 
         Log.exiting(c, METHOD_NAME);
         return targets;
