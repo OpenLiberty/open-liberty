@@ -27,4 +27,9 @@ public interface ValidationHelper {
      */
     public boolean addOperationId(String operationId);
 
+    /**
+     * Adds an operationId and location of Link object specifying it to the map of IDs and locations.
+     */
+    public void addLinkOperationId(String operationId, String location);
+
 }

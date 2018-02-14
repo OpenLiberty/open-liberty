@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corporation and others.
+* Copyright (c) 2017, 2018 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -111,9 +111,9 @@ public class MetricRegistryImpl extends MetricRegistry {
         return MetricType.INVALID;
     }
 
-    private final ConcurrentMap<String, Metric> metrics;
-    private final ConcurrentMap<String, Metadata> metadata;
-    private final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
+    protected final ConcurrentMap<String, Metric> metrics;
+    protected final ConcurrentMap<String, Metadata> metadata;
+    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
 
     /**
      * Creates a new {@link MetricRegistry}.
@@ -155,7 +155,6 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
-
         final Metric existing = metrics.putIfAbsent(name, metric);
         this.metadata.putIfAbsent(name, metadata);
         if (existing == null) {
@@ -173,7 +172,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      *
      * @param name
      */
-    private void addNameToApplicationMap(String name) {
+    protected void addNameToApplicationMap(String name) {
         String appName = getApplicationName();
 
         // If it is a base metric, the name will be null

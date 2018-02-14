@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,9 +49,7 @@ public class ReferenceValidator {
 
     public Object validate(ValidationHelper helper, Context context, String key, String $ref) {
 
-        if (context.getModel().getComponents() != null && $ref != null) {
-            //Store model components in a variable
-            Components components = context.getModel().getComponents();
+        if ($ref != null && !$ref.isEmpty()) {
             if ($ref.contains(".json")
                 || $ref.contains(".yml")
                 || $ref.contains(".yaml")
@@ -59,8 +57,7 @@ public class ReferenceValidator {
                 || $ref.startsWith("http://")
                 || $ref.startsWith("https://")) {
 
-                final String message = Tr.formatMessage(tc, "referenceExternalOrExtension", $ref);
-                LOGGER.warning(message);
+                return null;
 
             } else {
 
@@ -74,10 +71,19 @@ public class ReferenceValidator {
 
                 //If ref does not contain any duplicates, and the first two elements are # and components, then the length of a valid ref array should be 4 elements, i.e. #/components/examples/MyExample
                 if (validRefStruct) {
+                    //Store model components in a variable
+                    Components components = context.getModel().getComponents();
+
+                    //If components is null then the reference can't be matched to a valid object.
+                    if (components == null) {
+                        final String message = Tr.formatMessage(tc, "referenceNotPartOfModel", $ref);
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                        return null;
+                    }
+
                     //Start at index 2 because index 0 is # and index 1 is components
                     for (int i = 2; i < ((references.length) - 1); i++) {
                         String name = references[i + 1];
-
                         switch (references[i]) {
                             case "schemas":
 
@@ -188,7 +194,7 @@ public class ReferenceValidator {
             }
 
         } else {
-            final String message = Tr.formatMessage(tc, "referenceNull", context.getModel().getComponents(), $ref);
+            final String message = Tr.formatMessage(tc, "referenceNull");
             helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
         }
 

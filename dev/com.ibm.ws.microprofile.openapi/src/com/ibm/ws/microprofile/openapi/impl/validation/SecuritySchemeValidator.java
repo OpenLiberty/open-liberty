@@ -54,7 +54,8 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
             op_type.ifPresent(helper::addValidationEvent);
 
         } else {
-            if ("apiKey".equals(t.getType().toString())) {
+            String type = t.getType().toString();
+            if ("apiKey".equals(type)) {
                 ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
 
                 Optional<ValidationEvent> op_in = ValidatorUtils.validateRequiredField(t.getIn(), context, "in");
@@ -69,37 +70,14 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                     }
 
                 }
-                if (t.getBearerFormat() != null ||
-                    ValidatorUtils.flowsIsSet(t.getFlows()) ||
-                    t.getOpenIdConnectUrl() != null ||
-                    t.getScheme() != null) {
-                    final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
-                }
-            } else if ("http".equals(t.getType().toString())) {
+
+            } else if ("http".equals(type)) {
                 ValidatorUtils.validateRequiredField(t.getScheme(), context, "scheme").ifPresent(helper::addValidationEvent);
 
-                if (t.getOpenIdConnectUrl() != null ||
-                    ValidatorUtils.flowsIsSet(t.getFlows()) ||
-                    t.getName() != null ||
-                    t.getIn() != null) {
-                    final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
-                }
-
-            } else if ("oauth2".equals(t.getType().toString())) {
+            } else if ("oauth2".equals(type)) {
                 ValidatorUtils.validateRequiredField(t.getFlows(), context, "flows").ifPresent(helper::addValidationEvent);
 
-                if (t.getOpenIdConnectUrl() != null ||
-                    t.getName() != null ||
-                    t.getBearerFormat() != null ||
-                    t.getIn() != null ||
-                    t.getScheme() != null) {
-                    final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
-                }
-
-            } else if ("openIdConnect".equals(t.getType().toString())) {
+            } else if ("openIdConnect".equals(type)) {
                 Optional<ValidationEvent> op_url = ValidatorUtils.validateRequiredField(t.getOpenIdConnectUrl(), context, "openIdConnectUrl");
 
                 if (op_url.isPresent()) {
@@ -111,14 +89,44 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                         helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
                 }
-                if (t.getBearerFormat() != null ||
-                    ValidatorUtils.flowsIsSet(t.getFlows()) ||
-                    t.getName() != null ||
-                    t.getIn() != null ||
-                    t.getScheme() != null) {
-                    final String message = Tr.formatMessage(tc, "securitySchemeNonApplicableField", t.getType().toString());
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
-                }
+            }
+
+            //Issue warnings for non-applicable fields
+
+            //'bearerFormat' field is only applicable to 'http' type
+            if (t.getBearerFormat() != null && !t.getBearerFormat().isEmpty() && !"http".equals(type)) {
+                final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "bearerFormat", t.getBearerFormat(), "Security Scheme Object", type);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
+
+            //'scheme' field is only applicable to 'http' type
+            if (t.getScheme() != null && !t.getScheme().isEmpty() && !"http".equals(type)) {
+                final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "scheme", t.getScheme(), "Security Scheme Object", type);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
+
+            //'in' field is only applicable to 'apiKey' type
+            if (t.getIn() != null && !"apiKey".equals(type)) {
+                final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "in", t.getIn(), "Security Scheme Object", type);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
+
+            //'name' field is only applicable to 'apiKey' type
+            if (t.getName() != null && !t.getName().isEmpty() && !"apiKey".equals(type)) {
+                final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "name", t.getName(), "Security Scheme Object", type);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
+
+            //'openIdConnectUrl' field is only applicable to 'openIdConnect' type
+            if (t.getOpenIdConnectUrl() != null && !t.getOpenIdConnectUrl().isEmpty() && !"openIdConnect".equals(type)) {
+                final String message = Tr.formatMessage(tc, "nonApplicableFieldWithValue", "openIdConnectUrl", t.getOpenIdConnectUrl(), "Security Scheme Object", type);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
+
+            //'flows' field is only applicable to 'oauth2' type
+            if (!"oauth2".equals(type) && ValidatorUtils.flowsIsSet(t.getFlows())) {
+                final String message = Tr.formatMessage(tc, "nonApplicableField", "flows", "Security Scheme Object", type);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
             }
         }
     }

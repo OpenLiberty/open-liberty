@@ -36,18 +36,19 @@ public class ExampleValidator extends TypeValidator<Example> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Example t) {
 
-        String reference = t.getRef();
+        if (t != null) {
+            String reference = t.getRef();
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
+            }
+
+            // The value field and externalValue fields are mutually exclusive.
+            if (t.getValue() != null && (t.getExternalValue() != null && !t.getExternalValue().isEmpty())) {
+                final String message = Tr.formatMessage(tc, "exampleOnlyValueOrExternalValue", key);
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
         }
-
-        // The value field and externalValue fields are mutually exclusive.
-        if (t.getValue() != null && (t.getExternalValue() != null && !t.getExternalValue().isEmpty())) {
-            final String message = Tr.formatMessage(tc, "exampleOnlyValueOrExternalValue", key);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
-        }
-
     }
 }

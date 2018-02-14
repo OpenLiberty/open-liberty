@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,8 @@ public class HpackConstants {
     public final static int SCHEME_HASH = ":scheme".hashCode();
     public final static int STATUS_HASH = ":status".hashCode();
 
-    static final List<String> connectionSpecificHeaderList = java.util.Arrays.asList(new String[] { "Keep-Alive", "Proxy-Connection",
-                                                                                                    "Transfer-Encoding", "Upgrade" });
+    public static final List<String> connectionSpecificHeaderList = java.util.Arrays.asList(new String[] { "Keep-Alive", "Proxy-Connection",
+                                                                                                           "Transfer-Encoding", "Upgrade" });
 
     /*
      * This value is determined by the SETTINGS_HEADER_TABLE_SIZE setting
