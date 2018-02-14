@@ -8,18 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config12.test;
+package com.ibm.ws.microprofile.config.fat.suite;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConverterPriorityTest.class,
-                TypeConverterTest.class,
-                ImplicitConverterTest.class,
-})
-public class FATSuite {
+/**
+ *
+ */
+public class RepeatConfig11EE8 extends EE8FeatureReplacementAction {
+
+    public static final FeatureReplacementAction INSTANCE = new RepeatConfig11EE8();
+
+    public RepeatConfig11EE8() {
+        super();
+        removeFeature("mpConfig-1.2");
+        addFeature("mpConfig-1.1");
+    }
 
 }

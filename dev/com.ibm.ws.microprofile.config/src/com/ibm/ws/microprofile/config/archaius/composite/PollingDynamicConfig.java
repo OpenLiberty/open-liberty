@@ -137,15 +137,6 @@ public class PollingDynamicConfig implements Closeable {
         return future;
     }
 
-    private Map<String, String> getToAdd() {
-        Map<String, String> toAdd = new HashMap<>();
-        Map<String, String> props = source.getProperties();
-        if (props != null) {
-            toAdd.putAll(props);
-        }
-        return toAdd;
-    }
-
     /**
      * Go out and poll for updated values via callable.call()
      *
@@ -155,8 +146,24 @@ public class PollingDynamicConfig implements Closeable {
         // OK to ignore calls to update() if already busy updating
         if (busy.compareAndSet(false, true)) {
             try {
-                current = getToAdd();
-                notifyConfigUpdated();
+                Map<String, String> updated = new HashMap<>();
+                Map<String, String> props = source.getProperties();
+                if (props != null) {
+                    updated.putAll(props);
+                }
+                if (!updated.equals(current)) {
+                    current = updated;
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "update: Contents of ConfigSource {0} has changed.", this);
+                    }
+
+                    notifyConfigUpdated();
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "update: Contents of ConfigSource {0} has NOT changed.", this);
+                    }
+                }
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "update: Exception updating dynamic source: {0}. Exception: {1}", this, e);
@@ -174,9 +181,11 @@ public class PollingDynamicConfig implements Closeable {
     public void close() {
         try {
             if (future != null) {
-                boolean cancelled = future.cancel(true);
-                if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                if (!(future.isDone() || future.isCancelled())) {
+                    boolean cancelled = future.cancel(true);
+                    if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                        Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                    }
                 }
                 future = null;
             }
@@ -221,6 +230,7 @@ public class PollingDynamicConfig implements Closeable {
     /**
      * @return the source id
      */
+    @Trivial
     public String getSourceID() {
         return this.id;
     }
