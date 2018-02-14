@@ -197,6 +197,8 @@ def getVersionQualifier(boolean isRelease) {
   if (branchName == '' || branchName == 'HEAD') {
     // Default to master if something went wrong
     branchName = 'master'
+  } else if (branchName.contains(".")) {
+    branchName = branchName.replaceAll("\\.", "_");
   }
   return [branchName, timestamp]
 }
