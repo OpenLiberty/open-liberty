@@ -309,3 +309,7 @@ display.unresolved.jsl=CWWKY0043I:  Die nicht aufgel\u00f6ste JSL f\u00fcr diese
 display.unresolved.jsl.explanation=Die f\u00fcr den Job verwendete JCL wird vor der Aufl\u00f6sung der Parameter und Eigenschaften angezeigt.
 display.unresolved.jsl.useraction=Stellen Sie sicher, dass der Dateiname f\u00fcr die JSL korrekt ist, und vergewissern Sie sich, dass die JSL-Quelle die richtige JSL enth\u00e4lt.
 
+#The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Der Name der {0}-operationGroup wurde nicht in einen g\u00fcltigen Gruppennamen aufgel\u00f6st.
+JOB_GROUP_NAME_NOT_VALID.explanation=Der Versuch, auf mit Gruppenzugriff auf den Job zuzugreifen, schl\u00e4gt m\u00f6glicherweise fehl, wenn hierbei ein ung\u00fcltiger Gruppenname verwendet wird.
+JOB_GROUP_NAME_NOT_VALID.useraction=Korrigieren Sie den Gruppennamen in der Serverkonfigurationsdatei.

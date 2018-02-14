@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -25,119 +29,35 @@
 # -------------------------------------------------------------------------------------------------
 External_transaction_controller_not_defined_by_server_platform=A DatabaseSession olyan k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151vel rendelkezik, amit nem a ServerPlatform hat\u00e1rozott meg. Az EclipseLink enged\u00e9lyezni fogja a k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151 fel\u00fclb\u00edr\u00e1lat\u00e1t, azonban javasoljuk, hogy alternat\u00edv megold\u00e1sk\u00e9nt fontolja meg az org.eclipse.persistence.platform.server.ServerPlatformBase tov\u00e1bbsz\u00e1rmaztat\u00e1s\u00e1t \u00e9s a getExternalTransactionControllerClass() fel\u00fclb\u00edr\u00e1lat\u00e1t.
 
-External_transaction_controller_not_defined_by_server_platform.MSGID=TOP-50050
-
 JDBC_driver_does_not_support_meta_data=Csatlakoztatott: ismeretlen (a JDBC illeszt\u0151program nem t\u00e1mogatja a metaadatokat.)
-
-JDBC_driver_does_not_support_meta_data.MSGID=TOP-50007
 
 all_registered_clones=Minden regisztr\u00e1lt m\u00e1solat:
 
-all_registered_clones.MSGID=TOP-50022
-
 an_error_executing_ejbSelect=Hiba t\u00f6rt\u00e9nt ejbSelect v\u00e9grehajt\u00e1sa sor\u00e1n: {0}
-
-an_error_executing_ejbSelect.MSGID=TOP-50042
 
 an_error_executing_finder=Hiba t\u00f6rt\u00e9nt keres\u0151 v\u00e9grehajt\u00e1sa sor\u00e1n: {0}
 
-an_error_executing_finder.MSGID=TOP-50041
-
 an_error_occured_executing_findByPrimaryKey=Hiba t\u00f6rt\u00e9nt findByPrimaryKey v\u00e9grehajt\u00e1sa sor\u00e1n: {0}
-
-an_error_occured_executing_findByPrimaryKey.MSGID=TOP-50039
 
 an_error_occured_initializing_dms_listener=Kiv\u00e9tel t\u00f6rt\u00e9nt a DMS be\u00e1gyazott figyel\u0151 \u00e9s a SPY szervlet inicializ\u00e1l\u00e1sa sor\u00e1n
 
-an_error_occured_initializing_dms_listener.MSGID=TOP-50072
-
 an_error_occured_preparing_bean=Hiba t\u00f6rt\u00e9nt komponens h\u00edv\u00e1sra t\u00f6rt\u00e9n\u0151 el\u0151k\u00e9sz\u00edt\u00e9se sor\u00e1n: {0}
-
-an_error_occured_preparing_bean.MSGID=TOP-50040
 
 an_error_occured_trying_to_undeploy_bean=Hiba t\u00f6rt\u00e9nt komponens telep\u00edt\u00e9s\u00e9nek visszavon\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n (telep\u00edt\u00e9si hiba ut\u00e1n): {0}
 
-an_error_occured_trying_to_undeploy_bean.MSGID=TOP-50038
-
-annotation_default_alias.MSGID=TOP-50142
-
-annotation_default_association_table_name.MSGID=TOP-50155
-
-annotation_default_column.MSGID=TOP-50145
-
-annotation_default_fk_column.MSGID=TOP-50147
-
-annotation_default_inheritance_fk_column.MSGID=TOP-50154
-
-annotation_default_inheritance_pk_column.MSGID=TOP-50153
-
-annotation_default_many_to_many_reference_class.MSGID=TOP-50161
-
-annotation_default_many_to_one_reference_class.MSGID=TOP-50160
-
-annotation_default_one_to_many_mapping.MSGID=TOP-50144
-
-annotation_default_one_to_many_reference_class.MSGID=TOP-50159
-
-annotation_default_one_to_one_mapping.MSGID=TOP-50143
-
-annotation_default_one_to_one_reference_class.MSGID=TOP-50158
-
-annotation_default_pk_column.MSGID=TOP-50146
-
-annotation_default_secondary_table_fk_column.MSGID=TOP-50157
-
-annotation_default_secondary_table_pk_column.MSGID=TOP-50156
-
-annotation_default_source_fk_column.MSGID=TOP-50150
-
-annotation_default_source_pk_column.MSGID=TOP-50149
-
-annotation_default_table_name.MSGID=TOP-50148
-
-annotation_default_target_fk_column.MSGID=TOP-50152
-
-annotation_default_target_pk_column.MSGID=TOP-50151
-
 annotation_warning_ignore_annotation=A(z) [{0}] feljegyz\u00e9s figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{1}] elemen, mert az oszt\u00e1ly az egyik XML metadata-complete be\u00e1ll\u00edt\u00e1sa true.
 
-annotation_warning_ignore_embedded_id.MSGID=TOP-50164
-
-annotation_warning_ignore_get_method.MSGID=TOP-50170
-
-annotation_warning_ignore_id_class.MSGID=TOP-50165
-
-annotation_warning_ignore_inheritance.MSGID=TOP-50169
-
-annotation_warning_ignore_mapping.MSGID=TOP-50162
-
-annotation_warning_ignore_primary_key.MSGID=TOP-50163
-
 annotation_warning_ignore_private_owned=@PrivateOwned figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{1}] elemen a(z) [{0}] entit\u00e1s oszt\u00e1lyon bel\u00fcl. A @PrivateOwned csak @OneToOne, @OneToMany \u00e9s @VariableOneToOne feljegyz\u00e9sekkel haszn\u00e1lhat\u00f3. Tov\u00e1bb\u00e1 a priv\u00e1t tulajdonjog @BasicCollection \u00e9s @BasicMap feljegyz\u00e9sekkel van megval\u00f3s\u00edtva.
-
-annotation_warning_ignore_query.MSGID=TOP-50171
 
 annotation_warning_ignore_return_insert=A @ReturnInsert figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{0}] elemen. A @ReturnInsert csak alapszint\u0171 lek\u00e9pez\u00e9ssel t\u00e1mogatott.
 
 annotation_warning_ignore_return_update=A @ReturnUpdate figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{0}] elemen. A @ReturnUpdate csak alapszint\u0171 lek\u00e9pez\u00e9ssel t\u00e1mogatott.
 
-annotation_warning_ignore_secondary_table.MSGID=TOP-50168
-
-annotation_warning_ignore_table.MSGID=TOP-50167
-
-annotation_warning_ignore_version_locking.MSGID=TOP-50166
-
 application_server_name_and_version=Kiszolg\u00e1l\u00f3: {0}
-
-application_server_name_and_version.MSGID=TOP-50002
 
 archive_not_found_in_input=Az arch\u00edv ({0}) f\u00e1jl nem l\u00e9tezett a bemeneti ({1}) k\u00f6nyvt\u00e1rban.
 
-archive_not_found_in_input.MSGID=TOP-50083
-
 associate_using_third_table_not_migrated=Az Oc4j nat\u00edv -DassociateUsingThirdTable=true CMP \u00f6sszetev\u0151je az 1:m lek\u00e9pez\u00e9shez rel\u00e1ci\u00f3s t\u00e1bl\u00e1val nem ker\u00fclt \u00e1ttelep\u00edt\u00e9sre. A(z) ({0}) entit\u00e1s ({1}) cmr mez\u0151j\u00e9t \u00e1t kell defini\u00e1lnia egy-sok lek\u00e9pez\u00e9ss\u00e9 a Lek\u00e9pez\u00e9si munkater\u00fcleten az \u00e1ttelep\u00edt\u00e9si folyamat ut\u00e1n.
-
-associate_using_third_table_not_migrated.MSGID=TOP-50100
 
 attempted_to_open_entry_in_url_as_jar={2} t\u00f6rt\u00e9nt a(z) {0} jar f\u00e1jlk\u00e9nt t\u00f6rt\u00e9n\u0151 megnyit\u00e1s\u00e1ra \u00e9s a bejegyz\u00e9s el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n: {1}.
 
@@ -149,49 +69,29 @@ attempted_to_open_url_as_jar={1} t\u00f6rt\u00e9nt a(z) {0} jar f\u00e1jlk\u00e9
 
 automatic_key_generation_not_supported=A WLS "automatic-key-generation" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-automatic_key_generation_not_supported.MSGID=TOP-50128
-
 bacth_update_not_supported=A batch-size k\u00f6tegfriss\u00edt\u00e9si be\u00e1ll\u00edt\u00e1st a(z) ({1}) entit\u00e1skomponensen ({0}) \u00e9rt\u00e9kkel az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-bacth_update_not_supported.MSGID=TOP-50119
 
 broadcast_connection_already_closed=Figyelmeztet\u00e9s: {0}: k\u00eds\u00e9rlet m\u00e1r lez\u00e1rt kapcsolat lez\u00e1r\u00e1s\u00e1ra. A rendszer figyelmen k\u00edv\u00fcl hagyja.
 
-broadcast_connection_already_closed.MSGID=TOP-50185
-
 broadcast_connection_already_closing=Figyelmeztet\u00e9s: {0}: k\u00eds\u00e9rlet lez\u00e1r\u00e1s alatt l\u00e9v\u0151 kapcsolat lez\u00e1r\u00e1s\u00e1ra. A rendszer figyelmen k\u00edv\u00fcl hagyja.
-
-broadcast_connection_already_closing.MSGID=TOP-50186
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Figyelmeztet\u00e9s: {0}: a kapcsolat lez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet {1} kiv\u00e9telt eredm\u00e9nyezett
 
-broadcast_exception_thrown_when_attempting_to_close_connection.MSGID=TOP-50184
-
 broadcast_ignored_command_while_closing_connection=Figyelmeztet\u00e9s: {0}: parancs k\u00f6zz\u00e9t\u00e9tel\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9st a rendszer figyelmen k\u00edv\u00fcl hagyja kapcsolat lez\u00e1r\u00e1sa sor\u00e1n.
-
-broadcast_ignored_command_while_closing_connection.MSGID=TOP-50189
 
 broadcast_listening_sleep_on_error=Figyelmeztet\u00e9s: {0}: {1} kiv\u00e9tel t\u00f6rt\u00e9nt. A sz\u00e1l {2} ezredm\u00e1sodpercig v\u00e1rakozik, miel\u0151tt folytatn\u00e1 a figyel\u00e9st.
 
-broadcast_listening_sleep_on_error.MSGID=TOP-50190
-
 broadcast_remote_command_is_null=Figyelmeztet\u00e9s: {0}: a fogadott {1} \u00fczenet RemoteCommand helyett null\u00e9rt\u00e9ket tartalmaz.
-
-broadcast_remote_command_is_null.MSGID=TOP-50187
 
 broadcast_remote_command_wrong_type=Figyelmeztet\u00e9s: {0}: a fogadott {1} \u00fczenet a v\u00e1rt RemoteCommand t\u00edpus\u00fa objektum helyett {2} t\u00edpus\u00fa objektumot tartalmaz.
 
-broadcast_remote_command_wrong_type.MSGID=TOP-50188
-
 call_timeout_not_migrated=A(z) {1} call-timeout \u00e9rt\u00e9k van megadva a(z) {0} entit\u00e1sban az orion-ejb-jar.xml f\u00e1jlban, de nincs meghat\u00e1rozva megmarad\u00f3 lek\u00e9pez\u00e9s a le\u00edr\u00f3f\u00e1jlban, ez\u00e9rt nem val\u00f3sul meg \u00e1ttelep\u00edt\u00e9s.  Ha a k\u00e9s\u0151bbiek sor\u00e1n EclipseLink alap\u00e9rtelmezett lek\u00e9pez\u00e9st haszn\u00e1l az EclipseLink lek\u00e9pez\u00e9si le\u00edr\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz, akkor figyeljen arra, hogy a call-timeout be\u00e1ll\u00edt\u00e1s elv\u00e9sz, mert az EclipseLink alap\u00e9rtelmezett lek\u00e9pez\u00e9s nem rendelkezik hozz\u00e1f\u00e9r\u00e9ssel a nat\u00edv le\u00edr\u00f3f\u00e1jlhoz.  Saj\u00e1t kez\u0171leg vagy az EclipseLink Lek\u00e9pez\u00e9si munkater\u00fclet\u00e9nek haszn\u00e1lat\u00e1val alaphelyzetbe kell \u00e1ll\u00edtania a call-timeout be\u00e1ll\u00edt\u00e1st az alap\u00e9rtelmezett lek\u00e9pez\u00e9s el\u0151\u00e1ll\u00edt\u00e1sa ut\u00e1n.
 
-call_timeout_not_migrated.MSGID=TOP-50112
+cannot_get_nested_collection_type=A be\u00e1gyazott gy\u0171jtem\u00e9nyt\u00edpus nem k\u00e9rdezhet\u0151 le.
 
 cannot_get_server_name_and_version=A kiszolg\u00e1l\u00f3n\u00e9v \u00e9s -v\u00e1ltozat a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem k\u00e9rhet\u0151 le.  {0}
 
 cannot_unwrap_connection=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e1ltal \u00e1talak\u00edtott oracle kapcsolat nem alak\u00edthat\u00f3 vissza a k\u00f6vetkez\u0151 kiv\u00e9tel miatt.  {0}
-
-cannot_unwrap_connection.MSGID=TOP-50182
 
 cannot_weave_changetracking=A(z) {0} nem f\u0171zhet\u0151 a m\u00f3dos\u00edt\u00e1sk\u00f6vet\u00e9shez, mert a lek\u00e9pez\u00e9sei azt nem t\u00e1mogatj\u00e1k.
 
@@ -199,175 +99,101 @@ cannot_weave_virtual_one_to_one=A(z) {0} oszt\u00e1ly {1} attrib\u00fatuma OneTo
 
 check_exist_on_method_as_true_not_supported=A WLS "check-exists-on-method-as-true" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-check_exist_on_method_as_true_not_supported.MSGID=TOP-50129
-
 class_list_created_by=Oszt\u00e1lylista ({0}).({1})() met\u00f3dus \u00e1ltal l\u00e9trehozva.
-
-class_list_created_by.MSGID=TOP-50181
 
 cmp_and_cmr_field=A(z) [{0}] ejb-jar.xml bejegyz\u00e9se <cmp-field> \u00e9s <cmr-field> bejegyz\u00e9st is tartalmaz a(z) [{1}] attrib\u00fatumra.  A <cmp-field> bejegyz\u00e9s figyelmen k\u00edv\u00fcl marad.
 
-cmp_and_cmr_field.MSGID=TOP-50054
-
 column_size_not_migrated=A(z) ({0}) adatb\u00e1zis oszlopm\u00e9ret nem ker\u00fcl \u00e1ttelep\u00edt\u00e9sre. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-column_size_not_migrated.MSGID=TOP-50099
 
 communication_failure_attempting_begintransaction_retry=Kommunik\u00e1ci\u00f3s hiba \u00e9szlelhet\u0151 az adatb\u00e1zison tranzakci\u00f3 l\u00e9trehoz\u00e1s\u00e1nak k\u00eds\u00e9rlete sor\u00e1n.  K\u00eds\u00e9rlet a tranzakci\u00f3 \u00fajrapr\u00f3b\u00e1l\u00e1s\u00e1ra. A hiba: {0}.
 
-communication_failure_attempting_begintransaction_retry.MSGID=TOP-50204
-
 communication_failure_attempting_query_retry=Kommunik\u00e1ci\u00f3s hiba egy tranzakci\u00f3n k\u00edv\u00fcli olvas\u00e1si lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. K\u00eds\u00e9rlet a lek\u00e9rdez\u00e9s \u00fajrapr\u00f3b\u00e1l\u00e1s\u00e1ra. A hiba: {0}.
-
-communication_failure_attempting_query_retry.MSGID=TOP-50203
 
 config_factory=Konfigur\u00e1ci\u00f3 gy\u00e1r: ({0}) = ({1})
 
-config_factory.MSGID=TOP-50180
-
 connected_sdk=Csatlakoztatott: SDK
-
-connected_sdk.MSGID=TOP-50011
 
 connected_user_database=Csatlakoztatott: {3}{4}Felhaszn\u00e1l\u00f3: {0}{3}{4}Adatb\u00e1zis: {1}  V\u00e1ltozat: {2}
 
-connected_user_database.MSGID=TOP-50006
-
 connected_user_database_driver=Csatlakoztatott: {0}{6}Felhaszn\u00e1l\u00f3: {1}{6}Adatb\u00e1zis: {2}  V\u00e1ltozat: {3}{6}Meghajt\u00f3: {4}  V\u00e1ltozat: {5}
-
-connected_user_database_driver.MSGID=TOP-50005
 
 connecting=csatlakoz\u00e1s({0})
 
-connecting.MSGID=TOP-50008
-
 corrupted_session_announcement=SessionID: {0}  Felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 s\u00e9r\u00fclt munkamenet-k\u00f6zlem\u00e9nyt kapott - mell\u0151z\u00e9s.
-
-corrupted_session_announcement.MSGID=TOP-50026
 
 create_default_dbms_tables_not_supported=A WLS "create-default-dbms-tables" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-create_default_dbms_tables_not_supported.MSGID=TOP-50124
-
 data_sync_on_ejb_create_not_supported=A(z) ({0}) entit\u00e1skomponensen meghat\u00e1rozott data-synchronization-option="ejbCreate" adatszinkroniz\u00e1l\u00e1si be\u00e1ll\u00edt\u00e1st az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-data_sync_on_ejb_create_not_supported.MSGID=TOP-50120
 
 dbPlatformHelper_defaultingPlatform=Nem \u00e1llap\u00edthat\u00f3 meg platform a(z) [{0}] sz\u00e1ll\u00edt\u00f3n\u00e9vhez. Alap\u00e9rtelmez\u00e9s be\u00e1ll\u00edt\u00e1sa: [{1}]. Lehet, hogy a haszn\u00e1lt adatb\u00e1zis dialektus nem felel meg a haszn\u00e1latban l\u00e9v\u0151 adatb\u00e1zisnak. Adja meg a platformot kifejezetten az "eclipselink.target-database" tulajdons\u00e1g haszn\u00e1lat\u00e1val.
 
 dbPlatformHelper_noMappingFound=Nem t\u00f6lthet\u0151 be a(z) [{0}] er\u0151forr\u00e1s, amely bet\u00f6lti a sz\u00e1ll\u00edt\u00f3n\u00e9v-adatb\u00e1zisplatform lek\u00e9pez\u00e9st. Az adatb\u00e1zisplatform automatikus \u00e9szlel\u00e9se nem m\u0171k\u00f6dik.
 
+dbws_no_wsdl_inline_schema=A(z) [{0}] WSDL bels\u0151 s\u00e9ma nem olvashat\u00f3.
+
+dbws_orm_metadata_read_error=A(z) [{0}] ORM metaadatok nem olvashat\u00f3k.
+
+dbws_oxm_metadata_read_error=A(z) [{0}] OXM metaadatok nem olvashat\u00f3k.
+
+dbws_xml_schema_read_error=A(z) [{0}] XML s\u00e9ma nem olvashat\u00f3.
+
 ddl_generation_unknown_property_value=Ismeretlen {0} \u00e9rt\u00e9k van megadva ([{1}]) a perzisztencia egys\u00e9ghez: [{2}]. Az \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sok: [{3}]
 
 default_dbms_tables_ddl_not_supported=A WLS "default-dbms-tables-ddl" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-default_dbms_tables_ddl_not_supported.MSGID=TOP-50125
-
 default_tables_already_existed=A(z) ({0}) t\u00e1bla m\u00e1r szerepel az adatb\u00e1zisban, \u00edgy nem ker\u00fcl l\u00e9trehoz\u00e1sra.
-
-default_tables_already_existed.MSGID=TOP-50179
 
 delay_database_insert_until_ejb_create_not_supported=A WLS "delay-database-insert-until-ejbCreate" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-delay_database_insert_until_ejb_create_not_supported.MSGID=TOP-50130
-
 delay_database_insert_until_ejb_post_create_not_supported=A WLS "delay-database-insert-until-ejbPostCreate" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-delay_database_insert_until_ejb_post_create_not_supported.MSGID=TOP-50131
 
 delay_updates_until_commit_not_supported=Az Oc4j "delay-updates-until-commit" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-delay_updates_until_commit_not_supported.MSGID=TOP-50101
-
 deleted_objects=T\u00f6r\u00f6lt objektumok:
 
-deleted_objects.MSGID=TOP-50019
-
 deleting_object=Az elt\u00e1vol\u00edt\u00e1si m\u0171velet v\u00e9grehajt\u00e1sra ker\u00fclt a k\u00f6vetkez\u0151n: {0}
-
-deleting_object.MSGID=TOP-50020
 
 deprecated_property=a(z) {1} tulajdons\u00e1g elavult, a(z) {0} tulajdons\u00e1got kell haszn\u00e1lni helyette.
 
 descriptor_named_query_cannot_be_added=Nem adhat\u00f3 hozz\u00e1 a le\u00edr\u00f3 \u00e1ltal megnevezett lek\u00e9rdez\u00e9s, melynek neve \u00fctk\u00f6zik egy megl\u00e9v\u0151 lek\u00e9rdez\u00e9ssel. Hozz\u00e1adand\u00f3 lek\u00e9rdez\u00e9s: [{0}] neve: [{1}] argumentumai: [{2}].
 
-detect_server_platform=\u00c9szlelt kiszolg\u00e1l\u00f3 platform: {0}.
-
 dir_cleaned_for_mw_files=A(z) {0} c\u00edmjegyz\u00e9k alatti f\u00e1jlok \u00e9s alk\u00f6nyvt\u00e1rak t\u00f6rl\u00e9sre ker\u00fcltek, hogy tiszta k\u00f6nyvt\u00e1r legyen l\u00e9trehozva az \u00fajonnan el\u0151\u00e1ll\u00edtott EclipseLink Lek\u00e9pez\u00e9si munkater\u00fclet projektf\u00e1jlok sz\u00e1m\u00e1ra
-
-dir_cleaned_for_mw_files.MSGID=TOP-50136
 
 disconnect=sz\u00e9tkapcsol\u00e1s
 
-disconnect.MSGID=TOP-50009
-
 do_select_before_insert_not_supported=Az Oc4j "do-select-before-insert" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-do_select_before_insert_not_supported.MSGID=TOP-50102
 
 drop_connection_on_error=Figyelmeztet\u00e9s: T\u00e1voli parancs kapcsolat megsz\u00fcntet\u00e9se {0} fel\u00e9 {1} hib\u00e1val
 
-drop_connection_on_error.MSGID=TOP-50056
-
 ejbSelect2=EjbSelect: {0}
-
-ejbSelect2.MSGID=TOP-50043
 
 ejb_jar_xml_not_found_in_input=Az ejb-jar.xml nincs jelen a(z) ({0}) bemeneti k\u00f6nyvt\u00e1rban.
 
-ejb_jar_xml_not_found_in_input.MSGID=TOP-50086
-
 elements={0}{1} elem
-
-elements.MSGID=TOP-50017
 
 enable_batch_operations_as_true_not_supported=A WLS "enable-batch-operations-as-true" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-enable_batch_operations_as_true_not_supported.MSGID=TOP-50126
-
 entity_manager_ignores_jta_data_source=A perzisztencia egys\u00e9g nem haszn\u00e1l JTA-t, ez\u00e9rt az EntityManager figyelmen k\u00edv\u00fcl hagyja a jta adatforr\u00e1st. 
-
-entity_manager_ignores_jta_data_source.MSGID=TOP-50214
 
 entity_manager_ignores_nonjta_data_source=A perzisztencia egys\u00e9g JTA-t haszn\u00e1l, ez\u00e9rt az EntityManager figyelmen k\u00edv\u00fcl hagyja a nem jta adatforr\u00e1st. 
 
-entity_manager_ignores_nonjta_data_source.MSGID=TOP-50213
-
 entity_manager_sets_property_while_context_is_active=A(z) {0} tulajdons\u00e1g az entit\u00e1skezel\u0151ben be van \u00e1ll\u00edtva, amikor akt\u00edv perzisztencia kontextus m\u00e1r l\u00e9tezik; csak akkor lesz feldolgozva \u00e9s \u00e9rv\u00e9nybe l\u00e9ptetve, amikor \u00faj akt\u00edv perzisztencia kontextus ker\u00fcl l\u00e9trehoz\u00e1sra. \u00daj akt\u00edv perzisztencia kontextus l\u00e9trehoz\u00e1s\u00e1hoz a megl\u00e9v\u0151t el kell t\u00e1vol\u00edtani - ezt az EntityManager clear met\u00f3dus\u00e1nak h\u00edv\u00e1s\u00e1val lehet v\u00e9grehajtani.
-
-entity_manager_sets_property_while_context_is_active.MSGID=TOP-50210
 
 entity_not_available_during_merge=Pr\u00f3b\u00e1lkoz\u00e1sok maxim\u00e1lis sz\u00e1ma el\u00e9rve.  A z\u00e1rolt cacheKey \u00e9rt\u00e9ke nem tal\u00e1lhat\u00f3.  Oszt\u00e1ly: [{0}] Azonos\u00edt\u00f3:[{1}] Ez a sz\u00e1l: [{2}] Tulajdonos sz\u00e1l:[{3}]
 
-entity_not_available_during_merge.MSGID=TOP-50247
-
 error_during_PersistenceManager_setup_for_bean=Hiba PersistenceManager be\u00e1ll\u00edt\u00e1sa sor\u00e1n a komponenshez: {0}
-
-error_during_PersistenceManager_setup_for_bean.MSGID=TOP-50033
 
 error_executing_ejbHome=Hiba t\u00f6rt\u00e9nt ejbHome v\u00e9grehajt\u00e1sa sor\u00e1n: {0}
 
-error_executing_ejbHome.MSGID=TOP-50035
-
 error_executing_remote_command={0} parancs meghi\u00fasult a k\u00f6vetkez\u0151 miatt: {1}
-
-error_executing_remote_command.MSGID=TOP-50061
 
 error_getting_transaction_status=Hiba a tranzakci\u00f3 \u00e1llapot lek\u00e9r\u00e9se sor\u00e1n.  {0}
 
-error_getting_transaction_status.MSGID=TOP-50044
-
 error_in_codegen=Hiba konkr\u00e9t komponensoszt\u00e1ly el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n.
-
-error_in_codegen.MSGID=TOP-50032
 
 error_in_create=Hiba a l\u00e9trehoz\u00e1sban.
 
-error_in_create.MSGID=TOP-50034
-
 error_in_remove=Hiba az elt\u00e1vol\u00edt\u00e1sban.
-
-error_in_remove.MSGID=TOP-50036
 
 error_loading_xml_file=Kiv\u00e9tel az ORM xml f\u00e1jl bet\u00f6lt\u00e9se sor\u00e1n: {0}: {1}
 
@@ -375,89 +201,47 @@ exception_loading_entity_class=Kiv\u00e9tel t\u00f6rt\u00e9nt a perzisztencia in
 
 exception_thrown_when_attempting_to_close_connection=Figyelmeztet\u00e9s: kiv\u00e9tel t\u00f6rt\u00e9nt a kapcsolat bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n
 
-exception_thrown_when_attempting_to_close_connection.MSGID=TOP-50060
-
 exception_thrown_when_attempting_to_close_listening_topic_connection=Kiv\u00e9tel t\u00f6rt\u00e9nt t\u00e9mak\u00f6r kapcsolat bez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n: {0}
-
-exception_thrown_when_attempting_to_close_listening_topic_connection.MSGID=TOP-50027
 
 exception_thrown_when_attempting_to_shutdown_cache_synch=Kiv\u00e9tel t\u00f6rt\u00e9nt gyors\u00edt\u00f3t\u00e1r szinkroniz\u00e1l\u00e1s le\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n: {0}
 
-exception_thrown_when_attempting_to_shutdown_cache_synch.MSGID=TOP-50025
-
-exception_while_weaving=A bef\u0171z\u0151 kiv\u00e9telt \u00e9szlelt a(z) {0} oszt\u00e1ly bef\u0171z\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.  A kiv\u00e9tel: {1}
+exception_while_weaving=A bef\u0171z\u0151 kiv\u00e9telt \u00e9szlelt a(z) {0} oszt\u00e1ly bef\u0171z\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: {1}
 
 extra_cmp_field=Meg van hat\u00e1rozva egy absztrakt beolvas\u00f3 \u00e9s/vagy be\u00e1ll\u00edt\u00f3 a(z) [{0}] absztrakt komponens oszt\u00e1lyon, de a vonatkoz\u00f3 [{1}] cmp mez\u0151 nincs deklar\u00e1lva az ejb-jar.xml f\u00e1jlban.
 
-extra_cmp_field.MSGID=TOP-50051
-
 extra_ejb_select=Meg van hat\u00e1rozva egy absztrakt ejbSelect a(z) [{0}] absztrakt komponens oszt\u00e1lyon, de a vonatkoz\u00f3 [{1}{2}] ejbSelect bejegyz\u00e9s nincs deklar\u00e1lva az ejb-jar.xml f\u00e1jlban.
-
-extra_ejb_select.MSGID=TOP-50052
 
 extra_finder=Meg van hat\u00e1rozva keres\u0151 a(z) [{0}] saj\u00e1t fel\u00fclet(ek)en, de a vonatkoz\u00f3 [{1}{2}] keres\u0151 bejegyz\u00e9s nincs deklar\u00e1lva az ejb-jar.xml f\u00e1jlban.
 
-extra_finder.MSGID=TOP-50053
-
 failed_command_propagation=Hiba: A(z) {0} fel\u00e9 parancs terjeszt\u00e9s\u00e9re tett k\u00eds\u00e9rlet meghi\u00fasult {1} miatt
-
-failed_command_propagation.MSGID=TOP-50059
 
 failed_to_find_mbean_server=MBean kiszolg\u00e1l\u00f3 keres\u00e9se meghi\u00fasult: {0}
 
-failed_to_find_mbean_server.MSGID=TOP-50047
-
 failed_to_propogate_to=CacheSynchronization : Terjeszt\u00e9s meghi\u00fasult {0} fel\u00e9.  {1}
-
-failed_to_propogate_to.MSGID=TOP-50024
 
 field_group_not_supported=A WLS "field-group" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-field_group_not_supported.MSGID=TOP-50132
-
 field_type_set_to_java_lang_string=Az alap\u00e9rtelmezett t\u00e1blal\u00e9trehoz\u00f3 nem tal\u00e1lta, vagy nem tudta \u00e1talak\u00edtani a(z) ({1}) java t\u00edpust a(z) ({0}) adatb\u00e1zis-mez\u0151 egy adatb\u00e1zis-t\u00edpus\u00e1v\u00e1. Az el\u0151\u00e1ll\u00edt\u00f3 a mez\u0151 alap\u00e9rtelmezett java t\u00edpusak\u00e9nt "java.lang.String" t\u00edpust haszn\u00e1l.
 
-field_type_set_to_java_lang_string.MSGID=TOP-50177
-
-force_update_not_supported=Az Oc4j "primarykey-lazy-loading" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-force_update_not_supported.MSGID=TOP-50106
+force_update_not_supported=Az Oc4j "force-update" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
 identitymap_for={0}{1} a k\u00f6vetkez\u0151 eset\u00e9n: {2}
 
-identitymap_for.MSGID=TOP-50013
-
 includes=(tartalmazza: 
-
-includes.MSGID=TOP-50014
 
 input_and_output_dir_be_different=A bemeneti k\u00f6nyvt\u00e1rt\u00f3l elt\u00e9r\u0151 kimeneti k\u00f6nyvt\u00e1rat kell meghat\u00e1roznia.
 
-input_and_output_dir_be_different.MSGID=TOP-50081
-
 input_archive_format_not_supported=Az \u00e1ttelep\u00edt\u00e9si seg\u00e9dprogram .ear \u00e9s .jar bemeneti arch\u00edv form\u00e1tumot t\u00e1mogatja. A(z) ({0}) bemeneti f\u00e1jlform\u00e1tum nem t\u00e1mogatott.
-
-input_archive_format_not_supported.MSGID=TOP-50082
 
 input_at_least_either_archive_or_xml=Az -e kapcsol\u00f3val megadhatja az \u00e1ttelep\u00edtett arch\u00edv f\u00e1jl nev\u00e9t, vagy az -x kapcsol\u00f3val jelezheti, hogy a bemeneti k\u00f6nyvt\u00e1r alatti le\u00edr\u00f3 xml f\u00e1jlok \u00e1ttelep\u00edt\u00e9sre ker\u00fclnek, de ezek k\u00f6z\u00fcl csak az egyiket szabad \u00e9s kell megadnia.
 
-input_at_least_either_archive_or_xml.MSGID=TOP-50085
-
 input_minimum_arguments=A parancssori bemeneti argumentumai k\u00f6z\u00f6tt legal\u00e1bb a k\u00f6vetkez\u0151knek szerepelni\u00fck kell: -s, -a vagy -x, \u00e9s -o.
-
-input_minimum_arguments.MSGID=TOP-50073
 
 input_not_both_archive_and_xml=Az -e kapcsol\u00f3val megadhatja az arch\u00edv f\u00e1jl nev\u00e9t, vagy az -x kapcsol\u00f3val jelezheti, hogy a bemeneti k\u00f6nyvt\u00e1r alatti le\u00edr\u00f3f\u00e1jlok \u00e1ttelep\u00edt\u00e9sre ker\u00fclnek, de csak az egyiket szabad megadnia.
 
-input_not_both_archive_and_xml.MSGID=TOP-50084
-
 input_orione_ejb_jar_augmented=A bemeneti orion-ejb-jar.xml f\u00e1jl kieg\u00e9sz\u00edt\u00e9sre ker\u00fclt, hogy az EclipseLink az OC4J megmarad\u00f3 kezel\u0151jek\u00e9nt legyen megadva
 
-input_orione_ejb_jar_augmented.MSGID=TOP-50122
-
 invalid_command_line_argument=A(z) ({0}) parancssori argumentum \u00e9rv\u00e9nytelen
-
-invalid_command_line_argument.MSGID=TOP-50098
 
 invalid_datasource_property_value=A(z) {1} nem \u00e9rv\u00e9nyes objektum a(z) {0} tulajdons\u00e1g sz\u00e1m\u00e1ra \u00e1tad\u00e1shoz.  Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: karaktersorozat vagy a javax.sql.DataSource p\u00e9ld\u00e1nyai.
 
@@ -465,131 +249,67 @@ invalid_property_value=A(z) {1} nem \u00e9rv\u00e9nyes objektum a(z) {0} tulajdo
 
 isolation_level_not_supported=Az Oc4j "isolation-level" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-isolation_level_not_supported.MSGID=TOP-50105
-
 jar_entry_has_been_migrated=A nat\u00edv cmp le\u00edr\u00f3f\u00e1jl a bemeneti ({1}) EAR f\u00e1jl ({0}) jar bejegyz\u00e9s\u00e9b\u0151l \u00e1ttelep\u00edt\u00e1sre ker\u00fclt.
 
-jar_entry_has_been_migrated.MSGID=TOP-50096
-
 jar_entry_not_migratable=A(z) ({0}) jar bejegyz\u00e9s a(z) ({1}) bemeneti EAR f\u00e1jlban nem telep\u00edthet\u0151 \u00e1t.
-
-jar_entry_not_migratable.MSGID=TOP-50095
 
 jar_file_url_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt a persistence.xml \u00e9rtelmez\u00e9se sor\u00e1n.  A jar f\u00e1jl helye nem tal\u00e1lhat\u00f3: {0}
 
 jaxb_metadata_warning_ignoring_java_attribute=A(z) [{0}] attrib\u00fatum figyelmen k\u00edv\u00fcl hagy\u00e1sa a(z) [{1}] oszt\u00e1lyon, mert nem ker\u00fclt el\u0151\u00e1ll\u00edt\u00e1sra tulajdons\u00e1g hozz\u00e1.
 
-jaxb_metadata_warning_ignoring_java_attribute.MSGID=TOP-50235
-
 jaxb_metadata_warning_ignoring_type_on_map=Az xml-element type attrib\u00fatum\u00e1nak figyelmen k\u00edv\u00fcl hagy\u00e1sa, mert xml-map van be\u00e1ll\u00edtva a(z) [{0}] tulajdons\u00e1gon.
-
-jaxb_metadata_warning_ignoring_type_on_map.MSGID=TOP-50238
 
 jaxb_metadata_warning_invalid_bound_type=A(z) [{1}] illeszt\u0151 oszt\u00e1ly [{0}] k\u00f6t\u00e9si t\u00edpusa \u00e9rv\u00e9nytelen, \u00e9s figyelmen k\u00edv\u00fcl marad.
 
-jaxb_metadata_warning_invalid_bound_type.MSGID=TOP-50236
-
 jaxb_metadata_warning_invalid_java_attribute=Nem t\u00e1mogatott [{0}] JavaAttribute \u00e9szlelhet\u0151, \u00e9s figyelmen k\u00edv\u00fcl marad.
-
-jaxb_metadata_warning_invalid_java_attribute.MSGID=TOP-50239
 
 jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] csomaghoz, \u00e9s figyelmen k\u00edv\u00fcl marad.
 
-jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter.MSGID=TOP-50240
-
 jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] mez\u0151h\u00f6z/tulajdons\u00e1ghoz a(z) [{2}] oszt\u00e1lyon, \u00e9s figyelmen k\u00edv\u00fcl marad.
-
-jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter.MSGID=TOP-50242
 
 jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=\u00c9rv\u00e9nytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] oszt\u00e1lyhoz, \u00e9s figyelmen k\u00edv\u00fcl marad.
 
-jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter.MSGID=TOP-50241
-
 jaxb_metadata_warning_no_classes_to_process=Nincsenek feldolgozand\u00f3 oszt\u00e1lyok a(z) [{0}] csomaghoz.
-
-jaxb_metadata_warning_no_classes_to_process.MSGID=TOP-50237
 
 jmx_mbean_runtime_services_failed_toget_initial_context=Nem k\u00e9rhet\u0151 le InitialContext az MBean regisztr\u00e1ci\u00f3hoz: {0}
 
-jmx_mbean_runtime_services_failed_toget_initial_context.MSGID=TOP-50229
-
-# START NON-TRANSLATABLE
 jmx_mbean_runtime_services_get_executethreadruntime_object_failed=A WebLogic v\u00e1ltozat nem t\u00e1mogatja az executeThreadRuntime objektumot - az oszt\u00e1lybet\u00f6lt\u0151 haszn\u00e1lata: {0}
-# END NON-TRANSLATABLE
-
-jmx_mbean_runtime_services_get_executethreadruntime_object_failed.MSGID=TOP-50232
 
 jmx_mbean_runtime_services_identity_map_class=[{0}] azonoss\u00e1g-lek\u00e9pez\u00e9s, oszt\u00e1ly = {1}
 
-jmx_mbean_runtime_services_identity_map_class.MSGID=TOP-50221
-
 jmx_mbean_runtime_services_identity_map_empty=A(z) [{0}] azonoss\u00e1g-lek\u00e9pez\u00e9s \u00fcres.
-
-jmx_mbean_runtime_services_identity_map_empty.MSGID=TOP-50220
 
 jmx_mbean_runtime_services_identity_map_initialized=A(z) [{0}] azonoss\u00e1g-lek\u00e9pez\u00e9s inicializ\u00e1lva.
 
-jmx_mbean_runtime_services_identity_map_initialized.MSGID=TOP-50223
-
 jmx_mbean_runtime_services_identity_map_invalidated=A(z) [{0}] azonoss\u00e1g-lek\u00e9pez\u00e9s \u00e9rv\u00e9nytelen\u00edtve.
-
-jmx_mbean_runtime_services_identity_map_invalidated.MSGID=TOP-50224
 
 jmx_mbean_runtime_services_identity_map_non_existent=A(z) [{0}] azonoss\u00e1g-lek\u00e9pez\u00e9s nem l\u00e9tezik.
 
-jmx_mbean_runtime_services_identity_map_non_existent.MSGID=TOP-50219
-
 jmx_mbean_runtime_services_mbeanserver_lookup_failed=Nem k\u00e9rhet\u0151 le InitialContext az MBean regisztr\u00e1ci\u00f3hoz: {0}
-
-jmx_mbean_runtime_services_mbeanserver_lookup_failed.MSGID=TOP-50230
 
 jmx_mbean_runtime_services_no_classes_in_session=Nincsenek oszt\u00e1lyok a munkamenetben.
 
-jmx_mbean_runtime_services_no_classes_in_session.MSGID=TOP-50226
-
 jmx_mbean_runtime_services_no_connection_pools_available=Nem \u00e9rhet\u0151k el kapcsolatk\u00e9szletek.
-
-jmx_mbean_runtime_services_no_connection_pools_available.MSGID=TOP-50228
 
 jmx_mbean_runtime_services_no_identity_maps_in_session=A munkamenetben nincsenek azonoss\u00e1g-lek\u00e9pez\u00e9sek.
 
-jmx_mbean_runtime_services_no_identity_maps_in_session.MSGID=TOP-50222
-
 jmx_mbean_runtime_services_pool_name=K\u00e9szletn\u00e9v = {0}
-
-jmx_mbean_runtime_services_pool_name.MSGID=TOP-50218
 
 jmx_mbean_runtime_services_print_cache_key_value=Kulcs [{0}] => \u00c9rt\u00e9k [{1}]
 
-jmx_mbean_runtime_services_print_cache_key_value.MSGID=TOP-50225
-
 jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=T\u00f6bb [{0}] JMX MBeanServer p\u00e9ld\u00e1ny l\u00e9tezik, a k\u00f6vetkez\u0151 indexen l\u00e9v\u0151 kiszolg\u00e1l\u00f3t fogjuk hszn\u00e1lni: [{1}] : [{2}].
-
-jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances.MSGID=TOP-50242
 
 jmx_mbean_runtime_services_registration_mbeanserver_print=JMX MBeanServer p\u00e9ld\u00e1ny tal\u00e1lhat\u00f3: [{0}], komponensek sz\u00e1ma: [{1}], tartom\u00e1ny: [{2}] index: [{3}].
 
-jmx_mbean_runtime_services_registration_mbeanserver_print.MSGID=TOP-50243
-
 jmx_mbean_runtime_services_statement_cache_cleared=Utas\u00edt\u00e1s gyors\u00edt\u00f3t\u00e1r ki\u00fcr\u00edtve.
-
-jmx_mbean_runtime_services_statement_cache_cleared.MSGID=TOP-50227
 
 jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=JMX MBeanServer haszn\u00e1latban: [{0}] kezd\u0151 index: [{1}] 
 
-jmx_mbean_runtime_services_switching_to_alternate_mbeanserver.MSGID=TOP-50244
-
 jmx_mbean_runtime_services_threadpool_initialize_failed=MBean threadPoolRuntime inicializ\u00e1la meghi\u00fasult: {0}
-
-jmx_mbean_runtime_services_threadpool_initialize_failed.MSGID=TOP-50231
 
 jmx_unable_to_unregister_mbean=A(z) [{0}] MBean regisztr\u00e1ci\u00f3ja nem sz\u00fcntethet\u0151 meg, mert az MBeanServer null\u00e9rt\u00e9k\u0171. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a saj\u00e1t ServerPlatform patformja JMX t\u00e1mogat\u00e1ssal rendelkezik.
 
-jmx_unable_to_unregister_mbean.MSGID=TOP-50249
-
 jmx_unregistered_mbean=A(z) [{0}] MBean regisztr\u00e1ci\u00f3ja megsz\u00fcntetve a(z) [{1}] MBeanServer kiszolg\u00e1l\u00f3n.
-
-jmx_unregistered_mbean.MSGID=TOP-50248
 
 jpars_could_bootstrap_persistence_context=Perzisztencia kontextus: [{0}] el\u0151bet\u00f6lt\u00e9se nem hajthat\u00f3 v\u00e9gre.
 
@@ -601,53 +321,29 @@ jpars_could_not_find_session_bean=H\u00edv\u00e1s ker\u00fclt v\u00e9grehajt\u00
 
 jta_cannot_be_disabled_in_cmp=T\u00e1rol\u00f3vez\u00e9relt megmarad\u00e1s (CMP) haszn\u00e1lata eset\u00e9n a JTA nem tilthat\u00f3. Az EclipseLink \u00fagy fog m\u0171k\u00f6dni, mintha a JTA enged\u00e9lyezett lenne.
 
-jta_cannot_be_disabled_in_cmp.MSGID=TOP-50141
-
 key_identity_hash_code_object={0}Kulcs: {1}{2}Azonoss\u00e1g kivonatk\u00f3d: {3}{2}Objektum: {4}
-
-key_identity_hash_code_object.MSGID=TOP-50016
 
 key_object_null={0}Kulcs: {1}{2}Objektum: null
 
-key_object_null.MSGID=TOP-50015
-
 key_version_identity_hash_code_object={0}Kulcs: {1}{2}V\u00e1ltozat: {5}{2}Azonoss\u00e1g kivonatk\u00f3d: {3}{2}Objektum: {4}
 
-# START NON-TRANSLATABLE
 locking_mode_not_valid=A(z) ({1}) z\u00e1rol\u00e1si m\u00f3d a(z) ({0}) entit\u00e1son az orion-ejb-jar.xml f\u00e1jlban nincs megfelel\u0151en meghat\u00e1rozva, ez\u00e9rt nem ker\u00fcl \u00e1ttelep\u00edt\u00e9sre.
-# END NON-TRANSLATABLE
-
-locking_mode_not_valid.MSGID=TOP-50115
 
 locking_required_for_database_change_notification=A(z) {0} entit\u00e1s nem haszn\u00e1l verzi\u00f3z\u00e1rol\u00e1st, azonban t\u00f6bb t\u00e1bl\u00e1val vagy viszonnyal rendelkezik, \u00e9s Oracle adatb\u00e1zist haszn\u00e1l; lehet, hogy a viszonyok vagy m\u00e1sodlagos t\u00e1bl\u00e1k m\u00f3dos\u00edt\u00e1sai a gyors\u00edt\u00f3t\u00e1rat nem \u00e9rv\u00e9nytelen\u00edtik.
 
 log_file_under_output_dir=L\u00e9tezik egy ({0}) nev\u0171 napl\u00f3f\u00e1jl a(z) ({1}) kimeneti k\u00f6nyvt\u00e1rban.
 
-log_file_under_output_dir.MSGID=TOP-50093
-
 login_successful={0} bejelentkez\u00e9s sikeres
-
-login_successful.MSGID=TOP-50003
 
 logout_successful={0} kijelentkez\u00e9s sikeres
 
-logout_successful.MSGID=TOP-50004
-
 mapping_not_supported_by_mw=A(z) {0} EclipseLink lek\u00e9pez\u00e9st a lek\u00e9pez\u00e9si munkater\u00fclet nem t\u00e1mogatja
-
-mapping_not_supported_by_mw.MSGID=TOP-50137
 
 marshal_warning_null_document_root_element={0}: Egy hivatkozott [{1}] objektum meghat\u00e1rozatlan dokumentum gy\u00f6k\u00e9releme figyelmen k\u00edv\u00fcl marad b\u00e1rmilyen gy\u0171jtem\u00e9ny|objektum lek\u00e9pez\u00e9ssel t\u00f6rt\u00e9n\u0151 rendez\u00e9s sor\u00e1n.
 
-marshal_warning_null_document_root_element.MSGID=TOP-50183
-
 max_instance_not_supported=Az Oc4j "max-instance" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-max_instance_not_supported.MSGID=TOP-50107
-
 max_tx_retries_not_supported=Az Oc4j "max-tx-retries" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-max_tx_retries_not_supported.MSGID=TOP-50108
 
 metadata_access_type=A(z) [{1}] megmarad\u00f3 oszt\u00e1ly hozz\u00e1f\u00e9r\u00e9si t\u00edpus\u00e1nak be\u00e1ll\u00edt\u00e1sa: [{0}].
 
@@ -857,283 +553,147 @@ metadata_warning_reference_column_not_found=A(z) [{1}] elemen lek\u00e9pezett [{
 
 metamodel_print_type_header=A k\u00f6vetend\u0151 [{0}] metamodell t\u00edpusok ki\u00edrt list\u00e1ja:
 
-metamodel_print_type_header.MSGID=TOP-50245
-
 metamodel_print_type_value=Metamodell t\u00edpus: [{0}]}
-
-metamodel_print_type_value.MSGID=TOP-50246
 
 metamodel_type_collection_empty=A metamodell t\u00edpusok gy\u0171jtem\u00e9nye \u00fcres. Lehet, hogy nem tal\u00e1lhat\u00f3k modell oszt\u00e1lyok a Java SE \u00e9s n\u00e9h\u00e1ny Java EE t\u00e1rol\u00f3 kezelt perzisztencia egys\u00e9g entit\u00e1skeres\u00e9se sor\u00e1n.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s oszt\u00e1lyai a persistence.xml f\u00e1jlban <class> elemek vagy egy glob\u00e1lis <exclude-unlisted-classes>false</exclude-unlisted-classes> elem haszn\u00e1lat\u00e1val vannak bejegyezve
 
-metamodel_type_collection_empty.MSGID=TOP-50250
-
 metamodel_type_collection_empty_during_lookup=A(z) [{1}] metamodell t\u00edpusok gy\u0171jtem\u00e9nye \u00fcres. Lehet, hogy nem tal\u00e1lhat\u00f3k modell oszt\u00e1lyok a Java SE \u00e9s n\u00e9h\u00e1ny Java EE t\u00e1rol\u00f3 kezelt perzisztencia egys\u00e9g entit\u00e1skeres\u00e9se sor\u00e1n.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s oszt\u00e1lyai a persistence.xml f\u00e1jlban <class> elemek vagy egy glob\u00e1lis <exclude-unlisted-classes>false</exclude-unlisted-classes> elem haszn\u00e1lat\u00e1val vannak bejegyezve.  A kikeres\u00e9s a k\u00f6vetkez\u0151n: [{0}] null\u00e9rt\u00e9ket fog visszaadni.
-
-metamodel_type_collection_empty_during_lookup.MSGID=TOP-50251
 
 migration_failed=Az \u00e1ttelep\u00edt\u00e9s meghi\u00fasult.
 
-migration_failed.MSGID=TOP-50091
-
 migration_input_dir_not_valid=A meghat\u00e1rozott ({0}) bemeneti k\u00f6nyvt\u00e1r \u00e9rv\u00e9nytelen
-
-migration_input_dir_not_valid.MSGID=TOP-50080
 
 migration_output_dir_not_valid=A meghat\u00e1rozott ({0}) kimeneti k\u00f6nyvt\u00e1r \u00e9rv\u00e9nytelen
 
-migration_output_dir_not_valid.MSGID=TOP-50079
-
 migration_successful=\u00c1ttelep\u00edt\u00e9s sikeres.
-
-migration_successful.MSGID=TOP-50090
-
-migration_tool_usage.MSGID=TOP-50139
-
-migration_tool_usage_example.MSGID=TOP-50140
 
 min_instance_not_supported=Az Oc4j "min-instance" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-min_instance_not_supported.MSGID=TOP-50109
-
 missing_converter=Figyelmeztet\u00e9s: A(z) {0} parancs nem alak\u00edthat\u00f3 \u00e1t hi\u00e1nyz\u00f3 CommandConverter miatt - parancs figyelmen k\u00edv\u00fcl hagy\u00e1sa
-
-missing_converter.MSGID=TOP-50058
 
 multiple_ds_not_supported=Az EclipseLink CMP nem t\u00e1mogatja a t\u00f6bb adatforr\u00e1st, \u00e9s ezek k\u00f6z\u00fcl csak a(z) ({0}) nev\u0171t fogja haszn\u00e1lni, amely az orion-ejb-jar.xml f\u00e1jlban van megadva, \u00e9s t\u00e1rs\u00edtva van a corresponding ejb-jar.xml f\u00e1jlban legut\u00f3bb meghat\u00e1rozott entit\u00e1skomponenssel.
 
-multiple_ds_not_supported.MSGID=TOP-50046
-
 must_define_migration_output_dir=Meg kell hat\u00e1roznia egy kimeneti k\u00f6nyvt\u00e1rat az \u00e1ttelep\u00edt\u00e9si eszk\u00f6zh\u00f6z
-
-must_define_migration_output_dir.MSGID=TOP-50078
 
 mw_project_generated_and_under=Az \u00e1ttelep\u00edtett EclipseLink munkater\u00fclet projektf\u00e1jlok a k\u00f6vetkez\u0151 alatt tal\u00e1lhat\u00f3k: ({0}).
 
-mw_project_generated_and_under.MSGID=TOP-50092
-
 named_argument_not_found_in_query_parameters=Hi\u00e1nyz\u00f3 lek\u00e9rdez\u00e9si param\u00e9ter a megnevezett argumentumhoz: {0} "null" \u00e9rt\u00e9kkel lesz helyettes\u00edtve.
-
-named_argument_not_found_in_query_parameters.MSGID=TOP-50247
 
 nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=A(z) {0} oszt\u00e1ly m\u00e1r ki\u00fcr\u00edt\u00e9s alatt van. A lek\u00e9rdez\u00e9s az adatb\u00e1zisba \u00edrt tov\u00e1bbi m\u00f3dos\u00edt\u00e1sok n\u00e9lk\u00fcl ker\u00fcl v\u00e9grehajt\u00e1sra.  Ha a lek\u00e9rdez\u00e9s a m\u00f3dos\u00edtott adatok alapj\u00e1n felt\u00e9teles, akkor a m\u00f3dos\u00edt\u00e1sok nem felt\u00e9tlen\u00fcl t\u00fckr\u00f6z\u0151dnek az eredm\u00e9nyekben.  A helyes eredm\u00e9nyek biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben a felhaszn\u00e1l\u00f3k kiadhatnak egy flush() h\u00edv\u00e1st a f\u00fcgg\u0151 m\u00f3dos\u00edt\u00e1sok befejez\u00e9sekor, ezen flush() h\u00edv\u00e1s el\u0151tt.
 
-nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending.MSGID=TOP-50233
-
 new_objects=\u00daj objektumok:
-
-new_objects.MSGID=TOP-50023
 
 no_exclusive_write_access_not_supported=Az Oc4j "no-exclusive-write-access" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-no_exclusive_write_access_not_supported.MSGID=TOP-50103
-
 no_jar_entry_migratable_in_ear=A(z) ({0}) bemeneti EAR f\u00e1jl egyik jar bejegyz\u00e9se sem telep\u00edthet\u0151 \u00e1t.
 
-no_jar_entry_migratable_in_ear.MSGID=TOP-50097
-
 no_session_found=A(z) [{0}] nev\u0171 munkamenet nem tal\u00e1lhat\u00f3 a session.xml f\u00e1jlban [{1}]
-
-no_session_found.MSGID=TOP-50012
 
 non_jpa_allowed_type_used_for_collection_using_lazy_access=A(z) [{1}] elem a(z) [{0}] entit\u00e1s oszt\u00e1lyon bel\u00fcl [{2}] gy\u0171jtem\u00e9nyt\u00edpust haszn\u00e1l, m\u00edg a JPA specifik\u00e1ci\u00f3 csak java.util.Collection, java.util.Set, java.util.List vagy java.util.Map t\u00edpust t\u00e1mogat.  Ez a t\u00edpus a szorgalmas bet\u00f6lt\u00e9ssel t\u00e1mogatott; ezzel a gy\u0171jtem\u00e9nyt\u00edpussal a k\u00e9sleltetett bet\u00f6lt\u00e9s haszn\u00e1lata tov\u00e1bbi konfigur\u00e1ci\u00f3t a(z) k\u00f6vetkez\u0151t: [{2}] kiterjeszt\u0151 IndirectContainer megval\u00f3s\u00edt\u00e1st ig\u00e9nyel, vagy azt k\u00f6veteli meg, hogy a lek\u00e9pez\u00e9s alapszint\u0171 k\u00f6zvetett elj\u00e1r\u00e1s haszn\u00e1lat\u00e1ra legyen be\u00e1ll\u00edtva, a t\u00edpus pedig ValueholderInterface legyen.
 
 objectchangepolicy_turned_off=M\u00f3dos\u00edt\u00e1sk\u00f6vet\u00e9s kikapcsolva a k\u00f6vetkez\u0151re: {0}
 
-objectchangepolicy_turned_off.MSGID=TOP-50049
-
 oc4j_native_migration_start=OC4J-Nat\u00edv CMP -> OC4J EclipseLink CMP \u00e1ttelep\u00edt\u00e9s INDUL......
-
-oc4j_native_migration_start.MSGID=TOP-50075
 
 old_pessimistic_locking_not_supported=Az Oc4j "old-pessimistic-locking" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-old_pessimistic_locking_not_supported.MSGID=TOP-50114
-
 one_to_one_join_outer_migrated=A(z) ({1}) entit\u00e1skomponens ({0}) cmr mez\u0151j\u00e9hez meghat\u00e1rozott egy-egy k\u00fcls\u0151 csatlakoz\u00e1st az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-one_to_one_join_outer_migrated.MSGID=TOP-50118
 
 optimistic_locking_not_supported=Az Oc4j locking-mode="optimistic" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-optimistic_locking_not_supported.MSGID=TOP-50113
-
-oracle.core.ojdl.logging.MessageIdSuffixResourceBundle=oracle.core.ojdl.logging.MessageIdSuffixResourceBundle
-
 orion_ejb_jar_xml_not_found_in_input=Az orion-ejb-jar.xml nem l\u00e9tezik a megadott ({0}) bemeneti k\u00f6nyvt\u00e1r alatt.
-
-orion_ejb_jar_xml_not_found_in_input.MSGID=TOP-50087
 
 osgi_initializer=OSGi inicializ\u00e1l\u00f3 haszn\u00e1lata: [{0}].
 
-osgi_initializer.MSGID=TOP-50212
-
 osgi_initializer_failed=A(z) [{0}] k\u00f6rnyezetspecifikus OSGi inicializ\u00e1l\u00f3 \u00f6ssze\u00e1ll\u00edt\u00e1sa meghi\u00fasult, a k\u00f6vetkez\u0151 \u00fczenettel: [{1}].
-
-osgi_initializer_failed.MSGID=TOP-50211
 
 overriding_cache_isolation=A(z) {0} sz\u00fcl\u0151 entit\u00e1s elk\u00fcl\u00f6n\u00edt\u00e9si szintje: {1}, ami nagyobb v\u00e9delmet ny\u00fajt, mint a(z) {2} aloszt\u00e1ly a k\u00f6vetkez\u0151 elk\u00fcl\u00f6n\u00edt\u00e9ssel: {3}, \u00edgy az aloszt\u00e1ly be\u00e1ll\u00edt\u00e1sra ker\u00fclt {1} elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
 
 ox_lowering_global_logging_from_default_info_to_warning= {0} Glob\u00e1lis napl\u00f3z\u00e1s cs\u00f6kkent\u00e9se alap\u00e9rtelmezett INFO szintr\u0151l WARNING szintre.
 
-ox_lowering_global_logging_from_default_info_to_warning.MSGID=TOP-50200
-
 ox_lowering_session_logging_from_default_info_to_warning= {0} Munkamenet-napl\u00f3z\u00e1s cs\u00f6kkent\u00e9se alap\u00e9rtelmezett INFO szintr\u0151l WARNING szintre.
-
-ox_lowering_session_logging_from_default_info_to_warning.MSGID=TOP-50202
 
 ox_turn_global_logging_off= {0} Glob\u00e1lis munkamenet-napl\u00f3z\u00e1s kikapcsol\u00e1sa.
 
-ox_turn_global_logging_off.MSGID=TOP-50199
-
 ox_turn_session_logging_off= {0} Munkamenet-napl\u00f3z\u00e1s kikapcsol\u00e1sa.
 
-ox_turn_session_logging_off.MSGID=TOP-50201
-
 parse_ejb_jar_with_validation_fails=Az ejb-jar.xml \u00e1tad\u00e1sa \u00e9rv\u00e9nyes\u00edt\u00e9ssel meghi\u00fasult, hib\u00e1val: ({0}). Az \u00e1ttelep\u00edt\u00e9si eszk\u00f6z az xml f\u00e1jlt \u00e9rv\u00e9nyes\u00edt\u00e9s n\u00e9lk\u00fcl fogja \u00e9rtelmezni.
-
-parse_ejb_jar_with_validation_fails.MSGID=TOP-50094
 
 persistence_unit_ignores_statments_cache_setting=Az utas\u00edt\u00e1s gyors\u00edt\u00f3t\u00e1r nem enged\u00e9lyezhet\u0151, mert nincs konfigur\u00e1lva kapcsolatk\u00e9szlet.
 
 persistence_unit_processor_error_in_class_forname_weaving_disabled=A(z) [{0}] oszt\u00e1lybet\u00f6lt\u0151 nem tudta bet\u00f6lteni a(z) [{1}] oszt\u00e1lyt. A bef\u0171z\u00e9s erre a munkamenetre tilt\u00e1sra ker\u00fclt. Lehet, hogy az EclipseLink nem k\u00e9pes lek\u00e9rni egy speci\u00e1lis k\u00f6telez\u0151 ideiglenes oszt\u00e1lybet\u00f6lt\u0151t a kiszolg\u00e1l\u00f3r\u00f3l, de \u00d6n lehets\u00e9ges \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus bef\u0171z\u00e9st. 
 
-persistence_unit_processor_error_in_class_forname_weaving_disabled.MSGID=TOP-50209
-
 persistence_unit_processor_error_loading_class={0}: {1} t\u00f6rt\u00e9nt a PersistenceLoadProcessor {2} oszt\u00e1ly bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlete sor\u00e1n. Az oszt\u00e1ly figyelmen k\u00edv\u00fcl marad.
 
 persistence_unit_processor_error_loading_class_weaving_disabled=A(z) [{0}] oszt\u00e1lybet\u00f6lt\u0151 a(z) [{1}] PersistenceLoadProcessor eset\u00e9n nem tudta bet\u00f6lteni a(z) [{2}] oszt\u00e1lyt. A bef\u0171z\u00e9s erre a munkamenetre tilt\u00e1sra ker\u00fclt. Lehet, hogy az EclipseLink nem k\u00e9pes lek\u00e9rni egy speci\u00e1lis k\u00f6telez\u0151 ideiglenes oszt\u00e1lybet\u00f6lt\u0151t a kiszolg\u00e1l\u00f3r\u00f3l, de \u00d6n lehets\u00e9ges \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus bef\u0171z\u00e9st. 
 
-persistence_unit_processor_error_loading_class_weaving_disabled.MSGID=TOP-50205
-
 persistence_unit_processor_jboss_temp_classloader_bypassed=A(z) [{0}] PersistenceLoadProcessor ideiglenes oszt\u00e1lybet\u00f6lt\u0151je nem \u00e9rhet\u0151 el.  Oszt\u00e1lybet\u00f6lt\u0151 \u00e1tkapcsol\u00e1sa a k\u00f6vetkez\u0151re: [{1}].  A bef\u0171z\u00e9s erre a munkamenetre tilt\u00e1sra ker\u00fclt. Lehet, hogy az EclipseLink nem k\u00e9pes lek\u00e9rni egy speci\u00e1lis k\u00f6telez\u0151 ideiglenes oszt\u00e1lybet\u00f6lt\u0151t a kiszolg\u00e1l\u00f3r\u00f3l, de \u00d6n lehets\u00e9ges \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus bef\u0171z\u00e9st. 
-
-persistence_unit_processor_jboss_temp_classloader_bypassed.MSGID=TOP-50208
 
 persistence_unit_processor_npe_temp_classloader=A(z) [{1}] PersistenceLoadProcessor [{0}] oszt\u00e1lybet\u00f6lt\u0151je NPE-t okoz loadClass sor\u00e1n. Oszt\u00e1lybet\u00f6lt\u0151 \u00e1tkapcsol\u00e1sa a k\u00f6vetkez\u0151re: [{2}].  A bef\u0171z\u00e9s erre a munkamenetre tilt\u00e1sra ker\u00fclt. Lehet, hogy az EclipseLink nem k\u00e9pes lek\u00e9rni egy speci\u00e1lis k\u00f6telez\u0151 ideiglenes oszt\u00e1lybet\u00f6lt\u0151t a kiszolg\u00e1l\u00f3r\u00f3l, de \u00d6n lehets\u00e9ges \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus bef\u0171z\u00e9st. 
 
-persistence_unit_processor_npe_temp_classloader.MSGID=TOP-50207
-
 persistence_unit_processor_null_temp_classloader=A(z) [{0}] PersistenceLoadProcessor oszt\u00e1lybet\u00f6lt\u0151je null. A bef\u0171z\u00e9s erre a munkamenetre tilt\u00e1sra ker\u00fclt. Lehet, hogy az EclipseLink nem k\u00e9pes lek\u00e9rni egy speci\u00e1lis k\u00f6telez\u0151 ideiglenes oszt\u00e1lybet\u00f6lt\u0151t a kiszolg\u00e1l\u00f3r\u00f3l, de \u00d6n lehets\u00e9ges \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus bef\u0171z\u00e9st. 
-
-persistence_unit_processor_null_temp_classloader.MSGID=TOP-50206
 
 persistence_unit_processor_sap_temp_classloader_bypassed=A(z) [{0}] PersistenceLoadProcessor ideiglenes oszt\u00e1lybet\u00f6lt\u0151je nem \u00e9rhet\u0151 el.  Oszt\u00e1lybet\u00f6lt\u0151 \u00e1tkapcsol\u00e1sa a k\u00f6vetkez\u0151re: [{1}].  A bef\u0171z\u00e9s erre a munkamenetre tilt\u00e1sra ker\u00fclt. Lehet, hogy az EclipseLink nem k\u00e9pes lek\u00e9rni egy speci\u00e1lis k\u00f6telez\u0151 ideiglenes oszt\u00e1lybet\u00f6lt\u0151t a kiszolg\u00e1l\u00f3r\u00f3l, de \u00d6n lehets\u00e9ges \u00e1thidal\u00f3 megold\u00e1sk\u00e9nt haszn\u00e1lhat statikus bef\u0171z\u00e9st. 
 
 problem_adding_connection=Nem adhat\u00f3 t\u00e1voli kapcsolat a k\u00f6vetkez\u0151b\u0151l: {0} hiba miatt: {1}
 
-problem_adding_connection.MSGID=TOP-50062
-
 problem_adding_remote_connection=Probl\u00e9ma t\u00e1voli kapcsolat hozz\u00e1ad\u00e1sa sor\u00e1n: {0}
-
-problem_adding_remote_connection.MSGID=TOP-50031
 
 problem_reconnect_to_jms=Nem lehet \u00fajracsatlakozni a(z) {0} nev\u0171 JMS t\u00e9mak\u00f6rh\u00f6z hiba miatt: {1}
 
-problem_reconnect_to_jms.MSGID=TOP-50063
-
 problem_registering_mbean=Probl\u00e9ma MBean regisztr\u00e1l\u00e1sa sor\u00e1n: {0}
-
-problem_registering_mbean.MSGID=TOP-50215}
 
 problem_unregistering_mbean=Probl\u00e9ma MBean regisztr\u00e1ci\u00f3j\u00e1nak megsz\u00fcntet\u00e9se sor\u00e1n: {0}
 
-problem_unregistering_mbean.MSGID=TOP-50216
-
 problem_while_registering=Probl\u00e9ma regisztr\u00e1l\u00e1s sor\u00e1n: {0}
-
-problem_while_registering.MSGID=TOP-50048
 
 query_has_both_join_attributes_and_partial_attributes=A(z) {1} nev\u0171 {0} \u00f6sszef\u00e9s\u00fcl\u00e9si \u00e9s r\u00e9szleges attrib\u00fatumokkal is rendelkezik. Ez a k\u00e9t technol\u00f3gia nem arra lett tervezve, hogy egy\u00fcttm\u0171k\u00f6djenek; az eredm\u00e9ny el\u0151re nem l\u00e1that\u00f3.
 
-query_has_both_join_attributes_and_partial_attributes.MSGID=TOP-50196
-
 query_has_joined_attribute_outside_fetch_group={0}: a(z) [{1}] \u00f6sszef\u00e9s\u00fclt attrib\u00fatum nem ker\u00fclt beilleszt\u00e9sre a leh\u00edv\u00e1si csoportba. Az \u00f6sszef\u00e9s\u00fclt attrib\u00fatum adatai (b\u00e1r beolvas\u00e1sra ker\u00fclnek az adatb\u00e1zisb\u00f3l) figyelmen k\u00edv\u00fcl maradnak. Egy \u00faj sql ker\u00fcl v\u00e9grehajt\u00e1sra az \u00f6sszef\u00e9s\u00fclt attrib\u00fatum \u00e1ltal hivatkozott objektum beolvass\u00e1ra; tov\u00e1bb\u00e1 m\u00e9g egy sql a teljes f\u0151objektum beolvas\u00e1s\u00e1ra (az attrib\u00fatum\u00e9rt\u00e9knek a leh\u00edv\u00e1si csoporton k\u00edv\u00fcli be\u00e1ll\u00edt\u00e1sa miatt). Illessze be a leh\u00edvott attrib\u00fatumot a leh\u00edv\u00e1si csoportba, vagy t\u00e1vol\u00edtsa el azt.
-
-query_has_joined_attribute_outside_fetch_group.MSGID=TOP-50234
 
 received_corrupt_announcement=Figyelmeztet\u00e9s: A felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 nem tudott feldolgozni szervizk\u00f6zlem\u00e9nyt {0} miatt - k\u00f6zlem\u00e9ny figyelmen k\u00edv\u00fcl hagy\u00e1sa
 
-received_corrupt_announcement.MSGID=TOP-50057
-
 received_unexpected_message_type=Nem v\u00e1rt {0} \u00fczenett\u00edpus fogad\u00e1sa a(z) {1} t\u00e9mak\u00f6rb\u0151l; figyelmen k\u00edv\u00fcl hagy\u00e1s
-
-received_unexpected_message_type.MSGID=TOP-50030
 
 reconnecting=\u00fajracsatlakoz\u00e1s({0})
 
-reconnecting.MSGID=TOP-50010
-
 register_new_for_persist=PERSIST m\u0171velet h\u00edv\u00e1sa a k\u00f6vetkez\u0151n: {0}.
-
-register_new_for_persist.MSGID=TOP-50021
 
 relational_descriptor_support_only=Az alap\u00e9rtelmezett t\u00e1blael\u0151\u00e1ll\u00edt\u00f3 jelenleg csak rel\u00e1ci\u00f3s projektb\u0151l t\u00e1mogatja alap\u00e9rtelmezett t\u00e1blas\u00e9m\u00e1k el\u0151\u00e1ll\u00edt\u00e1s\u00e1t.
 
-relational_descriptor_support_only.MSGID=TOP-50178
-
 relationship_cacheing_not_supported=A WLS "relationship-caching" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-relationship_cacheing_not_supported.MSGID=TOP-50133
 
 removeEJB_return=removeEJB visszat\u00e9r\u00e9s: {0}
 
-removeEJB_return.MSGID=TOP-50045
-
 removing_unique_constraint=UNIQUE megszor\u00edt\u00e1s-meghat\u00e1roz\u00e1s elt\u00e1vol\u00edt\u00e1sa a k\u00f6vetkez\u0151b\u0151l: [{0}], mert az szint\u00e9n els\u0151dleges kulcs.
-
-removing_unique_constraint.MSGID=TOP-50253
 
 resource_local_persistence_init_info_ignores_jta_data_source=A(z) {0} PersistenceUnitInfo transactionType t\u00edpusa RESOURCE_LOCAL, ez\u00e9rt a jtaDataSource figyelmen k\u00edv\u00fcl marad
 
 retreived_null_message=Null \u00fczenet lek\u00e9rve a t\u00e9mak\u00f6rb\u0151l: {0}; figyelmen k\u00edv\u00fcl hagy\u00e1s
 
-retreived_null_message.MSGID=TOP-50029
-
 retreived_unknown_message_type=Ismeretlen {0} \u00fczenett\u00edpus lek\u00e9r\u00e9se a(z) {1} t\u00e9mak\u00f6rb\u0151l; figyelmen k\u00edv\u00fcl hagy\u00e1s
-
-retreived_unknown_message_type.MSGID=TOP-50028
 
 sdo_classgenerator_exception={2} [{0}] kiv\u00e9tel t\u00f6rt\u00e9nt - \u00fczenet: [{1}]
 
-sdo_classgenerator_exception.MSGID=TOP-50195
-
 sdo_error_processing_referenced_schema={0} t\u00f6rt\u00e9nt a hivatkozott s\u00e9ma feldolgoz\u00e1sa sor\u00e1n {1} uri-val, schemaLocation: {2}.
-
-sdo_error_processing_referenced_schema.MSGID=TOP-50198
 
 sdo_invalid_schemaLocation=A(z) [{0}] schemaLocation nem hozhat\u00f3 l\u00e9tre import\u00e1l\u00e1sra [{1}] uri-val.
 
 sdo_missing_schemaLocation=A hivatkozott s\u00e9ma {0} uri-val nem dolgozhat\u00f3 fel, mert nincs megadva schemaLocation attrib\u00fatum.
 
-sdo_missing_schemaLocation.MSGID=TOP-50197
-
 sdo_type_generation_modified_class_naming_format_to={0}: A(z) [{1}] el\u0151\u00e1ll\u00edtott t\u00edpus\u00fa java oszt\u00e1ly neve [{2}] n\u00e9vre m\u00f3dos\u00edtva, hogy k\u00f6vesse az elnevez\u00e9si meg\u00e1llapod\u00e1st.
-
-sdo_type_generation_modified_class_naming_format_to.MSGID=TOP-50192
 
 sdo_type_generation_modified_function_naming_format_to={0}: A(z) [{1}] el\u0151\u00e1ll\u00edtott t\u00edpus\u00fa java get/set met\u00f3dus neve [{2}] n\u00e9vre m\u00f3dos\u00edtva, hogy k\u00f6vesse az elnevez\u00e9si meg\u00e1llapod\u00e1st.
 
-sdo_type_generation_modified_function_naming_format_to.MSGID=TOP-50191
-
 sdo_type_generation_warning_class_name_violates_java_spec={0}: A(z) [{1}] el\u0151\u00e1ll\u00edtott t\u00edpus \u00fctk\u00f6zik a(z) [{2}] Java specifik\u00e1ci\u00f3 elnevez\u00e9si szab\u00e1lyaival, ez\u00e9rt \u00e1t kell nevezni.
-
-sdo_type_generation_warning_class_name_violates_java_spec.MSGID=TOP-50193
 
 sdo_type_generation_warning_class_name_violates_sdo_spec={0}: A(z) [{1}] el\u0151\u00e1ll\u00edtott t\u00edpus \u00fctk\u00f6zik a(z) [{2}] SDO specifik\u00e1ci\u00f3 elnevez\u00e9si szab\u00e1lyaival, ez\u00e9rt \u00e1t kell nevezni.
 
-sdo_type_generation_warning_class_name_violates_sdo_spec.MSGID=TOP-50194
-
 sequence_cachekey_improper_format=A WLS "key-cache-size" nat\u00edv CMP be\u00e1ll\u00edt\u00e1sa a(z) ({0}) entit\u00e1son helytelen\u00fcl form\u00e1zott, ({1}) \u00e9rt\u00e9kkel
-
-sequence_cachekey_improper_format.MSGID=TOP-50135
 
 session_key_for_mbean_name_is_null=Az MBean regisztr\u00e1ci\u00f3hoz haszn\u00e1lt munkamenetn\u00e9v nem lehet null.
 
-session_key_for_mbean_name_is_null.MSGID=TOP-50217
-
 session_manager_no_partition=Nincs t\u00e1rs\u00edtva partition p\u00e9ld\u00e1ny az aktu\u00e1lis SessionManager p\u00e9ld\u00e1nnyal.
-
-session_manager_no_partition.MSGID=TOP-50254
 
 sessions_xml_path_where_session_load_from=A munkamenet inform\u00e1ci\u00f3k bet\u00f6lt\u00e9sre ker\u00fclnek a k\u00f6vetkez\u0151r\u0151l: [{0}].
 
@@ -1147,99 +707,49 @@ sop_object_wrong_version=Soros\u00edtott sopObject elt\u00e1vol\u00edt\u00e1sa a
 
 src_pm_name_first_argument=A forr\u00e1s PM nev\u00e9t az els\u0151 bemeneti argumentumban kell megadnia: -sOc4j-native vagy -sWeblogic.
 
-src_pm_name_first_argument.MSGID=TOP-50074
-
 table_existed_during_creation=T\u00e1bla l\u00e9trehoz\u00e1s meghi\u00fasult. Ha m\u00e1r l\u00e9tezik, akkor el\u0151sz\u00f6r meg kell sz\u00fcntetni. V\u00e9grehajthatja saj\u00e1t kez\u0171leg, vagy a db-table-gen attrib\u00fatum be\u00e1ll\u00edt\u00e1s\u00e1val az orion-ejb-jar.xml f\u00e1jlban.
-
-table_existed_during_creation.MSGID=TOP-50037
 
 template_orion_ejb_jar_created=Egy sablonos\u00edtott orion-ejb-jar.xml f\u00e1jl l\u00e9trehoz\u00e1sra ker\u00fclt
 
-template_orion_ejb_jar_created.MSGID=TOP-50123
-
 topLink_version=EclipseLink, verzi\u00f3: {0}
-
-topLink_version.MSGID=TOP-50001
 
 toplink=[EL]: 
 
-toplink.MSGID=TOP-50071
-
 toplink_cmp_bean_name_xml_deprecated=A toplink-cmp-bean_name.xml t\u00e1mogat\u00e1sa elavult. A toplink-ejb-jar.xml haszn\u00e1lat\u00e1r\u00f3l inform\u00e1ci\u00f3k\u00e9rt tanulm\u00e1nyozza a dokument\u00e1ci\u00f3t
-
-toplink_cmp_bean_name_xml_deprecated.MSGID=TOP-50055
 
 toplink_config=[EL Config]: 
 
-toplink_config.MSGID=TOP-50067
-
 toplink_ejb_jar_in_jar=A toplink-ejb-jar.xml f\u00e1jlt a(z) ({0}) jar f\u00e1jl tartalmazza, ez\u00e9rt erre a jar f\u00e1jlra nem ker\u00fcl v\u00e9grehajt\u00e1sra \u00e1ttelep\u00edt\u00e9s.
-
-toplink_ejb_jar_in_jar.MSGID=TOP-50138
 
 toplink_ejb_jar_xml_found_in_input=A toplink-ejb-jar.xml f\u00e1jl a(z) ({0}) bemeneti k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3. Az \u00e1ttelep\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz el kell t\u00e1vol\u00edtania a toplink le\u00edr\u00f3t a bemeneti k\u00f6nyvt\u00e1rb\u00f3l.
 
-toplink_ejb_jar_xml_found_in_input.MSGID=TOP-50089
-
 toplink_fine=[EL Fine]: 
-
-toplink_fine.MSGID=TOP-50068
 
 toplink_finer=[EL Finer]: 
 
-toplink_finer.MSGID=TOP-50069
-
 toplink_finest=[EL Finest]: 
-
-toplink_finest.MSGID=TOP-50070
 
 toplink_info=[EL Info]: 
 
-toplink_info.MSGID=TOP-50066
-
 toplink_severe=[EL Severe]: 
-
-toplink_severe.MSGID=TOP-50064
 
 toplink_warning=[EL Warning]: 
 
-toplink_warning.MSGID=TOP-50065
-
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
 
-unitofwork_identity_hashcode.MSGID=TOP-50018
-
-unknown_ddl_generation_property.MSGID=TOP-50252
-
 update_all_fields_not_supported=Az Oc4j "update-all-fields" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-update_all_fields_not_supported.MSGID=TOP-50110
 
 update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem haszn\u00e1lhat k\u00f6t\u00e9st ezen az adatb\u00e1zis-platformon. Lek\u00e9rdez\u00e9s be\u00e1ll\u00edt\u00e1s m\u00f3dos\u00edtva a v\u00e9grehajt\u00e1shoz k\u00f6t\u00e9s n\u00e9lk\u00fcl.
 
 validate_db_schema_with_not_supported=A WLS "validate-db-schema-with" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-validate_db_schema_with_not_supported.MSGID=TOP-50127
-
 validate_ejb_jar=Az ejb-jar.xml \u00e9rv\u00e9nyes\u00edt\u00e9se indul, eltarthat egy ideig...
-
-validate_ejb_jar.MSGID=TOP-50076
 
 validity_timeout_not_supported=Az Oc4j "validity-timeout" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-validity_timeout_not_supported.MSGID=TOP-50111
-
 verifiy_columns_read_locking_not_supported=A "Read" optimista be\u00e1ll\u00edt\u00e1s a "verify-columns" elemhez a(z) ({0}) entit\u00e1sban nem k\u00f6zvetlen\u00fcl t\u00e1mogatott az EclipseLink CMP-ben. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
-verifiy_columns_read_locking_not_supported.MSGID=TOP-50116
-
 verifiy_rows_read_locking_not_supported=A "Read" optimista be\u00e1ll\u00edt\u00e1s a "verify-rows" elemhez a(z) ({0}) enti\u00e1sban nem k\u00f6zvetlen\u00fcl t\u00e1mogatott az EclipseLink CMP-ben. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-verifiy_rows_read_locking_not_supported.MSGID=TOP-50117
-
-weaver_change_tracking_disabled_missing_field.MSGID=TOP-50175
-
-weaver_change_tracking_disabled_not_supported.MSGID=TOP-50176
 
 weaver_class_not_in_project=A bef\u0171z\u0151 olyanoszt\u00e1lyt tal\u00e1lt, amely nem r\u00e9sze a projektnek: {0}.
 
@@ -1247,31 +757,15 @@ weaver_could_not_write=A bef\u0171z\u0151 kiv\u00e9telt \u00e9szlelt a(z) {0} os
 
 weaver_disable_by_system_property=A bef\u0171z\u00e9s a(z) {0} rendszertulajdons\u00e1g \u00e1ltal tiltott
 
-weaver_disable_by_system_property.MSGID=TOP-50173
-
 weaver_not_overwriting=A bef\u0171z\u0151 nem \u00edrja fel\u00fcl a(z) {0} oszt\u00e1lyt, mert nincs fel\u00fcl\u00edr\u00e1sra be\u00e1ll\u00edtva.
 
 weaver_null_project=A bef\u0171z\u0151 munkamenet projektje nem lehet null
 
-weaver_null_project.MSGID=TOP-50172
-
-weaver_processing_class=Bef\u0171z\u0151 feldolgoz\u00e1si oszt\u00e1ly: {0}.
-
-weaver_valueholders_disabled_missing_field.MSGID=TOP-50174
-
 weblogic_ejb_jar_xml_not_found_in_input=A weblogic-ejb-jar.xml nem l\u00e9tezik a megadott ({0}) bemeneti k\u00f6nyvt\u00e1r alatt.
-
-weblogic_ejb_jar_xml_not_found_in_input.MSGID=TOP-50088
 
 weblogic_native_migration_start=WebLogic-Nat\u00edv CMP -> OC4J EclipseLink CMP \u00e1ttelep\u00edt\u00e9s INDUL......
 
-weblogic_native_migration_start.MSGID=TOP-50077
-
 weblogic_ql_not_supported=A(z) ({2}) entit\u00e1s  ({1}) met\u00f3dus\u00e1hoz tartoz\u00f3 ({0}) WebLogic-QL nem ker\u00fclt \u00e1ttelep\u00edt\u00e9sre, mivel az EclipseLink nem t\u00e1mogatja a WebLogic QL nyelvet.
 
-weblogic_ql_not_supported.MSGID=TOP-50121
-
 weblogic_query_not_supported=A WLS "weblogic-query" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
-
-weblogic_query_not_supported.MSGID=TOP-50134
 

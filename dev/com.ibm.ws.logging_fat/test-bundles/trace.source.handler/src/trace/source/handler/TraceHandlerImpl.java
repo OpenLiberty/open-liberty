@@ -25,7 +25,10 @@ import java.util.concurrent.Future;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.logging.source.TraceLogData;
+import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.LogTraceData;
+import com.ibm.ws.logging.data.Pair;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
@@ -153,6 +156,19 @@ public class TraceHandlerImpl implements Handler {
         }
     }
 
+    private String getAttribute(GenericData genData, String key) {
+        ArrayList<Pair> pairs = genData.getPairs();
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                KeyValuePair kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(key)) {
+                    return kvp.getValue();
+                }
+            }
+        }
+        return "";
+    }
+
     private final Runnable handlerTask = new Runnable() {
         @FFDCIgnore(value = { InterruptedException.class })
         @Trivial
@@ -161,11 +177,12 @@ public class TraceHandlerImpl implements Handler {
             int counter = 1;
             while (counter <= 500) {
                 try {
-                    TraceLogData event = (TraceLogData) bufferMgr.getNextEvent(HANDLER_NAME);
+                    LogTraceData logTraceDataEvent = (LogTraceData) bufferMgr.getNextEvent(HANDLER_NAME);
+                    GenericData event = logTraceDataEvent.getGenData();
 
                     // String eventString = event.toString();
                     // if (eventString.contains("testTraceSourceForLibertyLogging") || eventString.contains("testTraceSourceForJUL")) {
-                    if (event.getLoggerName().contains("collector.manager_fat")) {
+                    if (getAttribute(event, "module").contains("collector.manager_fat")) {
                         customLogger.debug("[" + counter + "]Received Trace event: " + event);
                     }
 

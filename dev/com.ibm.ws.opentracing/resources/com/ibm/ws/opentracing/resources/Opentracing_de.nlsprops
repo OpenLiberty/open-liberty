@@ -86,14 +86,6 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Der Aufruf der von der Benut
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat null zur\u00fcckgegeben.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance null zur\u00fcckgegeben hat.
 
-OPENTRACING_FILTER_PATTERN_BLANK=CWMOT0007E: Das Musterattribut eines Opentracing-Konfigurationselements excludeSpans oder includeSpans ist leer.
-OPENTRACING_FILTER_PATTERN_BLANK.explanation=Es muss ein g\u00fcltiges URI-Muster angegeben werden und es darf nicht leer sein.
-OPENTRACING_FILTER_PATTERN_BLANK.useraction=Die g\u00fcltigen Muster sind in der Dokumentation beschrieben.
-
-OPENTRACING_FILTER_PATTERN_INVALID=CWMOT0008E: Das Musterattribut {0} eines Opentracing-Konfigurationselements excludeSpans oder includeSpans ist ein ung\u00fcltiger URI (RFC 2396).
-OPENTRACING_FILTER_PATTERN_INVALID.explanation=Es muss ein g\u00fcltiges URI-Muster angegeben werden. In den meisten F\u00e4llen ist das Problem darauf zur\u00fcckzuf\u00fchren, dass bei der URL-Codierung ung\u00fcltige Zeichen nicht durch % ersetzt werden.
-OPENTRACING_FILTER_PATTERN_INVALID.useraction=Lesen Sie RFC 2396 und stellen Sie sicher, dass bei der URL-Codierung ung\u00fcltige Zeichen ordnungsgem\u00e4\u00df durch % ersetzt werden.
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,7 @@ public class SecurityContextTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = SecurityContextTest.class;
     protected String queryString = "/JavaEESecBasicAuthServlet";
-    protected static String[] warList = { "JavaEESecBasicAuthServlet.war", "JavaEESecAnnotatedBasicAuthServlet.war",
-                                          "JavaEEsecFormAuth.war", "JavaEEsecFormAuthRedirect.war" };
+    protected static String[] warList = { "JavaEESecBasicAuthServlet.war" };
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
 
@@ -59,9 +58,6 @@ public class SecurityContextTest extends JavaEESecTestBase {
 
         ServerHelper.setupldapServer();
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.basic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.annotatedbasic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.formlogin");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.redirectformlogin");
 
         myServer.setServerConfigurationFile("securityContext.xml");
         myServer.startServer(true);
@@ -263,7 +259,7 @@ public class SecurityContextTest extends JavaEESecTestBase {
      * <P> Expected Results:
      * <OL>
      * <LI> Return code 200
-     * <LI> The caller has access, hasAccessToWebResource returns true
+     * <LI> The caller does not have access, hasAccessToWebResource returns false
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -287,7 +283,7 @@ public class SecurityContextTest extends JavaEESecTestBase {
      * <P> Expected Results:
      * <OL>
      * <LI> Return code 200
-     * <LI> The caller has access, hasAccessToWebResource returns true
+     * <LI> The caller has access to POST, hasAccessToWebResource returns true
      * </OL>
      */
     @Mode(TestMode.LITE)
@@ -298,6 +294,78 @@ public class SecurityContextTest extends JavaEESecTestBase {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleGroupUser, Constants.javaeesec_basicRolePwd,
                                                           HttpServletResponse.SC_OK);
         verifySecurityContextResponse(response, "securityContext.hasAccessToWebResource(/Protected,GET,POST): true");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> Access a protected servlet configured for basic authentication.
+     * <LI> Login with a valid userId and password in the in javaeesec_basic role and call
+     * <LI> hasAccessToWebResource with null for methods. Should test all methods and return true
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200
+     * <LI> The caller has access, hasAccessToWebResource returns true
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSecurityContext_hasAccessToWebResource_nullMethods() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        queryString = queryString + "/Unprotected?resource=/Protected&methods=";
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
+                                                          HttpServletResponse.SC_OK);
+        verifySecurityContextResponse(response, "securityContext.hasAccessToWebResource(/Protected,): true");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> Access a protected servlet configured for basic authentication.
+     * <LI> Login with a valid userId and password not in the javaeesec_basic role and call
+     * <LI> hasAccessToWebResource with CUSTOM for methods.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200
+     * <LI> The caller does not have access, hasAccessToWebResource returns false
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSecurityContext_hasAccessToWebResource_custom() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        queryString = queryString + "/Unprotected?resource=/CustomBasicAuth&methods=CUSTOM";
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleGroupUser, Constants.javaeesec_basicRolePwd,
+                                                          HttpServletResponse.SC_OK);
+        verifySecurityContextResponse(response, "securityContext.hasAccessToWebResource(/CustomBasicAuth,CUSTOM): false");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> Access a protected servlet configured for basic authentication.
+     * <LI> Login with a valid userId and password in the in javaeesec_basic role and call
+     * <LI> hasAccessToWebResource with null for methods. Should test all methods, custom method has access
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200
+     * <LI> The caller has access, hasAccessToWebResource returns true
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSecurityContext_hasAccessToWebResource_nullMethods_custom() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        queryString = queryString + "/Protected?resource=/CustomBasicAuth&methods=";
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
+                                                          HttpServletResponse.SC_OK);
+        verifySecurityContextResponse(response, "securityContext.hasAccessToWebResource(/CustomBasicAuth,): true");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

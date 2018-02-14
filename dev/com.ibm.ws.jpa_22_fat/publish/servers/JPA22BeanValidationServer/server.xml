@@ -4,7 +4,7 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
@@ -16,24 +16,24 @@
 		<feature>beanValidation-2.0</feature>
 	    <feature>componenttest-1.0</feature>
     </featureManager>
-    
+
     <include location="../fatTestPorts.xml"/>
-    
-    <dataSource id="DefaultDataSource" fat.modify="true">
+
+    <dataSource id="DefaultDataSource" jndiName="jdbc/TransactionalDataSource" fat.modify="true">
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
-    
+
     <dataSource id="jdbc/NonTransactionalDataSource" jndiName="jdbc/NonTransactionalDataSource" fat.modify="true" transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
-    
+
     <library id="DerbyLib" fat.modify="true">
     	<fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
-    
+
     <application location="bval.war" />
-    
+
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 </server>

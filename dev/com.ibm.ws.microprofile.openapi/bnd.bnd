@@ -25,6 +25,7 @@ Web-ContextPath: /openapi
 
 Import-Package: \
 	org.apache.commons.io*;version=1.4;packageType=was_internal,\
+	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	*
 
 Private-Package: \
@@ -79,3 +80,16 @@ WS-TraceGroup: MPOPENAPI
 	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	org.yaml.snakeyaml;version=1.18
+
+-testpath: \
+        ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+        com.ibm.ws.junit.extensions;version=latest, \
+        com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+        org.apache.commons:commons-lang3;version=3.5, \
+        org.hamcrest:hamcrest-all;version=1.3, \
+        org.jmock:jmock-junit4;version=2.5.1, \
+        org.jmock:jmock;version=2.5.1, \
+        org.glassfish:javax.json;version=1.0.4, \
+        org.slf4j:slf4j-api;version=1.7.7, \
+        org.slf4j:slf4j-jdk14;version=1.7.7, \
+        ./resources;version=file

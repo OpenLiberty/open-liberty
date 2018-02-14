@@ -41,17 +41,7 @@ public class JobModelSerializerImpl implements ModelSerializer<JSLJob> {
 
     @Override
     public String serializeModel(JSLJob model) {
-
-        final JSLJob finalModel = model;
-        String serializedModel = AccessController.doPrivileged(
-                                                               new PrivilegedAction<String>() {
-                                                                   @Override
-                                                                   public String run() {
-                                                                       return marshalJSLJob(finalModel);
-                                                                   }
-                                                               });
-
-        return serializedModel;
+        return marshalJSLJob(model);
     }
 
     @Override
@@ -65,15 +55,19 @@ public class JobModelSerializerImpl implements ModelSerializer<JSLJob> {
         String resultXML = null;
         JSLValidationEventHandler handler = new JSLValidationEventHandler();
         try {
-            ClassLoader currentClassLoader = JSLJob.class.getClassLoader();
+            ClassLoader currentClassLoader = AccessController.doPrivileged(
+                                                                           new PrivilegedAction<ClassLoader>() {
+                                                                               @Override
+                                                                               public ClassLoader run() {
+                                                                                   return JSLJob.class.getClassLoader();
+                                                                               }
+                                                                           });
             JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model", currentClassLoader);
             Marshaller m = ctx.createMarshaller();
             m.setEventHandler(handler);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //m.marshal(job, baos);
-            /*
-             * from scott:
-             */
+
+            // Let's invent a target NS for the purpose of this serialization, to be clear it's not part of the spec XSD.
             m.marshal(new JAXBElement(new QName("http://com.ibm.jbatch.model/serialization", "job"), JSLJob.class, job), baos);
             resultXML = baos.toString();
         } catch (Exception e) {

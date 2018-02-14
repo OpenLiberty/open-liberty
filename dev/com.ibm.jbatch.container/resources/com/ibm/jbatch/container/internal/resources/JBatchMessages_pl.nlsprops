@@ -423,3 +423,7 @@ display.unresolved.jsl=CWWKY0043I:  Nierozstrzygni\u0119ty element JSL dla tego 
 display.unresolved.jsl.explanation=Element JSL u\u017cyty dla tego zadania jest wy\u015bwietlany przed rozstrzygni\u0119ciem parametr\u00f3w i w\u0142a\u015bciwo\u015bci.
 display.unresolved.jsl.useraction=Upewnij si\u0119, \u017ce nazwa pliku tego elementu JSL jest poprawna i sprawd\u017a, czy \u017ar\u00f3d\u0142o tego elementu JSL zawiera poprawny element JSL.
 
+#The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Nazwa obiektu operationGroup {0} nie zosta\u0142a rozstrzygni\u0119ta na poprawn\u0105 nazw\u0119 grupy.
+JOB_GROUP_NAME_NOT_VALID.explanation=Pr\u00f3by uzyskania dost\u0119pu do tego zadania przy u\u017cyciu dost\u0119pu grupy mog\u0105 si\u0119 nie powie\u015b\u0107, je\u015bli wyst\u0105pi\u0105 pr\u00f3by u\u017cycia niepoprawnej nazwy grupy.
+JOB_GROUP_NAME_NOT_VALID.useraction=Popraw nazw\u0119 grupy w pliku konfiguracyjnym serwera.

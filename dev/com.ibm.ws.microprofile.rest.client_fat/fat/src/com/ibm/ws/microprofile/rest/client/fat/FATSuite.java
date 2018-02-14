@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 BasicTest.class,
                 BasicCdiTest.class,
-                BasicCdiInEE8Test.class
+                BasicCdiInEE8Test.class,
+                MultiClientCdiTest.class
 })
 public class FATSuite {}

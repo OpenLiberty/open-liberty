@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,11 +212,20 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 // complex type
                 Schema mi = context.resolve(propType);
                 if (mi != null) {
-                    if ("object".equals(mi.getType())) {
+                    if ("object".equals(mi.getType().toString())) {
                         // create a reference for the property
                         final BeanDescription beanDesc = _mapper.getSerializationConfig().introspect(propType);
                         String name = _typeName(propType, beanDesc);
-                        property = new SchemaImpl().ref(constructRef(name));
+                        org.eclipse.microprofile.openapi.annotations.media.Schema schema = getSchemaAnnotation(annotations);
+                        boolean inline = false;
+                        property = new SchemaImpl((SchemaImpl) mi);
+                        if (schema != null && AnnotationsUtils.hasSchemaAnnotation(schema)) {
+                            inline = AnnotationsUtils.overrideSchemaFromAnnotation(property, schema);
+                        }
+                        if (!inline) {
+                            property = new SchemaImpl().ref(constructRef(name));
+                        }
+
                     } else if (mi.getRef() != null) {
                         property = new SchemaImpl().ref(StringUtils.isNotEmpty(mi.getRef()) ? mi.getRef() : ((SchemaImpl) mi).getName());
                     } else {
@@ -288,34 +297,13 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 return primitive;
             }
         }
-        org.eclipse.microprofile.openapi.annotations.media.Schema schemaAnnotationReference = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema directArraySchemaAnnotation = type.getRawClass().getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (directArraySchemaAnnotation != null) {
-            schemaAnnotationReference = directArraySchemaAnnotation.schema();
-        } else {
-            schemaAnnotationReference = directSchemaAnnotation;
-        }
+        org.eclipse.microprofile.openapi.annotations.media.Schema schemaAnnotationReference = directSchemaAnnotation;
 
         if (schemaAnnotationReference != null && !Void.class.equals(schemaAnnotationReference.implementation())) {
             Class<?> cls = schemaAnnotationReference.implementation();
 
             //LOGGER.debug("overriding datatype from {} to {}", type, cls.getName());
-
-            if (directArraySchemaAnnotation != null) {
-                Schema schema = new SchemaImpl().type(SchemaType.ARRAY);
-                Schema innerSchema = null;
-
-                Schema primitive = PrimitiveType.createProperty(cls);
-                if (primitive != null) {
-                    innerSchema = primitive;
-                } else {
-                    innerSchema = context.resolve(cls);
-                }
-                schema.setItems(innerSchema);
-                return schema;
-            } else {
-                return context.resolve(cls);
-            }
+            return context.resolve(cls);
         }
 
         if ("Object".equals(name)) {
@@ -1153,9 +1141,11 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 DiscriminatorMapping mappings[] = directSchemaAnnotation.discriminatorMapping();
                 if (mappings != null && mappings.length > 0) {
                     for (DiscriminatorMapping mapping : mappings) {
-                        if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
-                            discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
-                        }
+                        //@DiscriminatorMapping is not specified as default value anywhere - so it must be user-specified, hence the following if-check is not needed.
+                        //if (!mapping.value().isEmpty() && !mapping.schema().equals(Void.class)) {
+                        //TODO verify that resolving/processing Void.class doesn't result in NullPointerException
+                        discriminator.addMapping(mapping.value(), constructRef(((SchemaImpl) context.resolve(mapping.schema())).getName()));
+                        //}
                     }
                 }
             }
@@ -1292,14 +1282,7 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
 
         annotations = annotationList.toArray(new Annotation[annotationList.size()]);
 
-        org.eclipse.microprofile.openapi.annotations.media.Schema mp = null;
-
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema as = member.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (as != null) {
-            mp = as.schema();
-        } else {
-            mp = member.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        }
+        org.eclipse.microprofile.openapi.annotations.media.Schema mp = member.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
 
         // allow override of name from annotation
         if (mp != null && !mp.name().isEmpty()) {
@@ -1365,11 +1348,12 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
                 //applyBeanValidatorAnnotations(property, annotations, parent);
             }
         }
-        if (AnnotationsUtils.hasArrayAnnotation(as)) {
-            SchemaImpl arraySchema = (SchemaImpl) AnnotationsUtils.getArraySchema(as).get();
-            arraySchema.setName(name);
+
+        if (mp != null && mp.type() == org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY) {
+            SchemaImpl arraySchema = (SchemaImpl) AnnotationsUtils.getSchemaFromAnnotation(mp, null).get();
             arraySchema.setItems(property);
-            return arraySchema;
+            arraySchema.setName(name);
+            property = arraySchema;
         }
 
         return property;

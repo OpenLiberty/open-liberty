@@ -341,6 +341,33 @@ public class ServerEndpointControlMBeanTest {
         Log.exiting(c, METHOD_NAME);
     }
 
+    //Test that an exception is thrown when isPaused(String targets) is supplied with an empty string
+    //or null for the target
+    @ExpectedFFDC(PAUSEABLE_EXCEPTION_CLASS)
+    @Test
+    public void testIsPausedInvalidArgs() throws Exception {
+        final String METHOD_NAME = "testIsPausedInvalidArgs";
+        Log.entering(c, METHOD_NAME);
+        restoreSavedConfig = false;
+
+        try {
+            mbean.isPaused("");
+            fail("Failed to get expected exception from calling isPaused(\"\")");
+        } catch (MBeanException e) {
+            // expected
+        }
+
+        try {
+            mbean.isPaused(null);
+            fail("Failed to get expected exception from calling isPaused(null)");
+        } catch (MBeanException e) {
+            // expected
+        }
+
+        assertNotNull("Didn't find CWWKE0946W in logs as expected.", server.waitForStringInLog("CWWKE0946W"));
+        Log.exiting(c, METHOD_NAME);
+    }
+
     /**
      * Tests that the expected exception is thrown if the MBean resume method is issued with empty target list
      *

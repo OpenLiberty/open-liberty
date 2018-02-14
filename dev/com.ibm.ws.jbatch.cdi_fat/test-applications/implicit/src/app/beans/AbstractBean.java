@@ -31,6 +31,7 @@ public abstract class AbstractBean {
      * by virtue of thread context. It could be of some use for @Dependent scoped, though maybe kind of a bad fit for @ApplicationScoped
      * since it would depend who loaded it first.
      */
+
     @Inject
     @BatchProperty(name = "color")
     protected String color;

@@ -21,6 +21,9 @@
 
 package com.ibm.ws.microprofile.config.interfaces;
 
+/**
+ * A very generic RuntimeException for errors in the Config runtime
+ */
 public class ConfigException extends RuntimeException {
 
     /**

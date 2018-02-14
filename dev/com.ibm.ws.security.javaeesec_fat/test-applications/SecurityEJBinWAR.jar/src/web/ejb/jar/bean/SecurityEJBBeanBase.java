@@ -1,18 +1,21 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package web.ejb.jar.bean;
 
 import java.security.Principal;
 import java.util.logging.Logger;
+
+
+import javax.ejb.SessionContext;
+
 
 import javax.security.enterprise.SecurityContext;
 
@@ -23,7 +26,8 @@ public abstract class SecurityEJBBeanBase {
 
     private class Authentication {
 
-        protected String authenticate(String method, SecurityContext context, Logger logger) {
+
+        protected String authenticate(String method, SessionContext context, SecurityContext securityContext, Logger logger) {
             Principal principal = context.getCallerPrincipal();
             String principalName = null;
             if (principal != null) {
@@ -34,8 +38,9 @@ public abstract class SecurityEJBBeanBase {
 
             boolean isManager = false;
             boolean isEmployee = false;
-            isManager = context.isCallerInRole("Manager");
-            isEmployee = context.isCallerInRole("Employee");
+
+            isManager = securityContext.isCallerInRole("Manager");
+            isEmployee = securityContext.isCallerInRole("Employee");
             int len = principalName.length() + 12;
             StringBuffer result = new StringBuffer(len);
             result.append("EJB  = " + SecurityEJBBeanBase.this.getClass().getSimpleName() + "\n");
@@ -56,22 +61,47 @@ public abstract class SecurityEJBBeanBase {
             return result.toString();
         }
 
-        protected void dealWithIdentity(StringBuffer result, SecurityContext context) {
+        protected void dealWithIdentity(StringBuffer result, SessionContext context) {
 
         }
     }
 
-    private final Authentication a;
+
+    private class AuthenticationWithDeprecatedAPI extends Authentication {
+        @SuppressWarnings("deprecation")
+        @Override
+        protected void dealWithIdentity(StringBuffer result, SessionContext context) {
+            java.security.Identity identity = context.getCallerIdentity();
+            String identityName = null;
+            if (identity != null) {
+                identityName = identity.getName();
+            } else {
+                identityName = "null";
+            }
+            result.append("   getCallerIdentity()=");
+            result.append(identityName);
+            result.append("\n");
+        }
+    }
+
+    private Authentication a;
 
     protected SecurityEJBBeanBase() {
         a = new Authentication();
     }
 
-    protected abstract SecurityContext getContext();
+
+    protected abstract SessionContext getContext();
+
+    protected abstract SecurityContext getSecurityContext();
 
     protected abstract Logger getLogger();
 
+    public void withDeprecation() {
+        a = new AuthenticationWithDeprecatedAPI();
+    }
+
     protected String authenticate(String method) {
-        return a.authenticate(method, getContext(), getLogger());
+        return a.authenticate(method, getContext(), getSecurityContext(), getLogger());
     }
 }

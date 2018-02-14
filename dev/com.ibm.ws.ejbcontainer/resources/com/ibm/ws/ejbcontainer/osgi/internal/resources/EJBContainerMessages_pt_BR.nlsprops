@@ -194,3 +194,18 @@ INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=Remova a classe de ejb-jar.xml, 
 INVALID_CLASS_CNTR4115E=CNTR4115E: O elemento <ejb-class> no arquivo ejb-jar.xml especifica o nome de classe {0} do enterprise bean {1}, mas o arquivo de classe n\u00e3o foi localizado.
 INVALID_CLASS_CNTR4115E.explanation=O arquivo ejb-jar.xml especifica um nome de classe inv\u00e1lido, ou que o arquivo de classe n\u00e3o foi empacotado no aplicativo.
 INVALID_CLASS_CNTR4115E.useraction=Corrija o nome da classe no arquivo ejb-jar.xml ou empacote o arquivo de classe no aplicativo.
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ALREADY_ACTIVE_CNTR4118I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_PAUSE_CNTR4119W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DID_NOT_RESUME_CNTR4120W

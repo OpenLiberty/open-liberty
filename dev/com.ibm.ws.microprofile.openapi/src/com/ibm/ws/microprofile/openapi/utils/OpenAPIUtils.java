@@ -94,6 +94,7 @@ public class OpenAPIUtils {
                 Tr.event(tc, "Failed to access class for model: " + OASModelReaderClassName);
             }
         }
+        Tr.error(tc, "OPENAPI_MODEL_READER_LOAD_ERROR", OASModelReaderClassName);
         return null;
     }
 
@@ -124,6 +125,7 @@ public class OpenAPIUtils {
                 Tr.event(tc, "Failed to access class for filter: " + OASFilterClassName);
             }
         }
+        Tr.error(tc, "OPENAPI_FILTER_LOAD_ERROR", OASFilterClassName);
         return null;
     }
 }

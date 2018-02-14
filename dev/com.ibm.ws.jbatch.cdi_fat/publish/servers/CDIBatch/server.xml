@@ -5,6 +5,7 @@
         <feature>cdi-1.2</feature>
         <feature>ejb-3.2</feature>
         <feature>componenttest-1.0</feature>
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

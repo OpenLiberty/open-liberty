@@ -45,8 +45,7 @@ Export-Package: \
     com.ibm.ws.http.channel.h2internal.exceptions, \
     com.ibm.ws.http.channel.h2internal.hpack, \
     com.ibm.ws.http.channel.h2internal.huffman, \
-    com.ibm.ws.http.logging.source, \
-    com.ibm.ws.http.logging.data
+    com.ibm.ws.http.logging.source
 
 Private-Package: \
 	com.ibm.ws.http.*, \

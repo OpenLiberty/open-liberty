@@ -1,15 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package web.war.ejb.servlet;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
+import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
 import web.ejb.jar.bean.SecurityEJBInterface;
 
 /**
  * Security EJB servlet used for Pure Annotation tests - PureAnnA0xTest.
  */
+@BasicAuthenticationMechanismDefinition(realmName = "ejbRealm")
+@LdapIdentityStoreDefinition(
+                             url = "ldap://127.0.0.1:10389/",
+                             callerBaseDn = "",
+                             callerSearchBase = "ou=users,o=ibm,c=us",
+                             callerSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
+                             callerSearchFilter = "(&(objectclass=person)(uid=%s))",
+                             callerNameAttribute = "uid",
+                             groupNameAttribute = "cn",
+                             groupSearchBase = "ou=groups,o=ibm,c=us",
+                             groupSearchScope = LdapIdentityStoreDefinition.LdapSearchScope.SUBTREE,
+                             groupSearchFilter = "(objectclass=groupofnames)",
+                             groupMemberAttribute = "member",
+                             bindDn = "uid=admin,ou=users,o=ibm,c=us",
+                             bindDnPassword = "s3cur1ty",
+                             priority = 100)
 @SuppressWarnings("serial")
 public class SecurityEJBServlet extends SecurityEJBBaseServlet {
 
@@ -26,11 +54,11 @@ public class SecurityEJBServlet extends SecurityEJBBaseServlet {
 
     //Inject Stateless/Singleton EJB interfaces for Pure Annotation Tests - PureAnnA0xTest.
 
-    @EJB(beanName = "SecurityEJBA01Bean")
-    private SecurityEJBInterface injectedEJB01;
-
     @EJB(beanName = "SecurityEJBA02Bean")
     private SecurityEJBInterface injectedEJB02;
+
+    @EJB(beanName = "SecurityEJBA03Bean")
+    private SecurityEJBInterface injectedEJB03;
 
     protected Map<String, Invoke> methodMap = new HashMap<String, Invoke>();
 
@@ -39,8 +67,8 @@ public class SecurityEJBServlet extends SecurityEJBBaseServlet {
 
         Map<String, SecurityEJBInterface> beanMap = new HashMap<String, SecurityEJBInterface>();
         if (beanMap.size() == 0) {
-            beanMap.put("ejb01", injectedEJB01);
             beanMap.put("ejb02", injectedEJB02);
+            beanMap.put("ejb03", injectedEJB03);
         }
         return beanMap;
     }

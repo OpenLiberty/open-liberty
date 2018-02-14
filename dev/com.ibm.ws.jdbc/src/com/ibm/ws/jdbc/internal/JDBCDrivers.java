@@ -129,13 +129,23 @@ public class JDBCDrivers {
         classes = new String[] { className, className, className };
         classNamesByKey.put("MARIADB-JAVA-CLIENT", classes);
 
-        // MySQL
+        // MySQL before version 6.0
         classes = new String[] {
                                 "com.mysql.jdbc.jdbc2.optional.MysqlDataSource",                                
                                 "com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource",
                                 "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
         };
-        classNamesByKey.put("MYSQL-CONNECTOR-JAVA", classes);
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-2", classes);
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-3", classes);
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-5", classes);
+        
+        // MySQL after version 6.0
+        classes = new String[] {
+                                "com.mysql.cj.jdbc.MysqlDataSource",                                
+                                "com.mysql.cj.jdbc.MysqlConnectionPoolDataSource",
+                                "com.mysql.cj.jdbc.MysqlXADataSource"
+        };
+        classNamesByKey.put("MYSQL-CONNECTOR-JAVA-", classes);
 
         // Sybase JDBC 4 driver
         classes = new String[] {

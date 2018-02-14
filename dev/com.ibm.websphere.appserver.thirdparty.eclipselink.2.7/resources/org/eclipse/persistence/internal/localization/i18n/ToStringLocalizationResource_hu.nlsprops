@@ -1,9 +1,13 @@
-# IBM Confidential OCO Source Material
-# (C) COPYRIGHT International Business Machines Corp. 2014
-# The source code for this program is not published or otherwise divested
-# of its trade secrets, irrespective of what has been deposited with the
-# U.S. Copyright Office.
-# -------------------------------------------------------------------------------------------------
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -33,7 +37,7 @@ connected=csatlakoztatva
 
 connector=csatol\u00f3
 
-context=Kontextus:	
+context=Kontextus:   
 
 database_name=adatb\u00e1zisn\u00e9v
 
@@ -160,6 +164,10 @@ staticweave_commandline_help_message_7of19=           Ez a param\u00e9ter jellem
 staticweave_commandline_help_message_8of19=    -persistencexml
 
 staticweave_commandline_help_message_9of19=           A persistence.xml hely\u00e9t azonos\u00edtja a perzisztencia egys\u00e9ghez k\u00e9pest relat\u00edv m\u00f3don, ha az nem a META-INF/persistence.xml
+
+staticweave_processor_dir_not_created=A(z) {0} k\u00f6nyvt\u00e1r nem hozhat\u00f3 l\u00e9tre.
+
+staticweave_processor_file_not_created=A(z) {0} f\u00e1jl nem hozhat\u00f3 l\u00e9tre.
 
 staticweave_processor_unknown_outcome=Egy k\u00f6nyvt\u00e1rban t\u00e1rolt oszt\u00e1lyok bef\u0171z\u00e9se \u00e9s a kimenetnek egy JAR f\u00e1jlba ir\u00e1ny\u00edt\u00e1sa gyakran nem v\u00e1rt eredm\u00e9nyekre vezet.
 

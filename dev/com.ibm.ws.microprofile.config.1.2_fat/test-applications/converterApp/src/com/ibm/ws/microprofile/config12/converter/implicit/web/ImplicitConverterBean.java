@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.config12.converter.implicit.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
+import com.ibm.ws.microprofile.config12.converter.implicit.beans.MissingStringCtorType;
 import com.ibm.ws.microprofile.config12.converter.implicit.beans.StringCtorType;
 import com.ibm.ws.microprofile.config12.converter.implicit.converters.StringCtorTypeConverter;
 
@@ -58,6 +61,28 @@ public class ImplicitConverterBean {
 
         assertEquals("value1", myObject.getValue());
         assertEquals("StringCtorTypeConverter", myObject.getConverter());
+    }
+
+    /**
+     * Checks that the correct exception is thrown if the class does not have a suitable String constructor
+     *
+     * @throws Exception
+     */
+    public void stringConstructorMissingTest() throws Exception {
+
+        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
+        builder.addDefaultSources();
+
+        Config config = builder.build();
+        MissingStringCtorType myObject = null;
+        try {
+            myObject = config.getValue("key1", MissingStringCtorType.class);
+            fail("IllegalArgumentException not thrown");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
+
+        assertNull(myObject);
     }
 
 }

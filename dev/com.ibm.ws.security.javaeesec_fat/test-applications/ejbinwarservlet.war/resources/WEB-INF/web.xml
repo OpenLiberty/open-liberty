@@ -12,7 +12,8 @@
     <servlet-class>web.war.ejb.servlet.SecurityEJBServlet</servlet-class>
     <load-on-startup></load-on-startup>
   </servlet>
-  <!-- SERVLET MAPPINGS -->        
+  
+  <!-- SERVLET MAPPINGS -->   
   <servlet-mapping id="Default_Servlet_Mapping_1">
     <servlet-name>SecurityEJBServlet</servlet-name>
     <url-pattern>/SimpleServlet</url-pattern>
@@ -30,14 +31,15 @@
         <role-name>AllAuthenticated</role-name>
      </auth-constraint>
   </security-constraint>
+    <!-- 
    <login-config id="LoginConfig_1">
   	<auth-method>BASIC</auth-method>
     <realm-name>Basic Authentication</realm-name>
   </login-config>
-  
-  <security-role id="SecurityRole_1">
-     <description>AllAuthenticated role</description>
-     <role-name>AllAuthenticated</role-name>
-  </security-role>
+  -->
+   <!-- ROLES DEFINITION -->
+	<security-role>
+		<role-name>Manager</role-name>
+	</security-role>
   
 </web-app>

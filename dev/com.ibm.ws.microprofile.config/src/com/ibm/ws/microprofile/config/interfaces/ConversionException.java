@@ -11,11 +11,12 @@
 
 package com.ibm.ws.microprofile.config.interfaces;
 
+/**
+ * Thrown if errors occur during value conversion that are unrelated to the input value.
+ * If there is a problem with the input value then an IllegalArgumentException should be thrown.
+ */
 public class ConversionException extends ConfigException {
 
-    /**
-     * The exception was thrown when unable to convert to the specified type.
-     */
     private static final long serialVersionUID = 1L;
 
     public ConversionException(String message) {

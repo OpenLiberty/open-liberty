@@ -20,11 +20,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
-import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
+import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -82,49 +82,6 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Destroying wrapped H2 inbound link: " + this + " " + getVirtualConnection());
         }
-//        // if this object is not active, then just return out
-//        synchronized (this) {
-//            if (!this.bIsActive) {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "Ignoring destroy on an inactive object");
-//                }
-//                return;
-//            }
-//            this.bIsActive = false;
-//        }
-//        // 291714 - clean up the statemap
-//        getVirtualConnection().getStateMap().remove(CallbackIDs.CALLBACK_HTTPICL);
-//        // 363633 - remove the buffer size value if present
-//        getVirtualConnection().getStateMap().remove(HttpConstants.HTTPReadBufferSize);
-//        // now clean out any other app connlinks we may have picked up
-//        if (null != this.appSides) {
-//            // the super.destroy without an exception just nulls out values
-//            // the list of appside connlinks includes the current one
-//
-//            // let mux handle propagating destroys
-//            // muxLink.destroyLinkWrap(streamID);    // replacing super.destroy();
-//
-//            //for (ConnectionReadyCallback appside : this.appSides) {
-//            //    appside.destroy(e);
-//            //}
-//
-//            this.appSides = null;
-//        } else {
-//            // if we only ever got one connlink above, then call the standard
-//            // destroy to pass the sequence along
-//
-//            // let mux handle propagating destroys
-//            // muxLink.destroyLinkWrap(streamID);    // replacing super.destroy(e);
-//
-//        }
-//        this.myInterface.clear();
-//        this.myInterface.destroy();
-//        // these are no longer pooled, dereference now
-//        this.myInterface = null;
-//        this.myTSC = null;
-//        this.filterExceptions = false;
-//        this.numRequestsProcessed = 0;
-//        this.myChannel = null;
         super.destroy(e);
 
         vc = null;
@@ -311,8 +268,46 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         //At this point our side should be in the close state, as we have sent out our data
         //Should probably check if the connection is closed, if so issue the destroy up the chain
         //Then call the close on the underlying muxLink so we can close the connection if everything has been closed
-
-        this.muxLink.close(inVC, e);
+        //Additionally, don't close the underlying link if this is a push stream
+        if (streamID == 0 || streamID % 2 == 1) {
+            // if this isn't an http/2 exception, don't pass it down, since that will cause a GOAWAY to be sent immediately
+            if (e == null || e instanceof Http2Exception) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close: closing with exception: " + e);
+                }
+                this.muxLink.close(inVC, e);
+            } else {
+                H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
+                if (h2sp != null) {
+                    try {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "close: attempting to reset stream: " + streamID);
+                        }
+                        int PROTOCOL_ERROR = 0x1;
+                        Frame reset = new FrameRstStream(streamID, PROTOCOL_ERROR, false);
+                        h2sp.processNextFrame(reset, Constants.Direction.WRITING_OUT);
+                    } catch (Http2Exception h2e) {
+                        // if we can't write out RST frame, throw the original exception
+                        this.muxLink.close(inVC, e);
+                    }
+                }
+                this.muxLink.close(inVC, null);
+            }
+        } else { // try to send an RST_STREAM to let the client know the push promise has been canceled
+            H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
+            if (h2sp != null && !h2sp.isStreamClosed() && !h2sp.isHalfClosed()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close: attempting to reset stream: " + streamID);
+                }
+                int PROTOCOL_ERROR = 0x1;
+                Frame reset = new FrameRstStream(streamID, PROTOCOL_ERROR, false);
+                try {
+                    h2sp.processNextFrame(reset, Constants.Direction.WRITING_OUT);
+                } catch (Http2Exception h2e) {
+                    // don't close
+                }
+            }
+        }
     }
 
     public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) {
@@ -341,7 +336,9 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 if (streamProcessor != null) {
                     streamProcessor.processNextFrame(currentFrame, Direction.WRITING_OUT);
                 } else {
-                    throw new StreamClosedException("stream " + streamID + " was already closed!");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "writeFramesSync stream " + streamID + " was already closed; cannot write");
+                    }
                 }
 
             } catch (Http2Exception e) {
@@ -378,31 +375,4 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     public ArrayList<H2HeaderField> getReadHeaders() {
         return this.headers;
     }
-
-    // Initial survey of HTTPInboundLink methods
-    // close                 - no override (getDeviceLink.close gets routed to the H2ConnectionLinkProxy)
-    //                       -   need to verify connection closes when using wrapper, and does not return without closing by detecting "upgraded" in VC map
-    // complete              - no override.
-    // destroy               - Needs some override - done except for add muxLink methods
-    // error                 - no override, mostly calls close
-    // getChannel            - no override
-    // getChannelAccessor    - no override - getDeviceLink.getChannelAccessor routed to H2ConnectionLinkProxy
-    // getHTTPContext        - no override
-    // getObjectFactory      - no override
-    // handleDiscrimination  - no override -may need attention, but seems ok to just leave as is
-    // handleGenericHNIError - no override
-    // handleNewInformation  - no override
-    // handleNewRequest      - no override
-    // handlePipeLining      - not sure    - leave alone for now
-    // init                  - no override
-    // isFirstRequest        - no override
-    // isHTTP2UpgradeRequest - no override - but does need to be updated and not hard-coded!
-    // isPartiallyParsed     - no override
-    // maxRequestsServed     - no override
-    // processRequest        - no override - as long as myTSC is an H2TCPConnectionContext
-    // ready                 - no override
-    // sendErrorMessage(SC)  - no override
-    // sendErrorMessage(T)   - no override
-    // setFilterCloseExceptions - no overide
-    // setPartiallyParsed    - no override
 }

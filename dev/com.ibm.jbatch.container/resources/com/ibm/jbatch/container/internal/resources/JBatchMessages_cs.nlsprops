@@ -314,3 +314,7 @@ display.unresolved.jsl=CWWKY0043I:  Nevy\u0159e\u0161en\u00fdch JSL pro tuto \u0
 display.unresolved.jsl.explanation=JSL pou\u017eit\u00fd pro \u00falohu je zobrazen p\u0159ed vy\u0159e\u0161en\u00edm parametr\u016f a vlastnost\u00ed.
 display.unresolved.jsl.useraction=Ujist\u011bte se, \u017ee n\u00e1zev souboru pro JSL je spr\u00e1vn\u00fd, a ov\u011b\u0159te, \u017ee zdroj JSL obsahuje spr\u00e1vn\u00fd JSL.
 
+#The {0} operationGroup name was not resolved to a valid group name.
+JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: N\u00e1zev operationGroup {0} nebyl vy\u0159e\u0161en na platn\u00fd n\u00e1zev skupiny.
+JOB_GROUP_NAME_NOT_VALID.explanation=Pokusy o p\u0159\u00edstup, kdy\u017e \u00faloha pou\u017e\u00edv\u00e1 skupinov\u00fd p\u0159\u00edstup, mohly selhat, jestli\u017ee p\u0159i nich do\u0161lo k pou\u017eit\u00ed neplatn\u00e9ho n\u00e1zvu skupiny.
+JOB_GROUP_NAME_NOT_VALID.useraction=Opravte n\u00e1zev skupiny v konfigura\u010dn\u00edm souboru serveru.

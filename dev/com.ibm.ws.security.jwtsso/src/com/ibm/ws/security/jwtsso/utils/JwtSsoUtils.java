@@ -10,8 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.utils;
 
-public class JwtSsoUtils {
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-	// todo: implement me
+public class JwtSsoUtils {
+	private static final TraceComponent tc = Tr.register(JwtSsoUtils.class);
+
+	public static final String CFG_KEY_COOKIENAME = "cookieName";
+	public static final String CFG_KEY_HTTPONLYCOOKIES = "httpOnlyCookies";
+	public static final String CFG_KEY_SSOUSEDOMAINFROMURL = "ssoUseDomainFromURL";
+	public static final String CFG_KEY_SSOREQUIRESSSL = "ssoRequiresSSL";
+	public static final String CFG_KEY_SSODOMAINNAMES = "ssoDomainNames";
+	public static final String CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH = "setCookiePathToWebAppContextPath";
+	public static final String CFG_KEY_INCLUDELTPACOOKIE = "includeLtpaCookie";
+	public static final String CFG_KEY_FALLBACKTOLTPA = "fallbackToLtpa";
+
+	public static final String CFG_KEY_GROUPBASEDNOMITTED = "groupBaseDnOmitted";
+	public static final String CFG_KEY_JWTBUILDERREF = "jwtBuilderRef";
+	public static final String CFG_KEY_JWTCONSUMERREF = "jwtConsumerRef";
 
 }

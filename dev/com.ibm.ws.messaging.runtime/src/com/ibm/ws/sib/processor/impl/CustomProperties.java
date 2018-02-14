@@ -16,6 +16,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.processor.SIMPConstants;
 import com.ibm.ws.sib.processor.gd.GDConfig;
 import com.ibm.ws.sib.utils.ras.SibTr;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 
 public final class CustomProperties
 {
@@ -55,7 +56,7 @@ public final class CustomProperties
   private int _max_system_threadpool_size = 5;
   // Value to indicate the maximum size of the Reconstitute Thread Pool
   //The deault value is numberofcores*2
-  private int _max_reconstitute_threadpool_size = Runtime.getRuntime().availableProcessors();
+  private int _max_reconstitute_threadpool_size = CpuInfo.getAvailableProcessors();
 
   // Browse Protocol Liveness Parameters. Should be configurable
 

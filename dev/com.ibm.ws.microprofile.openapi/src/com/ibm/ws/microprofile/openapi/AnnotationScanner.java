@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
@@ -47,21 +48,17 @@ public class AnnotationScanner {
                                                                              JAX_RS_APP_PATH_ANNOTATION_CLASS_NAME,
                                                                              OPENAPI_SCHEMA_ANNOTATION_CLASS_NAME);
 
-    private final ClassLoader webModuleClassLoader;
     private final WebAnnotations webAnnotations;
-    private Set<Class<?>> annotatedClasses;
-    private Set<Class<?>> scannedClasses;
     private String urlMapping;
     private final WebAppConfig appConfig;
 
     public AnnotationScanner(ClassLoader classLoader, Container containerToAdapt) throws UnableToAdaptException {
-        webModuleClassLoader = classLoader;
         webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
         appConfig = containerToAdapt.adapt(WebModuleMetaData.class).getConfiguration();
     }
 
     public boolean anyAnnotatedClasses() {
-        return !getAnnotatedClasses().isEmpty();
+        return !getAnnotatedClassesNames().isEmpty();
     }
 
     private String getUrlMappingFromServlet(IServletConfig sconfig) {
@@ -166,48 +163,26 @@ public class AnnotationScanner {
         return getUrlMappingFromApp(appClassName);
     }
 
-    /**
-     * Returns the set of classes in the web module that are annotated with
-     * Open API annotations that can be added to a class or <code>javax.ws.rs.Path</code>.
-     */
-    private synchronized Set<Class<?>> getAllAnnotatedClasses() throws UnableToAdaptException {
-        if (this.annotatedClasses == null) {
-            AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
-            Set<String> restAPIClasses = new HashSet<String>();
+    @FFDCIgnore(UnableToAdaptException.class)
+    public synchronized Set<String> getAnnotatedClassesNames() {
+        AnnotationTargets_Targets annotationTargets;
+        Set<String> restAPIClasses = null;
 
+        try {
+            annotationTargets = webAnnotations.getAnnotationTargets();
             restAPIClasses = ANNOTATION_CLASS_NAMES.stream().flatMap(anno -> annotationTargets.getAnnotatedClasses(anno,
                                                                                                                    AnnotationTargets_Targets.POLICY_SEED).stream()).collect(Collectors.toSet());
-
             Tr.event(tc, "Found annotated classes: ", restAPIClasses);
-            Set<Class<?>> classes = new HashSet<Class<?>>();
-            for (String className : restAPIClasses) {
-                try {
-                    classes.add(webModuleClassLoader.loadClass(className));
-                } catch (ClassNotFoundException e) {
-                    Tr.event(tc, "Failed to load class " + className + " returned from the annotation scanner.");
-                    Tr.error(tc, "FAILED_FINDING_CLASS", className, getClass().getName(), e.toString());
-                } catch (NoClassDefFoundError e) {
-                    Tr.event(tc, "Failed to load class " + className + " returned from the annotation scanner.");
-                    Tr.error(tc, "FAILED_FINDING_CLASS", className, getClass().getName(), e.toString());
-                }
-            }
-            this.annotatedClasses = Collections.unmodifiableSet(classes);
+        } catch (UnableToAdaptException e) {
+            Tr.event(tc, "Unable to get annotated class names");
         }
-        return this.annotatedClasses;
+        return Collections.unmodifiableSet(restAPIClasses);
     }
 
-    /**
-     *
-     * @param reader
-     * @return Set of object that represent scanned classes
-     * @throws UnableToAdaptException
-     */
-    public synchronized Set<Class<?>> getAnnotatedClasses() {
+    public String getURLMapping() {
+        this.urlMapping = null;
         try {
-            Set<Class<?>> scanClasses = new HashSet<>();
-            Set<Class<?>> annotated = getAllAnnotatedClasses();
             Set<String> appClassNames = getAllApplicationClasses();
-            this.urlMapping = null;
 
             if (appClassNames.size() < 2) {
                 String urlMapping = null;
@@ -220,21 +195,12 @@ public class AnnotationScanner {
                     urlMapping = findServletMappingForApp(appClassNames.iterator().next());
                 }
                 this.urlMapping = urlMapping;
-                scanClasses.addAll(annotated);
             } else {
                 Tr.event(tc, "Found multiple Application classes. This is not supported at this time.");
             }
-
-            this.scannedClasses = Collections.unmodifiableSet(scanClasses);
-            Tr.event(tc, "Finished scanning for annotated classes");
-        } catch (UnableToAdaptException e) {
-            Tr.event(tc, "Unable to get annotated classes");
-            return null;
+        } catch (Exception e) {
+            Tr.event(tc, "Unable to get url mapping");
         }
-        return scannedClasses;
-    }
-
-    public String getURLMapping() {
         return this.urlMapping;
     }
 }

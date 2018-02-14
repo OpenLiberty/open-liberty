@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Si l'utilisateur n'est pas autoris\u
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: L''utilisateur {0} n''est pas autoris\u00e9 \u00e0 d\u00e9marrer les travaux Batch.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=L'utilisateur ne dispose pas d'un r\u00f4le lui permettant de d\u00e9marrer des travaux Batch.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=Si l'utilisateur n'est pas autoris\u00e9 \u00e0 d\u00e9marrer des travaux Batch, aucune action n'est alors requise. Si l'utilisateur est autoris\u00e9 \u00e0 effectuer l'op\u00e9ration Batch demand\u00e9e, configurez alors l'autorisation de s\u00e9curit\u00e9 Batch puis ajoutez cet utilisateur aux r\u00f4les Batch requis.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: L''acc\u00e8s \u00e0 l''instance de travail {0} a \u00e9t\u00e9 refus\u00e9. Un nom de groupe d''op\u00e9rations est d\u00e9fini pour le travail et l''utilisateur {1} dispose des droits batchGroupMonitor ou batchGroupAdmin ; toutefois, cet utilisateur n''est pas membre des groupes configur\u00e9s suivants : {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=L'utilisateur batchGroupAdmin ou batchGroupMonitor n'appartient pas \u00e0 un groupe de s\u00e9curit\u00e9 auquel ce travail est associ\u00e9.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=Si l'utilisateur doit disposer de droits d'acc\u00e8s de groupe pour ce travail, ajoutez-le au groupe de s\u00e9curit\u00e9 appropri\u00e9.
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: L''acc\u00e8s au travail {0} a \u00e9t\u00e9 refus\u00e9. Le nom de groupe d''op\u00e9rations {1} est d\u00e9fini pour le travail et l''utilisateur ne dispose pas des droits batchGroupMonitor ou batchGroupAdmin.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=L'utilisateur ne poss\u00e8de pas l'un des r\u00f4les de groupe Batch et n'est pas autoris\u00e9 \u00e0 effectuer des op\u00e9rations Batch.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=Si l'utilisateur n'est pas autoris\u00e9 \u00e0 \u00eatre membre d'un groupe Batch, aucune action n'est requise. Si l'utilisateur est autoris\u00e9 \u00e0 effectuer les op\u00e9rations de groupe Batch et que la s\u00e9curit\u00e9 Batch est activ\u00e9e, configurez l'autorisation de s\u00e9curit\u00e9 Batch et ajoutez cet utilisateur aux r\u00f4les de groupe Batch requis.

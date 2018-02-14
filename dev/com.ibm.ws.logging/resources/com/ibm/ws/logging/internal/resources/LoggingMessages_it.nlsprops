@@ -116,6 +116,13 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: I seguenti messaggi sono nascosti nei fi
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=I messaggi configurati per essere nascosti non vengono scritti nei file console.log e messages.log. Vengono scritti nel file trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Non \u00e8 richiesta alcuna azione
 
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Il formato di output di messages.log \u00e8 stato aggiornato a ''{0}''.
+MESSAGE_FORMAT_UPDATED.explanation=Il formato di output per messages.log \u00e8 stato aggiornato.
+MESSAGE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
+
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Il formato di output della console \u00e8 stato aggiornato a ''{0}''.
+CONSOLE_FORMAT_UPDATED.explanation=Il formato di output per la console \u00e8 stato aggiornato.
+CONSOLE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

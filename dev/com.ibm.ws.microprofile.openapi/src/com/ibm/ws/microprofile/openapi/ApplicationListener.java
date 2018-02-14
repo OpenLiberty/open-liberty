@@ -35,7 +35,7 @@ public class ApplicationListener implements ApplicationStateListener {
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
         if (appProcessor != null) {
             try {
-                appProcessor.processApplication(appInfo);
+                appProcessor.addApplication(appInfo);
             } catch (Throwable e) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
                     Tr.event(tc, "Failed to process application: " + e.getMessage());

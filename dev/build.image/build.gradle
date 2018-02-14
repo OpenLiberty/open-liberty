@@ -66,15 +66,32 @@ File packageDir = new File(project.buildDir, 'openliberty')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
 
-task packageOpenLiberty {
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
-    dependsOn parent.subprojects.assemble
-    dependsOn copyGeneratedToBuildImageBinTools
-    dependsOn copyGeneratedToCnfLib
-    doLast {
+String getGaFeatures() {
+    String features = ""
+    rootProject.fileTree(dir: '.', include: '*/*.feature').visit { element ->
+        if (element.isDirectory()) {
+            return
+        }
+        Properties featureProps = new Properties()
+        element.getFile().withInputStream { featureProps.load(it) }
+        if (featureProps['kind'] == 'ga' && featureProps['IBM-ShortName'] != null) {
+            String shortname = featureProps['IBM-ShortName']
+            features += "\n<feature>" + shortname + "</feature>"
+        }
+    }
+
+    features
+}
+
+class PackageLibertyWithFeatures extends DefaultTask {
+    String withFeatures
+    File outputTo
+
+    @TaskAction
+    void buildPackage() {
         // Create server in order to minify an image that only includes kind=ga features
-        delete project.file('wlp/usr/servers/packageOpenLiberty')
-        exec {
+        project.delete project.file('wlp/usr/servers/packageOpenLiberty')
+        project.exec {
             workingDir project.file('wlp/bin')
             def args = ["create", "packageOpenLiberty"]
             if (OperatingSystem.current().windows) {
@@ -85,30 +102,17 @@ task packageOpenLiberty {
         }
 
         try {
-            String features = ""
-            rootProject.fileTree(dir: '.', include: '*/*.feature').visit { element ->
-                if (element.isDirectory()) {
-                    return
-                }
-                Properties featureProps = new Properties()
-                element.getFile().withInputStream { featureProps.load(it) }
-                if (featureProps['kind'] == 'ga' && featureProps['IBM-ShortName'] != null) {
-                    String shortname = featureProps['IBM-ShortName']
-                    features += "\n<feature>" + shortname + "</feature>"
-                }
-            }
-
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
-    <server description="new server">
-    <featureManager>${features}
-    </featureManager>
-    </server>
-    """
+        <server description="new server">
+        <featureManager>${withFeatures}
+        </featureManager>
+        </server>
+        """
 
             File archive = new File(project.buildDir, 'openliberty.zip')
-            delete archive
-            exec {
+            project.delete archive
+            project.exec {
                 workingDir project.file('wlp/bin')
                 def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
                 if (OperatingSystem.current().windows) {
@@ -119,14 +123,16 @@ task packageOpenLiberty {
             }
 
             // Postprocess to remove unwanted files
-            delete packageDir
-            copy {
-                from zipTree(file(archive))
+            project.delete outputTo
+            project.copy {
+                from project.zipTree(project.file(archive))
                 exclude 'wlp/usr/servers/**'
                 exclude 'wlp/lib/versions/package_*'
-                into packageDir
+                into outputTo
             }
         } catch (all) {
+            println "-- EXCEPTION PACKAGING SERVER --"
+            println all
             def messages = project.file("wlp/usr/servers/packageOpenLiberty/logs/messages.log")
             if (messages.exists()) {
                 messages.eachLine { String line ->
@@ -135,6 +141,31 @@ task packageOpenLiberty {
             }
         }
     }
+}
+
+task packageOpenLiberty(type: PackageLibertyWithFeatures) {
+    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn parent.subprojects.publishFeatureResources
+    dependsOn copyGeneratedToBuildImageBinTools
+    dependsOn copyGeneratedToCnfLib
+    
+    withFeatures getGaFeatures()
+    outputTo packageDir
+
+}
+
+task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
+    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+
+    dependsOn parent.subprojects.assemble
+    dependsOn parent.subprojects.publishFeatureResources
+    dependsOn copyGeneratedToBuildImageBinTools
+    dependsOn copyGeneratedToCnfLib
+
+    withFeatures ''
+    outputTo packageDir
+    
 }
 
 // Includes only kind=ga features.
@@ -147,9 +178,20 @@ task zipOpenLiberty(type: Zip) {
 }
 publish.dependsOn zipOpenLiberty
 
+// Includes only kind=ga features.
+task zipOpenLibertyKernel(type: Zip) {
+    dependsOn packageOpenLibertyKernel
+    baseName 'openliberty-kernel'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+}
+publish.dependsOn zipOpenLibertyKernel
+
 // Includes all features.
 task zipOpenLibertyAll(type: Zip) {
     dependsOn parent.subprojects.assemble
+    dependsOn parent.subprojects.publishFeatureResources
     dependsOn copyGeneratedToBuildImageBinTools
     dependsOn copyGeneratedToCnfLib
     baseName 'openliberty-all'
@@ -385,3 +427,4 @@ task publishPublicArtifactsOnBintray {
         }
     }
 }
+

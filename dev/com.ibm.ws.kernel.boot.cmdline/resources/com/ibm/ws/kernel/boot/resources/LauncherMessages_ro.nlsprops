@@ -668,6 +668,14 @@ error.zosProcStart.jobname.invalid=CWWKE0943E: A e\u015fuat pornirea procedurii 
 error.zosProcStart.jobname.invalid.explanation=Numele de job STC specificat de proprietatea WLP_ZOS_JOBNAME din fi\u015fierul server.env file nu este valid. Numele de job nu trebuie s\u0103 aib\u0103 mai mult de opt caractere \u015fi nu poate con\u0163ine o virgul\u0103.
 error.zosProcStart.jobname.invalid.useraction=Verifica\u0163i c\u0103 numele de job nu are mai mult de opt caractere \u015fi nu con\u0163ine o virgul\u0103.
 
+error.server.pause.command.port.disabled=CWWKE0944E: A fost primit\u0103 o cerere de pauz\u0103 pentru serverul {0}, dar portul de comand\u0103 al serverului este dezactivat. Cererea nu a putut fi procesat\u0103. Activa\u0163i portul de comand\u0103 \u015fi \u00eencerca\u0163i din nou.
+error.server.pause.command.port.disabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103. Portul de comand\u0103 este dezactivat pentru acest server, prin urmare nu a putut fi procesat\u0103 cererea de pauz\u0103. Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
+error.server.pause.command.port.disabled.useraction=Activa\u0163i portul de comand\u0103 pentru acest server. Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, aceast\u0103 pauz\u0103 poate fi cerut\u0103 \u015fi de pe consola de operator.
+
+error.server.resume.command.port.disabled=CWWKE0945E: A fost recep\u0163ionat\u0103 o cerere de reluare pentru serverul {0}, dar portul de comand\u0103 al serverului este dezactivat. Cererea nu a putut fi procesat\u0103. Activa\u0163i portul de comand\u0103 \u015fi \u00eencerca\u0163i din nou.
+error.server.resume.command.port.disabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103. Portul de comand\u0103 este dezactivat pentru acest server, prin urmare nu a putut fi procesat\u0103 cererea de reluare. Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
+error.server.resume.command.port.disabled.useraction=Activa\u0163i portul de comand\u0103 pentru acest server. Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, aceast\u0103 reluare poate fi cerut\u0103 \u015fi de pe consola de operator.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

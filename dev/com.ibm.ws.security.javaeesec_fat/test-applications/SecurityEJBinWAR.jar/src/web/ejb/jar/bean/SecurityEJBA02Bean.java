@@ -1,10 +1,25 @@
+
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package web.ejb.jar.bean;
 
 import java.util.logging.Logger;
 
+
+
+import javax.annotation.Resource;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
@@ -23,12 +38,19 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     @Inject
     SecurityContext securityContext;
 
-    public SecurityEJBA02Bean() {
 
+    @Resource
+    private SessionContext context;
+
+    public SecurityEJBA02Bean() {}
+
+    @Override
+    protected SessionContext getContext() {
+        return context;
     }
 
     @Override
-    protected SecurityContext getContext() {
+    protected SecurityContext getSecurityContext() {
         return securityContext;
     }
 

@@ -11,14 +11,18 @@
 
 package com.ibm.ws.microprofile.config12.impl;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.archaius.impl.ConversionDecoder;
 import com.ibm.ws.microprofile.config.converters.AutomaticConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.ConversionStatus;
-import com.ibm.ws.microprofile.config.interfaces.ConverterNotFoundException;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
-public class Config12ConversionManager extends ConversionDecoder {
+public class Config12ConversionManager extends ConversionManager {
+
+    private static final TraceComponent tc = Tr.register(Config12ConversionManager.class);
 
     /**
      * @param converters all the converters to use
@@ -35,19 +39,52 @@ public class Config12ConversionManager extends ConversionDecoder {
      * @return a converted T object
      */
     @Override
-    @FFDCIgnore(ConverterNotFoundException.class)
     protected <T> ConversionStatus implicitConverters(String rawString, Class<T> type) {
         ConversionStatus status = new ConversionStatus();
+        AutomaticConverter automaticConverter = getConverter(type);
 
-        try {
-            AutomaticConverter automaticConverter = new AutomaticConverter(type);
-            Object converted = automaticConverter.convert(rawString);
-            status.setConverted(converted);
-        } catch (ConverterNotFoundException e) {
-            //no FFDC
+        //will be null if a suitable string constructor method could not be found
+        if (automaticConverter != null) {
+            try {
+                Object converted = automaticConverter.convert(rawString);
+                status.setConverted(converted);
+            } catch (IllegalArgumentException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "implicitConverters: An automatic converter for type ''{0}'' and raw String ''{1}'' threw an exception: {2}.", type, rawString, e);
+                }
+                throw e;
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "implicitConverters: An automatic converter for type ''{0}'' and raw String ''{1}'' threw an exception: {2}.", type, rawString, t);
+                }
+                throw new ConfigException(t);
+            }
         }
 
         return status;
+    }
+
+    @FFDCIgnore(IllegalArgumentException.class)
+    private <T> AutomaticConverter getConverter(Class<T> type) {
+        AutomaticConverter automaticConverter = null;
+
+        try {
+            automaticConverter = new AutomaticConverter(type);
+        } catch (IllegalArgumentException e) {
+            //no FFDC
+            //this means that a suitable string constuctor method could not be found for the given class
+            //ignore the exception and return null
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getConverter (INFO): An automatic converter for type ''{0}'' could not be constructed: {2}.", type, e);
+            }
+        } catch (Throwable t) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getConverter: An automatic converter for type ''{0}'' could not be constructed: {2}.", type, t);
+            }
+            throw new ConfigException(t);
+        }
+
+        return automaticConverter;
     }
 
 }

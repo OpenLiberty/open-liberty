@@ -303,6 +303,11 @@ UNABLE_TO_FIND_TOOLS_JAR=L''agent Liberty Java n''a pas pu \u00eatre li\u00e9 ca
 
 UNABLE_TO_FIND_JAVA_AGENT=L''agent Liberty Java n''a pas pu \u00eatre localis\u00e9. Ce serveur fonctionnera, mais il ne pourra pas prendre en charge les fonctions n\u00e9cessitant l''agent Java, telles que la surveillance ou le tra\u00e7age.
 
+RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG a \u00e9t\u00e9 d\u00e9fini. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
+RUN_IN_CHILD_JVM_JVM_OPTIONS=Le fichier jar contient les fichiers jvm.options. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
+RUN_IN_CHILD_JVM_IBM_AGENT_ISSUE=Un kit de d\u00e9veloppement Java IBM est utilis\u00e9 sans l''option -XX:+EnableHCR. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
+RUN_IN_CHILD_JVM_JRE=Une installation d''environnement d''ex\u00e9cution Java est utilis\u00e9e. Le serveur va s''ex\u00e9cuter sur une machine virtuelle Java distincte.
+
 # messages for LicenseSelfEctractor
 LICENSE_invalidInstall=Le r\u00e9pertoire {0} n''est pas celui d''une installation Liberty valide. Sp\u00e9cifiez le r\u00e9pertoire racine de l''installation Liberty que vous voulez mettre \u00e0 niveau.
 LICENSE_invalidVersion=La licence ne peut pas \u00eatre mise \u00e0 niveau. En effet, l''installation de produit sp\u00e9cifi\u00e9e est \u00e0 \

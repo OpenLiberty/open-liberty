@@ -1,15 +1,18 @@
-/*
-* IBM Confidential
-*
-* OCO Source Materials
-*
-* WLP Copyright IBM Corp. 2018
-*
-* The source code for this program is not published or otherwise divested
-* of its trade secrets, irrespective of what has been deposited with the
-* U.S. Copyright Office.
-*/
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.security.javaeesec.fat;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +20,6 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,7 +29,9 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
@@ -45,7 +49,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 
 public class EAREJBModuleTest extends JavaEESecTestBase {
-    protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.ejb.fat");
+    protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = EAREJBModuleTest.class;
     protected static String urlBase;
     protected static String TEMP_DIR = "test_temp";
@@ -54,8 +58,11 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
     protected static String EJB_WAR_NAME = "ejbinwarservlet.war";
     protected static String EJB_EAR_NAME = "securityejbinwar.ear";
     protected static String EJB_APP_NAME = "securityejbinwar.ear";
+    protected static String XML_NAME = "ejbserver.xml";
 
     protected DefaultHttpClient httpclient;
+
+    protected static LocalLdapServer ldapServer;
 
     public EAREJBModuleTest() {
         super(myServer, logClass);
@@ -66,25 +73,33 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Log.info(logClass, "setUp()", "-----setting up test");
+        ldapServer = new LocalLdapServer();
+        ldapServer.start();
 
-        System.out.println("creating war");
+        Log.info(logClass, "setUp()", "-----Creating EAR app.");
+
         // create ejbinwarservlet.war,
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.ejb.jar.bean", "web.war.ejb.servlet");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.servlet");
 
-        System.out.println("creating ear");
         // add the servlet war inside the ear
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME);
 
-        System.out.println("adding ear");
         //add ear to the server
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
+        Log.info(logClass, "setUp()", "-----EAR app created");
 
-        startServer(null, EJB_APP_NAME);
+        startServer(XML_NAME, EJB_APP_NAME);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         myServer.stopServer();
+
+        if (ldapServer != null) {
+            ldapServer.stop();
+        }
+        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before
@@ -96,78 +111,95 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
         httpclient = new DefaultHttpClient(httpParams);
     }
 
-    @After
-    public void cleanupConnection() throws Exception {
-        httpclient.getConnectionManager().shutdown();
-    }
-
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
     }
 
     protected static void startServer(String config, String appName) throws Exception {
-        if (config != null)
-            myServer.setServerConfigurationFile(config);
+        myServer.setServerConfigurationFile(config);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(appName);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testejb_manager__getCallerPrincipal() throws Exception {
-        Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
-
-        String queryString = "/securityejbinwar/SimpleServlet?testInstance=ejb02&testMethod=manager";
-
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user2", "user2pwd",
-                                                          HttpServletResponse.SC_OK);
-        verifySecurityContextResponse(response, "getCallerPrincipal()=" + "user2");
-
-        Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
+    String getServletURL() {
+        return "SimpleServlet";
     }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains one war and one jar file. It uses EJB with the purpose of testing Basic Authentication with LDAP
+     * Identity Store.
+     * </OL>
+     * <P> Expected Results: 200 OK user is in role for manager.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
     @Mode(TestMode.LITE)
     @Test
-    public void testejb_manager_isUserInRole() throws Exception {
-        Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
+    public void testisUserInRole() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
-        String queryString = "/securityejbinwar/SimpleServlet?testInstance=ejb02&testMethod=manager";
-
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user2", "user2pwd",
+        String queryString = "/securityejbinwar/" + getServletURL() + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
+                                                          LocalLdapServer.PASSWORD,
                                                           HttpServletResponse.SC_OK);
-        verifySecurityContextResponse(response, "getCallerPrincipal()=" + "user2", "isCallerInRole(Manager)=true");
-
-        Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, "isUserInRole(Manager): true");
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains one war and one jar file. It uses EJB with the purpose of testing Basic Authentication with LDAP
+     * Identity Store.
+     * </OL>
+     * <P> Expected Results: 200 OK caller is in role for manager.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
     @Mode(TestMode.LITE)
     @Test
-    public void testejb_employee_isUserInRole() throws Exception {
-        Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
+    public void testisCallerInRole() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
-        String queryString = "/securityejbinwar/SimpleServlet?testInstance=ejb02&testMethod=employee";
-
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99", "user99pwd",
+        String queryString = "/securityejbinwar/" + getServletURL() + "?testInstance=ejb03&testMethod=declareRoles01";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER2,
+                                                          LocalLdapServer.PASSWORD,
                                                           HttpServletResponse.SC_OK);
-        verifySecurityContextResponse(response, "getCallerPrincipal()=" + "user99", "isCallerInRole(Employee)=true");
-
-        Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER2, "securityContext.isCallerInRole(DeclaredRole01): true");
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testejb_employee_group_isUserInRole() throws Exception {
-        Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
-
-        String queryString = "/securityejbinwar/SimpleServlet?testInstance=ejb02&testMethod=employee";
-
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user1", "user1pwd",
-                                                          HttpServletResponse.SC_OK);
-        verifySecurityContextResponse(response, "getCallerPrincipal()=" + "user", "isCallerInRole(Employee)=true");
-
-        Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
+/* ------------------------ support methods ---------------------- */
+    protected String getViewState(String form) {
+        Pattern p = Pattern.compile("[\\s\\S]*value=\"(.+)\".*autocomplete[\\s\\S]*");
+        Matcher m = p.matcher(form);
+        String viewState = null;
+        if (m.matches()) {
+            viewState = m.group(1);
+        }
+        return viewState;
     }
 
+    protected void verifyResponse(String response, String user, String realm, String invalidRealm, String groups) {
+        verifyUserResponse(response, Constants.getUserPrincipalFound + user, Constants.getRemoteUserFound + user);
+        verifyRealm(response, realm);
+        if (invalidRealm != null) {
+            verifyNotInGroups(response, invalidRealm); // make sure that there is no realm name from the second IdentityStore.
+        }
+        verifyGroups(response, groups);
+    }
 }

@@ -28,4 +28,9 @@ public class AppObject implements Serializable {
         in.defaultReadObject();
         deserialized = true;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " deserialzed=" + deserialized;
+    }
 }

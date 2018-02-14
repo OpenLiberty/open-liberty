@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,10 @@ public class JavaEESecConstants {
     public static final String LOGIN_TO_CONTINUE_ERRORPAGE = "errorPage";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN = "useForwardToLogin";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION = "useForwardToLoginExpression";
+    public static final String LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN = "useGlobalLogin";
+    public static final String LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT = "formLoginContextRoot";
+
+    public static final String BASIC_AUTH_DEFAULT_REALM = "defaultRealm";
 
     public static final String SECURITY_CONTEXT_AUTH_PARAMS = "com.ibm.ws.security.javaeesec.auth.params";
 

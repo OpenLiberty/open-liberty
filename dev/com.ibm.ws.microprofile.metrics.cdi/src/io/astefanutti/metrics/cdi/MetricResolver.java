@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,13 +42,13 @@ import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 @ApplicationScoped
-/* package-private */ class MetricResolver {
+public class MetricResolver {
 
     @Inject
-    private MetricsExtension extension;
+    protected MetricsExtension extension;
 
     @Inject
-    private MetricName metricName;
+    protected MetricName metricName;
 
     <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Counted.class);
@@ -73,9 +73,17 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
             return beanResolverOf(element, metric, bean);
     }
 
-    private <E extends Member & AnnotatedElement, T extends Annotation> Of<T> elementResolverOf(E element, Class<T> metric) {
+    protected <E extends Member & AnnotatedElement, T extends Annotation> Of<T> elementResolverOf(E element, Class<T> metric) {
         T annotation = element.getAnnotation(metric);
-        String name = metricName(element, metric, metricName(annotation), isMetricAbsolute(annotation));
+
+        // See if we have the name cached
+        String name = extension.getMetricNameForMember(element, annotation);
+
+        boolean initialDiscovery = false;
+        if (name == null) {
+            name = metricName(element, metric, metricName(annotation), isMetricAbsolute(annotation));
+            initialDiscovery = true;
+        }
 
         Metadata metadata = new Metadata(name, this.getType(annotation), this.getUnit(annotation));
         metadata.setDescription(this.getDescription(annotation));
@@ -83,13 +91,21 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
         for (String tag : this.getTags(annotation)) {
             metadata.addTag(tag);
         }
-        return new DoesHaveMetric<>(annotation, name, metadata);
+        return new DoesHaveMetric<>(annotation, name, metadata, initialDiscovery);
     }
 
-    private <E extends Member & AnnotatedElement, T extends Annotation> Of<T> beanResolverOf(E element, Class<T> metric, Class<?> bean) {
+    protected <E extends Member & AnnotatedElement, T extends Annotation> Of<T> beanResolverOf(E element, Class<T> metric, Class<?> bean) {
         if (bean.isAnnotationPresent(metric)) {
             T annotation = bean.getAnnotation(metric);
-            String name = metricName(bean, element, metric, metricName(annotation), isMetricAbsolute(annotation));
+
+            // See if we have the name cached
+            String name = extension.getMetricNameForMember(element, annotation);
+
+            boolean initialDiscovery = false;
+            if (name == null) {
+                name = metricName(bean, element, metric, metricName(annotation), isMetricAbsolute(annotation));
+                initialDiscovery = true;
+            }
 
             Metadata metadata = new Metadata(name, this.getType(annotation), this.getUnit(annotation));
             metadata.setDescription(this.getDescription(annotation));
@@ -97,7 +113,7 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
             for (String tag : this.getTags(annotation)) {
                 metadata.addTag(tag);
             }
-            return new DoesHaveMetric<>(annotation, name, metadata);
+            return new DoesHaveMetric<>(annotation, name, metadata, initialDiscovery);
         } else if (bean.getSuperclass() != null) {
             return beanResolverOf(element, metric, bean.getSuperclass());
         }
@@ -226,7 +242,7 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
             throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
     }
 
-    interface Of<T extends Annotation> {
+    public interface Of<T extends Annotation> {
 
         boolean isPresent();
 
@@ -235,9 +251,11 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
         Metadata metadata();
 
         T metricAnnotation();
+
+        boolean isInitialDiscovery();
     }
 
-    private static final class DoesHaveMetric<T extends Annotation> implements Of<T> {
+    protected static final class DoesHaveMetric<T extends Annotation> implements Of<T> {
 
         private final T annotation;
 
@@ -255,10 +273,13 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 
         private final Metadata metadata;
 
-        private DoesHaveMetric(T annotation, String name, Metadata metadata) {
+        private final boolean initialDiscovery;
+
+        private DoesHaveMetric(T annotation, String name, Metadata metadata, boolean initialDiscovery) {
             this.annotation = annotation;
             this.name = name;
             this.metadata = metadata;
+            this.initialDiscovery = initialDiscovery;
         }
 
         @Override
@@ -280,10 +301,15 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
         public Metadata metadata() {
             return this.metadata;
         }
+
+        @Override
+        public boolean isInitialDiscovery() {
+            return initialDiscovery;
+        }
     }
 
     @Vetoed
-    private static final class DoesNotHaveMetric<T extends Annotation> implements Of<T> {
+    protected static final class DoesNotHaveMetric<T extends Annotation> implements Of<T> {
 
         private DoesNotHaveMetric() {}
 
@@ -305,6 +331,11 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
         @Override
         public Metadata metadata() {
             return null;
+        }
+
+        @Override
+        public boolean isInitialDiscovery() {
+            return false;
         }
     }
 }

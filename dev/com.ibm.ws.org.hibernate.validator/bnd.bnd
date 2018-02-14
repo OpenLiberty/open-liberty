@@ -10,4 +10,12 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--buildpath: org.hibernate.validator:hibernate-validator;version=6.0.4.Final
+-buildpath: \
+	org.hibernate.validator:hibernate-validator;version=6.0.4.Final
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1

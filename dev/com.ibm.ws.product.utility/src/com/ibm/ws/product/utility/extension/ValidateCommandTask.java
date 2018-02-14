@@ -94,6 +94,9 @@ public class ValidateCommandTask extends BaseCommandTask {
                     continue;
                 }
 
+                if ("true".equalsIgnoreCase(pfd.getHeader("IBM-Test-Feature")))
+                    continue;
+
                 if (!"os/400".equalsIgnoreCase(System.getProperty("os.name")) &&
                     "com.ibm.websphere.appserver.os400.extensions-1.0".equalsIgnoreCase(pfd.getSymbolicName())) {
                     // Special case for the OS/400 platform manifest (wlp/lib/platform/os400Extensions.mf)

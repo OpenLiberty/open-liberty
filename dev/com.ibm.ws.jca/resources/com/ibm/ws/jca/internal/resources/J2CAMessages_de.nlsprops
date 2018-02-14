@@ -127,6 +127,9 @@ J2CA8815.duplicate.resource.adapter.id=J2CA8815E: Es ist nicht zul\u00e4ssig, da
 J2CA8815.duplicate.resource.adapter.id.explanation=Es sind mehrere Ressourcenadapter mit derselben eindeutigen ID konfiguriert bzw. mehrere Ressourcenadapter erhalten implizit dieselbe eindeutige ID.
 J2CA8815.duplicate.resource.adapter.id.useraction=Weisen Sie den Ressourcenadaptern eindeutige IDs zu, damit der Konflikt behoben wird.
 
+J2CA8816.reserved.resource.adapter.id=J2CA8816E: Das Attribut id des Elements resourceAdapter f\u00fcr das Ressourcenadaptermodul {0} darf keine der reservierten IDs {1} sein.
+J2CA8816.reserved.resource.adapter.id.explanation=Die in der Konfiguration angegebene bzw. vom Modulnamen abgeleitete ID ist eine reservierte ID. Reservierte IDs sind nur f\u00fcr die interne Verwendung vorgesehen.
+J2CA8816.reserved.resource.adapter.id.useraction=Geben Sie einen nicht reservierten Wert f\u00fcr das Attribut id des Elements resourceAdapter oder f\u00fcr den Modulnamen in der Serverkonfiguration an.
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
 # ---------------------------------

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 2.0
+ * @version 3.0
  */
-@org.osgi.annotation.versioning.Version("2.0")
+@org.osgi.annotation.versioning.Version("3.0")
 package com.ibm.wsspi.http.ee8;

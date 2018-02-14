@@ -17,8 +17,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 /**
  *
  */
@@ -37,7 +35,7 @@ public class SharedShrinkWrapApps {
     public static Archive brokenConfigServerApps() {
         final String APP_NAME = "brokenCDIConfig";
 
-        if (brokenCDIConfig_war != null){
+        if (brokenCDIConfig_war != null) {
             return brokenCDIConfig_war;
         }
 
@@ -52,8 +50,8 @@ public class SharedShrinkWrapApps {
     public static Archive cdiConfigServerApps() {
         final String APP_NAME = "cdiConfig";
 
-        if (cdiConfig_war != null){
-            return(cdiConfig_war);
+        if (cdiConfig_war != null) {
+            return (cdiConfig_war);
         }
 
         cdiConfig_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -64,7 +62,7 @@ public class SharedShrinkWrapApps {
                                                "services/org.eclipse.microprofile.config.spi.Converter")
                         .addAsLibrary(cdiConfigJar());
 
-        return(cdiConfig_war);
+        return (cdiConfig_war);
     }
 
     private static JavaArchive cdiConfigJar() {

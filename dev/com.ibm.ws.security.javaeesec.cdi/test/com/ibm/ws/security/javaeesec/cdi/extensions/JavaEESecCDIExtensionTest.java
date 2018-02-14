@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,19 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,10 +38,15 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.util.TypeLiteral;
+import javax.security.enterprise.AuthenticationException;
+import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
+import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
@@ -45,21 +56,38 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 import javax.security.enterprise.identitystore.PasswordHash;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
+import com.ibm.websphere.csi.J2EEName;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
+import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 public class JavaEESecCDIExtensionTest {
 
     private final Mockery context = new JUnit4Mockery();
-    private final ProcessAnnotatedType pat = context.mock(ProcessAnnotatedType.class, "pat1");
+    private final ProcessAnnotatedType pat1 = context.mock(ProcessAnnotatedType.class, "pat1");
+    private final ProcessAnnotatedType pat2 = context.mock(ProcessAnnotatedType.class, "pat2");
     private final BeanManager bm = context.mock(BeanManager.class, "bm1");
-    private final AnnotatedType at = context.mock(AnnotatedType.class, "at1");
+    private final AnnotatedType at1 = context.mock(AnnotatedType.class, "at1");
+    private final AnnotatedType at2 = context.mock(AnnotatedType.class, "at2");
 //    private final LdapIdentityStoreDefinition lisd = context.mock(LdapIdentityStoreDefinition.class, "lisd1");
 //    private final DatabaseIdentityStoreDefinition disd = context.mock(DatabaseIdentityStoreDefinition.class, "disd1");
     private final AfterBeanDiscovery abd = context.mock(AfterBeanDiscovery.class, "abd1");
@@ -70,9 +98,60 @@ public class JavaEESecCDIExtensionTest {
     private final Bean<?> bn2 = context.mock(Bean.class, "bn2");
     @SuppressWarnings("unchecked")
     private final CreationalContext<IdentityStoreHandler> cc = context.mock(CreationalContext.class, "cc1");
+    private final WebAppSecurityConfig wasc  = context.mock(WebAppSecurityConfig.class);
+    private final WebModuleMetaData wmmd1 = context.mock(WebModuleMetaData.class, "wmmd1");
+    private final WebModuleMetaData wmmd2 = context.mock(WebModuleMetaData.class, "wmmd2");
+    private final J2EEName j2en1 = context.mock(J2EEName.class, "j2en1");
+    private final J2EEName j2en2 = context.mock(J2EEName.class, "j2en2");
+    private final ProcessBeanAttributes pba = context.mock(ProcessBeanAttributes.class, "pba1");
+    
+
+    private final static String MODULE_NAME1 = "module1.war";
+    private final static String MODULE_NAME2 = "module2.war";
+    private final static String MODULE_PATH_NAME1 = "/wlp/usr/servers/apps/" + MODULE_NAME1;
+    private final static String MODULE_PATH_NAME2 = "/wlp/usr/servers/apps/" + MODULE_NAME2;
+
+    private final static String MODULE_LOCATION_NAME1 = "file:" + MODULE_PATH_NAME1;
+    private final static String MODULE_LOCATION_NAME2 = "file:" + MODULE_PATH_NAME2;
+    private final static String CLASS_LOCATION1 = MODULE_PATH_NAME1 + "/foo/bar/HAMClass1";
+    private final static String CLASS_LOCATION2 = MODULE_PATH_NAME2 + "/foo1/bar1/HAMClass2";
+    private final static String REALM_NAME1 = "realmName1";
+
+    private final static String LTC_FORM_LOGIN_PAGE = "/formLogin.jsp";
+    private final static String LTC_FORM_ERROR_PAGE = "/formError.jsp";
+    private final static String LTC_FORM_EL = "${el_expression}";
+    private final static boolean LTC_FORM_USEFORWARD = false;
+
+    private final static String LTC_CUSTOM_FORM_LOGIN_PAGE = "/customFormLogin.xhtml";
+    private final static String LTC_CUSTOM_FORM_ERROR_PAGE = "/customFormError.xhtml";
+    private final static String LTC_CUSTOM_FORM_EL = "${el_expression_for_custom}";
+    private final static boolean LTC_CUSTOM_FORM_USEFORWARD = true;
+    
+    private final static String GLOBAL_FORM = "FORM";
+    private final static String GLOBAL_BASIC = "BASIC";
+    private final static String GLOBAL_FORM_CONTEXT_ROOT = "/global";
+    private final static String GLOBAL_FORM_LOGIN_PAGE = "/GlobalFormLogin.jsp";
+    private final static String GLOBAL_FORM_ERROR_PAGE = "/GlobalFormError.jsp";
+    private final static String GLOBAL_FORM_LOGIN_URL = GLOBAL_FORM_CONTEXT_ROOT + GLOBAL_FORM_LOGIN_PAGE;
+    private final static String GLOBAL_FORM_ERROR_URL = GLOBAL_FORM_CONTEXT_ROOT + GLOBAL_FORM_ERROR_PAGE;
+    private final static String GLOBAL_BASIC_REALM_NAME = "globalRealm";
+    
+
+    private URL url1;
+    private URL url2;
+
+    @Rule
+    public final TestName testName = new TestName();
 
     @Before
-    public void setUp() {}
+    public void setUp() {
+        try {
+            url1 = new URL(MODULE_LOCATION_NAME1);
+            url2 = new URL(MODULE_LOCATION_NAME2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -86,17 +165,24 @@ public class JavaEESecCDIExtensionTest {
         aset.add(ia);
         context.checking(new Expectations() {
             {
-                one(pat).getAnnotatedType();
-                will(returnValue(at));
-                one(at).getJavaClass();
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getJavaClass();
                 will(returnValue(String.class));
-                one(at).getAnnotations();
+                one(at1).getAnnotations();
                 will(returnValue(aset));
+                one(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(null));
             }
         });
 
-        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
-        j3ce.processAnnotatedType(pat, bm);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+        };
+        j3ce.processAnnotatedType(pat1, bm);
         Set<Bean> beans = j3ce.getBeansToAdd();
         assertTrue("beansToAdd should be empty after processAnnotatedType", beans.isEmpty());
     }
@@ -109,20 +195,474 @@ public class JavaEESecCDIExtensionTest {
         aset.add(lisd);
         context.checking(new Expectations() {
             {
-                one(at).getJavaClass();
+                one(at1).getJavaClass();
                 will(returnValue(String.class));
-                one(pat).getAnnotatedType();
-                will(returnValue(at));
-                one(at).getAnnotations();
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getAnnotations();
+                will(returnValue(aset));
+                one(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(null));
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+        };
+        j3ce.processAnnotatedType(pat1, bm);
+        Set<Bean> beans = j3ce.getBeansToAdd();
+        assertEquals("incorrect number of beans in beansToAdd after processAnnotatedType", 1, beans.size());
+        assertTrue("incorrect beansToAdd value after processAnnotatedType", beans.iterator().next().getClass().equals(LdapIdentityStoreBean.class));
+    }
+
+    @Test
+    public void processAnnotatedTypeBasicHAM() {
+        final Set<Annotation> aset = new HashSet<Annotation>();
+        final BasicAuthenticationMechanismDefinition bamd = getBAMDInstance(REALM_NAME1);
+        final Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
+        aset.add(bamd);
+        context.checking(new Expectations() {
+            {
+                one(at1).getJavaClass();
+                will(returnValue(HAMClass1.class));
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getAnnotations();
+                will(returnValue(aset));
+                one(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(null));
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+            @Override
+            protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+                return mmds;
+            }
+
+            @Override
+            protected String getClassFileLocation(Class klass) {
+                if (klass.equals(HAMClass1.class)) {
+                    return CLASS_LOCATION1;
+                } else {
+                    return CLASS_LOCATION2;
+                }
+            }
+        };
+        createMMDs(mmds);
+        j3ce.processAnnotatedType(pat1, bm);
+        Map<String, ModuleProperties> moduleMap = j3ce.getModuleMap();
+        // check ModuleProperties object.
+        ModuleProperties moduleProps = moduleMap.get(MODULE_NAME1);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME1, moduleProps);
+        Properties props = moduleProps.getFromAuthMechMap(BasicHttpAuthenticationMechanism.class);
+        assertNotNull("Properties for the HAM implementation class BasicHttpAuthenticationMechanism.class should not be null.", props);
+        assertEquals("realm name should be " + REALM_NAME1, props.get(JavaEESecConstants.REALM_NAME), REALM_NAME1);
+    }
+
+    @Test
+    public void processAnnotatedTypeFormHAM() {
+        final Set<Annotation> aset = new HashSet<Annotation>();
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_FORM_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_FORM_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_FORM_EL);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_FORM_USEFORWARD);
+        final LoginToContinue ltc = getLTCInstance(props);
+        final FormAuthenticationMechanismDefinition famd = getFAMDInstance(ltc);
+
+        final Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
+        aset.add(famd);
+        context.checking(new Expectations() {
+            {
+                one(at1).getJavaClass();
+                will(returnValue(HAMClass1.class));
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getAnnotations();
+                will(returnValue(aset));
+                one(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(null));
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+            @Override
+            protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+                return mmds;
+            }
+
+            @Override
+            protected String getClassFileLocation(Class klass) {
+                if (klass.equals(HAMClass1.class)) {
+                    return CLASS_LOCATION1;
+                } else {
+                    return CLASS_LOCATION2;
+                }
+            }
+        };
+        createMMDs(mmds);
+        j3ce.processAnnotatedType(pat1, bm);
+        Map<String, ModuleProperties> moduleMap = j3ce.getModuleMap();
+        // check ModuleProperties object.
+        ModuleProperties moduleProps = moduleMap.get(MODULE_NAME1);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME1, moduleProps);
+        Properties resultProps = moduleProps.getFromAuthMechMap(FormAuthenticationMechanism.class);
+        assertNotNull("Properties for the HAM implementation class FormAuthenticationMechanism.class should not be null.", resultProps);
+        System.out.println("resultProps : " + resultProps);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , LTC_FORM_LOGIN_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), LTC_FORM_ERROR_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION), LTC_FORM_EL);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), LTC_FORM_USEFORWARD);
+    }
+
+    @Test
+    public void processAnnotatedTypeApplicationHAM() {
+        final Set<Annotation> aset = new HashSet<Annotation>();
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_FORM_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_FORM_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_FORM_EL);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_FORM_USEFORWARD);
+        final LoginToContinue ltc = getLTCInstance(props);
+
+        final Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
+        context.checking(new Expectations() {
+            {
+                one(at1).getJavaClass();
+                will(returnValue(ApplicationHAM.class));
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getAnnotation(LoginToContinue.class);
+                will(returnValue(ltc));
+                one(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(null));
+                one(at1).getAnnotations();
                 will(returnValue(aset));
             }
         });
 
-        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
-        j3ce.processAnnotatedType(pat, bm);
-        Set<Bean> beans = j3ce.getBeansToAdd();
-        assertEquals("incorrect number of beans in beansToAdd after processAnnotatedType", 1, beans.size());
-        assertTrue("incorrect beansToAdd value after processAnnotatedType", beans.iterator().next().getClass().equals(LdapIdentityStoreBean.class));
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+            @Override
+            protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+                return mmds;
+            }
+
+            @Override
+            protected String getClassFileLocation(Class klass) {
+                if (klass.equals(ApplicationHAM.class)) {
+                    return CLASS_LOCATION1;
+                } else {
+                    return CLASS_LOCATION2;
+                }
+            }
+        };
+        createMMDs(mmds);
+        j3ce.processAnnotatedType(pat1, bm);
+        Map<String, ModuleProperties> moduleMap = j3ce.getModuleMap();
+        // check ModuleProperties object.
+        ModuleProperties moduleProps = moduleMap.get(MODULE_NAME1);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME1, moduleProps);
+        Properties resultProps = moduleProps.getFromAuthMechMap(ApplicationHAM.class);
+        assertNotNull("Properties for the application provided HAM with LoginToContinue annotation should not be null.", resultProps);
+        System.out.println("resultProps : " + resultProps);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , LTC_FORM_LOGIN_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), LTC_FORM_ERROR_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION), LTC_FORM_EL);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), LTC_FORM_USEFORWARD);
+    }
+
+    @Test
+    public void processAnnotatedTypeFormAndCustomFormHAM() {
+        final Set<Annotation> aset1 = new HashSet<Annotation>();
+        Properties propsForm = new Properties();
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_FORM_LOGIN_PAGE);
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_FORM_ERROR_PAGE);
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_FORM_EL);
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_FORM_USEFORWARD);
+        final LoginToContinue ltcForm = getLTCInstance(propsForm);
+        final FormAuthenticationMechanismDefinition famd = getFAMDInstance(ltcForm);
+        aset1.add(famd);
+
+        final Set<Annotation> aset2 = new HashSet<Annotation>();
+        Properties propsCustom = new Properties();
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_CUSTOM_FORM_LOGIN_PAGE);
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_CUSTOM_FORM_ERROR_PAGE);
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_CUSTOM_FORM_EL);
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_CUSTOM_FORM_USEFORWARD);
+        final LoginToContinue ltcCustom = getLTCInstance(propsCustom);
+        final CustomFormAuthenticationMechanismDefinition cfamd = getCFAMDInstance(ltcCustom);
+
+        final Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
+        aset2.add(cfamd);
+
+        context.checking(new Expectations() {
+            {
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getJavaClass();
+                will(returnValue(HAMClass1.class));
+                one(at1).getAnnotations();
+                will(returnValue(aset1));
+
+                one(pat2).getAnnotatedType();
+                will(returnValue(at2));
+                one(at2).getJavaClass();
+                will(returnValue(HAMClass2.class));
+                one(at2).getAnnotations();
+                will(returnValue(aset2));
+
+                exactly(2).of(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(null));
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+            @Override
+            protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+                return mmds;
+            }
+
+            @Override
+            protected String getClassFileLocation(Class klass) {
+                if (klass.equals(HAMClass1.class)) {
+                    return CLASS_LOCATION1;
+                } else {
+                    return CLASS_LOCATION2;
+                }
+            }
+        };
+        createMMDs(mmds);
+
+        j3ce.processAnnotatedType(pat1, bm);
+        j3ce.processAnnotatedType(pat2, bm);
+
+        Map<String, ModuleProperties> moduleMap = j3ce.getModuleMap();
+        // check ModuleProperties object for Form.
+        ModuleProperties moduleProps = moduleMap.get(MODULE_NAME1);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME1, moduleProps);
+        Properties resultProps = moduleProps.getFromAuthMechMap(FormAuthenticationMechanism.class);
+        assertNotNull("Properties for the HAM implementation class FormAuthenticationMechanism.class should not be null.", resultProps);
+        System.out.println("resultProps for Form: " + resultProps);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , LTC_FORM_LOGIN_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), LTC_FORM_ERROR_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION), LTC_FORM_EL);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), LTC_FORM_USEFORWARD);
+
+        // check ModuleProperties object for Custom Form.
+        moduleProps = moduleMap.get(MODULE_NAME2);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME2, moduleProps);
+        resultProps = moduleProps.getFromAuthMechMap(CustomFormAuthenticationMechanism.class);
+        assertNotNull("Properties for the HAM implementation class CustomFormAuthenticationMechanism.class should not be null.", resultProps);
+        System.out.println("resultProps for CustomForm: " + resultProps);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , LTC_CUSTOM_FORM_LOGIN_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), LTC_CUSTOM_FORM_ERROR_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION), LTC_CUSTOM_FORM_EL);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), LTC_CUSTOM_FORM_USEFORWARD);
+    }
+
+    @Test
+    public void processAnnotatedTypeBasicAndCustomFormHAMOverriddenByGlobalForm() {
+        final Set<Annotation> aset1 = new HashSet<Annotation>();
+
+        final BasicAuthenticationMechanismDefinition bamd = getBAMDInstance(REALM_NAME1);
+        aset1.add(bamd);
+
+        final Set<Annotation> aset2 = new HashSet<Annotation>();
+        Properties propsCustom = new Properties();
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_CUSTOM_FORM_LOGIN_PAGE);
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_CUSTOM_FORM_ERROR_PAGE);
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_CUSTOM_FORM_EL);
+        propsCustom.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_CUSTOM_FORM_USEFORWARD);
+        final LoginToContinue ltcCustom = getLTCInstance(propsCustom);
+        final CustomFormAuthenticationMechanismDefinition cfamd = getCFAMDInstance(ltcCustom);
+
+        final Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
+        aset2.add(cfamd);
+
+        context.checking(new Expectations() {
+            {
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getJavaClass();
+                will(returnValue(HAMClass1.class));
+                one(at1).getAnnotations();
+                will(returnValue(aset1));
+
+                one(pat2).getAnnotatedType();
+                will(returnValue(at2));
+                one(at2).getJavaClass();
+                will(returnValue(HAMClass2.class));
+                one(at2).getAnnotations();
+                will(returnValue(aset2));
+
+                allowing(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(GLOBAL_FORM));
+                exactly(2).of(wasc).getLoginFormURL();
+                will(returnValue(GLOBAL_FORM_LOGIN_URL));
+                exactly(2).of(wasc).getLoginErrorURL();
+                will(returnValue(GLOBAL_FORM_ERROR_URL));
+                exactly(2).of(wasc).getLoginFormContextRoot();
+                will(returnValue(GLOBAL_FORM_CONTEXT_ROOT));
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+            @Override
+            protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+                return mmds;
+            }
+
+            @Override
+            protected String getClassFileLocation(Class klass) {
+                if (klass.equals(HAMClass1.class)) {
+                    return CLASS_LOCATION1;
+                } else {
+                    return CLASS_LOCATION2;
+                }
+            }
+        };
+        createMMDs(mmds);
+
+        j3ce.processAnnotatedType(pat1, bm);
+        j3ce.processAnnotatedType(pat2, bm);
+
+        Map<String, ModuleProperties> moduleMap = j3ce.getModuleMap();
+        // check ModuleProperties object for Form.
+        ModuleProperties moduleProps = moduleMap.get(MODULE_NAME1);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME1, moduleProps);
+        Properties resultProps = moduleProps.getFromAuthMechMap(FormAuthenticationMechanism.class);
+        assertNotNull("Properties for the Global Login FormAuthenticationMechanism.class should not be null.", resultProps);
+        System.out.println("resultProps for Form: " + resultProps);
+
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , GLOBAL_FORM_LOGIN_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), GLOBAL_FORM_ERROR_PAGE);
+        assertNull("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION));
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN), true);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT), GLOBAL_FORM_CONTEXT_ROOT);
+
+        // check ModuleProperties object for Custom Form.
+        moduleProps = moduleMap.get(MODULE_NAME2);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME2, moduleProps);
+        resultProps = moduleProps.getFromAuthMechMap(FormAuthenticationMechanism.class);
+        assertNotNull("Properties for the Global Login FormAuthenticationMechanism.class should not be null.", resultProps);
+        System.out.println("resultProps for CustomForm: " + resultProps);
+
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE) , GLOBAL_FORM_LOGIN_PAGE);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), GLOBAL_FORM_ERROR_PAGE);
+        assertNull("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION));
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true);
+        assertEquals("the property value of " + JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN + " is not valid.", resultProps.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USE_GLOBAL_LOGIN), true);
+    }
+
+    @Test
+    public void processAnnotatedTypeApplicationAndFormHAMNOverriddenByGlobalBasic() {
+        final Set<Annotation> aset1 = new HashSet<Annotation>();
+        Properties propsAppl = new Properties();
+        propsAppl.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_FORM_LOGIN_PAGE);
+        propsAppl.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_FORM_ERROR_PAGE);
+        propsAppl.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_FORM_EL);
+        propsAppl.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_FORM_USEFORWARD);
+        final LoginToContinue ltc1 = getLTCInstance(propsAppl);
+
+        final Set<Annotation> aset2 = new HashSet<Annotation>();
+        Properties propsForm = new Properties();
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LTC_FORM_LOGIN_PAGE);
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, LTC_FORM_ERROR_PAGE);
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, LTC_FORM_EL);
+        propsForm.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, LTC_FORM_USEFORWARD);
+        final LoginToContinue ltc2 = getLTCInstance(propsForm);
+        final FormAuthenticationMechanismDefinition famd = getFAMDInstance(ltc2);
+
+        final Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
+        aset2.add(famd);
+
+        context.checking(new Expectations() {
+            {
+                one(at1).getJavaClass();
+                will(returnValue(ApplicationHAM.class));
+                one(pat1).getAnnotatedType();
+                will(returnValue(at1));
+                one(at1).getAnnotations();
+                will(returnValue(aset1));
+
+                one(pat2).getAnnotatedType();
+                will(returnValue(at2));
+                one(at2).getJavaClass();
+                will(returnValue(HAMClass2.class));
+                one(at2).getAnnotations();
+                will(returnValue(aset2));
+
+                allowing(wasc).getOverrideHttpAuthenticationMechanism();
+                will(returnValue(GLOBAL_BASIC));
+                exactly(2).of(wasc).getBasicAuthRealmName();
+                will(returnValue(GLOBAL_BASIC_REALM_NAME));
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return wasc;
+            }
+            @Override
+            protected Map<URL, ModuleMetaData> getModuleMetaDataMap() {
+                return mmds;
+            }
+
+            @Override
+            protected String getClassFileLocation(Class klass) {
+                if (klass.equals(ApplicationHAM.class)) {
+                    return CLASS_LOCATION1;
+                } else if (klass.equals(HAMClass2.class)) {
+                    return CLASS_LOCATION2;
+                }
+                return null;
+            }
+        };
+        createMMDs(mmds);
+        j3ce.processAnnotatedType(pat1, bm);
+        j3ce.processAnnotatedType(pat2, bm);
+        Map<String, ModuleProperties> moduleMap = j3ce.getModuleMap();
+        // check ModuleProperties object.
+        ModuleProperties moduleProps = moduleMap.get(MODULE_NAME1);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME1, moduleProps);
+        Properties resultProps = moduleProps.getFromAuthMechMap(BasicHttpAuthenticationMechanism.class);
+        assertNotNull("Properties for Global Basic Login should not be null.", resultProps);
+        System.out.println("resultProps : " + resultProps);
+        assertEquals("realm name should be " + GLOBAL_BASIC_REALM_NAME, resultProps.get(JavaEESecConstants.REALM_NAME), GLOBAL_BASIC_REALM_NAME);
+
+        moduleProps = moduleMap.get(MODULE_NAME2);
+        System.out.println("moduleProps2 : " + moduleProps);
+        assertNotNull("The moduleMap should contain an element of module " + MODULE_NAME2, moduleProps);
+        resultProps = moduleProps.getFromAuthMechMap(BasicHttpAuthenticationMechanism.class);
+        assertNotNull("Properties for Global Basic Login should not be null.", resultProps);
+        System.out.println("resultProps : " + resultProps);
+        assertEquals("realm name should be " + GLOBAL_BASIC_REALM_NAME, resultProps.get(JavaEESecConstants.REALM_NAME), GLOBAL_BASIC_REALM_NAME);
     }
 
     @Test
@@ -345,7 +885,7 @@ public class JavaEESecCDIExtensionTest {
         assertFalse("incorrect result.", j3ce.isIdentityStoreHandler(pb));
     }
 
-    @Test
+//    @Test
     public void isApplicationIdentityStoreTrue() {
         final Set<Type> types = new HashSet<Type>();
         types.add(new TypeLiteral<Bean>() {}.getType());
@@ -456,6 +996,161 @@ public class JavaEESecCDIExtensionTest {
         assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd2));
     }
 
+    @Test
+    public void processBasicHttpAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processBasicHttpAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processBasicHttpAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processBasicHttpAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processFormAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+//        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processFormAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processCustomFormAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processCustomFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processCustomFormAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processCustomFormAuthMechNeeded(pba, bm);
+    }
+
+
     private void equalsLdapDefinitionTest(String key, Object value1, Object value2) {
         LdapIdentityStoreDefinition lisd1, lisd2;
         Map map1 = new HashMap<String, Object>();
@@ -540,25 +1235,22 @@ public class JavaEESecCDIExtensionTest {
             @Override
             public String errorPage() {
                 // TODO Auto-generated method stub
-                return null;
+                return (String)props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE);
             }
 
             @Override
             public String loginPage() {
-                // TODO Auto-generated method stub
-                return null;
+                return (String)props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE);
             }
 
             @Override
             public boolean useForwardToLogin() {
-                // TODO Auto-generated method stub
-                return false;
+                return (boolean)props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN);
             }
 
             @Override
             public String useForwardToLoginExpression() {
-                // TODO Auto-generated method stub
-                return null;
+                return (String)props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION);
             }
         };
         return ann;
@@ -784,7 +1476,6 @@ public class JavaEESecCDIExtensionTest {
         return ann;
     }
 
-
     private LdapIdentityStoreDefinition getLdapDefinitionForEqualsTest(final Map<String, Object> overrides) {
         LdapIdentityStoreDefinition annotation = new LdapIdentityStoreDefinition() {
 
@@ -921,5 +1612,65 @@ public class JavaEESecCDIExtensionTest {
         return annotation;
     }
 
+    /**
+     *
+     *
+     *
+     **/
+    private void createMMDs(Map<URL, ModuleMetaData> mmds) {
+        context.checking(new Expectations() {
+            {
+                one(wmmd1).getJ2EEName();
+                will(returnValue(j2en1));
+                one(j2en1).getModule();
+                will(returnValue(MODULE_NAME1));
+                one(wmmd2).getJ2EEName();
+                will(returnValue(j2en2));
+                one(j2en2).getModule();
+                will(returnValue(MODULE_NAME2));
+            }
+        });
+        mmds.put(url1, wmmd1);
+        mmds.put(url2, wmmd2);
+    }
 
+    private Map<String, ModuleProperties> createModuleMap(List<Class> cls) {
+        Map<String, ModuleProperties> mm = new LinkedHashMap<String, ModuleProperties>();
+        Iterator<Class> it = cls.iterator();
+        int i = 1;
+        while(it.hasNext()) {
+            Class cl = it.next();
+            Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
+            amm.put(cl, new Properties());
+            // since location is not used, set null.
+            ModuleProperties mp = new ModuleProperties(amm);
+            // since module name does not matter, just put some dummy string.
+            mm.put(("item-" + Integer.toString(i)), mp);
+            i++;
+        }
+        return mm;
+    }
+
+    class HAMClass1 {};
+    class HAMClass2 {};
+    class ApplicationHAM implements HttpAuthenticationMechanism {
+        @Override
+        public AuthenticationStatus validateRequest(HttpServletRequest request,
+                                             HttpServletResponse response,
+                                             HttpMessageContext httpMessageContext) throws AuthenticationException {
+            return AuthenticationStatus.SEND_FAILURE;
+        }
+        @Override
+        public AuthenticationStatus secureResponse(HttpServletRequest request,
+                                                   HttpServletResponse response,
+                                                   HttpMessageContext httpMessageContext) throws AuthenticationException {
+            return AuthenticationStatus.SUCCESS;
+        }
+
+        @Override
+        public void cleanSubject(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 HttpMessageContext httpMessageContext) {
+        }
+    }
 }

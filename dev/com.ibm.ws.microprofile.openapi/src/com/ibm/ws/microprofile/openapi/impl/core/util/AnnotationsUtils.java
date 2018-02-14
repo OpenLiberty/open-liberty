@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.ws.rs.Produces;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.eclipse.microprofile.openapi.annotations.callbacks.Callback;
 import org.eclipse.microprofile.openapi.annotations.links.LinkParameter;
 import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
+import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.headers.Header;
@@ -38,6 +42,8 @@ import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
+import org.eclipse.microprofile.openapi.models.responses.APIResponse;
+import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
@@ -45,6 +51,9 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.openapi.impl.core.converter.ModelConverters;
+import com.ibm.ws.microprofile.openapi.impl.core.converter.ResolvedSchema;
+import com.ibm.ws.microprofile.openapi.impl.jaxrs2.OperationParser;
 import com.ibm.ws.microprofile.openapi.impl.model.ExternalDocumentationImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.examples.ExampleImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.headers.HeaderImpl;
@@ -56,6 +65,8 @@ import com.ibm.ws.microprofile.openapi.impl.model.media.ContentImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.EncodingImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.MediaTypeImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.media.SchemaImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponsesImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerVariableImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerVariablesImpl;
@@ -64,6 +75,8 @@ import com.ibm.ws.microprofile.openapi.impl.model.tags.TagImpl;
 public abstract class AnnotationsUtils {
 
     //private static Logger LOGGER = LoggerFactory.getLogger(AnnotationsUtils.class);
+
+    public static final String COMPONENTS_REF = "#/components/schemas/";
 
     public static boolean hasSchemaAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema schema) {
         if (schema == null) {
@@ -96,21 +109,13 @@ public abstract class AnnotationsUtils {
             && StringUtils.isBlank(schema.example())
             && StringUtils.isBlank(schema.pattern())
             && schema.not().equals(Void.class)
+            && schema.allOf().length == 0
             && schema.oneOf().length == 0
-            && schema.anyOf().length == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean hasArrayAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema array) {
-        if (array == null) {
-            return false;
-        }
-        if (array.uniqueItems() == false
-            && array.maxItems() == Integer.MIN_VALUE
-            && array.minItems() == Integer.MAX_VALUE
-            && !hasSchemaAnnotation(array.schema())) {
+            && schema.anyOf().length == 0
+            && !getExternalDocumentation(schema.externalDocs()).isPresent()
+            && StringUtils.isBlank(schema.discriminatorProperty())
+            && schema.discriminatorMapping().length == 0
+            && !schema.hidden()) {
             return false;
         }
         return true;
@@ -121,59 +126,83 @@ public abstract class AnnotationsUtils {
         if (example == null) {
             return Optional.empty();
         }
-        if (StringUtils.isNotBlank(example.name())) {
-            Example exampleObject = new ExampleImpl();
-            if (StringUtils.isNotBlank(example.name())) {
-                exampleObject.setDescription(example.name());
-            }
-            if (StringUtils.isNotBlank(example.summary())) {
-                exampleObject.setSummary(example.summary());
-            }
-            if (StringUtils.isNotBlank(example.externalValue())) {
-                exampleObject.setExternalValue(example.externalValue());
-            }
-            if (StringUtils.isNotBlank(example.value())) {
-                try {
-                    exampleObject.setValue(Json.mapper().readTree(example.value()));
-                } catch (IOException e) {
-                    exampleObject.setValue(example.value());
-                }
-            }
-            return Optional.of(exampleObject);
-        }
-        return Optional.empty();
-    }
 
-    public static Optional<Schema> getArraySchema(org.eclipse.microprofile.openapi.annotations.media.ArraySchema arraySchema) {
-        if (arraySchema == null || !hasArrayAnnotation(arraySchema)) {
+        Example exampleObject = new ExampleImpl();
+        boolean isEmpty = true;
+
+        if (StringUtils.isNotBlank(example.ref())) {
+            exampleObject.setRef(example.ref());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(example.description())) {
+            exampleObject.setDescription(example.description());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(example.summary())) {
+            exampleObject.setSummary(example.summary());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(example.externalValue())) {
+            exampleObject.setExternalValue(example.externalValue());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(example.value())) {
+            try {
+                exampleObject.setValue(Json.mapper().readTree(example.value()));
+            } catch (IOException e) {
+                exampleObject.setValue(example.value());
+            }
+            isEmpty = false;
+        }
+
+        if (isEmpty) {
             return Optional.empty();
         }
-        Schema arraySchemaObject = new SchemaImpl().type(SchemaType.ARRAY);
-        if (arraySchema.uniqueItems()) {
-            arraySchemaObject.setUniqueItems(arraySchema.uniqueItems());
-        }
-        if (arraySchema.maxItems() > 0) {
-            arraySchemaObject.setMaxItems(arraySchema.maxItems());
-        }
 
-        if (arraySchema.minItems() < Integer.MAX_VALUE) {
-            arraySchemaObject.setMinItems(arraySchema.minItems());
-        }
-
-        if (arraySchema.schema() != null) {
-            if (arraySchema.schema().implementation().equals(Void.class)) {
-                getSchemaFromAnnotation(arraySchema.schema()).ifPresent(schema -> {
-                    if (schema.getType() != null) {
-                        arraySchemaObject.setItems(schema);
-                    }
-                });
-            } // if present, schema implementation handled upstream
-        }
-
-        return Optional.of(arraySchemaObject);
+        return Optional.of(exampleObject);
     }
 
-    public static Optional<Schema> getSchemaFromAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema schema) {
+    /**
+     * Retrieve the name
+     *
+     * If the item is a reference and name attribute is not specified then returns the simple name of the reference.
+     *
+     * @param annotation item
+     * @return name of the item
+     */
+    public static String getNameOfReferenceableItem(Object annotation) {
+        if (annotation == null) {
+            return "";
+        }
+
+        String name = "", ref = "";
+        if (annotation instanceof org.eclipse.microprofile.openapi.annotations.headers.Header) {
+            name = ((org.eclipse.microprofile.openapi.annotations.headers.Header) annotation).name();
+            ref = ((org.eclipse.microprofile.openapi.annotations.headers.Header) annotation).ref();
+        } else if (annotation instanceof ExampleObject) {
+            name = ((ExampleObject) annotation).name();
+            ref = ((ExampleObject) annotation).ref();
+        } else if (annotation instanceof org.eclipse.microprofile.openapi.annotations.links.Link) {
+            name = ((org.eclipse.microprofile.openapi.annotations.links.Link) annotation).name();
+            ref = ((org.eclipse.microprofile.openapi.annotations.links.Link) annotation).ref();
+        } else if (annotation instanceof Callback) {
+            name = ((Callback) annotation).name();
+            ref = ((Callback) annotation).ref();
+        }
+
+        if (StringUtils.isBlank(name)) {
+            if (StringUtils.isNotBlank(ref)) {
+                //If the item is a reference then use the simple name of reference as the name
+                int index = ref.lastIndexOf('/');
+                return index == -1 ? ref : ref.substring(index + 1);
+            }
+        }
+        return name;
+    }
+
+    @FFDCIgnore(IOException.class)
+    public static Optional<Schema> getSchemaFromAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema schema,
+                                                           Components components) {
         if (schema == null || !hasSchemaAnnotation(schema)) {
             return Optional.empty();
         }
@@ -184,7 +213,7 @@ public abstract class AnnotationsUtils {
         if (StringUtils.isNotBlank(schema.ref())) {
             schemaObject.setRef(schema.ref());
         }
-        if (schema.type() != null) {
+        if (StringUtils.isNotBlank(schema.type().toString())) {
             schemaObject.setType(SchemaType.valueOf(schema.type().toString().toUpperCase()));
         }
         if (StringUtils.isNotBlank(schema.defaultValue())) {
@@ -253,10 +282,122 @@ public abstract class AnnotationsUtils {
         if (schema.enumeration().length > 0) {
             schemaObject.setEnumeration(Arrays.asList(schema.enumeration()));
         }
+        if (schema.maxItems() != Integer.MIN_VALUE) {
+            schemaObject.setMaxItems(schema.maxItems());
+        }
+        if (schema.minItems() != Integer.MAX_VALUE) {
+            schemaObject.setMinItems(schema.minItems());
+        }
+        if (schema.uniqueItems()) {
+            schemaObject.setUniqueItems(true);
+        }
 
+        if (!schema.not().equals(Void.class)) {
+            Class<?> schemaImplementation = schema.not();
+            Schema notSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+            schemaObject.setNot(notSchemaObject);
+        }
+        if (schema.oneOf().length > 0) {
+            Class<?>[] schemaImplementations = schema.oneOf();
+            for (Class<?> schemaImplementation : schemaImplementations) {
+                Schema oneOfSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+                schemaObject.addOneOf(oneOfSchemaObject);
+            }
+        }
+        if (schema.anyOf().length > 0) {
+            Class<?>[] schemaImplementations = schema.anyOf();
+            for (Class<?> schemaImplementation : schemaImplementations) {
+                Schema anyOfSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+                schemaObject.addAnyOf(anyOfSchemaObject);
+            }
+        }
+        if (schema.allOf().length > 0) {
+            Class<?>[] schemaImplementations = schema.allOf();
+            for (Class<?> schemaImplementation : schemaImplementations) {
+                Schema allOfSchemaObject = resolveSchemaFromType(schemaImplementation, components);
+                schemaObject.addAllOf(allOfSchemaObject);
+            }
+        }
         getExternalDocumentation(schema.externalDocs()).ifPresent(schemaObject::setExternalDocs);
 
         return Optional.of(schemaObject);
+    }
+
+    public static Optional<? extends Schema> getSchema(org.eclipse.microprofile.openapi.annotations.media.Schema annotationSchema, Components components) {
+        Class<?> schemaImplementation = annotationSchema.implementation();
+        boolean isArray = false;
+        if (annotationSchema.type() == org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY) {
+            isArray = true;
+        }
+        Map<String, Schema> schemaMap;
+        if (schemaImplementation != Void.class) {
+            Schema schemaObject = new SchemaImpl();
+            PrimitiveType pt = PrimitiveType.fromType(schemaImplementation);
+            if (pt != null) {
+                schemaObject = pt.createProperty();
+            } else {
+                ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
+                if (resolvedSchema != null) {
+                    schemaMap = resolvedSchema.referencedSchemas;
+                    schemaMap.forEach((key, schema) -> {
+                        components.addSchema(key, schema);
+                    });
+                    Schema property = new SchemaImpl((SchemaImpl) resolvedSchema.schema);
+                    boolean inline = false;
+                    if (annotationSchema != null && annotationSchema.type() != org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY
+                        && AnnotationsUtils.hasSchemaAnnotation(annotationSchema)) {
+                        inline = overrideSchemaFromAnnotation(property, annotationSchema);
+                    }
+                    if (!inline)
+                        schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    else {
+                        schemaObject = property;
+                    }
+                }
+            }
+            if (StringUtils.isBlank(schemaObject.getRef()) && schemaObject.getType() == null) {
+                // default to string
+                schemaObject.setType(SchemaType.STRING);
+            }
+            if (isArray) {
+                Optional<Schema> schema = getSchemaFromAnnotation(annotationSchema, components);
+                Schema arraySchema;
+                if (schema.isPresent()) {
+                    arraySchema = schema.get();
+                } else {
+                    arraySchema = new SchemaImpl();
+                }
+                arraySchema.type(SchemaType.ARRAY);
+                arraySchema.setItems(schemaObject);
+
+                return Optional.of(arraySchema);
+            } else {
+                return Optional.of(schemaObject);
+            }
+        } else {
+            return AnnotationsUtils.getSchemaFromAnnotation(annotationSchema, components);
+        }
+    }
+
+    public static Schema resolveSchemaFromType(Class<?> schemaImplementation, Components components) {
+        Schema schemaObject = new SchemaImpl();
+        PrimitiveType pt = PrimitiveType.fromType(schemaImplementation);
+        if (pt != null) {
+            schemaObject = pt.createProperty();
+        } else {
+            ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
+            Map<String, Schema> schemaMap;
+            if (resolvedSchema != null) {
+                schemaMap = resolvedSchema.referencedSchemas;
+                schemaMap.forEach((key, referencedSchema) -> {
+                    if (components != null) {
+                        components.addSchema(key, referencedSchema);
+                    }
+                });
+                schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+            }
+        }
+        return schemaObject;
     }
 
     public static Optional<Set<Tag>> getTags(org.eclipse.microprofile.openapi.annotations.tags.Tag[] tags, boolean skipOnlyName) {
@@ -321,30 +462,54 @@ public abstract class AnnotationsUtils {
             serverObject.setDescription(server.description());
             isEmpty = false;
         }
+
+        Optional<ServerVariables> serverVariablesObject = getServerVariables(server.variables());
+        if (serverVariablesObject.isPresent()) {
+            isEmpty = false;
+            serverObject.setVariables(serverVariablesObject.get());
+        }
+
         if (isEmpty) {
             return Optional.empty();
         }
-        org.eclipse.microprofile.openapi.annotations.servers.ServerVariable[] serverVariables = server.variables();
+
+        return Optional.of(serverObject);
+    }
+
+    public static Optional<ServerVariables> getServerVariables(org.eclipse.microprofile.openapi.annotations.servers.ServerVariable[] serverVariables) {
+        if (serverVariables == null) {
+            return null;
+        }
+
+        boolean isEmpty = true;
         ServerVariables serverVariablesObject = new ServerVariablesImpl();
         for (org.eclipse.microprofile.openapi.annotations.servers.ServerVariable serverVariable : serverVariables) {
+            boolean isVariableEmpty = true;
             ServerVariable serverVariableObject = new ServerVariableImpl();
             if (StringUtils.isNotBlank(serverVariable.description())) {
                 serverVariableObject.setDescription(serverVariable.description());
+                isVariableEmpty = false;
             }
             if (StringUtils.isNotBlank(serverVariable.defaultValue())) {
                 serverVariableObject.setDefaultValue(serverVariable.defaultValue());
+                isVariableEmpty = false;
             }
             if (serverVariable.enumeration() != null && serverVariable.enumeration().length > 0) {
                 serverVariableObject.setEnumeration(Arrays.asList(serverVariable.enumeration()));
+                isVariableEmpty = false;
             }
             // TODO extensions
-            serverVariablesObject.addServerVariable(serverVariable.name(), serverVariableObject);
-        }
-        if (serverVariablesObject.size() > 0) {
-            serverObject.setVariables(serverVariablesObject);
+            if (!isVariableEmpty) {
+                serverVariablesObject.addServerVariable(serverVariable.name(), serverVariableObject);
+                isEmpty = false;
+            }
         }
 
-        return Optional.of(serverObject);
+        if (isEmpty) {
+            return Optional.empty();
+        }
+
+        return Optional.of(serverVariablesObject);
     }
 
     public static Optional<ExternalDocumentation> getExternalDocumentation(org.eclipse.microprofile.openapi.annotations.ExternalDocumentation externalDocumentation) {
@@ -371,6 +536,7 @@ public abstract class AnnotationsUtils {
         if (info == null) {
             return Optional.empty();
         }
+
         boolean isEmpty = true;
         Info infoObject = new InfoImpl();
         if (StringUtils.isNotBlank(info.description())) {
@@ -389,11 +555,16 @@ public abstract class AnnotationsUtils {
             infoObject.setVersion(info.version());
             isEmpty = false;
         }
+
+        getContact(info.contact()).ifPresent(infoObject::setContact);
+        isEmpty &= infoObject.getContact() == null;
+
+        getLicense(info.license()).ifPresent(infoObject::setLicense);
+        isEmpty &= infoObject.getLicense() == null;
+
         if (isEmpty) {
             return Optional.empty();
         }
-        getContact(info.contact()).ifPresent(infoObject::setContact);
-        getLicense(info.license()).ifPresent(infoObject::setLicense);
 
         return Optional.of(infoObject);
     }
@@ -448,17 +619,22 @@ public abstract class AnnotationsUtils {
             return linkMap;
         }
         for (org.eclipse.microprofile.openapi.annotations.links.Link link : links) {
-            getLink(link).ifPresent(linkResult -> linkMap.put(link.name(), linkResult));
+            getLink(link).ifPresent(linkResult -> linkMap.put(getNameOfReferenceableItem(link), linkResult));
         }
         return linkMap;
     }
 
+    @FFDCIgnore(IOException.class)
     public static Optional<Link> getLink(org.eclipse.microprofile.openapi.annotations.links.Link link) {
         if (link == null) {
             return Optional.empty();
         }
         boolean isEmpty = true;
         Link linkObject = new LinkImpl();
+        if (StringUtils.isNotBlank(link.ref())) {
+            linkObject.setRef(link.ref());
+            isEmpty = false;
+        }
         if (StringUtils.isNotBlank(link.description())) {
             linkObject.setDescription(link.description());
             isEmpty = false;
@@ -475,6 +651,22 @@ public abstract class AnnotationsUtils {
                 isEmpty = false;
             }
         }
+
+        if (StringUtils.isNotBlank(link.requestBody())) {
+            try {
+                linkObject.setRequestBody(Json.mapper().readTree(link.requestBody()));
+            } catch (IOException e) {
+                linkObject.setRequestBody(link.requestBody());
+            }
+            isEmpty = false;
+        }
+
+        Optional<Server> server = getServer(link.server());
+        if (server.isPresent()) {
+            linkObject.setServer(server.get());
+            isEmpty = false;
+        }
+
         if (isEmpty) {
             return Optional.empty();
         }
@@ -491,9 +683,7 @@ public abstract class AnnotationsUtils {
             return linkParametersMap;
         }
         for (LinkParameter parameter : linkParameter) {
-            if (StringUtils.isNotBlank(parameter.name())) {
-                linkParametersMap.put(parameter.name(), parameter.expression());
-            }
+            linkParametersMap.put(parameter.name(), parameter.expression());
         }
 
         return linkParametersMap;
@@ -506,7 +696,7 @@ public abstract class AnnotationsUtils {
 
         Map<String, Header> headers = new HashMap<>();
         for (org.eclipse.microprofile.openapi.annotations.headers.Header header : annotationHeaders) {
-            getHeader(header).ifPresent(headerResult -> headers.put(header.name(), headerResult));
+            getHeader(header).ifPresent(headerResult -> headers.put(getNameOfReferenceableItem(header), headerResult));
         }
 
         if (headers.size() == 0) {
@@ -523,6 +713,15 @@ public abstract class AnnotationsUtils {
 
         Header headerObject = new HeaderImpl();
         boolean isEmpty = true;
+
+        if (StringUtils.isNotBlank(header.ref())) {
+            headerObject.setRef(header.ref());
+            isEmpty = false;
+        } else {
+            //Set style - only when header is not a reference
+            headerObject.setStyle(Header.Style.SIMPLE);
+        }
+
         if (StringUtils.isNotBlank(header.description())) {
             headerObject.setDescription(header.description());
             isEmpty = false;
@@ -539,11 +738,9 @@ public abstract class AnnotationsUtils {
             isEmpty = false;
         }
 
-        headerObject.setStyle(Header.Style.SIMPLE);
-
         if (header.schema() != null) {
             if (header.schema().implementation().equals(Void.class)) {
-                AnnotationsUtils.getSchemaFromAnnotation(header.schema()).ifPresent(schema -> {
+                AnnotationsUtils.getSchemaFromAnnotation(header.schema(), null).ifPresent(schema -> {
                     if (schema.getType() != null) {
                         headerObject.setSchema(schema);
                         //schema inline no need to add to components
@@ -564,36 +761,46 @@ public abstract class AnnotationsUtils {
         if (encoding == null) {
             return;
         }
-        if (StringUtils.isNotBlank(encoding.name())) {
 
-            Encoding encodingObject = new EncodingImpl();
+        Encoding encodingObject = new EncodingImpl();
+        boolean isEmpty = true;
 
-            if (StringUtils.isNotBlank(encoding.contentType())) {
-                encodingObject.setContentType(encoding.contentType());
-            }
-            if (StringUtils.isNotBlank(encoding.style())) {
-                encodingObject.setStyle(Encoding.Style.valueOf(encoding.style().toUpperCase()));
-            }
-            if (encoding.explode()) {
-                encodingObject.setExplode(encoding.explode());
-            }
-            if (encoding.allowReserved()) {
-                encodingObject.setAllowReserved(encoding.allowReserved());
-            }
-
-            if (encoding.headers() != null) {
-                getHeaders(encoding.headers()).ifPresent(encodingObject::headers);
-            }
-
-            mediaType.addEncoding(encoding.name(), encodingObject);
+        if (StringUtils.isNotBlank(encoding.contentType())) {
+            encodingObject.setContentType(encoding.contentType());
+            isEmpty = false;
+        }
+        if (StringUtils.isNotBlank(encoding.style())) {
+            //TODO handle exception due to incorrect enum value
+            encodingObject.setStyle(Encoding.Style.valueOf(encoding.style().toUpperCase()));
+            isEmpty = false;
+        }
+        if (encoding.explode()) {
+            encodingObject.setExplode(encoding.explode());
+            isEmpty = false;
+        }
+        if (encoding.allowReserved()) {
+            encodingObject.setAllowReserved(encoding.allowReserved());
+            isEmpty = false;
         }
 
+        if (encoding.headers() != null) {
+            Optional<Map<String, Header>> optHeaders = getHeaders(encoding.headers());
+            if (optHeaders.isPresent()) {
+                encodingObject.headers(optHeaders.get());
+                isEmpty = false;
+            }
+        }
+
+        if (!isEmpty) {
+            mediaType.addEncoding(encoding.name(), encodingObject);
+        }
     }
 
     public static Type getSchemaType(org.eclipse.microprofile.openapi.annotations.media.Schema schema) {
         if (schema == null) {
             return String.class;
         }
+
         String schemaType = schema.type().toString();
         Class schemaImplementation = schema.implementation();
 
@@ -629,7 +836,7 @@ public abstract class AnnotationsUtils {
 
         ExampleObject[] examples = annotationContent.examples();
         for (ExampleObject example : examples) {
-            getExample(example).ifPresent(exampleObject -> mediaType.addExample(example.name(), exampleObject));
+            getExample(example).ifPresent(exampleObject -> mediaType.addExample(getNameOfReferenceableItem(example), exampleObject));
         }
         org.eclipse.microprofile.openapi.annotations.media.Encoding[] encodings = annotationContent.encoding();
         for (org.eclipse.microprofile.openapi.annotations.media.Encoding encoding : encodings) {
@@ -646,6 +853,48 @@ public abstract class AnnotationsUtils {
             return Optional.empty();
         }
         return Optional.of(content);
+    }
+
+    public static Optional<APIResponses> getApiResponses(final org.eclipse.microprofile.openapi.annotations.responses.APIResponse[] responses, Produces classProduces,
+                                                         Produces methodProduces, Components components, boolean useResponseCodeAsKey) {
+        if (responses == null) {
+            return Optional.empty();
+        }
+        APIResponses apiResponsesObject = new APIResponsesImpl();
+        for (org.eclipse.microprofile.openapi.annotations.responses.APIResponse response : responses) {
+            APIResponse apiResponseObject = new APIResponseImpl();
+            if (StringUtils.isNotBlank(response.ref())) {
+                apiResponseObject.setRef(response.ref());
+            }
+            if (StringUtils.isNotBlank(response.description())) {
+                apiResponseObject.setDescription(response.description());
+            }
+            OperationParser.getContent(response.content(), classProduces == null ? new String[0] : classProduces.value(),
+                                       methodProduces == null ? new String[0] : methodProduces.value(), components).ifPresent(apiResponseObject::content);
+            AnnotationsUtils.getHeaders(response.headers()).ifPresent(apiResponseObject::headers);
+
+            Map<String, Link> links = AnnotationsUtils.getLinks(response.links());
+            if (links.size() > 0) {
+                apiResponseObject.setLinks(links);
+            }
+
+            if (useResponseCodeAsKey) {
+                //Add the response object using the response code (for operations)
+                if (StringUtils.isNotBlank(response.responseCode())) {
+                    apiResponsesObject.addApiResponse(response.responseCode(), apiResponseObject);
+                } else {
+                    apiResponsesObject.defaultValue(apiResponseObject);
+                }
+            } else {
+                // Add the response object using the name of response (for components)
+                apiResponsesObject.addApiResponse(response.name(), apiResponseObject);
+            }
+
+        }
+        if (apiResponsesObject.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(apiResponsesObject);
     }
 
     public static void applyTypes(String[] classTypes, String[] methodTypes, Content content, MediaType mediaType) {
@@ -667,25 +916,103 @@ public abstract class AnnotationsUtils {
         if (a == null) {
             return null;
         }
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema arraySchema = a.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (arraySchema != null) {
-            return arraySchema.schema();
-        } else {
-            return a.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
-        }
+        return a.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
     }
 
     public static org.eclipse.microprofile.openapi.annotations.media.Schema getSchemaAnnotation(Class<?> cls) {
         if (cls == null) {
             return null;
         }
-        org.eclipse.microprofile.openapi.annotations.media.Schema mp = null;
-        org.eclipse.microprofile.openapi.annotations.media.ArraySchema as = cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.ArraySchema.class);
-        if (as != null) {
-            mp = as.schema();
-        } else {
-            mp = cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+        return cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+    }
+
+    public static boolean overrideSchemaFromAnnotation(Schema schema, org.eclipse.microprofile.openapi.annotations.media.Schema annSchema) {
+        boolean overriden = false;
+        if (annSchema.deprecated()) {
+            schema.setDeprecated(true);
+            overriden = true;
         }
-        return mp;
+        if (annSchema.exclusiveMaximum()) {
+            schema.setExclusiveMaximum(annSchema.exclusiveMaximum());
+            overriden = true;
+        }
+        if (annSchema.exclusiveMinimum()) {
+            schema.setExclusiveMinimum(annSchema.exclusiveMinimum());
+            overriden = true;
+        }
+        if (annSchema.nullable()) {
+            schema.setNullable(annSchema.nullable());
+            overriden = true;
+        }
+        if (annSchema.readOnly()) {
+            schema.setReadOnly(annSchema.readOnly());
+            overriden = true;
+        }
+        if (annSchema.uniqueItems()) {
+            schema.setUniqueItems(annSchema.uniqueItems());
+            overriden = true;
+        }
+        if (annSchema.writeOnly()) {
+            schema.setWriteOnly(annSchema.writeOnly());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.defaultValue())) {
+            schema.setDefaultValue(annSchema.defaultValue());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.description())) {
+            schema.setDescription(annSchema.description());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.example())) {
+            schema.setExample((annSchema.example()));
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.format())) {
+            schema.setFormat((annSchema.format()));
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.maximum())) {
+            try {
+                schema.setMaximum(new BigDecimal(annSchema.maximum()));
+            } catch (NumberFormatException e) {
+            }
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.minimum())) {
+            try {
+                schema.setMinimum(new BigDecimal(annSchema.minimum()));
+            } catch (NumberFormatException e) {
+            }
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.pattern())) {
+            schema.setPattern(annSchema.pattern());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.title())) {
+            schema.setTitle(annSchema.title());
+            overriden = true;
+        }
+        if (annSchema.maxItems() != Integer.MIN_VALUE) {
+            schema.setMaxItems(annSchema.maxItems());
+            overriden = true;
+        }
+        if (annSchema.minItems() != Integer.MAX_VALUE) {
+            schema.setMaxItems(annSchema.minItems());
+            overriden = true;
+        }
+
+        if (annSchema.maxProperties() != 0) {
+            schema.setMaxProperties(annSchema.maxProperties());
+            overriden = true;
+        }
+
+        if (annSchema.minProperties() != 0) {
+            schema.setMinProperties(annSchema.minProperties());
+            overriden = true;
+        }
+
+        return overriden;
     }
 }
