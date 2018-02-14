@@ -106,7 +106,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     public void testNullWsLogHandlerId() {
         // No NullPointerException if the id passed is null (non-existent service property)
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler(null, null , true);
+        msgRouter.setWsLogHandler(null, null);
         msgRouter.unsetWsLogHandler(null, null);
     }
 
@@ -114,7 +114,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     public void testNullWsLogHandlerRef() {
         // No NullPointerException if the ref passed is null (result of bad getService)
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("id", null , true);
+        msgRouter.setWsLogHandler("id", null);
         msgRouter.unsetWsLogHandler("id", null);
     }
 
@@ -132,7 +132,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         msgRouter.modified(props);
 
         // Set WsLogHandler *after* modified().
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Create msg.
         RoutedMessage msg = new TestRoutedMessage("MYMSG1234I: blah blah blah");
@@ -153,7 +153,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
 
         // Set LogHandler *before* modified.
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -178,7 +178,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void overrideAndRemoveWsLogHandler() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -212,7 +212,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void removeDefaultWs() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -236,7 +236,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void unsetWsLogHandler() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -267,7 +267,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void badPropertyDataWs() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -290,9 +290,9 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void multipleWsLogHandlers() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1 , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER2", mockWsLogHandler2 , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
+        msgRouter.setWsLogHandler("MYLOGHANDLER2", mockWsLogHandler2);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -335,8 +335,8 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void overrideAndAddWs() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1 , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -372,7 +372,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void setEmptyWsLogHandlerKey() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("", mockWsLogHandler1 , true);
+        msgRouter.setWsLogHandler("", mockWsLogHandler1);
     }
 
     /**
@@ -381,7 +381,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void invalidMessageWs() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -417,7 +417,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test(expected = NullPointerException.class)
     public void wsLogHandlerThrowsException() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -444,8 +444,8 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void test_routeAllMsgs() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1 , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -477,8 +477,8 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     @Test
     public void test_routeAllMultiple() {
         WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1 , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -543,8 +543,8 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg1236);
 
         // Earlier messages are routed to the handlers when they're set.
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1 , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
     }
 
     /**
@@ -588,8 +588,8 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msgShort);
 
         // Earlier messages are routed to the handlers when they're set.
-        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler , true);
-        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1 , true);
+        msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
     }
 
 }
