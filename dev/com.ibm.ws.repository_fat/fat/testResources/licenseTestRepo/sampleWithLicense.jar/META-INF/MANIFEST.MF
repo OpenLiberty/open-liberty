@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Applies-To: com.ibm.websphere.appserver; productVersion=8.5.5.0+; produc
+ tInstallType=Archive
+Archive-Content-Type: sample
+Archive-Root: wlp/usr/
+Bnd-LastModified: 1382549016360
+Bundle-Vendor: IBM
+Created-By: 1.6.0 (IBM Corporation)
+License-Agreement: wlp/usr/lafiles/LA
+License-Information: wlp/usr/lafiles/LI
+Main-Class: wlp.lib.extract.SelfExtract
+Map-Based-Self-Extractor: wlp.lib.extract.MapBasedSelfExtractor
+Require-Feature: com.ibm.websphere.appserver.jdbc-4.0,com.ibm.websphere.
+ appserver.jpa-2.0,com.ibm.websphere.appserver.jndi-1.0,com.ibm.webspher
+ e.appserver.beanValidation-1.0,com.ibm.websphere.appserver.servlet-3.0
+Sample-Type: thirdParty
+Tool: Bnd-2.1.0.20120920-170235
