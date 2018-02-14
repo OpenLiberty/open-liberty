@@ -97,6 +97,7 @@ public class FATOpentracing implements FATOpentracingConstants {
     // OpenTrace FAT server ...
 
     private static LibertyServer server;
+    private static final boolean usingMicroProfile = true;
 
     private static void setUpServer() throws Exception {
         server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
@@ -614,7 +615,13 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** The completed span event must be be for a get tracer state request. ***
 
-        assertEq("Operation", "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState", completedSpan.getOperation());
+        String operationName;
+        if (usingMicroProfile) {
+            operationName = "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState";
+        } else {
+            operationName = requestUrl;
+        }
+        assertEq("Operation", operationName, completedSpan.getOperation());
 
         // *** The completed span must have valid state and finish times. ***
 

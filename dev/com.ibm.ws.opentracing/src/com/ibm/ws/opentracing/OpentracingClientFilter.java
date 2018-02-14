@@ -21,8 +21,6 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.osgi.service.component.annotations.Component;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -44,7 +42,6 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single client filter is used by all clients.</p>
  */
-@Component
 public class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingClientFilter.class);
 
@@ -58,6 +55,12 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     public static final String CLIENT_SPAN_PROP_ID = OpentracingClientFilter.class.getName() + ".Span";
 
     public static final String CLIENT_SPAN_SKIPPED_ID = OpentracingClientFilter.class.getName() + ".Skipped";
+
+    private final OpentracingFilterHelper helper;
+
+    OpentracingClientFilter(OpentracingFilterHelper helper) {
+        this.helper = helper;
+    }
 
     /**
      * <p>Handle an outgoing request.</p>
@@ -108,11 +111,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         SpanContext nextContext;
 
         if (process) {
-            // "The default operation name of the new Span for the outgoing request is
-            // <HTTP method>"
-            // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#client-span-name
-            String operationName = clientRequestContext.getMethod();
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
+            String buildSpanName = helper != null ? helper.getBuildSpanName(clientRequestContext) : outgoingURL;
+            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
 
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), outgoingURL);
