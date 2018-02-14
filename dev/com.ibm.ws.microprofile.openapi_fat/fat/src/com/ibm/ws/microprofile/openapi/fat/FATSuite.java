@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestOne;
+
 @RunWith(Suite.class)
-@SuiteClasses({ ApplicationProcessorTest.class })
+@SuiteClasses({ ApplicationProcessorTest.class, OpenAPIValidationTestOne.class })
 public class FATSuite {}
