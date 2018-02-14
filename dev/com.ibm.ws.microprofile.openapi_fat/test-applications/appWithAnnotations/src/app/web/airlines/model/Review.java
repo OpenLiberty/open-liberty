@@ -52,7 +52,7 @@ public class Review {
 
     /**
      * Returns the id of this Review
-     * 
+     *
      * @return id
      */
     public String getId() {
@@ -61,7 +61,7 @@ public class Review {
 
     /**
      * Sets the id for this Review
-     * 
+     *
      * @param id the unique id of this Review
      */
     public void setId(String id) {
@@ -70,7 +70,7 @@ public class Review {
 
     /**
      * Returns the user of this Review
-     * 
+     *
      * @return user
      */
     public User getUser() {
@@ -79,7 +79,7 @@ public class Review {
 
     /**
      * Sets the user for this Review
-     * 
+     *
      * @param user the user associated with this Review
      */
     public void setUser(User user) {
@@ -88,7 +88,7 @@ public class Review {
 
     /**
      * Returns the Airlines of this Review
-     * 
+     *
      * @return airlines
      */
     public Airline getAirlines() {
@@ -97,7 +97,7 @@ public class Review {
 
     /**
      * Sets the airlines for this Review
-     * 
+     *
      * @param airlines the Airline associated with this Review
      */
     public void setAirlinesID(Airline airlines) {
@@ -106,7 +106,7 @@ public class Review {
 
     /**
      * Returns the rating of this Review
-     * 
+     *
      * @return rating
      */
     public int getRating() {
@@ -115,7 +115,7 @@ public class Review {
 
     /**
      * Sets the rating for this Review
-     * 
+     *
      * @param rating the rating for this Review
      */
     public void setRating(int rating) {
@@ -124,7 +124,7 @@ public class Review {
 
     /**
      * Returns the comments of this Review
-     * 
+     *
      * @return comment
      */
     public String getComment() {
@@ -133,7 +133,7 @@ public class Review {
 
     /**
      * Sets the comments for this Review
-     * 
+     *
      * @param comment the comments for this Review
      */
     public void setComment(String comment) {

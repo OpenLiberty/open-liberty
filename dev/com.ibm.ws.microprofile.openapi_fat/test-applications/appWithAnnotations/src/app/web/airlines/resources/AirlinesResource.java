@@ -38,30 +38,30 @@ import app.web.airlines.model.Flight;
 @Path("")
 @Schema(name = "Airline Booking API")
 @Tags(
-      value = @Tag(
-                   name = "Airlines",
-                   description = "All the airlines methods"))
+    value = @Tag(
+        name = "Airlines",
+        description = "All the airlines methods"))
 @Callback(
-          name = "availabilityCallback",
-          callbackUrlExpression = "http://localhost:9080/oas3-airlines/availability",
-          operations = @CallbackOperation(
-                                          method = "get",
-                                          summary = "Retrieve available flights.",
-                                          responses = {
-                                                        @APIResponse(
-                                                                     responseCode = "200",
-                                                                     description = "successful operation",
-                                                                     content = @Content(
-                                                                                        mediaType = "applictaion/json",
-                                                                                        schema = @Schema(
-                                                                                                         type = SchemaType.ARRAY,
-                                                                                                         implementation = Flight.class))),
-                                                        @APIResponse(
-                                                                     responseCode = "404",
-                                                                     description = "No available flights found",
-                                                                     content = @Content(
-                                                                                        mediaType = "n/a"))
-                                          }))
+    name = "availabilityCallback",
+    callbackUrlExpression = "http://localhost:9080/oas3-airlines/availability",
+    operations = @CallbackOperation(
+        method = "get",
+        summary = "Retrieve available flights.",
+        responses = {
+                      @APIResponse(
+                          responseCode = "200",
+                          description = "successful operation",
+                          content = @Content(
+                              mediaType = "applictaion/json",
+                              schema = @Schema(
+                                  type = SchemaType.ARRAY,
+                                  implementation = Flight.class))),
+                      @APIResponse(
+                          responseCode = "404",
+                          description = "No available flights found",
+                          content = @Content(
+                              mediaType = "n/a"))
+        }))
 public class AirlinesResource {
     private static Map<Integer, Airline> airlines = new ConcurrentHashMap<Integer, Airline>();
 
@@ -77,15 +77,15 @@ public class AirlinesResource {
 
     @GET
     @APIResponse(
-                 ref = "FoundAirlines")
+        ref = "FoundAirlines")
     @APIResponse(
-                 responseCode = "404",
-                 description = "No airlines found",
-                 content = @Content(
-                                    mediaType = "n/a"))
+        responseCode = "404",
+        description = "No airlines found",
+        content = @Content(
+            mediaType = "n/a"))
     @Operation(
-               summary = "Retrieve all available airlines",
-               operationId = "getAirlines")
+        summary = "Retrieve all available airlines",
+        operationId = "getAirlines")
     @Produces("application/json")
     public Response getAirlines() {
         return Response.ok().entity(airlines.values()).build();

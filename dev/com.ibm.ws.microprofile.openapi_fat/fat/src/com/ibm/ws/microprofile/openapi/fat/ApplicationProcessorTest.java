@@ -25,8 +25,8 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 
 /**
- * Tests to ensure 	MP OpenAPI annotations in a single app deployed on a server are read and
- * an Open API documentation is returned.
+ * Tests to ensure MP OpenAPI annotations in a single app deployed on a server
+ * are read and an Open API documentation is returned.
  */
 public class ApplicationProcessorTest extends FATServletClient {
 
@@ -49,6 +49,6 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @Test
     public void verifyApplicationProcessor() throws Exception {
-    	Thread.sleep(5000);
+        Thread.sleep(5000);
     }
 }

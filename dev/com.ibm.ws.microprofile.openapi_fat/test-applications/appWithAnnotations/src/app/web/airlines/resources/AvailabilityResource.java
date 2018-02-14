@@ -36,73 +36,73 @@ import app.web.airlines.model.Flight;
 
 @Path("/availability")
 @Tag(
-     name = "Availability",
-     description = "All the availability methods")
+    name = "Availability",
+    description = "All the availability methods")
 public class AvailabilityResource {
 
     @GET
     @Tag(
-         name = "Get Flights",
-         description = "method to retrieve all flights available",
-         externalDocs = @ExternalDocumentation(
-                                               description = "A list of all the flights offered by the app",
-                                               url = "http://airlinesratingapp.com/ourflights"))
+        name = "Get Flights",
+        description = "method to retrieve all flights available",
+        externalDocs = @ExternalDocumentation(
+            description = "A list of all the flights offered by the app",
+            url = "http://airlinesratingapp.com/ourflights"))
     @Tag(ref = "Availability")
     @APIResponse(
-                 responseCode = "200",
-                 description = "successful operation",
-                 content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                                     type = SchemaType.ARRAY,
-                                                     implementation = Flight.class)))
+        responseCode = "200",
+        description = "successful operation",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(
+                type = SchemaType.ARRAY,
+                implementation = Flight.class)))
     @APIResponse(
-                 responseCode = "404",
-                 description = "No available flights found",
-                 content = @Content(
-                                    mediaType = "n/a"))
+        responseCode = "404",
+        description = "No available flights found",
+        content = @Content(
+            mediaType = "n/a"))
     @Operation(
-               summary = "Retrieve all available flights",
-               operationId = "getFlights")
+        summary = "Retrieve all available flights",
+        operationId = "getFlights")
     @Produces("application/json")
     public Response getFlights(
                                @Parameter(
-                                          ref = "#/components/parameters/departureDate") @QueryParam("departureDate") String departureDate,
+                                   ref = "#/components/parameters/departureDate") @QueryParam("departureDate") String departureDate,
                                @Parameter(
-                                          name = "airportFrom",
-                                          required = true,
-                                          allowEmptyValue = true,
-                                          description = "Airport the customer departs from",
-                                          schema = @Schema(
-                                                           implementation = String.class)) @QueryParam("airportFrom") String airportFrom,
+                                   name = "airportFrom",
+                                   required = true,
+                                   allowEmptyValue = true,
+                                   description = "Airport the customer departs from",
+                                   schema = @Schema(
+                                       implementation = String.class)) @QueryParam("airportFrom") String airportFrom,
                                @Parameter(
-                                          name = "returningDate",
-                                          required = true,
-                                          allowReserved = true,
-                                          description = "Customer return date",
-                                          schema = @Schema(
-                                                           implementation = String.class)) @QueryParam("returningDate") String returningDate,
+                                   name = "returningDate",
+                                   required = true,
+                                   allowReserved = true,
+                                   description = "Customer return date",
+                                   schema = @Schema(
+                                       implementation = String.class)) @QueryParam("returningDate") String returningDate,
                                @Parameter(
-                                          name = "airportTo",
-                                          required = true,
-                                          description = "Airport the customer returns to",
-                                          schema = @Schema(
-                                                           implementation = String.class)) @QueryParam("airportTo") String airportTo,
+                                   name = "airportTo",
+                                   required = true,
+                                   description = "Airport the customer returns to",
+                                   schema = @Schema(
+                                       implementation = String.class)) @QueryParam("airportTo") String airportTo,
                                @Parameter(
-                                          name = "numberOfAdults",
-                                          required = true,
-                                          description = "Number of adults on the flight",
-                                          schema = @Schema(
-                                                           minimum = "0",
-                                                           implementation = String.class)) @QueryParam("numberOfAdults") int numberOfAdults,
+                                   name = "numberOfAdults",
+                                   required = true,
+                                   description = "Number of adults on the flight",
+                                   schema = @Schema(
+                                       minimum = "0",
+                                       implementation = String.class)) @QueryParam("numberOfAdults") int numberOfAdults,
                                @Parameter(
-                                          name = "numberOfChildren",
-                                          required = true,
-                                          deprecated = true,
-                                          description = "Number of children on the flight",
-                                          schema = @Schema(
-                                                           minimum = "0",
-                                                           implementation = String.class)) @QueryParam("numberOfChildren") int numberOfChildren) {
+                                   name = "numberOfChildren",
+                                   required = true,
+                                   deprecated = true,
+                                   description = "Number of children on the flight",
+                                   schema = @Schema(
+                                       minimum = "0",
+                                       implementation = String.class)) @QueryParam("numberOfChildren") int numberOfChildren) {
         return Response.ok().entity(findFlights(airportFrom, airportTo, departureDate, returningDate)).build();
     }
 
@@ -113,15 +113,19 @@ public class AvailabilityResource {
         //Departure flights
         departureDate = extractDate(departureDate);
         for (int i = 0; i < 3; i++) {
-            flights.add(new Flight(AirlinesResource.getRandomAirline(), departureDate + getRandomTime(), "AC" + JAXRSApp
-                            .getRandomNumber(200, 10), "on schedule", airportFrom, airportTo, getRandomPrice()));
+            flights.add(new Flight(AirlinesResource.getRandomAirline(), departureDate
+                                                                        + getRandomTime(), "AC"
+                                                                                           + JAXRSApp.getRandomNumber(200,
+                                                                                                                      10), "on schedule", airportFrom, airportTo, getRandomPrice()));
         }
 
         //Returning flights
         returningDate = extractDate(returningDate);
         for (int i = 0; i < 3; i++) {
-            flights.add(new Flight(AirlinesResource.getRandomAirline(), returningDate + getRandomTime(), "AC" + JAXRSApp
-                            .getRandomNumber(200, 10), "on schedule", airportFrom, airportTo, getRandomPrice()));
+            flights.add(new Flight(AirlinesResource.getRandomAirline(), returningDate
+                                                                        + getRandomTime(), "AC"
+                                                                                           + JAXRSApp.getRandomNumber(200,
+                                                                                                                      10), "on schedule", airportFrom, airportTo, getRandomPrice()));
         }
 
         return flights;

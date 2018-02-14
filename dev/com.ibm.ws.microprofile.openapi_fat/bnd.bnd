@@ -22,10 +22,9 @@ fat.project: true
 
 fat.minimum.java.level: 1.8
 
-tested.features:\
-	mpOpenAPI-1.0
-
 -buildpath: \
 	com.ibm.ws.microprofile.openapi;version=latest, \
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest, \
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest
+	com.ibm.ws.common.encoder;version=latest
