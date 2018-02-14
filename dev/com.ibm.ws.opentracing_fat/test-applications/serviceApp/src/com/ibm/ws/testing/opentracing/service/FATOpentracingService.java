@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.service;
 
-import org.eclipse.microprofile.opentracing.Traced;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -202,7 +201,6 @@ public class FATOpentracingService extends Application implements FATOpentracing
      *
      * @return The response text as plain text.
      */
-    @Traced
     @GET
     @Path(GET_IMMEDIATE_PATH)
     @Produces(MediaType.TEXT_PLAIN)
