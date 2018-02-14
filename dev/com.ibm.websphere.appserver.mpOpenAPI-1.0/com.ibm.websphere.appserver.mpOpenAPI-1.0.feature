@@ -42,5 +42,5 @@ Subsystem-Name: MicroProfile OpenAPI 1.0
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui
-kind=beta
+kind=ga
 edition=core
