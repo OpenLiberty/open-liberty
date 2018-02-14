@@ -16,3 +16,4 @@ Subsystem-Name: Expression Language 3.0
 -bundles=com.ibm.ws.org.apache.jasper.el.3.0
 kind=ga
 edition=core
+IBM-Maven-Dependency: javax.el:el-api:3.0.0

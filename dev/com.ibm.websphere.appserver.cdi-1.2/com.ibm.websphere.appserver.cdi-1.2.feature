@@ -60,3 +60,6 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
 kind=ga
 edition=core
+IBM-Maven-Dependency: javax.enterprise:cdi-api:2.0, \
+ javax.inject:javax.inject:1, \
+ javax.interceptor:javax.interceptor-api:3.1

@@ -21,3 +21,4 @@ IBM-App-ForceRestart: uninstall, \
 -bundles=com.ibm.ws.jpa.container.v21, \
  com.ibm.ws.jpa.container, \
  com.ibm.ws.jpa.container.thirdparty
+IBM-Maven-Dependency: org.eclipse.persistence:javax.persistence:2.2.0
