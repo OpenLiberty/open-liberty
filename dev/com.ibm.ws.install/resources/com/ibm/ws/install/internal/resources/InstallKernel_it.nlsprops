@@ -1,0 +1,776 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/InstallKernel.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Kernel
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1200 to 1399 are reserved for the InstallKernel.
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# The following five messages are for InstallException and should not occur.
+# No user action exists to recover from these exceptions without assistance from IBM.
+# The installer may be IM, WDT, FeatureManager or others.
+ERROR_FEATURES_LIST_INVALID=CWWKF1200E: L'elenco di funzioni fornito \u00e8 null o vuoto.
+ERROR_FEATURES_LIST_INVALID.explanation=L'elenco di funzioni da installare manca o \u00e8 vuoto.
+ERROR_FEATURES_LIST_INVALID.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED=CWWKF1201E: Operazione non supportata.
+ERROR_UNSUPPORTED.explanation=Il programma di installazione ha tentato di eseguire un'operazione non supportata.
+ERROR_UNSUPPORTED.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED_ASSETTYPE=CWWKF1202E: Tipo di asset {0} non supportato.
+ERROR_UNSUPPORTED_ASSETTYPE.explanation=Il tipo di asset specificato non \u00e8 supportato dal programma di installazione.
+ERROR_UNSUPPORTED_ASSETTYPE.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA=CWWKF1217E: La funzione {0} non pu\u00f2 essere disinstallata.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.explanation=Errore interno rilevato durante l'elaborazione dei metadati. 
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA=CWWKF1218E: La fix {0} non pu\u00f2 essere disinstallata.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.explanation=Errore interno rilevato durante l'elaborazione dei metadati. 
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Following messages for InstallException
+ERROR_FAILED_TO_RESOLVE_FEATURES=CWWKF1203E: Impossibile ottenere le seguenti funzioni: {0} Assicurarsi che le funzioni specificate siano valide.
+ERROR_FAILED_TO_RESOLVE_FEATURES.explanation=Il programma di installazione non \u00e8 riuscito a richiamare le funzioni specificate da IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_RESOLVE_FEATURES.useraction=Assicurarsi che le funzioni specificate siano valide.
+
+ERROR_FAILED_TO_RESOLVE_IFIX=CWWKF1204E: Impossibile ottenere le seguenti fix temporanee: {0} Verificare che il sistema possa accedere a IBM WebSphere Liberty Repository e che gli ID delle fix temporanee siano corretti.
+ERROR_FAILED_TO_RESOLVE_IFIX.explanation=Il programma di installazione non \u00e8 riuscito a richiamare le fix temporanee da IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_RESOLVE_IFIX.useraction=Verificare che sia stato specificato un ID  fix temporanea valido, che siano stati forniti un ID utente e una password validi e che IBM WebSphere Liberty Repository sia accessibile.
+
+ERROR_INVALID_ESA=CWWKF1205E: L''asset della funzione specificato scaricato non \u00e8 valido: {0}. Verificare che il sistema possa accedere a Internet e riprovare.
+ERROR_INVALID_ESA.explanation=L'asset della funzione specificato \u00e8 stato richiamato correttamente dal repository, ma ci\u00f2 non \u00e8 valido.
+ERROR_INVALID_ESA.useraction=Verificare che il sistema possa accedere a Internet e riprovare.
+
+ERROR_INVALID_IFIX=CWWKF1206E: L''asset della fix specificato scaricato non \u00e8 valido: {0}. Verificare che il sistema possa accedere a Internet e riprovare.
+ERROR_INVALID_IFIX.explanation=L'asset della fix specificato \u00e8 stato richiamato correttamente dal repository, ma ci\u00f2 non \u00e8 valido.
+ERROR_INVALID_IFIX.useraction=Verificare che il sistema possa accedere a Internet e riprovare.
+
+ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: La funzione {0} non \u00e8 installata.
+ERROR_FEATURE_NOT_INSTALLED.explanation=La funzione specificata non esiste e non pu\u00f2 essere disinstallata. 
+ERROR_FEATURE_NOT_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: Le funzioni che si stanno disinstallando sono richieste dalla funzione o dalle funzioni indicate {0}.
+ERROR_OTHER_FEATURE_DEPEND_ON.explanation=La funzione specificata non pu\u00f2 essere rimossa se \u00e8 ancora richiesta da un'altra funzione.
+ERROR_OTHER_FEATURE_DEPEND_ON.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_IFIX_NOT_INSTALLED=CWWKF1209E: La fix {0} non \u00e8 installata.
+ERROR_IFIX_NOT_INSTALLED.explanation=La fix specificata non esiste.
+ERROR_IFIX_NOT_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_IFIX_UNINSTALLABLE=CWWKF1210E: La fix {0} non pu\u00f2 essere disinstallata.
+ERROR_IFIX_UNINSTALLABLE.explanation=La fix specificata non pu\u00f2 essere rimossa se \u00e8 ancora richiesta da un'altra fix.
+ERROR_IFIX_UNINSTALLABLE.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_LICENSES_NOT_ACCEPTED=CWWKF1211E: La licenza non \u00e8 stata accettata.
+ERROR_LICENSES_NOT_ACCEPTED.explanation=La funzione non pu\u00f2 essere installata se non viene accettata la licenza. 
+ERROR_LICENSES_NOT_ACCEPTED.useraction=Accettare la licenza e ripetere l'operazione.
+
+ERROR_FAILED_TO_DOWNLOAD_FEATURE=CWWKF1212E: Impossibile scaricare la funzione {0} in {1}. Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.explanation=Si \u00e8 verificato un errore durante lo scaricamento di una funzione nella directory temporanea. 
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.useraction=Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+
+ERROR_FAILED_TO_DOWNLOAD_IFIX=CWWKF1213E: Impossibile scaricare la fix {0} in {1}.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.explanation=Si \u00e8 verificato un errore durante lo scaricamento di una fix nella directory temporanea. Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.useraction=Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE=CWWKF1214E: La fix {0} \u00e8 richiesta dalla funzione {1}. Aggiungere --verbose per visualizzare tutte le funzioni dipendenti.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.explanation=La fix non pu\u00f2 essere rimossa se \u00e8 ancora richiesta da {1}.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_FAILED_TO_GET_FEATURE_LICENSE=CWWKF1215E: Impossibile ottenere la licenza per la funzione {0}.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.explanation=Si \u00e8 verificato un errore durante il richiamo della licenza della funzione specificata.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Verificare che il nome della funzione specificato sia valido, che siano stati specificati un ID utente e una password validi e che IBM WebSphere Liberty Repository sia accessibile.
+
+ALREADY_INSTALLED=CWWKF1216I: Le seguenti funzioni esistono gi\u00e0: {0}. Non saranno reinstallate. Per modificare una funzione esistente, \u00e8 necessario prima disinstallarla manualmente.
+ALREADY_INSTALLED.explanation=Le funzioni specificate sono gi\u00e0 state installate.
+ALREADY_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_FAILED_TO_CONNECT=CWWKF1219E: Impossibile raggiungere IBM WebSphere Liberty Repository. Verificare che il computer abbia accesso alla rete e i firewall siano configurati correttamente, quindi tentare nuovamente l'azione. Se la connessione non riesce ancora, il server del repository potrebbe essere temporaneamente non disponibile.
+ERROR_FAILED_TO_CONNECT.explanation=Si \u00e8 verificato un errore durante la connessione a IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_CONNECT.useraction=Verificare che il sistema possa accedere a Internet e al repository appropriato.
+
+ERROR_FAILED_TO_AUTHENICATE=CWWKF1220E: Le credenziali fornite non sono valide.
+ERROR_FAILED_TO_AUTHENICATE.explanation=Si \u00e8 verificato un errore di autenticazione. Le credenziali specificate non sono valide.
+ERROR_FAILED_TO_AUTHENICATE.useraction=Verificare che siano stati specificati un ID utente e una password validi.
+
+ERROR_MISSING_DEPENDENT=CWWKF1221E: L''asset {0} dipende da {1}, che non \u00e8 disponibile in IBM WebSphere Liberty Repository. Se l''asset richiesto \u00e8 una funzione precedentemente scaricata, installare la funzione mancante specificando l''ubicazione del file ESA della funzione nell''opzione featureManager install --location, e ripetere l''installazione di {0}.
+ERROR_MISSING_DEPENDENT.explanation=La funzione, addon o fix temporanea non pu\u00f2 essere installata perch\u00e9 dipende da un asset che non \u00e8 disponibile.
+ERROR_MISSING_DEPENDENT.useraction=Se l'asset richiesto \u00e8 una funzione precedentemente scaricata, installare la funzione mancante specificando l'ubicazione del file ESA della funzione nell'opzione featureManager install --location, e riprovare. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_INSTALL_FIX=CWWKF1222E: Impossibile applicare correttamente la fix {0}.
+ERROR_FAILED_TO_INSTALL_FIX.explanation=Si \u00e8 verificato un errore durante l'applicazione della fix.
+ERROR_FAILED_TO_INSTALL_FIX.useraction=Individuare la causa nel file wlp/lib/fixes/fixinstall.log.
+
+ERROR_INVALID_PRODUCT_VERSION=CWWKF1224E: La funzione {0} non pu\u00f2 essere installata a {1} {2} perch\u00e9 si applica solo alla versione {3}.  Utilizzare l''azione "find" del comando featureManager per richiamare un elenco di funzioni applicabili a {1} {2}.
+ERROR_INVALID_PRODUCT_VERSION.explanation=La funzione non \u00e8 applicabile alla versione correntemente installata del prodotto.
+ERROR_INVALID_PRODUCT_VERSION.useraction=Installare le funzioni che sono supportate da questa versione del prodotto.
+
+ERROR_INVALID_PRODUCT_EDITION=CWWKF1225E: La funzione {0} non pu\u00f2 essere installata a {1} {2} Edition perch\u00e9 si applica solo alle {3} Edition. Utilizzare l''azione "find" del comando featureManager per richiamare un elenco di funzioni applicabili a {4} {5} Edition. 
+ERROR_INVALID_PRODUCT_EDITION.explanation=La funzione non \u00e8 applicabile all'edizione installata del prodotto.
+ERROR_INVALID_PRODUCT_EDITION.useraction=Installare le funzioni che sono supportate da questa edizione del prodotto.
+
+ERROR_INVALID_PRODUCT_INSTALLTYPE=CWWKF1226E: L''asset {0} non pu\u00f2 essere scaricato o installato con il comando featureManager in quanto il prodotto \u00e8 stato installato da {1} e l''asset si applica solo alle installazioni {2}. Utilizzare l''azione di ricerca di featureManager per richiamare un elenco degli asset che possono essere scaricati o installati con il comando.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.explanation=Il comando featureManager non pu\u00f2 scaricare o installare l'asset nell'installazione Liberty in quanto si applica ad un tipo di installazione diverso.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.useraction=Utilizzare l'azione di ricerca di featureManager per richiamare un elenco degli asset che possono essere scaricati o installati con il comando. Per ulteriori informazioni, consultare la documentazione del prodotto relativa all'asset.
+
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR=CWWKF1227E: Impossibile ottenere la funzione {0} dalla directory {1}.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Il programma di installazione non \u00e8 riuscito a ottenere la funzione specificata dalla directory locale specificata.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Assicurarsi che la directory contenga la funzione e ritentare l'operazione.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Impossibile individuare l''eseguibile {0} dopo il controllo delle seguenti ubicazioni: {1}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Il programma di installazione non \u00e8 stato in grado di individuare il file eseguibile
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Assicurarsi che il file eseguibile esista in una delle ubicazioni specificate.
+
+ERROR_EXECUTING_COMMAND=CWWKF1229E: Si \u00e8 verificato un errore durante l''esecuzione del comando: {0}  Restituzione del comando con codice di uscita {1} e messaggio di errore: {2}
+ERROR_EXECUTING_COMMAND.explanation=Impossibile eseguire correttamente il comando.
+ERROR_EXECUTING_COMMAND.useraction=Riesaminare il codice di uscita e il messaggio di errore e assicurarsi di disporre di autorizzazioni sufficienti per eseguire il comando.
+
+ERROR_INVALID_EXTATTR_PARMS=CWWKF1230E: I parametri {0} non sono validi per il comando extattr
+ERROR_INVALID_EXTATTR_PARMS.explanation=I parametri validi per il comando extattr sono: [+alps] [-alps]
+ERROR_INVALID_EXTATTR_PARMS.useraction=Assicurarsi che i parametri utilizzati siano validi.
+
+ERROR_UNABLE_TO_GET_UMASK=CWWKF1231E: Impossibile richiamare l''impostazione umask utilizzando il comando: {0}
+ERROR_UNABLE_TO_GET_UMASK.explanation=Il valore per l'impostazione umask non \u00e8 stato restituito dopo l'esecuzione del comando umask.
+ERROR_UNABLE_TO_GET_UMASK.useraction=Assicurarsi di essere in grado di eseguire con esito positivo il comando umask.
+
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=CWWKF1232E: Impossibile impostare l''autorizzazione di esecuzione sui seguenti file: {0}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.explanation=Si \u00e8 verificato un errore durante il tentativo di impostare l'autorizzazione di esecuzione.  L'ID utente potrebbe non disporre dell'autorizzazione a modificare le autorizzazioni sul file.
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.useraction=Assicurarsi che per i file sia impostata l'autorizzazione di esecuzione.
+
+ERROR_UNABLE_TO_SET_EXT_ATTR=CWWKF1233E: Impossibile impostare gli attributi estesi {0} sui seguenti file: {1}
+ERROR_UNABLE_TO_SET_EXT_ATTR.explanation=Si \u00e8 verificato un errore durante il tentativo di impostare gli attributi estesi.  L'ID utente potrebbe non disporre dell'autorizzazione a modificare gli attributi estesi.
+ERROR_UNABLE_TO_SET_EXT_ATTR.useraction=Assicurarsi che per i file siano impostati gli attributi estesi richiesti.
+
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED=CWWKF1234E: La funzione {0} non pu\u00f2 essere disinstallata perch\u00e9 il file {1} \u00e8 bloccato. Arrestare tutti i server in esecuzione e ritentare l''operazione.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.explanation=Si \u00e8 verificato un errore durante un tentativo di eliminazione di un file.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.useraction=Assicurarsi che nessun file sia bloccato.
+
+ERROR_UNINSTALL_FIX_FILE_LOCKED=CWWKF1235E: Non \u00e8 possibile disinstallare la fix {0} perch\u00e9 il file {1} \u00e8 bloccato. Arrestare tutti i server in esecuzione e ritentare l''operazione.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.explanation=Si \u00e8 verificato un errore durante un tentativo di eliminazione di un file.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.useraction=Assicurarsi che nessun file sia bloccato.
+
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED=CWWKF1236E: Le funzioni del prodotto {0} non possono essere disinstallate perch\u00e9 il file {1} \u00e8 bloccato. Arrestare tutti i server in esecuzione e ritentare l''operazione.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.explanation=Si \u00e8 verificato un errore durante un tentativo di eliminazione di un file.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.useraction=Assicurarsi che nessun file sia bloccato.
+
+ERROR_UNINSTALL_RUNNING_SERVER=CWWKF1237E: La funzione {0} non pu\u00f2 essere disinstallata perch\u00e9 il server \u00e8 in esecuzione.\nArrestare i seguenti server in esecuzione e ritentare l''operazione: {1}
+ERROR_UNINSTALL_RUNNING_SERVER.explanation=Il server \u00e8 in esecuzione durante il tentativo di disinstallazione di una funzione.
+ERROR_UNINSTALL_RUNNING_SERVER.useraction=Assicurarsi che tutti i server siano arrestati e non in esecuzione.
+
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER_=CWWKF1238E: La funzione {0} non pu\u00f2 essere disinstallata perch\u00e9 il server \u00e8 in esecuzione e non pu\u00f2 essere arrestato.\nArrestare i seguenti server in esecuzione e ritentare l''operazione: {1}
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.explanation=Il server \u00e8 in esecuzione e non pu\u00f2 essere arrestato durante il tentativo di disinstallazione di una funzione.
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.useraction=Assicurarsi che tutti i server siano arrestati e non in esecuzione.
+
+ERROR_INVALID_SERVER_PACKAGE=CWWKF1239E: Il file {0} \u00e8 un file package del server non valido.
+ERROR_INVALID_SERVER_PACKAGE.explanation=Il file di archivio specificato \u00e8 un file package del server non valido.
+ERROR_INVALID_SERVER_PACKAGE.useraction=Utilizzare il comando server per creare il file package del server.
+
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME=CWWKF1240E: Il file package del server {0} non pu\u00f2 essere installato perch\u00e9 contiene il runtime Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.explanation=Il package del server non pu\u00f2 essere installato se contiene il runtime Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.useraction=Decomprimere il file package del server.
+
+ERROR_INVALID_SERVER_XML=CWWKF1241E: Impossibile leggere {0} perch\u00e9 si \u00e8 verificato il seguente errore: Errore: {1}
+ERROR_INVALID_SERVER_XML.explanation=Il file server.xml non \u00e8 valido.
+ERROR_INVALID_SERVER_XML.useraction=Assicurarsi che il file server.xml sia valido.
+
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED=CWWKF1242E: Il file package del server {0} non pu\u00f2 essere installato perch\u00e9 il server {1} gi\u00e0 esiste.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.explanation=Il server in fase di installazione gi\u00e0 esiste.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1243E: Le seguenti funzioni non sono state scaricate perch\u00e9 sono gi\u00e0 installate: {0}. Utilizzare un altro valore per l''opzione --downloadOnly, come ad esempio all o none.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Le funzioni specificate sono gi\u00e0 state installate.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Eseguire di nuovo il comando con un altro valore per l'opzione --downloadOnly, come ad esempio all o none.
+
+ERROR_FEATURE_NOT_APPLICABLE=CWWKF1244E: La funzione {0} non \u00e8 applicabile all''installazione del prodotto {1}.  {2}
+ERROR_FEATURE_NOT_APPLICABLE.explanation=La funzione specificata non \u00e8 una funzione valida per l'installazione del prodotto specificata.
+ERROR_FEATURE_NOT_APPLICABLE.useraction=Verificare che la funzione sia applicabile all'installazione del prodotto.  Utilizzare l'azione "find" del comando featureManager per richiamare un elenco di funzioni applicabili.
+
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY=CWWKF1245E: Impossibile scaricare {0} in {1}. Verificare che la directory di destinazione sia scrivibile e disponga di spazio su disco sufficiente.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.explanation=Il programma di installazione richiede l'accesso in scrittura alla directory di download.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.useraction=Verificare che la directory esista, sia scrivibile e disponga di spazio su disco sufficiente.
+
+ERROR_UNINSTALL_FAILED_ADDON=CWWKF1246E: Le seguenti funzioni non possono essere disinstallate perch\u00e9 sono degli asset add-on: {0}
+ERROR_UNINSTALL_FAILED_ADDON.explanation=Le funzioni specificate sono asset add-on e non \u00e8 possibile disinstallarle.
+ERROR_UNINSTALL_FAILED_ADDON.useraction=Non disinstallare asset add-on.
+
+ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Le seguenti funzioni non possono essere disinstallate perch\u00e9 sono delle funzioni utente: {0}
+ERROR_UNINSTALL_FAILED_USR.explanation=Le funzioni specificate sono funzioni utente e non \u00e8 possibile disinstallarle.
+ERROR_UNINSTALL_FAILED_USR.useraction=Non disinstallare le funzioni utente.
+
+ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Uno dei repository che viene specificato nel file di configurazione non pu\u00f2 essere raggiunto. Verificare che il computer abbia accesso alla rete e i firewall siano configurati correttamente, quindi tentare nuovamente l'azione. Se la connessione non riesce ancora, il server del repository potrebbe essere temporaneamente non disponibile.
+ERROR_FAILED_TO_CONNECT_REPOS.explanation=Si \u00e8 verificato un errore durante la connessione a un repository.
+ERROR_FAILED_TO_CONNECT_REPOS.useraction=Verificare che il sistema possa accedere a Internet e al repository appropriato.
+
+ERROR_ASSETS_LIST_INVALID=CWWKF1249E: L'elenco di asset fornito \u00e8 null o vuoto.
+ERROR_ASSETS_LIST_INVALID.explanation=L'elenco di asset da installare manca o \u00e8 vuoto.
+ERROR_ASSETS_LIST_INVALID.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ASSETS_ALREADY_INSTALLED=CWWKF1250I: I seguenti asset esistono gi\u00e0: {0}. Non saranno reinstallate. Per modificare una funzione esistente, \u00e8 necessario prima disinstallarla manualmente.
+ASSETS_ALREADY_INSTALLED.explanation=Gli asset specificati sono gi\u00e0 stati installati.
+ASSETS_ALREADY_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE=CWWKF1251E: Impossibile scaricare il prodotto di esempio {0} in {1}. Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.explanation=Si \u00e8 verificato un errore durante lo scaricamento di un prodotto di esempio nella directory temporanea. 
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.useraction=Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE=CWWKF1252E: Impossibile scaricare l''integrazione open source {0} in {1}. Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.explanation=Si \u00e8 verificato un errore durante lo scaricamento di un'integrazione open source nella directory temporanea. 
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.useraction=Verificare che il sistema possa accedere a Internet, che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, riprovare.
+
+ERROR_INVALID_SAMPLE=CWWKF1253E: L''asset prodotto di esempio specificato scaricato non \u00e8 valido: {0}. Verificare che il sistema possa accedere a Internet e riprovare.
+ERROR_INVALID_SAMPLE.explanation=L'asset prodotto di esempio specificato \u00e8 stato richiamato correttamente dal repository, ma ci\u00f2 non \u00e8 valido.
+ERROR_INVALID_SAMPLE.useraction=Verificare che il sistema possa accedere a Internet e riprovare.
+
+ERROR_INVALID_OPENSOURCE=CWWKF1254E: L''asset integrazione open source specificato scaricato non \u00e8 valido: {0}. Verificare che il sistema possa accedere a Internet e riprovare.
+ERROR_INVALID_OPENSOURCE.explanation=L'asset integrazione open source specificato \u00e8 stato richiamato correttamente dal repository, ma ci\u00f2 non \u00e8 valido.
+ERROR_INVALID_OPENSOURCE.useraction=Verificare che il sistema possa accedere a Internet e riprovare.
+
+ERROR_ASSET_INVALID_PRODUCT_VERSION=CWWKF1255E: L''asset {0} non pu\u00f2 essere installato in {1} {2} perch\u00e9 si applica solo alla versione {3}.  Utilizzare l''azione "find" del comando installUtility per richiamare un elenco di asset applicabili a {1} {2}.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.explanation=L'asset non \u00e8 applicabile alla versione correntemente installata del prodotto.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.useraction=Installare gli asset che sono supportati da questa versione del prodotto.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION=CWWKF1256E: L''asset {0} non pu\u00f2 essere installato in {1} {2} Edition perch\u00e9 si applica solo alle {3} Edition. Utilizzare l''azione "find" del comando installUtility per richiamare un elenco di asset applicabili a {4} {5} Edition. 
+ERROR_ASSET_INVALID_PRODUCT_EDITION.explanation=L'asset non \u00e8 applicabile all'edizione installata del prodotto.
+ERROR_ASSET_INVALID_PRODUCT_EDITION.useraction=Installare gli asset che sono supportati da questa edizione del prodotto.
+
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE=CWWKF1257E: L''asset {0} non pu\u00f2 essere scaricato o installato con il comando installUtility in quanto il prodotto \u00e8 stato installato da {1} e l''asset si applica solo alle installazioni {2}. Utilizzare l''azione di ricerca di installUtility per richiamare un elenco degli asset che possono essere scaricati o installati con il comando.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.explanation=Il comando installUtility non pu\u00f2 scaricare o installare l'asset nell'installazione Liberty in quanto si applica ad un tipo di installazione diverso.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=Utilizzare l'azione di ricerca di installUtility per richiamare un elenco degli asset che possono essere scaricati o installati con il comando. Per ulteriori informazioni, consultare la documentazione del prodotto relativa all'asset.
+
+ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: L''asset {0} dipende da {1}, che non \u00e8 disponibile nei repository configurati. Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l''asset. Se non si dispone di accesso a internet, contattare l''amministratore per scaricare l''asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato.
+ERROR_ASSET_MISSING_DEPENDENT.explanation=L'asset non pu\u00f2 essere scaricato o installato perch\u00e9 dipende da un asset che non \u00e8 disponibile.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l'asset. In alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory. Se non si dispone di accesso a internet, contattare l'amministratore per scaricare l'asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato. Per maggiori informazioni sull'installazione degli asset, consultare la documentazione di installUtility in IBM Knowledge Center. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Impossibile ottenere i seguenti asset: {0} Assicurarsi che gli asset specificati siano validi. Per trovare gli ID degli asset applicabili, eseguire il comando installUtility find.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Il programma di installazione non \u00e8 riuscito a richiamare gli asset specificati dai repository.
+ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Verificare che gli asset specificati siano validi, che siano stati forniti un ID utente e una password validi e che i repository siano accessibili.
+
+ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: L''asset {0} non \u00e8 applicabile all''installazione del prodotto {1}.  {2}
+ERROR_ASSET_NOT_APPLICABLE.explanation=L'asset specificato non \u00e8 un asset valido per l'installazione del prodotto specificata.
+ERROR_ASSET_NOT_APPLICABLE.useraction=Verificare che l'asset sia applicabile all'installazione del prodotto.  Utilizzare l'azione "find" del comando installUtility per richiamare un elenco di asset applicabili.
+
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED=CWWKF1261E: {0} di esempio non pu\u00f2 essere installato perch\u00e9 il server {1} gi\u00e0 esiste.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.explanation=Il server di esempio in fase di installazione gi\u00e0 esiste.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED=CWWKF1262E: {0} integrazione open source non pu\u00f2 essere installata perch\u00e9 il server {1} gi\u00e0 esiste.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.explanation=Il server integrazione open source in fase di installazione gi\u00e0 esiste.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED=\nCWWKF1263E: Le funzioni che l'utente sta tentando di disinstallare sono ancora richieste da altre funzioni che rimangono installate:\n\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.explanation=Le funzioni specificate da disinstallare sono ancora richieste da altre funzioni che rimangono installate.
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.useraction=Disinstallare tutte le funzioni con requisiti prima o contemporaneamente alle funzioni specificate da disinstallare.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_REQUIRED_BY=[{0}] \u00e8 richiesto da: {1}.\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_ACTION=\n Disinstallare tutte le funzioni con requisiti prima o contemporaneamente alle funzioni specificate da disinstallare.\n
+
+ERROR_UNABLE_RUN_EXTRACTOR=CWWKF1264E: Il file di archivio {0} non pu\u00f2 essere installato a causa di: {1}
+ERROR_UNABLE_RUN_EXTRACTOR.explanation=Si \u00e8 verificata un'eccezione durante l'installazione del file di archivio.
+ERROR_UNABLE_RUN_EXTRACTOR.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_GET_ASSET_LICENSE=CWWKF1265E: Impossibile ottenere la licenza per l''asset {0}. Verificare che il nome asset specificato sia valido e che i repository siano accessibili. 
+ERROR_FAILED_TO_GET_ASSET_LICENSE.explanation=Si \u00e8 verificato un errore durante il richiamo della licenza dell'asset specificato.
+ERROR_FAILED_TO_GET_ASSET_LICENSE.useraction=Verificare che il nome asset specificato sia valido e che i repository siano accessibili.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWKF1266E: Impossibile individuare il file server.xml nella directory {0}. Verificare che il file esista e sia accessibile.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Il file server.xml per il server specificato non \u00e8 stato individuato nella directory del server.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Verificare che il file esista e sia accessibile.
+
+ERROR_INSTALL_ESA_FILE_NOTEXIST=CWWKF1267E: Il file {0} non esiste.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.explanation=Il file .esa (Enterprise Subsystem Archive) specificato fornito all'azione di installazione non esiste.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.useraction=Assicurarsi che il nome del file di archivio esa sia stato fornito correttamente ed eseguire nuovamente l'azione di installazione.
+
+ERROR_DEPOLY_DIRECTORY=CWWKF1268E: {0} \u00e8 una directory. \u00c8 richiesto un file di archivio.
+ERROR_DEPOLY_DIRECTORY.explanation=\u00c8 stato effettuato un tentativo di installare una directory.
+ERROR_DEPOLY_DIRECTORY.useraction=Eseguire di nuovo il comando con un file di archivio.
+
+ERROR_INVALID_LOCAL_ESA=CWWKF1269E: Il file {0} \u00e8 un file esa (Enterprise Subsystem Archive) non valido.
+ERROR_INVALID_LOCAL_ESA.explanation=Il file di archivio specificato \u00e8 un file esa (Enterprise Subsystem Archive) non valido.
+ERROR_INVALID_LOCAL_ESA.useraction=Eseguire il comando con un file Enterprise Subsystem Archive valido.
+
+EXCEPTION_STARTING_SERVER=CWWKF1270E: Si \u00e8 verificata un''eccezione durante il tentativo di avvviare il server {0}.  Eccezione: {1}
+EXCEPTION_STARTING_SERVER.explanation=Si \u00e8 verificata un'eccezione durante l'avvio del server.
+EXCEPTION_STARTING_SERVER.useraction=Per ulteriori informazioni, consultare l'eccezione di riferimento e i log del server.
+
+EXCEPTION_STOPPING_SERVER=CWWKF1271E: Si \u00e8 verificata un''eccezione durante il tentativo di arrestare il server {0}.  Eccezione: {1}
+EXCEPTION_STOPPING_SERVER.explanation=Si \u00e8 verificata un'eccezione durante l'arresto del server.
+EXCEPTION_STOPPING_SERVER.useraction=Per ulteriori informazioni, consultare l'eccezione di riferimento e i log del server.
+
+UNABLE_TO_STOP_START_SERVER=CWWKF1272E: Impossibile avviare o arrestare il server {0}.  Consultare i log del server in {1} per ulteriori informazioni.
+UNABLE_TO_STOP_START_SERVER.explanation=Si \u00e8 verificato un errore durante il tentativo di avviare o arrestare il server.
+UNABLE_TO_STOP_START_SERVER.useraction=Per ulteriori informazioni, controllare i log del server.
+
+UNABLE_TO_DETERMINE_FEATURES=CWWKF1273E: Impossibile determinare le funzioni richieste dal server {0}.  Consultare i log del server in {1} per ulteriori informazioni.
+UNABLE_TO_DETERMINE_FEATURES.explanation=Il programma di installazione non \u00e8 in grado di determinare le funzioni richieste dal server.
+UNABLE_TO_DETERMINE_FEATURES.useraction=Verificare che la directory server esista e sia accessibile.  Per ulteriori informazioni, controllare i log del server.
+
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER=CWWKF1274E: Il programma di installazione non pu\u00f2 controllare le funzioni che sono richieste dal server {0} perch\u00e9 il server \u00e8 in esecuzione.  Arrestare il server e rieseguire il comando.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.explanation=Il server deve essere arrestato prima che il programma di installazione possa verificare le funzioni richieste.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.useraction=Arrestare il server e rieseguire il comando.
+
+ERROR_UNABLE_TO_READ_SERVER_XML=CWWKF1275E: Impossibile leggere l''elemento {0} dal file server.xml: {1}.  Verificare che il file server.xml contenga l''elemento {0} e utilizzi la sintassi XML corretta.
+ERROR_UNABLE_TO_READ_SERVER_XMLL.explanation=Il file non \u00e8 un file server.xml valido o contiene errori.
+ERROR_UNABLE_TO_READ_SERVER_XML.useraction=Assicurarsi che il file server.xml sia valido e che la sintassi XML sia corretta.
+
+ERROR_DOWNLOAD_TO_SOURCE_REPO=CWWKF1276E: Impossibile scaricare la funzione {0} in {1}. La cartella origine repository dell''asset ha lo stesso percorso dell''ubicazione di scaricamento.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.explanation=Gli asset non possono essere scaricati nella propria cartella origine repository.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.useraction=Specificare una nuova ubicazione di scaricamento.
+
+ERROR_CREATING_TEMP_SERVER_DIR=CWWKF1277E: La seguente directory server temporanea non \u00e8 stata creata: {0} assicurarsi di disporre dell''autorizzazione di scrittura alla directory {1} e che la directory disponga di spazio libero sufficiente.
+ERROR_CREATING_TEMP_SERVER_DIR.explanation=La directory server temporanea non pu\u00f2 essere creata nella directory specificata a causa di autorizzazioni o spazio file insufficienti.
+ERROR_CREATING_TEMP_SERVER_DIR.useraction=Assicurarsi di disporre dell'autorizzazione per scrivere nella directory parent e che la directory disponga di spazio libero sufficiente.
+
+ERROR_CREATING_DIR=CWWKF1278E: La directory {0} non \u00e8 stata creata a causa della seguente eccezione: {1}
+ERROR_CREATING_DIR.explanation=La directory specificata non \u00e8 stata creata poich\u00e9 si \u00e8 verificato un errore.
+ERROR_CREATING_DIR.useraction=Per informazioni sul motivo per cui la directory non \u00e8 stata creata, consultare l'eccezione di riferimento.
+
+ERROR_COPYING_FILE=CWWKF1279E: Il file {0} non \u00e8 stato copiato nella directory {1} a causa della seguente eccezione: {2}
+ERROR_COPYING_FILE.explanation=Il file non \u00e8 stato copiato nella directory specificata perch\u00e9 si \u00e8 verificato un errore.
+ERROR_COPYING_FILE.useraction=Per informazioni sul motivo per cui il file non \u00e8 stato copiato, consultare l'eccezione di riferimento.
+
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT=CWWKF1280E: Impossibile raggiungere IBM WebSphere Liberty Repository perch\u00e9 il JRE (Java Runtime Environment) non considera affidabile il certificato server. Aggiungere il certificato server del repository come certificato affidabile nel proprio JRE.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.explanation=Si \u00e8 verificata un'eccezione java.security.cert.CertPathBuilderException durante la connessione a IBM WebSphere Liberty Repository, poich\u00e9 il JRE non riconosce il certificato di sicurezza del server di repository come un certificato affidabile. \u00c8 richiesto un certificato affidabile per verificare l'identit\u00e0 del server di repository.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.useraction=Aggiungere il certificato server IBM WebSphere Liberty Repository come certificato affidabile nel proprio JRE.
+
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT=CWWKF1281E: Impossibile raggiungere uno dei repository specificato nella configurazione perch\u00e9 il JRE (Java Runtime Environment) non considera affidabile il certificato server. Aggiungere il certificato server del repository come certificato affidabile nel proprio JRE.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.explanation=Si \u00e8 verificata un'eccezione java.security.cert.CertPathBuilderException durante la connessione a un repository poich\u00e9 il JRE non riconosce il certificato di sicurezza del server di repository come un certificato affidabile. \u00c8 richiesto un certificato affidabile per verificare l'identit\u00e0 del server di repository.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.useraction=Aggiungere il certificato server del repository come certificato affidabile nel proprio JRE.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1282E: Impossibile raggiungere il repository {0} perch\u00e9 il JRE (Java Runtime Environment) non considera affidabile il certificato server. Aggiungere il certificato server del repository come certificato affidabile nel proprio JRE.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=Si \u00e8 verificata un'eccezione java.security.cert.CertPathBuilderException durante la connessione al repository poich\u00e9 il JRE non riconosce il certificato di sicurezza del server di repository come un certificato affidabile. \u00c8 richiesto un certificato affidabile per verificare l'identit\u00e0 del server di repository.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Aggiungere il certificato server del repository come certificato affidabile nel proprio JRE.
+
+# In the following 4 messages (CWWKF1282E to CWWKF1285E),
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The webCacheMonitor-1.0 feature cannot be downloaded ...
+# 	The extendedPackage-1.0 addon cannot be downloaded ...
+# 	The ServletSample product sample cannot be downloaded ...
+# 	The SpringSample open source integration cannot be downloaded ...
+ 
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP=CWWKF1283E: Impossibile scaricare {0} {1} in {2}. Verificare che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, rieseguire il comando.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.explanation=L'asset specificato non \u00e8 stato scaricato nella directory temporanea. La directory potrebbe non esistere o non avere spazio o l'utente non dispone dell'autorizzazione alla scrittura nella directory.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.useraction=Verificare che la directory temporanea esista e che sia possibile scrivere al suo interno, quindi, rieseguire il comando.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS=CWWKF1284E: Impossibile scaricare {0} {1}. Verificare che i repository di asset Liberty configurati contengano l''asset, quindi, rieseguire il comando.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.explanation=L'asset specificato non \u00e8 stato scaricato da alcun repository configurato perch\u00e9 i repository non contengono l'asset.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.useraction=Verificare che i repository di asset Liberty configurati contengano l'asset, quindi, rieseguire il comando.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO=CWWKF1285E: Impossibile scaricare {0} {1} dal repository {2}. Verificare che il repository contenga l''asset, quindi, rieseguire il comando.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.explanation=L'asset specificato non \u00e8 stato scaricato dal repository specificato perch\u00e9 il repository non contiene una versione valida dell'asset.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.useraction=Verificare che il repository contenga l'asset, quindi, rieseguire il comando.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO=CWWKF1286E: Impossibile scaricare {0} {1} da IBM WebSphere Liberty Repository. Consultare le informazioni sulla determinazione dei problemi nella pagina web di supporto di WebSphere Application Server.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.explanation=Impossibile scaricare l'asset specificato da IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_BUNDLE_IN_ESA=CWWKF1287E: La funzione {0} non pu\u00f2 essere installata perch\u00e9 il file {1} all''interno del file ESA (Enterprise Subsystem Archive) non \u00e8 un file bundle. La root ESA deve contenere solo directory e file bundle. Se l''utente crea il file ESA, verificare che il  contenuto sia corretto.
+ERROR_INVALID_BUNDLE_IN_ESA.explanation=Per installare una funzione, la root del file ESA (Enterprise Subsystem Archive) deve contenere solo directory o contenuto bundle validi. I file bundle devono essere file JAR contenenti un file manifest.mf valido.
+ERROR_INVALID_BUNDLE_IN_ESA.useraction=Se l'utente crea il file ESA, verificare che il  contenuto sia corretto. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# In the following message CWWKF1288E,
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The content of the webCacheMonitor-1.0 feature was changed ..., so the feature is not valid. 
+# 	The content of the extendedPackage-1.0 addon was changed ..., so the addon is not valid. 
+# 	The content of the ServletSample product sample was changed ..., so the sample is not valid. 
+# 	The content of the SpringSample open source integration was changed ..., so the open source integration is not valid. 
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM=CWWKF1288E: Il contenuto di {0} {1} \u00e8 stato modificato durante lo scaricamento, quindi {1} non \u00e8 valido. Eseguire nuovamente il comando.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.explanation=Il checksum dell'asset scaricato non \u00e8 corretto. Il contenuto dell'asset scaricato non \u00e8 uguale a quello proveniente dal repository, quindi l'asset non pu\u00f2 essere installato.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.useraction=Eseguire nuovamente il comando. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNABLE_TO_CREATE_FILE=CWWKF1289E: Impossibile creare il seguente file: {0}. Assicurarsi che la directory parent esista e che si disponga delle autorizzazioni necessarie per creare i file in essa, quindi rieseguire il comando.
+ERROR_UNABLE_TO_CREATE_FILE.explanation=Il comando featureManager o installUtility non \u00e8 stato in grado di installare o scaricare l'asset nell'ubicazione specificata perch\u00e9 la directory non esiste o non si dispone delle autorizzazioni richieste per creare i file.
+ERROR_UNABLE_TO_CREATE_FILE.useraction=Assicurarsi che la directory parent esista e che si disponga delle autorizzazioni necessarie per creare i file in essa, quindi rieseguire il comando.
+
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: L''asset {0} dipende da {1}, che non pu\u00f2 essere scaricato o installato in {2} {3} {4}. L''asset {1} nei repository attualmente configurati si applica solo alle seguenti edizioni e versioni del prodotto: {5}. Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare una versione dell''asset applicabile all''installazione in uso. Se non si dispone di accesso a internet, contattare l''amministratore per scaricare questo asset e le relative dipendenze, quindi aggiungerli a un repository configurato.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=L'asset non pu\u00f2 essere scaricato o installato perch\u00e9 dipende da un asset che non \u00e8 disponibile. \u00c8 stata trovata una versione dell'asset richiesto, ma non si applica all'edizione o versione di prodotto installata.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l'asset. In alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare il package zip come repository basato sulla directory. Se non si dispone di accesso a internet, contattare l'amministratore per scaricare questo asset e le relative dipendenze, quindi aggiungerli a un repository configurato. Per maggiori informazioni sull'installazione degli asset, consultare la documentazione di installUtility in IBM Knowledge Center. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: L''asset {0} dipende da {1}, che non pu\u00f2 essere scaricato o installato in {2} {3} {4}. L''asset {1} in IBM WebSphere Liberty Repository si applica solo alle seguenti edizioni e versioni del prodotto: {5}. Se l''asset richiesto \u00e8 una funzione precedentemente scaricata, installare la funzione mancante specificando l''ubicazione del file ESA della funzione nell''opzione featureManager install --location, e ripetere l''installazione di {0}.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=La funzione, addon o fix temporanea non pu\u00f2 essere scaricata o installata perch\u00e9 dipende da un asset che non \u00e8 disponibile. \u00c8 stata trovata una versione dell'asset richiesto, ma non si applica all'edizione o versione di prodotto installata.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.useraction=Se l'asset richiesto \u00e8 una funzione precedentemente scaricata, installare la funzione mancante specificando l'ubicazione del file ESA della funzione nell'opzione featureManager install --location, e riprovare. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1292E: L'opzione uninstall --force pu\u00f2 essere specificata solo per una funzione alla volta. Eseguire il comando uninstall con l'opzione --force per una singola funzione.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=\u00c8 stata specificata l'opzione --force nella disinstallazione di pi\u00f9 di una funzione.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Eseguire il comando uninstall con l'opzione --force per una singola funzione.
+
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION=CWWKF1293E: Non \u00e8 possibile trovare la funzione {0} nell''estensione del prodotto {1}. Per trovare l''estensione prodotto della funzione, eseguire il comando productInfo featureInfo.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.explanation=La funzione non \u00e8 stata disinstallata perch\u00e9 non \u00e8 stata trovata nell'estensione specificata.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.action=Per trovare l'estensione prodotto della funzione, eseguire il comando productInfo featureInfo. Dopo aver identificato la funzione e l'estensione corrette, rieseguire il comando installUtility uninstall.
+
+ERROR_EXTENSION_NOT_FOUND=CWWKF1294E: La funzione {0} non pu\u00f2 essere disinstallata perch\u00e9 l''estensione del prodotto {1} non \u00e8 stata trovata nel prodotto. Per trovare tutti gli asset e le estensione del prodotto installati, eseguire il comando productInfo featureInfo.
+ERROR_EXTENSION_NOT_FOUND.explanation=La funzione non \u00e8 stata disinstallata perch\u00e9 nel prodotto non \u00e8 stata trovata l'estensione del prodotto specificata.
+ERROR_EXTENSION_NOT_FOUND.action=Per trovare tutti gli asset e le estensione del prodotto installati, eseguire il comando productInfo featureInfo. Dopo aver identificato la funzione e l'estensione corrette, rieseguire il comando installUtility uninstall.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION=CWWKF1295E: Impossibile caricare o installare l''asset {0} in {1} {2} {3} perch\u00e9 si applica solo alle seguenti versioni e edizioni del prodotto: {4}. Utilizzare l''azione di ricerca di installUtility per richiamare un elenco degli asset validi per la propria installazione.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.explanation=L'asset non \u00e8 applicabile all'edizione o versione installata del prodotto.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.useraction=Utilizzare l'azione di ricerca di installUtility per richiamare un elenco degli asset validi per la propria installazione.
+
+ERROR_INVALID_PRODUCT_EDITION_VERSION=CWWKF1296E: Impossibile caricare o installare l''asset {0} in {1} {2} {3} perch\u00e9 si applica solo alle seguenti versioni e edizioni del prodotto: {4}. Utilizzare l''azione di ricerca di featureManager per richiamare un elenco delle funzioni valide per la propria installazione.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.explanation=La funzione o l'addon non \u00e8 applicabile alla versione correntemente installata del prodotto.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.useraction=Utilizzare l'azione di ricerca di featureManager per richiamare un elenco degli asset validi per la propria installazione.
+
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND=CWWKF1297E: La funzione {0} non pu\u00f2 essere installata perch\u00e9 l''estensione del prodotto {1} non \u00e8 stata trovata nel prodotto. Creare l''estensione del prodotto specificata o specificarne una differente.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.explanation=La funzione non \u00e8 stata installata perch\u00e9 nel prodotto non \u00e8 stata trovata l'estensione del prodotto specificata.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.action= Se si desidera installare la funzione nell'estensione del prodotto specificata, creare l'estensione del prodotto. In alternativa, specificare una estensione del prodotto differente. Dopo aver identificato un'estensione del prodotto valida, rieseguire il comando installUtility.
+
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} non \u00e8 una funzione, pertanto non pu\u00f2 essere installata su un''estensione del prodotto. Eseguire il comando senza specificare l''estensione.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Solo le funzioni possono essere installate su un'estensione del prodotto.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Eseguire il comando installUtility senza specificare l'estensione.
+
+# Following messages for info logging purpose
+LOG_INSTALL_FEATURES=CWWKF1300I: Installazione delle seguenti funzioni: {0}.
+LOG_INSTALL_FEATURES.explanation=Le funzioni specificate verranno installate.
+LOG_INSTALL_FEATURES.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_INSTALL_FIXES=CWWKF1301I: Installazione delle seguenti fix: {0}.
+LOG_INSTALL_FIXES.explanation=Le fix specificate verranno installate.
+LOG_INSTALL_FIXES.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_UNINSTALL_FEATURES=CWWKF1302I: Disinstallazione delle seguenti funzioni: {0}.
+LOG_UNINSTALL_FEATURES.explanation=Le funzioni specificate verranno disinstallate.
+LOG_UNINSTALL_FEATURES.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_UNINSTALL_FIXES=CWWKF1303I: Disinstallazione delle seguenti fix: {0}.
+LOG_UNINSTALL_FIXES.explanation=Le fix specificate verranno disinstallate.
+LOG_UNINSTALL_FIXES.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_INSTALLED_FEATURE=CWWKF1304I: La funzione {0} \u00e8 stata installata.
+LOG_INSTALLED_FEATURE.explanation=La funzione specificata \u00e8 stata installata.
+LOG_INSTALLED_FEATURE.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_INSTALLED_FIX=CWWKF1305I: La fix {0} \u00e8 stata installata.
+LOG_INSTALLED_FIX.explanation=La fix specificata \u00e8 stata installata.
+LOG_INSTALLED_FIX.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_UNINSTALLED_FEATURE=CWWKF1306I: La funzione {0} \u00e8 stata disinstallata.
+LOG_UNINSTALLED_FEATURE.explanation=La funzione specificata \u00e8 stata disinstallata.
+LOG_UNINSTALLED_FEATURE.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_UNINSTALLED_FIX=CWWKF1307I: La fix {0} \u00e8 stata disinstallata.
+LOG_UNINSTALLED_FIX.explanation=La fix specificata \u00e8 stata disinstallata.
+LOG_UNINSTALLED_FIX.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_INSTALL_ESA=CWWKF1308I: Installazione di {0}.
+LOG_INSTALL_ESA.explanation=Verr\u00e0 installato il file .esa (Enterprise Subsystem Archive) specificato.
+LOG_INSTALL_ESA.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_REINSTALL_FIXES_WARNING=Avvertenza: le seguenti fix precedentemente installate non possono essere reinstallate: {0}. Reinstallare le fix manualmente.
+LOG_REAPPLY_FIXES_WARNING=CWWKF1309W: Impossibile riapplicare le seguenti fix: {0}.
+LOG_REAPPLY_FIXES_WARNING.explanation=Le fix installate non possono essere riapplicate.
+LOG_REAPPLY_FIXES_WARNING.useraction=Riapplicare le fix manualmente.
+
+LOG_UNABLE_TO_DETERMINE_CODEPAGE=WWKF1310W: Impossibile determinare la codepage del sistema per {0}.  Viene utilizzata la codepage predefinita {1}.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.explanation=Il programma di installazione non \u00e8 riuscito a determinare la codepage del sistema e utilizzer\u00e0 la codepage predefinita per l'installazione dei file.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.useraction=Assicurarsi che il sistema supporti la codepage predefinita.
+
+LOG_INSTALLED_SAMPLE=CWWKF1312I: Prodotto di esempio {0} installato correttamente.
+LOG_INSTALLED_SAMPLE.explanation=Il prodotto di esempio specificato \u00e8 stato installato.
+LOG_INSTALLED_SAMPLE.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_INSTALLED_OPENSOURCE=CWWKF1313I: Integrazione open source {0} installata correttamente.
+LOG_INSTALLED_OPENSOURCE.explanation=L'integrazione open source specificata \u00e8 stata installata.
+LOG_INSTALLED_OPENSOURCE.useraction=Non \u00e8 richiesta alcuna azione.
+
+LOG_UNINSTALL_FEATURE_DEPENDENCIES=La funzione che si sta per disinstallare \u00e8 richiesta da altre funzioni installate:
+LOG_UNINSTALL_FEATURE_DEPENDENCIES_EXPLANATION=La disinstallazione della funzione potrebbe causare un funzionamento non corretto delle funzioni dipendenti.
+
+LOG_DEPLOY_SERVER_FEATURES=Il server {0} richiede le seguenti funzioni: {1}
+LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED=I server {0} richiedono che le seguenti funzioni aggiuntive siano installate: {1}
+LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED=I server {0} non richiedono che siano installate funzioni aggiuntive.
+LOG_DEPLOY_FILE=Distribuzione del package di server {0}
+
+LOG_NO_REPO_NAME=Non \u00e8 stato specificato alcun nome repository. Il seguente repository configurato sar\u00e0 ignorato: {0}\n
+LOG_DUPLICATE_REPO_NAMES=Rilevati nomi repository duplicati {0}. Il seguente repository configurato sar\u00e0 ignorato: {1}\n
+LOG_DEFAULT_INVALID_VALUE=Valore non valido di "{0}" specificato per la propriet\u00e0 "useDefaultRepository". Verr\u00e0 abilitato IBM WebSphere Liberty Repository per impostazione predefinita.\n
+LOG_VALIDATING=Convalida del seguente file di configurazione: {0}\n
+LOG_VALIDATION_DONE=Convalida del file di configurazione completata correttamente.\n
+
+LOG_DELETING_TEMP_SERVER_DIR=Eliminazione della directory server temporanea {0}...
+LOG_NOT_DELETING_TEMP_SERVER_DIR=La directory server temporanea {0} non \u00e8 stata eliminata perch\u00e9 potrebbe contenere informazioni di errore nella directory logs. Se non sono necessarie le informazioni, \u00e8 possibile eliminare manualmente la directory {1}.
+LOG_CREATED_TEMP_SERVER_DIR=Directory server temporanea {0} creata.
+
+LOG_CANNOT_DELETE_FILE=Impossibile eliminare il file {0}. Verr\u00e0 eliminato quando viene arrestata la JVM (Java virtual machine).
+
+LOG_CANNOT_CLOSE_OBJECT=Impossibile eliminare i file temporanei.
+LOG_CANNOT_CLOSE_OBJECT.explanation=L'esempio richiede Java 7 o successive per eliminare la directory installTmp.
+LOG_CANNOT_CLOSE_OBJECT.action=Rimuovere manualmente la directory installTmp o utilizzare Java 7 o successive.
+
+LOG_PASSWORD_NOT_ENCODED_PROXY=La password per il seguente proxy non \u00e8 codificata: {0}. \u00c8 possibile codificare la password eseguendo il comando securityUtility encode con l''opzione --encoding impostata su un tipo di codifica supportato, cio\u00e8 xor (valore predefinito), aes e hash. Ad esempio: securityUtility encode --encoding=aes proxyPassword
+LOG_PENDING_UNINSTALLING_FEATURE=Funzioni da disinstallare:
+# Following messages for debug logging purpose
+STATE_STARTING_INSTALL=Avvio installazione...
+STATE_STARTING_UNINSTALL=Avvio disinstallazione...
+STATE_STARTING_DEPLOY=Avvio distribuzione...
+STATE_STARTING_DOWNLOAD=Avvio download ...
+STATE_CHECKING=Controllo funzioni...
+STATE_CHECKING_FIXES=Controllo fix...
+STATE_CHECKING_MISSING_SERVER_FEATURES=Controllo delle funzioni mancanti richieste dal server...
+STATE_CHECKING_ASSETS=Controllo asset...
+STATE_DOWNLOADING=Scaricamento di {0} in corso...
+STATE_DOWNLOADING_DEPENDENCY=Scaricamento di una funzione dipendente...
+STATE_DOWNLOADING_IGNORE_ASSET=Il seguente asset esiste gi\u00e0 nella directory: {0}\nL''opzione --overwrite non \u00e8 specificata, quindi l''asset non verr\u00e0 scaricato.\n
+STATE_DOWNLOADING_REPLACE_ASSET=Il seguente asset esiste gi\u00e0 nella directory: {0}\nL''opzione --overwrite \u00e8 specificata, quindi l''asset verr\u00e0 scaricato per sostituire il file esistente. \n
+STATE_DOWNLOADING_IGNORE_ASSETS=I seguenti asset esistono gi\u00e0 nella directory: {0}\nL''opzione --overwrite non \u00e8 specificata, quindi gli asset non verranno scaricati.\n
+STATE_DOWNLOADING_REPLACE_ASSETS=I seguenti asset esistono gi\u00e0 nella directory: {0}\nL''opzione --overwrite \u00e8 specificata, quindi gli asset verranno scaricati per sostituire i file esistenti.\n
+STATE_DOWNLOADING_FEATURES=Scaricamento delle funzioni remote...
+STATE_DOWNLOADING_ASSETS=Scaricamento degli asset remoti...
+STATE_INSTALLING=Installazione di {0} in corso...
+STATE_INSTALLING_DEPENDENCY=Installazione di una funzione dipendente...
+STATE_INSTALLING_FEATURES=Installazione funzioni...
+STATE_INSTALLING_ASSETS=Installazione asset...
+STATE_UNINSTALLING=Disinstallazione di {0} in corso...
+STATE_UNINSTALLING_FEATURES=Disinstallazione funzioni...
+STATE_REAPPLYING_FIXES=Riapplicazione delle fix {0} in corso...
+STATE_VALIDATING_FIXES=Convalida delle fix installate in corso...
+STATE_SET_SCRIPTS_PERMISSION=Impostazione autorizzazione script in corso...
+STATE_DEPLOYING=Distribuzione di {0} in corso...
+STATE_CLEANING=Cancellazione file temporanei...
+STATE_COMPLETED_INSTALL=Installazione completata
+STATE_COMPLETED_UNINSTALL=Disinstallazione completata
+STATE_COMPLETED_DOWNLOAD=Download completato\n
+STATE_COMPLETED_DEPLOY=Distribuzione completata
+STATE_RESOLVING=Risoluzione delle funzioni remote. Il completamento di questo processo potrebbe richiedere alcuni minuti.
+STATE_PREPARING_ASSETS=Preparazione degli asset per l'installazione. Il completamento di questo processo potrebbe richiedere alcuni minuti.
+STATE_INITIALIZING=Inizializzazione...
+STATE_CONTACTING_REPO=Si sta contattando IBM WebSphere Liberty Repository...
+STATE_DOWNLOAD_FILES_OK=\nTutti gli asset sono stati scaricati correttamente.
+PROGRESS_STEP=Passo {0} di {1}
+
+MSG_DOWNLOAD_SUCCESS=La funzione {0} \u00e8 stata scaricata.
+MSG_CLEANUP_SUCCESS=Ripulitura dei file temporanei completata correttamente.
+
+MSG_CANCEL_INSTALL=L'installazione \u00e8 stata annullata.
+MSG_TAKE_SEVERAL_MINUTES=Il completamento di questo processo potrebbe richiedere alcuni minuti.
+MSG_SEARCHING=Ricerca di asset. Il completamento di questo processo potrebbe richiedere alcuni minuti.
+MSG_SEARCHING_FEATURES=Ricerca funzioni...
+MSG_SEARCHING_ADDONS=Ricerca addon...
+MSG_SEARCHING_SAMPLES=Ricerca esempi...
+MSG_SEARCHING_OPENSOURCE=Ricerca delle integrazioni open source in corso...
+
+FEATURE_ASSET=funzione
+ADDON_ASSET=addon
+SAMPLE_ASSET=esempio prodotto
+OPENSOURCE_ASSET=integrazione open source
+GENERAL_ASSET=asset
+
+MSG_INVALID_FOR_OS=La risorsa funzione {0} non \u00e8 valida per il sistema operativo corrente e non sar\u00e0 installata.
+
+# Following are validation messages for viewSettings
+MSG_VALIDATION_EMPTY_KEY=Il nome propriet\u00e0 non \u00e8 stato specificato. Specificare un nome propriet\u00e0 valido o escludere la propriet\u00e0 se \u00e8 inutilizzata.
+MSG_VALIDATION_INVALID_KEY={0} non \u00e8 una propriet\u00e0\u00a0 supportata. Specificare un nome propriet\u00e0 valido o escludere la propriet\u00e0 se \u00e8 inutilizzata.
+MSG_VALIDATION_EMPTY_REPONAME=Il nome repository non \u00e8 stato specificato. Specificare un nome per il repository o escludere la propriet\u00e0 se \u00e8 inutilizzata.
+MSG_VALIDATION_DUPLICATE_KEY=Il nome propriet\u00e0\u00a0{0} \u00e8 un duplicato del nome propriet\u00e0\u00a0trovato alla riga {1}. Specificare un nome propriet\u00e0\u00a0univoco per ogni propriet\u00e0.
+MSG_VALIDATION_EMPTY_VALUE=Nessun valore \u00e8 stato specificato per la propriet\u00e0 {0}. Specificare un valore valido per la propriet\u00e0\u00a0o escludere la propriet\u00e0 se \u00e8 inutilizzata.
+MSG_VALIDATION_INVALID_DEFAULTREPO_VALUE=La propriet\u00e0 useDefaultRepository non supporta il valore {0}. Specificare un valore valido, ossia True o False.
+MSG_VALIDATION_INVALID_PORT_VALUE=Il valore porta di {0} non \u00e8 valido. Specificare un valore porta per il server proxy come un numero intero compreso nell''intervallo 1-65535.
+MSG_VALIDATION_MISSING_PORT_VALUE=Il valore porta non \u00e8 specificato. Specificare un valore porta per il server proxy come un numero intero compreso nell'intervallo 1-65535.
+MSG_VALIDATION_MISSING_HOST=Il nome host del server proxy non \u00e8 stato specificato. Specificare il nome host per il server proxy o escludere le altre propriet\u00e0\u00a0server proxy.
+MSG_VALIDATION_INVALID_URL=Il seguente URL non \u00e8 valido: {0} Sono supportati solo HTTP, HTTPS e gli URL file. Assicurarsi che l''URL sia specificato correttamente
+MSG_VALIDATION_UNSUPPORT_PROTOCOL=Il protocollo URL per il seguente repository non \u00e8 supportato: {0}. I protocolli supportati sono HTTP, HTTPS e file. Assicurarsi che l''URL sia specificato correttamente.
+MSG_VALIDATION_INVALID_HOST=Il seguente host server proxy non \u00e8 valido: {0} Specificare un nome host server proxy HTTP valido. Il prefisso http:// non \u00e8 necessario.
+
+VALIDATION_INVALID_VALUE=Valore non supportato
+VALIDATION_INVALID_KEY=Nome propriet\u00e0\u00a0non supportato
+VALIDATION_EMPTY_KEY=Nome propriet\u00e0\u00a0vuoto
+VALIDATION_EMPTY_VALUE=Valore vuoto
+VALIDATION_MISSING_REPONAME=Nome repository mancante
+VALIDATION_MISSING_PORT=Valore porta mancante
+VALIDATION_INVALID_PORT=Valore porta non supportato
+VALIDATION_MISSING_HOST=Nome host mancante
+VALIDATION_INVALID_HOST=Nome host non valido
+VALIDATION_INVALID_URL=Formato URL non supportato
+VALIDATION_DUPLICATE_KEY=Nome propriet\u00e0\u00a0duplicato
+VALIDATION_UNSUPPORTED_PROTOCOL=Protocollo non supportato
+
+# Following for tool
+TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Una o pi\u00f9 funzioni sono state disinstallate correttamente: {0}.
+TOOL_UNINSTALL_FEATURE_OK.explanation=La funzione specificata \u00e8 stata disinstallata.
+TOOL_UNINSTALL_FEATURE_OK.useraction=Non \u00e8 richiesta alcuna azione.
+TOOL_UNININSTALL_FEATURE_CONFIRMATION=Avvertenza: assicurarsi che tutti i processi server siano arrestati prima di disinstallare le funzioni.\nLa disinstallazione di funzioni da server in esecuzione potrebbe determinare degli errori di runtime o delle modalit\u00e0 di funzionamento impreviste.\n\nPremere Invio per continuare oppure "x" per uscire dall'operazione di disinstallazione delle funzioni.
+
+TOOL_PASSWORD_PROMPT=Immettere la password:
+TOOL_RE_ENTER_PASSWORD_PROMPT=Reimmettere la password:
+TOOL_PASSWORD_DOES_NOT_MATCH=Le voci non corrispondono.
+
+TOOL_FEATURES_INSTALLATION_COMPLETED=Tutte le funzioni sono state installate correttamente.
+TOOL_INSTALLATION_COMPLETED=Tutti gli asset sono stati installati correttamente.
+
+ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: La password per l'ID utente specificato nell'opzione --user non \u00e8 stata fornita.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=La password \u00e8 obbligatoria quando si specifica l'ID utente.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.useraction=Utilizzare l'opzione --password o --passwordfile per fornire la password per l'ID utente specificato nell'opzione --user e ripetere l'operazione.
+
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION=CWWKF1352E: Impossibile individuare il file della password specificato {0}.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.explanation=Si \u00e8 verificato un errore durante il tentativo di accedere al file della password specificato.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.useraction=Verificare che il percorso del file specificato sia valido, che il file esista e che l'utente disponga dell'autorizzazione necessaria per accedervi.
+
+ERROR_TOOL_INVALID_LOG_LEVEL=Il livello di log specificato {0} non \u00e8 valido.  Il log non \u00e8 abilitato.
+
+ERROR_TOOL_DIRECTORY_NOT_EXISTS=CWWKF1353E: La directory specificata non esiste: {0}
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.explanation=Il sistema non pu\u00f2 trovare la directory specificata.
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.useraction=Rieseguire il comando con una directory valida.
+
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA=CWWKF1354E: L''opzione --downloadOnly non pu\u00f2 essere utilizzata per installare {0}.
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.explanation=Utilizzo non valido dell'opzione --downloadOnly. 
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.useraction=Rieseguire il comando senza l'opzione --downloadOnly.
+
+ERROR_TOOL_DOWNLOADONLY_IS_FILE=CWWKF1355E: {0} \u00e8 un file. \u00c8 obbligatorio un percorso directory.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.explanation=\u00c8 stato effettuato un tentativo di scaricare gli archivi del sottosistema in un file.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.useraction=Rieseguire il comando con un percorso di directory.
+
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR=CWWKF1356E: Impossibile creare la struttura di directory {0}.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.explanation=Non \u00e8 stato possibile creare le directory richieste per scaricare gli archivi del sottosistema.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.useraction=Assicurarsi che la directory fornita esista e che le autorizzazioni necessarie siano presenti per consentire la creazione della struttura di directory. Eseguire nuovamente l'operazione.
+
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY=CWWKF1357E: L'opzione --downloadOnly non pu\u00f2 essere utilizzata con --offlineOnly.
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.explanation=Utilizzo non valido dell'opzione --offlineOnly. 
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.useraction=Rieseguire il comando senza l'opzione --offlineOnly.
+
+ERROR_TOOL_MISSING_DIRECTORY=CWWKF1358E: L''opzione --location \u00e8 obbligatoria per {0}.
+ERROR_TOOL_MISSING_DIRECTORY.explanation=L'opzione --location non \u00e8 stata trovata.
+ERROR_TOOL_MISSING_DIRECTORY.useraction=Rieseguire il comando con l'opzione --location.
+
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION=CWWKF1359E: Il valore {0} non \u00e8 valido per --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.explanation=\u00c8 necessario utilizzare dei valori validi per l'opzione --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.useraction=Eseguire il comando con un valore valido per --downloadOnly, come all.
+
+ERROR_TOOL_LOCATION_WITH_ESA=CWWKF1360E: L'opzione --location non pu\u00f2 essere utilizzata per installare un file di archivio del sottosistema (.esa).
+ERROR_TOOL_LOCATION_WITH_ESA.explanation=Utilizzo non valido dell'opzione --location. 
+ERROR_TOOL_LOCATION_WITH_ESA.useraction=Rieseguire il comando senza l'opzione --location.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED=CWWKF1361E: Impossibile caricare le propriet\u00e0\u00a0del repository da {0}. Verificare che il percorso al file delle propriet\u00e0 specificato sia valido e che il file contenga le propriet\u00e0 richieste.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.explanation=Si \u00e8 verificato un errore nel tentativo di accedere al file delle propriet\u00e0\u00a0specificato.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.useraction=Verificare che il percorso del file specificato sia valido e che il file contenga le propriet\u00e0 richieste.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE=CWWKF1362E: Il percorso specificato {0} non \u00e8 un file.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.explanation=La propriet\u00e0 di sistema per sovrascrivere l'ubicazione predefinita del file delle propriet\u00e0 deve essere impostata come un percorso file, non una directory. 
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.useraction=Rieseguire il comando con la propriet\u00e0 di sistema impostata su un percorso file valido.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS=CWWKF1363E: Il file specificato {0} non esiste.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.explanation=Il sistema non pu\u00f2 trovare il file delle propriet\u00e0\u00a0dei repository specificato.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.useraction=Verificare che il file esista nel percorso specificato e rieseguire il comando.
+
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED=CWWKF1364E: La password del server proxy non \u00e8 codificata. La password deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.explanation=La password del server proxy deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.useraction=Rieseguire il comando con una password codificata.
+
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED=CWWKF1365E: La password del server proxy codificata non \u00e8 valida. La password del proxy deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata. 
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.explanation=L'algoritmo di codifica utilizzato per codificare la password del proxy non \u00e8 supportato. La password del proxy deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata.
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.useraction=Rieseguire il comando con una password codificata valida.
+
+ERROR_TOOL_PROXY_PORT_MISSING=CWWKF1366E: Il numero di porta del server proxy non \u00e8 stato specificato.
+ERROR_TOOL_PROXY_PORT_MISSING.explanation=Il numero porta \u00e8 obbligatorio quando viene specificato il nome host per il server proxy.
+ERROR_TOOL_PROXY_PORT_MISSING.useraction=Rieseguire il comando con un numero di porta del server proxy valido.
+
+ERROR_TOOL_PROXY_HOST_MISSING=CWWKF1367E: Il nome host del server proxy non \u00e8 stato specificato.
+ERROR_TOOL_PROXY_HOST_MISSING.explanation=Il nome host \u00e8 obbligatorio quando viene specificato il numero della porta per il server proxy.
+ERROR_TOOL_PROXY_HOST_MISSING.useraction=Rieseguire il comando con un nome host del server proxy valido.
+
+ERROR_TOOL_INVALID_PROXY_PORT=CWWKF1368E: Il numero di porta del server proxy {0} non \u00e8 valido. Il numero di porta deve essere un numero compreso nell''intervallo 1-65535.
+ERROR_TOOL_INVALID_PROXY_PORT.explanation=Il numero di porta del server proxy specificato deve essere un numero compreso nell'intervallo 1-65535.
+ERROR_TOOL_INVALID_PROXY_PORT.useraction=Rieseguire il comando con un numero di porta del server proxy valido.
+
+ERROR_TOOL_PROXY_PWD_MISSING=CWWKF1369E: La password del server proxy non \u00e8 stata specificata.
+ERROR_TOOL_PROXY_PWD_MISSING.explanation=La password \u00e8 obbligatoria quando viene specificato l'ID utente per il server proxy.
+ERROR_TOOL_PROXY_PWD_MISSING.useraction=Rieseguire il comando con la password del server proxy richiesta.
+
+ERROR_TOOL_UNKNOWN_PROXY_HOST=CWWKF1370E: Il nome host del server proxy {0} \u00e8 sconosciuto.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.explanation=Impossibile risolvere il nome host del server proxy.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.useraction=Rieseguire il comando con un nome host del server proxy noto.
+
+ERROR_TOOL_INCORRECT_PROXY_PORT=CWWKF1371E: Impossibile connettersi al server proxy sulla porta {0}.
+ERROR_TOOL_INCORRECT_PROXY_PORT.explanation=Il numero di porta del proxy specificato non \u00e8 corretto. Non ci sono servizi in ascolto sul numero di porta specificato per il server proxy. 
+ERROR_TOOL_INCORRECT_PROXY_PORT.useraction=Rieseguire il comando con il numero di porta proxy corretto.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWKF1372E: Le credenziali del server proxy specificate non sono corrette.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Le credenziali del server proxy specificate non possono essere autenticate. 
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Rieseguire il comando con le credenziali del server proxy corrette.
+
+ERROR_NO_REPO_WAS_ENABLED=CWWKF1373E: Il comando non pu\u00f2 essere eseguito perch\u00e9 non sono abilitati repository.
+ERROR_NO_REPO_WAS_ENABLED.explanation=Tutti i repository erano disabilitati dalla configurazione.
+ERROR_NO_REPO_WAS_ENABLED.useraction=Abilitare uno o pi\u00f9 repository e rieseguire il comando.
+
+ERROR_TOOL_PWD_NOT_ENCRYPTED=CWWKF1374E: La password non \u00e8 codificata. La password deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.explanation=La password deve essere codificata utilizzando il comando securityUtility.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.useraction=Rieseguire il comando con una password codificata.
+
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED=CWWKF1375E: La password codificata non \u00e8 valida. La password deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata. 
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.explanation=L'algoritmo di codifica utilizzato per codificare la password non \u00e8 supportato. La password deve essere codificata utilizzando il comando securityUtility con l'algoritmo di crittografia AES come opzione --encoding consigliata.
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.useraction=Rieseguire il comando con una password codificata valida.
+
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E: {0} non \u00e8 una cartella vuota n\u00e9 un repository directory valido. Utilizzare una cartella vuota o un repository directory esistente per lo scaricamento.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.explanation=\u00c8 stato effettuato un tentativo di scaricare in una directory non valida.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.useraction=Rieseguire il comando con un percorso directory valido.
+
+ERROR_TOOL_DIRECTORY_REQUIRED=CWWKF1377E: \u00c8 necessario specificare un percorso file valido sull''opzione --{0}. Specificare un percorso file e rieseguire il comando.
+ERROR_TOOL_DIRECTORY_REQUIRED.explanation=L'opzione --location richiede un percorso file valido, ma non \u00e8 stato specificato un percorso file o quello specificato non \u00e8 valido.
+ERROR_TOOL_DIRECTORY_REQUIRED.useraction=Sull'opzione --location, specificare un percorso file valido in cui scaricare i file, quindi rieseguire il comando.
+
+ERROR_TOOL_DIRECTORY_INACCESSIBLE=CWWKF1378E: La seguente directory non \u00e8 accessibile: {0}, assicurarsi che l''utente corrente abbia autorizzazione di scrittura e lettura alla directory. 
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.explanation=Il comando non pu\u00f2 scaricare i file nella directory specificata perch\u00e9 l'utente corrente non dispone dell'autorizzazione di scrittura e lettura necessaria.
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.useraction=Verificare che l'utente corrente abbia le autorizzazioni di scrittura e lettura alla directory e rieseguire il comando.
+
+ERROR_TEMP_DIR_NO_SPACE=CWWKF1379E: L''asset non pu\u00f2 essere scaricato perch\u00e9 lo spazio disco disponibile alla seguente directory temporanea Java \u00e8 insufficiente: {0}. Lo spazio totale richiesto \u00e8 {2}. Lo spazio totale disponibile \u00e8 {1}. Eliminari i file non necessari nella directory o modificare il percorso di java.io.tempdir in un''altra directory e rieseguire il comando.
+ERROR_TEMP_DIR_NO_SPACE.explanation=Il comando non pu\u00f2 scaricare i file nella directory temporanea Java perch\u00e9 la directory non dispone di spazio sufficiente.
+ERROR_TEMP_DIR_NO_SPACE.useraction=Assicurarsi che la directory temporanea Java disponga di spazio sufficiente eliminando i file non necessari o modificare il percorso di java.io.tempdir in un'altra directory e rieseguire il comando.
+
+ERROR_WLP_DIR_NO_SPACE=CWWKF1380E: L''asset non pu\u00f2 essere installato perch\u00e9 lo spazio disco disponibile alla seguente directory di installazione \u00e8 insufficiente: {0}. Lo spazio totale richiesto \u00e8 {2}. Lo spazio totale disponibile \u00e8 {1}. Eliminari i file non necessari nel file system e rieseguire il comando.
+ERROR_WLP_DIR_NO_SPACE.explanation=Il comando non pu\u00f2 installare gli asset nella directory di installazione perch\u00e9 la directory non dispone di spazio sufficiente.
+ERROR_WLP_DIR_NO_SPACE.useraction=Assicurarsi che la directory di installazione disponga di spazio sufficiente eliminando i file non necessari nel file system e rieseguire il comando.
+
+ERROR_FAILED_TO_CONNECT_JDK_WRONG=CWWKF1381E: Impossibile raggiungere IBM WebSphere Liberty Repository a causa di un errore del factory di socket SSL. Questo errore pu\u00f2 verificarsi se si utilizza un Java SDK fornito per WebSphere Application Server classico con Liberty. Installare un Java SDK fornito per Liberty o cancellare i provider di factory di socket SSL nell'SDK esistente come descritto nella documentazione per la risoluzione dei problemi di Liberty.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.explanation=Il Java SDK configurato sembra essere fornito per WebSphere Application Server classico. Questo Java SDK non pu\u00f2 essere utilizzato cos\u00ec com'\u00e8 con WebSphere Application Server Liberty, ci\u00f2 ha causato un errore del factory di socket SSL.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.useraction=Installare e configurare  un Java SDK per Liberty. \n\nIn alternativa, \u00e8 possibile utilizzare l'SDK esistente e aggirare il problema cancellando i provider di factory di socket SSL per il Java SDK. Per ulteriori informazioni, consultare la documentazione Liberty relativamente alla risoluzione dei problemi SSL. 
+
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION=CWWKF1382E: Impossibile ottenere i seguenti asset: {0} Uno o pi\u00f9 repository configurati potrebbero non essere accessibili, o gli asset specificati potrebbero non essere validi. Verificare che i repository possa accedere ai repository e utilizzare le azioni viewSettings e testConnection per verificare la connessione. Per trovare gli ID degli asset applicabili, eseguire il comando installUtility find.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.explanation=Il programma di installazione non \u00e8 riuscito a richiamare gli asset specificati dai repository.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Verificare che gli asset specificati siano validi, che siano stati forniti un ID utente e una password validi e che i repository siano accessibili. \u00c8 possibile utilizzare l'azione viewSettings per verificare i repository configurati e successivamente utilizzare l'azione testConnection per verificare la connessione.
+
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: L''asset {0} dipende da {1}, che non \u00e8 disponibile nei repository configurati. Uno o pi\u00f9 dei repository configurati potrebbe non essere accessibile. Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l''asset. Se non si dispone di accesso a internet, contattare l''amministratore per scaricare l''asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato. In alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=L'asset non pu\u00f2 essere scaricato o installato perch\u00e9 dipende da un asset che non \u00e8 disponibile.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l'asset. \u00c8 possibile utilizzare l'azione viewSettings per verificare i repository configurati e successivamente utilizzare l'azione testConnection per verificare la connessione.\n\nIn alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory.\n\nSe non si dispone di accesso a internet, contattare l'amministratore per scaricare l'asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato.\n\nPer maggiori informazioni sull'installazione degli asset, consultare la documentazione di installUtility in IBM Knowledge Center. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Gli asset {0} dipendono da {1}, che non \u00e8 disponibile nei repository configurati. Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l''asset. Se non si dispone di accesso a internet, contattare l''amministratore per scaricare l''asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Gli asset non possono essere scaricati o installati perch\u00e9 dipendono da un asset non disponibile.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l'asset. In alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory. Se non si dispone di accesso a internet, contattare l'amministratore per scaricare gli asset mancanti e le eventuali dipendenze, quindi aggiungerli a un repository configurato. Per maggiori informazioni sull'installazione degli asset, consultare la documentazione di installUtility in IBM Knowledge Center. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Gli asset {0} dipendono da {1}, che non \u00e8 disponibile in IBM WebSphere Liberty Repository. Se l''asset richiesto \u00e8 una funzione precedentemente scaricata, installare la funzione mancante specificando l''ubicazione del file ESA della funzione nell''opzione featureManager install --location, e ripetere l''installazione di {0}.
+ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Impossibile installare le funzioni, i componenti aggiuntivi o le fix temporanee perch\u00e9 dipendono da un asset non disponibile.
+ERROR_MISSING_MULTIPLE_DEPENDENT.useraction=Se l'asset richiesto \u00e8 una funzione precedentemente scaricata, installare la funzione mancante specificando l'ubicazione del file ESA della funzione nell'opzione featureManager install --location, e riprovare. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNKNOWN_OPERATING_SYSTEM=CWWKF1386E: Il sistema operativo corrente non \u00e8 riconosciuto.
+ERROR_UNKNOWN_OPERATING_SYSTEM.explanation=I controlli di compatibilit\u00e0 file del sistema operativo vengono ignorati perch\u00e9 il sistema operativo in uso non \u00e8 riconosciuto.
+ERROR_UNKNOWN_OPERATING_SYSTEM.useraction=Passare a uno dei seguenti sistemi operativi: AIX, HP-UX, macOS, Linux, OS/400, Solaris, Windows o z/OS.
+
+ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Il valore {0} non \u00e8 un''immissione valida per la direttiva del sistema operativo {1}.
+ERROR_UNKNOWN_OSLIST_VALUE.explanation=Questo valore verr\u00e0 ignorato perch\u00e9 non \u00e8 un nome sistema operativo riconosciuto.
+ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modificare o rimuovere il valore dal file manifest della funzione.
+
+TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: La funzione \u00e8 stata scaricata correttamente.
+TOOL_DOWNLOAD_FEATURE_OK.explanation=La funzione \u00e8 stata scaricata.
+TOOL_DOWNLOAD_FEATURE_OK.useraction=Non \u00e8 richiesta alcuna azione.
+
+TOOL_DOWNLOAD_FEATURES_OK=CWWKF1501I: Le funzioni sono state scaricate correttamente.
+TOOL_DOWNLOAD_FEATURES_OK.explanation=Le funzioni sono state scaricate.
+TOOL_DOWNLOAD_FEATURES_OK.useraction=Non \u00e8 richiesta alcuna azione.
+
+MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Il file {0} non pu\u00f2 essere installato poich\u00e9 \u00e8 un tipo di file non supportato. \u00c8 supportata solo l''installazione dai file ESA.
+MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Il file non \u00e8 stato installato poich\u00e9 \u00e8 stato fornito un tipo non supportato di file.
+MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Consultare le informazioni sulla determinazione dei problemi nella pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MSG_STABILIZING_FEATUREMANAGER=Questa azione featureManager \u00e8 stabilizzata. Utilizzare invece installUtility {0}. Il comando installUtility non \u00e8 consigliato per azioni correlate di installazione e correlate al repository. 

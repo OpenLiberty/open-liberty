@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1001,6 +1001,15 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         }
         return buffers;
     }
+    
+    protected void setTable(H2HeaderTable table) {
+        this.table = table;
+    }
+
+    public WsByteBuffer[] marshallHeaders(WsByteBuffer[] src, H2HeaderTable table) {
+        this.table = table;
+        return marshallHeaders(src);
+    }
 
     /**
      * @throws Exception
@@ -1034,6 +1043,13 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 //instead of marshallHeader
                 if (this.table != null) {
                     try {
+                        if (!H2Headers.checkIsValidH2WriteHeader(elem.getName())) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "On an HTTP/2 connection - will not encode this header header: " + elem.getName());
+                            }
+                            // this is a connection-specific header; don't encode it
+                            continue;
+                        }
                         buffers = encodeHeader(buffers, elem);
                     } catch (Exception e) {
                         // Three possible scenarios -
@@ -1044,7 +1060,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         // Show error and return null, so caller can invalidate the table
                         // and close the stream.
                         // 3.) IOException for not being able to write into Byte Array stream
-                        Tr.error(tc, e.getMessage());
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
+                            Tr.error(tc, e.getMessage());
+                        }
                         // Release all allocated buffers of this message
                         for (WsByteBuffer buffer : buffers) {
                             buffer.release();

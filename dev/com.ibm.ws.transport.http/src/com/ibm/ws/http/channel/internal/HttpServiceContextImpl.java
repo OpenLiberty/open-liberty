@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
 import com.ibm.ws.http.channel.h2internal.H2VirtualConnectionImpl;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
@@ -1920,26 +1920,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
                 framesToWrite.addAll(bodyFrames);
-//                WsByteBuffer buffer = this.allocateBuffer(frameToWrite.length);
-//                buffer.put(frameToWrite);
-//                buffer.flip();
-//
-//                for (WsByteBuffer bb : wsbb) {
-//                    if (bb != null) {
-//                        bb.release();
-//                    }
-//                }
-//                for (int i = 0; i < wsbb.length; i++) {
-//                    wsbb[i] = null;
-//                }
-//
-//                wsbb[0] = buffer;
-//
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "formatBody: Adding " + index + " app buffers to write queue");
-//                }
-//                // save their non-null data buffers
-//                addToPendingByteBuffer(wsbb, index);
 
                 // save the amount of data written inside actual body
                 addBytesWritten(length);
@@ -2063,6 +2043,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 //We will then continue on from there
                 if (msg.isBodyExpected()) {
                     complete = false;
+                }
+                // if the method is HEAD we know no body will be written out; we need to mark the headers as end of stream
+                if (this.getRequestMethod().equals(MethodValues.HEAD)) {
+                    complete = true;
                 }
                 ArrayList<Frame> headerFrames = link.prepareHeaders(WsByteBufferUtils.asByteArray(headerBuffers), complete);
 
@@ -2399,14 +2383,21 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "sendFullOutgoing : preparing the final write");
                 }
-
-                ArrayList<Frame> frameToWrite = h2Link.prepareBody(null, this.isFinalWrite);
-
+                if (msg.getTrailers() != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "sendFullOutgoing : creating trailers");
+                    }
+                    WsByteBuffer[] trailers = marshallOutgoingH2Trailers(h2Link.getWriteTable());
+                    if (trailers != null) {
+                        framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(trailers), true));
+                    }
+                } else {
+                    framesToWrite.addAll(h2Link.prepareBody(null, this.isFinalWrite));
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "sendFullOutgoing : final write prepared : " + frameToWrite);
+                    Tr.debug(tc, "sendFullOutgoing : final write prepared : " + framesToWrite);
                 }
 
-                framesToWrite.addAll(frameToWrite);
             } else if (msg.isChunkedEncodingSet()) {
                 createEndOfBodyChunk();
             }
@@ -2447,31 +2438,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (this instanceof HttpInboundServiceContextImpl) {
                 hisc = (HttpInboundServiceContextImpl) this;
             }
-            if (hisc != null && hisc.getLink() instanceof H2HttpInboundLinkWrap) {
-//                if (wsbb == null) {
-//                    H2HttpInboundLinkWrap h2Link = (H2HttpInboundLinkWrap) hisc.getLink();
-//
-//                    byte[] frameToWrite = h2Link.prepareBody(null, this.isFinalWrite);
-//                    WsByteBuffer buffer = this.allocateBuffer(frameToWrite.length);
-//                    buffer.put(frameToWrite);
-//                    buffer.flip();
-//                    wsbb = new WsByteBuffer[1];
-//                    wsbb[0] = buffer;
-//
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "formatBody: Adding " + 1 + " app buffers to write queue");
-//                    }
-//                    addToPendingByteBuffer(wsbb, 1);
-//
-//                    // save the amount of data written inside actual body
-////                    addBytesWritten(length);
-//
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "formatBody: total bytes now : " + getNumBytesWritten());
-//                    }
-//                    System.out.println("XXX sendFullOutgoing : new chunk");
-//                }
-            } else {
+            if (hisc != null && !(hisc.getLink() instanceof H2HttpInboundLinkWrap)) {
                 createEndOfBodyChunk();
             }
         }
@@ -2603,6 +2570,34 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 } else {
                     buffers = trailers.marshallHeaders(null);
                 }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Trailers marshalled into " + buffers.length + " buffers.");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Warning: no actual trailers to marshall.");
+                }
+            }
+        }
+        return buffers;
+    }
+
+    /**
+     * Convert the outgoing trailers, if any exist, to one or more <code>WsByteBuffer</code> objects.
+     *
+     * @return the trailers as an array of <code>WsByteBuffer</code> objects. NULL
+     *         will be returned if no trailers exist and/or
+     *         need to be marshalled.
+     */
+    private WsByteBuffer[] marshallOutgoingH2Trailers(H2HeaderTable table) {
+
+        HttpTrailersImpl trailers = getMessageBeingSent().getTrailersImpl();
+        WsByteBuffer[] buffers = null;
+        if (null != trailers) {
+            trailers.computeRemainingTrailers();
+            if (0 < trailers.getNumberOfHeaders()) {
+                // we do have headers to marshall
+                buffers = trailers.marshallHeaders(null, table);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Trailers marshalled into " + buffers.length + " buffers.");
                 }
@@ -5091,8 +5086,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         try {
             // Add the four required pseudo headers to the push_promise frame header block fragment
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, "GET", LiteralIndexType.NOINDEXING));
-            String authority = getLocalAddr().getHostName() + ":" + getLocalPort();
-            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, authority, LiteralIndexType.NOINDEXING));
+            // Encode authority
+            String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
+            if (auth != null) {
+                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+            }
             if (this.isSecure()) {
                 ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
             } else {
@@ -5149,9 +5147,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (existingSP != null) {
             try {
                 existingSP.processNextFrame(pushPromiseFrame, com.ibm.ws.http.channel.h2internal.Constants.Direction.WRITING_OUT);
-            } catch (ProtocolException pe) {
+            } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "handleH2LinkPreload(): Protocol exception when sending the push_promise frame: " + pe);
+                    Tr.exit(tc, "handleH2LinkPreload(): Protocol exception when sending the push_promise frame: " + e);
                 }
                 return;
             }

@@ -11,10 +11,14 @@
 package session.cache.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,6 +103,11 @@ public class SessionCacheTestServlet extends FATServlet {
         object = (AppObject) sessionMap.get("appObject");
         assertNotNull("The indirect appObject was not found in the HTTP session", object);
         assertTrue("indirect AppObject not deserialized properly", object.deserialized);
+
+        ArrayList<String> attributeNames = Collections.list(session.getAttributeNames());
+        String attributeNamesString = attributeNames.toString();
+        assertTrue(attributeNamesString, attributeNames.containsAll(Arrays.asList("map", "str", "appObject")));
+        assertEquals(attributeNamesString, 3, attributeNames.size());
     }
 
     public void testSerializeDataSource(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -143,6 +152,7 @@ public class SessionCacheTestServlet extends FATServlet {
 
         assertNull(session.getAttribute("str"));
         assertNull(session.getAttribute("appObject"));
+        assertFalse(session.getAttributeNames().hasMoreElements());
     }
 
     public void sessionPut(HttpServletRequest request, HttpServletResponse response) throws Throwable {
