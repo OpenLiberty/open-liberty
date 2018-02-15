@@ -44,7 +44,8 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.httptransport-1.0, \
  com.ibm.websphere.appserver.javax.servlet-4.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
- com.ibm.websphere.appserver.javaeeCompatible-8.0
+ com.ibm.websphere.appserver.javaeeCompatible-8.0, \
+ com.ibm.websphere.appserver.servlet-servletSpi1.0
 -bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io.1.4, \
@@ -60,13 +61,11 @@ Subsystem-Category: JavaEE8Application
  com.ibm.ws.webserver.plugin.runtime, \
  com.ibm.ws.webserver.plugin.runtime.interfaces
 -jars=com.ibm.ws.webserver.plugin.utility, \
- com.ibm.websphere.appserver.api.servlet; location:=dev/api/ibm/, \
- com.ibm.websphere.appserver.spi.servlet; location:=dev/spi/ibm/
+ com.ibm.websphere.appserver.api.servlet; location:=dev/api/ibm/
 -files=bin/tools/ws-webserverPluginutil.jar, \
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
  dev/api/ibm/schema/ibm-common-bnd_1_2.xsd, \
- dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.servlet_2.1-javadoc.zip, \
  dev/api/ibm/schema/ibm-web-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-application-ext_1_0.xsd, \
  dev/api/ibm/schema/ibm-web-ext_1_0.xsd, \
