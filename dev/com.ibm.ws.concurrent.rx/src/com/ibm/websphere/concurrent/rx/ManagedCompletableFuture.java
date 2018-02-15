@@ -69,6 +69,11 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * one for the subclass itself, which includes the override logic, which delegates to another CompletableFuture
  * instance that does the actual work.
  *
+ * TODO Before releasing any code that uses this, this implementation needs to be rebased onto Java 9,
+ * taking advantage of plugin points for defaultExecutor/newIncompleteFuture, which will allow for a more
+ * optimal implementation. Java 9 methods are marked with TODO, however, all methods should be impacted
+ * by this.
+ *
  * @param <T>
  */
 public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
@@ -218,6 +223,47 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                         CompletableFuture.completedFuture(value), //
                         AccessController.doPrivileged(getDefaultManagedExecutorAction), //
                         null);
+    }
+
+    /**
+     * Replaces CompletableFuture.completedStage(value) with an implementation that switches the
+     * default asynchronous execution facility to be the default managed executor.
+     *
+     * @param value result of the completed future
+     * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
+     */
+    public static <U> CompletionStage<U> completedStage(U value) {
+        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+    }
+
+    public static Executor delayedExecutor​(long delay, TimeUnit unit) {
+        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+    }
+
+    public static Executor delayedExecutor​(long delay, TimeUnit unit, Executor executor) {
+        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+    }
+
+    /**
+     * Replaces CompletableFuture.failedFuture(value) with an implementation that switches the
+     * default asynchronous execution facility to be the default managed executor.
+     *
+     * @param value result of the completed future
+     * @return completed completable future where the default managed executor is the default asynchronous execution facility.
+     */
+    public static <U> ManagedCompletableFuture<U> failedFuture(U value) {
+        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+    }
+
+    /**
+     * Replaces CompletableFuture.failedStage(value) with an implementation that switches the
+     * default asynchronous execution facility to be the default managed executor.
+     *
+     * @param value result of the completed future
+     * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
+     */
+    public static <U> CompletionStage<U> failedStage(U value) {
+        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
     }
 
     /**
@@ -473,6 +519,22 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * @see java.util.concurrent.CompletableFuture#completeAsync(Supplier)
+     */
+    // TODO Java 9 @Override
+    public CompletableFuture<T> completeAsync​(Supplier<? extends T> supplier) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#completeAsync(Supplier, Executor)
+     */
+    // TODO Java 9 @Override
+    public CompletableFuture<T> completeAsync​(Supplier<? extends T> supplier, Executor executor) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * @see java.util.concurrent.CompletableFuture#completeExceptionally(java.lang.Throwable)
      */
     @Override
@@ -487,6 +549,30 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         }
 
         return completedByThisMethod;
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#completeOnTimeout(Object, long, TimeUnit)
+     */
+    // TODO Java 9 @Override
+    public CompletableFuture<T> completeOnTimeout​(T value, long timeout, TimeUnit unit) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#copy()
+     */
+    // TODO Java 9 @Override
+    public CompletableFuture<T> copy​() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#defaultExecutor()
+     */
+    // TODO Java 9 @Override
+    public Executor defaultExecutor​() {
+        return defaultExecutor;
     }
 
     /**
@@ -634,6 +720,22 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
+     * @see java.util.concurrent.CompletableFuture#minimalCompletionStage()
+     */
+    // TODO Java 9 @Override
+    public CompletionStage<T> minimalCompletionStage() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#newIncompleteFuture()
+     */
+    // TODO Java 9 @Override
+    public CompletableFuture<T> newIncompleteFuture() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * @see java.util.concurrent.CompletableFuture#obtrudeException(java.lang.Throwable)
      */
     @Override
@@ -669,6 +771,14 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             if (future != null)
                 future.cancel(true);
         }
+    }
+
+    /**
+     * @see java.util.concurrent.CompletableFuture#orTimeout(long, TimeUnit)
+     */
+    // TODO Java 9 @Override
+    public CompletableFuture<T> orTimeout(long timeout, TimeUnit unit) {
+        throw new UnsupportedOperationException();
     }
 
     /**
