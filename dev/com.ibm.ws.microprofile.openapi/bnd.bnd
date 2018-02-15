@@ -52,7 +52,10 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.ws.microprofile.openapi.ApplicationProcessor,\
 	com.ibm.ws.microprofile.openapi.OASFactoryResolverImpl, \
 	com.ibm.ws.microprofile.openapi.impl.CustomCSSProcessor
+
 WS-TraceGroup: MPOPENAPI
+instrument.classesExcludes: \
+    **/com/ibm/ws/microprofile/openapi/impl/model/**
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
