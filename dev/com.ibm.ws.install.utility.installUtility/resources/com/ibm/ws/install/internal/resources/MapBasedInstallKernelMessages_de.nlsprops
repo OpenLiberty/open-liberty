@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/resources/MapBasedInstallKernelMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1650 to 1699 are reserved for the asset manager.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: Das Liberty Profile-Installationsverzeichnis wurde nicht definiert.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=Das System findet das Liberty Profile-Installationsverzeichnis nicht, weil das Verzeichnis nicht angegeben wurde.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: Das folgende Liberty Profile-Installationsverzeichnis ist nicht vorhanden: {0}
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=Das angegebene Liberty Profile-Installationsverzeichnis ist nicht vorhanden.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: {0} ist kein g\u00fcltiges Verzeichnis.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=Das angegebene Liberty Profile-Installationsverzeichnis ist eine Datei.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: Das Installationsprogramm wurde nicht initialisiert.
+MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=Das Installationsprogramm wurde wegen eines internen Fehlers nicht initialisiert.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
+
+MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: Das Installationsprogramm wurde nicht initialisiert, weil der folgende Fehler aufgetreten ist: {0}
+MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=Das Installationsprogramm wurde wegen eines internen Fehlers nicht initialisiert.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).

@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/resources/MapBasedInstallKernelMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1650 to 1699 are reserved for the asset manager.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: O diret\u00f3rio de instala\u00e7\u00e3o do perfil do Liberty n\u00e3o foi configurado.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=O sistema n\u00e3o pode localizar o diret\u00f3rio de instala\u00e7\u00e3o do perfil do Liberty porque o diret\u00f3rio n\u00e3o foi especificado.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: O seguinte diret\u00f3rio de instala\u00e7\u00e3o do perfil do Liberty n\u00e3o existe: {0}
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=O diret\u00f3rio de instala\u00e7\u00e3o do perfil do Liberty especificado n\u00e3o existe.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: {0} n\u00e3o \u00e9 um diret\u00f3rio v\u00e1lido.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=O diret\u00f3rio de instala\u00e7\u00e3o do perfil do Liberty especificado \u00e9 um arquivo.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: O instalador n\u00e3o foi inicializado.
+MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=O instalador n\u00e3o foi inicializado devido um erro interno.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: O instalador n\u00e3o foi inicializado devido ao erro a seguir ter ocorrido: {0}
+MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=O instalador n\u00e3o foi inicializado devido um erro interno.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

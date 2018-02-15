@@ -102,8 +102,8 @@ class SessionData {
 
     @Trivial
     byte[] getBytes() {
-        BitSet bitset = (BitSet) list.get(BITS);
-        byte[] bytes = bitset == null ? null : bitset.toByteArray();
+        Object o = list.get(BITS);
+        byte[] bytes = o instanceof BitSet ? ((BitSet) o).toByteArray() : null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "getBytes", bytes == null ? null : bytes.length);
         return bytes;
@@ -154,8 +154,8 @@ class SessionData {
 
     @Override
     public String toString() {
-        BitSet bitset = (BitSet) list.get(BITS);
-        Integer length = bitset == null ? null : (bitset.length() + 7) / 8; // per BitSet.toByteArray
+        Object o = list.get(BITS);
+        Integer length = o instanceof BitSet ? (((BitSet) o).length() + 7) / 8 : null; // per BitSet.toByteArray
         return new StringBuilder("SessionData[").append(length)
                         .append("] for ").append(list.get(USER))
                         .append(" created ").append(list.get(CREATION_TIME))

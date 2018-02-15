@@ -45,6 +45,7 @@ import org.apache.myfaces.cdi.view.ApplicationContextBean;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.context.servlet.StartupFacesContextImpl;
 import org.apache.myfaces.context.servlet.StartupServletExternalContextImpl;
+import org.apache.myfaces.flow.FlowReference;
 import org.apache.myfaces.flow.util.FlowUtils;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.context.ExceptionHandlerImpl;
@@ -303,6 +304,13 @@ public class FlowScopeBeanHolder implements Serializable
             return activeFlowKeys;
         }
     }
+    
+
+    public String getFlowMapKey(FacesContext facesContext, FlowReference flowReference)
+    {
+        // no-op: needed to maintain serializability with pre-18.0.0.1 servers
+        return null;
+    } 
     
     public void createCurrentFlowScope(FacesContext facesContext)
     {

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2014, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/Repository.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Repositor
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1500 to 1699 are reserved for the InstallKernel.
+
+ERROR_DIRECTORY_NOT_EXISTS=CWWKF1500E: \uc9c0\uc815\ub41c \ub514\ub809\ud1a0\ub9ac {0}\uc774(\uac00) \uc5c6\uc2b5\ub2c8\ub2e4.
+ERROR_DIRECTORY_NOT_EXISTS.explanation=\uc2dc\uc2a4\ud15c\uc774 \uc9c0\uc815\ub41c \ub514\ub809\ud1a0\ub9ac\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERROR_DIRECTORY_NOT_EXISTS.useraction=\uc720\ud6a8\ud55c \ub514\ub809\ud1a0\ub9ac\ub97c \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+ERROR_PATH_IS_FILE=CWWKF1501E: {0}\uc774(\uac00) \ud30c\uc77c\uc785\ub2c8\ub2e4. \ub514\ub809\ud1a0\ub9ac \uacbd\ub85c\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
+ERROR_PATH_IS_FILE.explanation=\uc2dc\uc2a4\ud15c\uc774 \uc720\ud6a8\ud55c \ub514\ub809\ud1a0\ub9ac\ub97c \uc694\uad6c\ud569\ub2c8\ub2e4.
+ERROR_PATH_IS_FILE.useraction=\uc720\ud6a8\ud55c \ub514\ub809\ud1a0\ub9ac\ub97c \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+ERROR_INVALID_INDEX_FILE=CWWKF1502E: {0}\uc774(\uac00) \uc720\ud6a8\ud55c \uc0c9\uc778 \ud30c\uc77c\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+ERROR_INVALID_INDEX_FILE.explanation=\uc0c9\uc778 \ud30c\uc77c\uc774 \uc190\uc0c1\ub418\uc5c8\uac70\ub098 \uc62c\ubc14\ub978 \ud615\uc2dd\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+ERROR_INVALID_INDEX_FILE.useraction=WebSphere Application Server \uc9c0\uc6d0 \uc6f9 \ud398\uc774\uc9c0(http://www.ibm.com/software/webservers/appserv/was/support)\uc5d0\uc11c \ubb38\uc81c\uc810 \ud310\ubcc4 \uc815\ubcf4\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+ERROR_FILEPATH_NOT_EXISTS=CWWKF1503E: \ub2e4\uc74c\uacfc \uac19\uc774 \uc9c0\uc815\ub41c \ud30c\uc77c \uacbd\ub85c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4. {0}. \ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc800\uc7a5\uc18c\uc758 \uc62c\ubc14\ub978 \uacbd\ub85c\ub97c \uc785\ub825\ud558\uc2ed\uc2dc\uc624.
+ERROR_FILEPATH_NOT_EXISTS.explanation=\uc2dc\uc2a4\ud15c\uc774 \uc9c0\uc815\ub41c \ud30c\uc77c \uacbd\ub85c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ub514\ub809\ud1a0\ub9ac \ub610\ub294 ZIP \ud30c\uc77c\uc758 \uc62c\ubc14\ub978 \uacbd\ub85c\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
+ERROR_FILEPATH_NOT_EXISTS.useraction=\ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc800\uc7a5\uc18c\uc758 \uc62c\ubc14\ub978 \uacbd\ub85c\ub97c \uc785\ub825\ud558\uc2ed\uc2dc\uc624.

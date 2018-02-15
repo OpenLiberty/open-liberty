@@ -1,0 +1,50 @@
+<ejb-jar-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+             version="1.0">
+
+  <session name="BasicStateless">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BasicStateless"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerRemote" binding-name="ejb/BasicStateless"/>
+  </session>
+
+  <session name="BeanManagerStatelessAnnotation">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BeanManagerStatelessAnnotation"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerRemote" binding-name="ejb/BeanManagerStatelessAnnotation"/>
+  </session>
+
+  <session name="BeanManagerStatelessMappedName">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BeanManagerStatelessMappedName"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerRemote" binding-name="ejb/BeanManagerStatelessMappedName"/>
+  </session>
+
+  <session name="BeanManagerStatelessXML">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BeanManagerStatelessXML"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerRemote" binding-name="ejb/BeanManagerStatelessXML"/>
+  </session>
+
+  <session name="BeanManagerStatelessInject">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BeanManagerStatelessInject"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerRemote" binding-name="ejb/BeanManagerStatelessInject"/>
+  </session>
+
+  <session name="SimpleStatefulOnce">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulBean" binding-name="ejblocal:SimpleStatefulOnceBean"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulRemove" binding-name="ejblocal:SimpleStatefulOnce"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulRemoveRemote" binding-name="ejb/SimpleStatefulOnce"/>
+  </session>
+
+  <session name="SimpleStatefulTran">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulBean" binding-name="ejblocal:SimpleStatefulTranBean"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulRemove" binding-name="ejblocal:SimpleStatefulTran"/>
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulRemoveRemote" binding-name="ejb/SimpleStatefulTran"/>
+  </session>
+
+  <session name="SimpleStatefulCompOnce" local-home-binding-name="ejblocal:SimpleStatefulCompHome">
+  </session>
+
+  <session name="SimpleStatefulBM">
+    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulBMRemove" binding-name="ejblocal:SimpleStatefulBM"/>
+  </session>
+
+</ejb-jar-bnd>
