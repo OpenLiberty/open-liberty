@@ -26,7 +26,7 @@ public class ResultsUtil {
       
         //Create DocumentBuilderFactory for reading testng-results file
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();;
+        DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse("publish/tckRunner/tck/target/surefire-reports/testng-results.xml");
       
         // Create XPathFactory for creating XPath Object
