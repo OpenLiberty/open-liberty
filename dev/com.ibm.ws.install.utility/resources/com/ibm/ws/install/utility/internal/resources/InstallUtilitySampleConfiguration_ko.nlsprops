@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## \uc628\ub77c\uc778 IBM WebSphere Liberty Repository \uc0ac\uc6a9 ##\n\
+## useDefaultRepository \ud2b9\uc131\uc744 false\ub85c \uc124\uc815\ud558\uc5ec\n\
+## installUtility\uac00\n\
+## IBM WebSphere Liberty Repository \uc800\uc7a5\uc18c\uc5d0 \uc5f0\uacb0\ud558\ub294 \ub370 \uc778\ud130\ub137\uc5d0 \uc561\uc138\uc2a4\ud558\uc9c0 \uc54a\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624. \uae30\ubcf8\uc801\uc73c\ub85c \uc561\uc138\uc2a4\uac00\n\
+## \uc0ac\uc6a9\ub429\ub2c8\ub2e4.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## \uc0ac\uc6a9\uc790 \uc815\uc758 \uc800\uc7a5\uc18c \uc0ac\uc6a9 ##\n\
+## installUtility\ub294 Liberty Asset Repository Service\uc758 \ud638\uc2a4\ud2b8\ub41c \n\
+## \uc778\uc2a4\ud134\uc2a4 \ubc0f \uc555\ucd95\ub418\uac70\ub098 \uc555\ucd95\uc744 \ud47c \ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc800\uc7a5\uc18c\uc5d0\uc11c \n\
+## \uc790\uc0b0\uc744 \uc124\uce58\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. Liberty \uc790\uc0b0\uc774 \ud3ec\ud568\ub41c \uac01 \uc0ac\uc6a9\uc790 \uc815\uc758 \uc800\uc7a5\uc18c\uc5d0 \n\
+## \uc800\uc7a5\uc18c \uc774\ub984\uacfc \ub514\ub809\ud1a0\ub9ac \uacbd\ub85c, \ud30c\uc77c \uacbd\ub85c \ub610\ub294 URL\uc744 \n\
+## \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.\n\
+## \uc800\uc7a5\uc18c\ub294 \uc9c0\uc815\ub41c \uc21c\uc11c\ub300\ub85c \uc561\uc138\uc2a4\ub429\ub2c8\ub2e4.\n\
+\n\
+## \ub514\ub809\ud1a0\ub9ac \uae30\ubc18 \uc800\uc7a5\uc18c\uc5d0 \uc774\ub984 \ubc0f \ub514\ub809\ud1a0\ub9ac \uacbd\ub85c, \uc544\uce74\uc774\ube0c \ud30c\uc77c \uacbd\ub85c \n\
+## \ub610\ub294 URL\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.\n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## \ud638\uc2a4\ud2b8\ub41c \uc800\uc7a5\uc18c\uc5d0 \uc774\ub984 \ubc0f URL\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## \ud544\uc694\ud55c \uacbd\uc6b0 \uac01 \uc800\uc7a5\uc18c\uc758 \uc2e0\uc784 \uc815\ubcf4\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.\n\
+## \ubcf4\uc548\uc744 \uac1c\uc120\ud558\ub824\uba74\n\
+## securityUtility \uc778\ucf54\ub4dc \uc870\uce58\ub97c \uc0ac\uc6a9\ud558\uc5ec .password \ud2b9\uc131\uc758 \uac12\uc744 \uc778\ucf54\ub4dc\ud558\uc2ed\uc2dc\uc624.\n\
+## \uc0ac\uc6a9\uc790 \ubc0f \ube44\ubc00\ubc88\ud638\ub97c \uc124\uc815\ud558\uc9c0 \uc54a\uc73c\uba74\n\
+## \uc774\ub97c \uc81c\uacf5\ud558\ub3c4\ub85d \ud504\ub86c\ud504\ud2b8\uac00 \uc218\uc2e0\ub429\ub2c8\ub2e4.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## \ud504\ub85d\uc2dc \uc11c\ubc84 \uc0ac\uc6a9(\uc120\ud0dd\uc0ac\ud56d) ##\n\
+## \ud504\ub85d\uc2dc \uc11c\ubc84\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc778\ud130\ub137\uc5d0 \uc561\uc138\uc2a4\ud558\ub294 \uacbd\uc6b0,\n\
+## \ud504\ub85d\uc2dc \uc124\uc815 \ud2b9\uc131\uc758 \uac12\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.\n\
+## \ubcf4\uc548\uc744 \uac1c\uc120\ud558\ub824\uba74\n\
+## securityUtility \uc778\ucf54\ub4dc \uc870\uce58\ub97c \uc0ac\uc6a9\ud558\uc5ec proxyPassword \ud2b9\uc131\uc758 \uac12\uc744 \uc778\ucf54\ub4dc\ud558\uc2ed\uc2dc\uc624.\n\
+## proxyUser \ubc0f proxyPassword\ub97c \uc124\uc815\ud558\uc9c0 \uc54a\uc73c\uba74\n\
+## \uc774\ub97c \uc81c\uacf5\ud558\ub3c4\ub85d \ud504\ub86c\ud504\ud2b8\uac00 \uc218\uc2e0\ub429\ub2c8\ub2e4.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword

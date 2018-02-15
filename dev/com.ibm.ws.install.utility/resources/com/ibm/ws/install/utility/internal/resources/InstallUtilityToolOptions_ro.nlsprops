@@ -1,0 +1,164 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Folosire:  {0}
+
+global.description=Descriere:
+global.actions=Ac\u0163iuni:
+global.options=Op\u0163iuni:
+global.options.lower=op\u0163iuni
+global.usage=Folosire:
+global.options.statement=\tUtiliza\u0163i ajutorul [actionName] pentru informa\u0163ii detaliate despre fiecare op\u0163iune.
+task.unknown=Ac\u0163iune necunoscut\u0103: {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tTip\u0103rirea informa\u0163iilor de ajutor pentru ac\u0163iunea specificat\u0103.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\tDesc\u0103rcarea aseturilor din magazii.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ nume ...
+download.option-desc.name...=\tSpecifica\u0163i unul sau mai multe nume de aseturi separate printr-un spa\u0163iu. Pentru a g\u0103si aseturile \n\
+\tpe care le pute\u0163i desc\u0103rca, rula\u0163i comanda installUtility find. Pentru      \n\
+\tcaracteristici \u015fi programe de completare, pute\u0163i specifica numele scurt (featureName-1.0)\n\
+\tsau numele simbolic (com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a suprascrie fi\u015fiere existente atunci c\u00e2nd desc\u0103rca\u0163i la  \n\
+\tdirectorul local. Dac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, comportamentul \n\
+\timplicit este de a ignora toate fi\u015fierele existente.       
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=directoryPath
+download.option-desc.--location=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica directorul destina\u0163ie pentru          \n\
+\taseturilor desc\u0103rcate.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa toate informa\u0163iile suplimentare disponibile \u00een timp ce\n\
+\tac\u0163iunea ruleaz\u0103.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tG\u0103sirea aseturilor din magazii.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tUtiliza\u0163i \u015firul de c\u0103utare pentru a g\u0103si aseturi \u00een magazii.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\tSe afi\u015feaz\u0103 descrierea pentru fiecare dintre caracteristicile g\u0103site de c\u0103tre c\u0103utare.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\tSe caut\u0103 tipul specificat de aseturi.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\tSe specific\u0103 numele asetului pe care dori\u0163i s\u0103-l c\u0103uta\u0163i \u00een   \n\
+\tsearchString.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=filePath
+find.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica o cale de fi\u015fier a unei singure magazii \n\
+\tbazate pe magazie ca singura surs\u0103 pentru ca installUtility s\u0103 g\u0103seasc\u0103 aseturi. Aceast\u0103\n\
+\tcale de fi\u015fier poate fi fie un director fie un fi\u015fier arhiv\u0103.              
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa toate informa\u0163iile suplimentare disponibile \u00een timp ce\n\
+\tac\u0163iunea ruleaz\u0103.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\tInstala\u0163i aseturi sau un fi\u015fier ESA (Enterprise Subsystem Archive) la  \n\
+\truntime, sau implementa\u0163i un pachet de server \u015fi instala\u0163i caracteristicile         \n\
+\tcerute ale pachetului.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ nume ...
+install.option-desc.name...=\tPute\u0163i specifica urm\u0103toarele nume: \n\
+\t - Unul sau mai multe nume de aseturi separate printr-un spa\u0163iu. Pentru a g\u0103si aseturile pe care  \n\
+\t   le pute\u0163i instala, rula\u0163i comanda installUtility find. Pentru caracteristici\n\
+\t   \u015fi programe de completare, pute\u0163i specifica numele scurt (featureName-1.0)   \n\
+\t   sau numele simbolic (com.ibm.websphere.featureName-1.0).        \n\
+\t - Un nume de server                                               \n\
+\t - Un fi\u015fier local server.xml                                      \n\
+\t - Un fi\u015fier local ESA                                             \n\
+\t - Un fi\u015fier arhiv\u0103 local de pachete de server care a fost creat de\n\
+\t   ac\u0163iunea de pachete de server cu op\u0163iunea --include=usr
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\tSpecifica\u0163i unde s\u0103 se instaleze caracteristica. Caracteristica poate fi instalat\u0103\n\
+\t\u00een orice loca\u0163ie extensie de produs configurat, sau drept caracteristic\u0103 de utilizator. Dac\u0103  \n\
+\taceast\u0103 op\u0163iune nu este specificat\u0103, caracteristica va fi instalat\u0103 drept \n\
+\tcaracteristic\u0103 de utilizator.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\tDac\u0103 un fi\u015fier care face parte din ESA exist\u0103 deja pe sistem, \n\
+\ttrebuie s\u0103 specifica\u0163i ce ac\u0163iuni s\u0103 se realizeze. Op\u0163iunile valide sunt: fail - renun\u0163are   \n\
+\tla instalare; ignore - continuarea instal\u0103rii \u015fi ignorarea  \n\
+\tfi\u015fierului care exist\u0103; replace - \u00eenlocuirea fi\u015fierului existent. Nu utiliza\u0163i  \n\
+\top\u0163iunea de \u00eenlocuire pentru a reinstala caracteristici.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\tPentru a desc\u0103rca automat toate dependen\u0163ele externe pentru e\u015fantioane sau   \n\
+\tintegr\u0103ri cu surs\u0103 deschis\u0103, seta\u0163i la true. Dac\u0103 nu dori\u0163i s\u0103 desc\u0103rca\u0163i\n\
+\tdependen\u0163e externe, seta\u0163i la false. Dac\u0103 dependen\u0163ele externe sunt    \n\
+\tnecesare \u015fi aceast\u0103 op\u0163iune nu este specificat\u0103, ve\u0163i fi promptat s\u0103   \n\
+\tle desc\u0103rca\u0163i.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=filePath
+install.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica o cale de fi\u015fier a unei singure magazii \n\
+\tbazate pe magazie ca singura surs\u0103 pentru ca installUtility s\u0103 instaleze aseturi.  \n\
+\tAceast\u0103 cale de fi\u015fier poate fi fie un director fie un fi\u015fier arhiv\u0103.         
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa toate informa\u0163iile suplimentare disponibile \n\
+\t\u00een timp ce ac\u0163iunea ruleaz\u0103.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\tDezinstala\u0163i o caracteristic\u0103 din runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ name
+uninstall.option-desc.name...=\tSpecifica\u0163i una sau mai multe caracteristici separate printr-un spa\u0163iu. Pute\u0163i specifica   \n\
+\tnumele scurt (featureName-1.0) sau numele simbolic                 \n\
+\t(com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tS\u0103ri\u0163i peste confirmarea utilizatorului \u015fi dezinstala\u0163i caracteristica.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tDezinstalarea caracteristicii indiferent dac\u0103 alte caracteristici instalate au\n\
+\tdependen\u0163e pe el.  Dezinstalarea unei caracteristici care este cerut\u0103 de alte\n\
+\tcaracteristici instalate ar putea fi cauza ca aceste caracteristici s\u0103-\u015fi opreasc\u0103 func\u0163ionarea \u015fi ar\n\
+\tputea \u00eempiedica serverele s\u0103 ruleze corect.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa toate informa\u0163iile suplimentare disponibile \n\
+\t\u00een timp ce ac\u0163iunea ruleaz\u0103.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tVizualizarea set\u0103rilor proxy-ului \u015fi ale magaziilor.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa mesajele detaliate de la            \n\
+\tvalidarea fi\u015fierului repositories.properties configurat.           \n\
+\tFiecare mesaj con\u0163ine un cod de eroare, num\u0103rul liniei unde a fost \n\
+\tg\u0103sit\u0103 eroarea \u015fi cauza erorii.							   \n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\tTestarea conexiunii magaziei.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ repoName
+testConnection.option-desc.[repoName]=\tSpecifica\u0163i numele magaziei de testat. Pentru referire la IBM        \n\
+\tWebSphere Liberty Repository, utiliza\u0163i numele default.                  \n\
+\tDac\u0103 nu este specificat un nume de magazie, vor fi testate            \n\
+\ttoate magaziile configurate.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa toate informa\u0163iile suplimentare disponibile \n\
+\t\u00een timp ce ac\u0163iunea ruleaz\u0103.
+

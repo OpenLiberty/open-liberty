@@ -1,0 +1,220 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=\
+Usage: {0}
+
+global.description=Description:
+global.actions=Actions:
+global.options=Options:
+global.options.lower=options
+global.usage=Usage:
+global.options.statement=\
+\tUse help [actionName] for detailed option information of each action.
+task.unknown=Unknown action: {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\
+\tPrint help information for the specified action.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\
+\tDownload assets from the repositories.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\
+\ \ \ \ name ...
+download.option-desc.name...=\
+\tSpecify one or more asset names separated by a space. To find assets \n\
+\tthat you can download, run the installUtility find command. For      \n\
+\tfeatures and addons, you can specify the short name (featureName-1.0)\n\
+\tor the symbolic name (com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\
+\ \ \ \ --overwrite
+download.option-desc.--overwrite=\
+\tUse this option to overwrite existing files when you download to  \n\
+\tthe local directory. If this option is not specified, the default \n\
+\tbehavior is to ignore all existing files.       
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\
+\ \ \ \ --location=directoryPath
+download.option-desc.--location=\
+\tUse this option to specify the destination directory for the         \n\
+\tdownloaded assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\
+\ \ \ \ --verbose
+download.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\
+\tFind assets from the repositories.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\
+\ \ \ \ searchString
+find.option-desc.[searchString]=\
+\tUse the search string to find assets in the repositories.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\
+\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\
+\tDisplay the description for each of the features found by the search.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\
+\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\
+\tSearch the specified type of assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\
+\ \ \ \ --name
+find.option-desc.--name=\
+\tSpecifies the name of the asset that you want to search for in the   \n\
+\tsearchString.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\
+\ \ \ \ --from=filePath
+find.option-desc.--from=\
+\tUse this option to specify the file path of a single directory-based \n\
+\trepository as the only source for installUtility to find assets. This\n\
+\tfile path can either be a directory or an archive file.              
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\
+\ \ \ \ --verbose
+find.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\
+\tInstall assets or an enterprise subsystem archive (ESA) file to the  \n\
+\trun time, or deploy a server package and install the required        \n\
+\tfeatures of the package.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\
+\ \ \ \ name ...
+install.option-desc.name...=\
+\tYou can specify the following names:                                 \n\
+\t - One or more asset names separated by a space. To find assets that \n\
+\t   you can install, run the installUtility find command. For features\n\
+\t   and addons, you can specify the short name (featureName-1.0) or   \n\
+\t   the symbolic name (com.ibm.websphere.featureName-1.0).            \n\
+\t - A server name                                                     \n\
+\t - A local server.xml file                                           \n\
+\t - A local ESA file                                                  \n\
+\t - A local server package archive file that was created by the server\n\
+\t   package action with the --include=usr option
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\
+\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\
+\tSpecify where to install the feature. The feature can be installed to\n\
+\tany configured product extension location, or as a user feature. If  \n\
+\tthis option is not specified the feature will be installed as a user \n\
+\tfeature.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\
+\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\
+\tIf a file that is part of the ESA already exists on the system, you  \n\
+\tmust specify what actions to take. Valid options are: fail - abort   \n\
+\tthe installation; ignore - continue the installation and ignore the  \n\
+\tfile that exists; replace - overwrite the existing file. Do not use  \n\
+\tthe replace option to reinstall features.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\
+\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\
+\tTo automatically download any external dependencies for samples or   \n\
+\topen source integrations, set to true. If you do not want to download\n\
+\texternal dependencies, set to false. If external dependencies are    \n\
+\trequired and this option is not specified, you will be prompted to   \n\
+\tdownload them.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\
+\ \ \ \ --from=filePath
+install.option-desc.--from=\
+\tUse this option to specify the file path of a single directory-based \n\
+\trepository as the only source for installUtility to install assets.  \n\
+\tThis file path can either be a directory or an archive file.         
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\
+\ \ \ \ --verbose
+install.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\
+\tUninstall a feature from the runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\
+\ \ \ \ name
+uninstall.option-desc.name...=\
+\tSpecify one or more features separated by a space. You can specify   \n\
+\tthe shortname (featureName-1.0) or the symbolic name                 \n\
+\t(com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\
+\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\
+\tSkip user confirmation and uninstall the feature.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\
+\ \ \ \ --force
+uninstall.option-desc.--force=\
+\tUninstall the feature regardless of whether other installed features have\n\
+\tdependencies on it.  Uninstalling a feature that is required by other\n\
+\tinstalled features might cause those features to stop working and might\n\
+\tprevent servers from running correctly.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\
+\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\
+\tView the repositories and proxy settings.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\
+\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\
+\tUse this option to display the detailed messages from the            \n\
+\tvalidation of the configured repositories.properties file.           \n\
+\tEach message contains an error code, the line number where the error \n\
+\twas found, and the cause of the error.							   \n\
+
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\
+\tTest the connection of the repository.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\
+\ \ \ \ repoName
+testConnection.option-desc.[repoName]=\
+\tSpecify the repository name to be tested. To refer to the IBM        \n\
+\tWebSphere Liberty Repository, use the name default.                  \n\
+\tIf a repository name is not specified, all the configured            \n\
+\trepositories will be tested.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\
+\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+
