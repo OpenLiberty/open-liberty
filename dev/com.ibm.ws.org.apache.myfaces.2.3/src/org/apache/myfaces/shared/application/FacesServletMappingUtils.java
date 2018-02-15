@@ -21,6 +21,9 @@ package org.apache.myfaces.shared.application;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
@@ -34,6 +37,9 @@ import org.apache.myfaces.shared.webapp.webxml.WebXml;
  */
 public class FacesServletMappingUtils
 {
+    // Key used to store a map of servlet class names with boolean values that indicate whether the
+    // the servlet is a FacesServlet.
+    private static final String IS_FACES_SERVLET_CLASS_NAME_MAP = "org.apache.myfaces.IS_FACES_SERVLET_CLASS_NAME_MAP";
 
     public static FacesServletMapping calculateGenericFacesServletMapping(
         FacesContext facesContext, String servletPath, String pathInfo)
@@ -238,15 +244,41 @@ public class FacesServletMappingUtils
     
     public static boolean isFacesServlet(FacesContext facesContext, String servletClassName)
     {
-        Class servletClass = org.apache.myfaces.shared.util.ClassUtils.simpleClassForName(
-                servletClassName, false);
-        boolean isFacesServlet = false;
-        if (servletClass != null) 
+        ExternalContext eContext = facesContext.getExternalContext();
+
+        // Map used for caching purposes
+        Map<String, Boolean> servletClassNameMap = (Map<String, Boolean>) 
+                                eContext.getApplicationMap().get(IS_FACES_SERVLET_CLASS_NAME_MAP);
+
+        if (servletClassNameMap == null)
         {
-            isFacesServlet = (FacesServlet.class.isAssignableFrom(servletClass) ||
-                            DelegatedFacesServlet.class.isAssignableFrom(servletClass) ||
-                            servletClass.getName().equals(
-                                    WebXml.getWebXml(facesContext.getExternalContext()).getDelegateFacesServlet()));
+            // Create the map if it has not been created yet
+            servletClassNameMap = new ConcurrentHashMap<String, Boolean>();
+            eContext.getApplicationMap().put(IS_FACES_SERVLET_CLASS_NAME_MAP, servletClassNameMap);
+        }
+
+        Boolean isFacesServlet = servletClassNameMap.get(servletClassName);
+
+        // if isFacesServlet is null, that means that we haven't cached the servletClassName boolean value
+        if (isFacesServlet == null)
+        {
+            Class servletClass = org.apache.myfaces.shared.util.ClassUtils.simpleClassForName(
+                    servletClassName, false);
+
+            if (servletClass != null)
+            {
+                isFacesServlet = (FacesServlet.class.isAssignableFrom(servletClass) ||
+                                DelegatedFacesServlet.class.isAssignableFrom(servletClass) ||
+                                servletClass.getName().equals(
+                                WebXml.getWebXml(eContext).getDelegateFacesServlet())) ? Boolean.TRUE : Boolean.FALSE;
+
+                servletClassNameMap.put(servletClassName, isFacesServlet);
+            }
+            else
+            {
+                isFacesServlet = Boolean.FALSE;
+                servletClassNameMap.put(servletClassName, isFacesServlet);
+            }
         }
 
         return isFacesServlet;
