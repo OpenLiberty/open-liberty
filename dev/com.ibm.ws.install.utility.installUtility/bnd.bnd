@@ -17,6 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.install.utility.installUtility
 Bundle-Description: Project for storing Map based Kernel installation library.
 
 Require-Bundle: com.ibm.ws.install; version="[1,1.0.100)", \
+  com.ibm.ws.install.utility;version="[1,1.0.100)",\
   com.ibm.ws.crypto.passwordutil; version="[1,1.0.100)", \
   com.ibm.ws.kernel.feature; version="[1,1.0.100)", \
   com.ibm.ws.org.apache.aries.util; version="[1,1.0.100)", \
@@ -34,6 +35,8 @@ Require-Bundle: com.ibm.ws.install; version="[1,1.0.100)", \
   com.ibm.websphere.javaee.jaxb.2.2; location="dev/api/spec/"; version="[1, 1.0.100)", \
   com.ibm.websphere.javaee.jsonp.1.0; location="dev/api/spec/"; version="[1, 1.0.100)", \
   com.ibm.ws.org.glassfish.json.1.0; version="[1,1.0.100)"
+  Command-Class: com.ibm.ws.install.utility.internal.cmdline.InstallUtilityExecutor
+
 
 Private-Package: \
   com.ibm.ws.install, \
