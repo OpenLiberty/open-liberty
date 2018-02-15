@@ -28,7 +28,6 @@ import com.ibm.ws.opentracing.OpentracingService;
 import com.ibm.ws.opentracing.OpentracingTracerManager;
 
 import io.opentracing.ActiveSpan;
-import io.opentracing.Span;
 import io.opentracing.Tracer;
 
 /**
@@ -108,27 +107,17 @@ public class TracedInterceptor {
 
             Tracer tracer = OpentracingTracerManager.getTracer();
 
-            ActiveSpan activeSpan = tracer.activeSpan();
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
-            if (activeSpan != null) {
-                spanBuilder.asChildOf(activeSpan.context());
-            }
-            Span span = spanBuilder.startManual();
-            if (activeSpan == null) {
-                tracer.makeActive(span);
-            }
-
-            try {
-                Object result = context.proceed();
-                return result;
-            } catch (Exception e) {
-                OpentracingService.addSpanErrorInfo(span, e);
-                throw e;
-            } catch (Error e) {
-                OpentracingService.addSpanErrorInfo(span, e);
-                throw e;
-            } finally {
-                span.finish();
+            try (ActiveSpan activeSpan = tracer.buildSpan(operationName).startActive()) {
+                try {
+                    Object result = context.proceed();
+                    return result;
+                } catch (Exception e) {
+                    OpentracingService.addSpanErrorInfo(activeSpan, e);
+                    throw e;
+                } catch (Error e) {
+                    OpentracingService.addSpanErrorInfo(activeSpan, e);
+                    throw e;
+                }
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -153,14 +142,14 @@ public class TracedInterceptor {
         // request method designator. [...] A request method designator is a
         // runtime annotation that is annotated with the @HttpMethod
         // annotation."
+        for (Annotation annotation : method.getAnnotations()) {
+            if (HttpMethod.class.isAssignableFrom(annotation.annotationType())) {
+                return true;
+            }
+        }
+
         if (method.isAnnotationPresent(Path.class)) {
             return true;
-        } else {
-            for (Annotation annotation : method.getAnnotations()) {
-                if (HttpMethod.class.isAssignableFrom(annotation.annotationType())) {
-                    return true;
-                }
-            }
         }
 
         return false;
