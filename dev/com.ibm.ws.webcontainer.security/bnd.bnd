@@ -101,7 +101,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.websphere.org.osgi.service.cm, \
 	com.ibm.ws.injection;version=latest, \
-	com.ibm.ws.org.apache.commons.io.1.4;version=latest, \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.ws.org.apache.commons.fileupload;version=latest, \
 	com.ibm.ws.security.mp.jwt.proxy;version=latest, \
 	com.ibm.ws.kernel.service;version=latest	
