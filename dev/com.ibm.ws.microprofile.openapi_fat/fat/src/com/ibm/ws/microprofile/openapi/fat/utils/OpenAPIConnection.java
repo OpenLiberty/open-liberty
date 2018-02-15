@@ -39,7 +39,7 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
  * 1. new OpenAPIConnection(server, "/air/book").header("key","123").
  * queryParam("name","Bob").download();
  *
- * 2. OpenAPIConnection.privateDocsConnection().queryParam("root","airlines").download()
+ * 2. OpenAPIConnection.openAPIDocsConnection(server, false).queryParam("root","airlines").download()
  *
  */
 @SuppressWarnings("restriction")
