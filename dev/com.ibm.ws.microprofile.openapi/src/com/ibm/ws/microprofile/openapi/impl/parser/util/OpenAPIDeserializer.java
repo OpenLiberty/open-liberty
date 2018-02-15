@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -181,18 +182,36 @@ public class OpenAPIDeserializer {
             obj = getObject("paths", rootNode, true, location, result);
             if (obj != null) {
                 Paths paths = getPaths(obj, "paths", result);
-                openAPI.setPaths(paths);
+                if (openAPI.getPaths() != null && paths != null && paths.size() > 0) {
+                    for (Entry<String, PathItem> entry : paths.entrySet()) {
+                        openAPI.path(entry.getKey(), entry.getValue());
+                    }
+                } else {
+                    openAPI.setPaths(paths);
+                }
             }
 
             obj = getObject("components", rootNode, false, location, result);
             if (obj != null) {
                 Components components = getComponents(obj, "components", result);
-                openAPI.setComponents(components);
+                if (components != null && openAPI.getComponents() != null) {
+                    mergeComponents(openAPI.getComponents(), components);
+                } else if (components != null) {
+                    openAPI.setComponents(components);
+                }
             }
 
             ArrayNode array = getArray("servers", rootNode, false, location, result);
             if (array != null && array.size() > 0) {
-                openAPI.setServers(getServersList(array, String.format("%s.%s'", location, "servers"), result));
+                List<Server> servers = getServersList(array, String.format("%s.%s'", location, "servers"), result);
+                if (openAPI.getServers() != null && openAPI.getServers().size() > 0 && servers != null && servers.size() > 0) {
+                    for (Server server : servers) {
+                        openAPI.addServer(server);
+                    }
+
+                } else if (servers != null && servers.size() > 0) {
+                    openAPI.setServers(servers);
+                }
             }
             // Don't add server if not specified by user - Liberty servers will be added in that case
             /*
@@ -213,19 +232,38 @@ public class OpenAPIDeserializer {
 
             array = getArray("tags", rootNode, false, location, result);
             if (array != null && array.size() > 0) {
-                openAPI.setTags(getTagList(array, "tags", result));
+                List<Tag> tags = getTagList(array, "tags", result);
+
+                if (openAPI.getTags() != null && openAPI.getTags().size() > 0 && tags != null && tags.size() > 0) {
+                    Map<String, Tag> tagsMap = new LinkedHashMap<>();
+                    for (Tag tag : openAPI.getTags()) {
+                        tagsMap.put(tag.getName(), tag);
+                    }
+                    for (Tag tag : tags) {
+                        tagsMap.put(tag.getName(), tag);
+                    }
+                    openAPI.setTags(new ArrayList<>(tagsMap.values()));
+                } else if (tags != null && tags.size() > 0) {
+                    openAPI.setTags(tags);
+                }
             }
 
             array = getArray("security", rootNode, false, location, result);
             if (array != null && array.size() > 0) {
                 List<SecurityRequirement> securityRequirements = getSecurityRequirementsList(array, "security", result);
-                if (securityRequirements != null && securityRequirements.size() > 0) {
+                if (openAPI.getSecurity() != null && securityRequirements != null && securityRequirements.size() > 0) {
+                    for (SecurityRequirement securityRequirement : securityRequirements) {
+                        openAPI.addSecurityRequirement(securityRequirement);
+                    }
+                } else if (securityRequirements != null && securityRequirements.size() > 0) {
                     openAPI.setSecurity(securityRequirements);
                 }
             }
 
             Map<String, Object> extensions = getExtensions(rootNode);
-            if (extensions != null && extensions.size() > 0) {
+            if (openAPI.getExtensions() != null && extensions != null && extensions.size() > 0) {
+                openAPI.setExtensions(mergeMaps(openAPI.getExtensions(), extensions));
+            } else if (extensions != null && extensions.size() > 0) {
                 openAPI.setExtensions(extensions);
             }
 
@@ -243,6 +281,44 @@ public class OpenAPIDeserializer {
         }
 
         return openAPI;
+    }
+
+    /**
+     * @param components
+     * @param components2
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void mergeComponents(Components to, Components from) {
+        Map resMap = mergeMaps(to.getCallbacks(), from.getCallbacks());
+        to.setCallbacks(resMap);
+        resMap = mergeMaps(to.getExamples(), from.getExamples());
+        to.setExamples(resMap);
+        resMap = mergeMaps(to.getExtensions(), from.getExtensions());
+        to.setExtensions(resMap);
+        resMap = mergeMaps(to.getHeaders(), from.getHeaders());
+        to.setHeaders(resMap);
+        resMap = mergeMaps(to.getLinks(), from.getLinks());
+        to.setLinks(resMap);
+        resMap = mergeMaps(to.getParameters(), from.getParameters());
+        to.setParameters(resMap);
+        resMap = mergeMaps(to.getRequestBodies(), from.getRequestBodies());
+        to.setRequestBodies(resMap);
+        resMap = mergeMaps(to.getResponses(), from.getResponses());
+        to.setResponses(resMap);
+        resMap = mergeMaps(to.getSchemas(), from.getSchemas());
+        to.setSchemas(resMap);
+        resMap = mergeMaps(to.getSecuritySchemes(), from.getSecuritySchemes());
+        to.setSecuritySchemes(resMap);
+    }
+
+    private <T> Map<String, T> mergeMaps(Map<String, T> resultMap, Map<String, T> inMap) {
+        if (inMap == null || inMap.isEmpty()) {
+            return resultMap;
+        }
+        if (resultMap == null)
+            resultMap = new LinkedHashMap<String, T>();
+        resultMap.putAll(inMap);
+        return resultMap;
     }
 
     public Map<String, Object> getExtensions(ObjectNode node) {
