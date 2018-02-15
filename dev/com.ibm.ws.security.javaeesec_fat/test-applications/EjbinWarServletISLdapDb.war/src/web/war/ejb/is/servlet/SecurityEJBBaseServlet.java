@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web.war.ejb.servlet;
+package web.war.ejb.is.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,12 +28,11 @@ import web.jar.base.FlexibleBaseServlet;
 /**
  * Base security EJB servlet which the other EJB test servlets extend.
  */
-
 @SuppressWarnings("serial")
 public abstract class SecurityEJBBaseServlet extends FlexibleBaseServlet {
 
     public SecurityEJBBaseServlet() {
-        super("SecurityEJBBaseServlet.SimpleServlet");
+        super("SecurityEJBBaseServlet.SimpleBaseServlet");
 
         mySteps.add(new WriteRequestBasicsStep());
         mySteps.add(new WritePrincipalStep());
@@ -67,14 +66,16 @@ public abstract class SecurityEJBBaseServlet extends FlexibleBaseServlet {
      * @throws ServletException
      * @throws IOException
      */
-    protected void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @Override
+    public void handleRequest(String type, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
-
+        writer.println("Using EJB Base Servlet");
         writer.println("\nServletName: " + servletName());
+        writer.println("Request type: " + type);
 
         StringBuffer sb = new StringBuffer();
         try {
-            performTask(req, resp, sb);
+            performTask(type, req, resp, sb);
         } catch (Throwable t) {
             t.printStackTrace(writer);
         }
@@ -95,7 +96,8 @@ public abstract class SecurityEJBBaseServlet extends FlexibleBaseServlet {
      * @throws ServletException
      * @throws IOException
      */
-    protected void performTask(HttpServletRequest req, HttpServletResponse resp, StringBuffer sb) throws ServletException, IOException {
+    @Override
+    public void performTask(String type, HttpServletRequest req, HttpServletResponse resp, StringBuffer sb) throws ServletException, IOException {
 
         //Get parameters from URL link
         String testMethod = req.getParameter("testMethod");

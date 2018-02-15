@@ -124,6 +124,17 @@ public class Constants {
     public final static String BasicRole = "javaeesec_basic";
     public final static String FormRole = "javaeesec_form";
 
+    //Values to be verified in ejb servlet response
+    public final static String getEJBBeanResponse = "EJB  = ";
+    public final static String ejb03Bean = "SecurityEJBA03Bean";
+    public final static String getEjbBeanMethodName = "Method = ";
+    public final static String ejbBeanMethodManager = "manager";
+    public final static String ejbisCallerManagerTrue = "isCallerInRole(Manager)=true";
+    public final static String ejbisCallerManagerFale = "isCallerInRole(Manager)=false";
+    public final static String ejbisCallerEmployeeTrue = "isCallerInRole(Employee)=true";
+    public final static String ejbisCallerEmployeeFalse = "isCallerInRole(Employee)=false";
+    public final static String getEjbCallerPrincipal = "getCallerPrincipal()=";
+
     // Values to be verified in servlet response
 
     public final static String RESPONSE_AUTHENTICATION_FAILED = "JASPIC Authenticated with status: SEND_FAILURE";

@@ -17,38 +17,29 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
-import javax.inject.Inject;
-import javax.security.enterprise.SecurityContext;
+import javax.ejb.Stateless;
 
 /**
  * Bean implementation class for Enterprise Bean
  */
 
-@Singleton
-@PermitAll
-public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
+@Stateless
+@DenyAll
+public class SecurityEJBA06Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
 
-    private static final Class<?> c = SecurityEJBA02Bean.class;
+    private static final Class<?> c = SecurityEJBA06Bean.class;
     protected Logger logger = Logger.getLogger(c.getCanonicalName());
-
-    @Inject
-    SecurityContext securityContext;
 
     @Resource
     private SessionContext context;
 
-    public SecurityEJBA02Bean() {}
+    public SecurityEJBA06Bean() {
+        withDeprecation();
+    }
 
     @Override
     protected SessionContext getContext() {
         return context;
-    }
-
-    @Override
-    protected SecurityContext getSecurityContext() {
-        return securityContext;
-
     }
 
     @Override
@@ -57,25 +48,19 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
-    @DenyAll
     public String denyAll() {
         return authenticate("denyAll");
     }
 
     @Override
-    @DenyAll
     public String denyAll(String input) {
         return authenticate("denyAll(input)");
     }
 
     @Override
+    @PermitAll
     public String permitAll() {
         return authenticate("permitAll");
-    }
-
-    @Override
-    public String permitAll(String input) {
-        return authenticate("permitAll(input)");
     }
 
     @Override
@@ -87,6 +72,12 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     @RolesAllowed("**")
     public String permitAuthenticated() {
         return authenticate("permitAuthenticated()");
+    }
+
+    @Override
+    @PermitAll
+    public String permitAll(String input) {
+        return authenticate("permitAll(input)");
     }
 
     @Override
@@ -138,16 +129,14 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
+    @PermitAll
     public String declareRoles01() {
         String result1 = authenticate("declareRoles01");
-
-        boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
-
+        boolean isDeclaredMgr = context.isCallerInRole("DeclaredRole01");
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);
         result2.append(result1);
-        result2.append("\n");
-        result2.append("   isCallerInRole(DeclaredRole01)=");
+        result2.append("\n" + "   isCallerInRole(DeclaredRole01)=");
         result2.append(isDeclaredMgr);
         logger.info("result2: " + result2);
         return result2.toString();

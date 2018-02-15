@@ -13,42 +13,39 @@ package web.ejb.jar.bean;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.RunAs;
+import javax.ejb.EJB;
+import javax.ejb.EJBAccessException;
 import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
-import javax.inject.Inject;
-import javax.security.enterprise.SecurityContext;
 
 /**
  * Bean implementation class for Enterprise Bean
  */
 
 @Singleton
-@PermitAll
-public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
+@RunAs("Employee")
+@DeclareRoles("DeclaredRole01")
+public class SecurityEJBA05Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
 
-    private static final Class<?> c = SecurityEJBA02Bean.class;
+    private static final Class<?> c = SecurityEJBA05Bean.class;
     protected Logger logger = Logger.getLogger(c.getCanonicalName());
 
-    @Inject
-    SecurityContext securityContext;
+    @EJB(beanName = "SecurityEJBRunAsBean")
+    private SecurityEJBRunAsInterface injectedRunAs;
 
     @Resource
     private SessionContext context;
 
-    public SecurityEJBA02Bean() {}
+    public SecurityEJBA05Bean() {}
 
     @Override
     protected SessionContext getContext() {
         return context;
-    }
-
-    @Override
-    protected SecurityContext getSecurityContext() {
-        return securityContext;
-
     }
 
     @Override
@@ -69,11 +66,13 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
+    @PermitAll
     public String permitAll() {
         return authenticate("permitAll");
     }
 
     @Override
+    @PermitAll
     public String permitAll(String input) {
         return authenticate("permitAll(input)");
     }
@@ -114,13 +113,13 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     }
 
     @Override
-    @RolesAllowed({ "Employee", "Manager" })
+    @RolesAllowed({ "Manager", "Employee" })
     public String employeeAndManager() {
         return authenticate("employeeAndManager");
     }
 
     @Override
-    @RolesAllowed({ "Employee", "Manager" })
+    @RolesAllowed({ "Manager", "Employee" })
     public String employeeAndManager(String input) {
         return authenticate("employeeAndManager(input)");
     }
@@ -140,9 +139,7 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     @Override
     public String declareRoles01() {
         String result1 = authenticate("declareRoles01");
-
-        boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
-
+        boolean isDeclaredMgr = context.isCallerInRole("DeclaredRole01");
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);
         result2.append(result1);
@@ -153,16 +150,28 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
         return result2.toString();
     }
 
+    // PureAnnA05Test uses this method to attempt to access injected manager method which requires Manager role when
+    // class level RunAs annotation specifies Employee role to be used when invoking injected EJBs. This is a negative
+    // test which expects an EJBAccessDenied exception.
     @Override
-    @PermitAll
     public String runAsClient() {
-        return authenticate("runAsClient");
+        try {
+            return injectedRunAs.manager();
+        } catch (EJBAccessException e) {
+            return e.toString();
+        }
     }
 
+    // PureAnnA05Test uses this method to attempt to access injected manager method which requires Manager role when
+    // class level RunAs annotation specifies Employee role to be used when invoking injected EJBs. This is a negative
+    // test which expects an EJBAccessDenied exception.
     @Override
-    @PermitAll
     public String runAsSpecified() {
-        return authenticate("runAsSpecified");
+        try {
+            return injectedRunAs.manager();
+        } catch (EJBAccessException e) {
+            return e.toString();
+        }
     }
 
 }

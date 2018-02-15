@@ -12,157 +12,114 @@ package web.ejb.jar.bean;
 
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.RunAs;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
-import javax.inject.Inject;
-import javax.security.enterprise.SecurityContext;
+import javax.ejb.Stateless;
 
 /**
- * Bean implementation class for Enterprise Bean
+ * Bean superclass implementation class for Enterprise Bean
+ * This class is used as superclass in conjunction with the
+ * derived class, SecurityEJBA07Bean, in order to test Java
+ * inheritance in PureAnnA07InheritanceTest.
  */
 
-@Singleton
-@PermitAll
-public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
-
-    private static final Class<?> c = SecurityEJBA02Bean.class;
-    protected Logger logger = Logger.getLogger(c.getCanonicalName());
-
-    @Inject
-    SecurityContext securityContext;
-
-    @Resource
-    private SessionContext context;
-
-    public SecurityEJBA02Bean() {}
+@Stateless
+@RolesAllowed({ "Manager" })
+@DeclareRoles("DeclaredRole01")
+@RunAs("Employee")
+public class SecurityEJBA07Base extends SecurityEJBBeanBase {
 
     @Override
     protected SessionContext getContext() {
-        return context;
-    }
-
-    @Override
-    protected SecurityContext getSecurityContext() {
-        return securityContext;
-
+        return null; // Class cannot be abstract
     }
 
     @Override
     protected Logger getLogger() {
-        return logger;
+        return null; // Class cannot be abstract
     }
 
-    @Override
     @DenyAll
     public String denyAll() {
         return authenticate("denyAll");
     }
 
-    @Override
-    @DenyAll
     public String denyAll(String input) {
         return authenticate("denyAll(input)");
     }
 
-    @Override
+    @PermitAll
     public String permitAll() {
         return authenticate("permitAll");
     }
 
-    @Override
     public String permitAll(String input) {
         return authenticate("permitAll(input)");
     }
 
-    @Override
-    public String checkAuthenticated() {
-        return authenticate("checkAuthenticated()");
-    }
-
-    @Override
-    @RolesAllowed("**")
-    public String permitAuthenticated() {
-        return authenticate("permitAuthenticated()");
-    }
-
-    @Override
-    @RolesAllowed("Manager")
     public String manager() {
         return authenticate("manager");
     }
 
-    @Override
-    @RolesAllowed("Manager")
+    // no annotations here or in derived class, so method permissions not specified
     public String manager(String input) {
         return authenticate("manager(input)");
     }
 
-    @Override
     @RolesAllowed("Employee")
     public String employee() {
         return authenticate("employee");
     }
 
-    @Override
-    @RolesAllowed("Employee")
     public String employee(String input) {
         return authenticate("employee(input)");
     }
 
-    @Override
     @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager() {
         return authenticate("employeeAndManager");
     }
 
-    @Override
     @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager(String input) {
         return authenticate("employeeAndManager(input)");
     }
 
-    @Override
-    @RolesAllowed({ "Employee", "Manager" })
+// No annotation here, derived class provides
     public String employeeAndManager(String input, String input2) {
         return authenticate("employeeAndManager(string1, string2)");
     }
 
-    @Override
-    @RolesAllowed({ "Employee", "Manager" })
+// No annotation here or on derived class, inherit class level annotation
     public String employeeAndManager(int i) {
         return authenticate("employeeAndManager(3)");
     }
 
-    @Override
     public String declareRoles01() {
         String result1 = authenticate("declareRoles01");
-
-        boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
-
+        boolean isDeclaredMgr = getContext().isCallerInRole("DeclaredRole01");
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);
         result2.append(result1);
-        result2.append("\n");
         result2.append("   isCallerInRole(DeclaredRole01)=");
         result2.append(isDeclaredMgr);
-        logger.info("result2: " + result2);
+        result2.append("\n");
+        getLogger().info("result2: " + result2);
         return result2.toString();
     }
 
-    @Override
-    @PermitAll
     public String runAsClient() {
-        return authenticate("runAsClient");
+        String result = null;
+        return result;
     }
 
-    @Override
-    @PermitAll
     public String runAsSpecified() {
-        return authenticate("runAsSpecified");
+        String result = null;
+        return result;
     }
 
 }

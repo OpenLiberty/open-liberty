@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web.war.ejb.servlet;
+package web.war.ejb.annotated.servlet;
 
 import java.util.HashMap;
 import java.util.Map;
