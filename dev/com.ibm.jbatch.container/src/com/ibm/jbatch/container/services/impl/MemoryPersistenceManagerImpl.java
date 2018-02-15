@@ -1332,17 +1332,8 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     @Override
     public List<JobInstanceEntity> getJobInstances(IJPAQueryHelper queryHelper, int page, int pageSize) {
         // TODO: Should we implement this for Memory Persistence?
-        //throw new UnsupportedOperationException("The REST URL search parameters requesting this function "
-        //   + "are not supported by the Java batch memory-based persistence configuration.");
-
-        String delieveredQuery = queryHelper.getQuery();
-
-        if (delieveredQuery.equals(queryHelper.DEFAULT_QUERY)) {
-            return getJobInstances(page, pageSize);
-        } else {
-            throw new UnsupportedOperationException("The REST URL search parameters requesting this function"
-                                                    + "are not supported by the Java batch memory-based persistence configuration.");
-        }
+        throw new UnsupportedOperationException("The REST URL search parameters requesting this function "
+                                                + "are not supported by the Java batch memory-based persistence configuration.");
     }
 
     @Override

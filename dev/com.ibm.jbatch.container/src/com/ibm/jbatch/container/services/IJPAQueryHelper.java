@@ -22,11 +22,6 @@ import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
 public interface IJPAQueryHelper {
 
     /**
-     * Base Query String
-     */
-    final String DEFAULT_QUERY = "SELECT x from JobInstanceEntity x ORDER BY x.createTime DESC";
-
-    /**
      * Get the JPQL query string
      */
     String getQuery();
