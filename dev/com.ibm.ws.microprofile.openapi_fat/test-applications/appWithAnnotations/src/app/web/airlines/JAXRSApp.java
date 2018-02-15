@@ -155,7 +155,7 @@ import app.web.airlines.resources.bookings.BookingResource;
                   @Link(
                       name = "UserName",
                       description = "The username corresponding to provided user id",
-                      operationId = "getUserByName",
+                      operationId = "getUserByUserName",
                       parameters = @LinkParameter(name = "userId", expression = "$request.path.id")) },
         callbacks = {
                       @Callback(
