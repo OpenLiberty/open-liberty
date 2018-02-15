@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 
@@ -193,7 +194,7 @@ public class VmmServiceServletConnection {
         throw new IllegalArgumentException(msg);
     }
 
-    protected String makeServletMethodCallWithException(String methodName, String servletRequest) throws WIMException {
+    public String makeServletMethodCallWithException(String methodName, String servletRequest) throws WIMException {
         String ret = makeServletMethodCall(methodName, servletRequest);
         throwIfEntityNotFoundException(ret);
         throwIfWIMException(ret);
@@ -277,7 +278,7 @@ public class VmmServiceServletConnection {
      * @param userSecurityName
      * @return
      */
-    private String encodeSpaces(String userSecurityName) {
+    public static String encodeSpaces(String userSecurityName) {
         return userSecurityName.replaceAll(" ", "%20");
     }
 
@@ -343,4 +344,9 @@ public class VmmServiceServletConnection {
         return null;
     }
 
+    public String ping() throws WIMException, RemoteException {
+        String methodName = "ping";
+        String servletRequest = "?method=" + methodName;
+        return makeServletMethodCallWithException(methodName, servletRequest);
+    }
 }

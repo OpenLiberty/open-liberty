@@ -22,8 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
+import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.wim.adapter.urbridge.URBridge;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
@@ -129,6 +131,10 @@ public class RepositoryManager {
         if (repo != null) {
             return repo;
         }
+
+        AuditManager auditManager = new AuditManager();
+        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), auditManager.getRequestType(), auditManager.getRepositoryId(), uniqueName,
+                    vmmService.getConfigManager().getDefaultRealmName(), null, Integer.valueOf("204"));
 
         throw new InvalidUniqueNameException(WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE, Tr.formatMessage(
                                                                                                        tc,
