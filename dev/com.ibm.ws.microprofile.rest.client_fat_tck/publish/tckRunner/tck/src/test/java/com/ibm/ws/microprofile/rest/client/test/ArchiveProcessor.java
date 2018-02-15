@@ -32,5 +32,10 @@ public class ArchiveProcessor implements ApplicationArchiveProcessor {
 //            System.out.println("WLP: Adding Jar:" + file.getAbsolutePath() + " to " + applicationArchive.getName());
 //            ((WebArchive) applicationArchive).addAsLibraries(file);
 //        }
+    	if (applicationArchive instanceof WebArchive) {
+          File file = new File("/home/andymc/mpRestClientTCK/open-liberty/dev/com.ibm.ws.microprofile.rest.client_fat_tck/publish/servers/FATServer/wiremock-standalone-2.14.0.jar");
+          System.out.println("WLP: Adding Jar:" + file.getAbsolutePath() + " to " + applicationArchive.getName());
+          ((WebArchive) applicationArchive).addAsLibraries(file);
+      }
     }
 }

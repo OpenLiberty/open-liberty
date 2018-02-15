@@ -23,7 +23,7 @@
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
-        <!-- <wlp>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/</wlp> -->
+        <!-- <wlp>${project.basedir}/../../../../build.image/wlp/</wlp> -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -51,8 +51,8 @@
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-tck</artifactId>
             <version>${microprofile.rest.client.version}</version>
-            <!-- <scope>system</scope>
-            <systemPath>/home/andymc/Downloads/microprofile-rest-client-tck-1.1-SNAPSHOT.jar</systemPath> -->
+            <scope>system</scope>
+            <systemPath>${basedir}/../../servers/FATServer/microprofile-rest-client-tck-1.0.1.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -61,7 +61,6 @@
             <version>${microprofile.rest.client.version}</version>
             <scope>system</scope>
             <systemPath>${com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_1.0.19.jar</systemPath> -->
         </dependency>
 
         <dependency>
@@ -70,7 +69,6 @@
             <version>3.2.1</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_1.0.19.jar</systemPath> -->
         </dependency>
 
         <dependency>
@@ -79,17 +77,15 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.jaxrs.2.0.common_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/lib/com.ibm.ws.jaxrs.2.0.common_1.0.19.jar</systemPath> -->
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>jaxrs20.client</artifactId>
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.jaxrs.2.0.client_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/lib/com.ibm.ws.jaxrs.2.0.client_1.0.19.jar</systemPath> -->
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>com.ibm.ws</groupId>
@@ -97,7 +93,6 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.jaxrs.2.0.cdi_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/lib/com.ibm.ws.jaxrs.2.0.cdi_1.0.19.jar</systemPath> -->
         </dependency>
 
         <dependency>
@@ -106,20 +101,23 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.logging_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/lib/com.ibm.ws.logging_1.0.19.jar</systemPath> -->
         </dependency>
 
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.2</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.annotation.1.2_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.0</version>
-            <scope>provided</scope>
+            <!--  <scope>provided</scope> -->
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jaxrs.2.0_}</systemPath>
             <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jaxrs.2.0_1.0.19.jar</systemPath> -->
         </dependency>
 
@@ -127,14 +125,18 @@
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.2</version>
-            <scope>provided</scope>
+            <!-- <scope>provided</scope> -->
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.cdi.1.2_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+            <!-- <scope>provided</scope> -->
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jsonp.1.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -158,14 +160,28 @@
             <scope>test</scope>
         </dependency>
 
+<!-- 
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>2.15.0</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+ --> 
+ 
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-standalone</artifactId>
+            
             <version>2.14.0</version>
-            <!-- scope>test</scope -->
+            <!-- <scope>system</scope>
+            <systemPath>${basedir}/../../servers/FATServer/wiremock-standalone-2.14.0.jar</systemPath> -->
         </dependency>
+        
+        
     </dependencies>
-
+ 
     <build>
         <directory>${targetDirectory}</directory>
         <defaultGoal>clean test</defaultGoal>
@@ -201,13 +217,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
+                    <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <!-- <wlp>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp</wlp> -->
-                        <tck_server>${tck_server}</tck_server>
-                        <!-- <tck_server>FATServer</tck_server> -->
-                        <tck_port>${tck_port}</tck_port>
-                        <!-- <tck_port>8010</tck_port> -->
+                        <!-- <tck_server>${tck_server}</tck_server> -->
+                        <tck_server>FATServer</tck_server>
+                        <!-- <tck_port>${tck_port}</tck_port>  -->
+                        <tck_port>8010</tck_port>
                         <!-- <wiremock.server.port>8765</wiremock.server.port> -->
                     </systemPropertyVariables>
                     <suiteXmlFiles>
@@ -220,7 +237,7 @@
             <plugin>
                <groupId>uk.co.deliverymind</groupId>
                <artifactId>wiremock-maven-plugin</artifactId>
-               <version>2.7.0</version>
+               <version>2.11.0</version>
                <executions>
                    <execution>
                        <phase>generate-test-sources</phase>

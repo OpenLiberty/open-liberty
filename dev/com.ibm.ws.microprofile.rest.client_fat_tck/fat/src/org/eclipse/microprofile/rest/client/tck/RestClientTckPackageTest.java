@@ -31,15 +31,17 @@ public class RestClientTckPackageTest {
     @Server("FATServer")
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        server.startServer();
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
-    }
+//    @BeforeClass
+//    public static void setUp() throws Exception {
+//        server.startServer();
+//    }
+//
+//    @AfterClass
+//    public static void tearDown() throws Exception {
+//    	if (server != null && server.isStarted()) {
+//    		server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+//    	}
+//    }
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.

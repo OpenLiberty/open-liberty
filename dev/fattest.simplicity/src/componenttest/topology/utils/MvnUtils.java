@@ -287,10 +287,12 @@ public class MvnUtils {
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
         String apiStable = api + "stable/";
+        String apiSpec = api + "spec/";
         String lib = wlpPathName + "/lib/";
 
         ArrayList<String> places = new ArrayList<String>();
         places.add(apiStable);
+        places.add(apiSpec);
         places.add(lib);
 
         String jarPath = null;
