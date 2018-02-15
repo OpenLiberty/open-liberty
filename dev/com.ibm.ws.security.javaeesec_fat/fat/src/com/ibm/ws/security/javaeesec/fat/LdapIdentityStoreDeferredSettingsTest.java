@@ -15,6 +15,7 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getRemoteUserFo
 import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipalFound;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -307,7 +308,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("bindDn", "uid=nosuchuser,o=ibm,c=us");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -335,7 +336,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDn' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -362,7 +363,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("bindDnPassword", "badbinddnpassword");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -390,7 +391,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         FATHelper.resetMarksInLogs(myServer);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'bindDnPassword' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -418,7 +419,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("callerSearchBase", ""); // Needs to be empty to use callerBaseDn
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -447,7 +448,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerBaseDn' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -473,7 +474,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("callerNameAttribute", "badcallernameattribute");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -527,7 +528,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("callerSearchBase", "o=ibm,c=uk");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -555,7 +556,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerSearchBase' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -580,8 +581,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         Map<String, String> overrides = new HashMap<String, String>();
         overrides.put("callerSearchFilter", "(&(uid=%s)(objectclass=nosuchclass))");
         updateLdapSettingsBean(overrides);
-
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -636,7 +636,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("callerSearchScope", "ONE_LEVEL");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_OK, SC_OK, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1159,7 +1159,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("url", "ldap://nosuchhost");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1187,7 +1187,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         updateLdapSettingsBean(overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'url' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

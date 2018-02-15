@@ -147,7 +147,7 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "baduser",
                                         "pwd",
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

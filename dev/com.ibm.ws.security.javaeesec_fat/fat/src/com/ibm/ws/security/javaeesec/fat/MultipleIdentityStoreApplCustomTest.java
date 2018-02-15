@@ -200,7 +200,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomNoCred_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, null, null, HttpServletResponse.SC_FORBIDDEN);
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, null, null, HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
