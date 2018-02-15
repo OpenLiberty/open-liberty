@@ -27,7 +27,7 @@ fat.project: true
 tested.features: opentracing-1.0
 
 -buildpath: \
-    com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0;version=latest,\
 	com.ibm.ws.opentracing;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
@@ -35,10 +35,10 @@ tested.features: opentracing-1.0
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
 	io.opentracing:opentracing-api;version=0.30.0, \
 	io.opentracing:opentracing-mock;version=0.30.0, \
-    io.opentracing:opentracing-util;version=0.30.0, \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.wsspi.org.osgi.service.component;version=latest, \
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	io.opentracing:opentracing-util;version=0.30.0, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest
