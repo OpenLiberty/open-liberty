@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -192,6 +193,8 @@ public class Reader {
                                                                                                                                                 org.eclipse.microprofile.openapi.annotations.security.SecurityScheme.class);
         List<org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement> apiSecurityRequirements = ReflectionUtils.getRepeatableAnnotations(cls,
                                                                                                                                                            org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement.class);
+        org.eclipse.microprofile.openapi.annotations.security.SecurityRequirementsSet apiSecurityRequirementSet = ReflectionUtils.getAnnotation(cls,
+                                                                                                                                                org.eclipse.microprofile.openapi.annotations.security.SecurityRequirementsSet.class);
         List<org.eclipse.microprofile.openapi.annotations.servers.Server> apiServers = ReflectionUtils.getRepeatableAnnotations(cls,
                                                                                                                                 org.eclipse.microprofile.openapi.annotations.servers.Server.class);
         List<org.eclipse.microprofile.openapi.annotations.callbacks.Callback> apiCallbacks = ReflectionUtils.getRepeatableAnnotations(cls,
@@ -231,6 +234,12 @@ public class Reader {
                                                                                                             apiSecurityRequirements.toArray(new org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement[apiSecurityRequirements.size()]));
             if (requirementsObject.isPresent()) {
                 classSecurityRequirements = requirementsObject.get();
+            }
+        }
+        if (apiSecurityRequirementSet != null) {
+            Optional<SecurityRequirement> requirementsObject = SecurityParser.getSecurityRequirementFromSet(apiSecurityRequirementSet);
+            if (requirementsObject.isPresent()) {
+                classSecurityRequirements.add(requirementsObject.get());
             }
         }
 
@@ -405,6 +414,22 @@ public class Reader {
                                 operation.addParameter(operationParameter);
                             }
                         }
+                    }
+
+                    if (operation.getParameters() != null) {
+                        List<Parameter> parameters = new LinkedList<>();
+                        operation.getParameters().forEach(param -> {
+                            if (param.getRef() != null) {
+                                parameters.add(new ParameterImpl().ref(param.getRef()));
+                            } else {
+                                parameters.add(param);
+                            }
+                        });
+                        operation.setParameters(parameters);
+                    }
+
+                    if (operation.getRequestBody() != null && operation.getRequestBody().getRef() != null) {
+                        operation.setRequestBody(new RequestBodyImpl().ref(operation.getRequestBody().getRef()));
                     }
 
                     paths.addPathItem(operationPath, pathItemObject);
@@ -751,6 +776,8 @@ public class Reader {
 
         List<org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement> apiSecurity = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                                                org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement.class);
+        org.eclipse.microprofile.openapi.annotations.security.SecurityRequirementsSet apiSecurityReqSet = ReflectionUtils.getAnnotation(method,
+                                                                                                                                        org.eclipse.microprofile.openapi.annotations.security.SecurityRequirementsSet.class);
         List<org.eclipse.microprofile.openapi.annotations.callbacks.Callback> apiCallbacks = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                                       org.eclipse.microprofile.openapi.annotations.callbacks.Callback.class);
         List<Server> apiServers = ReflectionUtils.getRepeatableAnnotations(method, Server.class);
@@ -786,7 +813,16 @@ public class Reader {
             if (requirementsObject.isPresent()) {
                 requirementsObject.get().stream().filter(r -> operation.getSecurity() == null || !operation.getSecurity().contains(r)).forEach(operation::addSecurityRequirement);
             }
-        } else {
+        }
+
+        // security set
+        if (apiSecurityReqSet != null && apiSecurityReqSet.value().length > 0) {
+            Optional<SecurityRequirement> requirementsObject = SecurityParser.getSecurityRequirementFromSet(apiSecurityReqSet);
+            if (requirementsObject.isPresent()) {
+                operation.addSecurityRequirement(requirementsObject.get());
+            }
+        }
+        if (operation.getSecurity() == null || operation.getSecurity().size() == 0) {
             classSecurityRequirements.forEach(operation::addSecurityRequirement);
         }
 
@@ -875,8 +911,8 @@ public class Reader {
                 Schema returnTypeSchema = resolvedSchema.schema;
                 Content content = new ContentImpl();
                 MediaType mediaType = new MediaTypeImpl().schema(returnTypeSchema);
-                AnnotationsUtils.applyTypes(classConsumes == null ? new String[0] : classConsumes.value(),
-                                            methodConsumes == null ? new String[0] : methodConsumes.value(), content, mediaType);
+                AnnotationsUtils.applyTypes(classProduces == null ? new String[0] : classProduces.value(),
+                                            methodProduces == null ? new String[0] : methodProduces.value(), content, mediaType);
                 if (operation.getResponses() == null) {
                     operation.responses(
                                         new APIResponsesImpl().defaultValue(
