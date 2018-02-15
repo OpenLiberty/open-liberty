@@ -13,7 +13,10 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Tests to ensure that OpenAPI model validation works and proper events (errors, warning) are reported.
+ * Tests to ensure that OpenAPI model validation works, model walker calls appropriate validators,
+ * and proper events (errors, warning) are reported.
+ * Tests that correct validation messages are provided for the validation errors in the following models:
+ * Security Scheme, Security Requirement, OAuth Flow(s), MediaType, Example, Encoding
  *
  */
 @RunWith(FATRunner.class)
@@ -23,13 +26,11 @@ public class OpenAPIValidationTestTwo {
     public static LibertyServer server;
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
-    //private static final int TIMEOUT = 10000; //in milliseconds (10 seconds)
-
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        server.startServer("OpenAPIValidationTest.log", true);
+        server.startServer("OpenAPIValidationTestTwo.log", true);
 
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
@@ -44,12 +45,9 @@ public class OpenAPIValidationTestTwo {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted()) {
-            server.stopServer("CWWKO1603E", "CWWKO1650E", "CWWKO1651W");
+            server.stopServer("CWWKO1650E", "CWWKO1651W");
         }
     }
-
-    //Tests that correct validation messages are provided for the validation errors in the following models:
-    //Security Scheme, Security Requirement, OAuth Flow(s), MediaType, Example, Encoding
 
     @Test
     public void testSecuritySchemeValidation() {
@@ -120,5 +118,4 @@ public class OpenAPIValidationTestTwo {
         assertNotNull("The Encoding object is not properly validated",
                       server.waitForStringInLog("Message: The encoding property specified cannot be validated because the corresponding schema property is null*"));
     }
-
 }

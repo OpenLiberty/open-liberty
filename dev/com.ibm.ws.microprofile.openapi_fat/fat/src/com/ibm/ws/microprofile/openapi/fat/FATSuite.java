@@ -18,5 +18,5 @@ import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestOne;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ApplicationProcessorTest.class, OpenAPIValidationTestOne.class, OpenAPIValidationTestTwo.class })
+@SuiteClasses({ ApplicationProcessorTest.class, OpenAPIValidationTestOne.class, OpenAPIValidationTestTwo.class, EndpointAvailabilityTest.class })
 public class FATSuite {}
