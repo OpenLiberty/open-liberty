@@ -39,10 +39,8 @@ public class LogFieldConstants {
     public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";
     public static final String COUNT = "count";
     public static final String IBM_REQUESTSTARTTIME = "ibm_requestStartTime";
-
     public static final String IBM_CLASSNAME = "ibm_className";
     public static final String IBM_METHODNAME = "ibm_methodName";
-
     public static final String LEVELVALUE = "levelValue";
     public static final String CORRELATION_ID = "correlationId";
     public static final String PRODUCT = "product";
@@ -50,9 +48,8 @@ public class LogFieldConstants {
     public static final String THREADNAME = "threadName";
     public static final String ORG = "org";
     public static final String OBJECT_ID = "objectId";
-
     public static final String THROWABLE = "throwable";
     public static final String THROWABLE_LOCALIZED = "throwable_localized";
     public static final String FORMATTEDMSG = "formattedMsg";
-
+    public static final String EXT_PREFIX = "ext_";
 }
