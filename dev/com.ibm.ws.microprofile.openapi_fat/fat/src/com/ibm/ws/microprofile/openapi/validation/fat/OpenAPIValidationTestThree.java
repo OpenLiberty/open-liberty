@@ -33,6 +33,7 @@ public class OpenAPIValidationTestThree {
 
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
+        assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
         assertNotNull("Web application is not available at /Validation/",
                       server.waitForStringInLog("CWWKT0016I.*/Validation/")); //wait for endpoint to become available
         assertNotNull("CWWKF0011I.* not recieved on relationServer",
@@ -41,13 +42,7 @@ public class OpenAPIValidationTestThree {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1603E", "CWWKO1650E");
-    }
-
-    @Test
-    public void testStartup() throws Exception {
-
-        assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
+        server.stopServer("CWWKO1650E");
     }
 
     @Test
