@@ -32,7 +32,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.opentracing.Span;
+import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -79,13 +79,14 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
         SpanContext priorOutgoingContext = tracer.extract(Format.Builtin.HTTP_HEADERS,
                                                           new MultivaluedMapToTextMap(incomingRequestContext.getHeaders()));
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
         /*
          * Removing filter processing until microprofile spec for it is approved. Expect to add this code
-         * back in in 1Q18 - smf
+         * back in 1Q18 - smf
          */
         // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
         boolean process = true;
@@ -94,7 +95,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         String classOperationName = OpentracingService.getClassOperationName(resourceInfo.getResourceMethod());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " operation namnes", classOperationName, methodOperationName);
+            Tr.debug(tc, methodName + " operation names", classOperationName, methodOperationName);
         }
 
         // Check if this JAXRS method has @Traced(false)
@@ -136,25 +137,15 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
             spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), incomingRequestContext.getMethod());
+            spanBuilder.asChildOf(priorOutgoingContext);
 
-            if (priorOutgoingContext != null) {
-                spanBuilder.asChildOf(priorOutgoingContext);
-            } else {
-                spanBuilder.ignoreActiveSpan();
-                // TODO: This is a work-around for a mock tracer bug.
-                // See io.opentracing.mock.MockTracer.MockSpanBuilder.startManual(),
-                // which will set the parent based on the active context.
-            }
-
-            Span newIncomingSpan = spanBuilder.startManual();
-
-            tracer.makeActive(newIncomingSpan);
-
-            incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, newIncomingSpan);
+            ActiveSpan activeSpan = spanBuilder.startActive();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " contextSpan", newIncomingSpan);
+                Tr.debug(tc, methodName + " activeSpan", activeSpan);
             }
+
+            incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, activeSpan);
         }
 
         incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, !process);
@@ -167,30 +158,38 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         String methodName = "filter(outgoing)";
 
         Boolean skipped = (Boolean) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID);
+
+        if (skipped != null) {
+            // Remove it immediately
+            incomingRequestContext.removeProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID);
+        }
+
         if (skipped != null && skipped) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " skipped");
             }
-            incomingRequestContext.removeProperty(OpentracingContainerFilter.SERVER_SPAN_SKIPPED_ID);
             return;
         }
 
-        Span incomingSpan = (Span) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
-        if (incomingSpan == null) {
+        // If processing wasn't skipped, then we should have an ActiveSpan
+        ActiveSpan activeSpan = (ActiveSpan) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
+        if (activeSpan == null) {
             Tr.error(tc, "OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST");
             return;
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " incomingSpan", incomingSpan);
-            }
         }
 
+        incomingRequestContext.removeProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
+
         try {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + " activeSpan", activeSpan);
+            }
+
             Integer httpStatus = Integer.valueOf(outgoingResponseContext.getStatus());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " httpStatus", httpStatus);
             }
-            incomingSpan.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
+            activeSpan.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
 
             if (outgoingResponseContext.getStatus() >= 400) {
                 MultivaluedMap<String, Object> headers = outgoingResponseContext.getHeaders();
@@ -200,12 +199,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
                     headers.remove(EXCEPTION_KEY);
                 }
 
-                OpentracingService.addSpanErrorInfo(incomingSpan, exception);
+                OpentracingService.addSpanErrorInfo(activeSpan, exception);
             }
-
         } finally {
-            incomingSpan.finish();
-            incomingRequestContext.removeProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
+            activeSpan.deactivate();
         }
     }
 
