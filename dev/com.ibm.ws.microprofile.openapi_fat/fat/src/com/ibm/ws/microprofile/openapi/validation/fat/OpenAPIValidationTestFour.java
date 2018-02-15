@@ -51,8 +51,7 @@ public class OpenAPIValidationTestFour {
 
     @Test
     public void testStartup() throws Exception {
-        // Tests that correct validation messages are provided for the validation errors in the following models:
-        // OpenAPI and Paths
+ 
         assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
     }
 

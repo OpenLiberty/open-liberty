@@ -13,13 +13,13 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * A class to test the OpenAPI validator. This class covers the scenario where the info and paths fields is missing from the OpenAPI model.
+ * A class to test an app with no validation errors.
  *
  */
 @RunWith(FATRunner.class)
-public class OpenAPIValidationTestThree {
+public class OpenAPIValidationTestSix {
 
-    @Server("validationServerThree")
+    @Server("validationServerSix")
     public static LibertyServer server;
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
@@ -29,7 +29,7 @@ public class OpenAPIValidationTestThree {
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        server.startServer("OpenAPIValidationTestThree.log", true);
+        server.startServer("OpenAPIValidationTestSix.log", true);
 
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
@@ -41,21 +41,13 @@ public class OpenAPIValidationTestThree {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1603E", "CWWKO1650E");
+        server.stopServer("CWWKO1603E");
     }
 
     @Test
     public void testStartup() throws Exception {
-
         assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
     }
 
-    @Test
-    public void testPaths() throws Exception {
-        assertNotNull("The OpenAPI Validator should have been triggered by the missing 'paths' field",
-                             server.waitForStringInLog("Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
-        assertNotNull("The OpenAPI Validator should have been triggered by the missing 'info' field",
-                             server.waitForStringInLog("Message: Required \"info\" field is missing or is set to an invalid value, Location: #"));
-    }
 
 }
