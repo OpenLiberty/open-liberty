@@ -62,11 +62,29 @@ public class LTPAToken2 implements Token, Serializable {
     private final LTPAPublicKey publicKey;
     private String cipher = null;
 
+    private static String javaVendor = null;
+    private static boolean ibmJVM = false;
+    
+
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-	    m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
-	    m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
+	    if (javaVendor == null) {
+		javaVendor = System.getProperty("java.vendor");
+		if (javaVendor.contains("IBM")) {
+		    ibmJVM = true; 
+		}
+	    }
+
+ 	    if (ibmJVM) {
+	       m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
+	       m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
+	    }
+	    else {
+	       //MessageDigest SHA is in SUN, which is always at the top of provider list. No need to worry about other provider gets picked. 
+	       m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+	       m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+	    }
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Error creating digest; " + e);
