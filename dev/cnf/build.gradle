@@ -404,7 +404,7 @@ task createSingleJson {
       	//                   metadataFile:file('build/repo/${esa.name}.
      
      files.each {esa ->
-        	println "inside"
+        	//println "inside"
         	println esa.name
         	String basename=esa.name
             ant.singleJsonRepo(assetFile:file(esa),
@@ -473,18 +473,21 @@ task packageForClosed {
 	doLast{
    		copy{
    			from "SingleJson.json"
-   			into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+   			//into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+   			into "build/temp/LibertyFeaturesToMavenRepo"
    		}
    		copy{
    		
    			from "${rootDir}/LibertyFeaturesToMavenRepo/"
-           	into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+          // 	into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+           	into "build/temp/LibertyFeaturesToMavenRepo"
             include "LibertyFeaturesToMavenRepo-0.0.1-SNAPSHOT.jar"            
            
    		}
    		copy{
    			from "${rootDir}/com.ibm.ws.repository.generator/build/libs"
-           	into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+          // 	into "${rootDir}/build.image/wlp/lib/LibertyFeaturesToMavenRepo"
+           	into "build/temp/LibertyFeaturesToMavenRepo"
             include "com.ibm.ws.repository.generator.jar"
    	
    		}
