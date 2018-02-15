@@ -13,7 +13,6 @@
 
     <!-- Enable features -->
     <featureManager>
-    	<feature>localConnector-1.0</feature>
     	<feature>componenttest-1.0</feature>
         <feature>mpOpenAPI-1.0</feature>
     </featureManager>
@@ -22,7 +21,5 @@
     <applicationManager autoExpand="true"/>
     
     <include location="../fatTestPorts.xml"/>
-    
-    <applicationMonitor updateTrigger="mbean"/>
     
 </server>

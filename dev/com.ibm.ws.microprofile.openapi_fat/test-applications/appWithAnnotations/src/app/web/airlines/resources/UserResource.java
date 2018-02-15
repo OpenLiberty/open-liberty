@@ -221,13 +221,7 @@ public class UserResource {
                                                           writeOnly = true,
                                                           minItems = 2,
                                                           maxItems = 20,
-                                                          uniqueItems = true),
-                                                      encoding = @Encoding(
-                                                          name = "firstName",
-                                                          contentType = "text/plain",
-                                                          style = "form",
-                                                          allowReserved = true,
-                                                          explode = true))) User[] users) {
+                                                          uniqueItems = true))) User[] users) {
         for (User user : users) {
             userData.addUser(user);
         }
@@ -380,7 +374,7 @@ public class UserResource {
                   @Link(
                       name = "User name",
                       description = "The username corresponding to provided user id",
-                      operationId = "getUserByName",
+                      operationId = "getUserByUserName",
                       parameters = @LinkParameter(
                           name = "userId",
                           expression = "$request.path.id")),

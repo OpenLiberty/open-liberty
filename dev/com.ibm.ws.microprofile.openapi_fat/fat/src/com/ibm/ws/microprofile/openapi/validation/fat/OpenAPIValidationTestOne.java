@@ -15,9 +15,26 @@ import componenttest.topology.utils.HttpUtils;
 /**
  * Tests to ensure that OpenAPI model validation works,
  * model walker calls appropriate validators, and proper events (errors, warning) are reported.
+ *
  * Tests for correct validation messages provided for the validation errors in the following models:
+ *
  * Info, Contact, License, ServerVariable(s), Server(s), PathItem, Operation, ExternalDocumentation,
  * SecurityRequirement, RequestBody, Response, Responses
+ *
+ * The app with a static yaml file checks the following conditions for each model:
+ * - Info: REQUIRED "title" and "version", valid "termsOfService" URL - all validation cases checked
+ * - License: REQUIRED "name", and valid "url" URL - all validation cases checked
+ * - Contact: valid url and email - all validation cases checked
+ * - ServerVariable: REQUIRED "default" - all validation cases checked
+ * - ServerVariables: null value results in invalid OpenAPI doc, null key is tested - all validation cases checked
+ * - Server: "url" field is not null and is valid, and all server variables are defined - all validation cases checked
+ * - PathItem: duplicate parameter, the 'required' field of path parameter, undeclared parameter, path string validity, operation parameters - all validation cases checked
+ * - Operation: RQUIRED 'responses' field and unique operation IDs - all validation cases checked
+ * - ExternalDocumentation: invalid url tested here, null url tested in OpenAPIValidationTestTwo
+ * - SecurityRequirement: name undeclared in SecurityScheme tested, the rest of cases are tested in OpenAPIValidationTestTwo
+ * - RequestBody: REQUIRED 'content' field tested - all validation cases checked
+ * - Response: REQUIRED 'description' field tested - all validation cases checked
+ * - Responses: at least one response code for successful operation tested - all validation cases checked
  *
  */
 @RunWith(FATRunner.class)
@@ -81,32 +98,38 @@ public class OpenAPIValidationTestOne {
     public void testServerValidation() {
         assertNotNull("The Server object was not validated properly",
                       server.waitForMultipleStringsInLog(4, "Message: The Server Object must contain a valid URL*"));
-    }
-
-    @Test
-    public void testServersValidation() {
         assertNotNull("The Server object was not validated properly",
                       server.waitForStringInLog("Message: Required \"url\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/get/servers"));
+        assertNotNull("The Server Variable object was not validated properly",
+                      server.waitForStringInLog("The \"extraVariable\" variable in the Server Object is not defined*"));
+        assertNotNull("The Server Variable object was not validated properly",
+                      server.waitForStringInLog("Message: The \"id\" variable in the Server Object is not defined*"));
     }
 
     @Test
     public void testServerVariableValidation() {
         assertNotNull("The Server Variable object was not validated properly",
                       server.waitForStringInLog("Message: Required \"default\" field is missing or is set to an invalid value*"));
-        assertNotNull("The Server Variable object was not validated properly",
-                      server.waitForStringInLog("he \"extraVariable\" variable in the Server Object is not defined*"));
-        assertNotNull("The Server Variable object was not validated properly",
-                      server.waitForStringInLog("Message: The \"id\" variable in the Server Object is not defined*"));
     }
 
     @Test
     public void testPathItemValidation() {
         assertNotNull("The PathItem object was not validated properly",
-                      server.waitForStringInLog("The \"id\" path parameter from the \"GET\" operation of the path*"));
+                      server.waitForStringInLog("The \"id\" path parameter from the \"GET\" operation of the path \"/bookings/\\{id\\}\" does not contain the \"required\" field or its value is not \"true\""));
         assertNotNull("The PathItem object was not validated properly",
-                      server.waitForStringInLog("The \"GET\" operation of the*"));
+                      server.waitForStringInLog("The \"GET\" operation of the \"/reviews/\\{id\\}\" path does not define a path parameter that is declared: \"id\""));
         assertNotNull("The PathItem object was not validated properly",
-                      server.waitForStringInLog("The \"GET\" operation from the*"));
+                      server.waitForStringInLog("The Path Item Object must contain a valid path. The \"GET\" operation from the \"/reviews/\\{airline\\}\" path defines a duplicated \"path\" parameter: \"airline\""));
+        assertNotNull("The PathItem object was not properly validated",
+                      server.waitForStringInLog("The Paths Object contains an invalid path. The \"noSlashPath\" path value does not begin with a slash*"));
+        assertNotNull("The PathItem object was not properly validated",
+                      server.waitForStringInLog("The Path Item Object must contain a valid path. The format of the \"/availability/\"*"));
+        assertNotNull("The PathItem object was not properly validated",
+                      server.waitForStringInLog(" The \"userFirstName\" path parameter from the \"GET\" operation of the path \"/operationWithParam\" does not contain the \"required\" field"));
+        assertNotNull("The PathItem object was not properly validated",
+                      server.waitForStringInLog("The Path Item Object must contain a valid path. The \"/\\{username\\}\" path defines \"3\" path parameters that are not declared: \"\\[pathWithUndeclaredParams, usernameParam, accountNumber\\]\"*"));
+        assertNotNull("The PathItem object was not properly validated",
+                      server.waitForStringInLog("The \"GET\" operation from the \"/operationWithParam\" path defines one path parameter that is not declared: \"\\[userFirstName\\]\""));
     }
 
     @Test
