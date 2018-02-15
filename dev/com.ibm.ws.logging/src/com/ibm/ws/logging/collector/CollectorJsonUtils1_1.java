@@ -347,24 +347,27 @@ public class CollectorJsonUtils1_1 {
                 }
             } else if (p instanceof KeyValuePairList) {
                 kvpl = (KeyValuePairList) p;
-                extensions = kvpl.getKeyValuePairs();
-                boolean isExtNum = false;
-                for (KeyValuePair k : extensions) {
-                    String extKey = k.getKey();
-                    String extValue = k.getValue();
-                    // Checking the value of the extension KeyValuePair to make sure the suffix is correct
-                    boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(k);
-                    if (isValidExt) {
-                        isExtNum = CollectorJsonHelpers.checkIfExtNum(extKey);
-                        extKey = LogFieldConstants.EXT_PREFIX + extKey;
-                        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, isFirstField, isExtNum);
+                if (kvpl.getName().equals(LogFieldConstants.KVPL_NAME)) {
+                    extensions = kvpl.getKeyValuePairs();
+                    boolean isExtQuoteless = false;
+                    for (KeyValuePair k : extensions) {
+                        String extKey = k.getKey();
+                        String extValue = k.getValue();
+                        // Checking the value of the extension KeyValuePair to make sure the suffix is correct
+                        boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(k);
+                        if (isValidExt) {
+                            isExtQuoteless = CollectorJsonHelpers.checkIfExtIsQuoteless(extKey);
+                            extKey = LogFieldConstants.EXT_PREFIX + extKey;
+                            isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, isFirstField, isExtQuoteless);
+                        }
                     }
-
                 }
             }
         }
 
-        if (tags != null) {
+        if (tags != null)
+
+        {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
         }
 

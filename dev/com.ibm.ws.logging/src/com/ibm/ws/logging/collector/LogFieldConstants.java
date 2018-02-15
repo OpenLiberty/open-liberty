@@ -52,4 +52,5 @@ public class LogFieldConstants {
     public static final String THROWABLE_LOCALIZED = "throwable_localized";
     public static final String FORMATTEDMSG = "formattedMsg";
     public static final String EXT_PREFIX = "ext_";
+    public static final String KVPL_NAME = "extensions";
 }

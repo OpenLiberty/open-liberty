@@ -55,7 +55,7 @@ public class CollectorJsonHelpers {
     }
 
     protected static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
-                                       boolean jsonEscapeValue, boolean trim, boolean isFirstField, boolean isNumber) {
+                                       boolean jsonEscapeValue, boolean trim, boolean isFirstField, boolean isQuoteless) {
 
         // if name or value is null just return
         if (name == null || value == null)
@@ -77,8 +77,8 @@ public class CollectorJsonHelpers {
         else
             sb.append(name);
 
-        //If the type of the field is NUMBER, then do not add quotations around the value
-        if (isNumber) {
+        //If the type of does not require quotes, then do not add quotations around the value
+        if (isQuoteless) {
 
             sb.append("\":");
 
@@ -255,7 +255,7 @@ public class CollectorJsonHelpers {
         return isValidExt;
     }
 
-    public static boolean verifyIntValue(String value) {
+    private static boolean verifyIntValue(String value) {
         boolean isValid = true;
         char[] arr = value.toCharArray();
         for (int i = 0; i < arr.length; i++) {
@@ -274,7 +274,7 @@ public class CollectorJsonHelpers {
         return isValid;
     }
 
-    public static boolean verifyFloatValue(String s) {
+    private static boolean verifyFloatValue(String s) {
         boolean isValid = true;
         boolean decimalFlag = false;
         char[] arr = s.toCharArray();
@@ -314,8 +314,9 @@ public class CollectorJsonHelpers {
         return isValid;
     }
 
-    protected static boolean checkIfExtNum(String extKey) {
-        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX) || extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+    protected static boolean checkIfExtIsQuoteless(String extKey) {
+        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX) || extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)
+            || extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
             return true;
         } else {
             return false;
