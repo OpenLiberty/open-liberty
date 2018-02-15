@@ -21,6 +21,7 @@ import com.ibm.ws.logging.internal.impl.BaseTraceService;
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
 import com.ibm.ws.logging.internal.impl.RoutedMessageImpl;
 import com.ibm.wsspi.logging.MessageRouter;
+import com.ibm.wsspi.logprovider.LogProviderConfig;
 
 /**
  *
@@ -28,6 +29,13 @@ import com.ibm.wsspi.logging.MessageRouter;
 //Just a comment
 public class HpelBaseTraceService extends BaseTraceService {
     private final HpelTraceServiceWriter trWriter = new HpelTraceServiceWriter(this);
+
+    @Override
+    public synchronized void update(LogProviderConfig config) {
+        super.update(config);
+        collectorMgrPipelineUtils.setJsonTrService(false);
+        logConduit.removeSyncHandler(consoleLogHandler);
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -69,7 +77,6 @@ public class HpelBaseTraceService extends BaseTraceService {
                 }
             }
         }
-
         return true;
     }
 

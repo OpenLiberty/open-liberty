@@ -39,6 +39,11 @@ javac.target: 1.8
 	
 fat.project: true
 
+tested.features: mpConfig-1.1,\
+                 mpConfig-1.2,\
+                 cdi-1.2,\
+                 cdi-2.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\

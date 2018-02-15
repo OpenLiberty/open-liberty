@@ -234,27 +234,17 @@ public class H2StreamProcessor {
                 }
             } else if (direction.equals(Constants.Direction.READ_IN)) {
                 // handle a frame recieved after stream closure
-                if (frame.getFrameType() == FrameTypes.PRIORITY) {
-                    // Ignore PRIORITY in all closed situations
+                if (frame.getFrameType() == FrameTypes.PRIORITY || frame.getFrameType() == FrameTypes.RST_STREAM) {
+                    // Ignore PRIORITY and RST_STREAM in all closed situations
                     return;
                 }
+                if (muxLink.closeTable.containsKey(this.myID)) {
+                    throw new StreamClosedException(frame.getFrameType() + " frame received on a closed stream");
+                } else {
+                    throw new ProtocolException(frame.getFrameType() + " frame received on a closed stream");
 
-                if (muxLink.significantlyPastCloseTime(myID)) {
-                    // stream is old, client should know stream was closed
-                    throw new ProtocolException("Stream is already closed");
                 }
 
-                if (frame.getFrameType() == FrameTypes.DATA || frame.getFrameType() == FrameTypes.HEADERS) {
-                    if (muxLink.closeTable.containsKey(this.myID)) {
-                        throw new StreamClosedException(frame.getFrameType() + " frame received on a closed stream");
-                    } else {
-                        throw new ProtocolException(frame.getFrameType() + " frame received on a closed stream");
-
-                    }
-                } else if (frame.getFrameType() == FrameTypes.RST_STREAM) {
-                    // ignore
-                    return;
-                }
             }
         }
 
@@ -538,9 +528,9 @@ public class H2StreamProcessor {
         if (currentFrame.getFrameType() == FrameTypes.GOAWAY
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             writeFrameSync();
-            this.updateStreamState(StreamState.CLOSED);
 
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
+                this.updateStreamState(StreamState.CLOSED);
                 muxLink.closeConnectionLink(null);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -991,7 +981,7 @@ public class H2StreamProcessor {
             writeFrameSync();
             if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
                 endStream = true;
-                updateStreamState(StreamState.CLOSED);
+                updateStreamState(StreamState.HALF_CLOSED_LOCAL);
             }
         } else if (currentFrame.getFrameType() == FrameTypes.RST_STREAM ||
                    currentFrame.flagEndStreamSet()) {
@@ -1014,7 +1004,6 @@ public class H2StreamProcessor {
             if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet())
                 && writeCompleted) {
                 endStream = true;
-                updateStreamState(StreamState.CLOSED);
 
             } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
@@ -1486,10 +1475,6 @@ public class H2StreamProcessor {
         }
         if (pseudoHeaders.get(HpackConstants.METHOD) != null && pseudoHeaders.get(HpackConstants.PATH) != null &&
             pseudoHeaders.get(HpackConstants.SCHEME) != null) {
-            // OPTIONS requests must include the ":path" pseudo-header field with a value of '*'
-            if (pseudoHeaders.get(HpackConstants.METHOD).equals("OPTIONS") && !pseudoHeaders.get(HpackConstants.PATH).equals("*")) {
-                return false;
-            }
             return true;
         }
         return false;

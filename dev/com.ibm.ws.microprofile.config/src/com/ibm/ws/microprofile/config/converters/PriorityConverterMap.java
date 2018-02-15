@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * A Map of PriorityConverters, that only stores the PriorityConverter with the highest priority for each Type
  */
@@ -35,7 +37,7 @@ public class PriorityConverterMap {
      */
     public PriorityConverterMap(PriorityConverterMap toCopy) {
         for (PriorityConverter converter : toCopy.getAll()) {
-            addConverter(converter);
+            _addConverter(converter);
         }
     }
 
@@ -49,6 +51,12 @@ public class PriorityConverterMap {
      * @return the new converter if it was added or the existing converter if it was not
      */
     public PriorityConverter addConverter(PriorityConverter converter) {
+        PriorityConverter existing = _addConverter(converter);
+        return existing;
+    }
+
+    @Trivial
+    private PriorityConverter _addConverter(PriorityConverter converter) {
         if (this.unmodifiable) {
             throw new UnsupportedOperationException();
         }
@@ -70,7 +78,7 @@ public class PriorityConverterMap {
      */
     public void addAll(PriorityConverterMap convertersToAdd) {
         for (PriorityConverter converter : convertersToAdd.converters.values()) {
-            addConverter(converter);
+            _addConverter(converter);
         }
     }
 
@@ -111,5 +119,10 @@ public class PriorityConverterMap {
      */
     public Collection<? extends Type> getTypes() {
         return converters.keySet();
+    }
+
+    @Override
+    public String toString() {
+        return "PriorityConverterMap:" + converters;
     }
 }

@@ -26,7 +26,7 @@ import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 /**
  *
  */
-public class SystemConfigSource extends AbstractConfigSource implements ConfigSource {
+public class SystemConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(SystemConfigSource.class);
 

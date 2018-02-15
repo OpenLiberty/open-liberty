@@ -309,9 +309,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
             }
             Log.info(c, m, "Resulting features: " + features);
 
-            if (isServerConfig)
+            if (isServerConfig) {
+                Log.info(c, m, "Config: " + serverConfig);
                 ServerConfigurationFactory.toFile(configFile, serverConfig);
-            else
+            } else
                 ClientConfigurationFactory.toFile(configFile, clientConfig);
         }
     }
