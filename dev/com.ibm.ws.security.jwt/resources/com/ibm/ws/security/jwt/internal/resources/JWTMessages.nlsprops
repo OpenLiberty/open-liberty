@@ -278,7 +278,7 @@ JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verify that the truststore that is used
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
 JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Cannot determine which signer certificate in the truststore to use. Add the 'trustedAlias' attribute to the JWT consumer configuration or the 'keyName' attribute to the MP-JWT configuration.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Multiple signer certificates were found in the configured truststore. When there are multiple certificates in the truststore, the 'trustedAlias' attribute must be specified in the JWT consumer configuration or the 'keyName' attribute must be specified in the MP-JWT configuration to establish certificate to use.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Multiple signer certificates were found in the configured truststore. When there are multiple certificates in the truststore, the 'trustedAlias' attribute must be specified in the JWT consumer configuration or the 'keyName' attribute must be specified in the MP-JWT configuration to establish which certificate to use.
 JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specify which certificate to use in the truststore by adding the alias of the appropriate signer certificate to either the 'trustedAlias' JWT consumer configuration attribute or the 'keyName' MP-JWT configuration attribute.
 
 # Do not translate "JSON Web Token", "JWT"
