@@ -14,9 +14,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFive;
+import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestFour;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestOne;
+import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestSix;
+import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestThree;
 import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ApplicationProcessorTest.class, OpenAPIValidationTestOne.class, OpenAPIValidationTestTwo.class, EndpointAvailabilityTest.class })
+@SuiteClasses({
+                ApplicationProcessorTest.class,
+                OpenAPIValidationTestOne.class,
+                OpenAPIValidationTestTwo.class,
+                OpenAPIValidationTestThree.class,
+                OpenAPIValidationTestFour.class,
+                OpenAPIValidationTestFive.class,
+                OpenAPIValidationTestSix.class,
+})
 public class FATSuite {}
