@@ -365,9 +365,7 @@ public class CollectorJsonUtils1_1 {
             }
         }
 
-        if (tags != null)
-
-        {
+        if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
         }
 
