@@ -70,103 +70,103 @@ public class OpenAPIValidationTestOne {
     @Test
     public void testInfoValidation() throws Exception {
 
-        assertNotNull("The Info object was not validated properly",
+        assertNotNull("The Info Validator should have been triggered by invalid URL",
                       server.waitForStringInLog("Message: The Info Object must contain a valid URL. The \"not in URL format\" value specified for \"termsOfService\"*"));
-        assertNotNull("The Info object was not validated properly",
+        assertNotNull("The Info Validator should have been triggered by missing \"version\" field",
                       server.waitForStringInLog("Message: Required \"version\" field is missing or is set to an invalid value, Location: #/info"));
-        assertNotNull("The Info object was not validated properly",
+        assertNotNull("The Info Validator should have been triggered by missing \"title\" field",
                       server.waitForStringInLog("Message: Required \"title\" field is missing or is set to an invalid value, Location: #/info"));
     }
 
     @Test
     public void testContactValidation() {
-        assertNotNull("The Contact object was not validated properly",
+        assertNotNull("The Contact Validator should have been triggered by invalid URL",
                       server.waitForStringInLog("Message: The Contact Object must contain a valid URL. The \"not in URL Format\" value specified*"));
-        assertNotNull("The Contact object was not validated properly",
+        assertNotNull("The Contact Validator should have been triggered by invalid email",
                       server.waitForStringInLog("Message: The Contact Object must contain a valid email address. The \"not an email\" value*"));
     }
 
     @Test
     public void testLicenseValidation() {
-        assertNotNull("The License object was not validated properly",
+        assertNotNull("The License Validator should have been triggered by missing \"name\" field",
                       server.waitForStringInLog("Message: Required \"name\" field is missing or is set to an invalid value"));
-        assertNotNull("The License object was not validated properly",
+        assertNotNull("The License Validator should have been triggered by invalid URL",
                       server.waitForStringInLog("The License Object must contain a valid URL. The \"not in URL format\" value"));
     }
 
     @Test
     public void testServerValidation() {
-        assertNotNull("The Server object was not validated properly",
+        assertNotNull("The Server Validator should have been triggered by invalid URL",
                       server.waitForMultipleStringsInLog(4, "Message: The Server Object must contain a valid URL*"));
-        assertNotNull("The Server object was not validated properly",
+        assertNotNull("The Server Validator should have been triggered by missing \"url\" field",
                       server.waitForStringInLog("Message: Required \"url\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/get/servers"));
-        assertNotNull("The Server Variable object was not validated properly",
+        assertNotNull("The Server Validator should have been triggered by undefined variable",
                       server.waitForStringInLog("The \"extraVariable\" variable in the Server Object is not defined*"));
-        assertNotNull("The Server Variable object was not validated properly",
+        assertNotNull("The Server Validator should have been triggered by undefined variable",
                       server.waitForStringInLog("Message: The \"id\" variable in the Server Object is not defined*"));
     }
 
     @Test
     public void testServerVariableValidation() {
-        assertNotNull("The Server Variable object was not validated properly",
+        assertNotNull("The Server Variable Validator should have been triggered by a missing \"default\" field",
                       server.waitForStringInLog("Message: Required \"default\" field is missing or is set to an invalid value*"));
     }
 
     @Test
     public void testPathItemValidation() {
-        assertNotNull("The PathItem object was not validated properly",
+        assertNotNull("The PathItem Validator should have been triggered by teh missing \"required\" field in a path parameter",
                       server.waitForStringInLog("The \"id\" path parameter from the \"GET\" operation of the path \"/bookings/\\{id\\}\" does not contain the \"required\" field or its value is not \"true\""));
-        assertNotNull("The PathItem object was not validated properly",
+        assertNotNull("The PathItem Validator should have been triggered by an undeclared path parameter",
                       server.waitForStringInLog("The \"GET\" operation of the \"/reviews/\\{id\\}\" path does not define a path parameter that is declared: \"id\""));
-        assertNotNull("The PathItem object was not validated properly",
+        assertNotNull("The PathItem Validator should have been triggered by an invalid path",
                       server.waitForStringInLog("The Path Item Object must contain a valid path. The \"GET\" operation from the \"/reviews/\\{airline\\}\" path defines a duplicated \"path\" parameter: \"airline\""));
-        assertNotNull("The PathItem object was not properly validated",
+        assertNotNull("The PathItem Validator should have been triggered by an invalid path",
                       server.waitForStringInLog("The Paths Object contains an invalid path. The \"noSlashPath\" path value does not begin with a slash*"));
-        assertNotNull("The PathItem object was not properly validated",
+        assertNotNull("The PathItem Validator should have been triggered by an invalid path",
                       server.waitForStringInLog("The Path Item Object must contain a valid path. The format of the \"/availability/\"*"));
-        assertNotNull("The PathItem object was not properly validated",
+        assertNotNull("The PathItem Validator should have been triggered by teh missing \"required\" field in a path parameter",
                       server.waitForStringInLog(" The \"userFirstName\" path parameter from the \"GET\" operation of the path \"/operationWithParam\" does not contain the \"required\" field"));
-        assertNotNull("The PathItem object was not properly validated",
+        assertNotNull("The PathItem Validator should have been triggered by an invalid path",
                       server.waitForStringInLog("The Path Item Object must contain a valid path. The \"/\\{username\\}\" path defines \"3\" path parameters that are not declared: \"\\[pathWithUndeclaredParams, usernameParam, accountNumber\\]\"*"));
-        assertNotNull("The PathItem object was not properly validated",
+        assertNotNull("The PathItem Validator should have been triggered by an undeclared path parameter",
                       server.waitForStringInLog("The \"GET\" operation from the \"/operationWithParam\" path defines one path parameter that is not declared: \"\\[userFirstName\\]\""));
     }
 
     @Test
     public void testOperationValidation() {
-        assertNotNull("The Operation object was not validated properly",
+        assertNotNull("The Operation Validator should have been triggered by the missing \"responses\" field",
                       server.waitForStringInLog("Message: Required \"responses\" field is missing or is set to an invalid value, Location: #/paths/~1/get"));
-        assertNotNull("The Operation object was not validated properly",
+        assertNotNull("The Operation Validator should have been triggered by non-unique operationIDs",
                       server.waitForStringInLog("Message: More than one Operation Objects with \"getReviewById\" value for \"operationId\" field was found. The \"operationId\" must be unique"));
     }
 
     @Test
     public void testExternalDocsValidation() {
-        assertNotNull("The ExternalDocumentation object was not validated properly",
+        assertNotNull("The ExternalDocumentation Validator should have been triggered by an invalid URL",
                       server.waitForStringInLog("Message: The External Documentation Object must contain a valid URL. The \"not a URL\" value"));
     }
 
     @Test
     public void testSecurityRequirementValidation() {
-        assertNotNull("The Parameter object was not validated properly",
+        assertNotNull("The Security Requirement Validator should have been triggered by undeclared Security Scheme",
                       server.waitForStringInLog("The \"reviewoauth2\" name provided for the Security Requirement Object does not correspond to a declared security scheme"));
     }
 
     @Test
     public void testRequestBodyValidation() {
-        assertNotNull("The RequestBody object was not validated properly",
+        assertNotNull("The RequestBody Validator should have been triggered by the missing \"content\" field",
                       server.waitForStringInLog("Message: Required \"content\" field is missing or is set to an invalid value, Location: #/paths/~1reviews/post/requestBody"));
     }
 
     @Test
     public void testResponseValidation() {
-        assertNotNull("The Response object was not validated properly",
+        assertNotNull("The Response Validator should have been triggered by the missing \"description\" field",
                       server.waitForStringInLog("Message: Required \"description\" field is missing or is set to an invalid value*"));
     }
 
     @Test
     public void testResponsesValidation() {
-        assertNotNull("The Responses object was not validated properly",
+        assertNotNull("The Responses Validator should have been triggered by missing response code for successful operation",
                       server.waitForStringInLog("Message: The Responses Object should contain at least one response code for a successful operation"));
     }
 }
