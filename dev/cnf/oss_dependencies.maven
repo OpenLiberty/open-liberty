@@ -146,9 +146,9 @@ org.apache.httpcomponents:httpcore:4.1.2
 org.apache.httpcomponents:httpcore:4.3
 org.apache.httpcomponents:httpmime:4.1.2
 org.apache.httpcomponents:httpmime:4.3.1
-org.apache.johnzon:johnzon-core:1.1.0
-org.apache.johnzon:johnzon-jsonb:1.1.0
-org.apache.johnzon:johnzon-mapper:1.1.0
+org.apache.johnzon:johnzon-core:1.1.5
+org.apache.johnzon:johnzon-jsonb:1.1.5
+org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.0-beta
 org.apache.myfaces.core:myfaces-impl:2.2.12

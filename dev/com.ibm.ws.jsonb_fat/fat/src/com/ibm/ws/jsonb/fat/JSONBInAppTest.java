@@ -23,7 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonbtest.JSONBTestServlet;
-import web.jsonbtest.YassonTestServlet;
+import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
 public class JSONBInAppTest extends FATServletClient {
@@ -31,7 +31,7 @@ public class JSONBInAppTest extends FATServletClient {
     @Server("com.ibm.ws.jsonb.inapp")
     @TestServlets({
                     @TestServlet(servlet = JSONBTestServlet.class, contextRoot = JSONB_APP),
-                    @TestServlet(servlet = YassonTestServlet.class, contextRoot = JSONB_APP)
+                    @TestServlet(servlet = JohnzonTestServlet.class, contextRoot = JSONB_APP) // TODO: once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved, switch back to Yasson
     })
     public static LibertyServer server;
 

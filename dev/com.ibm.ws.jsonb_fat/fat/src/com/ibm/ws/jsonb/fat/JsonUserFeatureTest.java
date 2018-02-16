@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
+import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON_JSONP;
-import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_YASSON;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -76,7 +76,7 @@ public class JsonUserFeatureTest extends FATServletClient {
         // using Johnzon for jsonp and Yasson for jsonb
         String found;
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1: JsonbProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_YASSON));
+        assertTrue(found, found.contains(PROVIDER_JOHNZON)); // TODO: once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved, switch back to Yasson
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1.1: JsonProvider obtained from declarative services"));
         assertTrue(found, found.contains(PROVIDER_JOHNZON_JSONP));
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST2"));
