@@ -24,6 +24,7 @@ import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
 
 import com.ibm.websphere.channelfw.FlowType;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
@@ -651,10 +652,34 @@ public class SSLUtils {
         TCPReadRequestContext deviceReadContext = connLink.getDeviceReadInterface();
         TCPWriteRequestContext deviceWriteContext = connLink.getDeviceWriteInterface();
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
+
+        // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
         ThirdPartyAlpnNegotiator negotiator = null;
-        if (connLink.getChannel().getUseH2Protocol()) {
-            // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
-            negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+
+        if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
+
+            boolean tryAlpnNegotiator = false;
+
+            if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                if (connLink.getChannel().getUseH2ProtocolAttribute() != null && connLink.getChannel().getUseH2ProtocolAttribute()) {
+                    tryAlpnNegotiator = true;
+                }
+            }
+
+            else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                if (connLink.getChannel().getUseH2ProtocolAttribute() == null || connLink.getChannel().getUseH2ProtocolAttribute()) {
+                    tryAlpnNegotiator = true;
+                }
+            }
+
+            if (tryAlpnNegotiator) {
+                // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
+                if (bTrace && tc.isEntryEnabled()) {
+                    Tr.debug(tc, "handleHandshake, try Alpn Negotiator");
+                }
+                negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+            }
+
         }
 
         int amountToWrite = 0;

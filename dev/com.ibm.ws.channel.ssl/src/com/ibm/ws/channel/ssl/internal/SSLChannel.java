@@ -15,6 +15,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,7 +29,6 @@ import javax.net.ssl.SSLSessionContext;
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
-import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
@@ -95,7 +95,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
      */
     private int timeoutValueInSSLClosingHandshake = 30;
 
-    private static boolean useH2Protocol = false;
+    private static Boolean useH2ProtocolAttribute = null;
 
     /** Flag on whether stop with no quiese has been called after the last start call */
     volatile private boolean stop0Called = false;
@@ -503,11 +503,8 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
      *
      * @return
      */
-    public boolean getUseH2Protocol() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "useH2Protocol : " + this.useH2Protocol);
-        }
-        return this.useH2Protocol;
+    public Boolean getUseH2ProtocolAttribute() {
+        return this.useH2ProtocolAttribute;
     }
 
     /*
@@ -536,9 +533,6 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "inboundHost = " + this.inboundHost
                                  + " inboundPort = " + this.inboundPort
                                  + " endPointName = " + this.endPointName);
-                    if (this.useH2Protocol) {
-                        Tr.debug(tc, "HTTP/2.0 is enabled for port " + this.inboundPort);
-                    }
 
                 }
             }
@@ -594,14 +588,6 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
             return;
         }
 
-        String configuredHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Configured Http Version Setting, " +
-                         ((configuredHttpVersionSetting == null) ? SSLChannelConstants.NEVER_20 : configuredHttpVersionSetting));
-        }
-        this.useH2Protocol = (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting));
-
         // Extract the channel properties.
         try {
             Properties channelProps = getConfig().getProperties();
@@ -646,16 +632,16 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                 }
 
                 String protocolVersion = channelProps.getProperty(SSLChannelConstants.PROPNAME_PROTOCOL_VERSION);
-                if (protocolVersion != null && !SSLChannelConstants.NEVER_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
+                if (protocolVersion != null) {
 
                     if (SSLChannelConstants.PROTOCOL_VERSION_11.equalsIgnoreCase(protocolVersion)) {
-                        this.useH2Protocol = false;
+                        this.useH2ProtocolAttribute = Boolean.FALSE;
                     } else if (SSLChannelConstants.PROTOCOL_VERSION_2.equalsIgnoreCase(protocolVersion)) {
-                        this.useH2Protocol = true;
+                        this.useH2ProtocolAttribute = Boolean.TRUE;
                     }
 
-                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                        Tr.event(tc, "SSL Channel Config: versionProtocol has been set to " + protocolVersion);
+                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled()) && useH2ProtocolAttribute != null) {
+                        Tr.event(tc, "SSL Channel Config: versionProtocolOption has been set to " + protocolVersion.toLowerCase(Locale.ENGLISH));
                     }
                 }
 

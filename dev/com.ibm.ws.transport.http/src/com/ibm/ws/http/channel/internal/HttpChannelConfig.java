@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.channelfw.ChannelData;
-import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -136,8 +135,8 @@ public class HttpChannelConfig {
     /** PI81572 Purge the remaining response body off the wire when clear is called */
     private boolean purgeRemainingResponseBody = true;
 
-    /** Default http version for the channel is http/1.1 **/
-    private VersionValues protocolVersion = VersionValues.V11;
+    /** Set as an attribute to the HttpEndpoint **/
+    private Boolean useH2ProtocolAttribute = null;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -166,17 +165,6 @@ public class HttpChannelConfig {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "parseConfig: " + cc.getName());
-        }
-
-        // Look at the CHFWBundle to see if the enabled servlet feature enabled
-        // Http 2.0
-        String configuredHttpVersionSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.debug(tc, "Configured Http Version Setting, " + ((configuredHttpVersionSetting == null) ? HttpConfigConstants.NEVER_20 : configuredHttpVersionSetting));
-        }
-
-        if (HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(configuredHttpVersionSetting)) {
-            this.protocolVersion = VersionValues.V20;
         }
 
         Map<Object, Object> propsIn = cc.getPropertyBag();
@@ -1271,18 +1259,17 @@ public class HttpChannelConfig {
      */
     private void parseProtocolVersion(Map<?, ?> props) {
         Object protocolVersionProperty = props.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION);
-        String servletSetting = CHFWBundle.getServletConfiguredHttpVersionSetting();
-        if (null != protocolVersionProperty && !HttpConfigConstants.NEVER_20.equalsIgnoreCase(servletSetting)) {
+        if (null != protocolVersionProperty) {
 
             String protocolVersion = ((String) protocolVersionProperty).toLowerCase();
             if (HttpConfigConstants.PROTOCOL_VERSION_11.equals(protocolVersion)) {
-                this.protocolVersion = VersionValues.V11;
+                this.useH2ProtocolAttribute = Boolean.FALSE;
             } else if (HttpConfigConstants.PROTOCOL_VERSION_2.equals(protocolVersion)) {
-                this.protocolVersion = VersionValues.V20;
+                this.useH2ProtocolAttribute = Boolean.TRUE;
 
             }
 
-            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled()) && this.useH2ProtocolAttribute != null) {
                 Tr.event(tc, "HTTP Channel Config: versionProtocol has been set to " + protocolVersion);
             }
 
@@ -1295,8 +1282,8 @@ public class HttpChannelConfig {
      *
      * @return
      */
-    public VersionValues getProtocolVersion() {
-        return this.protocolVersion;
+    public Boolean getUseH2ProtocolAttribute() {
+        return this.useH2ProtocolAttribute;
     }
 
     /**

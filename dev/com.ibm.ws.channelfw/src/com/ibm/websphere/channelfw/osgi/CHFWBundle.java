@@ -478,7 +478,7 @@ public class CHFWBundle implements ServerQuiesceListener {
         // do nothing: need the ref for activation of service
     }
 
-    @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.MANDATORY,
+    @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected synchronized void setBehavior(ServiceReference<HttpProtocolBehavior> reference) {
 
