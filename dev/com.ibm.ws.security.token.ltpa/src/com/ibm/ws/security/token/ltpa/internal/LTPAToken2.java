@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import javax.crypto.BadPaddingException;
 
 import com.ibm.websphere.ras.Tr;
@@ -62,21 +63,11 @@ public class LTPAToken2 implements Token, Serializable {
     private final LTPAPublicKey publicKey;
     private String cipher = null;
 
-    private static String javaVendor = null;
-    private static boolean ibmJVM = false;
-    
 
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-	    if (javaVendor == null) {
-		javaVendor = System.getProperty("java.vendor");
-		if (javaVendor.contains("IBM")) {
-		    ibmJVM = true; 
-		}
-	    }
-
- 	    if (ibmJVM) {
+	    if (JavaInfo.vendor() == JavaInfo.Vendor.IBM) {
 	       m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
 	       m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
 	    }
