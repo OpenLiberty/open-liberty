@@ -94,6 +94,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
+
 public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator, WebAppAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(WebAppSecurityCollaboratorImpl.class);
 
@@ -1277,9 +1278,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     public SecurityMetadata getSecurityMetadata() {
         SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData(WebComponentMetaData.class);
+        if (cmd != null) {
+            WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
+            secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        }
         return secMetadata;
     }
 

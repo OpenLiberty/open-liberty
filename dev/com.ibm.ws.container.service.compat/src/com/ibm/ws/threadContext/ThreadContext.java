@@ -34,4 +34,9 @@ public interface ThreadContext<T> {
      */
     int getContextIndex();
 
+    /**
+     * peekContext returns the topmost Object of which class is passed in.
+     */
+    T peekContext(Class clz);
+
 }

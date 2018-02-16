@@ -82,6 +82,10 @@ public class ThreadContextImpl<T> extends WSThreadLocal<ThreadContext<T>> implem
         return get().getContextIndex(); // d646139.1
     }
 
+    public T peekContext(Class clz) {
+        return get().peekContext(clz);
+    }
+
     /**
      * Adapt the FastStack class to the ThreadContext interface.
      */
@@ -104,5 +108,10 @@ public class ThreadContextImpl<T> extends WSThreadLocal<ThreadContext<T>> implem
         public int getContextIndex() {
             return getTopOfStackIndex();
         }
+
+        public T peekContext(Class clz) {
+            return peek(clz);
+        }
+
     }
 }

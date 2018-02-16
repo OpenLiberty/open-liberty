@@ -66,6 +66,14 @@ public final class ComponentMetaDataAccessorImpl {
     }
 
     /**
+     * @return ComponentMetaData which matches a passed in class
+     *         if there is no match, return null.
+     */
+    public ComponentMetaData getComponentMetaData(Class clz) {
+        return threadContext.peekContext(clz);
+    }
+
+    /**
      * @return ThreadContext
      * @deprecated use beginContext and endContext methods provided by ComponentMetaDataImpl
      */

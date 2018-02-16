@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2010 IBM Corporation and others.
+ * Copyright (c) 1997, 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,21 @@ public class FastStack<T> {
             return (stack[topOfStack]);
         else
             return null;
+    }
+
+    public T peek(Class clz) {
+System.out.println("Toshi : class : " + clz);
+        if (topOfStack >= 0) {
+            for(int i = topOfStack; i >= 0; i--) {
+System.out.println("Toshi ; stack [" + i + "] class : " + stack[i].getClass());
+                if (clz.isAssignableFrom(stack[i].getClass())) {
+System.out.println("Toshi ; return : " + stack[i]);
+                    return (stack[i]);
+                }
+            }
+        }
+System.out.println("Toshi ; return : null");
+        return null;
     }
 
     public T push(T o) {
