@@ -11,6 +11,8 @@
 package com.ibm.ws.microprofile.openapi.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,6 +41,7 @@ import test.common.TestLogger;
  * - Remove all apps and ensure no documentation (for any endpoint) is shown in /openapi
  * - Scenarios involving context root, host/port, servers
  * - Make a pure JAX-RS app with the ApplicationPath annotation and ensure that the annotations are scanned and a document is generated
+ * - Complete flow: model, static, annotation, filter in order
  */
 @RunWith(FATRunner.class)
 @SuppressWarnings("restriction")
@@ -54,6 +57,7 @@ public class ApplicationProcessorTest extends FATServletClient {
     private static final String APP_NAME_8 = "OpenAPIEarOverwriteContextRoot";
     private static final String APP_NAME_9 = "staticDocWithContextRootInPath";
     private static final String APP_NAME_10 = "pure-jaxrs";
+    private static final String APP_NAME_11 = "complete-flow";
 
     @Server("ApplicationProcessorServer")
     public static LibertyServer server;
@@ -69,6 +73,7 @@ public class ApplicationProcessorTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME_2);
         ShrinkHelper.defaultApp(server, APP_NAME_3, "app.web.servlet");
         ShrinkHelper.defaultApp(server, APP_NAME_10, "app.web.pure.jaxrs");
+        ShrinkHelper.defaultApp(server, APP_NAME_11, "app.web.complete.flow.*");
 
         LibertyServer.setValidateApps(false);
         server.startServer(c.getSimpleName() + ".log");
@@ -89,7 +94,7 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1650E");
+        server.stopServer("CWWKO1650E", "CWWKO1651W");
     }
 
     /**
@@ -277,5 +282,25 @@ public class ApplicationProcessorTest extends FATServletClient {
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), APP_NAME_10));
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test-service/test");
+    }
+
+    @Test
+    public void testCompleteFlow() throws Exception {
+        OpenAPITestUtil.addApplication(server, APP_NAME_11);
+        OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, APP_NAME_11);
+        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_11);
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkServer(openapiNode, "https://test-server.com:80/#1", "https://test-server.com:80/#2", "https://test-server.com:80/#3",
+                                    "https://test-server.com:80/#4");
+        //, "https://test-server.com:80/#5", "https://test-server.com:80/#6");
+
+        OpenAPITestUtil.checkPaths(openapiNode, 3, "/test-service/test", "/modelReader", "/staticFile");
+        JsonNode infoNode = openapiNode.get("info");
+        assertNotNull(infoNode);
+        assertTrue(infoNode.isObject());
+        JsonNode titleNode = infoNode.get("title");
+        assertNotNull(titleNode);
+        assertEquals(titleNode.asText(), "Title from JAX-RS app + title from filter");
     }
 }

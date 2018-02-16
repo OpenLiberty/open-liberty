@@ -24,7 +24,7 @@ tags:
   - name: developers
     description: Operations available to regular developers
 paths:
-  /inventory:
+  /staticFile:
     get:
       tags:
         - developers
