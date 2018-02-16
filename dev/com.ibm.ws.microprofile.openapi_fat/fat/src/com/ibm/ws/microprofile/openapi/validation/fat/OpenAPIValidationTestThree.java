@@ -7,13 +7,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
+import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
-import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A class to test the OpenAPI validator. This class covers the scenario where the info and paths fields is missing from the OpenAPI model.
@@ -60,6 +61,6 @@ public class OpenAPIValidationTestThree {
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
         String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
-        OpenAPITestUtil.checkInfo(openapiNode, "Deployed API", "1.0.0");
+        OpenAPITestUtil.checkInfo(openapiNode, "Deployed APIs", "1.0.0");
     }
 }

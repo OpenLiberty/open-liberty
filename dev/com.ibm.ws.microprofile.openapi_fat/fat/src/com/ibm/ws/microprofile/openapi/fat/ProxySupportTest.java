@@ -57,6 +57,10 @@ public class ProxySupportTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME_1);
 
         LibertyServer.setValidateApps(false);
+
+        // Change server ports to the default ones
+        OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+
         server.startServer(c.getSimpleName() + ".log");
 
         OpenAPITestUtil.addApplication(server, APP_NAME_1);
