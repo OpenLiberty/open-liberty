@@ -60,6 +60,6 @@ public class OpenAPIValidationTestThree {
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
         String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
-        OpenAPITestUtil.checkInfo(openapiNode, new String[] {"Deployed API", "1.0.0"});
+        OpenAPITestUtil.checkInfo(openapiNode, "Deployed API", "1.0.0");
     }
 }

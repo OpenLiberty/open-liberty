@@ -224,7 +224,7 @@ public class OpenAPITestUtil {
         expected.stream().forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path, paths.get(path)));
     }
 
-    public static void checkInfo(JsonNode root, String[] requiredInfoFields) {
+    public static void checkInfo(JsonNode root, String defaultTitle, String defaultVersion) {
         JsonNode infoNode = root.get("info");
         assertNotNull(infoNode);
 
@@ -234,8 +234,8 @@ public class OpenAPITestUtil {
         String title = infoNode.get("title").textValue();
         String version = infoNode.get("version").textValue();
 
-        assertTrue("Incorrect default value for title", title.equals(requiredInfoFields[0]));
-        assertTrue("Incorrect default value for version", version.equals(requiredInfoFields[1]));
+        assertTrue("Incorrect default value for title", title.equals(defaultTitle));
+        assertTrue("Incorrect default value for version", version.equals(defaultVersion));
     }
 
     /**
