@@ -38,7 +38,7 @@ public class UICustomizationTest extends FATServletClient {
     @Server("UICustomizationServer")
     public static LibertyServer server;
 
-    private final static int TIMEOUT = 10000; // in seconds
+    private final static int TIMEOUT = 10000; // in ms
     private final static int START_TIMEOUT = 60000; // in ms
 
     private final static String WARNING_CUSTOM_CSS_NOT_PROCESSED = "CWWKO1655W";
