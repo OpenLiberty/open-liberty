@@ -1,5 +1,5 @@
 -include= ~../cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jpaContainer2.1-cdi1.2
+symbolicName=com.ibm.websphere.appserver.jpaContainer-cdi
 visibility=private
 IBM-App-ForceRestart: install, \
  uninstall
