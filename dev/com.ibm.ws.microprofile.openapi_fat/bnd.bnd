@@ -18,6 +18,8 @@ src: \
 	fat/src, \
 	test-applications/appWithAnnotations/src, \
 	test-applications/appWithStaticDoc/src, \
+	test-applications/complete-flow/src, \
+	test-applications/pure-jaxrs/src, \
 	test-applications/simpleServlet/src
 
 fat.project: true

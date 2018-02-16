@@ -1,6 +1,6 @@
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,8 +23,6 @@ public class OpenAPIValidationTestThree {
     public static LibertyServer server;
     private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
-    private static final int TIMEOUT = 10000; //in milliseconds (10 seconds)
-
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
@@ -34,10 +32,12 @@ public class OpenAPIValidationTestThree {
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
         assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
+        //wait for endpoint to become available
         assertNotNull("Web application is not available at /Validation/",
-                      server.waitForStringInLog("CWWKT0016I.*/Validation/")); //wait for endpoint to become available
+                      server.waitForStringInLog("CWWKT0016I.*/Validation/"));
+        // wait for server is ready to run a smarter planet message
         assertNotNull("CWWKF0011I.* not recieved on relationServer",
-                      server.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet message
+                      server.waitForStringInLog("CWWKF0011I.*"));
     }
 
     @AfterClass
@@ -48,9 +48,8 @@ public class OpenAPIValidationTestThree {
     @Test
     public void testPaths() throws Exception {
         assertNotNull("The OpenAPI Validator should have been triggered by the missing 'paths' field",
-                             server.waitForStringInLog("Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
-        assertNotNull("The OpenAPI Validator should have been triggered by the missing 'info' field",
-                             server.waitForStringInLog("Message: Required \"info\" field is missing or is set to an invalid value, Location: #"));
+                      server.waitForStringInLog("Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
+//        assertNotNull("The OpenAPI Validator should have been triggered by the missing 'info' field",
+//                      server.waitForStringInLog("Message: Required \"info\" field is missing or is set to an invalid value, Location: #"));
     }
-
 }

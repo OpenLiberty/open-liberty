@@ -1,12 +1,11 @@
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -21,7 +20,7 @@ import componenttest.topology.utils.HttpUtils;
  * Schema: inappropriate fields for certain Schema types (min/max items or uniqueOnly fields on String type, min/max Length on array types)
  * invalid values for certain fields such as negative values for length
  * conflicting fields such as the readOnly and writeOnly fields
- * Extension: name not starting wiht "x-"
+ * Extension: name not starting with "x-"
  *
  */
 @RunWith(FATRunner.class)
@@ -29,9 +28,8 @@ public class OpenAPIValidationTestFive {
 
     @Server("validationServerFive")
     public static LibertyServer server;
-    private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
-    private static final int TIMEOUT = 10000; //in milliseconds (10 seconds)
+    private static final String OPENAPI_VALIDATION_YAML = "Validation";
 
     @BeforeClass
     public static void setUpTest() throws Exception {
@@ -40,13 +38,15 @@ public class OpenAPIValidationTestFive {
         server.startServer("OpenAPIValidationTestFive.log", true);
 
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
-        
+
         assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
+        //wait for endpoint to become available
         assertNotNull("Web application is not available at /Validation/",
-                      server.waitForStringInLog("CWWKT0016I.*/Validation/")); //wait for endpoint to become available
+                      server.waitForStringInLog("CWWKT0016I.*/Validation/"));
+        // wait for server is ready to run a smarter planet message
         assertNotNull("CWWKF0011I.* not recieved on relationServer",
-                      server.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet message
-        
+                      server.waitForStringInLog("CWWKF0011I.*"));
+
     }
 
     @AfterClass
@@ -99,7 +99,6 @@ public class OpenAPIValidationTestFive {
 //                      server.waitForStringInLog("The \"maxLength\" property of the Schema Object must be greater than or equal to zero"));
 //        assertNotNull("The Schema validator should have been triggered by the invalid 'minLength'field",
 //                      server.waitForStringInLog("The \"minLength\" property of the Schema Object must be greater than or equal to zero"));
-
     }
 
 }

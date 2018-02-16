@@ -42,6 +42,7 @@ public class OpenAPIValidationTestOne {
 
     @Server("validationServerOne")
     public static LibertyServer server;
+
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
     @BeforeClass
@@ -69,7 +70,6 @@ public class OpenAPIValidationTestOne {
 
     @Test
     public void testInfoValidation() throws Exception {
-
         assertNotNull("The Info object was not validated properly",
                       server.waitForStringInLog("Message: The Info Object must contain a valid URL. The \"not in URL format\" value specified for \"termsOfService\"*"));
         assertNotNull("The Info object was not validated properly",
