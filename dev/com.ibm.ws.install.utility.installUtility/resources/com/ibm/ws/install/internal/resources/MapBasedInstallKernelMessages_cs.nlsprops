@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2015, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/resources/MapBasedInstallKernelMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1650 to 1699 are reserved for the asset manager.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET=CWWKF1650E: Nebyl nastaven instala\u010dn\u00ed adres\u00e1\u0159 profilu Liberty.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.explanation=Syst\u00e9m nem\u016f\u017ee naj\u00edt instala\u010dn\u00ed adres\u00e1\u0159 profilu Liberty, proto\u017ee tento adres\u00e1\u0159 nebyl ur\u010den.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS=CWWKF1651E: Neexistuje tento instala\u010dn\u00ed adres\u00e1\u0159 profilu Liberty: {0}
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.explanation=Uveden\u00fd instala\u010dn\u00ed adres\u00e1\u0159 profilu Liberty neexistuje.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR=CWWKF1652E: {0} nen\u00ed platn\u00fd adres\u00e1\u0159.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.explanation=Uveden\u00fd instala\u010dn\u00ed adres\u00e1\u0159 profilu Liberty je soubor.
+MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_NOT_INIT=CWWKF1653E: Nebyl inicializov\u00e1n instala\u010dn\u00ed program.
+MAPBASED_ERROR_KERNEL_NOT_INIT.explanation=Instala\u010dn\u00ed program nebyl inicializov\u00e1n kv\u016fli intern\u00ed chyb\u011b.
+MAPBASED_ERROR_KERNEL_NOT_INIT.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MAPBASED_ERROR_KERNEL_INIT_FAILED=CWWKF1654E: Nebyl inicializov\u00e1n instala\u010dn\u00ed program, proto\u017ee do\u0161lo k t\u00e9to chyb\u011b: {0}
+MAPBASED_ERROR_KERNEL_INIT_FAILED.explanation=Instala\u010dn\u00ed program nebyl inicializov\u00e1n kv\u016fli intern\u00ed chyb\u011b.
+MAPBASED_ERROR_KERNEL_INIT_FAILED.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

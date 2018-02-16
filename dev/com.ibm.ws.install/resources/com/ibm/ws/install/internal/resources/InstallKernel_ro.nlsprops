@@ -1,0 +1,776 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/InstallKernel.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Kernel
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1200 to 1399 are reserved for the InstallKernel.
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# The following five messages are for InstallException and should not occur.
+# No user action exists to recover from these exceptions without assistance from IBM.
+# The installer may be IM, WDT, FeatureManager or others.
+ERROR_FEATURES_LIST_INVALID=CWWKF1200E: Lista de caracteristici furnizat\u0103 este nul\u0103 sau goal\u0103.
+ERROR_FEATURES_LIST_INVALID.explanation=Lista de caracteristici de instalat lipse\u015fte sau este goal\u0103.
+ERROR_FEATURES_LIST_INVALID.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED=CWWKF1201E: Opera\u0163ie nesuportat\u0103.
+ERROR_UNSUPPORTED.explanation=Programul de instalare a \u00eencercat s\u0103 realizeze o opera\u0163ie nesuportat\u0103.
+ERROR_UNSUPPORTED.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED_ASSETTYPE=CWWKF1202E: Tipul de aset {0} nu este suportat.
+ERROR_UNSUPPORTED_ASSETTYPE.explanation=Tipul de aset specificat nu este suportat de programul de instalare.
+ERROR_UNSUPPORTED_ASSETTYPE.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA=CWWKF1217E: Caracteristica {0} nu poate fi dezinstalat\u0103.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.explanation=Eroare intern\u0103 detectat\u0103 la procesarea metadatelor. 
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA=CWWKF1218E: Corec\u0163ia {0} nu poate fi dezinstalat\u0103.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.explanation=Eroare intern\u0103 detectat\u0103 la procesarea metadatelor. 
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Following messages for InstallException
+ERROR_FAILED_TO_RESOLVE_FEATURES=CWWKF1203E: Nu se pot ob\u0163ine urm\u0103toarele caracteristici: {0}. Asigura\u0163i-v\u0103 c\u0103 aceste caracteristici sunt valide.
+ERROR_FAILED_TO_RESOLVE_FEATURES.explanation=Programul de instalare nu a putut extrage caracteristicile specificate din Magazia IBM WebSphere Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES.useraction=Asigura\u0163i-v\u0103 c\u0103 caracteristicile specificate sunt valide.
+
+ERROR_FAILED_TO_RESOLVE_IFIX=CWWKF1204E: Nu se pot ob\u0163ine urm\u0103toarele corec\u0163ii interimare: {0}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa IBM WebSphere Liberty Repository \u015fi c\u0103 sunt corecte ID-urile corec\u0163iilor interimare.
+ERROR_FAILED_TO_RESOLVE_IFIX.explanation=Programul de instalare nu a putut extrage corec\u0163iile interimare din IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_RESOLVE_IFIX.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un ID valid de corec\u0163ie interimar\u0103, c\u0103 sunt furnizate un ID valid de utilizator \u015fi o parol\u0103 valid\u0103 \u015fi c\u0103 IBM WebSphere Liberty Repository este accesibil.
+
+ERROR_INVALID_ESA=CWWKF1205E: Asetul caracteristicii specificate desc\u0103rcate este invalid: {0}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi \u00eencerca\u0163i din nou.
+ERROR_INVALID_ESA.explanation=Asetul caracteristicii specificate a fost extras cu succes din magazie, dar este invalid.
+ERROR_INVALID_ESA.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_INVALID_IFIX=CWWKF1206E: Asetul de corec\u0163ie specificat desc\u0103rcat este invalid: {0}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi \u00eencerca\u0163i din nou.
+ERROR_INVALID_IFIX.explanation=Asetul de corec\u0163ie specificat a fost extras cu succes din magazie, dar este invalid.
+ERROR_INVALID_IFIX.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: Caracteristica {0} nu este instalat\u0103.
+ERROR_FEATURE_NOT_INSTALLED.explanation=Caracteristica specificat\u0103 nu exist\u0103 \u015fi nu poate fi dezinstalat\u0103. 
+ERROR_FEATURE_NOT_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: Caracteristicile pe care le dezinstala\u0163i sunt cerute de urm\u0103toarele caracteristici {0}.
+ERROR_OTHER_FEATURE_DEPEND_ON.explanation=Caracteristica specificat\u0103 nu poate fi \u00eenl\u0103turat\u0103 c\u00e2t timp alt\u0103 caracteristic\u0103 are nevoie de ea.
+ERROR_OTHER_FEATURE_DEPEND_ON.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+ERROR_IFIX_NOT_INSTALLED=CWWKF1209E: Corec\u0163ia {0} nu este instalat\u0103.
+ERROR_IFIX_NOT_INSTALLED.explanation=Corec\u0163ia specificat\u0103 nu exist\u0103.
+ERROR_IFIX_NOT_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_IFIX_UNINSTALLABLE=CWWKF1210E: Corec\u0163ia {0} nu poate fi dezinstalat\u0103.
+ERROR_IFIX_UNINSTALLABLE.explanation=Corec\u0163ia specificat\u0103 nu poate fi \u00eenl\u0103turat\u0103 c\u00e2t timp alt\u0103 corec\u0163ie are nevoie de ea.
+ERROR_IFIX_UNINSTALLABLE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_LICENSES_NOT_ACCEPTED=CWWKF1211E: Licen\u0163a nu a fost acceptat\u0103.
+ERROR_LICENSES_NOT_ACCEPTED.explanation=Caracteristica nu poate fi instalat\u0103 dec\u00e2t dac\u0103 licen\u0163a este acceptat\u0103. 
+ERROR_LICENSES_NOT_ACCEPTED.useraction=Accepta\u0163i licen\u0163a \u015fi re\u00eencerca\u0163i opera\u0163ia.
+
+ERROR_FAILED_TO_DOWNLOAD_FEATURE=CWWKF1212E: Nu se poate desc\u0103rca caracteristica {0} la {1}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.explanation=A ap\u0103rut o eroare la desc\u0103rcarea unei caracteristici \u00een directorul temporar. 
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_FAILED_TO_DOWNLOAD_IFIX=CWWKF1213E: Nu se poate desc\u0103rca corec\u0163ia {0} la {1}.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.explanation=A ap\u0103rut o eroare la desc\u0103rcarea unei corec\u0163ii \u00een directorul temporar. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE=CWWKF1214E: Corec\u0163ia {0} este cerut\u0103 de caracteristica {1}. Ad\u0103uga\u0163i --verbose pentru a vedea toate caracteristicile dependente.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.explanation=Corec\u0163ia nu poate fi \u00eenl\u0103turat\u0103 \u00een timp ce {1} \u00eenc\u0103 are nevoie de ea.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_FAILED_TO_GET_FEATURE_LICENSE=CWWKF1215E: Nu se poate ob\u0163ine licen\u0163a pentru caracteristica {0}.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.explanation=A ap\u0103rut o eroare la extragerea licen\u0163ei de caracteristic\u0103 specificate.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Asigura\u0163i-v\u0103 c\u0103 este valid numele de caracteristic\u0103 specificat, c\u0103 sunt furnizate un ID de utilizator \u015fi o parol\u0103 valide \u015fi c\u0103 Magazia IBM WebSphere Liberty este accesibil\u0103.
+
+ALREADY_INSTALLED=CWWKF1216I: Urm\u0103toarele caracteristici exist\u0103 deja: {0}. Acestea nu vor fi reinstalate. Pentru a modifica o caracteristic\u0103 existent\u0103, trebuie s\u0103 o dezinstala\u0163i manual mai \u00eent\u00e2i.
+ALREADY_INSTALLED.explanation=Caracteristicile specificate au fost deja instalate.
+ALREADY_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_FAILED_TO_CONNECT=CWWKF1219E: Nu se poate ajunge la IBM WebSphere Liberty Repository. Verifica\u0163i c\u0103 computerul dumneavoastr\u0103 are acces la re\u0163ea \u015fi c\u0103 firewall-urile sunt configurate corect, apoi \u00eencerca\u0163i ac\u0163iunea din nou. Dac\u0103 conexiunea \u00eenc\u0103 e\u015fueaz\u0103, serverul magazie ar putea fi temporar indisponibil.
+ERROR_FAILED_TO_CONNECT.explanation=A ap\u0103rut o eroare la conectarea la Magazia IBM WebSphere Liberty.
+ERROR_FAILED_TO_CONNECT.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi magazia corespunz\u0103toare.
+
+ERROR_FAILED_TO_AUTHENICATE=CWWKF1220E: Acredit\u0103rile furnizate sunt invalide.
+ERROR_FAILED_TO_AUTHENICATE.explanation=A ap\u0103rut o eroare de autentificare. Acredit\u0103rile specificate sunt invalide.
+ERROR_FAILED_TO_AUTHENICATE.useraction=Asigura\u0163i-v\u0103 c\u0103 se specific\u0103 un ID de utilizator \u015fi o parol\u0103 valide.
+
+ERROR_MISSING_DEPENDENT=CWWKF1221E: Asetul {0} depinde de {1}, care nu este disponibil \u00een IBM WebSphere Liberty Repository. Dac\u0103 asetul cerut este o caracteristic\u0103 pe care a\u0163i desc\u0103rcat-o anterior, instala\u0163i caracteristica lips\u0103 specific\u00e2nd loca\u0163ia fi\u015fierului de caracteristici ESA pe op\u0163iunea featureManager install --location \u015fi \u00eencerca\u0163i s\u0103 instala\u0163i {0} din nou.
+ERROR_MISSING_DEPENDENT.explanation=Caracteristica, addon-ul sau corec\u0163ia interimar\u0103 nu pot fi instalate deoarece depind de un aset care nu este disponibil.
+ERROR_MISSING_DEPENDENT.useraction=Dac\u0103 asetul cerut este o caracteristic\u0103 pe care a\u0163i desc\u0103rcat-o anterior, instala\u0163i caracteristica lips\u0103 specific\u00e2nd loca\u0163ia fi\u015fierului de caracteristici ESA pe op\u0163iunea featureManager install --location \u015fi \u00eencerca\u0163i din nou. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_INSTALL_FIX=CWWKF1222E: Corec\u0163ia {0} nu a putut fi aplicat\u0103 cu succes.
+ERROR_FAILED_TO_INSTALL_FIX.explanation=A survenit o eroare la aplicarea corec\u0163iei.
+ERROR_FAILED_TO_INSTALL_FIX.useraction=G\u0103si\u0163i motivul \u00een wlp/lib/fixes/fixinstall.log.
+
+ERROR_INVALID_PRODUCT_VERSION=CWWKF1224E: Caracteristica {0} nu poate fi instalat\u0103 pe {1} {2} deoarece se aplic\u0103 numai versiunii {3}.  Utiliza\u0163i ac\u0163iunea "g\u0103sire" din comanda featureManager pentru a extrage o list\u0103 de caracteristici ce sunt aplicabile pentru {1} {2}.
+ERROR_INVALID_PRODUCT_VERSION.explanation=Caracteristica nu este aplicabil\u0103 versiunii curente a produsului instalat.
+ERROR_INVALID_PRODUCT_VERSION.useraction=Caracteristicile instalate ce sunt suportate de versiunea de produs.
+
+ERROR_INVALID_PRODUCT_EDITION=CWWKF1225E: Caracteristica {0} nu poate fi instalat\u0103 pentru edi\u0163ia {1} {2} pentru c\u0103 se aplic\u0103 doar la edi\u0163iile {3}. Utiliza\u0163i ac\u0163iunea "g\u0103sire" din comanda featureManager pentru a extrage o list\u0103 de caracteristici ce sunt aplicabile pentru edi\u0163ia {4} {5}. 
+ERROR_INVALID_PRODUCT_EDITION.explanation=Caracteristica nu este aplicabil\u0103 pentru edi\u0163ia produsului instalat.
+ERROR_INVALID_PRODUCT_EDITION.useraction=Instala\u0163i caracteristici ce sunt suportate de edi\u0163ia produsului.
+
+ERROR_INVALID_PRODUCT_INSTALLTYPE=CWWKF1226E: Asetul {0} nu poate fi desc\u0103rcat sau instalat cu comanda featureManager pentru c\u0103 produsul a fost instalat de {1} \u015fi asetul se aplic\u0103 numai la instal\u0103ri {2}. Folosi\u0163i ac\u0163iunea de g\u0103sire featureManager pentru a extrage o list\u0103 de aseturi pe care le pute\u0163i desc\u0103rca sau instala cu comanda.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.explanation=Comanda featureManager nu poate desc\u0103rca sau instala asetul pe instalarea dumneavoastr\u0103 Liberty pentru c\u0103 asetul se aplic\u0103 numai la un alt tip de instalare.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.useraction=Folosi\u0163i ac\u0163iunea de g\u0103sire featureManager pentru a extrage o list\u0103 de aseturi pe care le pute\u0163i desc\u0103rca sau instala cu comanda. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia de produs pentru aseturi.
+
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR=CWWKF1227E: Nu poate fi ob\u0163inut\u0103 caracteristica {0} din directorul {1}.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Programul de instalare nu a putut ob\u0163ine caracteristica specificat\u0103 din directorul local specificat.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul con\u0163ine caracteristica \u015fi re\u00eencerca\u0163i opera\u0163ia.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Nu se poate localiza executabilul {0} dup\u0103 verificarea urm\u0103toarelor loca\u0163ii: {1}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Programul de instalare nu a putut localiza fi\u015fierul executabil
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul executabil exist\u0103 \u00eentr-una dintre loca\u0163iile specificate.
+
+ERROR_EXECUTING_COMMAND=CWWKF1229E: A existat o eroare la executarea comenzii: {0}  Comanda a fost returnat\u0103 cu codul de ie\u015fire {1} \u015fi mesajul de eroare: {2}
+ERROR_EXECUTING_COMMAND.explanation=Comanda nu s-a putut executa cu succes.
+ERROR_EXECUTING_COMMAND.useraction=Examina\u0163i codul de ie\u015fire \u015fi mesajul de eroare \u015fi asigura\u0163i-v\u0103 c\u0103 ave\u0163i suficiente permisiuni pentru a rula comanda.
+
+ERROR_INVALID_EXTATTR_PARMS=CWWKF1230E: Parametrii {0} nu sunt valizi pentru comanda extattr
+ERROR_INVALID_EXTATTR_PARMS.explanation=Parametri valizi pentru comanda extattr sunt: [+alps] [-alps]
+ERROR_INVALID_EXTATTR_PARMS.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrii care sunt utiliza\u0163i sunt valizi.
+
+ERROR_UNABLE_TO_GET_UMASK=CWWKF1231E: Nu se poate extrage setarea umask utiliz\u00e2nd comanda: {0}
+ERROR_UNABLE_TO_GET_UMASK.explanation=Valoarea pentru setarea umask nu a fost returnat\u0103 dup\u0103 executarea comenzii umask.
+ERROR_UNABLE_TO_GET_UMASK.useraction=Asigura\u0163i-v\u0103 c\u0103 pute\u0163i rula cu succes comanda umask.
+
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=CWWKF1232E: Nu se poate seta permisiunea de executare pe urm\u0103toarele fi\u015fiere: {0}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a seta permisiunea de executare.  ID-ul de utilizator ar putea s\u0103 nu aib\u0103 permisiune de a modifica permisiunile pe fi\u015fiere.
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierele au permisiunea de execu\u0163ie setat\u0103.
+
+ERROR_UNABLE_TO_SET_EXT_ATTR=CWWKF1233E: Nu se pot seta atributele extinse {0} pe fi\u015fierele urm\u0103toare: {1}
+ERROR_UNABLE_TO_SET_EXT_ATTR.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a seta atribute extinse.  ID-ul de utilizator ar putea s\u0103 nu aib\u0103 permisiune de a modifica atribute extinse.
+ERROR_UNABLE_TO_SET_EXT_ATTR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierele au atributele extinse necesare setate.
+
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED=CWWKF1234E: Caracteristica {0} nu poate fi dezinstalat\u0103 pentru c\u0103 fi\u015fierul {1} este blocat. Opri\u0163i toate serverele care ruleaz\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.explanation=A ap\u0103rut o eroare c\u00e2nd se \u00eencerca \u015ftergerea unui fi\u015fier.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este blocat niciun fi\u015fier.
+
+ERROR_UNINSTALL_FIX_FILE_LOCKED=CWWKF1235E: Corec\u0163ia {0} nu poate fi dezinstalat\u0103 pentru c\u0103 fi\u015fierul {1} este blocat. Opri\u0163i toate serverele care ruleaz\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.explanation=A ap\u0103rut o eroare c\u00e2nd se \u00eencerca \u015ftergerea unui fi\u015fier.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este blocat niciun fi\u015fier.
+
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED=CWWKF1236E: Caracteristicile produsului {0} nu pot fi dezinstalate pentru c\u0103 fi\u015fierul {1} este blocat. Opri\u0163i toate serverele care ruleaz\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.explanation=A ap\u0103rut o eroare c\u00e2nd se \u00eencerca \u015ftergerea unui fi\u015fier.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este blocat niciun fi\u015fier.
+
+ERROR_UNINSTALL_RUNNING_SERVER=CWWKF1237E: Caracteristica {0} nu poate fi dezinstalat\u0103 pentru c\u0103 serverul ruleaz\u0103.\nOpri\u0163i urm\u0103toarele servere care ruleaz\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia: {1}
+ERROR_UNINSTALL_RUNNING_SERVER.explanation=Serverul ruleaz\u0103 \u00een timp ce \u00eencerca\u0163i s\u0103 dezinstala\u0163i o caracteristic\u0103.
+ERROR_UNINSTALL_RUNNING_SERVER.useraction=Asigura\u0163i-v\u0103 c\u0103 toate serverele sunt oprite \u015fi nu ruleaz\u0103.
+
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER_=CWWKF1238E: Caracteristica {0} nu poate fi dezinstalat\u0103 pentru c\u0103 serverul ruleaz\u0103 \u015fi nu poate fi oprit.\nOpri\u0163i urm\u0103toarele servere care ruleaz\u0103 \u015fi re\u00eencerca\u0163i opera\u0163ia: {1}
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.explanation=Serverul ruleaz\u0103 \u015fi nu poate fi oprit \u00een timp ce \u00eencerca\u0163i s\u0103 dezinstala\u0163i o caracteristic\u0103.
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.useraction=Asigura\u0163i-v\u0103 c\u0103 toate serverele sunt oprite \u015fi nu ruleaz\u0103.
+
+ERROR_INVALID_SERVER_PACKAGE=CWWKF1239E: Fi\u015fierul {0} este un fi\u015fier pachet de server invalid.
+ERROR_INVALID_SERVER_PACKAGE.explanation=Fi\u015fierul arhiv\u0103 specificat este un fi\u015fier pachet de server invalid.
+ERROR_INVALID_SERVER_PACKAGE.useraction=Folosi\u0163ia comanda serverului pentru a crea fi\u015fierul pachet de server.
+
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME=CWWKF1240E: Fi\u015fierul pachet de server {0} nu poate fi instalat \u00eentruc\u00e2t con\u0163ine runtime-ul Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.explanation=Pachetul de server nu poate fi instalat dac\u0103 con\u0163ine runtime-ul Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.useraction=Decomprima\u0163i fi\u015fierul pachet de server.
+
+ERROR_INVALID_SERVER_XML=CWWKF1241E: A e\u015fuat citirea {0} pentru c\u0103 a ap\u0103rut urm\u0103toarea eroare: Eroare: {1}
+ERROR_INVALID_SERVER_XML.explanation=server.xml este invalid.
+ERROR_INVALID_SERVER_XML.useraction=Asigura\u0163i.v\u0103 c\u0103 server.xml este valid.
+
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED=CWWKF1242E: Fi\u015fierul pachet de server {0} nu poate fi instalat pentru c\u0103 serverul {1} exist\u0103 deja.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.explanation=Serverul \u00een curs de instalare exist\u0103 deja.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1243E: Urm\u0103toarele caracteristici nu au fost descprcate pentru c\u0103 sunt deja instalate: {0}. Folosi\u0163i alt\u0103 valoare pentru op\u0163iunea --downloadOnly, cum ar fi all (tot) sau none (f\u0103r\u0103 / nimic).
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Caracteristicile specificate au fost deja instalate.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Rula\u0163i din nou comanda cu alt\u0103 valoare pentru op\u0163iunea --downloadOnly, cum ar fi all sau none.
+
+ERROR_FEATURE_NOT_APPLICABLE=CWWKF1244E: Caracteristica {0} nu este aplicabil\u0103 instal\u0103rii produsului {1}.  {2}
+ERROR_FEATURE_NOT_APPLICABLE.explanation=Caracteristica specificat\u0103 nu este o caracteristic\u0103 valid\u0103 pentru instalarea specificat\u0103 de produs.
+ERROR_FEATURE_NOT_APPLICABLE.useraction=Asigura\u0163i-v\u0103 c\u0103 aceast\u0103 caracteristic\u0103 este aplicabil\u0103 instal\u0103rii produsului.  Utiliza\u0163i ac\u0163iunea "find" din comanda featureManager pentru a extrage o list\u0103 de caracteristici aplicabile.
+
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY=CWWKF1245E: Nu se poate desc\u0103rca {0} la {1}. Asigura\u0163i-v\u0103 c\u0103 directorul \u0163int\u0103 este inscriptibil \u015fi c\u0103 are spa\u0163iu de disc suficient.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.explanation=Programul de instalare are nevoie de acces la scriere pe directorul de desc\u0103rcare.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul exist\u0103,  este inscriptibil \u015fi c\u0103 are spa\u0163iu de disc suficient.
+
+ERROR_UNINSTALL_FAILED_ADDON=CWWKF1246E: Urm\u0103toarele caracteristici nu pot fi dezinstalate deoarece acestea sunt aseturi ad\u0103ugate: {0}
+ERROR_UNINSTALL_FAILED_ADDON.explanation=Caracteristicile specificate sunt aseturi ad\u0103ugate \u015fi nu pot fi dezinstalate.
+ERROR_UNINSTALL_FAILED_ADDON.useraction=Nu dezinstala\u0163i aseturi ad\u0103ugate.
+
+ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Urm\u0103toarele caracteristici nu pot fi dezinstalate deoarece acestea sunt caracteristici de utilizator: {0}
+ERROR_UNINSTALL_FAILED_USR.explanation=Caracteristicile specificate sunt caracteristici de utilizator \u015fi nu pot fi dezinstalate.
+ERROR_UNINSTALL_FAILED_USR.useraction=Nu dezinstala\u0163i caracteristici de utilizator.
+
+ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Nu se poate ajunge la una din magaziile care este specificat\u0103 \u00een configura\u0163ie. Verifica\u0163i c\u0103 computerul dumneavoastr\u0103 are acces la re\u0163ea \u015fi c\u0103 firewall-urile sunt configurate corect, apoi \u00eencerca\u0163i ac\u0163iunea din nou. Dac\u0103 conexiunea \u00eenc\u0103 e\u015fueaz\u0103, serverul magazie ar putea fi temporar indisponibil.
+ERROR_FAILED_TO_CONNECT_REPOS.explanation=A ap\u0103rut o eroare la conectarea la o magazie.
+ERROR_FAILED_TO_CONNECT_REPOS.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi magazia corespunz\u0103toare.
+
+ERROR_ASSETS_LIST_INVALID=CWWKF1249E: Lista de aseturi furnizat\u0103 este nul\u0103 sau goal\u0103.
+ERROR_ASSETS_LIST_INVALID.explanation=Lista de aseturi de instalat lipse\u015fte sau e goal\u0103.
+ERROR_ASSETS_LIST_INVALID.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ASSETS_ALREADY_INSTALLED=CWWKF1250I: Urm\u0103toarele aseturi exist\u0103 deja: {0}. Acestea nu vor fi reinstalate. Pentru a modifica o caracteristic\u0103 existent\u0103, trebuie s\u0103 o dezinstala\u0163i manual mai \u00eent\u00e2i.
+ASSETS_ALREADY_INSTALLED.explanation=Aseturile specificate au fost deja instalate.
+ASSETS_ALREADY_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE=CWWKF1251E: Nu se poate desc\u0103rca exemplul de produs {0} la {1}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.explanation=A ap\u0103rut o eroare la desc\u0103rcarea unui exemplu de produs la directorul temporar. 
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE=CWWKF1252E: Nu se poate desc\u0103rca integrarea cu surs\u0103 deschis\u0103 {0} la {1}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.explanation=A ap\u0103rut o eroare la desc\u0103rcarea unei integr\u0103ri cu surs\u0103 deschis\u0103 \u00een directorul temporar. 
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul, c\u0103 directorul temporar exist\u0103 \u015fi este inscriptibil \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_INVALID_SAMPLE=CWWKF1253E: Asetul caracteristicii specificate desc\u0103rcate este invalid: {0}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul \u015fi \u00eencerca\u0163i din nou.
+ERROR_INVALID_SAMPLE.explanation=Asetul de exemplu de produs specificat a fost extras cu succes din magazie, dar este invalid.
+ERROR_INVALID_SAMPLE.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_INVALID_OPENSOURCE=CWWKF1254E: Asetul de integrare cu surs\u0103 deschis\u0103 specificat desc\u0103rcat este invalid: {0}. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul \u015fi \u00eencerca\u0163i din nou.
+ERROR_INVALID_OPENSOURCE.explanation=Asetul de integrare cu surs\u0103 deschis\u0103 specificat a fost extras cu succes din magazie, dar este invalid.
+ERROR_INVALID_OPENSOURCE.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul \u015fi \u00eencerca\u0163i din nou.
+
+ERROR_ASSET_INVALID_PRODUCT_VERSION=CWWKF1255E: Asetul {0} nu poate fi instalat la {1} {2} deoarece se aplic\u0103 numai versiunii {3}.  Utiliza\u0163i ac\u0163iunea "find" din comanda installUtility pentru a extrage o list\u0103 de aseturi care sunt aplicabile pentru {1} {2}.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.explanation=Asetul nu este aplicabil versiunii curente a produsului instalat.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.useraction=Instala\u0163i aseturile care sunt suportate de versiunea de produs.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION=CWWKF1256E: Asetul {0} nu poate fi instalat la edi\u0163ia {1} {2} pentru c\u0103 se aplic\u0103 doar la edi\u0163iile {3}. Utiliza\u0163i ac\u0163iunea "find" din comanda installUtility pentru a extrage o list\u0103 de aseturi care sunt aplicabile pentru edi\u0163ia {4} {5}. 
+ERROR_ASSET_INVALID_PRODUCT_EDITION.explanation=Asetul nu este aplicabil edi\u0163iei produsului instalat.
+ERROR_ASSET_INVALID_PRODUCT_EDITION.useraction=Instala\u0163i aseturile care sunt suportate de edi\u0163ia de produs.
+
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE=CWWKF1257E: Asetul {0} nu poate fi desc\u0103rcat sau instalat cu comanda installUtility pentru c\u0103 produsul a fost instalat de {1} \u015fi asetul se aplic\u0103 numai la instal\u0103ri {2}. Folosi\u0163i ac\u0163iunea de g\u0103sire installUtility pentru a extrage o list\u0103 de aseturi pe care le pute\u0163i desc\u0103rca sau instala cu comanda.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.explanation=Comanda installUtility nu poate desc\u0103rca sau instala asetul pe instalarea dumneavoastr\u0103 Liberty pentru c\u0103 asetul se aplic\u0103 numai la un alt tip de instalare.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=Folosi\u0163i ac\u0163iunea de g\u0103sire installUtility pentru a extrage o list\u0103 de aseturi pe care le pute\u0163i desc\u0103rca sau instala cu comanda. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia de produs pentru aset.
+
+ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: Asetul {0} depinde de {1}, care nu este disponibil \u00een magaziile configurate . Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103.
+ERROR_ASSET_MISSING_DEPENDENT.explanation=Asetul nu poate fi desc\u0103rcat sau instalat deoarece depinde de un aset care nu este disponibil.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Alternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. Pentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nu se pot ob\u0163ine urm\u0103toarele aseturi: {0}. Asigura\u0163i-v\u0103 c\u0103 aseturile specificate sunt valide. Pentru a g\u0103si ID-urile aseturilor aplicabile, rula\u0163i comanda installUtility find.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Programul de instalare nu a putut extrage aseturile specificate din magazii.
+ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt valide aseturile specificate, c\u0103 sunt furnizate un ID valid de utilizator \u015fi o parol\u0103 \u015fi c\u0103 magaziile sunt accesibile.
+
+ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: Asetul {0} nu este aplicabil instal\u0103rii produsului {1}.  {2}
+ERROR_ASSET_NOT_APPLICABLE.explanation=Asetul specificat nu este un aset valid pentru instalarea specificat\u0103 de produs.
+ERROR_ASSET_NOT_APPLICABLE.useraction=Asigura\u0163i-v\u0103 c\u0103 asetul este aplicabil instal\u0103rii produsului.  Utiliza\u0163i ac\u0163iunea "find" din comanda installUtility pentru a extrage o list\u0103 de aseturi aplicabile.
+
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED=CWWKF1261E: Exemplul {0} nu poate fi instalat pentru c\u0103 serverul {1} exist\u0103 deja.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.explanation=Serverul exemplu exist\u0103 deja.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED=CWWKF1262E: Integrarea cu surs\u0103 deschis\u0103 {0} nu poate fi instalat\u0103 pentru c\u0103 serverul {1} exist\u0103 deja.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.explanation=Integrarea cu surs\u0103 deschis\u0103 \u00een curs de instalare exist\u0103 deja.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED=\nCWWKF1263E: Caracteristicile pe care \u00eencerca\u0163i s\u0103 le dezinstala\u0163i sunt \u00eenc\u0103 necesare altor caracteristici care r\u0103m\u00e2n instalate:\n\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.explanation=Caracteristicile specificate pentru dezinstalare sunt \u00eenc\u0103 necesare altor caracteristici care r\u0103m\u00e2n instalate.
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.useraction=Dezinstala\u0163i toate caracteristicile cu cerin\u0163e fie \u00eenainte fie \u00een acela\u015fi timp cu caracteristicile specificate pentru a le dezinstala.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_REQUIRED_BY=[{0}] este cerut de: {1}.\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_ACTION=\nDezinstala\u0163i toate caracteristicile cu cerin\u0163e fie \u00eenainte fie \u00een acela\u015fi timp cu caracteristicile specificate pentru a le dezinstala.\n
+
+ERROR_UNABLE_RUN_EXTRACTOR=CWWKF1264E: Fi\u015fierul arhiv\u0103 {0} nu poate fi instalat din cauza: {1}
+ERROR_UNABLE_RUN_EXTRACTOR.explanation=A ap\u0103rut o excep\u0163ie la instalarea fi\u015fierului arhiv\u0103.
+ERROR_UNABLE_RUN_EXTRACTOR.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_GET_ASSET_LICENSE=CWWKF1265E: Nu s-a putut ob\u0163ine licen\u0163a pentru asetul {0}. Verifica\u0163i c\u0103 numele de aset specificat este valid \u015fi magaziile sunt accesibile. 
+ERROR_FAILED_TO_GET_ASSET_LICENSE.explanation=A avut loc o eroare la extragerea licen\u0163ei de aset specificate.
+ERROR_FAILED_TO_GET_ASSET_LICENSE.useraction=Asigura\u0163i-v\u0103 c\u0103 numele de aset specificat este valid \u015fi c\u0103 magaziile sunt accesibile.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWKF1266E: Nu se poate localiza fi\u015fierul server.xml \u00een directorul {0}. Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 este accesibil.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Fi\u015fierul server.xml pentru serverul specificat nu poate fi localizat \u00een directorul serverului.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi este accesibil.
+
+ERROR_INSTALL_ESA_FILE_NOTEXIST=CWWKF1267E: Fi\u015fierul {0} nu exist\u0103.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.explanation=Nu exist\u0103 fi\u015fierul Enterprise Subsystem Archive (.esa) specificat pentru ac\u0163iunea de instalare.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.useraction=Asigura\u0163i-v\u0103 c\u0103 numele fi\u015fierului de arhiv\u0103 esa a fost furnizat corect \u015fi rula\u0163i din nou ac\u0163iunea de instalare.
+
+ERROR_DEPOLY_DIRECTORY=CWWKF1268E: {0} este un director. Este necesar un fi\u015fier de arhiv\u0103.
+ERROR_DEPOLY_DIRECTORY.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a instala directorul.
+ERROR_DEPOLY_DIRECTORY.useraction=Rula\u0163i din nou comanda cu un fi\u015fier de arhiv\u0103.
+
+ERROR_INVALID_LOCAL_ESA=CWWKF1269E: Fi\u015fierul {0} este un fi\u015fier invalid Enterprise Subsystem Archive.
+ERROR_INVALID_LOCAL_ESA.explanation=Fi\u015fierul de arhiv\u0103 specificat este un fi\u015fier Enterprise Subsystem Archive invalid.
+ERROR_INVALID_LOCAL_ESA.useraction=Rula\u0163i comanda cu un fi\u015fier Enterprise Subsystem Archive valid.
+
+EXCEPTION_STARTING_SERVER=CWWKF1270E: A survenit o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de a porni serverul {0}.  Excep\u0163ia: {1}
+EXCEPTION_STARTING_SERVER.explanation=A survenit o excep\u0163ie \u00een timpul pornirii serverului.
+EXCEPTION_STARTING_SERVER.useraction=Vede\u0163i excep\u0163ia referin\u0163\u0103 \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+EXCEPTION_STOPPING_SERVER=CWWKF1271E: A survenit o excep\u0163ie \u00een timpul \u00eencerc\u0103rii de a opri serverul {0}.  Excep\u0163ia: {1}
+EXCEPTION_STOPPING_SERVER.explanation=A survenit o excep\u0163ie la oprirea serverului.
+EXCEPTION_STOPPING_SERVER.useraction=Vede\u0163i excep\u0163ia referin\u0163\u0103 \u015fi istoricele de server pentru mai multe informa\u0163ii.
+
+UNABLE_TO_STOP_START_SERVER=CWWKF1272E: Nu s-a putut porni sau opri serverul {0}.  Vede\u0163i istoricele de server \u00een {1} pentru informa\u0163ii suplimentare.
+UNABLE_TO_STOP_START_SERVER.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a porni sau opri serverul.
+UNABLE_TO_STOP_START_SERVER.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare.
+
+UNABLE_TO_DETERMINE_FEATURES=CWWKF1273E: Nu se pot determina caracteristicile cerute de serverul {0}.  Verifica\u0163i istoricele serverului \u00een {1} pentru informa\u0163ii suplimentare.
+UNABLE_TO_DETERMINE_FEATURES.explanation=Programul de instalare nu a putut determina caracteristicile cerute de server.
+UNABLE_TO_DETERMINE_FEATURES.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul de server exist\u0103 \u015fi este accesibil.  Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare.
+
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER=CWWKF1274E: Programul de instalare nu poate testa caracteristicile care sunt cerute de serverul {0} din cauz\u0103 c\u0103 serverul ruleaz\u0103.  Opri\u0163i serverul \u015fi rula\u0163i comanda din nou.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.explanation=Serverul trebuie s\u0103 fie oprit \u00eenainte ca programul de instalare s\u0103 poat\u0103 testa caracteristicile care sunt cerute.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.useraction=Opri\u0163i serverul \u015fi rula\u0163i comanda din nou.
+
+ERROR_UNABLE_TO_READ_SERVER_XML=CWWKF1275E: Nu se poate citi elementul {0} din fi\u015fierul server.xml: {1}.  Verifica\u0163i c\u0103 fi\u015fierul server.xml con\u0163ine elementul {0} \u015fi c\u0103 utilizeaz\u0103 sintaxa XML corect\u0103.
+ERROR_UNABLE_TO_READ_SERVER_XMLL.explanation=Fi\u015fierul nu este un fi\u015fier server.xml valid sau con\u0163ine erori.
+ERROR_UNABLE_TO_READ_SERVER_XML.useraction=Asigura\u0163i-v\u0103 c\u0103 server.xml este valid \u015fi c\u0103 sintaxa XML este corect\u0103.
+
+ERROR_DOWNLOAD_TO_SOURCE_REPO=CWWKF1276E: Nu se poate desc\u0103rca caracteristica {0} la {1}. Folderul surs\u0103 al magaziei asetului are aceea\u015fi cale cu loca\u0163ia de desc\u0103rcare.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.explanation=Aseturile nu pot fi desc\u0103rcate la folderul lor surs\u0103 magazie.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.useraction=Specifica\u0163i o nou\u0103 loca\u0163ie de desc\u0103rcare.
+
+ERROR_CREATING_TEMP_SERVER_DIR=CWWKF1277E: Urm\u0103torul director de server temporar nu a fost creat: {0} Asigura\u0163i-v\u0103 c\u0103 ave\u0163i permisiuni de scriere \u00een directorul {1} \u015fi c\u0103 directorul are spa\u0163iu liber disponibil.
+ERROR_CREATING_TEMP_SERVER_DIR.explanation=Directorul de server temporar nu poate fi creat \u00een directorul specificat din cauza permisiunilor sau a spa\u0163iului insuficiente.
+ERROR_CREATING_TEMP_SERVER_DIR.useraction=Asigura\u0163i-v\u0103 c\u0103 ave\u0163i permisiunea de a scrie \u00een directorul p\u0103rinte \u015fi c\u0103 directorul are spa\u0163iu liber disponibil.
+
+ERROR_CREATING_DIR=CWWKF1278E: Directorul {0} nu a fost creat din cauza urm\u0103toarei excep\u0163ii: {1}
+ERROR_CREATING_DIR.explanation=Directorul specificat nu a fost creat deoarece a ap\u0103rut o eroare.
+ERROR_CREATING_DIR.useraction=Pentru informa\u0163i legate de motivul pentru care directorul nu a fost creat, vede\u0163i excep\u0163ia de referin\u0163\u0103.
+
+ERROR_COPYING_FILE=CWWKF1279E: Fi\u015fierul {0} nu a fost copiat \u00een directorul {1} din cauza urm\u0103toarei excep\u0163ii: {2}
+ERROR_COPYING_FILE.explanation=Fi\u015fierul nu a fost copiat \u00een directorul specificat deoarece a ap\u0103rut o eroare.
+ERROR_COPYING_FILE.useraction=Pentru informa\u0163i legate de motivul pentru care fi\u015fierul nu a fost copiat, vede\u0163i excep\u0163ia de referin\u0163\u0103.
+
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT=CWWKF1280E: IBM WebSphere Liberty Repository nu poate fi accesat\u0103 deoarece JRE (Java runtime environment) nu are \u00eencredere \u00een certificatul serverului. Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.explanation=O excep\u0163ie java.security.cert.CertPathBuilderException a ap\u0103rut la conectarea la IBM WebSphere Liberty Repository deoarece JRE nu recunoa\u015fte cerificatul de securitate al serverului magazie ca un certificat de \u00eencredere. Un certificat de \u00eencredere este necesar pentru a verifica identitatea serverului magazie.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.useraction=Ad\u0103uga\u0163i certificatul serverului IBM WebSphere Liberty Repository ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT=CWWKF1281E: Una dintre magaziile care este specificat\u0103 \u00een configura\u0163ie nu poate fi accesat\u0103 deoarece JRE (Java runtime environment) nu are \u00eencredere \u00een certificatul serverului. Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.explanation=A ap\u0103rut o excep\u0163ie java.security.cert.CertPathBuilderException la conectarea la o magazie, deoarece JRE nu recunoa\u015fte certificatul de securitate al serverului de magazie ca certificat de \u00eencredere. Un certificat de \u00eencredere este necesar pentru a verifica identitatea serverului magazie.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.useraction=Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1282E: Magazia {0} nu poate fi accesat\u0103, deoarece mediul runtime Java (JRE) nu are \u00eencredere \u00een certificatul de server. Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=O excep\u0163ie java.security.cert.CertPathBuilderException a p\u0103rut la conectarea la o magazie deoarece JRE-ul nu recunoa\u015fte certificatul de securitate al serverului magazie ca un certificat de \u00eencredere. Un certificat de \u00eencredere este necesar pentru a verifica identitatea serverului magazie.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+
+# In the following 4 messages (CWWKF1282E to CWWKF1285E),
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The webCacheMonitor-1.0 feature cannot be downloaded ...
+# 	The extendedPackage-1.0 addon cannot be downloaded ...
+# 	The ServletSample product sample cannot be downloaded ...
+# 	The SpringSample open source integration cannot be downloaded ...
+ 
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP=CWWKF1283E: Nu se poate desc\u0103rca {0} {1} \u00een {2}. Asigura\u0163i-v\u0103 c\u0103 directorul temporar exist\u0103 \u015fi se poate scrie \u00een el, apoi rula\u0163i din nou comanda.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.explanation=Asetul specificat nu a fost desc\u0103rcat \u00een directorul temporar. Este posibil ca directorul s\u0103 nu existe sau s\u0103 nu aib\u0103 spa\u0163iu sau s\u0103 nu ave\u0163i permisiunea de scriere pentru director.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul temporar exist\u0103 \u015fi se poate scrie \u00een el, apoi rula\u0163i din nou comanda.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS=CWWKF1284E: Nu se poate desc\u0103rca {0} {1}. Asigura\u0163i-v\u0103 c\u0103 magaziile de aseturi Liberty configurate con\u0163in asetul, apoi rula\u0163i din nou comanda.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.explanation=Asetul specificat nu a fost desc\u0103rcat din niciuna dintre magaziile configurate, deoarece magaziile nu con\u0163in asetul.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.useraction=Asigura\u0163i-v\u0103 c\u0103 magaziile de aseturi Liberty configurate con\u0163in asetul, apoi rula\u0163i din nou comanda.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO=CWWKF1285E: Nu se poate desc\u0103rca {0} {1} din magazia {2}. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine asetul, apoi rula\u0163i din nou comanda.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.explanation=Asetul specificat nu a fost desc\u0103rcat din magazia specificat\u0103, deoarece magazia nu con\u0163ine o versiune valid\u0103 a asetului.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.useraction=Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine asetul, apoi rula\u0163i din nou comanda.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO=CWWKF1286E: Nu se poate desc\u0103rca {0} {1} din magazia IBM WebSphere Liberty. Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web de suport WebSphere Application Server.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.explanation=Asetul specificat nu a fost desc\u0103rcat din magazia IBM WebSphere Liberty.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_BUNDLE_IN_ESA=CWWKF1287E: Caracteristica {0} nu poate fi instalat\u0103, deoarece fi\u015fierul {1} din interiorul fi\u015fierului Enterprise Subsystem Archive (ESA) nu este un fi\u015fier bundle. R\u0103d\u0103cina ESA trebuie s\u0103 con\u0163in\u0103 numai directoare \u015fi fi\u015fiere bundle. Dac\u0103 a\u0163i creat un fi\u015fier ESA, verifica\u0163i dac\u0103 con\u0163inutul fi\u015fierului este corect.
+ERROR_INVALID_BUNDLE_IN_ESA.explanation=Pentru a instala o caracteristic\u0103, fi\u015fierul Enterprise Subsystem Archive trebuie s\u0103 includ\u0103 numai con\u0163inut bundle \u015fi directoare valide. Fi\u015fierele bundle trebuie s\u0103 fie fi\u015fiere JAR care s\u0103 con\u0163in\u0103 un fi\u015fier manifest.mf valid.
+ERROR_INVALID_BUNDLE_IN_ESA.useraction=Dac\u0103 a\u0163i creat un fi\u015fier ESA, verifica\u0163i dac\u0103 con\u0163inutul fi\u015fierului este corect. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server, la: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# In the following message CWWKF1288E,
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The content of the webCacheMonitor-1.0 feature was changed ..., so the feature is not valid. 
+# 	The content of the extendedPackage-1.0 addon was changed ..., so the addon is not valid. 
+# 	The content of the ServletSample product sample was changed ..., so the sample is not valid. 
+# 	The content of the SpringSample open source integration was changed ..., so the open source integration is not valid. 
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM=CWWKF1288E: Con\u0163inutul din {0} {1} a fost modificat \u00een timpul desc\u0103rc\u0103rii, astfel \u00eenc\u00e2t {1} nu este valid. Rula\u0163i comanda din nou.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.explanation=Suma de control a asetului desc\u0103rcat nu este corect\u0103. Con\u0163inutul asetului desc\u0103rcat nu este acela\u015fi cu con\u0163inutul din magazie, deci asetul nu poate fi instalat.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.useraction=Rula\u0163i comanda din nou. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server, la: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNABLE_TO_CREATE_FILE=CWWKF1289E: Urm\u0103torul fi\u015fier nu poate fi creat: {0}. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul s\u0103u p\u0103rinte \u015fi c\u0103 ave\u0163i permisiunile necesare pentru a crea fi\u015fiere \u00een director, apoi rula\u0163i comanda din nou.
+ERROR_UNABLE_TO_CREATE_FILE.explanation=Comanda featureManager sau installUtility nu a putut instala sau desc\u0103rca asetul la loca\u0163ia specificat\u0103 deoarece directorul nu exist\u0103 sau nu ave\u0163i permisiunile care sunt necesare pentru a crea fi\u015fiere.
+ERROR_UNABLE_TO_CREATE_FILE.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul s\u0103u p\u0103rinte \u015fi c\u0103 ave\u0163i permisiunile necesare pentru a crea fi\u015fiere \u00een director, apoi rula\u0163i comanda din nou.
+
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: Asetul {0} depinde de {1}, care nu poate fi desc\u0103rcat sau instalat pe {2} {3} {4}. Asetul {1} din magaziile configurate momentan se aplic\u0103 numai la urm\u0103toarele edi\u0163ii \u015fi versiuni de produse: {5}Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau a instala o versiune de aset care se aplic\u0103 la instalarea dumneavoastr\u0103. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca acest aset \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=Asetul nu poate fi desc\u0103rcat sau instalat deoarece depinde de un aset care nu este disponibil. A fost g\u0103sit\u0103 o versiune a asetului cerut, dar aceasta nu se aplic\u0103 versiunii sau edi\u0163iei produsului instalat.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Alternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i pachetul de arhivare ca magazie bazat\u0103 pe directoare. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca acest aset \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. Pentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: Asetul {0} depinde de {1}, care nu poate fi desc\u0103rcat sau instalat pe {2} {3} {4}. Asetul {1} din Magazia IBM WebSphere Liberty se aplic\u0103 numai la urm\u0103toarele edi\u0163ii \u015fi versiuni de produse: {5}Dac\u0103 asetul necesar este o caracteristic\u0103 pe care a\u0163i desc\u0103rcat-o anterior, instala\u0163i caracteristica lips\u0103 specific\u00e2nd loca\u0163ia fi\u015fierului ESA al caracteristicii pe op\u0163iunea featureManager install --location \u015fi \u00eencerca\u0163i s\u0103 instala\u0163i {0} din nou.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=Caracteristica, add-on-ul sau corec\u0163ia interimar\u0103 nu se poate desc\u0103rca sau instala \u00eentruc\u00e2t depinde de un aset care nu este disponibil. A fost g\u0103sit\u0103 o versiune a asetului cerut, dar aceasta nu se aplic\u0103 versiunii sau edi\u0163iei produsului instalat.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.useraction=Dac\u0103 asetul cerut este o caracteristic\u0103 pe care a\u0163i desc\u0103rcat-o anterior, instala\u0163i caracteristica lips\u0103 specific\u00e2nd loca\u0163ia fi\u015fierului de caracteristici ESA pe op\u0163iunea featureManager install --location \u015fi \u00eencerca\u0163i din nou. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1292E: Numele de dezinstalare --force op\u0163iune poate fi specificat\u0103 pentru doar o caracteristic\u0103 la un moment dat. Rula\u0163i comanda de dezinstalare cu op\u0163iunea --force pentru o singur\u0103 caracteristic\u0103.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Op\u0163iunea --force a fost specificat\u0103 la dezinstalarea a mai mult de o caracteristic\u0103.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Rula\u0163i comanda de dezinstalare cu op\u0163iunea --force pentru o singur\u0103 caracteristic\u0103.
+
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION=CWWKF1293E: Caracteristica {0} nu poate fi g\u0103sit\u0103 sub extensia de produs {1}. Pentru a g\u0103si extensia de produs a caracteristicii, rula\u0163i comanda productInfo featureInfo.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.explanation=Caracteristica nu a fost dezinstalat\u0103 deoarece nu a fost g\u0103sit\u0103 sub extensia specificat\u0103.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.action=Pentru a g\u0103si extensia de produs a caracteristicii, rula\u0163i comanda productInfo featureInfo. Dup\u0103 ce identifica\u0163i corect caracteristica \u015fi extensia, rula\u0163i comanda installUtility uninstall din nou.
+
+ERROR_EXTENSION_NOT_FOUND=CWWKF1294E: Caracteristica {0} nu poate fi dezinstalat\u0103 pentru c\u0103 extensia de produs {1} nu a fost g\u0103sit\u0103 \u00een produs. Pentru a g\u0103si toate aseturile \u015fi extensiile de produs instalate, rula\u0163i comanda productInfo featureInfo.
+ERROR_EXTENSION_NOT_FOUND.explanation=Caracteristica nu a fost dezinstalat\u0103 deoarece nu a fost g\u0103sit\u0103 extensia de produs specificat\u0103 \u00een produs.
+ERROR_EXTENSION_NOT_FOUND.action=Pentru a g\u0103si toate aseturile \u015fi extensiile de produs instalate, rula\u0163i comanda productInfo featureInfo. Dup\u0103 ce identifica\u0163i corect caracteristica \u015fi extensia, rula\u0163i comanda installUtility uninstall din nou.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION=CWWKF1295E: Asetul {0} nu poate fi desc\u0103rcat sau instalat pe {1} {2} {3} \u00eentruc\u00e2t se aplic\u0103 numai la urm\u0103toarele edi\u0163ii \u015fi versiuni de produs: {4}Folosi\u0163i ac\u0163iunea de g\u0103sire installUtility pentru a extrage o list\u0103 de aseturi care se aplic\u0103 la instalarea dumneavoastr\u0103.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.explanation=Asetul nu este aplicabil la edi\u0163ia sau versiunea produsului instalat.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.useraction=Folosi\u0163i ac\u0163iunea de g\u0103sire installUtility pentru a extrage o list\u0103 de aseturi care se aplic\u0103 la instalarea dumneavoastr\u0103.
+
+ERROR_INVALID_PRODUCT_EDITION_VERSION=CWWKF1296E: Asetul {0} nu poate fi desc\u0103rcat sau instalat pe {1} {2} {3} \u00eentruc\u00e2t se aplic\u0103 numai la urm\u0103toarele edi\u0163ii \u015fi versiuni de produs: {4}Folosi\u0163i ac\u0163iunea de g\u0103sire featureManager pentru a extrage o list\u0103 de caracteristici care se aplic\u0103 la instalarea dumneavoastr\u0103.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.explanation=Caracteristica sau add-on-ul nu se aplic\u0103 la versiunea curent\u0103 a produsului instalat.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.useraction=Folosi\u0163i ac\u0163iunea de g\u0103sire featureManager pentru a extrage o list\u0103 de aseturi care se aplic\u0103 la instalarea dumneavoastr\u0103.
+
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND=CWWKF1297E: Caracteristica {0} nu poate fi instalat\u0103 deoarece extensia de produs {1} nu a fost g\u0103sit\u0103 \u00een produs. Crea\u0163i extensia de produs specificat\u0103 sau specifica\u0163i o extensie de produs existent\u0103.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.explanation=Caracteristica nu a fost instalat\u0103 deoarece extensia de produs specificat\u0103 nu a fost g\u0103sit\u0103 \u00een produs.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.action= Dac\u0103 dori\u0163i s\u0103 instala\u0163i caracteristica la extensia de produs specificat\u0103, crea\u0163i extensia de produs. Alternativ, specifica\u0163i o extensie de produs existent\u0103. Dup\u0103 ce identifica\u0163i o extensie de produs valid\u0103, rula\u0163i din nou comanda de instalare installUtility.
+
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} nu este o caracteristic\u0103 \u015fi prin urmare nu poate fi instalat\u0103 pe o extensie de produs. Rula\u0163i comanda f\u0103r\u0103 s\u0103 specifica\u0163i extensia de produs.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Numai caracteristici pot fi instalate pe o extensie de produs.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Rula\u0163i din nou comanda installUtility f\u0103r\u0103 s\u0103 specifica\u0163i extensia de produs.
+
+# Following messages for info logging purpose
+LOG_INSTALL_FEATURES=CWWKF1300I: Se instaleaz\u0103 urm\u0103toarele caracteristici: {0}.
+LOG_INSTALL_FEATURES.explanation=Caracteristicile specificate vor fi instalate.
+LOG_INSTALL_FEATURES.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOG_INSTALL_FIXES=CWWKF1301I: Se instaleaz\u0103 urm\u0103toarele corec\u0163ii: {0}.
+LOG_INSTALL_FIXES.explanation=Corec\u0163iile specificate vor fi instalate.
+LOG_INSTALL_FIXES.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOG_UNINSTALL_FEATURES=CWWKF1302I: Se dezinstaleaz\u0103 urm\u0103toarele caracteristici: {0}.
+LOG_UNINSTALL_FEATURES.explanation=Caracteristicile specificate vor fi dezinstalate.
+LOG_UNINSTALL_FEATURES.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+LOG_UNINSTALL_FIXES=CWWKF1303I: Se dezinstaleaz\u0103 urm\u0103toarele corec\u0163ii: {0}.
+LOG_UNINSTALL_FIXES.explanation=Corec\u0163iile specificate vor fi dezinstalate.
+LOG_UNINSTALL_FIXES.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+LOG_INSTALLED_FEATURE=CWWKF1304I: S-a instalat cu succes caracteristica {0}.
+LOG_INSTALLED_FEATURE.explanation=Caracteristica specificat\u0103 a fost instalat\u0103 cu succes.
+LOG_INSTALLED_FEATURE.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+LOG_INSTALLED_FIX=CWWKF1305I: S-a instalat cu succes corec\u0163ia {0}.
+LOG_INSTALLED_FIX.explanation=Corec\u0163ia specificat\u0103 a fost instalat\u0103 cu succes.
+LOG_INSTALLED_FIX.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOG_UNINSTALLED_FEATURE=CWWKF1306I: S-a dezinstalat cu succes caracteristica {0}.
+LOG_UNINSTALLED_FEATURE.explanation=Caracteristica specificat\u0103 a fost dezinstalat\u0103.
+LOG_UNINSTALLED_FEATURE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOG_UNINSTALLED_FIX=CWWKF1307I: S-a dezinstalat cu succes corec\u0163ia {0}.
+LOG_UNINSTALLED_FIX.explanation=Corec\u0163ia specificat\u0103 a fost dezinstalat\u0103 cu succes.
+LOG_UNINSTALLED_FIX.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+LOG_INSTALL_ESA=CWWKF1308I: Se instaleaz\u0103 {0}.
+LOG_INSTALL_ESA.explanation=Fi\u015fierul Enterprise Subsystem Archive (.esa) specificat\u0103 va fi instalat.
+LOG_INSTALL_ESA.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+LOG_REINSTALL_FIXES_WARNING=Avertisment: Urm\u0103toarele corec\u0163ii instalate anterior nu au putut fi reinstalate: {0}. Reinstala\u0163i corec\u0163iile manual.
+LOG_REAPPLY_FIXES_WARNING=CWWKF1309W: E\u015fuare la reaplicarea urm\u0103toarelor corec\u0163ii: {0}.
+LOG_REAPPLY_FIXES_WARNING.explanation=Corec\u0163iile instalate nu pot fi reaplicate.
+LOG_REAPPLY_FIXES_WARNING.useraction=Reaplica\u0163i manual corec\u0163iile.
+
+LOG_UNABLE_TO_DETERMINE_CODEPAGE=WWKF1310W: Nu se poate determina pagina de cod de sistem pentru {0}.  Se folose\u015fte pagina de cod implicit\u0103 {1}.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.explanation=Programul de instalare nu a putut determina pagina de cod de sistem \u015fi va folosi pagina de cod implicit\u0103 pentru instalarea fi\u015fierelor.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul suport\u0103 pagina de cod implicit\u0103.
+
+LOG_INSTALLED_SAMPLE=CWWKF1312I: S-a instalat cu succes exemplul de produs {0}.
+LOG_INSTALLED_SAMPLE.explanation=Exemplul de produs specificat a fost dezinstalat cu succes.
+LOG_INSTALLED_SAMPLE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOG_INSTALLED_OPENSOURCE=CWWKF1313I: S-a instalat cu succes integrarea cu surs\u0103 deschis\u0103 {0}.
+LOG_INSTALLED_OPENSOURCE.explanation=Integrarea cu surs\u0103 deschis\u0103 specificat\u0103 a fost instalat\u0103 cu succes.
+LOG_INSTALLED_OPENSOURCE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOG_UNINSTALL_FEATURE_DEPENDENCIES=Caracteristica care este dezinstalat\u0103 este cerut\u0103 de c\u0103tre alte caracteristici instalate:
+LOG_UNINSTALL_FEATURE_DEPENDENCIES_EXPLANATION=Dezinstalarea caracteristicii ar putea face caracteristicile dependente s\u0103 nu func\u0163ioneze corect.
+
+LOG_DEPLOY_SERVER_FEATURES=Serverului {0} necesit\u0103 caracteristicile urm\u0103toare: {1}
+LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED=Serverele {0} necesit\u0103 ca urm\u0103toarele caracteristici suplimentare s\u0103 fie instalate: {1}
+LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED=Serverele {0} nu necesit\u0103 ca nicio caracteristic\u0103 suplimentar\u0103 s\u0103 fie instalat\u0103.
+LOG_DEPLOY_FILE=Se implementeaz\u0103 pachetul de server {0}
+
+LOG_NO_REPO_NAME=Nu a fost specificat niciun nume de magazie. Urm\u0103toarea magazie configurat\u0103 va fi s\u0103rit\u0103: {0}\n
+LOG_DUPLICATE_REPO_NAMES=A fost detectat\u0103 duplicarea numelor de magazii {0}. Urm\u0103toarea magazie configurat\u0103 va fi s\u0103rit\u0103: {1}\n
+LOG_DEFAULT_INVALID_VALUE=Valoarea nevalid\u0103 de "{0}" a fost specificat\u0103 pentru proprietatea "useDefaultRepository". IBM WebSphere Liberty Repository va fi activat\u0103 implicit.\n
+LOG_VALIDATING=Validarea urm\u0103torului fi\u015fier de configurare: {0}\n
+LOG_VALIDATION_DONE=S-a finalizat cu succes validarea fi\u015fierului de configurare.\n
+
+LOG_DELETING_TEMP_SERVER_DIR=\u015etergerea directorului temporar al serverului {0}...
+LOG_NOT_DELETING_TEMP_SERVER_DIR=Directorul de server temporar {0} nu a fost \u015fters deoarece ar putea con\u0163ine informa\u0163ii legate de eroare \u00een directorul istoric. Dac\u0103 nu ave\u0163i nevoie de aceste informa\u0163ii, pute\u0163i \u015fterge manual directorul {1}.
+LOG_CREATED_TEMP_SERVER_DIR=A creat directorul temporar de server {0}.
+
+LOG_CANNOT_DELETE_FILE=Fi\u015fierul {0} nu poate fi \u015fters. Va fi \u015fters c\u00e2nd termin\u0103 ma\u015fina virtual\u0103 Java.
+
+LOG_CANNOT_CLOSE_OBJECT=Fi\u015fierele temporare nu pot fi \u015fterse.
+LOG_CANNOT_CLOSE_OBJECT.explanation=Exemplul necesit\u0103 Java 7 sau o versiune superioar\u0103 pentru a \u015fterge directorul installTmp.
+LOG_CANNOT_CLOSE_OBJECT.action=\u00cenl\u0103tura\u0163i manual directorul installTmp sau utiliza\u0163i Java 7 sau o versiune superioar\u0103.
+
+LOG_PASSWORD_NOT_ENCODED_PROXY=Parola pentru proxy-ul urm\u0103tor nu este codificat\u0103: {0}. Pute\u0163i codifica parola prin rularea comenzii de codificare securityUtility cu op\u0163iunea --encoding setat\u0103 la un tip de codificare suportat\u0103, care sunt xor (implicit), aes \u015fi hash. De exemplu: securityUtility encode --encoding=aes proxyPassword
+LOG_PENDING_UNINSTALLING_FEATURE=Caracteristici de dezinstalat:
+# Following messages for debug logging purpose
+STATE_STARTING_INSTALL=Se porne\u015fte instalarea ...
+STATE_STARTING_UNINSTALL=Se porne\u015fte dezinstalarea ...
+STATE_STARTING_DEPLOY=Se porne\u015fte implementarea ...
+STATE_STARTING_DOWNLOAD=Se porne\u015fte desc\u0103rcarea ...
+STATE_CHECKING=Se verific\u0103 caracteristicile ...
+STATE_CHECKING_FIXES=Se verific\u0103 corec\u0163iile ...
+STATE_CHECKING_MISSING_SERVER_FEATURES=Se verific\u0103 caracteristicile cerute de server care lipsesc ...
+STATE_CHECKING_ASSETS=Se verific\u0103 aseturile ...
+STATE_DOWNLOADING=Se descarc\u0103 {0}...
+STATE_DOWNLOADING_DEPENDENCY=Se verific\u0103 o caracteristic\u0103 dependent\u0103...
+STATE_DOWNLOADING_IGNORE_ASSET=Urm\u0103torul aset exist\u0103 deja \u00een directorul: {0}\nOp\u0163iunea --overwrite nu este specificat\u0103, astfel c\u0103 asetul nu va fi desc\u0103rcat.\n
+STATE_DOWNLOADING_REPLACE_ASSET=Urm\u0103torul aset exist\u0103 deja \u00een directorul: {0}\nOp\u0163iunea --overwrite este specificat\u0103, astfel c\u0103 asetul va fi desc\u0103rcat pentru a \u00eenlocui fi\u015fierul existent.\n
+STATE_DOWNLOADING_IGNORE_ASSETS=Urm\u0103toarele aseturi exist\u0103 deja \u00een directorul: {0}\nOp\u0163iunea --overwrite nu este specificat\u0103, astfel c\u0103 aseturile nu vor fi desc\u0103rcate.\n
+STATE_DOWNLOADING_REPLACE_ASSETS=Urm\u0103toarele aseturi exist\u0103 deja \u00een directorul: {0}\nOp\u0163iunea --overwrite este specificat\u0103, astfel c\u0103 aseturile vor fi desc\u0103rcate pentru a \u00eenlocui fi\u015fierele existente.\n
+STATE_DOWNLOADING_FEATURES=Se descarc\u0103 caracteristicile la distan\u0163\u0103...
+STATE_DOWNLOADING_ASSETS=Se descarc\u0103 aseturile la distan\u0163\u0103...
+STATE_INSTALLING=Se instaleaz\u0103 {0}...
+STATE_INSTALLING_DEPENDENCY=Se instaleaz\u0103 o caracteristic\u0103 dependent\u0103...
+STATE_INSTALLING_FEATURES=Se instaleaz\u0103 caracteristicile ...
+STATE_INSTALLING_ASSETS=Se instaleaz\u0103 aseturile ...
+STATE_UNINSTALLING=Se dezinstaleaz\u0103 {0}...
+STATE_UNINSTALLING_FEATURES=Se dezinstaleaz\u0103 caracteristicile ...
+STATE_REAPPLYING_FIXES=Se reaplic\u0103 corec\u0163iile {0}...
+STATE_VALIDATING_FIXES=Se valideaz\u0103 corec\u0163iile instalate ...
+STATE_SET_SCRIPTS_PERMISSION=Se seteaz\u0103 permisiunile de scripturi...
+STATE_DEPLOYING=Se implementeaz\u0103 {0}...
+STATE_CLEANING=Se cur\u0103\u0163\u0103 fi\u015fiere temporare...
+STATE_COMPLETED_INSTALL=Instalare finalizat\u0103
+STATE_COMPLETED_UNINSTALL=Dezinstalare finalizat\u0103
+STATE_COMPLETED_DOWNLOAD=Desc\u0103rcare finalizat\u0103\n
+STATE_COMPLETED_DEPLOY=Implementare finalizat\u0103
+STATE_RESOLVING=Rezolvarea caracteristicilor la distan\u0163\u0103. Acest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
+STATE_PREPARING_ASSETS=Preg\u0103tirea aseturilor pentru instalare. Acest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
+STATE_INITIALIZING=Se ini\u0163ializeaz\u0103 ...
+STATE_CONTACTING_REPO=Se contacteaz\u0103 IBM WebSphere Liberty Repository...
+STATE_DOWNLOAD_FILES_OK=\nToate aseturile au fost desc\u0103rcate cu succes.
+PROGRESS_STEP=Pasul {0} din {1}
+
+MSG_DOWNLOAD_SUCCESS=S-a desc\u0103rcat cu succes caracteristica {0}.
+MSG_CLEANUP_SUCCESS=S-a finalizat cu succes cur\u0103\u0163area fi\u015fierelor temporare.
+
+MSG_CANCEL_INSTALL=Instalarea a fost anulat\u0103.
+MSG_TAKE_SEVERAL_MINUTES=Acest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
+MSG_SEARCHING=Se caut\u0103 aseturi. Acest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
+MSG_SEARCHING_FEATURES=Se caut\u0103 caracteristici ...
+MSG_SEARCHING_ADDONS=Se caut\u0103 add-on-uri ...
+MSG_SEARCHING_SAMPLES=Se caut\u0103 exemple ...
+MSG_SEARCHING_OPENSOURCE=Se caut\u0103 integr\u0103ri cu surs\u0103 deschis\u0103...
+
+FEATURE_ASSET=caracteristic\u0103
+ADDON_ASSET=addon
+SAMPLE_ASSET=e\u015fantion de produs
+OPENSOURCE_ASSET=integrare cu surs\u0103 deschis\u0103
+GENERAL_ASSET=aset
+
+MSG_INVALID_FOR_OS=Resursa de caracteristic\u0103 {0} nu este valid\u0103 pentru sistemul de operare curent \u015fi nu va fi instalat\u0103.
+
+# Following are validation messages for viewSettings
+MSG_VALIDATION_EMPTY_KEY=Nu este specificat numele propriet\u0103\u0163ii. Fie specifica\u0163i un nume de proprietate valid, fie comenta\u0163i proprietatea dac\u0103 este neutilizat\u0103.
+MSG_VALIDATION_INVALID_KEY={0} nu este o proprietate suportat\u0103. Fie specifica\u0163i un nume de proprietate valid, fie comenta\u0163i proprietatea dac\u0103 este neutilizat\u0103.
+MSG_VALIDATION_EMPTY_REPONAME=Nu este specificat numele magaziei. Fie specifica\u0163i un nume pentru magazie, fie comenta\u0163i proprietatea dac\u0103 este neutilizat\u0103.
+MSG_VALIDATION_DUPLICATE_KEY=Numele de proprietate {0} este un duplicat al numelui de proprietate g\u0103sit \u00een linia {1}. Specifica\u0163i un nume de proprietate unic pentru fiecare proprietate.
+MSG_VALIDATION_EMPTY_VALUE=Nu este specificat\u0103 nicio valoare pentru proprietatea {0}. Fie specifica\u0163i o valoare valid\u0103 pentru proprietate, fie comenta\u0163i proprietatea dac\u0103 este neutilizat\u0103.
+MSG_VALIDATION_INVALID_DEFAULTREPO_VALUE=Proprietatea useDefaultRepository nu suport\u0103 o valoare de {0}. Specifica\u0163i o valoare valid\u0103, care este fie True fie False.
+MSG_VALIDATION_INVALID_PORT_VALUE=Valoarea de port de {0} nu este valid\u0103. Specifica\u0163i o valoare de port pentru serverul proxy ca un \u00eentreg \u00een intervalul de la 1 la 65535.
+MSG_VALIDATION_MISSING_PORT_VALUE=Valoarea de port nu este specificat\u0103. Specifica\u0163i o valoare de port pentru serverul proxy ca un \u00eentreg \u00een intervalul de la 1 la 65535.
+MSG_VALIDATION_MISSING_HOST=Numele de gazd\u0103 de server proxy nu este specificat. Specifica\u0163i numele de gazd\u0103 pentru serverul proxy sau comenta\u0163i celelalte propriet\u0103\u0163i de server proxy.
+MSG_VALIDATION_INVALID_URL=URL-ul urm\u0103tor nu este valid: {0}. Sunt suportate numai protocoale HTTP, HTTPS \u015fi URL-uri de fi\u015fiere. Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect
+MSG_VALIDATION_UNSUPPORT_PROTOCOL=Protocolul de URL pentru urm\u0103toarea magazie nu este suportat: {0}. Protocoalele suportate sunt HTTP, HTTPS \u015fi fi\u015fier. Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect.
+MSG_VALIDATION_INVALID_HOST=Urm\u0103toarea gazd\u0103 de server proxy nu este valid\u0103: {0}. pecifica\u0163i un nume valid de gazd\u0103 de server proxy HTTP. Nu este necesar prefixul http://.
+
+VALIDATION_INVALID_VALUE=Valoare nesuportat\u0103
+VALIDATION_INVALID_KEY=Nume de proprietate nesuportat
+VALIDATION_EMPTY_KEY=Nume de proprietate gol
+VALIDATION_EMPTY_VALUE=Valoare goal\u0103
+VALIDATION_MISSING_REPONAME=Nume de magazie lips\u0103
+VALIDATION_MISSING_PORT=Nume de port lips\u0103
+VALIDATION_INVALID_PORT=Valoare de port nesuportat\u0103
+VALIDATION_MISSING_HOST=Nume de gazd\u0103 lips\u0103
+VALIDATION_INVALID_HOST=Nume de gazd\u0103 invalid
+VALIDATION_INVALID_URL=Format de URL nesuportat
+VALIDATION_DUPLICATE_KEY=Nume de proprietate duplicat
+VALIDATION_UNSUPPORTED_PROTOCOL=Protocol nesuportat
+
+# Following for tool
+TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Una sau mai multe caracteristici au fost dezinstalate cu succes: {0}.
+TOOL_UNINSTALL_FEATURE_OK.explanation=Caracteristica specificat\u0103 a fost dezinstalat\u0103.
+TOOL_UNINSTALL_FEATURE_OK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+TOOL_UNININSTALL_FEATURE_CONFIRMATION=Avertisment: Asigura\u0163i-v\u0103 c\u0103 toate procesele de server sunt oprite \u00eenainte de a dezinstala caracteristicile.\nDezinstalarea caracteristicilor de la servere care ruleaz\u0103 ar putea duce la erori runtime sau comportamente nea\u015fteptate.\n\nAp\u0103sa\u0163i Enter pentru a continua, sau "x" pentru a renun\u0163a la opera\u0163ia de dezinstalare caracteristic\u0103.
+
+TOOL_PASSWORD_PROMPT=Introduce\u0163i parola:
+TOOL_RE_ENTER_PASSWORD_PROMPT=Reintroduce\u0163i parola:
+TOOL_PASSWORD_DOES_NOT_MATCH=Intr\u0103rile nu s-au potrivit.
+
+TOOL_FEATURES_INSTALLATION_COMPLETED=Toate caracteristicile au fost dezinstalate cu succes.
+TOOL_INSTALLATION_COMPLETED=Toate caracteristicile au fost instalate cu succes.
+
+ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Parola pentru ID-ul de utilizator specificat \u00een op\u0163iunea --user nu a fost furnizat\u0103.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Este necesar\u0103 o parol\u0103 c\u00e2nd se specific\u0103 ID-ul de utilizator.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.useraction=Folosi\u0163i op\u0163iunea --password sau --passwordfile pentru a furniza parola pentru ID-ul de utilizator specificat \u00een op\u0163iunea --user \u015fi re\u00eencerca\u0163i opera\u0163ia.
+
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION=CWWKF1352E: Nu se poate localiza fi\u015fierul de parol\u0103 specificat {0}.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.explanation=A ap\u0103rut o eroare c\u00e2nd se \u00eencerca accesarea fi\u015fierului de parol\u0103 specificat.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.useraction=Asigura\u0163i-v\u0103 c\u0103 este valid\u0103 calea spre fi\u015fierul specificat, c\u0103 exist\u0103 fi\u015fierul \u015fi c\u0103 utilizatorul are autoriza\u0163ia necesar\u0103 pentru a accesa fi\u015fierul.
+
+ERROR_TOOL_INVALID_LOG_LEVEL=Nivelul de istoric specificat {0} este invalid.  Istoricul nu este activat.
+
+ERROR_TOOL_DIRECTORY_NOT_EXISTS=CWWKF1353E: Directorul specificat nu exist\u0103: {0}
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.explanation=Sistemul nu poate g\u0103si directorul specificat.
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.useraction=Rula\u0163i din nou comanda cu un director valid.
+
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA=CWWKF1354E: Op\u0163iunea --downloadOnly nu poate fi utilizat\u0103 pentru a instala {0}.
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.explanation=Utilizarea invalid\u0103 a op\u0163iunii --downloadOnly. 
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.useraction=Rula\u0163i din nou comanda f\u0103r\u0103 parametrul --downloadOnly.
+
+ERROR_TOOL_DOWNLOADONLY_IS_FILE=CWWKF1355E: {0} este un fi\u015fier. Este necesar\u0103 o cale de director.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a desc\u0103rca arhivele Subsistem la un fi\u015fier.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.useraction=Rula\u0163i din nou comanda cu o cale de director.
+
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR=CWWKF1356E: Nu se poate crea structura de director {0}.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.explanation=Directoare necesare pentru a desc\u0103rca arhiva Subsistem nu au putut fi create.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul furnizat \u015fi permisiunile necesare pentru a permite crearea structurii directorului. Rula\u0163i opera\u0163ia din nou.
+
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY=CWWKF1357E: Op\u0163iunea --downloadOnly nu poate fi utilizat\u0103 cu --offlineOnly.
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.explanation=Utilizare invalid\u0103 a op\u0163iunii --offlineOnly. 
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.useraction=Rula\u0163i din nou comanda f\u0103r\u0103 op\u0163iunea --offlineOnly.
+
+ERROR_TOOL_MISSING_DIRECTORY=CWWKF1358E: Op\u0163iunea --location este necesar\u0103 pentru {0}.
+ERROR_TOOL_MISSING_DIRECTORY.explanation=Op\u0163iunea --location nu a fost g\u0103sit\u0103.
+ERROR_TOOL_MISSING_DIRECTORY.useraction=Rula\u0163i din nou comanda cu op\u0163iunea --location.
+
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION=CWWKF1359E: Valoarea {0} nu este valid\u0103 pentru --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.explanation=Trebuie s\u0103 utiliza\u0163i valori valide pentru op\u0163iunea --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.useraction=Rula\u0163i comanda cu o valoare valid\u0103 pentru --downloadOnly, cum ar fi all.
+
+ERROR_TOOL_LOCATION_WITH_ESA=CWWKF1360E: Op\u0163iunea --location nu poate fi folosit\u0103 pentru a instala un fi\u015fier Subsystem Archive (.esa).
+ERROR_TOOL_LOCATION_WITH_ESA.explanation=Utilizarea invalid\u0103 a op\u0163iunii --location. 
+ERROR_TOOL_LOCATION_WITH_ESA.useraction=Rula\u0163i din nou comanda f\u0103r\u0103 op\u0163iunea --location.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED=CWWKF1361E: Nu pot fi \u00eenc\u0103rcate propriet\u0103\u0163ile magaziei din {0}. Confirma\u0163i c\u0103 este valid\u0103 calea la fi\u015fierul specificat de propriet\u0103\u0163i \u015fi c\u0103 fi\u015fierul con\u0163ine propriet\u0103\u0163ile cerute.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.explanation=A ap\u0103rut o eroare la \u00eencercarea de a accesa fi\u015fierul specificat de propriet\u0103\u0163i.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.useraction=Asigura\u0163i-v\u0103 c\u0103 este valid\u0103 calea la fi\u015fierul specificat, c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 fi\u015fierul con\u0163ine propriet\u0103\u0163ile cerute.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE=CWWKF1362E: Calea specificat\u0103 {0} nu este un fi\u015fier.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.explanation=Proprietatea de sistem de a \u00eenlocui loca\u0163ia implicit\u0103 a fi\u015fierului de propriet\u0103\u0163i trebuie s\u0103 fie setat\u0103 drept cale de fi\u015fier, nu ca director. 
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.useraction=Rula\u0163i din nou comanda proprietatea de sistem setat\u0103 la o cale valid\u0103 de fi\u015fier.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS=CWWKF1363E: Fi\u015fierul specificat {0} nu exist\u0103.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.explanation=Sistemul nu poate g\u0103si fi\u015fierul specificat de propriet\u0103\u0163i de magazii.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.useraction=Verifica\u0163i c\u0103 fi\u015fierul exist\u0103 \u00een calea specificat\u0103 \u015fi rula\u0163i comanda din nou.
+
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED=CWWKF1364E: Parola de server proxy nu este codat\u0103. Parola trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.explanation=Parola de server proxy trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.useraction=Rula\u0163i din nou comanda cu o parol\u0103 codificat\u0103.
+
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED=CWWKF1365E: Parola codat\u0103 de server proxy este invalid\u0103. Parola de server proxy trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding. 
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.explanation=Algoritmul de codificare utilizat pentru a codifica parola proxy nu este suportat. Parola de proxy trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding.
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.useraction=Rula\u0163i din nou comanda cu o parol\u0103 codificat\u0103 valid\u0103.
+
+ERROR_TOOL_PROXY_PORT_MISSING=CWWKF1366E: Num\u0103rul portului de server proxy nu este specificat.
+ERROR_TOOL_PROXY_PORT_MISSING.explanation=Este necesar un num\u0103r de port c\u00e2nd este specificat un nume de gazd\u0103 pentru serverul proxy.
+ERROR_TOOL_PROXY_PORT_MISSING.useraction=Rula\u0163i din nou comanda cu un num\u0103r valid de port de server proxy.
+
+ERROR_TOOL_PROXY_HOST_MISSING=CWWKF1367E: Nu este specificat numele de gazd\u0103 al serverului proxy.
+ERROR_TOOL_PROXY_HOST_MISSING.explanation=Este necesar un nume de gazd\u0103 c\u00e2nd este specificat un num\u0103r de port pentru serverul proxy.
+ERROR_TOOL_PROXY_HOST_MISSING.useraction=Rula\u0163i din nou comanda cu un nume valid de gazd\u0103 de server proxy.
+
+ERROR_TOOL_INVALID_PROXY_PORT=CWWKF1368E: Num\u0103rul portului de server proxy {0} este invalid. Num\u0103rul de port trebuie s\u0103 fie un num\u0103r \u00een intervalul de la 1 la 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.explanation=Num\u0103rul portului de server proxy specificat trebuie s\u0103 fie un num\u0103r \u00een intervalul de la 1 la 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.useraction=Rula\u0163i din nou comanda cu un num\u0103r valid de port de server proxy.
+
+ERROR_TOOL_PROXY_PWD_MISSING=CWWKF1369E: Parola de server proxy nu este specificat\u0103.
+ERROR_TOOL_PROXY_PWD_MISSING.explanation=Este necesar\u0103 o parol\u0103 c\u00e2nd este specificat un ID utilizator pentru serverul proxy.
+ERROR_TOOL_PROXY_PWD_MISSING.useraction=Rula\u0163i din nou comanda cu parola cerut\u0103 de server proxy.
+
+ERROR_TOOL_UNKNOWN_PROXY_HOST=CWWKF1370E: Numele de gazd\u0103 de server proxy {0} este necunoscut.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.explanation=Numele de gazd\u0103 de server proxy nu poate fi rezolvat.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.useraction=Rula\u0163i din nou comanda cu un nume cunoscut de gazd\u0103 de server proxy.
+
+ERROR_TOOL_INCORRECT_PROXY_PORT=CWWKF1371E: A e\u015fuat conectarea la serverul proxy pe portul {0}.
+ERROR_TOOL_INCORRECT_PROXY_PORT.explanation=Num\u0103rul portului de server proxy este incorect. Nu exist\u0103 niciun serviciu care ascult\u0103 pe num\u0103rul de port specificat pentru serverul proxy. 
+ERROR_TOOL_INCORRECT_PROXY_PORT.useraction=Rula\u0163i din nou comanda cu num\u0103rul corect de port de server proxy.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWKF1372E: Acredit\u0103rile specificate de server proxy sunt incorecte.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Acredit\u0103rile specificate de server proxy nu pot fi autentificate. 
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Rula\u0163i din nou comanda cu acredit\u0103rile corecte de server proxy.
+
+ERROR_NO_REPO_WAS_ENABLED=CWWKF1373E: Comanda nu poate fi executat\u0103 deoarece nu este activat\u0103 nicio magazie.
+ERROR_NO_REPO_WAS_ENABLED.explanation=Toate magaziile au fost dezactivate din configura\u0163ie.
+ERROR_NO_REPO_WAS_ENABLED.useraction=Activa\u0163i una sau mai multe magazii \u015fi rula\u0163i comanda din nou.
+
+ERROR_TOOL_PWD_NOT_ENCRYPTED=CWWKF1374E: Parola nu este criptat\u0103. Parola trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.explanation=Parola trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.useraction=Rula\u0163i din nou comanda cu o parol\u0103 codificat\u0103.
+
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED=CWWKF1375E: Parola criptat\u0103 este invalid\u0103. Parola trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding. 
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.explanation=Algoritmul de criptografie utilizat pentru a cripta parola nu este suportat. Parola trebuie s\u0103 fie cifrat\u0103 utiliz\u00e2nd comanda securityUtility cu algoritmul de criptografie AES ca op\u0163iune recomandat\u0103 --encoding.
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.useraction=Rula\u0163i din nou comanda cu o parol\u0103 codificat\u0103 valid\u0103.
+
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E: {0} nu este nici un folder gol nici o magazie valid\u0103 de director. V\u0103 rug\u0103m folosi\u0163i un folder gol sau o magazie existent\u0103 de director pentru desc\u0103rcare.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a desc\u0103rca la un director invalid de desc\u0103rcare.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.useraction=Rula\u0163i din nou comanda cu o cale valid\u0103 de director.
+
+ERROR_TOOL_DIRECTORY_REQUIRED=CWWKF1377E: Trebuie specificat\u0103 o cale valid\u0103 de fi\u015fier pe op\u0163iunea --{0}. Specifica\u0163i o cale de fi\u015fier \u015fi rula\u0163i comanda din nou.
+ERROR_TOOL_DIRECTORY_REQUIRED.explanation=Op\u0163iunea --location necesit\u0103 o cale valid\u0103 de fi\u015fier, dar nu a fost specificat\u0103 o cale de fi\u015fier sau calea fi\u015fierului specificat\u0103 nu este valid\u0103.
+ERROR_TOOL_DIRECTORY_REQUIRED.useraction=Pe op\u0163iunea --location, specifica\u0163i o cale valid\u0103 de fi\u015fier la care dori\u0163i s\u0103 desc\u0103rca\u0163i fi\u015fiere, apoi rula\u0163i comanda din nou.
+
+ERROR_TOOL_DIRECTORY_INACCESSIBLE=CWWKF1378E: Directorul urm\u0103tor nu este accesibil: {0} Asigura\u0163i-v\u0103 c\u0103 utilizatorul curent are permisiuni de scriere pe director. 
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.explanation=Comanda nu poate desc\u0103rca fi\u015fiere \u00een directorul specificat deoarece utilizatorul curent nu are necesare permisiunile de citire \u015fi scriere necesare.
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.useraction=Asigura\u0163i-v\u0103 c\u0103 utilizatorul curent are permisiuni de citire \u015fi scriere pe director \u015fi rula\u0163i comanda din nou.
+
+ERROR_TEMP_DIR_NO_SPACE=CWWKF1379E: Asetul nu poate fi desc\u0103rcat pentru c\u0103 spa\u0163iul pe disc disponibil la urm\u0103torul director temporar Java este insuficient: {0}. Spa\u0163iul total necesar este {2}. Spa\u0163iul total disponibil este {1}. \u015eterge\u0163i fi\u015fierele nenecesare din director sau modifica\u0163i calea java.io.tempdir c\u0103tre un alt director \u015fi rula\u0163i comanda din nou.
+ERROR_TEMP_DIR_NO_SPACE.explanation=Comanda nu poate desc\u0103rca fi\u015fiere \u00een directorul Java temporar deoarece directorul nu are destul spa\u0163iu.
+ERROR_TEMP_DIR_NO_SPACE.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul Java temporar are suficient spa\u0163iu prin \u015ftergerea fi\u015fierele nenecesare din director sau prin modificarea c\u0103ii java.io.tempdir c\u0103tre un alt director \u015fi rula\u0163i comanda din nou.
+
+ERROR_WLP_DIR_NO_SPACE=CWWKF1380E: Asetul nu poate fi instalat pentru c\u0103 spa\u0163iul pe disc disponibil la urm\u0103torul director de instalare este insuficient: {0}. Spa\u0163iul total necesar este {2}. Spa\u0163iul total disponibil este {1}. \u015eterge\u0163i fi\u015fierele nenecesare din sistemul de fi\u015fiere \u015fi rula\u0163i comanda din nou.
+ERROR_WLP_DIR_NO_SPACE.explanation=Comanda nu poate instala aseturi \u00een directorul de instalare deoarece directorul nu are destul spa\u0163iu.
+ERROR_WLP_DIR_NO_SPACE.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul de instalare are suficient spa\u0163iu prin \u015ftergerea fi\u015fierele nenecesare din sistemul de fi\u015fiere \u015fi rula\u0163i comanda din nou.
+
+ERROR_FAILED_TO_CONNECT_JDK_WRONG=CWWKF1381E: Nu se poate ajunge la IBM WebSphere Liberty Repository din cauza unei erori de fabric\u0103 de socket-uri SSL. Aceast\u0103 eroare poate s\u0103 apar\u0103 dac\u0103 folosi\u0163i cu Liberty un Java SDK furnizat pentru WebSphere Application Server clasic. Instala\u0163i un Java SDK care este furnizat pentru Liberty sau cur\u0103\u0163a\u0163i furnizorii de fabric\u0103 de socket-uri SSL din SDK-ul existent, a\u015fa cum este descris \u00een documenta\u0163ia de depanare Liberty.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.explanation=Java SDK configurat pare a fi furnizat pentru WebSphere Application Server clasic. Acest Java SDK nu poate fi folosit a\u015fa cum este cu WebSphere Application Server Liberty, ceea ce a dus la o eroare de fabric\u0103 de socket-uri SSL.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.useraction=Instala\u0163i \u015fi configura\u0163i un Java SDK pentru Liberty. \n\nAlternativ, pute\u0163i folosi SDK-ul existent \u015fi ocoli\u0163i problema cur\u0103\u0163\u00e2nd furnizorii de fabric\u0103 de socket-uri SSL pentru Java SDK. Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia Liberty despre depanarea SSL. 
+
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION=CWWKF1382E: Nu se pot ob\u0163ine urm\u0103toarele aseturi: {0}. Este posibil ca una sau mai multe dintre magaziile configurate s\u0103 nu fie disponibile sau ca aseturile specificate s\u0103 nu fie valide. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa magaziile \u015fi utiliza\u0163i ac\u0163iunile viewSettings \u015fi testConnection pentru verificarea conexiunii. Pentru a g\u0103si ID-urile aseturilor aplicabile, rula\u0163i comanda installUtility find.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.explanation=Programul de instalare nu a putut extrage aseturile specificate din magazii.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt valide aseturile specificate, c\u0103 sunt furnizate un ID valid de utilizator \u015fi o parol\u0103 \u015fi c\u0103 magaziile sunt accesibile. Pute\u0163i utiliza ac\u0163iunea viewSettings pentru a verifica magaziile configurate \u015fi apoi utiliza\u0163i ac\u0163iunea testConnection pentru a testa conexiunea.
+
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Asetul {0} depinde de {1}, care nu este disponibil \u00een magaziile configurate . E posibil ca una sau mai multe magazii configurate s\u0103 nu fie accesibile. Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. Alternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Asetul nu poate fi desc\u0103rcat sau instalat deoarece depinde de un aset care nu este disponibil.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Pute\u0163i utiliza ac\u0163iunea viewSettings pentru a verifica magaziile configurate \u015fi apoi utiliza\u0163i ac\u0163iunea testConnection pentru a testa conexiunea. \n\nAlternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director. \n\nDac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. \n\nPentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Aseturile {0} depind de {1}, care nu este disponibil \u00een magaziile configurate. Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Aseturile nu pot fi desc\u0103rcate sau instalate din cauz\u0103 c\u0103 depind de un aset care nu este disponibil.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Alternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca aseturile lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. Pentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Aseturile {0} depind de {1}, care nu este disponibil \u00een IBM WebSphere Liberty Repository. Dac\u0103 asetul cerut este o caracteristic\u0103 pe care a\u0163i desc\u0103rcat-o anterior, instala\u0163i caracteristica lips\u0103 specific\u00e2nd loca\u0163ia fi\u015fierului de caracteristici ESA pe op\u0163iunea featureManager install --location \u015fi \u00eencerca\u0163i s\u0103 instala\u0163i {0} din nou.
+ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Caracteristicile, programele de completare sau corec\u0163iile interimare nu pot fi instalate deoarece depind de un aset care nu este disponibil.
+ERROR_MISSING_MULTIPLE_DEPENDENT.useraction=Dac\u0103 asetul cerut este o caracteristic\u0103 pe care a\u0163i desc\u0103rcat-o anterior, instala\u0163i caracteristica lips\u0103 specific\u00e2nd loca\u0163ia fi\u015fierului de caracteristici ESA pe op\u0163iunea featureManager install --location \u015fi \u00eencerca\u0163i din nou. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNKNOWN_OPERATING_SYSTEM=CWWKF1386E: Sistemul de operare curent nu este recunoscut.
+ERROR_UNKNOWN_OPERATING_SYSTEM.explanation=Se sare peste verific\u0103rile privind sistemul de operare al fi\u015fierului, deoarece sistemul dumneavoastr\u0103 de operare nu este recunsocut.
+ERROR_UNKNOWN_OPERATING_SYSTEM.useraction=V\u0103 rug\u0103m s\u0103 comuta\u0163i la unul dintre urm\u0103toarele sisteme de operare: AIX, HP-UX, macOS, Linux, OS/400, Solaris, Windows sau z/OS.
+
+ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Valoarea {0} nu este o intrare valid\u0103 pentru directiva de sistem de operare {1}.
+ERROR_UNKNOWN_OSLIST_VALUE.explanation=Aceast\u0103 valoare va fi ignorat\u0103, deoarece nu este un nume de sistem de operare recunoscut.
+ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modifica\u0163i sau \u00eenl\u0103tura\u0163i aceast\u0103 valoare din fi\u015fierul manifest al caracteristicii.
+
+TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Caracteristica a fost desc\u0103rcat\u0103 cu succes.
+TOOL_DOWNLOAD_FEATURE_OK.explanation=Caracteristica a fost desc\u0103rcat\u0103.
+TOOL_DOWNLOAD_FEATURE_OK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+TOOL_DOWNLOAD_FEATURES_OK=CWWKF1501I: Caracteristicile au fost desc\u0103rcate cu succes.
+TOOL_DOWNLOAD_FEATURES_OK.explanation=Caracteristicile au fost desc\u0103rcate.
+TOOL_DOWNLOAD_FEATURES_OK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Fi\u015fierul de {0} nu poate fi instalat deoarece este un tip de fi\u015fier nesuportat. Numai instalarea din fi\u015fiere ESA este suportat\u0103.
+MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Fi\u015fierul nu a fost instalat deoarece a fost furnizat un tip nesuportat de fi\u015fier.
+MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MSG_STABILIZING_FEATUREMANAGER=Aceast\u0103 ac\u0163iune featureManager este stabilizat\u0103. Utiliza\u0163i installUtility {0} \u00een loc. Comanda installUtility este recomandat\u0103 pentru instalare \u015fi ac\u0163iuni legate de depozit.

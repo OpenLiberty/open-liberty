@@ -11,18 +11,18 @@
 package com.ibm.ws.microprofile.openapi.fat.utils;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.simplicity.config.Application;
-import com.ibm.websphere.simplicity.config.ClassloaderElement;
-import com.ibm.websphere.simplicity.config.ConfigElementList;
-import com.ibm.websphere.simplicity.config.OpenAPIElement;
-import com.ibm.websphere.simplicity.config.OpenAPIElement.WebModuleDocElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
@@ -32,7 +32,6 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class OpenAPITestUtil {
 
-    private final static Class<?> c = OpenAPITestUtil.class;
     private final static int TIMEOUT = 30000;
 
     /**
@@ -89,16 +88,37 @@ public class OpenAPITestUtil {
         }
     }
 
-    public static Application removeApplication(LibertyServer server, String appName) throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
-        Application webApp = config.getApplications().removeById(appName);
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(null);
-        assertNotNull("FAIL: App didn't report is has been removed.",
-                      server.waitForStringInLogUsingMark("CWWKT0017I.*" + appName));
-        assertNotNull("FAIL: App didn't report is has been stopped.",
-                      server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
+    /**
+     * Wait for the message stating the app has been processed by the aggregator.
+     *
+     * @param server - Liberty server
+     * @param contextRoot - Context root of the app being installed
+     * @throws Exception
+     */
+    public static void waitForApplicationProcessor(LibertyServer server, String appName) {
+        String s = server.waitForStringInTraceUsingMark("Processign application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+        assertNotNull("FAIL: Application processor didn't successfully process the app " + appName, s);
+    }
 
+    public static void waitForApplicationAdded(LibertyServer server, String appName) {
+        String s = server.waitForStringInTraceUsingMark("Processign application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+        assertNotNull("FAIL: Application processor didn't successfully process the app " + appName, s);
+    }
+
+    public static Application removeApplication(LibertyServer server, String appName) {
+        Application webApp = null;
+        try {
+            ServerConfiguration config = server.getServerConfiguration();
+            webApp = config.getApplications().removeById(appName);
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(null);
+            assertNotNull("FAIL: App didn't report is has been removed.",
+                          server.waitForStringInLogUsingMark("CWWKT0017I.*" + appName));
+            assertNotNull("FAIL: App didn't report is has been stopped.",
+                          server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
+        } catch (Exception e) {
+            fail("FAIL: Could not remove the application " + appName);
+        }
         return webApp;
     }
 
@@ -109,33 +129,36 @@ public class OpenAPITestUtil {
      * @param name the name of the application
      * @param path the fully qualified path to the application archive on the liberty machine
      * @param type the type of the application (ear/war/etc)
+     * @param waitForUpdate boolean controlling if the method should wait for the configuration update event before returning
      * @return the deployed application
      */
     public static Application addApplication(LibertyServer server, String name, String path, String type) throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         Application app = config.addApplication(name, path, type);
-        ConfigElementList<ClassloaderElement> cel = app.getClassloaders();
-        if (cel.isEmpty()) {
-            ClassloaderElement ce = new ClassloaderElement();
-            ce.setApiTypeVisibility("spec,ibm-api,api,third-party");
-            cel.add(ce);
-        }
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(null);
-        assertNotNull("FAIL: App didn't report is has started.",
-                      server.waitForStringInLogUsingMark("CWWKZ0001I.*" + name));
         return app;
     }
 
     /**
      * Adds an WAR application inside the '${server.config.dir}/apps/'
      * to the current config, or updates an application with a specific name
-     * if it already exists
+     * if it already exists. This method waits for the app to be processed by OpenAPI
+     * Application Processor.
      *
      * @param name the name of the application
      * @return the deployed application
      */
     public static Application addApplication(LibertyServer server, String name) throws Exception {
         return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war");
+    }
+
+    public static void ensureOpenAPIEndpointIsReady(LibertyServer server) {
+        assertNotNull("FAIL: Endpoint is not available at /openapi",
+                      server.waitForStringInLog("CWWKT0016I.*" + "/openapi"));
+    }
+
+    public static JsonNode readYamlTree(String contents) {
+        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor());
+        return new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
     }
 }

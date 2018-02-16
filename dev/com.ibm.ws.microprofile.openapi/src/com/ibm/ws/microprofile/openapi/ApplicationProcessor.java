@@ -262,14 +262,23 @@ public class ApplicationProcessor {
 
     @FFDCIgnore(UnableToAdaptException.class)
     private void processApplication(ApplicationInfo appInfo) {
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Processign application started: appInfo=" + appInfo);
+        }
         synchronized (this.document) {
 
             if (appInfo == null) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Processign application ended: appInfo=null");
+                }
                 return;
             }
 
             Container appContainer = appInfo.getContainer();
             if (appContainer == null) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Processign application ended: appInfo=" + appInfo + ", appContainer=null");
+                }
                 return;
             }
 
@@ -305,6 +314,9 @@ public class ApplicationProcessor {
             }
 
             if (moduleInfo == null) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Processign application ended: moduleInfo=null");
+                }
                 return;
             }
 
@@ -315,6 +327,10 @@ public class ApplicationProcessor {
                 handleUserServer(openAPI);
                 this.document = openAPI;
                 Tr.info(tc, "OPENAPI_APPLICATION_PROCESSED", moduleInfo.getApplicationInfo().getDeploymentName());
+            }
+
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Processign application ended: appInfo=" + appInfo);
             }
         }
     }

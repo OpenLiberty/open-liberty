@@ -13,7 +13,20 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Tests to ensure that OpenAPI model validation works and proper events (errors, warning) are reported.
+ * Tests to ensure that OpenAPI model validation works, model walker calls appropriate validators,
+ * and proper events (errors, warning) are reported.
+ *
+ * Tests that correct validation messages are provided for the validation errors in the following models:
+ *
+ * Security Scheme, Security Requirement, OAuth Flow(s), MediaType, Example
+ *
+ * The app with a static yaml file checks the following conditions for each model:
+ * - SecurityScheme: REQUIRED 'type' field, other required fields for each particular type - all validation cases checked
+ * - SecurityRequirement: SecurityRequirement is declared, Scopes is present on appropriate types - all validation cases checked
+ * - OAuthFlow: REQUIRED 'scopes' field, and valid url - all validation cases checked
+ * - OAuthFlows: fields are defined for applicable flows objects - all validation cases checked
+ * - MediaType: 'example' and 'examples', encoding not in schema, encoding but null schema - all validation cases checked
+ * - Example: 'value' and 'extrenalValue' - all validation cases checked
  *
  */
 @RunWith(FATRunner.class)
@@ -23,13 +36,11 @@ public class OpenAPIValidationTestTwo {
     public static LibertyServer server;
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
-    //private static final int TIMEOUT = 10000; //in milliseconds (10 seconds)
-
     @BeforeClass
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        server.startServer("OpenAPIValidationTest.log", true);
+        server.startServer("OpenAPIValidationTestTwo.log", true);
 
         server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
 
@@ -44,12 +55,9 @@ public class OpenAPIValidationTestTwo {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted()) {
-            server.stopServer("CWWKO1603E", "CWWKO1650E", "CWWKO1651W");
+            server.stopServer("CWWKO1650E", "CWWKO1651W");
         }
     }
-
-    //Tests that correct validation messages are provided for the validation errors in the following models:
-    //Security Scheme, Security Requirement, OAuth Flow(s), MediaType, Example, Encoding
 
     @Test
     public void testSecuritySchemeValidation() {
@@ -68,6 +76,8 @@ public class OpenAPIValidationTestTwo {
         assertNotNull("The SecurityScheme object is not properly validated",
                       server.waitForStringInLog("Message: Required \"in\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/ApiKeyWithScheme"));
         assertNotNull("The SecurityScheme object is not properly validated",
+                      server.waitForStringInLog("Message: Required \"in\" field is missing or is set to an invalid value, Location: #/components/securitySchemes/ApiKeyWithInvalidIn"));
+        assertNotNull("The SecurityScheme object is not properly validated",
                       server.waitForStringInLog("Message: The Security Scheme Object must contain a valid URL. The \"not a URL\" value specified for the URL is not valid*"));
         assertNotNull("The SecurityScheme object is not properly validated",
                       server.waitForStringInLog("Message: The \"scheme\" field with \"openIdConnectWithScheme\" value is not applicable for \"Security Scheme Object\" of \"openIdConnect\" type"));
@@ -83,6 +93,10 @@ public class OpenAPIValidationTestTwo {
     public void testSecurityRequirementValidation() {
         assertNotNull("The SecurityRequirement object is not properly validated",
                       server.waitForStringInLog("Message: The \"schemeNotInComponent\" name provided for the Security Requirement Object does not correspond to a declared security scheme, Location: #/paths/~1availability/get/security"));
+        assertNotNull("The SecurityRequirement object is not properly validated",
+                      server.waitForStringInLog("Message: The \"airlinesHttp\" field of Security Requirement Object should be empty, but is: \"\\[write:app, read:app\\]\""));
+        assertNotNull("The SecurityRequirement object is not properly validated",
+                      server.waitForStringInLog("Message: The \"openIdConnectWithScheme\" Security Requirement Object should specify be a list of scope names required for execution"));
     }
 
     @Test
@@ -107,6 +121,8 @@ public class OpenAPIValidationTestTwo {
                       server.waitForMultipleStringsInLog(2, "Message: The \"nonExistingField\" encoding property specified in the MediaType Object does not exist"));
         assertNotNull("The MediaType object is not properly validated",
                       server.waitForStringInLog("Message: The MediaType Object cannot have both \"examples\" and \"example\" fields*"));
+        assertNotNull("The MediaType object is not properly validated",
+                      server.waitForStringInLog("Message: The encoding property specified cannot be validated because the corresponding schema property is null"));
     }
 
     @Test
@@ -114,11 +130,4 @@ public class OpenAPIValidationTestTwo {
         assertNotNull("The Example object is not properly validated",
                       server.waitForStringInLog("Message: The \"booking\" Example Object specifies both \"value\" and \"externalValue\" fields*"));
     }
-
-    @Test
-    public void testEncodingValidation() {
-        assertNotNull("The Encoding object is not properly validated",
-                      server.waitForStringInLog("Message: The encoding property specified cannot be validated because the corresponding schema property is null*"));
-    }
-
 }
