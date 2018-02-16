@@ -40,6 +40,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.ConstrainedTo;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.FormParam;
@@ -48,6 +49,7 @@ import javax.ws.rs.MatrixParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.RuntimeType;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -703,6 +705,14 @@ public final class ResourceUtils {
         if (c == null || c == Object.class) {
             return false;
         }
+
+        // this is server-side only, so if the provider is constrained
+        // to the client, we should return false here:
+        ConstrainedTo providerConstraint = c.getAnnotation(ConstrainedTo.class);
+        if (providerConstraint != null && !RuntimeType.SERVER.equals(providerConstraint.value())) {
+            return false;
+        }
+
         if (c.getAnnotation(Provider.class) != null) {
             return true;
         }
