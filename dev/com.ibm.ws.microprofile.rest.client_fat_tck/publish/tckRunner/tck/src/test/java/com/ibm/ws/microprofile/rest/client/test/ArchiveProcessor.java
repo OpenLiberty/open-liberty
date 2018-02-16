@@ -21,19 +21,21 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  */
 public class ArchiveProcessor implements ApplicationArchiveProcessor {
 
+    private final static String WLP_DIR = System.getProperty("wlp");
+
     /* (non-Javadoc)
      * @see org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor#process(org.jboss.shrinkwrap.api.Archive, org.jboss.arquillian.test.spi.TestClass)
      */
     @Override
     public void process(Archive<?> applicationArchive, TestClass testClass) {
-    	System.out.println("WLP: ArchiveProcessor.process(...) - no-op");
+        System.out.println("WLP: ArchiveProcessor.process(...) - no-op");
 //        if (applicationArchive instanceof WebArchive) {
-//            File file = new File("/home/andymc/Downloads/microprofile-rest-client-tck-1.1-SNAPSHOT.jar");
+//            File file = new File(WLP_DIR, "/usr/servers/FATServer/microprofile-rest-client-tck-1.0.1.jar");
 //            System.out.println("WLP: Adding Jar:" + file.getAbsolutePath() + " to " + applicationArchive.getName());
 //            ((WebArchive) applicationArchive).addAsLibraries(file);
 //        }
-    	if (applicationArchive instanceof WebArchive) {
-          File file = new File("/home/andymc/mpRestClientTCK/open-liberty/dev/com.ibm.ws.microprofile.rest.client_fat_tck/publish/servers/FATServer/wiremock-standalone-2.14.0.jar");
+        if (applicationArchive instanceof WebArchive) {
+          File file = new File(WLP_DIR, "/usr/servers/FATServer/wiremock-standalone-2.14.0.jar");
           System.out.println("WLP: Adding Jar:" + file.getAbsolutePath() + " to " + applicationArchive.getName());
           ((WebArchive) applicationArchive).addAsLibraries(file);
       }

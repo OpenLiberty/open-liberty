@@ -36,12 +36,13 @@ public class RestClientTckPackageTest {
 //        server.startServer();
 //    }
 //
-//    @AfterClass
-//    public static void tearDown() throws Exception {
-//    	if (server != null && server.isStarted()) {
-//    		server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
-//    	}
-//    }
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (server != null) {
+            server.postStopServerArchive(); // must explicitly collect since arquillian is starting/stopping the server
+//            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+        }
+    }
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.

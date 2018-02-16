@@ -22,6 +22,8 @@
             <property name="serverName">${tck_server}</property>
             <property name="httpPort">${tck_port}</property>
             <property name="allowConnectingToRunningServer">true</property>
+            <property name="appDeployTimeout">60</property>
+            <property name="verifyAppDeployTimeout">60</property>
         </configuration>
     </container>
 </arquillian>
