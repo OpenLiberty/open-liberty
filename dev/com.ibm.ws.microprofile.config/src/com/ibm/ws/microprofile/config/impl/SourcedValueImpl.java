@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.archaius.composite;
+package com.ibm.ws.microprofile.config.impl;
 
 import java.lang.reflect.Type;
 
@@ -23,11 +23,25 @@ public class SourcedValueImpl implements SourcedValue {
     private final Object value;
     private final Type type;
     private final String source;
+    private final String key;
 
-    public SourcedValueImpl(Object value, Type type, String source) {
+    @Trivial
+    public SourcedValueImpl(String key, Object value, Type type, String source) {
+        this.key = key;
         this.value = value;
         this.type = type;
         this.source = source;
+    }
+
+    /**
+     * Get the key
+     *
+     * @return the key
+     */
+    @Override
+    @Trivial
+    public String getKey() {
+        return key;
     }
 
     /**
@@ -36,6 +50,7 @@ public class SourcedValueImpl implements SourcedValue {
      * @return the value
      */
     @Override
+    @Trivial
     public Object getValue() {
         return value;
     }
@@ -46,6 +61,7 @@ public class SourcedValueImpl implements SourcedValue {
      * @return
      */
     @Override
+    @Trivial
     public Type getType() {
         return type;
     }
@@ -56,6 +72,7 @@ public class SourcedValueImpl implements SourcedValue {
      * @return the originating source ID
      */
     @Override
+    @Trivial
     public String getSource() {
         return source;
     }
@@ -63,6 +80,6 @@ public class SourcedValueImpl implements SourcedValue {
     @Override
     @Trivial
     public String toString() {
-        return value + "[type:" + type + ";source:" + source + "]";
+        return "[" + source + "; " + type + "] " + key + "=" + value;
     }
 }
