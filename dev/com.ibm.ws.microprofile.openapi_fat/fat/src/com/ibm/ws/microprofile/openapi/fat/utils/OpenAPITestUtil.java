@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat.utils;
 
-import com.ibm.websphere.simplicity.log.Log;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
