@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat.utils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +25,10 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
@@ -89,15 +95,36 @@ public class OpenAPITestUtil {
     }
 
     /**
-     * Wait for the message stating the app has been processed by the aggregator.
+     * Wait for the message stating the app has been processed by the application processor adding.
      *
      * @param server - Liberty server
-     * @param contextRoot - Context root of the app being installed
      * @throws Exception
      */
-    public static void waitForApplicationProcessor(LibertyServer server, String appName) {
-        String s = server.waitForStringInTraceUsingMark("Processign application ended: appInfo=.*[" + appName + "]", TIMEOUT);
-        assertNotNull("FAIL: Application processor didn't successfully process the app " + appName, s);
+    public static void waitForApplicationProcessorAddedEvent(LibertyServer server, String appName) {
+        String s = server.waitForStringInTraceUsingMark("Application Processor: Adding application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+        assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
+    }
+
+    /**
+     * Wait for the message stating the app has been processed by the application processor.
+     *
+     * @param server - Liberty server
+     * @throws Exception
+     */
+    public static void waitForApplicationProcessorProcessedEvent(LibertyServer server, String appName) {
+        String s = server.waitForStringInTraceUsingMark("Application Processor: Processing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+        assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
+    }
+
+    /**
+     * Wait for the message stating the app has been processed by the application processor removing.
+     *
+     * @param server - Liberty server
+     * @throws Exception
+     */
+    public static void waitForApplicationProcessorRemovedEvent(LibertyServer server, String appName) {
+        String s = server.waitForStringInTraceUsingMark("Application Processor: Removing application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+        assertNotNull("FAIL: Application processor didn't successfully finish removing the app " + appName, s);
     }
 
     public static void waitForApplicationAdded(LibertyServer server, String appName) {
@@ -112,8 +139,11 @@ public class OpenAPITestUtil {
             webApp = config.getApplications().removeById(appName);
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(null);
-            assertNotNull("FAIL: App didn't report is has been removed.",
-                          server.waitForStringInLogUsingMark("CWWKT0017I.*" + appName));
+            waitForApplicationProcessorRemovedEvent(server, appName);
+            if (!webApp.getType().equals("ear")) {
+                assertNotNull("FAIL: App didn't report is has been removed.",
+                              server.waitForStringInLogUsingMark("CWWKT0017I.*" + appName));
+            }
             assertNotNull("FAIL: App didn't report is has been stopped.",
                           server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
         } catch (Exception e) {
@@ -160,5 +190,90 @@ public class OpenAPITestUtil {
     public static JsonNode readYamlTree(String contents) {
         org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml(new SafeConstructor());
         return new ObjectMapper().convertValue(yaml.load(contents), JsonNode.class);
+    }
+
+    /**
+     * Removes all the applications from server.xml
+     *
+     * @param server
+     * @throws Exception
+     */
+    public static void removeAllApplication(LibertyServer server) throws Exception {
+        server.getServerConfiguration().getApplications().stream().forEach(app -> removeApplication(server, app.getName()));
+    }
+
+    public static void checkServer(JsonNode root, String... expectedUrls) {
+        JsonNode serversNode = root.get("servers");
+        assertNotNull(serversNode);
+        assertTrue(serversNode.isArray());
+        ArrayNode servers = (ArrayNode) serversNode;
+
+        List<String> urls = Arrays.asList(expectedUrls);
+        servers.findValues("url").forEach(url -> assertTrue("FAIL: Unexpected server URL " + url, urls.contains(url.asText())));
+        assertEquals("FAIL: Found incorrect number of server objects.", urls.size(), servers.size());
+    }
+
+    public static void checkPaths(JsonNode root, int expectedCount, String... containedPaths) {
+        JsonNode pathsNode = root.get("paths");
+        assertNotNull(pathsNode);
+        assertTrue(pathsNode.isObject());
+        ObjectNode paths = (ObjectNode) pathsNode;
+
+        assertEquals("FAIL: Found incorrect number of server objects.", expectedCount, paths.size());
+        List<String> expected = Arrays.asList(containedPaths);
+        expected.stream().forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path, paths.get(path)));
+    }
+
+    /**
+     * Sets the http and https ports on the server configuration object. Note: After this method is called, you should also call
+     * <code>server.updateServerConfiguration(config);</code> for the configuration to take effect.
+     *
+     * @param config
+     * @param httpPort
+     * @param httpsPort
+     * @throws Exception
+     *
+     */
+    public static void changeServerPorts(LibertyServer server, int httpPort, int httpsPort) throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpEndpoint http = config.getHttpEndpoints().getById("defaultHttpEndpoint");
+        if (http == null) {
+            http = new HttpEndpoint();
+            http.setId("defaultHttpEndpoint");
+            http.setHttpPort(server.getHttpDefaultPort());
+            http.setHttpPort(server.getHttpDefaultSecurePort());
+            config.getHttpEndpoints().add(http);
+        }
+
+        if (http.getHttpPort() == httpPort && http.getHttpsPort() == httpsPort) {
+            return;
+        }
+
+        http.setHttpPort(httpPort);
+        http.setHttpsPort(httpsPort);
+
+        // Set the mark to the current end of log
+        server.setMarkToEndOfLog();
+
+        // Save the config and wait for message that was a result of the config change
+        server.updateServerConfiguration(config);
+        assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
+        server.resetLogMarks();
+    }
+
+    public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort) {
+        return getServerURLs(server, httpPort, httpsPort, null);
+    }
+
+    public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort, String contextRoot) {
+        List<String> servers = new ArrayList<>();
+        contextRoot = contextRoot == null ? "" : contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
+        if (httpPort != -1) {
+            servers.add("http://" + server.getHostname() + ":" + httpPort + contextRoot);
+        }
+        if (httpsPort != -1) {
+            servers.add("https://" + server.getHostname() + ":" + httpsPort + contextRoot);
+        }
+        return servers.toArray(new String[0]);
     }
 }

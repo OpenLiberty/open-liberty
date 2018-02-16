@@ -94,12 +94,18 @@ public class ApplicationProcessor {
     }
 
     public void addApplication(ApplicationInfo appInfo) {
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Application Processor: Adding application started: appInfo=" + appInfo);
+        }
         synchronized (this.document) {
             if (currentApp == null) {
                 processApplication(appInfo);
             } else {
                 applications.put(appInfo.getName(), appInfo);
             }
+        }
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Application Processor: Adding application ended: appInfo=" + appInfo);
         }
     }
 
@@ -263,13 +269,13 @@ public class ApplicationProcessor {
     @FFDCIgnore(UnableToAdaptException.class)
     private void processApplication(ApplicationInfo appInfo) {
         if (OpenAPIUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Processign application started: appInfo=" + appInfo);
+            Tr.event(tc, "Application Processor: Processing application started: appInfo=" + appInfo);
         }
         synchronized (this.document) {
 
             if (appInfo == null) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Processign application ended: appInfo=null");
+                    Tr.event(tc, "Application Processor: Processing application ended: appInfo=null");
                 }
                 return;
             }
@@ -277,7 +283,7 @@ public class ApplicationProcessor {
             Container appContainer = appInfo.getContainer();
             if (appContainer == null) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Processign application ended: appInfo=" + appInfo + ", appContainer=null");
+                    Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo + ", appContainer=null");
                 }
                 return;
             }
@@ -315,7 +321,7 @@ public class ApplicationProcessor {
 
             if (moduleInfo == null) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Processign application ended: moduleInfo=null");
+                    Tr.event(tc, "Application Processor: Processing application ended: moduleInfo=null");
                 }
                 return;
             }
@@ -330,7 +336,7 @@ public class ApplicationProcessor {
             }
 
             if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Processign application ended: appInfo=" + appInfo);
+                Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo);
             }
         }
     }
@@ -423,7 +429,9 @@ public class ApplicationProcessor {
     }
 
     public void removeApplication(ApplicationInfo appInfo) {
-
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Application Processor: Removing application started: appInfo=" + appInfo);
+        }
         synchronized (this.document) {
             if (currentApp != null && currentApp.getName().equals(appInfo.getName())) {
                 currentApp = null;
@@ -442,6 +450,9 @@ public class ApplicationProcessor {
             } else {
                 applications.remove(appInfo.getName());
             }
+        }
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + appInfo);
         }
     }
 
