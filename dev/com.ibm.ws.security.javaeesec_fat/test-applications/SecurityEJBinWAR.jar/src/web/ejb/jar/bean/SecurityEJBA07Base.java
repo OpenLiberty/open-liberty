@@ -19,6 +19,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.security.enterprise.SecurityContext;
 
 /**
  * Bean superclass implementation class for Enterprise Bean
@@ -120,6 +121,17 @@ public class SecurityEJBA07Base extends SecurityEJBBeanBase {
     public String runAsSpecified() {
         String result = null;
         return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
+     */
+    @Override
+    protected SecurityContext getSecurityContext() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

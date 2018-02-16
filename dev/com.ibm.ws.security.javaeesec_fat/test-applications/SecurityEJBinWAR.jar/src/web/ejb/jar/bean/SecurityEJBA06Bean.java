@@ -18,6 +18,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.security.enterprise.SecurityContext;
 
 /**
  * Bean implementation class for Enterprise Bean
@@ -152,6 +153,17 @@ public class SecurityEJBA06Bean extends SecurityEJBBeanBase implements SecurityE
     @PermitAll
     public String runAsSpecified() {
         return authenticate("runAsSpecified");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
+     */
+    @Override
+    protected SecurityContext getSecurityContext() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

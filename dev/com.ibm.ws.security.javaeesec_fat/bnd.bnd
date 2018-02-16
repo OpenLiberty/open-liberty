@@ -38,9 +38,9 @@ src: \
 	test-applications/CustomPasswordHashBean.jar/src,\
 	test-applications/DatabaseAnnotatedCustomHash.war/src,\
 	test-applications/DatabaseAnnotatedCustomHashBean.war/src,\
-	test-applications/securityContextEJBInWar.war/src,\
-	test-applications/EjbinWarServletLdapDb.war/src,\
-	test-applications/EjbinWarServletLdap.war/src,\
+ 	test-applications/securityContextEJBInWar.war/src,\
+ 	test-applications/EjbinWarServletLdapDb.war/src,\
+ 	test-applications/EjbinWarServletLdap.war/src,\
 	test-applications/EjbinWarServletISLdapDb.war/src,\
 	test-applications/EjbinWarServletISLdap.war/src
 

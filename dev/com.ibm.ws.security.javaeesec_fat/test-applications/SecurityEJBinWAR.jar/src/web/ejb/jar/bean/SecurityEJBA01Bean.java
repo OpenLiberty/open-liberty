@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBAccessException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.security.enterprise.SecurityContext;
 
 /**
  * Bean implementation class for Enterprise Bean
@@ -191,6 +192,17 @@ public class SecurityEJBA01Bean extends SecurityEJBBeanBase implements SecurityE
         } catch (EJBAccessException e) {
             return e.toString();
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
+     */
+    @Override
+    protected SecurityContext getSecurityContext() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

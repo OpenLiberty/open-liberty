@@ -23,6 +23,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.security.enterprise.SecurityContext;
 
 import com.ibm.websphere.security.auth.callback.WSCallbackHandlerImpl;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
@@ -228,6 +229,17 @@ public class SecurityEJBA08Bean extends SecurityEJBBeanBase implements SecurityE
     @PermitAll
     public String runAsSpecified() {
         return authenticate("runAsSpecified");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
+     */
+    @Override
+    protected SecurityContext getSecurityContext() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
