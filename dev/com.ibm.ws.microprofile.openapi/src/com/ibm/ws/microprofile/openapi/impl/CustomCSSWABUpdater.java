@@ -44,13 +44,13 @@ public class CustomCSSWABUpdater {
             filesToUpdate.put(PATH_CSS_CUSTOM_HEADER, PATH_CSS_DEFAULT_HEADER);
             //Update OpenAPI UI bundles
             OpenAPIUIBundlesUpdater.updateResources(filesToUpdate, true);
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "Updated the OpenAPI UI bundles with the default CSS file");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Updated the OpenAPI UI bundles with the default CSS file");
             }
         } catch (Exception e) {
             //Restoring default values shouldn't fail.
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "Exception restoring default CSS headers in WAB", e.getClass().getName(), e.getLocalizedMessage());
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Exception restoring default CSS headers in WAB", e.getClass().getName(), e.getLocalizedMessage());
             }
         }
     }
@@ -74,8 +74,8 @@ public class CustomCSSWABUpdater {
 
             //Update OpenAPI UI bundles
             OpenAPIUIBundlesUpdater.updateResources(filesToUpdate, false);
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "Updated the OpenAPI UI bundles with the custom CSS file " + cssUrlObj);
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Updated the OpenAPI UI bundles with the custom CSS file " + cssUrlObj);
             }
         } catch (Exception e) {
             //Issue a warning (with details of the exception) and restore default values of OpenAPI UI.
@@ -97,8 +97,8 @@ public class CustomCSSWABUpdater {
         }
 
         String backgroundImagePath = parentPath.concat(PATH_IMAGES_CUSTOM_LOGO);
-        if (OpenAPIUtils.isDebugEnabled(tc)) {
-            Tr.debug(tc, "backgroundImagePath=" + backgroundImagePath);
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "backgroundImagePath=" + backgroundImagePath);
         }
 
         Object image = null;
@@ -110,8 +110,8 @@ public class CustomCSSWABUpdater {
 
         validateImage(image); //ensure that the specified image is valid and exists
         filesToUpdate.put(PATH_CSS_IMAGES_CUSTOM_LOGO, image);
-        if (OpenAPIUtils.isDebugEnabled(tc)) {
-            Tr.debug(tc, "Added image to map at " + PATH_CSS_IMAGES_CUSTOM_LOGO);
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Added image to map at " + PATH_CSS_IMAGES_CUSTOM_LOGO);
         }
     }
 
@@ -120,8 +120,8 @@ public class CustomCSSWABUpdater {
             if (img instanceof File) {
                 File aFile = (File) img;
                 if (FileUtils.fileExists(aFile) && FileUtils.fileIsFile(aFile) && FileUtils.getInputStream(aFile) != null) {
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "File is valid :" + aFile.getAbsolutePath());
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "File is valid :" + aFile.getAbsolutePath());
                     }
                     return;
                 }
@@ -129,8 +129,8 @@ public class CustomCSSWABUpdater {
             } else if (img instanceof URL) {
                 URL url = (URL) img;
                 if (OpenAPIUtils.getUrlAsStream(url, "image/png") != null) {
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "Image at URL is valid :" + url);
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Image at URL is valid :" + url);
                     }
                     return;
                 }

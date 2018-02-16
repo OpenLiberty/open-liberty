@@ -149,4 +149,11 @@ public class ServerInfo {
             openapi.addServer(secureServer);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ServerInfo [host=" + this.host + ", httpPort=" + this.httpPort + ", httpsPort="
+               + this.httpsPort + ", applicationPath=" + this.applicationPath + ", isUserServer="
+               + this.isUserServer + "]";
+    }
 }
