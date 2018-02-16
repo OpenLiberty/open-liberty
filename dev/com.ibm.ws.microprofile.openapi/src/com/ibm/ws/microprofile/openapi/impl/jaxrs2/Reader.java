@@ -69,6 +69,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.ibm.ws.microprofile.openapi.impl.core.converter.ModelConverters;
 import com.ibm.ws.microprofile.openapi.impl.core.converter.ResolvedSchema;
 import com.ibm.ws.microprofile.openapi.impl.core.util.AnnotationsUtils;
+import com.ibm.ws.microprofile.openapi.impl.core.util.BaseReaderUtils;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Json;
 import com.ibm.ws.microprofile.openapi.impl.core.util.ParameterProcessor;
 import com.ibm.ws.microprofile.openapi.impl.core.util.PathUtils;
@@ -200,6 +201,17 @@ public class Reader {
         List<org.eclipse.microprofile.openapi.annotations.callbacks.Callback> apiCallbacks = ReflectionUtils.getRepeatableAnnotations(cls,
                                                                                                                                       org.eclipse.microprofile.openapi.annotations.callbacks.Callback.class);
 
+        List<Extension> classExtensions = ReflectionUtils.getRepeatableAnnotations(cls, Extension.class);
+
+        if (classExtensions != null && classExtensions.size() > 0) {
+            Map<String, Object> ext = BaseReaderUtils.parseExtensions(classExtensions.toArray(new org.eclipse.microprofile.openapi.annotations.extensions.Extension[classExtensions.size()]));
+            if (ext != null && ext.size() > 0) {
+                ext.forEach((k, v) -> {
+                    openAPI.addExtension(k, v);
+                });
+            }
+        }
+        
         ExternalDocumentation apiExternalDocs = ReflectionUtils.getAnnotation(cls, ExternalDocumentation.class);
         org.eclipse.microprofile.openapi.annotations.tags.Tag[] apiTags = ReflectionUtils.getRepeatableAnnotationsArray(cls,
                                                                                                                         org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
@@ -789,9 +801,17 @@ public class Reader {
                                                                                                                                          org.eclipse.microprofile.openapi.annotations.parameters.Parameter.class);
         List<org.eclipse.microprofile.openapi.annotations.responses.APIResponse> apiResponses = ReflectionUtils.getRepeatableAnnotations(method,
                                                                                                                                          org.eclipse.microprofile.openapi.annotations.responses.APIResponse.class);
-        // TODO extensions
-        List<Extension> apiExtensions = ReflectionUtils.getRepeatableAnnotations(method, Extension.class);
+        List<Extension> operationExtensions = ReflectionUtils.getRepeatableAnnotations(method, Extension.class);
         ExternalDocumentation apiExternalDocumentation = ReflectionUtils.getAnnotation(method, ExternalDocumentation.class);
+
+        if (operationExtensions != null && operationExtensions.size() > 0) {
+            Map<String, Object> ext = BaseReaderUtils.parseExtensions(operationExtensions.toArray(new org.eclipse.microprofile.openapi.annotations.extensions.Extension[operationExtensions.size()]));
+            if (ext != null && ext.size() > 0) {
+                ext.forEach((k, v) -> {
+                    operation.addExtension(k, v);
+                });
+            }
+        }
 
         // callbacks
         Map<String, Callback> callbacks = new LinkedHashMap<>();

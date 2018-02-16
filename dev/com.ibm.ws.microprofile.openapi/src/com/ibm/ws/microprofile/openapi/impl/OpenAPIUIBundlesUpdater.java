@@ -74,16 +74,16 @@ public class OpenAPIUIBundlesUpdater {
         InputStream updatedBundleStream = null;
         while (itr.hasNext()) {
             Bundle openAPIUIBundle = itr.next();
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "About to process bundle : " + getBundleDescription(openAPIUIBundle));
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "About to process bundle : " + getBundleDescription(openAPIUIBundle));
             }
 
             if (isRestoreDefaults) {
                 String customHeader = getResource(openAPIUIBundle, CustomCSSWABUpdater.PATH_CSS_CUSTOM_HEADER);
                 String defaultHeader = getResource(openAPIUIBundle, CustomCSSWABUpdater.PATH_CSS_DEFAULT_HEADER);
                 if (defaultHeader != null && defaultHeader.equals(customHeader)) {
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "Not updating the bundle as it is already in default state : " + getBundleDescription(openAPIUIBundle));
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Not updating the bundle as it is already in default state : " + getBundleDescription(openAPIUIBundle));
                     }
                     continue;
                 }
@@ -96,14 +96,14 @@ public class OpenAPIUIBundlesUpdater {
                     continue;
                 }
                 openAPIUIBundle.update(updatedBundleStream);
-                if (OpenAPIUtils.isDebugEnabled(tc)) {
-                    Tr.debug(tc, "Updated bundle : " + getBundleDescription(openAPIUIBundle));
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Updated bundle : " + getBundleDescription(openAPIUIBundle));
                 }
             } finally {
                 FileUtils.tryToClose(updatedBundleStream);
                 if (openAPIUIBundle.getState() != Bundle.ACTIVE && openAPIUIBundle.getState() != Bundle.STARTING) {
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "Bundle is not active: " + getBundleDescription(openAPIUIBundle));
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Bundle is not active: " + getBundleDescription(openAPIUIBundle));
                     }
                     openAPIUIBundle.start();
                 }
@@ -137,15 +137,15 @@ public class OpenAPIUIBundlesUpdater {
                 String bundleName = aBundle.getSymbolicName();
                 if (openAPIUIBundleNames.contains(bundleName)) {
                     openAPIUIBundles.add(aBundle);
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "Found a OpenAPI-UI bundle: " + bundleName);
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Found a OpenAPI-UI bundle: " + bundleName);
                     }
                 }
             }
         }
 
-        if (OpenAPIUtils.isDebugEnabled(tc)) {
-            Tr.debug(tc, "Found " + openAPIUIBundles.size() + " OpenAPI-UI bundles in bundleContext=" + bundleContext);
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Found " + openAPIUIBundles.size() + " OpenAPI-UI bundles in bundleContext=" + bundleContext);
         }
         return openAPIUIBundles;
     }
@@ -239,8 +239,8 @@ public class OpenAPIUIBundlesUpdater {
                     }
                     return;
                 } else {
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "File is not valid : " + aFile.getAbsolutePath());
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "File is not valid : " + aFile.getAbsolutePath());
                     }
                 }
             } else if (resourceContents instanceof URL) {
@@ -276,14 +276,14 @@ public class OpenAPIUIBundlesUpdater {
                 }
                 br.close();
             } catch (Exception e) { // shouldn't happen
-                if (OpenAPIUtils.isDebugEnabled(tc)) {
-                    Tr.debug(tc, "Exception trying to read resource at " + resourcePath + " from bundle " + bundleShortDescription);
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Exception trying to read resource at " + resourcePath + " from bundle " + bundleShortDescription);
                 }
             }
 
         } else {
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "Unexpected error getting resource from WAB bundle.");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Unexpected error getting resource from WAB bundle.");
             }
         }
         return responseString.toString();

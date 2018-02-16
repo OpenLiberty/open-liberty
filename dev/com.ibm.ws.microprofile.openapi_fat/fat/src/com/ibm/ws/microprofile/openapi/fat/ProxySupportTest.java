@@ -42,9 +42,9 @@ public class ProxySupportTest extends FATServletClient {
     private static final Class<?> c = ProxySupportTest.class;
     private static final String REFERER = "Referer";
 
-    private static final String APP_NAME_1 = "pure-jaxrs";
+    private static final String APP_NAME_1 = "appWithStaticDoc";
 
-    @Server("ApplicationProcessorServer")
+    @Server("ProxySupportServer")
     public static LibertyServer server;
 
     @Rule
@@ -54,7 +54,7 @@ public class ProxySupportTest extends FATServletClient {
     public static void setUpTest() throws Exception {
         HttpUtils.trustAllCertificates();
 
-        ShrinkHelper.defaultApp(server, APP_NAME_1, "app.web.pure.jaxrs");
+        ShrinkHelper.defaultApp(server, APP_NAME_1);
 
         LibertyServer.setValidateApps(false);
         server.startServer(c.getSimpleName() + ".log");
@@ -76,7 +76,7 @@ public class ProxySupportTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1650E");
+        server.stopServer();
     }
 
     /**

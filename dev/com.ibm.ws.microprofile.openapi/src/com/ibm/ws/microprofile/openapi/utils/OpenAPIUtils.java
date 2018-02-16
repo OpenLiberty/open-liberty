@@ -150,8 +150,8 @@ public class OpenAPIUtils {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             return connection.getInputStream();
         } else {
-            if (isDebugEnabled(tc)) {
-                Tr.debug(tc, "Did not find resource at " + url + ".  ResponseCode: " + responseCode);
+            if (isEventEnabled(tc)) {
+                Tr.event(tc, "Did not find resource at " + url + ".  ResponseCode: " + responseCode);
             }
         }
         return null;

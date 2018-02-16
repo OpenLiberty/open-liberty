@@ -76,6 +76,10 @@ public class ApplicationProcessorTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME_11, "app.web.complete.flow.*");
 
         LibertyServer.setValidateApps(false);
+
+        // Change server ports to the default ones
+        OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+
         server.startServer(c.getSimpleName() + ".log");
     }
 
@@ -126,7 +130,7 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_2);
         String app2Doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         openapiNode = OpenAPITestUtil.readYamlTree(app2Doc);
-        OpenAPITestUtil.checkServer(openapiNode, "https:///MySimpleAPI/1.0.0");
+        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), APP_NAME_2));
         OpenAPITestUtil.checkPaths(openapiNode, 1);
 
         // Remove the appWithStaticDoc app and ensure that the default empty OpenAPI documentation is created

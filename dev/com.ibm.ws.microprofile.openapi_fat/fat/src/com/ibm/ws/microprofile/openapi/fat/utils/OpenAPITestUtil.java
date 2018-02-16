@@ -224,6 +224,20 @@ public class OpenAPITestUtil {
         expected.stream().forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path, paths.get(path)));
     }
 
+    public static void checkInfo(JsonNode root, String defaultTitle, String defaultVersion) {
+        JsonNode infoNode = root.get("info");
+        assertNotNull(infoNode);
+
+        assertNotNull("Title is not specified to the default value", infoNode.get("title"));
+        assertNotNull("Version is not specified to the default value", infoNode.get("version"));
+        
+        String title = infoNode.get("title").textValue();
+        String version = infoNode.get("version").textValue();
+
+        assertTrue("Incorrect default value for title", title.equals(defaultTitle));
+        assertTrue("Incorrect default value for version", version.equals(defaultVersion));
+    }
+
     /**
      * Sets the http and https ports on the server configuration object. Note: After this method is called, you should also call
      * <code>server.updateServerConfiguration(config);</code> for the configuration to take effect.
@@ -252,13 +266,17 @@ public class OpenAPITestUtil {
         http.setHttpPort(httpPort);
         http.setHttpsPort(httpsPort);
 
-        // Set the mark to the current end of log
-        server.setMarkToEndOfLog();
+        if (server.isStarted()) {
+            // Set the mark to the current end of log
+            server.setMarkToEndOfLog();
 
-        // Save the config and wait for message that was a result of the config change
-        server.updateServerConfiguration(config);
-        assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
-        server.resetLogMarks();
+            // Save the config and wait for message that was a result of the config change
+            server.updateServerConfiguration(config);
+            assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
+            server.resetLogMarks();
+        } else {
+            server.updateServerConfiguration(config);
+        }
     }
 
     public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort) {
