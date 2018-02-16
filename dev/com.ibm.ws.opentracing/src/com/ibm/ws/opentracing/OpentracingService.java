@@ -36,7 +36,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.opentracing.filters.SpanFilter;
 import com.ibm.ws.opentracing.filters.SpanFilterType;
 
-import io.opentracing.Span;
+import io.opentracing.BaseSpan;
 import io.opentracing.tag.Tags;
 
 /**
@@ -293,7 +293,7 @@ public class OpentracingService {
      * @param span The span to add the information to.
      * @param exception Optional exception details.
      */
-    public static void addSpanErrorInfo(Span span, Throwable exception) {
+    public static void addSpanErrorInfo(BaseSpan<?> span, Throwable exception) {
         String methodName = "addSpanErrorInfo";
 
         span.setTag(Tags.ERROR.getKey(), true);

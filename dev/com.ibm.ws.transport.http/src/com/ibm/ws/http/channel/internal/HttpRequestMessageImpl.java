@@ -319,10 +319,6 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
 
         //Authority is not required to be present, check if it is.
-        if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
-            this.sUrlHost = pseudoHeaders.get(HpackConstants.AUTHORITY);
-            this.sHdrHost = pseudoHeaders.get(HpackConstants.AUTHORITY);
-        }
         if (pseudoHeaders.containsKey(HpackConstants.METHOD)) {
             this.setMethod(pseudoHeaders.get(HpackConstants.METHOD));
         }
@@ -331,6 +327,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
         if (pseudoHeaders.containsKey(HpackConstants.SCHEME)) {
             this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
+        }
+        if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
+            parseAuthority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes(), 0);
         }
 
     }
@@ -582,6 +581,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             firstLine = putBytes(encodedHeader, firstLine);
             //Encode Authority
             if (this.sUrlHost != null) {
+                // TODO: should the iUrlPort be added here?
                 encodedHeader = H2Headers.encodeHeader(table, HpackConstants.AUTHORITY, this.sUrlHost, indexType);
                 firstLine = putBytes(encodedHeader, firstLine);
             }

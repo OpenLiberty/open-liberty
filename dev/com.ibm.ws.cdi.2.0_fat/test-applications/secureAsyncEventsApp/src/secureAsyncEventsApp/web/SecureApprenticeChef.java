@@ -33,7 +33,8 @@ public class SecureApprenticeChef {
         CompletionStage<RecipeArrival> stage = recipe.fireAsync(newRecipe);
         CompletableFuture<RecipeArrival> future = stage.toCompletableFuture();
 
-        RecipeArrival futureRecipe = future.get(3000, TimeUnit.MILLISECONDS);
+        // Set a (very) large timeout to be sure that something is wrong as opposed to slow
+        RecipeArrival futureRecipe = future.get(60000, TimeUnit.MILLISECONDS);
         return futureRecipe;
     }
 

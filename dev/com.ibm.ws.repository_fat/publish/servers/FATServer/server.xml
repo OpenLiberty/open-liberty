@@ -1,0 +1,51 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Lars server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+    <keyStore id="defaultKeyStore" password="{xor}PDc+MTg6Nis="/>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <basicRegistry id="defaultRegistry" realm="default">
+        <user name="admin" password="passw0rd"/>
+        <group name="Administrators">
+            <member name="admin"/>
+        </group>
+    </basicRegistry>
+    
+    <webAppSecurity singleSignonEnabled="false"/>
+    
+    <!-- TODO remove -->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
+    <webApplication id="com.ibm.ws.lars.rest" location="larsServer-memoryBackend-1.0.1.war" name="com.ibm.ws.lars.rest" contextRoot="/">
+        <application-bnd>
+            <security-role name="User">
+                <special-subject type="EVERYONE"/>
+            </security-role>
+            <security-role name="Administrator">
+                <group name="Administrators"/>
+            </security-role>
+        </application-bnd>
+    </webApplication>
+    
+    <logging traceSpecification="JCDI=all:org.jboss.weld.*=all"/>
+    
+</server>

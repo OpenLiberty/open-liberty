@@ -39,9 +39,12 @@ import org.junit.Test;
 import com.ibm.websphere.security.auth.WSSubject;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/secureasyncevents")
+@Mode(TestMode.FULL)
 public class SecureAsyncEventsServlet extends FATServlet {
     @Inject
     private MultiThreadCDIBean multiThreadCDIBean;
@@ -138,7 +141,8 @@ public class SecureAsyncEventsServlet extends FATServlet {
         CompletionStage<CakeArrival> stage = cakeEvent.fireAsync(newCake);
         CompletableFuture<CakeArrival> future = stage.toCompletableFuture();
 
-        CakeArrival futureCake = future.get(3000, TimeUnit.MILLISECONDS);
+        // Set a (very) large timeout to be sure that something is wrong as opposed to slow
+        CakeArrival futureCake = future.get(60000, TimeUnit.MILLISECONDS);
 
         List<SecureCakeReport> cakeReportList = futureCake.getCakeReports();
         SecureCakeReport cakeReport = null;
