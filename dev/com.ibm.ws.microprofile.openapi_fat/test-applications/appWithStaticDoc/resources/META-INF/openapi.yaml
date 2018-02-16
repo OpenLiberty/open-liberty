@@ -1,7 +1,4 @@
 openapi: 3.0.0
-servers:
-  - description: MySimpleAPI
-    url: https:///MySimpleAPI/1.0.0
 info:
   description: This is a simple API
   version: "1.0.0"

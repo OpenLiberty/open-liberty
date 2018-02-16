@@ -252,13 +252,17 @@ public class OpenAPITestUtil {
         http.setHttpPort(httpPort);
         http.setHttpsPort(httpsPort);
 
-        // Set the mark to the current end of log
-        server.setMarkToEndOfLog();
+        if (server.isStarted()) {
+            // Set the mark to the current end of log
+            server.setMarkToEndOfLog();
 
-        // Save the config and wait for message that was a result of the config change
-        server.updateServerConfiguration(config);
-        assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
-        server.resetLogMarks();
+            // Save the config and wait for message that was a result of the config change
+            server.updateServerConfiguration(config);
+            assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
+            server.resetLogMarks();
+        } else {
+            server.updateServerConfiguration(config);
+        }
     }
 
     public static String[] getServerURLs(LibertyServer server, int httpPort, int httpsPort) {
