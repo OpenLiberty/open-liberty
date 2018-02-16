@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config12.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -20,6 +21,8 @@ import com.ibm.ws.microprofile.config12.converter.implicit.web.ImplicitConverter
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -44,6 +47,9 @@ public class ImplicitConverterTest extends FATServletClient {
     @Server("ConverterServer")
     @TestServlet(servlet = ImplicitConverterServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()).andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @BeforeClass
     public static void setUp() throws Exception {

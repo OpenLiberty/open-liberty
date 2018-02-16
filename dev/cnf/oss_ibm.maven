@@ -86,3 +86,4 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.1-bd4
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.1-bd47e8f
 com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20180110-104032-383
 com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20180110-104402-374
+com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
