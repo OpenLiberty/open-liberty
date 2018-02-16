@@ -11,6 +11,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
+import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A class to test the OpenAPI validator. This class covers the scenario where the info and paths fields is missing from the OpenAPI model.
@@ -49,7 +52,14 @@ public class OpenAPIValidationTestThree {
     public void testPaths() throws Exception {
         assertNotNull("The OpenAPI Validator should have been triggered by the missing 'paths' field",
                       server.waitForStringInLog("Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
-//        assertNotNull("The OpenAPI Validator should have been triggered by the missing 'info' field",
-//                      server.waitForStringInLog("Message: Required \"info\" field is missing or is set to an invalid value, Location: #"));
+    }
+
+    @Test
+    public void testBlankInfo() throws Exception {
+        OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
+        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
+        String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
+        OpenAPITestUtil.checkInfo(openapiNode, "Deployed API", "1.0.0");
     }
 }

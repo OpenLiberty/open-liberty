@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.fat.utils;
 
+import com.ibm.websphere.simplicity.log.Log;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -222,6 +223,17 @@ public class OpenAPITestUtil {
         assertEquals("FAIL: Found incorrect number of server objects.", expectedCount, paths.size());
         List<String> expected = Arrays.asList(containedPaths);
         expected.stream().forEach(path -> assertNotNull("FAIL: OpenAPI document does not contain the expected path " + path, paths.get(path)));
+    }
+
+    public static void checkInfo(JsonNode root, String... requiredInfoFields) {
+        JsonNode infoNode = root.get("info");
+        assertNotNull(infoNode);
+
+        String title = infoNode.get("title").textValue();
+        String version = infoNode.get("version").textValue();
+
+        assertTrue("Incorrect default value for title", title.equals(requiredInfoFields[0]));
+        assertTrue("Incorrect default value for version", version.equals(requiredInfoFields[1]));
     }
 
     /**
