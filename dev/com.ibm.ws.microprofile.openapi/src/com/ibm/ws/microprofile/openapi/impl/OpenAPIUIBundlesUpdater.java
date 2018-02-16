@@ -137,8 +137,8 @@ public class OpenAPIUIBundlesUpdater {
                 String bundleName = aBundle.getSymbolicName();
                 if (openAPIUIBundleNames.contains(bundleName)) {
                     openAPIUIBundles.add(aBundle);
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "Found a OpenAPI-UI bundle: " + bundleName);
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Found a OpenAPI-UI bundle: " + bundleName);
                     }
                 }
             }
@@ -239,8 +239,8 @@ public class OpenAPIUIBundlesUpdater {
                     }
                     return;
                 } else {
-                    if (OpenAPIUtils.isDebugEnabled(tc)) {
-                        Tr.debug(tc, "File is not valid : " + aFile.getAbsolutePath());
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "File is not valid : " + aFile.getAbsolutePath());
                     }
                 }
             } else if (resourceContents instanceof URL) {

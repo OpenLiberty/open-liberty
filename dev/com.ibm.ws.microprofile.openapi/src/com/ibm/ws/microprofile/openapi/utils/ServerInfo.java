@@ -121,8 +121,8 @@ public class ServerInfo {
 
     public void updateOpenAPIWithServers(OpenAPI openapi) {
         if (isUserServer) {
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
             }
             return;
         }
