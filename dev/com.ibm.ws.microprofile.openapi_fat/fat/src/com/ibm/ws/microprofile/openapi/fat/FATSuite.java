@@ -32,5 +32,6 @@ import com.ibm.ws.microprofile.openapi.validation.fat.OpenAPIValidationTestTwo;
                 OpenAPIValidationTestSix.class,
                 ProxySupportTest.class,
                 EndpointAvailabilityTest.class,
+                UICustomizationTest.class
 })
 public class FATSuite {}
