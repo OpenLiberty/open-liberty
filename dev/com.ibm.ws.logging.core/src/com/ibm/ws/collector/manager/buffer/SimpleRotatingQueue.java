@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.internal.impl;
+package com.ibm.ws.collector.manager.buffer;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -151,7 +151,8 @@ public class SimpleRotatingQueue<T> implements Queue<T> {
 
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException();
+        Object[] messagesList = this.toArray(new Object[0]);
+        return (T[]) messagesList;
     }
 
     @Override

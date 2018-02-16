@@ -43,8 +43,27 @@ public class BufferManagerImpl extends BufferManager {
     private volatile static boolean EMQRemovedFlag = false;
     private static final int EARLY_MESSAGE_QUEUE_SIZE=400;
     private static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
+    private final static boolean defaultIsSoftRefEMQ = true;
 
+    /**
+     * Constructor for BufferManagerImpl
+     * This constructor defaults to use soft references for the early message queue
+     * 
+     * @param capacity the capacity of the ring buffer that will be used to service asyncrhonous handlers
+     * @param sourceId sourceId source ID of the source that this buffer will service
+     */
     public BufferManagerImpl(int capacity, String sourceId) {
+        this(capacity, sourceId, defaultIsSoftRefEMQ);
+    }
+
+    /**
+     * Constructor for BufferManagerImpl
+     * 
+     * @param capacity the capacity of the ring buffer that will be used to service asyncrhonous handlers
+     * @param sourceId source ID of the source that this buffer will service
+     * @param isSoftRefEMQ true to construct an early message queue with soft references, false for hard references
+     */
+	public BufferManagerImpl(int capacity, String sourceId, boolean isSoftRefEMQ) {
         super();
         RERWLOCK.writeLock().lock();
         try {
@@ -52,13 +71,18 @@ public class BufferManagerImpl extends BufferManager {
             ringBuffer=null;
             this.sourceId = sourceId;
             this.capacity = capacity;
-            if(!BufferManagerImpl.EMQRemovedFlag)
-                earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+            if(!BufferManagerImpl.EMQRemovedFlag){
+            	if (isSoftRefEMQ){
+            		 earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+            	} else {
+            		earlyMessageQueue = new SimpleRotatingQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+            	}
+            }
         }finally {
             RERWLOCK.writeLock().unlock();
         }
-    }
-
+	}
+    
     @Override
     public void add(Object event) {
         if (event == null)
