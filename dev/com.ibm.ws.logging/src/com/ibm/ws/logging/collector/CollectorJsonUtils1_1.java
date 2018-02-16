@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.data.Pair;
 
@@ -297,7 +298,9 @@ public class CollectorJsonUtils1_1 {
         StringBuilder sb = new StringBuilder();
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
+        ArrayList<KeyValuePair> extensions = null;
         KeyValuePair kvp = null;
+        KeyValuePairList kvpl = null;
         String key = null;
         String value = null;
 
@@ -341,6 +344,23 @@ public class CollectorJsonUtils1_1 {
 
                     isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
 
+                }
+            } else if (p instanceof KeyValuePairList) {
+                kvpl = (KeyValuePairList) p;
+                if (kvpl.getName().equals(LogFieldConstants.KVPL_NAME)) {
+                    extensions = kvpl.getKeyValuePairs();
+                    boolean isExtQuoteless = false;
+                    for (KeyValuePair k : extensions) {
+                        String extKey = k.getKey();
+                        String extValue = k.getValue();
+                        // Checking the value of the extension KeyValuePair to make sure the suffix is correct
+                        boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(k);
+                        if (isValidExt) {
+                            isExtQuoteless = CollectorJsonHelpers.checkIfExtIsQuoteless(extKey);
+                            extKey = LogFieldConstants.EXT_PREFIX + extKey;
+                            isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, isFirstField, isExtQuoteless);
+                        }
+                    }
                 }
             }
         }

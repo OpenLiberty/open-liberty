@@ -25,6 +25,7 @@ import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
@@ -169,7 +170,7 @@ public class LogSource implements Source, WsLogHandler {
             genData.addPair("component", wsLogRecord.getComponent());
         }
 
-        KeyValuePairList extensions = new KeyValuePairList();
+        KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.KVPL_NAME);
         Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
