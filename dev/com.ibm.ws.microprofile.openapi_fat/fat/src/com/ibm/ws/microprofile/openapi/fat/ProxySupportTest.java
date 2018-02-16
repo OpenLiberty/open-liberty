@@ -44,7 +44,7 @@ public class ProxySupportTest extends FATServletClient {
 
     private static final String APP_NAME_1 = "pure-jaxrs";
 
-    @Server("FATServer")
+    @Server("ApplicationProcessorServer")
     public static LibertyServer server;
 
     @Rule

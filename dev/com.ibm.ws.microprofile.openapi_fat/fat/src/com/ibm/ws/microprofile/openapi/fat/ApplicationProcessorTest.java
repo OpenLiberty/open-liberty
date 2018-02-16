@@ -32,8 +32,13 @@ import componenttest.topology.utils.HttpUtils;
 import test.common.TestLogger;
 
 /**
- * Tests to ensure MP OpenAPI annotations in a single app deployed on a server
- * are read and an Open API documentation is returned.
+ * Test to ensure exercise Application Processor. Here's summary of all the scnearios being tested:
+ * - Deploy a single app and ensure it's documentation shows up in /openapi
+ * - Deploy two apps and ensure one app's documentation shows up in /openapi
+ * - Remove the app that was picked from the above scenario and ensure that the other app's documentation now shows up in /openapi
+ * - Remove all apps and ensure no documentation (for any endpoint) is shown in /openapi
+ * - Scenarios involving context root, host/port, servers
+ * - Make a pure JAX-RS app with the ApplicationPath annotation and ensure that the annotations are scanned and a document is generated
  */
 @RunWith(FATRunner.class)
 @SuppressWarnings("restriction")
@@ -50,7 +55,7 @@ public class ApplicationProcessorTest extends FATServletClient {
     private static final String APP_NAME_9 = "staticDocWithContextRootInPath";
     private static final String APP_NAME_10 = "pure-jaxrs";
 
-    @Server("FATServer")
+    @Server("ApplicationProcessorServer")
     public static LibertyServer server;
 
     @Rule
