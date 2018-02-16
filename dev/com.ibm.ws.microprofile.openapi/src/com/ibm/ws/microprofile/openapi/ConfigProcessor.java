@@ -88,12 +88,19 @@ public class ConfigProcessor {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("{\n");
+        builder.append("ConfigProcessor : {\n");
         builder.append(OASConfig.MODEL_READER + "=" + modelReaderClassName + "\n");
         builder.append(OASConfig.FILTER + "=" + openAPIFilterClassName + "\n");
         builder.append(OASConfig.SCAN_DISABLE + "=" + scanDisabled + "\n");
         builder.append(VALIDATION + "=" + validation + "\n");
         builder.append(FILE_POLLING_INTERVAL + "=" + pollingInterval + "\n");
+        builder.append(OASConfig.SCAN_CLASSES + "=" + classesToScan + "\n");
+        builder.append(OASConfig.SCAN_PACKAGES + "=" + packagesToScan + "\n");
+        builder.append(OASConfig.SCAN_EXCLUDE_CLASSES + "=" + classesToExclude + "\n");
+        builder.append(OASConfig.SCAN_EXCLUDE_PACKAGES + "=" + packagesToExclude + "\n");
+        builder.append(OASConfig.SERVERS + "=" + servers + "\n");
+        builder.append(OASConfig.SERVERS_PATH_PREFIX + "=" + pathsServers + "\n");
+        builder.append(OASConfig.SERVERS_OPERATION_PREFIX + "=" + operationsServers + "\n");
         builder.append("}\n");
         return builder.toString();
     }

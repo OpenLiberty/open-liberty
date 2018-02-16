@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.openapi.OASConfig;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -116,6 +117,9 @@ public final class CustomCSSProcessor implements FileMonitor {
 
     private synchronized void activateFileMonitor(ComponentContext cc) {
         final int pollingInterval = new ConfigProcessor(CustomCSSProcessor.class.getClassLoader()).getFilePollingInterval();
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(this, tc, OASConfig.EXTENSIONS_PREFIX + "liberty.file.polling.interval=" + pollingInterval);
+        }
         if (pollingInterval > 0) {
             final BundleContext bundleContext = cc.getBundleContext();
             final Dictionary<String, Object> props = new Hashtable<String, Object>();
@@ -187,8 +191,8 @@ public final class CustomCSSProcessor implements FileMonitor {
                     Tr.warning(tc, "CSS_NOT_PROCESSED", uri, se.getClass().getName(), se.getMessage());
                 }
             } else {
-                if (OpenAPIUtils.isDebugEnabled(tc)) {
-                    Tr.debug(this, tc, "Restore to default CSS");
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Restore to default CSS");
                 }
                 cssUpdates.add(new CSSUpdate());
                 cssProcessed = true;
@@ -200,8 +204,8 @@ public final class CustomCSSProcessor implements FileMonitor {
         }
 
         if (!cssProcessed) {
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(this, tc, "CSS was not processed - error occurred. So restore to default.");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "CSS was not processed - error occurred. So restore to default.");
             }
             cssUpdates.add(new CSSUpdate());
         }

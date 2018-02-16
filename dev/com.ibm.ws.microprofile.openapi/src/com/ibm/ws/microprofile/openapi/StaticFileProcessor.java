@@ -42,6 +42,9 @@ public class StaticFileProcessor {
         }
 
         if (openAPIFileEntry == null) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "No static file was found");
+            }
             return null;
         }
 
@@ -54,7 +57,6 @@ public class StaticFileProcessor {
             result = IOUtils.toString(is, "UTF-8");
         } catch (IOException e) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
-
                 Tr.event(tc, "Unable to read openapi file into a string");
             }
         } finally {
@@ -70,6 +72,7 @@ public class StaticFileProcessor {
         return result;
     }
 
+    @FFDCIgnore(UnableToAdaptException.class)
     public static InputStream entryToInputStream(Entry entry) {
         if (entry == null)
             return null;

@@ -55,8 +55,8 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
             if (key.contains("{$")) {
                 //Path within a Callback can contain variables (e.g. {$request.query.callbackUrl}/data ) which shouldn't be validated since they are not path params
-                if (OpenAPIUtils.isDebugEnabled(tc)) {
-                    Tr.debug(tc, "Path contains variables. Skip validation: " + key);
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Path contains variables. Skip validation: " + key);
                 }
                 return;
             }

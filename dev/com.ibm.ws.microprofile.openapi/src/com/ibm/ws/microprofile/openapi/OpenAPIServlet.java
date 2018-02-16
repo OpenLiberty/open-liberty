@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.ApplicationProcessor.DocType;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 public class OpenAPIServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -61,6 +62,9 @@ public class OpenAPIServlet extends HttpServlet {
                     Writer writer = response.getWriter();
                     writer.write(document);
                 } else {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "Null document (json). Return 500.");
+                    }
                     response.setStatus(500);
                 }
             } else {
@@ -69,10 +73,16 @@ public class OpenAPIServlet extends HttpServlet {
                     Writer writer = response.getWriter();
                     writer.write(document);
                 } else {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "Null document (yaml). Return 500.");
+                    }
                     response.setStatus(500);
                 }
             }
         } else {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Invalid method. Return 405.");
+            }
             response.setStatus(405);
         }
 
