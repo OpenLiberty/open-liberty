@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,10 +38,11 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
  * <p>See {@link ClassSource_MappedSimple.SimpleClassProvider}.</p>
  */
 public class ClassSourceImpl_MappedSimple
-                extends ClassSourceImpl
-                implements ClassSource, ClassSource_MappedSimple {
+    extends ClassSourceImpl
+    implements ClassSource_MappedSimple {
 
     /** <p>Cache of the class name for logging.</p> */
+    @SuppressWarnings("hiding")
     public static final String CLASS_NAME = ClassSourceImpl_MappedSimple.class.getName();
 
     /** <p>Trace component for simple class sources.</p> */
@@ -63,6 +64,7 @@ public class ClassSourceImpl_MappedSimple
      * @throws ClassSource_Exception Thrown in case of a failure constructing
      *             the new simple class source. Currently unused.
      */
+    @Trivial
     public ClassSourceImpl_MappedSimple(ClassSourceImpl_Factory factory,
                                         Util_InternMap internMap,
                                         String name,
@@ -72,9 +74,6 @@ public class ClassSourceImpl_MappedSimple
         super(factory, internMap, name, provider.getName());
 
         this.provider = provider;
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "<init> [ {0} ]", this.getHashText());
-        }
     }
 
     // Base state: A simple class source wraps a simple class provider.
@@ -90,6 +89,7 @@ public class ClassSourceImpl_MappedSimple
      * @return The simple class provider of this simple class source.
      */
     @Override
+    @Trivial
     public ClassSource_MappedSimple.SimpleClassProvider getProvider() {
         return provider;
     }
@@ -137,7 +137,7 @@ public class ClassSourceImpl_MappedSimple
     @Trivial
     public boolean isProviderResource(String resourceName) {
         Collection<String> useResourceNames = getResourceNames();
-        if (useResourceNames.contains(resourceName)) {
+        if ( useResourceNames.contains(resourceName) ) {
             return true;
         }
 
@@ -150,9 +150,9 @@ public class ClassSourceImpl_MappedSimple
         // which should never be empty.  However, let's double check,
         // and avoid any possible IndexOutOfBounds exception.
 
-        if (resourceName.length() == 0) {
+        if ( resourceName.length() == 0)  {
             return false;
-        } else if (resourceName.charAt(0) == '/') {
+        } else if ( resourceName.charAt(0) == '/' ) {
             return false;
         }
 
@@ -174,7 +174,7 @@ public class ClassSourceImpl_MappedSimple
     @Trivial
     public void open() throws ClassSource_Exception {
         String methodName = "open";
-        if (tc.isDebugEnabled()) {
+        if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] [ {1} ] ENTER/RETURN", getHashText(), methodName));
         }
     }
@@ -189,7 +189,7 @@ public class ClassSourceImpl_MappedSimple
     @Trivial
     public void close() throws ClassSource_Exception {
         String methodName = "close";
-        if (tc.isDebugEnabled()) {
+        if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] [ {1} ] ENTER/RETURN", getHashText(), methodName));
         }
     }
@@ -219,18 +219,29 @@ public class ClassSourceImpl_MappedSimple
      *            to place the scan results.
      */
     @Override
-    public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
-        String methodName = "scanClasses";
+    protected void processFromScratch(
+        ClassSource_Streamer streamer,
+        Set<String> i_seedClassNames,
+        ScanPolicy scanPolicy) {
+
+        String methodName = "processFromScratch";
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, methodName, MessageFormat.format("[ {0} ] ENTER", getHashText()));
         }
+
+        // ++ JANDEX
+        //
+        // A simple class source must be provided with a JANDEX index, if one is to be
+        // used.
+        //
+        // ++ JANDEX
 
         startTimings();
 
         int initialClasses = i_seedClassNames.size();
 
-        for (String nextResourceName : provider.getResourceNames()) {
-            if (isDirectoryResource(nextResourceName)) {
+        for ( String nextResourceName : provider.getResourceNames() ) {
+            if ( isDirectoryResource(nextResourceName) ) {
                 incrementResourceExclusionCount();
 
                 // Mark all directories as non-root containers;
@@ -240,7 +251,7 @@ public class ClassSourceImpl_MappedSimple
                 markResult(ClassSource_ScanCounts.ResultField.NON_ROOT_CONTAINER);
 
             } else {
-                if (!isClassResource(nextResourceName)) {
+                if ( !isClassResource(nextResourceName) ) {
                     incrementResourceExclusionCount();
 
                     markResult(ClassSource_ScanCounts.ResultField.NON_CLASS);
@@ -263,7 +274,7 @@ public class ClassSourceImpl_MappedSimple
                     String i_nextClassName = internClassName(nextClassName);
                     boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
 
-                    if (!didAdd) {
+                    if ( !didAdd ) {
                         incrementClassExclusionCount();
 
                         markResult(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
@@ -289,7 +300,7 @@ public class ClassSourceImpl_MappedSimple
                             Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
                         }
 
-                        if (didProcess) {
+                        if ( didProcess ) {
                             markResult(ClassSource_ScanCounts.ResultField.PROCESSED_CLASS);
 
                         } else {
@@ -309,7 +320,7 @@ public class ClassSourceImpl_MappedSimple
 
         int finalClasses = i_seedClassNames.size();
 
-        if (tc.isDebugEnabled()) {
+        if ( tc.isDebugEnabled() ) {
             Object[] logParms = new Object[] { getHashText(), null, null };
 
             logParms[1] = Integer.valueOf(finalClasses - initialClasses);
@@ -328,7 +339,7 @@ public class ClassSourceImpl_MappedSimple
 
         endTimings();
 
-        if (tc.isEntryEnabled()) {
+        if ( tc.isEntryEnabled() ) {
             Tr.exit(tc, methodName, getHashText());
         }
     }
@@ -383,6 +394,7 @@ public class ClassSourceImpl_MappedSimple
     /**
      * <p>Set the start time, and reset the stream time to zero.</p>
      */
+    @Trivial
     protected void startTimings() {
         startTime = getTime();
 
@@ -403,6 +415,7 @@ public class ClassSourceImpl_MappedSimple
     /**
      * <p>Set the end time, and log the accumulated timing statistics.</p>
      */
+    @Trivial
     protected void endTimings() {
         endTime = getTime();
 
@@ -412,24 +425,6 @@ public class ClassSourceImpl_MappedSimple
             Tr.debug(tc, MessageFormat.format("Delta time:  [ {0} ]", Long.valueOf(endTime - startTime)));
             Tr.debug(tc, MessageFormat.format("Stream time: [ {0} ]", Long.valueOf(streamTime)));
         }
-
-        // System.out.println("Start time:  [ " + startTime + " ]");
-        // System.out.println("End time:    [ " + endTime + " ]");
-        //
-        // System.out.println("Delta time:  [ " + (endTime - startTime)+ " ]");
-        // System.out.println("Stream time: [ " + streamTime + " ]");
-    }
-
-    /**
-     * <p>Timing helper: Answer the current system time, in milliseconds.</p>
-     * 
-     * @return The current time in milliseconds.
-     * 
-     * @see System#currentTimeMillis()
-     */
-    @Trivial
-    protected long getTime() {
-        return System.currentTimeMillis();
     }
 
     //
@@ -463,24 +458,24 @@ public class ClassSourceImpl_MappedSimple
      *             to close the input stream is logged, but does not cause
      *             a class source exception to be thrown.
      */
-    protected boolean process(ClassSource_Streamer streamer, String className, String resourceName, ScanPolicy scanPolicy)
-                    throws ClassSource_Exception {
+    protected boolean process(
+        ClassSource_Streamer streamer,
+        String className, String resourceName,
+        ScanPolicy scanPolicy) throws ClassSource_Exception {
 
-        if (streamer == null) {
+        if ( streamer == null ) {
             return true;
-        }
-
-        if (!streamer.doProcess(className, scanPolicy)) {
+        } else if ( !streamer.doProcess(className, scanPolicy) ) {
             return false;
         }
 
         InputStream inputStream = openResourceStream(className, resourceName); // throws ClassSource_Exception
-        if (inputStream == null) {
+        if ( inputStream == null ) {
             return false; // Null is returned if the resource is not a resource of the mapped provider.
         }
 
         try {
-            streamer.process(getCanonicalName(), className, inputStream, scanPolicy);
+            streamer.process( getCanonicalName(), className, inputStream, scanPolicy );
             // 'process' throws ClassSourceException
         } finally {
             closeResourceStream(className, resourceName, inputStream);

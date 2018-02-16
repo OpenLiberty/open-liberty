@@ -220,7 +220,7 @@ public class AnnotationTargetsImpl_Scanner {
 
         long stopTime = System.currentTimeMillis();
         logState(); // Doesn't use 'logger': don't guard this call.
-        timeSpentInReferenceScan += (stopTime - startTime);
+        timeSpentInDeclaredScan += (stopTime - startTime);
 
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, getHashText());
