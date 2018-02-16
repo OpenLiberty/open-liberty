@@ -46,7 +46,7 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.appbnd.internal.delegation.DefaultDelegationProvider;
-import com.ibm.ws.security.authentication.JavaEESecurityService;
+import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authorization.AuthorizationTableService;
 import com.ibm.ws.security.authorization.RoleSet;
 import com.ibm.ws.security.authorization.builtin.BaseAuthorizationTableService;
@@ -76,8 +76,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class AppBndAuthorizationTableService extends BaseAuthorizationTableService implements ApplicationMetaDataListener, AuthorizationTableService, UserRegistryChangeListener {
     private static final TraceComponent tc = Tr.register(AppBndAuthorizationTableService.class);
 
-    static final String KEY_JAVA_EE_SECURITY_SERVICE = "javaEESecurityService";
-    private final AtomicServiceReference<JavaEESecurityService> javaEESecurityServiceRef = new AtomicServiceReference<JavaEESecurityService>(KEY_JAVA_EE_SECURITY_SERVICE);
+    static final String KEY_IDENTITY_STORE_HANDLER_SERVICE = "identityStoreHandlerService";
+    private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = new AtomicServiceReference<IdentityStoreHandlerService>(KEY_IDENTITY_STORE_HANDLER_SERVICE);
 
 
     private volatile DefaultDelegationProvider defaultDelegationProvider = null;
@@ -102,15 +102,15 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      */
     private final ConcurrentMap<String, AuthzInfo> resourceToAuthzInfoMap = new ConcurrentHashMap<String, AuthzInfo>(16, 0.7f, 1);
 
-    @Reference(service = JavaEESecurityService.class, name = KEY_JAVA_EE_SECURITY_SERVICE,
+    @Reference(service = IdentityStoreHandlerService.class, name = KEY_IDENTITY_STORE_HANDLER_SERVICE,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC)
-    protected void setJavaEESecurityService(ServiceReference<JavaEESecurityService> reference) {
-        javaEESecurityServiceRef.setReference(reference);
+    protected void setIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> reference) {
+        identityStoreHandlerServiceRef.setReference(reference);
     }
 
-    protected void unsetJavaEESecurityService(ServiceReference<JavaEESecurityService> reference) {
-        javaEESecurityServiceRef.unsetReference(reference);
+    protected void unsetIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> reference) {
+        identityStoreHandlerServiceRef.unsetReference(reference);
     }
 
     private static final class AuthzInfo {
@@ -165,7 +165,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     private void registerDefaultDelegationProvider(ComponentContext cc) {
         defaultDelegationProvider = new DefaultDelegationProvider();
         defaultDelegationProvider.setSecurityService(securityServiceRef.getService());
-        defaultDelegationProvider.setJavaEESecurityService(javaEESecurityServiceRef);
+        defaultDelegationProvider.setIdentityStoreHandlerService(identityStoreHandlerServiceRef);
         BundleContext bc = cc.getBundleContext();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("type", "defaultProvider");
@@ -177,14 +177,14 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     @Override
     protected void activate(ComponentContext cc) {
         super.activate(cc);
-        javaEESecurityServiceRef.activate(cc);
+        identityStoreHandlerServiceRef.activate(cc);
         registerDefaultDelegationProvider(cc);
     }
 
     @Override
     protected void deactivate(ComponentContext cc) {
         super.deactivate(cc);
-        javaEESecurityServiceRef.deactivate(cc);
+        identityStoreHandlerServiceRef.deactivate(cc);
         if (defaultDelegationProviderReg != null) {
             defaultDelegationProviderReg.unregister();
         }

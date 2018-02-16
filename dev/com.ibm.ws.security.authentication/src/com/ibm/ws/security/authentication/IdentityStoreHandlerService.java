@@ -13,12 +13,13 @@ package com.ibm.ws.security.authentication;
 import javax.security.auth.Subject;
 
 /**
- * The JavaEESecurity Service interface. The JavaEESecurityService implementation performs
- * the authentication given user and password and return partial subject for hashtable login.
- * The purpose of this service is to privide a way to create run-as user subject under
+ * The IdentityStoreHandlerService interface. The IdentityStoreHandlerervice implementation performs
+ * the authentication given use idr and password and return partial subject for hashtable login, or
+ * return partial subject for hashtable login by given user id.
+ * The purpose of this service is to provide a way to create run-as user subject under
  * JavaEESecurity (JSR375) application.
  */
-public interface JavaEESecurityService {
+public interface IdentityStoreHandlerService {
 
     /**
      * Returns the partial subject for hashtable login
@@ -29,7 +30,7 @@ public interface JavaEESecurityService {
      * @return the partial subject which can be used for hashtable login if username and password are valid.
      * @throws com.ibm.ws.security.authentication.AuthenticationException
      */
-    public Subject createLoginHashtable(String username, String password) throws AuthenticationException;
+    public Subject createHashtableInSubject(String username, String password) throws AuthenticationException;
 
     /**
      * Returns the partial subject for hashtable login
@@ -41,7 +42,7 @@ public interface JavaEESecurityService {
      * @return the partial subject which can be used for hashtable login if username and password are valid.
      * @throws com.ibm.ws.security.authentication.AuthenticationException
      */
-    public Subject createLoginHashtable(String username) throws AuthenticationException;
+    public Subject createHashtableInSubject(String username) throws AuthenticationException;
 
     /**
      * Returns whether an IdentiyStoreHander is available for validation.

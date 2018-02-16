@@ -23,7 +23,7 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
-import com.ibm.ws.security.authentication.JavaEESecurityService;
+import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
@@ -38,11 +38,11 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  *
  */
-@Component(service = { JavaEESecurityService.class },
+@Component(service = { IdentityStoreHandlerService.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class JavaEESecurityServiceImpl implements JavaEESecurityService {
+public class IdentityStoreHandlerServiceImpl implements IdentityStoreHandlerService {
     Utils utils = new Utils();
 
     @Activate
@@ -61,9 +61,9 @@ public class JavaEESecurityServiceImpl implements JavaEESecurityService {
      * @throws com.ibm.ws.security.authentication.AuthenticationException
      */
     @Override
-    public Subject createLoginHashtable(String username, @Sensitive String password) throws AuthenticationException {
+    public Subject createHashtableInSubject(String username, @Sensitive String password) throws AuthenticationException {
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
-        return createLoginHashtable(credential);
+        return createHashtableInSubject(credential);
     }
 
     /**
@@ -75,12 +75,12 @@ public class JavaEESecurityServiceImpl implements JavaEESecurityService {
      * @throws com.ibm.ws.security.authentication.AuthenticationException
      */
     @Override
-    public Subject createLoginHashtable(String username) throws AuthenticationException {
+    public Subject createHashtableInSubject(String username) throws AuthenticationException {
         CallerOnlyCredential credential = new CallerOnlyCredential(username);
-        return createLoginHashtable(credential);
+        return createHashtableInSubject(credential);
     }
 
-    private Subject createLoginHashtable(Credential credential) throws AuthenticationException {
+    private Subject createHashtableInSubject(Credential credential) throws AuthenticationException {
         if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
             IdentityStoreHandler identityStoreHandler = utils.getIdentityStoreHandler(getCDI());
             if (identityStoreHandler != null) {
