@@ -61,8 +61,9 @@ public class AppExtensionTest extends LoggingTest {
                         .addAsLibrary(applicationExtensionJar);
 
         server = LibertyServerFactory.getStartedLibertyServer("cdi12AppExtensionServer");
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, applicationExtension);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application applicationExtension started");
+        server.waitForStringInLogUsingMark("CWWKZ000[13]I.*applicationExtension"); // App started or updated
 
     }
 
