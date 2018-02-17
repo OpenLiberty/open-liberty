@@ -15,7 +15,9 @@ public final class LTPAKeyUtil {
 
   public static final String IBMJCE_NAME = "IBMJCE";
   public static final String SUNJCE_NAME = "SunJCE";
+  public static final String SUNJSSE_NAME = "SunJSSE";
   public static String defaultJCEProvider=null;
+  public static String defaultJSSEProvider=null;
 
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
     return LTPACrypto.encrypt(data, key, cipher);
@@ -60,13 +62,25 @@ public final class LTPAKeyUtil {
 	 String javaVendor = System.getProperty("java.vendor");
 	 
 	 if (javaVendor.contains("IBM")) {
-	     defaultJCEProvider = IBMJCE_NAME;
+	     //Both IBMJCE Provider
+	     defaultJCEProvider =  IBMJCE_NAME;
+	     defaultJSSEProvider = IBMJCE_NAME;
 	 }
 	 else {
-	     defaultJCEProvider = SUNJCE_NAME;
+	     //For RSA related operation, SunJSSE. Otherwise, SunJCE 
+	     defaultJCEProvider =  SUNJCE_NAME;
+	     defaultJSSEProvider = SUNJSSE_NAME;
 	 }
      }
      return defaultJCEProvider;
+  }
+
+  public static String defaultJSSEProvider()
+  {
+     if (defaultJCEProvider == null) {
+	 defaultJCEProvider();   //Just for initialization purpose and avoid dup code. 
+     }
+     return defaultJSSEProvider;
   }
 
 }
