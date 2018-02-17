@@ -61,9 +61,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
             name = "Apache 2.0",
             url = "http://www.apache.org/licenses/LICENSE-2.0.html")),
     security = @SecurityRequirement(name = "airlinesRatingApp_auth"),
-//    servers = {
-//                @Server(url = "https://test-server.com:80/#5", description = "The test API server #5 - from JAX-RS app"),
-//                @Server(url = "https://test-server.com:80/#6", description = "The test API server #6 - from JAX-RS app") },
     components = @Components(
         parameters = {
                        @Parameter(

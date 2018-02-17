@@ -101,7 +101,7 @@ public class OpenAPITestUtil {
      * @throws Exception
      */
     public static void waitForApplicationProcessorAddedEvent(LibertyServer server, String appName) {
-        String s = server.waitForStringInTraceUsingMark("Application Processor: Adding application ended: appInfo=.*[" + appName + "]", TIMEOUT);
+        String s = server.waitForStringInTraceUsingMark("Application Processor: Adding application ended: appInfo=.*\\[" + appName + "\\]", TIMEOUT);
         assertNotNull("FAIL: Application processor didn't successfully finish adding the app " + appName, s);
     }
 
@@ -140,10 +140,6 @@ public class OpenAPITestUtil {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(null);
             waitForApplicationProcessorRemovedEvent(server, appName);
-            if (!webApp.getType().equals("ear")) {
-                assertNotNull("FAIL: App didn't report is has been removed.",
-                              server.waitForStringInLogUsingMark("CWWKT0017I.*" + appName));
-            }
             assertNotNull("FAIL: App didn't report is has been stopped.",
                           server.waitForStringInLogUsingMark("CWWKZ0009I.*" + appName));
         } catch (Exception e) {
@@ -183,8 +179,15 @@ public class OpenAPITestUtil {
     }
 
     public static void ensureOpenAPIEndpointIsReady(LibertyServer server) {
-        assertNotNull("FAIL: Endpoint is not available at /openapi",
-                      server.waitForStringInLog("CWWKT0016I.*" + "/openapi"));
+        ensureEndpointIsReady(server, "/openapi");
+    }
+
+    public static void ensureEndpointIsReady(LibertyServer server, String endpoint) {
+        if (!endpoint.startsWith("/")) {
+            endpoint = "/" + endpoint;
+        }
+        assertNotNull("FAIL: Endpoint is not available at " + endpoint,
+                      server.waitForStringInLog("CWWKT0016I.*" + endpoint));
     }
 
     public static JsonNode readYamlTree(String contents) {
@@ -230,7 +233,7 @@ public class OpenAPITestUtil {
 
         assertNotNull("Title is not specified to the default value", infoNode.get("title"));
         assertNotNull("Version is not specified to the default value", infoNode.get("version"));
-        
+
         String title = infoNode.get("title").textValue();
         String version = infoNode.get("version").textValue();
 
