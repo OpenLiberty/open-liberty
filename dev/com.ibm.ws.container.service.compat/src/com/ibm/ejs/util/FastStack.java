@@ -39,17 +39,13 @@ public class FastStack<T> {
     }
 
     public T peek(Class clz) {
-System.out.println("Toshi : class : " + clz);
         if (topOfStack >= 0) {
             for(int i = topOfStack; i >= 0; i--) {
-System.out.println("Toshi ; stack [" + i + "] class : " + stack[i].getClass());
                 if (clz.isAssignableFrom(stack[i].getClass())) {
-System.out.println("Toshi ; return : " + stack[i]);
                     return (stack[i]);
                 }
             }
         }
-System.out.println("Toshi ; return : null");
         return null;
     }
 
