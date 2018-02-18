@@ -20,7 +20,6 @@ import componenttest.topology.utils.HttpUtils;
  * Schema: inappropriate fields for certain Schema types (min/max items or uniqueOnly fields on String type, min/max Length on array types)
  * invalid values for certain fields such as negative values for length
  * conflicting fields such as the readOnly and writeOnly fields
- * Extension: name not starting with "x-"
  *
  */
 @RunWith(FATRunner.class)
