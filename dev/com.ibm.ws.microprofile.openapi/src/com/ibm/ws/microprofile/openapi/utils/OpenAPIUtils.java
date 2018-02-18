@@ -20,6 +20,7 @@ import org.eclipse.microprofile.openapi.OASModelReader;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.AnnotationScanner;
@@ -33,14 +34,17 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
 
+    @Trivial
     public static boolean isDebugEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
     }
 
+    @Trivial
     public static boolean isEventEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled();
     }
 
+    @Trivial
     public static boolean isDumpEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
     }
