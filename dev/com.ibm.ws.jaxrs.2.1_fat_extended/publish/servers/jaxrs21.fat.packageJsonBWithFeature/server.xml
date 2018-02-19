@@ -2,18 +2,20 @@
 	<featureManager>
 		<feature>componenttest-1.0</feature>
 		<feature>jaxrs-2.1</feature>
-		<feature>jsonb-1.0</feature>
+		<feature>jsonbContainer-1.0</feature>
 	</featureManager>
 	
+	<!-- Define Johnzon as a 'bell' so it can be registered in the server's service registry and used by JAX-RS -->
+	<bell libraryRef="johnzon"/>
+	<library id="johnzon">
+	  <fileset dir="${shared.resource.dir}/johnzon" includes="*.jar"/>
+	</library>
+
 	<include location="../fatTestPorts.xml"/>
 	
-	<javaPermission className="java.util.PropertyPermission" name="org.apache.johnzon.max-string-length" actions="read"/>
-	<javaPermission className="java.util.PropertyPermission" name="org.apache.johnzon.default-char-buffer" actions="read"/>
-	<javaPermission className="java.util.PropertyPermission" name="org.apache.johnzon.supports-comments" actions="read"/>
-	<javaPermission className="java.util.PropertyPermission" name="org.apache.johnzon.default-char-buffer-generator" actions="read"/>
-	<javaPermission className="java.util.PropertyPermission" name="johnzon.string-builder.strategy" actions="read"/>
-	<javaPermission className="java.util.PropertyPermission" name="johnzon.mapper.encoding" actions="read"/>
-	<javaPermission className="java.util.PropertyPermission" name="org.apache.johnzon.default-string-builder" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
 	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 </server>
