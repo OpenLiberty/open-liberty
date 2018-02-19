@@ -90,15 +90,14 @@ public class CollectorJsonUtils {
 
     private static String jsonifyGCEvent(String hostName, String wlpUserDir, String serverName, HCGCData hcGCData, String[] tags) {
         String sequenceNum = hcGCData.getSequence();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         boolean isFirstField = true;
 
         sb.append("{");
 
         //                                           name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = CollectorJsonHelpers.addCommonFieldsGC(sb, hostName, wlpUserDir, serverName, hcGCData.getTime(), sequenceNum, isFirstField,
-                                                              CollectorConstants.GC_EVENT_TYPE);
+        isFirstField = CollectorJsonHelpers.startGCJson(sb, hostName, wlpUserDir, serverName, hcGCData.getTime(), sequenceNum, isFirstField);
         /* GC specific fields */
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, isFirstField);
         isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, "usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, isFirstField);
@@ -120,7 +119,7 @@ public class CollectorJsonUtils {
     private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
                                          String serverName, String hostName, String eventType, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
@@ -129,7 +128,7 @@ public class CollectorJsonUtils {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.startGenDataGCJson(sb, hostName, wlpUserDir, serverName, isFirstField);
 
         for (Pair p : pairs) {
 
@@ -172,7 +171,7 @@ public class CollectorJsonUtils {
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
 
         GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
@@ -181,7 +180,10 @@ public class CollectorJsonUtils {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
+            isFirstField = CollectorJsonHelpers.startMessageJson(sb, hostName, wlpUserDir, serverName, isFirstField);
+        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE))
+            isFirstField = CollectorJsonHelpers.startTraceJson(sb, hostName, wlpUserDir, serverName, isFirstField);
 
         for (Pair p : pairs) {
 
@@ -236,7 +238,7 @@ public class CollectorJsonUtils {
                                       String serverName, String hostName, String eventType, Object event, String[] tags) {
 
         GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
@@ -245,7 +247,7 @@ public class CollectorJsonUtils {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.startFFDCJson(sb, hostName, wlpUserDir, serverName, isFirstField);
 
         for (Pair p : pairs) {
 
@@ -298,7 +300,7 @@ public class CollectorJsonUtils {
                                         String serverName, String hostName, String eventType, Object event, String[] tags) {
 
         GenericData genData = (GenericData) event;
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
@@ -307,7 +309,7 @@ public class CollectorJsonUtils {
 
         sb.append("{");
 
-        isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
+        isFirstField = CollectorJsonHelpers.startAccessLogJson(sb, hostName, wlpUserDir, serverName, isFirstField);
 
         for (Pair p : pairs) {
 
