@@ -55,7 +55,11 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: MPOPENAPI
 instrument.classesExcludes: \
-    **/com/ibm/ws/microprofile/openapi/impl/model/**
+    **/com/ibm/ws/microprofile/openapi/impl/model/**, \
+    **/com/ibm/ws/microprofile/openapi/utils/OpenAPIModel*.class, \
+    **/com/ibm/ws/microprofile/openapi/utils/DefaultOpenAPIModel*.class, \
+    **/com/ibm/ws/microprofile/openapi/impl/validation/*.class, \
+    **/com/ibm/ws/microprofile/openapi/OpenAPIFilter.class
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
