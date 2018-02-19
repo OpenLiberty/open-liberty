@@ -504,15 +504,10 @@ public class AuditEvent {
      * @return unique identifier id of this server
      */
     public static String getServerID() {
-        System.out.println("serverID on entry is: " + serverID);
         if (serverID == null) {
-            System.out.println("serverID == null");
             AuditService auditService = SecurityUtils.getAuditService();
             if (auditService != null) {
                 serverID = auditService.getServerID();
-                System.out.println("AuditEvent, auditService not null, serverID = " + serverID);
-            } else {
-                System.out.println("AuditEvent, auditService is null");
             }
         }
         return serverID;
