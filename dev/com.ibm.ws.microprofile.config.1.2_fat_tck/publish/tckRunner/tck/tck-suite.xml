@@ -18,8 +18,7 @@
                     <![CDATA[
                         !method.getDeclaringClass().getSimpleName().startsWith("ClassConverterTest") &&
                         !method.getDeclaringClass().getSimpleName().startsWith("ImplicitConverterTest") &&
-                        !method.getName().contains("testDuckConversionWithMultipleConverters") &&
-                        !method.getName().contains("testEnvironmentConfigSource")
+                        !method.getName().contains("testDuckConversionWithMultipleConverters")
                     ]]>
                     </script>
                 </method-selector>
