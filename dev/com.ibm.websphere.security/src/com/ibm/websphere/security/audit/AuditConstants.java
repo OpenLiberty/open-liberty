@@ -63,8 +63,10 @@ public class AuditConstants {
     static public final String SECURITY_JMS_AUTHN = "SECURITY_JMS_AUTHN";
     static public final String SECURITY_JMS_AUTHZ = "SECURITY_JMS_AUTHZ";
     static public final String SECURITY_JMS_AUTHN_TERMINATE = "SECURITY_JMS_AUTHN_TERMINATE";
-    static public final String JMX_MBEANS = "JMX_MBEANS";
+    static public final String JMX_MBEAN = "JMX_MBEAN";
     static public final String JMX_NOTIFICATION = "JMX_NOTIFICATION";
+    static public final String JMX_REGISTER_DELAYED_MBEAN = "JMX_REGISTER_DELAYED_MBEAN";
+    static public final String JMX_UNREGISTER_DELAYED_MBEAN = "JMX_UNREGISTER_DELAYED_MBEAN";
     static public final String JMS = "JMS";
     static public final String CUSTOM = "CUSTOM";
 
@@ -76,7 +78,7 @@ public class AuditConstants {
                                                                          "SECURITY_AUTHN_TERMINATE", "SECURITY_AUTHZ",
                                                                          "SECURITY_SIGNING", "SECURITY_ENCRYPTION", "SECURITY_RESOURCE_ACCESS", "SECURITY_MGMT_KEY",
                                                                          "SECURITY_RUNTIME_KEY", "SECURITY_JMS_AUTHN", "SECURITY_JMS_AUTHZ", "SECURITY_JMS_AUTHN_TERMINATE",
-                                                                         "JMX_MBEANS", "JMX_NOTIFICATION",
+                                                                         "JMX_MBEAN", "JMX_NOTIFICATION", "JMX_REGISTER_DELAYED_MBEAN", "JMX_UNREGISTER_DELAYED_MBEAN",
                                                                          "JMS", "CUSTOM");
 
     static public final String SUCCESS = "success";

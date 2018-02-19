@@ -67,7 +67,7 @@ Service-Component: \
     properties:='service.vendor=IBM'
 
 -dsannotations: \
-   com.ibm.ws.security.utils.SecurityUtils
+   com.ibm.ws.security.audit.utils.SecurityUtils
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
