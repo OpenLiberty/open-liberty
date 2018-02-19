@@ -83,7 +83,7 @@ public class QueryParamObjectFactory implements ObjectFactory {
             proxy = new ApplicationInjectionProxy();
         } else {
 
-            proxy = Proxy.newProxyInstance(PrivHelper.getClassLoader(contextClass),
+            proxy = Proxy.newProxyInstance(ContextObjectFactory.priv.getClassLoader(contextClass),
                                            new Class[] { contextClass },
                                            new InvocationHandler() {
                                                @Override

@@ -11,6 +11,7 @@
 package com.ibm.ws.concurrent.persistent.internal;
 
 import java.io.IOException;
+import java.security.AccessController;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import com.ibm.ws.concurrent.persistent.ejb.TaskLocker;
 import com.ibm.ws.concurrent.persistent.serializable.TaskFailure;
 import com.ibm.ws.concurrent.persistent.serializable.TaskSkipped;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.concurrent.persistent.TaskRecord;
 import com.ibm.wsspi.concurrent.persistent.TaskStore;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -48,6 +49,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  */
 public class InvokerTask implements Runnable, Synchronization {
     private static final TraceComponent tc = Tr.register(InvokerTask.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     public final static ThreadLocal<Long> taskIdsOfRunningTasks = new ThreadLocal<Long>();
 
@@ -119,8 +121,7 @@ public class InvokerTask implements Runnable, Synchronization {
      * @param taskName identity name for the task
      */
     private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName) {
-        taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' '
-                        ? String.valueOf(taskId) // empty task name
+        taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
                         : taskId + " (" + taskName + ")";
         TaskStore taskStore = persistentExecutor.taskStore;
         TransactionManager tranMgr = persistentExecutor.tranMgrRef.getServiceWithException();
@@ -162,12 +163,7 @@ public class InvokerTask implements Runnable, Synchronization {
                         else
                             Tr.warning(tc, "CWWKC1511.retry.limit.reached.failed", persistentExecutor.name, taskName, consecutiveFailureCount, failure);
 
-                        TaskFailure taskFailure = new TaskFailure(
-                                        failure,
-                                        failure == null ? null : loader,
-                                        persistentExecutor,
-                                        TaskFailure.FAILURE_LIMIT_REACHED,
-                                        Short.toString(consecutiveFailureCount));
+                        TaskFailure taskFailure = new TaskFailure(failure, failure == null ? null : loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(consecutiveFailureCount));
                         // Update database with the result and state if we reached the limit
                         TaskRecord updates = new TaskRecord(false);
                         updates.setConsecutiveFailureCount(consecutiveFailureCount);
@@ -181,8 +177,7 @@ public class InvokerTask implements Runnable, Synchronization {
                         retry = consecutiveFailureCount != -1;
 
                         if (retry) {
-                            String seconds = consecutiveFailureCount == 1 || config.retryInterval == 0L ? "0"
-                                            : NumberFormat.getInstance().format(config.retryInterval / 1000.0);
+                            String seconds = consecutiveFailureCount == 1 || config.retryInterval == 0L ? "0" : NumberFormat.getInstance().format(config.retryInterval / 1000.0);
                             if (failure == null)
                                 Tr.warning(tc, "CWWKC1500.task.rollback.retry", persistentExecutor.name, taskName, seconds);
                             else
@@ -313,7 +308,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     }
 
                     byte[] bytes = ejbSingletonRecord.getTrigger();
-                    ejbSingletonLockCollaborator = (TaskLocker) persistentExecutor.deserialize(bytes, PrivHelper.getSystemClassLoader());
+                    ejbSingletonLockCollaborator = (TaskLocker) persistentExecutor.deserialize(bytes, priv.getSystemClassLoader());
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "notify EJB container to lock singleton");
                     ejbSingletonLockCollaborator.lock();
@@ -337,7 +332,7 @@ public class InvokerTask implements Runnable, Synchronization {
             String classLoaderIdentifier = taskRecord.getIdentifierOfClassLoader();
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "classloader identifier", classLoaderIdentifier);
-            loader = ejbSingletonRecord == null ? persistentExecutor.classloaderIdSvc.getClassLoader(classLoaderIdentifier) : PrivHelper.getSystemClassLoader();
+            loader = ejbSingletonRecord == null ? persistentExecutor.classloaderIdSvc.getClassLoader(classLoaderIdentifier) : priv.getSystemClassLoader();
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "classloader", loader);
 
@@ -352,11 +347,10 @@ public class InvokerTask implements Runnable, Synchronization {
             TaskInfo info = (TaskInfo) persistentExecutor.deserialize(taskRecord.getTaskInformation(), null);
 
             byte[] triggerBytes = taskRecord.getTrigger();
-            Trigger trigger = triggerBytes == null
-                            ? null
-                            : ejbSingletonRecord != null && Arrays.equals(triggerBytes, ejbSingletonRecord.getTrigger())
-                                            ? ejbSingletonLockCollaborator
-                                            : (Trigger) persistentExecutor.deserialize(triggerBytes, loader);
+            Trigger trigger = triggerBytes == null ? null : ejbSingletonRecord != null
+                                                            && Arrays.equals(triggerBytes,
+                                                                             ejbSingletonRecord.getTrigger()) ? ejbSingletonLockCollaborator : (Trigger) persistentExecutor.deserialize(triggerBytes,
+                                                                                                                                                                                        loader);
             if (trigger == null) {
                 String triggerClassName = info.getClassNameForNonSerializableTrigger();
                 if (triggerClassName != null)
@@ -388,15 +382,7 @@ public class InvokerTask implements Runnable, Synchronization {
                 if (trigger != null) {
                     Long prevScheduledStart = taskRecord.getPreviousScheduledStartTime();
                     if (prevScheduledStart != null)
-                        lastExecution = new LastExecutionImpl(
-                                        persistentExecutor,
-                                        taskId,
-                                        taskName,
-                                        resultBytes,
-                                        taskRecord.getPreviousStopTime(),
-                                        taskRecord.getPreviousStartTime(),
-                                        prevScheduledStart,
-                                        loader);
+                        lastExecution = new LastExecutionImpl(persistentExecutor, taskId, taskName, resultBytes, taskRecord.getPreviousStopTime(), taskRecord.getPreviousStartTime(), prevScheduledStart, loader);
                     try {
                         skipped = trigger.skipRun(lastExecution, new Date(taskRecord.getNextExecutionTime()));
                     } catch (RuntimeException x) {
@@ -448,15 +434,7 @@ public class InvokerTask implements Runnable, Synchronization {
                             if (trigger == null) {
                                 nextExecTime = null; // one-shot task
                             } else {
-                                lastExecution = new LastExecutionImpl(
-                                                persistentExecutor,
-                                                taskId,
-                                                taskName,
-                                                result,
-                                                stopTime,
-                                                startTime,
-                                                taskRecord.getNextExecutionTime()
-                                                );
+                                lastExecution = new LastExecutionImpl(persistentExecutor, taskId, taskName, result, stopTime, startTime, taskRecord.getNextExecutionTime());
                                 Date nextExecDate = trigger.getNextRunTime(lastExecution, new Date(taskRecord.getOriginalSubmitTime()));
                                 nextExecTime = nextExecDate == null ? null : nextExecDate.getTime();
                             }
@@ -591,8 +569,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     else {
                         persistentExecutor.inMemoryTaskIds.remove(taskId);
                         if (failure != null) {
-                            taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' '
-                                            ? String.valueOf(taskId) // empty task name
+                            taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
                                             : taskId + " (" + taskName + ")";
                             Tr.warning(tc, "CWWKC1511.retry.limit.reached.failed", persistentExecutor.name, taskName, nextFailureCount, failure);
                         }

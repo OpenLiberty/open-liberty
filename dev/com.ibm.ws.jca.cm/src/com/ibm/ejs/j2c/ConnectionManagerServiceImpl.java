@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ejs.j2c;
 
+import java.security.AccessController;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
 import com.ibm.ws.jca.cm.ConnectorService;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.resource.ResourceInfo;
@@ -50,6 +51,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
 public class ConnectionManagerServiceImpl extends ConnectionManagerService {
 
     private static final TraceComponent tc = Tr.register(ConnectionManagerServiceImpl.class, J2CConstants.traceSpec, J2CConstants.NLS_FILE);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Mapping of connection factory key to connection manager.
@@ -128,7 +130,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "activate", properties);
 
-        bndCtx = PrivHelper.getBundleContext(context);
+        bndCtx = priv.getBundleContext(context);
 
         // config.displayId contains the Xpath identifier.
         name = (String) properties.get("config.displayId");
@@ -225,7 +227,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                         gConfigProps, raClassLoader);
 
         if (bndCtx == null)
-            bndCtx = PrivHelper.getBundleContext(FrameworkUtil.getBundle(getClass()));
+            bndCtx = priv.getBundleContext(FrameworkUtil.getBundle(getClass()));
 
         try {
             pmMBean = new PoolManagerMBeanImpl(pm, svc.getFeatureVersion());

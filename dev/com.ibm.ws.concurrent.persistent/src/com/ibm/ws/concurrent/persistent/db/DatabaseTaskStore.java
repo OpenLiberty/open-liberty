@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.db;
 
+import java.security.AccessController;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +36,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.persistent.internal.Utils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.concurrent.persistent.PartitionRecord;
 import com.ibm.wsspi.concurrent.persistent.TaskRecord;
 import com.ibm.wsspi.concurrent.persistent.TaskStore;
@@ -47,6 +48,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
  */
 public class DatabaseTaskStore implements TaskStore {
     private static final TraceComponent tc = Tr.register(DatabaseTaskStore.class);
+    private final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static final Map<DatabaseStore, DatabaseTaskStore> dbTaskStores = new HashMap<DatabaseStore, DatabaseTaskStore>();
     private static final Map<DatabaseStore, Integer> refCounts = new HashMap<DatabaseStore, Integer>();
@@ -116,7 +118,7 @@ public class DatabaseTaskStore implements TaskStore {
     /**
      * Appends conditions to a JPA query to filter based on the presence or absence of the specified state.
      * This method optimizes to avoid the MOD function if possible.
-     * 
+     *
      * @param sb string builder for the query
      * @param state a task state. For example, TaskState.CANCELED
      * @param inState indicates whether to include or exclude results with the specified state
@@ -159,16 +161,17 @@ public class DatabaseTaskStore implements TaskStore {
 
     /**
      * Update the record for a task in the persistent store to indicate that the task is canceled.
-     * 
+     *
      * @param taskId unique identifier for a persistent task
      * @return true if the state of the task was updated as a result of this method, otherwise false.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
     @Override
     public boolean cancel(long taskId) throws Exception {
-        StringBuilder update = new StringBuilder(87)
-                        .append("UPDATE Task t SET t.STATES=").append(TaskState.CANCELED.bit + TaskState.ENDED.bit)
-                        .append(",t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.STATES<").append(TaskState.ENDED.bit);
+        StringBuilder update = new StringBuilder(87).append("UPDATE Task t SET t.STATES=")
+                        .append(TaskState.CANCELED.bit + TaskState.ENDED.bit)
+                        .append(",t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.STATES<")
+                        .append(TaskState.ENDED.bit);
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -191,9 +194,10 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception {
-        StringBuilder update = new StringBuilder(133)
-                        .append("UPDATE Task t SET t.STATES=").append(TaskState.CANCELED.bit + TaskState.ENDED.bit)
-                        .append(" WHERE t.STATES<").append(TaskState.ENDED.bit); // cannot cancel already-ended tasks
+        StringBuilder update = new StringBuilder(133).append("UPDATE Task t SET t.STATES=")
+                        .append(TaskState.CANCELED.bit + TaskState.ENDED.bit)
+                        .append(" WHERE t.STATES<")
+                        .append(TaskState.ENDED.bit); // cannot cancel already-ended tasks
         if (owner != null)
             update.append(" AND t.OWNR=:o");
         if (pattern != null) {
@@ -237,7 +241,7 @@ public class DatabaseTaskStore implements TaskStore {
 
     /**
      * Create an entry in the persistent store for a new task.
-     * 
+     *
      * @param taskRecord information about the persistent task
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
@@ -256,7 +260,7 @@ public class DatabaseTaskStore implements TaskStore {
 
     /**
      * Create a property entry in the persistent store.
-     * 
+     *
      * @param name unique name for the property.
      * @param value value of the property.
      * @return true if the property was created. False if a property with the same name already exists.
@@ -273,8 +277,7 @@ public class DatabaseTaskStore implements TaskStore {
             return false;
         } catch (PersistenceException x) {
             // TODO why can't JPA do a better job of interpreting the exception and always raise EntityExistsException?
-            if (x.getCause() instanceof SQLIntegrityConstraintViolationException
-                || em.find(Property.class, name) != null)
+            if (x.getCause() instanceof SQLIntegrityConstraintViolationException || em.find(Property.class, name) != null)
                 return false;
             FFDCFilter.processException(x, getClass().getName(), "309", this);
             throw x;
@@ -287,8 +290,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public List<PartitionRecord> find(PartitionRecord expected) throws Exception {
-        StringBuilder select = new StringBuilder(172)
-                        .append("SELECT p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR FROM Partition p");
+        StringBuilder select = new StringBuilder(172).append("SELECT p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR FROM Partition p");
         if (expected != null) {
             select.append(" WHERE");
             if (expected.hasExecutor())
@@ -351,7 +353,8 @@ public class DatabaseTaskStore implements TaskStore {
     public TaskRecord find(long taskId, long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception {
         StringBuilder find = new StringBuilder(237)
                         .append("SELECT t.LOADER,t.OWNR,t.MBITS,t.INAME,t.NEXTEXEC,t.ORIGSUBMT,t.PREVSCHED,t.PREVSTART,t.PREVSTOP,t.RESLT,t.RFAILS,t.STATES,t.TASKB,t.TASKINFO,t.TRIG,t.VERSION FROM Task t WHERE t.ID=:i AND t.PARTN=:p AND t.STATES<")
-                        .append(TaskState.SUSPENDED.bit).append(" AND t.NEXTEXEC<=:m");
+                        .append(TaskState.SUSPENDED.bit)
+                        .append(" AND t.NEXTEXEC<=:m");
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -404,8 +407,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public TaskRecord findById(long taskId, String owner, boolean includeTrigger) throws Exception {
-        StringBuilder find = new StringBuilder(116)
-                        .append("SELECT t.LOADER,t.MBITS,t.INAME,t.NEXTEXEC,t.RESLT,t.STATES,t.VERSION");
+        StringBuilder find = new StringBuilder(116).append("SELECT t.LOADER,t.MBITS,t.INAME,t.NEXTEXEC,t.RESLT,t.STATES,t.VERSION");
         if (includeTrigger)
             find.append(",t.TRIG");
         find.append(" FROM Task t WHERE t.ID=:i");
@@ -494,8 +496,7 @@ public class DatabaseTaskStore implements TaskStore {
     public List<Long> findTaskIds(String pattern, Character escape, TaskState state, boolean inState,
                                   Long minId, Integer maxResults, String owner, Long partition) throws Exception {
         int i = 0;
-        StringBuilder find = new StringBuilder(152)
-                        .append("SELECT t.ID FROM Task t");
+        StringBuilder find = new StringBuilder(152).append("SELECT t.ID FROM Task t");
         if (minId != null)
             find.append(++i == 1 ? " WHERE" : " AND").append(" t.ID>=:m");
         if (owner != null)
@@ -697,7 +698,7 @@ public class DatabaseTaskStore implements TaskStore {
 
     /**
      * Returns the persistence service unit, lazily initializing if necessary.
-     * 
+     *
      * @return the persistence service unit.
      * @throws Exceptin if an error occurs.
      * @throws IllegalStateException if this instance has been destroyed.
@@ -715,8 +716,10 @@ public class DatabaseTaskStore implements TaskStore {
                     if (destroyed)
                         throw new IllegalStateException();
                     if (persistenceServiceUnit == null)
-                        persistenceServiceUnit = dbStore.createPersistenceServiceUnit
-                                        (PrivHelper.getClassLoader(Task.class), Partition.class.getName(), Property.class.getName(), Task.class.getName());
+                        persistenceServiceUnit = dbStore.createPersistenceServiceUnit(priv.getClassLoader(Task.class),
+                                                                                      Partition.class.getName(),
+                                                                                      Property.class.getName(),
+                                                                                      Task.class.getName());
                 } finally {
                     // Downgrade to read lock for rest of method
                     lock.readLock().lock();
@@ -732,7 +735,8 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public Map<String, String> getProperties(String pattern, Character escape) throws Exception {
-        StringBuilder find = new StringBuilder(62).append("SELECT p.ID,p.VAL FROM Property p WHERE p.ID LIKE :p");
+        StringBuilder find = new StringBuilder(62)
+                        .append("SELECT p.ID,p.VAL FROM Property p WHERE p.ID LIKE :p");
         if (escape != null)
             find.append(" ESCAPE :e");
 
@@ -853,7 +857,8 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public int persist(PartitionRecord updates, PartitionRecord expected) throws Exception {
-        StringBuilder update = new StringBuilder(160).append("UPDATE Partition SET ");
+        StringBuilder update = new StringBuilder(160)
+                        .append("UPDATE Partition SET ");
         if (updates.hasExecutor())
             update.append("EXECUTOR=:x2,");
         if (updates.hasHostName())
@@ -922,7 +927,7 @@ public class DatabaseTaskStore implements TaskStore {
 
     /**
      * Persist updates to a task record in the persistent store.
-     * 
+     *
      * @param updates updates to make to the task. Only the specified fields are persisted. Version must be omitted, as it always increments by 1.
      * @param expected criteria that must be matched for optimistic update to succeed. Must include Id.
      * @return true if persistent task store was updated, otherwise false.
@@ -930,7 +935,8 @@ public class DatabaseTaskStore implements TaskStore {
      */
     @Override
     public boolean persist(TaskRecord updates, TaskRecord expected) throws Exception {
-        StringBuilder update = new StringBuilder(220).append("UPDATE Task t SET ");
+        StringBuilder update = new StringBuilder(220)
+                        .append("UPDATE Task t SET ");
         if (updates != null) {
             if (updates.hasIdentifierOfClassLoader())
                 update.append("t.LOADER=:c2,");
@@ -1095,7 +1101,8 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public boolean remove(long taskId, String owner, boolean removeIfEnded) throws Exception {
-        StringBuilder delete = new StringBuilder(66).append("DELETE FROM Task t WHERE t.ID=:i");
+        StringBuilder delete = new StringBuilder(66)
+                        .append("DELETE FROM Task t WHERE t.ID=:i");
         if (!removeIfEnded)
             delete.append(" AND t.STATES<").append(TaskState.ENDED.bit);
         if (owner != null)
@@ -1125,7 +1132,8 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public int remove(PartitionRecord criteria) throws Exception {
-        StringBuilder delete = new StringBuilder(111).append("DELETE FROM Partition p WHERE");
+        StringBuilder delete = new StringBuilder(111)
+                        .append("DELETE FROM Partition p WHERE");
         if (criteria != null) {
             if (criteria.hasExecutor())
                 delete.append(" p.EXECUTOR=:x AND");
@@ -1177,7 +1185,7 @@ public class DatabaseTaskStore implements TaskStore {
      * (as determined by the inState attribute) of the specified state.
      * For example, to remove all canceled tasks that have a name that starts with "PAYROLL_TASK_",
      * taskStore.remove("PAYROLL\\_TASK\\_%", '\\', TaskState.CANCELED, true, "app1");
-     * 
+     *
      * @param pattern task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
      * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
      * @param state a task state. For example, TaskState.UNATTEMPTED.
@@ -1235,7 +1243,8 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public int removeProperties(String pattern, Character escape) throws Exception {
-        StringBuilder delete = new StringBuilder(58).append("DELETE FROM Property WHERE ID LIKE :pattern");
+        StringBuilder delete = new StringBuilder(58)
+                        .append("DELETE FROM Property WHERE ID LIKE :pattern");
         if (escape != null)
             delete.append(" ESCAPE :escape");
 

@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLStreamHandler;
@@ -43,7 +45,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Utility class to execute common privileged code.
- * Derived from the Equinox class: org.eclipse.osgi.framework.util.SecureAction
  */
 @Trivial
 public class SecureAction {
@@ -65,11 +66,13 @@ public class SecureAction {
 
     /**
      * Creates a privileged action that can be used to construct a SecureAction object.
-     * The recommended way to construct a SecureAction object is the following: <p>
+     * The recommended way to construct and cache SecureAction object is the following: <p>
      *
      * <pre>
-     * SecureAction secureAction = (SecureAction) AccessController.doPrivileged(SecureAction.get());
+     * static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
      * </pre>
+     *
+     * NOTE: For optimal performance, the SecureAction should be cached in a package private field.
      *
      * @return a privileged action object that can be used to construct a SecureAction object.
      */
@@ -783,6 +786,27 @@ public class SecureAction {
             }, controlContext);
     }
 
+    public <S> S getService(final Bundle bundle, final Class<S> clazz) {
+        if (System.getSecurityManager() == null) {
+            BundleContext bCtx = bundle.getBundleContext();
+            if (bCtx == null)
+                return null;
+            ServiceReference<S> svcRef = bCtx.getServiceReference(clazz);
+            return svcRef == null ? null : bCtx.getService(svcRef);
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<S>() {
+                @Override
+                public S run() {
+                    BundleContext bCtx = bundle.getBundleContext();
+                    if (bCtx == null)
+                        return null;
+                    ServiceReference<S> svcRef = bCtx.getServiceReference(clazz);
+                    return svcRef == null ? null : bCtx.getService(svcRef);
+                }
+            }, controlContext);
+        }
+    }
+
     public <S> S getService(final BundleContext bCtx, final Class<S> clazz) {
         if (System.getSecurityManager() == null) {
             ServiceReference<S> svcRef = bCtx.getServiceReference(clazz);
@@ -924,5 +948,33 @@ public class SecureAction {
                     return bCtx.registerService(classes, svc, properties);
                 }
             }, controlContext);
+    }
+
+    public void setAccessible(final Method m, final boolean accessible) {
+        if (System.getSecurityManager() == null) {
+            m.setAccessible(accessible);
+        } else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    m.setAccessible(accessible);
+                    return null;
+                }
+            }, controlContext);
+        }
+    }
+
+    public void setAccessible(final Field f, final boolean accessible) {
+        if (System.getSecurityManager() == null) {
+            f.setAccessible(accessible);
+        } else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    f.setAccessible(accessible);
+                    return null;
+                }
+            }, controlContext);
+        }
     }
 }

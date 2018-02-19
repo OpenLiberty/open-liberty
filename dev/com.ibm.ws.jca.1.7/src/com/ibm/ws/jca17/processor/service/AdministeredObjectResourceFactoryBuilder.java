@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jca17.processor.service;
 
+import java.security.AccessController;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.AppDefinedResourceFactory;
 import com.ibm.ws.jca.service.AdminObjectService;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -50,6 +51,7 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
     private static final String BASE_PROPERTIES_KEY = "properties.0.";
 
     private static final TraceComponent tc = Tr.register(AdministeredObjectResourceFactoryBuilder.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Name of property used by config service to uniquely identify a component instance.
@@ -120,7 +122,7 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
         variableRegistryRef.activate(context);
         metaTypeServiceRef.activate(context);
         wsConfigurationHelperRef.activate(context);
-        bundleContext = PrivHelper.getBundleContext(context);
+        bundleContext = priv.getBundleContext(context);
 
     }
 
@@ -216,7 +218,7 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
         for (Map.Entry<String, Object> prop : annotationProps.entrySet())
             adminObjectSvcProps.put(BASE_PROPERTIES_KEY + prop.getKey(), prop.getValue());
 
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(AdminObjectService.class));
+        BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(AdminObjectService.class));
 
         StringBuilder adminObjectFilter = new StringBuilder(200);
         adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));

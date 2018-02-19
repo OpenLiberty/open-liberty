@@ -90,7 +90,6 @@ import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -122,26 +121,25 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 @Component(
            name = "com.ibm.ws.concurrent.persistent.executor",
            service = {
-                      ApplicationRecycleComponent.class,
-                      DDLGenerationParticipant.class,
-                      ExecutorService.class,
-                      ManagedExecutorService.class,
-                      ManagedScheduledExecutorService.class,
-                      PersistentExecutor.class,
-                      ResourceFactory.class,
-                      RuntimeUpdateListener.class,
-                      ScheduledExecutorService.class,
-                      ServerQuiesceListener.class },
+                       ApplicationRecycleComponent.class,
+                       DDLGenerationParticipant.class,
+                       ExecutorService.class,
+                       ManagedExecutorService.class,
+                       ManagedScheduledExecutorService.class,
+                       PersistentExecutor.class,
+                       ResourceFactory.class,
+                       RuntimeUpdateListener.class,
+                       ScheduledExecutorService.class,
+                       ServerQuiesceListener.class },
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true,
            property = {
-                       "creates.objectClass=java.util.concurrent.ExecutorService",
-                       "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
-                       "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                       "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
-                       "creates.objectClass=com.ibm.websphere.concurrent.persistent.PersistentExecutor" })
-public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLGenerationParticipant,
-                ResourceFactory, RuntimeUpdateListener, PersistentExecutor, ServerQuiesceListener, TimersPersistentExecutor {
+                        "creates.objectClass=java.util.concurrent.ExecutorService",
+                        "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
+                        "creates.objectClass=com.ibm.websphere.concurrent.persistent.PersistentExecutor" })
+public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLGenerationParticipant, ResourceFactory, RuntimeUpdateListener, PersistentExecutor, ServerQuiesceListener, TimersPersistentExecutor {
     private static final TraceComponent tc = Tr.register(PersistentExecutorImpl.class);
 
     /**
@@ -215,8 +213,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Reference to a service that controls local transactions.
      */
-    private final AtomicServiceReference<LocalTransactionCurrent> localTranCurrentRef =
-                    new AtomicServiceReference<LocalTransactionCurrent>("LocalTransactionCurrent");
+    private final AtomicServiceReference<LocalTransactionCurrent> localTranCurrentRef = new AtomicServiceReference<LocalTransactionCurrent>("LocalTransactionCurrent");
 
     /**
      * WsLocationAdmin service.
@@ -286,8 +283,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Reference to the transaction manager, which is also the unit of work manager.
      */
-    final AtomicServiceReference<EmbeddableWebSphereTransactionManager> tranMgrRef =
-                    new AtomicServiceReference<EmbeddableWebSphereTransactionManager>("TransactionManager");
+    final AtomicServiceReference<EmbeddableWebSphereTransactionManager> tranMgrRef = new AtomicServiceReference<EmbeddableWebSphereTransactionManager>("TransactionManager");
 
     /**
      * The variable registry for the server.
@@ -302,7 +298,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      * @throws MalformedObjectNameException
      */
@@ -352,7 +348,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             startPollingTask(config);
 
         mbean = new PersistentExecutorMBeanImpl(this);
-        mbean.register(PrivHelper.getBundleContext(context));
+        mbean.register(InvokerTask.priv.getBundleContext(context));
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -428,7 +424,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * DS method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      */
     protected void deactivate(ComponentContext context) {
@@ -448,7 +444,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Utility method that deserializes an object from bytes.
-     * 
+     *
      * @param bytes from which to deserialize an object. If null, then null should be returned as the result.
      * @param loader optional class loader to use when deserializing.
      * @return deserialized object.
@@ -460,9 +456,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         InputStream iin = new InflaterInputStream(new ByteArrayInputStream(bytes));
         SerializationService serializationSvc = serializationSvcRef.getService();
-        ObjectInputStream oin = loader == null || serializationSvc == null
-                        ? new ObjectInputStream(iin)
-                        : serializationSvc.createObjectInputStream(iin, loader);
+        ObjectInputStream oin = loader == null || serializationSvc == null ? new ObjectInputStream(iin) : serializationSvc.createObjectInputStream(iin, loader);
         try {
             return oin.readObject();
         } finally {
@@ -482,9 +476,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Finds partition information in the persistent store. All of the parameters are optional.
      * If a parameter is specified, only entries that match it are retrieved from the persistent store.
-     * 
+     *
      * This method is for the mbean only.
-     * 
+     *
      * @param hostName the host name.
      * @param userDir wlp.user.dir
      * @param libertyServerName name of the Liberty server.
@@ -557,9 +551,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * (as determined by the inState attribute) of the specified state.
      * For example, to find taskIDs for the first 100 tasks in partition 12 that have not completed all executions,
      * taskStore.findTaskIds(12, TaskState.ENDED, false, null, 100);
-     * 
+     *
      * This method is for the mbean only.
-     * 
+     *
      * @param partition identifier of the partition in which to search for tasks.
      * @param state a task state. For example, TaskState.SCHEDULED
      * @param inState indicates whether to include or exclude results with the specified state
@@ -612,7 +606,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /** {@inheritDoc} */
     @Override
-    public List<TimerStatus<?>> findTimerStatus(String appName, String pattern, Character escape, TaskState state, boolean inState, Long minId, Integer maxResults) throws Exception {
+    public List<TimerStatus<?>> findTimerStatus(String appName, String pattern, Character escape, TaskState state, boolean inState, Long minId,
+                                                Integer maxResults) throws Exception {
         pattern = pattern == null ? null : Utils.normalizeString(pattern);
         List<?> results = null;
         TransactionController tranController = new TransactionController();
@@ -696,7 +691,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Returns the execution properties for the specified task.
-     * 
+     *
      * @param task Callable or Runnable which might or might not implement ManagedTask.
      * @return the execution properties for the specified task.
      */
@@ -733,7 +728,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Returns the partition id for this (persistent executor, Liberty server, host name) combination.
-     * 
+     *
      * @return the partition id.
      * @throws Exception if unable to obtain a partition id.
      */
@@ -826,7 +821,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Returns status for the persistent task with the specified id.
-     * 
+     *
      * @param taskId unique identifier for the task.
      * @return status for the persistent task with the specified id.
      *         If the task is not found, <code>null</code> is returned.
@@ -892,7 +887,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         // The task/trigger for EJB persistent timers does not require the application class loader to deserialize.
         byte[] triggerBytes = taskRecord.getTrigger();
-        TimerTrigger trigger = triggerBytes == null ? null : (TimerTrigger) deserialize(triggerBytes, PrivHelper.getSystemClassLoader());
+        TimerTrigger trigger = triggerBytes == null ? null : (TimerTrigger) deserialize(triggerBytes, InvokerTask.priv.getSystemClassLoader());
         return trigger;
     }
 
@@ -901,7 +896,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * If component metadata exists on the thread, the application name is used.
      * Otherwise, if a thread context class loader is present, the application name from the class loader identifier is used.
      * Otherwise, null is returned.
-     * 
+     *
      * @return name of the task owner.
      */
     @Trivial
@@ -909,7 +904,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String name = cData == null ? null : cData.getJ2EEName().getApplication();
         if (name == null) {
-            ClassLoader threadContextClassLoader = PrivHelper.getContextClassLoader();
+            ClassLoader threadContextClassLoader = InvokerTask.priv.getContextClassLoader();
             String identifier = classloaderIdSvc.getClassLoaderIdentifier(threadContextClassLoader);
             // Parse the app name from the identifier. For example, from WebModule:app#module#component
             if (identifier != null) {
@@ -967,7 +962,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * DS method to modify this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context DeclarativeService defined/populated component context
      * @throws MalformedObjectNameException
      */
@@ -1018,7 +1013,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 mbean.unregister();
 
             mbean = new PersistentExecutorMBeanImpl(this);
-            mbean.register(PrivHelper.getBundleContext(context));
+            mbean.register(InvokerTask.priv.getBundleContext(context));
         }
 
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
@@ -1030,7 +1025,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Create and persist a new task to the persistent store.
-     * 
+     *
      * @param task the task.
      * @param taskInfo information to store with the task in binary form which is not directly queryable.
      * @param trigger trigger for the task (if any).
@@ -1125,7 +1120,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             else
                 taskInfo.initForNonSerializableTask(task.getClass().getName());
 
-        ClassLoader loader = timerTrigger == null ? PrivHelper.getContextClassLoader() : timerTrigger.getClassLoader();
+        ClassLoader loader = timerTrigger == null ? InvokerTask.priv.getContextClassLoader() : timerTrigger.getClassLoader();
         record.setIdentifierOfClassLoader(classloaderIdSvc.getClassLoaderIdentifier(loader));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1208,7 +1203,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Invoked by a controller to notify a persistent executor that a task has been assigned to it.
-     * 
+     *
      * @param taskId unique identifier for the task.
      * @param nextExecTime next execution time for the task.
      * @param binaryFlags combination of bits for various binary values.
@@ -1279,9 +1274,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Removes partition information from the persistent store. All of the parameters are optional.
      * If a parameter is specified, only entries that match it are removed from the persistent store.
-     * 
+     *
      * This method is for the mbean only.
-     * 
+     *
      * @param hostName the host name.
      * @param userDir wlp.user.dir
      * @param libertyServerName name of the Liberty server.
@@ -1401,10 +1396,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     @Override
     public <V> TaskStatus<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
         int compare = unit.compareTo(TimeUnit.MILLISECONDS);
-        delay = delay <= 0 ? 0
-                        : compare == 0 ? delay // no conversion needed
+        delay = delay <= 0 ? 0 : compare == 0 ? delay // no conversion needed
                         : compare < 0 ? unit.toMillis(delay - 1) + 1 // round up to nearest millisecond
-                        : unit.toMillis(delay);
+                                        : unit.toMillis(delay);
 
         TaskInfo taskInfo = new TaskInfo(true);
         taskInfo.initForOneShotTask(delay);
@@ -1429,10 +1423,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     @Override
     public TaskStatus<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
         int compare = unit.compareTo(TimeUnit.MILLISECONDS);
-        delay = delay <= 0 ? 0
-                        : compare == 0 ? delay // no conversion needed
+        delay = delay <= 0 ? 0 : compare == 0 ? delay // no conversion needed
                         : compare < 0 ? unit.toMillis(delay - 1) + 1 // round up to nearest millisecond
-                        : unit.toMillis(delay);
+                                        : unit.toMillis(delay);
 
         TaskInfo taskInfo = new TaskInfo(false);
         taskInfo.initForOneShotTask(delay);
@@ -1451,14 +1444,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     public TaskStatus<?> scheduleAtFixedRate(Runnable runnable, long initialDelay, long period, TimeUnit unit) {
         int compare = unit.compareTo(TimeUnit.MILLISECONDS);
 
-        initialDelay = initialDelay <= 0 ? 0
-                        : compare == 0 ? initialDelay // no conversion needed
+        initialDelay = initialDelay <= 0 ? 0 : compare == 0 ? initialDelay // no conversion needed
                         : compare < 0 ? unit.toMillis(initialDelay - 1) + 1 // round up to nearest millisecond
-                        : unit.toMillis(initialDelay);
+                                        : unit.toMillis(initialDelay);
 
         if (period > 0)
-            period = compare == 0 ? period
-                            : compare < 0 ? unit.toMillis(period - 1) + 1 // round up to nearest millisecond
+            period = compare == 0 ? period : compare < 0 ? unit.toMillis(period - 1) + 1 // round up to nearest millisecond
                             : unit.toMillis(period);
         else
             throw new IllegalArgumentException(Long.toString(period));
@@ -1473,14 +1464,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     public TaskStatus<?> scheduleWithFixedDelay(Runnable runnable, long initialDelay, long delay, TimeUnit unit) {
         int compare = unit.compareTo(TimeUnit.MILLISECONDS);
 
-        initialDelay = initialDelay <= 0 ? 0
-                        : compare == 0 ? initialDelay // no conversion needed
+        initialDelay = initialDelay <= 0 ? 0 : compare == 0 ? initialDelay // no conversion needed
                         : compare < 0 ? unit.toMillis(initialDelay - 1) + 1 // round up to nearest millisecond
-                        : unit.toMillis(initialDelay);
+                                        : unit.toMillis(initialDelay);
 
         if (delay > 0)
-            delay = compare == 0 ? delay
-                            : compare < 0 ? unit.toMillis(delay - 1) + 1 // round up to nearest millisecond
+            delay = compare == 0 ? delay : compare < 0 ? unit.toMillis(delay - 1) + 1 // round up to nearest millisecond
                             : unit.toMillis(delay);
         else
             throw new IllegalArgumentException(Long.toString(delay));
@@ -1493,7 +1482,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Utility method that serializes an object to bytes.
-     * 
+     *
      * @param object object to serialize.
      * @return bytes representing the object. Null if the object is null.
      * @throws IOException if an error occurs serializing the object.
@@ -1516,7 +1505,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Invoked when the server is stopped without the {@code --force}.
      * This gives us an opportunity to stop polling for tasks to run
      * and mark ourselves as deactivated so that we don't start any new tasks.
-     * 
+     *
      * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
      */
     @Override
@@ -1529,7 +1518,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the ApplicationTracker reference
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = ApplicationTracker.class)
@@ -1539,7 +1528,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the ApplicationRecycleCoordinator service
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = ApplicationRecycleCoordinator.class)
@@ -1547,7 +1536,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the class loader identifier service.
-     * 
+     *
      * @param svc the service
      */
     @Reference
@@ -1557,7 +1546,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the context service reference
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = WSContextService.class,
@@ -1570,7 +1559,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the controller
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = Controller.class,
@@ -1583,7 +1572,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the Liberty executor.
-     * 
+     *
      * @param svc the service
      */
     @Reference(target = "(component.name=com.ibm.ws.threading)")
@@ -1593,7 +1582,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the LocalTransactionCurrent.
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = LocalTransactionCurrent.class)
@@ -1603,7 +1592,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the WSLocationAdmin service.
-     * 
+     *
      * @param svc the service
      */
     @Reference
@@ -1635,7 +1624,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the Liberty scheduled executor.
-     * 
+     *
      * @param svc the service
      */
     @Reference(target = "(deferrable=false)")
@@ -1645,7 +1634,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the serialization service
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = SerializationService.class)
@@ -1655,7 +1644,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the database store
-     * 
+     *
      * @param svc the service
      * @param props service properties
      */
@@ -1667,7 +1656,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the transaction manager
-     * 
+     *
      * @param ref reference to the service
      */
     @Reference(service = EmbeddableWebSphereTransactionManager.class)
@@ -1677,7 +1666,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for setting the variable registry
-     * 
+     *
      * @param svc the service
      */
     @Reference
@@ -1689,7 +1678,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Declarative services method that is invoked once the server is started.
      * Only after this method is invoked is the initial polling for
      * persistent tasks performed.
-     * 
+     *
      * @param ref reference to the ServerStarted service
      */
     @Reference(service = ServerStarted.class,
@@ -1698,7 +1687,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServiceReference<ServerStarted> ref) {
 
-        // We don't want to start the polling task if we haven't been activated yet. 
+        // We don't want to start the polling task if we haven't been activated yet.
 
         // Not starting polling if not executing tasks.  Need to coordinate with activate.
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.SERVER_STARTED))
@@ -1762,9 +1751,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Transfers tasks that have not yet ended to this persistent executor instance.
-     * 
+     *
      * This method is for the mbean only.
-     * 
+     *
      * @param maxTaskId task id including and up to which to transfer non-ended tasks from the old partition to this partition.
      *            If null, all non-ended tasks are transferred from the old partition to this partition.
      * @param oldPartitionId partition id to which tasks are currently assigned.
@@ -1800,7 +1789,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the ApplicationTracker reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetApplicationTracker(ServiceReference<ApplicationTracker> ref) {
@@ -1809,14 +1798,14 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the ApplicationRecycleCoordinator service
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> ref) {}
 
     /**
      * Declarative Services method for unsetting the class loader identifier service.
-     * 
+     *
      * @param svc the service
      */
     protected void unsetClassLoaderIdentifierService(ClassLoaderIdentifierService svc) {
@@ -1825,7 +1814,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the context service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
@@ -1834,7 +1823,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the controller
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetController(ServiceReference<Controller> ref) {
@@ -1843,7 +1832,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the Liberty executor.
-     * 
+     *
      * @param svc the service
      */
     protected void unsetExecutor(ExecutorService svc) {
@@ -1852,7 +1841,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the LocalTransactionCurrent.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetLocalTransactionCurrent(ServiceReference<LocalTransactionCurrent> ref) {
@@ -1861,7 +1850,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the WSLocationAdmin service.
-     * 
+     *
      * @param svc the service
      */
     protected void unsetLocationAdmin(WsLocationAdmin svc) {
@@ -1870,7 +1859,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the Liberty scheduled executor.
-     * 
+     *
      * @param svc the service
      */
     protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
@@ -1879,7 +1868,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the serialization service
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetSerializationService(ServiceReference<SerializationService> ref) {
@@ -1888,14 +1877,14 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the persistent store
-     * 
+     *
      * @param svc the service
      */
     protected void unsetTaskStore(DatabaseStore svc) {}
 
     /**
      * Declarative Services method for unsetting the transaction manager
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetTransactionManager(ServiceReference<EmbeddableWebSphereTransactionManager> ref) {
@@ -1904,7 +1893,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the variable registry
-     * 
+     *
      * @param svc the service
      */
     protected void unsetVariableRegistry(VariableRegistry svc) {
@@ -1913,7 +1902,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Declarative Services method for unsetting the ServerStarted service
-     * 
+     *
      * @param ref reference to the service
      */
     protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
@@ -1924,9 +1913,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Updates partition information in the persistent store. The parameters are optional, except at least one new value
      * must be specified.
-     * 
+     *
      * This method is for the mbean only.
-     * 
+     *
      * @param oldHostName the host name to update.
      * @param oldUserDir wlp.user.dir to update.
      * @param oldLibertyServerName name of the Liberty server to update.
@@ -1978,7 +1967,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Start the polling task.
-     * 
+     *
      * @param config snapshot of configuration.
      */
     private void startPollingTask(Config config) {
@@ -1994,10 +1983,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * This method is driven for various RuntimeUpdateNotification's. When we receive a
      * notification we will bump our count of active configuration updates in progress. A non-zero count value
      * signifies configuration update(s) are in progress.
-     * 
+     *
      * We monitor the completion of the Futures related to the notifications. When we
      * are driven for their completion we decrement our configuration update in progress count.
-     * 
+     *
      * @see com.ibm.ws.runtime.update.RuntimeUpdateListener#notificationCreated(com.ibm.ws.runtime.update.RuntimeUpdateManager, com.ibm.ws.runtime.update.RuntimeUpdateNotification)
      */
     @Override
@@ -2012,14 +2001,14 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             @Override
             public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                // The configuration update for which we were monitoring is now complete.  
+                // The configuration update for which we were monitoring is now complete.
                 // Update our awareness to the update and perform any deferred actions.
                 configUpdateCompleted(notificationName);
             }
 
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
-                // The configuration update failed, but we still want to resume functions.  
+                // The configuration update failed, but we still want to resume functions.
                 // Update our awareness to the update and perform any deferred actions.
                 configUpdateCompleted(notificationName);
             }
@@ -2074,7 +2063,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * If a configuration update is currently in progress add the targetRunnable to a
      * local queue to drive its run method after the configuration update(s) is complete.
-     * 
+     *
      * @param targetRunnable Runnable eligible for execution.
      * @return return true if a configuration update is in progress, false if not.
      */
@@ -2108,7 +2097,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Bump the number of Configuration updates that we are monitoring.
-     * 
+     *
      * @return previous number of Configuration updates that we are monitoring.
      */
     private int configUpdateInProgress() {
@@ -2128,9 +2117,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Update our awareness to the update and perform any deferred actions.
      * Note: if we're going to do anything significant we should get off of the notification
      * thread.
-     * 
+     *
      * @param notificationName name of associated Notification
-     * 
+     *
      * @return previous number of Configuration updates that we are monitoring.
      */
     int configUpdateCompleted(String notificationName) {
@@ -2177,7 +2166,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /**
      * Polls the persistent task store for tasks that ought to run in the near future and then schedules them.
-     * 
+     *
      * For scenarios where tasks a transferred to a persistent executor where repeated polling is disabled (pollInterval < 0),
      * an instance of this class can be registered as a Synchronization with a transaction in order to
      * automatically schedule a poll after the transaction commits.
@@ -2195,7 +2184,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         /**
          * Upon successful transaction commit, automatically schedules a poll for tasks.
-         * 
+         *
          * @see javax.transaction.Synchronization#afterCompletion(int)
          */
         @Override
@@ -2328,7 +2317,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         /**
          * Commits or rolls back the global transaction started by preInvoke (if any).
          * Resumes the LTC that was suspended by preInvoke (if any).
-         * 
+         *
          * @param exceptionClass type of exception to raise if a declared exception occurs.
          * @return failure wrapped in the specified type. Null if no failure occurs or has occurred previously.
          *         If the failure is an Error or RuntimeException, it is thrown instead.
@@ -2370,7 +2359,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         /**
          * Sets the recorded failure if a previous failure has not already been recorded.
-         * 
+         *
          * @param failure the failure.
          */
         void setFailure(Throwable failure) {

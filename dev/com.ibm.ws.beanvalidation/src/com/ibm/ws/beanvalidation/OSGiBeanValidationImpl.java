@@ -50,6 +50,7 @@ import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -71,6 +72,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
            immediate = true)
 public class OSGiBeanValidationImpl extends AbstractBeanValidation implements ModuleMetaDataListener, BeanValidationUsingClassLoader {
     private static final TraceComponent tc = Tr.register(OSGiBeanValidationImpl.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static final String REFERENCE_VALIDATION_CONFIG_FACTORY = "validationConfigFactory";
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
@@ -256,14 +258,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     @Trivial
     @Override
     public Validator getValidator(ComponentMetaData cmd) {
-        ClassLoader tccl = java.security.AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-
-            @Override
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
-        return getValidator(cmd.getModuleMetaData(), tccl);
+        return getValidator(cmd.getModuleMetaData(), priv.getContextClassLoader());
     }
 
     @Override
@@ -514,12 +509,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     @Override
     public ClassLoader configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
-            cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                @Override
-                public ClassLoader run() {
-                    return Thread.currentThread().getContextClassLoader();
-                }
-            });
+            cl = priv.getContextClassLoader();
         }
         if (cl != null) {
             ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
@@ -564,17 +554,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                 Class<?> clazz = classLoader.loadClass("org.apache.bval.jsr.ConstraintAnnotationAttributes");
                 final Field methodByNameAndClass = clazz.getDeclaredField("METHOD_BY_NAME_AND_CLASS");
 
-                if (System.getSecurityManager() == null) {
-                    methodByNameAndClass.setAccessible(true);
-                } else {
-                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                        @Override
-                        public Object run() {
-                            methodByNameAndClass.setAccessible(true);
-                            return null;
-                        }
-                    });
-                }
+                priv.setAccessible(methodByNameAndClass, true);
 
                 Map<?, ?> methodMap = (Map<?, ?>) methodByNameAndClass.get(null);
                 methodMap.clear();

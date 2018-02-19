@@ -79,8 +79,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
      *            - is the configuration information from parsing the
      *            validation.xml file
      */
-    public ValidationConfigurator(BeanValidationContext bvContext, ValidationConfig config)
-    {
+    public ValidationConfigurator(BeanValidationContext bvContext, ValidationConfig config) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "<init>", new Object[] { bvContext, config });
@@ -97,16 +96,14 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
         ivBVContext = null;
     }
 
-    public ValidationConfigurator(BeanValidationContext bvContext)
-    {
+    public ValidationConfigurator(BeanValidationContext bvContext) {
         this(bvContext, null);
     }
 
     /**
      * Internal method to set up the object's data
      */
-    private void setupData(ValidationConfig config, ClassLoader classLoader)
-    {
+    private void setupData(ValidationConfig config, ClassLoader classLoader) {
         // A config object is always used to use a common code path, so the parsed
         // ValidationConfig may be null if a validation.xml wasn't found.
         if (config != null) {
@@ -133,12 +130,11 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuffer sb = new StringBuffer(NEW_LINE + "[").append(getClass().getName()).append(NEW_LINE);
         dump(sb);
         return sb.append(']').append(NEW_LINE).toString();
@@ -158,7 +154,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#getDefaultProviderClass()
      */
     @Override
@@ -192,7 +188,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#configure()
      */
     @Override
@@ -233,7 +229,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#release(javax.validation.ValidatorFactory)
      */
     @Override
@@ -243,7 +239,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#setMessageInterpolator(javax.validation.Configuration)
      */
     @Override
@@ -278,7 +274,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#setTraversableResolver(javax.validation.Configuration)
      */
     @Override
@@ -313,7 +309,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#setConstraintValidatorFactory(javax.validation.Configuration)
      */
     @Override
@@ -348,7 +344,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#getConstraintMapping()
      */
     @Override
@@ -366,7 +362,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#getProperty()
      */
     @Override
@@ -376,7 +372,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#setProperties(javax.validation.Configuration)
      */
     @Override
@@ -399,7 +395,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#setConstraintMappings(javax.validation.Configuration)
      */
     @Override
@@ -435,9 +431,9 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
      * Load the class on the application class loader given the class name. If the application
      * class loader wasn't passed in, it is assumed that the current TCCL is already set
      * so that is what is used.
-     * 
+     *
      * @param className - class name to find. Cannot be null.
-     * 
+     *
      * @throws ClassNotFoundException
      */
     protected Class<?> loadClass(String className) throws ClassNotFoundException {
@@ -477,7 +473,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
      * Load the class on the application class loader given the class name. More specifically,
      * the class will be loaded using which ever class loader already loaded the class, which
      * is handled by {@link #loadClass(String)}.
-     * 
+     *
      * @param <T> the type of the class to be instantiated
      * @param clazz - class cannot be null.
      */
@@ -503,7 +499,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#closeMappingFiles()
      */
     @Override
@@ -538,7 +534,7 @@ public class ValidationConfigurator implements ValidationConfigurationInterface 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface#getAppClassLoader()
      */
     @Override

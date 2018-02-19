@@ -33,13 +33,12 @@ import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.internal.PersistentExecutorImpl.TransactionController;
 import com.ibm.ws.concurrent.persistent.serializable.TaskFailure;
 import com.ibm.ws.concurrent.persistent.serializable.TaskSkipped;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.wsspi.concurrent.persistent.TaskRecord;
 import com.ibm.wsspi.concurrent.persistent.TaskStore;
 
 /**
  * Future for a persistent task.
- * 
+ *
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
 public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
@@ -92,7 +91,7 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
 
     /**
      * Initialize a snapshot of task status.
-     * 
+     *
      * @param task persistent task.
      * @param persistentExecutor persistent scheduled executor that obtained this task status.
      * @throws IllegalStateException if any of the following are unspecified in the task record:
@@ -120,9 +119,7 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
         TaskStore taskStore = persistentExecutor.taskStore;
         try {
             tranController.preInvoke();
-            result = (miscBinaryFlags & TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit) == 0
-                            ? taskStore.cancel(id)
-                            : taskStore.remove(id, null, false);
+            result = (miscBinaryFlags & TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit) == 0 ? taskStore.cancel(id) : taskStore.remove(id, null, false);
         } catch (Throwable x) {
             tranController.setFailure(x);
         } finally {
@@ -155,7 +152,7 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
 
     /**
      * Comparison of task ids and status.
-     * 
+     *
      * @return true if the task ids and status match, otherwise false.
      */
     @Override
@@ -211,7 +208,7 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
     /**
      * Returns text formatted with both the task id and name (if any).
      * For example: "1001 (My Task Name)" or just "1001"
-     * 
+     *
      * @return text formatted with both the task id and name (if any).
      */
     private final String getIdAndName() {
@@ -255,8 +252,7 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
 
         else if (resultBytes != null) {
             try {
-                ClassLoader loader = classLoaderIdentifier == null ? null
-                                : persistentExecutor.classloaderIdSvc.getClassLoader(classLoaderIdentifier);
+                ClassLoader loader = classLoaderIdentifier == null ? null : persistentExecutor.classloaderIdSvc.getClassLoader(classLoaderIdentifier);
                 // TODO what if null?
 
                 Object result = persistentExecutor.deserialize(resultBytes, loader);
@@ -266,18 +262,15 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
                     TaskFailure taskFailure = (TaskFailure) result;
                     switch (taskFailure.getReason()) {
                         case TaskFailure.FAILURE_LIMIT_REACHED:
-                            failure = new AbortedException(
-                                            Tr.formatMessage(tc, "CWWKC1555.retry.limit.reached", getIdAndName(), taskFailure.getParameter(0)),
-                                            taskFailure.getCause());
+                            failure = new AbortedException(Tr.formatMessage(tc, "CWWKC1555.retry.limit.reached", getIdAndName(),
+                                                                            taskFailure.getParameter(0)), taskFailure.getCause());
                             break;
                         case TaskFailure.NONSER_RESULT:
                             failure = new ResultNotSerializableException(taskFailure.getParameter(0));
                             failure.initCause(taskFailure.getCause());
                             break;
                         default:
-                            failure = new ExecutionException(
-                                            Tr.formatMessage(tc, "CWWKC1554.general.task.failure", getIdAndName()),
-                                            taskFailure.getCause());
+                            failure = new ExecutionException(Tr.formatMessage(tc, "CWWKC1554.general.task.failure", getIdAndName()), taskFailure.getCause());
                     }
                 } else if (result instanceof TaskSkipped) {
                     failure = new SkippedException(((TaskSkipped) result).getCause());
@@ -305,7 +298,7 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
 
     /**
      * Returns the unique identifier for the task.
-     * 
+     *
      * @return the unique identifier for the task.
      */
     @Override
@@ -330,12 +323,12 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
             return null;
 
         // The task/trigger for EJB persistent timers does not require the application class loader to deserialize.
-        return (TimerTrigger) persistentExecutor.deserialize(triggerBytes, PrivHelper.getSystemClassLoader());
+        return (TimerTrigger) persistentExecutor.deserialize(triggerBytes, InvokerTask.priv.getSystemClassLoader());
     }
 
     /**
      * Returns the task id as an integer.
-     * 
+     *
      * @Return the task id as an integer.
      */
     @Override
@@ -376,14 +369,12 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
     /**
      * Returns a string consisting of the identity hash code, task id, task name (if any is known), next time, and state.
      * Example: TaskStatus[301]@a556a556 My Task Name SCHEDULED 2014/06/03-8:48:00.000-CDT
-     * 
+     *
      * @return a string consisting of the identity hash code, task id, and task name (if any is known).
      */
     @Override
     public String toString() {
-        StringBuilder output = new StringBuilder(100).append("TaskStatus[")
-                        .append(id).append("]@")
-                        .append(Integer.toHexString(System.identityHashCode(this)));
+        StringBuilder output = new StringBuilder(100).append("TaskStatus[").append(id).append("]@").append(Integer.toHexString(System.identityHashCode(this)));
         if (name != null && name.length() > 0)
             output.append(' ').append(name);
         Utils.appendState(output.append(' '), state);

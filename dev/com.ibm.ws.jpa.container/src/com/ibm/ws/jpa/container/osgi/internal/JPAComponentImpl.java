@@ -15,6 +15,7 @@ import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NA
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -68,7 +69,7 @@ import com.ibm.ws.jpa.management.JPAEMFPropertyProvider;
 import com.ibm.ws.jpa.management.JPAPuScope;
 import com.ibm.ws.jpa.management.JPARuntime;
 import com.ibm.ws.kernel.LibertyProcess;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -84,12 +85,13 @@ import com.ibm.wsspi.resource.ResourceBindingListener;
 @Component(configurationPid = "com.ibm.ws.jpacomponent",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { JPAComponent.class, ApplicationStateListener.class, ModuleStateListener.class },
-// Use a higher service.ranking to ensure app/module listeners can
-// register class transformers before other components attempt to
-// load classes.
+           // Use a higher service.ranking to ensure app/module listeners can
+           // register class transformers before other components attempt to
+           // load classes.
            property = { "service.vendor=IBM", "service.ranking:Integer=1000" })
 public class JPAComponentImpl extends AbstractJPAComponent implements ApplicationStateListener, ModuleStateListener {
     private static final TraceComponent tc = Tr.register(JPAComponentImpl.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static final String REFERENCE_JPA_RUNTIME = "jpaRuntime";
     private static final String REFERENCE_TRANSACTION_MANAGER = "transactionManager";
@@ -832,7 +834,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         stuckApps.clear();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Recycling JPA applications", appsToRestart);
-        ApplicationRecycleCoordinator appCoord = (ApplicationRecycleCoordinator) PrivHelper.locateService(context, REFERENCE_APP_COORD);
+        ApplicationRecycleCoordinator appCoord = (ApplicationRecycleCoordinator) priv.locateService(context, REFERENCE_APP_COORD);
         appCoord.recycleApplications(appsToRestart);
     }
 }
