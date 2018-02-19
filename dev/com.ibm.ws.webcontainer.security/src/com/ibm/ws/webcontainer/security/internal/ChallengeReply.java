@@ -22,6 +22,7 @@ import com.ibm.ws.webcontainer.security.AuthResult;
  */
 public class ChallengeReply extends WebReply {
     boolean taiChallengeReply = false;
+    String reason = null;
     public static final String AUTHENTICATE_HDR = "WWW-Authenticate";
 
     public static final String REALM_HDR_PREFIX = "Basic realm=\"";
@@ -34,9 +35,7 @@ public class ChallengeReply extends WebReply {
     public ChallengeReply(String realm, String reason) {
         this(realm, HttpServletResponse.SC_UNAUTHORIZED, AuthResult.UNKNOWN);
         message = REALM_HDR_PREFIX + realm + REALM_HDR_SUFFIX;
-        if (reason != null) {
-            message = message + ";" + reason;
-        }
+        this.reason = reason;
     }
 
     public ChallengeReply(String realm, int code, AuthResult status) {
@@ -53,6 +52,8 @@ public class ChallengeReply extends WebReply {
         //DO NOT set the header for TAI challenge reply.
         if (!taiChallengeReply) {
             rsp.setHeader(AUTHENTICATE_HDR, message);
+            if (reason != null)
+                rsp.sendError(responseCode, reason);
         }
     }
 }

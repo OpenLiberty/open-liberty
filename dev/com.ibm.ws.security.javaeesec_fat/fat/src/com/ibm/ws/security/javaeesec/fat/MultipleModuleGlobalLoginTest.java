@@ -435,7 +435,7 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
         // Execute BA login for custom identity store in the different module.
         // This should fail.
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, REALM1_USER, REALM1_PASSWORD, HttpServletResponse.SC_FORBIDDEN);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, REALM1_USER, REALM1_PASSWORD, HttpServletResponse.SC_UNAUTHORIZED);
     }
 
 }
