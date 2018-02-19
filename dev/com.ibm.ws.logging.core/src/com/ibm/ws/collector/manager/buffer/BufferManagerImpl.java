@@ -64,7 +64,6 @@ public class BufferManagerImpl extends BufferManager {
         if (event == null)
             throw new NullPointerException();
 
-        SynchronousHandler[] arrayCopy = null;
         RERWLOCK.readLock().lock();
         try {
 
@@ -72,16 +71,18 @@ public class BufferManagerImpl extends BufferManager {
              * Check if we have any synchronous handlers, and write directly to
              * them
              */
-	        if (!synchronousHandlerSet.isEmpty()) {
-	            /*
-	             * There can be many Reader locks, but only one writer lock. This
-	             * ReaderWriter lock is needed to avoid CMException when the add()
-	             * method is forwarding log events to synchronous handlers and an
-	             * addSyncHandler or removeSyncHandler is called
-	             */
-	        	arrayCopy = synchronousHandlerSet.toArray(new SynchronousHandler[0]);
-	        
-	        }
+            if (!synchronousHandlerSet.isEmpty()) {
+                /*
+                 * There can be many Reader locks, but only one writer lock. This
+                 * ReaderWriter lock is needed to avoid CMException when the add()
+                 * method is forwarding log events to synchronous handlers and an
+                 * addSyncHandler or removeSyncHandler is called
+                 */
+                for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
+                    synchronousHandler.synchronousWrite(event);
+                }
+
+            }
             
             if(ringBuffer !=  null){
                 ringBuffer.add(event);
@@ -95,12 +96,6 @@ public class BufferManagerImpl extends BufferManager {
 
         } finally {
             RERWLOCK.readLock().unlock();
-            if (arrayCopy != null){
-	            for (SynchronousHandler synchronousHandler : arrayCopy) {
-	            	synchronousHandler.synchronousWrite(event);
-	            }
-            }
-            arrayCopy = null;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
