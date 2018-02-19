@@ -35,6 +35,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
@@ -125,7 +126,7 @@ public class SecurityContextImpl implements SecurityContext {
     public boolean hasAccessToWebResource(String resource, String... methods) {
 
         String appName = getApplicationName();
-        SecurityMetadata securityMetadata = getSecurityMetadata();
+        SecurityMetadata securityMetadata = WebConfigUtils.getSecurityMetadata();
         SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
 
         if (null != collection) {
@@ -197,13 +198,4 @@ public class SecurityContextImpl implements SecurityContext {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
     }
-
-    private SecurityMetadata getSecurityMetadata() {
-        SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
-        return secMetadata;
-    }
-
 }

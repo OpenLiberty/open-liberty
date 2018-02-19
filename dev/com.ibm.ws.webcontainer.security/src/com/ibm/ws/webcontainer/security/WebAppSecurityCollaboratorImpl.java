@@ -79,6 +79,7 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityConstraint;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.metadata.WebResourceCollection;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -87,7 +88,6 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
-import com.ibm.wsspi.webcontainer.metadata.WebCollaboratorComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.security.SecurityViolationException;
@@ -1278,20 +1278,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     public SecurityMetadata getSecurityMetadata() {
-        SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (!(cmd instanceof WebComponentMetaData || cmd instanceof WebCollaboratorComponentMetaData)) {
-            // if there is not webcollaborator on the top of threadcontext, peek one of these classes in the stack.
-            cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData(WebComponentMetaData.class);
-            if (cmd == null) {
-                cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData(WebCollaboratorComponentMetaData.class);
-            }
-        }
-        if (cmd != null) {
-            WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-            secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
-        }
-        return secMetadata;
+        return WebConfigUtils.getSecurityMetadata();
     }
 
     protected void setSecurityMetadata(SecurityMetadata secMetadata) {

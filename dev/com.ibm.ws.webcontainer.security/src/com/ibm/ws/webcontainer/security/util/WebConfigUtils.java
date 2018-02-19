@@ -15,6 +15,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.wsspi.webcontainer.metadata.WebCollaboratorComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
@@ -59,8 +60,18 @@ public class WebConfigUtils {
     public static SecurityMetadata getSecurityMetadata() {
         SecurityMetadata secMetadata = null;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        if (!(cmd instanceof WebComponentMetaData || cmd instanceof WebCollaboratorComponentMetaData)) {
+            // if there is not webcollaborator on the top of threadcontext, peek one of these classes in the stack.
+            cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData(WebComponentMetaData.class);
+            if (cmd == null) {
+                cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData(WebCollaboratorComponentMetaData.class);
+            }
+        }
+        if (cmd != null) {
+            WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
+            secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        }
         return secMetadata;
+
     }
 }

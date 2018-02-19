@@ -265,9 +265,7 @@ public class LoginToContinueInterceptor {
     }
 
     protected SecurityMetadata getSecurityMetadata() {
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        return (SecurityMetadata) wmmd.getSecurityMetaData();
+        return WebConfigUtils.getSecurityMetadata();
     }
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
