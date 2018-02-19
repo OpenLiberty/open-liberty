@@ -36,6 +36,10 @@ public class CacheSession extends BackedSession {
     private boolean populatedAppData;
     private boolean usingMultirow;
 
+    CacheSession() {
+        super();
+    }
+
     public CacheSession(CacheHashMap sessions, String id, IStoreCallback storeCallback) {
         super(sessions, id, storeCallback);
         usingMultirow = _smc.isUsingMultirow();

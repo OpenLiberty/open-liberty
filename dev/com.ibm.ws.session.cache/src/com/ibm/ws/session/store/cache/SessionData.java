@@ -16,6 +16,7 @@ import java.util.BitSet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -56,7 +57,7 @@ class SessionData {
      * @param list ArrayList obtained from the cache.
      */
     @SuppressWarnings("unchecked")
-    SessionData(ArrayList<?> list) {
+    SessionData(@Sensitive ArrayList<?> list) { // avoid tracing all of the bytes
         this.list = (ArrayList<Object>) list;
     }
 

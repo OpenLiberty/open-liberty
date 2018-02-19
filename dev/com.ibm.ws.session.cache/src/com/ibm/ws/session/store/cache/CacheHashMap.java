@@ -17,7 +17,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
@@ -64,6 +69,23 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * Create a key for an application, of the form: app:Application
+     * 
+     * @param app the application
+     * @return the key
+     */
+    @Trivial
+    static final String createAppKey(String app) {
+        String key = new StringBuilder(4 + app.length())
+                        .append("app:")
+                        .append(app)
+                        .toString();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "app key: " + key);
+        return key;
+    }
+
+    /**
      * Create a key for a session, of the form: SessionId@Application
      * 
      * @param sessionId the session id
@@ -99,6 +121,92 @@ public class CacheHashMap extends BackedHashMap {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "session property key: " + key);
         return key;
+    }
+
+    /**
+     * Copied from DatabaseHashMap.doInvalidations.
+     * this method removes timed out sessions that do not require listener processing
+     */
+    private void doInvalidations() {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        try {
+            long now = System.currentTimeMillis();
+            String appName = getIStore().getId();
+            String appKey = createAppKey(appName);
+            String appPostFix = new StringBuilder(appName.length() + 1).append('@').append(appName).toString();
+
+            // loop through all the candidates eligible for invalidation
+            BackedSession pmiStatSession = null; // fake session for pmi stats
+            SessionStatistics pmiStats = null;
+            for (@SuppressWarnings("rawtypes") Iterator<Cache.Entry<String, ArrayList>> it = cacheStoreService.cache.iterator(); it.hasNext(); ) {
+                @SuppressWarnings("rawtypes")
+                Cache.Entry<String, ArrayList> entry = it.next();
+                String key = entry == null ? null : entry.getKey();
+                if (key != null && (key.equals(appKey) || key.endsWith(appPostFix))) {
+                    SessionData sessionData = new SessionData(entry.getValue());
+                    long lastAccess = sessionData.getLastAccess();
+                    short listenerCnt = sessionData.getListenerCount();
+                    int maxInactive = sessionData.getMaxInactiveTime();
+                    if ((listenerCnt == 0 || listenerCnt == 2)
+                                    && maxInactive >= 0
+                                    && maxInactive < (now - lastAccess) / 1000) {
+                        if (now + _smc.getInvalidationCheckInterval() * 1000 <= System.currentTimeMillis()) {
+                            // If the scan is taking more than pollInterval, just break and
+                            // invalidate the sessions so far determined
+                            break;
+                        }
+
+                        String id = key.equals(appKey) ? appName : key.substring(0, key.length() - appPostFix.length());
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "attempt to delete " + key, id);
+
+                        if (cacheStoreService.cache.remove(key, entry.getValue())) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "deleted " + key);
+
+                            //delete sub rows
+                            if (_smc.isUsingMultirow()) {
+                                SessionInfo sessionInfo = new SessionInfo(entry.getValue());
+                                Set<String> propIds = sessionInfo.getSessionPropertyIds();
+                                if (propIds != null && !propIds.isEmpty()) {
+                                    HashSet<String> propKeys = new HashSet<String>();
+                                    for (String propId : propIds)
+                                        propKeys.add(createSessionPropertyKey(id, propId));
+
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "deleting", propKeys);
+
+                                    sessionPropertyCache.removeAll(propKeys);
+                                }
+                            }
+                        }
+
+                        /*
+                         * We already did cleanUpCache during the invalidation processing. Therefore, the session is no longer
+                         * in our cache, and superRemove should return null. We need to create a temporary Session with an
+                         * accurate Id and creationTime to send to the PMI counters.
+                         */
+                        superRemove(id);
+                        long createTime = sessionData.getCreationTime();
+                        //we don't want to retrieve session, so use a fake one for pmi
+                        if (pmiStatSession == null)
+                            pmiStatSession = new CacheSession();
+                        if (pmiStats == null)
+                            pmiStats = _iStore.getSessionStatistics();
+                        pmiStatSession.setId(id);
+                        pmiStatSession.setCreationTime(createTime);
+                        if (pmiStats != null) {
+                            pmiStats.sessionDestroyed(pmiStatSession);
+                            pmiStats.sessionDestroyedByTimeout(pmiStatSession);
+                        }
+                    }
+                }
+            }
+        } catch (Exception x) {
+            // auto FFDC
+        }
     }
 
     /**
@@ -293,9 +401,67 @@ public class CacheHashMap extends BackedHashMap {
      * @see com.ibm.ws.session.store.common.BackedHashMap#performInvalidation()
      */
     @Override
-    @Trivial
     protected void performInvalidation() {
-        // no-op: JCache will invalidate sessions on its own
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        long now = System.currentTimeMillis();
+
+        String appName = getIStore().getId();
+
+        boolean doInvals = false;
+        boolean doCacheInval = doScheduledInvalidation();
+
+        try {
+            // handle last acc times for manual update regardless
+            // of whether this thread will scan for time outs
+            if (!_smc.getEnableEOSWrite()) {
+                writeCachedLastAccessedTimes();
+            }
+
+            if (doCacheInval) {
+                String appkey = createAppKey(appName);
+                ArrayList<?> oldValue = cacheStoreService.cache.get(appkey);
+                if (oldValue == null) {
+                    // If we are here, it means this is the first time this web module is
+                    // trying to perform invalidation of sessions
+                    SessionData sessionData = new SessionData(now, // last access
+                                                              -1, // max inactive time,
+                                                              (short) 0, // listener count 
+                                                              null); // user name
+                    ArrayList<Object> newValue = sessionData.getArrayList();
+                    cacheStoreService.cache.put(appkey, newValue);
+                    doInvals = true;
+                } else {
+                    SessionData sessionData = new SessionData(oldValue);
+                    long lastTime = sessionData.getLastAccess();
+
+                    long lastCheck = now - _smc.getInvalidationCheckInterval() * 1000;
+
+                    //check the value of lastCheck,lastTime,now
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "lastCheck/lastTime/now", lastCheck, lastTime, now);
+
+                    //if no other server tried to process invalidation within the interval, this will be true
+                    //similar to updateNukerTimeStamp, but we have an extra check here to test the last access time hasn't changed
+                    if (lastCheck >= lastTime || lastTime > now) {
+                        sessionData = sessionData.clone();
+                        sessionData.setLastAccess(now);
+                        ArrayList<Object> newValue = sessionData.getArrayList();
+                        doInvals = cacheStoreService.cache.replace(appkey, oldValue, newValue);
+                    }
+                }
+
+                if (doInvals) {
+                    //Process the non-listener sessions first
+                    doInvalidations();
+
+                    //Read in all the sessions with listeners that need to be invalidated
+                    processInvalidListeners();
+                }
+            }
+        } catch (Throwable t) {
+            // auto FFDC
+        }
     }
 
     /**
@@ -385,6 +551,105 @@ public class CacheHashMap extends BackedHashMap {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Copied from DatabaseHashMap.pollForInvalidSessionsWithListeners and DatabaseHashMap.processInvalidListeners.
+     * This method determines the set of sessions with session listeners which
+     * need to be invalidated and processes them.
+     */
+    private void processInvalidListeners() {
+        final boolean trace = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
+
+        String appName = getIStore().getId();
+        String appKey = createAppKey(appName);
+        String appPostFix = new StringBuilder(appName.length() + 1).append('@').append(appName).toString();
+
+        long start = System.currentTimeMillis();
+
+        for (@SuppressWarnings("rawtypes") Iterator<Cache.Entry<String, ArrayList>> it = cacheStoreService.cache.iterator(); it.hasNext(); ) {
+            @SuppressWarnings("rawtypes")
+            Cache.Entry<String, ArrayList> entry = it.next();
+            String key = entry == null ? null : entry.getKey();
+            if (key != null && (key.equals(appKey) || key.endsWith(appPostFix))) {
+                SessionData sessionData = new SessionData(entry.getValue());
+                long lastAccess = sessionData.getLastAccess();
+                short listenerCnt = sessionData.getListenerCount();
+                int maxInactive = sessionData.getMaxInactiveTime();
+                if ((listenerCnt == 0 || listenerCnt == 2)
+                                && maxInactive >= 0
+                                && maxInactive < (start - lastAccess) / 1000) {
+
+                    String id = key.equals(appKey) ? appName : key.substring(0, key.length() - appPostFix.length());
+
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "processing " + key, id);
+
+                    CacheSession s = new CacheSession(this, id, _iStore.getStoreCallback());
+                    s.initSession(_iStore);
+                    s.setIsValid(true);
+                    s.setIsNew(false);
+                    s.updateLastAccessTime(lastAccess);
+                    s.setCreationTime(sessionData.getCreationTime());
+                    s.internalSetMaxInactive(maxInactive);
+                    s.internalSetUser(sessionData.getUser());
+                    s.setListenerFlag(listenerCnt);
+
+                    long now = System.currentTimeMillis();
+                    //handle the subset of session listeners
+
+                    lastAccess = s.getCurrentAccessTime(); // try using lastTouch again..
+
+                    try {
+                        // get the session ready and read in any listeners
+                        s.setIsNew(false);
+                        s.getSwappableListeners(BackedSession.HTTP_SESSION_BINDING_LISTENER);
+
+                        sessionData = sessionData.clone();
+                        sessionData.setLastAccess(lastAccess);
+
+                        // only invalidate those which have not been accessed since
+                        // check in computeInvalidList
+                        if (cacheStoreService.cache.remove(key, sessionData.getArrayList())) {
+                            // return of session done as a result of this call
+                            s.internalInvalidate(true);
+
+                            if (_smc.isUsingMultirow()) {
+                                SessionInfo sessionInfo = new SessionInfo(entry.getValue());
+                                Set<String> propIds = sessionInfo.getSessionPropertyIds();
+                                if (propIds != null && !propIds.isEmpty()) {
+                                    HashSet<String> propKeys = new HashSet<String>();
+                                    for (String propId : propIds)
+                                        propKeys.add(createSessionPropertyKey(id, propId));
+
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "deleting", propKeys);
+
+                                    sessionPropertyCache.removeAll(propKeys);
+                                }
+                            }
+                        }
+
+                        /*
+                         * we don't want to update this on every invalidation with a listener that is processed.
+                         * We'll only update this if we're getting close.
+                         *
+                         * Processing Invalidation Listeners could take a long time. We should update the
+                         * NukerTimeStamp so that another server in this cluster doesn't kick off invalidation
+                         * while we are still processing. We only want to update the time stamp if we are getting
+                         * close to the time when it will expire. Therefore, we are going to do it after we're 1/2 way there.
+                         */
+                        if ((now + _smc.getInvalidationCheckInterval() * (1000 / 2)) < System.currentTimeMillis()) {
+                            // TODO updateNukerTimeStamp(nukerCon, getIStore().getId());
+                            now = System.currentTimeMillis();
+                        }
+                    } catch (Exception e) {
+                        FFDCFilter.processException(e, getClass().getName(), "652", s);
+                        throw e;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -490,6 +755,49 @@ public class CacheHashMap extends BackedHashMap {
         }
 
         return updateCount;
+    }
+
+    /**
+     * Copied from DatabaseHashMap.writeCachedLastAccessedTimes.
+     * writeCachedLastAccessedTimes - if we have manual writes of time-based writes, we cache the last
+     * accessed times and only write them to the persistent store prior to the inval thread running.
+     */
+    void writeCachedLastAccessedTimes() throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // create a copy for the updates, then atomically clear the table
+        // the hashtable table clone is shallow, it will not dup the keys/elements
+        @SuppressWarnings("unchecked")
+        Hashtable<String, Object> updTab = (Hashtable<String, Object>) cachedLastAccessedTimes.clone();
+        cachedLastAccessedTimes.clear();
+        Enumeration<String> updEnum = updTab.keys();
+
+        while (updEnum.hasMoreElements()) {
+            String id = (String) updEnum.nextElement();
+            Long timeObj = (Long) updTab.get(id);
+            long time = timeObj.longValue();
+            try {
+                String key = createSessionKey(id, getIStore().getId());
+                for (int updateCount = -1; updateCount == -1; ) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Updating LastAccess for " + key);
+
+                    ArrayList<?> oldValue = cacheStoreService.cache.get(key);
+                    SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
+                    if (sessionData == null || sessionData.getLastAccess() >= time) {
+                        updateCount = 0;
+                    } else {
+                        sessionData.setLastAccess(time);
+                        ArrayList<Object> newValue = sessionData.getArrayList();
+                        if (cacheStoreService.cache.replace(key, oldValue, newValue))
+                            updateCount = 1;
+                    }
+                }
+            } catch (Exception x) {
+                FFDCFilter.processException(x, getClass().getName(), "649", id);
+                throw x;
+            }
+        }
     }
 
     /**
