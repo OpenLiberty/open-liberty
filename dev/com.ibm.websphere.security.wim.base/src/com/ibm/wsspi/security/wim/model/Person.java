@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,9 +26,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Person complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Person">
  * &lt;complexContent>
@@ -37,61 +38,102 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The Person object extends the Party object and is used to represent a user or principal.
- * 
+ *
  * <p> The Person object defines the various properties that can be associated with a user, such as uid, cn,
  * and mail.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {
-                                       "uid",
-                                       "cn",
-                                       "sn",
-                                       "preferredLanguage",
-                                       "displayName",
-                                       "initials",
-                                       "mail",
-                                       "ibmPrimaryEmail",
-                                       "jpegPhoto",
-                                       "labeledURI",
-                                       "carLicense",
-                                       "telephoneNumber",
-                                       "facsimileTelephoneNumber",
-                                       "pager",
-                                       "mobile",
-                                       "homePostalAddress",
-                                       "postalAddress",
-                                       "roomNumber",
-                                       "l",
-                                       "localityName",
-                                       "st",
-                                       "stateOrProvinceName",
-                                       "street",
-                                       "postalCode",
-                                       "city",
-                                       "employeeType",
-                                       "employeeNumber",
-                                       "manager",
-                                       "secretary",
-                                       "departmentNumber",
-                                       "title",
-                                       "ibmJobTitle",
-                                       "c",
-                                       "countryName",
-                                       "givenName",
-                                       "homeAddress",
-                                       "businessAddress",
-                                       "description",
-                                       "businessCategory",
-                                       "seeAlso",
-                                       "kerberosId",
-                                       "photoURL",
-                                       "photoURLThumbnail"
+                                        "uid",
+                                        "cn",
+                                        "sn",
+                                        "preferredLanguage",
+                                        "displayName",
+                                        "initials",
+                                        "mail",
+                                        "ibmPrimaryEmail",
+                                        "jpegPhoto",
+                                        "labeledURI",
+                                        "carLicense",
+                                        "telephoneNumber",
+                                        "facsimileTelephoneNumber",
+                                        "pager",
+                                        "mobile",
+                                        "homePostalAddress",
+                                        "postalAddress",
+                                        "roomNumber",
+                                        "l",
+                                        "localityName",
+                                        "st",
+                                        "stateOrProvinceName",
+                                        "street",
+                                        "postalCode",
+                                        "city",
+                                        "employeeType",
+                                        "employeeNumber",
+                                        "manager",
+                                        "secretary",
+                                        "departmentNumber",
+                                        "title",
+                                        "ibmJobTitle",
+                                        "c",
+                                        "countryName",
+                                        "givenName",
+                                        "homeAddress",
+                                        "businessAddress",
+                                        "description",
+                                        "businessCategory",
+                                        "seeAlso",
+                                        "kerberosId",
+                                        "photoURL",
+                                        "photoURLThumbnail"
 })
-public class Person
-                extends Party
-{
+public class Person extends Party {
+    private static final String PROP_UID = "uid";
+    private static final String PROP_CN = "cn";
+    private static final String PROP_SN = "sn";
+    private static final String PROP_PREFERRED_LANGUAGE = "preferredLanguage";
+    private static final String PROP_DISPLAY_NAME = "displayName";
+    private static final String PROP_INITIALS = "initials";
+    private static final String PROP_MAIL = "mail";
+    private static final String PROP_IBM_PRIMARY_EMAIL = "ibmPrimaryEmail";
+    private static final String PROP_JPEG_PHOTO = "jpegPhoto";
+    private static final String PROP_LABELED_URI = "labeledURI";
+    private static final String PROP_CAR_LICENSE = "carLicense";
+    private static final String PROP_TELEPHONE_NUMBER = "telephoneNumber";
+    private static final String PROP_FACSIMILE_TELEPHONE_NUMBER = "facsimileTelephoneNumber";
+    private static final String PROP_PAGER = "pager";
+    private static final String PROP_MOBILE = "mobile";
+    private static final String PROP_HOME_POSTAL_ADDRESS = "homePostalAddress";
+    private static final String PROP_POSTAL_ADDRESS = "postalAddress";
+    private static final String PROP_ROOM_NUMBER = "roomNumber";
+    private static final String PROP_L = "l";
+    private static final String PROP_LOCALITY_NAME = "localityName";
+    private static final String PROP_ST = "st";
+    private static final String PROP_STATE_OR_PROVINCE_NAME = "stateOrProvinceName";
+    private static final String PROP_STREET = "street";
+    private static final String PROP_POSTAL_CODE = "postalCode";
+    private static final String PROP_CITY = "city";
+    private static final String PROP_EMPLOYEE_TYPE = "employeeType";
+    private static final String PROP_EMPLOYEE_NUMBER = "employeeNumber";
+    private static final String PROP_MANAGER = "manager";
+    private static final String PROP_SECRETARY = "secretary";
+    private static final String PROP_DEPARTMENT_NUMBER = "departmentNumber";
+    private static final String PROP_TITLE = "title";
+    private static final String PROP_IBM_JOB_TITLE = "ibmJobTitle";
+    private static final String PROP_C = "c";
+    private static final String PROP_COUNTRY_NAME = "countryName";
+    private static final String PROP_GIVEN_NAME = "givenName";
+    private static final String PROP_HOME_ADDRESS = "homeAddress";
+    private static final String PROP_BUSINESS_ADDRESS = "businessAddress";
+    private static final String PROP_DESCRIPTION = "description";
+    private static final String PROP_BUSINESS_CATEGORY = "businessCategory";
+    private static final String PROP_SEE_ALSO = "seeAlso";
+    private static final String PROP_KERBEROS_ID = "kerberosId";
+    private static final String PROP_PHOTO_URL = "photoURL";
+    private static final String PROP_PHOTO_URL_THUMBNAIL = "photoURLThumbnail";
 
     protected String uid;
     protected String cn;
@@ -138,23 +180,60 @@ public class Person
     protected String kerberosId;
     protected String photoURL;
     protected String photoURLThumbnail;
+
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
     private static ArrayList superTypeList = null;
     private static HashSet subTypeList = null;
 
+    /** The set of multi-valued properties for this entity type. */
+    private static final Set<String> MULTI_VALUED_PROPERTIES;
+
     static {
         setDataTypeMap();
         setSuperTypes();
         setSubTypes();
+
+        MULTI_VALUED_PROPERTIES = new HashSet<String>();
+        MULTI_VALUED_PROPERTIES.add(PROP_DISPLAY_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_INITIALS);
+        MULTI_VALUED_PROPERTIES.add(PROP_JPEG_PHOTO);
+        MULTI_VALUED_PROPERTIES.add(PROP_CAR_LICENSE);
+        MULTI_VALUED_PROPERTIES.add(PROP_TELEPHONE_NUMBER);
+        MULTI_VALUED_PROPERTIES.add(PROP_FACSIMILE_TELEPHONE_NUMBER);
+        MULTI_VALUED_PROPERTIES.add(PROP_PAGER);
+        MULTI_VALUED_PROPERTIES.add(PROP_MOBILE);
+        MULTI_VALUED_PROPERTIES.add(PROP_HOME_POSTAL_ADDRESS);
+        MULTI_VALUED_PROPERTIES.add(PROP_POSTAL_ADDRESS);
+        MULTI_VALUED_PROPERTIES.add(PROP_ROOM_NUMBER);
+        MULTI_VALUED_PROPERTIES.add(PROP_L);
+        MULTI_VALUED_PROPERTIES.add(PROP_LOCALITY_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_ST);
+        MULTI_VALUED_PROPERTIES.add(PROP_STATE_OR_PROVINCE_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_STREET);
+        MULTI_VALUED_PROPERTIES.add(PROP_POSTAL_CODE);
+        MULTI_VALUED_PROPERTIES.add(PROP_CITY);
+        MULTI_VALUED_PROPERTIES.add(PROP_MANAGER);
+        MULTI_VALUED_PROPERTIES.add(PROP_SECRETARY);
+        MULTI_VALUED_PROPERTIES.add(PROP_DEPARTMENT_NUMBER);
+        MULTI_VALUED_PROPERTIES.add(PROP_TITLE);
+        MULTI_VALUED_PROPERTIES.add(PROP_IBM_JOB_TITLE);
+        MULTI_VALUED_PROPERTIES.add(PROP_C);
+        MULTI_VALUED_PROPERTIES.add(PROP_COUNTRY_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_GIVEN_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_HOME_ADDRESS);
+        MULTI_VALUED_PROPERTIES.add(PROP_BUSINESS_ADDRESS);
+        MULTI_VALUED_PROPERTIES.add(PROP_DESCRIPTION);
+        MULTI_VALUED_PROPERTIES.add(PROP_BUSINESS_CATEGORY);
+        MULTI_VALUED_PROPERTIES.add(PROP_SEE_ALSO);
     }
 
     /**
      * Gets the value of the uid property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getUid() {
         return uid;
@@ -162,10 +241,10 @@ public class Person
 
     /**
      * Sets the value of the uid property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setUid(String value) {
         this.uid = value;
@@ -177,10 +256,10 @@ public class Person
 
     /**
      * Gets the value of the cn property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getCn() {
         return cn;
@@ -188,10 +267,10 @@ public class Person
 
     /**
      * Sets the value of the cn property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setCn(String value) {
         this.cn = value;
@@ -203,10 +282,10 @@ public class Person
 
     /**
      * Gets the value of the sn property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getSn() {
         return sn;
@@ -214,10 +293,10 @@ public class Person
 
     /**
      * Sets the value of the sn property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setSn(String value) {
         this.sn = value;
@@ -229,10 +308,10 @@ public class Person
 
     /**
      * Gets the value of the preferredLanguage property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getPreferredLanguage() {
         return preferredLanguage;
@@ -240,10 +319,10 @@ public class Person
 
     /**
      * Sets the value of the preferredLanguage property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setPreferredLanguage(String value) {
         this.preferredLanguage = value;
@@ -255,24 +334,25 @@ public class Person
 
     /**
      * Gets the value of the displayName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the displayName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getDisplayName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getDisplayName() {
         if (displayName == null) {
@@ -291,24 +371,25 @@ public class Person
 
     /**
      * Gets the value of the initials property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the initials property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getInitials().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getInitials() {
         if (initials == null) {
@@ -327,10 +408,10 @@ public class Person
 
     /**
      * Gets the value of the mail property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getMail() {
         return mail;
@@ -338,10 +419,10 @@ public class Person
 
     /**
      * Sets the value of the mail property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setMail(String value) {
         this.mail = value;
@@ -353,10 +434,10 @@ public class Person
 
     /**
      * Gets the value of the ibmPrimaryEmail property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getIbmPrimaryEmail() {
         return ibmPrimaryEmail;
@@ -364,10 +445,10 @@ public class Person
 
     /**
      * Sets the value of the ibmPrimaryEmail property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setIbmPrimaryEmail(String value) {
         this.ibmPrimaryEmail = value;
@@ -379,24 +460,25 @@ public class Person
 
     /**
      * Gets the value of the jpegPhoto property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the jpegPhoto property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getJpegPhoto().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * byte[]
-     * 
+     *
      */
     public List<byte[]> getJpegPhoto() {
         if (jpegPhoto == null) {
@@ -415,10 +497,10 @@ public class Person
 
     /**
      * Gets the value of the labeledURI property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getLabeledURI() {
         return labeledURI;
@@ -426,10 +508,10 @@ public class Person
 
     /**
      * Sets the value of the labeledURI property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setLabeledURI(String value) {
         this.labeledURI = value;
@@ -441,24 +523,25 @@ public class Person
 
     /**
      * Gets the value of the carLicense property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the carLicense property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getCarLicense().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getCarLicense() {
         if (carLicense == null) {
@@ -477,24 +560,25 @@ public class Person
 
     /**
      * Gets the value of the telephoneNumber property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the telephoneNumber property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getTelephoneNumber().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getTelephoneNumber() {
         if (telephoneNumber == null) {
@@ -513,24 +597,25 @@ public class Person
 
     /**
      * Gets the value of the facsimileTelephoneNumber property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the facsimileTelephoneNumber property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getFacsimileTelephoneNumber().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getFacsimileTelephoneNumber() {
         if (facsimileTelephoneNumber == null) {
@@ -549,24 +634,25 @@ public class Person
 
     /**
      * Gets the value of the pager property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the pager property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getPager().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getPager() {
         if (pager == null) {
@@ -585,24 +671,25 @@ public class Person
 
     /**
      * Gets the value of the mobile property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the mobile property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getMobile().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getMobile() {
         if (mobile == null) {
@@ -621,24 +708,25 @@ public class Person
 
     /**
      * Gets the value of the homePostalAddress property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the homePostalAddress property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getHomePostalAddress().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getHomePostalAddress() {
         if (homePostalAddress == null) {
@@ -657,24 +745,25 @@ public class Person
 
     /**
      * Gets the value of the postalAddress property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the postalAddress property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getPostalAddress().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getPostalAddress() {
         if (postalAddress == null) {
@@ -693,24 +782,25 @@ public class Person
 
     /**
      * Gets the value of the roomNumber property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the roomNumber property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getRoomNumber().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getRoomNumber() {
         if (roomNumber == null) {
@@ -729,24 +819,25 @@ public class Person
 
     /**
      * Gets the value of the l property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the l property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getL().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getL() {
         if (l == null) {
@@ -765,24 +856,25 @@ public class Person
 
     /**
      * Gets the value of the localityName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the localityName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getLocalityName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getLocalityName() {
         if (localityName == null) {
@@ -801,24 +893,25 @@ public class Person
 
     /**
      * Gets the value of the st property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the st property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSt().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getSt() {
         if (st == null) {
@@ -837,24 +930,25 @@ public class Person
 
     /**
      * Gets the value of the stateOrProvinceName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the stateOrProvinceName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getStateOrProvinceName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getStateOrProvinceName() {
         if (stateOrProvinceName == null) {
@@ -873,24 +967,25 @@ public class Person
 
     /**
      * Gets the value of the street property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the street property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getStreet().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getStreet() {
         if (street == null) {
@@ -909,24 +1004,25 @@ public class Person
 
     /**
      * Gets the value of the postalCode property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the postalCode property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getPostalCode().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getPostalCode() {
         if (postalCode == null) {
@@ -945,24 +1041,25 @@ public class Person
 
     /**
      * Gets the value of the city property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the city property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getCity().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getCity() {
         if (city == null) {
@@ -981,10 +1078,10 @@ public class Person
 
     /**
      * Gets the value of the employeeType property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getEmployeeType() {
         return employeeType;
@@ -992,10 +1089,10 @@ public class Person
 
     /**
      * Sets the value of the employeeType property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setEmployeeType(String value) {
         this.employeeType = value;
@@ -1007,10 +1104,10 @@ public class Person
 
     /**
      * Gets the value of the employeeNumber property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getEmployeeNumber() {
         return employeeNumber;
@@ -1018,10 +1115,10 @@ public class Person
 
     /**
      * Sets the value of the employeeNumber property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setEmployeeNumber(String value) {
         this.employeeNumber = value;
@@ -1033,24 +1130,25 @@ public class Person
 
     /**
      * Gets the value of the manager property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the manager property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getManager().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.IdentifierType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.IdentifierType> getManager() {
         if (manager == null) {
@@ -1069,24 +1167,25 @@ public class Person
 
     /**
      * Gets the value of the secretary property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the secretary property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSecretary().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.IdentifierType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.IdentifierType> getSecretary() {
         if (secretary == null) {
@@ -1105,24 +1204,25 @@ public class Person
 
     /**
      * Gets the value of the departmentNumber property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the departmentNumber property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getDepartmentNumber().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getDepartmentNumber() {
         if (departmentNumber == null) {
@@ -1141,24 +1241,25 @@ public class Person
 
     /**
      * Gets the value of the title property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the title property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getTitle().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getTitle() {
         if (title == null) {
@@ -1177,24 +1278,25 @@ public class Person
 
     /**
      * Gets the value of the ibmJobTitle property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the ibmJobTitle property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getIbmJobTitle().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getIbmJobTitle() {
         if (ibmJobTitle == null) {
@@ -1213,24 +1315,25 @@ public class Person
 
     /**
      * Gets the value of the c property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the c property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getC().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getC() {
         if (c == null) {
@@ -1249,24 +1352,25 @@ public class Person
 
     /**
      * Gets the value of the countryName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the countryName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getCountryName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getCountryName() {
         if (countryName == null) {
@@ -1285,24 +1389,25 @@ public class Person
 
     /**
      * Gets the value of the givenName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the givenName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getGivenName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getGivenName() {
         if (givenName == null) {
@@ -1321,24 +1426,25 @@ public class Person
 
     /**
      * Gets the value of the homeAddress property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the homeAddress property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getHomeAddress().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.AddressType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.AddressType> getHomeAddress() {
         if (homeAddress == null) {
@@ -1357,24 +1463,25 @@ public class Person
 
     /**
      * Gets the value of the businessAddress property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the businessAddress property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getBusinessAddress().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.AddressType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.AddressType> getBusinessAddress() {
         if (businessAddress == null) {
@@ -1393,24 +1500,25 @@ public class Person
 
     /**
      * Gets the value of the description property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the description property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getDescription().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getDescription() {
         if (description == null) {
@@ -1429,24 +1537,25 @@ public class Person
 
     /**
      * Gets the value of the businessCategory property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the businessCategory property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getBusinessCategory().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getBusinessCategory() {
         if (businessCategory == null) {
@@ -1465,24 +1574,25 @@ public class Person
 
     /**
      * Gets the value of the seeAlso property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the seeAlso property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSeeAlso().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getSeeAlso() {
         if (seeAlso == null) {
@@ -1501,10 +1611,10 @@ public class Person
 
     /**
      * Gets the value of the kerberosId property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getKerberosId() {
         return kerberosId;
@@ -1512,10 +1622,10 @@ public class Person
 
     /**
      * Sets the value of the kerberosId property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setKerberosId(String value) {
         this.kerberosId = value;
@@ -1527,10 +1637,10 @@ public class Person
 
     /**
      * Gets the value of the photoURL property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getPhotoUrl() {
         return photoURL;
@@ -1538,10 +1648,10 @@ public class Person
 
     /**
      * Sets the value of the photoURL property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setPhotoUrl(String value) {
         this.photoURL = value;
@@ -1553,10 +1663,10 @@ public class Person
 
     /**
      * Gets the value of the photoURLThumbnail property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getPhotoUrlThumbnail() {
         return photoURLThumbnail;
@@ -1564,10 +1674,10 @@ public class Person
 
     /**
      * Sets the value of the photoURLThumbnail property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setPhotoUrlThumbnail(String value) {
         this.photoURLThumbnail = value;
@@ -1579,133 +1689,133 @@ public class Person
 
     @Override
     public Object get(String propName) {
-        if (propName.equals("uid")) {
+        if (propName.equals(PROP_UID)) {
             return getUid();
         }
-        if (propName.equals("cn")) {
+        if (propName.equals(PROP_CN)) {
             return getCn();
         }
-        if (propName.equals("sn")) {
+        if (propName.equals(PROP_SN)) {
             return getSn();
         }
-        if (propName.equals("preferredLanguage")) {
+        if (propName.equals(PROP_PREFERRED_LANGUAGE)) {
             return getPreferredLanguage();
         }
-        if (propName.equals("displayName")) {
+        if (propName.equals(PROP_DISPLAY_NAME)) {
             return getDisplayName();
         }
-        if (propName.equals("initials")) {
+        if (propName.equals(PROP_INITIALS)) {
             return getInitials();
         }
-        if (propName.equals("mail")) {
+        if (propName.equals(PROP_MAIL)) {
             return getMail();
         }
-        if (propName.equals("ibmPrimaryEmail")) {
+        if (propName.equals(PROP_IBM_PRIMARY_EMAIL)) {
             return getIbmPrimaryEmail();
         }
-        if (propName.equals("jpegPhoto")) {
+        if (propName.equals(PROP_JPEG_PHOTO)) {
             return getJpegPhoto();
         }
-        if (propName.equals("labeledURI")) {
+        if (propName.equals(PROP_LABELED_URI)) {
             return getLabeledURI();
         }
-        if (propName.equals("carLicense")) {
+        if (propName.equals(PROP_CAR_LICENSE)) {
             return getCarLicense();
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             return getTelephoneNumber();
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             return getFacsimileTelephoneNumber();
         }
-        if (propName.equals("pager")) {
+        if (propName.equals(PROP_PAGER)) {
             return getPager();
         }
-        if (propName.equals("mobile")) {
+        if (propName.equals(PROP_MOBILE)) {
             return getMobile();
         }
-        if (propName.equals("homePostalAddress")) {
+        if (propName.equals(PROP_HOME_POSTAL_ADDRESS)) {
             return getHomePostalAddress();
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             return getPostalAddress();
         }
-        if (propName.equals("roomNumber")) {
+        if (propName.equals(PROP_ROOM_NUMBER)) {
             return getRoomNumber();
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             return getL();
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             return getLocalityName();
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             return getSt();
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             return getStateOrProvinceName();
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             return getStreet();
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             return getPostalCode();
         }
-        if (propName.equals("city")) {
+        if (propName.equals(PROP_CITY)) {
             return getCity();
         }
-        if (propName.equals("employeeType")) {
+        if (propName.equals(PROP_EMPLOYEE_TYPE)) {
             return getEmployeeType();
         }
-        if (propName.equals("employeeNumber")) {
+        if (propName.equals(PROP_EMPLOYEE_NUMBER)) {
             return getEmployeeNumber();
         }
-        if (propName.equals("manager")) {
+        if (propName.equals(PROP_MANAGER)) {
             return getManager();
         }
-        if (propName.equals("secretary")) {
+        if (propName.equals(PROP_SECRETARY)) {
             return getSecretary();
         }
-        if (propName.equals("departmentNumber")) {
+        if (propName.equals(PROP_DEPARTMENT_NUMBER)) {
             return getDepartmentNumber();
         }
-        if (propName.equals("title")) {
+        if (propName.equals(PROP_TITLE)) {
             return getTitle();
         }
-        if (propName.equals("ibmJobTitle")) {
+        if (propName.equals(PROP_IBM_JOB_TITLE)) {
             return getIbmJobTitle();
         }
-        if (propName.equals("c")) {
+        if (propName.equals(PROP_C)) {
             return getC();
         }
-        if (propName.equals("countryName")) {
+        if (propName.equals(PROP_COUNTRY_NAME)) {
             return getCountryName();
         }
-        if (propName.equals("givenName")) {
+        if (propName.equals(PROP_GIVEN_NAME)) {
             return getGivenName();
         }
-        if (propName.equals("homeAddress")) {
+        if (propName.equals(PROP_HOME_ADDRESS)) {
             return getHomeAddress();
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             return getBusinessAddress();
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             return getDescription();
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             return getBusinessCategory();
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             return getSeeAlso();
         }
-        if (propName.equals("kerberosId")) {
+        if (propName.equals(PROP_KERBEROS_ID)) {
             return getKerberosId();
         }
-        if (propName.equals("photoURL")) {
+        if (propName.equals(PROP_PHOTO_URL)) {
             return getPhotoUrl();
         }
-        if (propName.equals("photoURLThumbnail")) {
+        if (propName.equals(PROP_PHOTO_URL_THUMBNAIL)) {
             return getPhotoUrlThumbnail();
         }
         return super.get(propName);
@@ -1713,133 +1823,133 @@ public class Person
 
     @Override
     public boolean isSet(String propName) {
-        if (propName.equals("uid")) {
+        if (propName.equals(PROP_UID)) {
             return isSetUid();
         }
-        if (propName.equals("cn")) {
+        if (propName.equals(PROP_CN)) {
             return isSetCn();
         }
-        if (propName.equals("sn")) {
+        if (propName.equals(PROP_SN)) {
             return isSetSn();
         }
-        if (propName.equals("preferredLanguage")) {
+        if (propName.equals(PROP_PREFERRED_LANGUAGE)) {
             return isSetPreferredLanguage();
         }
-        if (propName.equals("displayName")) {
+        if (propName.equals(PROP_DISPLAY_NAME)) {
             return isSetDisplayName();
         }
-        if (propName.equals("initials")) {
+        if (propName.equals(PROP_INITIALS)) {
             return isSetInitials();
         }
-        if (propName.equals("mail")) {
+        if (propName.equals(PROP_MAIL)) {
             return isSetMail();
         }
-        if (propName.equals("ibmPrimaryEmail")) {
+        if (propName.equals(PROP_IBM_PRIMARY_EMAIL)) {
             return isSetIbmPrimaryEmail();
         }
-        if (propName.equals("jpegPhoto")) {
+        if (propName.equals(PROP_JPEG_PHOTO)) {
             return isSetJpegPhoto();
         }
-        if (propName.equals("labeledURI")) {
+        if (propName.equals(PROP_LABELED_URI)) {
             return isSetLabeledURI();
         }
-        if (propName.equals("carLicense")) {
+        if (propName.equals(PROP_CAR_LICENSE)) {
             return isSetCarLicense();
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             return isSetTelephoneNumber();
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             return isSetFacsimileTelephoneNumber();
         }
-        if (propName.equals("pager")) {
+        if (propName.equals(PROP_PAGER)) {
             return isSetPager();
         }
-        if (propName.equals("mobile")) {
+        if (propName.equals(PROP_MOBILE)) {
             return isSetMobile();
         }
-        if (propName.equals("homePostalAddress")) {
+        if (propName.equals(PROP_HOME_POSTAL_ADDRESS)) {
             return isSetHomePostalAddress();
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             return isSetPostalAddress();
         }
-        if (propName.equals("roomNumber")) {
+        if (propName.equals(PROP_ROOM_NUMBER)) {
             return isSetRoomNumber();
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             return isSetL();
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             return isSetLocalityName();
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             return isSetSt();
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             return isSetStateOrProvinceName();
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             return isSetStreet();
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             return isSetPostalCode();
         }
-        if (propName.equals("city")) {
+        if (propName.equals(PROP_CITY)) {
             return isSetCity();
         }
-        if (propName.equals("employeeType")) {
+        if (propName.equals(PROP_EMPLOYEE_TYPE)) {
             return isSetEmployeeType();
         }
-        if (propName.equals("employeeNumber")) {
+        if (propName.equals(PROP_EMPLOYEE_NUMBER)) {
             return isSetEmployeeNumber();
         }
-        if (propName.equals("manager")) {
+        if (propName.equals(PROP_MANAGER)) {
             return isSetManager();
         }
-        if (propName.equals("secretary")) {
+        if (propName.equals(PROP_SECRETARY)) {
             return isSetSecretary();
         }
-        if (propName.equals("departmentNumber")) {
+        if (propName.equals(PROP_DEPARTMENT_NUMBER)) {
             return isSetDepartmentNumber();
         }
-        if (propName.equals("title")) {
+        if (propName.equals(PROP_TITLE)) {
             return isSetTitle();
         }
-        if (propName.equals("ibmJobTitle")) {
+        if (propName.equals(PROP_IBM_JOB_TITLE)) {
             return isSetIbmJobTitle();
         }
-        if (propName.equals("c")) {
+        if (propName.equals(PROP_C)) {
             return isSetC();
         }
-        if (propName.equals("countryName")) {
+        if (propName.equals(PROP_COUNTRY_NAME)) {
             return isSetCountryName();
         }
-        if (propName.equals("givenName")) {
+        if (propName.equals(PROP_GIVEN_NAME)) {
             return isSetGivenName();
         }
-        if (propName.equals("homeAddress")) {
+        if (propName.equals(PROP_HOME_ADDRESS)) {
             return isSetHomeAddress();
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             return isSetBusinessAddress();
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             return isSetDescription();
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             return isSetBusinessCategory();
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             return isSetSeeAlso();
         }
-        if (propName.equals("kerberosId")) {
+        if (propName.equals(PROP_KERBEROS_ID)) {
             return isSetKerberosId();
         }
-        if (propName.equals("photoURL")) {
+        if (propName.equals(PROP_PHOTO_URL)) {
             return isSetPhotoUrl();
         }
-        if (propName.equals("photoURLThumbnail")) {
+        if (propName.equals(PROP_PHOTO_URL_THUMBNAIL)) {
             return isSetPhotoUrlThumbnail();
         }
         return super.isSet(propName);
@@ -1847,133 +1957,133 @@ public class Person
 
     @Override
     public void set(String propName, Object value) {
-        if (propName.equals("uid")) {
+        if (propName.equals(PROP_UID)) {
             setUid(((String) value));
         }
-        if (propName.equals("cn")) {
+        if (propName.equals(PROP_CN)) {
             setCn(((String) value));
         }
-        if (propName.equals("sn")) {
+        if (propName.equals(PROP_SN)) {
             setSn(((String) value));
         }
-        if (propName.equals("preferredLanguage")) {
+        if (propName.equals(PROP_PREFERRED_LANGUAGE)) {
             setPreferredLanguage(((String) value));
         }
-        if (propName.equals("displayName")) {
+        if (propName.equals(PROP_DISPLAY_NAME)) {
             getDisplayName().add(((String) value));
         }
-        if (propName.equals("initials")) {
+        if (propName.equals(PROP_INITIALS)) {
             getInitials().add(((String) value));
         }
-        if (propName.equals("mail")) {
+        if (propName.equals(PROP_MAIL)) {
             setMail(((String) value));
         }
-        if (propName.equals("ibmPrimaryEmail")) {
+        if (propName.equals(PROP_IBM_PRIMARY_EMAIL)) {
             setIbmPrimaryEmail(((String) value));
         }
-        if (propName.equals("jpegPhoto")) {
+        if (propName.equals(PROP_JPEG_PHOTO)) {
             getJpegPhoto().add(((byte[]) value));
         }
-        if (propName.equals("labeledURI")) {
+        if (propName.equals(PROP_LABELED_URI)) {
             setLabeledURI(((String) value));
         }
-        if (propName.equals("carLicense")) {
+        if (propName.equals(PROP_CAR_LICENSE)) {
             getCarLicense().add(((String) value));
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             getTelephoneNumber().add(((String) value));
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             getFacsimileTelephoneNumber().add(((String) value));
         }
-        if (propName.equals("pager")) {
+        if (propName.equals(PROP_PAGER)) {
             getPager().add(((String) value));
         }
-        if (propName.equals("mobile")) {
+        if (propName.equals(PROP_MOBILE)) {
             getMobile().add(((String) value));
         }
-        if (propName.equals("homePostalAddress")) {
+        if (propName.equals(PROP_HOME_POSTAL_ADDRESS)) {
             getHomePostalAddress().add(((String) value));
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             getPostalAddress().add(((String) value));
         }
-        if (propName.equals("roomNumber")) {
+        if (propName.equals(PROP_ROOM_NUMBER)) {
             getRoomNumber().add(((String) value));
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             getL().add(((String) value));
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             getLocalityName().add(((String) value));
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             getSt().add(((String) value));
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             getStateOrProvinceName().add(((String) value));
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             getStreet().add(((String) value));
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             getPostalCode().add(((String) value));
         }
-        if (propName.equals("city")) {
+        if (propName.equals(PROP_CITY)) {
             getCity().add(((String) value));
         }
-        if (propName.equals("employeeType")) {
+        if (propName.equals(PROP_EMPLOYEE_TYPE)) {
             setEmployeeType(((String) value));
         }
-        if (propName.equals("employeeNumber")) {
+        if (propName.equals(PROP_EMPLOYEE_NUMBER)) {
             setEmployeeNumber(((String) value));
         }
-        if (propName.equals("manager")) {
+        if (propName.equals(PROP_MANAGER)) {
             getManager().add(((com.ibm.wsspi.security.wim.model.IdentifierType) value));
         }
-        if (propName.equals("secretary")) {
+        if (propName.equals(PROP_SECRETARY)) {
             getSecretary().add(((com.ibm.wsspi.security.wim.model.IdentifierType) value));
         }
-        if (propName.equals("departmentNumber")) {
+        if (propName.equals(PROP_DEPARTMENT_NUMBER)) {
             getDepartmentNumber().add(((String) value));
         }
-        if (propName.equals("title")) {
+        if (propName.equals(PROP_TITLE)) {
             getTitle().add(((String) value));
         }
-        if (propName.equals("ibmJobTitle")) {
+        if (propName.equals(PROP_IBM_JOB_TITLE)) {
             getIbmJobTitle().add(((String) value));
         }
-        if (propName.equals("c")) {
+        if (propName.equals(PROP_C)) {
             getC().add(((String) value));
         }
-        if (propName.equals("countryName")) {
+        if (propName.equals(PROP_COUNTRY_NAME)) {
             getCountryName().add(((String) value));
         }
-        if (propName.equals("givenName")) {
+        if (propName.equals(PROP_GIVEN_NAME)) {
             getGivenName().add(((String) value));
         }
-        if (propName.equals("homeAddress")) {
+        if (propName.equals(PROP_HOME_ADDRESS)) {
             getHomeAddress().add(((com.ibm.wsspi.security.wim.model.AddressType) value));
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             getBusinessAddress().add(((com.ibm.wsspi.security.wim.model.AddressType) value));
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             getDescription().add(((String) value));
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             getBusinessCategory().add(((String) value));
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             getSeeAlso().add(((String) value));
         }
-        if (propName.equals("kerberosId")) {
+        if (propName.equals(PROP_KERBEROS_ID)) {
             setKerberosId(((String) value));
         }
-        if (propName.equals("photoURL")) {
+        if (propName.equals(PROP_PHOTO_URL)) {
             setPhotoUrl(((String) value));
         }
-        if (propName.equals("photoURLThumbnail")) {
+        if (propName.equals(PROP_PHOTO_URL_THUMBNAIL)) {
             setPhotoUrlThumbnail(((String) value));
         }
         super.set(propName, value);
@@ -1981,97 +2091,97 @@ public class Person
 
     @Override
     public void unset(String propName) {
-        if (propName.equals("displayName")) {
+        if (propName.equals(PROP_DISPLAY_NAME)) {
             unsetDisplayName();
         }
-        if (propName.equals("initials")) {
+        if (propName.equals(PROP_INITIALS)) {
             unsetInitials();
         }
-        if (propName.equals("jpegPhoto")) {
+        if (propName.equals(PROP_JPEG_PHOTO)) {
             unsetJpegPhoto();
         }
-        if (propName.equals("carLicense")) {
+        if (propName.equals(PROP_CAR_LICENSE)) {
             unsetCarLicense();
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             unsetTelephoneNumber();
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             unsetFacsimileTelephoneNumber();
         }
-        if (propName.equals("pager")) {
+        if (propName.equals(PROP_PAGER)) {
             unsetPager();
         }
-        if (propName.equals("mobile")) {
+        if (propName.equals(PROP_MOBILE)) {
             unsetMobile();
         }
-        if (propName.equals("homePostalAddress")) {
+        if (propName.equals(PROP_HOME_POSTAL_ADDRESS)) {
             unsetHomePostalAddress();
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             unsetPostalAddress();
         }
-        if (propName.equals("roomNumber")) {
+        if (propName.equals(PROP_ROOM_NUMBER)) {
             unsetRoomNumber();
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             unsetL();
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             unsetLocalityName();
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             unsetSt();
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             unsetStateOrProvinceName();
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             unsetStreet();
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             unsetPostalCode();
         }
-        if (propName.equals("city")) {
+        if (propName.equals(PROP_CITY)) {
             unsetCity();
         }
-        if (propName.equals("manager")) {
+        if (propName.equals(PROP_MANAGER)) {
             unsetManager();
         }
-        if (propName.equals("secretary")) {
+        if (propName.equals(PROP_SECRETARY)) {
             unsetSecretary();
         }
-        if (propName.equals("departmentNumber")) {
+        if (propName.equals(PROP_DEPARTMENT_NUMBER)) {
             unsetDepartmentNumber();
         }
-        if (propName.equals("title")) {
+        if (propName.equals(PROP_TITLE)) {
             unsetTitle();
         }
-        if (propName.equals("ibmJobTitle")) {
+        if (propName.equals(PROP_IBM_JOB_TITLE)) {
             unsetIbmJobTitle();
         }
-        if (propName.equals("c")) {
+        if (propName.equals(PROP_C)) {
             unsetC();
         }
-        if (propName.equals("countryName")) {
+        if (propName.equals(PROP_COUNTRY_NAME)) {
             unsetCountryName();
         }
-        if (propName.equals("givenName")) {
+        if (propName.equals(PROP_GIVEN_NAME)) {
             unsetGivenName();
         }
-        if (propName.equals("homeAddress")) {
+        if (propName.equals(PROP_HOME_ADDRESS)) {
             unsetHomeAddress();
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             unsetBusinessAddress();
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             unsetDescription();
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             unsetBusinessCategory();
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             unsetSeeAlso();
         }
         super.unset(propName);
@@ -2088,49 +2198,49 @@ public class Person
         } else {
             {
                 List names = new ArrayList();
-                names.add("uid");
-                names.add("cn");
-                names.add("sn");
-                names.add("preferredLanguage");
-                names.add("displayName");
-                names.add("initials");
-                names.add("mail");
-                names.add("ibmPrimaryEmail");
-                names.add("jpegPhoto");
-                names.add("labeledURI");
-                names.add("carLicense");
-                names.add("telephoneNumber");
-                names.add("facsimileTelephoneNumber");
-                names.add("pager");
-                names.add("mobile");
-                names.add("homePostalAddress");
-                names.add("postalAddress");
-                names.add("roomNumber");
-                names.add("l");
-                names.add("localityName");
-                names.add("st");
-                names.add("stateOrProvinceName");
-                names.add("street");
-                names.add("postalCode");
-                names.add("city");
-                names.add("employeeType");
-                names.add("employeeNumber");
-                names.add("manager");
-                names.add("secretary");
-                names.add("departmentNumber");
-                names.add("title");
-                names.add("ibmJobTitle");
-                names.add("c");
-                names.add("countryName");
-                names.add("givenName");
-                names.add("homeAddress");
-                names.add("businessAddress");
-                names.add("description");
-                names.add("businessCategory");
-                names.add("seeAlso");
-                names.add("kerberosId");
-                names.add("photoURL");
-                names.add("photoURLThumbnail");
+                names.add(PROP_UID);
+                names.add(PROP_CN);
+                names.add(PROP_SN);
+                names.add(PROP_PREFERRED_LANGUAGE);
+                names.add(PROP_DISPLAY_NAME);
+                names.add(PROP_INITIALS);
+                names.add(PROP_MAIL);
+                names.add(PROP_IBM_PRIMARY_EMAIL);
+                names.add(PROP_JPEG_PHOTO);
+                names.add(PROP_LABELED_URI);
+                names.add(PROP_CAR_LICENSE);
+                names.add(PROP_TELEPHONE_NUMBER);
+                names.add(PROP_FACSIMILE_TELEPHONE_NUMBER);
+                names.add(PROP_PAGER);
+                names.add(PROP_MOBILE);
+                names.add(PROP_HOME_POSTAL_ADDRESS);
+                names.add(PROP_POSTAL_ADDRESS);
+                names.add(PROP_ROOM_NUMBER);
+                names.add(PROP_L);
+                names.add(PROP_LOCALITY_NAME);
+                names.add(PROP_ST);
+                names.add(PROP_STATE_OR_PROVINCE_NAME);
+                names.add(PROP_STREET);
+                names.add(PROP_POSTAL_CODE);
+                names.add(PROP_CITY);
+                names.add(PROP_EMPLOYEE_TYPE);
+                names.add(PROP_EMPLOYEE_NUMBER);
+                names.add(PROP_MANAGER);
+                names.add(PROP_SECRETARY);
+                names.add(PROP_DEPARTMENT_NUMBER);
+                names.add(PROP_TITLE);
+                names.add(PROP_IBM_JOB_TITLE);
+                names.add(PROP_C);
+                names.add(PROP_COUNTRY_NAME);
+                names.add(PROP_GIVEN_NAME);
+                names.add(PROP_HOME_ADDRESS);
+                names.add(PROP_BUSINESS_ADDRESS);
+                names.add(PROP_DESCRIPTION);
+                names.add(PROP_BUSINESS_CATEGORY);
+                names.add(PROP_SEE_ALSO);
+                names.add(PROP_KERBEROS_ID);
+                names.add(PROP_PHOTO_URL);
+                names.add(PROP_PHOTO_URL_THUMBNAIL);
                 names.addAll(Party.getPropertyNames("Party"));
                 propertyNames = Collections.unmodifiableList(names);
                 return propertyNames;
@@ -2142,49 +2252,49 @@ public class Person
         if (dataTypeMap == null) {
             dataTypeMap = new HashMap();
         }
-        dataTypeMap.put("uid", "String");
-        dataTypeMap.put("cn", "String");
-        dataTypeMap.put("sn", "String");
-        dataTypeMap.put("preferredLanguage", "String");
-        dataTypeMap.put("displayName", "String");
-        dataTypeMap.put("initials", "String");
-        dataTypeMap.put("mail", "String");
-        dataTypeMap.put("ibmPrimaryEmail", "String");
-        dataTypeMap.put("jpegPhoto", "byte[]");
-        dataTypeMap.put("labeledURI", "String");
-        dataTypeMap.put("carLicense", "String");
-        dataTypeMap.put("telephoneNumber", "String");
-        dataTypeMap.put("facsimileTelephoneNumber", "String");
-        dataTypeMap.put("pager", "String");
-        dataTypeMap.put("mobile", "String");
-        dataTypeMap.put("homePostalAddress", "String");
-        dataTypeMap.put("postalAddress", "String");
-        dataTypeMap.put("roomNumber", "String");
-        dataTypeMap.put("l", "String");
-        dataTypeMap.put("localityName", "String");
-        dataTypeMap.put("st", "String");
-        dataTypeMap.put("stateOrProvinceName", "String");
-        dataTypeMap.put("street", "String");
-        dataTypeMap.put("postalCode", "String");
-        dataTypeMap.put("city", "String");
-        dataTypeMap.put("employeeType", "String");
-        dataTypeMap.put("employeeNumber", "String");
-        dataTypeMap.put("manager", "IdentifierType");
-        dataTypeMap.put("secretary", "IdentifierType");
-        dataTypeMap.put("departmentNumber", "String");
-        dataTypeMap.put("title", "String");
-        dataTypeMap.put("ibmJobTitle", "String");
-        dataTypeMap.put("c", "String");
-        dataTypeMap.put("countryName", "String");
-        dataTypeMap.put("givenName", "String");
-        dataTypeMap.put("homeAddress", "AddressType");
-        dataTypeMap.put("businessAddress", "AddressType");
-        dataTypeMap.put("description", "String");
-        dataTypeMap.put("businessCategory", "String");
-        dataTypeMap.put("seeAlso", "String");
-        dataTypeMap.put("kerberosId", "String");
-        dataTypeMap.put("photoURL", "String");
-        dataTypeMap.put("photoURLThumbnail", "String");
+        dataTypeMap.put(PROP_UID, "String");
+        dataTypeMap.put(PROP_CN, "String");
+        dataTypeMap.put(PROP_SN, "String");
+        dataTypeMap.put(PROP_PREFERRED_LANGUAGE, "String");
+        dataTypeMap.put(PROP_DISPLAY_NAME, "String");
+        dataTypeMap.put(PROP_INITIALS, "String");
+        dataTypeMap.put(PROP_MAIL, "String");
+        dataTypeMap.put(PROP_IBM_PRIMARY_EMAIL, "String");
+        dataTypeMap.put(PROP_JPEG_PHOTO, "byte[]");
+        dataTypeMap.put(PROP_LABELED_URI, "String");
+        dataTypeMap.put(PROP_CAR_LICENSE, "String");
+        dataTypeMap.put(PROP_TELEPHONE_NUMBER, "String");
+        dataTypeMap.put(PROP_FACSIMILE_TELEPHONE_NUMBER, "String");
+        dataTypeMap.put(PROP_PAGER, "String");
+        dataTypeMap.put(PROP_MOBILE, "String");
+        dataTypeMap.put(PROP_HOME_POSTAL_ADDRESS, "String");
+        dataTypeMap.put(PROP_POSTAL_ADDRESS, "String");
+        dataTypeMap.put(PROP_ROOM_NUMBER, "String");
+        dataTypeMap.put(PROP_L, "String");
+        dataTypeMap.put(PROP_LOCALITY_NAME, "String");
+        dataTypeMap.put(PROP_ST, "String");
+        dataTypeMap.put(PROP_STATE_OR_PROVINCE_NAME, "String");
+        dataTypeMap.put(PROP_STREET, "String");
+        dataTypeMap.put(PROP_POSTAL_CODE, "String");
+        dataTypeMap.put(PROP_CITY, "String");
+        dataTypeMap.put(PROP_EMPLOYEE_TYPE, "String");
+        dataTypeMap.put(PROP_EMPLOYEE_NUMBER, "String");
+        dataTypeMap.put(PROP_MANAGER, "IdentifierType");
+        dataTypeMap.put(PROP_SECRETARY, "IdentifierType");
+        dataTypeMap.put(PROP_DEPARTMENT_NUMBER, "String");
+        dataTypeMap.put(PROP_TITLE, "String");
+        dataTypeMap.put(PROP_IBM_JOB_TITLE, "String");
+        dataTypeMap.put(PROP_C, "String");
+        dataTypeMap.put(PROP_COUNTRY_NAME, "String");
+        dataTypeMap.put(PROP_GIVEN_NAME, "String");
+        dataTypeMap.put(PROP_HOME_ADDRESS, "AddressType");
+        dataTypeMap.put(PROP_BUSINESS_ADDRESS, "AddressType");
+        dataTypeMap.put(PROP_DESCRIPTION, "String");
+        dataTypeMap.put(PROP_BUSINESS_CATEGORY, "String");
+        dataTypeMap.put(PROP_SEE_ALSO, "String");
+        dataTypeMap.put(PROP_KERBEROS_ID, "String");
+        dataTypeMap.put(PROP_PHOTO_URL, "String");
+        dataTypeMap.put(PROP_PHOTO_URL_THUMBNAIL, "String");
     }
 
     @Override
@@ -2236,4 +2346,8 @@ public class Person
         return WIMTraceHelper.trace(this);
     }
 
+    @Override
+    public boolean isMultiValuedProperty(String propName) {
+        return MULTI_VALUED_PROPERTIES.contains(propName) || super.isMultiValuedProperty(propName);
+    }
 }

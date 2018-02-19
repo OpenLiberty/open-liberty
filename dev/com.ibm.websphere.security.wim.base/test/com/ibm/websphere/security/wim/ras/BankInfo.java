@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.security.wim.ras_test;
+package com.ibm.websphere.security.wim.ras;
 
 public class BankInfo {
 	private String bankName = null;
