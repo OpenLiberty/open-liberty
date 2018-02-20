@@ -76,7 +76,7 @@ public class AuditEvent {
     public final static String TARGET_JMX_MBEAN_INVOKE_OPERATION = "target.jmx.mbean.invoke.operation";
     public final static String TARGET_JMX_MBEAN_PARAMS = "target.jmx.mbean.params";
     public final static String TARGET_JMX_MBEAN_SIGNATURE = "target.jmx.mbean.signature";
-    public final static String TARGET_JMX_MBEAN_QUERYEXP = "target.jxm.mbean.queryExp";
+    public final static String TARGET_JMX_MBEAN_QUERYEXP = "target.jmx.mbean.queryExp";
 
     public final static String TARGET_APPNAME = "target.appname";
     public final static String TARGET_PARAMS = "target.params";
