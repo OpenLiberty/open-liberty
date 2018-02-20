@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.openapi.fat;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +26,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
-import test.common.TestLogger;
 
 /**
  * Tests to ensure that the proxy support feature changes server object in the final document.
@@ -36,7 +34,6 @@ import test.common.TestLogger;
  * with Referer header and same ports than the server. In these three scenarios, requests are sent
  * to both http and https ports.
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class ProxySupportTest extends FATServletClient {
     private static final Class<?> c = ProxySupportTest.class;
@@ -46,9 +43,6 @@ public class ProxySupportTest extends FATServletClient {
 
     @Server("ProxySupportServer")
     public static LibertyServer server;
-
-    @Rule
-    public final TestLogger logger = new TestLogger();
 
     @BeforeClass
     public static void setUpTest() throws Exception {
