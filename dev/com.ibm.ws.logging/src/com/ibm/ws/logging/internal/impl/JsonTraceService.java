@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -224,7 +224,7 @@ public class JsonTraceService extends BaseTraceService {
             // preserve System.out vs. System.err
             publishTraceLogRecord(holder, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         } else {
-            if (copySystemStreams) {
+            if (copySystemStreams && !isConsoleJsonConfigured) {
                 // Tee to console.log if we are copying System.out and System.err to system streams.
                 writeFilteredStreamOutput(holder, logRecord);
             }
