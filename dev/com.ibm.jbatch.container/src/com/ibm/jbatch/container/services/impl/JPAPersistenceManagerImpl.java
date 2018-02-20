@@ -2739,7 +2739,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 while (cause != null) {
                     logger.fine("Cause of V2 persistence exception: " + cause.toString());
                     logger.fine("Cause message of V2 persistence exception: " + cause.getMessage());
-                    if (cause instanceof SQLSyntaxErrorException &&
+                    if ((cause instanceof SQLSyntaxErrorException || cause.getClass().getCanonicalName().contains("SqlSyntaxErrorException")) &&
                         cause.getMessage() != null &&
                         cause.getMessage().contains("UPDATETIME")) {
                         // The UPDATETIME column isn't there.
@@ -2779,7 +2779,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 while (cause != null) {
                     logger.fine("Cause of V3 persistence exception: " + cause.toString());
                     logger.fine("Cause message of V3 persistence exception: " + cause.getMessage());
-                    if (cause instanceof SQLSyntaxErrorException &&
+                    if ((cause instanceof SQLSyntaxErrorException || cause.getClass().getCanonicalName().contains("SqlSyntaxErrorException")) &&
                         cause.getMessage() != null &&
                         cause.getMessage().contains("GROUPASSOCIATION")) {
                         // The GROUPASSOCIATION support isn't there.
