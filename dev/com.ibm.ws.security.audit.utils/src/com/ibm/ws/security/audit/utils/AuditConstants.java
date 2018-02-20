@@ -56,14 +56,14 @@ public class AuditConstants {
     static public final String SECURITY_RESOURCE_ACCESS = "SECURITY_RESOURCE_ACCESS";
     static public final String SECURITY_MGMT_KEY = "SECURITY_MGMT_KEY";
     static public final String SECURITY_RUNTIME_KEY = "SECURITY_RUNTIME_KEY";
-    static public final String JMX_MBEANS = "JMX_MBEANS";
+    static public final String JMX_MBEAN = "JMX_MBEAN";
     static public final String JMX_NOTIFICATION = "JMX_NOTIFICATION";
     static public final String JMS = "JMS";
     static public final String CUSTOM = "CUSTOM";
     
     static public final List<String> validEventNamesList = Arrays.asList("CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT", "SECURITY_SESSION_LOGIN", 
     		"SECURITY_SESSION_LOGOUT", "SECURITY_SESSION_EXPIRY", "SECURITY_ROLE_MAPPING", "SECURITY_AUTHN", "SECURITY_AUTHN_FAILOVER", "SECURITY_AUTHN_DELEGATION", "SECURITY_AUTHZ_DELEGATION",
-    		"SECURITY_AUTHZ", "SECURITY_SIGNING", "SECURITY_ENCRYPTION", "SECURITY_RESOURCE_ACCESS", "SECURITY_MGMT_KEY", "SECURITY_RUNTIME_KEY", "JMX_MBEANS", "JMX_NOTIFICATION", "JMS"); 
+    		"SECURITY_AUTHZ", "SECURITY_SIGNING", "SECURITY_ENCRYPTION", "SECURITY_RESOURCE_ACCESS", "SECURITY_MGMT_KEY", "SECURITY_RUNTIME_KEY", "JMX_MBEAN", "JMX_NOTIFICATION", "JMS"); 
 
     static public final String SUCCESS = "success";
     static public final String FAILURE = "failure";
