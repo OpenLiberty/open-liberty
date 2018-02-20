@@ -21,7 +21,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import javax.cache.CacheException;
 import javax.cache.configuration.Configuration;
@@ -45,11 +44,6 @@ public class CacheHashMapMR extends CacheHashMap {
 
     private static final TraceComponent tc = Tr.register(CacheHashMapMR.class);
 
-    /**
-     * Reusable patterns for String.replaceAll
-     */
-    private static final Pattern COLON = Pattern.compile(":"), PERCENT = Pattern.compile("%"), SLASH = Pattern.compile("/");
-
     public CacheHashMapMR(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc, cacheStoreService);
 
@@ -59,13 +53,7 @@ public class CacheHashMapMR extends CacheHashMap {
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
 
-        // Build a unique per-application cache name by starting with the application context root and percent encoding
-        // the / and : characters (JCache spec does not allow these in cache names)
-        // and also the % character (which is necessary because of percent encoding)
-        String a = PERCENT.matcher(store.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
-        a = SLASH.matcher(a).replaceAll("%2F");
-        a = COLON.matcher(a).replaceAll("%3A");
-        String cacheName = new StringBuilder(23 + a.length()).append("com.ibm.ws.session.app.").append(a).toString();
+        String cacheName = new StringBuilder(24 + encodedAppRoot.length()).append("com.ibm.ws.session.prop.").append(encodedAppRoot).toString();
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "find or create cache", cacheName);
@@ -96,13 +84,11 @@ public class CacheHashMapMR extends CacheHashMap {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String id = sess.getId();
-        String appName = getAppName();
 
         long startTime = System.nanoTime();
         long readSize = 0;
 
-        String sessionKey = createSessionKey(id, appName);
-        ArrayList<?> list = cacheStoreService.cache.get(sessionKey);
+        ArrayList<?> list = sessionInfoCache.get(id);
         Set<String> propIds = list == null ? null : new SessionInfo(list).getSessionPropertyIds();
 
         Hashtable<String, Object> h = new Hashtable<String, Object>();
@@ -198,7 +184,7 @@ public class CacheHashMapMR extends CacheHashMap {
         }
 
         // Before returning the value, confirm that the cache entry for the session hasn't expired
-        if (!cacheStoreService.cache.containsKey(createSessionKey(sessId, appName))) {
+        if (!sessionInfoCache.containsKey(sessId)) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, sessId + " does not appear to be a valid session for " + appName);
             tmp = null;
@@ -219,7 +205,6 @@ public class CacheHashMapMR extends CacheHashMap {
         Thread t = Thread.currentThread();
 
         String id = d2.getId();
-        String appName = getAppName();
 
         try {
             Set<String> propsToWrite = null;
@@ -347,7 +332,6 @@ public class CacheHashMapMR extends CacheHashMap {
 
             // Update the session's main cache entry per the identified changes
             if (propsToWrite != null || propsToRemove != null) {
-                String sessionKey = createSessionKey(id, appName);
                 ArrayList<?> oldValue, newValue;
                 long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
                 do {
@@ -359,10 +343,10 @@ public class CacheHashMapMR extends CacheHashMap {
                                 throw new RuntimeException("Giving up on retries"); 
                             TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
                         } catch (InterruptedException x) {
-                            FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { sessionKey, backoff, propsToWrite, propsToRemove });
+                            FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { id, backoff, propsToWrite, propsToRemove });
                             throw new RuntimeException(x);
                         }
-                    oldValue = cacheStoreService.cache.get(sessionKey);
+                    oldValue = sessionInfoCache.get(id);
                     if (oldValue == null)
                         throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
                     SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
@@ -371,7 +355,7 @@ public class CacheHashMapMR extends CacheHashMap {
                     if (propsToRemove != null)
                         sessionInfo.removeSessionPropertyIds(propsToRemove);
                     newValue = sessionInfo.getArrayList();
-                } while (!cacheStoreService.cache.replace(sessionKey, oldValue, newValue));
+                } while (!sessionInfoCache.replace(id, oldValue, newValue));
             }
         } catch (IOException x) {
             FFDCFilter.processException(x, getClass().getName(), "256", d2);
@@ -389,8 +373,7 @@ public class CacheHashMapMR extends CacheHashMap {
         //If the app calls invalidate, it may not be removed from the local cache yet.
         superRemove(id);
 
-        String sessionKey = createSessionKey(id, _iStore.getId());
-        ArrayList<?> removed = cacheStoreService.cache.getAndRemove(sessionKey);
+        ArrayList<?> removed = sessionInfoCache.getAndRemove(id);
 
         addToRecentlyInvalidatedList(id);
 
