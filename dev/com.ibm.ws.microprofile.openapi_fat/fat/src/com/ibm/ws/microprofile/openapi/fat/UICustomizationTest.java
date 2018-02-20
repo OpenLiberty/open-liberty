@@ -127,9 +127,15 @@ public class UICustomizationTest extends FATServletClient {
         server.startServer("UICustomizationTest.log", false);
 
         // Wait for /openapi/ui to be restarted - first the regular start then it should be restored to default customization values and started again.
+        // It's possible that the server didn't cache the old CSS, so we check for the default after seeing the first openapi/ui message.
         assertTrue("Web application /openapi/ui/ was not restarted on server",
-                   server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 2);
-        validateDefaultOpenAPIUI();
+                   server.waitForMultipleStringsInLog(1, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 1);
+        if (!isValidDefaultOpenAPIUI()) {
+            // Wait for the restart before checking again.
+            assertTrue("Web application /openapi/ui/ was not restarted on server",
+                       server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 2);
+            validateDefaultOpenAPIUI();
+        }
 
         //---------------------------------------------------------------------------------
         // Empty CSS file (should produce a warning because it does not contain .swagger-ui .headerbar)
@@ -141,29 +147,45 @@ public class UICustomizationTest extends FATServletClient {
         validateDefaultOpenAPIUI();
     }
 
+    private boolean isValidDefaultOpenAPIUI() throws IOException, Exception {
+        return validateOpenAPIUI(CSS_CONTENT_DEFAULT, false, false);
+    }
+
     private void validateDefaultOpenAPIUI() throws IOException, Exception {
-        validateOpenAPIUI(CSS_CONTENT_DEFAULT, false);
+        validateOpenAPIUI(CSS_CONTENT_DEFAULT, false, true);
     }
 
     private void validateCustomOpenAPIUI() throws IOException, Exception {
-        validateOpenAPIUI(CSS_CONTENT_CUSTOM_IMAGE, true);
+        validateOpenAPIUI(CSS_CONTENT_CUSTOM_IMAGE, true, true);
     }
 
-    private void validateOpenAPIUI(String expectedContent, boolean validateImage) throws IOException, Exception {
+    private boolean validateOpenAPIUI(String expectedContent, boolean validateImage, boolean assertion) throws IOException, Exception {
         // UI endpoint - HTTP
         String cssContent = downloadUrl(UI_CUSTOM_HEADER_CSS);
-        validateCSS(cssContent, expectedContent);
+        boolean valid = validateCSS(cssContent, expectedContent, assertion);
         if (validateImage) {
-            assertNotNull("(HTTP) Custom image was not found : " + UI_CUSTOM_IMAGE, downloadUrl(UI_CUSTOM_IMAGE));
+            if (assertion) {
+                assertNotNull("(HTTP) Custom image was not found : " + UI_CUSTOM_IMAGE, downloadUrl(UI_CUSTOM_IMAGE));
+            } else {
+                valid &= downloadUrl(UI_CUSTOM_IMAGE) != null;
+            }
         }
+        return valid;
     }
 
-    private static void validateCSS(String body, String referenceText) {
-        assertNotNull("FAIL: Unexpected null content", body);
-        assertTrue("FAIL: Unexpected content : Didn't find '" + referenceText + "' within content : " + body,
-                   referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
-        assertFalse("FAIL: Unexpected content : Found 'invalid-content' : " + body,
-                    body.contains("invalid-content"));
+    private static boolean validateCSS(String body, String referenceText, boolean assertion) {
+        if (assertion) {
+            assertNotNull("FAIL: Unexpected null content", body);
+            assertTrue("FAIL: Unexpected content : Didn't find '" + referenceText + "' within content : " + body,
+                       referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
+            assertFalse("FAIL: Unexpected content : Found 'invalid-content' : " + body,
+                        body.contains("invalid-content"));
+        } else {
+            return body != null &&
+                   !body.contains("invalid-content") &&
+                   (referenceText.isEmpty() ? body.isEmpty() : body.contains(referenceText));
+        }
+        return true;
     }
 
     private String downloadUrl(String path) throws IOException, Exception {
