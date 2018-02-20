@@ -22,8 +22,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -53,8 +51,11 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
     public static final String EXCEPTION_KEY = OpentracingContainerFilter.class.getName() + ".Exception";
 
-    @Context
-    private ResourceInfo resourceInfo;
+    private final OpentracingFilterHelper helper;
+
+    OpentracingContainerFilter(OpentracingFilterHelper helper) {
+        this.helper = helper;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -91,49 +92,21 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         // boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
         boolean process = true;
 
-        String methodOperationName = OpentracingService.getMethodOperationName(resourceInfo.getResourceMethod());
-        String classOperationName = OpentracingService.getClassOperationName(resourceInfo.getResourceMethod());
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " operation names", classOperationName, methodOperationName);
-        }
-
-        // Check if this JAXRS method has @Traced(false)
-        if (OpentracingService.isNotTraced(classOperationName, methodOperationName)) {
-            process = false;
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " skipping not traced method");
+        String buildSpanName;
+        if (helper != null) {
+            buildSpanName = helper.getBuildSpanName(incomingRequestContext);
+            if (buildSpanName == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " skipping not traced method");
+                }
+                process = false;
             }
+        } else {
+            buildSpanName = incomingURL;
         }
 
         if (process) {
-            // If there's no Traced annotation (operationName is null) or there is a Traced annotation
-            // with value=true but a default operationName, then set it to the default based on the URI.
-
-            String operationName;
-
-            if (OpentracingService.hasExplicitOperationName(methodOperationName)) {
-                operationName = methodOperationName;
-            } else {
-                // "The default operation name of the new Span for the incoming request is
-                // <HTTP method>:<package name>.<class name>.<method name> [...]
-                // If operationName is specified on a class, that operationName will be used
-                // for all methods of the class unless a method explicitly overrides it with
-                // its own operationName."
-                // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#server-span-name
-
-                if (OpentracingService.hasExplicitOperationName(classOperationName)) {
-                    operationName = classOperationName;
-                } else {
-                    operationName = incomingRequestContext.getMethod() + ":"
-                                    + resourceInfo.getResourceClass().getName() + "."
-                                    + resourceInfo.getResourceMethod().getName();
-                }
-            }
-
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
-
+            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), incomingURL);
             spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), incomingRequestContext.getMethod());
@@ -205,6 +178,8 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             activeSpan.deactivate();
         }
     }
+
+    //
 
     private static class MultivaluedMapToTextMap implements TextMap {
         private final MultivaluedMap<String, String> mvMap;

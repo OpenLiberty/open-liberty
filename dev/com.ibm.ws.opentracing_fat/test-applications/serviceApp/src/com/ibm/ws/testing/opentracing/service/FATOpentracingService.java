@@ -203,7 +203,6 @@ public class FATOpentracingService extends Application implements FATOpentracing
      *
      * @return The response text as plain text.
      */
-    @Traced
     @GET
     @Path(GET_IMMEDIATE_PATH)
     @Produces(MediaType.TEXT_PLAIN)
