@@ -24,19 +24,19 @@ public interface ContainerAnnotations {
      * Returns true if the container has any classes directly annotated with the specified annotations.
      * Uses a scan policy of {@link ClassSource_Aggregate.ScanPolicy.SEED}.
      * Inherited annotations are <b>NOT</b> included in the scan results.
-     * 
+     *
      * @param annotationTypeNames the annotation type names
      * @return true if the container has any classes with the specified annotations
      */
-    public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames);
+    public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames, boolean useJandex);
 
     /**
      * Returns the names of any classes in the container which have any of the specified annotations.
      * Uses a scan policy of {@link ClassSource_Aggregate.ScanPolicy.SEED}.
      * Inherited annotations are included in the scan results.
-     * 
+     *
      * @param annotationTypeNames the annotation type names
      * @return the names of any classes which have any of the specified annotations (declared or inherited)
      */
-    public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames);
+    public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames, boolean useJandex);
 }

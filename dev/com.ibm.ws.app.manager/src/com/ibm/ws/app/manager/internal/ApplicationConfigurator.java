@@ -60,6 +60,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.AppMessageHelper;
+import com.ibm.ws.app.manager.ApplicationManager;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.internal.lifecycle.ServiceReg;
 import com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator;
@@ -402,6 +403,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private volatile ExecutorService _executor;
     private volatile ScheduledExecutorService _scheduledExecutor;
     private volatile AppMonitorConfigurator _appMonitorConfigurator;
+    private volatile ApplicationManager _applicationManager;
 
     private static final Collection<String> SIMPLE_INITIAL_UPDATE_NOTIFICATIONS = Arrays.asList(new String[] { RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED,
                                                                                                                RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED,
@@ -807,6 +809,15 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
+    @Reference
+    protected void setApplicationManager(ApplicationManager mgr) {
+        _applicationManager = mgr;
+    }
+
+    protected void unsetApplicationManager(ApplicationManager mgr) {
+        _applicationManager = null;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -830,7 +841,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
         try {
             synchronized (this) {
-                ApplicationConfig appConfig = new ApplicationConfig(pid, properties);
+                ApplicationConfig appConfig = new ApplicationConfig(pid, properties, _applicationManager);
                 if (appConfig.getLocation() == null) {
                     if (appConfig.getName() == null) {
                         Tr.audit(_tc, "APPLICATION_NO_LOCATION_NO_NAME");

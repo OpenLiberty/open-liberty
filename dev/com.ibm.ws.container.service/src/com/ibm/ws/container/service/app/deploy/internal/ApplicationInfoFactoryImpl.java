@@ -76,13 +76,15 @@ public class ApplicationInfoFactoryImpl implements ApplicationInfoFactory {
     }
 
     @Override
-    public ExtendedApplicationInfo createApplicationInfo(String appMgrName, String preferredName, Container container,
+    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName, Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
-                                                         NestedConfigHelper configHelper) {
-        J2EEName j2eeName = j2eeNameFactory.getService().create(appMgrName, null, null);
+                                                         NestedConfigHelper configHelper,
+                                                         boolean useJandex) {
+
+        J2EEName j2eeName = j2eeNameFactory.getService().create(appName, null, null);
         String name = reserveName(preferredName);
 
-        ExtendedApplicationInfo appInfo = new ApplicationInfoImpl(name, j2eeName, container, configHelper);
+        ExtendedApplicationInfo appInfo = new ApplicationInfoImpl(name, j2eeName, container, configHelper, useJandex);
         try {
             NonPersistentCache cache = container.adapt(NonPersistentCache.class);
             cache.addToCache(ApplicationInfo.class, appInfo);
@@ -94,16 +96,16 @@ public class ApplicationInfoFactoryImpl implements ApplicationInfoFactory {
     }
 
     @Override
-    public ExtendedEARApplicationInfo createEARApplicationInfo(String appMgrName, String preferredName, Container container,
+    public ExtendedEARApplicationInfo createEARApplicationInfo(String appName, String preferredName, Container container,
                                                                ApplicationClassesContainerInfo appClassesContainerInfo,
                                                                NestedConfigHelper configHelper,
+                                                               boolean useJandex,
                                                                Container libDirContainer, AppClassLoaderFactory classLoaderFactory) {
-        J2EEName j2eeName = j2eeNameFactory.getService().create(appMgrName, null, null);
+        J2EEName j2eeName = j2eeNameFactory.getService().create(appName, null, null);
         ExtendedEARApplicationInfo appInfo = null;
         try {
             String name = reserveName(preferredName);
-            appInfo = new EARApplicationInfoImpl(name, j2eeName, container, configHelper,
-                            libDirContainer, classLoaderFactory);
+            appInfo = new EARApplicationInfoImpl(name, j2eeName, container, configHelper, libDirContainer, classLoaderFactory, useJandex);
 
             NonPersistentCache cache = container.adapt(NonPersistentCache.class);
             cache.addToCache(ApplicationInfo.class, appInfo);

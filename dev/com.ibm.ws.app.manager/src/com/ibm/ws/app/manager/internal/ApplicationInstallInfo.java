@@ -62,6 +62,12 @@ public class ApplicationInstallInfo implements ApplicationInformation<Object> {
         return _config.getName();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean getUseJandex() {
+        return _config.getUseJandex();
+    }
+
     public String getMBeanName() {
         return _config.getMBeanName();
     }

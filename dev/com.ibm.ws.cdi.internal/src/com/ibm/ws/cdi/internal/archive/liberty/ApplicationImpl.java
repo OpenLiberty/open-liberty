@@ -229,4 +229,10 @@ public class ApplicationImpl implements Application {
         return "ApplicationImpl: " + applicationInfo.getName();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean getUseJandex() {
+        return applicationInfo.getUseJandex();
+    }
+
 }
