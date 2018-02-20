@@ -31,3 +31,4 @@ Subsystem-Name: JavaMail 1.5
  com.ibm.websphere.appserver.thirdparty.mail; location:=dev/api/third-party/
 kind=ga
 edition=core
+IBM-Maven-Dependency: javax.mail:javax.mail-api:1.5.0

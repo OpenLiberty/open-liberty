@@ -16,3 +16,4 @@ kind=ga
 edition=core
 -jars=com.ibm.websphere.appserver.spi.jaspic; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
+IBM-Maven-Dependency: javax.security.auth.message:javax.security.auth.message-api:1.1

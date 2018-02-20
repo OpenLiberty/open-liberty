@@ -46,3 +46,5 @@ Subsystem-Name: JavaServer Pages 2.3
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
 kind=ga
 edition=core
+IBM-Maven-Dependency: javax.servlet.jsp:javax.servlet.jsp-api:2.3.1, \
+ javax.el:javax.el-api:3.0.0

@@ -63,3 +63,4 @@ Subsystem-Name: Java Web Services 2.2
  bin/jaxws/tools/ws-wsgen.jar
 kind=ga
 edition=base
+IBM-Maven-Dependency: javax.xml.ws:jaxws-api:2.2.8

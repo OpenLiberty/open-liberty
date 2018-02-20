@@ -30,3 +30,5 @@ Subsystem-Name: Batch API 1.0
  com.ibm.websphere.javaee.batch.1.0; location:="dev/api/spec/,lib/"
 kind=ga
 edition=base
+IBM-Maven-Dependency: javax.batch:javax.batch-api:1.0.1, \
+ javax.inject:javax.inject:1

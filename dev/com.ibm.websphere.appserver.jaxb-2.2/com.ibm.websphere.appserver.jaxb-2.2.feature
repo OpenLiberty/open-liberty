@@ -26,3 +26,4 @@ Subsystem-Name: Java XML Bindings 2.2
  bin/jaxb/schemagen.bat
 kind=ga
 edition=base
+IBM-Maven-Dependency: javax.xml.bind:jaxb-api-osgi:2.2.7
