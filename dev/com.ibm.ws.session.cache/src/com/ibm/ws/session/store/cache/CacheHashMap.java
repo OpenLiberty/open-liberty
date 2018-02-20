@@ -133,7 +133,6 @@ public class CacheHashMap extends BackedHashMap {
         try {
             long now = System.currentTimeMillis();
             String appName = getIStore().getId();
-            String appKey = createAppKey(appName);
             String appPostFix = new StringBuilder(appName.length() + 1).append('@').append(appName).toString();
 
             // loop through all the candidates eligible for invalidation
@@ -143,7 +142,7 @@ public class CacheHashMap extends BackedHashMap {
                 @SuppressWarnings("rawtypes")
                 Cache.Entry<String, ArrayList> entry = it.next();
                 String key = entry == null ? null : entry.getKey();
-                if (key != null && (key.equals(appKey) || key.endsWith(appPostFix))) {
+                if (key != null && key.endsWith(appPostFix)) {
                     SessionData sessionData = new SessionData(entry.getValue());
                     long lastAccess = sessionData.getLastAccess();
                     short listenerCnt = sessionData.getListenerCount();
@@ -157,7 +156,7 @@ public class CacheHashMap extends BackedHashMap {
                             break;
                         }
 
-                        String id = key.equals(appKey) ? appName : key.substring(0, key.length() - appPostFix.length());
+                        String id = key.substring(0, key.length() - appPostFix.length());
 
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "attempt to delete " + key, id);
@@ -419,8 +418,8 @@ public class CacheHashMap extends BackedHashMap {
             }
 
             if (doCacheInval) {
-                String appkey = createAppKey(appName);
-                ArrayList<?> oldValue = cacheStoreService.cache.get(appkey);
+                String appKey = createAppKey(appName);
+                ArrayList<?> oldValue = cacheStoreService.cache.get(appKey);
                 if (oldValue == null) {
                     // If we are here, it means this is the first time this web module is
                     // trying to perform invalidation of sessions
@@ -429,7 +428,7 @@ public class CacheHashMap extends BackedHashMap {
                                                               (short) 0, // listener count 
                                                               null); // user name
                     ArrayList<Object> newValue = sessionData.getArrayList();
-                    cacheStoreService.cache.put(appkey, newValue);
+                    cacheStoreService.cache.put(appKey, newValue);
                     doInvals = true;
                 } else {
                     SessionData sessionData = new SessionData(oldValue);
@@ -447,7 +446,7 @@ public class CacheHashMap extends BackedHashMap {
                         sessionData = sessionData.clone();
                         sessionData.setLastAccess(now);
                         ArrayList<Object> newValue = sessionData.getArrayList();
-                        doInvals = cacheStoreService.cache.replace(appkey, oldValue, newValue);
+                        doInvals = cacheStoreService.cache.replace(appKey, oldValue, newValue);
                     }
                 }
 
@@ -562,7 +561,6 @@ public class CacheHashMap extends BackedHashMap {
         final boolean trace = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
 
         String appName = getIStore().getId();
-        String appKey = createAppKey(appName);
         String appPostFix = new StringBuilder(appName.length() + 1).append('@').append(appName).toString();
 
         long start = System.currentTimeMillis();
@@ -571,7 +569,7 @@ public class CacheHashMap extends BackedHashMap {
             @SuppressWarnings("rawtypes")
             Cache.Entry<String, ArrayList> entry = it.next();
             String key = entry == null ? null : entry.getKey();
-            if (key != null && (key.equals(appKey) || key.endsWith(appPostFix))) {
+            if (key != null && key.endsWith(appPostFix)) {
                 SessionData sessionData = new SessionData(entry.getValue());
                 long lastAccess = sessionData.getLastAccess();
                 short listenerCnt = sessionData.getListenerCount();
@@ -580,7 +578,7 @@ public class CacheHashMap extends BackedHashMap {
                                 && maxInactive >= 0
                                 && maxInactive < (start - lastAccess) / 1000) {
 
-                    String id = key.equals(appKey) ? appName : key.substring(0, key.length() - appPostFix.length());
+                    String id = key.substring(0, key.length() - appPostFix.length());
 
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "processing " + key, id);
@@ -640,7 +638,7 @@ public class CacheHashMap extends BackedHashMap {
                          * close to the time when it will expire. Therefore, we are going to do it after we're 1/2 way there.
                          */
                         if ((now + _smc.getInvalidationCheckInterval() * (1000 / 2)) < System.currentTimeMillis()) {
-                            // TODO updateNukerTimeStamp(nukerCon, getIStore().getId());
+                            updateNukerTimeStamp(appName);
                             now = System.currentTimeMillis();
                         }
                     } catch (Exception e) {
@@ -755,6 +753,23 @@ public class CacheHashMap extends BackedHashMap {
         }
 
         return updateCount;
+    }
+
+    /**
+     * Copied from DatabaseHashMap.updateNukerTimeStamp.
+     * When running in a clustered environment, there could be multiple machines processing invalidation.
+     * This method updates the last time the invalidation was run. A server should not try to process invalidation if
+     * it was already done within the specified time interval for that app.
+     */
+    private void updateNukerTimeStamp(String appName) {
+        String appKey = createAppKey(appName);
+        long now = System.currentTimeMillis();
+        SessionData sessionData = new SessionData(now, // last access
+                                                  -1, // max inactive time,
+                                                  (short) 0, // listener count 
+                                                  null); // user name
+        ArrayList<Object> newValue = sessionData.getArrayList();
+        cacheStoreService.cache.put(appKey, newValue);
     }
 
     /**

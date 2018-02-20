@@ -19,6 +19,7 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.Configuration;
 import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.EternalExpiryPolicy;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
@@ -101,7 +102,9 @@ public class CacheStoreService implements SessionStoreService {
         cache = cacheManager.getCache(cacheName, String.class, ArrayList.class);
         if (cache == null) {
             @SuppressWarnings("rawtypes")
-            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>().setTypes(String.class, ArrayList.class);
+            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
+                            .setTypes(String.class, ArrayList.class)
+                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
             try {
                 cache = cacheManager.createCache(cacheName, config);
 
