@@ -47,4 +47,4 @@ Subsystem-Name: JavaServer Pages 2.3
 kind=ga
 edition=core
 IBM-Maven-Dependency: javax.servlet.jsp:javax.servlet.jsp-api:2.3.1, \
- javax.el:el-api:3.0.0
+ javax.el:javax.el-api:3.0.0

@@ -50,4 +50,4 @@ Subsystem-Name: JavaServer Pages 2.2
 kind=ga
 edition=core
 IBM-Maven-Dependency: javax.servlet.jsp:javax.servlet.jsp-api:2.2.1, \
- javax.el:el-api:2.2
+ javax.el:javax.el-api:2.2.1
