@@ -16,4 +16,5 @@ package com.ibm.wsspi.http.ee7;
 public class HttpTransportBehavior {
 
     public static final String USE_EE7_STREAMS = "useEE7Streams";
+    public static final String USE_IOE_BEHAVIOR = "useIOEBehavior";
 }

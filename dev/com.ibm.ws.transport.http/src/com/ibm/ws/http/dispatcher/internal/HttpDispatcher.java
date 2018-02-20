@@ -74,6 +74,7 @@ public class HttpDispatcher {
     private volatile ServiceReference<HttpTransportBehavior> behaviorRef;
 
     private static volatile boolean useEE7Streams = false;
+    private static volatile Boolean useIOExceptionBehavior = null;
 
     static final String CONFIG_ALIAS = "httpDispatcher";
 
@@ -634,16 +635,22 @@ public class HttpDispatcher {
     protected synchronized void setBehavior(ServiceReference<HttpTransportBehavior> reference) {
         behaviorRef = reference;
         useEE7Streams = (Boolean) reference.getProperty(HttpTransportBehavior.USE_EE7_STREAMS);
+        useIOExceptionBehavior = (Boolean) reference.getProperty(HttpTransportBehavior.USE_IOE_BEHAVIOR);
     }
 
     protected synchronized void unsetBehavior(ServiceReference<HttpTransportBehavior> reference) {
         if (reference == this.behaviorRef) {
             behaviorRef = null;
             useEE7Streams = false;
+            useIOExceptionBehavior = null;
         }
     }
 
     public static boolean useEE7Streams() {
         return useEE7Streams;
+    }
+
+    public static Boolean useIOEForInboundConnectionsBehavior() {
+        return useIOExceptionBehavior;
     }
 }

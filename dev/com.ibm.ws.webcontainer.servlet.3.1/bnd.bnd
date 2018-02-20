@@ -21,14 +21,7 @@ WLP-ServerVersion: ${liberty.beta.version}
  com.ibm.ws.webcontainer31.util.ServletInjectionClassListCollaborator
 
 Service-Component: \
-  com.ibm.ws.webcontainer.v31.dd; \
-    implementation:=com.ibm.ws.javaee.version.ServletVersion; \
-    provide:=com.ibm.ws.javaee.version.ServletVersion; \
-    properties:="version:Integer=31", \
-  com.ibm.ws.webcontainer.v31.httpTransportBehavior; \
-    implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
-    provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
-    properties:="useEE7Streams:Boolean=true"
+  
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
