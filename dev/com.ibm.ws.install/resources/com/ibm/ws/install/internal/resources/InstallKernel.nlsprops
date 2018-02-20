@@ -130,7 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=The installer could not get
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Ensure that the directory contains the feature and retry the operation.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Unable to locate the {0} executable after checking the following locations: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=The installer did not locate the executable file.
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=The installer did not locate the executable file." or to "The installer cannot locate the executable file.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Ensure that the executable file exists in one of the specified locations.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: There was an error executing the command: {0}  The command returned with exit code {1} and error message: {2}
