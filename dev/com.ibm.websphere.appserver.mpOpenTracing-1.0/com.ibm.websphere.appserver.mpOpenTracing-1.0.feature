@@ -15,6 +15,6 @@ IBM-API-Package: org.eclipse.microprofile.opentracing; type="stable"
 -bundles=com.ibm.ws.require.java8, \
          com.ibm.ws.microprofile.opentracing
          
-kind=noship
+kind=ga
 edition=core
 
