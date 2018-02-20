@@ -90,7 +90,8 @@ class EJBDeployedAppInfo extends DeployedAppInfoBase {
                                                                                ejbContainerModuleInfo.moduleName,
                                                                                getContainer(),
                                                                                this,
-                                                                               getConfigHelper());
+                                                                               getConfigHelper(),
+                                                                               applicationInformation.getUseJandex());
         ejbContainerModuleInfo.moduleName = appInfo.getName();
         return appInfo;
     }

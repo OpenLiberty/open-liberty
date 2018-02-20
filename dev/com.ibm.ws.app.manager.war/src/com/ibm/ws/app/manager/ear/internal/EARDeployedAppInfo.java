@@ -279,6 +279,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                                        getContainer(),
                                                        this,
                                                        getConfigHelper(),
+                                                       applicationInformation.getUseJandex(),
                                                        libDirContainer,
                                                        this);
     }
@@ -375,9 +376,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                           String contextRoot, String mainClass,
                                           boolean checkForDDOrAnnotations) throws UnableToAdaptException {
         if (moduleHandler == connectorModuleHandler) {
-            ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("connector"),
-                            nestedModuleMetaDataFactories.get("connector"), moduleContainer,
-                            altDDEntry, moduleURI, moduleClassesInfo);
+            ConnectorModuleContainerInfo mci = new ConnectorModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("connector"), nestedModuleMetaDataFactories.get("connector"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo);
             if (initializeInOrder) {
                 moduleContainerInfos.add(mci);
             } else {
@@ -391,9 +390,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
         if (moduleHandler == ejbModuleHandler) {
-            EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("ejb"),
-                            nestedModuleMetaDataFactories.get("ejb"), moduleContainer,
-                            altDDEntry, moduleURI, moduleClassesInfo);
+            EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("ejb"), nestedModuleMetaDataFactories.get("ejb"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo);
             if (!checkForDDOrAnnotations || mci.moduleDD != null || hasSpecifiedAnnotations(mci.getContainer(), EJB_ANNOTATIONS)) {
                 if (initializeInOrder) {
                     moduleContainerInfos.add(mci);
@@ -410,7 +407,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         }
         if (moduleHandler == clientModuleHandler) {
             // If this is called from processModuleContainerInfo(...), the mainClass argument is null.
-            // Also, if checkForDDOrAnnotations is true, mainClass should not be null.            
+            // Also, if checkForDDOrAnnotations is true, mainClass should not be null.
             String mfMainClass = mainClass;
             if (mfMainClass == null) {
                 if (checkForDDOrAnnotations) { // called from processModuleContainerInfo(...)
@@ -419,9 +416,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 mfMainClass = getMFMainClass(moduleContainer, "/META-INF/MANIFEST.MF", true);
             }
             if (mfMainClass != null) {
-                ClientModuleContainerInfo mci = new ClientModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("client"),
-                                nestedModuleMetaDataFactories.get("client"), moduleContainer,
-                                altDDEntry, moduleURI, moduleClassesInfo, mfMainClass);
+                ClientModuleContainerInfo mci = new ClientModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("client"), nestedModuleMetaDataFactories.get("client"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo, mfMainClass);
                 moduleContainerInfos.add(mci);
                 if (_tc.isDebugEnabled()) {
                     Tr.debug(_tc, "Added client module [ " + mci.moduleName + " ]" +
@@ -437,9 +432,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             if (contextRoot == null) {
                 contextRoot = ContextRootUtil.getContextRoot(moduleContainer);
             }
-            WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("web"),
-                            nestedModuleMetaDataFactories.get("web"), moduleContainer,
-                            altDDEntry, moduleURI, moduleClassesInfo, contextRoot);
+            WebModuleContainerInfo mci = new WebModuleContainerInfo(moduleHandler, moduleMetaDataExtenders.get("web"), nestedModuleMetaDataFactories.get("web"), moduleContainer, altDDEntry, moduleURI, moduleClassesInfo, contextRoot);
             moduleContainerInfos.add(mci);
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Added web module [ " + mci.moduleName + " ]" +
@@ -471,10 +464,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 Tr.debug(_tc, "Application descriptor provides ejb module with module uri [ " + modulePath + " ]");
             }
         } else if ((ddModule.getModuleType() == Module.TYPE_JAVA) &&
-                   // Historically, we did not check for client modules, so we
-                   // cannot start rejecting EARs with invalid <module><java>,
-                   // so unlike other module types, we ignore the module
-                   // altogether unless a module handler is registered.
+        // Historically, we did not check for client modules, so we
+        // cannot start rejecting EARs with invalid <module><java>,
+        // so unlike other module types, we ignore the module
+        // altogether unless a module handler is registered.
                    clientModuleHandler != null) {
             moduleHandler = clientModuleHandler;
             moduleTypeTag = "client";
@@ -528,7 +521,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         if (moduleContainer == null) {
             // error.module.container.null=
-            // CWWKZ0115E: Application {0}: Null container for candidate module {1} of type {2}                        
+            // CWWKZ0115E: Application {0}: Null container for candidate module {1} of type {2}
             Tr.error(_tc, "error.module.container.null", getName(), modulePath, moduleTypeTag);
             return;
         }
@@ -696,11 +689,11 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     /**
      * Return the Main-Class from the MANIFEST.MF.
-     * 
+     *
      * @param appEntryContainer The root container.
      * @param entryPath The path of the mainfest file.
      * @param required true if current module is known to be a client module, and false otherwise
-     * 
+     *
      * @return The main class or null depending on the boolean value 'required'.
      */
     protected String getMFMainClass(Container appEntryContainer, String entryPath, boolean required) {
@@ -771,10 +764,10 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         // Add monitors ...
         /*
          * We need to listen to the /WEB-INF directory on all of the WAR modules and /META-INF/application.xml in the EAR container.
-         * 
+         *
          * We only discover the WARs when we construct the earAppInfo so build this now, we'll pass it back to the app manager so that it can be pass through to the install method
          * to save us some time later on.
-         * 
+         *
          * First though we go to interpreted as this knows when a container is a WAR
          */
 
@@ -915,7 +908,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
 
-        if (ca != null && ca.hasSpecifiedAnnotations(useAnnotationTypeNames)) {
+        if (ca != null && ca.hasSpecifiedAnnotations(useAnnotationTypeNames, applicationInformation.getUseJandex())) {
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Select EJB module [ " + moduleContainer.getPath() + " ]: EJB annotations were detected:");
             }
@@ -949,16 +942,11 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
         }
 
-        GatewayConfiguration gwCfg = classLoadingService.createGatewayConfiguration()
-                        .setApplicationName(getName())
-                        .setDynamicImportPackage(DYNAMIC_IMPORT_PACKAGE_LIST);
+        GatewayConfiguration gwCfg = classLoadingService.createGatewayConfiguration().setApplicationName(getName()).setDynamicImportPackage(DYNAMIC_IMPORT_PACKAGE_LIST);
 
         protectionDomain = getProtectionDomain();
 
-        ClassLoaderConfiguration clCfg = classLoadingService.createClassLoaderConfiguration()
-                        .setId(appClassLoaderId)
-                        .setProtectionDomain(protectionDomain)
-                        .setNativeLibraryContainers(nativeLibraryContainers);
+        ClassLoaderConfiguration clCfg = classLoadingService.createClassLoaderConfiguration().setId(appClassLoaderId).setProtectionDomain(protectionDomain).setNativeLibraryContainers(nativeLibraryContainers);
 
         ClassLoader appClassLoader = createTopLevelClassLoader(classLoaderContainers, gwCfg, clCfg);
         if (_tc.isDebugEnabled()) {
@@ -969,16 +957,16 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
     /**
      * <p>Create a class loader for a web or client module - which is a child to the top-level app loader.</p>
-     * 
+     *
      * <p>Notable: This constructor is only usable for web and client modules. Other code of the module
      * container must make available the collection of locations for the class path.</p>
-     * 
+     *
      * @see WebModuleClassesInfo
-     * 
+     *
      * @param type - The module identity domain ("WebModule" or "ClientModule") - also used for trace
      * @param moduleInfo The module info.
      * @param moduleClassesContainers The list of containers for module code.
-     * 
+     *
      * @return The class loader for the child module.
      */
     private ClassLoader createModuleChildClassLoader(String moduleDomain, ModuleInfo moduleInfo, List<ContainerInfo> moduleClassesContainers) {
@@ -1003,11 +991,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             Tr.debug(_tc, moduleDomain + " [ " + moduleName + " ] sets module class loader ID [ " + moduleClassLoaderId + " ]");
         }
 
-        ClassLoaderConfiguration clCfg = classLoadingService.createClassLoaderConfiguration()
-                        .setId(moduleClassLoaderId)
-                        .setParentId(parentId)
-                        .setDelegateToParentAfterCheckingLocalClasspath(isDelegateLast)
-			.setIncludeAppExtensions(true);
+        ClassLoaderConfiguration clCfg = classLoadingService.createClassLoaderConfiguration().setId(moduleClassLoaderId).setParentId(parentId).setDelegateToParentAfterCheckingLocalClasspath(isDelegateLast).setIncludeAppExtensions(true);
 
         clCfg.setProtectionDomain(protectionDomain);
 

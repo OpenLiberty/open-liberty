@@ -398,7 +398,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
                     //need to create an app info for it
                     String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(modPath);
                     String moduleName = ModuleInfoUtils.getModuleName(wabContainer.adapt(WebApp.class), moduleURI);
-                    appInfo = applicationInfoFactorySRRef.getService().createApplicationInfo(modPath, moduleName, wabContainer, null, null);
+                    appInfo = applicationInfoFactorySRRef.getService().createApplicationInfo(modPath, moduleName, wabContainer, null, null, false);
                     wab.setCreatedApplicationInfo();
                 }
                 wab.setApplicationInfo(appInfo);
