@@ -25,9 +25,14 @@ final class EARApplicationInfoImpl extends ApplicationInfoImpl implements Extend
     private final AppClassLoaderFactory appClassLoaderFactory;
     private volatile ClassLoader appClassLoader;
 
+    //EARApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper,
+    //                       Container libDirContainer, AppClassLoaderFactory appClassLoaderFactory) {
+    //    this(appName, j2eeName, appContainer, configHelper, libDirContainer, appClassLoaderFactory, null);
+    //}
+
     EARApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper,
-                           Container libDirContainer, AppClassLoaderFactory appClassLoaderFactory) {
-        super(appName, j2eeName, appContainer, configHelper);
+                           Container libDirContainer, AppClassLoaderFactory appClassLoaderFactory, boolean useJandex) {
+        super(appName, j2eeName, appContainer, configHelper, useJandex);
         this.libDirContainer = libDirContainer;
         this.appClassLoaderFactory = appClassLoaderFactory;
     }

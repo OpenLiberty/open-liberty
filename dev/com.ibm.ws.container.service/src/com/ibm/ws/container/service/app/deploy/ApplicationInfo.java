@@ -27,7 +27,7 @@ public interface ApplicationInfo {
 
     /**
      * Returns the Container object associated with this application
-     * 
+     *
      */
     Container getContainer();
 
@@ -39,8 +39,15 @@ public interface ApplicationInfo {
     /**
      * Returns an instance of NestedConfigHelper that can be used to obtain
      * application properties
-     * 
+     *
      */
     NestedConfigHelper getConfigHelper();
+
+    /**
+     * This indicates whether Jandex annotation indexes supplied in the application are to be used.
+     *
+     * @return
+     */
+    boolean getUseJandex();
 
 }

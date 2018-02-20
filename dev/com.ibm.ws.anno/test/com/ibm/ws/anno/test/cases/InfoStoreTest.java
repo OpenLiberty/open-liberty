@@ -584,7 +584,7 @@ public class InfoStoreTest {
 
         public TestClassSource(ClassSourceImpl_Factory factory, Util_InternMap internMap,
                                String name) {
-            super(factory, internMap, name, "TESTHASH");
+            super(factory, internMap, name, factory.createOptions(), "TESTHASH");
 
             // tc.setResourceBundleName("com.ibm.ws.anno.resources.internal.AnnoMessages");
 

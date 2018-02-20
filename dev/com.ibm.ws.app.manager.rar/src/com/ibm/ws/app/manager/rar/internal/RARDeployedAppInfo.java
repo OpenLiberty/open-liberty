@@ -99,7 +99,8 @@ class RARDeployedAppInfo extends DeployedAppInfoBase {
                                                                        rarContainerModuleInfo.moduleName,
                                                                        getContainer(),
                                                                        this,
-                                                                       getConfigHelper());
+                                                                       getConfigHelper(),
+                                                                       applicationInformation.getUseJandex());
         rarContainerModuleInfo.moduleName = appInfo.getName();
         return appInfo;
     }
