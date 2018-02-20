@@ -15,6 +15,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 
 /**
@@ -119,6 +120,7 @@ public class ServerInfo {
         this.isUserServer = isUserServer;
     }
 
+    @Trivial
     public void updateOpenAPIWithServers(OpenAPI openapi) {
         if (isUserServer) {
             if (OpenAPIUtils.isEventEnabled(tc)) {

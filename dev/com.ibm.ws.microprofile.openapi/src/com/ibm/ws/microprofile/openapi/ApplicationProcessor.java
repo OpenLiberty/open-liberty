@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
@@ -249,7 +250,6 @@ public class ApplicationProcessor {
 
         // Filter
         OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
-
         if (oasFilter != null) {
             final OpenAPIFilter filter = new OpenAPIFilter(oasFilter);
             try {
@@ -272,6 +272,9 @@ public class ApplicationProcessor {
         final boolean validating = configProcessor.isValidating();
         if (validating) {
             try {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Validate document");
+                }
                 validateDocument(newDocument);
             } catch (Throwable e) {
                 if (OpenAPIUtils.isEventEnabled(tc)) {
@@ -287,6 +290,7 @@ public class ApplicationProcessor {
         return newDocument;
     }
 
+    @Trivial
     private void validateDocument(OpenAPI document) {
         final OASValidator validator = new OASValidator();
         final OASValidationResult result = validator.validate(document);
@@ -387,6 +391,7 @@ public class ApplicationProcessor {
         }
     }
 
+    @Trivial
     private void handleApplicationPath(final OpenAPI openAPI, String contextRoot) {
         //Check the first path item to determine if it already starts with contextRoot
         if (openAPI != null) {
@@ -400,15 +405,23 @@ public class ApplicationProcessor {
         }
 
         //Path doesn't start with context root, so add it
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Add context root: " + contextRoot);
+        }
         serverInfo.setApplicationPath(contextRoot);
     }
 
+    @Trivial
     private void handleUserServer(final OpenAPI openapi) {
         if (openapi != null && openapi.getServers() != null && openapi.getServers().size() > 0) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "User application specifies server");
+            }
             serverInfo.setIsUserServer(true);
         }
     }
 
+    @Trivial
     private void handleServers(OpenAPI openapi, ConfigProcessor configProcessor) {
 
         // Handle global servers
@@ -422,7 +435,7 @@ public class ApplicationProcessor {
             if (configServers.size() > 0) {
                 openapi.setServers(configServers);
                 if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Set global servers from config: " + configServers);
+                    Tr.event(tc, "Set global servers from config: servers=" + servers);
                 }
             }
         }
@@ -451,6 +464,9 @@ public class ApplicationProcessor {
                     }
                     if (!configPathServers.isEmpty()) {
                         paths.get(path).setServers(configPathServers);
+                        if (OpenAPIUtils.isEventEnabled(tc)) {
+                            Tr.event(tc, "Set servers from config on path: path=" + path + " : servers=" + pathServers.get(path));
+                        }
                     }
                 }
 
@@ -465,6 +481,10 @@ public class ApplicationProcessor {
                             }
                             if (!configOperationServers.isEmpty()) {
                                 operation.setServers(configOperationServers);
+                                if (OpenAPIUtils.isEventEnabled(tc)) {
+                                    Tr.event(tc, "Set servers from config on operation: operationId=" + operationId + " : path=" + path + " : servers="
+                                                 + operationServers.get(operationId));
+                                }
                             }
                         }
                     }
@@ -533,6 +553,7 @@ public class ApplicationProcessor {
         return oasResult;
     }
 
+    @Trivial
     @FFDCIgnore(JsonProcessingException.class)
     private String getSerializedJsonDocument(final OpenAPI openapi) {
         String oasResult = null;
@@ -547,10 +568,14 @@ public class ApplicationProcessor {
         return oasResult;
     }
 
+    @Trivial
     private OpenAPI createBaseOpenAPIDocument() {
         OpenAPI openAPI = new OpenAPIImpl();
         openAPI.info(new InfoImpl().title("Deployed APIs").version("1.0.0"));
         openAPI.paths(new PathsImpl());
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(this, tc, "Created base OpenAPI document");
+        }
         return openAPI;
     }
 

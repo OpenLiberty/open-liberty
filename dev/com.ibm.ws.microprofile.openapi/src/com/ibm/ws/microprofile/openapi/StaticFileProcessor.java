@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -30,6 +31,7 @@ public class StaticFileProcessor {
 
     private static final TraceComponent tc = Tr.register(StaticFileProcessor.class);
 
+    @Trivial
     @FFDCIgnore(IOException.class)
     public static String getOpenAPIFile(Container container) {
         String result = null;

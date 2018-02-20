@@ -31,6 +31,14 @@ import componenttest.topology.utils.HttpUtils;
 
 /**
  * Tests to ensure OpenAPI UI bundles are updated with custom CSS files provided by users
+ *
+ * - Set a valid CSS file and ensure that the UI is updated with customized value
+ * - Set an empty CSS file and server should produce a warning because it does not contain .swagger-ui .headerbar
+ * - Set an invalid CSS file where the value of background-image property is not valid and ensure that the right message shows up in the server logs and the CSS content must revert
+ * to default
+ * - Ensure there are no caching issues. First set customization, then stop the server. When the server is offline, remove the customization. Then start the server and verify
+ * customization is no longer applied.
+ *
  */
 @RunWith(FATRunner.class)
 public class UICustomizationTest extends FATServletClient {
