@@ -100,7 +100,7 @@ public class InfoValidatorTest {
         InfoImpl info = new InfoImpl();
         info.setTitle("test");
         info.setVersion("1.0");
-        info.setTermsOfService("/notValidURL");
+        info.setTermsOfService("/relativeURL");
         validator.validate(vh, context, info);
         Assert.assertEquals(0, vh.getEventsSize());
     }

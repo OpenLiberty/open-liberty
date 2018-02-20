@@ -74,7 +74,7 @@ public class OAuthFlowValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
-        oauthflow.setAuthorizationUrl("/invalidUrl-example");
+        oauthflow.setAuthorizationUrl("/relativeUrl-example");
         ScopesImpl scopes = new ScopesImpl();
         scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);

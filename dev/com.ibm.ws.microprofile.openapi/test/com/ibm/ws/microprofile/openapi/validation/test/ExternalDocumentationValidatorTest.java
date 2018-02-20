@@ -61,7 +61,7 @@ public class ExternalDocumentationValidatorTest {
         ExternalDocumentationImpl externalDocs = new ExternalDocumentationImpl();
 
         vh.resetResults();
-        externalDocs.setUrl("/../notAValidURL");
+        externalDocs.setUrl("/../relativeURL");
         validator.validate(vh, context, externalDocs);
         Assert.assertEquals(0, vh.getEventsSize());
 

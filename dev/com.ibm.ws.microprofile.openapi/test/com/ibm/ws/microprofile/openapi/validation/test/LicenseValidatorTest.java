@@ -69,7 +69,7 @@ public class LicenseValidatorTest {
 
         LicenseImpl license = new LicenseImpl();
         license.setName("Apache 2.0");
-        license.setUrl("/notAValidURL");
+        license.setUrl("/relativeURL");
         validator.validate(vh, context, license);
         Assert.assertEquals(0, vh.getEventsSize());
     }
