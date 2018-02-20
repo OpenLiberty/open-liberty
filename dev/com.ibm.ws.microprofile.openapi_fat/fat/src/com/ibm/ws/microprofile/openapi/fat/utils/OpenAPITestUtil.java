@@ -158,11 +158,19 @@ public class OpenAPITestUtil {
      * @param waitForUpdate boolean controlling if the method should wait for the configuration update event before returning
      * @return the deployed application
      */
-    public static Application addApplication(LibertyServer server, String name, String path, String type) throws Exception {
+    public static Application addApplication(LibertyServer server, String name, String path, String type, boolean waitForAppProcessor) throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         Application app = config.addApplication(name, path, type);
         server.updateServerConfiguration(config);
+        if (waitForAppProcessor) {
+            waitForApplicationProcessorAddedEvent(server, name);
+        }
+        server.validateAppLoaded(name);
         return app;
+    }
+
+    public static Application addApplication(LibertyServer server, String name, String path, String type) throws Exception {
+        return addApplication(server, name, path, type, true);
     }
 
     /**
@@ -175,19 +183,11 @@ public class OpenAPITestUtil {
      * @return the deployed application
      */
     public static Application addApplication(LibertyServer server, String name) throws Exception {
-        return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war");
+        return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war", true);
     }
 
-    public static void ensureOpenAPIEndpointIsReady(LibertyServer server) {
-        ensureEndpointIsReady(server, "/openapi");
-    }
-
-    public static void ensureEndpointIsReady(LibertyServer server, String endpoint) {
-        if (!endpoint.startsWith("/")) {
-            endpoint = "/" + endpoint;
-        }
-        assertNotNull("FAIL: Endpoint is not available at " + endpoint,
-                      server.waitForStringInLog("CWWKT0016I.*" + endpoint));
+    public static Application addApplication(LibertyServer server, String name, boolean waitForAppProcessor) throws Exception {
+        return addApplication(server, name, "${server.config.dir}/apps/" + name + ".war", "war", waitForAppProcessor);
     }
 
     public static JsonNode readYamlTree(String contents) {
@@ -241,28 +241,16 @@ public class OpenAPITestUtil {
         assertTrue("Incorrect default value for version", version.equals(defaultVersion));
     }
 
-    /**
-     * Sets the http and https ports on the server configuration object. Note: After this method is called, you should also call
-     * <code>server.updateServerConfiguration(config);</code> for the configuration to take effect.
-     *
-     * @param config
-     * @param httpPort
-     * @param httpsPort
-     * @throws Exception
-     *
-     */
     public static void changeServerPorts(LibertyServer server, int httpPort, int httpsPort) throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         HttpEndpoint http = config.getHttpEndpoints().getById("defaultHttpEndpoint");
         if (http == null) {
             http = new HttpEndpoint();
             http.setId("defaultHttpEndpoint");
-            http.setHttpPort(server.getHttpDefaultPort());
-            http.setHttpPort(server.getHttpDefaultSecurePort());
+            http.setHttpPort(httpPort);
+            http.setHttpsPort(httpsPort);
             config.getHttpEndpoints().add(http);
-        }
-
-        if (http.getHttpPort() == httpPort && http.getHttpsPort() == httpsPort) {
+        } else if (http.getHttpPort() == httpPort && http.getHttpsPort() == httpsPort) {
             return;
         }
 
@@ -271,12 +259,14 @@ public class OpenAPITestUtil {
 
         if (server.isStarted()) {
             // Set the mark to the current end of log
-            server.setMarkToEndOfLog();
+            setMarkToEndOfAllLogs(server);
 
             // Save the config and wait for message that was a result of the config change
             server.updateServerConfiguration(config);
             assertNotNull("FAIL: Didn't get expected config update log messages.", server.waitForConfigUpdateInLogUsingMark(null, false));
-            server.resetLogMarks();
+            String regex = "Updated server information.*"
+                           + "httpPort=" + (httpPort == -1 ? 0 : httpPort) + ", httpsPort=" + (httpsPort == -1 ? 0 : httpsPort);
+            server.waitForStringInTrace(regex, TIMEOUT);
         } else {
             server.updateServerConfiguration(config);
         }
@@ -296,5 +286,10 @@ public class OpenAPITestUtil {
             servers.add("https://" + server.getHostname() + ":" + httpsPort + contextRoot);
         }
         return servers.toArray(new String[0]);
+    }
+
+    public static void setMarkToEndOfAllLogs(LibertyServer server) throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
+        server.setMarkToEndOfLog(server.getMostRecentTraceFile());
     }
 }

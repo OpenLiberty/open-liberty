@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,7 +30,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
-import test.common.TestLogger;
 
 /**
  * Test to ensure exercise Application Processor. Here's summary of all the scnearios being tested:
@@ -44,7 +42,6 @@ import test.common.TestLogger;
  * - Complete flow: model, static, annotation, filter in order
  */
 @RunWith(FATRunner.class)
-@SuppressWarnings("restriction")
 public class ApplicationProcessorTest extends FATServletClient {
     private static final Class<?> c = ApplicationProcessorTest.class;
     private static final String APP_NAME_1 = "appWithAnnotations";
@@ -61,9 +58,6 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @Server("ApplicationProcessorServer")
     public static LibertyServer server;
-
-    @Rule
-    public final TestLogger logger = new TestLogger();
 
     @BeforeClass
     public static void setUpTest() throws Exception {
@@ -94,8 +88,7 @@ public class ApplicationProcessorTest extends FATServletClient {
 
         // Change server ports to the default ones
         OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
-
-        server.setMarkToEndOfLog();
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
     }
 
     @AfterClass
@@ -112,15 +105,14 @@ public class ApplicationProcessorTest extends FATServletClient {
     public void testApplicationProcessor() throws Exception {
         // Validate the app is deployed
         OpenAPITestUtil.addApplication(server, APP_NAME_1);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_1);
         String app1Doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(app1Doc);
         OpenAPITestUtil.checkServer(openapiNode, "https://{username}.gigantic-server.com:{port}/{basePath}", "https://test-server.com:80/basePath");
         OpenAPITestUtil.checkPaths(openapiNode, 16);
 
         // Add a second app and ensure it's not deployed
-        OpenAPITestUtil.addApplication(server, APP_NAME_2);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_2);
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
+        OpenAPITestUtil.addApplication(server, APP_NAME_2, false);
         String openapi = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         assertEquals("FAIL: Only a single application must be processed by the application processor.", app1Doc, openapi);
 
@@ -133,6 +125,7 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.checkPaths(openapiNode, 1);
 
         // Remove the appWithStaticDoc app and ensure that the default empty OpenAPI documentation is created
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
         OpenAPITestUtil.removeApplication(server, APP_NAME_2);
         String emptyDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         openapiNode = OpenAPITestUtil.readYamlTree(emptyDoc);
@@ -140,14 +133,14 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.checkPaths(openapiNode, 0);
 
         // Add an empty servlet app is deployed and ensure the default empty OpenAPI documentation is created
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
         OpenAPITestUtil.addApplication(server, APP_NAME_3);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_3);
         openapi = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         assertEquals("FAIL: Server with a single empty app should not change the default OpenAPI document.", emptyDoc, openapi);
 
         // Now add an app with OpenAPI artifacts and ensure it shows up
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
         OpenAPITestUtil.addApplication(server, APP_NAME_1);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_1);
         openapi = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         assertEquals("FAIL: Only a single application must be processed by the application processor.", app1Doc, openapi);
     }
@@ -168,6 +161,7 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort()));
 
         // Set http/https to different ports and validate the OpenAPI documentation is reflecting it
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
         OpenAPITestUtil.changeServerPorts(server, server.getHttpSecondaryPort(), server.getHttpSecondarySecurePort());
         openapi = OpenAPIConnection.openAPIDocsConnection(server, false).port(server.getHttpSecondaryPort()).download();
         openapiNode = OpenAPITestUtil.readYamlTree(openapi);
@@ -177,16 +171,31 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpSecondaryPort(), server.getHttpSecondarySecurePort()));
 
         // Set http to -1, https to the default and validate the OpenAPI documentation is reflecting it
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
         OpenAPITestUtil.changeServerPorts(server, -1, server.getHttpDefaultSecurePort());
         openapi = OpenAPIConnection.openAPIDocsConnection(server, true).download();
         openapiNode = OpenAPITestUtil.readYamlTree(openapi);
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, -1, server.getHttpDefaultSecurePort()));
 
-        // Set https to -1, http to the default and validate the OpenAPI documentation is reflecting it
-        OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), -1);
-        openapi = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        // Set https and http to the secondary default ports and validate the OpenAPI documentation is reflecting it
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
+        OpenAPITestUtil.changeServerPorts(server, server.getHttpSecondaryPort(), server.getHttpSecondarySecurePort());
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, false).port(server.getHttpSecondaryPort()).download();
         openapiNode = OpenAPITestUtil.readYamlTree(openapi);
-        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), -1));
+        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpSecondaryPort(), server.getHttpSecondarySecurePort()));
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, true).port(server.getHttpSecondarySecurePort()).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpSecondaryPort(), server.getHttpSecondarySecurePort()));
+
+        // Set https to -1, http to the default and validate the OpenAPI documentation is reflecting it
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
+        OpenAPITestUtil.changeServerPorts(server, server.getHttpSecondaryPort(), -1);
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, false).port(server.getHttpSecondaryPort()).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpSecondaryPort(), -1));
+
+        OpenAPITestUtil.setMarkToEndOfAllLogs(server);
+        OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
     /**
@@ -198,7 +207,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testContextRootWARWithServerObject() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_4);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_4);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, "https:///MySimpleAPI/1.0.0", "https:///MySimpleAPI/2.0.0");
@@ -213,7 +221,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testContextRootWARWithoutServerObject() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_5);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_5);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), APP_NAME_5));
@@ -228,7 +235,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testContextRootEARWithServerObject() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_6, "${server.config.dir}/apps/" + APP_NAME_6 + ".ear", "ear");
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_6);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, "https:///MySimpleAPI/1.0.0", "https:///MySimpleAPI/2.0.0");
@@ -237,7 +243,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testContextRootEARWithoutServerObject() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_7, "${server.config.dir}/apps/" + APP_NAME_7 + ".ear", "ear");
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_7);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         // staticDocWithoutServerObject should be appended into the server since it's the name of the only WAR containing OAS
@@ -247,7 +252,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testOverwrittenContextRootEAR() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_8, "${server.config.dir}/apps/" + APP_NAME_8 + ".ear", "ear");
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_8);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         // EAR has an Applicaiton.xml that should overwrite the context root
@@ -263,7 +267,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testContextRootWARWithPathPrefixedContextRoot() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_9);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_9);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), null));
@@ -272,7 +275,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testPureJaxRsApp() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_10);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_10);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), APP_NAME_10));
@@ -282,7 +284,6 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testCompleteFlow() throws Exception {
         OpenAPITestUtil.addApplication(server, APP_NAME_11);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, APP_NAME_11);
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkServer(openapiNode, "https://test-server.com:80/#1", "https://test-server.com:80/#2", "https://test-server.com:80/#3",
