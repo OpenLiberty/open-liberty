@@ -44,4 +44,4 @@ Subsystem-Name: JavaServer Faces 2.2
  com.ibm.ws.org.apache.commons.digester.1.8
 kind=ga
 edition=core
-IBM-Maven-Dependency: javax.faces:javax.faces-api:2.3
+IBM-Maven-Dependency: javax.faces:javax.faces-api:2.2

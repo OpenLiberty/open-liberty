@@ -84,4 +84,4 @@ Subsystem-Category: JavaEE7Application
 Subsystem-Name: Java Servlets 3.1
 kind=ga
 edition=core
-IBM-Maven-Dependency: javax.servlet:javax.servlet-api:4.0.0
+IBM-Maven-Dependency: javax.servlet:javax.servlet-api:3.1.0

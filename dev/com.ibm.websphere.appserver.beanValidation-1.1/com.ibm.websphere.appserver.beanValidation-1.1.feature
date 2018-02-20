@@ -28,4 +28,4 @@ Subsystem-Name: Bean Validation 1.1
  com.ibm.ws.org.apache.bval.1.1.0
 kind=ga
 edition=core
-IBM-Maven-Dependency: javax.validation:validation-api:2.0.1.Final
+IBM-Maven-Dependency: javax.validation:validation-api:1.1.0.Final
