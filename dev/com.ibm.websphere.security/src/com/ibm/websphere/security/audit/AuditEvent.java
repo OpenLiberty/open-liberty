@@ -67,7 +67,7 @@ public class AuditEvent {
     public final static String TARGET_JMX_NOTIFICATION_HANDBACK = "target.jmx.notification.handback";
 
     public final static String TARGET_JMX_MBEAN_NAME = "target.jmx.mbean.name";
-    public final static String TARGET_JMX_MBEAN_ACTION = "target.jxm.mbean.action";
+    public final static String TARGET_JMX_MBEAN_ACTION = "target.jmx.mbean.action";
     public final static String TARGET_JMX_MBEAN_ATTRIBUTE_NAME = "target.jmx.mbean.attribute.name";
     public final static String TARGET_JMX_MBEAN_ATTRIBUTE_NAMES = "target.jmx.mbean.attribute.names";
     public final static String TARGET_JMX_MBEAN_ATTRIBUTE_ACTION = "target.jmx.mbean.attribute.action";
