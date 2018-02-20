@@ -74,7 +74,8 @@ public class CallbackValidator extends TypeValidator<Callback> {
                     }
                 } else {
                     // validate remaining url
-                    if (!ValidatorUtils.isValidURL(buildURL)) {
+                    //validating buildURL as URI to account for relative paths
+                    if (!ValidatorUtils.isValidURI(buildURL)) {
                         message = Tr.formatMessage(tc, "callbackInvalidURL", urlTemplate);
                         helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }
