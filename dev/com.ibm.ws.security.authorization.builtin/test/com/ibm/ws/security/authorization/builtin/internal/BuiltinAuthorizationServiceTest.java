@@ -69,8 +69,8 @@ public class BuiltinAuthorizationServiceTest {
     private final static String realmName1 = "BasicRealm";
     private final static String groupAccessId1 = "group:BasicRealm/group1";
     private final static String roleAllAuthen = "Employee";
-    private final static String authzTableName = "com.ibm.ws.security.authorization.table.name";
-    private final static String authzTable = "WebApp";
+    private final static String COMPONENT_NAME = "component.name";
+    private final static String APP_BND_AUTHZ_TABLE_SERVICE = "com.ibm.ws.security.appbnd.AppBndAuthorizationTableService";
 
     private final Mockery context = new JUnit4Mockery();
     private final ComponentContext cc = context.mock(ComponentContext.class);
@@ -78,6 +78,7 @@ public class BuiltinAuthorizationServiceTest {
     private final AccessDecisionService accessDecisionService = context.mock(AccessDecisionService.class);
     private final ServiceReference<AuthorizationTableService> authzTableServiceRef = context.mock(ServiceReference.class, "authzTableServiceRef");
     private final AuthorizationTableService authzTableService = context.mock(AuthorizationTableService.class, "authzTableService");
+    private final AuthorizationTableService appBndAuthorizationTableService = context.mock(AuthorizationTableService.class, "appBndAuthorizationTableService");
     private final ServiceReference<AuthorizationTableService> authzTableService2Ref = context.mock(ServiceReference.class, "authzTableService2Ref");
     private final AuthorizationTableService authzTableService2 = context.mock(AuthorizationTableService.class, "authzTableService2");
     private final ServiceReference<AuthorizationTableService> authzTableService3Ref = context.mock(ServiceReference.class, "authzTableService3Ref");
@@ -103,8 +104,8 @@ public class BuiltinAuthorizationServiceTest {
                 will(returnValue(1L));
                 allowing(authzTableServiceRef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
-                allowing(authzTableServiceRef).getProperty(authzTableName);
-                will(returnValue(authzTable));
+                allowing(authzTableServiceRef).getProperty(COMPONENT_NAME);
+                will(returnValue(APP_BND_AUTHZ_TABLE_SERVICE));
                 allowing(cc).locateService(BuiltinAuthorizationService.KEY_AUTHORIZATION_TABLE_SERVICE, authzTableServiceRef);
                 will(returnValue(authzTableService));
 
@@ -112,8 +113,8 @@ public class BuiltinAuthorizationServiceTest {
                 will(returnValue(2L));
                 allowing(authzTableService2Ref).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
-                allowing(authzTableService2Ref).getProperty(authzTableName);
-                will(returnValue(authzTable));
+                allowing(authzTableService2Ref).getProperty(COMPONENT_NAME);
+                will(returnValue(APP_BND_AUTHZ_TABLE_SERVICE));
                 allowing(cc).locateService(BuiltinAuthorizationService.KEY_AUTHORIZATION_TABLE_SERVICE, authzTableService2Ref);
                 will(returnValue(authzTableService2));
 
@@ -123,8 +124,8 @@ public class BuiltinAuthorizationServiceTest {
                 will(returnValue(0));
                 allowing(cc).locateService(BuiltinAuthorizationService.KEY_AUTHORIZATION_TABLE_SERVICE, authzTableService3Ref);
                 will(returnValue(authzTableService3));
-                allowing(authzTableService3Ref).getProperty(authzTableName);
-                will(returnValue(authzTable));
+                allowing(authzTableService3Ref).getProperty(COMPONENT_NAME);
+                will(returnValue(APP_BND_AUTHZ_TABLE_SERVICE));
                 allowing(authzTableService).isAuthzInfoAvailableForApp("myApp");
                 will(returnValue(true));
             }
