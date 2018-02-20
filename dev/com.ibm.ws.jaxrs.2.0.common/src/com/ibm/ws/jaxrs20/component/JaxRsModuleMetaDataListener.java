@@ -168,6 +168,21 @@ public class JaxRsModuleMetaDataListener implements ModuleMetaDataListener, Modu
             Tr.debug(tc, "moduleMetaDataDestroyed(" + event.getMetaData().getName() + ") : " + event.getMetaData());
         }
 
+        try {
+            Container moduleContainer = event.getContainer();
+            if (moduleContainer != null) {
+                NonPersistentCache overlayCache = moduleContainer.adapt(NonPersistentCache.class);
+                overlayCache.removeFromCache(JaxRsModuleMetaData.class);
+            }
+        } catch (UnableToAdaptException ex) {
+            // FFDC
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "moduleMetaDataDestroyed(" + event.getMetaData().getName() +
+                             ") : Failed to remove metadata from overlay cache",
+                         ex);
+            }
+        }
+
         JaxRsModuleMetaData moduleMetaData = JaxRsMetaDataManager.getJaxRsModuleMetaData(event.getMetaData());
         if (moduleMetaData != null) {
             JaxRsMetaDataManager.setJaxRsModuleMetaData(event.getMetaData(), null);
