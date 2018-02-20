@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests.implicit;
  
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -62,8 +64,9 @@ public class ImplicitEJBTest {
                         .addClass("com.ibm.ws.cdi12.test.implicit.ejb.SimpleEJB")
                         .addAsLibrary(utilLib);
 
+       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitEJBInWar);
-       server.waitForStringInLogUsingMark("CWWKZ0001I.*");
+       assertNotNull("implicitEJBInWar started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitEJBInWar"));
     }
 
     @Rule
