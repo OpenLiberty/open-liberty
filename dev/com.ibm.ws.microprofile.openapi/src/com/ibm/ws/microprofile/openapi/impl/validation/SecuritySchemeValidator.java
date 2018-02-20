@@ -84,7 +84,7 @@ public class SecuritySchemeValidator extends TypeValidator<SecurityScheme> {
                     op_url.ifPresent(helper::addValidationEvent);
 
                 } else {
-                    if (!(ValidatorUtils.isValidURL(t.getOpenIdConnectUrl()))) {
+                    if (!(ValidatorUtils.isValidURI(t.getOpenIdConnectUrl()))) {
                         final String message = Tr.formatMessage(tc, "securitySchemeInvalidURL", t.getOpenIdConnectUrl());
                         helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                     }

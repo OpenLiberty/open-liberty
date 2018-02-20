@@ -40,7 +40,7 @@ public class LicenseValidator extends TypeValidator<License> {
             ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
 
             if (t.getUrl() != null) {
-                if (!ValidatorUtils.isValidURL(t.getUrl())) {
+                if (!ValidatorUtils.isValidURI(t.getUrl())) {
                     final String message = Tr.formatMessage(tc, "licenseInvalidURL", t.getUrl());
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
