@@ -77,7 +77,7 @@ public class ContactValidatorTest {
         ContactImpl contact = new ContactImpl();
         contact.setName("test_contact");
         contact.setEmail("mytestemail@gmail.com");
-        contact.setUrl("http/test-url.");
+        contact.setUrl(":http/test-url.");
 
         validator.validate(vh, context, key, contact);
         Assert.assertEquals(1, vh.getEventsSize());

@@ -56,7 +56,7 @@ public class LicenseValidatorTest {
 
         LicenseImpl license = new LicenseImpl();
         license.setName("Apache 2.0");
-        license.setUrl("notAValidURL");
+        license.setUrl(":notAValidURL");
         validator.validate(vh, context, license);
         Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The License Object must contain a valid URL"));
