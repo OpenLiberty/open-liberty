@@ -59,19 +59,18 @@ import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.PrivHelper;
 import junit.framework.AssertionFailedError;
 
 public class FATRunner extends BlockJUnit4ClassRunner {
     private static final Class<?> c = FATRunner.class;
 
     // Used to reduce timeouts to a sensible level when FATs are running locally
-    public static final boolean FAT_TEST_LOCALRUN = PrivHelper.getBoolean("fat.test.localrun");
+    public static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     private static final int MAX_FFDC_LINES = 1000;
-    private static final boolean DISABLE_FFDC_CHECKING = PrivHelper.getBoolean("disable.ffdc.checking");
+    private static final boolean DISABLE_FFDC_CHECKING = Boolean.getBoolean("disable.ffdc.checking");
 
-    private static final boolean ENABLE_TMP_DIR_CHECKING = PrivHelper.getBoolean("enable.tmpdir.checking");
+    private static final boolean ENABLE_TMP_DIR_CHECKING = Boolean.getBoolean("enable.tmpdir.checking");
     private static final long TMP_DIR_SIZE_THRESHOLD = 20 * 1024; // 20k
 
     //list of filters to apply
@@ -330,6 +329,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                         blowup("A problem was detected during post-test tidy up. New FFDC file is generated. Please check the log directory. The beginning of the FFDC file is:\n"
                                + ffdcHeader);
                     }
+
+                    LogPolice.checkUsedTrace();
                 }
             }
         };

@@ -67,6 +67,7 @@ import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.LogPolice;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
@@ -1510,6 +1511,10 @@ public class LibertyClient {
 
             RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
+            String absPath = toCopy.getAbsolutePath();
+
+            if (absPath.endsWith(".log"))
+                LogPolice.measureUsedTrace(toCopy.length());
 
             if (toCopy.isDirectory()) {
                 // Recurse
@@ -1517,18 +1522,18 @@ public class LibertyClient {
             } else {
                 try {
                     if (skipArchives
-                        && (toCopy.getAbsolutePath().endsWith(".jar")
-                            || toCopy.getAbsolutePath().endsWith(".war")
-                            || toCopy.getAbsolutePath().endsWith(".ear")
-                            || toCopy.getAbsolutePath().endsWith(".rar")
+                        && (absPath.endsWith(".jar")
+                            || absPath.endsWith(".war")
+                            || absPath.endsWith(".ear")
+                            || absPath.endsWith(".rar")
                             //If we're only getting logs, skip jars, wars, ears, zips, unless they are client dump zips
-                            || (toCopy.getAbsolutePath().endsWith(".zip") && !toCopy.getName().contains(clientToUse + ".dump")))) {
+                            || (absPath.endsWith(".zip") && !toCopy.getName().contains(clientToUse + ".dump")))) {
                         continue;
                     }
 
                     // We're only going to attempt to move log files. Because of ffdc log checking, we
                     // can't move those. But we should move other log files..
-                    boolean isLog = (toCopy.getAbsolutePath().contains("logs") && !toCopy.getAbsolutePath().contains("ffdc"))
+                    boolean isLog = (absPath.contains("logs") && !absPath.contains("ffdc"))
                                     || toCopy.getName().contains("javacore")
                                     || toCopy.getName().contains("heapdump")
                                     || toCopy.getName().contains("Snap")
