@@ -93,6 +93,15 @@ public class CallbacksValidatorTest {
     }
 
     @Test
+    public void relativeUrlCallBack() {
+        CallbackImpl c = new CallbackImpl();
+        c.addPathItem("../../abc.com/path", pathItem);
+        vh.resetResults();
+        validator.validate(vh, context, c);
+        Assert.assertEquals("Callback with relative url must have no error:" + vh, 0, vh.getEventsSize());
+    }
+
+    @Test
     public void invalidRuntimeExpressionCallBack() {
         CallbackImpl c = new CallbackImpl();
         c.addPathItem("http://abc.com/path", pathItem);

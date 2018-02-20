@@ -63,6 +63,18 @@ public class LicenseValidatorTest {
     }
 
     @Test
+    public void testLicenseWithRealtiveUrl() {
+        LicenseValidator validator = LicenseValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        LicenseImpl license = new LicenseImpl();
+        license.setName("Apache 2.0");
+        license.setUrl("/notAValidURL");
+        validator.validate(vh, context, license);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
     public void testCorrectLicense() {
         LicenseValidator validator = LicenseValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();

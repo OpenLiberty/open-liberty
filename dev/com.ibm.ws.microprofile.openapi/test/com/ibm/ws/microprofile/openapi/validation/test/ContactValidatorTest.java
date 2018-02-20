@@ -85,6 +85,20 @@ public class ContactValidatorTest {
     }
 
     @Test
+    public void testContactWithRelativeUrl() {
+        ContactValidator validator = ContactValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        ContactImpl contact = new ContactImpl();
+        contact.setName("test_contact");
+        contact.setEmail("mytestemail@gmail.com");
+        contact.setUrl("/http/test-url.");
+
+        validator.validate(vh, context, key, contact);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
     public void testContactWithNullUrl() {
         ContactValidator validator = ContactValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();

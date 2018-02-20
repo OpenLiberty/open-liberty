@@ -92,6 +92,20 @@ public class InfoValidatorTest {
     }
 
     @Test
+    public void testInfoWithRelativeUrlForTermsOfService() {
+
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();
+        info.setTitle("test");
+        info.setVersion("1.0");
+        info.setTermsOfService("/notValidURL");
+        validator.validate(vh, context, info);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
     public void testInfoWithNullTermsOfService() {
 
         InfoValidator validator = InfoValidator.getInstance();
