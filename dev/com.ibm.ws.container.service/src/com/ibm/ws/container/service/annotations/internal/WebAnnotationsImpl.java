@@ -30,6 +30,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
@@ -56,7 +57,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * 3) The future is resolved through an appropriate getter.
  *
  * The implementation performs steps using web module rules.
- * 
+ *
  * Note that the initial adapt call accepts four parameters.  The additional
  * parameters are accepted as debugging assists.
  *
@@ -105,7 +106,7 @@ public class WebAnnotationsImpl implements WebAnnotations {
     // be for a web module.
     private final Container adaptableContainer;
 
-    // Web app specific values ... these are retrieved from the overlay container. 
+    // Web app specific values ... these are retrieved from the overlay container.
     private final ApplicationInfo appInfo;
     private final String appName;
     private final WebModuleInfo webModuleInfo;
@@ -267,8 +268,11 @@ public class WebAnnotationsImpl implements WebAnnotations {
 
         ClassSource_Aggregate useClassSource;
 
+        ClassSource_Options options = getClassSourceFactory().createOptions();
+        options.setUseJandex(appInfo.getUseJandex());
+
         try {
-            useClassSource = getClassSourceFactory().createAggregateClassSource(containerName);
+            useClassSource = getClassSourceFactory().createAggregateClassSource(containerName, options);
         } catch (ClassSource_Exception e) {
             String msg = Tr.formatMessage(tc, "failed.to.create.module.class.source.CWWKM0465E", "Failed to create module class source", containerName, e);
             throw new UnableToAdaptException(msg);

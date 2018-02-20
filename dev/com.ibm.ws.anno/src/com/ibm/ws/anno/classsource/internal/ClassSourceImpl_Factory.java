@@ -132,8 +132,12 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(String name, ClassSource_Options options) throws ClassSource_Exception {
+        String methodName = "createAggregateClassSource";
         Util_InternMap classInternMap = getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and packages");
-
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(methodName, tc, MessageFormat.format("UseJandex = [ {0} ]", Boolean.valueOf(options.getUseJandex())));
+        }
         return createAggregateClassSource(classInternMap, name, options); // throws ClassSource_Exception
     }
     

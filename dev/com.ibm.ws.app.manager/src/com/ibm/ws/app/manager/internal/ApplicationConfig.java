@@ -18,20 +18,22 @@ import javax.management.NotificationBroadcasterSupport;
 
 import com.ibm.websphere.application.ApplicationMBean;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.app.manager.ApplicationManager;
 
 @Trivial
 public final class ApplicationConfig {
     private final String _configPid;
     private final Dictionary<String, ?> _config;
+    private final ApplicationManager _applicationManager;
     private final String _location;
     private final String _type;
     private final String _name;
     private NotificationBroadcasterSupport _notificationBroadcasterSupport;
 
-    public ApplicationConfig(String configPid, Dictionary<String, ?> config) {
+    public ApplicationConfig(String configPid, Dictionary<String, ?> config, ApplicationManager applicationManager) {
         _configPid = configPid;
         _config = config;
-
+        _applicationManager = applicationManager;
         _location = (String) config.get(AppManagerConstants.LOCATION);
         String type = (String) config.get(AppManagerConstants.TYPE);
         if (type == null) {
@@ -60,6 +62,10 @@ public final class ApplicationConfig {
         }
         _name = name;
     }
+
+    //public ApplicationConfig(String configPid, Dictionary<String, ?> config) {
+    //    this(configPid, config, null);
+    //}
 
     public void setMBeanNotifier(NotificationBroadcasterSupport broadcaster) {
         _notificationBroadcasterSupport = broadcaster;
@@ -132,8 +138,10 @@ public final class ApplicationConfig {
         }
         return true;
     }
-    
+
     public boolean getUseJandex() {
+        // First try to get the value from the application configuration
+        // which overrides the value on the application manager configuration.
         Dictionary<String, ?> config = _config;
         if (config != null) {
             Object result = config.get(AppManagerConstants.USE_JANDEX);
@@ -141,8 +149,10 @@ public final class ApplicationConfig {
                 return (Boolean) result;
             }
         }
-        return true;
-    }    
+
+        // If that fails, try to get the value from the application manager
+        return _applicationManager.getUseJandex();
+    }
 
     void describe(StringBuilder sb) {
         sb.append("app[" + getName() + "," + getType() + "]");

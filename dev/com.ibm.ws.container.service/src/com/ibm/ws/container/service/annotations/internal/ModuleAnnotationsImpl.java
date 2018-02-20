@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.annotations.SpecificAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
@@ -27,6 +28,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
@@ -53,7 +55,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * 3) The future is resolved through an appropriate getter.
  *
  * The implementation performs steps using web module rules.
- * 
+ *
  * Note that the initial adapt call accepts four parameters.  The additional
  * parameters are accepted as debugging assists.
  *
@@ -96,7 +98,7 @@ public class ModuleAnnotationsImpl implements ModuleAnnotations {
     private final OverlayContainer rootOverlayContainer;
     private final ArtifactContainer rootArtifactContainer;
 
-    // Web app specific values ... these are retrieved from the overlay container. 
+    // Web app specific values ... these are retrieved from the overlay container.
     private final ModuleInfo moduleInfo;
 
     // Note that this should be the module context class loader, not the entire class
@@ -203,10 +205,9 @@ public class ModuleAnnotationsImpl implements ModuleAnnotations {
     public void addAppClassLoader(ClassLoader appClassLoader) {
         ClassSource_Factory classSourceFactory = annotationService.getClassSourceFactory();
         try {
-            ClassSource clClassSource =
-                            classSourceFactory.createClassLoaderClassSource(getClassSource().getInternMap(),
-                                                                            containerName + " parent classloader",
-                                                                            appClassLoader);
+            ClassSource clClassSource = classSourceFactory.createClassLoaderClassSource(getClassSource().getInternMap(),
+                                                                                        containerName + " parent classloader",
+                                                                                        appClassLoader);
             getClassSource().addClassSource(clClassSource, ClassSource_Aggregate.ScanPolicy.EXTERNAL);
         } catch (ClassSource_Exception e) {
             e.getCause();
@@ -230,10 +231,14 @@ public class ModuleAnnotationsImpl implements ModuleAnnotations {
 
         containerName = rootContainer.getName();
 
+        ApplicationInfo applicationInfo = moduleInfo.getApplicationInfo();
+        ClassSource_Options options = getClassSourceFactory().createOptions();
+        options.setUseJandex(applicationInfo.getUseJandex());
+
         ClassSource_Aggregate useClassSource;
 
         try {
-            useClassSource = getClassSourceFactory().createAggregateClassSource(containerName);
+            useClassSource = getClassSourceFactory().createAggregateClassSource(containerName, options);
         } catch (ClassSource_Exception e) {
             String msg = Tr.formatMessage(tc, "failed.to.create.module.class.source.CWWKM0454E", "Failed to create module class source", containerName, e);
             throw new UnableToAdaptException(msg, e);

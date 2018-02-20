@@ -20,14 +20,25 @@ import com.ibm.wsspi.adaptable.module.Container;
  */
 public interface ApplicationInfoFactory {
 
-    public ExtendedApplicationInfo createApplicationInfo(String appMgrName, String preferredName, Container container,
+    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName, Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
-                                                         NestedConfigHelper configHelper);
+                                                         NestedConfigHelper configHelper,
+                                                         boolean useJandex);
 
-    public ExtendedEARApplicationInfo createEARApplicationInfo(String appMgrName, String preferredName, Container container,
+    //public ExtendedApplicationInfo createApplicationInfo(String appMgrName, String preferredName, Container container,
+    //                                                     ApplicationClassesContainerInfo appClassesContainerInfo,
+    //                                                     NestedConfigHelper configHelper);
+
+    public ExtendedEARApplicationInfo createEARApplicationInfo(String appName, String preferredName, Container container,
                                                                ApplicationClassesContainerInfo appClassesContainerInfo,
                                                                NestedConfigHelper configHelper,
+                                                               boolean useJandex,
                                                                Container libDirContainer, AppClassLoaderFactory classLoaderFactory);
+
+    //public ExtendedEARApplicationInfo createEARApplicationInfo(String appMgrName, String preferredName, Container container,
+    //                                                           ApplicationClassesContainerInfo appClassesContainerInfo,
+    //                                                           NestedConfigHelper configHelper,
+    //                                                           Container libDirContainer, AppClassLoaderFactory classLoaderFactory);
 
     public void destroyApplicationInfo(ApplicationInfo appInfo);
 }
