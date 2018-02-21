@@ -325,12 +325,26 @@ task zipGradleBootstrap(type: Zip) {
     from new File(project.buildDir, 'replacements')
 }
 
+task zipDotFeatureFiles(type: Zip) {
+    baseName 'openliberty-features'
+    from rootProject.fileTree(dir: '.', include: '*/*.feature').collect {
+        if (!it.isDirectory()) {
+            it
+        }
+    }
+}
+
 publishing {
   publications {
     gradle(MavenPublication) {
         artifactId 'gradle-bootstrap'
         version project.version
         artifact zipGradleBootstrap
+    }
+    features(MavenPublication) {
+        artifactId 'openliberty-features'
+        version project.version
+        artifact zipDotFeatureFiles
     }
   }
 }
