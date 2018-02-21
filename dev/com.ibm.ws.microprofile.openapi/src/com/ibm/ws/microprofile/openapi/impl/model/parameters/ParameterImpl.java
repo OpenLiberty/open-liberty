@@ -338,21 +338,21 @@ public class ParameterImpl implements Parameter {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Parameter {\n");
-        sb = (!toIndentedString(name).equals(Constants.NULL_VALUE)) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
-        sb = (!toIndentedString(in).equals(Constants.NULL_VALUE)) ? sb.append("    in: ").append(toIndentedString(in)).append("\n") : sb.append("");
-        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = (!toIndentedString(required).equals(Constants.NULL_VALUE)) ? sb.append("    required: ").append(toIndentedString(required)).append("\n") : sb.append("");
-        sb = (!toIndentedString(deprecated).equals(Constants.NULL_VALUE)) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
-        sb = (!toIndentedString(allowEmptyValue).equals(Constants.NULL_VALUE)) ? sb.append("    allowEmptyValue: ").append(toIndentedString(allowEmptyValue)).append("\n") : sb.append("");
-        sb = (!toIndentedString(style).equals(Constants.NULL_VALUE)) ? sb.append("    style: ").append(toIndentedString(style)).append("\n") : sb.append("");
-        sb = (!toIndentedString(explode).equals(Constants.NULL_VALUE)) ? sb.append("    explode: ").append(toIndentedString(explode)).append("\n") : sb.append("");
-        sb = (!toIndentedString(allowReserved).equals(Constants.NULL_VALUE)) ? sb.append("    allowReserved: ").append(toIndentedString(allowReserved)).append("\n") : sb.append("");
-        sb = (!toIndentedString(schema).equals(Constants.NULL_VALUE)) ? sb.append("    schema: ").append(toIndentedString(schema)).append("\n") : sb.append("");
-        sb = (!toIndentedString(examples).equals(Constants.NULL_VALUE)) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
-        sb = (!toIndentedString(example).equals(Constants.NULL_VALUE)) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
-        sb = (!toIndentedString(content).equals(Constants.NULL_VALUE)) ? sb.append("    content: ").append(toIndentedString(content)).append("\n") : sb.append("");
-        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (name != null) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (in != null) ? sb.append("    in: ").append(toIndentedString(in)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (required != null) ? sb.append("    required: ").append(toIndentedString(required)).append("\n") : sb.append("");
+        sb = (deprecated != null) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
+        sb = (allowEmptyValue != null) ? sb.append("    allowEmptyValue: ").append(toIndentedString(allowEmptyValue)).append("\n") : sb.append("");
+        sb = (style != null) ? sb.append("    style: ").append(toIndentedString(style)).append("\n") : sb.append("");
+        sb = (explode != null) ? sb.append("    explode: ").append(toIndentedString(explode)).append("\n") : sb.append("");
+        sb = (allowReserved != null) ? sb.append("    allowReserved: ").append(toIndentedString(allowReserved)).append("\n") : sb.append("");
+        sb = (schema != null) ? sb.append("    schema: ").append(toIndentedString(schema)).append("\n") : sb.append("");
+        sb = (examples != null) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
+        sb = (example != null) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
+        sb = (content != null) ? sb.append("    content: ").append(toIndentedString(content)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

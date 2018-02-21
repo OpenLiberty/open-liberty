@@ -174,13 +174,13 @@ public class InfoImpl implements Info {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Info {\n");
-        sb = (!toIndentedString(title).equals(Constants.NULL_VALUE)) ? sb.append("    title: ").append(toIndentedString(title)).append("\n") : sb.append("");
-        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = (!toIndentedString(termsOfService).equals(Constants.NULL_VALUE)) ? sb.append("    termsOfService: ").append(toIndentedString(termsOfService)).append("\n") : sb.append("");
-        sb = (!toIndentedString(contact).equals(Constants.NULL_VALUE)) ? sb.append("    contact: ").append(toIndentedString(contact)).append("\n") : sb.append("");
-        sb = (!toIndentedString(license).equals(Constants.NULL_VALUE)) ? sb.append("    license: ").append(toIndentedString(license)).append("\n") : sb.append("");
-        sb = (!toIndentedString(version).equals(Constants.NULL_VALUE)) ? sb.append("    version: ").append(toIndentedString(version)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (title != null) ? sb.append("    title: ").append(toIndentedString(title)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (termsOfService != null) ? sb.append("    termsOfService: ").append(toIndentedString(termsOfService)).append("\n") : sb.append("");
+        sb = (contact != null) ? sb.append("    contact: ").append(toIndentedString(contact)).append("\n") : sb.append("");
+        sb = (license != null) ? sb.append("    license: ").append(toIndentedString(license)).append("\n") : sb.append("");
+        sb = (version != null) ? sb.append("    version: ").append(toIndentedString(version)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

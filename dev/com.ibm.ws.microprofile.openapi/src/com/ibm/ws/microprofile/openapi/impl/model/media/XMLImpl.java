@@ -155,12 +155,12 @@ public class XMLImpl implements XML {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class XML {\n");
-        sb = (!toIndentedString(name).equals(Constants.NULL_VALUE)) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
-        sb = (!toIndentedString(namespace).equals(Constants.NULL_VALUE)) ? sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n") : sb.append("");
-        sb = (!toIndentedString(prefix).equals(Constants.NULL_VALUE)) ? sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n") : sb.append("");
-        sb = (!toIndentedString(attribute).equals(Constants.NULL_VALUE)) ? sb.append("    attribute: ").append(toIndentedString(attribute)).append("\n") : sb.append("");
-        sb = (!toIndentedString(wrapped).equals(Constants.NULL_VALUE)) ? sb.append("    wrapped: ").append(toIndentedString(wrapped)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (name != null) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (namespace != null) ? sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n") : sb.append("");
+        sb = (prefix != null) ? sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n") : sb.append("");
+        sb = (attribute != null) ? sb.append("    attribute: ").append(toIndentedString(attribute)).append("\n") : sb.append("");
+        sb = (wrapped != null) ? sb.append("    wrapped: ").append(toIndentedString(wrapped)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

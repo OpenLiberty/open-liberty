@@ -430,20 +430,20 @@ public class PathItemImpl implements PathItem {
         StringBuilder sb = new StringBuilder();
         sb.append("class PathItem {\n");
 
-        sb = (!toIndentedString(summary).equals(Constants.NULL_VALUE)) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
-        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = (!toIndentedString(get).equals(Constants.NULL_VALUE)) ? sb.append("    get: ").append(toIndentedString(get)).append("\n") : sb.append("");
-        sb = (!toIndentedString(put).equals(Constants.NULL_VALUE)) ? sb.append("    put: ").append(toIndentedString(put)).append("\n") : sb.append("");
-        sb = (!toIndentedString(post).equals(Constants.NULL_VALUE)) ? sb.append("    post: ").append(toIndentedString(post)).append("\n") : sb.append("");
-        sb = (!toIndentedString(delete).equals(Constants.NULL_VALUE)) ? sb.append("    delete: ").append(toIndentedString(delete)).append("\n") : sb.append("");
-        sb = (!toIndentedString(options).equals(Constants.NULL_VALUE)) ? sb.append("    options: ").append(toIndentedString(options)).append("\n") : sb.append("");
-        sb = (!toIndentedString(head).equals(Constants.NULL_VALUE)) ? sb.append("    head: ").append(toIndentedString(head)).append("\n") : sb.append("");
-        sb = (!toIndentedString(patch).equals(Constants.NULL_VALUE)) ? sb.append("    patch: ").append(toIndentedString(patch)).append("\n") : sb.append("");
-        sb = (!toIndentedString(trace).equals(Constants.NULL_VALUE)) ? sb.append("    trace: ").append(toIndentedString(trace)).append("\n") : sb.append("");
-        sb = (!toIndentedString(servers).equals(Constants.NULL_VALUE)) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
-        sb = (!toIndentedString(parameters).equals(Constants.NULL_VALUE)) ? sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n") : sb.append("");
-        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (summary != null) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (get != null) ? sb.append("    get: ").append(toIndentedString(get)).append("\n") : sb.append("");
+        sb = (put != null) ? sb.append("    put: ").append(toIndentedString(put)).append("\n") : sb.append("");
+        sb = (post != null) ? sb.append("    post: ").append(toIndentedString(post)).append("\n") : sb.append("");
+        sb = (delete != null) ? sb.append("    delete: ").append(toIndentedString(delete)).append("\n") : sb.append("");
+        sb = (options != null) ? sb.append("    options: ").append(toIndentedString(options)).append("\n") : sb.append("");
+        sb = (head != null) ? sb.append("    head: ").append(toIndentedString(head)).append("\n") : sb.append("");
+        sb = (patch != null) ? sb.append("    patch: ").append(toIndentedString(patch)).append("\n") : sb.append("");
+        sb = (trace != null) ? sb.append("    trace: ").append(toIndentedString(trace)).append("\n") : sb.append("");
+        sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

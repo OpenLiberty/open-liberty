@@ -76,8 +76,8 @@ public class ServerVariablesImpl extends LinkedHashMap<String, ServerVariable> i
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class ServerVariables {\n");
-        sb = !toIndentedString(super.toString()).equals(Constants.NULL_VALUE) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
-        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

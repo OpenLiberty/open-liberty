@@ -261,15 +261,15 @@ public class OpenAPIImpl implements OpenAPI {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class OpenAPI {\n");
-        sb = (!toIndentedString(openapi).equals(Constants.NULL_VALUE)) ? sb.append("    openapi: ").append(toIndentedString(openapi)).append("\n") : sb.append("");
-        sb = (!toIndentedString(info).equals(Constants.NULL_VALUE)) ? sb.append("    info: ").append(toIndentedString(info)).append("\n") : sb.append("");
-        sb = (!toIndentedString(externalDocs).equals(Constants.NULL_VALUE)) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
-        sb = (!toIndentedString(servers).equals(Constants.NULL_VALUE)) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
-        sb = (!toIndentedString(security).equals(Constants.NULL_VALUE)) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
-        sb = (!toIndentedString(tags).equals(Constants.NULL_VALUE)) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
-        sb = (!toIndentedString(paths).equals(Constants.NULL_VALUE)) ? sb.append("    paths: ").append(toIndentedString(paths)).append("\n") : sb.append("");
-        sb = (!toIndentedString(components).equals(Constants.NULL_VALUE)) ? sb.append("    components: ").append(toIndentedString(components)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (openapi != null) ? sb.append("    openapi: ").append(toIndentedString(openapi)).append("\n") : sb.append("");
+        sb = (info != null) ? sb.append("    info: ").append(toIndentedString(info)).append("\n") : sb.append("");
+        sb = (externalDocs != null) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (security != null) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
+        sb = (tags != null) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
+        sb = (paths != null) ? sb.append("    paths: ").append(toIndentedString(paths)).append("\n") : sb.append("");
+        sb = (components != null) ? sb.append("    components: ").append(toIndentedString(components)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

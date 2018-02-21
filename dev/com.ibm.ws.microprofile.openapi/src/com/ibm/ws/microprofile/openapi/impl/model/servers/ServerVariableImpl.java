@@ -131,10 +131,10 @@ public class ServerVariableImpl implements ServerVariable {
         StringBuilder sb = new StringBuilder();
         sb.append("class ServerVariable {\n");
 
-        sb = !toIndentedString(_enum).equals(Constants.NULL_VALUE) ? sb.append("    _enum: ").append(toIndentedString(_enum)).append("\n") : sb.append("");
-        sb = !toIndentedString(_default).equals(Constants.NULL_VALUE) ? sb.append("    _default: ").append(toIndentedString(_default)).append("\n") : sb.append("");
-        sb = !toIndentedString(description).equals(Constants.NULL_VALUE) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (_enum != null) ? sb.append("    _enum: ").append(toIndentedString(_enum)).append("\n") : sb.append("");
+        sb = (_default != null) ? sb.append("    _default: ").append(toIndentedString(_default)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

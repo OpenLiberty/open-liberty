@@ -327,19 +327,19 @@ public class OperationImpl implements Operation {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Operation {\n");
-        sb = (!toIndentedString(tags).equals(Constants.NULL_VALUE)) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
-        sb = (!toIndentedString(summary).equals(Constants.NULL_VALUE)) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
-        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = (!toIndentedString(externalDocs).equals(Constants.NULL_VALUE)) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
-        sb = (!toIndentedString(operationId).equals(Constants.NULL_VALUE)) ? sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n") : sb.append("");
-        sb = (!toIndentedString(parameters).equals(Constants.NULL_VALUE)) ? sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n") : sb.append("");
-        sb = (!toIndentedString(requestBody).equals(Constants.NULL_VALUE)) ? sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n") : sb.append("");
-        sb = (!toIndentedString(responses).equals(Constants.NULL_VALUE)) ? sb.append("    responses: ").append(toIndentedString(responses)).append("\n") : sb.append("");
-        sb = (!toIndentedString(callbacks).equals(Constants.NULL_VALUE)) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
-        sb = (!toIndentedString(deprecated).equals(Constants.NULL_VALUE)) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
-        sb = (!toIndentedString(security).equals(Constants.NULL_VALUE)) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
-        sb = (!toIndentedString(servers).equals(Constants.NULL_VALUE)) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (tags != null) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
+        sb = (summary != null) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (externalDocs != null) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (operationId != null) ? sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n") : sb.append("");
+        sb = (requestBody != null) ? sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n") : sb.append("");
+        sb = (responses != null) ? sb.append("    responses: ").append(toIndentedString(responses)).append("\n") : sb.append("");
+        sb = (callbacks != null) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
+        sb = (deprecated != null) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
+        sb = (security != null) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
+        sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         
         sb.append("}");
         return sb.toString();

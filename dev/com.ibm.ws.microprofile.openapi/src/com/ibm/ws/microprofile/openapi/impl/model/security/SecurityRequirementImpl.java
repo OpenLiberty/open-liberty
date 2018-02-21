@@ -68,7 +68,7 @@ public class SecurityRequirementImpl extends LinkedHashMap<String, List<String>>
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class SecurityRequirement {\n");
-        sb = !toIndentedString(super.toString()).equals(Constants.NULL_VALUE) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

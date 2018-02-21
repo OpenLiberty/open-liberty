@@ -122,10 +122,10 @@ public class TagImpl implements Tag {
         StringBuilder sb = new StringBuilder();
         sb.append("class Tag {\n");
 
-        sb = !toIndentedString(name).equals(Constants.NULL_VALUE) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
-        sb = !toIndentedString(description).equals(Constants.NULL_VALUE) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = !toIndentedString(externalDocs).equals(Constants.NULL_VALUE) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
-        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (name != null) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (externalDocs != null) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

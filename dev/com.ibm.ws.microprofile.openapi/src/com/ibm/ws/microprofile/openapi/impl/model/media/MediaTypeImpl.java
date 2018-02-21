@@ -20,6 +20,7 @@ import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
 import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * MediaType
@@ -159,11 +160,11 @@ public class MediaTypeImpl implements MediaType {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class MediaType {\n");
-        sb = (!toIndentedString(schema).equals(Constants.NULL_VALUE)) ? sb.append("    schema: ").append(toIndentedString(schema)).append("\n") : sb.append("");
-        sb = (!toIndentedString(examples).equals(Constants.NULL_VALUE)) ? sb.append("    examples: ").append(toIndentedString(examples)).append("\n") : sb.append("");
-        sb = (!toIndentedString(example).equals(Constants.NULL_VALUE)) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
-        sb = (!toIndentedString(encoding).equals(Constants.NULL_VALUE)) ? sb.append("    encoding: ").append(toIndentedString(encoding)).append("\n") : sb.append("");
-
+        sb = (schema != null) ? sb.append("    schema: ").append(toIndentedString(schema)).append("\n") : sb.append("");
+        sb = (examples != null) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
+        sb = (example != null) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
+        sb = (encoding != null) ? sb.append("    encoding: ").append(OpenAPIUtils.mapToString(encoding)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

@@ -139,11 +139,11 @@ public class OAuthFlowImpl implements OAuthFlow {
         StringBuilder sb = new StringBuilder();
         sb.append("class OAuthFlow {\n");
 
-        sb = !toIndentedString(authorizationUrl).equals(Constants.NULL_VALUE) ? sb.append("    authorizationUrl: ").append(toIndentedString(authorizationUrl)).append("\n") : sb.append("");
-        sb = !toIndentedString(tokenUrl).equals(Constants.NULL_VALUE) ? sb.append("    tokenUrl: ").append(toIndentedString(tokenUrl)).append("\n") : sb.append("");
-        sb = !toIndentedString(refreshUrl).equals(Constants.NULL_VALUE) ? sb.append("    refreshUrl: ").append(toIndentedString(refreshUrl)).append("\n") : sb.append("");
-        sb = !toIndentedString(scopes).equals(Constants.NULL_VALUE) ? sb.append("    scopes: ").append(toIndentedString(scopes)).append("\n") : sb.append("");
-        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (authorizationUrl != null) ? sb.append("    authorizationUrl: ").append(toIndentedString(authorizationUrl)).append("\n") : sb.append("");
+        sb = (tokenUrl != null) ? sb.append("    tokenUrl: ").append(toIndentedString(tokenUrl)).append("\n") : sb.append("");
+        sb = (refreshUrl != null) ? sb.append("    refreshUrl: ").append(toIndentedString(refreshUrl)).append("\n") : sb.append("");
+        sb = (scopes != null) ? sb.append("    scopes: ").append(toIndentedString(scopes)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }
