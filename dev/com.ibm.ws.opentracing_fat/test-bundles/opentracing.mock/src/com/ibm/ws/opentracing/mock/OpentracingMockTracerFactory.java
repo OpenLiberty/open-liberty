@@ -68,7 +68,7 @@ public class OpentracingMockTracerFactory implements OpentracingTracerFactory {
      */
     @Override
     public Tracer newInstance(String serviceName) {
-        System.out.println("OpentracingMockTracerFactory.newInstance");
+        System.out.println("OpentracingMockTracerFactory.newInstance USE_MOCK_TRACER: " + USE_MOCK_TRACER);
         if (USE_MOCK_TRACER) {
             return new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
         } else {

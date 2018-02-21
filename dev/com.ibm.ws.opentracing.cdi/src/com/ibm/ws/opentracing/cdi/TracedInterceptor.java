@@ -109,6 +109,9 @@ public class TracedInterceptor {
 
             try (ActiveSpan activeSpan = tracer.buildSpan(operationName).startActive()) {
                 try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, methodName + " created span", activeSpan);
+                    }
                     Object result = context.proceed();
                     return result;
                 } catch (Exception e) {
