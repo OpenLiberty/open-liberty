@@ -111,6 +111,8 @@ instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
 	com.ibm.websphere.appserver.api.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging,\
+	com.ibm.ws.logging.core,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest
 
 -testpath: \
