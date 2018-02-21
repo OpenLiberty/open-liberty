@@ -19,6 +19,9 @@ import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * ApiResponse
  *
@@ -173,11 +176,14 @@ public class APIResponseImpl implements APIResponse {
         StringBuilder sb = new StringBuilder();
         sb.append("class ApiResponse {\n");
 
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    headers: ").append(toIndentedString(headers)).append("\n");
-        sb.append("    content: ").append(toIndentedString(content)).append("\n");
-        sb.append("    links: ").append(toIndentedString(links)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
+        sb = !toIndentedString(description).equals(Constants.NULL_VALUE) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = !toIndentedString(headers).equals(Constants.NULL_VALUE) ? sb.append("    headers: ").append(toIndentedString(headers)).append("\n") : sb.append("");
+        sb = !toIndentedString(content).equals(Constants.NULL_VALUE) ? sb.append("    content: ").append(toIndentedString(content)).append("\n") : sb.append("");
+        sb = !toIndentedString(links).equals(Constants.NULL_VALUE) ? sb.append("    links: ").append(toIndentedString(links)).append("\n") : sb.append("");
+        sb = !toIndentedString($ref).equals(Constants.NULL_VALUE) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = !toIndentedString(headers).equals(Constants.NULL_VALUE) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = !toIndentedString(links).equals(Constants.NULL_VALUE) ? sb.append("    links: ").append(OpenAPIUtils.mapToString(links)).append("\n") : sb.append("");
+        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }
