@@ -45,18 +45,10 @@ public class ReferenceValidator {
 
     private ReferenceValidator() {}
 
-    /** {@inheritDoc} */
-
     public Object validate(ValidationHelper helper, Context context, String key, String $ref) {
-
-        if ($ref != null && !$ref.isEmpty()) {
-            if ($ref.contains(".json")
-                || $ref.contains(".yml")
-                || $ref.contains(".yaml")
-                || $ref.contains("/x-")
-                || $ref.startsWith("http://")
-                || $ref.startsWith("https://")) {
-
+        if ($ref != null && !$ref.trim().isEmpty()) {
+            //Validates relative references only (for now)
+            if (!$ref.startsWith("#")) {
                 return null;
 
             } else {
