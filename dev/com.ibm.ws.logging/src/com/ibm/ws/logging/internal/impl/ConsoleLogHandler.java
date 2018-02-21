@@ -49,9 +49,11 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         String evensourcetType = getSourceTypeFromDataObject(event);
         int logLevelValue = Integer.MIN_VALUE;
         String loggerName = null;
+        String sourceType = null;
         if (event instanceof GenericData) {
             GenericData genData = (GenericData) event;
             loggerName = genData.getLoggerName();
+            sourceType = genData.getSourceType();
             Level logRecordLevel = genData.getLogRecordLevel();
             if (logRecordLevel != null) {
                 logLevelValue = logRecordLevel.intValue();
@@ -77,6 +79,13 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
             if (copySystemStreams &&
                 logLevelValue == WsLevel.CONFIG.intValue() &&
                 (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR))) {
+                sysLogHolder.getOriginalStream().println(messageOutput);
+            }
+
+            //Other wise we will be writing out  accessLog or ffdc or trace
+            if (sourceType.equals(CollectorConstants.ACCESS_LOG_SOURCE) ||
+                sourceType.equals(CollectorConstants.TRACE_SOURCE) ||
+                sourceType.equals(CollectorConstants.FFDC_SOURCE)) {
                 sysLogHolder.getOriginalStream().println(messageOutput);
             }
         }
