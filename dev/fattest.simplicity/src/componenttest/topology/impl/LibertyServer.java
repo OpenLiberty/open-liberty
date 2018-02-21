@@ -2063,8 +2063,13 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
-            if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY)
-                new ACEScanner(this).run();
+            if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
+                try {
+                    new ACEScanner(this).run();
+                } catch (Throwable t) {
+                    LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
+                }
+            }
             if (postStopServerArchive)
                 postStopServerArchive();
             // Delete marker for stopped server
