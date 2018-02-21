@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features description="Maven Coordinates for feature compilation dependencies">
+
+		<feature name="com.ibm.websphere.appserver.batch-1.0">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.batch</groupId>
+					<artifactId>javax.batch-api</artifactId>
+					<version>1.0.1</version>
+				</dependency>	
+				<dependency>
+					<groupId>javax.inject</groupId>
+					<artifactId>javax.inject</artifactId>
+					<version>1</version>
+				</dependency>			
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.batchManagement-1.0">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.batch</groupId>
+					<artifactId>javax.batch-api</artifactId>
+					<version>1.0.1</version>
+				</dependency>		
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.beanValidation-1.0">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.validation</groupId>
+					<artifactId>validation-api</artifactId>
+					<version>1.0.0.GA</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.beanValidation-1.1">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.validation</groupId>
+					<artifactId>validation-api</artifactId>
+					<version>1.1.0.Final</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.cdi-1.0">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.enterprise</groupId>
+					<artifactId>cdi-api</artifactId>
+					<version>1.0-SP4</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.inject</groupId>
+					<artifactId>javax.inject</artifactId>
+					<version>1</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.interceptor</groupId>
+					<artifactId>javax.interceptor-api</artifactId>
+					<version>3.1</version>
+				</dependency>				
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.cdi-1.2">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.enterprise</groupId>
+					<artifactId>cdi-api</artifactId>
+					<version>1.2</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.inject</groupId>
+					<artifactId>javax.inject</artifactId>
+					<version>1</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.interceptor</groupId>
+					<artifactId>javax.interceptor-api</artifactId>
+					<version>3.1</version>
+				</dependency>				
+			</mavendependencies>
+		</feature>	
+
+		<feature name="com.ibm.websphere.appserver.el-3.0">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>el-api</artifactId>
+					<version>2.2</version>
+				</dependency>		
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.j2eeManagement-1.1">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.management.j2ee</groupId>
+					<artifactId>management-api</artifactId>
+					<version>1.1-rev-1</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.api</groupId>
+					<artifactId>com.ibm.websphere.appserver.api.j2eemanagement</artifactId>
+					<version>1.1.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jacc-1.5">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.security.jacc</groupId>
+					<artifactId>javax.security.jacc-api</artifactId>
+					<version>1.5</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.api</groupId>
+					<artifactId>com.ibm.websphere.appserver.api.jacc</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jaspic-1.1">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.security.auth.message</groupId>
+					<artifactId>javax.security.auth.message-api</artifactId>
+					<version>1.1</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.spi</groupId>
+					<artifactId>com.ibm.websphere.appserver.spi.jaspic</artifactId>
+					<version>1.1.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.javaMail-1.5">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.mail</groupId>
+					<artifactId>javax.mail-api</artifactId>
+					<version>1.5.6</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jaxb-2.2">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.xml.bind</groupId>
+					<artifactId>jaxb-api</artifactId>
+					<version>2.2.12</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jaxrs-1.1">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>javax.ws.rs-api</artifactId>
+					<version>2.1</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.api</groupId>
+					<artifactId>com.ibm.websphere.appserver.api.jaxrs</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jaxws-2.2">
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.xml.ws</groupId>
+					<artifactId>jaxws-api</artifactId>
+					<version>2.2.12</version>
+				
+				</dependency>
+				<dependency>
+					<groupId>wsdl4j</groupId>
+					<artifactId>wsdl4j</artifactId>
+					<version>1.6.3</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jpa-2.0">		
+			<mavendependencies>
+				<dependency>
+					<groupId>org.eclipse.persistence</groupId>
+					<artifactId>javax.persistence</artifactId>
+					<version>2.1.0</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jpaContainer-2.1">		
+			<mavendependencies>
+				<dependency>
+					<groupId>org.eclipse.persistence</groupId>
+					<artifactId>javax.persistence</artifactId>
+					<version>2.1.0</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jsf-2.0">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<version>2.0</version>					
+				</dependency>
+				<dependency>
+					<groupId>org.eclipse.persistence</groupId>
+					<artifactId>javax.persistence</artifactId>
+					<version>2.1.0</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jsf-2.2">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+					<version>2.1</version>					
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jsonp-1.0">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.json</groupId>
+					<artifactId>javax.json-api</artifactId>
+					<version>1.1.2</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jsp-2.2">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.servlet.jsp</groupId>
+					<artifactId>javax.servlet.jsp-api</artifactId>
+					<version>2.2.1</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>el-api</artifactId>
+					<version>2.2</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.spi</groupId>
+					<artifactId>com.ibm.websphere.appserver.spi.jsp</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.jsp-2.3">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.servlet.jsp</groupId>
+					<artifactId>javax.servlet.jsp-api</artifactId>
+					<version>2.3.1</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.el</groupId>
+					<artifactId>el-api</artifactId>
+					<version>2.2</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.spi</groupId>
+					<artifactId>com.ibm.websphere.appserver.spi.jsp</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.mediaServerControl-1.0">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.media</groupId>
+					<artifactId>jai_core</artifactId>
+					<version>1.1.3</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.servlet-3.0">
+			    <mavendependencies>
+					<dependency>
+						<groupId>javax.servlet</groupId>
+						<artifactId>javax.servlet-api</artifactId>
+						<version>3.0.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.ibm.websphere.appserver.api</groupId>
+						<artifactId>com.ibm.websphere.appserver.api.servlet</artifactId>
+						<version>1.1.19</version>
+					</dependency>
+					<dependency>
+						<groupId>com.ibm.websphere.appserver.spi</groupId>
+						<artifactId>com.ibm.websphere.appserver.spi.servlet</artifactId>
+						<version>2.1.19</version>
+					</dependency>					
+				</mavendependencies>
+		</feature>		
+		
+		<feature name="com.ibm.websphere.appserver.servlet-3.1">
+			    <mavendependencies>
+					<dependency>
+						<groupId>javax.servlet</groupId>
+						<artifactId>javax.servlet-api</artifactId>
+						<version>3.1.0</version>
+					</dependency>
+					<dependency>
+						<groupId>com.ibm.websphere.appserver.api</groupId>
+						<artifactId>com.ibm.websphere.appserver.api.servlet</artifactId>
+						<version>1.1.19</version>
+					</dependency>
+					<dependency>
+						<groupId>com.ibm.websphere.appserver.spi</groupId>
+						<artifactId>com.ibm.websphere.appserver.spi.servlet</artifactId>
+						<version>2.1.19</version>
+					</dependency>					
+				</mavendependencies>
+		</feature>		
+
+		<feature name="com.ibm.websphere.appserver.sipServlet-1.1">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.servlet</groupId>
+					<artifactId>sip-api</artifactId>
+					<version>1.0</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.api</groupId>
+					<artifactId>com.ibm.websphere.appserver.api.sipServlet.1.1</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.wasJmsClient-1.1">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+					<version>1.1</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.wasJmsClient-2.0">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.jms</groupId>
+					<artifactId>javax.jms-api</artifactId>
+					<version>2.0</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.websocket-1.0">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.websocket</groupId>
+					<artifactId>javax.websocket-api</artifactId>
+					<version>1.0</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.api</groupId>
+					<artifactId>com.ibm.websphere.appserver.api.wsoc</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.websocket-1.1">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.websocket</groupId>
+					<artifactId>javax.websocket-api</artifactId>
+					<version>1.1</version>
+				</dependency>
+				<dependency>
+					<groupId>com.ibm.websphere.appserver.api</groupId>
+					<artifactId>com.ibm.websphere.appserver.api.wsoc</artifactId>
+					<version>1.0.19</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+		<feature name="com.ibm.websphere.appserver.wmqJmsClient-1.1">		
+			<mavendependencies>
+				<dependency>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+					<version>1.1</version>
+				</dependency>
+			</mavendependencies>
+		</feature>
+		
+</features>

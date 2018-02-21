@@ -142,7 +142,9 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
 
     @Override
     public InputStream getAttachment(Asset asset, Attachment attachment) throws IOException, BadVersionException, RequestFailureException {
-        throw new UnsupportedOperationException("Single file repositories do not support attachments");
+        // Allow the add attachment call to succeed, though the attachment is not stored
+        // This makes it easier to parse an asset and add it to a single file repository
+        return null;
     }
 
     @Override
