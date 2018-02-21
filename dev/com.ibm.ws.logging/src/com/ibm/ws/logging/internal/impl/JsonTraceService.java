@@ -227,7 +227,7 @@ public class JsonTraceService extends BaseTraceService {
             // preserve System.out vs. System.err
             publishTraceLogRecord(holder, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         } else {
-            if (copySystemStreams) {
+            if (copySystemStreams && !isConsoleJsonConfigured) {
                 // Tee to console.log if we are copying System.out and System.err to system streams.
                 writeFilteredStreamOutput(holder, logRecord);
             }

@@ -62,32 +62,38 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
         String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         synchronized (this) {
-            /*
-             * We only allow two types of console messages to go through:
-             *
-             * 1. Either this message is greater than or equal to consoleLogLevel (i.e from publishLogRecord)
-             * OR
-             * 2. CopySystemStreams is true AND this message came from BaseTraceService.TrOutputStream which exhibit the following characteristics:
-             * - LogLevel of WsLevel.CONFIG
-             * - LoggerName of LoggingConstants.SYSTEM_OUT (i.e SystemOut) OR loggerNameLoggingConstants.SYSTEM_ERR (i.e. SystemErr)
-             *
-             */
-            if (logLevelValue >= consoleLogLevel.intValue()) {
-                sysLogHolder.getOriginalStream().println(messageOutput);
-            }
-            //separated for readability***
-            if (copySystemStreams &&
-                logLevelValue == WsLevel.CONFIG.intValue() &&
-                (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR))) {
-                sysLogHolder.getOriginalStream().println(messageOutput);
-            }
 
-            //Other wise we will be writing out  accessLog or ffdc or trace
+            //Write out accessLog or ffdc or trace
             if (sourceType.equals(CollectorConstants.ACCESS_LOG_SOURCE) ||
                 sourceType.equals(CollectorConstants.TRACE_SOURCE) ||
                 sourceType.equals(CollectorConstants.FFDC_SOURCE)) {
                 sysLogHolder.getOriginalStream().println(messageOutput);
+                return;
             }
+
+            /*
+             * We only allow two types of console messages to go through:
+             *
+             * 1. CopySystemStreams is true AND this message came from BaseTraceService.TrOutputStream which exhibit the following characteristics:
+             * - LogLevel of WsLevel.CONFIG
+             * - LoggerName of LoggingConstants.SYSTEM_OUT (i.e SystemOut) OR loggerNameLoggingConstants.SYSTEM_ERR (i.e. SystemErr)
+             * OR
+             * 2. Either this message is greater than or equal to consoleLogLevel (i.e from publishLogRecord)
+             *
+             */
+
+            if (copySystemStreams &&
+                logLevelValue == WsLevel.CONFIG.intValue() &&
+                (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR))) {
+                sysLogHolder.getOriginalStream().println(messageOutput);
+                return;
+            }
+
+            if (logLevelValue >= consoleLogLevel.intValue()) {
+                sysLogHolder.getOriginalStream().println(messageOutput);
+                return;
+            }
+
         }
     }
 
