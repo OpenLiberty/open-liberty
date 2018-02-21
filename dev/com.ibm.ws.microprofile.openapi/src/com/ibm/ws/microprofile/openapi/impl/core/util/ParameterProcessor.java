@@ -54,12 +54,36 @@ public class ParameterProcessor {
         // first handle schema
         List<Annotation> reworkedAnnotations = new ArrayList<>(annotations);
         Annotation paramSchemaOrArrayAnnotation = getParamSchemaAnnotation(annotations);
+        Schema schemaFromAnn = null;
         if (paramSchemaOrArrayAnnotation != null) {
             reworkedAnnotations.add(paramSchemaOrArrayAnnotation);
+            if (paramSchemaOrArrayAnnotation instanceof org.eclipse.microprofile.openapi.annotations.media.Schema) {
+                org.eclipse.microprofile.openapi.annotations.media.Schema schemaAnn = (org.eclipse.microprofile.openapi.annotations.media.Schema) paramSchemaOrArrayAnnotation;
+                schemaFromAnn = AnnotationsUtils.getSchema(schemaAnn, components).orElse(null);
+            }
         }
+
         ResolvedSchema resolvedSchema = ModelConverters.getInstance().resolveAnnotatedType(type, reworkedAnnotations, "");
 
         if (resolvedSchema.schema != null) {
+            if (schemaFromAnn != null) {
+                if (schemaFromAnn.getAllOf() != null) {
+                    resolvedSchema.schema.setAllOf(schemaFromAnn.getAllOf());
+                    resolvedSchema.schema.setType(null);
+                }
+                if (schemaFromAnn.getAnyOf() != null) {
+                    resolvedSchema.schema.setAnyOf(schemaFromAnn.getAnyOf());
+                    resolvedSchema.schema.setType(null);
+                }
+                if (schemaFromAnn.getOneOf() != null) {
+                    resolvedSchema.schema.setOneOf(schemaFromAnn.getOneOf());
+                    resolvedSchema.schema.setType(null);
+                }
+                if (schemaFromAnn.getNot() != null) {
+                    resolvedSchema.schema.setNot(schemaFromAnn.getNot());
+                    resolvedSchema.schema.setType(null);
+                }
+            }
             parameter.setSchema(resolvedSchema.schema);
         }
         resolvedSchema.referencedSchemas.forEach((key, schema) -> components.addSchema(key, schema));
