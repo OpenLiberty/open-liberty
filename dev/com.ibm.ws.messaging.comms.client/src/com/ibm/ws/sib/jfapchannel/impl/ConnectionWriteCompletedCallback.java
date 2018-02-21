@@ -50,9 +50,9 @@ public class ConnectionWriteCompletedCallback implements IOWriteCompletedCallbac
    // The connection that this callback is associated with.
    private Connection connection;                                                   // F176003
 
-   // Is the callback currently idle (ie. there is currently no TCP write request
-   // outstanding, or we are not about to issue one).
-   private boolean idle = true;                                                     // F176003
+   // The Thread which is processing the TCP write request,                         // PI92182
+   // or null if no thread is currently processing the write request.               // PI92182
+   private Thread writingThread = null;                                             // PI92182
 	
    private boolean terminate = false;                                               // F176003
 
@@ -115,11 +115,16 @@ public class ConnectionWriteCompletedCallback implements IOWriteCompletedCallbac
       {
          synchronized(this)
          {
-            if (idle && !terminate)
-            {
-               idle = !isWorkAvailable();
-               if (!idle) writeOnThisThread = true;
+           Thread currentThread = Thread.currentThread();                          // PI92182
+            if ((writingThread == null || currentThread.equals(writingThread)) && !terminate) {    // PI92182                                         
+                if (isWorkAvailable()) {                                            // PI92182
+                    writingThread = Thread.currentThread();                         // PI92182
+                    writeOnThisThread = true;                                       // PI92182
+                } else {                                                            // PI92182
+                    writingThread = null;                                           // PI92182
+                }
             }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "writingThread="+writingThread);
          }
       } 
       // end D226210
@@ -151,7 +156,10 @@ public class ConnectionWriteCompletedCallback implements IOWriteCompletedCallbac
          if (dequeueTransmissionData(writeBuffer))
          {
             writeBuffer.flip();
-            idle = false;
+            synchronized (this) {                                                   // PI92182
+                // Another thread may have cleared writingThread, so claim it anyway.// PI92182 
+                writingThread = Thread.currentThread();                             // PI92182
+            }                                                                       // PI92182
 
             NetworkConnection vc = null;
                         
@@ -238,7 +246,7 @@ public class ConnectionWriteCompletedCallback implements IOWriteCompletedCallbac
                   {
                      if (terminate)
                      {
-                        idle = true;
+                        writingThread = null;                                       // PI92182
                      }
                      else
                      {
@@ -262,9 +270,10 @@ public class ConnectionWriteCompletedCallback implements IOWriteCompletedCallbac
                            }
                         }
                         
-                        idle = !isWorkAvailable();
+                        if (!isWorkAvailable())                                     // PI92182
+                            writingThread = null;                                   // PI92182
                      }
-                     done |= idle;
+                     done |= (writingThread == null);                               // PI92182
                   }
                }
                // end D226210
