@@ -319,17 +319,17 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGaESAList
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
-                                    new File(project.buildDir, 'gaFeatures.txt'),
-                                    new File(project.buildDir, 'excludeList.txt') }
+    into 'prereq.published', {
+        from new File(project.buildDir, 'dependencies.gradle'),
+             new File(project.buildDir, 'gaFeatures.txt'),
+             new File(project.buildDir, 'excludeList.txt')
+    }
     from new File(project.buildDir, 'replacements')
-}
-
-task zipDotFeatureFiles(type: Zip) {
-    baseName 'openliberty-features'
-    from rootProject.fileTree(dir: '.', include: '*/*.feature').collect {
-        if (!it.isDirectory()) {
-            it
+    into 'com.ibm.websphere.features.internal.openliberty', {
+        from rootProject.fileTree(dir: '.', include: '*/*.feature').collect {
+            if (!it.isDirectory()) {
+                it
+            }
         }
     }
 }
@@ -340,11 +340,6 @@ publishing {
         artifactId 'gradle-bootstrap'
         version project.version
         artifact zipGradleBootstrap
-    }
-    features(MavenPublication) {
-        artifactId 'openliberty-features'
-        version project.version
-        artifact zipDotFeatureFiles
     }
   }
 }
