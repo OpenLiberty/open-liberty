@@ -97,10 +97,10 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             if (_notificationSupport != null) {
                 _notificationSupport.sendRegisterNotification(objectName);
             }
-            emitJMXRegisterDelayedMBeans(objectName, "registerDelayedMBean", "success", "Successful MBean registration");
+            emitJMXRegisterDelayedMBeans(objectName, "registerMBean", "success", "Successful MBean registration");
             return true;
         }
-        emitJMXRegisterDelayedMBeans(objectName, "registerDelayedMBean", "failure", "Instance of MBean not found");
+        emitJMXRegisterDelayedMBeans(objectName, "registerMBean", "failure", "Instance of MBean not found");
         return false;
     }
 
@@ -113,19 +113,19 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             try {
                 registerMBeanIfDelayed(name);
             } catch (InstanceNotFoundException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "failure", "Instance of MBean not found");
+                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Instance of MBean not found");
                 //TODO log appropriate message??
             } catch (NotCompliantMBeanException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "failure", "Not compliant MBean");
+                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Not compliant MBean");
                 //TODO log appropriate message??
             } catch (InstanceAlreadyExistsException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "failure", "Instance of MBean already exists");
+                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Instance of MBean already exists");
                 //TODO log appropriate message??
             } catch (MBeanRegistrationException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "failure", "MBean registration failure");
+                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "MBean registration failure");
                 //TODO log appropriate message??
             }
-            emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "success", "Successful MBean registration");
+            emitJMXRegisterDelayedMBeans(name, "registerMBean", "success", "Successful MBean registration");
         }
     }
 
@@ -169,7 +169,7 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                         }
                     }
                 }
-                emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "success", "Successful MBean registration");
+                emitJMXRegisterDelayedMBeans(name, "registerMBean", "success", "Successful MBean registration");
 
                 return;
             }
@@ -183,7 +183,7 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                 waitForProcessingToComplete(mBeanHolder);
             }
         } else {
-            emitJMXRegisterDelayedMBeans(name, "registerDelayedMBean", "failure", "Instance of MBean not found");
+            emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Instance of MBean not found");
             throw new InstanceNotFoundException(); //TODO appropriate message
         }
     }
@@ -195,7 +195,7 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                 return unregisterMBeanIfDelayed(mBeanHolder, name);
             }
         }
-        emitJMXRegisterDelayedMBeans(name, "unregisterDelayedMBean", "failure", "Instance of MBean not found");
+        emitJMXRegisterDelayedMBeans(name, "unregisterMBean", "failure", "Instance of MBean not found");
         return false;
     }
 
@@ -216,7 +216,7 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             if (_notificationSupport != null) {
                 _notificationSupport.sendUnregisterNotification(name);
             }
-            emitJMXRegisterDelayedMBeans(name, "unregisterDelayedMBean", "success", "Successful MBean unregistration");
+            emitJMXRegisterDelayedMBeans(name, "unregisterMBean", "success", "Successful MBean unregistration");
             return true;
         }
 
@@ -452,6 +452,7 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException {
+        Thread.dumpStack();
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
