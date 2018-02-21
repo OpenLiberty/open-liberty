@@ -320,16 +320,16 @@ public class ComponentsImpl implements Components {
         StringBuilder sb = new StringBuilder();
         sb.append("class Components {\n");
 
-        sb = (!toIndentedString(schemas).equals(Constants.NULL_VALUE)) ? sb.append("    schemas: ").append(OpenAPIUtils.mapToString(schemas)).append("\n") : sb.append("");
-        sb = (!toIndentedString(responses).equals(Constants.NULL_VALUE)) ? sb.append("    responses: ").append(OpenAPIUtils.mapToString(responses)).append("\n") : sb.append("");
-        sb = (!toIndentedString(parameters).equals(Constants.NULL_VALUE)) ? sb.append("    parameters: ").append(OpenAPIUtils.mapToString(parameters)).append("\n") : sb.append("");
-        sb = (!toIndentedString(examples).equals(Constants.NULL_VALUE)) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
-        sb = (!toIndentedString(requestBodies).equals(Constants.NULL_VALUE)) ? sb.append("    requestBodies: ").append(OpenAPIUtils.mapToString(requestBodies)).append("\n") : sb.append("");
-        sb = (!toIndentedString(headers).equals(Constants.NULL_VALUE)) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
-        sb = (!toIndentedString(securitySchemes).equals(Constants.NULL_VALUE)) ? sb.append("    securitySchemes: ").append(OpenAPIUtils.mapToString(securitySchemes)).append("\n") : sb.append("");
-        sb = (!toIndentedString(links).equals(Constants.NULL_VALUE)) ? sb.append("    links: ").append(OpenAPIUtils.mapToString(links)).append("\n") : sb.append("");
-        sb = (!toIndentedString(callbacks).equals(Constants.NULL_VALUE)) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (schemas != null) ? sb.append("    schemas: ").append(OpenAPIUtils.mapToString(schemas)).append("\n") : sb.append("");
+        sb = (responses != null) ? sb.append("    responses: ").append(OpenAPIUtils.mapToString(responses)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(OpenAPIUtils.mapToString(parameters)).append("\n") : sb.append("");
+        sb = (examples != null) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
+        sb = (requestBodies != null) ? sb.append("    requestBodies: ").append(OpenAPIUtils.mapToString(requestBodies)).append("\n") : sb.append("");
+        sb = (headers != null) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = (securitySchemes != null) ? sb.append("    securitySchemes: ").append(OpenAPIUtils.mapToString(securitySchemes)).append("\n") : sb.append("");
+        sb = (links != null) ? sb.append("    links: ").append(OpenAPIUtils.mapToString(links)).append("\n") : sb.append("");
+        sb = (callbacks != null) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         
         sb.append("}");
         return sb.toString();

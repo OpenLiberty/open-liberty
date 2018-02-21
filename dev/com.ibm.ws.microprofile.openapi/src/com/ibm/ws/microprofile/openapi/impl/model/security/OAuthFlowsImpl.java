@@ -140,11 +140,11 @@ public class OAuthFlowsImpl implements OAuthFlows {
         StringBuilder sb = new StringBuilder();
         sb.append("class OAuthFlows {\n");
 
-        sb = !toIndentedString(implicit).equals(Constants.NULL_VALUE) ? sb.append("    implicit: ").append(toIndentedString(implicit)).append("\n") : sb.append("");
-        sb = !toIndentedString(password).equals(Constants.NULL_VALUE) ? sb.append("    password: ").append(toIndentedString(password)).append("\n") : sb.append("");
-        sb = !toIndentedString(clientCredentials).equals(Constants.NULL_VALUE) ? sb.append("    clientCredentials: ").append(toIndentedString(clientCredentials)).append("\n") : sb.append("");
-        sb = !toIndentedString(authorizationCode).equals(Constants.NULL_VALUE) ? sb.append("    authorizationCode: ").append(toIndentedString(authorizationCode)).append("\n") : sb.append("");
-        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (implicit != null) ? sb.append("    implicit: ").append(toIndentedString(implicit)).append("\n") : sb.append("");
+        sb = (password != null) ? sb.append("    password: ").append(toIndentedString(password)).append("\n") : sb.append("");
+        sb = (clientCredentials != null) ? sb.append("    clientCredentials: ").append(toIndentedString(clientCredentials)).append("\n") : sb.append("");
+        sb = (authorizationCode != null) ? sb.append("    authorizationCode: ").append(toIndentedString(authorizationCode)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

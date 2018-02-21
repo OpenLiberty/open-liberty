@@ -24,6 +24,4 @@ public class Constants {
     public static String CONTENT_TYPE_JSON = "application/json";
     public static String CONTENT_TYPE_YAML = "application/yaml";
 
-    public static final String NULL_VALUE = "null";
-
 }

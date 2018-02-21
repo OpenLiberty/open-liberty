@@ -174,12 +174,12 @@ public class ExampleImpl implements Example {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Example {\n");
-        sb = (!toIndentedString(summary).equals(Constants.NULL_VALUE)) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
-        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = (!toIndentedString(value).equals(Constants.NULL_VALUE)) ? sb.append("    value: ").append(toIndentedString(value)).append("\n") : sb.append("");
-        sb = (!toIndentedString(externalValue).equals(Constants.NULL_VALUE)) ? sb.append("    externalValue: ").append(toIndentedString(externalValue)).append("\n") : sb.append("");
-        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (summary != null) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (value != null) ? sb.append("    value: ").append(toIndentedString(value)).append("\n") : sb.append("");
+        sb = (externalValue != null) ? sb.append("    externalValue: ").append(toIndentedString(externalValue)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

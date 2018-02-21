@@ -82,8 +82,8 @@ public class DiscriminatorImpl implements Discriminator {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Discriminator {\n");
-        sb = (!toIndentedString(propertyName).equals(Constants.NULL_VALUE)) ? sb.append("    propertyName: ").append(toIndentedString(propertyName)).append("\n") : sb.append("");
-        sb = (!toIndentedString(mapping).equals(Constants.NULL_VALUE)) ? sb.append("    mapping: ").append(OpenAPIUtils.mapToString(mapping)).append("\n") : sb.append("");
+        sb = (propertyName != null) ? sb.append("    propertyName: ").append(toIndentedString(propertyName)).append("\n") : sb.append("");
+        sb = (mapping != null) ? sb.append("    mapping: ").append(OpenAPIUtils.mapToString(mapping)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

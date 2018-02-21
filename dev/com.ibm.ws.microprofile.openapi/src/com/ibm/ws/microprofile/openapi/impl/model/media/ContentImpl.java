@@ -54,7 +54,7 @@ public class ContentImpl extends LinkedHashMap<String, MediaType> implements Con
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Content {\n");
-        sb = (!toIndentedString(super.toString()).equals(Constants.NULL_VALUE)) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

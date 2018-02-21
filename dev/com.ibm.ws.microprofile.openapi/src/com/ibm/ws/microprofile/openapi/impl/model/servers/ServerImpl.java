@@ -121,10 +121,10 @@ public class ServerImpl implements Server {
         StringBuilder sb = new StringBuilder();
         sb.append("class Server {\n");
 
-        sb = !toIndentedString(url).equals(Constants.NULL_VALUE) ? sb.append("    url: ").append(toIndentedString(url)).append("\n") : sb.append("");
-        sb = !toIndentedString(description).equals(Constants.NULL_VALUE) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = !toIndentedString(variables).equals(Constants.NULL_VALUE) ? sb.append("    variables: ").append(toIndentedString(variables)).append("\n") : sb.append("");
-        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (url != null) ? sb.append("    url: ").append(toIndentedString(url)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (variables != null) ? sb.append("    variables: ").append(toIndentedString(variables)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

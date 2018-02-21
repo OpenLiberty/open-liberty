@@ -235,15 +235,15 @@ public class LinkImpl implements Link {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Link {\n");
-        sb = (!toIndentedString(operationRef).equals(Constants.NULL_VALUE)) ? sb.append("    operationRef: ").append(toIndentedString(operationRef)).append("\n") : sb.append("");
-        sb = (!toIndentedString(operationId).equals(Constants.NULL_VALUE)) ? sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n") : sb.append("");
-        sb = (!toIndentedString(parameters).equals(Constants.NULL_VALUE)) ? sb.append("    parameters: ").append(OpenAPIUtils.mapToString(parameters)).append("\n") : sb.append("");
-        sb = (!toIndentedString(requestBody).equals(Constants.NULL_VALUE)) ? sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n") : sb.append("");
-        sb = (!toIndentedString(headers).equals(Constants.NULL_VALUE)) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
-        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
-        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
-        sb = (!toIndentedString(server).equals(Constants.NULL_VALUE)) ? sb.append("    server: ").append(toIndentedString(server)).append("\n") : sb.append("");
+        sb = (operationRef != null) ? sb.append("    operationRef: ").append(toIndentedString(operationRef)).append("\n") : sb.append("");
+        sb = (operationId != null) ? sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(OpenAPIUtils.mapToString(parameters)).append("\n") : sb.append("");
+        sb = (requestBody != null) ? sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n") : sb.append("");
+        sb = (headers != null) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (server != null) ? sb.append("    server: ").append(toIndentedString(server)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

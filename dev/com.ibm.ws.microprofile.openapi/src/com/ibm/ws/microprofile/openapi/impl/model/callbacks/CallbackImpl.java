@@ -81,9 +81,9 @@ public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Cal
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Callback {\n");
-        sb = (!toIndentedString(super.toString()).equals(Constants.NULL_VALUE)) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
-        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
         sb.append("}");
         return sb.toString();

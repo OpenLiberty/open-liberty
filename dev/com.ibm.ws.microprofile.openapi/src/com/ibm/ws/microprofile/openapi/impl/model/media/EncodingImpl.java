@@ -16,7 +16,6 @@ import java.util.Map;
 import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 
-import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
@@ -137,12 +136,12 @@ public class EncodingImpl implements Encoding {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Discriminator {\n");
-        sb = (!toIndentedString(contentType).equals(Constants.NULL_VALUE)) ? sb.append("    contentType: ").append(toIndentedString(contentType)).append("\n") : sb.append("");
-        sb = (!toIndentedString(headers).equals(Constants.NULL_VALUE)) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
-        sb = (!toIndentedString(style).equals(Constants.NULL_VALUE)) ? sb.append("    style: ").append(toIndentedString(style)).append("\n") : sb.append("");
-        sb = (!toIndentedString(explode).equals(Constants.NULL_VALUE)) ? sb.append("    explode: ").append(toIndentedString(explode)).append("\n") : sb.append("");
-        sb = (!toIndentedString(allowReserved).equals(Constants.NULL_VALUE)) ? sb.append("    allowReserved: ").append(toIndentedString(allowReserved)).append("\n") : sb.append("");
-        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (contentType != null) ? sb.append("    contentType: ").append(toIndentedString(contentType)).append("\n") : sb.append("");
+        sb = (headers != null) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = (style != null) ? sb.append("    style: ").append(toIndentedString(style)).append("\n") : sb.append("");
+        sb = (explode != null) ? sb.append("    explode: ").append(toIndentedString(explode)).append("\n") : sb.append("");
+        sb = (allowReserved != null) ? sb.append("    allowReserved: ").append(toIndentedString(allowReserved)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }
