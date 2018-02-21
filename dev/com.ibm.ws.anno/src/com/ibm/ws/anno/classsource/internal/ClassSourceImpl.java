@@ -137,7 +137,7 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     //
-    
+
     protected final ClassSource_Options options;
 
     @Override
@@ -150,7 +150,7 @@ public abstract class ClassSourceImpl implements ClassSource {
     public boolean getUseJandex() {
     	return getOptions().getUseJandex();
     }
-    
+
     //
 
     @Trivial
@@ -280,22 +280,22 @@ public abstract class ClassSourceImpl implements ClassSource {
     /**
      * <p>Attempt to process a specified class. Answer whether processing was handed
      * successfully by the streamer via {@link ClassSource_Streamer#process(String, InputStream, boolean, boolean, boolean)}.</p>
-     * 
+     *
      * <p>A failure (false) result occurs the class is blocked by {@link ClassSource_Streamer#doProcess(String, boolean, boolean, boolean)},
      * or if no resource is available for the class. A failure to open the resource results
      * in an exception. Certain processing failures also result in an exception.</p>
-     * 
+     *
      * <p>An exception thrown by the streamer indicates that the class was not successfully
      * handled by the streamer.</p>
-     * 
+     *
      * <p>A failure to close the stream for the class is handled locally.</p>
-     * 
+     *
      * @param streamer The streamer which is to be used to process the named class.
      * @param className The class which is to be processed.
      * @param scanPolicy The scan policy of the class source of the named class.
-     * 
+     *
      * @return True if processing reaches the streamer. Otherwise, false.
-     * 
+     *
      * @throws ClassSource_Exception Thrown in case of a processing failure.
      */
     @Trivial
@@ -467,12 +467,12 @@ public abstract class ClassSourceImpl implements ClassSource {
         int initialClasses = i_seedClassNames.size();
 
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] Initial classes [ {2} ]", 
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] Initial classes [ {2} ]",
                      new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) } ));
         }
 
         boolean fromJandex;
-        
+
         if ( processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
         	fromJandex = true;
         } else {
@@ -483,12 +483,12 @@ public abstract class ClassSourceImpl implements ClassSource {
         int finalClasses = i_seedClassNames.size();
 
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]", 
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
                     new Object[] { getHashText(),
                     		       getCanonicalName(),
                     		       (fromJandex ? "New Scan" : "Jandex"),
-                    		       Integer.valueOf(finalClasses) } ));            
-            
+                    		       Integer.valueOf(finalClasses) } ));
+
             Object[] logParms = new Object[] { getHashText(), null, null };
 
             logParms[1] = Integer.valueOf(finalClasses - initialClasses);
@@ -504,28 +504,28 @@ public abstract class ClassSourceImpl implements ClassSource {
                 Tr.debug(tc, MessageFormat.format("[ {0} ]  [ {1} ] {2}", logParms));
             }
         }
-        
+
         if ( fromJandex && JandexLogger.doLog() ) {
         	String useHashText = getHashText();
-        	
+
         	String msg = MessageFormat.format(
-        		"[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]", 
+        		"[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
         		useHashText, getCanonicalName(),
         		(fromJandex ? "New Scan" : "Jandex"),
-        		Integer.valueOf(finalClasses) );            
+        		Integer.valueOf(finalClasses) );
         	JandexLogger.log(CLASS_NAME, methodName, msg);
 
-        	JandexLogger.log(CLASS_NAME, methodName, 
+        	JandexLogger.log(CLASS_NAME, methodName,
         		MessageFormat.format("[ {0} ] Added classes [ {1} ]",
-        			useHashText, Integer.valueOf(finalClasses - initialClasses))); 
+        			useHashText, Integer.valueOf(finalClasses - initialClasses)));
 
         	for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
         		int nextResult = getResult(resultField);
         		String nextResultTag = resultField.getTag();
 
-            	JandexLogger.log(CLASS_NAME, methodName,         		
+            	JandexLogger.log(CLASS_NAME, methodName,
                     MessageFormat.format("[ {0} ]  [ {1} ] {2}",
-                    	useHashText, Integer.valueOf(nextResult), nextResultTag)); 
+                    	useHashText, Integer.valueOf(nextResult), nextResultTag));
             }
         }
     }
@@ -533,7 +533,7 @@ public abstract class ClassSourceImpl implements ClassSource {
     /**
      * <p>Main scan implementation step: Process the classes of this class source.  No cache
      * data is available.</p>
-     * 
+     *
      * @param streamer The streamer used to process the classes.
      * @param i_seedClassNames The seed class names.  Updated with new seed class names from the scan.
      * @param scanPolicy The policy to apply to the scan data.
@@ -559,11 +559,11 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     /**
      * Attempt to read the Jandex index.
-     * 
+     *
      * If Jandex is not enabled, immediately answer null.
-     * 
+     *
      * If no Jandex index is available, or if it cannot be read, answer null.
-     * 
+     *
      * @return The read Jandex index.
      */
     protected Index getJandexIndex() {
@@ -580,7 +580,7 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         	if ( doLog || doJandexLog ) {
         		boolean haveJandex = basicHasJandexIndex();
-        		
+
         		String msg;
         		if ( haveJandex ) {
         			msg = MessageFormat.format(
@@ -590,7 +590,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         			msg = MessageFormat.format(
         				"[ {0} ] Jandex disabled; Jandex index [ {1} ] not found",
         				getHashText(), getJandexIndexPath());
-        				
+
         		}
         		if ( doLog ) {
         	        Tr.debug(tc, msg);
@@ -617,13 +617,13 @@ public abstract class ClassSourceImpl implements ClassSource {
         				getHashText(), getJandexIndexPath());
         		}
         		if ( doLog ) {
-        	        Tr.debug(tc, msg);	
+        	        Tr.debug(tc, msg);
         		}
         		if ( doJandexLog ) {
         			JandexLogger.log(CLASS_NAME,  methodName, msg);
-        		}        		
+        		}
         	}
-        		
+
         	return jandexIndex;
         }
     }
@@ -631,17 +631,17 @@ public abstract class ClassSourceImpl implements ClassSource {
     /**
      * <p>Answer the JANDEX index for this class source.  Answer null if none
      * is available.</p>
-     * 
+     *
      * @return The JANDEX index for this class source.  This default implementation
      *     always answers null.
      */
     protected Index basicGetJandexIndex() {
         return null;
     }
-    
+
     /**
      * <p>Tell if a Jandex index is available.</p>
-     * 
+     *
      * @return Whether a Jandex index is available.  This implementation always
      *     answers false.
      */
@@ -651,11 +651,11 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     /**
      * <p>Attempt to process this class source using cache data.</p>
-     * 
+     *
      * @param streamer The streamer used to process the class source.
      * @param i_seedClassNames The class names of the class source.
      * @param scanPolicy The policy of this class source.
-     * 
+     *
      * @return True or false telling if the class was successfully
      *     processed using cache data.
      */
@@ -663,7 +663,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         ClassSource_Streamer streamer,
         Set<String> i_seedClassNames,
         ScanPolicy scanPolicy) {
-        
+
         if ( streamer == null ) {
             return false;
         }
@@ -682,7 +682,7 @@ public abstract class ClassSourceImpl implements ClassSource {
             markResult(ClassSource_ScanCounts.ResultField.ENTRY);
             markResult(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
             markResult(ClassSource_ScanCounts.ResultField.CLASS);
-            
+
             // Processing notes:
             //
             // Make sure to record the class before attempting processing.
@@ -729,11 +729,6 @@ public abstract class ClassSourceImpl implements ClassSource {
             }
         }
 
-        return true;
-    }
-
-    private boolean getUseJandex() {
-        // TODO Auto-generated method stub
         return true;
     }
 }
