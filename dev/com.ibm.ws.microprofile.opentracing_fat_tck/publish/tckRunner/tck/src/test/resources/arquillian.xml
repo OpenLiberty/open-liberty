@@ -24,7 +24,6 @@
             <property name="allowConnectingToRunningServer">true</property>
             <property name="deployType">xml</property>
             <property name="apiTypeVisibility">spec, ibm-api, third-party, stable</property>
-            <property name="javaVmArguments">-DUSE_MOCK_TRACER=true</property>
         </configuration>
     </container>
 </arquillian>
