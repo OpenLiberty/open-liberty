@@ -35,7 +35,6 @@ import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -65,7 +64,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
     private final String[] userIdOnlyProperties = { AttributeNameConstants.WSCREDENTIAL_USERID,
                                                     AuthenticationConstants.INTERNAL_ASSERTION_KEY };
 
-    private final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
+//    private final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
 
     private boolean uniquedIdAndSecurityNameLogin = false;
     private boolean useIdAndPasswordLogin = false;
@@ -317,12 +316,12 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         }
     }
 
-    private void addJsonWebToken(Subject subject) {
-        if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
-            MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
-            removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
-        }
-    }
+//    private void addJsonWebToken(Subject subject) {
+//        if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
+//            MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
+//            removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
+//        }
+//    }
 
     private void setUpTemporarySubject() throws Exception {
         temporarySubject = new Subject();
@@ -398,14 +397,14 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         return true;
     }
 
-    private void removeInternalAssertionHashtable(Hashtable<String, ?> props, String propNames[]) {
-        Set<Object> publicCredentials = subject.getPublicCredentials();
-        publicCredentials.remove(props);
-        for (String propName : propNames) {
-            props.remove(propName);
-        }
-        if (!props.isEmpty()) {
-            publicCredentials.add(props);
-        }
-    }
+//    private void removeInternalAssertionHashtable(Hashtable<String, ?> props, String propNames[]) {
+//        Set<Object> publicCredentials = subject.getPublicCredentials();
+//        publicCredentials.remove(props);
+//        for (String propName : propNames) {
+//            props.remove(propName);
+//        }
+//        if (!props.isEmpty()) {
+//            publicCredentials.add(props);
+//        }
+//    }
 }
