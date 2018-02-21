@@ -8,32 +8,32 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.security.wim.ras_test;
+package com.ibm.websphere.security.wim.ras;
 
-public class PhoneInfo {
+public class Geography {
+	private String city = null;
+	private String state = null;
+	private String country = null;
+	
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	
+	
 
-	private String stdCode = null;
-	private String mobileNo = null;
-	private String landLineNo = null;
-	
-	public String getStdCode() {
-		return stdCode;
-	}
-	public void setStdCode(String stdCode) {
-		this.stdCode = stdCode;
-	}
-	public String getMobileNo() {
-		return mobileNo;
-	}
-	public void setMobileNo(String mobileNo) {
-		this.mobileNo = mobileNo;
-	}
-	public String getLandLineNo() {
-		return landLineNo;
-	}
-	public void setLandLineNo(String landLineNo) {
-		this.landLineNo = landLineNo;
-	}
-	
-	
 }

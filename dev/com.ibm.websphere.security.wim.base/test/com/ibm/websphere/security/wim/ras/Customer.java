@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.security.wim.ras_test;
+package com.ibm.websphere.security.wim.ras;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class Customer {
 	
 	private Geography geo = null;
 	
-	protected List<com.ibm.websphere.security.wim.ras_test.BankInfo> bankInfo = null;
+	protected List<com.ibm.websphere.security.wim.ras.BankInfo> bankInfo = null;
 	
 	private HashMap dataTypeMap = new HashMap();
 	
@@ -60,10 +60,10 @@ public class Customer {
 	
 	
 	
-	public List<com.ibm.websphere.security.wim.ras_test.BankInfo> getBankInfo() {
+	public List<com.ibm.websphere.security.wim.ras.BankInfo> getBankInfo() {
 		return bankInfo;
 	}
-	public void setBankInfo(List<com.ibm.websphere.security.wim.ras_test.BankInfo> bankInfo) {
+	public void setBankInfo(List<com.ibm.websphere.security.wim.ras.BankInfo> bankInfo) {
 		this.bankInfo = bankInfo;
 	}
 	public Geography getGeo() {
