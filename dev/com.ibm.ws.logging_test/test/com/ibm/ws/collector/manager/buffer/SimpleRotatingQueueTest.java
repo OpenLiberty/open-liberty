@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.internal.impl;
+package com.ibm.ws.collector.manager.buffer;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ import org.junit.Test;
 public class SimpleRotatingQueueTest {
 
     /**
-     * 
+     *
      */
     @Test
     public void test1() {
@@ -52,7 +52,7 @@ public class SimpleRotatingQueueTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void test2() {
